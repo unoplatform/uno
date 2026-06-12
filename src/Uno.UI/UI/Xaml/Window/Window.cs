@@ -50,6 +50,12 @@ public partial class Window
 
 	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
+		// The real caller is captured by the public parameterless ctor, which guards
+		// Assembly.GetCallingAssembly behind ContentHostOverride because it throws
+		// PlatformNotSupportedException on AOT/mobile. Resolving it here would only ever
+		// yield Uno.UI (and crash on those platforms), so we rely on what's passed in.
+		CaptureOwnerAssemblyLoadContext(callingAssembly);
+
 #if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
@@ -100,7 +106,7 @@ public partial class Window
 		{
 			// Called only when a secondary ALC is setting content
 
-			InitializeAlcState(callingAssembly ?? Assembly.GetCallingAssembly());
+			InitializeAlcState(callingAssembly);
 		}
 
 		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
@@ -131,7 +137,8 @@ public partial class Window
 	}
 
 	partial void InitializeWindowingFlavor();
-	partial void InitializeAlcState(Assembly callingAssembly);
+	partial void InitializeAlcState(Assembly? callingAssembly);
+	partial void CaptureOwnerAssemblyLoadContext(Assembly? callingAssembly);
 	internal partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
 	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
 

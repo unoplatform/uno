@@ -48,7 +48,7 @@
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
-		<PackageReference Include="MessagePack" Version="3.1.4" />
+		<PackageReference Include="MessagePack" Version="3.1.7" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>

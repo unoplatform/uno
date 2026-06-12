@@ -747,10 +747,23 @@ partial class ClientHotReloadProcessor
 				// source was rebuilt by this update — wherever it sits, including dictionaries nested inside
 				// typed ResourceDictionary subclasses (e.g. a SimpleTheme/BaseTheme theme referencing an
 				// override file via ColorOverrideSource).
-				UpdateResourceDictionaries(updatedSources, Application.Current.Resources);
+				//
+				// CRITICAL: the rebuilt dictionaries do NOT necessarily live in Application.Current. When the
+				// app is hosted inside a secondary AssemblyLoadContext (e.g. a host rendering a consumer app in
+				// a per-app ALC), Application.Current is the *host* application — the consumer app is a
+				// secondary-ALC Application registered in Application's ALC registry, never Current. The edited
+				// source-backed dictionaries are merged into the *inner* app's Application.Resources, so a
+				// host-only walk never reaches them. We therefore refresh the host AND every secondary
+				// application's resource tree.
+				RefreshResourcesForApp(Application.Current, updatedSources);
 
-				// Force the app reevaluate global resources changes
-				Application.Current.UpdateResourceBindingsForHotReload();
+				if (Application.HasSecondaryApps)
+				{
+					foreach (var secondary in Application.EnumerateSecondaryApplications())
+					{
+						RefreshResourcesForApp(secondary, updatedSources);
+					}
+				}
 			}
 #endif
 		}
@@ -758,9 +771,40 @@ partial class ClientHotReloadProcessor
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 	/// <summary>
+	/// Refreshes the source-backed dictionaries of a single application's resource tree and, when at least
+	/// one was refreshed, re-evaluates its resource bindings. The resolution context is pinned to the
+	/// application's own <see cref="AssemblyLoadContext"/> so that <c>RefreshMergedDictionary</c> resolves
+	/// each source against the correct (ALC-scoped) registry — essential when the app is hosted in a
+	/// secondary ALC, where the rebuilt dictionaries were registered into that ALC's scoped registry rather
+	/// than the global one.
+	/// </summary>
+	private static void RefreshResourcesForApp(Application? app, HashSet<string> updatedSources)
+	{
+		if (app?.Resources is not { } resources)
+		{
+			return;
+		}
+
+		var alc = AssemblyLoadContext.GetLoadContext(app.GetType().Assembly)
+			?? AssemblyLoadContext.Default;
+
+		int refreshed;
+		using (Uno.UI.ResourceResolver.SetResolutionContext(alc))
+		{
+			refreshed = UpdateResourceDictionaries(updatedSources, resources);
+		}
+
+		if (refreshed > 0)
+		{
+			// Force the app to reevaluate global resource changes.
+			app.UpdateResourceBindingsForHotReload();
+		}
+	}
+
+	/// <summary>
 	/// Recursively refreshes every source-backed <see cref="ResourceDictionary"/> reachable through
 	/// <see cref="ResourceDictionary.MergedDictionaries"/> whose source was rebuilt by the current
-	/// metadata update.
+	/// metadata update, returning the number of dictionaries that were refreshed.
 	/// </summary>
 	/// <remarks>
 	/// Matching is done on a normalized source key (see <see cref="NormalizeResourceDictionarySource"/>):
@@ -770,8 +814,10 @@ partial class ClientHotReloadProcessor
 	/// overrides are reached, but only the matched entry is reloaded via <c>RefreshMergedDictionary</c>.
 	/// A typed subclass is therefore never replaced unless its own source file was the one edited.
 	/// </remarks>
-	private static void UpdateResourceDictionaries(HashSet<string> updatedSources, ResourceDictionary root)
+	private static int UpdateResourceDictionaries(HashSet<string> updatedSources, ResourceDictionary root)
 	{
+		var refreshed = 0;
+
 		// Snapshot first: RefreshMergedDictionary mutates MergedDictionaries (it replaces the entry at its index).
 		foreach (var merged in root.MergedDictionaries.ToArray())
 		{
@@ -779,13 +825,16 @@ partial class ClientHotReloadProcessor
 				&& updatedSources.Contains(NormalizeResourceDictionarySource(source)))
 			{
 				root.RefreshMergedDictionary(merged);
+				refreshed++;
 			}
 		}
 
 		foreach (var merged in root.MergedDictionaries)
 		{
-			UpdateResourceDictionaries(updatedSources, merged);
+			refreshed += UpdateResourceDictionaries(updatedSources, merged);
 		}
+
+		return refreshed;
 	}
 
 	/// <summary>

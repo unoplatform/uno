@@ -629,7 +629,14 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
-							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							// Re-apply the theme of the application that OWNS this content root, not `this`.
+							// The content-root list is process-global; when apps in multiple AssemblyLoadContexts
+							// share it (e.g. a host rendering a consumer app in a secondary ALC), a secondary
+							// app's resource refresh — such as its hot-reload pass — must not bleed its own theme
+							// onto the host's, or another app's, visual tree. Falls back to `this` when the owner
+							// is indeterminate, and avoids the owning-app lookup when there are no secondary apps.
+							var owningApp = (HasSecondaryApps ? GetOwningApplication(contentRoot) : null) ?? this;
+							var theme = owningApp.InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
 							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
 							rootFe?.NotifyThemeChanged(theme, forceRefresh);
