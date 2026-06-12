@@ -81,6 +81,8 @@ public sealed class HotReloadTracker(
 
 	internal void ReportError(string message) => _reporter.Error(message);
 
+	internal void ReportWarn(string message) => _reporter.Warn(message);
+
 	public async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? files)
 	{
 		var previous = Current;
