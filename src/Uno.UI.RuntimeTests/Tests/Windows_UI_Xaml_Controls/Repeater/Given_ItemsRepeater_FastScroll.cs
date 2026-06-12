@@ -604,7 +604,7 @@ public class Given_ItemsRepeater_FastScroll
 			$"the thumb drag to {draggedTo:F2} must hold instead of snapping back to the stale "
 			+ $"programmatic intent {armedIntent:F2}. Observed VerticalOffset={sut.Scroller.VerticalOffset:F2}.");
 #else
-		Assert.Inconclusive("not application for winui");
+		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
 #endif
 	}
 
