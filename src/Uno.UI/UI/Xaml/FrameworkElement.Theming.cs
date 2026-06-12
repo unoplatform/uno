@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -25,7 +27,7 @@ public partial class FrameworkElement
 	// In Uno, we emulate this with two fields on FrameworkElement:
 	// - _themeForeground: the frozen brush from the nearest themed ancestor
 	// - _isForegroundFrozen: whether this element's foreground is frozen (theme boundary)
-	private Brush _themeForeground;
+	private Brush? _themeForeground;
 	private bool _isForegroundFrozen;
 
 	/// <summary>
@@ -121,7 +123,7 @@ public partial class FrameworkElement
 				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
 			if (actualThemeChanged)
 			{
-				_actualThemeChanged?.Invoke(this, null);
+				_actualThemeChanged?.Invoke(this, null!);
 			}
 		}
 #endif
@@ -170,12 +172,12 @@ public partial class FrameworkElement
 		}
 	}
 
-	private TypedEventHandler<FrameworkElement, object> _actualThemeChanged;
+	private TypedEventHandler<FrameworkElement, object>? _actualThemeChanged;
 
 	/// <summary>
 	/// Occurs when the ActualTheme property value has changed.
 	/// </summary>
-	public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged
+	public event TypedEventHandler<FrameworkElement, object>? ActualThemeChanged
 	{
 		add
 		{
@@ -297,7 +299,7 @@ public partial class FrameworkElement
 	/// Internal: the WinAppSDK does not expose this event on the public FrameworkElement surface
 	/// (no Generated stub) — it is the engine-level companion of ActualThemeChanged.
 	/// </remarks>
-	internal event TypedEventHandler<FrameworkElement, object> HighContrastChanged;
+	internal event TypedEventHandler<FrameworkElement, object>? HighContrastChanged;
 
 	// Called when there are default (system/app) theme changes. This enables us to notify
 	// ActualThemeChanged listeners on this element when it's outside the live tree.
@@ -359,7 +361,7 @@ public partial class FrameworkElement
 	{
 		try
 		{
-			HighContrastChanged?.Invoke(this, null);
+			HighContrastChanged?.Invoke(this, null!);
 		}
 		catch (Exception e)
 		{
@@ -395,7 +397,7 @@ public partial class FrameworkElement
 	{
 		try
 		{
-			_actualThemeChanged?.Invoke(this, null);
+			_actualThemeChanged?.Invoke(this, null!);
 		}
 		catch (Exception e)
 		{
@@ -428,7 +430,7 @@ public partial class FrameworkElement
 		// MUX Reference: CTextBlock::PullInheritedTextFormatting (TextBlock.cpp line 647)
 		//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::TextBlock_Foreground)
 		//       && !m_pTextFormatting->m_freezeForeground)
-		DependencyProperty foregroundProperty = GetForegroundProperty();
+		DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 		if (foregroundProperty is null)
 		{
@@ -484,7 +486,7 @@ public partial class FrameworkElement
 
 		if (freeze)
 		{
-			DependencyProperty foregroundProperty = GetForegroundProperty();
+			DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 			// MUX Reference framework.cpp line 3423-3429:
 			// WinUI skips the entire freeze when Foreground is set locally or by style,
@@ -566,7 +568,7 @@ public partial class FrameworkElement
 			_themeForeground = null;
 
 			// Clear the value we set at Inheritance precedence
-			DependencyProperty foregroundProperty = GetForegroundProperty();
+			DependencyProperty? foregroundProperty = GetForegroundProperty();
 			if (foregroundProperty is not null)
 			{
 				DependencyObjectExtensions.SetValue(
@@ -579,7 +581,7 @@ public partial class FrameworkElement
 	/// <summary>
 	/// Gets the Foreground DependencyProperty for this element, if it has one.
 	/// </summary>
-	private DependencyProperty GetForegroundProperty()
+	private DependencyProperty? GetForegroundProperty()
 	{
 		if (this is Controls.Control)
 		{
@@ -634,7 +636,7 @@ public partial class FrameworkElement
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		var store = (this as IDependencyObjectStoreProvider).Store;
+		var store = ((IDependencyObjectStoreProvider)this).Store;
 
 		if (store.IsProcessingThemeWalk)
 		{
@@ -661,14 +663,14 @@ public partial class FrameworkElement
 		// in NotifyThemeChangedCore when the theme actually changes
 #else
 		TryGetResources()?.UpdateThemeBindings(updateReason);
-		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+		((IDependencyObjectStoreProvider)this).Store.UpdateResourceBindings(updateReason);
 		if (updateReason == ResourceUpdateReason.ThemeResource)
 		{
 			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 			{
 				try
 				{
-					_actualThemeChanged?.Invoke(this, null);
+					_actualThemeChanged?.Invoke(this, null!);
 				}
 				catch (Exception e)
 				{
