@@ -1,0 +1,103 @@
+<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeater_RecycledSpinner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.Repeater"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <!--  Template 1: row hosting an active indeterminate ProgressRing (Lottie/AnimatedVisualPlayer on Skia)  -->
+        <DataTemplate x:Key="SpinnerRowTemplate" x:DataType="local:RecycledSpinnerItem">
+            <StackPanel
+                Height="40"
+                Padding="16,0"
+                Orientation="Horizontal"
+                Spacing="8">
+                <mux:ProgressRing
+                    Width="24"
+                    Height="24"
+                    VerticalAlignment="Center"
+                    IsActive="{Binding IsSpinning}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding Title}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <!--  Template 2: plain text row. Removing the spinner item leaves only rows of THIS template,
+              so the recycled spinner element is never reused (different template = different pool key).  -->
+        <DataTemplate x:Key="TextRowTemplate" x:DataType="local:RecycledSpinnerItem">
+            <TextBlock
+                Height="32"
+                Padding="16,0"
+                VerticalAlignment="Center"
+                Text="{Binding Title}" />
+        </DataTemplate>
+
+        <local:RecycledSpinnerTemplateSelector
+            x:Key="ItemTemplateSelector"
+            SpinnerTemplate="{StaticResource SpinnerRowTemplate}"
+            TextTemplate="{StaticResource TextRowTemplate}" />
+    </Page.Resources>
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            MaxWidth="680"
+            HorizontalAlignment="Left"
+            Style="{ThemeResource BodyTextBlockStyle}"
+            TextWrapping="Wrap">
+            Repro: an active ProgressRing inside an ItemsRepeater item keeps the Skia render loop pinned after its item is removed.
+            Steps: (1) press "Measure CPU (2 s)" for a baseline while the spinner is visible (expected: high — the spinner is animating);
+            (2) press "Remove spinner item" — the spinner disappears, its element is recycled but never reused (remaining rows use a different template);
+            (3) press "Measure CPU (2 s)" again. Expected: near-idle. Actual: still ~100% of one core, indefinitely, with nothing animating on screen.
+            The mechanism line shows the recycled element is still parented, with its stale DataContext and an active ring.
+        </TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="6">
+            <Button
+                x:Name="RemoveSpinnerButton"
+                Click="OnRemoveSpinnerClick"
+                Content="Remove spinner item" />
+            <Button Click="OnResetClick" Content="Reset" />
+            <Button Click="OnMeasureCpuClick" Content="Measure CPU (2 s)" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2">
+            <TextBlock
+                x:Name="MechanismText"
+                FontSize="12"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <TextBlock
+                x:Name="CpuText"
+                FontSize="12"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="3"
+            VerticalAlignment="Stretch"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <mux:ItemsRepeater x:Name="Repeater" ItemTemplate="{StaticResource ItemTemplateSelector}">
+                    <mux:ItemsRepeater.Layout>
+                        <mux:StackLayout Orientation="Vertical" />
+                    </mux:ItemsRepeater.Layout>
+                </mux:ItemsRepeater>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
