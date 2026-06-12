@@ -3,8 +3,10 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics;
@@ -22,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics;
 public class Given_DisplayInformation_WindowIdMap
 {
 	[TestMethod]
-	public void When_DestroyForWindowId_Then_Entry_Is_Released()
+	public async Task When_DestroyForWindowId_Then_Entry_Is_Released()
 	{
 		var windowId = new WindowId(0xD15F0); // synthetic id, never used by a real window
 
@@ -32,14 +34,10 @@ public class Given_DisplayInformation_WindowIdMap
 
 			DisplayInformation.DestroyForWindowId(windowId);
 
-			for (var i = 0; i < 10 && weakInstance.IsAlive; i++)
-			{
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-			}
+			var collected = await TestHelper.TryWaitUntilCollected(weakInstance);
 
-			Assert.IsFalse(
-				weakInstance.IsAlive,
+			Assert.IsTrue(
+				collected,
 				"DestroyForWindowId must remove the static map entry; otherwise the closed window's " +
 				"DisplayInformation (and everything reachable from it) is retained for the process lifetime.");
 		}
