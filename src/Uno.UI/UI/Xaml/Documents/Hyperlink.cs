@@ -232,22 +232,30 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
-			// Resolve the state brushes under the containing element's effective theme, scoped onto
-			// the core requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key)
-			// (xcpcore.cpp:2371-2394); the resolution leaf reads the slot (EnsureActiveThemeDictionary,
-			// Resources.cpp:764-768).
+			// MUX Reference: CHyperlink::UpdateForegroundColor — Hyperlink.cpp:590-655. State brushes
+			// resolve through CCoreServices::LookupThemeResource(theme, key) under the containing
+			// element's effective theme, preferring the Hyperlink* keys with the SystemControl*
+			// fallbacks, and apply at Animations precedence (SetAnimatedValue).
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
-			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 
-			if (_pressedPointer is { }
-				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush, shouldCheckSystem: true))
+			if (_pressedPointer is { })
 			{
-				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
+				var pressedBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPressedKey)
+					?? core.LookupThemeResource(ownerTheme, "SystemControlHighlightBaseMediumLowBrush");
+				if (pressedBrush is not null)
+				{
+					this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
+				}
 			}
-			else if (_hoveredPointer is { }
-				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush, shouldCheckSystem: true))
+			else if (_hoveredPointer is { })
 			{
-				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
+				var hoveredBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPointerOverKey)
+					?? core.LookupThemeResource(ownerTheme, "SystemControlHyperlinkBaseMediumBrush");
+				if (hoveredBrush is not null)
+				{
+					this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
+				}
 			}
 			else // normal
 			{
@@ -257,9 +265,14 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
 				}
-				else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, out var defaultBrush, shouldCheckSystem: true))
+				else
 				{
-					this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
+					var defaultBrush = core.LookupThemeResource(ownerTheme, HyperlinkForeground)
+						?? core.LookupThemeResource(ownerTheme, "SystemControlHyperlinkTextBrush");
+					if (defaultBrush is not null)
+					{
+						this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
+					}
 				}
 			}
 		}

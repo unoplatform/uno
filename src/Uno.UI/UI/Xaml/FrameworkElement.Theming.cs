@@ -510,10 +510,10 @@ public partial class FrameworkElement
 			// CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
 			// foreground from the element's theme (framework.cpp:3401-3492).
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			// MUX Reference: framework.cpp:3441-3487 — the inherited-property foreground lookup runs
-			// with the element's theme scoped onto the core requested-theme-for-subtree slot (the same
-			// save/set/restore pattern as CCoreServices::LookupThemeResource, xcpcore.cpp:2371-2394);
-			// the resolution leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+			// MUX Reference: framework.cpp:3441-3487 — the element's theme is pushed onto the core
+			// requested-theme-for-subtree slot around the CCoreServices::LookupThemeResource call and
+			// the foreground freeze; the resolution leaf reads the slot (EnsureActiveThemeDictionary,
+			// Resources.cpp:764-768).
 			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 			var prevSlotTheme = core.GetRequestedThemeForSubTree();
 			var popSlotTheme = false;
@@ -530,8 +530,9 @@ public partial class FrameworkElement
 			try
 #endif
 			{
-				var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
-					"DefaultTextForegroundThemeBrush", null);
+				// MUX: core->LookupThemeResource(L"DefaultTextForegroundThemeBrush") under the pushed slot.
+				var brush = (Brush?)Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(
+					"DefaultTextForegroundThemeBrush");
 				if (brush is not null)
 				{
 					// Always store for child inheritance (popup content, template children)

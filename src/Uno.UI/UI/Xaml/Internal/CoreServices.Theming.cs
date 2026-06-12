@@ -269,6 +269,26 @@ internal partial class CoreServices
 #endif
 
 	/// <summary>
+	/// Looks up a top-level (system or application) resource by key; an Application.Resources
+	/// value overrides a theme-resource key. Uses the app theme unless a subtree theme is
+	/// currently scoped onto the requested-theme-for-subtree slot.
+	/// MUX Reference: CCoreServices::LookupThemeResource(key) — xcpcore.cpp:2326-2370.
+	/// </summary>
+	internal object? LookupThemeResource(SpecializedResourceDictionary.ResourceKey key)
+		=> global::Uno.UI.ResourceResolver.ResolveTopLevelResource(key);
+
+	/// <summary>
+	/// Looks up a top-level resource by key under <paramref name="theme"/>, scoping the
+	/// requested-theme-for-subtree slot around the lookup.
+	/// MUX Reference: CCoreServices::LookupThemeResource(theme, key) — xcpcore.cpp:2373-2396.
+	/// </summary>
+	internal object? LookupThemeResource(Theme theme, SpecializedResourceDictionary.ResourceKey key)
+	{
+		using var themeScope = ScopeRequestedThemeForSubTree(theme);
+		return LookupThemeResource(key);
+	}
+
+	/// <summary>
 	/// Scopes the requested-theme-for-subtree slot to <paramref name="theme"/> for the duration of
 	/// a lookup — the save/set/restore pattern of CCoreServices::LookupThemeResource
 	/// (xcpcore.cpp:2371-2394), used wherever WinUI resolves a keyed resource under a specific
