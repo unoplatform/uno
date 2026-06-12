@@ -327,20 +327,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			// Re-resolve each keyframe's {ThemeResource} against the TARGET element's EFFECTIVE theme. We pass the
-			// target element so UpdateThemeReference -> ResolveOwnerTheme walks the inheritance chain rather than
-			// reading the target's own per-object theme: a control-template child (e.g. a CheckBox's
-			// NormalRectangle) typically has _theme == None even though it lives in a themed (e.g. Light-pinned)
-			// subtree. Gating on its own None theme bailed here and left the keyframe at its stale, stock value on
-			// a visual-state re-entry. ResolveOwnerTheme resolves the inherited theme (never None), so the keyframe
-			// re-resolves against the owner's effective theme.
-			//
-			// preferAppResourceOverride: a keyframe's {ThemeResource} is authored in the generic/Fluent control
-			// template, so it pins to the framework (global) theme dictionary. Per WinUI
-			// (GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682) an app-level override of that
-			// key must still win over the framework default — so a Light-pinned checked CheckBox keeps its
-			// app-level CheckBoxCheckBackgroundFillChecked override across a visual-state re-entry instead of
-			// reverting to the stock accent.
+			// Resolve against the target's effective (inherited) theme, not its own per-object _theme: a
+			// template child (e.g. a CheckBox's NormalRectangle) is usually None even inside a themed subtree.
+			// preferAppResourceOverride lets an app-level key override win over the generic template default
+			// (WinUI GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682).
 			foreach (var keyFrame in KeyFrames)
 			{
 				if (keyFrame is IDependencyObjectStoreProvider provider)

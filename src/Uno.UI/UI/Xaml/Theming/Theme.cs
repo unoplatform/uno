@@ -30,11 +30,11 @@ internal enum Theme : byte
 #if DEBUG
 	// For debugability purposes, add extra flags so we can make sense of the base and high contrast
 	// combinations. Only include in debug builds so that people don't use these in actual code.
-	LigthAndHighContrastWhite = 0x09,
-	LigthAndHighContrastBlack = 0x0D,
-	LigthAndHighContrastCustom = 0X11,
+	LightAndHighContrastWhite = 0x09,
+	LightAndHighContrastBlack = 0x0D,
+	LightAndHighContrastCustom = 0x11,
 	DarkAndHighContrastWhite = 0x0A,
-	DarkAndHighContastBlack = 0x0E,
+	DarkAndHighContrastBlack = 0x0E,
 	DarkAndHighContrastCustom = 0x12,
 #endif
 }

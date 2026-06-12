@@ -798,7 +798,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					// "parent is PopupRoot" check maps to the PopupPanel (PopupRoot kept for safety).
 					if (spParent is PopupPanel or PopupRoot)
 					{
-						// If the target is in a Popup and the Popup is in the Visual Tree, we want to inherrit the theme
+						// If the target is in a Popup and the Popup is in the Visual Tree, we want to inherit the theme
 						// from that Popup's parent. Otherwise we will get the App's theme, which might not be what
 						// is expected.
 						spParent = spCurrentAsFE?.Parent;
