@@ -77,7 +77,11 @@ namespace Uno.UI.DataBinding
 			_getPropertyType.Clear();
 
 			// The pooled lookup key retains the last-queried Type past the dictionary clears.
-			_getPropertyTypeKey.Reset();
+			// Swap rather than mutate: an in-flight GetPropertyType call may be between Update()
+			// and Clone() on the old instance, and Clone() relies on non-null fields — a fresh
+			// instance keeps that invariant (its constructor seeds typeof(object)) while the old
+			// key, and the Type it retained, become unreachable.
+			_getPropertyTypeKey = new GetPropertyTypeKey();
 		}
 
 		/// <summary>
