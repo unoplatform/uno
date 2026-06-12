@@ -55,6 +55,14 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
+			<group targetFramework="net9.0-maccatalyst18.0">
+				<dependency id="SkiaSharp.Skottie" version="3.119.0" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="3.119.0" />
+				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="3.119.0" />
+
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="System.Json" version="4.7.1" />
+			</group>
 
 			<group targetFramework="net10.0-android">
 				<dependency id="SkiaSharp.Skottie" version="3.119.0" />
@@ -80,6 +88,14 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
+			<group targetFramework="net10.0-maccatalyst26.0">
+				<dependency id="SkiaSharp.Skottie" version="3.119.0" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="3.119.0" />
+				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="3.119.0" />
+
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="System.Json" version="4.7.1" />
+			</group>
 		</dependencies>
 
 		<references>
@@ -89,6 +105,9 @@
 			<group targetFramework="net9.0-tvos18.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
+			<group targetFramework="net9.0-maccatalyst18.0">
+				<reference file="Uno.UI.Lottie.dll" />
+			</group>
 			<group targetFramework="net9.0-android">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
@@ -96,6 +115,9 @@
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net10.0-tvos26.0">
+				<reference file="Uno.UI.Lottie.dll" />
+			</group>
+			<group targetFramework="net10.0-maccatalyst26.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net10.0-android">
@@ -118,10 +140,12 @@
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-android\Uno.UI.Lottie.dll" target="lib\net9.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Lottie.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Lottie.dll" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Lottie.dll" target="lib\net9.0-maccatalyst18.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-android\Uno.UI.Lottie.dll" target="lib\net10.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-ios26.0\Uno.UI.Lottie.dll" target="lib\net10.0-ios26.0" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Lottie.dll" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.Lottie.dll" target="lib\net10.0-maccatalyst26.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />

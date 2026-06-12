@@ -4,6 +4,7 @@
 	<ItemGroup Condition="
 		 $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'
 		 OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'
+		 OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'
 		 ">
 		<ProjectCapability Include="Msix" Exclude="@(ProjectCapability)" />
 		<ProjectCapability Include="MauiSingleProject" Exclude="@(ProjectCapability)" />
