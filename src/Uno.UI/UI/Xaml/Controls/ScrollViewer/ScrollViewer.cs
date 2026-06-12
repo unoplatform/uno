@@ -1207,7 +1207,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
+		// internal (not private) so runtime tests can drive the exact scrollbar-drag path that the
+		// offset-intent recompute regressed (Skia ScrollViewer thumb-scroll after a programmatic scroll).
+		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
@@ -1223,6 +1225,14 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
 				_ => (true, e.NewValue)
 			};
+
+			// A scrollbar interaction (thumb drag, paging, line step) is an explicit offset request —
+			// the WinUI equivalent of updating m_Offset via SetVerticalOffsetPrivate. Arm the intent so
+			// the post-layout RecomputeOffsetsFromIntent re-coerces toward THIS request rather than a
+			// stale programmatic intent left by an earlier ChangeView. Without this, ChangeViewCore
+			// (which never touches the intent) lets the recompute snap the offset straight back, so the
+			// thumb appears dead after any programmatic ScrollToVerticalOffset.
+			_verticalOffsetIntent = offset;
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1248,6 +1258,10 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
 				_ => (true, e.NewValue)
 			};
+
+			// See OnVerticalScrollBarScrolled: arm the intent so the post-layout recompute re-coerces
+			// toward this scrollbar request instead of snapping back to a stale programmatic intent.
+			_horizontalOffsetIntent = offset;
 
 			ChangeViewCore(
 				horizontalOffset: offset,
