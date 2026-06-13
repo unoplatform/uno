@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -261,7 +259,7 @@ public class Given_TreeView
 	}
 
 	[TestMethod]
-	public async Task When_AsdAsd()
+	public async Task When_SelectNode_DoesNotToggle_OtherNodesExpansion()
 	{
 		// We had an issue where in a treeview of mixed expanded/collapsed nodes,
 		// sometimes selecting a node could cause the viewport to shift and
