@@ -536,6 +536,78 @@ public class Given_ItemsRepeater_FastScroll
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_ProgrammaticScrollArmsIntent_Then_ThumbDragHolds()
+	{
+#if HAS_UNO
+		// Regression guard for the Skia "thumb scrolling does nothing after a programmatic scroll" bug.
+		//
+		// A programmatic ScrollToVerticalOffset arms an "offset intent" that the post-layout
+		// RecomputeOffsetsFromIntent keeps re-applying (clamped to the current ScrollableHeight) on
+		// every arrange. The scrollbar thumb-drag path (OnVerticalScrollBarScrolled -> ChangeViewCore)
+		// used to neither clear nor update that intent, so each thumb drag was instantly snapped back
+		// to the stale programmatic offset on the very next layout pass — the thumb appeared dead once
+		// any programmatic scroll had run.
+		//
+		// Unlike When_ScrollBarThumbDragged_..., this (a) arms an intent first and (b) drives the REAL
+		// OnVerticalScrollBarScrolled handler (not ChangeView, which arms the intent itself and so
+		// masks the bug). Both conditions are required to reproduce it.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var scrollable = sut.Scroller.ScrollableHeight;
+		scrollable.Should().BeGreaterThan(400,
+			"the SUT must be tall enough that the armed intent and the thumb target are clearly distinct offsets.");
+
+		// The 0.7x/0.1x targets vs the 0.5x/0.3x thresholds are NOT a loose tolerance on a single value:
+		// they are regime markers. This is virtualized mixed-height content (no snap points), so
+		// ScrollableHeight is a running-average ESTIMATE that shifts as items realize/dematerialize, and
+		// RecomputeOffsetsFromIntent re-clamps the offset to that moving height every layout pass — the
+		// landed offset drifts off the request. The bug snaps back to ~armedIntent (0.7x); the fix holds
+		// near the drag target (0.1x). Asserting "> 0.5x then < 0.3x" cleanly separates "held" from
+		// "snapped back"; the 0.3x..0.5x gap is a deliberate dead-zone so estimation drift can't flip the
+		// result. Pinning exact offsets here would be flaky, not stricter.
+
+		// 1. Programmatic scroll down (the repro does this in OnLoaded). Arms _verticalOffsetIntent.
+		var armedIntent = scrollable * 0.7;
+		sut.Scroller.ScrollToVerticalOffset(armedIntent);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Scroller.VerticalOffset.Should().BeGreaterThan(scrollable * 0.5,
+			"the programmatic scroll must land clearly in the lower half before the drag.");
+
+		// 2. User drags the thumb UP to a much smaller offset. This goes through the real scrollbar
+		//    handler with ThumbTrack (immediate, no animation) — the exact path that regressed.
+		//    The sender is the vertical ScrollBar, matching the production wiring
+		//    (_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled).
+		var verticalScrollBar = sut.Scroller.ElementVerticalScrollBar;
+		verticalScrollBar.Should().NotBeNull("the vertical scrollbar must be materialized to drive its Scroll handler.");
+
+		var draggedTo = scrollable * 0.1;
+		sut.Scroller.OnVerticalScrollBarScrolled(
+			verticalScrollBar,
+			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+			{
+				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
+				NewValue = draggedTo,
+			});
+
+		// 3. Force the layout pass that runs RecomputeOffsetsFromIntent. Before the fix this snapped
+		//    the offset straight back to armedIntent; after the fix the intent tracks the drag request.
+		sut.Scroller.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeLessThan(scrollable * 0.3,
+			$"the thumb drag to {draggedTo:F2} must hold instead of snapping back to the stale "
+			+ $"programmatic intent {armedIntent:F2}. Observed VerticalOffset={sut.Scroller.VerticalOffset:F2}.");
+#else
+		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
+#endif
+	}
+
 	// ----- helpers -----
 
 	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
