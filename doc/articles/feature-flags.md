@@ -151,12 +151,6 @@ See [WebView2 → Enabling native developer tools](xref:Uno.Controls.WebView2#en
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
 
-## Deprecated NSObjectExtensions.ValidateDispose for iOS
-
-The method `NSObjectExtensions.ValidateDispose` is deprecated in Uno 5.x and will be removed in the next major release.
-
-In order for calls to fail on uses of this method, set the `Uno.UI.FeatureConfiguration.UIElement.FailOnNSObjectExtensionsValidateDispose` flag to `true`.
-
 ## Android Settings
 
 ### `IsEdgeToEdgeEnabled`
