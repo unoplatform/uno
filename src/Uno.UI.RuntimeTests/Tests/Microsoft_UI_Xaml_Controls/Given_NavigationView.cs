@@ -580,5 +580,63 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await Task.CompletedTask;
 #endif
 		}
+
+		[TestMethod]
+		public void When_NegativePaneLength_Set_Via_SetValue_Coerced_To_Zero()
+		{
+			// A negative value in the (-0.1, 0) band set through SetValue (the binding/animation path that
+			// bypasses the coercing CLR setter) must coerce to 0 exactly like WinUI. The changed-callback
+			// uses a bit-exact compare (DoubleToInt64Bits) mirroring MUX's memcmp; the previous
+			// Math.Abs(...) > 0.1 tolerance left small negatives uncoerced.
+			var navView = new MUXC.NavigationView();
+
+			navView.SetValue(MUXC.NavigationView.CompactPaneLengthProperty, -0.05);
+			navView.SetValue(MUXC.NavigationView.OpenPaneLengthProperty, -0.05);
+			navView.SetValue(MUXC.NavigationView.CompactModeThresholdWidthProperty, -0.05);
+			navView.SetValue(MUXC.NavigationView.ExpandedModeThresholdWidthProperty, -0.05);
+
+			Assert.AreEqual(0.0, navView.CompactPaneLength);
+			Assert.AreEqual(0.0, navView.OpenPaneLength);
+			Assert.AreEqual(0.0, navView.CompactModeThresholdWidth);
+			Assert.AreEqual(0.0, navView.ExpandedModeThresholdWidth);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Selection_Changes_Between_Items_Indicator_Animation_Does_Not_Throw()
+		{
+			// The selection-indicator Composition animation (PlayIndicatorAnimations) is enabled on Skia.
+			// Switching selection between two realized items drives the full prev->next animation path
+			// (both indicators non-null); it must run without throwing and leave the new item selected
+			// with its selection indicator visible.
+			var itemA = new MUXC.NavigationViewItem { Content = "Item A" };
+			var itemB = new MUXC.NavigationViewItem { Content = "Item B" };
+
+			var nv = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+				IsPaneToggleButtonVisible = false,
+				Width = 400,
+				Height = 500,
+				MenuItems = { itemA, itemB },
+			};
+
+			await UITestHelper.Load(nv);
+
+			nv.SelectedItem = itemA;
+			await WindowHelper.WaitForIdle();
+
+			nv.SelectedItem = itemB;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(itemB, nv.SelectedItem);
+
+			var indicator = itemB.FindFirstDescendant<FrameworkElement>(f => f.Name == "SelectionIndicator");
+			Assert.IsNotNull(indicator, "Selected item should have a realized SelectionIndicator");
+			await WindowHelper.WaitFor(() => indicator.Opacity >= 0.99, timeoutMS: 3000);
+		}
 	}
 }
