@@ -207,22 +207,27 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			return isCollectible(action) ? null : action;
 		}
 
-		Action<RemoteControlClient>? kept = null;
+		var survivors = new List<Delegate>(invocationList.Length);
 		var removedAny = false;
 		foreach (var entry in invocationList)
 		{
-			var typedEntry = (Action<RemoteControlClient>)entry;
-			if (isCollectible(typedEntry))
+			if (isCollectible((Action<RemoteControlClient>)entry))
 			{
 				removedAny = true;
 			}
 			else
 			{
-				kept += typedEntry;
+				survivors.Add(entry);
 			}
 		}
 
-		return removedAny ? kept : action;
+		if (!removedAny)
+		{
+			return action;
+		}
+
+		// Rebuild the survivor delegate once rather than re-combining on each kept entry.
+		return (Action<RemoteControlClient>?)Delegate.Combine(survivors.ToArray());
 	}
 
 	/// <summary>
