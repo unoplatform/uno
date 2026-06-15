@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS0109
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -10,7 +11,6 @@ using Uno.Extensions;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
-using System;
 using Uno.UI;
 using System.Collections;
 using System.Diagnostics;
@@ -376,6 +376,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// AutomationProperties.LabeledBy also overrides the Text-derived name. When it's set,
+			// the accessible name comes from the labeller (which didn't change with our Text), so
+			// reporting (oldText -> newText) here would emit a bogus name-change notification.
+			if (AutomationProperties.GetLabeledBy(this) is not null)
+			{
+				return;
+			}
+
 			var listener = AutomationPeer.AutomationPeerListener;
 			if (listener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) != true)
 			{
@@ -384,9 +392,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetOrCreateAutomationPeer() is { } peer)
 			{
-				// Resolve the new name through the peer so LabeledBy / inline composition is honored,
-				// matching what GetNameCore would return for the updated text.
+				// Confirm the peer's resolved name truly tracks Text (e.g. ContentPresenter / inline
+				// composition could divert it). If not, oldValue/newValue would not be valid old/new
+				// accessible names and we'd emit a misleading event.
 				var newName = peer.GetName() ?? string.Empty;
+				var newText = newValue ?? string.Empty;
+				if (!string.Equals(newName, newText, StringComparison.Ordinal))
+				{
+					return;
+				}
+
 				listener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.NameProperty, oldValue ?? string.Empty, newName);
 			}
 #endif
