@@ -155,6 +155,11 @@ internal sealed partial class FocusSynchronizer
 
 				NativeMethods.FocusSemanticElement(semanticHandle);
 
+				// Drive the roving tabindex from focus movement, not only selection, so the
+				// single tab stop within a composite follows the focused element. groupHandle
+				// is Zero — JS infers the owning composite from the active element.
+				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, semanticHandle);
+
 				// Track for focus recovery
 				TrackFocusedElement(element);
 			}
@@ -206,6 +211,11 @@ internal sealed partial class FocusSynchronizer
 			_previousFocusedHandle = _currentFocusedHandle;
 			_currentFocusedHandle = handle;
 			control.Focus(FocusState.Keyboard);
+
+			// Drive the roving tabindex from focus movement, not only selection, so the
+			// single tab stop within a composite follows the focused element. groupHandle
+			// is Zero — JS infers the owning composite from the active element.
+			NativeMethods.UpdateRovingTabindex(IntPtr.Zero, handle);
 
 			// Track for focus recovery
 			TrackFocusedElement(owner!);
@@ -394,5 +404,8 @@ internal sealed partial class FocusSynchronizer
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
 		internal static partial void FocusSemanticElement(IntPtr handle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateRovingTabindex")]
+		internal static partial void UpdateRovingTabindex(IntPtr groupHandle, IntPtr activeHandle);
 	}
 }

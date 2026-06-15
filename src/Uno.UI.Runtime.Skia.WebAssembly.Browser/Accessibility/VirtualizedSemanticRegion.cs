@@ -49,6 +49,8 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	internal bool IsFocusPinned => _isFocusPinned;
 	/// <summary>Gets the data index of the pinned (focused) item, if any.</summary>
 	internal int? PinnedIndex => _pinnedIndex;
+	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
+	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandles.ContainsValue(handle);
 
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).

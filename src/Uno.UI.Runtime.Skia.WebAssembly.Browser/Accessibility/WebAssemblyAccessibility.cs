@@ -68,6 +68,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private const int PreserveTextSelectionSentinel = -1;
 
 	/// <summary>
+	/// True if the handle is a currently-realized item inside a virtualized container — it has a
+	/// uno-semantics-{handle} DOM node created via VirtualizedSemanticRegion (not via the normal
+	/// _semanticParentMap path), so focus/membership resolution must recognize it.
+	/// </summary>
+	private bool IsRealizedVirtualizedItem(IntPtr handle)
+	{
+		foreach (var region in _virtualizedRegions)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
 	/// Resolves a UIElement to the nearest handle that exists in the semantic DOM tree.
 	/// If the element itself is in the semantic tree, returns its handle.
 	/// Otherwise, walks up the visual tree to find the nearest semantic ancestor.
@@ -79,6 +97,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Check if this element is directly in the semantic tree
 		if (_semanticParentMap.ContainsKey(handle))
+		{
+			return handle;
+		}
+
+		// A realized virtualized item (NavigationViewItem / ListViewItem) has its own
+		// uno-semantics-{handle} DOM node created via VirtualizedSemanticRegion, tracked there rather
+		// than in _semanticParentMap. Resolve focus to the item itself so XAML focus moves DOM focus
+		// onto it instead of walking up to the container ancestor.
+		if (IsRealizedVirtualizedItem(handle))
 		{
 			return handle;
 		}
@@ -122,6 +149,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return true;
 		}
 
+		if (IsRealizedVirtualizedItem(handle))
+		{
+			return true;
+		}
+
 		var rootElement = WebAssemblyWindowWrapper.Instance?.Window?.RootElement;
 		return rootElement is not null && rootElement.Visual.Handle == handle;
 	}
@@ -134,6 +166,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// "parent handle not found in DOM" errors.
 	/// </summary>
 	private readonly Dictionary<IntPtr, IntPtr> _semanticParentMap = new();
+	/// <summary>
+	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
+	/// time (T058). When such an element later becomes visible, OnSizeOrOffsetChanged re-emits it —
+	/// no other post-build path creates a node and there is no show-counterpart to hide.
+	/// </summary>
+	private readonly HashSet<IntPtr> _prunedHandles = new();
+	/// <summary>
+	/// Controls carrying AutomationProperties.LabeledBy whose aria-labelledby IDREF is resolved AFTER
+	/// the surrounding subtree exists (FR-019/FR-022). The inline create-time resolution is
+	/// order-dependent — the labeller's node may not be registered yet when the labelled control is
+	/// built (following sibling / Header child) — so it is re-resolved by a deferred drain once every
+	/// labeller is present: at the end of CreateAOM for the initial build, and at the end of the
+	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
+	/// </summary>
+	private readonly List<(IntPtr Handle, AutomationPeer Peer)> _pendingLabelledBy = new();
+
+	/// <summary>
+	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
+	/// synchronously, so the outermost call (depth returning to 0) is the point at which every labeller
+	/// in that subtree has been registered — the moment to drain <see cref="_pendingLabelledBy"/> so a
+	/// following-sibling labeller resolves order-independently on the dynamic path too.
+	/// </summary>
+	private int _onChildAddedDepth;
 
 	// Debounce timer infrastructure for DOM updates (FR-012: 100ms debounce)
 	private const int DebounceDelayMs = 100;
@@ -293,9 +348,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		_onChildAddedDepth++;
 		try
 		{
 			TrySubscribeScrollSource(child);
+
+			// FR-032/T058: a Collapsed element (and its whole subtree) is not rendered — skip both
+			// emission and recursion so its descendants do not leak into the AT tree (WinUI: Collapsed
+			// is absent from the UIA tree). Equivalent to !child.Visual.IsVisible.
+			if (IsPrunedAsHidden(child))
+			{
+				_prunedHandles.Add(child.Visual.Handle);
+				return;
+			}
 
 			var isChildSemantic = IsSemanticElement(child);
 
@@ -308,6 +373,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryRegisterVirtualizedContainer(child);
 			// Detect ContentDialog for focus trapping
 			TryRegisterModalDialog(child);
+			// Detect ComboBox dropdowns so their options form a proper role="listbox"
+			TryRegisterComboBox(child);
+			TryRealizeComboBoxItem(child);
 
 			// Find the nearest semantic ancestor for this child
 			var semanticParent = FindSemanticParent(parent);
@@ -326,6 +394,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					if (AddSemanticElement(semanticParent, child, index))
 					{
 						_semanticParentMap[childHandle] = semanticParent;
+
+						// FR-019/FR-022: defer aria-labelledby resolution on the dynamic path too. The
+						// inline resolution inside AddSemanticElement is order-dependent — a following-
+						// sibling labeller has not registered yet when this control is added — so record
+						// it and re-resolve when the outermost OnChildAdded subtree completes (below).
+						// The HasSemanticElement gate in ResolveLabelledByIdRef still applies at drain
+						// time, so no dangling IDREF is emitted.
+						if (AutomationProperties.GetLabeledBy(child) is not null
+							&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
+						{
+							_pendingLabelledBy.Add((childHandle, labelledPeer));
+						}
 					}
 					else
 					{
@@ -339,7 +419,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Don't recurse into virtualized containers — their items are managed
 			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
-			if (child is not (ListViewBase or ItemsRepeater))
+			// ComboBox dropdown items are realized as role="option" by the listbox region; recursing
+			// would also emit each item's content TextBlock as a standalone <p> (duplicate).
+			if (child is not ComboBoxItem &&
+				(child is not (ListViewBase or ItemsRepeater) || !isChildSemantic))
 			{
 				// Recurse into children — if this element was skipped,
 				// its children will be parented to the nearest semantic ancestor.
@@ -357,6 +440,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().Error($"[A11y] OnChildAdded failed for {child.GetType().Name}: {ex.Message}", ex);
+			}
+		}
+		finally
+		{
+			// Outermost call complete: the whole added subtree (and any following-sibling labellers
+			// within it) is now registered, so re-resolve the deferred aria-labelledby IDREFs. Mirrors
+			// the CreateAOM drain, making the dynamic path order-independent (FR-019/FR-022).
+			if (--_onChildAddedDepth == 0)
+			{
+				DrainPendingLabelledBy();
 			}
 		}
 	}
@@ -377,6 +470,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			TryUnsubscribeScrollSource(child);
 			TryUnregisterVirtualizedContainer(child);
+			TryUnregisterComboBox(child);
+			TryUnrealizeComboBoxItem(child);
 
 			// Remove any children of this element first (they may be semantic even if parent isn't)
 			foreach (var childChild in child.GetChildren())
@@ -394,6 +489,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
+				_prunedHandles.Remove(childHandle);
 			}
 		}
 		catch (Exception ex)
@@ -407,6 +503,31 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void TryRegisterVirtualizedContainer(UIElement element)
 	{
+		if (element is not (ItemsRepeater or ListViewBase))
+		{
+			return;
+		}
+
+		// FR-031: a decorative (AccessibilityView=Raw) container — e.g. RadioButtons' InnerRepeater —
+		// must NOT be emitted as a listbox/grid region. The walkers recurse into it so its non-decorative
+		// items still emit via the normal path.
+		if (!IsSemanticElement(element))
+		{
+			return;
+		}
+
+		// Idempotent: a container may be registered both at AOM-build time (BuildSemanticsTreeRecursive)
+		// and via the dynamic OnChildAdded path. Registering twice would create duplicate regions/
+		// subscriptions and double-emit items.
+		var containerHandle = element.Visual.Handle;
+		foreach (var existingRegion in _virtualizedRegions)
+		{
+			if (existingRegion.ContainerHandle == containerHandle)
+			{
+				return;
+			}
+		}
+
 		if (element is ItemsRepeater repeater)
 		{
 			var region = new VirtualizedSemanticRegion(
@@ -417,31 +538,28 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			_virtualizedRegions.Add(region);
 
 			repeater.ElementPrepared += (s, e) =>
-			{
-				var itemElement = e.Element;
-				var itemIndex = e.Index;
-				var peer = itemElement.GetOrCreateAutomationPeer();
-				var label = peer?.GetName() ?? string.Empty;
-				var totalCount = repeater.ItemsSourceView?.Count ?? 0;
-				var offset = GetOffsetRelativeToSemanticParent(itemElement, repeater.Visual.Handle);
-				region.OnItemRealized(
-					itemElement.Visual.Handle,
-					itemIndex,
-					totalCount,
-					offset.X, offset.Y,
-					itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-					"option", label);
-			};
+				EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
 
 			repeater.ElementClearing += (s, e) =>
 			{
-				var itemElement = e.Element;
-				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
+				var info = ItemsRepeater.GetVirtualizationInfo(e.Element);
 				if (info is not null)
 				{
-					region.OnItemUnrealized(itemElement.Visual.Handle, info.Index);
+					region.OnItemUnrealized(e.Element.Visual.Handle, info.Index);
 				}
 			};
+
+			// Backfill items realized before this container was registered (the AOM-build / Enable-
+			// Accessibility-after-load flow); ElementPrepared only fires for FUTURE realizations.
+			var totalCount = repeater.ItemsSourceView?.Count ?? 0;
+			foreach (var itemElement in repeater.Children)
+			{
+				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
+				if (info is not null && info.IsRealized)
+				{
+					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, "option");
+				}
+			}
 		}
 		else if (element is ListViewBase listView)
 		{
@@ -454,37 +572,62 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				listView.SelectionMode == ListViewSelectionMode.Extended);
 			_virtualizedRegions.Add(region);
 
-			// ListViewBase uses ContainerContentChanging for virtualization lifecycle
+			var itemRole = isGrid ? "row" : "option";
+
 			listView.ContainerContentChanging += (s, e) =>
 			{
 				if (!e.InRecycleQueue)
 				{
-					var itemElement = e.ItemContainer;
-					if (itemElement is not null)
+					if (e.ItemContainer is { } itemElement)
 					{
-						var peer = itemElement.GetOrCreateAutomationPeer();
-						var label = peer?.GetName() ?? string.Empty;
-						var totalCount = listView.Items?.Count ?? 0;
-						var offset = GetOffsetRelativeToSemanticParent(itemElement, listView.Visual.Handle);
-						region.OnItemRealized(
-							itemElement.Visual.Handle,
-							e.ItemIndex,
-							totalCount,
-							offset.X, offset.Y,
-							itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-							isGrid ? "row" : "option", label);
+						EmitRealizedItem(region, listView.Visual.Handle, itemElement, e.ItemIndex, listView.Items?.Count ?? 0, itemRole);
 					}
 				}
-				else
+				else if (e.ItemContainer is { } itemElement)
 				{
-					var itemElement = e.ItemContainer;
-					if (itemElement is not null)
-					{
-						region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
-					}
+					region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
 				}
 			};
+
+			// Backfill already-materialized containers (the Enable-Accessibility-after-load flow).
+			var totalCount = listView.Items?.Count ?? 0;
+			foreach (var container in listView.MaterializedContainers.OfType<UIElement>())
+			{
+				var index = listView.IndexFromContainer(container);
+				if (index >= 0)
+				{
+					EmitRealizedItem(region, listView.Visual.Handle, container, index, totalCount, itemRole);
+				}
+			}
 		}
+	}
+
+	/// <summary>
+	/// Emits a single realized virtualized item into its region — shared by the live
+	/// ElementPrepared/ContainerContentChanging handlers and the build-time backfill.
+	/// </summary>
+	private void EmitRealizedItem(VirtualizedSemanticRegion region, IntPtr containerHandle, UIElement itemElement, int index, int totalCount, string role)
+	{
+		// FR-031: a realized container may be a decorative/non-semantic element rather than a real
+		// destination — e.g. NavigationView hosts NavigationViewItemSeparator and
+		// NavigationViewItemHeader (both AccessibilityView=Raw) in the same menu ItemsRepeater as its
+		// NavigationViewItems. Emitting those as role="option" exposes decorative clutter to AT
+		// (A11y Inspector WARN). Skip anything IsSemanticElement prunes (Raw short-circuit, structural,
+		// absorbed TextBlock), matching the membership rule the rest of the AOM walk already enforces.
+		if (!IsSemanticElement(itemElement))
+		{
+			return;
+		}
+
+		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
+		region.OnItemRealized(
+			itemElement.Visual.Handle,
+			index,
+			totalCount,
+			offset.X, offset.Y,
+			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
+			role, label);
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
@@ -585,6 +728,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			else
 			{
 				var handle = containerVisual.Handle;
+
+				// FR-013/FR-014: a ScrollViewer's region eligibility depends on its scrollability,
+				// which is only known once its content extent has been computed during layout. When the
+				// AOM node was built via OnChildAdded (before layout), the ScrollViewer was not yet
+				// scrollable, so the region role was dropped (and a named ScrollViewer fell back to
+				// "group"). Re-evaluate the region gate now that a size/offset change has settled the
+				// layout, upgrading the node to role=region once it is genuinely scrollable and named.
+				if (containerVisual.Owner?.Target is UIElement changedElement)
+				{
+					TryUpdateScrollRegionRole(changedElement);
+				}
+
+				// T058: a previously-Collapsed element pruned at build/add time has no semantic node; now
+				// that it is visible again, re-emit it (and its now-visible subtree). No other post-build
+				// path creates a node (there is no show-counterpart to HideSemanticElement).
+				if (_prunedHandles.Remove(handle) && containerVisual.Owner?.Target is UIElement shownElement)
+				{
+					var shownParent = shownElement.GetParent() as UIElement;
+					var shownParentHandle = shownParent is not null ? FindSemanticParent(shownParent) : _rootElementHandle;
+					BuildSemanticsTreeRecursive(shownParentHandle, shownElement);
+					return;
+				}
+
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
@@ -622,6 +788,45 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					}
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Re-evaluates the <c>role=region</c> gate (FR-013/FR-014) for the <see cref="ScrollViewer"/> that
+	/// owns or is the nearest semantic ancestor of <paramref name="changedElement"/>, after a layout
+	/// change. The gate is layout-dependent (scrollability is only known once the content extent is
+	/// computed), but the AOM node may have been built via OnChildAdded before layout — at which point a
+	/// scrollable, named ScrollViewer is mis-emitted as <c>role=group</c>. This brings the live DOM role
+	/// in line with the current scrollable+named state once layout has settled.
+	/// </summary>
+	private void TryUpdateScrollRegionRole(UIElement changedElement)
+	{
+		// Find the ScrollViewer that owns this layout change (itself or the nearest ancestor that has a
+		// semantic node). Content growth fires for descendants, so a bounded ancestor walk is needed.
+		var current = changedElement;
+		while (current is not null)
+		{
+			if (current is ScrollViewer scrollViewer)
+			{
+				if (!HasSemanticElement(scrollViewer.Visual.Handle))
+				{
+					return;
+				}
+
+				var peer = scrollViewer.GetOrCreateAutomationPeer();
+
+				// Only the named+scrollable case is upgraded here. The unnamed / non-scrollable cases are
+				// already correct from the build-time gate (a bare <div> with no role), and an empty-string
+				// role would be an invalid attribute — so we never write a role in those cases.
+				if (AriaMapper.QualifiesAsNamedScrollRegion(peer, scrollViewer))
+				{
+					NativeMethods.UpdateLandmarkRole(scrollViewer.Visual.Handle, "region");
+				}
+
+				return;
+			}
+
+			current = current.GetParent() as UIElement;
 		}
 	}
 
@@ -1000,6 +1205,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			BuildSemanticsTreeRecursive(rootHandle, child, depth: 1);
 		}
 
+		// FR-019/FR-022: now that the full AOM exists, every labeller with a semantic node is
+		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
+		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
+		DrainPendingLabelledBy();
+
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"[A11y] CreateAOM complete");
@@ -1007,16 +1217,75 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	/// <summary>
+	/// Re-resolves every deferred aria-labelledby IDREF now that more of the tree exists, then clears
+	/// the queue. Shared by the CreateAOM drain and the OnChildAdded drain so both paths are
+	/// order-independent (a labeller built after the labelled control still resolves). Each entry is
+	/// gated by <see cref="SemanticElementFactory.ResolveLabelledByIdRef"/>, which only emits when the
+	/// labeller actually has a semantic node — so a dangling IDREF is never written (FR-019/FR-022).
+	/// </summary>
+	private void DrainPendingLabelledBy()
+	{
+		if (_pendingLabelledBy.Count == 0)
+		{
+			return;
+		}
+
+		// Re-resolve each deferred entry; emit + drop the ones whose labeller now has a semantic node,
+		// and KEEP the rest. OnChildAdded fires per-element, so a following-sibling labeller may not be
+		// registered when its labelled control drains — keeping the entry lets it resolve on the
+		// labeller's own (later) drain. ResolveLabelledByIdRef's HasSemanticElement gate still applies.
+		for (var i = _pendingLabelledBy.Count - 1; i >= 0; i--)
+		{
+			var (labelledHandle, labelledPeer) = _pendingLabelledBy[i];
+			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(labelledPeer);
+			if (labelledById is not null)
+			{
+				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
+				_pendingLabelledBy.RemoveAt(i);
+			}
+		}
+	}
+
+	/// <summary>
+	/// FR-032/T058: a Collapsed element (and its entire subtree) is not rendered and must not be
+	/// exposed to assistive technology — matching WinUI (Collapsed is absent from the UIA tree) and
+	/// the framework's own render walk (which skips {IsVisible:false} subtrees). Equivalent to
+	/// !element.Visual.IsVisible (set only from Arrange's Visibility==Collapsed branch), but read
+	/// from the Visibility DP so it also prunes a Collapsed element that has not yet been arranged.
+	/// </summary>
+	private static bool IsPrunedAsHidden(UIElement element)
+		=> element.Visibility == Visibility.Collapsed;
+
+	/// <summary>
 	/// Determines whether a UIElement should be included in the semantic accessibility tree.
 	/// Elements without an automation peer, ARIA role, or automation ID are purely structural
 	/// (e.g., Grid, Border, ContentPresenter) and are pruned to reduce DOM bloat.
 	/// </summary>
-	private static bool IsSemanticElement(UIElement element)
+	private bool IsSemanticElement(UIElement element)
 	{
 		// Elements with AccessibilityView="Raw" are excluded from the accessibility tree entirely.
 		// This matches WinUI3 behavior where Raw elements are not exposed to UIA.
 		var accessibilityView = AutomationProperties.GetAccessibilityView(element);
 		if (accessibilityView == AccessibilityView.Raw)
+		{
+			return false;
+		}
+
+		// ComboBox dropdown items are surfaced as role="option" under a dedicated role="listbox"
+		// region (see TryRealizeComboBoxItem). Emitting them through the generic path would orphan
+		// them under the Popup's role="dialog", which the browser invalidates (the option resolves
+		// to "paragraph"). Skip them here so the listbox region is their sole owner.
+		if (element is ComboBoxItem)
+		{
+			return false;
+		}
+
+		// The ComboBox dropdown Popup is a structureless role="dialog" wrapper; its only meaningful
+		// content (the options) lives in the listbox region. Suppress the empty dialog node so screen
+		// readers don't announce a contentless dialog.
+		// Matched via the ComboBox's GetPopup() — a Popup template part does not reliably carry
+		// TemplatedParent, so suppress by identity against tracked ComboBoxes (IsComboBoxDropdownPopup).
+		if (element is Popup comboBoxPopup && IsComboBoxDropdownPopup(comboBoxPopup))
 		{
 			return false;
 		}
@@ -1048,7 +1317,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				return true;
 			}
-			return false;
+			return IsStandaloneBodyText(element);
 		}
 
 		// Elements with an automation peer are semantic.
@@ -1107,6 +1376,107 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	/// <summary>
+	/// FR-015: a plain TextBlock is exposed as standalone body text only when its text is not
+	/// already carried by an ancestor control's accessible name (else it would be announced twice).
+	/// </summary>
+	private static bool IsStandaloneBodyText(UIElement element)
+	{
+		// RichTextBlockOverflow is the paired-display target of a primary RichTextBlock — never standalone.
+		if (element is RichTextBlockOverflow)
+		{
+			return false;
+		}
+
+		// Only TextBlock exposes reliable plain text here; RichTextBlock has no GetPlainText source
+		// so it stays pruned (documented FR-015 limitation).
+		var text = (element as TextBlock)?.Text;
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			return false;
+		}
+
+		// A TextBlock inside a ComboBox carries text that is already conveyed by a richer role, so
+		// emitting it as a standalone <p> would duplicate the announcement. ExternalOnChildAdded fires
+		// per-element (not only via recursion), so the ComboBoxItem recursion-stop alone cannot prune
+		// these — gate on the visual ancestor chain instead:
+		//  - under a ComboBoxItem: the dropdown option's label is carried by its role="option" in the
+		//    listbox region (TryRealizeComboBoxItem).
+		//  - under a ComboBox (but no intervening ComboBoxItem): the head faceplate's selected value is
+		//    conveyed by the combobox role/value (aria-activedescendant / the head's name).
+		// An ImplicitTextBlock is the auto-generated text of a presenting control's string content
+		// (a ComboBoxItem option, the combobox faceplate, a Button caption, …), so its text is always
+		// conveyed by that control — never standalone body text. The visual-parent walk below misses
+		// popup-hosted content (managed GetParent does not traverse the popup host), so gate on type.
+		if (element is ImplicitTextBlock)
+		{
+			return false;
+		}
+
+		if (HasComboBoxOrComboBoxItemAncestor(element))
+		{
+			return false;
+		}
+
+		return !IsAbsorbedByAncestorName(element, text);
+	}
+
+	/// <summary>
+	/// True when the visual ancestor chain of <paramref name="element"/> includes a ComboBoxItem
+	/// (dropdown option) or a ComboBox (head faceplate). Such text is already conveyed by the
+	/// listbox option / combobox role, so a plain descendant TextBlock must not be re-emitted as a
+	/// standalone &lt;p&gt;.
+	/// </summary>
+	private static bool HasComboBoxOrComboBoxItemAncestor(UIElement element)
+	{
+		var node = element.GetParent() as UIElement;
+		while (node is not null)
+		{
+			if (node is ComboBoxItem or ComboBox)
+			{
+				return true;
+			}
+
+			node = node.GetParent() as UIElement;
+		}
+
+		return false;
+	}
+
+	private static bool IsAbsorbedByAncestorName(UIElement element, string ownText)
+	{
+		var node = element.GetParent() as UIElement;
+		for (var depth = 0; node is not null && depth < 6; depth++, node = node.GetParent() as UIElement)
+		{
+			// Identity: a ContentControl whose Content IS this element (or whose string content matches)
+			// names itself from it (AriaMapper.ResolveLabel / FR-033), so the text is already announced.
+			if (node is ContentControl contentControl)
+			{
+				if (ReferenceEquals(contentControl.Content, element))
+				{
+					return true;
+				}
+				if (contentControl.Content is string s && string.Equals(s, ownText, StringComparison.Ordinal))
+				{
+					return true;
+				}
+			}
+
+			// First peer-bearing ancestor with a resolved name decides: equal to this text => absorbed;
+			// named from something else => this text is not its label and remains standalone.
+			if (node.GetOrCreateAutomationPeer() is { } peer)
+			{
+				var name = AriaMapper.ResolveLabel(peer);
+				if (!string.IsNullOrEmpty(name))
+				{
+					return string.Equals(name, ownText, StringComparison.Ordinal);
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
 	/// Finds the nearest semantic ancestor handle for a given visual parent.
 	/// Walks up the visual tree until it finds an element that was added to
 	/// the semantic tree (tracked in _semanticParentMap) or is itself semantic.
@@ -1143,6 +1513,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		Debug.Assert(IsAccessibilityEnabled);
 
 		TrySubscribeScrollSource(child);
+		// Subscribe ComboBoxes encountered during the initial walk, and realize any options
+		// for a dropdown that is already open when accessibility is enabled.
+		TryRegisterComboBox(child);
+		TryRealizeComboBoxItem(child);
+
+		// FR-032/T058: a Collapsed element (and its whole subtree) is not rendered — skip both
+		// emission and recursion so its descendants do not leak into the AT tree (WinUI: Collapsed
+		// is absent from the UIA tree). Equivalent to !child.Visual.IsVisible.
+		if (IsPrunedAsHidden(child))
+		{
+			_prunedHandles.Add(child.Visual.Handle);
+			return;
+		}
 
 		var handle = child.Visual.Handle;
 		var isSemantic = IsSemanticElement(child);
@@ -1171,9 +1554,33 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
+		// FR-019/FR-022: defer aria-labelledby resolution. The labeller's semantic node may not be
+		// registered yet at this control's create time (a following sibling or a Header/template child
+		// registers after the labelled control), so record the control and re-resolve at the end of
+		// CreateAOM. The HasSemanticElement gate still applies there, so no dangling IDREF is emitted.
+		if (_isCreatingAOM && _semanticParentMap.ContainsKey(handle) && AutomationProperties.GetLabeledBy(child) is not null
+			&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
+		{
+			_pendingLabelledBy.Add((handle, labelledPeer));
+		}
+
+		// Register virtualized containers (and backfill their already-realized items) at AOM-build
+		// time. OnChildAdded is suppressed during the initial build (_isCreatingAOM guard), so without
+		// this a NavigationView/list already realized at Enable-Accessibility time would never emit its
+		// items — ElementPrepared only fires for future realizations (T057/FR-031).
+		TryRegisterVirtualizedContainer(child);
+
 		// Don't recurse into virtualized containers — their items are managed
 		// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
-		if (child is ListViewBase or ItemsRepeater)
+		if (child is (ListViewBase or ItemsRepeater) && isSemantic)
+		{
+			return;
+		}
+
+		// ComboBox dropdown items are realized as role="option" by the listbox region
+		// (TryRealizeComboBoxItem above); don't recurse, or each item's content TextBlock would
+		// also emit as a standalone <p> alongside its option.
+		if (child is ComboBoxItem)
 		{
 			return;
 		}
@@ -1233,7 +1640,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				y,
 				width,
 				height,
-				child);
+				child,
+				IsAccessibilityFocusable(child, child.IsFocusable));
 
 			if (created)
 			{
@@ -1246,12 +1654,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
+		// The accessible name (aria-label) must come ONLY from the resolved name (ResolveLabel),
+		// never the raw GetName() or a descendant-text dump. It is also the gate for landmark/region
+		// emission (FR-014): an unlabeled landmark/region MUST NOT be emitted.
+		var resolvedName = automationPeer is not null
+			? AriaMapper.ResolveLabel(automationPeer)
+			: AutomationProperties.GetName(child);
+		var hasAccessibleName = !string.IsNullOrEmpty(resolvedName);
+
 		// Fall back to generic semantic element for unsupported control types.
 		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
 		var role = (automationPeer is not null
 			? AriaMapper.GetAriaRole(automationPeer.GetAutomationControlType())
 			: null)
 			?? AutomationProperties.FindHtmlRole(child);
+
+		// FR-013/FR-014: a ScrollViewer (control type Pane → "region") only earns role=region when it
+		// is actually scrollable AND named. A non-scrollable or unnamed ScrollViewer must NOT become an
+		// (unlabeled) landmark — drop the region role so it renders as a plain structural <div>.
+		if (string.Equals(role, "region", StringComparison.Ordinal) &&
+			!AriaMapper.QualifiesAsNamedScrollRegion(automationPeer, child))
+		{
+			role = null;
+		}
 
 		// Containers with AutomationProperties.Name but no peer/role act as accessible groups.
 		// This matches WinUI3 where named containers create UIA Group elements.
@@ -1266,33 +1691,27 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Elements with a LandmarkType get the corresponding ARIA landmark role.
 		// This overrides any other role since landmarks are a higher-level semantic.
+		// FR-014: region/form landmarks are only exposed when named (an unnamed region/form is not a
+		// landmark; axe "region must have a name"). main/navigation/search are top-level landmarks
+		// identified by role alone and keep their role even when unnamed.
 		var landmarkType = AutomationProperties.GetLandmarkType(child);
 		if (landmarkType != AutomationLandmarkType.None)
 		{
 			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
-			if (!string.IsNullOrEmpty(landmarkRole))
+			if (!string.IsNullOrEmpty(landmarkRole)
+				&& (landmarkRole is not ("region" or "form") || hasAccessibleName))
 			{
 				role = landmarkRole;
 			}
 		}
 
-		var automationId = AutomationProperties.GetAutomationId(child);
+		// The accessible name (aria-label) comes ONLY from the resolved name (ResolveLabel).
+		// AutomationId is surfaced separately as the xamlautomationid attribute and
+		// must never leak into aria-label.
+		var name = resolvedName;
+		var xamlAutomationId = AutomationProperties.GetAutomationId(child);
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
-		if (automationPeer is not null)
-		{
-
-			if (string.IsNullOrEmpty(automationId))
-			{
-				automationId = automationPeer.GetName();
-			}
-		}
-		else if (string.IsNullOrEmpty(automationId))
-		{
-			// For elements without an automation peer (e.g., named StackPanel/Border groups),
-			// use AutomationProperties.Name as the label
-			automationId = AutomationProperties.GetName(child);
-		}
 
 		if (automationPeer is IScrollProvider scrollProvider)
 		{
@@ -1317,10 +1736,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"[A11y] AddSemanticElement: generic path — control={child.GetType().Name} handle={child.Visual.Handle} role='{role}' automationId='{automationId}'");
+			this.Log().Trace($"[A11y] AddSemanticElement: generic path — control={child.GetType().Name} handle={child.Visual.Handle} role='{role}' name='{name}' automationId='{xamlAutomationId}'");
 		}
 
-		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name);
+		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role ?? string.Empty, name ?? string.Empty, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name, xamlAutomationId);
 
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -1332,13 +1751,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			var handle = child.Visual.Handle;
 
-			// Custom landmark → aria-roledescription
-			if (landmarkType == AutomationLandmarkType.Custom)
+			// aria-roledescription from the AUTHORED AutomationProperties.LocalizedLandmarkType /
+			// LocalizedControlType attached properties (null when unset) — NOT the peer's
+			// GetLocalized*Type(), which DEFAULTS to the role name (e.g. "button") and would restate
+			// the role on every named control (an ARIA anti-pattern). FR-014: roledescription is also
+			// not a name substitute, so it is gated on hasAccessibleName.
+			if (hasAccessibleName)
 			{
-				var localizedLandmarkType = AutomationProperties.GetLocalizedLandmarkType(child);
-				if (!string.IsNullOrEmpty(localizedLandmarkType))
+				var roleDescription = landmarkType != AutomationLandmarkType.None
+					? AutomationProperties.GetLocalizedLandmarkType(child)
+					: null;
+				if (string.IsNullOrEmpty(roleDescription))
 				{
-					NativeMethods.UpdateAriaRoleDescription(handle, localizedLandmarkType);
+					roleDescription = AutomationProperties.GetLocalizedControlType(child);
+				}
+
+				if (!string.IsNullOrEmpty(roleDescription))
+				{
+					NativeMethods.UpdateAriaRoleDescription(handle, roleDescription);
 				}
 			}
 
@@ -1351,8 +1781,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 
 			// Generic elements that still expose ExpandCollapse / shortcut keys (e.g. Expander
-			// hosted inside a fallback role, custom controls) need aria-expanded / aria-keyshortcuts
-			// applied post-hoc. Factory paths handle their own creation-time wiring.
+			// hosted inside a fallback role, custom controls) need aria-expanded / aria-haspopup /
+			// aria-keyshortcuts / accesskey applied post-hoc. Factory paths handle their own
+			// creation-time wiring.
 			if (automationPeer is not null)
 			{
 				try
@@ -1362,6 +1793,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						var expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
 									   expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
 						NativeMethods.UpdateExpandCollapseState(handle, expanded);
+
+						// aria-haspopup from the C# value (FR-028): the popup kind follows the control
+						// type, mirroring AriaMapper.GetAriaAttributes.
+						var controlType = automationPeer.GetAutomationControlType();
+						var hasPopup = controlType switch
+						{
+							AutomationControlType.ComboBox => "listbox",
+							AutomationControlType.Menu or AutomationControlType.MenuItem => "menu",
+							_ => null,
+						};
+						if (!string.IsNullOrEmpty(hasPopup))
+						{
+							NativeMethods.UpdateAriaHasPopup(handle, hasPopup);
+						}
 					}
 				}
 				catch
@@ -1369,16 +1814,32 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					// Some peers throw if queried before fully initialized. Update will arrive via property change.
 				}
 
+				// aria-keyshortcuts from AcceleratorKey only; AccessKey maps to the HTML accesskey
+				// attribute, never conflated into aria-keyshortcuts (FR-028).
 				var acceleratorKey = automationPeer.GetAcceleratorKey();
-				var accessKey = automationPeer.GetAccessKey();
-				if (!string.IsNullOrEmpty(acceleratorKey) || !string.IsNullOrEmpty(accessKey))
+				if (!string.IsNullOrEmpty(acceleratorKey))
 				{
-					var keyShortcuts = string.IsNullOrEmpty(accessKey)
-						? acceleratorKey
-						: string.IsNullOrEmpty(acceleratorKey) ? accessKey : $"{acceleratorKey} {accessKey}";
-					NativeMethods.UpdateAriaKeyShortcuts(handle, keyShortcuts);
+					NativeMethods.UpdateAriaKeyShortcuts(handle, acceleratorKey);
+				}
+
+				var accessKey = automationPeer.GetAccessKey();
+				if (!string.IsNullOrEmpty(accessKey))
+				{
+					NativeMethods.SetAccessKey(handle, accessKey);
+				}
+
+				// aria-labelledby from AutomationProperties.LabeledBy, mirroring the factory path.
+				// Only emitted when the labeller has a semantic node (no dangling IDREF — FR-019/FR-022).
+				var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(automationPeer);
+				if (labelledById is not null)
+				{
+					NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
 				}
 			}
+
+			// Owner-scoped attributes sourced from AutomationProperties attached properties
+			// (aria-level, aria-busy, lang). Mirrors the factory path so both surface them.
+			SemanticElementFactory.ApplyOwnerScopedAriaAttributes(child, handle);
 		}
 
 		return result;
@@ -1555,7 +2016,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: IsSelected handle={element.Visual.Handle} element={element.GetType().Name} selected={selected}");
 			}
-			NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
+			if (element is RadioButton)
+			{
+				// RadioButton is a native <input type="radio">; reflect selection as the native
+				// checked state (UpdateAriaChecked sets element.checked). aria-selected is invalid on role="radio".
+				NativeMethods.UpdateAriaChecked(element.Visual.Handle, selected ? "true" : "false");
+			}
+			else
+			{
+				NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
+			}
 
 			// Update roving tabindex: the newly selected item gets tabindex=0,
 			// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
@@ -1565,8 +2035,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
 
 				// Update aria-activedescendant on the parent container (combobox/listbox)
-				// so screen readers announce the active option without moving DOM focus
-				if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+				// so screen readers announce the active option without moving DOM focus.
+				// A ComboBox option lives in a separate listbox subtree, so the relationship
+				// must be expressed on the combobox head (which carries the matching
+				// aria-controls), not on the option's automation parent.
+				if (element is ComboBoxItem comboBoxItem &&
+					ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox ownerComboBox)
+				{
+					NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, element.Visual.Handle);
+				}
+				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 				}
@@ -1643,12 +2121,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Dynamic aria-labelledby: when LabeledBy changes after creation
-			var attributes = AriaMapper.GetAriaAttributes(peer);
-			if (!string.IsNullOrEmpty(attributes.LabelledBy))
-			{
-				NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, attributes.LabelledBy);
-			}
+			// Dynamic aria-labelledby: when LabeledBy changes after creation. Resolve the new
+			// labeller → its semantic id (guarded on HasSemanticElement); clear the attribute when
+			// the labeller was removed or is not semantic, so no dangling IDREF survives.
+			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
+			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.DescribedByProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -1701,6 +2178,31 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				NativeMethods.UpdatePositionInSet(element.Visual.Handle, positionInSet, sizeOfSet);
 			}
+		}
+		else if (automationProperty == AutomationElementIdentifiers.HeadingLevelProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			// FR-011: live-sync aria-level on HeadingLevel change. The <hN> tag is fixed at
+			// creation (clamped to <h6>), but aria-level carries the true level (1-9), so a
+			// runtime change to level 7-9 is reflected without re-creating the element.
+			var level = ConvertHeadingLevel(newValue);
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"[A11y] PROP CHANGE: HeadingLevel handle={element.Visual.Handle} element={element.GetType().Name} level={level}");
+			}
+			UpdateHeadingLevel(element.Visual.Handle, level);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.IsDataValidForFormProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			// FR-023: live-sync aria-invalid on IsDataValidForForm change (inverted polarity —
+			// false means invalid). The attribute is removed when the field becomes valid again.
+			var invalid = !(bool)newValue;
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"[A11y] PROP CHANGE: IsDataValidForForm handle={element.Visual.Handle} element={element.GetType().Name} invalid={invalid}");
+			}
+			NativeMethods.UpdateAriaInvalid(element.Visual.Handle, invalid);
 		}
 	}
 
@@ -1909,7 +2411,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void AddRootElementToSemanticsRoot(IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.addSemanticElement")]
-		internal static partial bool AddSemanticElement(IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible, bool horizontallyScrollable, bool verticallyScrollable, string temporary);
+		internal static partial bool AddSemanticElement(IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible, bool horizontallyScrollable, bool verticallyScrollable, string temporary, string? xamlAutomationId);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
@@ -2023,11 +2525,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRequired")]
 		internal static partial void UpdateAriaRequired(IntPtr handle, bool required);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaInvalid")]
+		internal static partial void UpdateAriaInvalid(IntPtr handle, bool invalid);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
 		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaKeyShortcuts")]
 		internal static partial void UpdateAriaKeyShortcuts(IntPtr handle, string keyShortcuts);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaHasPopup")]
+		internal static partial void UpdateAriaHasPopup(IntPtr handle, string hasPopup);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.setAccessKey")]
+		internal static partial void SetAccessKey(IntPtr handle, string accessKey);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
