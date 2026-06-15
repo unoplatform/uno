@@ -393,7 +393,7 @@ internal static class SkiaRenderHelper
 
 			_font.MeasureText(value, out var textRect);
 			var textY = rowTop + (RowHeight - textRect.Height) / 2 - textRect.Top;
-			canvas.DrawText(value, textX, textY, _font, _textPaint);
+			canvas.DrawText(value, textX, textY, SKTextAlign.Left, _font, _textPaint);
 		}
 
 		private static void DrawSpeedometerIcon(SKCanvas canvas, float x, float y)
