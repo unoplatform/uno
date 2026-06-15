@@ -5,11 +5,9 @@ using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.Collections;
-using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -29,27 +27,13 @@ namespace Uno.UI.Controls;
 /// </summary>
 public partial class Window : UIWindow
 {
-	//Impediment # 19821 A way the bypass the processing done in the HitTest override when third party controls are used.
-	public static bool BypassCheckToCloseKeyboard { get; set; } = true;
-
-	private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
 	private static readonly WeakAttachedDictionary<UIView, string> _attachedProperties = new WeakAttachedDictionary<UIView, string>();
 	private const string NeedsKeyboardAttachedPropertyKey = "NeedsKeyboard";
 	private const int KeyboardMargin = 10;
 
-	public static class TraceProvider
-	{
-		public readonly static Guid Id = Guid.Parse("{64C590CE-CC02-4B48-BFC9-754A47571AC1}");
-
-		public const int Window_TouchStart = 1;
-		public const int Window_TouchStop = 2;
-	}
-
 	private UIView? _focusedView; // Not really the "focused", but the last view which was touched.
 	private WeakReference<UIScrollView?>? _scrollViewModifiedForKeyboard;
 	private InputPane _inputPane;
-	private EventProviderExtensions.DisposableEventActivity? _touchTrace;
 
 	internal event Action? FrameChanged;
 
@@ -170,56 +154,7 @@ public partial class Window : UIWindow
 
 	public override UIView? HitTest(CGPoint point, UIEvent? uievent)
 	{
-		if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
-		{
-			_touchTrace = _trace.WriteEventActivity(TraceProvider.Window_TouchStart, TraceProvider.Window_TouchStop);
-
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0) && _inputPane.Visible && point.Y > _inputPane.OccludedRect.Y)
-			{
-				// For some strange reasons, on iOS 8, when the app is sent in background (while the keyboard is open ?) and then restored,
-				// when user re-opens the keyboard we will get some HitTest also for touches which are made upon the keyboard.
-				// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause
-				// the keyboard to disappear and the feeling that touches are going "through the keyboard".
-
-				return _focusedView!;
-			}
-
-			var previouslyFocusedView = _focusedView;
-			var newlyFocusedView = base.HitTest(point, uievent);
-			_focusedView = newlyFocusedView;
-
-			if (_inputPane.Visible
-				&& !NeedsKeyboard(_focusedView!))
-			{
-				// Note: prefer call the IsWithinAWebView after the NeedsKeyboard since it is more power consuming.
-				if (IsWithinAWebView(_focusedView))
-				{
-					// As soon as we are in a WebView the NeedsKeyboard will always returns false. So here we will complete
-					// edition as soon as the user touch anywhere on the screen. This is acceptable since there are dedicated
-					// buttons on the keyboard to focus the next/previous fields of a form.
-					previouslyFocusedView?.EndEditing(true);
-				}
-				else if (previouslyFocusedView != null && IsFocusable(_focusedView))
-				{
-					// If not in a WebView or focusable button, stop editing on the whole window in order to close the keyboard even it the focused view
-					// is no more the one which requires the keyboard (e.g. swipe on another TextBox will not close the keyboard
-					// neither begin edit, but will "focus" it)
-					this.EndEditing(true); // Propagated to all children, will close the keyboard
-				}
-			}
-
-			return _focusedView ?? base.HitTest(point, uievent);
-		}
-		else
-		{
-			if (_touchTrace != null)
-			{
-				_touchTrace.Dispose();
-				_touchTrace = null;
-			}
-
-			return base.HitTest(point, uievent);
-		}
+		return base.HitTest(point, uievent);
 	}
 
 #if !__TVOS__
@@ -442,13 +377,5 @@ public partial class Window : UIWindow
 			view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null ||
 			view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 #endif
-	}
-
-	private bool IsFocusable(UIView? view)
-	{
-		// Basic IsFocusable support that only works with buttons.
-		// This prevent the keyboard from being dismissed when tapping on a button that doesn't want focus.
-		return ((_focusedView as ButtonBase) ?? _focusedView?.FindFirstParent<ButtonBase>())?.IsFocusable
-			?? true; // if it's not a button, we fallback to the default behavior which is to dismiss the keyboard
 	}
 }
