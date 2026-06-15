@@ -351,9 +351,46 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				AutomationHelper.RaiseEventIfListener(this, AutomationEvents.LiveRegionChanged);
 			}
+
+			RaiseAutomationNameChangedIfNeeded(oldValue, newValue);
 		}
 
 		partial void OnTextChangedPartial();
+
+		/// <summary>
+		/// When the TextBlock's accessible name is derived from its <see cref="Text"/> (i.e. no
+		/// explicit <see cref="AutomationProperties.NameProperty"/> overrides it), a runtime Text
+		/// change also changes the accessible name. UI Automation must be notified so assistive
+		/// technologies (and the semantic DOM on Skia-WASM) re-read the name; otherwise the
+		/// accessibility tree keeps the stale name. In WinUI3 the OS UIA framework derives and
+		/// re-evaluates the Name from the text automatically — we replicate that here.
+		/// </summary>
+		private void RaiseAutomationNameChangedIfNeeded(string oldValue, string newValue)
+		{
+#if __SKIA__
+			// Only the accessible-name-from-Text case matters: an explicit AutomationProperties.Name
+			// takes precedence in GetNameCore and is already routed via OnNamePropertyChanged, so
+			// raising here would be redundant (and would report an unchanged name).
+			if (!string.IsNullOrEmpty(AutomationProperties.GetName(this)))
+			{
+				return;
+			}
+
+			var listener = AutomationPeer.AutomationPeerListener;
+			if (listener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) != true)
+			{
+				return;
+			}
+
+			if (GetOrCreateAutomationPeer() is { } peer)
+			{
+				// Resolve the new name through the peer so LabeledBy / inline composition is honored,
+				// matching what GetNameCore would return for the updated text.
+				var newName = peer.GetName() ?? string.Empty;
+				listener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.NameProperty, oldValue ?? string.Empty, newName);
+			}
+#endif
+		}
 
 		#endregion
 
