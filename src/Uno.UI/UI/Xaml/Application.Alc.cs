@@ -373,9 +373,6 @@ partial class Application
 	// (Window.CloseAlcWindows, Application.RemoveAlcApplication, host sweeps).
 	private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<Type, global::System.Reflection.FieldInfo[]> _delegateFieldsCache = new();
 
-	private static readonly global::System.Reflection.FieldInfo _alcStateField =
-		typeof(AssemblyLoadContext).GetField("_state", global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.Instance);
-
 	/// <summary>
 	/// Whether the type's collectibility means "owned by a dying AssemblyLoadContext". This is
 	/// the discriminator for DESTRUCTIVE prunes: <see cref="Type.IsCollectible"/> alone also
@@ -397,15 +394,7 @@ partial class Application
 			return true;
 		}
 
-		try
-		{
-			return _alcStateField is not null && (int)_alcStateField.GetValue(alc) != 0;
-		}
-		catch (Exception)
-		{
-			// Fail leak-safe: an unreadable unload state must not leave the pin in place.
-			return true;
-		}
+		return global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(alc, valueIfUnknown: true);
 	}
 
 	/// <summary>
