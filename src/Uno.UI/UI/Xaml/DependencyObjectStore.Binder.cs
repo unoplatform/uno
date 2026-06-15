@@ -711,8 +711,19 @@ namespace Microsoft.UI.Xaml
 			// elements (shared types, indistinguishable by ALC) release their hold. An element
 			// whose ContentRoot has been unregistered from the coordinator (a closed secondary
 			// app's tree — popups included, which keep IsLoaded) is orphaned and also released.
+			// The collectible branch is gated on the parent's ALC unload having actually been
+			// initiated: a still-live session-lifetime add-in ALC (e.g. a designer host) is also
+			// collectible, but its associations must be preserved until it really unloads.
+			var collectibleAndUnloading = false;
+			if (_associatedParent is { } collectibleCandidate && collectibleCandidate.GetType().IsCollectible)
+			{
+				var parentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(collectibleCandidate.GetType().Assembly);
+				collectibleAndUnloading = parentAlc is not null
+					&& global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(parentAlc, valueIfUnknown: true);
+			}
+
 			if (_associatedParent is { } parent
-				&& (parent.GetType().IsCollectible
+				&& (collectibleAndUnloading
 					|| parent is FrameworkElement { IsLoaded: false }
 					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
@@ -749,7 +760,9 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception)
 			{
-				return false;
+				// Fail leak-safe: if orphan state can't be determined, treat the element as orphaned
+				// so its association is cleared rather than left to pin a potentially-unloaded ALC.
+				return true;
 			}
 		}
 
