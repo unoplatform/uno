@@ -77,7 +77,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net10.0-ios'
+      UnoCheckParameters: '--preview-major --tfm net11.0-ios'
 
   - template: ../templates/ios-build-select-version.yml
     parameters:

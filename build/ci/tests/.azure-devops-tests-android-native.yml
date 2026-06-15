@@ -45,7 +45,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net10.0-android'
+      UnoCheckParameters: '--preview-major --tfm net11.0-android'
 
   - template: ../templates/nuget-cache.yml
     parameters:

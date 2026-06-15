@@ -23,11 +23,11 @@ mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY"
 
 # Comment out the following line to avoid full rebuild for subsequent runs
 # pushd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile
-# dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/android-netcoremobile-sampleapp.binlog
+# dotnet publish -f net10.0-android -c Release -p:UnoTargetFrameworkOverride=net10.0-android /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/android-netcoremobile-sampleapp.binlog
 # popd
 
 mkdir -p "$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android"
-cp -f "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-android/publish/uno.platform.unosampleapp-Signed.apk" "$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk"
+cp -f "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net10.0-android/publish/uno.platform.unosampleapp-Signed.apk" "$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk"
 
 rm -fR ~/.android/avd/xamarin_android_emulator.avd
 

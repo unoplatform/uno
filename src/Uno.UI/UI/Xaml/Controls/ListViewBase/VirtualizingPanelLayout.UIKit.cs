@@ -1204,7 +1204,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!_layoutAttributesForIndexPaths.TryGetValue(key, out attributes))
 			{
 				var indexPath = GetNSIndexPathFromRowSection(row, section);
-				_layoutAttributesForIndexPaths.Add(key, attributes = UICollectionViewLayoutAttributes.CreateForCell<_LayoutAttributes>(indexPath));
+				_layoutAttributesForIndexPaths.Add(key, attributes = UICollectionViewLayoutAttributes.CreateForCell<_LayoutAttributes>(indexPath!));
 			}
 
 			return attributes!;

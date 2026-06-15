@@ -28,7 +28,7 @@ internal partial class NativeCoreWebView2HttpRequestHeaders : INativeHttpRequest
 			{
 				var keyStr = key.ToString();
 				var valueStr = nativeHeaders[key]?.ToString() ?? string.Empty;
-				_originalHeaders[keyStr] = valueStr;
+				_originalHeaders[keyStr!] = valueStr;
 			}
 		}
 	}
