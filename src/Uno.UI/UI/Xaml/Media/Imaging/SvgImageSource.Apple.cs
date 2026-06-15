@@ -90,7 +90,10 @@ partial class SvgImageSource
 		var fileName = global::System.IO.Path.GetFileNameWithoutExtension(bundlePath) ?? string.Empty;
 		var fileExtension = global::System.IO.Path.GetExtension(bundlePath) ?? string.Empty;
 
-		var resourcePathname = NSBundle.MainBundle.GetUrlForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
+		var resourcePath = global::System.IO.Path.Combine(directoryName, fileName);
+
+		var resourcePathname = NSBundle.MainBundle.GetUrlForResource(resourcePath, fileExtension.TrimStart('.')) ??
+			throw new InvalidOperationException($"Unable to find resource: {resourcePath}{fileExtension}");
 
 		using var data = NSData.FromUrl(resourcePathname);
 

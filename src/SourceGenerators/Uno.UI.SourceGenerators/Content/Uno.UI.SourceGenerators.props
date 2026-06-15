@@ -19,7 +19,7 @@
 		<_IsTvOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsTvOS>
 		<_IsTvOS Condition="'$(_IsTvOS)' == ''">false</_IsTvOS>
 
-		<_IsNetStdRef Condition="'$(TargetFramework)'=='net10.0' OR '$(TargetFramework)'=='net9.0'">true</_IsNetStdRef>
+		<_IsNetStdRef Condition="'$(TargetFramework)'=='$(NetCurrent)' OR '$(TargetFramework)'=='$(NetPrevious)'">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia' OR '$(UnoRuntimeIdentifier)'=='WebAssembly'">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(_IsNetStdRef)' == ''">false</_IsNetStdRef>
 
