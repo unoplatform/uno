@@ -16,10 +16,25 @@ namespace Uno.UI.RemoteControl.Messaging;
 /// </remarks>
 public static class RemoteControlJsonOptions
 {
+	// Guards the read-modify-write of the shared _options/_registeredContext pair. With multiple
+	// in-process RemoteControl clients, one client's Reset() (teardown) can otherwise race another
+	// client's Default/SetSourceGeneratedContext, tearing the cached options against the context they
+	// were built from.
+	private static readonly object _gate = new();
+
 	private static JsonSerializerOptions? _options;
 	private static JsonSerializerContext? _registeredContext;
 
-	public static JsonSerializerOptions Default => _options ??= CreateOptions(_registeredContext);
+	public static JsonSerializerOptions Default
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return _options ??= CreateOptions(_registeredContext);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Registers a source-generated context to be used for known types.
@@ -28,8 +43,11 @@ public static class RemoteControlJsonOptions
 	/// </summary>
 	public static void SetSourceGeneratedContext(JsonSerializerContext context)
 	{
-		_registeredContext = context;
-		_options = CreateOptions(context);
+		lock (_gate)
+		{
+			_registeredContext = context;
+			_options = CreateOptions(context);
+		}
 	}
 
 	/// <summary>
@@ -44,16 +62,19 @@ public static class RemoteControlJsonOptions
 	/// </summary>
 	public static void Reset()
 	{
-#if NET5_0_OR_GREATER
-		if (_registeredContext is { } context && context.GetType().IsCollectible)
+		lock (_gate)
 		{
-			_registeredContext = null;
-		}
+#if NET5_0_OR_GREATER
+			if (_registeredContext is { } context && context.GetType().IsCollectible)
+			{
+				_registeredContext = null;
+			}
 #else
-		// Collectibility is not testable on this target; drop the context as before.
-		_registeredContext = null;
+			// Collectibility is not testable on this target; drop the context as before.
+			_registeredContext = null;
 #endif
-		_options = null;
+			_options = null;
+		}
 	}
 
 	private static JsonSerializerOptions CreateOptions(JsonSerializerContext? sourceGenerated)
