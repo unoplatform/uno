@@ -9,6 +9,10 @@ using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
+#if HAS_UNO
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
 	/// <summary>
@@ -136,19 +140,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreNotEqual("0", GetTabindex(listView), "A composite container must not be a tab stop (tabindex must not be 0); the roving stop lives on its active item.");
 		}
 
-		private static void EnableAccessibilityThroughDom()
-		{
-			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
-		}
 
-		// Targets the exact semantic element for a given UIElement via its Visual.Handle. A generic role
-		// selector would match the first semantic node of that kind in the document, which is usually not
-		// the element under test (e.g. the test runner header).
-		private static string GetSemanticElementId(UIElement element)
-			=> $"uno-semantics-{((long)element.Visual.Handle)}";
 
-		private static bool SemanticElementExists(UIElement element)
-			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(element)}') ? '1' : '0';}})()") == "1";
 
 		// Returns the tabindex as a string ("0", "-1", ...) or empty string when the attribute is absent.
 		private static string GetTabindex(UIElement element)
@@ -157,16 +150,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		private static bool HasTabindexAttribute(UIElement element)
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e && e.hasAttribute('tabindex') ? '1' : '0'; }})()") == "1";
 
-		private static string InvokeBrowserJs(string javascript)
-		{
-			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
-			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
-
-			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
-			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
-
-			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
-		}
 #endif
 	}
 }

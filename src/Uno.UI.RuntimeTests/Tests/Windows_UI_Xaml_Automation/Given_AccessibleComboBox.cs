@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -285,21 +286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			return InvokeBrowserJs(js);
 		}
 
-		private static void EnableAccessibilityThroughDom()
-		{
-			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
-		}
 
-		private static string InvokeBrowserJs(string javascript)
-		{
-			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
-			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
-
-			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
-			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
-
-			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
-		}
 #endif
 
 #if HAS_UNO
@@ -392,16 +379,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("listbox", GetSemanticAttribute(comboBox, "aria-haspopup"), "A ComboBox must emit aria-haspopup=\"listbox\".");
 		}
 
-		// Targets the exact semantic element for a given element via its visual handle, mirroring the
-		// id scheme used by the WASM runtime (uno-semantics-{handle}).
-		private static string GetSemanticElementId(UIElement element)
-			=> $"uno-semantics-{((long)element.Visual.Handle)}";
 
-		private static bool SemanticElementExists(UIElement element)
-			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(element)}') ? '1' : '0';}})()") == "1";
 
-		private static string GetSemanticAttribute(UIElement element, string attribute)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e ? (e.getAttribute('{attribute}') ?? '') : '';}})()");
 
 #endif
 

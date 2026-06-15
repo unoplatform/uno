@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -317,10 +318,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("password", GetSemanticInputTypeForPassword(passwordBox), "A PasswordBox must emit input[type=password].");
 		}
 
-		private static void EnableAccessibilityThroughDom()
-		{
-			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
-		}
 
 		// Targets the exact semantic element for a given TextBox. Using a generic
 		// '#uno-semantics-root input' selector would match the first semantic input in the
@@ -380,16 +377,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
-		private static string InvokeBrowserJs(string javascript)
-		{
-			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
-			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
-
-			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
-			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
-
-			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
-		}
 #endif
 
 #if HAS_UNO
