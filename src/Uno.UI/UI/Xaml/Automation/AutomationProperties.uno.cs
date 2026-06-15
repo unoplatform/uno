@@ -29,15 +29,21 @@ public sealed partial class AutomationProperties
 				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
 			}
 
-			// aria-label is applied independently of role: the FR-020 role-token
-			// normalization now returns null for non-ARIA control types, and a missing
-			// role must not also drop the label on the native WASM DOM path.
-			uiElement.SetAttribute("aria-label", (string)args.NewValue);
+			// AutomationId is a test/automation identifier, not an accessible name source.
+			// aria-label must be sourced from AutomationProperties.Name (peer name resolution),
+			// not from AutomationId — otherwise assistive tech announces the dev-only id.
 
 			var role = FindHtmlRole(uiElement);
 			if (role != null)
 			{
 				uiElement.SetAttribute("role", role);
+			}
+			else
+			{
+				// FR-020 role-token normalization can now return null for non-ARIA control types.
+				// Explicitly clear any previously-set role so stale tokens don't survive a normalization
+				// change (or a control-type swap) that drops the role for this element.
+				uiElement.RemoveAttribute("role");
 			}
 		}
 #endif
