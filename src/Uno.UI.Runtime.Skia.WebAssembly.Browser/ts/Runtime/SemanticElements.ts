@@ -430,8 +430,10 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Roving tabindex: only the checked radio in a group is a tab stop; others are
-			// reachable via arrow keys (focus-driven roving promotes the first when none checked).
-			// A non-focusable (e.g. disabled) radio is never a tab stop (T017).
+			// reachable via arrow keys. A non-focusable (e.g. disabled) radio is never a
+			// tab stop (T017). When no radio in the group is checked yet, the APG roving
+			// pattern requires exactly one tab stop -- promote this radio if it is the
+			// first focusable one in its name group (checked below, after append).
 			element.tabIndex = (isFocusable && checked) ? 0 : -1;
 			element.style.pointerEvents = 'none';
 
@@ -454,6 +456,26 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			this.appendToParent(element, parentHandle, index);
+
+			// APG roving-tabindex fallback: if this focusable, unchecked radio joined a
+			// named group that still has no tab stop, promote it to tabIndex=0 so the
+			// group can be reached via Tab. Without this, a group where nothing is
+			// initially checked would be entirely unreachable from the keyboard.
+			if (isFocusable && !checked && groupName) {
+				const groupRadios = document.querySelectorAll<HTMLInputElement>(
+					`input[type="radio"][name="${CSS.escape(groupName)}"]`);
+				let hasTabStop = false;
+				for (let i = 0; i < groupRadios.length; i++) {
+					const r = groupRadios[i];
+					if (r !== element && r.tabIndex === 0) {
+						hasTabStop = true;
+						break;
+					}
+				}
+				if (!hasTabStop) {
+					element.tabIndex = 0;
+				}
+			}
 		}
 
 		/**
