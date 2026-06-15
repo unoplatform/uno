@@ -20,6 +20,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See the `/winui-port` skill for the full porting rules.)
 
 ## Idioms
+- **Prefer expression-bodied members** (`=>`) for one-line methods, properties, accessors, and constructors where it reads cleanly. Don't force it onto multi-statement logic or expressions that wrap awkwardly — a block body wins when it's clearer.
 - **`#nullable enable`** is per-file (top of file), not global. New/refactored files should enable it; large legacy files (e.g. `FrameworkElement.cs`) often don't — don't bulk-flip them.
 - **File-scoped namespaces** (`namespace X;`) for new files; don't force-convert existing braced-namespace partials unless rewriting the whole file.
 - **Extension methods are `internal`** and live in `[TypeName]Extensions.cs` in the same namespace. Public cross-assembly extensions are the rare exception.
@@ -28,9 +29,10 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - Suppress analyzer warnings narrowly with `#pragma warning disable <CODE>` / `restore <CODE>` (e.g. `CS0618` obsolete, `CA1422` platform-compat), not project-wide.
 
 ## Comments
-- Add a comment only when it earns its place — explain the non-obvious **why**, not the **what** the code already states plainly. Let clear names and small methods carry the *what*.
-- Keep them **succinct and meaningful**: a line or two. No walls of text.
+- **Default to no comment.** Add one only when it earns its place — explain the non-obvious **why**, not the **what** the code already states plainly. Let clear names and small methods carry the *what*.
+- **Keep them short — a line or two. Never a wall of text:** no paragraph-length blocks, no line-by-line narration of what a method does. A comment growing long usually means the code needs a better name or to be split, not a longer comment.
 - **Don't narrate code removal or change history** — no "removed X", "used to do Y", "no longer needed". A comment states the present reason a line exists; git carries the history. (Rare exception: a genuinely useful note about why something is intentionally *absent*.)
+- **Longer comments are allowed only when:** the user explicitly asks for them; you're **porting from WinUI/MUX** and the upstream source carries explanatory comments (keep those verbatim — fidelity to the original is the point, see the `/winui-port` skill); or a genuinely subtle invariant/algorithm can't be conveyed in a line or two. When in doubt, shorter.
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
 
 ## Conditional symbols

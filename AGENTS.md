@@ -278,7 +278,7 @@ Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load
 
 ### Code Style
 
-Tabs, Allman braces (always), `internal` extension methods in `[Type]Extensions.cs`, `#nullable enable` per-file, MUX/MIT headers on ported code. Comments only when they add value — succinct, explaining the non-obvious *why*, never narrating code removal/history. Details auto-load from `.claude/rules/code-style.md`. Style is analyzer-enforced on CI even when `UnoFastDevBuild=true` skips it locally.
+Tabs, Allman braces (always), expression-bodied members for one-liners, `internal` extension methods in `[Type]Extensions.cs`, `#nullable enable` per-file, MUX/MIT headers on ported code. Comments only when they add value — short (a line or two, never a wall of text), explaining the non-obvious *why*, never narrating code removal/history; longer is OK only when explicitly requested, actually needed for code understanding, or carried verbatim from a WinUI port. Details auto-load from `.claude/rules/code-style.md`. Style is analyzer-enforced on CI even when `UnoFastDevBuild=true` skips it locally.
 
 ### Events
 
