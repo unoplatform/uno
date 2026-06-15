@@ -251,11 +251,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var expectedY = 39.0;
 #if __ANDROID__
-				if (!FeatureConfiguration.Popup.UseNativePopup)
-				{
-					// If using managed popup, the expected offset must be adjusted for the status bar
-					expectedY += menuBarBounds.Y;
-				}
+				// The expected offset must be adjusted for the status bar.
+				expectedY += menuBarBounds.Y;
 #endif
 
 				Assert.AreEqual(5, flyoutItemBounds.X, 3);
@@ -266,26 +263,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				peer.Collapse();
 			}
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		[RequiresFullWindow]
-		[Ignore("Flaky #9080")]
-		public async Task Verify_MenuBarItem_Bounds_Native_Popups()
-		{
-			using (FeatureConfigurationHelper.UseNativePopups())
-			{
-				await Verify_MenuBarItem_Bounds();
-			}
-		}
-
-		[TestMethod]
-		[RequiresFullWindow]
-		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
-		{
-			await Verify_MenuBarItem_Bounds();
-		}
-#endif
 
 #if HAS_UNO
 		[TestMethod]
