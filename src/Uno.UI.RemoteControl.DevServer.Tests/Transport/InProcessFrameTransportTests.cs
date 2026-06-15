@@ -334,6 +334,59 @@ public class InProcessFrameTransportTests
 	/// in-process broker from being torn down mid-teardown.
 	/// </para>
 	/// </summary>
+	/// <summary>
+	/// Covers the bounded-wait teardown contract: a receiver parked on the semaphore must complete
+	/// with <c>null</c> (never hang or spin) when the transport is closed while the receive is pending.
+	/// This exercises the close-flag re-check on the post-wait path rather than the timeout poll.
+	/// </summary>
+	[TestMethod]
+	public async Task InProcessTransport_Close_While_Receive_Pending_Should_Return_Null()
+	{
+		// Arrange — a receiver parked with nothing queued.
+		using var pair = FrameTransportPair.Create();
+		var (peer1, peer2) = pair;
+
+		var receiveTask = peer2.ReceiveAsync(CancellationToken.None);
+		receiveTask.IsCompleted.Should().BeFalse("the receiver must park while the queue is empty");
+
+		// Act — close the pending receiver's own endpoint while it is parked.
+		await peer2.CloseAsync();
+
+		// Assert — completes promptly with null, no hang and no spin.
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		var completed = await Task.WhenAny(receiveTask, Task.Delay(Timeout.Infinite, cts.Token));
+		completed.Should().BeSameAs(receiveTask, "the parked receiver must self-complete on close");
+		(await receiveTask).Should().BeNull();
+	}
+
+	/// <summary>
+	/// Covers the disposal arm of the bounded-wait contract: disposing the endpoint a receiver is
+	/// parked on disposes its <see cref="SemaphoreSlim"/>, so the pending <c>WaitAsync</c> faults with
+	/// <see cref="ObjectDisposedException"/>; <c>ReceiveAsync</c> must swallow it and return <c>null</c>
+	/// rather than letting the exception escape or hang.
+	/// </summary>
+	[TestMethod]
+	public async Task InProcessTransport_Dispose_While_Receive_Pending_Should_Return_Null()
+	{
+		// Arrange — a receiver parked with nothing queued.
+		var pair = FrameTransportPair.Create();
+		var (peer1, peer2) = pair;
+
+		var receiveTask = peer2.ReceiveAsync(CancellationToken.None);
+		receiveTask.IsCompleted.Should().BeFalse("the receiver must park while the queue is empty");
+
+		// Act — fully dispose the endpoint the receiver is parked on (disposes _signal).
+		peer2.Dispose();
+
+		// Assert — completes promptly with null, neither hanging nor surfacing ObjectDisposedException.
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		var completed = await Task.WhenAny(receiveTask, Task.Delay(Timeout.Infinite, cts.Token));
+		completed.Should().BeSameAs(receiveTask, "the parked receiver must self-complete on dispose");
+		(await receiveTask).Should().BeNull();
+
+		await peer1.CloseAsync();
+	}
+
 	[TestMethod]
 	public async Task InProcessTransport_OnePeerDisposedFirst_OtherPeerCloseDoesNotThrow()
 	{
