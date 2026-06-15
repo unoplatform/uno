@@ -81,11 +81,8 @@ internal class MacOSWindowNative
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		// When running from a macOS .app bundle, the OS renders the dock icon from the
-		// bundle's Assets.car / CFBundleIconName, including the appearance-aware (Liquid
-		// Glass) variants. Calling setApplicationIconImage: would clobber those, so only
-		// set the icon programmatically when unbundled (e.g. development runs) to avoid
-		// the generic executable icon.
+		// Only set the icon when unbundled (e.g. dev runs); a bundle already carries
+		// its own appearance-aware icon that setApplicationIconImage: would clobber.
 		if (!NativeUno.uno_application_is_bundled() && Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', IOPath.DirectorySeparatorChar);
