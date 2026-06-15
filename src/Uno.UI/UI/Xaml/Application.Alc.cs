@@ -208,7 +208,7 @@ partial class Application
 
 		if (RequestedTheme != previousTheme)
 		{
-			RequestedThemeChanged?.Invoke();
+			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 

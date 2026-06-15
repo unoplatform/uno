@@ -355,7 +355,7 @@ namespace Microsoft.UI.Xaml
 
 			if (RequestedTheme != previousTheme)
 			{
-				RequestedThemeChanged?.Invoke();
+				RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 			}
 #else
 			// this flag makes sure the app will not respond to OS events
@@ -681,14 +681,14 @@ namespace Microsoft.UI.Xaml
 		internal void OnRequestedThemeChanged()
 		{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			RequestedThemeChanged?.Invoke();
+			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 
 			// Force a full re-notification of the current theme (ApplicationHelper.ReapplyApplicationTheme
 			// contract): FrameworkTheming::OnThemeChanged(forceUpdate: true) invokes the notify callback —
 			// CCoreServices::NotifyThemeChange — even when nothing changed on any axis.
 			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
 #else
-			RequestedThemeChanged?.Invoke();
+			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 
 			var wasBaseThemeChanging = IsBaseThemeChanging;
 			IsBaseThemeChanging = true;
@@ -703,7 +703,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal event Action RequestedThemeChanged;
+		internal event EventHandler RequestedThemeChanged;
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		// On enhanced-lifecycle targets the root background update lives in

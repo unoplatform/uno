@@ -209,6 +209,9 @@ public partial class DependencyObjectStore
 			return false;
 		}
 
+		// ItemsSource is a data-source (non-visual-tree) property on every items control;
+		// WinUI's sparse-property walk enters only IsVisualTreeProperty values (PropertySystem.cpp:1183),
+		// so its source items are never theme-entered. Match by name to cover them all.
 		if (property.Name == "ItemsSource")
 		{
 			return false;
