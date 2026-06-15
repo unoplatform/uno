@@ -430,11 +430,13 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute("aria-checked", ariaChecked);
 			}
 
-			if (automationId) {
+			// Mirror updateAriaLabel: omit aria-label for empty/whitespace values so we
+			// never create aria-label=" " on the element (screen readers announce "blank").
+			if (automationId && automationId.trim().length > 0) {
 				element.setAttribute("aria-label", automationId);
 			}
 
-			if (xamlAutomationId) {
+			if (xamlAutomationId && xamlAutomationId.trim().length > 0) {
 				element.setAttribute("xamlautomationid", xamlAutomationId);
 			}
 
@@ -482,7 +484,13 @@ namespace Uno.UI.Runtime.Skia {
 		public static setXamlAutomationId(handle: number, automationId: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("xamlautomationid", automationId);
+				// Mirror updateAriaLabel: remove (don't leave xamlautomationid="") when the
+				// incoming value is empty/whitespace so we never persist a stale attribute.
+				if (automationId && automationId.trim().length > 0) {
+					element.setAttribute("xamlautomationid", automationId);
+				} else {
+					element.removeAttribute("xamlautomationid");
+				}
 			}
 		}
 
