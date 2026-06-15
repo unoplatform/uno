@@ -12,10 +12,6 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 
-#if HAS_UNO
-using Uno.UI.Controls.Legacy;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
 	[TestClass]
@@ -1115,5 +1111,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 #endif
 	}
+
+#if HAS_UNO
+	internal static class GridExtensions
+	{
+		public static T GridPosition<T>(this T view, int row, int column)
+			where T : FrameworkElement
+		{
+			Grid.SetColumn(view, column);
+			Grid.SetRow(view, row);
+
+			return view;
+		}
+	}
+#endif
 }
 #endif

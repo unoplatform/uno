@@ -21,7 +21,6 @@ using Expander = Microsoft.UI.Xaml.Controls.Expander;
 using MUXControlsTestApp.Utilities;
 
 #if HAS_UNO
-using Uno.UI.Controls.Legacy;
 using Uno.UI.Xaml;
 #endif
 

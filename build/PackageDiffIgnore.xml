@@ -710,8 +710,6 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::LeftPaneOpenLengthProperty" reason="Api alignments" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::IsLeftPaneOpenProperty" reason="Api alignments" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::LeftPaneBackgroundProperty" reason="Api alignments" />
-			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Controls.Legacy.GridView::PaddingProperty" reason="Api alignments" />
-			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Controls.Legacy.GridView::ItemContainerStyleProperty" reason="Api alignments" />
 			<Member fullName="Foundation.NSString Windows.Media.Playback.MediaPlayer::RateObservationContext" reason="Api alignments" />
 			<Member fullName="UIKit.UIInterfaceOrientationMask[] Windows.Graphics.Display.DisplayInformation::PreferredOrientations" reason="Api alignments" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationView::PaneTitleProperty" reason="Api alignments" />
@@ -1187,10 +1185,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NativeListViewBase.OnIsEnabledChangedCore()" reason="Api alignments" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NativePagedView.OnIsEnabledChangedCore()" reason="Api alignments" />
 			<Member fullName="System.Void Uno.UI.Xaml.Controls.NativeRefreshControl.OnIsEnabledChangedCore()" reason="Api alignments" />
-			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnIsEnabledChangedCore()" reason="Api alignments" />
-			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnIsEnabledChangedCore()" reason="Api alignments" />
-			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnIsEnabledChangedCore()" reason="Api alignments" />
-			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnIsEnabledChangedCore()" reason="Api alignments" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NativeListViewBase.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NativeListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Picker.get_IsEnabled()" reason="Api alignments" />
@@ -1199,8 +1193,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.MultilineTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SinglelineTextBoxView.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.SinglelineTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
-			<Member fullName="System.Boolean Uno.UI.Controls.Legacy.ListViewBase.get_IsEnabled()" reason="Api alignments" />
-			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SecureTextBoxView.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.SecureTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="Microsoft.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.CreateFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
@@ -1369,18 +1361,6 @@
 				reason="Remove LoadActions" />
 			<Member
 				fullName="System.IDisposable Uno.UI.Controls.BindableView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
-				reason="Remove LoadActions" />
-			<Member
-				fullName="System.IDisposable Uno.UI.Controls.Legacy.GridView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
-				reason="Remove LoadActions" />
-			<Member
-				fullName="System.IDisposable Uno.UI.Controls.Legacy.HorizontalGridView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
-				reason="Remove LoadActions" />
-			<Member
-				fullName="System.IDisposable Uno.UI.Controls.Legacy.HorizontalListView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
-				reason="Remove LoadActions" />
-			<Member
-				fullName="System.IDisposable Uno.UI.Controls.Legacy.ListView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
 				reason="Remove LoadActions" />
 			<Member
 				fullName="System.IDisposable Microsoft.UI.Xaml.Controls.Picker.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
