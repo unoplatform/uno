@@ -19,6 +19,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 {
 	private readonly IntPtr _containerHandle;
 	private readonly Dictionary<int, IntPtr> _realizedHandles = new();
+	// Parallel set kept in sync with _realizedHandles.Values so ContainsRealizedHandle
+	// is O(1) on the focus/lookup hot path instead of O(n) Dictionary.ContainsValue.
+	private readonly HashSet<IntPtr> _realizedHandleSet = new();
 	private int _totalItemCount;
 	private bool _isFocusPinned;
 	private int? _pinnedIndex;
@@ -50,7 +53,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <summary>Gets the data index of the pinned (focused) item, if any.</summary>
 	internal int? PinnedIndex => _pinnedIndex;
 	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
-	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandles.ContainsValue(handle);
+	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandleSet.Contains(handle);
 
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
@@ -62,7 +65,12 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			this.Log().Trace($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
 		}
 		_totalItemCount = totalCount;
+		if (_realizedHandles.TryGetValue(index, out var existing) && existing != itemHandle)
+		{
+			_realizedHandleSet.Remove(existing);
+		}
 		_realizedHandles[index] = itemHandle;
+		_realizedHandleSet.Add(itemHandle);
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
 	}
 
@@ -85,7 +93,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		{
 			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
 		}
-		_realizedHandles.Remove(index);
+		if (_realizedHandles.Remove(index, out var removed))
+		{
+			_realizedHandleSet.Remove(removed);
+		}
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 	}
 
@@ -138,6 +149,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			}
 			_disposed = true;
 			_realizedHandles.Clear();
+			_realizedHandleSet.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
 		}
 	}
