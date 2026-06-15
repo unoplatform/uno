@@ -391,7 +391,8 @@ namespace Uno.UI.Runtime.Skia {
 			isVisible: boolean,
 			horizontallyScrollable: boolean,
 			verticallyScrollable: boolean,
-			temporary: string): boolean {
+			temporary: string,
+			xamlAutomationId: string): boolean {
 
 			// Remove any pre-existing element with this handle to prevent duplicates
 			const existing = document.getElementById(`uno-semantics-${handle}`);
@@ -431,6 +432,10 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (automationId) {
 				element.setAttribute("aria-label", automationId);
+			}
+
+			if (xamlAutomationId) {
+				element.setAttribute("xamlautomationid", xamlAutomationId);
 			}
 
 			if (horizontallyScrollable) {
@@ -474,11 +479,24 @@ namespace Uno.UI.Runtime.Skia {
 			// tree (pruned as non-semantic). This is expected.
 		}
 
+		public static setXamlAutomationId(handle: number, automationId: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("xamlautomationid", automationId);
+			}
+		}
+
 		public static updateAriaLabel(handle: number, automationId: string): void {
 			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-label", automationId);
+				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
+				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
+				if (automationId && automationId.trim().length > 0) {
+					element.setAttribute("aria-label", automationId);
+				} else {
+					element.removeAttribute("aria-label");
+				}
 			}
 		}
 
@@ -560,6 +578,21 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Updates aria-invalid on a semantic element.
+		 * Screen readers announce the field as "invalid" when its value fails form validation.
+		 */
+		public static updateAriaInvalid(handle: number, invalid: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (invalid) {
+					element.setAttribute("aria-invalid", "true");
+				} else {
+					element.removeAttribute("aria-invalid");
+				}
+			}
+		}
+
+		/**
 		 * Updates aria-pressed on a toggle button semantic element.
 		 */
 		public static updateAriaPressed(handle: number, pressed: string): void {
@@ -585,6 +618,38 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Updates aria-haspopup on a semantic element from the C# value (FR-028).
+		 * The popup kind ("listbox", "menu", "dialog", …) is decided in C# from the control's
+		 * ExpandCollapse pattern / control type, never hardcoded in TS.
+		 */
+		public static updateAriaHasPopup(handle: number, hasPopup: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (hasPopup) {
+					element.setAttribute("aria-haspopup", hasPopup);
+				} else {
+					element.removeAttribute("aria-haspopup");
+				}
+			}
+		}
+
+		/**
+		 * Updates the HTML accesskey attribute on a semantic element (FR-028).
+		 * Sourced from AutomationProperties.AccessKey (a mnemonic, e.g. "F"). This is distinct
+		 * from aria-keyshortcuts (the AcceleratorKey activation shortcut).
+		 */
+		public static setAccessKey(handle: number, accessKey: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (accessKey) {
+					element.setAttribute("accesskey", accessKey);
+				} else {
+					element.removeAttribute("accesskey");
+				}
+			}
+		}
+
+		/**
 		 * Updates aria-modal on a semantic element.
 		 * Used for dialogs that should scope screen reader announcements.
 		 */
@@ -600,14 +665,50 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Updates aria-busy on a semantic element.
+		 * Mapped from AutomationProperties.ItemStatus when the status indicates the
+		 * element is busy/loading, so screen readers suppress reading transient content.
+		 */
+		public static updateAriaBusy(handle: number, busy: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (busy) {
+					element.setAttribute("aria-busy", "true");
+				} else {
+					element.removeAttribute("aria-busy");
+				}
+			}
+		}
+
+		/**
+		 * Updates the lang attribute on a semantic element.
+		 * Mapped from AutomationProperties.Culture so screen readers pronounce the
+		 * content using the correct locale.
+		 */
+		public static updateLang(handle: number, lang: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (lang) {
+					element.setAttribute("lang", lang);
+				} else {
+					element.removeAttribute("lang");
+				}
+			}
+		}
+
+		/**
 		 * Updates aria-live on a semantic element for live region announcements.
 		 * Screen readers monitor elements with aria-live for content changes.
 		 */
 		public static updateAriaLive(handle: number, ariaLive: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
+				// aria-atomic is intentionally NOT forced here (FR-028). Defaulting every live
+				// region to aria-atomic="true" makes screen readers re-announce the entire region
+				// on any change; the browser default (false — announce only changed nodes) is
+				// correct for the common status/log case. A region whose WinUI semantics require
+				// atomic announcement must opt in explicitly elsewhere.
 				element.setAttribute("aria-live", ariaLive);
-				element.setAttribute("aria-atomic", "true");
 			}
 		}
 
