@@ -26,7 +26,11 @@ public class Given_DisplayInformation_WindowIdMap
 	[TestMethod]
 	public async Task When_DestroyForWindowId_Then_Entry_Is_Released()
 	{
-		var windowId = new WindowId(0xD15F0); // synthetic id, never used by a real window
+		// A synthetic id (no live window) is intentional: this exercises the registry lifetime
+		// invariant only. We register via CreateForWindowIdForTests rather than GetOrCreateForWindowId
+		// because the latter runs Initialize(), which on Skia resolves an IDisplayInformationExtension
+		// for a real AppWindow and throws for an id with no window.
+		var windowId = new WindowId(0xD15F0);
 
 		try
 		{
@@ -50,16 +54,18 @@ public class Given_DisplayInformation_WindowIdMap
 	[TestMethod]
 	public void When_DestroyForWindowId_Then_Subsequent_GetOrCreate_Returns_New_Instance()
 	{
+		// Synthetic id with no live window; see When_DestroyForWindowId_Then_Entry_Is_Released for
+		// why CreateForWindowIdForTests is used instead of GetOrCreateForWindowId.
 		var windowId = new WindowId(0xD15F1);
 
 		try
 		{
-			var first = DisplayInformation.GetOrCreateForWindowId(windowId);
-			Assert.AreSame(first, DisplayInformation.GetOrCreateForWindowId(windowId), "Pre-condition: the registry caches per WindowId");
+			var first = DisplayInformation.CreateForWindowIdForTests(windowId);
+			Assert.AreSame(first, DisplayInformation.CreateForWindowIdForTests(windowId), "Pre-condition: the registry caches per WindowId");
 
 			DisplayInformation.DestroyForWindowId(windowId);
 
-			var second = DisplayInformation.GetOrCreateForWindowId(windowId);
+			var second = DisplayInformation.CreateForWindowIdForTests(windowId);
 			Assert.AreNotSame(first, second, "After DestroyForWindowId, a fresh instance must be created for the id");
 		}
 		finally
@@ -70,6 +76,6 @@ public class Given_DisplayInformation_WindowIdMap
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static WeakReference CreateEntryAndDropStrongReference(WindowId windowId)
-		=> new WeakReference(DisplayInformation.GetOrCreateForWindowId(windowId));
+		=> new WeakReference(DisplayInformation.CreateForWindowIdForTests(windowId));
 }
 #endif
