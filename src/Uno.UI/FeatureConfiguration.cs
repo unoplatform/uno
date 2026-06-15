@@ -344,14 +344,6 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; }
 		}
 
-		public static class Binding
-		{
-			/// <summary>
-			/// Determines if the binding engine should ignore identical references in binding paths.
-			/// </summary>
-			public static bool IgnoreINPCSameReferences { get; set; }
-		}
-
 		public static class BindingExpression
 		{
 			/// <summary>
