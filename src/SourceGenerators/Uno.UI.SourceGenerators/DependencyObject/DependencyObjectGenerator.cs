@@ -196,8 +196,6 @@ using Uno.Diagnostics.Eventing;
 
 				WriteAndroidEqualityOverride(typeSymbol, builder);
 
-				WriteAndroidBinderDetails(typeSymbol, builder);
-
 				WriteAndroidAttachedToWindow(typeSymbol, builder);
 
 				WriteAttachToWindow(typeSymbol, builder);
@@ -448,21 +446,6 @@ partial void OnDetachedFromWindowPartial();
 			private static bool IsNotDependencyObjectGeneratorSourceFile(IMethodSymbol m)
 			{
 				return !m.Locations.FirstOrDefault()?.SourceTree?.FilePath.Contains(nameof(DependencyObjectGenerator)) ?? true;
-			}
-
-			private void WriteAndroidBinderDetails(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
-			{
-				var hasBinderDetails = typeSymbol.Is(_androidViewSymbol);
-
-				if (hasBinderDetails)
-				{
-					builder.AppendMultiLineIndented($@"
-public BinderDetails GetBinderDetail()
-{{
-	return null;
-}}
-					");
-				}
 			}
 
 			private static void WriteInitializer(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
