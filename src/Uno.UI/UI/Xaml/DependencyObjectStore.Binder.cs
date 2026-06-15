@@ -778,31 +778,45 @@ namespace Microsoft.UI.Xaml
 			{
 				a.Unloading += static unloading =>
 				{
-					if (_collectibleParentAssociations.TryGetValue(unloading, out var stores))
+					// ClearCollectibleAssociatedParent reads/writes DependencyProperty values, which is
+					// only valid on the UI thread. Unloading fires on whichever thread called
+					// AssemblyLoadContext.Unload(); marshal to the UI thread so the clear actually runs
+					// instead of being swallowed as an off-thread DP-access failure.
+					static void Sweep(global::System.Runtime.Loader.AssemblyLoadContext unloading)
 					{
-						lock (stores)
+						if (_collectibleParentAssociations.TryGetValue(unloading, out var stores))
 						{
-							foreach (var weakStore in stores)
+							lock (stores)
 							{
-								if (weakStore.TryGetTarget(out var store))
+								foreach (var weakStore in stores)
 								{
-									try
+									if (weakStore.TryGetTarget(out var store))
 									{
-										store.ClearCollectibleAssociatedParent();
-									}
-									catch (Exception)
-									{
-										// Unloading sweeps run on the unloading thread; a store
-										// that rejects off-thread DP access must not abort the
-										// sweep for the remaining stores.
+										try
+										{
+											store.ClearCollectibleAssociatedParent();
+										}
+										catch (global::System.Exception)
+										{
+											// Defensive: one store throwing must not abort the sweep for the rest.
+										}
 									}
 								}
+
+								stores.Clear();
 							}
 
-							stores.Clear();
+							_collectibleParentAssociations.Remove(unloading);
 						}
+					}
 
-						_collectibleParentAssociations.Remove(unloading);
+					if (global::Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
+					{
+						Sweep(unloading);
+					}
+					else
+					{
+						global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() => Sweep(unloading));
 					}
 				};
 				return new List<WeakReference<DependencyObjectStore>>();
