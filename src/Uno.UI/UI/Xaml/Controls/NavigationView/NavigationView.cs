@@ -2214,7 +2214,7 @@ public partial class NavigationView : ContentControl
 		return null;
 	}
 
-#if !HAS_UNO
+#if !HAS_UNO || __SKIA__ // Cubic-bezier control points for the Skia-enabled indicator animation (see PlayIndicatorAnimations)
 	private readonly Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
 	private readonly Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
 	private readonly Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
@@ -2298,7 +2298,7 @@ public partial class NavigationView : ContentControl
 					areElementsAtSameDepth = prevPosPoint.X == nextPosPoint.X;
 				}
 
-#if !IS_UNO // disable animations for now
+#if !IS_UNO || __SKIA__ // Composition-based selection-indicator animation: WinUI and Skia (native targets snap, see #else)
 				Visual visual = ElementCompositionPreview.GetElementVisual(this);
 				CompositionScopedBatch scopedBatch = visual.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 
@@ -2349,7 +2349,7 @@ public partial class NavigationView : ContentControl
 				m_prevIndicator = prevIndicator;
 				m_nextIndicator = nextIndicator;
 
-#if !IS_UNO // disable animations for now
+#if !IS_UNO || __SKIA__
 				void OnCompleted(object sender, CompositionBatchCompletedEventArgs args)
 				{
 					this.OnAnimationComplete(sender, args);
@@ -2371,7 +2371,7 @@ public partial class NavigationView : ContentControl
 		}
 	}
 
-#if !IS_UNO // TODO:MZ: Can be enabled for Skia now?
+#if !IS_UNO || __SKIA__
 	private void PlayIndicatorNonSameLevelAnimations(UIElement indicator, bool isOutgoing, bool fromTop)
 	{
 		Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
