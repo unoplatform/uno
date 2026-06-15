@@ -148,9 +148,8 @@ public class Given_AlcContentHost
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
 
-		// Pre-conditions: the secondary app's DIRECT resource and theme dictionaries
-		// were projected onto the host control (merged dictionaries are covered by
-		// the existing inheritance tests).
+		// Pre-conditions: the secondary app's DIRECT resource, theme dictionaries, and merged
+		// dictionaries were projected onto the host control.
 		Assert.IsTrue(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
 			"Pre-condition: AlcAppDirectBrush (direct Application.Resources entry) should be projected while the secondary app is hosted");
 		Assert.IsTrue(
@@ -158,10 +157,14 @@ public class Given_AlcContentHost
 				&& lightDictionary is ResourceDictionary lightResources
 				&& lightResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
 			"Pre-condition: the secondary app's Light theme dictionary should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.MergedDictionaries.Any(dict => dict.ContainsKey("TestTextBlockStyle")),
+			"Pre-condition: the secondary app's merged dictionaries should be surfaced while the secondary app is hosted");
 
-		// Teardown trigger: clear the hosted content. UpdateMergedResources re-runs with
-		// the host application as the source and must drop everything previously copied
-		// from the secondary app.
+		// Teardown trigger: clear the hosted content. UpdateMergedResources re-runs and, with no
+		// content (and no source override), must release every projection rather than re-resolve
+		// to a secondary app — otherwise a collectible-ALC-typed key/style/template would stay
+		// pinned on the host control and keep the ALC alive after unload.
 		contentHost.Content = null;
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -173,6 +176,10 @@ public class Given_AlcContentHost
 			&& themeResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false);
 		Assert.IsFalse(staleThemeEntry,
 			"After content is cleared, the secondary app's theme dictionaries must be removed from the host control's Resources");
+
+		Assert.IsFalse(
+			contentHost.Resources.MergedDictionaries.Any(dict => dict.ContainsKey("TestTextBlockStyle")),
+			"After content is cleared, the secondary app's merged dictionaries (holding ALC-typed styles/templates) must be released from the host control");
 	}
 
 	/// <summary>

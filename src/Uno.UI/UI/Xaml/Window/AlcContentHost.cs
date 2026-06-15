@@ -139,13 +139,24 @@ public sealed partial class AlcContentHost : ContentControl
 	private void UpdateMergedResources()
 	{
 		// Remove everything previously projected from the (old) source application before
-		// recomputing the source. When the content is cleared on app unload the source falls
-		// back to the host application, and the previous app's resource objects must not be
-		// retained by this control (see the tracking fields for the rationale).
+		// recomputing the source. When the content is cleared on app unload, the previous app's
+		// resource objects must not be retained by this control (see the tracking fields for the
+		// rationale); the null-Content guard below then keeps those projections released.
 		ClearProjectedResources();
 
 		// Clear existing merged dictionaries to avoid duplicates
 		Resources.MergedDictionaries.Clear();
+
+		// When the host clears Content (the secondary app's teardown path), there is no source
+		// to project from: leave the projections released and return so the host falls back to
+		// its own ambient resources. Re-projecting from Application.Current here would re-copy
+		// the host's own keys needlessly; more importantly, never re-resolving to a secondary
+		// app on a null Content guarantees no collectible-ALC-typed key is re-pinned after the
+		// content is cleared (the projection released above stays released).
+		if (Content is null && _sourceApplicationOverride is null)
+		{
+			return;
+		}
 
 		var sourceApp = _sourceApplicationOverride
 			?? _contentApplication
