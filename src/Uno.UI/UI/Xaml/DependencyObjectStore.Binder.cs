@@ -38,9 +38,12 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly object _gate = new object();
 
+		private object? _associatedParent; // see note in AssociateParent(object)
+
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
 		private List<object?>? _childrenBindable;
-		private object? _associatedParent; // see note in AssociateParent(object)
+		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
 		// Mentor mechanism (models WinUI's SetParentForInheritanceContextOnly / GetMentor):
 		// On the CHILD side: weak ref to owning FrameworkElement (the mentor).
@@ -49,9 +52,6 @@ namespace Microsoft.UI.Xaml
 		// with ValueDoesNotInheritDataContext, so DataContext can be propagated to them.
 		private HashtableEx? _mentoredChildrenMap; // maps DependencyProperty → index in _mentoredChildren
 		private List<ManagedWeakReference?>? _mentoredChildren;
-
-		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
-		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
@@ -613,14 +613,18 @@ namespace Microsoft.UI.Xaml
 				// instead of using _childrenBindable (which calls AssociateParent with a strong ref).
 				// This matches WinUI's SetParentForInheritanceContextOnly behavior where
 				// non-FrameworkElement property values get a weak ref to the owning element.
+				// Exclude FrameworkTemplate (DataTemplate, ControlTemplate) and IMultiParentShareableDependencyObject
+				// (Style, Brush, etc.) since those are shareable and must not inherit DataContext via the mentor path.
 				if (newValue is IDependencyObjectStoreProvider newProvider
-					&& newProvider is not UIElement)
+					&& newProvider is not UIElement
+					&& newProvider is not FrameworkTemplate
+					&& newProvider is not IMultiParentShareableDependencyObject)
 				{
 					SetMentoredChild(propertyDetails, newProvider);
 				}
 				else
 				{
-					// Clear the old mentored child (value is null or a UIElement)
+					// Clear the old mentored child (value is null, a UIElement, a FrameworkTemplate, or an IMultiParentShareableDependencyObject)
 					SetMentoredChild(propertyDetails, null);
 				}
 			}
@@ -759,7 +763,7 @@ namespace Microsoft.UI.Xaml
 		/// Gets the mentor (inheritance context parent) for this store.
 		/// Returns null if no mentor is set or the mentor has been collected.
 		/// </summary>
-		internal object? GetMentor() => _mentorRef?.IsAlive == true ? _mentorRef.Target : null;
+		internal object? GetMentor() => _mentorRef?.TryGetTarget<object>(out var mentor) is true ? mentor : default;
 
 		/// <summary>
 		/// Tracks a non-UIElement DependencyObject as a mentored child of this store.

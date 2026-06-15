@@ -191,11 +191,10 @@ public partial class Given_UIElement
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ContextFlyout_BindingOnFlyout_ResolvesDataContext()
+	public void When_ContextFlyout_InheritsOwnerDataContext()
 	{
-		// Verify that {Binding} on a FlyoutBase property (attached or otherwise)
-		// resolves against the owning UIElement's DataContext.
-		// This is the regression scenario from kahua-private#439.
+		// Verify that a FlyoutBase assigned as ContextFlyout inherits the owning UIElement's DataContext
+		// via the mentor mechanism, so that {Binding} expressions on the flyout resolve correctly.
 
 		var menuItems = new[] { "Item1", "Item2", "Item3" };
 		var viewModel = new { MenuItems = menuItems };
@@ -207,8 +206,6 @@ public partial class Given_UIElement
 			DataContext = viewModel,
 		};
 
-		// Simulate what XAML does: set an attached property binding on the flyout.
-		// We set the binding manually since we're in code-behind.
 		button.ContextFlyout = flyout;
 
 		// The flyout should now have DataContext from the button.
@@ -219,7 +216,7 @@ public partial class Given_UIElement
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ContextFlyout_DataContextChanges_FlyoutUpdated()
+	public void When_ContextFlyout_DataContextChanges_FlyoutUpdated()
 	{
 		// Verify that when the owning element's DataContext changes,
 		// the ContextFlyout's DataContext is updated.
@@ -315,7 +312,7 @@ public partial class Given_UIElement
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ContextFlyout_SharedFlyoutReassigned_DataContextSwitches()
+	public void When_ContextFlyout_SharedFlyoutReassigned_DataContextSwitches()
 	{
 		// When a flyout is moved from element A to element B,
 		// its DataContext should switch to element B's DataContext.
