@@ -49,13 +49,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			_displayInformation?.NotifyDpiChanged();
 		}
 
-		if (_refreshRate != oldRefreshRate)
-		{
-			if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
-			{
-				_framePacer.UpdateTargetFps(_refreshRate);
-			}
-		}
+		// _refreshRate is still tracked for display information consumers.
 	}
 
 	private unsafe (DisplayInfo, float) GetDisplayInfo()

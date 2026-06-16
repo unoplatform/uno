@@ -1,60 +1,53 @@
-using System.Threading;
-using Uno.UI;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private readonly AutoResetEvent _renderRequested = new(false);
-	private volatile bool _renderLoopRunning = true;
-	private readonly Thread _renderThread;
-	private readonly FramePacer _framePacer;
+	private X11RenderThread? _renderThread;
 
-	private FramePacer CreateFramePacer()
-	{
-		return new FramePacer(
-			FeatureConfiguration.CompositionTarget.FrameRate,
-			() => _renderRequested.Set());
-	}
+	bool IXamlRootHost.SupportsRenderThrottle => true;
 
-	private Thread InitRenderThread()
+	private void InitializeRenderThread()
 	{
-		var thread = new Thread(RenderLoop)
+		if (_renderer is null)
 		{
-			IsBackground = true,
-			Name = "X11RenderThread",
-			Priority = ThreadPriority.AboveNormal
-		};
-		thread.Start();
-		return thread;
-	}
-
-	private void RenderLoop()
-	{
-		while (_renderLoopRunning)
-		{
-			_renderRequested.WaitOne();
-
-			_framePacer.OnFrameStart();
-			_renderer?.Render();
+			return;
 		}
+
+		_renderThread = new X11RenderThread(
+			_renderer,
+			onFramePresented: () =>
+			{
+				NativeDispatcher.Main.Enqueue(
+					OnFramePresented,
+					NativeDispatcherPriority.High);
+			});
 	}
 
+	/// <summary>
+	/// No-op. Previously updated the timer interval based on screen refresh rate.
+	/// With the render thread, VSync pacing comes from glXSwapBuffers/eglSwapBuffers
+	/// blocking, so explicit frame rate configuration is no longer needed.
+	/// </summary>
 	internal void UpdateRenderTimerFps(double fps)
 	{
-		if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
-		{
-			_framePacer.UpdateTargetFps(fps);
-		}
+		// Render thread is paced by VSync (SwapBuffers blocking).
+	}
+
+	private void OnFramePresented()
+	{
+		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
+		ct?.OnFramePresented();
 	}
 
 	void IXamlRootHost.InvalidateRender()
 	{
 		if (!_closed.Task.IsCompleted)
 		{
-			_framePacer.RequestFrame();
+			_renderThread?.SignalNewFrame();
 		}
 	}
 }
