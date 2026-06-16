@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -57,6 +58,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// On WinUI, QueryButton is never retrieved in OnTextBoxLoaded, not in OnApplyTemplate.
 			// We do in both to account for all our platforms.
 			_queryButton = _textBox?.GetTemplateChild("QueryButton") as Button;
+
+			// Add the automation name from the group to the edit box.
+			if (_textBox is not null)
+			{
+				var automationName = AutomationProperties.GetName(this);
+				if (!string.IsNullOrEmpty(automationName))
+				{
+					AutomationProperties.SetName(_textBox, automationName);
+				}
+			}
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
 			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
@@ -148,6 +159,20 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override DependencyObject GetContainerForItemOverride()
 		{
 			return new ListViewItem() { IsGeneratedContainer = true };
+		}
+
+		internal override string GetPlainText()
+		{
+			if (Header is not null)
+			{
+				var plainText = GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return string.Empty;
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
