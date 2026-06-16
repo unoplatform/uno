@@ -140,7 +140,7 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 		}
 	}
 
-	private static T? FindDescendant<T>(DependencyObject root) where T : class, DependencyObject
+	private static T? FindDescendant<T>(DependencyObject root) where T : class
 	{
 		var count = VisualTreeHelper.GetChildrenCount(root);
 		for (var i = 0; i < count; i++)
