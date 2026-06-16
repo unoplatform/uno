@@ -633,8 +633,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaHasPopup(handle: number, hasPopup: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (hasPopup) {
-					element.setAttribute("aria-haspopup", hasPopup);
+				// Mirror the omit-when-empty contract: aria-haspopup=" " is a malformed token
+				// that AT either rejects or treats as "true"; both are wrong. Trim and omit.
+				const trimmed = hasPopup ? hasPopup.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("aria-haspopup", trimmed);
 				} else {
 					element.removeAttribute("aria-haspopup");
 				}
@@ -700,8 +703,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateLang(handle: number, lang: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (lang) {
-					element.setAttribute("lang", lang);
+				// Mirror the omit-when-empty contract: lang=" " is invalid per the HTML/BCP-47
+				// language-tag grammar and would make AT fall back unpredictably. Trim and omit.
+				const trimmed = lang ? lang.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("lang", trimmed);
 				} else {
 					element.removeAttribute("lang");
 				}
