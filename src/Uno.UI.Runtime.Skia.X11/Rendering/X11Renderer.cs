@@ -73,7 +73,7 @@ internal abstract class X11Renderer : IDisposable
 
 		// In dirty-rectangles mode the render target must retain the previous frame outside the changed
 		// region, so we must NOT clear it here; the clipped clear happens in Draw().
-		var dirtyRectanglesActive = global::Uno.UI.FeatureConfiguration.Rendering.EnableDirtyRectangles && SurfaceRetainsContents;
+		var dirtyRectanglesActive = SurfaceRetainsContents;
 		var useLayer = dirtyRectanglesActive && UsesRetainedLayer;
 
 		if (!dirtyRectanglesActive)
