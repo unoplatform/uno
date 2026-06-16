@@ -224,61 +224,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
-		/// T027: Verifies that a vertical Slider exposes its Orientation, which the WASM
-		/// semantic factory maps to aria-orientation="vertical" on the input[type=range].
+		/// T029/T032 (cross-platform): Verifies that <see cref="AutomationProperties.Level"/>,
+		/// <see cref="AutomationProperties.ItemStatus"/> and <see cref="AutomationProperties.Culture"/>
+		/// round-trip on a Slider so unrelated platforms still smoke-test the DP set/read path.
+		/// The actual a11y-mapping assertions (aria-level, aria-busy, lang) live in the
+		/// SkiaWasm-gated DOM tests below; this one only guards against an attached-DP regression.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Slider_Is_Vertical_Then_Orientation_Is_Vertical()
+		public async Task When_AutomationProperties_Set_Then_RoundTrip()
 		{
-			// Arrange
-			var slider = new Slider
-			{
-				Orientation = Orientation.Vertical,
-				Value = 50
-			};
-
-			await UITestHelper.Load(slider);
-
-			// Assert — the factory reads Slider.Orientation to emit aria-orientation.
-			Assert.AreEqual(Orientation.Vertical, slider.Orientation);
-		}
-
-		/// <summary>
-		/// T029: Verifies that AutomationProperties.Level round-trips on a Slider. The WASM
-		/// semantic factory maps a non-zero Level to aria-level on the element.
-		/// </summary>
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_AutomationLevel_Set_Then_Exposed()
-		{
-			// Arrange
 			var slider = new Slider { Value = 50 };
 			AutomationProperties.SetLevel(slider, 3);
-
-			await UITestHelper.Load(slider);
-
-			// Assert — drives aria-level="3".
-			Assert.AreEqual(3, AutomationProperties.GetLevel(slider));
-		}
-
-		/// <summary>
-		/// T032: Verifies that AutomationProperties.ItemStatus and Culture round-trip on a
-		/// Slider. The WASM semantic factory maps a busy ItemStatus to aria-busy and a Culture
-		/// LCID to the lang attribute.
-		/// </summary>
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_ItemStatus_And_Culture_Set_Then_Exposed()
-		{
-			// Arrange
-			var slider = new Slider { Value = 50 };
 			AutomationProperties.SetItemStatus(slider, "Busy");
 			AutomationProperties.SetCulture(slider, 1033); // en-US
 
 			await UITestHelper.Load(slider);
 
-			// Assert — "Busy" drives aria-busy="true"; LCID 1033 drives lang="en-US".
+			Assert.AreEqual(3, AutomationProperties.GetLevel(slider));
 			Assert.AreEqual("Busy", AutomationProperties.GetItemStatus(slider));
 			Assert.AreEqual(1033, AutomationProperties.GetCulture(slider));
 		}
@@ -413,6 +376,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitForIdle();
 
 			Assert.AreEqual("vertical", GetSemanticAttribute(slider, "aria-orientation"), "A vertical Slider must emit aria-orientation=\"vertical\".");
+		}
+
+		/// <summary>
+		/// T029/FR-018 (WASM DOM): a non-zero AutomationProperties.Level emits aria-level on
+		/// the semantic node, so AT exposes the structural depth.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_AutomationLevel_Set_Then_Dom_AriaLevel_Is_Set()
+		{
+			var slider = new Slider { Value = 50 };
+			AutomationProperties.SetLevel(slider, 3);
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("3", GetSemanticAttribute(slider, "aria-level"), "AutomationProperties.Level=3 must emit aria-level=\"3\".");
+		}
+
+		/// <summary>
+		/// T032/FR-019 (WASM DOM): a busy ItemStatus emits aria-busy="true" and a Culture LCID
+		/// emits the matching lang attribute on the semantic node.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ItemStatus_And_Culture_Set_Then_Dom_AriaBusy_And_Lang_Are_Set()
+		{
+			var slider = new Slider { Value = 50 };
+			AutomationProperties.SetItemStatus(slider, "Busy");
+			AutomationProperties.SetCulture(slider, 1033); // en-US
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("true", GetSemanticAttribute(slider, "aria-busy"), "ItemStatus=\"Busy\" must emit aria-busy=\"true\".");
+			Assert.AreEqual("en-US", GetSemanticAttribute(slider, "lang"), "Culture LCID 1033 must emit lang=\"en-US\".");
 		}
 
 
