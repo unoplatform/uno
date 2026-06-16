@@ -615,7 +615,50 @@ internal class Win32RawElementProvider :
 	/// filtered/flattened list. Otherwise we walk the visual tree to collect peers,
 	/// mimicking <see cref="FrameworkElementAutomationPeer.GetChildrenCore"/>.
 	/// </summary>
-	internal void InvalidateChildrenCache() => _cachedAutomationChildren = null;
+	internal void InvalidateChildrenCache() => InvalidateChildrenCache(null);
+
+	/// <summary>
+	/// Clears this provider's cached automation children and cascades the
+	/// invalidation through the UIA child links we previously built.
+	/// </summary>
+	/// <remarks>
+	/// Cascading is required for correctness, not just hygiene. Structure-change
+	/// signals only reach providers that are registered by <see cref="UIElement"/>
+	/// in <see cref="Win32Accessibility"/>'s element table (resolved by walking the
+	/// visual tree). "Virtual" peers — e.g. WCT DataGrid's
+	/// <c>DataGridItemAutomationPeer</c>, whose owner is the DataGrid itself and
+	/// whose children are computed live from the currently-displayed row — are
+	/// keyed only by peer, so the visual-tree walk can never reach them. Without
+	/// the cascade their cached children survive a data refresh and the row keeps
+	/// reporting the now-detached (empty) cell peers. By following the cached child
+	/// peers to their providers we drop the whole stale subtree, so the next UIA
+	/// query re-invokes <c>GetChildren()</c> and rebuilds it from current state.
+	/// </remarks>
+	private void InvalidateChildrenCache(HashSet<Win32RawElementProvider>? visited)
+	{
+		var children = _cachedAutomationChildren;
+		_cachedAutomationChildren = null;
+
+		if (children is null || children.Count == 0)
+		{
+			return;
+		}
+
+		visited ??= new HashSet<Win32RawElementProvider>(ReferenceEqualityComparer.Instance);
+		if (!visited.Add(this))
+		{
+			return;
+		}
+
+		for (var i = 0; i < children.Count; i++)
+		{
+			var childProvider = _accessibility.TryGetExistingProviderForPeer(children[i]);
+			if (childProvider is not null && !ReferenceEquals(childProvider, this))
+			{
+				childProvider.InvalidateChildrenCache(visited);
+			}
+		}
+	}
 
 	private IList<AutomationPeer>? GetAutomationChildren()
 	{

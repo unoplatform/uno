@@ -509,8 +509,19 @@ public partial class AutomationPeer : DependencyObject
 	/// </summary>
 	public void InvalidatePeer()
 	{
-		// TODO Uno: Implement InvalidatePeer when UIA infrastructure is available.
-		// In WinUI, this triggers an async callback to re-evaluate cached properties.
+#if __SKIA__
+		// WinUI's CAutomationPeer::InvalidatePeer raises an async re-evaluation that
+		// makes the UIA host drop this peer's cached node and re-query it. We map that
+		// to StructureChanged (ChildrenInvalidated): the platform accessibility layer
+		// clears the cached children for this peer's provider (cascading to virtual
+		// peers) and re-reads them on the next query. Controls such as WCT's DataGrid
+		// rely on this to refresh row/cell content after a data change — both
+		// DataGridItemAutomationPeer.GetChildrenCore and
+		// DataGridAutomationPeer.RaiseAutomationInvokeEvents call InvalidatePeer.
+		RaiseAutomationEvent(AutomationEvents.StructureChanged);
+#endif
+		// Native (maintenance-only) targets have no managed UIA provider tree to
+		// invalidate, so this remains a no-op there.
 	}
 
 	/// <summary>
