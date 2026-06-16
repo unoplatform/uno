@@ -68,14 +68,19 @@ namespace Microsoft.UI.Composition
 			_keyframeEvaluator!.Pause();
 		}
 
-		// Default base-class implementations: derived animations that evaluate expressions at runtime
-		// override these (see ScalarKeyFrameAnimation and Vector2KeyFrameAnimation). Types without
-		// expression support (Vector3/Vector4/Boolean) fall through to these, which warn and discard
-		// the keyframe so the unsupported path stays diagnosable.
-		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
-			=> WarnExpressionKeyFrameNotSupported();
+		// These match WinUI's non-virtual KeyFrameAnimation API surface; per-type behaviour is provided
+		// by InsertExpressionKeyFrameCore. A virtual modifier here would diverge from WinUI and make the
+		// sync generator emit a conflicting NotImplemented stub.
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
+			=> InsertExpressionKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
-		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+			=> InsertExpressionKeyFrameCore(normalizedProgressKey, value, easingFunction);
+
+		// Derived animations that evaluate expressions at runtime override this (ScalarKeyFrameAnimation
+		// and Vector2KeyFrameAnimation). Types without expression support (Vector3/Vector4/Boolean) fall
+		// through to this, which warns and discards the keyframe so the unsupported path stays diagnosable.
+		private protected virtual void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
 			=> WarnExpressionKeyFrameNotSupported();
 
 		private void WarnExpressionKeyFrameNotSupported()
