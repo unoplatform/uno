@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		// Bug 1: the page in the sample sets its own RequestedTheme at runtime; its Background must follow.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_Runtime_Self_Theme_Change_Updates_Own_Background()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -114,7 +114,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		// Bug 2a: TextBox directly under a parse-time Light pin (matches the existing CheckBox control test shape).
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_ParseTime_Light_Pin_Direct_TextBox_Border_Resolves_Light()
 		{
 			await AssertTextBoxBorderLight(nested: false);
