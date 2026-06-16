@@ -166,7 +166,9 @@ internal sealed class ThemeResourceReference
 				// storyboard keyframe re-begun on a visual-state re-entry would otherwise revert to the stock
 				// value. The caller passes preferAppResourceOverride for those framework-pinned cases (keyframes);
 				// dict.IsSystemDictionary covers Uno.UI's own generic dictionaries.
-				if ((preferAppResourceOverride || dict.IsSystemDictionary)
+				if ((preferAppResourceOverride
+						|| dict.IsSystemDictionary
+						|| Uno.UI.ResourceResolver.ContainsKeySystem(ResourceKey))
 					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
 					value = appOverride;
