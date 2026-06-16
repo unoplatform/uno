@@ -1444,8 +1444,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private static bool IsAbsorbedByAncestorName(UIElement element, string ownText)
 	{
+		// Walk ancestors looking for the nearest one that names itself from this element.
+		// Termination is normally governed by the first peer-bearing ancestor with a resolved
+		// accessible name (see the peer.ResolveLabel branch below), which always answers
+		// "absorbed" or "not absorbed" and stops the walk. The depth cap is a defensive
+		// runaway guard for malformed trees with no named ancestor at all -- 16 is well
+		// past any realistic XAML nesting depth for a control's own labelling chain.
 		var node = element.GetParent() as UIElement;
-		for (var depth = 0; node is not null && depth < 6; depth++, node = node.GetParent() as UIElement)
+		for (var depth = 0; node is not null && depth < 16; depth++, node = node.GetParent() as UIElement)
 		{
 			// Identity: a ContentControl whose Content IS this element (or whose string content matches)
 			// names itself from it (AriaMapper.ResolveLabel / FR-033), so the text is already announced.
@@ -2055,14 +2061,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (element is ComboBox)
 			{
-				// For ComboBox, update aria-label with the selected value so
-				// screen readers announce it when the ComboBox receives focus
-				var selectedValue = newValue as string ?? string.Empty;
+				// Don't overwrite aria-label with the selected value -- that destroys the
+				// control's accessible name (FR-020). The selection itself is already announced
+				// via aria-activedescendant -> the ComboBoxItem option, whose own text the
+				// screen reader reads alongside the head's name. If we ever need to reflect
+				// the selected text on the head itself (editable-combobox UX), aria-valuetext
+				// is the right attribute; aria-label is not.
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} selectedValue='{selectedValue}'");
+					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} (no aria-label update; activedescendant carries selection)");
 				}
-				NativeMethods.UpdateAriaLabel(element.Visual.Handle, selectedValue);
 			}
 			else if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
