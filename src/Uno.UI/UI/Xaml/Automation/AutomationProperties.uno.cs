@@ -198,7 +198,10 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is AppBar or CommandBar)
 		{
-			return "appbar";
+			// "appbar" is not a valid WAI-ARIA role token (UWP/macOS terminology).
+			// CommandBar is closest to a toolbar; emit null here and let the caller
+			// decide (the AutomationControlType.AppBar arm below also returns null).
+			return null;
 		}
 		if (uIElement is AppBarButton)
 		{
@@ -229,12 +232,17 @@ public sealed partial class AutomationProperties
 				AutomationControlType.TreeItem => "treeitem",
 				AutomationControlType.Group => "group",
 				AutomationControlType.DataGrid => "grid",
-				AutomationControlType.DataItem => "dataitem",
+				// "dataitem", "header", and "appbar" are NOT valid WAI-ARIA role tokens.
+				// DataItem outside a grid has no native ARIA equivalent; Header maps to HTML
+				// <header>'s implicit role (banner/generic) not a literal "header" token;
+				// AppBar is UWP/macOS terminology. Emit null so we don't push rejected tokens
+				// into the accessibility tree.
+				AutomationControlType.DataItem => null,
 				AutomationControlType.Document => "document",
-				AutomationControlType.Header => "header",
+				AutomationControlType.Header => null,
 				AutomationControlType.Table => "table",
 				AutomationControlType.Separator => "separator",
-				AutomationControlType.AppBar => "appbar",
+				AutomationControlType.AppBar => null,
 				// The following UIA control types have no valid WAI-ARIA role.
 				// Emitting them as a "role" attribute is rejected by the
 				// accessibility tree, so map them to null (no role) instead.
