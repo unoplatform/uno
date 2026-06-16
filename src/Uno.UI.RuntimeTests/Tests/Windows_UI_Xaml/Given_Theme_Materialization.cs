@@ -420,6 +420,209 @@ public class Given_Theme_Materialization
 			"Control added at runtime into a Light island should resolve the Light sentinel, not the Dark ambient.");
 	}
 
+	// ---- T6b — VisualState storyboard keyframe {ThemeResource} resolves the island theme ----
+
+	// ControlStrongStrokeColorDefault (the color behind {ThemeResource ToggleSwitchStrokeOffPointerOver}).
+	private static readonly Color ControlStrongStrokeLight = Color.FromArgb(0x72, 0x00, 0x00, 0x00);
+	private static readonly Color ControlStrongStrokeDark = Color.FromArgb(0x8B, 0xFF, 0xFF, 0xFF);
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_ToggleSwitch_PointerOver_In_Light_Island_Resolves_Light()
+	{
+		// Repro of the reported ToggleSwitch hover-stroke bug: a ToggleSwitch in a Light island under a
+		// Dark ambient renders its PointerOver outer-border stroke against the DARK theme (invisible on
+		// the light background) until a full theme round-trip. The hover stroke comes from a VisualState
+		// Storyboard ColorAnimation keyframe — <LinearColorKeyFrame Value="{ThemeResource
+		// ToggleSwitchStrokeOffPointerOver}"/> — that is resolved lazily when the state is first entered.
+		// WinUI: the keyframe resolves against the part's Enter-established Light theme. Uno today: the
+		// part/keyframe carries no per-object theme, so the lazy resolution reads the Dark ambient.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+#endif
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      RequestedTheme="Dark">
+				<Border RequestedTheme="Light">
+					<ToggleSwitch x:Name="ts" />
+				</Border>
+			</Grid>
+			""");
+
+		var toggle = (ToggleSwitch)root.FindName("ts");
+
+		try
+		{
+			await UITestHelper.Load(root);
+
+			var outerBorder = toggle.FindFirstDescendant<Microsoft.UI.Xaml.Shapes.Rectangle>("OuterBorder");
+			Assert.IsNotNull(outerBorder, "ToggleSwitch template should have materialized its OuterBorder.");
+
+			// Sanity: the resting (Normal) stroke already resolves Light — the not-hovered case the user
+			// sees rendered correctly.
+			Assert.AreEqual(ControlStrongStrokeLight, (outerBorder.Stroke as SolidColorBrush)?.Color,
+				"Resting ToggleSwitch stroke in a Light island should resolve the Light theme color.");
+
+			// Enter the PointerOver state the way a hover does and snap to its end values.
+			VisualStateManager.GoToState(toggle, "PointerOver", false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ControlStrongStrokeLight, (outerBorder.Stroke as SolidColorBrush)?.Color,
+				"PointerOver stroke in a Light island must resolve the Light theme color, not the Dark ambient "
+				+ "(the VisualState storyboard keyframe {ThemeResource} must key on the part's island theme).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// ---- T6c — a page navigated into a Frame AFTER an element-theme switch inherits the new theme ----
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_Frame_Navigates_After_Theme_Switch_New_Page_Inherits_Theme()
+	{
+		// Repro of the reported GC Toolkit bug: the app root's RequestedTheme is switched to Dark (the
+		// current page re-themes correctly), then the Frame navigates to a fresh page — which loads in
+		// the OLD/base theme instead of inheriting the root's Dark. WinUI: the page inherits the Frame's
+		// Dark theme at Enter (depends.cpp EnterImpl). Uno today: the late-navigated page does not pick
+		// up the switched element theme, so its {ThemeResource}s resolve the base theme.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Light);
+		await WindowHelper.WaitForIdle();
+#endif
+		var frame = new Frame();
+		var nav = new NavigationView
+		{
+			Content = frame,
+			PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal,
+			IsPaneOpen = false,
+			IsSettingsVisible = false,
+		};
+		var host = new Grid { Children = { nav } };
+
+		try
+		{
+			await UITestHelper.Load(host, h => frame.IsLoaded);
+
+			frame.Navigate(typeof(ThemeProbePage), null, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+			await WindowHelper.WaitForIdle();
+			var probe1 = ((ThemeProbePage)frame.Content).FindFirstDescendant<Border>("probe");
+			Assert.AreEqual(LightSentinel, ColorOf(probe1), "Initial page should resolve the base Light theme.");
+
+			// Switch the root element theme to Dark; the current page must re-theme.
+			host.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(DarkSentinel, ColorOf(probe1), "The page already in the Frame should re-theme to Dark on switch.");
+
+			// Navigate to a fresh page AFTER the switch — it must inherit the root's Dark theme.
+			frame.Navigate(typeof(ThemeProbePage), null, new Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo());
+			await WindowHelper.WaitForIdle();
+			var probe2 = ((ThemeProbePage)frame.Content).FindFirstDescendant<Border>("probe");
+			Assert.AreEqual(DarkSentinel, ColorOf(probe2),
+				"A page navigated AFTER the theme switch must inherit the root's Dark theme, not the base Light.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// ---- T6d — a ToggleSwitch on a page navigated into a stable Light island resolves hover Light ----
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_Navigated_ToggleSwitch_PointerOver_In_Light_Island_Resolves_Light()
+	{
+		// Faithful repro of the Stopwatch ToggleSwitch hover bug: a stable Light island (root
+		// RequestedTheme=Light under a Dark ambient) hosts a Frame; the page with the ToggleSwitch is
+		// reached by navigation (template materialized after the island theme walk). Its PointerOver
+		// stroke must still resolve the Light theme color.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+#endif
+		var frame = new Frame();
+		var island = new Border { RequestedTheme = ElementTheme.Light, Child = frame };
+		var host = new Grid { RequestedTheme = ElementTheme.Dark, Children = { island } };
+
+		try
+		{
+			await UITestHelper.Load(host);
+
+			frame.Navigate(typeof(ThemeProbePage), null, new Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo());
+			await WindowHelper.WaitForIdle();
+
+			var toggle = ((ThemeProbePage)frame.Content).FindFirstDescendant<ToggleSwitch>("ts");
+			Assert.IsNotNull(toggle, "Navigated page should host the ToggleSwitch.");
+			var outerBorder = toggle.FindFirstDescendant<Microsoft.UI.Xaml.Shapes.Rectangle>("OuterBorder");
+			Assert.IsNotNull(outerBorder, "ToggleSwitch template should have materialized its OuterBorder.");
+
+			VisualStateManager.GoToState(toggle, "PointerOver", false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ControlStrongStrokeLight, (outerBorder.Stroke as SolidColorBrush)?.Color,
+				"PointerOver stroke of a navigated ToggleSwitch in a Light island must resolve the Light theme color.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// ---- T6e — a CACHED page re-navigated after a theme switch inherits the new theme ----
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_Cached_Page_Renavigated_After_Theme_Switch_Inherits_Theme()
+	{
+		// Repro of the reported GC Toolkit bug: a Frame page with NavigationCacheMode is themed, the
+		// user navigates away, switches the root element theme, then navigates back. The cached page is
+		// restored stale: PageStackEntry.PrepareContent sets Page.Frame, and Uno used to propagate the
+		// page's stale theme UP to the Frame (Page.Frame is a back-reference), corrupting the whole Frame
+		// subtree to the old theme. WinUI excludes Page_Frame from theme propagation
+		// (IsDependencyPropertyBackReference, PropertySystem.cpp:130), so the page re-inherits the live
+		// Frame theme at Enter instead.
+		var frame = new Frame();
+		var host = new Grid { RequestedTheme = ElementTheme.Dark, Children = { frame } };
+
+		try
+		{
+			await UITestHelper.Load(host, h => frame.IsLoaded);
+
+			frame.Navigate(typeof(CachedThemeProbePage));
+			await WindowHelper.WaitForIdle();
+			var probe1 = ((CachedThemeProbePage)frame.Content).FindFirstDescendant<Border>("probe");
+			Assert.AreEqual(DarkSentinel, ColorOf(probe1), "Cached page should resolve the Dark element theme initially.");
+
+			// Navigate away so the cached page leaves the tree, then switch the root theme to Light.
+			frame.Navigate(typeof(BlankThemePage));
+			await WindowHelper.WaitForIdle();
+			host.RequestedTheme = ElementTheme.Light;
+			await WindowHelper.WaitForIdle();
+
+			// Re-navigate to the cached page — it must inherit the new Light theme, not its stale Dark.
+			frame.Navigate(typeof(CachedThemeProbePage));
+			await WindowHelper.WaitForIdle();
+			var probe2 = ((CachedThemeProbePage)frame.Content).FindFirstDescendant<Border>("probe");
+			Assert.AreEqual(LightSentinel, ColorOf(probe2),
+				"A cached page re-navigated after a theme switch must inherit the new Light theme, not its stale Dark "
+				+ "(setting Page.Frame must not propagate the page's stale theme up to the Frame).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// ---- T7 — public regression guard: app theme switch updates ThemeResource values ----
 
 	[TestMethod]
@@ -857,4 +1060,82 @@ public class Given_Theme_Materialization
 		}
 	}
 #endif
+}
+
+/// <summary>
+/// A navigable page that carries its own Light/Dark sentinel ThemeDictionaries and a single
+/// <c>{ThemeResource SentinelBrush}</c>-backed Border named <c>probe</c>, so a Frame-navigation
+/// theme test can read the theme the page resolved purely from the element's inherited theme.
+/// </summary>
+public sealed partial class ThemeProbePage : Page
+{
+	public ThemeProbePage()
+	{
+		Content = (UIElement)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<StackPanel>
+					<Border x:Name="probe" Width="40" Height="20" Background="{ThemeResource SentinelBrush}" />
+					<ToggleSwitch x:Name="ts" />
+				</StackPanel>
+			</Grid>
+			""");
+	}
+}
+
+/// <summary>
+/// Like <see cref="ThemeProbePage"/> but with <c>NavigationCacheMode.Required</c> so the Frame
+/// keeps the instance (and its stale per-object theme) across navigations — the configuration that
+/// reproduces the Page.Frame back-reference theme bug.
+/// </summary>
+public sealed partial class CachedThemeProbePage : Page
+{
+	public CachedThemeProbePage()
+	{
+		NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
+		Content = (UIElement)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<Border x:Name="probe" Width="40" Height="20" Background="{ThemeResource SentinelBrush}" />
+			</Grid>
+			""");
+	}
+}
+
+/// <summary>A blank navigable page used to navigate away from a cached page in theme tests.</summary>
+public sealed partial class BlankThemePage : Page
+{
+	public BlankThemePage() => Content = new Grid();
 }

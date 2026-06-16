@@ -540,64 +540,61 @@ public partial class DependencyObjectStore
 	}
 #endif
 
-	/// <summary>
-	/// Determines whether a property's value should be notified of a theme change.
-	/// </summary>
+	// Should this property be notified of theme change?
 	/// <remarks>
-	/// MUX Reference: CDependencyObject::ShouldNotifyPropertyOfThemeChange in Theming.cpp (lines 57-76)
-	///
-	/// WinUI skips:
-	/// - ButtonBase_CommandParameter, MenuFlyoutItem_CommandParameter (back-references)
-	/// - CommandBar_PrimaryCommands, CommandBar_SecondaryCommands (contain AppBarButtons
-	///   not yet in the visual tree — saves many unnecessary resource lookups)
-	/// - Properties that are back-references (IsDependencyPropertyBackReference)
-	///
-	/// Note: WinUI's generic IsDependencyPropertyBackReference(propertyIndex) check (Theming.cpp:75)
-	/// filters a curated list of back-reference properties (PropertySystem.cpp:126-156). Uno doesn't
-	/// have a centralized back-reference concept in its DP system, so the cases from that list that
-	/// exist as Uno DPs are enumerated below. If new back-reference properties are added, they
-	/// should be listed here.
+	/// MUX Reference: CDependencyObject::ShouldNotifyPropertyOfThemeChange in Theming.cpp (lines 57-77).
+	/// Uno: C# cannot switch on a <see cref="DependencyProperty"/> (it is not a compile-time constant),
+	/// so the WinUI KnownPropertyIndex switch is expressed as equality checks. The comments are carried
+	/// verbatim from the C++ source.
 	/// </remarks>
 	private static bool ShouldNotifyPropertyOfThemeChange(DependencyProperty property)
 	{
-		// WinUI: Theming.cpp:67-68 — CommandBar collections contain AppBarButtons
-		// not yet in the visual tree. Skip to avoid unnecessary resource lookups.
-		if (property == CommandBar.PrimaryCommandsProperty ||
+		if (property == ButtonBase.CommandParameterProperty ||
+			property == MenuFlyoutItem.CommandParameterProperty ||
+
+			// These can contain AppBarButtons that aren't in the visual tree yet (i.e. aren't in the child collection of the
+			// CommandBar). These buttons won't render, so there's no reason to update their theme resources. We can do that
+			// when they are parented to the CommandBar. This saves us from many resource lookups from those AppBarButtons.
+			property == CommandBar.PrimaryCommandsProperty ||
 			property == CommandBar.SecondaryCommandsProperty)
 		{
 			return false;
 		}
 
-		// WinUI: Theming.cpp:61-62 — Skip command parameters (back-references)
-		if (property == ButtonBase.CommandParameterProperty ||
-			property == MenuFlyoutItem.CommandParameterProperty)
-		{
-			return false;
-		}
-
-		// WinUI: Theming.cpp:72-74 — "Don't notify property values that contain objects up the
-		// visual tree to prevent theme from propagating up the tree."
-		// (IsDependencyPropertyBackReference, PropertySystem.cpp:126-156 — the entries that exist
-		// as Uno DPs.)
-		if (property == UIElement.XYFocusLeftProperty ||
-			property == UIElement.XYFocusRightProperty ||
-			property == UIElement.XYFocusUpProperty ||
-			property == UIElement.XYFocusDownProperty ||
-			property == Documents.Hyperlink.XYFocusLeftProperty ||
-			property == Documents.Hyperlink.XYFocusRightProperty ||
-			property == Documents.Hyperlink.XYFocusUpProperty ||
-			property == Documents.Hyperlink.XYFocusDownProperty ||
-			property == UIElement.AccessKeyScopeOwnerProperty ||
-			property == UIElement.KeyboardAcceleratorPlacementTargetProperty ||
-			property == Documents.TextElement.AccessKeyScopeOwnerProperty ||
-			property == FlyoutBase.OverlayInputPassThroughElementProperty ||
-			property == Popup.OverlayInputPassThroughElementProperty)
-		{
-			return false;
-		}
-
-		return true;
+		// Don't notify property values that contain objects up the visual tree to prevent theme from propagating up the tree.
+		return !IsDependencyPropertyBackReference(property);
 	}
+
+	// Returns TRUE if the dependency property is a back reference to an object up the tree.
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::IsDependencyPropertyBackReference in PropertySystem.cpp
+	/// (lines 126-156). Uno: the WinUI KnownPropertyIndex switch is expressed as equality checks, kept
+	/// in source order. Entries whose Uno <see cref="DependencyProperty"/> does not exist yet are left
+	/// as <c>TODO Uno:</c> markers so this stays a faithful 1:1 of the WinUI list; add them here when
+	/// the DP is introduced.
+	/// </remarks>
+	private static bool IsDependencyPropertyBackReference(DependencyProperty property)
+		=> property == Page.FrameProperty ||                                       // Page_Frame
+			property == Hub.SemanticZoomOwnerProperty ||                           // Hub_SemanticZoomOwner
+			property == ListViewBase.SemanticZoomOwnerProperty ||                  // ListViewBase_SemanticZoomOwner
+			property == UIElement.AccessKeyScopeOwnerProperty ||                   // UIElement_AccessKeyScopeOwner
+			property == UIElement.KeyTipTargetProperty ||                          // UIElement_KeyTipTarget
+			property == Documents.TextElement.AccessKeyScopeOwnerProperty ||       // TextElement_AccessKeyScopeOwner
+			property == UIElement.XYFocusLeftProperty ||                           // UIElement_XYFocusLeft
+			property == UIElement.XYFocusRightProperty ||                          // UIElement_XYFocusRight
+			property == UIElement.XYFocusUpProperty ||                             // UIElement_XYFocusUp
+			property == UIElement.XYFocusDownProperty ||                           // UIElement_XYFocusDown
+			property == Documents.Hyperlink.XYFocusLeftProperty ||                 // Hyperlink_XYFocusLeft
+			property == Documents.Hyperlink.XYFocusRightProperty ||                // Hyperlink_XYFocusRight
+			property == Documents.Hyperlink.XYFocusUpProperty ||                   // Hyperlink_XYFocusUp
+			property == Documents.Hyperlink.XYFocusDownProperty ||                 // Hyperlink_XYFocusDown
+			property == FlyoutBase.OverlayInputPassThroughElementProperty ||       // FlyoutBase_OverlayInputPassThroughElement
+			// TODO Uno: FlyoutBase_Target — no FlyoutBase.TargetProperty DP in Uno yet.
+			property == Popup.OverlayInputPassThroughElementProperty ||            // Popup_OverlayInputPassThroughElement
+			property == Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty || // KeyboardAccelerator_ScopeOwner
+			property == UIElement.KeyboardAcceleratorPlacementTargetProperty;      // UIElement_KeyboardAcceleratorPlacementTarget
+			// TODO Uno: Control_FocusTargetDescendant, CommandingContainer_CommandingTarget,
+			// CommandingContainer_CommandingContainer — no corresponding Uno DPs yet.
 
 	/// <summary>
 	/// Propagates resource binding updates to non-FrameworkElement DependencyObject values
