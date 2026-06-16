@@ -866,7 +866,11 @@ namespace Microsoft.UI.Xaml
 				var childRef = _mentoredChildren[i];
 				if (childRef?.Target is IDependencyObjectStoreProvider childProvider)
 				{
-					childProvider.Store.ClearInheritedDataContext();
+					var mentor = childProvider.Store.GetMentor();
+					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
+					{
+						childProvider.Store.ClearInheritedDataContext();
+					}
 				}
 			}
 		}

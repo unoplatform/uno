@@ -336,6 +336,51 @@ public partial class Given_UIElement
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_StaleOwner_Unloaded_DoesNotClear_ActiveOwnerDataContext()
+	{
+		// Repro for the ClearMentoredChildrenDataContext ownership-guard bug:
+		//
+		// Step 1: buttonA.ContextFlyout = flyout  →  flyout.mentor = buttonA (buttonA._mentoredChildren contains flyout)
+		// Step 2: buttonB.ContextFlyout = flyout  →  flyout.mentor = buttonB (buttonA._mentoredChildren slot is NOT cleared)
+		// Step 3: buttonA is unloaded             →  ClearMentoredChildrenDataContext iterates buttonA's stale slot
+		//                                            and calls ClearInheritedDataContext on flyout — wiping vmB's DataContext.
+		//
+		// Expected: flyout.DataContext == vmB after buttonA is unloaded.
+		// Actual (bugged): flyout.DataContext == null, because ClearMentoredChildrenDataContext
+		//                  does not guard on ReferenceEquals(mentor, ActualInstance).
+
+		var vmA = "ViewModelA";
+		var vmB = "ViewModelB";
+
+		var flyout = new MenuFlyout();
+
+		var buttonA = new Button { Content = "A", DataContext = vmA };
+		var buttonB = new Button { Content = "B", DataContext = vmB };
+
+		// Assign flyout to A first, then reassign to B.
+		buttonA.ContextFlyout = flyout;
+		buttonB.ContextFlyout = flyout;
+
+		// Both buttons must be loaded so that the Unloaded event fires when buttonA is removed.
+		var root = new StackPanel();
+		root.Children.Add(buttonA);
+		root.Children.Add(buttonB);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreEqual(vmB, flyout.DataContext,
+			"Flyout should have DataContext from the current owner (buttonB) after reassignment.");
+
+		// Unload buttonA — this triggers ClearMentoredChildrenDataContext on buttonA's store.
+		root.Children.Remove(buttonA);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(vmB, flyout.DataContext,
+			"Flyout DataContext must not be cleared by the stale (no-longer-owning) buttonA being unloaded.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_ContextFlyout_ElementReloaded_DataContextRepropagated()
 	{
 		// When a UIElement is removed and re-added to the tree,
