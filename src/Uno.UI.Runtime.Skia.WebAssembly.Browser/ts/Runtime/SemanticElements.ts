@@ -66,8 +66,12 @@ namespace Uno.UI.Runtime.Skia {
 			name: string,
 			value: string | null | undefined
 		): void {
-			if (value && value.trim().length > 0) {
-				element.setAttribute(name, value);
+			// Normalize: set the trimmed value (not the raw input). Leading/trailing whitespace
+			// in aria-label causes inconsistent AT announcements (e.g. "  Name  " announces
+			// differently across screen readers) and is never the author's intent.
+			const trimmed = value ? value.trim() : "";
+			if (trimmed.length > 0) {
+				element.setAttribute(name, trimmed);
 			} else {
 				element.removeAttribute(name);
 			}
