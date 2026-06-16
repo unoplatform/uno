@@ -255,11 +255,7 @@ namespace Microsoft.UI.Xaml
 						}
 						finally
 						{
-							// Clear MeasuringSelf even if MeasureCore throws. Otherwise the flag stays
-							// set and InvalidateMeasure() permanently no-ops for this element (see the
-							// guard in InvalidateMeasure), which freezes its DesiredSize until the
-							// process restarts — a transient measure exception becomes a permanent
-							// layout lock for the whole subtree.
+							// Clear even on throw, otherwise InvalidateMeasure() permanently no-ops and the subtree's layout freezes.
 							ClearLayoutFlags(LayoutFlag.MeasuringSelf);
 						}
 						InvalidateArrange();

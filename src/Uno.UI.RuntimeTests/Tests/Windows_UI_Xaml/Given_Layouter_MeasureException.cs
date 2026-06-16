@@ -35,6 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MeasureThrowsOnce_Then_Recovers_On_Reinvalidate()
 		{
 			var sut = new ThrowingMeasureControl { MeasureResult = new Size(100, 100) };
@@ -57,6 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async System.Threading.Tasks.Task When_ChildThrows_DuringResize_Then_Parent_Recovers()
 		{
 			var child = new ThrowingMeasureControl { MeasureResult = new Size(50, 50) };
@@ -70,13 +72,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				Assert.AreEqual(1920d, parent.ActualWidth, 1d, "baseline parent width");
 
-				// Resize down while the child throws on the resulting measure (the exception is observed
-				// by the layout pass).
+				// Resize down while the child throws, forcing a synchronous layout pass so the
+				// exception is deterministically observed rather than swallowed by the dispatcher.
 				child.ThrowOnMeasure = true;
 				parent.Width = 390;
 				parent.Height = 844;
-				parent.InvalidateMeasure();
-				await WindowHelper.WaitForIdle();
+				Assert.ThrowsExactly<InvalidOperationException>(() => parent.UpdateLayout());
 
 				// The child stops throwing and the parent is resized again; it must re-measure.
 				child.ThrowOnMeasure = false;
