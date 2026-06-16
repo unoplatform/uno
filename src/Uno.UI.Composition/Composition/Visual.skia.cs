@@ -39,6 +39,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
 
+	/// <summary>
+	/// When enabled, invalidations accumulate the changed screen-space region so the present
+	/// step can repaint only the dirty area instead of the whole surface. See
+	/// <see cref="FeatureConfiguration.Rendering.EnableDirtyRectangles"/>.
+	/// </summary>
+	internal static bool EnableDirtyRectangles { get; set; }
+
+	/// <summary>
+	/// When <see cref="EnableDirtyRectangles"/> is enabled, visually highlights the regions being
+	/// repainted each frame.
+	/// </summary>
+	internal static bool DirtyRectanglesOverlay { get; set; }
+
+	// Small inflation (in root/logical pixels) added to each damage rect to absorb antialiasing
+	// bleed at the edges of a changed visual, so the dirty region fully covers the painted pixels.
+	private const float DirtyRectInflation = 2f;
+
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
@@ -52,6 +69,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private IntPtr _picture;
 	private IntPtr _childrenPicture;
 	private int _framesSinceSubtreeNotChanged;
+
+	// The root-space bounds this visual occupied the last time it painted its own content, used to
+	// add the vacated region to the dirty region when it moves/resizes. Only used for dirty rectangles.
+	private SKRect _lastRenderBounds;
+	private bool _hasLastRenderBounds;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
@@ -134,6 +156,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
+
+	// How far beyond this visual's own bounds its paint samples the canvas (e.g. a backdrop blur).
+	// Dirty-rectangles rendering expands the damage region by this margin so the sampled area is
+	// repainted fresh. 0 for visuals that paint strictly within their bounds.
+	internal virtual float DirtyRegionSamplingMargin => 0;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -239,6 +266,80 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
+	}
+
+	// Called during the render walk when this visual actually (re)paints its own content. Adds both the
+	// region it now occupies (new bounds) and the region it occupied in the previous frame (old bounds,
+	// to erase vacated pixels on a move/resize) to the composition target's per-frame damage region.
+	// Bounds are computed here — not at invalidation time — because the visual's Size/matrix are only
+	// final during the render walk. No-op unless dirty-rectangles rendering is enabled.
+	private void ContributeDamageOnPaint()
+	{
+		if (!EnableDirtyRectangles)
+		{
+			return;
+		}
+
+		if (CompositionTarget is not { } target)
+		{
+			return;
+		}
+
+		if (TryGetRootRenderBounds(out var bounds))
+		{
+			target.AddDamage(bounds);
+			if (_hasLastRenderBounds)
+			{
+				target.AddDamage(_lastRenderBounds);
+			}
+			_lastRenderBounds = bounds;
+			_hasLastRenderBounds = true;
+		}
+		else if (_hasLastRenderBounds)
+		{
+			// The visual no longer has paintable bounds (e.g. collapsed to zero size); repaint where it was.
+			target.AddDamage(_lastRenderBounds);
+			_hasLastRenderBounds = false;
+		}
+	}
+
+	// Maps this visual's local bounds (0,0,Size) through TotalMatrix to root/logical coordinates,
+	// returning the axis-aligned bounding box (inflated to absorb antialiasing). Returns false for
+	// zero-sized visuals.
+	private bool TryGetRootRenderBounds(out SKRect bounds)
+	{
+		var size = Size;
+		if (size.X <= 0 || size.Y <= 0)
+		{
+			bounds = default;
+			return false;
+		}
+
+		var m = TotalMatrix;
+
+		// Inflate the local bounds by the AA fudge plus any sampling margin (e.g. backdrop-blur radius)
+		// before mapping, so the margin is expressed in the visual's own coordinate space and scales /
+		// rotates with the transform.
+		var margin = DirtyRectInflation + DirtyRegionSamplingMargin;
+		var lx = -margin;
+		var ly = -margin;
+		var rx = size.X + margin;
+		var by = size.Y + margin;
+
+		// Row-vector convention (matches the offset matrix layout / canvas.SetMatrix(TotalMatrix)):
+		// x' = x*M11 + y*M21 + M41, y' = x*M12 + y*M22 + M42
+		var (x0, y0) = (lx * m.M11 + ly * m.M21 + m.M41, lx * m.M12 + ly * m.M22 + m.M42);
+		var (x1, y1) = (rx * m.M11 + ly * m.M21 + m.M41, rx * m.M12 + ly * m.M22 + m.M42);
+		var (x2, y2) = (lx * m.M11 + by * m.M21 + m.M41, lx * m.M12 + by * m.M22 + m.M42);
+		var (x3, y3) = (rx * m.M11 + by * m.M21 + m.M41, rx * m.M12 + by * m.M22 + m.M42);
+
+		var left = MathF.Min(MathF.Min(x0, x1), MathF.Min(x2, x3));
+		var top = MathF.Min(MathF.Min(y0, y1), MathF.Min(y2, y3));
+		var right = MathF.Max(MathF.Max(x0, x1), MathF.Max(x2, x3));
+		var bottom = MathF.Max(MathF.Max(y0, y1), MathF.Max(y2, y3));
+
+		bounds = new SKRect(left, top, right, bottom);
+		return true;
 	}
 
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
@@ -433,6 +534,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				visual.ContributeDamageOnPaint();
 				visual.Paint(session);
 			}
 			else
@@ -440,6 +542,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
+
+					visual.ContributeDamageOnPaint();
 
 					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
@@ -496,11 +600,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._childrenPicture, null, IntPtr.Zero);
 				}
 			}
-			else if (!visual._enablePictureCollapsingOptimization
+			else if (EnableDirtyRectangles
+					 || !visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
 					 || !applyChildOptimization
 					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
 			{
+				// When dirty rectangles are enabled we must not collapse subtrees into a cached picture:
+				// a collapsed subtree is no longer walked, so visuals inside it (notably backdrop effect
+				// brushes that sample the live canvas at present time) can't contribute their changed region
+				// to the dirty region and would render against a clip-starved backdrop. The present is still
+				// clipped to the dirty region, so this disables only the orthogonal subtree-caching, not the
+				// dirty-rectangles win itself.
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
 					child.Render(in session, applyChildOptimization);

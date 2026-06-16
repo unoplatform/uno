@@ -61,7 +61,14 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		set => SetObjectProperty(ref _noiseImage, value);
 	}
 
+	// How far the backdrop blur samples beyond the brush bounds (see EnsureFilter's blurBounds).
+	private const int BlurPadding = 100;
+
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
+
+	// The translucent path blurs the backdrop over bounds ± BlurPadding, so dirty rectangles must
+	// repaint that padded region for the blur to sample fresh pixels.
+	internal override float DirtyRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
 
 	internal override bool CanPaint() => true;
 
@@ -184,13 +191,12 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 		_filter?.Dispose();
 
-		const int blurPadding = 100;
 		var blurBounds = bounds with
 		{
-			Left = bounds.Left - blurPadding,
-			Top = bounds.Top - blurPadding,
-			Right = bounds.Right + blurPadding,
-			Bottom = bounds.Bottom + blurPadding
+			Left = bounds.Left - BlurPadding,
+			Top = bounds.Top - BlurPadding,
+			Right = bounds.Right + BlurPadding,
+			Bottom = bounds.Bottom + BlurPadding
 		};
 
 		var scaleFactor = Math.Max(1, (int)(_blurSigma / 8));
