@@ -32,7 +32,7 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 		=> InsertExpressionKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
 	public override void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
-		=> _keyFrames[normalizedProgressKey] = new() { Value = 0f, EasingFunction = easingFunction, Expression = value, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
+		=> _keyFrames[normalizedProgressKey] = new() { Value = 0f, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
 
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
