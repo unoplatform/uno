@@ -645,7 +645,7 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Cached_Page_Renavigated_After_Theme_Switch_Inherits_Theme()
 	{
 		// Repro of the reported GC Toolkit bug: a Frame page with NavigationCacheMode is themed, the
