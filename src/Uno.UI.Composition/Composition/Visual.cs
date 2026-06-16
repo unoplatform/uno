@@ -260,10 +260,6 @@ namespace Microsoft.UI.Composition
 			{
 				return IsVisible;
 			}
-			else if (propertyName.Equals(nameof(Opacity), StringComparison.OrdinalIgnoreCase))
-			{
-				return Opacity;
-			}
 			else
 			{
 				return base.GetAnimatableProperty(propertyName, subPropertyName);
