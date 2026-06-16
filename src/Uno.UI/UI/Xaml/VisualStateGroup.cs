@@ -258,8 +258,16 @@ namespace Microsoft.UI.Xaml
 				// keyframes/setters key on it — the ResolveOwnerTheme intent noted above. In WinUI the state's
 				// storyboard is themed at Enter by the eager theme walk (CVisualState::NotifyThemeChangedCore);
 				// Uno builds it lazily on state entry, so the same owner theme must be applied here.
-				using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance
-					.ScopeRequestedThemeForSubTree(ThemeResolution.ResolveOwnerTheme(element as DependencyObject));
+				// Skip the scope during a theme walk (as every other ScopeRequestedThemeForSubTree site does):
+				// mid-walk the owner's per-object theme is still the stale pre-walk value while the core slot
+				// already carries the correct new theme, so a state materialized from a re-entrant GoToState
+				// (e.g. a StateTrigger flipping during the walk) must keep the walk theme, not re-resolve to it.
+				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
+					&& provider.Store.IsProcessingThemeWalk;
+				using var themeScope = ownerIsProcessingThemeWalk
+					? default
+					: Uno.UI.Xaml.Core.CoreServices.Instance
+						.ScopeRequestedThemeForSubTree(ThemeResolution.ResolveOwnerTheme(element as DependencyObject));
 
 				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
 				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
