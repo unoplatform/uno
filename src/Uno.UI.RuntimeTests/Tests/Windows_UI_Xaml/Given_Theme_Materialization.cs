@@ -603,7 +603,8 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	// NativeWinUI excluded: Frame.Navigate triggers a fatal 0xC0000005 access violation. https://github.com/unoplatform/uno/issues/23477
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Navigated_ToggleSwitch_PointerOver_In_Light_Island_Resolves_Light()
 	{
 		// Faithful repro of the Stopwatch ToggleSwitch hover bug: a stable Light island (root
