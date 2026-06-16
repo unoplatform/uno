@@ -22,6 +22,10 @@ internal partial class WebAssemblyAccessibility
 	// and link the combobox "head" to the listbox via aria-controls/aria-activedescendant.
 	private readonly Dictionary<ComboBox, VirtualizedSemanticRegion> _comboBoxListBoxes = new();
 	private readonly HashSet<ComboBox> _trackedComboBoxes = new();
+	// Reverse Popup -> ComboBox lookup so IsComboBoxDropdownPopup is O(1) on a hot path
+	// (semantic tree walk consults it for every Popup it encounters). Populated lazily on
+	// DropDownOpened (the Popup may not exist at registration time) and cleared on close.
+	private readonly Dictionary<Popup, ComboBox> _comboBoxByPopup = new();
 
 	/// <summary>
 	/// Subscribes to a ComboBox's dropdown lifecycle so its listbox region can be torn down
@@ -31,6 +35,7 @@ internal partial class WebAssemblyAccessibility
 	{
 		if (element is ComboBox comboBox && _trackedComboBoxes.Add(comboBox))
 		{
+			comboBox.DropDownOpened += OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed += OnComboBoxDropDownClosed;
 		}
 	}
@@ -43,23 +48,37 @@ internal partial class WebAssemblyAccessibility
 	{
 		if (element is ComboBox comboBox && _trackedComboBoxes.Remove(comboBox))
 		{
+			comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed -= OnComboBoxDropDownClosed;
+			if (comboBox.GetPopup() is { } popup)
+			{
+				_comboBoxByPopup.Remove(popup);
+			}
 			DisposeComboBoxListBox(comboBox);
 		}
 	}
 
 	/// <summary>
-	/// True when <paramref name="popup"/> is the dropdown Popup of a tracked ComboBox. Matched by
-	/// identity against each ComboBox's <see cref="ComboBox.GetPopup"/> rather than the Popup's
-	/// TemplatedParent (a Popup template part does not reliably carry it), so the empty role="dialog"
-	/// wrapper can be suppressed in favour of the listbox region.
+	/// True when <paramref name="popup"/> is the dropdown Popup of a tracked ComboBox. Resolved
+	/// via the reverse <see cref="_comboBoxByPopup"/> lookup so this stays O(1) on the semantic
+	/// tree walk; falls back to a linear scan only if the dropdown hasn't opened yet (in which
+	/// case there is at most a small number of tracked ComboBoxes to check).
 	/// </summary>
 	private bool IsComboBoxDropdownPopup(Popup popup)
 	{
+		if (_comboBoxByPopup.ContainsKey(popup))
+		{
+			return true;
+		}
+
+		// Fallback: a Popup that exists before DropDownOpened has fired (or before this
+		// instance ever opened) won't be in the reverse map yet. Keep the linear scan so
+		// suppression still works at first paint; subsequent calls hit the O(1) path.
 		foreach (var comboBox in _trackedComboBoxes)
 		{
 			if (comboBox.GetPopup() == popup)
 			{
+				_comboBoxByPopup[popup] = comboBox;
 				return true;
 			}
 		}
@@ -67,10 +86,22 @@ internal partial class WebAssemblyAccessibility
 		return false;
 	}
 
+	private void OnComboBoxDropDownOpened(object? sender, object e)
+	{
+		if (sender is ComboBox comboBox && comboBox.GetPopup() is { } popup)
+		{
+			_comboBoxByPopup[popup] = comboBox;
+		}
+	}
+
 	private void OnComboBoxDropDownClosed(object? sender, object e)
 	{
 		if (sender is ComboBox comboBox)
 		{
+			if (comboBox.GetPopup() is { } popup)
+			{
+				_comboBoxByPopup.Remove(popup);
+			}
 			DisposeComboBoxListBox(comboBox);
 		}
 	}
