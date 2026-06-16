@@ -140,7 +140,7 @@ internal sealed class ThemeResourceReference
 	/// LastResolvedValue. Does NOT do tree-walk — that's handled by UpdateThemeReference
 	/// (matching WinUI's UpdateThemeReference which walks ancestors before calling RefreshValue).
 	/// </remarks>
-	public object? RefreshValue(ThemeWalkResourceCache? cache = null, bool preferAppResourceOverride = false)
+	public object? RefreshValue(ThemeWalkResourceCache? cache = null)
 	{
 		var theme = ResourceDictionary.GetActiveBaseTheme();
 
@@ -158,17 +158,14 @@ internal sealed class ThemeResourceReference
 
 			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
-				// MUX: Resources.cpp:668-682 (GetKeyFromThemeDictionariesNoRef) — "Always allow
+				// MUX: Resources.cpp:675-684 (GetKeyFromThemeDictionariesNoRef) — "Always allow
 				// Application.Resources to override values found in the global ThemeDictionaries"
-				// (GetKeyOverrideFromApplicationResourcesNoRef). When this ref is pinned to a global/framework
-				// theme dictionary (a control template's {ThemeResource} pins to generic/Fluent), an app-level
-				// override of the same key must still win on re-resolution outside an ancestor walk — e.g. a
-				// storyboard keyframe re-begun on a visual-state re-entry would otherwise revert to the stock
-				// value. The caller passes preferAppResourceOverride for those framework-pinned cases (keyframes);
-				// dict.IsSystemDictionary covers Uno.UI's own generic dictionaries.
-				if ((preferAppResourceOverride
-						|| dict.IsSystemDictionary
-						|| Uno.UI.ResourceResolver.ContainsKeySystem(ResourceKey))
+				// (GetKeyOverrideFromApplicationResourcesNoRef), gated on IsGlobalThemeDictionaries(). When
+				// this ref is pinned to a framework/global theme dictionary (a control template's
+				// {ThemeResource} pins to generic/Fluent), an app-level override of the same key must still
+				// win on re-resolution outside an ancestor walk — e.g. a storyboard keyframe re-begun on a
+				// visual-state re-entry would otherwise revert to the stock value.
+				if (dict.IsGlobalThemeDictionaries
 					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
 					value = appOverride;
