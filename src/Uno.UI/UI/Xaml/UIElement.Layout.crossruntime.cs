@@ -190,6 +190,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <remarks>
+		/// Isolates the try/finally into its own method so the hot measure path in <c>DoMeasure</c>
+		/// stays free of exception handling (an EH-containing method can't be inlined and is slower
+		/// on WebAssembly — see https://github.com/dotnet/runtime/issues/56309). The finally is
+		/// mandatory: if MeasuringSelf is left set, InvalidateMeasure() permanently no-ops and the
+		/// subtree's layout freezes.
+		/// </remarks>
+		private void MeasureCoreClearingMeasuringSelf(Size availableSize)
+		{
+			try
+			{
+				MeasureCore(availableSize);
+			}
+			finally
+			{
+				ClearLayoutFlags(LayoutFlag.MeasuringSelf);
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
@@ -249,15 +268,7 @@ namespace Microsoft.UI.Xaml
 						}
 
 						SetLayoutFlags(LayoutFlag.MeasuringSelf);
-						try
-						{
-							MeasureCore(availableSize);
-						}
-						finally
-						{
-							// Clear even on throw, otherwise InvalidateMeasure() permanently no-ops and the subtree's layout freezes.
-							ClearLayoutFlags(LayoutFlag.MeasuringSelf);
-						}
+						MeasureCoreClearingMeasuringSelf(availableSize);
 						InvalidateArrange();
 					}
 #if DEBUG
