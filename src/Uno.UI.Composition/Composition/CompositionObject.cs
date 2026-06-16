@@ -264,6 +264,10 @@ namespace Microsoft.UI.Composition
 		internal void ResumeAnimation(KeyFrameAnimation animation)
 		{
 			animation.Resume();
+			// Subscribe exactly once: StartAnimation already subscribes ReEvaluateAnimation, so a
+			// Resume() on a running (never-paused) animation would otherwise double-subscribe and
+			// re-evaluate the property twice per frame. Removing first is a no-op when not subscribed.
+			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.AnimationFrame += ReEvaluateAnimation;
 		}
 
