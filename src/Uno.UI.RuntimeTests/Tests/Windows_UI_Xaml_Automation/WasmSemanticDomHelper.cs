@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO
 using System;
 using System.Globalization;
+using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -67,17 +68,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// assembly isn't a direct reference of the runtime-tests project, so the lookup is kept
 		/// here in one place — and intentionally fails fast (<see cref="Assert.IsNotNull"/>) so a
 		/// runtime rename surfaces with a clear test failure instead of silently returning empty.
+		/// The resolved <see cref="MethodInfo"/> is cached because the DOM-level tests call this
+		/// many times per test (every attribute read goes through here), and re-resolving the
+		/// type/method on each call shows up as overhead in the test runner.
 		/// </summary>
 		public static string InvokeBrowserJs(string javascript)
+		{
+			var method = s_invokeJs.Value;
+			return method.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
+		}
+
+		private static readonly Lazy<MethodInfo> s_invokeJs = new(() =>
 		{
 			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
 			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
 
-			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
+			var invokeJs = runtimeType!.GetMethod("InvokeJS", new[] { typeof(string) });
 			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
-
-			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
-		}
+			return invokeJs!;
+		});
 	}
 }
 #endif
