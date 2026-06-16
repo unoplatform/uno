@@ -22,4 +22,11 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds) => _wrappedBrush?.Paint(canvas, opacity, bounds);
 	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
+
+	// Forward to the wrapped brush so that effect brushes (e.g. a backdrop-blur acrylic) keep their
+	// per-frame-repaint and dirty-region sampling characteristics through the wrapper; otherwise the
+	// owning visual sees the base defaults (false / 0) and dirty-rectangles rendering would freeze the
+	// effect's cached picture and clip-starve its backdrop sampling.
+	internal override bool RequiresRepaintOnEveryFrame => WrappedBrush?.RequiresRepaintOnEveryFrame ?? false;
+	internal override float DirtyRegionSamplingMargin => WrappedBrush?.DirtyRegionSamplingMargin ?? 0;
 }

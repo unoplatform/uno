@@ -12,7 +12,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	private bool _needsContinuousUpdates;
 
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
@@ -54,13 +53,17 @@ public partial class ShapeVisual
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
-		if (propertyName == nameof(Shapes))
-		{
-			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
-		}
 	}
 
-	internal override bool RequiresRepaintOnEveryFrame => _needsContinuousUpdates;
+	// Evaluated live (not cached): a fill brush's RequiresRepaintOnEveryFrame can flip to true after the
+	// shape is first assigned — e.g. a backdrop effect brush only reports it once it has detected its
+	// backdrop input during its first paint. A stale cached value would freeze the visual's picture and,
+	// under dirty rectangles, leave the backdrop effect rendering against a clip-starved backdrop.
+	internal override bool RequiresRepaintOnEveryFrame =>
+		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+
+	internal override float DirtyRegionSamplingMargin =>
+		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DirtyRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 

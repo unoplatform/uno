@@ -163,7 +163,13 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	/// <param name="surfaceRetainsContents">
+	/// True if the platform surface preserves the previous frame's pixels between presents (e.g. a
+	/// persistent software bitmap). When true and dirty-rectangles rendering is enabled, the present
+	/// is clipped to the changed region. Defaults to false so swapchain/native renderers keep the
+	/// historical full-frame behavior until they opt in.
+	/// </param>
+	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc, bool surfaceRetainsContents = false)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
@@ -172,7 +178,7 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(canvas, resizeFunc);
+		return Draw(canvas, resizeFunc, surfaceRetainsContents);
 	}
 
 	internal void OnRenderFrameOpportunity()
