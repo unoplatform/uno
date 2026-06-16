@@ -35,8 +35,15 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
+	// Per-frame dirty region, accumulated from invalidations on the UI thread (via AddDamage) and
+	// snapshotted into the rendered frame in Render(). Only touched on the UI thread.
+	private readonly DirtyRegion _pendingDamage = new();
+
+	// Snapshot of the dirty region attached to a recorded frame, consumed by Draw() on the render thread.
+	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds);
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IntPtr frame, SKPath nativeElementClipPath, DamageSnapshot damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -88,13 +95,27 @@ public partial class CompositionTarget
 			(float)bounds.Height,
 			rootElement.Visual,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
-		var renderedFrame = (picture, path);
-		var previousFrame = default((IntPtr frame, SKPath path)?);
+
+		// Snapshot and reset the accumulated dirty region for this frame. The picture above is always
+		// the full tree; the snapshot tells Draw() which region actually needs to be re-presented.
+		var damageSnapshot = new DamageSnapshot(_pendingDamage.IsFullFrame, _pendingDamage.IsEmpty, _pendingDamage.Bounds);
+		_pendingDamage.Reset();
+
+		var previousFrame = default((IntPtr frame, SKPath path, DamageSnapshot damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			_lastRenderedFrame = renderedFrame;
+			// If a previously recorded frame was never presented (it's still here because Draw didn't
+			// borrow it), its dirty region was never painted to the surface. Carry that damage forward
+			// into this frame so those regions are still repainted; otherwise dirty-rectangles would
+			// drop the changes from the discarded frame, leaving stale pixels.
+			if (previousFrame is { } pf)
+			{
+				damageSnapshot = MergeDamage(damageSnapshot, pf.damage);
+			}
+
+			_lastRenderedFrame = (picture, path, damageSnapshot);
 		}
 
 		_fpsHelper.OnFrameRecorded();
@@ -138,11 +159,50 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.AddRect(bounds);
+
+	void ICompositionTarget.AddFullFrameDamage() => _pendingDamage.SetFullFrame();
+
+	// Unions two per-frame damage snapshots (used to carry an un-presented frame's damage forward).
+	private static DamageSnapshot MergeDamage(DamageSnapshot current, DamageSnapshot carried)
+	{
+		if (current.IsFullFrame || carried.IsFullFrame)
+		{
+			return new DamageSnapshot(IsFullFrame: true, IsEmpty: false, default);
+		}
+
+		if (carried.IsEmpty)
+		{
+			return current;
+		}
+
+		if (current.IsEmpty)
+		{
+			return carried;
+		}
+
+		var union = new SKRect(
+			Math.Min(current.Bounds.Left, carried.Bounds.Left),
+			Math.Min(current.Bounds.Top, carried.Bounds.Top),
+			Math.Max(current.Bounds.Right, carried.Bounds.Right),
+			Math.Max(current.Bounds.Bottom, carried.Bounds.Bottom));
+		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, union);
+	}
+
+	private static void DrawDirtyRectanglesOverlay(SKCanvas canvas, SKRect bounds)
+	{
+		// Diagnostic only: tint + outline the region repainted this frame.
+		using var fill = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
+		using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+		canvas.DrawRect(bounds, fill);
+		canvas.DrawRect(bounds, stroke);
+	}
+
+	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc, bool surfaceRetainsContents)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IntPtr frame, SKPath nativeElementClipPath, DamageSnapshot damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -174,7 +234,10 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			// A (re)created or resized canvas has undefined contents, so the whole surface must be
+			// repainted this frame regardless of the tracked dirty region.
+			var canvasRecreated = canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			if (canvasRecreated)
 			{
 				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
@@ -182,18 +245,44 @@ public partial class CompositionTarget
 				_lastScaledNativeClipPath = null;
 			}
 
-			canvas.Save();
+			// canvas is guaranteed non-null here: it is either the (non-null) argument or freshly
+			// created by resizeFunc when canvasRecreated is true.
+			var targetCanvas = canvas!;
+
+			targetCanvas.Save();
 			if (rasterizationScale != 1)
 			{
-				canvas.Scale(rasterizationScale, rasterizationScale);
+				targetCanvas.Scale(rasterizationScale, rasterizationScale);
 			}
+
+			// Dirty-rectangles: when the surface retains the previous frame's contents and the feature
+			// is enabled, clip the present to the changed region so only that area is cleared and
+			// repainted; the rest is preserved from the previous frame. Output is identical to a full
+			// repaint. Falls back to full-frame on canvas recreation/resize or when the frame is marked
+			// full. The clip is set in the post-scale (root/logical) coordinate space the picture uses.
+			var damage = lastRenderedFrame.damage;
+			var useDirtyRectangles = global::Uno.UI.FeatureConfiguration.Rendering.EnableDirtyRectangles
+				&& surfaceRetainsContents
+				&& !canvasRecreated
+				&& !damage.IsFullFrame;
+			if (useDirtyRectangles)
+			{
+				targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
+			}
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
-				canvas,
+				targetCanvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
 				_fpsHelper.DrawFps);
-			canvas.Restore();
+
+			if (useDirtyRectangles && !damage.IsEmpty && global::Uno.UI.FeatureConfiguration.Rendering.DirtyRectanglesOverlay)
+			{
+				DrawDirtyRectanglesOverlay(targetCanvas, damage.Bounds);
+			}
+
+			targetCanvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);
 
@@ -219,7 +308,7 @@ public partial class CompositionTarget
 		}
 	}
 
-	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	private void ReturnFrame((IntPtr frame, SKPath nativeElementClipPath, DamageSnapshot damage) frame)
 	{
 		var pictureToDelete = IntPtr.Zero;
 
@@ -232,7 +321,7 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				pictureToDelete = frame.picture;
+				pictureToDelete = frame.frame;
 			}
 		}
 
