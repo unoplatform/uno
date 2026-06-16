@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Uno;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Composition
 {
@@ -67,16 +68,22 @@ namespace Microsoft.UI.Composition
 			_keyframeEvaluator!.Pause();
 		}
 
-		// Default base-class implementations: derived animations that want to evaluate the
-		// expression at runtime override these (see ScalarKeyFrameAnimation and Vector2KeyFrameAnimation).
-		// Vector3/Vector4 currently treat expression keyframes as no-ops which mirrors the prior
-		// NotImplemented behavior.
+		// Default base-class implementations: derived animations that evaluate expressions at runtime
+		// override these (see ScalarKeyFrameAnimation and Vector2KeyFrameAnimation). Types without
+		// expression support (Vector3/Vector4/Boolean) fall through to these, which warn and discard
+		// the keyframe so the unsupported path stays diagnosable.
 		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
-		{
-		}
+			=> WarnExpressionKeyFrameNotSupported();
 
 		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+			=> WarnExpressionKeyFrameNotSupported();
+
+		private void WarnExpressionKeyFrameNotSupported()
 		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Expression keyframes are not supported for '{GetType().Name}'; the keyframe will be ignored.");
+			}
 		}
 
 		internal void Resume()
