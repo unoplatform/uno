@@ -39,18 +39,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
 
-	/// <summary>
-	/// When enabled, invalidations accumulate the changed screen-space region so the present
-	/// step can repaint only the dirty area instead of the whole surface. See
-	/// <see cref="FeatureConfiguration.Rendering.EnableDirtyRectangles"/>.
-	/// </summary>
 	internal static bool EnableDirtyRectangles { get; set; }
-
-	/// <summary>
-	/// When <see cref="EnableDirtyRectangles"/> is enabled, visually highlights the regions being
-	/// repainted each frame.
-	/// </summary>
-	internal static bool DirtyRectanglesOverlay { get; set; }
 
 	// Small inflation (in root/logical pixels) added to each damage rect to absorb antialiasing
 	// bleed at the edges of a changed visual, so the dirty region fully covers the painted pixels.
