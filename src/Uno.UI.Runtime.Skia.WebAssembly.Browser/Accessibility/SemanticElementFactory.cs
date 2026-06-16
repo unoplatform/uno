@@ -451,7 +451,13 @@ internal static partial class SemanticElementFactory
 			frameworkPeer.Owner is ComboBox comboBox &&
 			comboBox.SelectedItem is { } selected)
 		{
-			selectedValue = selected.ToString();
+			// Mirror WinUI selection-text resolution: prefer the value pattern (which honors
+			// DisplayMemberPath / item-template-bound value providers), fall back to ToString
+			// only when no value provider is exposed. This avoids announcing a type name for
+			// non-string item view models.
+			selectedValue = (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
+				? valueProvider.Value
+				: selected.ToString();
 		}
 
 		NativeMethods.CreateComboBoxElement(
