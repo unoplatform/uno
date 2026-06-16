@@ -649,8 +649,12 @@ namespace Uno.UI.Runtime.Skia {
 		public static setAccessKey(handle: number, accessKey: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (accessKey) {
-					element.setAttribute("accesskey", accessKey);
+				// Mirror the omit-when-empty contract used by updateAriaLabel / setXamlAutomationId:
+				// whitespace-only values would emit accesskey=" ", which is meaningless to AT and
+				// can interfere with browser shortcut handling.
+				const trimmed = accessKey ? accessKey.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("accesskey", trimmed);
 				} else {
 					element.removeAttribute("accesskey");
 				}
