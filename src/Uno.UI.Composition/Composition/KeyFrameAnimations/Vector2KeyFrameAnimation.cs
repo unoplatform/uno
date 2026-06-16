@@ -28,7 +28,7 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 		=> InsertExpressionKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
 	public override void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
-		=> _keyFrames[normalizedProgressKey] = new() { Value = Vector2.Zero, EasingFunction = easingFunction, Expression = value };
+		=> _keyFrames[normalizedProgressKey] = new() { Value = Vector2.Zero, EasingFunction = easingFunction, Expression = value, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
 
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
@@ -49,23 +49,24 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 
 		var owner = this;
 
+		Vector2 Resolve(AnimationKeyFrame<Vector2> frame) => ResolveVector2KeyFrameValue(owner, frame);
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		Vector2 Lerp(AnimationKeyFrame<Vector2> value1, AnimationKeyFrame<Vector2> value2, float amount)
-			=> Vector2.Lerp(ResolveVector2KeyFrameValue(owner, value1), ResolveVector2KeyFrameValue(owner, value2), value2.EasingFunction.Ease(amount));
+			=> Vector2.Lerp(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount));
 
-		_keyframeEvaluator = new KeyFrameEvaluator<Vector2>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
-		return ResolveVector2KeyFrameValue(this, startValue);
+		_keyframeEvaluator = new KeyFrameEvaluator<Vector2>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor, Resolve);
+		return Resolve(startValue);
 	}
 
 	private static Vector2 ResolveVector2KeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<Vector2> frame)
 	{
-		if (frame.Expression is null)
+		if (frame.ParsedExpression is null)
 		{
 			return frame.Value;
 		}
 
-		var parsed = new ExpressionAnimationParser(frame.Expression).Parse();
-		var evaluation = parsed.Evaluate(animation);
+		var evaluation = frame.ParsedExpression.Evaluate(animation);
 		return SubPropertyHelpers.ValidateValue<Vector2>(evaluation);
 	}
 }

@@ -14,6 +14,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private readonly TimeSpan _totalDuration;
 	private readonly SortedDictionary<float, AnimationKeyFrame<T>> _keyFrames;
 	private readonly Func<AnimationKeyFrame<T>, AnimationKeyFrame<T>, float, T> _lerp;
+	private readonly Func<AnimationKeyFrame<T>, T> _resolve;
 	private readonly Compositor _compositor;
 
 	private long? _pauseTimestamp;
@@ -27,7 +28,12 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		Func<AnimationKeyFrame<T>, AnimationKeyFrame<T>, float, T> lerp,
 		int iterationCount,
 		AnimationIterationBehavior iterationBehavior,
-		Compositor compositor)
+		Compositor compositor,
+		// Resolves a keyframe to its value, evaluating an expression keyframe when present. The lerp
+		// path resolves its own endpoints; this lets the held/final/exact-hit shortcuts below resolve
+		// too instead of returning an expression keyframe's placeholder Value. Null => use Value as-is
+		// (animation types without expression-keyframe support).
+		Func<AnimationKeyFrame<T>, T> resolve = null)
 	{
 		_startTimestamp = compositor.TimestampInTicks;
 		_initialValue = initialValue;
@@ -36,8 +42,11 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_totalDuration = iterationBehavior == AnimationIterationBehavior.Forever ? TimeSpan.MaxValue : duration * iterationCount;
 		_keyFrames = keyFrames;
 		_lerp = lerp;
+		_resolve = resolve;
 		_compositor = compositor;
 	}
+
+	private T Resolve(AnimationKeyFrame<T> frame) => _resolve is null ? frame.Value : _resolve(frame);
 
 	public (object Value, bool ShouldStop) Evaluate()
 	{
@@ -48,7 +57,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		var elapsed = new TimeSpan(nowTimestamp - _totalPause - _startTimestamp);
 		if (_pauseTimestamp is null && elapsed >= _totalDuration)
 		{
-			return (_finalValue.Value, true);
+			return (Resolve(_finalValue), true);
 		}
 
 		elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
@@ -60,7 +69,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	{
 		if (progress >= 1.0f)
 		{
-			return (_finalValue.Value, true);
+			return Resolve(_finalValue);
 		}
 
 		return EvaluateInternal(progress).Value;
@@ -75,14 +84,14 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		// off into invisibility.
 		if (currentFrame >= lastKey)
 		{
-			return (_keyFrames[lastKey].Value, false);
+			return (Resolve(_keyFrames[lastKey]), false);
 		}
 
 		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, lastKey);
 		if (nextKeyFrame == currentFrame)
 		{
 			// currentFrame is one that exists in the dictionary already.
-			return (_keyFrames[currentFrame].Value, false);
+			return (Resolve(_keyFrames[currentFrame]), false);
 		}
 
 		var previousKeyFrame = _keyFrames.Keys.LastOrDefault(k => k <= currentFrame);
