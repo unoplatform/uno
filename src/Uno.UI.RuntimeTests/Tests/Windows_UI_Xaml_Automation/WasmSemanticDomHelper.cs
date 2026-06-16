@@ -1,5 +1,6 @@
 ﻿#if HAS_UNO
 using System;
+using System.Globalization;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// (e.g. the test runner header).
 		/// </summary>
 		public static string GetSemanticElementId(UIElement element)
-			=> $"uno-semantics-{((long)element.Visual.Handle)}";
+			=> "uno-semantics-" + ((long)element.Visual.Handle).ToString(CultureInfo.InvariantCulture);
 
 		/// <summary>Returns true when the element's semantic node currently exists in the DOM.</summary>
 		public static bool SemanticElementExists(UIElement element)
