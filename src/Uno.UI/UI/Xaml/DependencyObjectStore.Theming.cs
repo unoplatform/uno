@@ -279,7 +279,7 @@ public partial class DependencyObjectStore
 	/// WinUI snapshots property indices into a stack_vector (size 50 to handle ListViewItemPresenter
 	/// with 41+ theme refs), then calls UpdateThemeReference(propertyIndex) for each.
 	/// </remarks>
-	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null, bool preferAppResourceOverride = false)
+	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null)
 	{
 		if (_themeResources is not { HasEntries: true })
 		{
@@ -299,7 +299,7 @@ public partial class DependencyObjectStore
 		if (snapshotCount == 1)
 		{
 			var entry = entries[0];
-			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride, preferAppResourceOverride);
+			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride);
 			return;
 		}
 
@@ -320,8 +320,7 @@ public partial class DependencyObjectStore
 					snapshot[i].Reference,
 					owner,
 					cache,
-					ownerThemeOverride,
-					preferAppResourceOverride);
+					ownerThemeOverride);
 			}
 		}
 		finally
@@ -354,8 +353,7 @@ public partial class DependencyObjectStore
 		ThemeResourceReference themeRef,
 		DependencyObject? owner,
 		ThemeWalkResourceCache? cache,
-		Theme? ownerThemeOverride = null,
-		bool preferAppResourceOverride = false)
+		Theme? ownerThemeOverride = null)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
@@ -452,7 +450,7 @@ public partial class DependencyObjectStore
 			if (!resolved)
 #endif
 			{
-				themeRef.RefreshValue(cache, preferAppResourceOverride);
+				themeRef.RefreshValue(cache);
 			}
 
 			// MUX: Theming.cpp:385-387 — GetLastResolvedThemeValue: the value to apply is the ref's
