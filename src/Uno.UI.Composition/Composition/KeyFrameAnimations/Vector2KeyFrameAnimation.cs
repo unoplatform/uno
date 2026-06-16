@@ -24,10 +24,7 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, Vector2 value)
 		=> InsertKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
-	public override void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
-		=> InsertExpressionKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
-
-	public override void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+	private protected override void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = Vector2.Zero, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
 
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
