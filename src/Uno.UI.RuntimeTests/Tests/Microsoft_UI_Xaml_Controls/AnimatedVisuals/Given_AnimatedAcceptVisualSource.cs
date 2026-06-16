@@ -18,6 +18,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls.AnimatedVisuals;
 [TestClass]
 public class Given_AnimatedAcceptVisualSource
 {
+	// These tests exercise the Skia-only AnimatedIcon/Composition rendering pipeline (screenshots,
+	// stroke geometry); gate the body to Skia like the sibling composition tests.
+#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_TryCreateAnimatedVisual_Returns_NonNull()
@@ -175,4 +178,5 @@ public class Given_AnimatedAcceptVisualSource
 		}
 		return max;
 	}
+#endif
 }
