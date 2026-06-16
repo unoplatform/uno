@@ -569,9 +569,14 @@ public partial class DependencyObjectStore
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::IsDependencyPropertyBackReference in PropertySystem.cpp
 	/// (lines 126-156). Uno: the WinUI KnownPropertyIndex switch is expressed as equality checks, kept
-	/// in source order. Entries whose Uno <see cref="DependencyProperty"/> does not exist yet are left
-	/// as <c>TODO Uno:</c> markers so this stays a faithful 1:1 of the WinUI list; add them here when
-	/// the DP is introduced.
+	/// in source order. WinUI entries whose Uno <see cref="DependencyProperty"/> does not exist yet are
+	/// tracked here so this stays a faithful 1:1 of the WinUI list; add them in source order when the DP
+	/// is introduced:
+	/// <list type="bullet">
+	/// <item>TODO Uno: FlyoutBase_Target — after FlyoutBase_OverlayInputPassThroughElement.</item>
+	/// <item>TODO Uno: Control_FocusTargetDescendant, CommandingContainer_CommandingTarget,
+	/// CommandingContainer_CommandingContainer — at the end of the list.</item>
+	/// </list>
 	/// </remarks>
 	private static bool IsDependencyPropertyBackReference(DependencyProperty property)
 		=> property == Page.FrameProperty ||                                       // Page_Frame
@@ -589,12 +594,9 @@ public partial class DependencyObjectStore
 			property == Documents.Hyperlink.XYFocusUpProperty ||                   // Hyperlink_XYFocusUp
 			property == Documents.Hyperlink.XYFocusDownProperty ||                 // Hyperlink_XYFocusDown
 			property == FlyoutBase.OverlayInputPassThroughElementProperty ||       // FlyoutBase_OverlayInputPassThroughElement
-			// TODO Uno: FlyoutBase_Target — no FlyoutBase.TargetProperty DP in Uno yet.
 			property == Popup.OverlayInputPassThroughElementProperty ||            // Popup_OverlayInputPassThroughElement
 			property == Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty || // KeyboardAccelerator_ScopeOwner
 			property == UIElement.KeyboardAcceleratorPlacementTargetProperty;      // UIElement_KeyboardAcceleratorPlacementTarget
-			// TODO Uno: Control_FocusTargetDescendant, CommandingContainer_CommandingTarget,
-			// CommandingContainer_CommandingContainer — no corresponding Uno DPs yet.
 
 	/// <summary>
 	/// Propagates resource binding updates to non-FrameworkElement DependencyObject values
