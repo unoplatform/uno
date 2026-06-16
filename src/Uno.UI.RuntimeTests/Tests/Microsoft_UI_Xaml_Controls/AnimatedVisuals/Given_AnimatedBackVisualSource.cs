@@ -17,6 +17,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls.AnimatedVisuals;
 [TestClass]
 public class Given_AnimatedBackVisualSource
 {
+	// These tests exercise the Skia-only AnimatedIcon/Composition rendering pipeline (screenshots,
+	// CompositionSpriteShape state); gate the body to Skia like the sibling composition tests.
+#if __SKIA__
 	// Portable compositor accessor: WinUI doesn't expose Compositor.GetSharedCompositor; load a
 	// throwaway Border into the visual tree and pull the compositor off its visual.
 	private static async Task<Compositor> GetCompositorAsync()
@@ -1067,4 +1070,5 @@ public class Given_AnimatedBackVisualSource
 		var pixel = screenshot.GetPixel(24, 24);
 		Assert.IsTrue(pixel.R < 100, $"Expected black pixel at (24,24) but got {pixel}.");
 	}
+#endif
 }
