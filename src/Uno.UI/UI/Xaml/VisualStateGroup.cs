@@ -252,6 +252,15 @@ namespace Microsoft.UI.Xaml
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
+				// A VisualState carries no per-object theme, so materializing its Storyboard/Setters here
+				// would resolve their {ThemeResource}s against the (possibly stale) ambient slot rather than
+				// the part's own theme. Scope the owner element's effective theme for the materialization so
+				// keyframes/setters key on it — the ResolveOwnerTheme intent noted above. In WinUI the state's
+				// storyboard is themed at Enter by the eager theme walk (CVisualState::NotifyThemeChangedCore);
+				// Uno builds it lazily on state entry, so the same owner theme must be applied here.
+				using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance
+					.ScopeRequestedThemeForSubTree(ThemeResolution.ResolveOwnerTheme(element as DependencyObject));
+
 				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
 				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
 			}

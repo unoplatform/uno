@@ -481,6 +481,70 @@ public class Given_Theme_Materialization
 		}
 	}
 
+	// ---- T6b2 — VisualState storyboard keyframe {ThemeResource} resolves the island theme (faithful) ----
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_ToggleSwitch_PointerOver_Keyframe_In_Light_Island_Resolves_Light()
+	{
+		// Faithful repro of the reported ToggleSwitch hover-stroke bug. A ToggleSwitch in a Light island
+		// under a Dark ambient: entering PointerOver lazily materializes the state's Storyboard, whose
+		// stroke ColorAnimation keyframe is <LinearColorKeyFrame Value="{ThemeResource
+		// ToggleSwitchStrokeOffPointerOver}"/>. The keyframe must resolve the LIGHT theme color, not the
+		// Dark ambient — VisualStateGroup.GoToState now scopes the owner element's theme around the
+		// materialization (ResolveOwnerTheme), the analog of WinUI theming the state's storyboard at Enter.
+		//
+		// We assert the resolved keyframe Value (the color the animation applies), not the rendered stroke:
+		// the rendered stroke is animation-driven and is not reliably applied in the headless runtime test,
+		// so the keyframe Value is the faithful signal of which theme the {ThemeResource} resolved.
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+
+		var island = new Border { RequestedTheme = ElementTheme.Light };
+		var host = new Grid { RequestedTheme = ElementTheme.Dark, Children = { island } };
+		var toggle = new ToggleSwitch();
+		island.Child = toggle;
+
+		static Color? StrokeKeyframeColor(ToggleSwitch ts)
+		{
+			var root = ts.GetTemplateRoot() as FrameworkElement;
+			var groups = root is null ? null : VisualStateManager.GetVisualStateGroups(root);
+			var pointerOver = groups?.SelectMany(g => g.States).FirstOrDefault(s => s.Name == "PointerOver");
+			var anim = pointerOver?.Storyboard?.Children
+				.OfType<Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames>()
+				.FirstOrDefault(a => (Microsoft.UI.Xaml.Media.Animation.Storyboard.GetTargetProperty(a) ?? "").Contains("Stroke"));
+			return anim?.KeyFrames.FirstOrDefault()?.Value;
+		}
+
+		try
+		{
+			await UITestHelper.Load(host);
+			await WindowHelper.WaitForIdle();
+
+			// Enter PointerOver — this lazily materializes the state's Storyboard and resolves its keyframes.
+			VisualStateManager.GoToState(toggle, "PointerOver", false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ControlStrongStrokeLight, StrokeKeyframeColor(toggle),
+				"PointerOver stroke keyframe materialized in a Light island must resolve the Light theme color, "
+				+ "not the Dark ambient (GoToState must scope the part's own theme around materialization).");
+
+			// Switch the island to Dark — the materialized keyframe must re-resolve to the Dark color.
+			island.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ControlStrongStrokeDark, StrokeKeyframeColor(toggle),
+				"After switching the island to Dark, the PointerOver stroke keyframe must re-resolve to the Dark color.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
+
 	// ---- T6c — a page navigated into a Frame AFTER an element-theme switch inherits the new theme ----
 
 	[TestMethod]
