@@ -385,7 +385,7 @@ namespace Uno.UI.Runtime.Skia {
 			x: number,
 			y: number,
 			role: string,
-			automationId: string,
+			ariaLabel: string,
 			isFocusable: boolean,
 			ariaChecked: string,
 			isVisible: boolean,
@@ -406,7 +406,7 @@ namespace Uno.UI.Runtime.Skia {
 				// This matches the behavior of the SemanticElements factory path
 				// and ensures elements still appear in the accessibility tree
 				// even when their semantic parent was pruned.
-				Accessibility.debugWarn(`[A11y] addSemanticElement: PARENT NOT FOUND — handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}'. Falling back to semanticsRoot.`);
+				Accessibility.debugWarn(`[A11y] addSemanticElement: PARENT NOT FOUND — handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${ariaLabel}'. Falling back to semanticsRoot.`);
 				parent = this.semanticsRoot;
 				if (!parent) {
 					Accessibility.debugWarn(`[A11y] addSemanticElement: semanticsRoot also null. Element will NOT appear in semantic tree.`);
@@ -414,7 +414,7 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			}
 
-			Accessibility.debugLog(`[A11y] addSemanticElement: handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}' size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable} visible=${isVisible}`);
+			Accessibility.debugLog(`[A11y] addSemanticElement: handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${ariaLabel}' size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable} visible=${isVisible}`);
 
 			let element = Accessibility.createSemanticElement(x, y, width, height, handle, isFocusable);
 			element.setAttribute('ElementType', temporary);
@@ -430,10 +430,12 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute("aria-checked", ariaChecked);
 			}
 
-			// Mirror updateAriaLabel: omit aria-label for empty/whitespace values so we
-			// never create aria-label=" " on the element (screen readers announce "blank").
-			if (automationId && automationId.trim().length > 0) {
-				element.setAttribute("aria-label", automationId);
+			// ariaLabel is the *aria-label* source (peer-resolved Name / AutomationProperties.Name)
+			// and is intentionally NOT the AutomationId — keeping the parameter named for what it
+			// becomes guards against a future regression where AutomationId leaks back into the
+			// accessible name. xamlAutomationId below is the test/dev identifier and never an AT name.
+			if (ariaLabel && ariaLabel.trim().length > 0) {
+				element.setAttribute("aria-label", ariaLabel.trim());
 			}
 
 			if (xamlAutomationId && xamlAutomationId.trim().length > 0) {
