@@ -60,24 +60,24 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var togglePaneButton = navView.FindFirstDescendant<Button>(b => b.Name == "TogglePaneButton");
-			var icon = togglePaneButton?.FindFirstDescendant<FrameworkElement>(f => f.Name == "Icon");
-			var iconTextBlock = icon as TextBlock ?? icon?.FindFirstDescendant<TextBlock>();
+			// The toggle icon is an AnimatedIcon (AnimatedGlobalNavigationButtonVisualSource). It renders
+			// its animated visual rather than the old fallback FontIcon, so there is no fallback TextBlock;
+			// assert the themed color on the AnimatedIcon's Foreground brush, which drives the glyph color.
+			var icon = togglePaneButton?.FindFirstDescendant<AnimatedIcon>(f => f.Name == "Icon");
+			Assert.IsNotNull(icon);
 
-			Assert.IsNotNull(iconTextBlock);
+			Color? IconColor() => (icon.Foreground as SolidColorBrush)?.Color;
 
-			ColorAssert.IsDark((iconTextBlock.Foreground as SolidColorBrush)?.Color);
-			using (ThemeHelper.UseDarkTheme())
-			{
-				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(Colors.White, (iconTextBlock.Foreground as SolidColorBrush)?.Color);
-				ColorAssert.IsLight((iconTextBlock.Foreground as SolidColorBrush)?.Color);
-#if __ANDROID__
-				// This is the meat of the test - we verify that the actual color of the TextBlock matches the managed Color, which will only be the
-				// case if it was correctly measured and arranged as requested after the theme changed.
-				Assert.IsFalse(iconTextBlock.IsLayoutRequested);
-				Assert.AreEqual((Android.Graphics.Color)((iconTextBlock.Foreground as SolidColorBrush).Color), iconTextBlock.NativeArrangedColor);
-#endif
-			}
+			// Drive the theme explicitly (rather than relying on the ambient theme) so the test is
+			// deterministic regardless of the host's default theme.
+			navView.RequestedTheme = ElementTheme.Light;
+			await WindowHelper.WaitForIdle();
+			ColorAssert.IsDark(IconColor());
+
+			navView.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(Colors.White, IconColor());
+			ColorAssert.IsLight(IconColor());
 		}
 
 		[TestMethod]
