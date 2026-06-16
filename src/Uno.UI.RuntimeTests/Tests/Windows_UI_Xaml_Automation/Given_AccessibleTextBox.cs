@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
 			TypeCharacterIntoSemanticTextBox(textBox, "a");
@@ -217,7 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
 			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
@@ -247,10 +247,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("input", GetSemanticTagName(textBox), "A single-line TextBox must emit a native <input> semantic element.");
+			Assert.AreEqual("input", GetSemanticElementTagName(textBox), "A single-line TextBox must emit a native <input> semantic element.");
 			Assert.AreEqual("text", GetSemanticInputType(textBox), "A single-line TextBox must emit input[type=text].");
 			Assert.AreEqual("Hello world", GetSemanticTextBoxValue(textBox), "The semantic input value must mirror TextBox.Text.");
 		}
@@ -270,10 +270,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the multiline semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the multiline semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("textarea", GetSemanticTagName(textBox), "A multiline TextBox (AcceptsReturn=true) must emit a <textarea> semantic element.");
+			Assert.AreEqual("textarea", GetSemanticElementTagName(textBox), "A multiline TextBox (AcceptsReturn=true) must emit a <textarea> semantic element.");
 		}
 
 		/// <summary>
@@ -290,10 +290,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the read-only semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the read-only semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("true", IsSemanticInputReadOnly(textBox), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
+			Assert.IsTrue(SemanticElementHasAttribute(textBox, "readonly"), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
 		}
 
 		/// <summary>
@@ -311,51 +311,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			passwordBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementForPasswordExists(passwordBox), timeoutMS: 5000, message: "Timed out waiting for the password semantic element to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000, message: "Timed out waiting for the password semantic element to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("input", GetSemanticTagNameForPassword(passwordBox), "A PasswordBox must emit a native <input> semantic element.");
-			Assert.AreEqual("password", GetSemanticInputTypeForPassword(passwordBox), "A PasswordBox must emit input[type=password].");
+			Assert.AreEqual("input", GetSemanticElementTagName(passwordBox), "A PasswordBox must emit a native <input> semantic element.");
+			Assert.AreEqual("password", GetSemanticInputType(passwordBox), "A PasswordBox must emit input[type=password].");
 		}
 
 
-		// Targets the exact semantic element for a given TextBox. Using a generic
-		// '#uno-semantics-root input' selector would match the first semantic input in the
-		// document, which is usually not the TextBox under test (e.g. the test runner header).
-		private static string GetSemanticElementId(TextBox textBox)
-			=> $"uno-semantics-{((long)textBox.Visual.Handle)}";
-
-		private static bool SemanticTextBoxExists(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(textBox)}') ? '1' : '0';}})()") == "1";
+		// TextBox-specific accessors. Generic helpers (existence, attribute, tag name, input type,
+		// attribute presence) live in WasmSemanticDomHelper and are used directly via the
+		// `using static` above; only TextBox-only behaviors (value, caret, character injection,
+		// hidden native input check) stay local.
 
 		private static string GetSemanticTextBoxValue(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? element.value : '';}})()");
 
 		private static string GetSemanticTextBoxCaret(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? String(element.selectionStart ?? -1) : '-1';}})()");
-
-		private static string GetSemanticTagName(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(textBox)}'); return e ? e.tagName.toLowerCase() : '';}})()");
-
-		private static string GetSemanticInputType(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(textBox)}'); return e ? (e.getAttribute('type') ?? '') : '';}})()");
-
-		private static string IsSemanticInputReadOnly(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(textBox)}'); return e && e.hasAttribute('readonly') ? 'true' : 'false';}})()");
-
-		// PasswordBox overloads: the id scheme is keyed on the element's Visual.Handle, identical to the
-		// TextBox overloads, but PasswordBox is not a TextBox so it needs its own typed accessors.
-		private static string GetSemanticElementIdForPassword(PasswordBox passwordBox)
-			=> $"uno-semantics-{((long)passwordBox.Visual.Handle)}";
-
-		private static bool SemanticElementForPasswordExists(PasswordBox passwordBox)
-			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementIdForPassword(passwordBox)}') ? '1' : '0';}})()") == "1";
-
-		private static string GetSemanticTagNameForPassword(PasswordBox passwordBox)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementIdForPassword(passwordBox)}'); return e ? e.tagName.toLowerCase() : '';}})()");
-
-		private static string GetSemanticInputTypeForPassword(PasswordBox passwordBox)
-			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementIdForPassword(passwordBox)}'); return e ? (e.getAttribute('type') ?? '') : '';}})()");
 
 		private static bool HiddenNativeTextBoxExists()
 			=> InvokeBrowserJs("(function(){return document.getElementById('uno-input') ? '1' : '0';})()") == "1";
