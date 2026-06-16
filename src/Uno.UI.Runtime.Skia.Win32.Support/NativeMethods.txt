@@ -52,6 +52,8 @@ POINTER_MESSAGE_FLAG_INRANGE
 POINTER_MESSAGE_FLAG_PRIMARY
 POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
+MA_ACTIVATE
+MA_NOACTIVATE
 RDH_RECTANGLES
 S_OK
 SC_CLOSE
@@ -75,6 +77,7 @@ WM_KEYDOWN
 WM_KEYUP
 WM_SYSKEYDOWN
 WM_SYSKEYUP
+WM_MOUSEACTIVATE
 WM_MOVE
 WM_NCCALCSIZE
 WM_DWMCOMPOSITIONCHANGED
@@ -197,6 +200,7 @@ GetClipboardData
 GetClipboardFormatName
 GetDC
 GetDeviceCaps
+GetForegroundWindow
 GetDpiForWindow
 GetDpiForMonitor
 GetIconInfo
@@ -226,6 +230,7 @@ GlobalSize
 GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
+IsChild
 LoadCursor
 LoadRegTypeLib
 LocalFree
@@ -253,6 +258,8 @@ SelectObject
 SendMessage
 SetActiveWindow
 SetCapture
+SetFocus
+SetForegroundWindow
 SetClipboardData
 SetCursor
 SetLayeredWindowAttributes
