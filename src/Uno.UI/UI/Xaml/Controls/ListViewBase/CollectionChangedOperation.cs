@@ -78,7 +78,8 @@ namespace Microsoft.UI.Xaml.Controls
 				case var itemMove when itemMove.ElementType == CollectionChangedOperation.Element.Item &&
 							itemMove.Action == NotifyCollectionChangedAction.Move &&
 							itemMove.StartingIndex.Section == section &&
-							itemMove.NewStartingIndex is Uno.UI.IndexPath newStart:
+							itemMove.NewStartingIndex is Uno.UI.IndexPath newStart &&
+							newStart.Section == section:
 					var oldMoveStart = itemMove.StartingIndex.Row;
 					var oldMoveEnd = oldMoveStart + itemMove.Range - 1;
 					var newMoveStart = newStart.Row;
