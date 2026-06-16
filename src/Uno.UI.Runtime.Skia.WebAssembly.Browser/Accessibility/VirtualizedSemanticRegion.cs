@@ -93,10 +93,17 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		{
 			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
 		}
-		if (_realizedHandles.Remove(index, out var removed))
+
+		// Only clear the index mapping when it still points at the same handle. If a new item was
+		// realized into this index before the unrealize callback arrived (race that OnItemRealized
+		// already partially handles), the index now belongs to a different live handle and must
+		// not be evicted. The handle being unrealized is always purged from _realizedHandleSet
+		// independently so DOM/state stay in sync.
+		if (_realizedHandles.TryGetValue(index, out var current) && current == itemHandle)
 		{
-			_realizedHandleSet.Remove(removed);
+			_realizedHandles.Remove(index);
 		}
+		_realizedHandleSet.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 	}
 
