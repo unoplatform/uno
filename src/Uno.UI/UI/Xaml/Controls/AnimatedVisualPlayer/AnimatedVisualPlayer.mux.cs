@@ -55,6 +55,8 @@ partial class AnimatedVisualPlayer
 	// Whether the current animated visual has its progress animations created.
 	private bool m_isAnimationsCreated;
 
+	// Mirrors WinUI's guard against stale async DestroyAnimations completions. Kept for port
+	// fidelity; Uno's synchronous teardown does not read it yet (see DestroyAnimations).
 	private uint m_createAnimationsCounter;
 
 	/// <summary>
@@ -228,6 +230,9 @@ partial class AnimatedVisualPlayer
 		m_isAnimationsCreated = true;
 	}
 
+	// TODO Uno: faithful port of WinUI's DestroyAnimations, not yet wired into the unload path
+	// (UnloadContent disposes the animated visual directly). Kept for parity, pending the deferred
+	// IAnimatedVisual2 / FallbackContent work.
 	private void DestroyAnimations()
 	{
 		if (!m_isAnimationsCreated || m_animatedVisual is null)
@@ -584,7 +589,6 @@ partial class AnimatedVisualPlayer
 
 	private void OnSourceChanged(DependencyPropertyChangedEventArgs args)
 	{
-		var previousUseWinUIFlow = m_useWinUIFlow;
 		// Clear cached animated visual so we re-evaluate the WinUI flow with the new source.
 		m_useWinUIFlow = false;
 
@@ -594,12 +598,6 @@ partial class AnimatedVisualPlayer
 			OnSourceChangedWinUI();
 		}
 #endif
-
-		if (!m_useWinUIFlow && previousUseWinUIFlow)
-		{
-			// We were on the WinUI flow; the legacy hooks won't have been called for the previous
-			// source, so calling them here would be a no-op. Nothing to do.
-		}
 
 		if (!m_useWinUIFlow)
 		{
@@ -803,9 +801,8 @@ partial class AnimatedVisualPlayer
 				_controller?.Pause();
 			}
 
-			var playbackRate = (float)_owner.PlaybackRate;
-			// AnimationController in Uno does not expose PlaybackRate yet; assume 1.0 for now.
-			// TODO Uno: Wire AnimationController.PlaybackRate when implemented.
+			// TODO Uno: AnimationController in Uno does not expose PlaybackRate yet (assumed 1.0);
+			// wire _owner.PlaybackRate through to the controller once it is implemented.
 
 			_owner.IsPlaying = true;
 		}
