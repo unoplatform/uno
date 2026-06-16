@@ -493,7 +493,7 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			level: number,
 			label: string | null,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			// HTML only has <h1>-<h6>, so the tag is clamped to that range, but the TRUE WinUI
 			// level (1-9) is preserved on aria-level so assistive tech sees the real depth (FR-011).
@@ -503,7 +503,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// A heading is a structural/rotor landmark, not a tab stop: it gets NO tabindex (T014).
-			// isFocusable is accepted for interop-signature uniformity but intentionally unused here.
+			// _isFocusable is accepted for interop-signature uniformity but intentionally unused here.
 			element.style.pointerEvents = 'none';
 
 			// Reset default heading styles so they don't affect layout
@@ -532,13 +532,13 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			text: string,
 			isBlock: boolean,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement(isBlock ? 'p' : 'span');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Standalone body text: non-interactive, not a tab stop. Only textContent is exposed
-			// (no aria-label, no role) so it is read once as plain text. isFocusable is unused.
+			// (no aria-label, no role) so it is read once as plain text. _isFocusable is unused.
 			element.style.pointerEvents = 'none';
 			element.style.margin = '0';
 			element.style.padding = '0';
@@ -703,14 +703,14 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			multiselect: boolean,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'listbox');
 			// Roving model (T015): the composite container is not itself a tab stop; focus rests on
-			// the active descendant item. isFocusable is accepted for signature uniformity.
+			// the active descendant item. _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
@@ -736,7 +736,7 @@ namespace Uno.UI.Runtime.Skia {
 			selected: boolean,
 			positionInSet: number,
 			sizeOfSet: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
@@ -746,7 +746,7 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('aria-posinset', String(positionInSet));
 			element.setAttribute('aria-setsize', String(sizeOfSet));
 			// Composite item stays at -1 (parent listbox manages focus via roving / activedescendant).
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
@@ -960,13 +960,13 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			label: string | null,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tablist');
 			// Roving model (T015): the composite container is not itself a tab stop; the active tab is.
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1034,13 +1034,13 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			multiselectable: boolean,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tree');
 			// Roving model (T015): the composite container is not itself a tab stop; the active treeitem is.
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1067,13 +1067,13 @@ namespace Uno.UI.Runtime.Skia {
 			selected: boolean,
 			positionInSet: number,
 			sizeOfSet: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'treeitem');
 			// Composite item stays at -1 (parent tree manages focus via roving / activedescendant).
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1184,13 +1184,13 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			rowCount: number,
 			colCount: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('table');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'grid');
 			// Roving model (T015): the composite container is not itself a tab stop; the active cell is.
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1215,14 +1215,14 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			rowIndex: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'row');
 			element.style.pointerEvents = 'none';
 			// A row is a structural grouping, not a tab stop: it gets no tabindex.
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			if (rowIndex > 0) {
 				element.setAttribute('aria-rowindex', String(rowIndex));
 			}
@@ -1243,13 +1243,13 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			rowIndex: number,
 			colIndex: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'gridcell');
 			// Composite item stays at -1 (parent grid manages focus via roving / activedescendant).
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1275,13 +1275,13 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			colIndex: number,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'columnheader');
 			// Composite item stays at -1 (parent grid manages focus via roving / activedescendant).
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1303,13 +1303,13 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			label: string | null,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'menu');
 			// Roving model (T015): the composite container is not itself a tab stop; the active menuitem is.
-			// isFocusable is accepted for signature uniformity.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -1330,13 +1330,13 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			disabled: boolean,
 			hasSubmenu: boolean,
-			isFocusable: boolean
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'menuitem');
 			// Composite item stays at -1 (parent menu manages focus via roving). A disabled menuitem
-			// is likewise not a tab stop (T017). isFocusable is accepted for signature uniformity.
+			// is likewise not a tab stop (T017). _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
