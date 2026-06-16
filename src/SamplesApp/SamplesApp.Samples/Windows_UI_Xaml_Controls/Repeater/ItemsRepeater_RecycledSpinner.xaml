@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeater_RecycledSpinner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -26,8 +26,10 @@
             </StackPanel>
         </DataTemplate>
 
-        <!--  Template 2: plain text row. Removing the spinner item leaves only rows of THIS template,
-              so the recycled spinner element is never reused (different template = different pool key).  -->
+        <!--
+            Template 2: plain text row. Removing the spinner item leaves only rows of THIS template,
+            so the recycled spinner element is never reused (different template = different pool key).
+        -->
         <DataTemplate x:Key="TextRowTemplate" x:DataType="local:RecycledSpinnerItem">
             <TextBlock
                 Height="32"
