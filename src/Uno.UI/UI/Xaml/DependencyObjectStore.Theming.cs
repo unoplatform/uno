@@ -540,7 +540,9 @@ public partial class DependencyObjectStore
 	}
 #endif
 
-	// Should this property be notified of theme change?
+	/// <summary>
+	/// Should this property be notified of theme change?
+	/// </summary>
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::ShouldNotifyPropertyOfThemeChange in Theming.cpp (lines 57-77).
 	/// Uno: C# cannot switch on a <see cref="DependencyProperty"/> (it is not a compile-time constant),
@@ -565,7 +567,9 @@ public partial class DependencyObjectStore
 		return !IsDependencyPropertyBackReference(property);
 	}
 
-	// Returns TRUE if the dependency property is a back reference to an object up the tree.
+	/// <summary>
+	/// Returns TRUE if the dependency property is a back reference to an object up the tree.
+	/// </summary>
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::IsDependencyPropertyBackReference in PropertySystem.cpp
 	/// (lines 126-156). Uno: the WinUI KnownPropertyIndex switch is expressed as equality checks, kept

@@ -252,16 +252,11 @@ namespace Microsoft.UI.Xaml
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
-				// A VisualState carries no per-object theme, so materializing its Storyboard/Setters here
-				// would resolve their {ThemeResource}s against the (possibly stale) ambient slot rather than
-				// the part's own theme. Scope the owner element's effective theme for the materialization so
-				// keyframes/setters key on it — the ResolveOwnerTheme intent noted above. In WinUI the state's
-				// storyboard is themed at Enter by the eager theme walk (CVisualState::NotifyThemeChangedCore);
-				// Uno builds it lazily on state entry, so the same owner theme must be applied here.
-				// Skip the scope during a theme walk (as every other ScopeRequestedThemeForSubTree site does):
-				// mid-walk the owner's per-object theme is still the stale pre-walk value while the core slot
-				// already carries the correct new theme, so a state materialized from a re-entrant GoToState
-				// (e.g. a StateTrigger flipping during the walk) must keep the walk theme, not re-resolve to it.
+				// Scope the owner's effective theme so a lazy-materialized VisualState's keyframes/setters
+				// resolve the part's own theme, not the stale ambient (ResolveOwnerTheme; WinUI themes the
+				// storyboard at Enter). Skipped during a theme walk — the core slot already carries the new
+				// theme while the owner's per-object theme is still stale, so a re-entrant GoToState (a
+				// StateTrigger flipping mid-walk) keeps the walk theme.
 				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
 					&& provider.Store.IsProcessingThemeWalk;
 				using var themeScope = ownerIsProcessingThemeWalk
