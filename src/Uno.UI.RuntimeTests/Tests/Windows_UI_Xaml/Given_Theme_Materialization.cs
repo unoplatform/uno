@@ -553,6 +553,60 @@ public class Given_Theme_Materialization
 	}
 #endif
 
+	// ---- T6b3 — applied keyframe color re-applies on a runtime theme switch (Defect 2, #23472) ----
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_ToggleSwitch_PointerOver_Applied_Stroke_ReApplies_On_Theme_Switch()
+	{
+		// Defect 2 (#23472): the previous test asserts the keyframe VALUE re-resolves on a theme switch.
+		// This one asserts the re-resolved color is also re-APPLIED to the live target. A color keyframe
+		// animation is Active (not Filling) after GoToState in the headless runner, and
+		// ColorAnimationUsingKeyFrames.OnThemeChanged only recomputed _finalValue without re-applying it,
+		// so the rendered OuterBorder stroke color stayed the old theme's color until the animation
+		// completed (WinUI re-applies via RequestTickForPendingThemeChange regardless of Active/Filling).
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+
+		var island = new Border { RequestedTheme = ElementTheme.Light };
+		var host = new Grid { RequestedTheme = ElementTheme.Dark, Children = { island } };
+		var toggle = new ToggleSwitch();
+		island.Child = toggle;
+
+		static Color? AppliedStrokeColor(ToggleSwitch ts)
+			=> (ts.FindFirstDescendant<Microsoft.UI.Xaml.Shapes.Rectangle>("OuterBorder")?.Stroke as SolidColorBrush)?.Color;
+
+		try
+		{
+			await UITestHelper.Load(host);
+			await WindowHelper.WaitForIdle();
+
+			VisualStateManager.GoToState(toggle, "PointerOver", false);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(ControlStrongStrokeLight, AppliedStrokeColor(toggle),
+				"PointerOver applied stroke color should be the Light theme color after entering the state.");
+
+			island.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(ControlStrongStrokeDark, AppliedStrokeColor(toggle),
+				"After switching the island to Dark, the applied PointerOver stroke color must re-apply to the "
+				+ "Dark color, not stay stale (the color animation must re-apply the re-resolved keyframe on theme change).");
+
+			// Round-trip back to Light — the re-apply must be bidirectional and not accumulate.
+			island.RequestedTheme = ElementTheme.Light;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(ControlStrongStrokeLight, AppliedStrokeColor(toggle),
+				"Switching the island back to Light must re-apply the Light color.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
+
 	// ---- T6c — a page navigated into a Frame AFTER an element-theme switch inherits the new theme ----
 
 	[TestMethod]
