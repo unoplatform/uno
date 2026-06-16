@@ -3,9 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
+#if false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+#endif
 	public partial class CompositionContainerShape : global::Microsoft.UI.Composition.CompositionShape
 	{
-		// Skipping already declared method Microsoft.UI.Composition.CompositionContainerShape.CompositionContainerShape()
 		// Skipping already declared property Shapes
 		// Forced skipping of method Microsoft.UI.Composition.CompositionContainerShape.Shapes.get
 	}

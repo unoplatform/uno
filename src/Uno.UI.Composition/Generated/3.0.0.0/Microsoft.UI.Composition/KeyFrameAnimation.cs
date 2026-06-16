@@ -29,8 +29,20 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property IterationCount
 		// Skipping already declared property KeyFrameCount
 		// Skipping already declared property StopBehavior
-		// Skipping already declared method Microsoft.UI.Composition.KeyFrameAnimation.InsertExpressionKeyFrame(float, string)
-		// Skipping already declared method Microsoft.UI.Composition.KeyFrameAnimation.InsertExpressionKeyFrame(float, string, Microsoft.UI.Composition.CompositionEasingFunction)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.KeyFrameAnimation", "InsertExpressionKeyFrame(float normalizedProgressKey, string value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.KeyFrameAnimation", "InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.DelayBehavior.get
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.DelayBehavior.set
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.DelayTime.get
