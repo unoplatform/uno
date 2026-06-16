@@ -706,7 +706,9 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	// Validated against a real WinUI 3 app: a NavigationCacheMode=Required page kept off-screen while the
+	// host RequestedTheme flips re-resolves its {ThemeResource}s to the NEW theme on re-navigation
+	// (probe.ActualTheme reads Light, probe.Background = the Light sentinel), so this runs on NativeWinUI too.
 	public async Task When_Cached_Page_Renavigated_After_Theme_Switch_Inherits_Theme()
 	{
 		// Repro of the reported GC Toolkit bug: a Frame page with NavigationCacheMode is themed, the
