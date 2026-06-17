@@ -1251,6 +1251,121 @@ public class Given_Theme_Materialization
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	// ---- T6b4 — a {ThemeResource} re-resolution must not defeat an active animation ----
+	// (kahua-private #491 / Uno #23472 — "checked CheckBoxes render empty until hover")
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23472")]
+	public async Task When_ThemeResource_Reresolution_Does_Not_Defeat_Active_Animation()
+	{
+		// Root cause of the Kahua "checked CheckBoxes render empty (white) until you hover them" bug.
+		// A CheckBox's CheckedNormal VisualState sets NormalRectangle.Fill to the accent via an
+		// ObjectAnimationUsingKeyFrames (Animations precedence); the template also carries a base
+		// Fill="{ThemeResource ...}" (Local precedence). A {ThemeResource} re-resolution that runs AFTER the
+		// animation has applied the accent re-applies the Local base value via
+		// DependencyObjectStore.UpdateResourceBindings (in Kahua: the per-element load-time
+		// FrameworkElement.OnFwEltLoading -> the template's generated __UpdateBindingsAndResources, during a
+		// deferred Measure). Per WinUI's CModifiedValue::GetEffectiveValue rule ("a local value set after an
+		// animation in its filling period trumps the held animation"), that later Local write defeats the
+		// animation — the box reverts to the (unchecked, white) base fill and renders empty until a hover
+		// re-runs GoToState. The defeat manifests only when the re-resolved value DIFFERS from the base captured
+		// when the animation started (ModifiedValue.SetBaseValue's AreDifferent guard) — in Kahua, the template
+		// writes different {ThemeResource} values to NormalRectangle.Fill across its states. Here we reproduce
+		// that by mutating the resource between the animation and the re-resolution.
+		//
+		// WinUI never trips this: a theme-resolved value is not a ValueOperationFromSetValue, so it does not set
+		// the "local newer than animated" bit. The global app/OS theme switch already suppresses this in Uno
+		// (CoreServices.RaiseThemeChanged / Application.OnResourcesChanged wrap the walk in
+		// ModifiedValue.SuppressLocalCanDefeatAnimations); every per-element UpdateResourceBindings must do the
+		// same. (Note ResourceDictionary mutation alone does not re-apply bindings on the tree, so the explicit
+		// UpdateResourceBindings call below is what drives the re-resolution — the same path the load uses.)
+		var accent = Color.FromArgb(0xFF, 0x00, 0x62, 0xA9);
+		var resolved = Color.FromArgb(0xFF, 0x00, 0xAA, 0x44);
+
+		var island = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Border.Resources>
+					<ResourceDictionary>
+						<SolidColorBrush x:Key="ResBrush" Color="#FF00AA44" />
+					</ResourceDictionary>
+				</Border.Resources>
+				<StackPanel>
+					<Rectangle x:Name="animated" Width="40" Height="40" />
+					<Rectangle x:Name="control" Width="40" Height="40" />
+				</StackPanel>
+			</Border>
+			""");
+		var animated = (Microsoft.UI.Xaml.Shapes.Rectangle)island.FindName("animated");
+		var control = (Microsoft.UI.Xaml.Shapes.Rectangle)island.FindName("control");
+
+		// Register a resource binding for Fill on each rect — a single Local-precedence re-application that
+		// UpdateResourceBindings drives (the SetResourceBindingValue path from the Kahua stack trace). We
+		// register the binding directly (rather than Fill="{ThemeResource}" markup) so the re-resolution is a
+		// SINGLE write: markup also pins a theme-reference, and UpdateResourceBindings then writes the value
+		// TWICE (theme-ref phase then resource-binding phase) with the same value — the second, same-value write
+		// clears ModifiedValue's "local newer than animated" bit again and masks the defeat (which is exactly
+		// why the empty-checkbox bug only reproduces inside Kahua's multi-state template churn, never in a
+		// simple isolated control). A single resource binding writes once, so the defeat sticks.
+		var key = new SpecializedResourceDictionary.ResourceKey("ResBrush");
+		void Bind(Microsoft.UI.Xaml.Shapes.Rectangle r) =>
+			((IDependencyObjectStoreProvider)r).Store.SetResourceBinding(
+				Microsoft.UI.Xaml.Shapes.Shape.FillProperty, key, Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource,
+				context: null, precedence: null, setterBindingPath: null);
+
+		try
+		{
+			await UITestHelper.Load(island);
+			await WindowHelper.WaitForIdle();
+
+			// CheckedNormal-keyframe analog: animate Fill to the accent and hold it. The ModifiedValue captures
+			// the current base (the unset Transparent default) and layers the accent on top at Animations
+			// precedence. We SkipToFill so the animation holds its end value and STOPS ticking — matching the
+			// real-app CheckedNormal keyframe (a 0-duration discrete frame that fills). The headless runtime-test
+			// time manager otherwise keeps a Begin()'d animation perpetually Active, re-applying the keyframe each
+			// idle tick (which re-clears the "local newer than animated" bit) and would mask the defeat.
+			var storyboard = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
+			var animation = new Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames();
+			Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(animation, animated);
+			Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(animation, "Fill");
+			animation.KeyFrames.Add(new Microsoft.UI.Xaml.Media.Animation.DiscreteObjectKeyFrame
+			{
+				KeyTime = Microsoft.UI.Xaml.Media.Animation.KeyTime.FromTimeSpan(TimeSpan.Zero),
+				Value = new SolidColorBrush(accent),
+			});
+			storyboard.Children.Add(animation);
+			storyboard.Begin();
+			storyboard.SkipToFill();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(accent, (animated.Fill as SolidColorBrush)?.Color,
+				"Sanity: the filled animation should hold the accent before the re-resolution.");
+
+			// Re-apply the resource binding AFTER the animation (the load-time / theme-refresh re-resolution
+			// path), which writes the resolved brush at Local precedence.
+			Bind(animated);
+			Bind(control);
+			((IDependencyObjectStoreProvider)animated).Store.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+			((IDependencyObjectStoreProvider)control).Store.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+			await WindowHelper.WaitForIdle();
+
+			// Control (no animation) proves the binding actually re-applied the resolved value, so the 'animated'
+			// assertion is not vacuous.
+			Assert.AreEqual(resolved, (control.Fill as SolidColorBrush)?.Color,
+				"Sanity: UpdateResourceBindings should re-apply the resolved brush on the non-animated control rect.");
+
+			Assert.AreEqual(accent, (animated.Fill as SolidColorBrush)?.Color,
+				"A resource-binding re-resolution must NOT defeat the active animation: Fill must stay the animated "
+				+ "accent, not revert to the re-resolved base value — the Kahua empty-checkbox bug.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 #endif
 }
 

@@ -760,6 +760,31 @@ public partial class DependencyObjectStore
 			throw new ArgumentException();
 		}
 
+		// A theme-resolved {ThemeResource}/{StaticResource} value re-applied during a per-element re-resolution
+		// — load-time (FrameworkElement.OnFwEltLoading) and element/subtree theme change (NotifyThemeChangedCore)
+		// — flows through SetValue at Local precedence, which marks ModifiedValue.LocalValueNewerThanAnimatedValue
+		// and would defeat an in-effect (held) animation, e.g. a Control's filled VisualState keyframe (the
+		// "checked CheckBox renders empty until hover" bug). MUX Reference: the precedence rule
+		// (ModifiedValue.cpp CModifiedValue::GetEffectiveValue, lines 255-282) and the theme write path that marks
+		// local-newer (Theming.cpp SetThemeResourceBinding -> SetValue, line 441; PropertySystem.cpp SetValue ->
+		// SetBaseValue(BaseValueSourceLocal), line 1651). WinUI has no suppress primitive; Uno compensates with
+		// the counter-based guard already wrapping the global theme switch (CoreServices.RaiseThemeChanged,
+		// Application.OnResourcesChanged) — extend it to this per-element choke point so a re-resolved theme value
+		// cannot defeat an in-effect animation. Counter-based, so it nests safely under the global guard;
+		// try/finally so the counter unwinds on an exception in any phase.
+		ModifiedValue.SuppressLocalCanDefeatAnimations();
+		try
+		{
+			UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
+		}
+		finally
+		{
+			ModifiedValue.ContinueLocalCanDefeatAnimations();
+		}
+	}
+
+	private void UpdateResourceBindingsCore(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider, ResourceDictionary? containingDictionary)
+	{
 		// The owner whose effective theme drives every {ThemeResource} resolution below: this element, or —
 		// for a standalone resource DO with no inheritance parent — the injected resource-context element
 		// (the dictionary's owning element), matching WinUI's per-owner {ThemeResource} resolution. Resolve
