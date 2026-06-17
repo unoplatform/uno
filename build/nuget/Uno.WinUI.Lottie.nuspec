@@ -83,24 +83,6 @@
 		</dependencies>
 
 		<references>
-			<group targetFramework="net9.0-ios18.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="net9.0-tvos18.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="net9.0-android">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="net10.0-ios26.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="net10.0-tvos26.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="net10.0-android">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
 			<group targetFramework="net10.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
@@ -115,29 +97,15 @@
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net9.0\Uno.UI.Lottie.dll" target="lib\net9.0" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net10.0\Uno.UI.Lottie.dll" target="lib\net10.0" />
 
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-android\Uno.UI.Lottie.dll" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Lottie.dll" target="lib\net9.0-ios18.0" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Lottie.dll" target="lib\net9.0-tvos18.0" />
-
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-android\Uno.UI.Lottie.dll" target="lib\net10.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-ios26.0\Uno.UI.Lottie.dll" target="lib\net10.0-ios26.0" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Lottie.dll" target="lib\net10.0-tvos26.0" />
-
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
-
-		<!-- net9.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net9.0\Uno.UI.Lottie.*" target="uno-runtime\net9.0\webassembly" />
 
 		<!-- net9.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net9.0\Uno.UI.Lottie.*" target="uno-runtime\net9.0\skia" />
 
-		<!-- net10.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net10.0\Uno.UI.Lottie.*" target="uno-runtime\net10.0\webassembly" />
-
 		<!-- net10.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net10.0\Uno.UI.Lottie.*" target="uno-runtime\net10.0\skia" />
-		
+
 		<!-- Force UAP/netx-win to ignore netX.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
 		<file src="_._" target="build\uap10.0.19041" />
