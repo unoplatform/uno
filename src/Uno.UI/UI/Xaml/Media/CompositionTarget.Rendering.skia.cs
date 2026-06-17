@@ -47,7 +47,55 @@ public partial class CompositionTarget
 		Environment.GetEnvironmentVariable("UNO_DIRTY_RECTANGLES") is "false";
 
 	// Snapshot of the dirty region attached to a recorded frame, consumed by Draw() on the render thread.
-	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds);
+	// The region may be a possibly-disjoint union of arbitrary shapes. It is transported across the
+	// record/present threads as SVG path data (a GC-managed string, so the snapshot needs no native cleanup):
+	// RegionSvg is null when the region is a single rectangle (the common case) — Bounds then describes it.
+	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds, string? RegionSvg);
+
+	private static readonly DamageSnapshot _emptyDamage = new(IsFullFrame: false, IsEmpty: true, default, null);
+
+	private static DamageSnapshot SnapshotFrom(DirtyRegion region)
+	{
+		if (region.IsFullFrame)
+		{
+			return new DamageSnapshot(IsFullFrame: true, IsEmpty: false, default, null);
+		}
+		if (region.IsEmpty)
+		{
+			return _emptyDamage;
+		}
+		if (region.IsRect(out var rect))
+		{
+			return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, rect, null);
+		}
+		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, region.Region.ToSvgPathData());
+	}
+
+	// Builds an SKPath for a (non-full, non-empty) snapshot's region. Caller owns/disposes it.
+	private static SKPath ToRegionPath(DamageSnapshot damage)
+	{
+		if (damage.RegionSvg is { } svg)
+		{
+			return SKPath.ParseSvgPathData(svg);
+		}
+		var path = new SKPath();
+		path.AddRect(damage.Bounds);
+		return path;
+	}
+
+	// Builds a DamageSnapshot from a region path (rectangle fast path when possible). Does not take ownership.
+	private static DamageSnapshot SnapshotFromPath(SKPath region)
+	{
+		if (region.IsEmpty)
+		{
+			return _emptyDamage;
+		}
+		if (region.IsRect)
+		{
+			return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, null);
+		}
+		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, region.ToSvgPathData());
+	}
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (IntPtr frame, SKPath nativeElementClipPath, DamageSnapshot damage)? _lastRenderedFrame;
@@ -105,7 +153,7 @@ public partial class CompositionTarget
 
 		// Snapshot and reset the accumulated dirty region for this frame. The picture above is always
 		// the full tree; the snapshot tells Draw() which region actually needs to be re-presented.
-		var damageSnapshot = new DamageSnapshot(_pendingDamage.IsFullFrame, _pendingDamage.IsEmpty, _pendingDamage.Bounds);
+		var damageSnapshot = SnapshotFrom(_pendingDamage);
 		_pendingDamage.Reset();
 
 		// Clamp the damage to the visual-tree bounds. Nothing outside the frame is ever presented, and an
@@ -114,10 +162,22 @@ public partial class CompositionTarget
 		if (!damageSnapshot.IsFullFrame && !damageSnapshot.IsEmpty)
 		{
 			var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
-			var clampedBounds = SKRect.Intersect(damageSnapshot.Bounds, frameRect);
-			damageSnapshot = clampedBounds.IsEmpty
-				? new DamageSnapshot(IsFullFrame: false, IsEmpty: true, default)
-				: new DamageSnapshot(IsFullFrame: false, IsEmpty: false, clampedBounds);
+			if (!frameRect.Contains(damageSnapshot.Bounds))
+			{
+				if (damageSnapshot.RegionSvg is null)
+				{
+					var clampedBounds = SKRect.Intersect(damageSnapshot.Bounds, frameRect);
+					damageSnapshot = clampedBounds.IsEmpty ? _emptyDamage : new DamageSnapshot(false, false, clampedBounds, null);
+				}
+				else
+				{
+					using var region = ToRegionPath(damageSnapshot);
+					using var framePath = new SKPath();
+					framePath.AddRect(frameRect);
+					region.Op(framePath, SKPathOp.Intersect, region);
+					damageSnapshot = SnapshotFromPath(region);
+				}
+			}
 		}
 
 		var previousFrame = default((IntPtr frame, SKPath path, DamageSnapshot damage)?);
@@ -180,14 +240,18 @@ public partial class CompositionTarget
 
 	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.AddRect(bounds);
 
+	void ICompositionTarget.AddDamage(SKPath region) => _pendingDamage.AddPath(region);
+
 	void ICompositionTarget.AddFullFrameDamage() => _pendingDamage.SetFullFrame();
 
-	// Unions two per-frame damage snapshots (used to carry an un-presented frame's damage forward).
+	// Unions two per-frame damage snapshots (used to carry an un-presented frame's damage forward). The
+	// union is a true geometric union of the two (possibly non-rectangular, possibly disjoint) regions, not
+	// their bounding box, so carrying damage forward doesn't fill in the gaps between far-apart changes.
 	private static DamageSnapshot MergeDamage(DamageSnapshot current, DamageSnapshot carried)
 	{
 		if (current.IsFullFrame || carried.IsFullFrame)
 		{
-			return new DamageSnapshot(IsFullFrame: true, IsEmpty: false, default);
+			return new DamageSnapshot(IsFullFrame: true, IsEmpty: false, default, null);
 		}
 
 		if (carried.IsEmpty)
@@ -200,21 +264,29 @@ public partial class CompositionTarget
 			return carried;
 		}
 
-		var union = new SKRect(
-			Math.Min(current.Bounds.Left, carried.Bounds.Left),
-			Math.Min(current.Bounds.Top, carried.Bounds.Top),
-			Math.Max(current.Bounds.Right, carried.Bounds.Right),
-			Math.Max(current.Bounds.Bottom, carried.Bounds.Bottom));
-		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, union);
+		using var region = ToRegionPath(current);
+		using var carriedRegion = ToRegionPath(carried);
+		region.Op(carriedRegion, SKPathOp.Union, region);
+		return SnapshotFromPath(region);
 	}
 
-	private static void DrawDirtyRectanglesOverlay(SKCanvas canvas, SKRect bounds)
+	private static void DrawDirtyRectanglesOverlay(SKCanvas canvas, in DamageSnapshot damage)
 	{
-		// Diagnostic only: tint + outline the region repainted this frame.
+		// Diagnostic only: tint + outline the region repainted this frame. Drawing the actual region (which
+		// may be disjoint / non-rectangular) shows the gaps between changed areas are not being repainted.
 		using var fill = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
 		using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
-		canvas.DrawRect(bounds, fill);
-		canvas.DrawRect(bounds, stroke);
+		if (damage.RegionSvg is null)
+		{
+			canvas.DrawRect(damage.Bounds, fill);
+			canvas.DrawRect(damage.Bounds, stroke);
+		}
+		else
+		{
+			using var region = ToRegionPath(damage);
+			canvas.DrawPath(region, fill);
+			canvas.DrawPath(region, stroke);
+		}
 	}
 
 	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc, bool surfaceRetainsContents)
@@ -292,9 +364,22 @@ public partial class CompositionTarget
 			// redraw wipes the previous frame's tint) and only highlight the region that WOULD have been the
 			// dirty clip. This is a diagnostic aid; it intentionally forgoes the clipped present so the marks
 			// flash on the current dirty region instead of piling up.
+			SKPath? damageClipPath = null;
 			if (useDirtyRectangles && !overlayEnabled)
 			{
-				targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
+				if (damage.IsEmpty || damage.RegionSvg is null)
+				{
+					targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
+				}
+				else
+				{
+					// Non-rectangular / disjoint region: clip to the actual region so the gaps between changed
+					// areas (and the parts outside a curved clip) are preserved from the previous frame. No
+					// antialiasing on the damage clip — the regions are pixel-snapped, and an AA clip would blend
+					// boundary pixels against the retained surface, diverging from a full repaint.
+					damageClipPath = ToRegionPath(damage);
+					targetCanvas.ClipPath(damageClipPath, antialias: false);
+				}
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
@@ -306,17 +391,18 @@ public partial class CompositionTarget
 
 			if (overlayEnabled && useDirtyRectangles && !damage.IsEmpty)
 			{
-				DrawDirtyRectanglesOverlay(targetCanvas, damage.Bounds);
+				DrawDirtyRectanglesOverlay(targetCanvas, damage);
 			}
 
 			targetCanvas.Restore();
+			damageClipPath?.Dispose();
 
 			// The frame has now been presented, so its dirty region is consumed. ReturnFrame puts the frame
 			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
 			// otherwise carry this already-presented damage forward via MergeDamage — accumulating it forever
 			// under a continuous render loop and pinning the dirty region (and the overlay) to the whole frame.
 			// Return it with an empty dirty region so a re-present paints nothing and the carry stays clean.
-			ReturnFrame((lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, new DamageSnapshot(IsFullFrame: false, IsEmpty: true, default)));
+			ReturnFrame((lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, _emptyDamage));
 
 			InvokeRendering();
 

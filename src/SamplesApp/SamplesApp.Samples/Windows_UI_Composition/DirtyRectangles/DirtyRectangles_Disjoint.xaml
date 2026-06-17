@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_Disjoint"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <!--
+        Two elements far apart with a large empty gap between them, both updated on a timer. Verifies the
+        dirty region is a disjoint union (the two changed areas), so the gap between them is NOT repainted —
+        while staying pixel-identical to a full repaint.
+    -->
+    <Grid>
+        <Border
+            x:Name="TopBox"
+            Width="200"
+            Height="40"
+            Margin="40,40,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+            <TextBlock
+                x:Name="TopText"
+                Margin="8"
+                Foreground="White"
+                Text="top" />
+        </Border>
+
+        <Border
+            x:Name="BottomBox"
+            Width="200"
+            Height="40"
+            Margin="40,0,0,40"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+            <TextBlock
+                x:Name="BottomText"
+                Margin="8"
+                Foreground="White"
+                Text="bottom" />
+        </Border>
+    </Grid>
+</Page>
