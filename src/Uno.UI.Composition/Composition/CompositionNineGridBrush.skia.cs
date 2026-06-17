@@ -14,6 +14,7 @@ namespace Microsoft.UI.Composition
 		private SKRectI _insetRect;
 
 		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
+		internal override float DirtyRegionSamplingMargin => Source?.DirtyRegionSamplingMargin ?? 0;
 
 		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{

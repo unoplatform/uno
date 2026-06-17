@@ -62,6 +62,9 @@ public partial class ShapeVisual
 	internal override bool RequiresRepaintOnEveryFrame =>
 		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
 
+	internal override float DirtyRegionSamplingMargin =>
+		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DirtyRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
+
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
 	// A ShapeVisual paints arbitrary geometry that can extend past its Size (strokes, paths with their own

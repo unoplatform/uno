@@ -147,6 +147,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
+	// How far (in local pixels) beyond its own bounds this visual's paint samples the surface (e.g. a backdrop
+	// blur). Dirty-rectangles rendering expands the damage region by this margin so the sampled backdrop stays
+	// fresh; otherwise the effect reads stale pixels where the surrounding content changed. 0 by default.
+	internal virtual float DirtyRegionSamplingMargin => 0;
+
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
@@ -277,11 +282,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		if (TryGetPaintDamageBounds(out var bounds))
+		if (TryGetPaintDamageRegion(out var bounds, out var regionPath))
 		{
-			target.AddDamage(bounds);
+			if (regionPath is not null)
+			{
+				target.AddDamage(regionPath);
+				_pathPool.Free(regionPath);
+			}
+			else
+			{
+				target.AddDamage(bounds);
+			}
+
 			if (_hasLastRenderBounds)
 			{
+				// Erase the region this visual vacated. The bounding rect is a safe (if slightly loose) cover
+				// for a curved old region; vacating only happens on moves/resizes.
 				target.AddDamage(_lastRenderBounds);
 			}
 			_lastRenderBounds = bounds;
@@ -298,51 +314,114 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	// Computes the dirty region (in root/logical coordinates) for this visual's own paint. The dirty region
 	// is the intersection of two things: the clip in effect when the visual draws (the region it is *allowed*
-	// to draw into, computed via GetTotalClipPath like native-element clipping), and the bounds of what it
-	// *actually* paints (its content). The clip alone over-damages — an element's clip is often the whole
-	// ScrollViewer viewport or the infinite clip, while it only paints a small icon/line/glyph. Intersecting
-	// with the content bounds yields the tight, correct region. When the content extent can't be bounded
-	// tighter than the clip (e.g. a drop shadow that paints beyond the visual), we fall back to the clip.
-	// Returns false when the visual paints nothing of its own or is fully clipped out.
-	private bool TryGetPaintDamageBounds(out SKRect bounds)
+	// to draw into, computed via GetTotalClipPath like native-element clipping — and which can be any curve,
+	// not just a rectangle), and the bounds of what it *actually* paints (its content). The clip alone
+	// over-damages — an element's clip is often the whole ScrollViewer viewport or the infinite clip, while
+	// it only paints a small icon/line/glyph. When the content extent can't be bounded tighter than the clip
+	// (e.g. a drop shadow that paints beyond the visual), we fall back to the clip itself.
+	//
+	// Outputs a plain rectangle in the common case (rectangular clip), or, when the clip is non-rectangular,
+	// a path (rented from <see cref="_pathPool"/> — the caller must free it). Returns false when the visual
+	// paints nothing of its own or is fully clipped out.
+	private bool TryGetPaintDamageRegion(out SKRect bounds, out SKPath? regionPath)
 	{
 		bounds = default;
+		regionPath = null;
 
-		var clipRect = GetTotalClipRectInRootCoordinates();
-		if (clipRect.Width <= 0 || clipRect.Height <= 0)
+		var clipPath = _pathPool.Allocate();
+		var keepClipPath = false;
+		try
 		{
-			return false;
-		}
-		var clip = new SKRect((float)clipRect.Left, (float)clipRect.Top, (float)clipRect.Right, (float)clipRect.Bottom);
-
-		if (TryGetLocalContentBounds(out var local))
-		{
-			if (local.IsEmpty)
+			clipPath.Rewind();
+			// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children.
+			GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
+			if (clipPath.IsEmpty)
 			{
 				return false;
 			}
 
-			var root = TotalMatrix.ToSKMatrix().MapRect(local);
-			// Absorb antialiasing bleed and sub-pixel placement at the content edges, then snap outward to
-			// whole pixels so the present-clip never bisects an antialiased boundary pixel (which would leave
-			// a faint stale seam where the clipped repaint blends against the retained surface).
-			root.Inflate(2, 2);
-			var clipped = SKRect.Intersect(root, clip);
-			if (clipped.IsEmpty)
+			var clipIsRect = clipPath.IsRect;
+			var clipRect = clipPath.Bounds;
+
+			if (TryGetLocalContentBounds(out var local))
 			{
-				return false;
+				if (local.IsEmpty)
+				{
+					return false;
+				}
+
+				// Expand by the backdrop-sampling margin (e.g. a blur radius): the effect reads the surface this
+				// far beyond its own bounds, so that ring must be kept fresh or the blur samples stale pixels.
+				var samplingMargin = DirtyRegionSamplingMargin;
+				if (samplingMargin > 0)
+				{
+					local.Inflate(samplingMargin, samplingMargin);
+				}
+
+				var root = TotalMatrix.ToSKMatrix().MapRect(local);
+				// Absorb antialiasing bleed and sub-pixel placement at the content edges, then snap outward to
+				// whole pixels so the present-clip never bisects an antialiased boundary pixel (which would
+				// leave a faint stale seam where the clipped repaint blends against the retained surface).
+				root.Inflate(2, 2);
+				root = new SKRect(
+					(float)Math.Floor(root.Left),
+					(float)Math.Floor(root.Top),
+					(float)Math.Ceiling(root.Right),
+					(float)Math.Ceiling(root.Bottom));
+
+				if (clipIsRect)
+				{
+					var clipped = SKRect.Intersect(root, clipRect);
+					if (clipped.IsEmpty)
+					{
+						return false;
+					}
+					bounds = clipped;
+					return true;
+				}
+
+				// Non-rectangular clip: intersect the content rect with the clip path so the damage honors the
+				// curve instead of over-damaging to the content's bounding box.
+				var rectPath = _pathPool.Allocate();
+				try
+				{
+					rectPath.Rewind();
+					rectPath.AddRect(root);
+					clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
+				}
+				finally
+				{
+					_pathPool.Free(rectPath);
+				}
+
+				if (clipPath.IsEmpty)
+				{
+					return false;
+				}
+				bounds = clipPath.Bounds;
+				regionPath = clipPath;
+				keepClipPath = true;
+				return true;
 			}
-			bounds = new SKRect(
-				(float)Math.Floor(clipped.Left),
-				(float)Math.Floor(clipped.Top),
-				(float)Math.Ceiling(clipped.Right),
-				(float)Math.Ceiling(clipped.Bottom));
+
+			// The content extent can't be bounded tighter than the clip (shadow casters / unknown painters).
+			if (clipIsRect)
+			{
+				bounds = clipRect;
+				return true;
+			}
+			bounds = clipPath.Bounds;
+			regionPath = clipPath;
+			keepClipPath = true;
 			return true;
 		}
-
-		// The paint extent can't be bounded tighter than the clip (shadow casters / unknown painters).
-		bounds = clip;
-		return true;
+		finally
+		{
+			if (!keepClipPath)
+			{
+				_pathPool.Free(clipPath);
+			}
+		}
 	}
 
 	// Bounds, in this visual's local coordinate space, of what it paints *itself* (not its children).

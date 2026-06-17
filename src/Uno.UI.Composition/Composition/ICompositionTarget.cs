@@ -28,6 +28,13 @@ internal interface ICompositionTarget
 	void AddDamage(SKRect bounds);
 
 	/// <summary>
+	/// Adds a changed region (in root/logical coordinates), possibly non-rectangular, to the current
+	/// frame's dirty region. The region is unioned with the rest of the frame's damage, which may be a
+	/// disjoint set of arbitrary shapes, so the gaps between changed areas are not repainted.
+	/// </summary>
+	void AddDamage(SKPath region);
+
+	/// <summary>
 	/// Marks the entire surface as dirty for the current frame (e.g. on resize), forcing a full repaint.
 	/// </summary>
 	void AddFullFrameDamage();
