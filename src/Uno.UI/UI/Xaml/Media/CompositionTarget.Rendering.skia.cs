@@ -120,6 +120,18 @@ public partial class CompositionTarget
 		var damageSnapshot = new DamageSnapshot(_pendingDamage.IsFullFrame, _pendingDamage.IsEmpty, _pendingDamage.Bounds);
 		_pendingDamage.Reset();
 
+		// Clamp the damage to the visual-tree bounds. Nothing outside the frame is ever presented, and an
+		// unbounded contributor (a visual that falls back to an infinite clip) would otherwise pin the damage
+		// — and, with carry-forward, every later frame — to the infinite rect, repainting the whole window.
+		if (!damageSnapshot.IsFullFrame && !damageSnapshot.IsEmpty)
+		{
+			var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
+			var clampedBounds = SKRect.Intersect(damageSnapshot.Bounds, frameRect);
+			damageSnapshot = clampedBounds.IsEmpty
+				? new DamageSnapshot(IsFullFrame: false, IsEmpty: true, default)
+				: new DamageSnapshot(IsFullFrame: false, IsEmpty: false, clampedBounds);
+		}
+
 		var previousFrame = default((IntPtr frame, SKPath path, DamageSnapshot damage)?);
 		lock (_frameGate)
 		{
@@ -324,7 +336,12 @@ public partial class CompositionTarget
 
 			targetCanvas.Restore();
 
-			ReturnFrame(lastRenderedFrame);
+			// The frame has now been presented, so its dirty region is consumed. ReturnFrame puts the frame
+			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
+			// otherwise carry this already-presented damage forward via MergeDamage — accumulating it forever
+			// under a continuous render loop and pinning the dirty region (and the overlay) to the whole frame.
+			// Return it with an empty dirty region so a re-present paints nothing and the carry stays clean.
+			ReturnFrame((lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, new DamageSnapshot(IsFullFrame: false, IsEmpty: true, default)));
 
 			InvokeRendering();
 
