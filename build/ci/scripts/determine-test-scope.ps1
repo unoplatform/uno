@@ -1,16 +1,15 @@
 <#
 .SYNOPSIS
-Determines which CI test scopes must run for a pull request based on the touched files.
+Determines which optional CI test scopes must run for a pull request based on the touched files.
 
 .DESCRIPTION
-This script inspects the diff between the PR head and its target branch to figure out
-which native build/test stages should execute. It sets Azure DevOps variables (both
-standard and task output) for each scope so subsequent jobs can conditionally run.
+This script inspects the diff between the PR head and its target branch to figure out which
+optional test stages (template tests and the screenshot comparison) should execute. It sets
+Azure DevOps variables (both standard and task output) for each scope so subsequent stages can
+conditionally run.
 
-It uses file-suffix heuristics that MUST remain aligned with
-src/Uno.CrossTargetting.targets. Update both locations together when introducing a new
-platform-specific suffix. When the script cannot determine scope (e.g., non-PR build or
-git fetch failure) it enables every scope to stay safe.
+When the script cannot determine scope (e.g., non-PR build or git fetch failure) it enables
+every scope to stay safe.
 
 .PARAMETER DefaultTargetBranch
 Fallback branch used when System.PullRequest.TargetBranch is not available.
@@ -23,27 +22,18 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $scopeVariables = [ordered]@{
-    RequireNativeAndroid = $false
-    RequireNativeIos     = $false
-    RequireNativeWasm    = $false
-    SkiaScreenshots      = $false
     TemplateTestsRequired = $false
-    ScreenshotsRequired  = $false
+    ScreenshotsRequired   = $false
 }
 
-# NOTE: The suffix-based filters below MUST stay aligned with the platform filters declared in
-#       src/Uno.CrossTargetting.targets (see the ItemGroup near the top of that file). When
-#       adding or removing conditional includes there, update this list accordingly.
+# Heuristics:
+#   TemplateTestsRequired - build infrastructure / project-shape changes that can affect the
+#                           generated app templates.
+#   ScreenshotsRequired   - Skia rendering changes (*.skia.cs) that warrant a screenshot diff.
 $patterns = @{
-    RequireNativeAndroid = [regex]'(?i)^.*\.(android|xamarin)\.cs$'
-    RequireNativeIos     = [regex]'(?i)^.*\.(ios|tvos|uikit|iosmacos|apple|xamarin)\.cs$'
-    RequireNativeWasm    = [regex]'(?i)^.*\.wasm\.cs$'
-    SkiaScreenshots      = [regex]'(?i)^.*\.skia\.cs$'
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/.*devserver.*|^src/.*remotecontrol.*)'
+    ScreenshotsRequired   = [regex]'(?i)^.*\.skia\.cs$'
 }
-
-$netcoreMobileProjectPattern = [regex]'(?i)\.netcoremobile\.csproj$'
-$wasmProjectPattern = [regex]'(?i)\.wasm\.csproj$'
 
 function Set-TestScopeVariable {
     param(
@@ -92,7 +82,7 @@ $fetchExitCode = $LASTEXITCODE
 $ErrorActionPreference = $prevErrorPref
 
 if ($fetchExitCode -ne 0) {
-    Write-Warning ("Unable to fetch {0} (exit code {1}). Falling back to enabling all native test scopes." -f $targetRef, $fetchExitCode)
+    Write-Warning ("Unable to fetch {0} (exit code {1}). Falling back to enabling all test scopes." -f $targetRef, $fetchExitCode)
     Enable-AllScopes -Values $scopeVariables
     Publish-TestScopes -Values $scopeVariables
     # Reset LASTEXITCODE so the Azure pipeline step does not fail due to git fetch's non-zero exit code.
@@ -122,24 +112,6 @@ foreach ($file in $changedFiles) {
             $scopeVariables[$scope.Key] = $true
         }
     }
-
-    if ($netcoreMobileProjectPattern.IsMatch($normalized)) {
-        if (-not $scopeVariables.RequireNativeAndroid) {
-            Write-Host "File '$normalized' touches netcoremobile csproj; enabling RequireNativeAndroid."
-            $scopeVariables.RequireNativeAndroid = $true
-        }
-        if (-not $scopeVariables.RequireNativeIos) {
-            Write-Host "File '$normalized' touches netcoremobile csproj; enabling RequireNativeIos."
-            $scopeVariables.RequireNativeIos = $true
-        }
-    }
-
-    if (-not $scopeVariables.RequireNativeWasm -and $wasmProjectPattern.IsMatch($normalized)) {
-        Write-Host "File '$normalized' touches wasm csproj; enabling RequireNativeWasm."
-        $scopeVariables.RequireNativeWasm = $true
-    }
 }
-
-$scopeVariables['ScreenshotsRequired'] = $scopeVariables.RequireNativeAndroid -or $scopeVariables.RequireNativeIos -or $scopeVariables.RequireNativeWasm -or $scopeVariables.SkiaScreenshots
 
 Publish-TestScopes -Values $scopeVariables

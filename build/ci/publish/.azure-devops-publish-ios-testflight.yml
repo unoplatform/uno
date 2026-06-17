@@ -11,12 +11,6 @@ jobs:
 
   strategy:
     matrix:
-      Native:
-        _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile'
-        _PackageArtifactName: 'samplesapp-ios-native-testflight'
-        _LogsArtifactName: 'samplesapp-ios-native-testflight-logs'
-        _VariantName: 'Native'
-
       Skia:
         _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.Skia.netcoremobile'
         _PackageArtifactName: 'samplesapp-ios-skia-testflight'
@@ -45,12 +39,6 @@ jobs:
       certSecureFile: UnoPlatform-Apple-Distribution.p12
       certPwd: $(appleappstorecertificatepassword)
       keychain: temp
-
-  - task: InstallAppleProvisioningProfile@1
-    displayName: Install Provisioning Profile
-    inputs:
-      provisioningProfileLocation: secureFiles
-      provProfileSecureFile: 'Uno_Dev_Samples.mobileprovision'
 
   - task: InstallAppleProvisioningProfile@1
     displayName: Install Provisioning Profile
@@ -112,37 +100,6 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
       ArtifactName: $(_LogsArtifactName)
       ArtifactType: Container
-
-- deployment: 'iOS_Publish_Native'
-  displayName: 'Publish iOS Testflight Native'
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
-  environment: 'Uno UI TestFlight'
-  cancelTimeoutInMinutes: 0
-  dependsOn: iOS_TestFlight
-  pool:
-    vmImage: macos-latest
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
-        - download: none
-
-        - task: DownloadPipelineArtifact@2
-          inputs:
-            artifactName: 'samplesapp-ios-native-testflight'
-            targetPath: '$(Pipeline.Workspace)/drop'
-          displayName: Download artifacts
-
-        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
-          displayName: 'Publish to the App Store TestFlight track'
-          inputs:
-            serviceEndpoint: 'Uno Platform Inc. (App Store)'
-            appIdentifier: 'uno.platform.samplesdev'
-            ipaPath: '$(Pipeline.Workspace)/drop/SamplesApp.ipa'
-            shouldSkipWaitingForProcessing: true
-            appSpecificId: 6466657985
-            teamId: 'Uno Platform Inc.'
 
 - deployment: 'iOS_Publish_Skia'
   displayName: 'Publish iOS Testflight Skia'
