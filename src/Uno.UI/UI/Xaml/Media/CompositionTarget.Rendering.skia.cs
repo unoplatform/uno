@@ -39,6 +39,13 @@ public partial class CompositionTarget
 	// snapshotted into the rendered frame in Render(). Only touched on the UI thread.
 	private readonly DirtyRegion _pendingDamage = new();
 
+	// Diagnostic escape hatch: when UNO_DIRTY_RECTANGLES=false, present the whole frame every time instead
+	// of clipping to the dirty region. Dirty-rectangles rendering is otherwise always on for retaining
+	// renderers. This exists so the validation harness can compare dirty output against a full-frame
+	// baseline in the same binary; both must be pixel-identical. Read once to keep the present path hot.
+	private static readonly bool _forceFullFramePresent =
+		Environment.GetEnvironmentVariable("UNO_DIRTY_RECTANGLES") is "false";
+
 	// Snapshot of the dirty region attached to a recorded frame, consumed by Draw() on the render thread.
 	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds);
 
@@ -261,11 +268,19 @@ public partial class CompositionTarget
 			// repaint. Falls back to full-frame on canvas recreation/resize or when the frame is marked
 			// full. The clip is set in the post-scale (root/logical) coordinate space the picture uses.
 			var damage = lastRenderedFrame.damage;
-			var useDirtyRectangles = global::Uno.UI.FeatureConfiguration.Rendering.EnableDirtyRectangles
-				&& surfaceRetainsContents
+			var useDirtyRectangles =
+				surfaceRetainsContents
 				&& !canvasRecreated
-				&& !damage.IsFullFrame;
-			if (useDirtyRectangles)
+				&& !damage.IsFullFrame
+				&& !_forceFullFramePresent;
+			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DirtyRectanglesOverlay;
+
+			// The overlay tint is drawn into the retained surface, so a clipped present would let the marks
+			// accumulate and never clear. When the overlay is on we therefore present full-frame (the full
+			// redraw wipes the previous frame's tint) and only highlight the region that WOULD have been the
+			// dirty clip. This is a diagnostic aid; it intentionally forgoes the clipped present so the marks
+			// flash on the current dirty region instead of piling up.
+			if (useDirtyRectangles && !overlayEnabled)
 			{
 				targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
 			}
@@ -277,7 +292,7 @@ public partial class CompositionTarget
 				SKColors.Transparent,
 				_fpsHelper.DrawFps);
 
-			if (useDirtyRectangles && !damage.IsEmpty && global::Uno.UI.FeatureConfiguration.Rendering.DirtyRectanglesOverlay)
+			if (overlayEnabled && useDirtyRectangles && !damage.IsEmpty)
 			{
 				DrawDirtyRectanglesOverlay(targetCanvas, damage.Bounds);
 			}

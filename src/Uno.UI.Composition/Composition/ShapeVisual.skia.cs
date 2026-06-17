@@ -62,10 +62,67 @@ public partial class ShapeVisual
 	internal override bool RequiresRepaintOnEveryFrame =>
 		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
 
-	internal override float DirtyRegionSamplingMargin =>
-		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DirtyRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
-
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
+
+	// A ShapeVisual paints arbitrary geometry that can extend past its Size (strokes, paths with their own
+	// coordinate range), so Size is not a valid bound. Use the union of the shapes' render bounds instead,
+	// mapped through the same ViewBox transform Paint applies. Falls back to the clip (returns false) for
+	// shapes whose bounds we can't compute yet, or when a drop shadow paints beyond the shapes.
+	internal override bool TryGetLocalContentBounds(out SKRect localBounds)
+	{
+		localBounds = default;
+
+		if (_shapes is not { Count: > 0 } shapes)
+		{
+			// No shapes: if there's a shadow it has no silhouette here; otherwise nothing is painted.
+			if (ShadowState is not null)
+			{
+				return false;
+			}
+			localBounds = SKRect.Empty;
+			return true;
+		}
+
+		var any = false;
+		var acc = SKRect.Empty;
+		for (var i = 0; i < shapes.Count; i++)
+		{
+			if (shapes[i] is CompositionSpriteShape sprite)
+			{
+				if (sprite.TryGetRenderBounds(out var shapeBounds))
+				{
+					acc = any ? SKRect.Union(acc, shapeBounds) : shapeBounds;
+					any = true;
+				}
+			}
+			else
+			{
+				// A non-sprite shape (e.g. a container shape) we can't bound; use the clip.
+				return false;
+			}
+		}
+
+		if (!any)
+		{
+			localBounds = SKRect.Empty;
+			return true;
+		}
+
+		// Mirror the ViewBox transform applied to the canvas in Paint (Scale, then Translate(-Offset)).
+		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var sx = Size.X / viewBox.Size.X;
+			var sy = Size.Y / viewBox.Size.Y;
+			acc = new SKRect(
+				sx * (acc.Left - viewBox.Offset.X),
+				sy * (acc.Top - viewBox.Offset.Y),
+				sx * (acc.Right - viewBox.Offset.X),
+				sy * (acc.Bottom - viewBox.Offset.Y));
+		}
+
+		localBounds = ExpandForShadow(acc);
+		return true;
+	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal override bool HitTest(Point point)

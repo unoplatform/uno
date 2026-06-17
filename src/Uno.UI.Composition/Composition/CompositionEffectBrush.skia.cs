@@ -32,14 +32,6 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
-	// Largest Gaussian blur sigma captured during the last effect-filter generation. A backdrop blur
-	// reads roughly 3*sigma pixels around each output pixel, so dirty-rectangles rendering must repaint
-	// that much extra backdrop around the element for the blur to see the same input it would in a
-	// full-frame render (the backdrop filter's input is otherwise bounded by the canvas clip).
-	private float _backdropBlurSigma;
-
-	internal override float DirtyRegionSamplingMargin => HasBackdropBrushInput ? _backdropBlurSigma * 3f : 0f;
-
 	internal bool UseBackdropBlurClamp { get; set; }
 
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
@@ -57,7 +49,6 @@ public partial class CompositionEffectBrush : CompositionBrush
 			// TODO: Support "Optimization" and "BorderMode" properties
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
-			_backdropBlurSigma = Math.Max(_backdropBlurSigma, sigma);
 
 			if (UseBackdropBlurClamp)
 			{
@@ -1621,7 +1612,6 @@ $$"""
 		{
 			_isCurrentInputBackdrop = false;
 			_hasBackdropBrushInputPrivate = false;
-			_backdropBlurSigma = 0;
 			_filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
 			HasBackdropBrushInput = _hasBackdropBrushInputPrivate;
 			_currentBounds = bounds;

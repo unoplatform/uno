@@ -1104,38 +1104,10 @@ namespace Uno.UI
 			public static bool? UseMetalOnMacOS { get; set; }
 
 			/// <summary>
-			/// Enables "dirty rectangles" rendering on skia targets: only the regions of the
-			/// surface whose visual output changed since the previous frame are repainted and
-			/// presented, instead of repainting the whole window every frame. When disabled
-			/// (default), the full surface is repainted each frame (the historical behavior).
-			/// The rendered output is identical to a full-frame repaint either way.
+			/// When dirty-rectangles rendering is active, visually highlights the regions being
+			/// repainted each frame, for tuning and debugging. This is a diagnostic aid only.
 			/// </summary>
-			public static bool EnableDirtyRectangles
-			{
-#if __SKIA__
-				get => Visual.EnableDirtyRectangles;
-				set => Visual.EnableDirtyRectangles = value;
-#else
-				get => false;
-				set { }
-#endif
-			}
-
-			/// <summary>
-			/// When <see cref="EnableDirtyRectangles"/> is enabled, visually highlights the
-			/// regions being repainted each frame, for tuning and debugging. Has no effect when
-			/// dirty-rectangles rendering is disabled. This is a diagnostic aid only.
-			/// </summary>
-			public static bool DirtyRectanglesOverlay
-			{
-#if __SKIA__
-				get => Visual.DirtyRectanglesOverlay;
-				set => Visual.DirtyRectanglesOverlay = value;
-#else
-				get => false;
-				set { }
-#endif
-			}
+			public static bool DirtyRectanglesOverlay { get; set; }
 		}
 
 		public static class ElementRefHandle

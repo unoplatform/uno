@@ -80,6 +80,34 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
+		// Bounds of what this shape renders, in the owning ShapeVisual's coordinate space (before any ViewBox
+		// transform the visual applies on the canvas). Used to compute the dirty region for dirty-rectangles
+		// rendering. Returns false when the (transformed) geometry hasn't been built yet, so the caller falls
+		// back to a safe bound.
+		internal bool TryGetRenderBounds(out SKRect bounds)
+		{
+			bounds = default;
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				bounds = fillGeometry.Bounds;
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				var strokeBounds = strokeGeometry.Bounds;
+				// The stroke straddles the path by ~half the thickness; inflate by the full thickness so caps
+				// and joins are covered too — the damage must never under-cover the painted stroke.
+				strokeBounds.Inflate(StrokeThickness, StrokeThickness);
+				bounds = any ? SKRect.Union(bounds, strokeBounds) : strokeBounds;
+				any = true;
+			}
+
+			return any;
+		}
+
 		private static readonly SKPaint _sparePaint = new SKPaint();
 		private static readonly SKPath _sparePath = new SKPath();
 
