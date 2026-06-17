@@ -29,10 +29,11 @@ $scopeVariables = [ordered]@{
 # Heuristics:
 #   TemplateTestsRequired - build infrastructure / project-shape changes that can affect the
 #                           generated app templates.
-#   ScreenshotsRequired   - Skia rendering changes (*.skia.cs) that warrant a screenshot diff.
+#   ScreenshotsRequired   - any .cs change in Uno.UI and above (the UI layer: src/Uno.UI* + src/AddIns)
+#                           that could affect rendered output.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/.*devserver.*|^src/.*remotecontrol.*)'
-    ScreenshotsRequired   = [regex]'(?i)^.*\.skia\.cs$'
+    ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
 }
 
 function Set-TestScopeVariable {
