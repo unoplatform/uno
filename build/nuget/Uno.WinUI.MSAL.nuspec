@@ -98,14 +98,8 @@
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
 
-		<!-- net9.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net9.0\Uno.UI.MSAL.*" target="uno-runtime\net9.0\webassembly" />
-
 		<!-- net9.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net9.0\Uno.UI.MSAL.*" target="uno-runtime\net9.0\skia" />
-
-		<!-- net10.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net10.0\Uno.UI.MSAL.*" target="uno-runtime\net10.0\webassembly" />
 
 		<!-- net10.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net10.0\Uno.UI.MSAL.*" target="uno-runtime\net10.0\skia" />
