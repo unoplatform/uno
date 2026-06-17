@@ -179,9 +179,6 @@
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.WinUI.Runtime.WebAssembly references version -->
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
-
 		<!-- Update Uno.WinUI.Runtime.Skia.Linux.FrameBuffer references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Linux.FrameBuffer']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
