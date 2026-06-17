@@ -41,14 +41,14 @@ jobs:
       artifact: native-assets-macos
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f net10.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
+  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework) -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f $(netCurrentTargetFramework) /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
     displayName: Build Generic Skia Head
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Generic Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net11.0
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\$(netCurrentTargetFramework)
       artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
 
   - task: PublishBuildArtifacts@1
