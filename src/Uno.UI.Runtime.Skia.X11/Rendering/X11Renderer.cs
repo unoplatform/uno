@@ -13,7 +13,7 @@ internal abstract class X11Renderer : IDisposable
 	private int _renderCount;
 	private SKColor _background = SKColors.White;
 	private SKSurface? _surface;
-	private SKSurface? _layerSurface;
+	private readonly RetainedLayer _retainedLayer = new();
 	private X11AirspaceRenderHelper? _airspaceHelper;
 	private readonly IXamlRootHost _host;
 	protected readonly X11Window _x11Window;
@@ -42,14 +42,10 @@ internal abstract class X11Renderer : IDisposable
 	/// </summary>
 	protected virtual bool UsesRetainedLayer => false;
 
-	/// <summary>Creates the persistent offscreen layer surface (GPU-backed) for <see cref="UsesRetainedLayer"/>.</summary>
-	protected virtual SKSurface CreateRetainedLayer(int width, int height) => throw new NotSupportedException();
+	/// <summary>The GPU context backing the retained layer for <see cref="UsesRetainedLayer"/> renderers.</summary>
+	protected virtual GRContext? GpuContext => null;
 
-	protected void DisposeRetainedLayer()
-	{
-		_layerSurface?.Dispose();
-		_layerSurface = null;
-	}
+	protected void DisposeRetainedLayer() => _retainedLayer.Dispose();
 
 	public void Render()
 	{
@@ -87,20 +83,19 @@ internal abstract class X11Renderer : IDisposable
 		{
 			// Draw renders onto the persistent layer (which preserves the previous frame); the layer is
 			// blitted to the window surface after.
-			renderCanvas = _layerSurface?.Canvas;
+			renderCanvas = _retainedLayer.Surface?.Canvas;
 			resizeFunc = size =>
 			{
 				_surface?.Dispose();
-				_layerSurface?.Dispose();
+				SKSurface layerSurface;
 				using (X11Helper.XLock(display))
 				{
 					_surface = UpdateSize((int)size.Width, (int)size.Height);
-					_layerSurface = CreateRetainedLayer((int)size.Width, (int)size.Height);
+					layerSurface = _retainedLayer.EnsureSurface(GpuContext!, (int)size.Width, (int)size.Height, _background);
 				}
-				_layerSurface.Canvas.Clear(_background);
 				_airspaceHelper?.Dispose();
 				_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
-				return _layerSurface.Canvas;
+				return layerSurface.Canvas;
 			};
 		}
 		else
@@ -122,11 +117,10 @@ internal abstract class X11Renderer : IDisposable
 
 		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderCanvas, resizeFunc, SurfaceRetainsContents);
 
-		if (useLayer && _layerSurface is { } layer && _surface is { } surface)
+		if (useLayer && _surface is { } surface)
 		{
 			// Blit the whole retained layer onto the (non-retaining) window surface each frame, then swap.
-			layer.Draw(surface.Canvas, 0, 0, null);
-			surface.Canvas.Flush();
+			_retainedLayer.Present(surface);
 		}
 
 		_airspaceHelper?.XShapeClip(nativeElementClipPath);

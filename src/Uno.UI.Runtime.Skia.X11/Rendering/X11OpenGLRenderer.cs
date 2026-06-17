@@ -28,13 +28,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		// so dirty rectangles render onto a persistent GPU layer that is blitted to the window each frame.
 		protected override bool SurfaceRetainsContents => true;
 		protected override bool UsesRetainedLayer => true;
-
-		protected override SKSurface CreateRetainedLayer(int width, int height)
-		{
-			var info = new SKImageInfo(Math.Max(1, width), Math.Max(1, height), SKColorType.Rgba8888, SKAlphaType.Premul);
-			return SKSurface.Create(_grContext, budgeted: true, info)
-				?? throw new NotSupportedException("Failed to create the dirty-rectangles retained layer surface.");
-		}
+		protected override GRContext? GpuContext => _grContext;
 
 		public override void Dispose()
 		{
