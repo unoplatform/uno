@@ -127,6 +127,48 @@ public partial class ShapeVisual
 		return true;
 	}
 
+	// The painted shapes themselves (ellipse, rounded rect, arbitrary geometry), so the dirty region follows
+	// the actual shape instead of its bounding box. (TryGetPaintDamageRegion only calls this when there's no
+	// shadow, so ExpandForShadow doesn't apply here.)
+	internal override bool TryGetLocalContentPath(SKPath dst)
+	{
+		if (_shapes is not { Count: > 0 } shapes)
+		{
+			return false;
+		}
+
+		var any = false;
+		for (var i = 0; i < shapes.Count; i++)
+		{
+			if (shapes[i] is CompositionSpriteShape sprite)
+			{
+				any |= sprite.TryGetRenderPath(dst);
+			}
+			else
+			{
+				// A non-sprite shape (e.g. a container shape) we can't represent; fall back to the bounds path.
+				return false;
+			}
+		}
+
+		if (!any)
+		{
+			return false;
+		}
+
+		// Mirror the ViewBox transform applied to the canvas in Paint (Scale, then Translate(-Offset)).
+		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var sx = Size.X / viewBox.Size.X;
+			var sy = Size.Y / viewBox.Size.Y;
+			// Apply Translate(-Offset) first, then Scale — matching canvas.Scale(); canvas.Translate(-Offset).
+			var m = SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), SKMatrix.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y));
+			dst.Transform(m);
+		}
+
+		return true;
+	}
+
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal override bool HitTest(Point point)
 	{

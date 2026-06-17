@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_Rounded"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Canvas>
+        <Border
+            x:Name="RoundedBorder"
+            Canvas.Left="100"
+            Canvas.Top="100"
+            Width="160"
+            Height="120"
+            Background="SeaGreen"
+            CornerRadius="40" />
+        <Ellipse
+            x:Name="Circle"
+            Canvas.Left="100"
+            Canvas.Top="280"
+            Width="160"
+            Height="120"
+            Fill="IndianRed" />
+    </Canvas>
+</Page>

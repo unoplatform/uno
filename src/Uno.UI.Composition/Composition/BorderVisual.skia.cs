@@ -384,6 +384,23 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override float DirtyRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DirtyRegionSamplingMargin ?? 0, _borderBrush?.DirtyRegionSamplingMargin ?? 0);
 
+	// The painted background fill and border ring (rounded by CornerRadius), so the dirty region follows the
+	// rounded shape rather than its bounding box. (Only called when there's no shadow / sampling margin.)
+	internal override bool TryGetLocalContentPath(SKPath dst)
+	{
+		UpdatePathsAndCornerClip();
+		var any = false;
+		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
+		{
+			any |= bg.TryGetRenderPath(dst);
+		}
+		if (_borderShape is { } border && (BorderBrush?.CanPaint() ?? false))
+		{
+			any |= border.TryGetRenderPath(dst);
+		}
+		return any;
+	}
+
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
