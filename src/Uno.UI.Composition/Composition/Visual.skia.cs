@@ -65,6 +65,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Matrix4x4 _lastRenderMatrix;
 	private bool _hasLastRenderBounds;
 
+	// True when a descendant changed this frame (captured in Render before the flag is cleared). A drop-shadow
+	// caster's shadow is derived from its descendants' silhouette, so it must re-damage its shadow region when
+	// the subtree changes — even if the caster's own visual is neither repainted nor moved.
+	private bool _subtreeChangedThisFrame;
+
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	private const int SK_MaxS32FitsInFloat = 2147483520;
@@ -277,7 +282,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// dirty rectangles, so skip it cheaply (just a matrix comparison).
 		var matrix = TotalMatrix;
 		var moved = !_hasLastRenderBounds || matrix != _lastRenderMatrix;
-		if (!contentChanged && !moved)
+
+		// A drop-shadow caster also re-damages its shadow region when its subtree changed: the shadow is cast
+		// from the descendants' silhouette, drawn by this visual, so a descendant moving/resizing changes the
+		// shadow even though this visual itself didn't repaint or move. Limited to casters that don't paint
+		// their own (silhouette-defining) content — an opaque card's silhouette is its own stable rect, so its
+		// shadow can't change from a content tick inside it, and re-damaging the whole card would be wasteful.
+		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame && !CanPaint();
+
+		if (!contentChanged && !moved && !shadowSilhouetteChanged)
 		{
 			return;
 		}
@@ -629,11 +642,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			_framesSinceSubtreeNotChanged++;
+			_subtreeChangedThisFrame = false;
 		}
 		else
 		{
 			_framesSinceSubtreeNotChanged = 0;
 			_flags &= ~VisualFlags.ChildrenSKPictureInvalid;
+			_subtreeChangedThisFrame = true;
 		}
 
 		CreateLocalSession(in parentSession, out var session);

@@ -38,6 +38,7 @@ SAMPLES=(
 	"Windows.UI.Composition/DirtyRectangles_Disjoint"
 	"Windows.UI.Composition/DirtyRectangles_Scroll"
 	"Windows.UI.Composition/DirtyRectangles_Shadow"
+	"Windows.UI.Composition/DirtyRectangles_ShadowChild"
 	"Windows.UI.Composition/DirtyRectangles_Acrylic"
 )
 

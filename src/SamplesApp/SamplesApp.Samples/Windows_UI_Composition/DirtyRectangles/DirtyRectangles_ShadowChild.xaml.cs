@@ -1,0 +1,39 @@
+using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
+
+namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
+{
+	/// <summary>
+	/// A static (transparent) shadow caster whose child moves, so the shadow's silhouette changes via a
+	/// descendant rather than the caster itself. Verifies the caster re-damages its shadow region on subtree
+	/// changes — otherwise a stale shadow trails the moving child — while staying identical to a full repaint.
+	/// </summary>
+	[Sample("Windows.UI.Composition", Name = "DirtyRectangles_ShadowChild", IsManualTest = true,
+		Description = "A shadow caster whose child moves, for dirty-rectangles descendant-shadow validation.")]
+	public sealed partial class DirtyRectangles_ShadowChild : Page
+	{
+		private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+		private double _left;
+		private int _steps;
+
+		public DirtyRectangles_ShadowChild()
+		{
+			this.InitializeComponent();
+			_timer.Tick += OnTick;
+			Loaded += (_, _) => _timer.Start();
+			Unloaded += (_, _) => _timer.Stop();
+		}
+
+		private void OnTick(object sender, object e)
+		{
+			_left += 40;
+			Canvas.SetLeft(Child, _left);
+			if (++_steps >= 4)
+			{
+				_timer.Stop();
+			}
+		}
+	}
+}
