@@ -113,7 +113,8 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
-export UnoTargetFrameworkOverride="net10.0-ios26.0"
+_TFM="${TFM:=net10.0-ios26.0}"
+export UnoTargetFrameworkOverride="$_TFM"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 

@@ -77,7 +77,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--preview-major --tfm net11.0-ios'
+      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios'
 
   - template: ../templates/ios-build-select-version.yml
     parameters:
@@ -86,7 +86,7 @@ jobs:
   - template: ../templates/gitversion.yml
 
   - bash: |
-      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
+      TFM="$(netCurrentTargetFramework)-ios" $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
 
     displayName: Build Samples App
 
@@ -96,7 +96,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net10.0-ios/iossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/$(netCurrentTargetFramework)-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
       CleanTargetFolder: false
