@@ -182,6 +182,14 @@ partial class AnimatedVisualPlayer
 	{
 		EnsureWinUIRootVisual();
 
+		// On non-composition targets EnsureWinUIRootVisual is a no-op, so there is no compositor
+		// root to host an IAnimatedVisual. Leave the WinUI flow inactive and let the caller fall
+		// back to the legacy source path.
+		if (m_rootVisual is null)
+		{
+			return;
+		}
+
 		// Drop any in-flight play directly. Going through StopWinUI/SetProgressWinUI would
 		// propagate a Progress write through the bound expression chain of the OUTGOING source,
 		// which can hit half-disposed state (e.g. cross-typed SetAnimatableProperty calls or
@@ -230,9 +238,11 @@ partial class AnimatedVisualPlayer
 		m_isAnimationsCreated = true;
 	}
 
-	// TODO Uno: faithful port of WinUI's DestroyAnimations, not yet wired into the unload path
-	// (UnloadContent disposes the animated visual directly). Kept for parity, pending the deferred
-	// IAnimatedVisual2 / FallbackContent work.
+	// TODO Uno: faithful port of WinUI's DestroyAnimations. WinUI invokes it only from the
+	// AnimationOptimization (PlayerAnimationOptimization.Resources) and IAnimatedVisual2 paths,
+	// neither of which is ported yet, so it currently has no call site. Kept as parity scaffolding
+	// for that deferred work — IDE0051 suppressed here for the same reason as the CS0649 fields above.
+#pragma warning disable IDE0051 // Remove unused private members
 	private void DestroyAnimations()
 	{
 		if (!m_isAnimationsCreated || m_animatedVisual is null)
@@ -245,6 +255,7 @@ partial class AnimatedVisualPlayer
 		// from the UI thread, so it is safe to flip the flag here without scheduling.
 		m_isAnimationsCreated = false;
 	}
+#pragma warning restore IDE0051
 
 	// Unload the current animated visual (if any).
 	private void UnloadContent()
@@ -592,12 +603,10 @@ partial class AnimatedVisualPlayer
 		// Clear cached animated visual so we re-evaluate the WinUI flow with the new source.
 		m_useWinUIFlow = false;
 
-#if __SKIA__
 		if (IsLoaded)
 		{
 			OnSourceChangedWinUI();
 		}
-#endif
 
 		if (!m_useWinUIFlow)
 		{
@@ -608,40 +617,37 @@ partial class AnimatedVisualPlayer
 
 	private void OnAutoPlayChanged(DependencyPropertyChangedEventArgs args)
 	{
-#if __SKIA__
 		if (m_useWinUIFlow)
 		{
 			OnAutoPlayChangedWinUI(args);
 			return;
 		}
-#endif
+
 		// LEGACY: ask the source to update auto-play state.
 		Source?.Update(this);
 	}
 
 	private void OnPlaybackRateChanged(DependencyPropertyChangedEventArgs args)
 	{
-#if __SKIA__
 		if (m_useWinUIFlow)
 		{
 			OnPlaybackRateChangedWinUI(args);
 			return;
 		}
-#endif
+
 		// LEGACY:
 		Source?.Update(this);
 	}
 
 	private void OnFallbackContentChanged(DependencyPropertyChangedEventArgs args)
 	{
-#if __SKIA__
 		if (m_useWinUIFlow)
 		{
 			OnFallbackContentChangedWinUI(args);
 			return;
 		}
-#endif
-		// LEGACY: nothing for non-Skia today.
+
+		// LEGACY: nothing to do on the legacy path today.
 	}
 
 	protected override Size MeasureOverride(Size availableSize)
