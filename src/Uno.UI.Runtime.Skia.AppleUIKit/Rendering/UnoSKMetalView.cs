@@ -21,6 +21,10 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
 
+		// The Metal drawable is a swapchain buffer that is not preserved between frames, so dirty rectangles
+		// render onto this persistent GPU layer which is blitted to the drawable each frame.
+		private readonly RetainedLayer _retainedLayer = new();
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
@@ -169,7 +173,14 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 				canvas = surface.Canvas;
 
-				_owner?.OnRenderFrameRequested(canvas);
+				// Render onto the persistent retained layer (which preserves the previous frame), then blit it
+				// onto this frame's (non-retaining) drawable surface.
+				_owner?.OnRenderFrameRequested(
+					_retainedLayer.Surface?.Canvas,
+					size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas,
+					surfaceRetainsContents: true);
+
+				_retainedLayer.Present(surface);
 
 				// Flush
 				_context!.Flush(submit: true);

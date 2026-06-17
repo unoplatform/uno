@@ -150,6 +150,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		private SKSurface? _glBackedSurface;
 		private SKSurface? _softwareSurface;
 
+		// When hardware accelerated, the GL backbuffer (_glBackedSurface) is a swapchain buffer that is not
+		// preserved across eglSwapBuffers, so dirty rectangles render onto this persistent GPU layer which is
+		// blitted to the backbuffer each frame. The software path retains its previous frame in _softwareSurface.
+		private readonly RetainedLayer _retainedLayer = new();
+
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
@@ -161,8 +166,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_context = GRContext.CreateGl(glInterface);
 			}
 
-			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
+			// The frame is rendered onto a surface that retains the previous frame's contents (the persistent
+			// GPU layer when hardware accelerated, the software surface otherwise); it is then blitted to the
+			// non-retaining GL backbuffer below. This is what lets dirty rectangles repaint only the changed region.
+			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer
@@ -189,31 +197,35 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_renderTarget?.Dispose();
 				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
 
-				if (_glBackedSurface == null)
+				_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
+
+				if (_hardwareAccelerated)
 				{
-					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
+					return _retainedLayer.EnsureSurface(_context, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas;
 				}
 
-				if (!_hardwareAccelerated && _softwareSurface is null)
-				{
-					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
-					_softwareSurface = SKSurface.Create(info);
-				}
-
-				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-				return surface!.Canvas;
-			});
+				var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
+				_softwareSurface = SKSurface.Create(info);
+				return _softwareSurface.Canvas;
+			}, surfaceRetainsContents: true);
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (!_hardwareAccelerated && _glBackedSurface is not null)
+			// Blit the retained render surface onto the (non-retaining) GL backbuffer, then present.
+			if (_hardwareAccelerated)
+			{
+				if (_glBackedSurface is not null)
+				{
+					_retainedLayer.Present(_glBackedSurface);
+				}
+			}
+			else if (_glBackedSurface is not null)
 			{
 				var glBackedCanvas = _glBackedSurface.Canvas;
 				glBackedCanvas.Clear(SKColors.Transparent);
 				glBackedCanvas.DrawSurface(_softwareSurface, 0, 0);
 				glBackedCanvas.Flush();
 			}
-			// else : we already drew directly on the OpenGL-backed canvas
 
 			_context!.Flush();
 		}
@@ -238,8 +250,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		private void FreeContext()
 		{
+			_retainedLayer.Dispose();
 			_glBackedSurface?.Dispose();
 			_glBackedSurface = null;
+			_softwareSurface?.Dispose();
+			_softwareSurface = null;
 			_renderTarget?.Dispose();
 			_renderTarget = null;
 			_context?.Dispose();
