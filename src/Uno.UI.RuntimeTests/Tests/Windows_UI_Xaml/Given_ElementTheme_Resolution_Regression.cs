@@ -123,7 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// Bug 2b: TextBox nested under Default-theme intermediates inside the Light pin, matching the sample's
 		// Light column (Light Border -> card Border (Default) -> StackPanel -> TextBox).
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_ParseTime_Light_Pin_Nested_TextBox_Border_Resolves_Light()
 		{
 			await AssertTextBoxBorderLight(nested: true);
