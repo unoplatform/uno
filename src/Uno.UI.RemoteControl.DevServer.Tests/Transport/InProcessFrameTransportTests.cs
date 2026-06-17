@@ -14,6 +14,7 @@ public class InProcessFrameTransportTests
 	{
 		private readonly Queue<(SendOrPostCallback Callback, object? State)> _work = new();
 		private readonly Lock _gate = new();
+		private readonly SemaphoreSlim _posted = new(0, int.MaxValue);
 
 		public int PendingCount
 		{
@@ -32,7 +33,14 @@ public class InProcessFrameTransportTests
 			{
 				_work.Enqueue((d, state));
 			}
+
+			_posted.Release();
 		}
+
+		// Blocks until at least one continuation has been posted. SemaphoreSlim.WaitAsync resumes its
+		// awaiter asynchronously, so the captured-context marshal-back from a parked ReceiveAsync lands
+		// on a thread-pool hop after SendAsync returns — asserting PendingCount synchronously races it.
+		public bool WaitForPost(TimeSpan timeout) => _posted.Wait(timeout);
 
 		public void ExecuteAll()
 		{
@@ -136,6 +144,10 @@ public class InProcessFrameTransportTests
 
 			// Act
 			await peer1.SendAsync(frame, CancellationToken.None).ConfigureAwait(false);
+
+			// The receiver resumes via the captured context, but that post is asynchronous (see
+			// WaitForPost); wait for it to land before asserting, otherwise this races on slower hosts.
+			context.WaitForPost(TimeSpan.FromSeconds(5)).Should().BeTrue();
 
 			receiveTask.IsCompleted.Should().BeFalse();
 			context.PendingCount.Should().Be(1);
