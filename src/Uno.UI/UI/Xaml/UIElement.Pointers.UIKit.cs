@@ -204,7 +204,14 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+				}
+				else
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
 			}
 		}
 
@@ -254,7 +261,14 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+				}
+				else
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
 			}
 		}
 
@@ -345,7 +359,14 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+				}
+				else
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
 			}
 		}
 
@@ -399,7 +420,14 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+				}
+				else
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
 			}
 		}
 
