@@ -535,7 +535,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WA_INACTIVE:
 				// lParam is the HWND being activated. If it's a descendant of our own window
 				// (e.g. a hosted WebView2 child), the app hasn't truly lost focus to another app.
-				var activatedHwnd = new HWND((nint)(uint)lParam.Value);
+				var activatedHwnd = new HWND(lParam.Value);
 				if (activatedHwnd != HWND.Null && PInvoke.IsChild(_hwnd, activatedHwnd))
 				{
 					break;

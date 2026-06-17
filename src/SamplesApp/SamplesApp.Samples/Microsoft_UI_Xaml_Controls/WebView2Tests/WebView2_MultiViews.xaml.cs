@@ -75,13 +75,13 @@ public sealed partial class WebView2_MultiViews : Page
 		};
 		webView.NavigationStarting += (s, e) =>
 		{
-			addressBar.Text = e.Uri;
+			addressBar.Text = e.Uri ?? string.Empty;
 		};
 		webView.NavigationCompleted += (s, e) =>
 		{
 			if (e.IsSuccess)
 			{
-				item.Header = webView.CoreWebView2.DocumentTitle;
+				item.Header = webView.CoreWebView2?.DocumentTitle ?? "Untitled";
 			}
 		};
 
