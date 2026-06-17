@@ -38,10 +38,11 @@ jobs:
   - checkout: self
     clean: true
 
-  # Install android 35 as we're running on macos-15
-  - bash: |
-      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-35' | tr '\r' '\n' | uniq
-    displayName: Install Android 35
+  # Should no longer be necessary, as macOS-26 includes API-37.0.
+  # # Install android 37 as we're running on macos-26
+  # - bash: |
+  #     echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-37.0' | tr '\r' '\n' | uniq
+  #   displayName: Install Android 35
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
