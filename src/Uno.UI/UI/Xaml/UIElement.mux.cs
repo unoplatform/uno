@@ -843,7 +843,28 @@ namespace Microsoft.UI.Xaml
 
 			var transform = GetTransform(from: this, to: null);
 			var localRect = new Rect(0, 0, size.X, size.Y);
-			return transform.Transform(localRect);
+			var globalBounds = transform.Transform(localRect);
+
+			if (!ignoreClipping)
+			{
+				// Intersect with the effective clip applied by ancestors (e.g. a ScrollViewer's viewport).
+				// Without this, an element scrolled out of view still reports non-empty bounds and is
+				// wrongly considered on-screen (IsOffscreen == false).
+				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
+				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
+				var clip = Visual.GetTotalClipRectInRootCoordinates();
+
+				var left = Math.Max(globalBounds.Left, clip.Left);
+				var top = Math.Max(globalBounds.Top, clip.Top);
+				var right = Math.Min(globalBounds.Right, clip.Right);
+				var bottom = Math.Min(globalBounds.Bottom, clip.Bottom);
+
+				return right > left && bottom > top
+					? new Rect(left, top, right - left, bottom - top)
+					: default;
+			}
+
+			return globalBounds;
 #else
 			return default;
 #endif

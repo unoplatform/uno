@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.CheckBoxTests.CheckBox_DisabledInDisabledListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CheckBoxTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Text="A checked, disabled CheckBox should look identical whether it is standalone or hosted inside a disabled ListView. The disabled list item must not add extra dimming on top of the CheckBox's own disabled visuals."
+            TextWrapping="Wrap" />
+
+        <CheckBox
+            Grid.Row="1"
+            Content="Disabled checkbox"
+            IsChecked="True"
+            IsEnabled="False" />
+
+        <ListView
+            x:Name="CheckBoxListView"
+            Grid.Row="2"
+            IsEnabled="False"
+            ItemsSource="{Binding Items}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <CheckBox
+                        Content="{x:Bind}"
+                        IsChecked="True"
+                        IsEnabled="False" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

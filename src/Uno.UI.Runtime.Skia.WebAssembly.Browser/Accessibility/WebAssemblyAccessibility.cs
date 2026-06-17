@@ -1743,7 +1743,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						this.Log().Trace($"[A11y] AUTOMATION EVENT: AutomationFocusChanged handle={focusElement.Visual.Handle} element={focusElement.GetType().Name}");
 					}
-					NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
+
+					if (HasSemanticElement(focusElement.Visual.Handle))
+					{
+						NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
+					}
 				}
 				break;
 
@@ -1838,7 +1842,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 	protected override void SetNativeFocus(nint handle)
-		=> NativeMethods.FocusSemanticElement(handle);
+	{
+		if (HasSemanticElement(handle))
+		{
+			NativeMethods.FocusSemanticElement(handle);
+		}
+	}
 	protected override void OnNativeStructureChanged() { }
 
 	internal void SyncTextBoxValueAndSelection(TextBox textBox)

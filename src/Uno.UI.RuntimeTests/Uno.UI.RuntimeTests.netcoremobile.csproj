@@ -13,10 +13,19 @@
 
 		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
 
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
 		<NoWarn>$(NoWarn);NU1703;CS0105</NoWarn>
 
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
+		<!--
+		error IL2111: Method 'MUXControlsTestApp.UtilitiesTemp.ControlStateViewer.ControlType.set' with parameters or return value with `DynamicallyAccessedMembersAttribute` is accessed via reflection. Trimmer can't guarantee availability of the requirements of the method.
+		  (within a generated `__PreserveProperties(new ControlStateViewer {…})` invocation; doesn't make sense!)
+		  -->
+		<NoWarn>$(NoWarn);IL2111</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">

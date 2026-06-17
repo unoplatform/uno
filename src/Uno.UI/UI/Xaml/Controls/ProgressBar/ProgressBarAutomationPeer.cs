@@ -26,7 +26,7 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(ProgressBar);
+	protected override string GetClassNameCore() => typeof(ProgressBar).FullName!;
 
 	protected override string GetNameCore()
 	{

@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_XYFocusTreeWalker
+public partial class Given_XYFocusTreeWalker
 {
 	private static void VerifyResult(
 		List<XYFocus.XYFocusParameters> vector,
@@ -195,7 +195,7 @@ public class Given_XYFocusTreeWalker
 		// Assert.HasCount(0, candidateList);
 	}
 
-	private sealed class FocusableXYFocusCUIElement : ContentControl
+	private sealed partial class FocusableXYFocusCUIElement : ContentControl
 	{
 		public FocusableXYFocusCUIElement()
 		{
@@ -205,7 +205,7 @@ public class Given_XYFocusTreeWalker
 	}
 
 	// Non-focusable container (Grid is not a Control, so it has no focus behavior).
-	private sealed class XYFocusCUIElement : Grid
+	private sealed partial class XYFocusCUIElement : Grid
 	{
 	}
 }

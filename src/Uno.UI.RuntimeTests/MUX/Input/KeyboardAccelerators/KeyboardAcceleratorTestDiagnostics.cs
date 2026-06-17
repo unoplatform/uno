@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,10 @@ internal static class KeyboardAcceleratorTestDiagnostics
 	/// Awaits an <see cref="EventTester{TSender,TEventArgs}"/> Invoked wait,
 	/// and if it times out, enriches the failure with detailed diagnostic info.
 	/// </summary>
-	public static async Task WaitWithDiagnosticsAsync<TSender, TArgs>(
+	public static async Task WaitWithDiagnosticsAsync<
+		[DynamicallyAccessedMembers(EventTester<TSender, TArgs>.SenderTypeRequirements)] TSender,
+		TArgs
+	>(
 		this EventTester<TSender, TArgs> tester,
 		UIElement expectedFocusedElement,
 		KeyboardAccelerator expectedAccelerator,

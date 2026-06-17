@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,6 +27,11 @@ public class Given_Control_Visibility
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
 #endif
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Regarding Assembly.GetTypes(): trimmer may remove types and/or constructors, but `typeof()` expressions should retain types we care about.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2062", Justification = "Regarding Activator.CreateInstance(): trimmer may remove types and/or constructors, but that won't break the test (see `catch(MissingMethodException)`).")]
+	[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "Regarding Activator.CreateInstance(): trimmer may remove types and/or constructors, but that won't break the test (see `catch(MissingMethodException)`).")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Regarding Activator.CreateInstance(): trimmer may remove types and/or constructors, but that won't break the test (see `catch(MissingMethodException)`).")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Regarding Type.GetConstructor(); trimmer may remove types and/or constructors, which means we may skip some types. The test won't break, but we may skip intended types.")]
 	public async Task When_Visibility_Changes()
 	{
 		foreach (var type in typeof(Control).Assembly.GetTypes())

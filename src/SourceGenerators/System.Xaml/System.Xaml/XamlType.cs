@@ -34,7 +34,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Xaml
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlType : IEquatable<XamlType>
 	{
 		public XamlType (Type underlyingType, XamlSchemaContext schemaContext)

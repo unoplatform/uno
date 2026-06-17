@@ -193,7 +193,7 @@ dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFram
 
 > [!NOTE]
 > Only apply `UseMonoRuntime=false` to the desktop target. WebAssembly and mobile
-> (`-android`, `-ios`) targets still require Mono.
+> (`-android`, `-ios`, `-maccatalyst`) targets still require Mono.
 >
 > If restore still fails after the change (for example due to a previously cached
 > failed lookup), you can clear NuGet caches and retry: `dotnet nuget locals all --clear`.

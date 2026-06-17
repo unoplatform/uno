@@ -6,19 +6,6 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
-## Uno Platform vNext (upcoming release)
-
-### Mac Catalyst target removed
-
-Upcoming version of Uno Platform removes support for the **Mac Catalyst** (`maccatalyst`) target. macOS is now served by the Skia-based **Desktop** target (`net10.0-desktop`), which shares a single rendering pipeline with the other desktop platforms.
-
-If your project targeted Mac Catalyst, apply the following changes:
-
-- **Target frameworks** — Remove any `net10.0-maccatalyst` (or `net9.0-maccatalyst`) entries from your `TargetFrameworks`, and use `net10.0-desktop` to run on macOS.
-- **Compilation symbol** — The `__MACCATALYST__` C# symbol is no longer defined. Remove `#if __MACCATALYST__` branches; use `__APPLE_UIKIT__` (iOS or tvOS) for shared UIKit code, or `.desktop.cs` / `__SKIA__` for macOS desktop code.
-- **MSBuild properties** — The `IsMacCatalyst` and `IsIOSOrCatalyst` properties are no longer defined by the Uno SDK. Replace usages with `IsIOS` (iOS only) or `IsAppleUIKit` (iOS or tvOS).
-- **Platform file suffixes** — `.UIKit.cs` and `.Apple.cs` files now compile for iOS and tvOS only; Mac Catalyst is no longer included.
-
 ## Uno Platform 6.5
 
 Uno Platform 6.5 does not contain breaking changes that require attention when upgrading

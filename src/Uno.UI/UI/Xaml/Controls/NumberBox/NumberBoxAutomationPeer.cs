@@ -36,8 +36,7 @@ public partial class NumberBoxAutomationPeer : FrameworkElementAutomationPeer, I
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(NumberBox);
-
+			=> typeof(NumberBox).FullName!;
 	protected override string GetNameCore()
 	{
 		var name = base.GetNameCore();

@@ -75,16 +75,20 @@ namespace Uno.Samples.UITest.Generator
 			var builder = new IndentedStringBuilder();
 
 			builder.AppendLineIndented("using System;");
+			builder.AppendLineIndented("using System.Diagnostics.CodeAnalysis;");
 
 			using (builder.BlockInvariant("namespace SampleControl.Presentation"))
 			{
 				using (builder.BlockInvariant("partial class SampleChooserViewModel"))
 				{
-					using (builder.BlockInvariant("internal Type[] _allSamples = new Type[]"))
+					builder.AppendLineIndented("internal const DynamicallyAccessedMemberTypes SampleRequirements = DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields;");
+					builder.AppendLineIndented("");
+
+					using (builder.BlockInvariant("internal SampleChooserType[] _allSamples = new SampleChooserType[]"))
 					{
 						foreach (var entry in attributedTypes)
 						{
-							builder.AppendLineIndented($"typeof({entry.TypeName}),");
+							builder.AppendLineIndented($"new(typeof({entry.TypeName})),");
 						}
 					}
 
@@ -104,6 +108,21 @@ namespace Uno.Samples.UITest.Generator
 					}
 
 					builder.AppendLineIndented(";");
+				}
+
+				builder.AppendLineIndented("");
+
+				using (builder.BlockInvariant("internal struct SampleChooserType"))
+				{
+					builder.AppendLineIndented("[DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)]");
+					builder.AppendLineIndented("public Type Type { get; }");
+
+					builder.AppendLineIndented("");
+
+					using (builder.BlockInvariant("public SampleChooserType([DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)] Type type)"))
+					{
+						builder.AppendLineIndented("this.Type = type;");
+					}
 				}
 			}
 
