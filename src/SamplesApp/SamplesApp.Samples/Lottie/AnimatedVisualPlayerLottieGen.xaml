@@ -1,0 +1,227 @@
+﻿<Page
+    x:Class="UITests.Shared.Lottie.AnimatedVisualPlayerLottieGen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Margin="16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Header  -->
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="AnimatedVisualPlayer · LottieGen sources" />
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="Drives LottieGen-generated IAnimatedVisualSource2 animations (Cooking, Cute cat, Steaming bowl) through the full AnimatedVisualPlayer API surface."
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <!--  Player stage  -->
+        <Border
+            Grid.Row="1"
+            MinHeight="220"
+            Padding="12"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+            <winui:AnimatedVisualPlayer
+                x:Name="Player"
+                AutoPlay="{Binding IsChecked, ElementName=AutoPlayToggle}"
+                PlaybackRate="{Binding Value, ElementName=RateSlider}"
+                Stretch="{Binding SelectedItem, ElementName=StretchSelector}" />
+        </Border>
+
+        <!--  Controls  -->
+        <ScrollViewer
+            Grid.Row="2"
+            MaxHeight="380"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+                <!--  Source + Stretch selectors  -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Source" />
+                        <ComboBox
+                            x:Name="SourceSelector"
+                            HorizontalAlignment="Stretch"
+                            SelectionChanged="SourceSelector_SelectionChanged" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Stretch" />
+                        <ComboBox x:Name="StretchSelector" HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  Transport buttons  -->
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    UseLayoutRounding="True">
+                    <Button
+                        x:Name="PlayButton"
+                        Click="PlayButton_Click"
+                        Content="Play range" />
+                    <Button
+                        x:Name="PlayFullButton"
+                        Click="PlayFullButton_Click"
+                        Content="Play 0→1" />
+                    <Button
+                        x:Name="PauseButton"
+                        Click="PauseButton_Click"
+                        Content="Pause" />
+                    <Button
+                        x:Name="ResumeButton"
+                        Click="ResumeButton_Click"
+                        Content="Resume" />
+                    <Button
+                        x:Name="StopButton"
+                        Click="StopButton_Click"
+                        Content="Stop" />
+                    <CheckBox
+                        x:Name="LoopToggle"
+                        Content="Loop"
+                        IsChecked="True" />
+                    <CheckBox
+                        x:Name="AutoPlayToggle"
+                        Content="AutoPlay"
+                        IsChecked="True" />
+                </StackPanel>
+
+                <!--  From progress  -->
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="From progress" />
+                    <Slider
+                        x:Name="FromSlider"
+                        Grid.Column="1"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.05"
+                        Value="0" />
+                    <TextBlock
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Text="{Binding Value, ElementName=FromSlider}" />
+                </Grid>
+
+                <!--  To progress  -->
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="To progress" />
+                    <Slider
+                        x:Name="ToSlider"
+                        Grid.Column="1"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.05"
+                        Value="1" />
+                    <TextBlock
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Text="{Binding Value, ElementName=ToSlider}" />
+                </Grid>
+
+                <!--  Progress scrub (SetProgress)  -->
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="Progress (scrub)" />
+                    <Slider
+                        x:Name="ProgressSlider"
+                        Grid.Column="1"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.01"
+                        ValueChanged="ProgressSlider_ValueChanged"
+                        Value="0" />
+                    <TextBlock
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Text="{Binding Value, ElementName=ProgressSlider}" />
+                </Grid>
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="Dragging the progress slider calls SetProgress and stops any running playback."
+                    TextWrapping="Wrap" />
+
+                <!--  PlaybackRate  -->
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="PlaybackRate" />
+                    <Slider
+                        x:Name="RateSlider"
+                        Grid.Column="1"
+                        Maximum="3"
+                        Minimum="0.25"
+                        StepFrequency="0.25"
+                        Value="1" />
+                    <TextBlock
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Text="{Binding Value, ElementName=RateSlider}" />
+                </Grid>
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="PlaybackRate is not yet applied on the LottieGen/Skia playback path — the slider updates the property but does not change speed today (AnimationController playback rate pending)."
+                    TextWrapping="Wrap" />
+
+                <!--  Live status  -->
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <CheckBox
+                        Content="IsAnimatedVisualLoaded"
+                        IsChecked="{Binding IsAnimatedVisualLoaded, ElementName=Player}"
+                        IsEnabled="False" />
+                    <CheckBox
+                        Content="IsPlaying"
+                        IsChecked="{Binding IsPlaying, ElementName=Player}"
+                        IsEnabled="False" />
+                    <TextBlock
+                        x:Name="DurationText"
+                        VerticalAlignment="Center"
+                        Text="Duration: —" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

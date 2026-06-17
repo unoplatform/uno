@@ -86,6 +86,31 @@ internal class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2
 		return new CanvasGeometry(new CanvasPathGeometry(combinedCommands));
 	}
 
+	// Win2D backs CombineWith with Direct2D's ID2D1Geometry::CombineWithGeometry. Uno's geometry layer
+	// is command-based and has no realized path to run true path-boolean ops on, so the operations that
+	// map onto a fill rule are emulated by concatenating both geometries' path commands under that rule —
+	// the same approximation CreateGroup already uses for split Lottie paths:
+	//   Xor   == even-odd (Alternate) fill of both contours (their symmetric difference).
+	//   Union == nonzero (Winding) fill of both contours.
+	// Intersect/Exclude and non-identity transforms have no fill-rule equivalent and need real
+	// path-boolean support, so they throw until that exists.
+	public CanvasGeometry CombineWith(CanvasGeometry otherGeometry, Matrix3x2 otherGeometryTransform, CanvasGeometryCombine combine)
+	{
+		if (!otherGeometryTransform.IsIdentity)
+		{
+			throw new NotImplementedException("CanvasGeometry.CombineWith only supports an identity transform.");
+		}
+
+		var fillMode = combine switch
+		{
+			CanvasGeometryCombine.Xor => CanvasFilledRegionDetermination.Alternate,
+			CanvasGeometryCombine.Union => CanvasFilledRegionDetermination.Winding,
+			_ => throw new NotImplementedException($"CanvasGeometry.CombineWith does not support {combine}.")
+		};
+
+		return CreateGroup(null!, new[] { this, otherGeometry }, fillMode);
+	}
+
 	private class CanvasPathGeometry : ID2D1PathGeometry, ICompositionPathCommandsProvider
 	{
 		private List<CompositionPathCommand> _commands;
