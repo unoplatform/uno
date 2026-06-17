@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if !NETFX_CORE
 using System;
@@ -172,6 +172,22 @@ namespace Uno.UI.DataBinding
 					RaiseValueChanged(null);
 
 					_propertyChanged.Disposable = null;
+
+					// The cached reflection accessors are normally kept so a same-typed DataContext
+					// can rebind cheaply — but when the previous DataContext type lives in a
+					// collectible AssemblyLoadContext, the cached RuntimeMethodInfo closures would
+					// pin that ALC's LoaderAllocator long after the source is gone (e.g. a designer
+					// binding whose secondary-app source was unloaded). Drop them; a rebind to a
+					// live collectible source simply rebuilds the accessors.
+					if (_dataContextType?.IsCollectible == true)
+					{
+						IsDependencyPropertyValueSet = false;
+						_valueGetter = null;
+						_substituteValueGetter = null;
+						_valueSetter = null;
+						_valueUnsetter = null;
+						_dataContextType = null;
+					}
 				}
 			}
 

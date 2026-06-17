@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if !NETFX_CORE
 using System;
@@ -75,6 +75,11 @@ namespace Uno.UI.DataBinding
 			_getSubstituteValueGetter.Clear();
 			_getValueUnsetter.Clear();
 			_getPropertyType.Clear();
+
+			// The pooled lookup key retains the last-queried Type past the dictionary clears.
+			// Swap rather than mutate: an in-flight GetPropertyType call may hold the old
+			// instance, and Clone() relies on non-null fields.
+			_getPropertyTypeKey = new GetPropertyTypeKey();
 		}
 
 		/// <summary>
@@ -138,13 +143,17 @@ namespace Uno.UI.DataBinding
 
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			_getPropertyTypeKey.Update(type, property, allowPrivateMembers);
+			// Capture the pooled key into a local: ClearCaches() swaps the static field, and a
+			// single lookup must never mix the old and the new instance (Update on one, Clone on
+			// the other would insert a stale or seeded key into the freshly cleared table).
+			var key = _getPropertyTypeKey;
+			key.Update(type, property, allowPrivateMembers);
 
 			object? result;
 
-			if (!_getPropertyType.TryGetValue(_getPropertyTypeKey, out result))
+			if (!_getPropertyType.TryGetValue(key, out result))
 			{
-				_getPropertyType.Add(_getPropertyTypeKey.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
+				_getPropertyType.Add(key.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
 			}
 
 			return Unsafe.As<Type>(result);
