@@ -548,6 +548,16 @@ namespace SampleControl.Presentation
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool DirtyRectanglesOverlay
+		{
+			get => FeatureConfiguration.Rendering.DirtyRectanglesOverlay;
+			set
+			{
+				FeatureConfiguration.Rendering.DirtyRectanglesOverlay = value;
+				RaisePropertyChanged();
+			}
+		}
 #endif
 
 		public bool ExtendContentIntoTitleBar
