@@ -14,8 +14,9 @@
 # Requires: Xvfb, ImageMagick (import + compare), dotnet, and the X11 client libs the app needs.
 # Notes:   No window manager is used on purpose — a WM toolbar/clock adds non-deterministic pixels.
 #
-# Renderer + feature are selected via env vars read by SamplesApp.Skia.Generic (see Program.cs):
-#   UNO_DIRTY_RECTANGLES = true|false   -> FeatureConfiguration.Rendering.EnableDirtyRectangles
+# Dirty-rectangles rendering is always on for retaining renderers; UNO_DIRTY_RECTANGLES=false is a
+# diagnostic escape hatch that forces a full-frame present so this run can serve as the baseline.
+#   UNO_DIRTY_RECTANGLES = true|false   (false -> force full-frame present; baseline)
 #   UNO_X11_RENDERER     = software|opengl
 set -uo pipefail
 
@@ -34,6 +35,8 @@ SAMPLES=(
 	"Windows.UI.Composition/DirtyRectangles_Static"
 	"Windows.UI.Composition/DirtyRectangles_SmallUpdate"
 	"Windows.UI.Composition/DirtyRectangles_MovedElement"
+	"Windows.UI.Composition/DirtyRectangles_Scroll"
+	"Windows.UI.Composition/DirtyRectangles_Shadow"
 	"Windows.UI.Composition/DirtyRectangles_Acrylic"
 )
 
