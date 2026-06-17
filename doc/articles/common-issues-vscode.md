@@ -36,10 +36,16 @@ After upgrading to **C# Dev Kit 3.20** or later, opening an Uno solution in VS C
 
 This is **not an Uno issue** and **not an error**. `.lscache` files are language-service caches written by the C# Dev Kit project system. They cache project metadata (references, target frameworks, output paths, restored package info) so the workspace can load quickly on the next session, and they regenerate automatically if deleted.
 
-They are safe to commit to source control if you prefer to keep them tracked. If you'd rather exclude them, add the following line to your repository's `.gitignore`:
+Because they are generated caches, we recommend excluding them from source control. Add the following line to your repository's `.gitignore`:
 
 ```text
 *.lscache
+```
+
+If they were already committed, untrack them (while keeping the local copies) with:
+
+```bash
+git rm --cached '*.lscache'
 ```
 
 This behavior is owned by the C# Dev Kit project system and tracked upstream at [microsoft/vscode-dotnettools#3080](https://github.com/microsoft/vscode-dotnettools/issues/3080).
