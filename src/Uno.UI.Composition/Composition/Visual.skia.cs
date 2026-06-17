@@ -373,9 +373,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return true;
 		}
 
-		if (PaintsWithinOwnSize && Size is { X: > 0, Y: > 0 })
+		if (PaintsWithinOwnSize)
 		{
-			localBounds = new SKRect(0, 0, Size.X, Size.Y);
+			// This visual paints strictly within its own size, so Size bounds its content. A degenerate size
+			// (zero width or height, e.g. an empty TextBlock) means it paints nothing: return an empty rect so
+			// it contributes no damage, rather than falling through to the whole-clip fallback below — which,
+			// for an unclipped visual, would be the infinite clip and would dirty the entire frame.
+			localBounds = new SKRect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
 			return true;
 		}
 

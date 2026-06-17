@@ -44,7 +44,7 @@ for (let i = 0; i < 12; i++) {
 	await page.waitForTimeout(60);
 }
 await page.mouse.move(660, 500); // neutral spot: no hover highlight
-await page.waitForTimeout(4000);  // let the auto-hiding scrollbar fully fade (timing-independent capture)
+await page.waitForTimeout(7000);  // let the auto-hiding scrollbar fully fade (timing-independent capture)
 
 await page.screenshot({ path: outA });
 
@@ -53,7 +53,7 @@ await page.setViewportSize({ width: 1280, height: 1025 });
 await page.waitForTimeout(700);
 await page.setViewportSize({ width: 1280, height: 1024 });
 await page.mouse.move(660, 500);
-await page.waitForTimeout(4000);
+await page.waitForTimeout(7000); // again let the scrollbar (re-shown by the resize) fully fade before capturing
 
 await page.screenshot({ path: outB });
 
