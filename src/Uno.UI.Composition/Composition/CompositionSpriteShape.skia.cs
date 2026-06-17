@@ -108,6 +108,37 @@ namespace Microsoft.UI.Composition
 			return any;
 		}
 
+		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+		private static readonly SKPath _spareRenderPathStroke = new SKPath();
+
+		// Appends the actual rendered shape (its geometry, not just a bounding box) to <paramref name="dst"/>,
+		// in the owning visual's coordinate space (before any ViewBox transform). Used to compute a tight,
+		// non-rectangular dirty region for dirty-rectangles rendering (e.g. an ellipse or rounded rectangle).
+		// Returns false when the (transformed) geometry hasn't been built yet.
+		internal bool TryGetRenderPath(SKPath dst)
+		{
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				dst.AddPath(fillGeometry.Geometry);
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				// The stroke covers a band of width StrokeThickness centered on the geometry; outline it so the
+				// damage follows the stroked shape (not just the centerline).
+				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
+				_spareRenderPathStroke.Rewind();
+				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStroke);
+				dst.AddPath(_spareRenderPathStroke);
+				any = true;
+			}
+
+			return any;
+		}
+
 		private static readonly SKPaint _sparePaint = new SKPaint();
 		private static readonly SKPath _sparePath = new SKPath();
 
