@@ -199,9 +199,13 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 				if (compositionTarget == null)
 					return;
 
+				// skSurface is the Vulkan context's persistent intermediate render image (reused across frames
+				// and blitted to the swapchain), so it retains the previous frame's contents and dirty
+				// rectangles can repaint only the changed region.
 				var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(
 					skSurface.Canvas,
-					size => skSurface.Canvas);
+					size => skSurface.Canvas,
+					surfaceRetainsContents: true);
 
 				// Update the native layer host clip path
 				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
