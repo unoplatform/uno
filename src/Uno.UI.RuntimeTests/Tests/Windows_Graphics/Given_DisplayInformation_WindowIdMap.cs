@@ -1,4 +1,7 @@
-#if HAS_UNO
+// The per-WindowId DisplayInformation registry (and its CreateForWindowIdForTests seam) is
+// compile-time excluded on Android (#if !ANDROID in DisplayInformation.cs) — Android's
+// DisplayInformation is a process singleton, not per-window — so these tests cannot exist there.
+#if HAS_UNO && !__ANDROID__
 #nullable enable
 
 using System;
