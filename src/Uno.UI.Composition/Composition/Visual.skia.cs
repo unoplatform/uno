@@ -307,10 +307,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				target.AddDamage(bounds);
 			}
 
-			if (_hasLastRenderBounds)
+			// Erase the region this visual vacated — but only when it actually moved or resized. The bounding
+			// rect is a safe (if loose) cover for a curved old region. Adding it on an in-place repaint (same
+			// matrix and bounds) would be redundant AND would rectangularize an otherwise-rounded region, so it
+			// is skipped: the new region already covers everything the unchanged old one did.
+			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
 			{
-				// Erase the region this visual vacated. The bounding rect is a safe (if slightly loose) cover
-				// for a curved old region; vacating only happens on moves/resizes.
 				target.AddDamage(_lastRenderBounds);
 			}
 			_lastRenderBounds = bounds;
@@ -342,7 +344,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		regionPath = null;
 
 		var clipPath = _pathPool.Allocate();
+		var contentPath = _pathPool.Allocate();
 		var keepClipPath = false;
+		var keepContentPath = false;
 		try
 		{
 			clipPath.Rewind();
@@ -355,6 +359,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
+
+			// Non-rectangular content (a rounded border, an ellipse, an arbitrary shape): damage the actual
+			// painted shape rather than its bounding box. Skipped when a shadow or backdrop-sampling margin is
+			// involved — those expand a rectangular silhouette instead.
+			if (ShadowState is null && DirtyRegionSamplingMargin == 0)
+			{
+				contentPath.Rewind();
+				if (TryGetLocalContentPath(contentPath) && !contentPath.IsEmpty)
+				{
+					contentPath.Transform(TotalMatrix.ToSKMatrix());
+					OutsetForAntialiasing(contentPath);
+					contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
+					if (contentPath.IsEmpty)
+					{
+						return false;
+					}
+					bounds = contentPath.Bounds;
+					regionPath = contentPath;
+					keepContentPath = true;
+					return true;
+				}
+			}
 
 			if (TryGetLocalContentBounds(out var local))
 			{
@@ -434,6 +460,36 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				_pathPool.Free(clipPath);
 			}
+			if (!keepContentPath)
+			{
+				_pathPool.Free(contentPath);
+			}
+		}
+	}
+
+	// Stroke of width 2*margin: its outline is a band reaching `margin` (2px) on each side of the path edge.
+	private static readonly SKPaint _outsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 4f, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+
+	// Outsets a region path by ~2px (in root pixels) to absorb antialiasing bleed at the shape's edge, so the
+	// non-antialiased present-clip doesn't bisect the shape's antialiased boundary and leave a faint seam.
+	private static void OutsetForAntialiasing(SKPath path)
+	{
+		var band = _pathPool.Allocate();
+		var result = _pathPool.Allocate();
+		try
+		{
+			band.Rewind();
+			result.Rewind();
+			// (path) ∪ (stroke band around its edge) = the path grown outward by `margin`.
+			_outsetPaint.GetFillPath(path, band);
+			path.Op(band, SKPathOp.Union, result);
+			path.Rewind();
+			path.AddPath(result);
+		}
+		finally
+		{
+			_pathPool.Free(band);
+			_pathPool.Free(result);
 		}
 	}
 
@@ -477,6 +533,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		return false;
 	}
+
+	// Appends the actual painted shape (a path, in this visual's local coordinate space) to <paramref
+	// name="dst"/> for visuals whose content isn't rectangular (e.g. a rounded border or an ellipse), so the
+	// dirty region follows the shape instead of its bounding box. Returns false to fall back to the
+	// rectangular <see cref="TryGetLocalContentBounds"/> path. Not used when a shadow or backdrop-sampling
+	// margin is involved (those expand a rectangular silhouette).
+	internal virtual bool TryGetLocalContentPath(SKPath dst) => false;
 
 	// Expands a local content rect to also cover the drop shadow this visual casts (the silhouette offset by
 	// (Dx,Dy) and blurred by ~3*sigma), so the shadow is included in the dirty region. No-op without a shadow.
