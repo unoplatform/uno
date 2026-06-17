@@ -19,7 +19,6 @@
 			"Uno.WinUI.Runtime.Skia.Android",
 			"Uno.WinUI.Runtime.Skia.AppleUIKit",
 			"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
-			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly",
 			"Uno.WinUI.MediaPlayer.Skia.X11",
 			"Uno.WinUI.MediaPlayer.Skia.Win32",
