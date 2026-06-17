@@ -46,7 +46,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--preview-major --tfm net11.0-ios --tfm net11.0-maccatalyst --tfm net11.0-android --tfm net11.0-tvos'
+      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-maccatalyst --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
   
   ## Restore skia-macos native assets
   - task: DownloadPipelineArtifact@2
