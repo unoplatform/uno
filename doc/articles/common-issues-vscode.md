@@ -38,7 +38,7 @@ This is **not an Uno issue** and **not an error**. `.lscache` files are language
 
 They are safe to commit to source control if you prefer to keep them tracked. If you'd rather exclude them, add the following line to your repository's `.gitignore`:
 
-```
+```text
 *.lscache
 ```
 
