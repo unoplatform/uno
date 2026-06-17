@@ -258,7 +258,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
-				OnWmActivate(wParam);
+				OnWmActivate(wParam, lParam);
 				return new LRESULT(0);
 			case PInvoke.WM_CLOSE:
 				if (OnWmClose())
@@ -359,6 +359,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
+				if (msg == PInvoke.WM_POINTERDOWN)
+				{
+					// Reclaim Win32 keyboard focus from any hosted native child (e.g. WebView2).
+					// Clicking a Skia-rendered element does not automatically transfer Win32 focus
+					// away from a cross-process child HWND; without this call, keyboard input keeps
+					// going to WebView2's renderer even after Uno's logical focus has moved.
+					// SetFocus is a no-op when _hwnd already has focus.
+					PInvoke.SetFocus(_hwnd);
+				}
 				OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
@@ -509,7 +518,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return false;
 	}
 
-	private void OnWmActivate(WPARAM wParam)
+	private void OnWmActivate(WPARAM wParam, LPARAM lParam)
 	{
 		switch ((uint)Win32Helper.LOWORD(wParam))
 		{
@@ -524,6 +533,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_INACTIVE:
+				// lParam is the HWND being activated. If it's a descendant of our own window
+				// (e.g. a hosted WebView2 child), the app hasn't truly lost focus to another app.
+				var activatedHwnd = new HWND(lParam.Value);
+				if (activatedHwnd != HWND.Null && PInvoke.IsChild(_hwnd, activatedHwnd))
+				{
+					break;
+				}
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
 				ActivationState = CoreWindowActivationState.Deactivated;
 				break;
