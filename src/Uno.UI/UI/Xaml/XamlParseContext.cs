@@ -16,7 +16,12 @@ namespace Uno.UI.Xaml
 		// *************** WARNING ***************
 		// This class instance is not being replaced when a ResourceDictionary is being reloaded (i.e. we continue to use the instance of the original type)
 		// This is valid only because all information hosted by this class doesn't change on hot-reload.
-		// 
+		//
+		// The one exception is the AssemblyLoadContext below: it is held WEAKLY (for collectibility — see that
+		// field's remarks) and so its resolved value can lapse. That does not violate the reuse rule: while the app
+		// is alive the ALC identity is stable, and the reference only dies once that ALC is unloaded — which is
+		// teardown, not hot-reload.
+		//
 		// Any new property on this class should follow this same rule, or the resolution of this has to be changed to support hot-reload properly
 		// (search for "__ParseContext_" in the xaml generator).
 		// ***************************************
