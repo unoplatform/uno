@@ -308,6 +308,40 @@ public class ToolRegistryTests
 		Assert.AreSame(original, ToolRegistry.Catalog);
 	}
 
+	[TestMethod]
+	public async Task InvokeAsync_RunOnUIThread_NoDispatcher_RunsInline()
+	{
+		var registry = new ToolRegistryImpl(); // no dispatcher wired
+		registry.RegisterTool(Tool("t"), Ok("inline"), runOnUIThread: true);
+
+		var result = await registry.InvokeAsync("t", new JsonObject(), default);
+
+		Assert.AreEqual("inline", result.Content[0].Text);
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_CancelledToken_Throws()
+	{
+		var registry = new ToolRegistryImpl();
+		registry.RegisterTool(Tool("t"), Ok());
+		using var cts = new CancellationTokenSource();
+		cts.Cancel();
+
+		await Assert.ThrowsExactlyAsync<OperationCanceledException>(
+			async () => await registry.InvokeAsync("t", new JsonObject(), cts.Token));
+	}
+
+	[TestMethod]
+	public async Task ReadResourceAsync_ReaderThrows_ReturnsIsError()
+	{
+		var registry = new ToolRegistryImpl();
+		registry.RegisterResource(Resource("u://1"), _ => throw new InvalidOperationException("boom"));
+
+		var result = await registry.ReadResourceAsync("u://1", default);
+
+		Assert.IsTrue(result.IsError);
+	}
+
 	private sealed class FakeDispatcher(bool hasThreadAccess) : IToolDispatcher
 	{
 		public bool WasUsed { get; private set; }

@@ -224,6 +224,9 @@ internal static class ToolRegistry
 
     private static IToolRegistry _instance = new ToolRegistryImpl();
 
+    /// <summary>Wires the UI-thread marshalling seam (host-only); when unset, handlers run inline.</summary>
+    internal static void SetDispatcher(IToolDispatcher? dispatcher);
+
     /// <summary>Swaps the backing registry for tests; dispose the result to restore.</summary>
     internal static IDisposable SetForTesting(IToolRegistry instance);
 }
@@ -265,6 +268,16 @@ internal interface IResourceRegistration : IDisposable
     void NotifyUpdated();
 }
 
+/// <summary>
+/// Optional UI-thread marshalling seam. Supplied by the host (which knows the dispatcher) via
+/// <see cref="ToolRegistry.SetDispatcher"/>; when none is wired, handlers run inline.
+/// </summary>
+internal interface IToolDispatcher
+{
+    bool HasThreadAccess { get; }
+    Task<T> RunAsync<T>(Func<Task<T>> action);
+}
+
 internal sealed class ResourceUpdatedEventArgs(string uri) : EventArgs
 {
     public string Uri { get; } = uri;
@@ -288,12 +301,21 @@ internal sealed class ToolInvocation
 `runOnUIThread: false` it runs on the caller's thread. Consumers never deal with threading —
 they just await.
 
-**Deadlock safety (mandatory).** The registry must **never block-wait** on the dispatcher.
-Before dispatching, it checks `HasThreadAccess`: if the caller is **already on the UI thread**,
+The dispatcher is an **injectable seam** (`IToolDispatcher`) the host wires via
+`ToolRegistry.SetDispatcher`. **When no dispatcher is wired, handlers run inline** regardless
+of `runOnUIThread` — so the registry is decoupled from any concrete dispatcher and is fully
+usable for same-thread invocation without one.
+
+**Deadlock safety (mandatory).** When a dispatcher *is* wired, the registry must **never
+block-wait** on it. It checks `HasThreadAccess`: if the caller is **already on the UI thread**,
 the handler runs **inline** (no re-dispatch). This is essential on **WASM (single-threaded)**,
 where a consumer's call path is typically already on the UI thread — a naive marshal-then-await
 there would self-deadlock. The dispatch path is `await`-based (post + await completion), never a
 synchronous `.Wait()` / `.Result`.
+
+> **Live wiring is an integration step.** This spec/PR lands the registry and the seam; wiring a
+> real `IToolDispatcher` (over the app's window dispatcher) is done by the host integration that
+> owns the window and can exercise it end-to-end — see Open Items.
 
 ### 3.2 Concurrency
 
@@ -399,29 +421,34 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-| Test | Description |
-|------|-------------|
+**24 tests, all green** (`ToolRegistryTests`). The implemented suite:
+
+| Test | Covers |
+|------|--------|
 | `RegisterTool_ThenSnapshot_ContainsDescriptor` | A registered tool appears in `Snapshot()`. |
-| `RegisterTool_Dispose_RemovesDescriptor` | Disposing removes the tool and raises `Changed`. |
-| `RegisterTool_DuplicateName_ReturnsNoOpDisposable_DoesNotEvictWinner` | A second registration with the same `Name` is rejected (warning logged), returns a no-op `IDisposable`, and disposing it leaves the original tool in `Snapshot()`. |
-| `Registry_Concurrent_RegisterUnregister_IsConsistent` | Parallel register/dispose leaves a coherent snapshot (lock-free). |
-| `Changed_RaisedOnAddAndRemove` | `Changed` fires on both add and remove. |
-| `InvokeAsync_Success_ReturnsResult` | `InvokeAsync` routes to the registered handler and returns its `ToolResult`. |
-| `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError = true`, no exception escapes. |
-| `InvokeAsync_UnknownTool_ReturnsIsError` | An unknown/removed tool returns an error result. |
-| `InvokeAsync_RunsOnUIThread_WhenRequested` | With `runOnUIThread: true`, the handler executes on the dispatcher. |
-| `InvokeAsync_AlreadyOnUIThread_RunsInline_NoDeadlock` | Calling `InvokeAsync` from the UI thread runs the handler inline without re-dispatch/block-wait (WASM deadlock guard). |
-| `InvokeAsync_DisposeDuringInvoke_CompletesInFlight` | Disposing a tool mid-invocation lets the in-flight call complete against the captured handler. |
-| `ReadResourceAsync_ReturnsContent` | `ReadResourceAsync` returns the reader's `ToolResult`. |
-| `NotifyUpdated_RaisesResourceUpdated_WithUri` | `NotifyUpdated()` raises `ResourceUpdated` with the correct URI. |
-| `NotifyUpdated_AfterDispose_IsNoOp` | `NotifyUpdated()` on a disposed resource registration raises nothing. |
-| `Event_SubscriberThrows_OthersStillNotified` | A throwing `Changed`/`ResourceUpdated` subscriber does not prevent other subscribers from being notified, nor surface to the caller. |
-| `Event_ReentrantRegisterDuringRaise_DoesNotRecurseUnbounded` | A subscriber that registers/disposes while handling an event does not stack-overflow. |
-| `Publisher_And_Catalog_ResolveToSameInstance` | `ToolRegistry.Publisher` and `ToolRegistry.Catalog` are the same singleton; a tool registered via the publisher is visible through the catalog. |
-| `SetForTesting_SwapsAndRestores` | `SetForTesting(...)` swaps the backing instance and restores it on dispose. |
+| `RegisterTool_Dispose_RemovesDescriptor_AndRaisesChanged` | Dispose removes the tool and raises `Changed` (on both add and remove). |
+| `RegisterTool_DuplicateName_ReturnsNoOpDisposable_DoesNotEvictWinner` | Duplicate `Name` rejected (warning), returns a no-op `IDisposable`; disposing it leaves the winner. |
 | `MultiplePublishers_Snapshot_AggregatesAll` | Tools from several publishers all appear in one `Snapshot()`. |
-| `MultipleConsumers_Changed_AllNotified` | Several subscribers to `Changed` are all notified on a registration change. |
-| `MultipleConsumers_ResourceUpdated_Multicast` | `NotifyUpdated()` reaches every subscriber of `ResourceUpdated`. |
+| `InvokeAsync_Success_ReturnsResult` | Routes to the handler and returns its `ToolResult` (default `runOnUIThread`, no dispatcher → inline). |
+| `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError`, no exception escapes. |
+| `InvokeAsync_MissingRequiredArg_ReturnsIsError` | A throwing typed accessor surfaces as `IsError`. |
+| `InvokeAsync_UnknownTool_ReturnsIsError` | Unknown/removed tool returns an error result. |
+| `InvokeAsync_OffUIThread_UsesDispatcher` | With a wired dispatcher and `HasThreadAccess == false`, marshals via the dispatcher. |
+| `InvokeAsync_AlreadyOnUIThread_RunsInline_NoDispatch` | With `HasThreadAccess == true`, runs inline (WASM deadlock guard). |
+| `InvokeAsync_RunOnUIThread_NoDispatcher_RunsInline` | No dispatcher wired → runs inline regardless of `runOnUIThread`. |
+| `InvokeAsync_DisposeDuringInvoke_CompletesInFlight` | Disposing mid-invocation lets the in-flight call complete. |
+| `InvokeAsync_CancelledToken_Throws` | A cancelled token throws `OperationCanceledException` before the handler (not `IsError`). |
+| `ReadResourceAsync_ReturnsContent` | Returns the reader's `ToolResult`. |
+| `ReadResourceAsync_Unknown_ReturnsIsError` | Unknown uri returns an error result. |
+| `ReadResourceAsync_ReaderThrows_ReturnsIsError` | A throwing reader surfaces as `IsError`. |
+| `NotifyUpdated_RaisesResourceUpdated_WithUri` | `NotifyUpdated()` raises `ResourceUpdated` with the correct URI. |
+| `NotifyUpdated_AfterDispose_IsNoOp` | `NotifyUpdated()` after dispose raises nothing. |
+| `MultipleConsumers_ResourceUpdated_Multicast` | `NotifyUpdated()` reaches every subscriber. |
+| `MultipleConsumers_Changed_AllNotified` | Several `Changed` subscribers are all notified. |
+| `Event_SubscriberThrows_OthersStillNotified` | A throwing subscriber doesn't block others, nor surface to the caller. |
+| `Event_ReentrantRegisterDuringRaise_DoesNotRecurseUnbounded` | Reentrant register during a raise is coalesced (no stack overflow), and observed. |
+| `Publisher_And_Catalog_ResolveToSameInstance` | Both faces are the same singleton. |
+| `SetForTesting_SwapsAndRestores` | `SetForTesting(...)` swaps and restores on dispose. |
 
 ---
 
@@ -430,7 +457,8 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | # | Item | Priority |
 |---|------|----------|
 | 1 | **Registry location**: `Uno.UI.RemoteControl` (recommended — debug-only + proximity) vs a more neutral assembly decoupled from the DevServer package. | P2 |
-| 2 | **Publisher debug-only wiring**: confirm the call path / optional shim so a debug-only publisher reaches `ToolRegistry` without a Release dependency. | P1 |
+| 2 | **Live dispatcher wiring**: wire a real `IToolDispatcher` (over the app's window dispatcher) via `ToolRegistry.SetDispatcher` in the host integration that owns the window, where it can be exercised end-to-end. The registry runs inline until then. | P1 |
+| 2b | **Publisher debug-only wiring**: confirm the call path / optional shim so a debug-only publisher reaches `ToolRegistry` without a Release dependency. | P1 |
 | 3 | **Public publisher API** (bonus: applications publish their own tools): stabilize under SemVer; decide where public types live. | P2 |
 | 4 | **Built-in argument validation** (convenience, not security): a declarative validator that checks `arguments` against `ToolParameter[]` inside `InvokeAsync`. Out of v1 — validation, if any, is the consumer/handler's choice (trust model: all in-process). | P3 |
 | 5 | **Resource templates** (parameterized URIs, MCP `resourceTemplates`): evaluate whether `ResourceDescriptor` needs a template variant. (Nested/constrained *tool params* are already covered by `ToolParameter.JsonSchema`.) | P3 |
