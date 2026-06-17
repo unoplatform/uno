@@ -9,8 +9,6 @@ namespace Microsoft.UI.Composition
 	{
 		internal override bool RequiresRepaintOnEveryFrame => Source is not null && Mask is not null && (Source.RequiresRepaintOnEveryFrame || Mask.RequiresRepaintOnEveryFrame);
 
-		internal override float DirtyRegionSamplingMargin => global::System.Math.Max(Source?.DirtyRegionSamplingMargin ?? 0, Mask?.DirtyRegionSamplingMargin ?? 0);
-
 		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
 			if (Source is null || Mask is null)

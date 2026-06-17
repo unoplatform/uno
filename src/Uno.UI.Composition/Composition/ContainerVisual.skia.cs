@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
@@ -46,11 +47,20 @@ public partial class ContainerVisual : Visual
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
+				var target = CompositionTarget;
 				foreach (var i in e.OldItems)
 				{
 					if (i is CompositionObject compositionObject)
 					{
 						compositionObject.StopAllAnimations();
+					}
+
+					// A removed visual is no longer walked, so it can't contribute its vacated region to the
+					// dirty area (e.g. a closed popup). Damage what its subtree last painted, via this (still
+					// attached) parent's composition target, so the content underneath is repainted.
+					if (target is not null && i is Visual removedVisual)
+					{
+						removedVisual.DamageLastRenderedRegion(target);
 					}
 				}
 			}
@@ -215,6 +225,15 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override void DamageLastRenderedRegion(ICompositionTarget target)
+	{
+		base.DamageLastRenderedRegion(target);
+		foreach (var child in Children.InnerList)
+		{
+			child.DamageLastRenderedRegion(target);
+		}
 	}
 
 	internal override int GetSubTreeVisualCount()
