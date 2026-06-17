@@ -157,7 +157,8 @@ public sealed record ToolParameter(
     ToolParameterKind Kind,
     bool IsRequired = false,
     string? DefaultValue = null,
-    ImmutableArray<string> AllowedValues = default); // enum constraint, optional
+    ImmutableArray<string> AllowedValues = default, // enum constraint, optional
+    string? JsonSchema = null); // escape hatch: raw JSON Schema for nested/constrained shapes; overrides Kind
 
 public enum ToolParameterKind { String, Integer, Number, Boolean, Array, Object }
 
@@ -179,15 +180,20 @@ public sealed record ToolResult(
     ImmutableArray<ToolContent> Content,
     bool IsError = false)
 {
-    public static ToolResult Text(string text) => /* single Text content */;
+    public static ToolResult Text(string text)
+        => new([new ToolContent(ToolContentKind.Text, Text: text)]);
 }
 ```
+
+> The C# blocks in this spec are illustrative **shape sketches** (some members are shown as
+> declarations without bodies); they convey the contract, not a compilable unit.
 
 > **Visibility**: these types are `internal` (per the v1 decision) and reachable by
 > publishers and consumers via `[InternalsVisibleTo]`. They are **not** serialized by Uno —
 > each consumer maps them onto its own message payloads. The **typed parameter model** lets a
 > consumer generate a JSON Schema (Appendix B) without Uno referencing any JSON-Schema or MCP
-> type.
+> type; for shapes the flat model can't express (nested objects/arrays, numeric constraints), a
+> publisher supplies `ToolParameter.JsonSchema` and the consumer uses it verbatim.
 
 ---
 
@@ -275,12 +281,19 @@ internal sealed class ToolInvocation
 }
 ```
 
-### 3.1 UI-thread marshalling
+### 3.1 UI-thread marshalling & deadlock safety
 
-`InvokeAsync` / `ReadResourceAsync` carry the marshalling: the registry knows each
-registration's `runOnUIThread` and dispatches the handler onto the UI thread (the same
-dispatcher the app uses) by default. A handler that declares `runOnUIThread: false` runs on
-the caller's thread. Consumers therefore never deal with threading — they just await.
+`InvokeAsync` / `ReadResourceAsync` carry the marshalling: for a registration with
+`runOnUIThread: true` (the default) the registry runs the handler on the UI dispatcher; with
+`runOnUIThread: false` it runs on the caller's thread. Consumers never deal with threading —
+they just await.
+
+**Deadlock safety (mandatory).** The registry must **never block-wait** on the dispatcher.
+Before dispatching, it checks `HasThreadAccess`: if the caller is **already on the UI thread**,
+the handler runs **inline** (no re-dispatch). This is essential on **WASM (single-threaded)**,
+where a consumer's call path is typically already on the UI thread — a naive marshal-then-await
+there would self-deadlock. The dispatch path is `await`-based (post + await completion), never a
+synchronous `.Wait()` / `.Result`.
 
 ### 3.2 Concurrency
 
@@ -291,8 +304,10 @@ Lock-free, per repository preference: registrations are held in an
 ### 3.3 Name uniqueness
 
 `Name` is the key and must be unique across all publishers. A duplicate registration is
-rejected and logged. Publishers namespace by module (a `<module>_` prefix) — documented in
-Appendix A.
+**rejected with a `LogWarning`** naming the colliding `Name` (and both owning assemblies when
+known); the existing tool is left untouched, and the call returns a **no-op `IDisposable`**
+that is *not* keyed to the winner — so disposing the rejected registration can never evict the
+live one. Publishers namespace by module (a `<module>_` prefix) — see Appendix A.
 
 ### 3.4 Inert without a consumer
 
@@ -304,9 +319,11 @@ registry is safe to call unconditionally from a module.
 
 The registry is a **many-to-many hub** backed by **one** singleton:
 
-- The singleton lives in `Uno.UI.RemoteControl`, whose statics load once in the shared ALC,
-  so `ToolRegistry.Publisher` and `ToolRegistry.Catalog` resolve to the **same** instance for
-  every publisher and every consumer.
+- The singleton lives in `Uno.UI.RemoteControl` as a static. **Assumption (v1):** that
+  assembly loads once in a single shared ALC, so `ToolRegistry.Publisher` and
+  `ToolRegistry.Catalog` resolve to the **same** instance for every publisher and consumer.
+  Multi-ALC isolation (a publisher and a consumer resolving the static in *different* ALCs) is
+  an **accepted limitation, out of scope for v1** — not a guarantee the registry enforces.
 - **Several publishers** contribute concurrently — names are unique, and each owns and
   disposes its own registrations. `Snapshot()` aggregates them all.
 - **Several consumers** read concurrently. The `IToolCatalog` face is **purely
@@ -318,8 +335,19 @@ The registry is a **many-to-many hub** backed by **one** singleton:
   `CreateAdditional(...)`, each on a **distinct devserver**): the per-devserver fan-out and
   the tracking of which agent subscribed to which URI live in the consumer(s), not the
   registry.
-- Because tools may be invoked concurrently from several consumers, **handlers must be
-  stateless across calls** (re-entrant).
+- Concurrent invocation is **best-effort, not serialized by the registry**: a tool *may* be
+  invoked concurrently (e.g. from several consumers), though in practice almost everything runs
+  on the UI thread and is therefore effectively serialized. The registry provides **no**
+  invocation serialization; a handler needing stronger guarantees owns its own thread-safety.
+
+### 3.6 Event dispatch safety
+
+`Changed` and `ResourceUpdated` are raised defensively: the registry **snapshots the
+subscriber list before invoking**, **isolates exceptions per subscriber** (one throwing
+subscriber must not prevent the others from being notified, nor surface to the publisher that
+called `NotifyUpdated()`), and **guards against re-entrancy** — a subscriber that mutates the
+registry (registers/disposes) while handling an event must not cause unbounded recursion or a
+`StackOverflowException`.
 
 ---
 
@@ -331,6 +359,15 @@ The registry is a **many-to-many hub** backed by **one** singleton:
   `IDisposable`; never persisted across a process restart or devserver reset.
 - A publisher that activates/deactivates registers on activate and disposes on deactivate;
   each transition raises `Changed`.
+- **In-flight invocations complete**: disposing a tool while an `InvokeAsync` for it is in
+  flight does not cancel that call (it finishes against the captured handler). `NotifyUpdated()`
+  on an already-disposed resource registration is a silent no-op.
+
+> **Trust model**: the registry, its publishers, and its consumers all run **in-process**,
+> under the **same trust boundary as the application itself**, and the feature is
+> **debug-only**. No authentication, authorization, or argument-sanitization layer is provided
+> or required here; any argument validation is a consumer/handler convenience, **not** a
+> security control.
 
 > **Publisher integration note**: `Uno.UI.RemoteControl` is a debug-only package reference. A
 > debug-only publisher must call `ToolRegistry` from a path gated the same way it consumes
@@ -366,15 +403,20 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 |------|-------------|
 | `RegisterTool_ThenSnapshot_ContainsDescriptor` | A registered tool appears in `Snapshot()`. |
 | `RegisterTool_Dispose_RemovesDescriptor` | Disposing removes the tool and raises `Changed`. |
-| `RegisterTool_DuplicateName_IsRejected` | A second registration with the same `Name` is rejected and logged. |
+| `RegisterTool_DuplicateName_ReturnsNoOpDisposable_DoesNotEvictWinner` | A second registration with the same `Name` is rejected (warning logged), returns a no-op `IDisposable`, and disposing it leaves the original tool in `Snapshot()`. |
 | `Registry_Concurrent_RegisterUnregister_IsConsistent` | Parallel register/dispose leaves a coherent snapshot (lock-free). |
 | `Changed_RaisedOnAddAndRemove` | `Changed` fires on both add and remove. |
 | `InvokeAsync_Success_ReturnsResult` | `InvokeAsync` routes to the registered handler and returns its `ToolResult`. |
 | `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError = true`, no exception escapes. |
 | `InvokeAsync_UnknownTool_ReturnsIsError` | An unknown/removed tool returns an error result. |
 | `InvokeAsync_RunsOnUIThread_WhenRequested` | With `runOnUIThread: true`, the handler executes on the dispatcher. |
+| `InvokeAsync_AlreadyOnUIThread_RunsInline_NoDeadlock` | Calling `InvokeAsync` from the UI thread runs the handler inline without re-dispatch/block-wait (WASM deadlock guard). |
+| `InvokeAsync_DisposeDuringInvoke_CompletesInFlight` | Disposing a tool mid-invocation lets the in-flight call complete against the captured handler. |
 | `ReadResourceAsync_ReturnsContent` | `ReadResourceAsync` returns the reader's `ToolResult`. |
-| `NotifyUpdated_RaisesResourceUpdated_WithUri` | `NotifyUpdated()` raises `ResourceUpdated` with the correct URI; not after the registration is disposed. |
+| `NotifyUpdated_RaisesResourceUpdated_WithUri` | `NotifyUpdated()` raises `ResourceUpdated` with the correct URI. |
+| `NotifyUpdated_AfterDispose_IsNoOp` | `NotifyUpdated()` on a disposed resource registration raises nothing. |
+| `Event_SubscriberThrows_OthersStillNotified` | A throwing `Changed`/`ResourceUpdated` subscriber does not prevent other subscribers from being notified, nor surface to the caller. |
+| `Event_ReentrantRegisterDuringRaise_DoesNotRecurseUnbounded` | A subscriber that registers/disposes while handling an event does not stack-overflow. |
 | `Publisher_And_Catalog_ResolveToSameInstance` | `ToolRegistry.Publisher` and `ToolRegistry.Catalog` are the same singleton; a tool registered via the publisher is visible through the catalog. |
 | `SetForTesting_SwapsAndRestores` | `SetForTesting(...)` swaps the backing instance and restores it on dispose. |
 | `MultiplePublishers_Snapshot_AggregatesAll` | Tools from several publishers all appear in one `Snapshot()`. |
@@ -390,5 +432,5 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | 1 | **Registry location**: `Uno.UI.RemoteControl` (recommended — debug-only + proximity) vs a more neutral assembly decoupled from the DevServer package. | P2 |
 | 2 | **Publisher debug-only wiring**: confirm the call path / optional shim so a debug-only publisher reaches `ToolRegistry` without a Release dependency. | P1 |
 | 3 | **Public publisher API** (bonus: applications publish their own tools): stabilize under SemVer; decide where public types live. | P2 |
-| 4 | **Argument validation**: optionally validate `arguments` against `ToolParameter[]` inside `InvokeAsync`, vs. delegating to the consumer/handler. | P3 |
-| 5 | **Resource templates** (parameterized URIs, MCP `resourceTemplates`): evaluate whether `ResourceDescriptor` needs a template variant. | P3 |
+| 4 | **Built-in argument validation** (convenience, not security): a declarative validator that checks `arguments` against `ToolParameter[]` inside `InvokeAsync`. Out of v1 — validation, if any, is the consumer/handler's choice (trust model: all in-process). | P3 |
+| 5 | **Resource templates** (parameterized URIs, MCP `resourceTemplates`): evaluate whether `ResourceDescriptor` needs a template variant. (Nested/constrained *tool params* are already covered by `ToolParameter.JsonSchema`.) | P3 |

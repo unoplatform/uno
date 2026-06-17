@@ -77,7 +77,9 @@ IDisposable registration = ToolRegistry.Publisher.RegisterTool(
 
 `Name` is the registry key and **must be unique across all publishers**. **Namespace by
 module** with a `<module>_` prefix (e.g. `mymodule_select_element`). A duplicate name is
-rejected and logged — it does not throw, but your tool will not be registered.
+rejected (a warning is logged) — it does not throw; your tool is simply not registered, and
+the returned disposable is a harmless **no-op** (disposing it never affects the tool that won
+the name).
 
 Use lower_snake_case, descriptive verbs (`mymodule_select_element`, `mymodule_get_state`).
 Names and descriptions are surfaced to an agent — write them for that reader.
@@ -102,6 +104,7 @@ JSON Schema. You do **not** write JSON Schema yourself.
 | `IsRequired` | feeds the schema `required` list |
 | `DefaultValue` | optional default (string form) |
 | `AllowedValues` | optional enum constraint |
+| `JsonSchema` | escape hatch: raw JSON Schema for shapes the flat model can't express (nested objects/arrays, numeric constraints). When set, the consumer uses it **verbatim** for that parameter and ignores `Kind`. |
 
 Inside the handler, read arguments through the typed accessors on `ToolInvocation`
 (`GetString`, `GetInt32`, `GetBoolean`, …), or the raw `invocation.Arguments` (`JsonObject`)
@@ -131,8 +134,10 @@ internal delegate ValueTask<ToolResult> ToolHandler(ToolInvocation invocation, C
 - **Honor the `CancellationToken`**. Long operations should observe `ct`.
 - **Threading**: with the default `runOnUIThread: true`, you are on the UI thread — touch
   the visual tree freely. Do not block it on long synchronous work; `await` instead.
-- **Keep handlers stateless across calls.** A tool may be invoked **concurrently from several
-  consumers**; do not assume a single caller or stash per-call state in shared fields.
+- **Tolerate (rare) concurrent calls.** A tool *may* be invoked concurrently from several
+  consumers, though in practice almost everything runs on the UI thread and is effectively
+  serialized. The registry does **not** serialize invocations — best-effort. If your handler
+  keeps shared mutable state, guard it yourself; don't assume a single caller.
 
 ---
 
@@ -216,7 +221,7 @@ devserver-side tools are unaffected by this registry.
 - Write agent-facing `Description`s.
 - Return `IsError: true` for failures instead of throwing.
 - Dispose registrations on deactivation.
-- Keep handlers stateless across calls.
+- Guard any shared mutable state in handlers (concurrent calls are rare but possible).
 
 **Don't**
 - Reference MCP, messaging, `Frame`, or `RemoteControlClient` from a publisher — you need

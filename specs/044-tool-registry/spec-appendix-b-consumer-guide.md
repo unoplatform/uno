@@ -81,6 +81,9 @@ For each `ToolDescriptor`, build an MCP tool whose `inputSchema` is generated fr
 - `AllowedValues` becomes `enum`.
 - `DefaultValue` becomes `default`.
 - `IsReadOnly` maps to the MCP read-only tool hint.
+- If a `ToolParameter` carries a non-null `JsonSchema`, use it **verbatim** as that
+  parameter's schema (it overrides the `Kind`-derived mapping) — the escape hatch for nested
+  objects/arrays and numeric constraints.
 
 On an MCP `tools/call`:
 
@@ -125,6 +128,12 @@ ToolResult result = await ToolRegistry.Catalog.InvokeAsync(name, arguments, ct);
 
 `ToolResult.IsError = true` maps to the MCP tool-call error result. The registry never throws
 across an invocation — a failing handler is surfaced as `IsError`, not an exception.
+
+> **Logging is the consumer's responsibility.** The registry surfaces only a generic
+> `IsError` result and does **not** carry the underlying exception or stack trace. If you need
+> the failure detail for diagnostics, capture it **on your side** (e.g. wrap `InvokeAsync` /
+> `ReadResourceAsync` and log) before relaying the error to the agent. Likewise, avoid echoing
+> raw error detail back to the agent.
 
 ---
 
