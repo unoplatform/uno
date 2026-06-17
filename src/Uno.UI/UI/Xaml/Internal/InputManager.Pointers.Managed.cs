@@ -11,7 +11,6 @@ using System.Threading;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
