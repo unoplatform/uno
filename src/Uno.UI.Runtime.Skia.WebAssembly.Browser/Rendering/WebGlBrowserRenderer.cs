@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -20,7 +21,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
-	private SKSurface? _layerSurface;
+	private readonly RetainedLayer _retainedLayer = new();
 
 	// The WebGL drawing buffer is not preserved across frames (preserveDrawingBuffer: 0), so dirty rectangles
 	// render onto a persistent GPU layer that is blitted to the swapchain each frame.
@@ -69,8 +70,6 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 		_surface?.Dispose();
 		_surface = null;
-		_layerSurface?.Dispose();
-		_layerSurface = null;
 
 		_renderTarget?.Dispose();
 		_renderTarget = new GRBackendRenderTarget(width, height, _jsInfo.Samples, _jsInfo.Stencil, glInfo);
@@ -79,21 +78,15 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 		// Render onto a persistent GPU layer that retains the previous frame; it is blitted to the (non-
 		// retaining) swapchain surface in Flush(). This is what makes dirty rectangles correct on WebGL.
-		var info = new SKImageInfo(Math.Max(1, width), Math.Max(1, height), ColorType, SKAlphaType.Premul);
-		_layerSurface = SKSurface.Create(_context, budgeted: true, info)
-			?? throw new InvalidOperationException("Failed to create the dirty-rectangles retained layer surface.");
-		_layerSurface.Canvas.Clear(SKColors.Transparent);
-
-		return _layerSurface.Canvas;
+		return _retainedLayer.EnsureSurface(_context, width, height, SKColors.Transparent).Canvas;
 	}
 
 	public void Flush()
 	{
 		// Blit the whole retained layer onto the swapchain surface, then present.
-		if (_layerSurface is { } layer && _surface is { } surface)
+		if (_surface is { } surface)
 		{
-			layer.Draw(surface.Canvas, 0, 0, null);
-			surface.Canvas.Flush();
+			_retainedLayer.Present(surface);
 		}
 
 		_context.Flush();
