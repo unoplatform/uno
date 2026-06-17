@@ -62,6 +62,21 @@ namespace Microsoft.UI.Xaml.Controls
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
+		private void MoveItems(int oldFirstItem, int newFirstItem, int count, int section)
+		{
+			if (count == 1)
+			{
+				var oldDisplayIndex = GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(oldFirstItem, section));
+				var newDisplayIndex = GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(newFirstItem, section));
+				NativePanel?.CurrentAdapter?.NotifyItemMoved(oldDisplayIndex, newDisplayIndex);
+				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
+			}
+			else
+			{
+				Refresh();
+			}
+		}
+
 		partial void AddGroupItems(int groupIndex)
 		{
 			var adapter = NativePanel?.CurrentAdapter;

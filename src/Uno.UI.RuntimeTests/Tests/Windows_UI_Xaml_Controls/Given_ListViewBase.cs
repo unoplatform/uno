@@ -76,6 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		/// Size = 152w x 29h
 		/// </summary>
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
+		private const double FixedSizeItemHeight = 29;
 
 		private DataTemplate NV286_Template => _testsResources["NV286_Template"] as DataTemplate;
 		private DataTemplate DefaultItemTemplate => _testsResources["DefaultItemTemplate"] as DataTemplate;
@@ -5301,6 +5302,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_INCC_Move_MinimalUpdate()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 30).Select(x => $"Item {x}"));
+			var sut = new ListView
+			{
+				Height = 10 * FixedSizeItemHeight,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+#if DEBUG
+			var tree1 = sut.TreeGraph(DescribeLVI);
+#endif
+
+			// Capture containers at indices 0–3 before the move
+			var containersBefore = new ListViewItem[4];
+			for (int i = 0; i < containersBefore.Length; i++)
+			{
+				containersBefore[i] = sut.ContainerFromIndex(i) as ListViewItem;
+				Assert.IsNotNull(containersBefore[i], $"Before: container at index {i} is null");
+				Assert.AreEqual(source[i], containersBefore[i].DataContext, $"Before: container at index {i} has wrong DataContext");
+			}
+
+			// Move "Item 1" from index 1 to index 2 → source becomes [Item 0, Item 2, Item 1, Item 3, ...]
+			source.Move(1, 2);
+			await UITestHelper.WaitForIdle();
+#if DEBUG
+			var tree2 = sut.TreeGraph(DescribeLVI);
+#endif
+
+			// Source order is now correct
+			Assert.AreEqual("Item 2", source[1]);
+			Assert.AreEqual("Item 1", source[2]);
+
+			// Containers at each position should reflect the new data order, and IndexFromContainer must agree
+			var containersAfter = new ListViewItem[4];
+			for (int i = 0; i < containersAfter.Length; i++)
+			{
+				containersAfter[i] = sut.ContainerFromIndex(i) as ListViewItem;
+				Assert.IsNotNull(containersAfter[i], $"After: container at index {i} is null");
+				Assert.AreEqual(source[i], containersAfter[i].DataContext, $"After: container at index {i} has wrong DataContext");
+				Assert.AreEqual(i, sut.IndexFromContainer(containersAfter[i]), $"After: IndexFromContainer disagrees for container at index {i}");
+			}
+
+			// The same container instances must be reused — no full re-materialization.
+			// After Move(1→2): the container for "Item 1" travels to position 2, "Item 2" shifts to 1, bookends are unchanged.
+			Assert.AreSame(containersBefore[0], containersAfter[0], "Container at 0→0 must be the same instance");
+			Assert.AreSame(containersBefore[1], containersAfter[2], "Container at 1→2 must be the same instance (moved item)");
+			Assert.AreSame(containersBefore[2], containersAfter[1], "Container at 2→1 must be the same instance (displaced item)");
+			Assert.AreSame(containersBefore[3], containersAfter[3], "Container at 3→3 must be the same instance");
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -5702,6 +5760,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(reference.IsAlive);
 		}
+
+#if DEBUG
+		private static IEnumerable<string> DescribeLVI(object x)
+		{
+			if (x is not null) yield return $"Hash={x.GetHashCode()}";
+			if (x is ListViewItem lvi)
+			{
+				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
+				yield return $"DC={lvi.DataContext}";
+			}
+		}
+#endif
 
 		public partial class OnItemsChangedListView : ListView
 		{

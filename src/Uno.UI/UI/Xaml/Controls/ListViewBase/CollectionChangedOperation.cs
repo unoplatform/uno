@@ -15,6 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 	internal class CollectionChangedOperation
 	{
 		public Uno.UI.IndexPath StartingIndex { get; }
+		public Uno.UI.IndexPath? NewStartingIndex { get; }
 		public int Range { get; }
 		public NotifyCollectionChangedAction Action { get; }
 		public Element ElementType { get; }
@@ -27,6 +28,15 @@ namespace Microsoft.UI.Xaml.Controls
 		public CollectionChangedOperation(Uno.UI.IndexPath startingIndex, int range, NotifyCollectionChangedAction action, Element elementType)
 		{
 			StartingIndex = startingIndex;
+			Range = range;
+			Action = action;
+			ElementType = elementType;
+		}
+
+		public CollectionChangedOperation(Uno.UI.IndexPath startingIndex, Uno.UI.IndexPath newStartingIndex, int range, NotifyCollectionChangedAction action, Element elementType)
+		{
+			StartingIndex = startingIndex;
+			NewStartingIndex = newStartingIndex;
 			Range = range;
 			Action = action;
 			ElementType = elementType;
@@ -64,6 +74,38 @@ namespace Microsoft.UI.Xaml.Controls
 							thisItemRemoved.StartingIndex.Row <= row && thisItemRemoved.EndIndex.Row >= row:
 					// This item has been removed or replaced, the index is no longer valid
 					return null;
+
+				case var itemMove when itemMove.ElementType == CollectionChangedOperation.Element.Item &&
+							itemMove.Action == NotifyCollectionChangedAction.Move &&
+							itemMove.StartingIndex.Section == section &&
+							itemMove.NewStartingIndex is Uno.UI.IndexPath newStart &&
+							newStart.Section == section:
+					var oldMoveStart = itemMove.StartingIndex.Row;
+					var oldMoveEnd = oldMoveStart + itemMove.Range - 1;
+					var newMoveStart = newStart.Row;
+
+					if (row >= oldMoveStart && row <= oldMoveEnd)
+					{
+						// This item was moved — remap to new position preserving relative offset
+						row = newMoveStart + (row - oldMoveStart);
+					}
+					else if (oldMoveStart < newMoveStart)
+					{
+						// Forward move: items in the gap (oldMoveEnd, newMoveStart+Range] shift down
+						if (row > oldMoveEnd && row <= newMoveStart + itemMove.Range - 1)
+						{
+							row -= itemMove.Range;
+						}
+					}
+					else
+					{
+						// Backward move: items in the gap [newMoveStart, oldMoveStart) shift up
+						if (row >= newMoveStart && row < oldMoveStart)
+						{
+							row += itemMove.Range;
+						}
+					}
+					break;
 
 				// Group operations are currently unsupported
 				case var groupAdd when groupAdd.ElementType == CollectionChangedOperation.Element.Group &&
