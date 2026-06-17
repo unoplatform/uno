@@ -26,14 +26,19 @@ namespace SkiaSharpExample
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
 
+			// Diagnostic: let the dirty-rectangles validation harness pick the X11 renderer (software vs
+			// OpenGL exercise different surface-retention paths and both must stay pixel-identical).
+			if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } r)
+			{
+				global::Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnX11 = !string.Equals(r, "software", StringComparison.OrdinalIgnoreCase);
+			}
+
 			Run();
 		}
 
 		private static void Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
-
-			ApplyDirtyRectanglesHarnessOverrides();
 
 			UnoPlatformHost? host = default;
 			var builder = UnoPlatformHostBuilder.Create()
@@ -54,26 +59,6 @@ namespace SkiaSharpExample
 				.Build();
 
 			host.Run();
-		}
-
-		// Lets the dirty-rectangles harness (build/test-scripts/run-dirty-rect-harness.sh) drive
-		// the renderer and the feature flag without code changes. Inert unless the env vars are set.
-		private static void ApplyDirtyRectanglesHarnessOverrides()
-		{
-			if (Environment.GetEnvironmentVariable("UNO_DIRTY_RECTANGLES") is { Length: > 0 } dirty)
-			{
-				FeatureConfiguration.Rendering.EnableDirtyRectangles = string.Equals(dirty, "true", StringComparison.OrdinalIgnoreCase);
-			}
-
-			if (Environment.GetEnvironmentVariable("UNO_DIRTY_RECTANGLES_OVERLAY") is { Length: > 0 } overlay)
-			{
-				FeatureConfiguration.Rendering.DirtyRectanglesOverlay = string.Equals(overlay, "true", StringComparison.OrdinalIgnoreCase);
-			}
-
-			if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { Length: > 0 } renderer)
-			{
-				FeatureConfiguration.Rendering.UseOpenGLOnX11 = string.Equals(renderer, "opengl", StringComparison.OrdinalIgnoreCase);
-			}
 		}
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
