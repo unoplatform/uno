@@ -17,6 +17,21 @@ namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		/// <summary>
+		/// Configuration for collectible AssemblyLoadContext (secondary-app) teardown.
+		/// </summary>
+		public static class Alc
+		{
+			/// <summary>
+			/// When true, a failure to read an <see cref="System.Runtime.Loader.AssemblyLoadContext"/>'s
+			/// unload state (e.g. a future runtime renaming the private state field) throws instead of
+			/// silently falling back. The fallback keeps teardown leak-safe, but it would also let a
+			/// broken read silently degrade every ALC cleanup scenario — enable this in tests/CI so such
+			/// a regression fails loudly rather than going unnoticed. Defaults to false.
+			/// </summary>
+			public static bool ThrowOnUnloadStateReadFailure { get; set; }
+		}
+
 		public static class ApiInformation
 		{
 			/// <summary>

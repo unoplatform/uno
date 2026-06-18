@@ -371,6 +371,12 @@ partial class Application
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
+		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
+		// it as their InheritanceContext parent (DependencyObjectStore._associatedParent); nothing
+		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
+		// Sweep every dictionary reachable from the host application and the master theme set.
+		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
+
 		// ResourceDictionary — invalidate _keyNotFoundCache on the host Application.
 		// The cache accumulates ResourceKey entries with TypeKey referencing ALC types.
 		// These entries pin RuntimeType → LoaderAllocator → ALC.
@@ -395,6 +401,32 @@ partial class Application
 				typeof(Application).Log().Trace($"[ALC-SCAN] Error during deep scan: {ex.GetType().Name}: {ex.Message}");
 			}
 		}
+	}
+
+	// Runs a teardown cleanup step in isolation: teardown is best-effort, so a failing step must not
+	// abort the rest. A failure may indicate a real defect, so it is logged as a warning with the
+	// full exception.
+	private static void RunCleanupStep(string name, Action step)
+	{
+		try
+		{
+			step();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Application).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Application).Log().Warn($"[ALC-CLEANUP] {name} failed", ex);
+			}
+		}
+	}
+
+	private static void ClearCollectibleResourceAssociations()
+	{
+#if !__NETSTD_REFERENCE__
+		Uno.UI.GlobalStaticResources.MasterDictionary.ClearCollectibleAssociatedParents();
+#endif
+		_current?.Resources?.ClearCollectibleAssociatedParents();
 	}
 
 	private static void ClearNonDefaultAlcApplications()
