@@ -592,6 +592,11 @@ namespace Microsoft.UI.Xaml
 					{
 						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
 						materializedNewValueProvider.Store.IsResourceDictionaryItem = true;
+          }
+					else if (newValue is IDependencyObjectStoreProvider storeProvider)
+					{
+						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+						storeProvider.Store.IsResourceDictionaryItem = true;
 					}
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
