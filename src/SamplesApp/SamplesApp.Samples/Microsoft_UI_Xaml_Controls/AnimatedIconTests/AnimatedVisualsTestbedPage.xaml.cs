@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ public sealed partial class AnimatedVisualsTestbedPage : Page
 		SourcePicker.SelectedIndex = 0;
 	}
 
-	private static SourceEntry Make<T>(string name, T source) where T : class, IAnimatedVisualSource2
+	private static SourceEntry Make<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(string name, T source) where T : class, IAnimatedVisualSource2
 	{
 		// Resolve a setter for the source-specific Foreground property (every Lottie-generated
 		// source exposes one). Other theme-color properties (e.g. AnimatedFindVisualSource may
