@@ -552,10 +552,12 @@ namespace Uno.UI.Runtime.Skia {
 		public static setXamlAutomationId(handle: number, automationId: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				// Mirror updateAriaLabel: remove (don't leave xamlautomationid="") when the
-				// incoming value is empty/whitespace so we never persist a stale attribute.
-				if (automationId && automationId.trim().length > 0) {
-					element.setAttribute("xamlautomationid", automationId);
+				// Mirror updateAriaLabel/setAriaStringAttribute: normalize on write by setting the
+				// trimmed value (and removing the attribute when empty) so live-sync matches the
+				// creation-time path and we never persist leading/trailing whitespace.
+				const trimmed = automationId ? automationId.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("xamlautomationid", trimmed);
 				} else {
 					element.removeAttribute("xamlautomationid");
 				}
@@ -568,8 +570,11 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
 				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
-				if (automationId && automationId.trim().length > 0) {
-					element.setAttribute("aria-label", automationId);
+				// Write the TRIMMED value so live-sync matches the creation-time path
+				// (setAriaStringAttribute) and never persists leading/trailing whitespace.
+				const trimmed = automationId ? automationId.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("aria-label", trimmed);
 				} else {
 					element.removeAttribute("aria-label");
 				}
