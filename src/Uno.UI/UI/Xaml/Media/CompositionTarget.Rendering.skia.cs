@@ -42,20 +42,6 @@ public partial class CompositionTarget
 	// rendered frame and reset each Render(). Only touched on the UI thread.
 	private readonly DamageRegion _pendingDamage = new();
 
-	// Diagnostic escape hatch: when UNO_DAMAGE_REGION=false, present the whole frame every time instead
-	// of clipping to the damage region. Damage-region rendering is otherwise always on for retaining
-	// renderers. This exists so the validation harness can compare dirty output against a full-frame
-	// baseline in the same binary; both must be pixel-identical. Read once to keep the present path hot.
-	private static readonly bool _forceFullFramePresent =
-		Environment.GetEnvironmentVariable("UNO_DAMAGE_REGION") is "false";
-
-	// Diagnostic: when UNO_DAMAGE_REGION_LOG=true, log the accumulated damage stats for every frame that
-	// changed something (full-frame vs. a sub-frame region count + bounds). Lets a scroll/animation be
-	// inspected to see whether it coalesces to a full-frame repaint (region count hit the cap) or stays a
-	// tight sub-region. Read once to keep the render path hot.
-	private static readonly bool _logDamage =
-		Environment.GetEnvironmentVariable("UNO_DAMAGE_REGION_LOG") is "true";
-
 	// Snapshot of the damage region attached to a recorded frame, consumed by Draw() on the render thread.
 	// The region may be a possibly-disjoint union of arbitrary shapes. It is transported across the
 	// record/present threads as SVG path data (a GC-managed string, so the snapshot needs no native cleanup):
@@ -172,11 +158,6 @@ public partial class CompositionTarget
 		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
 		{
 			_pendingDamage.AddRect(fpsBounds);
-		}
-
-		if (_logDamage && !_pendingDamage.IsEmpty)
-		{
-			Console.WriteLine($"[damage] full={_pendingDamage.IsFullFrame} regions={_pendingDamage.RegionCount} bounds={_pendingDamage.Bounds}");
 		}
 
 		// Snapshot and reset the accumulated damage region for this frame. The picture above is always
@@ -383,8 +364,7 @@ public partial class CompositionTarget
 			var useDamageRegion =
 				surfaceRetainsContents
 				&& !canvasRecreated
-				&& !damage.IsFullFrame
-				&& !_forceFullFramePresent;
+				&& !damage.IsFullFrame;
 			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 
 			// The overlay tint is drawn into the retained surface, so a clipped present would let the marks
