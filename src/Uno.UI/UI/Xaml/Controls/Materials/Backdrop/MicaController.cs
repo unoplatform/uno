@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool SetTarget(Microsoft.UI.Xaml.Window? xamlWindow)
 		{
 #if __SKIA__
-			if (OperatingSystem.IsMacOS() && xamlWindow is not null)
+			if ((OperatingSystem.IsMacOS() || OperatingSystem.IsWindows()) && xamlWindow is not null)
 			{
 				return true;
 			}

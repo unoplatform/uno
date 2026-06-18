@@ -10,7 +10,7 @@
 
     <StackPanel Padding="16" Spacing="8">
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Window.SystemBackdrop" />
-        <TextBlock Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 this uses the native Mica API. Set the page Background to Transparent to see the effect." TextWrapping="Wrap" />
+        <TextBlock Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 (22621+) this uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. The framework transparentizes the visual tree so the material shows through." TextWrapping="Wrap" />
 
         <TextBlock FontWeight="SemiBold">
             <Run Text="IsSupported: " />
@@ -26,5 +26,16 @@
         <Button Click="{x:Bind ViewModel.SetMicaBaseAlt}" Content="Mica (BaseAlt)" />
         <Button Click="{x:Bind ViewModel.SetDesktopAcrylic}" Content="Desktop Acrylic" />
         <Button Click="{x:Bind ViewModel.ClearBackdrop}" Content="None (clear backdrop)" />
+
+        <ToggleSwitch
+            Margin="0,8,0,0"
+            Header="Extend content into title bar"
+            IsOn="{x:Bind ViewModel.ExtendsContentIntoTitleBar, Mode=TwoWay}"
+            OffContent="Off"
+            OnContent="On" />
+        <TextBlock
+            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            Text="When on, content extends under the title bar. The backdrop material should fill the title bar region instead of rendering a solid caption."
+            TextWrapping="Wrap" />
     </StackPanel>
 </Page>

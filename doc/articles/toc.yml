@@ -635,6 +635,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: SystemBackdrop
+          href: features/system-backdrop.md
         - name: Spell checking
           href: features/spellchecking.md
         - name: String resources and localization
