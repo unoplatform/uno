@@ -165,6 +165,29 @@ namespace Microsoft.UI.Xaml
 		private HashSet<ResourceKey> KeyNotFoundCache
 			=> _keyNotFoundCache ??= new(SpecializedResourceDictionary.ResourceKeyComparer.Default);
 
+		/// <summary>
+		/// A typed key whose <see cref="Type"/> comes from a collectible AssemblyLoadContext must
+		/// never enter the key-not-found cache: dictionaries live as long as their owning element
+		/// (often the host application's lifetime) and a cached RuntimeType pins its
+		/// LoaderAllocator — and through it the whole collectible ALC — long after unload.
+		/// Re-probing such keys is cheap compared to leaking the entire secondary app.
+		/// </summary>
+		private static bool CanCacheKeyNotFound(in ResourceKey resourceKey)
+			=> resourceKey.TypeKey is not { IsCollectible: true };
+
+		/// <summary>
+		/// Records <paramref name="resourceKey"/> in the key-not-found cache when caching is enabled and the
+		/// key is safe to cache (see <see cref="CanCacheKeyNotFound"/>). Centralised so the collectible-key
+		/// guard is applied identically at every not-found site, rather than repeated inline.
+		/// </summary>
+		private void TryCacheKeyNotFound(in ResourceKey resourceKey, bool useKeysNotFoundCache, bool shouldCheckSystem)
+		{
+			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
+			{
+				KeyNotFoundCache.Add(resourceKey);
+			}
+		}
+
 		internal object Lookup(object key)
 		{
 			if (!TryGetValue(key, out var value))
@@ -331,10 +354,7 @@ namespace Microsoft.UI.Xaml
 				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem)
-			{
-				KeyNotFoundCache.Add(resourceKey);
-			}
+			TryCacheKeyNotFound(resourceKey, useKeysNotFoundCache, shouldCheckSystem);
 
 			return false;
 		}
@@ -411,10 +431,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem)
-			{
-				KeyNotFoundCache.Add(resourceKey);
-			}
+			TryCacheKeyNotFound(resourceKey, useKeysNotFoundCache, shouldCheckSystem);
 
 			providingDictionary = null;
 			return false;
@@ -491,6 +508,11 @@ namespace Microsoft.UI.Xaml
 					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
+				else if (value is IDependencyObjectStoreProvider provider)
+				{
+					// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+					provider.Store.IsResourceDictionaryItem = true;
+				}
 			}
 
 			InvalidateNotFoundCache(true, resourceKey);
@@ -565,6 +587,11 @@ namespace Microsoft.UI.Xaml
 					if (newValue is ResourceDictionary)
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+					}
+					else if (newValue is IDependencyObjectStoreProvider materializedProvider)
+					{
+						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+						materializedProvider.Store.IsResourceDictionaryItem = true;
 					}
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
