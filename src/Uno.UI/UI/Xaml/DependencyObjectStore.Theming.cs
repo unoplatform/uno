@@ -52,23 +52,57 @@ public partial class DependencyObjectStore
 	/// </summary>
 	internal void SetTheme(Theme theme) => _theme = theme;
 
-	// MUX Reference: CDependencyObject.h:300-302
-	//   XUINT32 fIsProcessingThemeWalk : 1;  // bit 16
-	//   "Indicates whether the DO is currently processing themes. It is used to prevent stack
-	//    overflows caused by cycles."
-	// WinUI packs this with other lifecycle bits on every CDependencyObject (corep.h:224-348), so it
-	// lives here on the store.
-	private bool _isProcessingThemeWalk;
+	// Per-store transient lifecycle/theme flags, packed into one field instead of one bool field per
+	// flag — WinUI packs the equivalent state into CDependencyObject's m_bitFields (corep.h:224-348).
+	[global::System.Flags]
+	private enum StoreFlags : byte
+	{
+		None = 0,
+
+		// MUX Reference: CDependencyObject.h:300-302 — fIsProcessingThemeWalk. "Indicates whether the DO
+		// is currently processing themes ... to prevent stack overflows caused by cycles."
+		IsProcessingThemeWalk = 1 << 0,
+
+		// Re-entrancy guard for UpdateChildResourceBindings.
+		IsUpdatingChildResourceBindings = 1 << 1,
+
+		// The members below are only written on enhanced-lifecycle targets (see their gated call sites).
+
+		// Transient forceRefresh of the theme walk this object is currently processing.
+		WalkForceRefresh = 1 << 2,
+
+		// MUX Reference: CDependencyObject.h:302 — fIsProcessingEnterLeave.
+		IsProcessingEnterLeave = 1 << 3,
+
+		// MUX Reference: CDependencyObject.h — fLive, carried here for non-UIElement DOs.
+		IsActive = 1 << 4,
+	}
+
+	private StoreFlags _flags;
+
+	private bool GetFlag(StoreFlags flag) => (_flags & flag) != 0;
+
+	private void SetFlag(StoreFlags flag, bool value)
+	{
+		if (value)
+		{
+			_flags |= flag;
+		}
+		else
+		{
+			_flags &= ~flag;
+		}
+	}
 
 	/// <summary>
 	/// Gets whether this object is currently processing a theme walk (re-entrancy guard).
 	/// </summary>
-	internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+	internal bool IsProcessingThemeWalk => GetFlag(StoreFlags.IsProcessingThemeWalk);
 
 	/// <summary>
 	/// Sets whether this object is currently processing a theme walk.
 	/// </summary>
-	internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+	internal void SetIsProcessingThemeWalk(bool value) => SetFlag(StoreFlags.IsProcessingThemeWalk, value);
 
 	#endregion
 
@@ -84,12 +118,11 @@ public partial class DependencyObjectStore
 	// UpdateChildResourceBindings, which has no walk parameters, so the walking store carries them
 	// here while IsProcessingThemeWalk is set.
 	private Theme _walkTheme;
-	private bool _walkForceRefresh;
 
 	// Valid only while IsProcessingThemeWalk — read by FrameworkElement.UpdateThemeBindings to
 	// thread the walk context into the Resources dictionary's per-child notification.
 	internal Theme WalkTheme => _walkTheme;
-	internal bool WalkForceRefresh => _walkForceRefresh;
+	internal bool WalkForceRefresh => GetFlag(StoreFlags.WalkForceRefresh);
 
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
@@ -137,7 +170,7 @@ public partial class DependencyObjectStore
 		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
 
 		_walkTheme = theme;
-		_walkForceRefresh = forceRefresh;
+		SetFlag(StoreFlags.WalkForceRefresh, forceRefresh);
 
 		try
 		{
@@ -517,8 +550,6 @@ public partial class DependencyObjectStore
 
 	#region Property-value theme propagation — WinUI: NotifyThemeChangedCoreImpl property walk (Theming.cpp lines 166-255)
 
-	private bool _isUpdatingChildResourceBindings;
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	// Notifies new property value of theme change that was applied to the property owner.
 	/// <remarks>
@@ -614,7 +645,7 @@ public partial class DependencyObjectStore
 	/// </remarks>
 	private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		if (_isUpdatingChildResourceBindings)
+		if (GetFlag(StoreFlags.IsUpdatingChildResourceBindings))
 		{
 			// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
 			return;
@@ -628,7 +659,7 @@ public partial class DependencyObjectStore
 			}
 			finally
 			{
-				_isUpdatingChildResourceBindings = false;
+				SetFlag(StoreFlags.IsUpdatingChildResourceBindings, false);
 			}
 
 			if (ActualInstance is IThemeChangeAware themeChangeAware)
@@ -651,7 +682,7 @@ public partial class DependencyObjectStore
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		_isUpdatingChildResourceBindings = true;
+		SetFlag(StoreFlags.IsUpdatingChildResourceBindings, true);
 
 		foreach (var propertyDetail in _properties.GetAllDetails())
 		{
@@ -722,7 +753,7 @@ public partial class DependencyObjectStore
 			if (dependencyObject is not UIElement { IsActiveInVisualTree: true }
 				&& dependencyObject is IDependencyObjectStoreProvider walkProvider)
 			{
-				walkProvider.Store.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+				walkProvider.Store.NotifyThemeChanged(_walkTheme, WalkForceRefresh);
 			}
 
 			return;
