@@ -3,8 +3,6 @@
 
 #nullable enable
 
-using System;
-
 namespace Microsoft.UI.Xaml.Documents;
 
 // TODO Uno (Stage 4): minimal KnownPropertyIndex subset needed by the block-layout run model.
@@ -15,15 +13,5 @@ internal enum KnownPropertyIndex
 	Run_FlowDirection,
 }
 
-partial class TextElement
-{
-	// TODO Uno (Stage 4): TextElement.EnsureTextFormattingForRead — realizes the element's resolved
-	// text formatting before it is read (CTextElement::EnsureTextFormattingForRead).
-	internal void EnsureTextFormattingForRead()
-		=> throw new NotSupportedException("TODO Uno (Stage 4): TextElement.EnsureTextFormattingForRead");
-
-	// TODO Uno (Stage 4): TextElement.IsPropertyDefaultByIndex — whether a property is still at its
-	// default (unset) value, addressed by KnownPropertyIndex (CDependencyObject::IsPropertyDefaultByIndex).
-	internal bool IsPropertyDefaultByIndex(KnownPropertyIndex propertyIndex)
-		=> throw new NotSupportedException("TODO Uno (Stage 4): TextElement.IsPropertyDefaultByIndex");
-}
+// TextElement.EnsureTextFormattingForRead, IsPropertyDefaultByIndex, GetTextFormatting and
+// GetInheritedProperties live in TextElement.TextContainer.skia.cs (the run-model partial).
