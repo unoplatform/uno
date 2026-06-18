@@ -19,6 +19,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
+				// A second collect after finalizers run reclaims the collectible type's LoaderAllocator
+				// deterministically — finalization can release the last references keeping it alive.
+				GC.Collect();
 			}
 
 			Assert.IsFalse(

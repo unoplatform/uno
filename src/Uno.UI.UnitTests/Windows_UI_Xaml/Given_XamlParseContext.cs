@@ -50,6 +50,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
+				// A second collect after finalizers run reclaims the unloaded collectible ALC
+				// deterministically — finalization can release the last references that keep it alive.
+				GC.Collect();
 			}
 
 			Assert.IsFalse(
