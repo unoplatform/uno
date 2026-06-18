@@ -3,7 +3,6 @@
 
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Documents;
@@ -28,12 +27,6 @@ partial class BlockCollection
 
 	internal Block GetItemWithAddRef(uint index) => this[(int)index];
 
-	// TODO Uno (Stage 4): BlockCollection.GetElementEdgeOffset — maps a TextElement edge to a
-	// character offset within the block collection (CBlockCollection::GetElementEdgeOffset).
-	internal void GetElementEdgeOffset(
-		InlineUIContainer pElement,
-		ElementEdge edge,
-		out uint pOffset,
-		out bool pFound)
-		=> throw new NotSupportedException("TODO Uno (Stage 4): BlockCollection.GetElementEdgeOffset");
+	// GetPositionCount / GetRun / GetContainingElement / GetElementEdgeOffset / CacheLengths
+	// live in BlockCollection.TextContainer.skia.cs (the run-model partial).
 }
