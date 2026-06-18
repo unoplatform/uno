@@ -28,7 +28,7 @@ internal abstract class X11Renderer : IDisposable
 
 	/// <summary>
 	/// True if this renderer's surface preserves the previous frame's pixels between presents, so the
-	/// composition layer may repaint only the dirty region. Overridden by the software renderer (which
+	/// composition layer may repaint only the damage region. Overridden by the software renderer (which
 	/// keeps a persistent backing bitmap). GPU swapchain renderers leave this false until the retained
 	/// layer is implemented.
 	/// </summary>
@@ -37,7 +37,7 @@ internal abstract class X11Renderer : IDisposable
 	/// <summary>
 	/// True if this renderer presents through a persistent offscreen layer (used by GPU swapchain
 	/// renderers): the frame is rendered onto the retained layer, which is then blitted to the
-	/// (non-retaining) window surface each frame. Lets dirty-rectangles work on a swapchain without
+	/// (non-retaining) window surface each frame. Lets damage-region work on a swapchain without
 	/// per-driver buffer-age handling. Requires <see cref="SurfaceRetainsContents"/> to also be true.
 	/// </summary>
 	protected virtual bool UsesRetainedLayer => false;
@@ -67,12 +67,12 @@ internal abstract class X11Renderer : IDisposable
 			MakeCurrent();
 		}
 
-		// In dirty-rectangles mode the render target must retain the previous frame outside the changed
+		// In damage-region mode the render target must retain the previous frame outside the changed
 		// region, so we must NOT clear it here; the clipped clear happens in Draw().
-		var dirtyRectanglesActive = SurfaceRetainsContents;
-		var useLayer = dirtyRectanglesActive && UsesRetainedLayer;
+		var damageRegionActive = SurfaceRetainsContents;
+		var useLayer = damageRegionActive && UsesRetainedLayer;
 
-		if (!dirtyRectanglesActive)
+		if (!damageRegionActive)
 		{
 			_surface?.Canvas.Clear(_background);
 		}

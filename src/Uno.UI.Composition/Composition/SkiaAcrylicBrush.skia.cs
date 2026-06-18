@@ -66,9 +66,9 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
 
-	// The translucent path blurs the backdrop over bounds ± BlurPadding, so dirty rectangles must keep that
+	// The translucent path blurs the backdrop over bounds ± BlurPadding, so damage region must keep that
 	// padded region fresh for the blur to sample correct pixels.
-	internal override float DirtyRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
+	internal override float DamageRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
 
 	internal override bool CanPaint() => true;
 

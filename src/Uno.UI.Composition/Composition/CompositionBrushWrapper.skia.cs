@@ -25,7 +25,7 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 
 	// Forward to the wrapped brush so that effect brushes (e.g. a backdrop-blur acrylic) keep their
 	// per-frame-repaint characteristic through the wrapper; otherwise the owning visual sees the base
-	// default (false) and dirty-rectangles rendering would freeze the effect's cached picture.
+	// default (false) and damage-region rendering would freeze the effect's cached picture.
 	internal override bool RequiresRepaintOnEveryFrame => WrappedBrush?.RequiresRepaintOnEveryFrame ?? false;
-	internal override float DirtyRegionSamplingMargin => WrappedBrush?.DirtyRegionSamplingMargin ?? 0;
+	internal override float DamageRegionSamplingMargin => WrappedBrush?.DamageRegionSamplingMargin ?? 0;
 }

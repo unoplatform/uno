@@ -6,13 +6,13 @@ namespace Uno.UI.Composition;
 
 /// <summary>
 /// Accumulates, for a single frame, the region of the surface whose visual output changed since the
-/// previous presented frame, for dirty-rectangles rendering. The region is a possibly-disjoint union of
+/// previous presented frame, for damage-region rendering. The region is a possibly-disjoint union of
 /// arbitrary shapes (not merged into a single bounding rectangle), so the gaps between far-apart changes
 /// (e.g. a TextBox near the top and a ListView near the bottom) are not repainted, and non-rectangular
 /// clips (rounded corners, curves) are honored. To bound cost, once too many distinct regions accumulate
 /// the whole surface is repainted instead.
 /// </summary>
-internal sealed class DirtyRegion
+internal sealed class DamageRegion
 {
 	// Beyond this many distinct contributions in a frame, coalescing into a precise region isn't worth it;
 	// repaint the whole surface instead.

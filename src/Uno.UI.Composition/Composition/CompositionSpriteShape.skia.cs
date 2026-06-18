@@ -42,7 +42,7 @@ namespace Microsoft.UI.Composition
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
 		// Bounds of what this shape renders, in the owning ShapeVisual's coordinate space (before any ViewBox
-		// transform the visual applies on the canvas). Used to compute the dirty region for dirty-rectangles
+		// transform the visual applies on the canvas). Used to compute the damage region for damage-region
 		// rendering. Returns false when the (transformed) geometry hasn't been built yet, so the caller falls
 		// back to a safe bound.
 		internal bool TryGetRenderBounds(out SKRect bounds)
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Composition
 
 		// Appends the actual rendered shape (its geometry, not just a bounding box) to <paramref name="dst"/>,
 		// in the owning visual's coordinate space (before any ViewBox transform). Used to compute a tight,
-		// non-rectangular dirty region for dirty-rectangles rendering (e.g. an ellipse or rounded rectangle).
+		// non-rectangular damage region for damage-region rendering (e.g. an ellipse or rounded rectangle).
 		// Returns false when the (transformed) geometry hasn't been built yet.
 		internal bool TryGetRenderPath(SKPath dst)
 		{

@@ -1,27 +1,27 @@
 #!/bin/bash
-# Dirty-rectangles validation harness.
+# Damage-region validation harness.
 #
-# Proves that enabling dirty-rectangles rendering produces byte-for-byte identical output to the
+# Proves that enabling damage-region rendering produces byte-for-byte identical output to the
 # historical full-frame path, by capturing the REAL presented window (not the in-process
 # RenderTargetBitmap path, which bypasses CompositionTarget.Draw) under Xvfb, on the software and
 # OpenGL X11 renderers.
 #
-# It drives the deterministic, self-settling validation samples (DirtyRectangles_Static / _SmallUpdate
+# It drives the deterministic, self-settling validation samples (DamageRegion_Static / _SmallUpdate
 # / _MovedElement under Windows.UI.Composition), which reach a fixed end state so an after-settle
-# screenshot is directly comparable between full-frame and dirty-rectangles runs.
+# screenshot is directly comparable between full-frame and damage-region runs.
 #
-# Usage:   build/test-scripts/run-dirty-rect-harness.sh <samples-app-dir> [out-dir]
+# Usage:   build/test-scripts/run-damage-region-harness.sh <samples-app-dir> [out-dir]
 # Requires: Xvfb, ImageMagick (import + compare), dotnet, and the X11 client libs the app needs.
 # Notes:   No window manager is used on purpose — a WM toolbar/clock adds non-deterministic pixels.
 #
-# Dirty-rectangles rendering is always on for retaining renderers; UNO_DIRTY_RECTANGLES=false is a
+# Damage-region rendering is always on for retaining renderers; UNO_DAMAGE_REGION=false is a
 # diagnostic escape hatch that forces a full-frame present so this run can serve as the baseline.
-#   UNO_DIRTY_RECTANGLES = true|false   (false -> force full-frame present; baseline)
+#   UNO_DAMAGE_REGION = true|false   (false -> force full-frame present; baseline)
 #   UNO_X11_RENDERER     = software|opengl
 set -uo pipefail
 
-SAMPLES_DIR="${1:?Usage: run-dirty-rect-harness.sh <samples-app-dir> [out-dir]}"
-OUT_DIR="${2:-/tmp/dirty-rect-harness}"
+SAMPLES_DIR="${1:?Usage: run-damage-region-harness.sh <samples-app-dir> [out-dir]}"
+OUT_DIR="${2:-/tmp/damage-region-harness}"
 DLL="$SAMPLES_DIR/SamplesApp.Skia.Generic.dll"
 DISPLAY_NUM=99
 SETTLE_SECONDS=8
@@ -32,14 +32,14 @@ done
 [ -f "$DLL" ] || { echo "ERROR: $DLL not found. Build SamplesApp.Skia.Generic first." >&2; exit 2; }
 
 SAMPLES=(
-	"Windows.UI.Composition/DirtyRectangles_Static"
-	"Windows.UI.Composition/DirtyRectangles_SmallUpdate"
-	"Windows.UI.Composition/DirtyRectangles_MovedElement"
-	"Windows.UI.Composition/DirtyRectangles_Disjoint"
-	"Windows.UI.Composition/DirtyRectangles_Scroll"
-	"Windows.UI.Composition/DirtyRectangles_Shadow"
-	"Windows.UI.Composition/DirtyRectangles_ShadowChild"
-	"Windows.UI.Composition/DirtyRectangles_Acrylic"
+	"Windows.UI.Composition/DamageRegion_Static"
+	"Windows.UI.Composition/DamageRegion_SmallUpdate"
+	"Windows.UI.Composition/DamageRegion_MovedElement"
+	"Windows.UI.Composition/DamageRegion_Disjoint"
+	"Windows.UI.Composition/DamageRegion_Scroll"
+	"Windows.UI.Composition/DamageRegion_Shadow"
+	"Windows.UI.Composition/DamageRegion_ShadowChild"
+	"Windows.UI.Composition/DamageRegion_Acrylic"
 )
 
 mkdir -p "$OUT_DIR"
@@ -50,7 +50,7 @@ capture() {
 	Xvfb ":$DISPLAY_NUM" -screen 0 1280x1024x24 >/dev/null 2>&1 &
 	local xvfb_pid=$!
 	sleep 1
-	DISPLAY=":$DISPLAY_NUM" UNO_X11_RENDERER="$renderer" UNO_DIRTY_RECTANGLES="$dirty" \
+	DISPLAY=":$DISPLAY_NUM" UNO_X11_RENDERER="$renderer" UNO_DAMAGE_REGION="$dirty" \
 		dotnet "$DLL" "sample=$sample" >/dev/null 2>&1 &
 	local app_pid=$!
 	sleep "$SETTLE_SECONDS"
@@ -59,14 +59,14 @@ capture() {
 	kill "$xvfb_pid" 2>/dev/null; sleep 1; kill -9 "$xvfb_pid" 2>/dev/null
 }
 
-# Max pixels allowed to differ. Dirty-rectangles output is byte-identical to a full repaint for
+# Max pixels allowed to differ. Damage-region output is byte-identical to a full repaint for
 # rectangular/disjoint regions, but when the damage region follows a non-rectangular shape (rounded
 # corners, ellipses) the GPU/CPU rasterizes that shape's antialiased edge a bounded, stable, sub-pixel
 # amount differently under a clipped present than under a full one. That difference does not accumulate
 # over frames. This tolerance absorbs it (a few px from rounded app chrome) while remaining orders of
 # magnitude below any real structural regression (stale region, dropped repaint), which run into the
 # thousands+ of pixels.
-TOLERANCE=${DIRTY_RECT_TOLERANCE:-8}
+TOLERANCE=${DAMAGE_REGION_TOLERANCE:-8}
 
 overall=0
 for renderer in software opengl; do
@@ -91,7 +91,7 @@ for renderer in software opengl; do
 done
 
 if [ "$overall" -eq 0 ]; then
-	echo "ALL PASS: dirty-rectangles output matches a full repaint (within $TOLERANCE px) on every renderer."
+	echo "ALL PASS: damage-region output matches a full repaint (within $TOLERANCE px) on every renderer."
 else
 	echo "HARNESS FAILED: see diffs above." >&2
 fi

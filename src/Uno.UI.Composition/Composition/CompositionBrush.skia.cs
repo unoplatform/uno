@@ -14,9 +14,9 @@ namespace Microsoft.UI.Composition
 
 		/// <summary>
 		/// How far (in local pixels) beyond the painted bounds this brush samples the surface — e.g. a backdrop
-		/// blur reads neighbouring pixels. Dirty-rectangles rendering expands the damage region by this margin
+		/// blur reads neighbouring pixels. Damage-region rendering expands the damage region by this margin
 		/// so the sampled area stays fresh; otherwise the effect would read stale pixels. 0 by default.
 		/// </summary>
-		internal virtual float DirtyRegionSamplingMargin => 0;
+		internal virtual float DamageRegionSamplingMargin => 0;
 	}
 }

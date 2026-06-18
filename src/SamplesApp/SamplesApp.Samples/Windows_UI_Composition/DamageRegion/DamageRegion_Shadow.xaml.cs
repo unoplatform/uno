@@ -3,22 +3,22 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
+namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
 	/// <summary>
 	/// A small element casting a drop shadow that moves across a static background on a timer. Verifies that
-	/// the shadow extent (which paints beyond the element's own size) is included in the dirty region, so no
+	/// the shadow extent (which paints beyond the element's own size) is included in the damage region, so no
 	/// stale shadow pixels remain, and output stays identical to a full-frame repaint.
 	/// </summary>
-	[Sample("Windows.UI.Composition", Name = "DirtyRectangles_Shadow", IsManualTest = true,
-		Description = "A shadow-casting element moving across a static background, for dirty-rectangles validation.")]
-	public sealed partial class DirtyRectangles_Shadow : Page
+	[Sample("Windows.UI.Composition", Name = "DamageRegion_Shadow", IsManualTest = true,
+		Description = "A shadow-casting element moving across a static background, for damage-region validation.")]
+	public sealed partial class DamageRegion_Shadow : Page
 	{
 		private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
 		private double _left;
 		private int _steps;
 
-		public DirtyRectangles_Shadow()
+		public DamageRegion_Shadow()
 		{
 			this.InitializeComponent();
 
@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
 			Canvas.SetLeft(Mover, _left);
 
 			// Move a fixed number of steps then settle at a deterministic final position, so a screenshot
-			// taken after settling is comparable between full-frame and dirty-rectangles runs. If the shadow's
+			// taken after settling is comparable between full-frame and damage-region runs. If the shadow's
 			// vacated region isn't repainted, stale shadow copies would remain at intermediate positions.
 			if (++_steps >= 5)
 			{

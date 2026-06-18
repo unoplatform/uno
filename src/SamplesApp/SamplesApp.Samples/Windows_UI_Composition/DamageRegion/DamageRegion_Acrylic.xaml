@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_Acrylic"
+    x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_Acrylic"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
     <!--
         A translucent acrylic (backdrop-blur) panel over a small element that moves behind it and
         settles. Acrylic is a backdrop effect brush (RequiresRepaintOnEveryFrame) that samples the
-        canvas well beyond its own bounds, so it stresses the dirty-rectangles damage region: if the
+        canvas well beyond its own bounds, so it stresses the damage-region damage region: if the
         damage doesn't cover the acrylic's sampling area (and the changed backdrop behind it), the
         blurred result goes stale. The settled end state must match a full-frame repaint.
     -->

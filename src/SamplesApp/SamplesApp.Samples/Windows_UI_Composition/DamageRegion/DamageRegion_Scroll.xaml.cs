@@ -5,22 +5,22 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using Colors = Microsoft.UI.Colors;
 
-namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
+namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
 	/// <summary>
 	/// Tall content scrolled to a fixed offset on a timer (via ChangeView). Scrolling shifts the whole
 	/// viewport without repainting each item, so this verifies moved-but-not-repainted content is dirtied
-	/// under dirty-rectangles, with output identical to a full-frame repaint.
+	/// under damage-region, with output identical to a full-frame repaint.
 	/// </summary>
-	[Sample("Windows.UI.Composition", Name = "DirtyRectangles_Scroll", IsManualTest = true,
-		Description = "Tall content scrolled to a fixed offset, for dirty-rectangles validation.")]
-	public sealed partial class DirtyRectangles_Scroll : Page
+	[Sample("Windows.UI.Composition", Name = "DamageRegion_Scroll", IsManualTest = true,
+		Description = "Tall content scrolled to a fixed offset, for damage-region validation.")]
+	public sealed partial class DamageRegion_Scroll : Page
 	{
 		private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(400) };
 		private double _offset;
 		private int _steps;
 
-		public DirtyRectangles_Scroll()
+		public DamageRegion_Scroll()
 		{
 			this.InitializeComponent();
 
@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
 			Scroller.ChangeView(null, _offset, null, disableAnimation: true);
 
 			// Scroll a fixed number of steps to a deterministic final offset, then settle so a post-settle
-			// screenshot is comparable between full-frame and dirty-rectangles runs.
+			// screenshot is comparable between full-frame and damage-region runs.
 			if (++_steps >= 5)
 			{
 				_timer.Stop();

@@ -104,7 +104,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		// The Metal drawable texture is a swapchain buffer that is not preserved between frames (and is a
-		// different texture each call), so dirty rectangles render onto a persistent GPU layer that is
+		// different texture each call), so the composition renders onto a persistent GPU layer that is
 		// blitted to the texture each frame.
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
 			_retainedLayer.Surface?.Canvas,
@@ -153,7 +153,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		// The backing bitmap persists between frames (it is only recreated on resize), so it retains the
-		// previous frame's pixels and dirty rectangles can repaint only the changed region into it.
+		// previous frame's pixels and damage-region rendering can repaint only the changed region into it.
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_bitmap?.Dispose();

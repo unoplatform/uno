@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_SmallUpdate"
+    x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_SmallUpdate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
 
     <!--
         A large static background with a single small element that updates on a timer.
-        Used by the dirty-rectangles harness to verify that only the small region is
+        Used by the damage-region harness to verify that only the small region is
         repainted while the static background is preserved (and that output stays
         identical to a full-frame repaint).
     -->
