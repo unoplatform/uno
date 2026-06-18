@@ -30,10 +30,6 @@ internal partial class Win32WindowWrapper
 		private SKSurface? _swapchainSurface; // owned here; wraps the GL framebuffer
 		private SKSurface? _layer; // non-owning reference; the caller (Win32WindowWrapper) owns/disposes it as _surface
 
-		// Src (not SrcOver): the layer is the whole frame and must overwrite the GL back buffer's stale,
-		// rotated contents — a SrcOver blit would let old frames bleed through any non-opaque pixels.
-		private readonly SKPaint _blitPaint = new() { BlendMode = SKBlendMode.Src };
-
 		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext)
 		{
 			_hwnd = hwnd;
@@ -197,7 +193,7 @@ internal partial class Win32WindowWrapper
 			// onto the (non-retaining) back buffer, then present.
 			if (_layer is { } layer && _swapchainSurface is { } swapchain)
 			{
-				layer.Draw(swapchain.Canvas, 0, 0, _blitPaint);
+				layer.Draw(swapchain.Canvas, 0, 0, null);
 				swapchain.Canvas.Flush();
 			}
 
@@ -214,7 +210,6 @@ internal partial class Win32WindowWrapper
 			// _layer is owned by the caller (disposed as _surface); only dispose what we own here.
 			_swapchainSurface?.Dispose();
 			_swapchainSurface = null;
-			_blitPaint.Dispose();
 			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
 		}
 
