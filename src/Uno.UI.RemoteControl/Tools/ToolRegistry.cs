@@ -13,13 +13,16 @@ namespace Uno.UI.RemoteControl.Tools;
 /// </summary>
 internal static class ToolRegistry
 {
+	// Read via Volatile.Read to pair with the Interlocked.Exchange / Volatile.Write on the swap path,
+	// giving an acquire fence on weak memory models. The field stays non-volatile so it can be passed
+	// by ref to Interlocked.Exchange without CS0420.
 	private static IToolRegistry _instance = new ToolRegistryImpl();
 
 	/// <summary>The registration face — used by publishers.</summary>
-	public static IToolPublisher Publisher => _instance;
+	public static IToolPublisher Publisher => Volatile.Read(ref _instance);
 
 	/// <summary>The consumption face — used by consumers.</summary>
-	public static IToolCatalog Catalog => _instance;
+	public static IToolCatalog Catalog => Volatile.Read(ref _instance);
 
 	/// <summary>
 	/// Wires the UI-thread dispatcher used to marshal tool invocations declared with
@@ -28,7 +31,7 @@ internal static class ToolRegistry
 	/// </summary>
 	internal static void SetDispatcher(IToolDispatcher? dispatcher)
 	{
-		if (_instance is ToolRegistryImpl impl)
+		if (Volatile.Read(ref _instance) is ToolRegistryImpl impl)
 		{
 			impl.Dispatcher = dispatcher;
 		}

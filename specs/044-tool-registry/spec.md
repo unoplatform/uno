@@ -98,8 +98,9 @@ registration.Dispose(); // removes the tool and raises Changed
 ### Scope
 
 - **In Uno (this spec)**: `ToolRegistry` and its in-memory types in `Uno.UI.RemoteControl`,
-  `internal` + `[InternalsVisibleTo]` to publisher assemblies and consumer in-app
-  components. Tools and resources both, including a resource-update signal.
+  `internal` (today `[InternalsVisibleTo]` only the test assemblies; IVT to publisher/consumer
+  assemblies is **deferred** to the integration work that adds them — see §7). Tools and resources
+  both, including a resource-update signal.
 - **Publisher guide**: Appendix A (`spec-appendix-a-publisher-guide.md`).
 - **Consumer guide**: Appendix B (`spec-appendix-b-consumer-guide.md`) — the normative MCP
   obligations for any consumer; consumer *code* is out of scope (separate codebase), as is
@@ -191,8 +192,9 @@ internal sealed record ToolResult(
 > The C# blocks in this spec are illustrative **shape sketches** (some members are shown as
 > declarations without bodies); they convey the contract, not a compilable unit.
 
-> **Visibility**: these types are `internal` (per the v1 decision) and reachable by
-> publishers and consumers via `[InternalsVisibleTo]`. They are **not** serialized by Uno —
+> **Visibility**: these types are `internal` (per the v1 decision) and will be reachable by
+> publishers and consumers via `[InternalsVisibleTo]` once those assemblies are wired (deferred;
+> today only the test assemblies are granted access). They are **not** serialized by Uno —
 > each consumer maps them onto its own message payloads. The **typed parameter model** lets a
 > consumer generate a JSON Schema (Appendix B) without Uno referencing any JSON-Schema or MCP
 > type; for shapes the flat model can't express (nested objects/arrays, numeric constraints), a
@@ -446,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**42 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**43 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -456,7 +458,7 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `MultiplePublishers_Snapshot_AggregatesAll` | Tools from several publishers all appear in one `Snapshot()`. |
 | `InvokeAsync_Success_ReturnsResult` | Routes to the handler and returns its `ToolResult` (default `runOnUIThread`, no dispatcher → inline). |
 | `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError`, no exception escapes. |
-| `InvokeAsync_MissingRequiredArg_ReturnsIsError` | A throwing typed accessor surfaces as `IsError`. |
+| `InvokeAsync_HandlerThrowsOnMissingArg_ReturnsIsError` | A throwing typed accessor in the handler surfaces as `IsError`. |
 | `InvokeAsync_UnknownTool_ReturnsIsError` | Unknown/removed tool returns an error result. |
 | `InvokeAsync_OffUIThread_UsesDispatcher` | With a wired dispatcher and `HasThreadAccess == false`, marshals via the dispatcher. |
 | `InvokeAsync_AlreadyOnUIThread_RunsInline_NoDispatch` | With `HasThreadAccess == true`, runs inline (WASM deadlock guard). |
@@ -490,6 +492,7 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout` | A handler's own OCE propagates as a throw, never a phantom timeout result. |
 | `TryGetInt32_And_TryGetBoolean_ReturnTypedValues` | The typed `TryGet*` accessors read values and report false on wrong/missing. |
 | `ToolParameter_DefaultAllowedValues_ReadsAsEmpty_NotDefault` | A default (uninitialized) `AllowedValues` reads as empty, never throwing on enumeration. |
+| `ToolDescriptor_DefaultParameters_ReadsAsEmpty_AndInvokesWithoutThrowing` | A default (uninitialized) `Parameters` reads as empty and validates/invokes without throwing. |
 | `InvokeAsync_TypedAccessors_IntAndBool` | `GetInt32`/`GetBoolean` read typed arguments. |
 | `TryGetString_NullValuedProperty_ReturnsFalse` | A null-valued JSON property is treated as absent. |
 

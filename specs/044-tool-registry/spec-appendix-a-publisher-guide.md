@@ -33,8 +33,9 @@ You never touch the consumption face (`IToolCatalog`) — that belongs to consum
 examples below call `ToolRegistry.Publisher.…`.
 
 > **Access**: the API is `internal`. A publisher assembly is granted access via
-> `[InternalsVisibleTo]` (added in `Uno.UI.RemoteControl/AssemblyInfo.cs`). Coordinate
-> adding your assembly name there.
+> `[InternalsVisibleTo]` in `Uno.UI.RemoteControl/AssemblyInfo.cs` — **not yet present** for
+> publishers (today only the test assemblies are listed). Adding your assembly name there is part
+> of wiring the publisher integration; coordinate that change then.
 
 > **Debug-only**: the registry ships in the debug-only `Uno.WinUI.DevServer` package
 > (`Uno.UI.RemoteControl`), absent in Release. Call it from a path gated the same way you

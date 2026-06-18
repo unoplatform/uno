@@ -106,8 +106,10 @@ public class ToolRegistryTests
 	}
 
 	[TestMethod]
-	public async Task InvokeAsync_MissingRequiredArg_ReturnsIsError()
+	public async Task InvokeAsync_HandlerThrowsOnMissingArg_ReturnsIsError()
 	{
+		// The descriptor declares no parameters, so the validator passes; this exercises the handler
+		// surfacing a throwing typed accessor as an error result (the validator path is covered separately).
 		var registry = new ToolRegistryImpl();
 		registry.RegisterTool(Tool("needs"), (inv, _) => new ValueTask<ToolResult>(ToolResult.Text(inv.GetString("absent"))));
 
@@ -570,6 +572,18 @@ public class ToolRegistryTests
 
 		Assert.IsFalse(parameter.AllowedValues.IsDefault);
 		Assert.IsTrue(parameter.AllowedValues.IsEmpty);
+	}
+
+	[TestMethod]
+	public async Task ToolDescriptor_DefaultParameters_ReadsAsEmpty_AndInvokesWithoutThrowing()
+	{
+		var registry = new ToolRegistryImpl();
+		// Parameters left as default (uninitialized ImmutableArray) must not throw when enumerated.
+		registry.RegisterTool(new ToolDescriptor("t", "d", default, IsReadOnly: false), Ok());
+
+		Assert.IsFalse(registry.Snapshot().Tools[0].Parameters.IsDefault);
+		var result = await registry.InvokeAsync("t", new JsonObject(), default);
+		Assert.IsFalse(result.IsError);
 	}
 
 	[TestMethod]

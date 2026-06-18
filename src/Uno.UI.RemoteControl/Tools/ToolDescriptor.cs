@@ -13,7 +13,15 @@ internal sealed record ToolDescriptor(
 	string Name,
 	string Description,
 	ImmutableArray<ToolParameter> Parameters,
-	bool IsReadOnly);
+	bool IsReadOnly)
+{
+	/// <summary>
+	/// The declared parameters. Normalized so an uninitialized (<c>default</c>)
+	/// <see cref="ImmutableArray{T}"/> reads as empty instead of throwing on enumeration.
+	/// </summary>
+	public ImmutableArray<ToolParameter> Parameters { get; init; }
+		= Parameters.IsDefault ? ImmutableArray<ToolParameter>.Empty : Parameters;
+}
 
 /// <summary>
 /// A single tool parameter, described declaratively. A consumer maps this onto its own schema.

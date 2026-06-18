@@ -32,8 +32,9 @@ The registry imposes **no transport** and holds **no per-consumer state**. A con
 mutates the registry (unless it also acts as a publisher — §7).
 
 > **Access**: the API is `internal`. A consumer assembly is granted access via
-> `[InternalsVisibleTo]` (added in `Uno.UI.RemoteControl/AssemblyInfo.cs`). Coordinate adding
-> your assembly name there.
+> `[InternalsVisibleTo]` in `Uno.UI.RemoteControl/AssemblyInfo.cs` — **not yet present** for
+> consumers (today only the test assemblies are listed). Adding your assembly name there is part
+> of wiring the consumer integration; coordinate that change then.
 
 > **Debug-only**: the registry ships in the debug-only `Uno.WinUI.DevServer` package
 > (`Uno.UI.RemoteControl`), absent in Release.
