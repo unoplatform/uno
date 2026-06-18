@@ -26,7 +26,18 @@ public sealed partial class AutomationProperties
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+				// Use safe cast + trim + remove-when-empty so we never throw on a null NewValue
+				// or persist a stale xamlautomationid="" attribute in the DOM. Matches the WASM
+				// Skia ``setXamlAutomationId`` and ``setAriaStringAttribute`` contracts.
+				var automationId = (args.NewValue as string)?.Trim();
+				if (!string.IsNullOrEmpty(automationId))
+				{
+					uiElement.SetAttribute("xamlautomationid", automationId);
+				}
+				else
+				{
+					uiElement.RemoveAttribute("xamlautomationid");
+				}
 			}
 
 			// AutomationId is a test/automation identifier, not an accessible name source.
