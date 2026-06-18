@@ -109,9 +109,6 @@ public enum UnoFeature
 	SkiaRenderer,
 
 	[UnoArea(UnoArea.Core)]
-	NativeRenderer,
-
-	[UnoArea(UnoArea.Core)]
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]
