@@ -325,7 +325,7 @@ public partial class DependencyObject
 			return;
 		}
 
-		_isProcessingEnterLeave = true;
+		SetFlag(StoreFlags.IsProcessingEnterLeave, true);
 		try
 		{
 			EstablishThemeOnEnterCore(@params);
@@ -333,7 +333,7 @@ public partial class DependencyObject
 		}
 		finally
 		{
-			_isProcessingEnterLeave = false;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, false);
 		}
 	}
 }
