@@ -9,6 +9,25 @@
                 <ResourceDictionary Source="ms-appx:///AlcAppResources.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/CustomColors.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.ThemeDictionaries>
+                <!--
+                    Fixture for AlcContentHost teardown: theme dictionaries copied onto the
+                    host control must be removed when the secondary app content is cleared.
+                -->
+                <ResourceDictionary x:Key="Light">
+                    <Color x:Key="AlcAppThemeColor">#FF102030</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="AlcAppThemeColor">#FFE0D0C0</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <!--
+                Fixture for AlcContentHost teardown: a resource defined DIRECTLY in
+                Application.Resources (not via a merged dictionary). AlcContentHost copies
+                direct resources onto the host control and must remove them when the
+                secondary app content is cleared.
+            -->
+            <SolidColorBrush x:Key="AlcAppDirectBrush" Color="#FFAA1122" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
