@@ -16,7 +16,12 @@ internal static class ToolArgumentValidator
 	{
 		foreach (var parameter in descriptor.Parameters)
 		{
-			var present = arguments.TryGetPropertyValue(parameter.Name, out var node) && node is not null;
+			// A JSON null is treated as absent (consistent with ToolInvocation.TryGet*), whether it
+			// surfaces as a null node or a JsonValueKind.Null node: an optional null is ignored, a
+			// required null yields the clearer "Missing required argument" error.
+			var present = arguments.TryGetPropertyValue(parameter.Name, out var node)
+				&& node is not null
+				&& node.GetValueKind() != JsonValueKind.Null;
 
 			if (!present)
 			{

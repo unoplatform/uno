@@ -503,6 +503,18 @@ public class ToolRegistryTests
 	}
 
 	[TestMethod]
+	public void Validate_NullArgument_TreatedAsAbsent()
+	{
+		var optional = ToolWith(new ToolParameter("name", "d", ToolParameterKind.String));
+		// An optional parameter passed as JSON null is ignored, not failed as a type mismatch.
+		Assert.IsNull(ToolArgumentValidator.Validate(optional, new JsonObject { ["name"] = null }));
+
+		var required = ToolWith(new ToolParameter("name", "d", ToolParameterKind.String, IsRequired: true));
+		// A required parameter passed as JSON null reports the clearer "missing" error.
+		Assert.IsNotNull(ToolArgumentValidator.Validate(required, new JsonObject { ["name"] = null }));
+	}
+
+	[TestMethod]
 	public void Validate_ValidArguments_ReturnsNull()
 	{
 		var descriptor = ToolWith(

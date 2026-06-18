@@ -448,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**44 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**45 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -486,6 +486,7 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `Validate_JsonSchemaPresent_SkipsFlatValidation` | A parameter with a `JsonSchema` bypasses flat type validation. |
 | `Validate_ValidArguments_ReturnsNull` | Conforming arguments pass validation. |
 | `Validate_FractionalNumberForIntegerParam_ReturnsError` | A fractional Number fails Integer validation, matching `GetInt32`. |
+| `Validate_NullArgument_TreatedAsAbsent` | A JSON null is treated as absent: optional ignored, required reports "missing". |
 | `InvokeAsync_InvalidArguments_ReturnsIsError` | Validation failure surfaces as an error result before dispatch. |
 | `InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation` | A handler exceeding the timeout yields an error result, not a thrown cancellation. |
 | `InvokeAsync_CallerCancelsDuringHandler_Throws` | Caller cancellation during a running handler throws `OperationCanceledException`. |
