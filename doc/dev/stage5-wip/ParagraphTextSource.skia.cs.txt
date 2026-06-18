@@ -1,0 +1,561 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ParagraphTextSource.h, ParagraphTextSource.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
+
+#nullable enable
+
+using System;
+using Microsoft.UI.Xaml.Documents.RichTextServices;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+
+namespace Microsoft.UI.Xaml.Documents.BlockLayout;
+
+//---------------------------------------------------------------------------
+//
+//  ParagraphTextSource
+//
+//  TextSource for Paragraph element. Can also be used for TextBlock since
+//  both Paragraph and TextBlock are based on InlineCollection content model.
+//
+//---------------------------------------------------------------------------
+// NOTE (Uno): ParagraphTextSource must implement BOTH the WinUI TextSource contract
+// AND the Uno-specific ISkiaParagraphSource bridge that feeds the Skia ParsedText
+// engine (SkiaTextFormatter reads GetLeafInlines/DefaultLineHeight/LineHeight/
+// LineStackingStrategy off this same object).
+internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
+{
+	private readonly Paragraph? m_pParagraph;
+	private readonly FrameworkElement m_pContentOwner;
+	private ParagraphNode? m_pParagraphNode;
+
+	// Creates an instance of this ParagraphTextSource. If the owning control is
+	// a TextBlock, pContent may be null since the TextBlock acts as a paragraph in this case.
+	public ParagraphTextSource(
+		Paragraph? pParagraph,
+		FrameworkElement pContentOwner)
+	{
+		m_pParagraph = pParagraph;
+		m_pContentOwner = pContentOwner;
+		m_pParagraphNode = null;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::GetTextRun
+	//
+	//  Synopsis:
+	//      Fetches one run of text.
+	//
+	//---------------------------------------------------------------------------
+	public override TextRun GetTextRun(uint characterIndex)
+	{
+		ReadOnlyMemory<char> pCharacters = default;
+		TextFormatting? pFormatting = null;
+		InheritedProperties? pInheritedAttachedProperties = null;
+		uint cCharacters = 0;
+		TextNestingType nestingType = TextNestingType.NestedContent;
+		TextRunProperties? pTextProperties = null;
+		TextRun? pTextRun = null;
+		uint paragraphLength = 0;
+		TextElement? pNestedElement = null;
+		DirectionalControl directionalControl = DirectionalControl.None;
+		FontContext? pFontContext = null;
+		FontTypeface? pFontTypeface = null;
+		InlineUIContainer? pUIContainer = null;
+		uint length = 0;
+		InlineCollection? pInlines = null;
+
+		// m_pParagraph can be NULL for a content-free RichTextBlock or for a TextBlock.
+		// For the TextBlock case, use the TextBlock's InlineCollection. For empty RichTextBlock, it's correct to
+		// calculation paragraph length as 0.
+		if (m_pParagraph != null)
+		{
+			// TODO Uno (integrate): CParagraph::GetPositionCount — Uno Paragraph does not yet
+			// expose a position count on the backing store. Provide the inline-collection length.
+			m_pParagraph.GetPositionCount(out paragraphLength);
+		}
+		else if (m_pContentOwner is TextBlock pTextBlock)
+		{
+			// TODO Uno (integrate): CTextBlock::m_pInlines / GetPositionCount.
+			pInlines = pTextBlock.Inlines;
+			pInlines.GetPositionCount(out paragraphLength);
+		}
+
+		if (paragraphLength == 0 ||
+			characterIndex == (paragraphLength - 1))
+		{
+			// Last character in the paragraph counts as </Paragraph> - return EOP run.
+			// We can also check for close nesting and Paragraph type for this.
+			pTextRun = new EndOfParagraphRun(1, characterIndex);
+		}
+		else
+		{
+			if (m_pParagraph != null)
+			{
+				// TODO Uno (integrate): CParagraph::GetRun — yields the run's formatting,
+				// inherited attached properties, nesting type, nested element and character span.
+				m_pParagraph.GetRun(
+					characterIndex,
+					out pFormatting,
+					out pInheritedAttachedProperties,
+					out nestingType,
+					out pNestedElement,
+					out pCharacters,
+					out cCharacters);
+			}
+			else if (pInlines != null)
+			{
+				// TODO Uno (integrate): CInlineCollection::GetRun.
+				pInlines.GetRun(
+					characterIndex,
+					out pFormatting,
+					out pInheritedAttachedProperties,
+					out nestingType,
+					out pNestedElement,
+					out pCharacters,
+					out cCharacters);
+			}
+
+			if (pCharacters.IsEmpty && cCharacters == 1)
+			{
+				// If there is a nested element, examine for InlineUIContainer or direction change.
+				if (pNestedElement != null &&
+					(nestingType == TextNestingType.OpenNesting ||
+					 nestingType == TextNestingType.CloseNesting))
+				{
+					if (pNestedElement is InlineUIContainer)
+					{
+						if (nestingType == TextNestingType.OpenNesting)
+						{
+							// Object run.
+							pUIContainer = (InlineUIContainer)pNestedElement;
+
+							// Create content properties from CFormatting
+							pFontContext = GetFontContext();
+
+							// TODO Uno (integrate): CFontFamily::GetFontTypeface — resolve the typeface
+							// from the formatting's weight/style/stretch/size against the font context.
+							pFontTypeface = pFormatting!.m_pFontFamily.GetFontTypeface(
+								pFontContext,
+								new FontFaceCriteria(
+									(uint)pFormatting.m_nFontWeight,
+									(uint)pFormatting.m_nFontStyle,
+									(uint)pFormatting.m_nFontStretch,
+									pFormatting.m_eFontSize));
+
+							// TODO Uno (integrate): TextRunProperties ctor differs from WinUI — the Uno port
+							// takes a FontDetails typeface, CultureInfo (resolved language) values and omits the
+							// InheritedProperties parameter. Map pFontTypeface -> FontDetails and the resolved
+							// language strings -> CultureInfo when the font/inherited-properties bridge lands.
+							pTextProperties = new TextRunProperties(
+								pFontTypeface,
+								pFormatting.GetScaledFontSize(m_pContentOwner.GetContext().GetFontScale()),
+								((uint)pFormatting.m_nTextDecorations & (uint)TextDecorations.Underline) > 0,
+								((uint)pFormatting.m_nTextDecorations & (uint)TextDecorations.Strikethrough) > 0,
+								pFormatting.m_nCharacterSpacing,
+								new WeakReference<DependencyObject>((DependencyObject)pNestedElement),
+								pFormatting.GetResolvedLanguageStringNoRef(),
+								pFormatting.GetResolvedLanguageListStringNoRef(),
+								pInheritedAttachedProperties);
+
+							pTextRun = new PageHostedObjectRun(
+								pUIContainer,
+								characterIndex,
+								pTextProperties);
+						}
+						else
+						{
+							// No reason to break inside an InlineUIContainer. This code path will just be processed
+							// as a HiddenRun, which may be OK, but no reason this should happen.
+							MUX_ASSERT(false);
+						}
+					}
+					else if (pNestedElement is LineBreak)
+					{
+						if (nestingType == TextNestingType.OpenNesting)
+						{
+							// LineBreak open is processed as a HiddenRun.
+							pTextRun = new HiddenRun(characterIndex);
+						}
+						else
+						{
+							// LineBreak close is processed as EndOfLine run.
+							pTextRun = new EndOfLineRun(characterIndex);
+						}
+					}
+					else
+					{
+						directionalControl = GetDirectionalControl(
+							pNestedElement,
+							nestingType == TextNestingType.CloseNesting ? true : false);
+					}
+				}
+
+				if (pTextRun == null)
+				{
+					// No embedded object run was created, so this is either Hidden or DirectionalControl.
+					if (directionalControl == DirectionalControl.None)
+					{
+						// No directional change, hidden run.
+						pTextRun = new HiddenRun(characterIndex);
+					}
+					else
+					{
+						// DirectionalControl run.
+						pTextRun = new DirectionalControlRun(characterIndex, directionalControl);
+					}
+				}
+			}
+			else
+			{
+				MUX_ASSERT(nestingType == TextNestingType.NestedContent);
+				MUX_ASSERT(!pCharacters.IsEmpty);
+
+				if (!IsXamlNewline(pCharacters.Span[0]))
+				{
+					// New lines don't require properties, but text and control charatcers do.
+					// Create properties from CFormatting.
+					pFontContext = GetFontContext();
+
+					// TODO Uno (integrate): CFontFamily::GetFontTypeface (see note above).
+					pFontTypeface = pFormatting!.m_pFontFamily.GetFontTypeface(
+						pFontContext,
+						new FontFaceCriteria(
+							(uint)pFormatting.m_nFontWeight,
+							(uint)pFormatting.m_nFontStyle,
+							(uint)pFormatting.m_nFontStretch,
+							pFormatting.m_eFontSize));
+
+					WeakReference<DependencyObject> pBrushSource = new WeakReference<DependencyObject>(
+						pNestedElement != null ? (DependencyObject)pNestedElement : (DependencyObject)m_pContentOwner);
+
+					// TODO Uno (integrate): TextRunProperties ctor mapping (see note above) — FontDetails
+					// typeface + CultureInfo language values, no InheritedProperties parameter.
+					pTextProperties = new TextRunProperties(
+						pFontTypeface,
+						pFormatting.GetScaledFontSize(m_pContentOwner.GetContext().GetFontScale()),
+						((uint)pFormatting.m_nTextDecorations & (uint)TextDecorations.Underline) > 0,
+						((uint)pFormatting.m_nTextDecorations & (uint)TextDecorations.Strikethrough) > 0,
+						pFormatting.m_nCharacterSpacing,
+						pBrushSource,
+						pFormatting.GetResolvedLanguageStringNoRef(),
+						pFormatting.GetResolvedLanguageListStringNoRef(),
+						pInheritedAttachedProperties);
+				}
+
+				// Check for control characters requiring special runs - CR/LF, tab, etc.
+				pTextRun = SplitAtFormatControlCharacter(
+					characterIndex,
+					pCharacters,
+					cCharacters,
+					pTextProperties);
+
+				// If no control characters detected, process regular TextCharactersRun.
+				if (pTextRun == null)
+				{
+					// Limit TextCharactersRun at any format control character.
+					while (length < cCharacters && !IsFormatControlCharacter(pCharacters.Span[(int)length]))
+					{
+						length++;
+					}
+
+					pTextRun = new TextCharactersRun(
+						pCharacters,
+						length,
+						characterIndex,
+						pTextProperties!);
+				}
+			}
+		}
+
+		// Success. Return results to caller.
+		return pTextRun!;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::GetEmbeddedElementHost
+	//
+	//  Synopsis:
+	//      Get the embedded element host for TextSource in the current
+	//      formatting context.
+	//
+	//---------------------------------------------------------------------------
+	public override IEmbeddedElementHost? GetEmbeddedElementHost() => m_pParagraphNode!.GetEmbeddedElementHost();
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::SetParagraphNode
+	//
+	//  Synopsis:
+	//      Sets the embedded element host for TextSource in the current
+	//      formatting context.
+	//
+	//---------------------------------------------------------------------------
+	public void SetParagraphNode(ParagraphNode pNode) => m_pParagraphNode = pNode;
+
+	// Checks if a position is within a surrogate pair or CRLF sequence.
+	public static bool IsInSurrogateCRLF(
+		InlineCollection inlines,
+		uint characterIndex)
+	{
+		uint length = 0;
+		ReadOnlyMemory<char> pCharacters = default;
+		uint runLength = 0;
+		bool isInSurrogateCRLF = false;
+
+		// TODO Uno (integrate): CInlineCollection::GetPositionCount / GetRun.
+		inlines.GetPositionCount(out length);
+		IFCEXPECT_RETURN(characterIndex <= length);
+
+		inlines.GetRun(characterIndex, out _, out _, out _, out _, out pCharacters, out runLength);
+		if (!pCharacters.IsEmpty &&
+			runLength > 0)
+		{
+			if (IS_TRAILING_SURROGATE(pCharacters.Span[0]))
+			{
+				isInSurrogateCRLF = true;
+			}
+			else if (pCharacters.Span[0] == UNICODE_LINE_FEED && characterIndex > 0)
+			{
+				// There's a LF here.  Go back one character and look for CR.
+				ReadOnlyMemory<char> pLookForCR = default;
+				uint cLookForCR = 0;
+
+				inlines.GetRun(characterIndex - 1, out _, out _, out _, out _, out pLookForCR, out cLookForCR);
+				if (cLookForCR > 0
+					&& !pLookForCR.IsEmpty
+					&& pLookForCR.Span[0] == UNICODE_CARRIAGE_RETURN)
+				{
+					// We are in the middle of a CR+LF sequence.
+					isInSurrogateCRLF = true;
+				}
+			}
+		}
+		return isInSurrogateCRLF;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::IsInSurrogateCRLF
+	//
+	//  Synopsis:
+	//      Checks if a position is within a surrogate pair or CRLF sequence.
+	//
+	//---------------------------------------------------------------------------
+	public bool IsInSurrogateCRLF(uint characterIndex)
+	{
+		InlineCollection? pInlines = null;
+
+		// m_pParagraph can be NULL for a content-free RichTextBlock or for a TextBlock.
+		// For the TextBlock case, use the TextBlock's InlineCollection. For empty RichTextBlock, inlines should be considered NULL for this logic.
+		if (m_pParagraph != null)
+		{
+			pInlines = m_pParagraph.Inlines;
+		}
+		else if (m_pContentOwner is TextBlock pTextBlock)
+		{
+			pInlines = pTextBlock.Inlines;
+		}
+
+		if (pInlines != null)
+		{
+			return IsInSurrogateCRLF(pInlines, characterIndex);
+		}
+		return false;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::SplitAtFormatControlCharacter
+	//
+	//  Synopsis:
+	//      Checks for formatting control characters requiring special runs:
+	//      CR/LF/Tab and splits the content, creating a run for the control
+	//      character.
+	//
+	//---------------------------------------------------------------------------
+	private static TextRun? SplitAtFormatControlCharacter(
+		uint characterIndex,
+			// Index of the first character of the run.
+		ReadOnlyMemory<char> pCharacters,
+			// Character buffer containing the run's character data.
+		uint length,
+			// Number of characters in the run.
+		TextRunProperties? pTextProperties)
+	{
+		TextRun? pTextRun = null;
+
+		if (IsFormatControlCharacter(pCharacters.Span[0]))
+		{
+			if (IsXamlNewline(pCharacters.Span[0]))
+			{
+				// Change the run type to end of line or end of paragraph
+				// Check for CR+LF - the only two character end of line case
+				if (length > 1 &&
+					pCharacters.Span[0] == UNICODE_CARRIAGE_RETURN &&
+					pCharacters.Span[1] == UNICODE_LINE_FEED)
+				{
+					// Special case. Return the initial 'CR' as a hidden character. The following 'LF' will
+					// get picked up on the next call by the  else clause beow and returned as an end of line.
+					pTextRun = new HiddenRun(characterIndex);
+				}
+				else if (pCharacters.Span[0] == UNICODE_PARAGRAPH_SEPARATOR)
+				{
+					// Treat EOP as EOL when it's encountered as a character in text.
+					// Only EOPs we should process as end of paragraph are at Paragraph element end
+					// and content end for TextBlock/TextBox.
+					pTextRun = new EndOfLineRun(characterIndex);
+				}
+				else
+				{
+					pTextRun = new EndOfLineRun(characterIndex);
+				}
+			}
+			else if (pCharacters.Span[0] == UNICODE_CHARACTER_TABULATION)
+			{
+				pTextRun = new TextCharactersRun(pCharacters, 1, characterIndex, pTextProperties!);
+			}
+			else
+			{
+				// No other format control currently supported.
+				MUX_ASSERT(false);
+			}
+		}
+
+		return pTextRun;
+	}
+
+	private static bool IsFormatControlCharacter(char character)
+	{
+		// Currently XAML new lines and tabs are the only formatting control characters.
+		return (IsXamlNewline(character) ||
+				character == UNICODE_CHARACTER_TABULATION);
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::GetDirectionalControl
+	//
+	//  Synopsis:
+	//      Gets DirectionalControl change caused by a TextElement if it has a flow direction different than
+	//      its parent TextElement.
+	//
+	//---------------------------------------------------------------------------
+	private DirectionalControl GetDirectionalControl(
+		TextElement pTextElement,
+			// A pointer to the TextElement object.
+		bool isCloseNesting)
+			// Flag indicating whether the element is closing, i.e. whether directional control
+			// should begin or end.
+	{
+		DirectionalControl control = DirectionalControl.None;
+
+		// If FlowDirection property has not been set on the element, there is no directional control change.
+		// Only Run can accept FlowDirection property. Limit the check just to Runs.
+		// TODO Uno (integrate): KnownTypeIndex::Run / IsPropertyDefaultByIndex(Run_FlowDirection).
+		if (pTextElement is Run &&
+			!pTextElement.IsPropertyDefaultByIndex(KnownPropertyIndex.Run_FlowDirection))
+		{
+			FlowDirection parentFlowDirection;
+			TextElement? pParentTextElement = pTextElement.GetParentInternal(false) as TextElement;
+
+			// TODO Uno (integrate): CTextElement::EnsureTextFormattingForRead.
+			pTextElement.EnsureTextFormattingForRead();
+
+			if (pParentTextElement is null)
+			{
+				TextElementCollection? pParentTextElementCollection = pTextElement.GetParentInternal(false) as TextElementCollection;
+				pParentTextElementCollection = pTextElement.GetParentInternal(false) as TextElementCollection;
+				if (pParentTextElementCollection != null)
+				{
+					pParentTextElement = pParentTextElementCollection.GetParentInternal(false) as TextElement;
+				}
+			}
+
+			if (pParentTextElement != null)
+			{
+				pParentTextElement.EnsureTextFormattingForRead();
+				parentFlowDirection = pParentTextElement.m_pTextFormatting.m_nFlowDirection;
+			}
+			else
+			{
+				// No parent TextElement found. Per OM, TextElements must be parented by other TextElements or TextElementCollections.
+				// This must be the top-level TextElement, so use the owning control's FlowDirection to compare.
+				parentFlowDirection = m_pContentOwner.IsRightToLeft() ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+			}
+
+			if (parentFlowDirection != pTextElement.m_pTextFormatting.m_nFlowDirection)
+			{
+				if (isCloseNesting)
+				{
+					control = DirectionalControl.PopDirectionalFormatting;
+				}
+				else if (pTextElement.m_pTextFormatting.m_nFlowDirection == FlowDirection.LeftToRight)
+				{
+					control = DirectionalControl.LeftToRightEmbedding;
+				}
+				else
+				{
+					control = DirectionalControl.RightToLeftEmbedding;
+				}
+			}
+			else
+			{
+				if (pTextElement.m_pTextFormatting.m_nFlowDirection == FlowDirection.LeftToRight)
+				{
+					control = DirectionalControl.LeftToRightMark;
+				}
+				else
+				{
+					control = DirectionalControl.RightToLeftMark;
+				}
+			}
+		}
+
+		return control;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  Member:
+	//      ParagraphTextSource::GetFontContext
+	//
+	//---------------------------------------------------------------------------
+	// TODO Uno (integrate): BlockLayoutHelpers::GetFontContext — returns the CFontContext for the owner.
+	private FontContext GetFontContext() => BlockLayoutHelpers.GetFontContext(m_pContentOwner);
+
+	#region ISkiaParagraphSource (Uno bridge to the Skia ParsedText engine)
+
+	// TODO Uno (integrate): ISkiaParagraphSource feeds the Skia text formatter. These members
+	// project the same paragraph/inline content GetTextRun walks above into the whole-paragraph
+	// input ParsedText expects (leaf inlines + line metrics). Wire them to the leaf inline list of
+	// m_pParagraph (or the TextBlock inlines) and to BlockLayoutHelpers line-stacking info.
+
+	Inline[] ISkiaParagraphSource.GetLeafInlines()
+	{
+		// TODO Uno (integrate): enumerate the pre-order leaf inlines of m_pParagraph.Inlines
+		// (or the owning TextBlock's Inlines when m_pParagraph is null).
+		throw new NotImplementedException();
+	}
+
+	float ISkiaParagraphSource.DefaultLineHeight
+		// TODO Uno (integrate): default font size of the content owner.
+		=> throw new NotImplementedException();
+
+	float ISkiaParagraphSource.LineHeight
+		// TODO Uno (integrate): resolved LineHeight for the paragraph (0 = automatic).
+		=> throw new NotImplementedException();
+
+	LineStackingStrategy ISkiaParagraphSource.LineStackingStrategy
+		// TODO Uno (integrate): resolved LineStackingStrategy for the paragraph.
+		=> throw new NotImplementedException();
+
+	#endregion
+}
