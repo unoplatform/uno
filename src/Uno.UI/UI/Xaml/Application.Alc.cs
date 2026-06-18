@@ -126,6 +126,103 @@ partial class Application
 		}
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	/// <summary>
+	/// Returns the <see cref="Application"/> that owns <paramref name="contentRoot"/>. The owner window's
+	/// <see cref="Window.OwnerAssemblyLoadContext"/> — tagged at construction with the ALC of the code
+	/// that created the window — is authoritative: it stays correct when a secondary app's root content
+	/// is a shared default-ALC type (e.g. a plain <c>Frame</c>) or null (content redirected to an
+	/// <c>AlcContentHost</c>), both cases where type-based inference misattributes the root to the host.
+	/// Falls back to inferring from the public root content's ALC (default-ALC content maps to
+	/// <see cref="Current"/>; secondary-ALC content maps to its registered application). Returns
+	/// <see langword="null"/> when the owner cannot be determined, in which case callers fall back to
+	/// the current application. Used by <c>OnResourcesChanged</c> so that one app's theme refresh does
+	/// not re-theme a content root owned by a different app sharing the process-global content-root
+	/// list. Guarded by the same symbol as its only call site (the enhanced-lifecycle theme walk) so
+	/// non-enhanced variants do not flag it as unused.
+	/// </summary>
+	private static Application GetOwningApplication(global::Uno.UI.Xaml.Core.ContentRoot contentRoot)
+	{
+		if (contentRoot is null)
+		{
+			return null;
+		}
+
+		if (contentRoot.GetOwnerWindow()?.OwnerAssemblyLoadContext is { } ownerAlc
+			&& GetForAssemblyLoadContext(ownerAlc) is { } owner)
+		{
+			return owner;
+		}
+
+		return contentRoot.XamlRoot?.Content is { } content ? GetForInstance(content) : null;
+	}
+
+	/// <summary>
+	/// The theme to walk a content root owned by this application with. For the host (default-ALC)
+	/// app this is the shared <c>FrameworkTheming</c> theme; for a secondary-ALC app with an explicit
+	/// theme it is that theme plus the global high-contrast axis, so refreshing a secondary-owned
+	/// root never bleeds the host theme over the app's own theme (or vice versa).
+	/// </summary>
+	internal Theme GetEffectiveWalkTheme()
+		=> _isSecondaryAlcApplication && _alcRequestedTheme is { } alcTheme
+			? (alcTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light)
+				| global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
+			: global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetTheme();
+#endif
+
+	/// <summary>
+	/// The explicit <see cref="ApplicationTheme"/> of a secondary-ALC application, if set.
+	/// Secondary apps must not mutate the shared <c>FrameworkTheming</c> (single per process, owned
+	/// by the host app — WinUI's one-FrameworkTheming-per-core model, corep.h:2207). Their theme is
+	/// instead pinned as an element-level <see cref="FrameworkElement.RequestedTheme"/> on the
+	/// <c>AlcContentHost</c> boundary — the same mechanism WinUI uses to theme an island/subtree
+	/// independently of the app theme (CFrameworkElement::GetRequestedThemeOverride,
+	/// framework.cpp:3399-3418).
+	/// </summary>
+	private ApplicationTheme? _alcRequestedTheme;
+
+	/// <summary>
+	/// Whether this <see cref="Application"/> instance was created in a non-default (secondary) ALC.
+	/// </summary>
+	private readonly bool _isSecondaryAlcApplication;
+
+	/// <summary>
+	/// Sets (or clears, with <see langword="null"/>) the explicit theme of a secondary-ALC app and
+	/// re-applies the element-level pin at its content-host boundary.
+	/// </summary>
+	private void SetAlcRequestedTheme(ApplicationTheme? explicitTheme)
+	{
+		if (_alcRequestedTheme == explicitTheme)
+		{
+			return;
+		}
+
+		var previousTheme = RequestedTheme;
+		_alcRequestedTheme = explicitTheme;
+
+#if __SKIA__ || __WASM__
+		// ALC app hosting only exists on Skia and WASM (see ExitAlcApplication); on native platforms
+		// Window maps to the native window type which doesn't have the ALC partial.
+		Window.ApplyAlcRequestedTheme(this, AlcElementTheme);
+#endif
+
+		if (RequestedTheme != previousTheme)
+		{
+			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+	/// <summary>
+	/// The element-level pin corresponding to this secondary app's explicit theme
+	/// (<see cref="ElementTheme.Default"/> when the app follows the host/system theme).
+	/// </summary>
+	internal ElementTheme AlcElementTheme => _alcRequestedTheme switch
+	{
+		ApplicationTheme.Light => ElementTheme.Light,
+		ApplicationTheme.Dark => ElementTheme.Dark,
+		_ => ElementTheme.Default,
+	};
+
 	/// <summary>
 	/// Enumerates all secondary-ALC <see cref="Application"/> instances currently registered.
 	/// Used by <see cref="ResourceResolver"/> as a last-resort fallback when a resource
@@ -319,6 +416,7 @@ partial class Application
 	}
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "Diagnostic")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void DeepScanForAlcReferences()

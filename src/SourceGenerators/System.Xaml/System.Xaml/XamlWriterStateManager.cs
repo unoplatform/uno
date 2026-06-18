@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -70,10 +71,16 @@ MemberDone + StartMember -> MemberStarted : push(xm)
 
 namespace Uno.Xaml
 {
-	internal class XamlWriterStateManager<TError,TNSError> : XamlWriterStateManager
+	internal class XamlWriterStateManager<
+		[DynamicallyAccessedMembers(TErrorRequirements)] TError,
+		[DynamicallyAccessedMembers(TNSErrorRequirements)] TNSError
+	> : XamlWriterStateManager
 		where TError : Exception
 		where TNSError : Exception
 	{
+		internal const DynamicallyAccessedMemberTypes TErrorRequirements = DynamicallyAccessedMemberTypes.PublicConstructors;
+		internal const DynamicallyAccessedMemberTypes TNSErrorRequirements = DynamicallyAccessedMemberTypes.PublicConstructors;
+
 		public XamlWriterStateManager (bool isXmlWriter)
 			: base (isXmlWriter)
 		{

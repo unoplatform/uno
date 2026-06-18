@@ -45,7 +45,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			textBlock.Text = "Placement Flyout";
 			_placementFlyout.Content = textBlock;
 
-			OrdinaryControlStateViewer.ControlType = TestSplitButton.GetType();
+			OrdinaryControlStateViewer.AssertSetControlType<SplitButton>(TestSplitButton.GetType());
 			OrdinaryControlStateViewer.States = new List<string>
 			{
 				"Normal",
@@ -57,7 +57,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 				"SecondaryPressed",
 			};
 
-			ToggleControlStateViewer.ControlType = TestSplitButton.GetType();
+			ToggleControlStateViewer.AssertSetControlType<SplitButton>(TestSplitButton.GetType());
 			ToggleControlStateViewer.States = new List<string>
 			{
 				"Checked",

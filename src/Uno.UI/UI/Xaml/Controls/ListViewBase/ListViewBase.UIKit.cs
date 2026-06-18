@@ -177,6 +177,21 @@ namespace Microsoft.UI.Xaml.Controls
 			NativePanel?.ReloadItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
 		}
 
+		private void MoveItems(int oldFirstItem, int newFirstItem, int count, int section)
+		{
+			if (count == 1)
+			{
+				var oldIndexPath = NSIndexPath.FromItemSection(oldFirstItem, section);
+				var newIndexPath = NSIndexPath.FromItemSection(newFirstItem, section);
+				NativePanel?.MoveItem(oldIndexPath, newIndexPath);
+				ManagedVirtualizingPanel?.GetLayouter().MoveItems(oldFirstItem, newFirstItem, count, section);
+			}
+			else
+			{
+				Refresh();
+			}
+		}
+
 		/// <summary>
 		/// Add a group using the native in-place modifier.
 		/// </summary>

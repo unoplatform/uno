@@ -1207,7 +1207,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
+		// internal so runtime tests can drive the scrollbar-drag path directly.
+		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
@@ -1223,6 +1224,10 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
 				_ => (true, e.NewValue)
 			};
+
+			// Scrollbar interactions are explicit offset requests: arm the intent so the post-layout
+			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
+			_verticalOffsetIntent = offset;
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1248,6 +1253,9 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
 				_ => (true, e.NewValue)
 			};
+
+			// Arm the intent — see OnVerticalScrollBarScrolled.
+			_horizontalOffsetIntent = offset;
 
 			ChangeViewCore(
 				horizontalOffset: offset,

@@ -835,9 +835,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 					break;
 				case NotifyCollectionChangedAction.Move:
-					// TODO PBI #19974: Fully implement NotifyCollectionChangedActions and map them to the appropriate calls
-					// on UICollectionView, MoveItems
-					Refresh();
+					var moveCount = args.OldItems?.Count ?? args.NewItems?.Count ?? 0;
+					if (moveCount == 0 || args.OldStartingIndex == args.NewStartingIndex)
+					{
+						break;
+					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Moving {moveCount} items from {args.OldStartingIndex} to {args.NewStartingIndex}");
+					}
+
+					var flatOldIdx = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(args.OldStartingIndex, section));
+					var flatNewIdx = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(args.NewStartingIndex, section));
+					SaveContainersBeforeMoveForIndexRepair(flatOldIdx, flatNewIdx, moveCount);
+					MoveItems(args.OldStartingIndex, args.NewStartingIndex, moveCount, section);
+					RepairIndices();
+
 					break;
 				case NotifyCollectionChangedAction.Reset:
 					CleanUpAllContainers();
@@ -911,6 +925,47 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// we store the index, that should be set after the collection change
 					_containersForIndexRepair.Add(container, currentIndex - indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers in the affected range so that their
+		/// <see cref="ItemsControl.IndexForItemContainerProperty"/> can be updated after a Move.
+		/// </summary>
+		private void SaveContainersBeforeMoveForIndexRepair(int oldStartingIndex, int newStartingIndex, int count)
+		{
+			_containersForIndexRepair.Clear();
+
+			if (oldStartingIndex == newStartingIndex)
+			{
+				return;
+			}
+
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+
+				if (currentIndex >= oldStartingIndex && currentIndex < oldStartingIndex + count)
+				{
+					// Moved item — preserve relative offset within the range
+					_containersForIndexRepair.Add(container, newStartingIndex + (currentIndex - oldStartingIndex));
+				}
+				else if (oldStartingIndex < newStartingIndex)
+				{
+					// Forward move: items in gap (oldEnd, newEnd] shift down by count
+					if (currentIndex > oldStartingIndex + count - 1 && currentIndex <= newStartingIndex + count - 1)
+					{
+						_containersForIndexRepair.Add(container, currentIndex - count);
+					}
+				}
+				else
+				{
+					// Backward move: items in gap [newStartingIndex, oldStartingIndex) shift up by count
+					if (currentIndex >= newStartingIndex && currentIndex < oldStartingIndex)
+					{
+						_containersForIndexRepair.Add(container, currentIndex + count);
+					}
 				}
 			}
 		}

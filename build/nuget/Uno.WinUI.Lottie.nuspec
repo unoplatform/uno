@@ -80,6 +80,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
+
 		</dependencies>
 
 		<references>

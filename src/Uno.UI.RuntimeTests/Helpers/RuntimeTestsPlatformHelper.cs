@@ -55,6 +55,7 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.NativeWasm => IsNativeWasm(),
 			RuntimeTestPlatforms.NativeAndroid => IsNativeAndroid(),
 			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
+			RuntimeTestPlatforms.NativeMacCatalyst => IsNativeMacCatalyst(),
 			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
 			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
@@ -64,6 +65,7 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
+			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
 			RuntimeTestPlatforms.SkiaFrameBuffer => IsSkia() && IsSkiaFrameBuffer(),
 			_ => throw new ArgumentException(nameof(singlePlatform)),
 		};
@@ -142,6 +144,15 @@ internal static class RuntimeTestsPlatformHelper
 	private static bool IsNativetvOS()
 	{
 #if __TVOS__
+		return true;
+#else
+		return false;
+#endif
+	}
+
+	private static bool IsNativeMacCatalyst()
+	{
+#if __MACCATALYST__
 		return true;
 #else
 		return false;

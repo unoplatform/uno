@@ -37,11 +37,7 @@ public class Given_BrowserKeyboardInputSource
 	[RunsOnUIThread]
 	public void When_OnNativeKeyboardEvent_KeyDown_Has_Expected_VirtualKey(string code, int expectedVirtualKey)
 	{
-		var sourceType = AppDomain.CurrentDomain
-			.GetAssemblies()
-			.FirstOrDefault(a => a.GetName().Name == "Uno.UI.Runtime.Skia.WebAssembly.Browser")
-			?.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource");
-
+		var sourceType = Type.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource, Uno.UI.Runtime.Skia.WebAssembly.Browser", throwOnError: false);
 		Assert.IsNotNull(sourceType, "BrowserKeyboardInputSource type was not found in Uno.UI.Runtime.Skia.WebAssembly.Browser.");
 
 		// GetUninitializedObject skips the ctor (which would re-attach JS DOM
@@ -70,10 +66,7 @@ public class Given_BrowserKeyboardInputSource
 	[RunsOnUIThread]
 	public void When_OnNativeKeyboardEvent_ShiftEqual_Modifiers_Flow_Through()
 	{
-		var sourceType = AppDomain.CurrentDomain
-			.GetAssemblies()
-			.FirstOrDefault(a => a.GetName().Name == "Uno.UI.Runtime.Skia.WebAssembly.Browser")
-			?.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource");
+		var sourceType = Type.GetType("Uno.UI.Runtime.Skia.BrowserKeyboardInputSource, Uno.UI.Runtime.Skia.WebAssembly.Browser", throwOnError: false);
 		Assert.IsNotNull(sourceType);
 
 		var instance = RuntimeHelpers.GetUninitializedObject(sourceType);

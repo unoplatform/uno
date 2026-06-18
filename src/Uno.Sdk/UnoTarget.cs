@@ -11,6 +11,7 @@ internal static class UnoTarget
 	[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "iOS is the correct style.")]
 	public const string iOS = "ios";
 	public const string tvOS = "tvos";
+	public const string MacCatalyst = "maccatalyst";
 	public const string SkiaDesktop = "desktop";
 
 	// Legacy

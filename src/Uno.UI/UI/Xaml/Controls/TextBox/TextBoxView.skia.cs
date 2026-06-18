@@ -11,6 +11,8 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -36,6 +38,11 @@ namespace Microsoft.UI.Xaml.Controls
 				OwningTextBox = textBox,
 				IsSpellCheckEnabled = textBox.IsSpellCheckEnabled
 			};
+
+			// The DisplayBlock is an internal rendering detail; its text content
+			// is already exposed via the TextBox's IValueProvider.  Keep it out of
+			// the Content/Control UIA views so it doesn't create a spurious child
+			AutomationProperties.SetAccessibilityView(DisplayBlock, AccessibilityView.Raw);
 
 			SetFlowDirection();
 			SetTextAlignment();

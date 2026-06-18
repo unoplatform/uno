@@ -40,5 +40,5 @@
 			Condition="exists('$(iOSProjectFolder)PrivacyInfo.xcprivacy')" />
 	</ItemGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-workarounds.targets" />
+	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
 </Project>
