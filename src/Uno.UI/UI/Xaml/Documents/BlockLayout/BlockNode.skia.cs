@@ -1,9 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BlockNode.h, BlockNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
@@ -12,7 +13,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 
 // MarginCollapsingState is just the accumulated bottom margin carried between blocks.
-using MarginCollapsingState = System.Single;
+using MarginCollapsingState = global::System.Single;
 
 internal abstract class BlockNode
 {
@@ -85,7 +86,7 @@ internal abstract class BlockNode
 		m_margin = default;
 	}
 
-	public void Measure(
+	public Result Measure(
 		Size availableSize,
 		uint maxLines,
 		MarginCollapsingState mcsIn,
@@ -108,15 +109,15 @@ internal abstract class BlockNode
 		BlockLayoutHelpers.GetBlockMargin(m_pElement, out var margin);
 		m_margin.Left = margin.Left;
 		m_margin.Right = margin.Right;
-		m_margin.Top = suppressTopMargin ? 0.0 : System.Math.Max(margin.Top, mcsIn);
+		m_margin.Top = suppressTopMargin ? 0.0 : Math.Max(margin.Top, mcsIn);
 		m_margin.Bottom = 0.0;
 		mcsOut = (float)margin.Bottom;
 
 		// Extract collapsed margin values from the availableSize.
-		availableSize.Width = System.Math.Max(0.0, availableSize.Width - (m_margin.Left + m_margin.Right));
-		availableSize.Height = System.Math.Max(0.0, availableSize.Height - (m_margin.Top + m_margin.Bottom));
+		availableSize.Width = Math.Max(0.0, availableSize.Width - (m_margin.Left + m_margin.Right));
+		availableSize.Height = Math.Max(0.0, availableSize.Height - (m_margin.Top + m_margin.Bottom));
 
-		CanBypassMeasure(availableSize, maxLines, allowEmptyContent, measureBottomless, pPreviousBreak, out canBypassMeasure);
+		canBypassMeasure = CanBypassMeasure(availableSize, maxLines, allowEmptyContent, measureBottomless, pPreviousBreak);
 
 		m_prevAvailableSize = availableSize;
 		m_pPreviousBreak = pPreviousBreak;
@@ -150,6 +151,8 @@ internal abstract class BlockNode
 		m_isContentDirty = false;
 		m_isMeasureDirty = false;
 		m_isMeasureBypassed = canBypassMeasure;
+
+		return Result.Success;
 	}
 
 	public void Arrange(Size finalSize)
@@ -160,8 +163,8 @@ internal abstract class BlockNode
 		MUX_ASSERT(!IsArrangeInProgress());
 
 		// Extract collapsed margin values from the availableSize.
-		finalSize.Width = System.Math.Max(0.0, finalSize.Width - (m_margin.Left + m_margin.Right));
-		finalSize.Height = System.Math.Max(0.0, finalSize.Height - (m_margin.Top + m_margin.Bottom));
+		finalSize.Width = Math.Max(0.0, finalSize.Width - (m_margin.Left + m_margin.Right));
+		finalSize.Height = Math.Max(0.0, finalSize.Height - (m_margin.Top + m_margin.Bottom));
 
 		// Arrange cannot be bypassed if:
 		// 1. Arrange was marked dirty/invalid.
@@ -224,7 +227,7 @@ internal abstract class BlockNode
 		}
 	}
 
-	public virtual float GetBaselineAlignmentOffset() => throw new System.NotImplementedException();
+	public virtual float GetBaselineAlignmentOffset() => throw new NotImplementedException();
 
 	public void InvalidateContent()
 	{
@@ -284,8 +287,8 @@ internal abstract class BlockNode
 		// Results are MAXed with 0 so we don't return a negative point, but don't bother to MIN with desired size, etc.
 		// This is an internal API so we expect callers to be reasonable with input.
 		return new Point(
-			System.Math.Max(offset.X - origin.X, 0.0),
-			System.Math.Max(offset.Y - origin.Y, 0.0));
+			Math.Max(offset.X - origin.X, 0.0),
+			Math.Max(offset.Y - origin.Y, 0.0));
 	}
 
 	// Transforms coordinates from block-relative to root-relative i.e. to the
@@ -381,13 +384,12 @@ internal abstract class BlockNode
 	//
 	// BlockNode is the base class and performs the most conservative layout bypass check since it
 	// can't make any assumptions about layout behavior - strict equality of all parameters.
-	protected virtual void CanBypassMeasure(
+	protected virtual bool CanBypassMeasure(
 		Size availableSize,
 		uint maxLines,
 		bool allowEmptyContent,
 		bool measureBottomless,
-		BlockNodeBreak? pPreviousBreak,
-		out bool pCanBypass)
+		BlockNodeBreak? pPreviousBreak)
 	{
 		var bypass = false;
 		if (!IsMeasureDirty() &&
@@ -411,7 +413,7 @@ internal abstract class BlockNode
 			}
 		}
 
-		pCanBypass = bypass;
+		return bypass;
 	}
 
 	protected bool CanBypassArrange(Size finalSize)

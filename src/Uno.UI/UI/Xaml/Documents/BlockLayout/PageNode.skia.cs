@@ -1,10 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference PageNode.h, PageNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
+#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
+using Uno.UI.Extensions;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Windows.Foundation;
@@ -21,6 +23,16 @@ namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 //---------------------------------------------------------------------------
 internal sealed class PageNode : ContainerNode
 {
+	// Uno integration helpers replacing C++ idioms (delete / IFC).
+	private static void DeleteBlockNode(BlockNode? node) { /* GC; C++ 'delete pChildNode' */ }
+	private static void ThrowOnRtsError(global::Microsoft.UI.Xaml.Documents.RichTextServices.Result rtsErr)
+	{
+		if (rtsErr != global::Microsoft.UI.Xaml.Documents.RichTextServices.Result.Success)
+		{
+			throw new global::System.InvalidOperationException($"RichTextServices error: {rtsErr}");
+		}
+	}
+
 	// CFrameworkElement that acts as the container for all embedded elements processed by this PageNode.
 	// This need not be the same as the element that owns the BlockCollection that is PageNode's content,
 	// but it is where any embedded elements encountered during formatting are attached.
@@ -698,7 +710,7 @@ internal sealed class PageNode : ContainerNode
 	protected override void ArrangeCore(Size finalSize)
 	{
 		Thickness padding;
-		Size contentFinalSize;
+		Size contentFinalSize = default;
 
 		// Adjust the final size and viewport to account for padding.
 		// TODO Uno (integrate): BlockLayoutHelpers::GetPagePadding
@@ -850,7 +862,7 @@ internal sealed class PageNode : ContainerNode
 
 			// TODO Uno (integrate): CUIElement::HasLayoutStorage / GetLayoutStorage()->m_desiredSize -
 			// use the element's measured desired size to size the arrange rect.
-			if (pElement.HasLayoutStorage())
+			if (pElement.HasLayoutStorage)
 			{
 				var pLayoutStorage = pElement.GetLayoutStorage();
 				arrangeRect.Width = pLayoutStorage.m_desiredSize.Width;
