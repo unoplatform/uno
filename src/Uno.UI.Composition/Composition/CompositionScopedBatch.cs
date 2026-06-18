@@ -77,9 +77,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		private void InvokeCompleted()
-		{
-			Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
-		}
+			=> Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
 
 		// End() means "no more animations will be added". The Completed event fires once all
 		// already-tracked animations have stopped. If no animations were tracked (e.g. a batch

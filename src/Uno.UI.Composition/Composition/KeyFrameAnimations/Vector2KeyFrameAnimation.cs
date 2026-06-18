@@ -44,9 +44,8 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
 
-		var owner = this;
-
-		Vector2 Resolve(AnimationKeyFrame<Vector2> frame) => ResolveVector2KeyFrameValue(owner, frame);
+		// Pass 'this' (the parent animation) so expression keyframes can resolve reference parameters.
+		Vector2 Resolve(AnimationKeyFrame<Vector2> frame) => ResolveVector2KeyFrameValue(this, frame);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		Vector2 Lerp(AnimationKeyFrame<Vector2> value1, AnimationKeyFrame<Vector2> value2, float amount)

@@ -49,10 +49,8 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
 
-		// 'this' is the parent animation; we need it so expression keyframes can resolve reference parameters.
-		var owner = this;
-
-		float Resolve(AnimationKeyFrame<float> frame) => ResolveScalarKeyFrameValue(owner, frame);
+		// Pass 'this' (the parent animation) so expression keyframes can resolve reference parameters.
+		float Resolve(AnimationKeyFrame<float> frame) => ResolveScalarKeyFrameValue(this, frame);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		float Lerp(AnimationKeyFrame<float> value1, AnimationKeyFrame<float> value2, float amount)
