@@ -1,5 +1,16 @@
 # Hot-Reload Client Event: Report Failed Type Identities (not just counts)
 
+**Repo**: `uno` (Uno.UI.RemoteControl)
+**Created**: 2026-06-18
+**Status**: Proposed
+**Input**: The `HotReloadClientOperationEvent` reports only **counts** (`FailedElementCount` /
+`TotalElementCount`) of per-element apply outcomes. A server tracking *which* views are in a failed
+UI-apply state cannot attribute a failure to a specific type, nor observe that same type recover —
+especially for a multi-type delta with a partial failure. This spec enriches the event with the
+identities of the failed (and succeeded) types.
+
+---
+
 ## Overview & Objectives
 
 When the client applies a hot-reload delta and re-instantiates affected views, it reports the
@@ -53,10 +64,10 @@ compatible; they remain the cheap summary).
 
 ```csharp
 /// <summary>Identities of the types whose UI update failed to apply (per-element isolation).</summary>
-public ImmutableArray<HotReloadTypeOutcome> FailedTypes { get; init; }
+public ImmutableArray<HotReloadTypeOutcome> FailedTypes { get; init; } = ImmutableArray<HotReloadTypeOutcome>.Empty;
 
 /// <summary>Identities of the types whose UI update applied successfully.</summary>
-public ImmutableArray<HotReloadTypeOutcome> UpdatedTypes { get; init; }
+public ImmutableArray<HotReloadTypeOutcome> UpdatedTypes { get; init; } = ImmutableArray<HotReloadTypeOutcome>.Empty;
 ```
 
 where a minimal, transport-friendly identity is:
@@ -64,8 +75,8 @@ where a minimal, transport-friendly identity is:
 ```csharp
 public sealed record HotReloadTypeOutcome
 {
-    /// <summary>Metadata token of the updated type (stable within a delta module), when available.</summary>
-    public int MetadataToken { get; init; }
+    /// <summary>Metadata token of the updated type (stable within a delta module); null when unavailable.</summary>
+    public int? MetadataToken { get; init; }
 
     /// <summary>Fully-qualified type name (e.g. "MyApp.Views.MainPage"), when resolvable.</summary>
     public string? FullName { get; init; }
@@ -80,8 +91,9 @@ Notes:
 - **At least one of** `MetadataToken` / `FullName` must be set. `FullName` is the friendlier key for
   a server correlating against source/file identity; `MetadataToken` correlates against the delta's
   `UpdatedTypes` tokens.
-- `FailedElementCount` should equal `FailedTypes.Length` (and `TotalElementCount` the union) so
-  existing count-only consumers are unaffected — the lists are an additive enrichment.
+- `FailedElementCount` should equal `FailedTypes.Length` (and `TotalElementCount` the sum
+  `FailedTypes.Length + UpdatedTypes.Length`, since the two lists are disjoint) so existing
+  count-only consumers are unaffected — the lists are an additive enrichment.
 - Serialization must go through the existing System.Text.Json source-generated context for the
   RemoteControl messages (AOT/trimming safe); add the new types to that context.
 - Keep the payload bounded: the per-type list is naturally small (the types in one delta), but a
@@ -94,6 +106,11 @@ Notes:
   counts; older clients send empty lists and servers fall back to count-only behavior. No
   coordinated version bump required, though a capability/version note in release notes is
   appropriate.
+- The new array fields **must** be initialized to `ImmutableArray<HotReloadTypeOutcome>.Empty` (as
+  in the sketch above), not left as the `default(ImmutableArray<T>)` struct value. A default
+  `ImmutableArray<T>` is uninitialized — not empty — and throws when enumerated, measured
+  (`.Length`), or serialized. The "older clients send empty lists" guarantee depends on these
+  explicit `.Empty` defaults so that a payload omitting the fields deserializes to empty arrays.
 - No behavioral change for consumers that only read the counts.
 
 ## Risks & considerations
@@ -113,6 +130,9 @@ Notes:
 - Round-trip serialization through the source-generated context preserves both lists and the counts.
 - A fully-successful apply reports an empty `FailedTypes` and a populated `UpdatedTypes`.
 - A capability-absent (older) client path yields empty lists and unchanged count behavior.
+- Deserializing a payload that **omits** `FailedTypes` / `UpdatedTypes` entirely (simulating an older
+  client) yields empty arrays — not a thrown exception or a `default` `ImmutableArray<T>` — on a
+  newer server.
 
 ## Out of scope
 
