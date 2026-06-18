@@ -135,6 +135,10 @@ internal partial class Win32WindowWrapper
 
 		public bool IsSoftware() => false;
 
+		// The cached SKSurface is backed by VulkanContext's persistent intermediate render image (only
+		// recreated on resize, then blitted to the swapchain), so it retains the previous frame.
+		bool IRenderer.SurfaceRetainsContents => true;
+
 		public void Reinitialize()
 		{
 			try

@@ -61,7 +61,7 @@ internal partial class Win32WindowWrapper
 			_surface?.Dispose();
 			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
 			return _surface.Canvas;
-		});
+		}, _renderer.SurfaceRetainsContents);
 
 		// _surface is created lazily inside resizeFunc; still null means the CompositionTarget
 		// has not recorded anything yet — nothing to present.
