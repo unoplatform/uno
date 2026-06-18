@@ -177,6 +177,15 @@ public partial class CompositionTarget
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			damage: _pendingDamage);
 
+		// The frame-rate counter is a present-time overlay (drawn in Draw, clipped to the damage region) that
+		// changes every frame, so its panel region must be damaged each frame or the clipped present would
+		// leave stale digits. It paints over composition content with a semi-transparent panel, so the content
+		// underneath must be repainted too — adding the bounds to the damage covers both.
+		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
+		{
+			_pendingDamage.AddRect(fpsBounds);
+		}
+
 		if (_logDamage && !_pendingDamage.IsEmpty)
 		{
 			Console.WriteLine($"[damage] full={_pendingDamage.IsFullFrame} regions={_pendingDamage.RegionCount} bounds={_pendingDamage.Bounds}");
