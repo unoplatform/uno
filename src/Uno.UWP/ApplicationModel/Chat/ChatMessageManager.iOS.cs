@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using UIKit;
 using Windows.Foundation;
 
+#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
+#endif
 
 namespace Windows.ApplicationModel.Chat
 {
@@ -19,6 +21,9 @@ namespace Windows.ApplicationModel.Chat
 				throw new ArgumentNullException(nameof(message));
 			}
 
+#if __MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+			throw new InvalidOperationException("Not supported on catalyst (https://github.com/xamarin/xamarin-macios/issues/13935)");
+#else
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var controller = window.RootViewController;
 
@@ -35,6 +40,7 @@ namespace Windows.ApplicationModel.Chat
 			controller.PresentViewController(messageController, true, null);
 
 			return Task.FromResult(true).AsAsyncAction();
+#endif
 		}
 	}
 }

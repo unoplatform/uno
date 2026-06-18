@@ -3,27 +3,27 @@
 #pragma warning disable 114 // new keyword hiding
 namespace System.Runtime.InteropServices.WindowsRuntime
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class WindowsRuntimeMarshal
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetDataUnsafe(global::Windows.Storage.Streams.IBuffer buffer, out nint dataPtr)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetDataUnsafe(IBuffer? buffer, out nint dataPtr)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetDataUnsafe(global::Windows.Foundation.IMemoryBufferReference buffer, out nint dataPtr, out uint capacity)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetDataUnsafe(IMemoryBufferReference? buffer, out nint dataPtr, out uint capacity)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetArray(global::Windows.Storage.Streams.IBuffer buffer, out global::System.ArraySegment<byte> array)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetArray(IBuffer? buffer, out ArraySegment<byte> array)");

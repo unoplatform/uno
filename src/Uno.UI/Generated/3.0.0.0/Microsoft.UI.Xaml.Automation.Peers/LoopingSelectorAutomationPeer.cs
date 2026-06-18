@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LoopingSelectorAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider, global::Microsoft.UI.Xaml.Automation.Provider.IItemContainerProvider, global::Microsoft.UI.Xaml.Automation.Provider.IScrollProvider
@@ -17,8 +17,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VerticalViewSize
 		// Skipping already declared property VerticallyScrollable
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.GetSelection()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty(global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter, global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object value)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value)");

@@ -205,12 +205,12 @@
 		<PropertyGroup>
 			<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
-			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=net9.0-windows10.0.19041.0;winuitargetpath=net9.0-windows10.0.19041.0</NuSpecProperties>
+			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI);winuitargetpath=$(NetUWPOrWinUI)</NuSpecProperties>
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->
 		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release"
-					 Condition="!exists('..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\net9.0-windows10.0.19041.0\Uno.UI.Toolkit.pri')" />
+					 Condition="!exists('..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Toolkit.pri')" />
 
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

@@ -416,7 +416,7 @@
         items:
           - name: Overview
             href: contributing/guidelines/creating-tests.md
-          - name: Mocked unit tests (Uno.UI.Tests)
+          - name: Unit tests (Uno.UI.Tests)
             href: uno-development/creating-mocked-tests.md
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
             href: uno-development/creating-runtime-tests.md
@@ -635,6 +635,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: SystemBackdrop
+          href: features/system-backdrop.md
         - name: Spell checking
           href: features/spellchecking.md
         - name: String resources and localization

@@ -72,7 +72,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
-		<InternalsVisibleTo Include="Uno.UI.Unit.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.UnitTests" />
 	</ItemGroup>
 
 	<ItemGroup>

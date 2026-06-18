@@ -8,6 +8,10 @@ namespace Uno.UI.Runtime.Skia {
 		private static containerElement: HTMLElement;
 		private static debugModeEnabled: boolean = false;
 
+		private static focusSentinelStart: HTMLDivElement | null = null;
+		private static focusSentinelEnd: HTMLDivElement | null = null;
+		private static isDepartingFocus: boolean = false;
+
 		// Managed callbacks from C#
 		private static managedEnableAccessibility: any;
 		private static managedOnScroll: any;
@@ -19,6 +23,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnSelection: any;
 		private static managedOnFocus: any;
 		private static managedOnBlur: any;
+		private static managedOnSentinelFocus: any;
 
 		private static managedIsAutoEnableAccessibility: () => boolean;
 
@@ -70,6 +75,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedOnSelection = accessibilityExports.OnSelection;
 			this.managedOnFocus = accessibilityExports.OnFocus;
 			this.managedOnBlur = accessibilityExports.OnBlur;
+			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
 
 			this.containerElement = document.getElementById("uno-body");
 
@@ -216,7 +222,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static updateElementFocusability(element: HTMLElement, isFocusable: boolean) {
 			if (isFocusable) {
-				element.tabIndex = 0;
+				element.tabIndex = -1;
 			} else {
 				element.removeAttribute("tabIndex");
 			}
@@ -303,6 +309,67 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		public static installFocusSentinels() {
+			if (!this.focusSentinelStart) {
+				this.focusSentinelStart = Accessibility.createFocusSentinel("uno-focus-sentinel-start", true);
+			}
+			if (!this.focusSentinelEnd) {
+				this.focusSentinelEnd = Accessibility.createFocusSentinel("uno-focus-sentinel-end", false);
+			}
+
+			document.body.insertBefore(this.focusSentinelStart, document.body.firstChild);
+			document.body.appendChild(this.focusSentinelEnd);
+		}
+
+		private static createFocusSentinel(id: string, isStart: boolean): HTMLDivElement {
+			const sentinel = document.createElement("div");
+			sentinel.id = id;
+			sentinel.tabIndex = 0;
+			sentinel.setAttribute("aria-hidden", "true");
+			sentinel.style.position = "fixed";
+			sentinel.style.width = "1px";
+			sentinel.style.height = "1px";
+			sentinel.style.padding = "0";
+			sentinel.style.margin = "-1px";
+			sentinel.style.overflow = "hidden";
+			sentinel.style.opacity = "0";
+			sentinel.style.pointerEvents = "none";
+			sentinel.style.top = "0";
+			sentinel.style.left = "0";
+
+			sentinel.addEventListener("focus", () => {
+				if (this.isDepartingFocus) {
+					return;
+				}
+				// Defer: browsers revert focus changes made synchronously inside a focus handler.
+				setTimeout(() => {
+					if (this.managedOnSentinelFocus) {
+						this.managedOnSentinelFocus(isStart);
+					}
+				}, 0);
+			});
+
+			return sentinel;
+		}
+
+		public static focusDepartureSentinel(isForward: boolean) {
+			const sentinel = isForward ? this.focusSentinelEnd : this.focusSentinelStart;
+			if (!sentinel) {
+				return;
+			}
+
+			this.isDepartingFocus = true;
+			sentinel.focus();
+			setTimeout(() => { this.isDepartingFocus = false; }, 0);
+		}
+
+		public static removeFocusSentinels() {
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+		}
+
 		/**
 		 * Updates roving tabindex within an ARIA widget group.
 		 * Sets tabindex="0" on the active element and tabindex="-1" on
@@ -321,8 +388,7 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
-			// Set the active element to tabindex 0
-			activeElement.tabIndex = 0;
+			activeElement.tabIndex = -1;
 
 			// Determine the group scope. Only radio buttons (sharing the
 			// same 'name') and tab-role children of a tablist are grouped.

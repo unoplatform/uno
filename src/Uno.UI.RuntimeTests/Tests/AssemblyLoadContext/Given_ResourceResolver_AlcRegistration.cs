@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -38,6 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 /// from a secondary ALC.
 /// </summary>
 [TestClass]
+[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
+[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 public class Given_ResourceResolver_AlcRegistration
 {
 	private TestAssemblyLoadContext? _testAlc;

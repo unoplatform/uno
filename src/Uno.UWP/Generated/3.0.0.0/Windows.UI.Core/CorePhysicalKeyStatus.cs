@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct CorePhysicalKeyStatus
 	{
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CorePhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CorePhysicalKeyStatus", "CorePhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");

@@ -188,11 +188,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			const string Light = nameof(Light);
 			const string Dark = nameof(Dark);
 
-			var theme = ResourceDictionary.GetActiveTheme();
+			// Drive the active theme through the application theme: on enhanced-lifecycle targets the
+			// resolution leaf reads FrameworkTheming.GetBaseTheme() (the core slot aside), matching WinUI's
+			// EnsureActiveThemeDictionary (Resources.cpp:764-768) — the retired Themes.Active test hook
+			// (SetActiveTheme) no longer affects lookups there.
+			var originalTheme = Application.Current.RequestedTheme;
+			var wasExplicit = Application.Current.IsThemeSetExplicitly;
 			try
 			{
 				// setup
-				ResourceDictionary.SetActiveTheme("Light");
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
 
 				// initialize source res-dict
 				var parserContext = new XamlParseContext();
@@ -225,7 +230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var materialized2Color = materialized2.Color;
 
 				// set active theme and update the copy res-dict
-				ResourceDictionary.SetActiveTheme(Dark);
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 				copy.UpdateThemeBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
 
 				// retrieve the "TestBrush" again from each res-dict
@@ -241,7 +246,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			finally
 			{
 				// clean up
-				ResourceDictionary.SetActiveTheme(theme);
+				if (wasExplicit)
+				{
+					Application.Current.SetExplicitRequestedTheme(originalTheme);
+				}
+				else
+				{
+					Application.Current.SetExplicitRequestedTheme(null);
+				}
 			}
 		}
 
@@ -290,18 +302,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Theme_Dictionary_Key_Added_Then_NotFound_Cleared()
 		{
-			var resourceDictionary = new ResourceDictionary();
+			// This test exercises the not-found-cache invalidation for theme-dictionary keys. The lookup
+			// resolves against the active theme, and the key is added to the "Light" sub-dictionary, so pin
+			// the application theme to Light to keep the test deterministic regardless of the host OS theme
+			// (otherwise it spuriously fails on a Dark OS, where TryGetValue resolves the Dark sub-dictionary).
+			// Driven through Application.RequestedTheme: the resolution leaf reads FrameworkTheming on
+			// enhanced-lifecycle targets, so the retired Themes.Active hook no longer affects lookups there.
+			var originalTheme = Application.Current.RequestedTheme;
+			var wasExplicit = Application.Current.IsThemeSetExplicitly;
+			try
+			{
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
 
-			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+				var resourceDictionary = new ResourceDictionary();
 
-			var m1 = new ResourceDictionary();
-			resourceDictionary.ThemeDictionaries["Light"] = m1;
+				Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
 
-			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+				var m1 = new ResourceDictionary();
+				resourceDictionary.ThemeDictionaries["Light"] = m1;
 
-			m1["Key1"] = "Value1";
+				Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
 
-			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+				m1["Key1"] = "Value1";
+
+				Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+			}
+			finally
+			{
+				if (wasExplicit)
+				{
+					Application.Current.SetExplicitRequestedTheme(originalTheme);
+				}
+				else
+				{
+					Application.Current.SetExplicitRequestedTheme(null);
+				}
+			}
 		}
 #endif
 	}

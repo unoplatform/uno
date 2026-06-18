@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
+		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 		<IsIOS>true</IsIOS>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
 

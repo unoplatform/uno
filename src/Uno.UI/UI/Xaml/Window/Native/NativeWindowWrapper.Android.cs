@@ -108,7 +108,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			return;
 		}
 
-		MUX.Application.Current.RequestedThemeChanged += () =>
+		MUX.Application.Current.RequestedThemeChanged += (_, _) =>
 		{
 			if (MUX.Application.Current.InitializationComplete)
 			{
