@@ -20,6 +20,14 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private long? _pauseTimestamp;
 	private long _totalPause;
 
+	/// <summary>
+	/// Initializes the evaluator. The <c>resolve</c> delegate resolves a keyframe to its value,
+	/// evaluating an expression keyframe when present: the lerp path resolves its own endpoints,
+	/// while this lets the held/final/exact-hit shortcuts resolve too instead of returning an
+	/// expression keyframe's placeholder <see cref="AnimationKeyFrame{T}.Value"/>. A
+	/// <see langword="null"/> delegate uses the value as-is (animation types without
+	/// expression-keyframe support).
+	/// </summary>
 	public KeyFrameEvaluator(
 		AnimationKeyFrame<T> initialValue,
 		AnimationKeyFrame<T> finalValue,
@@ -29,10 +37,6 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		int iterationCount,
 		AnimationIterationBehavior iterationBehavior,
 		Compositor compositor,
-		// Resolves a keyframe to its value, evaluating an expression keyframe when present. The lerp
-		// path resolves its own endpoints; this lets the held/final/exact-hit shortcuts below resolve
-		// too instead of returning an expression keyframe's placeholder Value. Null => use Value as-is
-		// (animation types without expression-keyframe support).
 		Func<AnimationKeyFrame<T>, T> resolve = null)
 	{
 		_startTimestamp = compositor.TimestampInTicks;
