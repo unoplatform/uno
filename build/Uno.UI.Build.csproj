@@ -179,9 +179,6 @@
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.WinUI.Runtime.WebAssembly references version -->
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
-
 		<!-- Update Uno.WinUI.Runtime.Skia.Linux.FrameBuffer references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Linux.FrameBuffer']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
@@ -249,7 +246,6 @@
 			<_diffPackage Include="Uno.WinUI.Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Foldable.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.GooglePlay.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Lottie" Other="Uno.WinUI.Lottie.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Maps" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Maps.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.MSAL" Other="Uno.WinUI.MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Svg" Other="Uno.WinUI.Svg.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
@@ -257,7 +253,6 @@
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Skia.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.XamlHost" Other="Uno.WinUI.XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.WebAssembly" Other="Uno.WinUI.WebAssembly.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
