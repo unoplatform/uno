@@ -68,8 +68,8 @@ This is the top priority. See [`plan.md`](./plan.md) Phase 1.
 
 | Item | Severity | What |
 |---|---|---|
-| **HC runtime toggle** (A3-2/A6-3/A9-4) | **High** | Wire HC change → `Theming.OnThemeChanged`; make the leaf read the `FrameworkTheming` HC snapshot. |
-| **Native secondary-ALC theme drop** (A7-1) | Medium | The unconditional `if (_isSecondaryAlcApplication) { … return; }` at the top of `SetExplicitRequestedTheme` no-ops a *native* secondary app's `RequestedTheme` (element pin is `#if __SKIA__\|\|__WASM__`). Gate the diversion to enhanced-lifecycle. |
+| **HC runtime toggle** (A3-2/A6-3/A9-4) | **High** | Wire HC change → `Theming.OnThemeChanged`; make the leaf read the `FrameworkTheming` HC snapshot. **✅ Done** on this branch (see [`plan.md`](./plan.md) Phase 1). |
+| ~~**Native secondary-ALC theme drop** (A7-1)~~ | ~~Medium~~ → none | **Verified non-issue** — ALC hosting is Skia/WASM-only (`Application.Alc.cs:204`), so the native path is unreachable. No code change. |
 | **Doc/policy fixes** (A9-5, A4-8, A4-9, A1-4/A2-6, stale citations) | Low | README over-claims completion; stale TODO/test comments; private `kahua-private` URLs in checked-in tests; several drifted C++ line citations. |
 
 ### Follow-up work (alignment completion)
@@ -101,8 +101,9 @@ but it now rides entirely on the element-level port — so element-level gaps re
   (A6-8/A7-6, **verified ALC-safe**).
 
 **ALC risks the alignment introduces or leaves open:**
-1. **A7-1 (current-branch):** native secondary-ALC `RequestedTheme` is silently dropped.
-2. **A3-2 (HIGH):** the stale HC snapshot also corrupts the **secondary-app** walk theme
+1. ~~**A7-1:** native secondary-ALC `RequestedTheme` silently dropped~~ — **verified non-issue** (ALC hosting is
+   Skia/WASM-only; the native path is unreachable).
+2. **A3-2 (HIGH, ✅ fixed on this branch):** the stale HC snapshot also corrupted the **secondary-app** walk theme
    (`GetEffectiveWalkTheme` OR-s in `GetHighContrastTheme()`), so fixing HC fixes ALC HC too.
 3. **A4-2/A7-2/A8-4 (low):** app-level overrides of system/theme keys resolve against the **host** app, not
    the secondary ALC's — widened by the new per-keyframe override path.
