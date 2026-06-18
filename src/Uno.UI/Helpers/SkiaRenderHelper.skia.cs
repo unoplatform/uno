@@ -330,6 +330,43 @@ internal static class SkiaRenderHelper
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
+		// Panel size in root/logical coordinates. The width grows to fit the current values (with per-column
+		// minimums); the height is fixed. Shared by DrawFps and TryGetDamageBounds so the two never diverge.
+		private (float panelWidth, float panelHeight, float col1Width, float col2Width) MeasurePanel()
+		{
+			var culture = CultureInfo.InvariantCulture;
+			var fpsText = _fps.ToString("F1", culture);
+			var droppedText = _droppedFrames.ToString(culture);
+			var unpresentedText = _unpresentedFrames.ToString(culture);
+			var frameTimeText = FormattableString.Invariant($"{_frameTime:F1} ms");
+			var delayText = _isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
+
+			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
+			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
+
+			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
+			var panelHeight = Padding + 3 * RowHeight + Padding;
+			return (panelWidth, panelHeight, col1Width, col2Width);
+		}
+
+		/// <summary>
+		/// The counter panel's bounds in root/logical coordinates (top-left origin); false when the counter is
+		/// disabled. The counter is a present-time overlay redrawn every frame, so under damage-region rendering
+		/// its region must be added to the frame's damage or the clipped present would leave its digits stale.
+		/// </summary>
+		public bool TryGetDamageBounds(out SKRect bounds)
+		{
+			if (!IsEnabled)
+			{
+				bounds = default;
+				return false;
+			}
+
+			var (panelWidth, panelHeight, _, _) = MeasurePanel();
+			bounds = new SKRect(0, 0, panelWidth, panelHeight);
+			return true;
+		}
+
 		public void DrawFps(SKCanvas canvas)
 		{
 			if (!IsEnabled)
@@ -345,11 +382,7 @@ internal static class SkiaRenderHelper
 			var isIdle = _isIdle;
 			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
 
-			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
-			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
-
-			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
-			var panelHeight = Padding + 3 * RowHeight + Padding;
+			var (panelWidth, panelHeight, col1Width, col2Width) = MeasurePanel();
 
 			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, isIdle ? _idleBackgroundPaint : _backgroundPaint);
 
