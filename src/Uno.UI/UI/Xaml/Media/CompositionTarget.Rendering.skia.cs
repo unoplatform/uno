@@ -35,8 +35,11 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
-	// Per-frame damage region, accumulated from invalidations on the UI thread (via AddDamage) and
-	// snapshotted into the rendered frame in Render(). Only touched on the UI thread.
+	// The per-frame damage region. During Render() it is threaded through the PaintingSession so each visual
+	// adds the region it (re)paints as the walk proceeds (see Visual.ContributeDamageOnPaint). It also collects
+	// out-of-band damage that occurs with no active walk — a visual hidden or removed between frames isn't
+	// walked, so it reports its vacated region here (via ICompositionTarget.AddDamage). Snapshotted into the
+	// rendered frame and reset each Render(). Only touched on the UI thread.
 	private readonly DamageRegion _pendingDamage = new();
 
 	// Diagnostic escape hatch: when UNO_DAMAGE_REGION=false, present the whole frame every time instead
@@ -145,11 +148,15 @@ public partial class CompositionTarget
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
+		// Thread the per-frame damage accumulator through the walk: visuals add the region they (re)paint to
+		// it via the PaintingSession as RecordPictureAndReturnPath walks the tree. It already carries any
+		// out-of-band damage (visuals hidden/removed since the last frame) accumulated via AddDamage.
 		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
+			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
+			damage: _pendingDamage);
 
 		// Snapshot and reset the accumulated damage region for this frame. The picture above is always
 		// the full tree; the snapshot tells Draw() which region actually needs to be re-presented.

@@ -10,6 +10,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
 
@@ -32,13 +33,13 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath, DamageRegion? damage = null)
 	{
 		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 
-		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
+		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, damage);
 
 		var (path, nativeVisualsInZOrder) = !ContentPresenter.HasNativeElements() ?
 			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :

@@ -163,7 +163,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
@@ -178,7 +178,7 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(canvas, null);
+		rootVisual.RenderRootVisual(canvas, null, damage);
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
