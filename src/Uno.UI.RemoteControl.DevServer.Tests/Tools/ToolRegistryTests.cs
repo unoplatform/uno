@@ -331,7 +331,7 @@ public class ToolRegistryTests
 		var registry = new ToolRegistryImpl();
 		registry.RegisterTool(Tool("t"), Ok());
 		using var cts = new CancellationTokenSource();
-		cts.Cancel();
+		await cts.CancelAsync();
 
 		await Assert.ThrowsExactlyAsync<OperationCanceledException>(
 			async () => await registry.InvokeAsync("t", new JsonObject(), cts.Token));
@@ -342,7 +342,7 @@ public class ToolRegistryTests
 	{
 		var registry = new ToolRegistryImpl();
 		using var cts = new CancellationTokenSource();
-		cts.Cancel();
+		await cts.CancelAsync();
 
 		// Cancellation propagates before the unknown-tool lookup, not as an error result.
 		await Assert.ThrowsExactlyAsync<OperationCanceledException>(
@@ -555,21 +555,45 @@ public class ToolRegistryTests
 	}
 
 	[TestMethod]
+	public void InvocationTimeout_NegativeValue_Throws()
+	{
+		// A misconfigured negative timeout is rejected at assignment, not deferred to CancelAfter.
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+			() => new ToolRegistryImpl { InvocationTimeout = TimeSpan.FromSeconds(-5) });
+	}
+
+	[TestMethod]
 	public async Task InvokeAsync_CallerCancelsDuringHandler_Throws()
 	{
 		var registry = new ToolRegistryImpl();
 		using var cts = new CancellationTokenSource();
+		var entered = new TaskCompletionSource();
 		registry.RegisterTool(Tool("hang"), async (_, ct) =>
 		{
+			entered.SetResult();
 			await Task.Delay(Timeout.Infinite, ct);
 			return ToolResult.Text("never");
 		});
 
-		var invocation = registry.InvokeAsync("hang", new JsonObject(), cts.Token).AsTask();
-		cts.Cancel();
+		// Task.Run keeps the awaited task in-context for the threading analyzer; the gate ensures the
+		// handler is genuinely running before the caller cancels.
+		var invocation = Task.Run(() => registry.InvokeAsync("hang", new JsonObject(), cts.Token).AsTask());
+		await entered.Task;
+		await cts.CancelAsync();
 
-		// TaskCanceledException (from Task.Delay) derives from OperationCanceledException — assignable, not exact.
-		await Assert.ThrowsAsync<OperationCanceledException>(async () => await invocation);
+		// Awaited at method scope (not inside a lambda) so the threading analyzer sees the Task.Run origin.
+		// TaskCanceledException (from Task.Delay) derives from OperationCanceledException.
+		OperationCanceledException? caught = null;
+		try
+		{
+			await invocation;
+		}
+		catch (OperationCanceledException ex)
+		{
+			caught = ex;
+		}
+
+		Assert.IsNotNull(caught);
 	}
 
 	[TestMethod]
@@ -577,7 +601,7 @@ public class ToolRegistryTests
 	{
 		var registry = new ToolRegistryImpl();
 		using var unrelated = new CancellationTokenSource();
-		unrelated.Cancel();
+		await unrelated.CancelAsync();
 		registry.RegisterTool(Tool("t"), (_, _) =>
 			// Neither the caller token nor the watchdog fired — this OCE is the handler's own.
 			throw new OperationCanceledException(unrelated.Token));

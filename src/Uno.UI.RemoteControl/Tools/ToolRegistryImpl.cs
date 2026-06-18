@@ -39,13 +39,28 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 		set => _dispatcher = value;
 	}
 
+	private TimeSpan _invocationTimeout = TimeSpan.FromSeconds(30);
+
 	/// <summary>
 	/// Upper bound on a single tool invocation / resource read before it is abandoned with an error
 	/// result, so a hung handler can't block the consumer indefinitely. Defaults to 30s; set to
 	/// <see cref="Timeout.InfiniteTimeSpan"/> to disable. The watchdog is cooperative: it cancels the
 	/// token passed to the handler, so it only takes effect if the handler observes that token.
 	/// </summary>
-	public TimeSpan InvocationTimeout { get; set; } = TimeSpan.FromSeconds(30);
+	/// <exception cref="ArgumentOutOfRangeException">A negative value other than <see cref="Timeout.InfiniteTimeSpan"/>.</exception>
+	public TimeSpan InvocationTimeout
+	{
+		get => _invocationTimeout;
+		set
+		{
+			if (value < TimeSpan.Zero && value != Timeout.InfiniteTimeSpan)
+			{
+				throw new ArgumentOutOfRangeException(nameof(value), value, "Timeout must be non-negative or Timeout.InfiniteTimeSpan.");
+			}
+
+			_invocationTimeout = value;
+		}
+	}
 
 	public event EventHandler? Changed;
 

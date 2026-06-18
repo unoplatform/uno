@@ -69,7 +69,9 @@ internal static class ToolArgumentValidator
 			ToolParameterKind.Boolean => node.GetValueKind() is JsonValueKind.True or JsonValueKind.False,
 			ToolParameterKind.Array => node.GetValueKind() == JsonValueKind.Array,
 			ToolParameterKind.Object => node.GetValueKind() == JsonValueKind.Object,
-			_ => true,
+			// Fail closed: a kind not handled above (a future enum value) surfaces as a validation
+			// error rather than silently passing an unvalidated argument through.
+			_ => false,
 		};
 
 	// The node is already a JSON Number; an integer literal carries no fractional or exponent part.

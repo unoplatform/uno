@@ -448,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**45 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**46 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
