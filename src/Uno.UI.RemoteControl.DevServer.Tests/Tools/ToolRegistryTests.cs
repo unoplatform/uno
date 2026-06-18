@@ -338,6 +338,18 @@ public class ToolRegistryTests
 	}
 
 	[TestMethod]
+	public async Task InvokeAsync_CancelledToken_UnknownTool_Throws()
+	{
+		var registry = new ToolRegistryImpl();
+		using var cts = new CancellationTokenSource();
+		cts.Cancel();
+
+		// Cancellation propagates before the unknown-tool lookup, not as an error result.
+		await Assert.ThrowsExactlyAsync<OperationCanceledException>(
+			async () => await registry.InvokeAsync("does_not_exist", new JsonObject(), cts.Token));
+	}
+
+	[TestMethod]
 	public async Task ReadResourceAsync_ReaderThrows_ReturnsIsError()
 	{
 		var registry = new ToolRegistryImpl();

@@ -448,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**43 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**44 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -489,6 +489,7 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `InvokeAsync_InvalidArguments_ReturnsIsError` | Validation failure surfaces as an error result before dispatch. |
 | `InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation` | A handler exceeding the timeout yields an error result, not a thrown cancellation. |
 | `InvokeAsync_CallerCancelsDuringHandler_Throws` | Caller cancellation during a running handler throws `OperationCanceledException`. |
+| `InvokeAsync_CancelledToken_UnknownTool_Throws` | A pre-cancelled token throws even for an unknown tool (cancellation is checked first). |
 | `InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout` | A handler's own OCE propagates as a throw, never a phantom timeout result. |
 | `TryGetInt32_And_TryGetBoolean_ReturnTypedValues` | The typed `TryGet*` accessors read values and report false on wrong/missing. |
 | `ToolParameter_DefaultAllowedValues_ReadsAsEmpty_NotDefault` | A default (uninitialized) `AllowedValues` reads as empty, never throwing on enumeration. |

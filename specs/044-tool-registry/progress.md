@@ -22,12 +22,12 @@
   - [x] `ToolParameter.AllowedValues` normalized so a `default` value reads as empty (no NRE).
   - [x] `TryGetInt32`/`TryGetBoolean` added; `TryGetString` null-guarded; `value!` removed.
   - [x] `RestoreToken.Dispose` uses `Volatile.Write`; non-nullable `arguments` contract honored; `NoOpDisposable.Instance` unified.
-- [x] `src/Uno.UI.RemoteControl.DevServer.Tests/Tools/ToolRegistryTests.cs` — 43 tests (added concurrency/reentrancy stress, validation, timeout, and param-model coverage; file `#nullable enable`).
+- [x] `src/Uno.UI.RemoteControl.DevServer.Tests/Tools/ToolRegistryTests.cs` — 44 tests (added concurrency/reentrancy stress, validation, timeout, and param-model coverage; file `#nullable enable`).
 
 ## Validation
 
 - **Compile**: `dotnet build Uno.UI.RemoteControl.Skia.csproj -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true` → **0 errors**. Test project builds → **0 errors**.
-- **Runtime**: ran the MTP test assembly directly → **43 passed, 0 failed**.
+- **Runtime**: ran the MTP test assembly directly → **44 passed, 0 failed**.
   ```
   dotnet "src/Uno.UI.RemoteControl.DevServer.Tests/bin/Debug/net10.0/Uno.UI.RemoteControl.DevServer.Tests.dll" --filter "FullyQualifiedName~ToolRegistry"
   ```

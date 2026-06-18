@@ -87,8 +87,10 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 	public (ImmutableArray<ToolDescriptor> Tools, ImmutableArray<ResourceDescriptor> Resources) Snapshot()
 	{
-		var tools = _tools;
-		var resources = _resources;
+		// Volatile.Read pairs with the Interlocked write inside ImmutableInterlocked, giving an acquire
+		// fence so a reader observes the latest dictionary reference on weak memory models.
+		var tools = Volatile.Read(ref _tools);
+		var resources = Volatile.Read(ref _resources);
 
 		var toolsBuilder = ImmutableArray.CreateBuilder<ToolDescriptor>(tools.Count);
 		foreach (var entry in tools.Values)
@@ -107,12 +109,14 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 	public async ValueTask<ToolResult> InvokeAsync(string toolName, JsonObject arguments, CancellationToken ct)
 	{
-		if (!_tools.TryGetValue(toolName, out var entry))
+		// Cancellation propagates unconditionally (per the IToolCatalog contract), so it is checked
+		// before the lookup — a pre-cancelled token throws even for an unknown tool.
+		ct.ThrowIfCancellationRequested();
+
+		if (!Volatile.Read(ref _tools).TryGetValue(toolName, out var entry))
 		{
 			return ToolResult.Error($"Unknown tool '{toolName}'.");
 		}
-
-		ct.ThrowIfCancellationRequested();
 
 		if (ToolArgumentValidator.Validate(entry.Descriptor, arguments) is { } validationError)
 		{
@@ -159,12 +163,12 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 	public async ValueTask<ToolResult> ReadResourceAsync(string uri, CancellationToken ct)
 	{
-		if (!_resources.TryGetValue(uri, out var entry))
+		ct.ThrowIfCancellationRequested();
+
+		if (!Volatile.Read(ref _resources).TryGetValue(uri, out var entry))
 		{
 			return ToolResult.Error($"Unknown resource '{uri}'.");
 		}
-
-		ct.ThrowIfCancellationRequested();
 
 		using var timeout = CreateTimeoutScope(ct);
 		try
