@@ -26,13 +26,6 @@ namespace SkiaSharpExample
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
 
-			// Diagnostic: let the damage-region validation harness pick the X11 renderer (software vs
-			// OpenGL exercise different surface-retention paths and both must stay pixel-identical).
-			if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } r)
-			{
-				global::Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnX11 = !string.Equals(r, "software", StringComparison.OrdinalIgnoreCase);
-			}
-
 			Run();
 		}
 

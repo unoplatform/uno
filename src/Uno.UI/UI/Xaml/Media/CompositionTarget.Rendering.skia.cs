@@ -121,9 +121,6 @@ public partial class CompositionTarget
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		// Thread the per-frame damage accumulator through the walk: visuals add the region they (re)paint to
-		// it via the PaintingSession as RecordPictureAndReturnPath walks the tree. It already carries any
-		// out-of-band damage (visuals hidden/removed since the last frame) accumulated via AddDamage.
 		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(float)bounds.Width,
 			(float)bounds.Height,
