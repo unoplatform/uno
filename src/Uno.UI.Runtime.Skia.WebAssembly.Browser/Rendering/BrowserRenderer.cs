@@ -96,7 +96,7 @@ internal partial class BrowserRenderer
 		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
 		{
 			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
-		}, _renderer.SurfaceRetainsContents);
+		});
 
 		if (_canvas is not null)
 		{

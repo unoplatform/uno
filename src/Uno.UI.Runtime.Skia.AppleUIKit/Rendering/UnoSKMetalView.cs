@@ -177,8 +177,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				// onto this frame's (non-retaining) drawable surface.
 				_owner?.OnRenderFrameRequested(
 					_retainedLayer.Surface?.Canvas,
-					size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas,
-					surfaceRetainsContents: true);
+					size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
 
 				_retainedLayer.Present(surface);
 
