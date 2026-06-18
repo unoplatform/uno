@@ -27,6 +27,7 @@ internal class Win32AccentColorExtension : IAccentColorExtension
 			{
 				using var hSubKeyString = new Win32Helper.NativeNulTerminatedUtf16String(AccentRegistryKey);
 				HKEY hSubKey;
+				// We're not closing this handle since this class lasts the whole lifetime of the app.
 				var errorCode = PInvoke.RegOpenKeyEx(HKEY.HKEY_CURRENT_USER, hSubKeyString, 0, REG_SAM_FLAGS.KEY_READ, &hSubKey);
 				if (errorCode != WIN32_ERROR.ERROR_SUCCESS)
 				{
@@ -35,6 +36,7 @@ internal class Win32AccentColorExtension : IAccentColorExtension
 				}
 				while (true)
 				{
+					// RegNotifyChangeKeyValue will block until the accent color changes
 					var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
 					if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
 					{
