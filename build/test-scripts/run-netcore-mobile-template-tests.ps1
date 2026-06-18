@@ -198,9 +198,9 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
     # Ensure that build can happen even if a RID is specified
-    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
-    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
-    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-browserwasm"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-desktop"), @("macOS", "NetCore")),
 
     ## Note for contributors
     ##
