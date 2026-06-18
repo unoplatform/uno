@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
+		<TargetFrameworks>$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -36,6 +37,7 @@ namespace Uno.UI.Samples.Converters
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 		private static object GetDefaultValue(Type targetType)
 		{
 #if SILVERLIGHT

@@ -45,9 +45,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresFullWindow]
 		public async Task When_Parent_Resource_Override_On_Loaded()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
 			{
 				var userControl = new When_Parent_Resource_Override_On_Loaded();
@@ -77,7 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_AppLevel_Resource_CheckBox_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
@@ -144,8 +145,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresFullWindow]
 		public async Task When_Theme_Changed()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			var control = new ThemeResource_Theme_Changing_Override();
 			WindowHelper.WindowContent = control;
 
@@ -200,8 +203,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if HAS_UNO
 		[TestMethod]
+		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_ActualThemeChanged_Throws()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
 			{
 				var border = (Border)XamlReader.Load(
@@ -229,6 +235,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
+#if HAS_UNO
+			using var _ = ThemeHelper.UseApplicationLightTheme();
+#endif
 			var run = new Run()
 			{
 				Text = "Hello"
@@ -349,11 +358,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 		// Regression: a subtree pinned to an explicit RequestedTheme that differs from the
 		// application/OS theme must resolve {ThemeResource} values against the subtree's
-		// theme, not against Themes.Active. This exercises the out-of-walk lookup paths
-		// (parse-time ApplyResource, RefreshValue, InnerUpdateResourceBindingsUnsafe).
-		// Without ThemeResourceReference.PushOwnerThemeIfDifferent, the parse-time lookup
-		// would select the Dark sub-dictionary because Themes.Active = Dark (the app theme),
-		// even though the Border's inherited ActualTheme is Light from its pinned ancestor.
+		// theme, not against Themes.Active. The {ThemeResource} is resolved at load against the
+		// owner's effective theme (Mechanism 1) from the pinned providing dictionary, so the
+		// Inner Border (which inherits Light from its pinned ancestor) selects the Light value
+		// even though Themes.Active is Dark (the app theme).
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Light_Pinned_Subtree_Inside_Dark_App_Resolves_Light_ThemeResource()
@@ -478,13 +486,148 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				"must resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
 		}
 #endif
+		// === Resolution-scope (popup) regression guards — see specs/theming-winui-resolution-scope ===
+
+		// R1: an inline <Popup> declared under a RequestedTheme="Light" boundary, opened so its content is
+		// hosted in the PopupRoot, must resolve a {ThemeResource} declared in the boundary's local
+		// ThemeDictionaries against the content's inherited Light theme — not the application/OS (Dark) theme.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Inline_Popup_Opened_Resolves_DeclarationSite_ThemeResource()
+		{
+#if HAS_UNO
+			using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+			await WindowHelper.WaitForIdle();
+#endif
+			var root = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+						RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="InlinePopupBrush" Color="Green" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="InlinePopupBrush" Color="Red" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+					<primitives:Popup x:Name="popup">
+						<Border x:Name="popupContent"
+								Width="50"
+								Height="50"
+								Background="{ThemeResource InlinePopupBrush}" />
+					</primitives:Popup>
+				</Border>
+				""");
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			var popup = (Microsoft.UI.Xaml.Controls.Primitives.Popup)root.FindName("popup");
+			var popupContent = (Border)root.FindName("popupContent");
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(popupContent);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(ElementTheme.Light, popupContent.ActualTheme,
+					"Inline popup content should inherit Light from its declaration site.");
+
+				var brush = popupContent.Background as SolidColorBrush;
+				Assert.IsNotNull(brush, "Popup content background should be a SolidColorBrush.");
+				Assert.AreEqual(Colors.Green, brush.Color,
+					$"Inline popup content has ActualTheme=Light, so its {{ThemeResource}} must resolve to the " +
+					$"Light value (Green), but it is {brush.Color}.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		// R1: re-resolving open popup content after the placement target's theme toggles at runtime must follow
+		// the new theme (the pinned providing dictionary re-selects the new sub-dictionary on RefreshValue).
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Flyout_Target_Theme_Toggled_While_Open_Updates_ThemeResource()
+		{
+#if HAS_UNO
+			using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+			await WindowHelper.WaitForIdle();
+#endif
+			var host = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="ToggleBrush" Color="Green" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="ToggleBrush" Color="Red" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+					<Button x:Name="btn" Content="Open">
+						<Button.Flyout>
+							<Flyout>
+								<Border x:Name="flyoutContent"
+										Width="50"
+										Height="50"
+										Background="{ThemeResource ToggleBrush}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</Border>
+				""");
+
+			WindowHelper.WindowContent = host;
+			await WindowHelper.WaitForLoaded(host);
+
+			var button = (Button)host.FindName("btn");
+			var flyout = (Flyout)button.Flyout;
+
+			try
+			{
+				flyout.ShowAt(button);
+				await WindowHelper.WaitForIdle();
+				var flyoutContent = (Border)flyout.Content;
+				await WindowHelper.WaitForLoaded(flyoutContent);
+
+				Assert.AreEqual(Colors.Green, (flyoutContent.Background as SolidColorBrush)?.Color,
+					"Flyout content should first resolve the host's Light value (Green).");
+
+				host.RequestedTheme = ElementTheme.Dark;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(Colors.Red, (flyoutContent.Background as SolidColorBrush)?.Color,
+					"After toggling the host (placement target) to Dark while open, the flyout content " +
+					"{ThemeResource} must follow to the Dark value (Red).");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
 	}
 
 #if HAS_UNO
 	// Minimal stand-in for a Microsoft.Xaml.Behaviors-style behaviour: a non-UIElement
-	// DependencyObject carrying a {ThemeResource}-bindable property. It deliberately has no
-	// "AssociatedObject" property — theme resolution must reach its host purely through
-	// DependencyObjectStore.Parent (wired by the Interaction.Behaviors DependencyObjectCollection).
+	// DependencyObject carrying a {ThemeResource}-bindable property, with no "AssociatedObject"
+	// property — theme resolution must reach its host purely through DependencyObjectStore.Parent.
 	public partial class FakeThemeBehavior : DependencyObject
 	{
 		public static readonly DependencyProperty TestBrushProperty = DependencyProperty.Register(

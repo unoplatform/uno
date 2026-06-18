@@ -187,7 +187,90 @@ public partial class Given_UIElement
 		GC.KeepAlive(flyout);
 	}
 
-#if HAS_UNO // flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_ContextFlyout_InheritsOwnerDataContext()
+	{
+		// Verify that a FlyoutBase assigned as ContextFlyout inherits the owning UIElement's DataContext
+		// via the mentor mechanism, so that {Binding} expressions on the flyout resolve correctly.
+
+		var menuItems = new[] { "Item1", "Item2", "Item3" };
+		var viewModel = new { MenuItems = menuItems };
+
+		var flyout = new MenuFlyout();
+		var button = new Button
+		{
+			Content = "Test",
+			DataContext = viewModel,
+		};
+
+		button.ContextFlyout = flyout;
+
+		// The flyout should now have DataContext from the button.
+		Assert.AreEqual(viewModel, flyout.DataContext,
+			"ContextFlyout should inherit DataContext from the owning UIElement.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_ContextFlyout_DataContextChanges_FlyoutUpdated()
+	{
+		// Verify that when the owning element's DataContext changes,
+		// the ContextFlyout's DataContext is updated.
+
+		var vm1 = new object();
+		var vm2 = new object();
+
+		var flyout = new MenuFlyout();
+		var button = new Button
+		{
+			Content = "Test",
+			DataContext = vm1,
+			ContextFlyout = flyout,
+		};
+
+		Assert.AreEqual(vm1, flyout.DataContext);
+
+		button.DataContext = vm2;
+		Assert.AreEqual(vm2, flyout.DataContext,
+			"ContextFlyout DataContext should update when owning element's DataContext changes.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ContextFlyout_ElementUnloaded_DataContextCleared()
+	{
+		// Verify that when the owning element is unloaded, the flyout's
+		// inherited DataContext is cleared (to prevent memory leaks).
+
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		var button = new Button
+		{
+			Content = "Test",
+			DataContext = viewModel,
+			ContextFlyout = flyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(button);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreEqual(viewModel, flyout.DataContext);
+
+		// Remove from tree - DataContext should be cleared
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNull(flyout.DataContext,
+			"ContextFlyout DataContext should be cleared when owning element is unloaded.");
+	}
+
+	// flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
@@ -224,6 +307,112 @@ public partial class Given_UIElement
 		await TestServices.WindowHelper.WaitForIdle();
 
 		root.Children.Clear();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_ContextFlyout_SharedFlyoutReassigned_DataContextSwitches()
+	{
+		// When a flyout is moved from element A to element B,
+		// its DataContext should switch to element B's DataContext.
+
+		var vmA = "ViewModelA";
+		var vmB = "ViewModelB";
+
+		var flyout = new MenuFlyout();
+		var buttonA = new Button { Content = "A", DataContext = vmA, ContextFlyout = flyout };
+
+		Assert.AreEqual(vmA, flyout.DataContext,
+			"Flyout should have DataContext from element A.");
+
+		var buttonB = new Button { Content = "B", DataContext = vmB };
+		buttonB.ContextFlyout = flyout;
+
+		Assert.AreEqual(vmB, flyout.DataContext,
+			"Flyout should have DataContext from element B after reassignment.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_StaleOwner_Unloaded_DoesNotClear_ActiveOwnerDataContext()
+	{
+		// Repro for the ClearMentoredChildrenDataContext ownership-guard bug:
+		//
+		// Step 1: buttonA.ContextFlyout = flyout  →  flyout.mentor = buttonA (buttonA._mentoredChildren contains flyout)
+		// Step 2: buttonB.ContextFlyout = flyout  →  flyout.mentor = buttonB (buttonA._mentoredChildren slot is NOT cleared)
+		// Step 3: buttonA is unloaded             →  ClearMentoredChildrenDataContext iterates buttonA's stale slot
+		//                                            and calls ClearInheritedDataContext on flyout — wiping vmB's DataContext.
+		//
+		// Expected: flyout.DataContext == vmB after buttonA is unloaded.
+		// Actual (bugged): flyout.DataContext == null, because ClearMentoredChildrenDataContext
+		//                  does not guard on ReferenceEquals(mentor, ActualInstance).
+
+		var vmA = "ViewModelA";
+		var vmB = "ViewModelB";
+
+		var flyout = new MenuFlyout();
+
+		var buttonA = new Button { Content = "A", DataContext = vmA };
+		var buttonB = new Button { Content = "B", DataContext = vmB };
+
+		// Assign flyout to A first, then reassign to B.
+		buttonA.ContextFlyout = flyout;
+		buttonB.ContextFlyout = flyout;
+
+		// Both buttons must be loaded so that the Unloaded event fires when buttonA is removed.
+		var root = new StackPanel();
+		root.Children.Add(buttonA);
+		root.Children.Add(buttonB);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreEqual(vmB, flyout.DataContext,
+			"Flyout should have DataContext from the current owner (buttonB) after reassignment.");
+
+		// Unload buttonA — this triggers ClearMentoredChildrenDataContext on buttonA's store.
+		root.Children.Remove(buttonA);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(vmB, flyout.DataContext,
+			"Flyout DataContext must not be cleared by the stale (no-longer-owning) buttonA being unloaded.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ContextFlyout_ElementReloaded_DataContextRepropagated()
+	{
+		// When a UIElement is removed and re-added to the tree,
+		// the flyout's DataContext should be re-propagated.
+
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		var button = new Button
+		{
+			Content = "Test",
+			DataContext = viewModel,
+			ContextFlyout = flyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(button);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreEqual(viewModel, flyout.DataContext);
+
+		// Remove from tree - DataContext should be cleared
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsNull(flyout.DataContext,
+			"DataContext should be cleared after unload.");
+
+		// Re-add to tree - DataContext should be re-propagated
+		root.Children.Add(button);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreEqual(viewModel, flyout.DataContext,
+			"DataContext should be re-propagated after reload.");
 	}
 #endif
 }

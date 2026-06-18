@@ -257,10 +257,23 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get => _resources ??= new ResourceDictionary();
+			get
+			{
+				if (_resources is null)
+				{
+					_resources = new ResourceDictionary();
+					// Record this element as the dictionary's owner so resources resolve their
+					// {ThemeResource} values against this element's effective theme (see
+					// ResourceDictionary.SetResourceOwner), not the process-global active theme.
+					_resources.SetResourceOwner(this);
+				}
+
+				return _resources;
+			}
 			set
 			{
 				_resources = value;
+				_resources?.SetResourceOwner(this);
 				_resources.InvalidateNotFoundCache(true);
 			}
 		}
@@ -421,70 +434,29 @@ namespace Microsoft.UI.Xaml
 			this.StoreTryEnableHardReferences();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			// Inherit theme from parent if we don't have explicit RequestedTheme
-			if (RequestedTheme == ElementTheme.Default)
-			{
-				var parent = this.GetParent() as UIElement;
-				// Only inherit if our theme hasn't already been set (e.g., by
-				// NotifyThemeChanged from Popup open code before this deferred
-				// Loading fires). Without this guard, popup content that was
-				// correctly themed by Popup.OnIsOpenChangedPartialNative would
-				// be overwritten with PopupRoot's stored theme during the
-				// first Measure pass.
-				if (GetTheme() == Theme.None && parent != null && parent.GetTheme() != Theme.None)
-				{
-					SetTheme(parent.GetTheme());
-				}
-			}
-			else
-			{
-				// We have explicit theme - ensure it's applied
-				NotifyThemeChanged(Theming.FromElementTheme(RequestedTheme));
-			}
-
-			// Push the element's theme context so ThemeResource references in styles
-			// and bindings resolve with the correct theme, especially for elements
-			// that had their RequestedTheme set during XAML parsing before their
-			// themed properties were set.
 			var effectiveTheme = GetTheme();
-			var needsPush = effectiveTheme != Theme.None;
-			if (needsPush)
+
+			// Apply active style and default style when we enter the visual tree.
+			ApplyStyles();
+
+			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
+			// Updates theme references to account for new ancestor theme dictionaries.
+			// Use UpdateThemeBindings (virtual) instead of the BindingHelper extension so that
+			// subclasses like TextBlock can also propagate to non-DP children (e.g., Inlines).
+			((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
+			UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
+
+			// MUX Reference: CUIElement::Enter / EnsureTextFormatting
+			// Pull inherited theme foreground from parent when entering the visual tree.
+			// Only apply when there IS a parent with a frozen theme foreground, meaning
+			// we're inside a theme boundary (RequestedTheme != Default ancestor).
+			// Without a theme boundary, foreground inheritance works normally via the DP system.
+			if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
 			{
-				var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
-				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			}
-
-			try
-			{
-				// Apply active style and default style when we enter the visual tree.
-				ApplyStyles();
-
-				// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
-				// Updates theme references to account for new ancestor theme dictionaries.
-				// Use UpdateThemeBindings (virtual) instead of the BindingHelper extension so that
-				// subclasses like TextBlock can also propagate to non-DP children (e.g., Inlines).
-				((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
-				UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
-
-				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
-				// Pull inherited theme foreground from parent when entering the visual tree.
-				// Only apply when there IS a parent with a frozen theme foreground, meaning
-				// we're inside a theme boundary (RequestedTheme != Default ancestor).
-				// Without a theme boundary, foreground inheritance works normally via the DP system.
-				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
+				var parent = this.GetParent() as FrameworkElement;
+				if (parent?._themeForeground is { } parentFg)
 				{
-					var parent = this.GetParent() as FrameworkElement;
-					if (parent?._themeForeground is { } parentFg)
-					{
-						EnsureThemeForeground(parentFg);
-					}
-				}
-			}
-			finally
-			{
-				if (needsPush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
+					EnsureThemeForeground(parentFg);
 				}
 			}
 #else
@@ -715,39 +687,7 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyStyleWithThemeContext(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			// MUX Reference: CFrameworkElement::OnStyleChanged -> InvalidateProperty chain
-			// ThemeResource setters in the style must resolve using the element's effective
-			// theme, not the app-level Themes.Active. During initial loading (OnLoadingPartial),
-			// the theme is already pushed by the caller. When Style is changed from code-behind
-			// after loading, no theme context is present and ThemeResources resolve against
-			// Themes.Active, which can differ from the element's theme when an ancestor has
-			// RequestedTheme set (e.g., RequestedTheme="Light" on root with OS in Dark mode).
-			var effectiveTheme = GetTheme();
-			var baseTheme = Theming.GetBaseValue(effectiveTheme);
-			// HighContrast-only themes have a base of None; skip the push in that case
-			// (mirrors the short-circuit in NotifyThemeChangedCore).
-			var needsThemePush = baseTheme is Theme.Light or Theme.Dark;
-			if (needsThemePush)
-			{
-				var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
-				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			}
-
-			try
-			{
-				ApplyStyleCore(oldStyle, newStyle, precedence);
-			}
-			finally
-			{
-				if (needsThemePush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
-			}
-#else
 			ApplyStyleCore(oldStyle, newStyle, precedence);
-#endif
 		}
 
 		private void ApplyStyleCore(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)

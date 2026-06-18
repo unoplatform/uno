@@ -154,6 +154,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Same app-level override, but the re-resolution is driven by an actual APPLICATION THEME CHANGE
+		// (a NotifyThemeChanged tree walk that re-resolves the keyframe's {ThemeResource} via RefreshValue
+		// against its pinned system dictionary), not a visual-state re-entry. The Light-pinned subtree must
+		// keep the Blue (Light) override across an app Dark->Light->Dark round-trip. Uno-only: WinUI cannot
+		// switch the application theme at runtime.
+		[TestMethod]
+		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		public async Task When_App_Override_Checked_Survives_Application_Theme_Change()
+		{
+			var originalTheme = Application.Current.RequestedTheme;
+			var wasExplicit = Application.Current.IsThemeSetExplicitly;
+			var overrides = new CheckBoxReproOverrides();
+			Application.Current.Resources.MergedDictionaries.Add(overrides);
+			try
+			{
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var lightRoot = new Border { RequestedTheme = ElementTheme.Light };
+				var checkBox = new CheckBox { IsChecked = true, MinWidth = 0 };
+				lightRoot.Child = checkBox;
+
+				await UITestHelper.Load(lightRoot);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var box = checkBox.FindVisualChildByName("NormalRectangle") as FrameworkElement;
+				Assert.IsNotNull(box, "NormalRectangle template part not found.");
+
+				var initial = await UITestHelper.ScreenShot(checkBox);
+				ImageAssert.HasColorAtChild(initial, box, box.ActualWidth / 2, box.ActualHeight / 2, Colors.Blue, tolerance: 40);
+
+				// Drive real application theme changes; each walks the tree and re-resolves the Light-pinned
+				// subtree's keyframe ThemeResource via RefreshValue.
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
+				await TestServices.WindowHelper.WaitForIdle();
+				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var after = await UITestHelper.ScreenShot(checkBox);
+				// Light-pinned subtree => Blue override regardless of the application theme.
+				ImageAssert.HasColorAtChild(after, box, box.ActualWidth / 2, box.ActualHeight / 2, Colors.Blue, tolerance: 40);
+			}
+			finally
+			{
+				if (wasExplicit)
+				{
+					Application.Current.SetExplicitRequestedTheme(originalTheme);
+				}
+				else
+				{
+					Application.Current.SetExplicitRequestedTheme(null);
+				}
+
+				Application.Current.Resources.MergedDictionaries.Remove(overrides);
+			}
+		}
+
 		private static async Task<Button> NavigateAndGetFlatButton(Frame frame)
 		{
 			frame.Navigate(typeof(FlatButtonNavReproPage));

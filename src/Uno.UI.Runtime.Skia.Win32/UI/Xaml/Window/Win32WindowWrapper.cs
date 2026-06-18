@@ -258,7 +258,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
-				OnWmActivate(wParam);
+				OnWmActivate(wParam, lParam);
 				return new LRESULT(0);
 			case PInvoke.WM_CLOSE:
 				if (OnWmClose())
@@ -359,6 +359,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
+				if (msg == PInvoke.WM_POINTERDOWN)
+				{
+					// Reclaim Win32 keyboard focus from any hosted native child (e.g. WebView2).
+					// Clicking a Skia-rendered element does not automatically transfer Win32 focus
+					// away from a cross-process child HWND; without this call, keyboard input keeps
+					// going to WebView2's renderer even after Uno's logical focus has moved.
+					// SetFocus is a no-op when _hwnd already has focus.
+					PInvoke.SetFocus(_hwnd);
+				}
 				OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
@@ -509,7 +518,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return false;
 	}
 
-	private void OnWmActivate(WPARAM wParam)
+	private void OnWmActivate(WPARAM wParam, LPARAM lParam)
 	{
 		switch ((uint)Win32Helper.LOWORD(wParam))
 		{
@@ -524,6 +533,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_INACTIVE:
+				// lParam is the HWND being activated. If it's a descendant of our own window
+				// (e.g. a hosted WebView2 child), the app hasn't truly lost focus to another app.
+				var activatedHwnd = new HWND(lParam.Value);
+				if (activatedHwnd != HWND.Null && PInvoke.IsChild(_hwnd, activatedHwnd))
+				{
+					break;
+				}
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
 				ActivationState = CoreWindowActivationState.Deactivated;
 				break;
@@ -876,5 +892,57 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
 			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
 		}
+	}
+
+	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
+	{
+		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
+		{
+			if (backdrop is not null)
+			{
+				this.LogWarn()?.Warn($"System backdrops on Win32 currently require Windows 11 build 22621 or later. '{backdrop.GetType().Name}' was ignored.");
+			}
+
+			return;
+		}
+
+		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
+		{
+			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
+			return;
+		}
+
+		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
+		{
+			null
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
+			Microsoft.UI.Xaml.Media.MicaBackdrop { Kind: Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt }
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TABBEDWINDOW,
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_MAINWINDOW,
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TRANSIENTWINDOW,
+			_ => DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
+		};
+
+		var hResult = PInvoke.DwmSetWindowAttribute(
+			_hwnd,
+			DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE,
+			&backdropType,
+			(uint)sizeof(DWM_SYSTEMBACKDROP_TYPE));
+
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"Failed to set system backdrop: {Win32Helper.GetErrorMessage(hResult)}");
+		}
+
+		// DWMWA_SYSTEMBACKDROP_TYPE only makes Mica/Acrylic appear under the non-client area unless the
+		// DWM frame is also extended into the client area. Let the presenter recompute the extension:
+		// when a backdrop is active its ApplyFrameExtension extends the frame across the whole client
+		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
+		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
+		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateClientAreaExtension();
 	}
 }

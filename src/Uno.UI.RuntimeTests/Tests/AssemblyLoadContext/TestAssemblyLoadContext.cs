@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Uno.Foundation.Logging;
@@ -14,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 /// while letting Uno framework / Microsoft.UI / Windows / Microsoft.Extensions / SkiaSharp
 /// resolve from the default ALC (shared).
 /// </summary>
+[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
 internal class TestAssemblyLoadContext : System.Runtime.Loader.AssemblyLoadContext
 {
 	private readonly string _basePath;

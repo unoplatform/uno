@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 
 namespace Uno.UI.RemoteControl.Helpers;
 
+[UnconditionalSuppressMessage("Trimming", "IL2045", Justification = "This helper is only used in Remote Control, which is not supported in trimming scenarios.")]
 internal static class ApplicationInfoHelper
 {
 	/// <summary>

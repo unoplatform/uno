@@ -76,10 +76,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private NSIndexPath _lastMaterializedItem = NSIndexPath.FromRowSection(0, 0);
 
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		/// <summary>
 		/// Is the UICollectionView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
 		private bool _isInAnimatedScroll;
+#endif
 		#endregion
 
 		public ListViewBaseSource()
@@ -456,6 +458,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return supplementaryView;
 		}
 
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		internal void SetIsAnimatedScrolling() => _isInAnimatedScroll = true;
 
 		public override void Scrolled(UIScrollView scrollView)
@@ -513,7 +516,9 @@ namespace Microsoft.UI.Xaml.Controls
 				Owner.ContentOffset.Clamp(CGPoint.Empty, Owner.UpperScrollLimit);
 			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
+#endif
 
+#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void WillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
 		{
 			// If snap points are enabled, override the target offset with the calculated snap point.
@@ -523,6 +528,7 @@ namespace Microsoft.UI.Xaml.Controls
 				targetContentOffset = snapTo.Value;
 			}
 		}
+#endif
 
 		#endregion
 
