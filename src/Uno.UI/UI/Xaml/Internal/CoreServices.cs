@@ -18,8 +18,14 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core
 {
-	internal class CoreServices
+	internal partial class CoreServices
 	{
+		/// <summary>
+		/// Whether the singleton has been created — guards ambient-theme reads from
+		/// contexts where core UI services may not exist yet (early resource loads, unit tests).
+		/// </summary>
+		internal static bool HasInstance => _instance.IsValueCreated;
+
 		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>(() => new CoreServices());
 
 		private VisualTree? _mainVisualTree;
@@ -123,6 +129,21 @@ namespace Uno.UI.Xaml.Core
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
+
+		private FrameworkTheming? _theming;
+
+		/// <summary>
+		/// The app/system theme state machine. Analog of CCoreServices::m_spTheming (corep.h:2205-2206),
+		/// created with a SystemThemingInterop and a callback to CCoreServices::NotifyThemeChange
+		/// (xcpcore.cpp:1202-1205); accessor analog: CCoreServices::GetFrameworkTheming (corep.h:1414-1417).
+		/// </summary>
+		internal FrameworkTheming Theming => _theming ??= new FrameworkTheming(new SystemThemingInterop(), NotifyThemeChange);
+
+		/// <summary>
+		/// Per-walk theme resource lookup cache. Analog of CCoreServices::m_themeWalkResourceCache
+		/// (activated around theme walks via BeginCachingThemeResources, xcpcore.cpp:8015).
+		/// </summary>
+		internal Microsoft.UI.Xaml.ThemeWalkResourceCache ThemeWalkResourceCache { get; } = new();
 
 		/// <summary>
 		/// Provides the content root coordinator.

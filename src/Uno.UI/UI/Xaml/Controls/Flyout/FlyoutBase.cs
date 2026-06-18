@@ -50,8 +50,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool _isLightDismissEnabled = true;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
-		// MUX Reference: FlyoutBase_partial.h m_isFlyoutPresenterRequestedThemeOverridden
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// MUX Reference: FlyoutBase_partial.h:359 — m_isFlyoutPresenterRequestedThemeOverridden.
+		// Element-level theme forwarding is a Skia/WASM-only feature (native flyouts follow the
+		// application/OS theme), so this flag is gated alongside ForwardThemeToPresenter.
 		private bool m_isFlyoutPresenterRequestedThemeOverridden;
+#endif
 
 		private bool m_hasPlacementOverride;
 		private FlyoutPlacementMode m_placementOverride;
@@ -382,7 +386,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			get => _targetWeakRef?.IsAlive == true ? _targetWeakRef.Target as FrameworkElement : null;
 			private set
 			{
-				// MUX Reference: FlyoutBase_partial.cpp SetPlacementTarget (lines 2978-3006)
+				// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 2973-3008)
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
@@ -397,7 +401,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		// MUX Reference: FlyoutBase_partial.cpp lines 3001-3006
+		// Hook up an event handler that will forward any theme changes to the flyout.
+		// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 3000-3005)
 		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
 		{
 			ForwardThemeToPresenter();
@@ -751,56 +756,72 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ForwardThemeToPresenter();
 		}
 
-		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592)
-		// Walks up from placement target to find the nearest non-Default RequestedTheme
-		// and applies it to the presenter and popup, ensuring flyout content matches
-		// the theme of the subtree it was opened from.
+		// MUX Reference: FlyoutBase_Partial.cpp FlyoutBase::ForwardThemeToPresenter (lines 1534-1592).
+		// Forwards the placement target's theme to the presenter and popup so the flyout matches the region
+		// it was opened from. Element-level theme forwarding is Skia/WASM-only; native targets support
+		// OS + application theme, so on native this is a no-op and the flyout follows the app/OS theme.
 		private void ForwardThemeToPresenter()
 		{
-			if (_popup?.Child is not Control presenter || Target is not { } target)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			if (_popup?.Child is not Control presenter)
 			{
 				return;
 			}
 
-			// Only override if presenter's RequestedTheme hasn't been explicitly set,
-			// or was previously overridden by us.
-			var presenterTheme = presenter.RequestedTheme;
-			var isDefault = presenterTheme == ElementTheme.Default;
-			if (!isDefault && !m_isFlyoutPresenterRequestedThemeOverridden)
-			{
-				return;
-			}
+			// Ensure the Flyout matches the theme of its placement target.
+			var requestedThemeProperty = FrameworkElement.RequestedThemeProperty;
 
-			// Walk up from placement target to find nearest non-Default RequestedTheme
-			var requestedTheme = ElementTheme.Default;
-			DependencyObject current = target;
-			while (current is FrameworkElement currentFe)
+			// We'll only override the requested theme on the presenter if its value hasn't been explicitly set.
+			// Otherwise, we'll abide by its existing value.
+			if (presenter.GetCurrentHighestValuePrecedence(requestedThemeProperty) == DependencyPropertyValuePrecedences.DefaultValue ||
+				m_isFlyoutPresenterRequestedThemeOverridden)
 			{
-				requestedTheme = currentFe.RequestedTheme;
-				if (requestedTheme != ElementTheme.Default)
+				var currentFlyoutPresenterTheme = presenter.RequestedTheme;
+				var requestedTheme = ElementTheme.Default;
+
+				// Walk up the tree from the placement target until we find an element with a RequestedTheme.
+				DependencyObject spCurrent = Target;
+				while (spCurrent is not null)
 				{
-					break;
+					var spCurrentAsFE = spCurrent as FrameworkElement;
+
+					requestedTheme = spCurrentAsFE?.RequestedTheme ?? ElementTheme.Default;
+
+					if (requestedTheme != ElementTheme.Default)
+					{
+						break;
+					}
+
+					var spParent = VisualTreeHelper.GetParent(spCurrent);
+					// Uno: an open Popup's Child is visually hosted in the uno-internal PopupPanel under
+					// PopupRoot — WinUI parents Popup.Child directly to PopupRoot — so WinUI's
+					// "parent is PopupRoot" check maps to the PopupPanel (PopupRoot kept for safety).
+					if (spParent is PopupPanel or PopupRoot)
+					{
+						// If the target is in a Popup and the Popup is in the Visual Tree, we want to inherit the theme
+						// from that Popup's parent. Otherwise we will get the App's theme, which might not be what
+						// is expected.
+						spParent = spCurrentAsFE?.Parent;
+					}
+
+					spCurrent = spParent;
 				}
 
-				var parent = VisualTreeHelper.GetParent(current);
-				if (parent is PopupRoot)
+				if (requestedTheme != currentFlyoutPresenterTheme)
 				{
-					// If the target is in a Popup's visual tree, skip PopupRoot
-					// and use the logical parent instead (the Popup's owner).
-					parent = currentFe.Parent;
+					presenter.RequestedTheme = requestedTheme;
+					m_isFlyoutPresenterRequestedThemeOverridden = true;
 				}
 
-				current = parent;
+				// Also set the popup's theme. If there is a SystemBackdrop on the menu, it'll be watching the theme on the
+				// popup itself rather than the presenter set as the popup's child.
+				_popup.RequestedTheme = requestedTheme;
 			}
-
-			if (requestedTheme != presenterTheme)
-			{
-				presenter.RequestedTheme = requestedTheme;
-				m_isFlyoutPresenterRequestedThemeOverridden = true;
-			}
-
-			// Also set the popup's theme for SystemBackdrop support.
-			_popup.RequestedTheme = requestedTheme;
+#else
+			// Native: OS + application theme only. We intentionally do not forward any element-level theme;
+			// the presenter keeps its inherited theme, so the flyout content follows the application/OS theme
+			// via the normal {ThemeResource} resolution and the Popup.UpdateThemeBindings propagation path.
+#endif
 		}
 
 		private protected virtual void OnOpened() { }

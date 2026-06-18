@@ -64,50 +64,40 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		/// <summary>
-		/// Internal theme state for this element. Matches WinUI's m_theme field in CDependencyObject.
-		/// </summary>
-		private Theme _theme = Theme.None;
-
-		// WinUI stores fIsProcessingEnterLeave (bit 15) and fIsProcessingThemeWalk (bit 16)
-		// in a DependencyObjectBitFields uint on CDependencyObject (corep.h:224-348).
-		[Flags]
-		private enum UIElementFlag : uint
-		{
-			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
-			IsProcessingThemeWalk = 1 << 16,  // WinUI CDependencyObject bit 16
-		}
-
-		private UIElementFlag _uiElementFlags;
 
 		/// <summary>
 		/// Gets the current theme value for this element.
 		/// </summary>
-		internal Theme GetTheme() => _theme;
+		/// <remarks>Thin forwarder to <see cref="DependencyObjectStore"/>, where the per-object theme
+		/// lives for every DependencyObject (WinUI: CDependencyObject::GetTheme, CDependencyObject.h:1648).</remarks>
+		internal Theme GetTheme() => ((IDependencyObjectStoreProvider)this).Store.GetTheme();
 
 		/// <summary>
 		/// Sets the theme value for this element.
 		/// </summary>
-		internal void SetTheme(Theme theme) => _theme = theme;
+		internal void SetTheme(Theme theme) => ((IDependencyObjectStoreProvider)this).Store.SetTheme(theme);
 
 		/// <summary>
 		/// Gets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal bool IsProcessingThemeWalk => (_uiElementFlags & UIElementFlag.IsProcessingThemeWalk) != 0;
+		internal bool IsProcessingThemeWalk => ((IDependencyObjectStoreProvider)this).Store.IsProcessingThemeWalk;
 
 		/// <summary>
 		/// Sets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value)
+		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
+
+		/// <summary>
+		/// Notifies this element and its subtree that the theme has changed.
+		/// </summary>
+		/// <remarks>Thin forwarder — the walk is a CDependencyObject mechanism
+		/// (Theming.cpp:110-157) hosted on <see cref="DependencyObjectStore"/>. Element-level
+		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
+		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
 		{
-			if (value)
-			{
-				_uiElementFlags |= UIElementFlag.IsProcessingThemeWalk;
-			}
-			else
-			{
-				_uiElementFlags &= ~UIElementFlag.IsProcessingThemeWalk;
-			}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
+#endif
 		}
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;

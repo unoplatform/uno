@@ -93,10 +93,6 @@ namespace UnitTestsApp
 				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialWidth,
 				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialHeight));
 
-#if !NETFX_CORE
-			//Clear custom theme
-			Uno.UI.ApplicationHelper.RequestedCustomTheme = null;
-#endif
 
 			return app;
 		}

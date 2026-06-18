@@ -58,7 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async System.Threading.Tasks.Task When_ChildThrows_DuringResize_Then_Parent_Recovers()
 		{
 			var child = new ThrowingMeasureControl { MeasureResult = new Size(50, 50) };

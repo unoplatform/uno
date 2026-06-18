@@ -242,29 +242,27 @@ namespace Microsoft.UI.Xaml
 			var targetValues = (state, transition: FindTransition(currentValues.state?.Name, state?.Name));
 
 			// As accessing to VisualState and VisualTransition properties (Storyboard and Setters) may trigger the materialization of the VisualState,
-			// we ensure that this materialization occurs only in the right resource scope AND theme context.
+			// we ensure that this materialization occurs only in the right resource scope.
 			// Note: the "current" should have already been materialized.
 			//
-			// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
-			// uses the global theme stack to select the correct Light/Dark sub-dictionary.
+			// VisualState Storyboards/Setters materialized here resolve {ThemeResource} against the
+			// element's own theme via ResolveOwnerTheme.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			var needsMaterializationThemePush = false;
-			if (element is FrameworkElement materializationFe)
-			{
-				var effectiveTheme = materializationFe.GetTheme();
-				if (effectiveTheme != Theme.None)
-				{
-					var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
-					ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-					needsMaterializationThemePush = true;
-				}
-			}
-#endif
-
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
+
+				// Scope the owner's effective theme so a lazy-materialized VisualState's keyframes/setters
+				// resolve the part's own theme, not the stale ambient (ResolveOwnerTheme; WinUI themes the
+				// storyboard at Enter). Skipped during a theme walk — the core slot already carries the new
+				// theme while the owner's per-object theme is still stale, so a re-entrant GoToState (a
+				// StateTrigger flipping mid-walk) keeps the walk theme.
+				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
+					&& provider.Store.IsProcessingThemeWalk;
+				using var themeScope = ownerIsProcessingThemeWalk
+					? default
+					: Uno.UI.Xaml.Core.CoreServices.Instance
+						.ScopeRequestedThemeForSubTree(ThemeResolution.ResolveOwnerTheme(element as DependencyObject));
 
 				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
 				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
@@ -272,13 +270,6 @@ namespace Microsoft.UI.Xaml
 			finally
 			{
 				ResourceResolver.PopScope();
-
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				if (needsMaterializationThemePush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
-#endif
 			}
 
 			// Stops running animations (transition or state's storyboard)
@@ -380,22 +371,8 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
-				// uses the global theme stack to select the correct Light/Dark sub-dictionary.
-				var needsThemePush = false;
-				if (element is FrameworkElement fe)
-				{
-					var effectiveTheme = fe.GetTheme();
-					if (effectiveTheme != Theme.None)
-					{
-						var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
-						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-						needsThemePush = true;
-					}
-				}
-#endif
-
+				// Setter.ApplyValue resolves {ThemeResource} setters against the element's own theme
+				// (ResourceResolver.ApplyThemeResource → ResolveOwnerTheme).
 				try
 				{
 					// Setter.ApplyValue can resolve some theme resources.
@@ -413,13 +390,6 @@ namespace Microsoft.UI.Xaml
 				finally
 				{
 					ResourceResolver.PopScope();
-
-#if UNO_HAS_ENHANCED_LIFECYCLE
-					if (needsThemePush)
-					{
-						ResourceDictionary.PopRequestedThemeForSubTree();
-					}
-#endif
 				}
 
 			}

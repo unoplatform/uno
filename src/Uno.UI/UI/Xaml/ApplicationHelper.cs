@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI;
 
@@ -10,31 +11,30 @@ public class ApplicationHelper
 	private static string _requestedCustomTheme;
 
 	/// <summary>
-	/// This is a custom theme that can be used in ThemeDictionaries
+	/// Obsolete and now a no-op. The app-level custom-theme axis has been removed to align with WinUI,
+	/// which has no custom-theme-name concept — the application theme is strictly Light or Dark.
 	/// </summary>
 	/// <remarks>
-	/// When the custom theme key is not found in a theme dictionary, it will fallback to
-	/// Application.RequestedTheme (Dark/Light)
+	/// To provide a custom/brand palette, merge a <see cref="ResourceDictionary"/> that overrides specific
+	/// brush/color keys on top of the standard Light/Dark theme dictionaries; to switch between the standard
+	/// themes, set <see cref="Application.RequestedTheme"/>.
 	/// </remarks>
+	[Obsolete("RequestedCustomTheme is now a no-op (the custom-theme axis has no WinUI equivalent). Provide a custom palette via merged ResourceDictionaries and use Application.RequestedTheme to switch themes.")]
 	public static string RequestedCustomTheme
 	{
 		get => _requestedCustomTheme;
+		// Retained for source compatibility (the value round-trips) but no longer selects a theme.
 		set
 		{
-			_requestedCustomTheme = value;
-			if (_requestedCustomTheme != null)
+			if (!string.IsNullOrEmpty(value) && typeof(ApplicationHelper).Log().IsEnabled(LogLevel.Warning))
 			{
-				if (_requestedCustomTheme.Equals("Dark"))
-				{
-					Application.Current.RequestedTheme = ApplicationTheme.Dark;
-				}
-				else if (_requestedCustomTheme.Equals("Light"))
-				{
-					Application.Current.RequestedTheme = ApplicationTheme.Light;
-				}
+				typeof(ApplicationHelper).Log().LogWarning(
+					$"RequestedCustomTheme is no longer supported and \"{value}\" will not select a theme. " +
+					"Provide a custom palette via merged ResourceDictionaries that override specific brush/color " +
+					"keys on top of the Light/Dark theme dictionaries, and use Application.RequestedTheme to switch themes.");
 			}
 
-			Application.UpdateRequestedThemesForResources();
+			_requestedCustomTheme = value;
 		}
 	}
 

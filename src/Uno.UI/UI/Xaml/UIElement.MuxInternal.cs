@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml
 #endif
 
 #if !__CROSSRUNTIME__
+		// Non-enhanced-lifecycle flavors (unit tests, native Android/iOS) have no live-tree tracking;
+		// constant false means theme references resolve via the parse-time pinned dictionary.
+		internal bool IsActiveInVisualTree => false;
+
 		internal void RemoveChild(UIElement viewToRemove) => VisualTreeHelper.RemoveChild(this, viewToRemove);
 
 		internal void AddChild(UIElement viewToAdd) => VisualTreeHelper.AddChild(this, viewToAdd);

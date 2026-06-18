@@ -156,7 +156,72 @@ partial class Application
 
 		return contentRoot.XamlRoot?.Content is { } content ? GetForInstance(content) : null;
 	}
+
+	/// <summary>
+	/// The theme to walk a content root owned by this application with. For the host (default-ALC)
+	/// app this is the shared <c>FrameworkTheming</c> theme; for a secondary-ALC app with an explicit
+	/// theme it is that theme plus the global high-contrast axis, so refreshing a secondary-owned
+	/// root never bleeds the host theme over the app's own theme (or vice versa).
+	/// </summary>
+	internal Theme GetEffectiveWalkTheme()
+		=> _isSecondaryAlcApplication && _alcRequestedTheme is { } alcTheme
+			? (alcTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light)
+				| global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
+			: global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetTheme();
 #endif
+
+	/// <summary>
+	/// The explicit <see cref="ApplicationTheme"/> of a secondary-ALC application, if set.
+	/// Secondary apps must not mutate the shared <c>FrameworkTheming</c> (single per process, owned
+	/// by the host app — WinUI's one-FrameworkTheming-per-core model, corep.h:2207). Their theme is
+	/// instead pinned as an element-level <see cref="FrameworkElement.RequestedTheme"/> on the
+	/// <c>AlcContentHost</c> boundary — the same mechanism WinUI uses to theme an island/subtree
+	/// independently of the app theme (CFrameworkElement::GetRequestedThemeOverride,
+	/// framework.cpp:3399-3418).
+	/// </summary>
+	private ApplicationTheme? _alcRequestedTheme;
+
+	/// <summary>
+	/// Whether this <see cref="Application"/> instance was created in a non-default (secondary) ALC.
+	/// </summary>
+	private readonly bool _isSecondaryAlcApplication;
+
+	/// <summary>
+	/// Sets (or clears, with <see langword="null"/>) the explicit theme of a secondary-ALC app and
+	/// re-applies the element-level pin at its content-host boundary.
+	/// </summary>
+	private void SetAlcRequestedTheme(ApplicationTheme? explicitTheme)
+	{
+		if (_alcRequestedTheme == explicitTheme)
+		{
+			return;
+		}
+
+		var previousTheme = RequestedTheme;
+		_alcRequestedTheme = explicitTheme;
+
+#if __SKIA__ || __WASM__
+		// ALC app hosting only exists on Skia and WASM (see ExitAlcApplication); on native platforms
+		// Window maps to the native window type which doesn't have the ALC partial.
+		Window.ApplyAlcRequestedTheme(this, AlcElementTheme);
+#endif
+
+		if (RequestedTheme != previousTheme)
+		{
+			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+	/// <summary>
+	/// The element-level pin corresponding to this secondary app's explicit theme
+	/// (<see cref="ElementTheme.Default"/> when the app follows the host/system theme).
+	/// </summary>
+	internal ElementTheme AlcElementTheme => _alcRequestedTheme switch
+	{
+		ApplicationTheme.Light => ElementTheme.Light,
+		ApplicationTheme.Dark => ElementTheme.Dark,
+		_ => ElementTheme.Default,
+	};
 
 	/// <summary>
 	/// Enumerates all secondary-ALC <see cref="Application"/> instances currently registered.

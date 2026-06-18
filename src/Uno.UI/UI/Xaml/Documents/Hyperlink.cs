@@ -232,63 +232,48 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			// MUX Reference: Hyperlink.cpp UpdateForegroundColor uses GetContext()->LookupThemeResource(theme, ...)
-			// to resolve resources with the element's theme. We push the containing element's theme
-			// onto the resource stack so Application.Current.Resources.TryGetValue resolves with the
-			// correct theme, especially when called from pointer events outside theme propagation.
-			var needsPush = false;
-			var containingFe = GetContainingFrameworkElement();
-			if (containingFe is not null)
-			{
-				var theme = containingFe.GetTheme();
-				if (theme != Theme.None)
-				{
-					var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
-					var currentActiveTheme = ResourceDictionary.GetActiveTheme();
-					if (!themeKey.Equals(currentActiveTheme.Key))
-					{
-						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-						needsPush = true;
-					}
-				}
-			}
-#endif
+			// MUX Reference: CHyperlink::UpdateForegroundColor — Hyperlink.cpp:590-655. State brushes
+			// resolve through CCoreServices::LookupThemeResource(theme, key) under the containing
+			// element's effective theme, preferring the Hyperlink* keys with the SystemControl*
+			// fallbacks, and apply at Animations precedence (SetAnimatedValue).
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
 
-			try
+			if (_pressedPointer is { })
 			{
-				if (_pressedPointer is { }
-					&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
+				var pressedBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPressedKey)
+					?? core.LookupThemeResource(ownerTheme, "SystemControlHighlightBaseMediumLowBrush");
+				if (pressedBrush is not null)
 				{
 					this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
 				}
-				else if (_hoveredPointer is { }
-					&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
+			}
+			else if (_hoveredPointer is { })
+			{
+				var hoveredBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPointerOverKey)
+					?? core.LookupThemeResource(ownerTheme, "SystemControlHyperlinkBaseMediumBrush");
+				if (hoveredBrush is not null)
 				{
 					this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
 				}
-				else // normal
+			}
+			else // normal
+			{
+				// this is close, although not identical, to what the WinUI source does
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				if (this.GetCurrentHighestValuePrecedence(ForegroundProperty) == DependencyPropertyValuePrecedences.Local)
 				{
-					// this is close, although not identical, to what the WinUI source does
-					this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
-					if (this.GetCurrentHighestValuePrecedence(ForegroundProperty) == DependencyPropertyValuePrecedences.Local)
-					{
-						this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
-					}
-					else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, out var defaultBrush))
+					this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
+				}
+				else
+				{
+					var defaultBrush = core.LookupThemeResource(ownerTheme, HyperlinkForeground)
+						?? core.LookupThemeResource(ownerTheme, "SystemControlHyperlinkTextBrush");
+					if (defaultBrush is not null)
 					{
 						this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
 					}
 				}
-			}
-			finally
-			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				if (needsPush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
-#endif
 			}
 		}
 

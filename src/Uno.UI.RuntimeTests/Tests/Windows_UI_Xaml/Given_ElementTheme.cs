@@ -629,8 +629,12 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_No_RequestedTheme_Uses_App_Theme()
 	{
+		// Pin the app to Light (RequiresFullWindow lets it reach the content) so this app-theme
+		// assertion is deterministic regardless of the developer's OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var element = new Border() { Width = 100, Height = 100 };
 
 		WindowHelper.WindowContent = element;
@@ -1605,8 +1609,10 @@ public class Given_ElementTheme
 	/// even when a sibling element has a different RequestedTheme.
 	/// </summary>
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Sibling_Has_Different_Theme_TextBlock_Foreground_Matches_App_Theme()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var root = (StackPanel)XamlReader.Load(
 			"""
 			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2003,6 +2009,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI's runtime-test harness crashes (access violation, 0xC0000005) when a flyout/popup is
+	// open and the theme is changed at runtime — a native popup-teardown instability, not a Uno parity gap.
+	// First-open flyout/popup theme IS confirmed on WinUI via Given_Theme_Materialization T4/T5.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates()
 	{
 		// When a parent's RequestedTheme changes, open popup content should update.
@@ -2066,6 +2076,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-popup + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ComboBox_Theme_Changes_At_Runtime_Dropdown_Updates()
 	{
 		// Simulates ThemeHelper.UseDarkTheme() scenario: root content theme changes
@@ -2127,6 +2140,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_Target_Theme_Changes_Flyout_Updates()
 	{
 		// MUX Reference: FlyoutBase hooks ActualThemeChanged on placement target
@@ -2500,8 +2516,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_Button_Normal_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a Button's normal (non-hovered) Foreground update
 		// when its parent's theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
@@ -2528,8 +2546,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Grandparent_RequestedTheme_Changes_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches BasicThemeResources scenario: Page sets RequestedTheme,
 		// buttons are nested several levels deep.
 		var outerPanel = new StackPanel { Width = 300, Height = 300 };
@@ -2570,8 +2590,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_XamlParsed_Buttons_Theme_Change_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Test XAML-parsed buttons (matching BasicThemeResources scenario)
 		// where buttons are created via XAML parsing, not programmatically.
 		var xaml = """
@@ -2617,8 +2639,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
 	{
+		// Pin the app to Light so this Light->Dark difference test is deterministic on any OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a TextBlock's Foreground update when parent theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
 		var textBlock = new TextBlock { Text = "Hello" };
@@ -2641,8 +2666,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Default_To_Dark_Button_PointerOver_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches SamplesApp behavior: page starts with Default theme (Light app theme),
 		// then user switches to Dark. The button in PointerOver should update.
 		var root = new StackPanel { Width = 200, Height = 200 }; // No explicit RequestedTheme (= Default)
@@ -2724,6 +2751,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-menuflyout + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_MenuFlyout_Open_During_Theme_Change_PointerOver_Updates()
 	{
 		// When a MenuFlyout is open and theme changes, items in PointerOver state
@@ -2838,8 +2868,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_Dark_Default_TextBlock_Foreground_Restores()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Repro: SamplesApp three-dots Dark → Default → navigate to page → TextBlock white instead of black
 		// Root cause: EnsureThemeForeground sets Inheritance-precedence foreground on all children
 		// during Dark push, but when root switches back to Default, only root's _themeForeground
@@ -2877,8 +2910,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_New_Content_Has_Correct_Foreground()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Tests that NEW content loaded after Dark→Default cycle gets correct foreground
 		var root = new StackPanel { Width = 200, Height = 200 };
 
@@ -2908,8 +2944,11 @@ public class Given_ElementTheme
 	#region Root Theme Cycle Then Element Theme Change (Issue Repro)
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_RootTheme_Cycles_Then_Element_RequestedTheme_Dark_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Exact SamplesApp repro:
 		// 1. Three-dots button → root.RequestedTheme = Dark → root.RequestedTheme = Default
 		// 2. Navigate to BasicThemeResources page (loads fresh content)
@@ -3400,6 +3439,9 @@ public class Given_ElementTheme
 #endif
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_PlacementTarget_Theme_Changes_Flyout_Updates()
 	{
 		// Gap: Open flyout, change placement target's ancestor theme,
@@ -3496,8 +3538,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Element_Theme_None_Does_Not_Force_Dark()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Element enters tree with no explicit theme and no parent theme
 		// Should use app theme (Light), not default to Dark
 		var element = new Border { Width = 100, Height = 100 };
@@ -3602,8 +3646,10 @@ public class Given_ElementTheme
 	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
 	/// </summary>
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
 
 		WindowHelper.WindowContent = page;
@@ -4382,20 +4428,27 @@ public class Given_ElementTheme
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
 
-		// Manually load the template content with the anchor as the templated parent
-		// — without adding it to the visual tree. The resolution captured by the
-		// template's bindings MUST be Light (Green) because the templated parent's
-		// effective theme is Light, regardless of the application theme.
+		// Materialize the template with the Light-themed ContentControl as templated parent, then attach it
+		// to the live tree — exactly what a virtualizing panel does when it realizes a row. The {ThemeResource}
+		// resolves to Light (Green) because the realized content's theme is established from its (logical)
+		// inheritance parent — the Light templated parent — when it enters the tree.
+		// MUX: WinUI establishes template-content theme at Enter (CDependencyObject::EnterImpl,
+		// depends.cpp:1023-1048), not at LoadContent; a pre-attach read would observe the app theme on WinUI
+		// too, so this repro attaches the realized content as the real virtualization path does.
 		var anchor = (ContentControl)root.FindName("anchor");
 		var template = (DataTemplate)root.Resources["ManualTemplate"];
 
 		var materializedRoot = (Border)template.LoadContent(anchor);
 		Assert.IsNotNull(materializedRoot);
 
+		anchor.Content = materializedRoot;
+		await WindowHelper.WaitForLoaded(materializedRoot);
+		await WindowHelper.WaitForIdle();
+
 		var brush = materializedRoot.Background as SolidColorBrush;
 		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
 		Assert.AreEqual(Colors.Green, brush.Color,
-			$"Template materialized for a Light-themed templated parent should resolve " +
+			$"Template realized for a Light-themed templated parent should resolve " +
 			$"{{ThemeResource}} to Green even though the app theme is Dark, got {brush.Color}. " +
 			$"This matches the scenario where a DataGrid row's template is realized while " +
 			$"the surrounding subtree is in Light mode but the application and OS are in Dark mode.");

@@ -2164,30 +2164,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-		// ---------------------------------------------------------------------------
-		// {ThemeResource} inheritance for popup-hosted (Flyout) content — kahua #475.
-		//
-		// Verifies that a {ThemeResource} used inside Flyout (popup-hosted) content
-		// resolves against the content's own inherited ActualTheme — not against the
-		// ambient/application theme.
-		//
-		// Flyout content is reparented into a separate PopupRoot visual-tree branch. When
-		// the placement target sits inside an element-level theme boundary (or under an
-		// application theme) that differs from the ambient theme, the popup content still
-		// inherits the target's theme. WinUI resolves a theme-keyed {ThemeResource} in that
-		// content against the inherited theme; Uno regresses by resolving it against the
-		// ambient/global active theme, so the content gets the wrong theme's value.
-		//
-		// The scenario is reproduced deterministically — without changing the OS theme —
-		// using nested element-level theme boundaries: an OUTER RequestedTheme=Dark boundary
-		// containing an INNER RequestedTheme=Light boundary that hosts the button. A flyout
-		// opened from the inner-Light button has ActualTheme == Light, so its theme-keyed
-		// {ThemeResource} must resolve to the Light value (Green). On Uno it resolves to the
-		// outer Dark value (Red) instead.
-		//
-		// Runs identically on Skia Desktop and native WinUI; the assertions encode the
-		// WinUI-correct behavior.
-		// ---------------------------------------------------------------------------
+		// {ThemeResource} inheritance for popup-hosted (Flyout) content — kahua #475. Flyout content
+		// reparented into the PopupRoot must still inherit the placement target's theme. Nested boundaries
+		// (OUTER Dark holding an INNER Light button) make the flyout ActualTheme Light, so its theme-keyed
+		// {ThemeResource} must resolve Light (Green); Uno regressed to the outer Dark (Red). Runs identically
+		// on Skia Desktop and native WinUI.
 		private const string ThemeResourceInheritanceRootXaml =
 			"""
 			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2235,6 +2216,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/475")]
 		public async Task When_Flyout_Opened_From_Inner_Light_Boundary_Resolves_Light_ThemeResource()
 		{
+#if HAS_UNO
+			// Pin the ambient OS theme to Dark so the leak reproduces deterministically regardless of the
+			// developer's OS theme (the application follows the system theme since it is not explicitly themed).
+			// On WinUI this override is compiled out; the explicit outer-Dark / inner-Light element boundary
+			// makes the flyout content Light there regardless of the OS theme.
+			using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+			await TestServices.WindowHelper.WaitForIdle();
+#endif
+
 			var root = (Border)XamlReader.Load(ThemeResourceInheritanceRootXaml);
 
 			TestServices.WindowHelper.WindowContent = root;

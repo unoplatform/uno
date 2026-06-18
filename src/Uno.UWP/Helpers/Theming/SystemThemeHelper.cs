@@ -15,11 +15,61 @@ internal static partial class SystemThemeHelper
 	private static EventHandler? _systemThemeChanged;
 	private static bool _changesObserved;
 	private static SystemTheme? _lastSystemTheme;
+	private static SystemTheme? _systemThemeOverride;
 
 	/// <summary>
-	/// Gets the current system theme.
+	/// Gets the current system theme. When <see cref="SystemThemeOverride"/> is set (for testing),
+	/// that value is reported instead of the real OS theme.
 	/// </summary>
-	internal static SystemTheme SystemTheme => _lastSystemTheme ??= GetSystemTheme();
+	/// <remarks>
+	/// <see cref="_lastSystemTheme"/> only ever caches the real OS theme; the override is applied
+	/// on top of it here, so it never poisons the cache.
+	/// </remarks>
+	internal static SystemTheme SystemTheme => _systemThemeOverride ?? (_lastSystemTheme ??= GetSystemTheme());
+
+	/// <summary>
+	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
+	/// OS/app-global dimension OR-ed onto the Light/Dark base theme (matching WinUI's
+	/// <c>FrameworkTheming::GetTheme</c>). Sourced from
+	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable, so it also
+	/// serves as the override hook for runtime tests. Defaults to <c>false</c>.
+	/// </summary>
+	internal static bool IsHighContrast => Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
+
+	/// <summary>
+	/// Test hook (analogous to <c>ScaleOverride</c>): when set, <see cref="SystemTheme"/> reports this
+	/// value instead of the real OS theme; set to <c>null</c> to restore real OS detection. Assigning
+	/// raises <see cref="SystemThemeChanged"/> when the effective theme changes, mirroring a real OS
+	/// theme change so observers (e.g. <c>Application.OnSystemThemeChanged</c>) react exactly as in
+	/// production. Enables runtime tests to validate behavior under a deterministic ambient OS theme,
+	/// and under runtime OS-theme changes, independently of the real machine theme.
+	/// </summary>
+	internal static SystemTheme? SystemThemeOverride
+	{
+		get => _systemThemeOverride;
+		set
+		{
+			if (_systemThemeOverride == value)
+			{
+				return;
+			}
+
+			_systemThemeOverride = value;
+
+			if (value is null)
+			{
+				// Restoring real OS detection: re-poll so the cache reflects any OS change
+				// that occurred while the override was active.
+				_lastSystemTheme = GetSystemTheme();
+			}
+
+			// Setting the override forces the system theme, so notify observers unconditionally — unlike
+			// RefreshSystemTheme (which gates on the cached theme for OS polling). The app's current theme
+			// can legitimately desync from the effective theme (e.g. after a test sets then restores an
+			// explicit app theme), so a conditional raise could skip and leave a stale theme (test flakiness).
+			RaiseSystemThemeChanged();
+		}
+	}
 
 	/// <summary>
 	/// Triggered when system theme changes.
@@ -77,8 +127,9 @@ internal static partial class SystemThemeHelper
 
 		_changesObserved = true;
 
-		// Cache the initial theme for future comparisons
-		_lastSystemTheme = GetSystemTheme();
+		// Seed the OS-theme cache; an active SystemThemeOverride stays authoritative because the
+		// SystemTheme getter checks it before the cache.
+		_lastSystemTheme ??= GetSystemTheme();
 
 		ObserveThemeChangesPlatform();
 
@@ -94,11 +145,14 @@ internal static partial class SystemThemeHelper
 	/// </summary>
 	internal static void RefreshSystemTheme()
 	{
-		var cachedTheme = _lastSystemTheme;
-		var currentTheme = GetSystemTheme();
-		if (cachedTheme != currentTheme)
+		var previousTheme = SystemTheme;
+
+		// Re-poll the real OS theme; while an override is active this refreshes the cache
+		// silently (the effective theme stays pinned to the override).
+		_lastSystemTheme = GetSystemTheme();
+
+		if (SystemTheme != previousTheme)
 		{
-			_lastSystemTheme = currentTheme;
 			RaiseSystemThemeChanged();
 		}
 	}

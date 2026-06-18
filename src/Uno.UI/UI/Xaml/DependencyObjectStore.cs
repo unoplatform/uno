@@ -645,6 +645,32 @@ namespace Microsoft.UI.Xaml
 					}
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
+					// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
+					// above), notify the new value of the theme that was applied to the property owner, so a
+					// DO value set on an already-themed owner carries the owner's theme.
+					//   // If this DP had an associated theme reference, clear it because a new value has been set.
+					//   ClearThemeResource(args.m_pDP);
+					//   if (m_theme != Theming::Theme::None)
+					//   {
+					//       IFC_RETURN(NotifyPropertyValueOfThemeChange(args.m_pDP, pEffectiveValue));
+					//   }
+					// The persistent-resource-binding flags are the ValueOperationFromSetValue analog (theme
+					// reference re-application is excluded, like WinUI's modified-value branch). The set-time
+					// Enter (UpdateAutoParent → EnterObjectProperty) covers logical-child properties; this
+					// covers the DO-valued properties WinUI notifies that carry no logical-child metadata
+					// (e.g. brushes). DataContext is excluded — Uno's core inherits user data through it,
+					// which WinUI's core property system never carries.
+					if (_theme != Theme.None
+						&& !isPersistentResourceBinding
+						&& !_isSettingPersistentResourceBinding
+						&& property != _dataContextProperty)
+					{
+						NotifyPropertyValueOfThemeChange(property, newValue);
+					}
+#endif
 				}
 				finally
 				{
@@ -1980,7 +2006,7 @@ namespace Microsoft.UI.Xaml
 		/// Updates the parent of the <paramref name="newValue"/> to the
 		/// <paramref name="actualInstanceAlias"/> and resets the parent of <paramref name="previousValue"/>.
 		/// </summary>
-		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
+		private void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
 		{
 			if (
 				previousValue is DependencyObject previousObject
@@ -1988,11 +2014,34 @@ namespace Microsoft.UI.Xaml
 			)
 			{
 				previousObject.SetParent(null);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// MUX Reference: CDependencyObject::LeaveEffectiveValue (PropertySystem.cpp:1355-1403,
+				// commit fc2f82117) — a DO value replaced on a live owner leaves the tree at set-time.
+				// TODO Uno: WinUI gates on pDP->IsVisualTreeProperty(); Uno's closest curated equivalent
+				// is the auto-parent (LogicalChild) set that reaches this method.
+				if (IsActive)
+				{
+					LeaveObjectProperty(previousObject, null, new Uno.UI.Xaml.LeaveParams(isLive: true));
+				}
+#endif
 			}
 
 			if (newValue is DependencyObject newObject)
 			{
 				newObject.SetParent(actualInstanceAlias);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// MUX Reference: CDependencyObject::EnterEffectiveValue (PropertySystem.cpp:1093-1161,
+				// commit fc2f82117) — a DO assigned to a visual-tree property of a live owner enters the
+				// tree at set-time (isLive = IsActive()), so it carries a theme before any of its
+				// {ThemeResource} values resolve. Dead (non-live) enters only serve namescope
+				// registration in WinUI, which Uno has not ported — skipped here.
+				if (IsActive)
+				{
+					EnterObjectProperty(newObject, null, new Uno.UI.Xaml.EnterParams(isLive: true));
+				}
+#endif
 			}
 		}
 

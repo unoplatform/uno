@@ -1,3 +1,8 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference ThemeResource.h & ThemeResource.cpp (CThemeResource), commit fc2f82117
+
 #nullable enable
 
 using System;
@@ -8,63 +13,93 @@ namespace Microsoft.UI.Xaml.Data;
 
 /// <summary>
 /// Represents a theme resource binding that pins the providing <see cref="ResourceDictionary"/>
-/// for efficient re-resolution on theme change.
+/// for efficient re-resolution on theme change. This is the Uno counterpart of WinUI's
+/// CThemeResource (ThemeResource.h/ThemeResource.cpp).
 /// </summary>
 /// <remarks>
-/// This is the Uno equivalent of WinUI's CThemeResource (ThemeResource.h/ThemeResource.cpp).
-/// Instead of re-walking the visual tree on every theme change, we store a weak reference to
-/// the specific ResourceDictionary that provided the value. On theme change, RefreshValue()
-/// re-queries that same dictionary, which automatically returns the new theme's value since
-/// its active theme sub-dictionary switched.
+/// On theme change, <see cref="RefreshValue"/> re-queries the pinned dictionary, which
+/// automatically returns the new theme's value since its active theme sub-dictionary switched.
+///
+/// NOT PORTED from CThemeResource (no Uno call path):
+/// - AddRef/Release and m_cRef — lifetime is GC-managed.
+/// - CThemeResource(CThemeResourceExtension*) — Uno has no CThemeResourceExtension peer; the
+///   parse-time {ThemeResource} flow (ResourceResolver.ApplyResource → TryStaticRetrieval)
+///   constructs this type directly. <see cref="CloneForTarget"/> covers the copy-from-existing
+///   shape that constructor serves.
+/// - GetValue(CValue*) (ThemeResource.cpp:53-61) — callers refresh and read
+///   <see cref="LastResolvedValue"/> directly (DependencyObjectStore.UpdateThemeReference).
+/// - SetInitialValueAndTargetDictionary (ThemeResource.cpp:39-51) — folded into the constructor
+///   (target dictionary + initial value are supplied at construction).
+/// - SetThemeResourceBinding (ThemeResource.cpp:171-200) — the PreserveThemeResourceExtension /
+///   Style-Setter dispatch lives in Uno's Setter/Style application
+///   (ResourceResolver.ApplyThemeResource); the plain branch is
+///   DependencyObjectStore.SetThemeResourceBinding (Theming.cpp:349-400 port).
+/// - static LookupResource (ThemeResource.cpp:202-256) — the parse-time resolve-and-pin lives in
+///   ResourceResolver.ApplyResource/TryStaticRetrieval.
+/// - m_themeWalkResourceCache — Uno passes the walk cache as a parameter to
+///   <see cref="RefreshValue"/> instead of capturing it per-reference.
 /// </remarks>
 internal sealed class ThemeResourceReference
 {
-	private WeakReference<ResourceDictionary>? _targetDictionary;
+	// MUX Reference: CThemeResource::m_isValueFromInitialTheme (ThemeResource.h:74).
+	// "Was the last resolved value from the app's initial theme?" — maintained by
+	// SetLastResolvedValue, consumed by the UpdateThemeReference refresh gate (Theming.cpp:340).
+	internal bool IsValueFromInitialTheme { get; private set; } = true;
 
 	/// <summary>
 	/// The resource key to look up in the pinned dictionary.
 	/// </summary>
+	/// <remarks>MUX Reference: CThemeResource::m_strResourceKey (ThemeResource.h:75).</remarks>
 	public SpecializedResourceDictionary.ResourceKey ResourceKey { get; }
 
-	/// <summary>
-	/// The last resolved value. Updated on theme change via RefreshValue().
-	/// If the pinned dictionary is dead and fallback also fails, this cached value is returned
-	/// (matching WinUI's CThemeResource::m_lastResolvedThemeValue behavior).
-	/// </summary>
-	public object? LastResolvedValue { get; internal set; }
+	// Last resolved theme value. If no theme switch has happened, this will be the initial theme value resolved during parse.
+	/// <remarks>
+	/// MUX Reference: CThemeResource::m_lastResolvedThemeValue (ThemeResource.h:82). If the pinned
+	/// dictionary is dead and fallback also fails, this cached value is returned.
+	/// </remarks>
+	public object? LastResolvedValue { get; private set; }
+
+	// ThemeDictionaries from which theme value can be obtained
+	// Use WeakRef to avoid cycles between theme resources and their dictionary.
+	/// <remarks>MUX Reference: CThemeResource::m_pTargetDictionaryWeakRef (ThemeResource.h:86).</remarks>
+	private WeakReference<ResourceDictionary>? _targetDictionary;
 
 	/// <summary>
 	/// Whether this reference has been resolved at least once.
 	/// Distinguishes "not yet resolved" (deferred) from "resolved to null" (e.g. x:Null).
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: WinUI uses CValue type system — valueAny means "unset/unresolved",
-	/// valueNull means "resolved to null". In C# both map to null, so we track this explicitly.
-	/// See CThemeResource::SetLastResolvedValue and CValue::IsUnset() in CValue.h.
+	/// Uno-specific: WinUI uses the CValue type system — valueAny means "unset/unresolved",
+	/// valueNull means "resolved to null". In C# both map to null, so we track this explicitly
+	/// (the CValue::IsUnset() analog, see SetLastResolvedValue).
 	/// </remarks>
-	internal bool IsResolved { get; set; }
+	internal bool IsResolved { get; private set; }
 
 	/// <summary>
-	/// Assembly parse context for fallback resolution when the pinned dictionary is dead.
+	/// Uno-specific: assembly parse context for fallback resolution when the pinned dictionary is dead.
 	/// </summary>
 	public object? ParseContext { get; }
 
 	/// <summary>
-	/// The resource update reason flags.
+	/// Uno-specific: the resource update reason flags.
 	/// </summary>
 	public ResourceUpdateReason UpdateReason { get; }
 
 	/// <summary>
-	/// The precedence at which this theme resource is set on the target property.
+	/// Uno-specific: the precedence at which this theme resource is set on the target property.
+	/// WinUI threads the equivalent BaseValueSource through SetThemeResourceBinding instead.
 	/// </summary>
 	public DependencyPropertyValuePrecedences Precedence { get; }
 
 	/// <summary>
-	/// The binding path for VisualState Setters that target via Setter.Target path.
+	/// Uno-specific: the binding path for VisualState Setters that target via Setter.Target path.
 	/// Null for direct property bindings.
 	/// </summary>
 	public BindingPath? SetterBindingPath { get; }
 
+	// MUX Reference: CThemeResource::CThemeResource(ThemeWalkResourceCache*) +
+	// SetInitialValueAndTargetDictionary (ThemeResource.cpp:32-51): construct with the key, pin the
+	// providing dictionary, and store the initially resolved value.
 	public ThemeResourceReference(
 		SpecializedResourceDictionary.ResourceKey resourceKey,
 		ResourceDictionary? targetDictionary,
@@ -91,288 +126,107 @@ internal sealed class ThemeResourceReference
 	/// Re-resolves the theme resource value from the pinned dictionary only.
 	/// Used during theme change walks where the ancestor walk is handled by the caller.
 	/// </summary>
-	/// <param name="owner">The DependencyObject that owns this theme resource binding.</param>
 	/// <param name="cache">Optional per-walk cache to avoid redundant dictionary lookups.</param>
-	/// <returns>The resolved value for the current theme.</returns>
+	/// <returns>The resolved value for the ambient theme.</returns>
 	/// <remarks>
-	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp (lines 64-129)
+	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp (lines 63-129)
 	///
-	/// Looks up the key in the pinned dictionary. If the dictionary is dead (teardown),
-	/// returns LastResolvedValue. Does NOT do tree-walk — that's handled by
-	/// UpdateAllThemeReferences (matching WinUI's UpdateThemeReference which walks
-	/// ancestors before calling RefreshValue).
+	/// Looks up the key in the pinned dictionary. The Light/Dark sub-dictionary is selected by the
+	/// ambient active theme (ResourceDictionary.GetActiveBaseTheme — the core
+	/// requested-theme-for-subtree slot scoped by the caller from the owner's theme, else the app
+	/// base theme), matching CResourceDictionary::EnsureActiveThemeDictionary reading the core slot
+	/// (Resources.cpp:764-768). The same ambient theme keys the ThemeWalkResourceCache, matching
+	/// WinUI's m_subTreeTheme cache key. If the dictionary is dead (teardown), returns
+	/// LastResolvedValue. Does NOT do tree-walk — that's handled by UpdateThemeReference
+	/// (matching WinUI's UpdateThemeReference which walks ancestors before calling RefreshValue).
 	/// </remarks>
-	public object? RefreshValue(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	public object? RefreshValue(ThemeWalkResourceCache? cache = null, bool preferAppResourceOverride = false)
 	{
-		// When RefreshValue is invoked OUTSIDE an active theme walk (deferred refresh
-		// from item-container generation, re-templating, animation key-frame application,
-		// etc.) the global `_requestedThemeForSubTree` stack is empty and `GetActiveTheme()`
-		// falls back to `Themes.Active`. If the application theme differs from a subtree's
-		// element-level RequestedTheme (e.g. app=Dark while subtree=Light, or vice-versa),
-		// the pinned dictionary's TryGetValue then selects the wrong Light/Dark sub-dictionary
-		// and the brush resolves against the application theme rather than the owner's own
-		// ActualTheme. Push the owner's element-level theme so the lookup honours the owner's
-		// theme boundary; the matching pop runs in the finally block.
-		var pushedOwnerTheme = PushOwnerThemeIfDifferent(owner);
+		var theme = ResourceDictionary.GetActiveBaseTheme();
 
-		try
+		// Get value from target dictionary.
+		// If target dictionary has been released, which can occur during teardown, return
+		// last resolved value.
+		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
 		{
-			// Try pinned dictionary (fast path)
-			if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
+			// Check cache first
+			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, theme, out var cachedValue))
 			{
-				// Check cache first
-				if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
+				SetLastResolvedValue(cachedValue);
+				return cachedValue;
+			}
+
+			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
+			{
+				// MUX: Resources.cpp:668-682 (GetKeyFromThemeDictionariesNoRef) — "Always allow
+				// Application.Resources to override values found in the global ThemeDictionaries"
+				// (GetKeyOverrideFromApplicationResourcesNoRef). When this ref is pinned to a global/framework
+				// theme dictionary (a control template's {ThemeResource} pins to generic/Fluent), an app-level
+				// override of the same key must still win on re-resolution outside an ancestor walk — e.g. a
+				// storyboard keyframe re-begun on a visual-state re-entry would otherwise revert to the stock
+				// value. The caller passes preferAppResourceOverride for those framework-pinned cases (keyframes);
+				// dict.IsSystemDictionary covers Uno.UI's own generic dictionaries.
+				if ((preferAppResourceOverride || dict.IsSystemDictionary)
+					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
-					SetResolvedValue(cachedValue);
-					return cachedValue;
+					value = appOverride;
 				}
 
-				if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
-				{
-					cache?.CacheValue(dict, ResourceKey, value);
-					SetResolvedValue(value);
-					return value;
-				}
+				// Cache this value so that we can skip the resource dictionary lookup
+				// for other theme resources with the same key.
+				cache?.CacheValue(dict, ResourceKey, theme, value);
 
-				// MUX Reference: ThemeResource.cpp:96-123 — WinUI raises AG_E_PARSER_FAILED_RESOURCE_FIND
-				// when the pinned dictionary is alive but doesn't contain the key. We log a warning
-				// instead of throwing, since Uno has additional fallback paths.
-				if (typeof(ThemeResourceReference).Log().IsEnabled(LogLevel.Debug))
-				{
-					typeof(ThemeResourceReference).Log().Debug(
-						$"Theme resource '{ResourceKey.Key}' not found in pinned dictionary, falling back.");
-				}
+				// Cache the value locally for this theme resource object.
+				SetLastResolvedValue(value);
+				return value;
 			}
 
-			// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
-			if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
+			// MUX Reference: ThemeResource.cpp:95-123 — WinUI re-runs the search with the resource
+			// lookup logger and raises AG_E_PARSER_FAILED_RESOURCE_FIND when the pinned dictionary is
+			// alive but doesn't contain the key. We log a warning instead of throwing, since Uno has
+			// additional fallback paths.
+			if (typeof(ThemeResourceReference).Log().IsEnabled(LogLevel.Debug))
 			{
-				SetResolvedValue(topLevelValue);
-				return topLevelValue;
-			}
-
-			// WinUI: If target dictionary is dead, returns m_lastResolvedThemeValue
-			return LastResolvedValue;
-		}
-		finally
-		{
-			if (pushedOwnerTheme)
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
+				typeof(ThemeResourceReference).Log().Debug(
+					$"Theme resource '{ResourceKey.Key}' not found in pinned dictionary, falling back.");
 			}
 		}
-	}
 
-	// Push the owner element's stored theme onto the global subtree theme stack when it
-	// differs from the current top, so the subsequent dictionary lookup selects the owner's
-	// Light/Dark variant instead of falling back to `Themes.Active`. This matches the WinUI
-	// invariant that a ThemeResource resolves against the element's inherited ActualTheme
-	// even when refresh happens outside the theme-walk's push/pop scope. Returns true when
-	// a push occurred; the caller is responsible for popping in a finally block.
-	//
-	// If the owner has no stored theme yet (Theme.None), walks up the visual-tree parent
-	// chain to find the nearest ancestor with a stored theme. This covers the case where
-	// default-style application or template materialisation for a newly-created element
-	// runs BEFORE OnLoadingPartial has propagated themes from its ancestors — without the
-	// walk, the lookup would fall back to `Themes.Active` and resolve against the wrong
-	// Light/Dark sub-dictionary for any subtree whose root pinned its own RequestedTheme.
-	internal static bool PushOwnerThemeIfDifferent(DependencyObject? owner)
-	{
-		// During NotifyThemeChangedCore, the cascade pushes the NEW theme onto the
-		// global stack BEFORE calling UpdateThemeBindings, and the element's stored
-		// `_theme` is updated AFTERWARDS (by SetTheme at step 5). If we read the
-		// chain's _theme here, we get the OLD theme and would overwrite the correctly
-		// pushed NEW theme with the stale value — inverting the toggle by one step.
-		// Skip the push entirely whenever the owner (or any UIElement ancestor in the
-		// resolution chain) is currently inside a theme walk; the cascade's own push
-		// is authoritative in that case.
-		if (IsAnyAncestorProcessingThemeWalk(owner))
+		// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
 		{
-			return false;
+			SetLastResolvedValue(topLevelValue);
+			return topLevelValue;
 		}
 
-		var baseTheme = ResolveInheritedBaseTheme(owner);
-		if (baseTheme is not Theme.Light and not Theme.Dark)
-		{
-			return false;
-		}
-
-		var ownerThemeKey = baseTheme == Theme.Light ? "Light" : "Dark";
-		var currentTheme = ResourceDictionary.GetActiveTheme();
-		if (ownerThemeKey.Equals(currentTheme.Key, StringComparison.Ordinal))
-		{
-			return false;
-		}
-
-		ResourceDictionary.PushRequestedThemeForSubTree(ownerThemeKey);
-		return true;
-	}
-
-	private static bool IsAnyAncestorProcessingThemeWalk(DependencyObject? start)
-	{
-		var current = start;
-		var depth = 0;
-		while (current is not null && depth < 80)
-		{
-			depth++;
-			if (current is UIElement uiElement && uiElement.IsProcessingThemeWalk)
-			{
-				return true;
-			}
-
-			var next = GetThemeResolutionParent(current);
-			if (next is null)
-			{
-				break;
-			}
-
-			current = next;
-		}
-
-		return false;
-	}
-
-	private static Theme ResolveInheritedBaseTheme(DependencyObject? owner)
-	{
-		// Walk up from the owner, returning the first stored Light/Dark theme we find.
-		// Parent resolution (including the non-UIElement behaviour case) is handled by
-		// GetThemeResolutionParent.
-		var current = owner;
-		var depth = 0;
-		while (current is not null && depth < 80)
-		{
-			depth++;
-			if (current is UIElement uiElement)
-			{
-				var baseTheme = Theming.GetBaseValue(uiElement.GetTheme());
-				if (baseTheme is Theme.Light or Theme.Dark)
-				{
-					return baseTheme;
-				}
-			}
-
-			var next = GetThemeResolutionParent(current);
-			if (next is null)
-			{
-				break;
-			}
-
-			current = next;
-		}
-
-		return Theme.None;
-	}
-
-	// Resolves the next ancestor to consider when walking up the tree for theme resolution.
-	//
-	// For FrameworkElements we prefer the store parent (DependencyObjectStore.Parent), then
-	// fall back to the publicly-visible logical Parent and finally the TemplatedParent. The
-	// latter two can legitimately differ from the store parent (see
-	// FrameworkElement.LogicalParentOverride / VisualParent) and cover control-template
-	// internals that are being materialised before they are attached to their templated owner.
-	//
-	// For any other DependencyObject we follow the store parent directly. Non-UIElement
-	// DependencyObjects participate in the tree exclusively through Store.Parent: a
-	// Microsoft.Xaml.Behaviors-style behaviour added through an Interaction.Behaviors
-	// (DependencyObjectCollection) attached property has its Store.Parent wired to the host
-	// element by DependencyObjectCollection.OnAdded / DependencyObjectStore.UpdateAutoParent —
-	// the same chain that already powers {Binding} DataContext inheritance and ResourceDictionary
-	// resolution (GetResourceDictionaries walks these parents via VisualTreeHelper.GetParent,
-	// which itself resolves to Store.Parent on Skia/WASM). Following Store.Parent therefore
-	// reaches the same host element the old reflected "AssociatedObject" hop did, without taking
-	// a hard dependency on, or reflecting against, Microsoft.Xaml.Behaviors.
-	private static DependencyObject? GetThemeResolutionParent(DependencyObject current)
-	{
-		if (current is FrameworkElement fe)
-		{
-			return fe.GetParent() as DependencyObject
-				?? fe.Parent
-				?? fe.TemplatedParent as DependencyObject;
-		}
-
-		return current.GetParent() as DependencyObject;
+		// WinUI: If target dictionary is dead, returns m_lastResolvedThemeValue
+		return LastResolvedValue;
 	}
 
 	/// <summary>
-	/// Re-resolves the theme resource value with full tree-walk fallback.
-	/// Used during initial resolution and hot-reload, NOT during theme change walks.
+	/// Stores a newly resolved value, maintaining the initial-theme bookkeeping.
 	/// </summary>
-	public object? RefreshValueWithTreeWalk(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	/// <remarks>
+	/// MUX Reference: CThemeResource::SetLastResolvedValue in ThemeResource.cpp (lines 137-169).
+	/// </remarks>
+	internal void SetLastResolvedValue(object? value)
 	{
-		// See PushOwnerThemeIfDifferent docs on RefreshValue above — same reasoning applies to
-		// the tree-walk-fallback path so the dictionary lookup honours the owner's element-level theme.
-		var pushedOwnerTheme = PushOwnerThemeIfDifferent(owner);
+		// MUX: m_isValueFromInitialTheme = m_lastResolvedThemeValue.IsUnset() — the stored value is
+		// from the initial theme iff nothing had been resolved before this set (IsResolved is the
+		// CValue::IsUnset() analog, see IsResolved remarks).
+		IsValueFromInitialTheme = !IsResolved;
 
-		try
-		{
-			// 1. Try pinned dictionary (fast path)
-			if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
-			{
-				if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
-				{
-					SetResolvedValue(cachedValue);
-					return cachedValue;
-				}
-
-				if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
-				{
-					cache?.CacheValue(dict, ResourceKey, value);
-					SetResolvedValue(value);
-					return value;
-				}
-			}
-
-			// 2. Fallback: tree-walk from owner's position (handles hot-reload / re-parenting)
-			if (owner is IDependencyObjectStoreProvider provider)
-			{
-				var dictionaries = provider.Store.GetResourceDictionaries(includeAppResources: false);
-				if (dictionaries is not null)
-				{
-					foreach (var walkDict in dictionaries)
-					{
-						if (walkDict.TryGetValue(ResourceKey, out var value, out var newProvidingDict, shouldCheckSystem: false))
-						{
-							// Re-pin the new dictionary
-							_targetDictionary = new WeakReference<ResourceDictionary>(newProvidingDict);
-							cache?.CacheValue(newProvidingDict, ResourceKey, value);
-							SetResolvedValue(value);
-							return value;
-						}
-					}
-				}
-			}
-
-			// 3. Try top-level resources as last resort, pinning the providing dictionary so the
-			//    pinned-dictionary-only RefreshValue path re-resolves the (app-level) override directly
-			//    afterwards instead of reverting to a stale parse-time pin (a {ThemeResource} on a
-			//    storyboard key-frame whose template lives in a framework/control dictionary, while the
-			//    key is overridden at application level).
-			if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue, out var topLevelDict))
-			{
-				if (topLevelDict is not null)
-				{
-					_targetDictionary = new WeakReference<ResourceDictionary>(topLevelDict);
-				}
-
-				SetResolvedValue(topLevelValue);
-				return topLevelValue;
-			}
-
-			// 4. Return cached value (WinUI behavior when target dictionary is dead)
-			return LastResolvedValue;
-		}
-		finally
-		{
-			if (pushedOwnerTheme)
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
-			}
-		}
+		// TODO Uno: WinUI unwraps CDependencyObjectWrapper and CManagedObjectReference and maps
+		// CNullKeyedResource to null here (ThemeResource.cpp:142-167) — those wrappers work around
+		// core/framework parenting when inserting into a ResourceDictionary; Uno's dictionaries store
+		// CLR values directly, so no unwrapping applies.
+		LastResolvedValue = value;
+		IsResolved = true;
 	}
 
 	/// <summary>
-	/// Updates the pinned target dictionary. Used when re-pinning after hot-reload
-	/// or when the initial resolution captured a new dictionary.
+	/// Uno-specific: updates the pinned target dictionary. Used when re-pinning after hot-reload
+	/// or when the load-time tree walk captured a new providing dictionary.
 	/// </summary>
 	internal void SetTargetDictionary(ResourceDictionary? dictionary)
 	{
@@ -386,8 +240,10 @@ internal sealed class ThemeResourceReference
 	/// a Style Setter's deferred ThemeResource to a control).
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: When a Style Setter with PreserveThemeResourceExtension is applied to a control,
-	/// a new CThemeResource binding is created on the target from the Setter's stored CThemeResource.
+	/// MUX Reference: the CThemeResource(CThemeResourceExtension*) copy construction
+	/// (ThemeResource.cpp:22-30) — when a Style Setter with PreserveThemeResourceExtension is
+	/// applied to a control, a new live binding is created on the target from the Setter's stored
+	/// theme resource, sharing key, last resolved value, initial-theme flag and pinned dictionary.
 	/// </remarks>
 	internal ThemeResourceReference CloneForTarget(DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath = null)
 	{
@@ -401,14 +257,9 @@ internal sealed class ThemeResourceReference
 			precedence,
 			setterBindingPath);
 
-		// Share the same pinned dictionary
+		// Share the same pinned dictionary (and the initial-theme flag, like the C++ copy ctor).
 		clone._targetDictionary = _targetDictionary;
+		clone.IsValueFromInitialTheme = IsValueFromInitialTheme;
 		return clone;
-	}
-
-	private void SetResolvedValue(object? value)
-	{
-		LastResolvedValue = value;
-		IsResolved = true;
 	}
 }

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -25,7 +27,7 @@ public partial class FrameworkElement
 	// In Uno, we emulate this with two fields on FrameworkElement:
 	// - _themeForeground: the frozen brush from the nearest themed ancestor
 	// - _isForegroundFrozen: whether this element's foreground is frozen (theme boundary)
-	private Brush _themeForeground;
+	private Brush? _themeForeground;
 	private bool _isForegroundFrozen;
 
 	/// <summary>
@@ -59,11 +61,13 @@ public partial class FrameworkElement
 				ElementTheme.Default,
 				(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 
-	// MUX Reference framework.cpp, lines 3501-3559
+	// MUX Reference: CFrameworkElement::OnRequestedThemeChanged — framework.cpp:3501-3559
 	private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		var theme = Theme.None;
+		bool setIsSwitchingTheme = false;
+		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 
 		switch (newValue)
 		{
@@ -74,36 +78,52 @@ public partial class FrameworkElement
 				theme = Theme.Light;
 				break;
 			case ElementTheme.Default:
-				// Use parent's requested theme if this property was cleared
-				var parent = this.GetParent() as UIElement;
-				if (parent != null)
+				// Use parent's theme if cleared
+				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
 				{
-					theme = parent.GetTheme();
+					theme = parentProvider.Store.GetTheme();
 				}
-				// If there is no parent, or parent's theme has not been set,
-				// default to the application's requested theme.
 				if (theme == Theme.None)
 				{
-					theme = Theming.FromElementTheme(
-						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+					// MUX: framework.cpp:3520-3527 — fall back to the app/system base theme
+					// (FrameworkTheming::GetBaseTheme).
+					theme = core.Theming.GetBaseTheme();
 				}
-				// Unfreeze inherited properties at this element's level
+
+				// UnFreeze inherited properties
 				NotifyThemeChangedForInheritedProperties(theme, freeze: false);
 				break;
 		}
 
-		// Apply theme to this element and its subtree
-		NotifyThemeChanged(theme);
+		try
+		{
+			if (!core.IsSwitchingTheme)
+			{
+				core.IsSwitchingTheme = true;
+				setIsSwitchingTheme = true;
+			}
+
+			// Apply theme + HC to subtree
+			theme |= core.Theming.GetHighContrastTheme();
+			NotifyThemeChanged(theme);
+		}
+		finally
+		{
+			if (setIsSwitchingTheme)
+			{
+				core.IsSwitchingTheme = false;
+			}
+		}
 #else
 		SyncRootRequestedTheme();
-		if (ActualThemeChanged != null)
+		if (_actualThemeChanged != null)
 		{
 			var actualThemeChanged =
 				(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
 				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
 			if (actualThemeChanged)
 			{
-				ActualThemeChanged?.Invoke(this, null);
+				_actualThemeChanged?.Invoke(this, null!);
 			}
 		}
 #endif
@@ -137,11 +157,11 @@ public partial class FrameworkElement
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			// Get base (non-HighContrast) theme.
 			// Fall back to default (system or app) theme if the local theme isn't set.
+			// MUX: framework.cpp:3978-3989 — FrameworkTheming::GetBaseTheme() when m_theme is None.
 			var baseTheme = Theming.GetBaseValue(GetTheme());
 			if (baseTheme == Theme.None)
 			{
-				baseTheme = Theming.FromElementTheme(
-					Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+				baseTheme = Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
 			}
 			return Theming.ToElementTheme(baseTheme);
 #else
@@ -152,192 +172,221 @@ public partial class FrameworkElement
 		}
 	}
 
+	private TypedEventHandler<FrameworkElement, object>? _actualThemeChanged;
+
 	/// <summary>
 	/// Occurs when the ActualTheme property value has changed.
 	/// </summary>
-	public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
-
-	// MUX Reference framework.cpp, lines 3313-3333
-	/// <summary>
-	/// Notifies this element and its subtree that the theme has changed.
-	/// </summary>
-	internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
+	public event TypedEventHandler<FrameworkElement, object>? ActualThemeChanged
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		return;
-#else
-		// Cycle protection - prevent re-entrant theme notifications
-		if (IsProcessingThemeWalk)
+		add
 		{
-			return;
+			if (value is null)
+			{
+				return;
+			}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: CFrameworkElement::AddEventListener — framework.cpp:3996-4014:
+			// "Register to receive theme change notifications so we can raise the event
+			//  for default (system/app) theme changes when the element happens to be outside
+			//  the live tree (i.e. not included in the theme walk from root)."
+			Uno.UI.Xaml.Core.CoreServices.Instance.AddThemeChangedListener(this);
+#endif
+			_actualThemeChanged += value;
+		}
+		remove
+		{
+			if (value is null)
+			{
+				return;
+			}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: CFrameworkElement::RemoveEventListener — framework.cpp:4016-4028
+			Uno.UI.Xaml.Core.CoreServices.Instance.RemoveThemeChangedListener(this);
+#endif
+			_actualThemeChanged -= value;
+		}
+	}
+
+	//------------------------------------------------------------------------
+	//
+	//  Synopsis:
+	//      Get theme to set for this element during Theme Walk
+	//------------------------------------------------------------------------
+	// MUX Reference: CFrameworkElement::GetRequestedThemeOverride — framework.cpp:3284-3304
+	internal Theme GetRequestedThemeOverride(Theme theme)
+	{
+		var highContrastTheme = theme & Theme.HighContrastMask;
+
+		// If RequestedTheme is set, it takes precedence.
+		var requestedTheme = RequestedTheme;
+		if (requestedTheme != ElementTheme.Default)
+		{
+			if (requestedTheme == ElementTheme.Dark)
+			{
+				theme = Theme.Dark | highContrastTheme;
+			}
+			else if (requestedTheme == ElementTheme.Light)
+			{
+				theme = Theme.Light | highContrastTheme;
+			}
 		}
 
-		// MUX Reference: Theming.cpp line 128, framework.cpp lines 3269-3288
-		// Override incoming theme with element's own RequestedTheme if set.
-		// This matches WinUI's GetRequestedThemeOverride pattern where each
-		// element with explicit RequestedTheme overrides the incoming theme
-		// rather than being skipped during propagation.
+		return theme;
+	}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	//------------------------------------------------------------------------
+	//
+	//  Synopsis:
+	//      Notify element that theme has changed
+	//
+	//------------------------------------------------------------------------
+	// MUX Reference: CFrameworkElement::NotifyThemeChangedCore — framework.cpp:3313-3333
+	internal override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	{
+		// If RequestedTheme is set, freeze of theme related inherited
+		// properties at the root of the subtree, so they don't inherit from this
+		// element's parent, which may have a different theme
 		if (RequestedTheme != ElementTheme.Default)
 		{
-			theme = Theming.FromElementTheme(RequestedTheme);
+			NotifyThemeChangedForInheritedProperties(theme, freeze: true);
+		}
+		// Uno-specific gate (the foreground re-pull below emulates WinUI's TextFormatting pull
+		// system): also re-pull on forced walks so hot reload refreshes the inherited brush.
+		else if (IsEffectiveBaseThemeChanging(theme) || forceRefresh)
+		{
+			// Uno-specific: Foreground is an inherited DP in Uno (WinUI propagates it through the
+			// TextFormatting pull system, see EnsureThemeForeground), so the inherited theme
+			// foreground is re-pulled from the parent or cleared here when the effective theme
+			// changes.
+			var parent = this.GetParent() as FrameworkElement;
+			var parentFg = parent?._themeForeground;
+			if (parentFg is not null)
+			{
+				EnsureThemeForeground(parentFg);
+			}
+			else if (_themeForeground is not null)
+			{
+				_themeForeground = null;
+				_isForegroundFrozen = false;
+
+				var fgProp = GetForegroundProperty();
+				if (fgProp is not null)
+				{
+					DependencyObjectExtensions.SetValue(
+						this, fgProp, DependencyProperty.UnsetValue,
+						DependencyPropertyValuePrecedences.Inheritance);
+				}
+			}
 		}
 
-		// MUX Reference: Theming.cpp line 132
-		// Early-out if theme hasn't changed and not forcing refresh
-		if (theme == GetTheme() && !forceRefresh)
-		{
-			return;
-		}
+		// Notify base class that theme has changed
+		base.NotifyThemeChangedCore(theme, forceRefresh);
 
-		SetIsProcessingThemeWalk(true);
-		// MUX Reference: CCoreServices::NotifyThemeChange() calls
-		// BeginCachingThemeResources() before the theme walk.
-		// Reentrant-safe: nested calls (recursive child walks) get no-op guards.
-		using var cacheGuard = ThemeWalkResourceCache.Instance.BeginCachingThemeResources();
-		try
-		{
-			NotifyThemeChangedCore(theme, forceRefresh);
-		}
-		finally
-		{
-			SetIsProcessingThemeWalk(false);
-		}
-#endif
+		// Raise event if the effective theme is changing.
+		RaiseActiveThemeChangedEventIfChanging(theme);
 	}
 
-	// MUX Reference Theming.cpp CDependencyObject::NotifyThemeChanged (line 110)
-	// WinUI uses a push-process-pop pattern where each element temporarily
-	// "owns" the global theme context during its processing.
 	/// <summary>
-	/// Core implementation of theme change notification using WinUI's push-pop pattern.
+	/// Occurs when the system high-contrast state affecting this element changes.
 	/// </summary>
-	private protected virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	/// <remarks>
+	/// MUX Reference: KnownEventIndex::FrameworkElement_HighContrastChanged, raised by
+	/// CFrameworkElement::RaiseActiveThemeChangedEventIfChanging (framework.cpp:3364-3376).
+	/// Internal: the WinAppSDK does not expose this event on the public FrameworkElement surface
+	/// (no Generated stub) — it is the engine-level companion of ActualThemeChanged.
+	/// </remarks>
+	internal event TypedEventHandler<FrameworkElement, object>? HighContrastChanged;
+
+	// Called when there are default (system/app) theme changes. This enables us to notify
+	// ActualThemeChanged listeners on this element when it's outside the live tree.
+	// MUX Reference: CFrameworkElement::NotifyThemeChangedListeners — framework.cpp:3337-3344.
+	// Invoked by the CCoreServices.NotifyThemeChange walk for elements registered through the
+	// ActualThemeChanged accessors (CoreServices.AddThemeChangedListener).
+	internal void NotifyThemeChangedListeners(Theme theme)
 	{
-		// 1. Determine if theme is changing
+		if (!IsActiveInVisualTree)
+		{
+			// Raise event if the effective theme is changing.
+			RaiseActiveThemeChangedEventIfChanging(theme);
+		}
+	}
+
+	// MUX Reference: CFrameworkElement::RaiseActiveThemeChangedEventIfChanging — framework.cpp:3346-3386
+	private void RaiseActiveThemeChangedEventIfChanging(Theme theme)
+	{
+		// The actual/effective theme value on an element may change due to theme changes
+		// in several places. The local theme value starts as None, which means default,
+		// and doesn't change unless one of the following changes occurs. Though we may be
+		// notified by these changes, the actual/effective theme value may remain the same.
+		// For example, if the initial actual value is Dark by default from the system theme,
+		// then setting RequestedTheme=Dark would trigger a theme walk here but wouldn't
+		// change the actual value.
+		// Possible causes of theme change notifications:
+		//  - RequestedTheme change on this element or an ancestor.
+		//  - RequestedTheme change on application.
+		//  - System theme change.
+		//  - System high contrast change.
+
+		var theming = Uno.UI.Xaml.Core.CoreServices.Instance.Theming;
+
+		// Raise HighContrastChanged event if it's high contrast that's changing.
+		// (Both raises are posted — WinUI delivers them through the EventManager, framework.cpp:
+		// 3367/3384; confirmed async by native ResourceDictionaryBasicTests.cpp:4209-4234, so
+		// handlers observe the already-persisted new theme.)
+		if (theming.IsHighContrastChanging())
+		{
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseHighContrastChanged);
+
+			// For backwards compatibility of ActualThemeChanged, we return only if
+			// we are changing from HC to HC, or non-HC to HC. If we are changing
+			// from HC to non-HC, we want to fire ActualThemeChanged as well.
+			if (theming.HasHighContrastTheme())
+			{
+				return;
+			}
+		}
+
+		// Raise ActualThemeChanged event if effective base (non-HighContrast) theme value is changing.
+		if (IsEffectiveBaseThemeChanging(theme))
+		{
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseActualThemeChanged);
+		}
+	}
+
+	private void RaiseHighContrastChanged()
+	{
+		try
+		{
+			HighContrastChanged?.Invoke(this, null!);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("HighContrastChanged handler threw an exception", e);
+			}
+		}
+	}
+
+	// MUX: framework.cpp:3378-3382 — "Raise ActualThemeChanged event if effective base
+	// (non-HighContrast) theme value is changing": oldTheme == None ? theming->GetBaseTheme() :
+	// GetBaseValue(oldTheme), compared to the incoming base, OR a never-walked element (None) while
+	// a base (app/system) switch is in progress (FrameworkTheming::IsBaseThemeChanging). GetTheme()
+	// still holds the pre-walk theme here (persisted after the core walk, Theming.cpp:155). No force
+	// disjunct — forced walks (fForceRefresh) re-resolve values but do not raise on elements whose
+	// effective theme is unchanged.
+	private bool IsEffectiveBaseThemeChanging(Theme theme)
+	{
+		var theming = Uno.UI.Xaml.Core.CoreServices.Instance.Theming;
 		var oldTheme = GetTheme();
+		var oldBase = oldTheme == Theme.None ? theming.GetBaseTheme() : Theming.GetBaseValue(oldTheme);
 		var newBase = Theming.GetBaseValue(theme);
-
-		// MUX Reference: Theming.cpp GetBaseValue(Theme::None) returns Theme::None (0x00),
-		// which never equals Light or Dark, ensuring themeChanged is always true for
-		// elements that haven't been through a theme walk yet. This guarantees
-		// UpdateThemeBindings is called on their first walk (fixes #23177).
-		var oldBase = Theming.GetBaseValue(oldTheme);
-		bool themeChanged = oldBase != newBase || forceRefresh;
-
-		// MUX Reference: framework.cpp RaiseActiveThemeChangedEventIfChanging uses
-		// oldTheme == Theme::None ? GetBaseTheme() : GetBaseValue(oldTheme) to prevent
-		// spurious ActualThemeChanged events and foreground inheritance on first walk.
-		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
-		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
-
-		// 2. PUSH this element's theme to global context
-		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
-		// uses the global theme stack to determine which theme sub-dictionary to return.
-		// Even though ThemeResourceReference pins the target dictionary, the dictionary's
-		// TryGetValue still needs to know the active theme to select Light/Dark sub-dict.
-		var currentActiveTheme = ResourceDictionary.GetActiveTheme();
-		string themeKey;
-		bool needsPush;
-		if (newBase == Theme.None)
-		{
-			themeKey = currentActiveTheme.Key;
-			needsPush = false;
-		}
-		else
-		{
-			themeKey = newBase == Theme.Light ? "Light" : "Dark";
-			needsPush = !themeKey.Equals(currentActiveTheme.Key);
-		}
-
-		if (needsPush)
-		{
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-		}
-
-		try
-		{
-			// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
-			if (RequestedTheme != ElementTheme.Default)
-			{
-				NotifyThemeChangedForInheritedProperties(theme, freeze: true);
-			}
-			else if (effectiveThemeChanged)
-			{
-				var parent = this.GetParent() as FrameworkElement;
-				var parentFg = parent?._themeForeground;
-				if (parentFg is not null)
-				{
-					EnsureThemeForeground(parentFg);
-				}
-				else if (_themeForeground is not null)
-				{
-					_themeForeground = null;
-					_isForegroundFrozen = false;
-
-					var fgProp = GetForegroundProperty();
-					if (fgProp is not null)
-					{
-						DependencyObjectExtensions.SetValue(
-							this, fgProp, DependencyProperty.UnsetValue,
-							DependencyPropertyValuePrecedences.Inheritance);
-					}
-				}
-			}
-
-			// 4. Update theme resources via pinned-dictionary path
-			if (themeChanged)
-			{
-				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
-			}
-
-			// 5. Persist theme (MUX Reference: Theming.cpp line 155)
-			//    Done BEFORE propagating to children and raising the event so
-			//    that ActualTheme returns the new value both in this element's
-			//    and in descendants' ActualThemeChanged handlers. oldTheme was
-			//    already captured at the top of this method, UpdateThemeBindings
-			//    resolves resources from the pushed subtree context (not from
-			//    _theme), and PropagateThemeToChildren forwards the passed
-			//    `theme` parameter, so moving this earlier is safe.
-			SetTheme(theme);
-
-			// 6. Propagate to children (they may push their own context)
-			PropagateThemeToChildren(theme, forceRefresh);
-
-			// 7. Raise event LAST (MUX Reference: framework.cpp line 3317)
-			if (effectiveThemeChanged)
-			{
-				RaiseActualThemeChanged();
-			}
-		}
-		finally
-		{
-			// 8. POP the global context
-			if (needsPush)
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
-			}
-		}
-	}
-
-	// MUX Reference uielement.cpp, lines 14469-14495
-	/// <summary>
-	/// Propagates theme changes to child elements.
-	/// </summary>
-	private void PropagateThemeToChildren(Theme theme, bool forceRefresh)
-	{
-		var childCount = VisualTreeHelper.GetChildrenCount(this);
-		for (var i = 0; i < childCount; i++)
-		{
-			var child = VisualTreeHelper.GetChild(this, i);
-			if (child is FrameworkElement fe)
-			{
-				// All children participate in the theme walk.
-				// GetRequestedThemeOverride in NotifyThemeChanged will override
-				// the theme for children with explicit RequestedTheme.
-				fe.NotifyThemeChanged(theme, forceRefresh);
-			}
-		}
+		return oldBase != newBase
+			|| (oldTheme == Theme.None && theming.IsBaseThemeChanging());
 	}
 
 	// MUX Reference framework.cpp, lines 3346-3386
@@ -348,7 +397,7 @@ public partial class FrameworkElement
 	{
 		try
 		{
-			ActualThemeChanged?.Invoke(this, null);
+			_actualThemeChanged?.Invoke(this, null!);
 		}
 		catch (Exception e)
 		{
@@ -381,7 +430,7 @@ public partial class FrameworkElement
 		// MUX Reference: CTextBlock::PullInheritedTextFormatting (TextBlock.cpp line 647)
 		//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::TextBlock_Foreground)
 		//       && !m_pTextFormatting->m_freezeForeground)
-		DependencyProperty foregroundProperty = GetForegroundProperty();
+		DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 		if (foregroundProperty is null)
 		{
@@ -410,6 +459,7 @@ public partial class FrameworkElement
 		_themeForeground = parentThemeForeground;
 		this.SetValue(foregroundProperty, parentThemeForeground, DependencyPropertyValuePrecedences.Inheritance);
 	}
+#endif
 
 	// MUX Reference framework.cpp, lines 3401-3492
 	/// <summary>
@@ -436,7 +486,7 @@ public partial class FrameworkElement
 
 		if (freeze)
 		{
-			DependencyProperty foregroundProperty = GetForegroundProperty();
+			DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 			// MUX Reference framework.cpp line 3423-3429:
 			// WinUI skips the entire freeze when Foreground is set locally or by style,
@@ -456,13 +506,33 @@ public partial class FrameworkElement
 				}
 			}
 
-			// Resolve the theme's default text foreground brush
-			var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			try
+			// Resolve the theme's default text foreground brush against the element's own theme. MUX:
+			// CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
+			// foreground from the element's theme (framework.cpp:3401-3492).
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: framework.cpp:3441-3487 — the element's theme is pushed onto the core
+			// requested-theme-for-subtree slot around the CCoreServices::LookupThemeResource call and
+			// the foreground freeze; the resolution leaf reads the slot (EnsureActiveThemeDictionary,
+			// Resources.cpp:764-768).
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			var prevSlotTheme = core.GetRequestedThemeForSubTree();
+			var popSlotTheme = false;
+			if (prevSlotTheme != Theming.GetBaseValue(theme))
 			{
-				var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
-					"DefaultTextForegroundThemeBrush", null);
+				core.SetRequestedThemeForSubTree(theme);
+				popSlotTheme = true;
+			}
+#endif
+
+			// On non-enhanced targets the try below compiles out, leaving a plain scope block so the
+			// body keeps a single indentation shape across both compilations.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			try
+#endif
+			{
+				// MUX: core->LookupThemeResource(L"DefaultTextForegroundThemeBrush") under the pushed slot.
+				var brush = (Brush?)Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(
+					"DefaultTextForegroundThemeBrush");
 				if (brush is not null)
 				{
 					// Always store for child inheritance (popup content, template children)
@@ -480,10 +550,16 @@ public partial class FrameworkElement
 					}
 				}
 			}
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			finally
 			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
+				// Scope-restore the slot (framework.cpp:3487).
+				if (popSlotTheme)
+				{
+					core.SetRequestedThemeForSubTree(prevSlotTheme);
+				}
 			}
+#endif
 		}
 		else
 		{
@@ -493,7 +569,7 @@ public partial class FrameworkElement
 			_themeForeground = null;
 
 			// Clear the value we set at Inheritance precedence
-			DependencyProperty foregroundProperty = GetForegroundProperty();
+			DependencyProperty? foregroundProperty = GetForegroundProperty();
 			if (foregroundProperty is not null)
 			{
 				DependencyObjectExtensions.SetValue(
@@ -506,7 +582,7 @@ public partial class FrameworkElement
 	/// <summary>
 	/// Gets the Foreground DependencyProperty for this element, if it has one.
 	/// </summary>
-	private DependencyProperty GetForegroundProperty()
+	private DependencyProperty? GetForegroundProperty()
 	{
 		if (this is Controls.Control)
 		{
@@ -533,30 +609,24 @@ public partial class FrameworkElement
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
-	/// Clears theme foreground state when unloading from the visual tree.
-	/// Called from <see cref="OnUnloadedPartial"/> to prevent stale inherited
-	/// values from leaking across runtime tests or re-parenting scenarios.
+	/// Clears inherited theme-foreground state when unloading from the visual tree.
+	/// Called from <see cref="OnUnloadedPartial"/> to prevent a stale frozen foreground
+	/// brush from leaking to elements loaded later under the same parent.
 	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
+	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
+	/// (depends.cpp:1044-1069), ported to DependencyObjectStore.EnterImpl (DependencyObjectStore.mux.cs). So
+	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
+	/// </remarks>
 	private void ClearThemeStateOnUnloaded()
 	{
-		// Clear inherited theme foreground when leaving the tree to prevent
-		// stale values from leaking to elements loaded later in the same
-		// parent (e.g., between runtime tests). Elements with explicit
-		// RequestedTheme (_isForegroundFrozen) retain their brush because
-		// they own the theme boundary.
+		// Clear the inherited theme foreground to prevent stale values from leaking to elements loaded
+		// later under the same parent (e.g., between runtime tests). Elements with explicit RequestedTheme
+		// (_isForegroundFrozen) keep their brush; on re-Enter the correct foreground is re-pulled.
 		if (!_isForegroundFrozen)
 		{
 			_themeForeground = null;
-		}
-
-		// Clear stored theme so that when this element re-enters the tree
-		// (possibly under a different theme region), OnLoadingPartial will
-		// correctly inherit the new parent's theme. Elements with explicit
-		// RequestedTheme don't need this because OnLoadingPartial calls
-		// NotifyThemeChanged for them.
-		if (RequestedTheme == ElementTheme.Default)
-		{
-			SetTheme(Theme.None);
 		}
 	}
 #endif
@@ -567,9 +637,26 @@ public partial class FrameworkElement
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		// Pass element's ActualTheme to resource binding updates
-		TryGetResources()?.UpdateThemeBindings(updateReason);
-		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+
+		if (store.IsProcessingThemeWalk)
+		{
+			// MUX: Resources is a field-backed property in WinUI, so the theme walk notifies the
+			// dictionary per-child — CResourceDictionary::NotifyThemeChangedCore →
+			// CDOCollection::NotifyThemeChangedCore (DOCollection.cpp:1295-1325) calls
+			// NotifyThemeChanged on every value, which re-resolves its theme references under the
+			// walk's ambient slot theme. The engine path below would resolve them under this
+			// element's per-object theme instead, which is stale during the walk — it is only
+			// persisted once the walk completes (persist-after-Core, Theming.cpp:155).
+			TryGetResources()?.NotifyThemeChanged(store.WalkTheme, store.WalkForceRefresh);
+		}
+		else
+		{
+			// Pass element's ActualTheme to resource binding updates
+			TryGetResources()?.UpdateThemeBindings(updateReason);
+		}
+
+		store.UpdateResourceBindings(
 			updateReason,
 			resourceContextProvider: this);
 
@@ -577,14 +664,14 @@ public partial class FrameworkElement
 		// in NotifyThemeChangedCore when the theme actually changes
 #else
 		TryGetResources()?.UpdateThemeBindings(updateReason);
-		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+		((IDependencyObjectStoreProvider)this).Store.UpdateResourceBindings(updateReason);
 		if (updateReason == ResourceUpdateReason.ThemeResource)
 		{
-			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 			{
 				try
 				{
-					ActualThemeChanged?.Invoke(this, null);
+					_actualThemeChanged?.Invoke(this, null!);
 				}
 				catch (Exception e)
 				{

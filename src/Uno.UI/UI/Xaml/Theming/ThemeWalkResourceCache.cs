@@ -11,31 +11,37 @@ namespace Microsoft.UI.Xaml;
 /// reference the same resource key from the same dictionary during a single theme change walk.
 /// </summary>
 /// <remarks>
-/// MUX Reference: ThemeWalkResourceCache in ThemeWalkResourceCache.h
+/// MUX Reference: ThemeWalkResourceCache in ThemeWalkResourceCache.h / .cpp
 /// In WinUI, this is stored on CCoreServices (one global instance). Resources are cached
 /// during theme walks and cleared when the walk completes. Reentrant-safe: nested calls
 /// return no-op guards.
 ///
-/// WinUI cache key (ThemeWalkResourceCache.h:55):
+/// WinUI cache item (ThemeWalkResourceCache.h:55):
 ///   std::tuple&lt;CResourceDictionary*, Theming::Theme, xstring_ptr, xref::weakref_ptr&lt;CDependencyObject&gt;&gt;
-/// The active theme is part of the key because different subtrees can have different
-/// RequestedTheme pushed (element-level theming islands), so the same dict+key can
-/// legitimately resolve to different values depending on the active theme context.
+/// The first three elements are the lookup key — (dictionary, theme, resource key); the fourth is the
+/// cached value, held as a weak reference. The theme is part of the key because different subtrees can
+/// have different themes (element-level theming islands), so the same dict+key can legitimately resolve
+/// to different values depending on the theme. WinUI's theme is the BASE value (Theming::GetBaseValue),
+/// set on the cache by CCoreServices::SetRequestedThemeForSubTree → SetSubTreeTheme (xcpcore.cpp:7903-7905).
+///
+/// Uno keys on the same (Dict, Theme, Key) tuple, with the value held as a ManagedWeakReference
+/// (== xref::weakref_ptr). The one difference from WinUI: the owner's effective theme is threaded in as a
+/// method parameter rather than read from a stored m_subTreeTheme ambient, avoiding process-global mutable
+/// theme state. The cached theme is the same base value WinUI would store, so behavior is identical.
 /// </remarks>
 internal sealed class ThemeWalkResourceCache
 {
-	/// <summary>
-	/// Global singleton, matching WinUI's CCoreServices::m_themeWalkResourceCache.
-	/// Safe because theme walks are UI-thread-only and serialized.
-	/// </summary>
-	internal static ThemeWalkResourceCache Instance { get; } = new();
+	// The instance is owned by CoreServices (CCoreServices::m_themeWalkResourceCache analog);
+	// theme walks are UI-thread-only and serialized.
 
-	// Key: (ResourceDictionary, ResourceKey, ActiveTheme) -> weak reference to resolved value.
-	// MUX Reference: ThemeWalkResourceCache.h:55 uses (CResourceDictionary*, Theming::Theme, xstring_ptr).
-	// ResourceDictionary uses reference equality (default for classes).
-	// WinUI uses xref::weakref_ptr<CDependencyObject> for cached values,
-	// so we use ManagedWeakReference to match — the cache must not extend object lifetimes.
-	private readonly Dictionary<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key, SpecializedResourceDictionary.ResourceKey ActiveTheme), ManagedWeakReference> _cache = new();
+	// Key: (ResourceDictionary, Theme, ResourceKey) -> weak reference to the resolved value.
+	// MUX Reference: ThemeWalkResourceCache.h:55 — key is (CResourceDictionary*, Theming::Theme,
+	// xstring_ptr); the value is xref::weakref_ptr<CDependencyObject>. The Theme is the BASE value
+	// (Theming::GetBaseValue), as stored by CCoreServices::SetRequestedThemeForSubTree (xcpcore.cpp:7903).
+	// ResourceDictionary uses reference equality (default for classes). We use ManagedWeakReference for the
+	// value to match xref::weakref_ptr — the cache must not extend object lifetimes. The Theme slot is the
+	// per-object Theme (base value) threaded in by the caller.
+	private readonly Dictionary<(ResourceDictionary Dict, Theme Theme, SpecializedResourceDictionary.ResourceKey Key), ManagedWeakReference> _cache = new();
 
 	private bool _isCachingThemeResources;
 
@@ -89,11 +95,13 @@ internal sealed class ThemeWalkResourceCache
 	/// Only returns values when a caching session is active.
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: ThemeWalkResourceCache::TryGetCachedResource()
-	/// WinUI guards with if (m_isCachingThemeResources) and uses weakref_ptr::lock_noref.
-	/// WinUI matches on (dictionary, subTreeTheme, resourceKey).
+	/// MUX Reference: ThemeWalkResourceCache::TryGetCachedResource() (ThemeWalkResourceCache.cpp:50-74).
+	/// WinUI guards with if (m_isCachingThemeResources) and uses weakref_ptr::lock_noref, matching on
+	/// (dictionary, m_subTreeTheme, resourceKey). The subtree theme is threaded in as
+	/// <paramref name="theme"/> (the resolving owner's effective theme), then normalized to its base
+	/// value to match WinUI's m_subTreeTheme (xcpcore.cpp:7903).
 	/// </remarks>
-	public bool TryGetCachedValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, out object? value)
+	public bool TryGetCachedValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, Theme theme, out object? value)
 	{
 		if (!_isCachingThemeResources)
 		{
@@ -101,8 +109,8 @@ internal sealed class ThemeWalkResourceCache
 			return false;
 		}
 
-		var activeTheme = ResourceDictionary.GetActiveTheme();
-		if (_cache.TryGetValue((dictionary, key, activeTheme), out var weakRef) && weakRef.TryGetTarget<object>(out var target))
+		var baseTheme = Theming.GetBaseValue(theme);
+		if (_cache.TryGetValue((dictionary, baseTheme, key), out var weakRef) && weakRef.TryGetTarget<object>(out var target))
 		{
 			value = target;
 			return true;
@@ -119,19 +127,20 @@ internal sealed class ThemeWalkResourceCache
 	/// to per-instance ResourceDictionaries indefinitely.
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: ThemeWalkResourceCache::AddCachedResource()
-	/// WinUI guards with if (m_isCachingThemeResources) and stores a weakref_ptr.
-	/// WinUI keys by (dictionary, subTreeTheme, resourceKey).
+	/// MUX Reference: ThemeWalkResourceCache::AddCachedResource() (ThemeWalkResourceCache.cpp:76-98).
+	/// WinUI guards with if (m_isCachingThemeResources) and stores a weakref_ptr, keying by
+	/// (dictionary, m_subTreeTheme, resourceKey). The subtree theme is threaded in as
+	/// <paramref name="theme"/> and normalized to its base value, matching WinUI's m_subTreeTheme.
 	/// </remarks>
-	public void CacheValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, object? value)
+	public void CacheValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, Theme theme, object? value)
 	{
 		if (!_isCachingThemeResources || value is null)
 		{
 			return;
 		}
 
-		var activeTheme = ResourceDictionary.GetActiveTheme();
-		var cacheKey = (dictionary, key, activeTheme);
+		var baseTheme = Theming.GetBaseValue(theme);
+		var cacheKey = (dictionary, baseTheme, key);
 		if (!_cache.ContainsKey(cacheKey))
 		{
 			_cache[cacheKey] = WeakReferencePool.RentWeakReference(this, value);
@@ -156,7 +165,7 @@ internal sealed class ThemeWalkResourceCache
 		}
 
 		// Remove entries for all dictionaries and themes since the resource itself changed.
-		List<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key, SpecializedResourceDictionary.ResourceKey ActiveTheme)>? keysToRemove = null;
+		List<(ResourceDictionary Dict, Theme Theme, SpecializedResourceDictionary.ResourceKey Key)>? keysToRemove = null;
 		foreach (var entry in _cache.Keys)
 		{
 			if (entry.Key.Equals(key))

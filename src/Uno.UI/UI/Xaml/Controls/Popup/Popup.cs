@@ -157,17 +157,24 @@ public partial class Popup
 		PopupPanel?.InvalidateMeasure();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
-	// Popup's Child is reparented to PopupRoot's visual tree, so the normal
-	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate.
-	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3666-3687).
+	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
+	// won't reach it; we explicitly propagate a runtime theme change to the logical child here. Element-level
+	// theme propagation is Skia/WASM-only, so this override stays gated (native is OS + application theme).
+	internal override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
+		// Notify base class that theme has changed
 		base.NotifyThemeChangedCore(theme, forceRefresh);
 
-		if (Child is FrameworkElement child)
+		// Recursively notify element subtree that theme has changed
+		if (Child is { } child)
 		{
 			child.NotifyThemeChanged(theme, forceRefresh);
 		}
+
+		// TODO Uno: WinUI also re-themes m_overlayElement here to the child's theme (popup.cpp:3678-3685);
+		// Uno's light-dismiss overlay is the PopupPanel background, which re-resolves through this popup's
+		// own LightDismissOverlayBackground theme reference instead.
 	}
 #endif
 
