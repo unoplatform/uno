@@ -419,6 +419,7 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
+		global::System.Console.WriteLine($"[SoftKeyboard] OnFocusStateChanged: focusState={focusState}, isSkiaTextBox={_isSkiaTextBox}, initial={initial}, type={GetType().Name}"); // DIAG
 		_clipboardChangeSubscription.Disposable = null;
 		TextBoxView?.OnFocusStateChanged(focusState);
 
@@ -429,6 +430,7 @@ public partial class TextBox : ITextSelectionGripperHost
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
 				StartImeSession();
+				ShowSoftwareKeyboardForTouchFocus(focusState);
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
@@ -452,6 +454,7 @@ public partial class TextBox : ITextSelectionGripperHost
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
 				EndImeSession();
+				RequestHideSoftwareKeyboard();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)

@@ -63,6 +63,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		AccessibilityRouter.EnsureInitialized();
 		MacOSAccessibility.RegisterCallbacks();
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => MacOSImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IInputPaneExtension), _ => MacOSInputPaneExtension.Instance);
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

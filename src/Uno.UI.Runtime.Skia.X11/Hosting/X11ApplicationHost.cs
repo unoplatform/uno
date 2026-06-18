@@ -101,6 +101,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 
 		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.IImeTextBoxExtension), _ => X11ImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IInputPaneExtension), _ => X11InputPaneExtension.Instance);
 		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.ITextBoxNotificationsProviderSingleton), _ => X11TextBoxNotificationsProviderSingleton.Instance);
 
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));

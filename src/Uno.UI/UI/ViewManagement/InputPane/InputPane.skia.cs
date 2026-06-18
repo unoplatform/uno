@@ -20,6 +20,28 @@ partial class InputPane
 	private Lazy<IInputPaneExtension?>? _inputPaneExtension;
 	private IDisposable _padScrollContentPresenter;
 
+	/// <summary>
+	/// The window the pane currently targets, set by the focusing control. There is a single
+	/// OS keyboard, so the pane stays a singleton but addresses the focused control's window
+	/// (correct placement/occlusion in multi-window and multi-display setups).
+	/// </summary>
+	internal XamlRoot? TargetXamlRoot { get; set; }
+
+	// Test seam: when set, platform show/hide route here instead of the registered extension.
+	internal static IInputPaneExtension? ExtensionForTesting { get; private set; }
+
+	internal static IDisposable SetExtensionForTesting(IInputPaneExtension extension)
+	{
+		var previous = ExtensionForTesting;
+		ExtensionForTesting = extension;
+		GetForCurrentView().OccludedRect = default;
+		return Uno.Disposables.Disposable.Create(() =>
+		{
+			ExtensionForTesting = previous;
+			GetForCurrentView().OccludedRect = default;
+		});
+	}
+
 	partial void InitializePlatform()
 	{
 		_inputPaneExtension = new(() =>
@@ -29,21 +51,18 @@ partial class InputPane
 		});
 	}
 
-	private bool TryShowPlatform() => _inputPaneExtension?.Value?.TryShow() ?? false;
+	private bool TryShowPlatform() => (ExtensionForTesting ?? _inputPaneExtension?.Value)?.TryShow() ?? false;
 
-	private bool TryHidePlatform() => _inputPaneExtension?.Value?.TryHide() ?? false;
+	private bool TryHidePlatform() => (ExtensionForTesting ?? _inputPaneExtension?.Value)?.TryHide() ?? false;
 
 	partial void EnsureFocusedElementInViewPartial()
 	{
 		_padScrollContentPresenter?.Dispose(); // Restore padding
 
-		var initialWindow = Window.InitialWindow;
-		if (initialWindow is null)
-		{
-			return;
-		}
-
-		var xamlRoot = initialWindow.Content?.XamlRoot;
+		// Use the window the pane currently targets (set by the focusing control), falling back
+		// to the initial window for direct API callers. This keeps pan-into-view correct in
+		// multi-window apps instead of always acting on the initial window.
+		var xamlRoot = TargetXamlRoot ?? Window.InitialWindow?.Content?.XamlRoot;
 
 		if (xamlRoot is not null && Visible && FocusManager.GetFocusedElement(xamlRoot) is UIElement focusedElement)
 		{

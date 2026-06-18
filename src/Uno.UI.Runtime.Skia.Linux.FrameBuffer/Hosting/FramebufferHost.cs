@@ -166,6 +166,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new DisplayInformationExtension(o, DisplayScale));
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.DataTransfer.IClipboardExtension), o => new LocalClipboardExtension());
+			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IInputPaneExtension), o => FrameBufferInputPaneExtension.Instance);
 
 			void Dispatch(System.Action d, NativeDispatcherPriority p)
 				=> _eventLoop.Schedule(d);

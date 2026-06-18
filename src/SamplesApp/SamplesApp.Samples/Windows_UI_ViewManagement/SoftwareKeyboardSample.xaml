@@ -1,0 +1,22 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.SoftwareKeyboardSample"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="12">
+
+            <!--  Instructions  -->
+            <TextBlock Text="Tap a field with touch or pen: the software keyboard should appear (e.g. on a Windows tablet) and the focused field should scroll into view. Mouse or keyboard focus should NOT show it." TextWrapping="Wrap" />
+
+            <!--  Spacer to push the fields near the bottom so pan-into-view is observable  -->
+            <Border Height="600" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+
+            <!--  Input fields  -->
+            <TextBox Header="Text" PlaceholderText="Tap me" />
+            <PasswordBox Header="Password" PlaceholderText="Tap me" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

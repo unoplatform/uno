@@ -106,6 +106,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
+		ApiExtensibility.Register<Windows.UI.ViewManagement.InputPane>(typeof(Windows.UI.ViewManagement.IInputPaneExtension), inputPane => new Win32InputPaneExtension(inputPane));
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 
 		AccessibilityRouter.EnsureInitialized();
