@@ -66,9 +66,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 				break;
 
 			default:
-				if (this.Log().IsEnabled(LogLevel.Error))
+				// An unrecognized frame name does not indicate a client error: a frame can be
+				// relayed over a scope this processor participates in while being addressed to a
+				// different consumer (for example host-only diagnostics frames). Log at Debug so a
+				// benign, expected frame does not surface as a red error in the console.
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogError($"Received unknown frame [{frame.Scope}/{frame.Name}]");
+					this.Log().LogDebug($"Received unknown frame [{frame.Scope}/{frame.Name}]");
 				}
 				break;
 		}
