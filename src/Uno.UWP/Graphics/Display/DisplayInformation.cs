@@ -44,6 +44,17 @@ namespace Windows.Graphics.Display
 		}
 
 #if !ANDROID
+		private DisplayInformation(WindowId windowId, bool skipExtensionInitialization)
+		{
+			WindowId = windowId;
+			if (!skipExtensionInitialization)
+			{
+				Initialize();
+			}
+		}
+#endif
+
+#if !ANDROID
 		internal WindowId WindowId { get; }
 #endif
 
@@ -78,6 +89,44 @@ namespace Windows.Graphics.Display
 				}
 
 				return displayInformation;
+			}
+		}
+
+#if !ANDROID
+		/// <summary>
+		/// Test-only seam that registers a <see cref="DisplayInformation"/> entry for an arbitrary
+		/// <see cref="WindowId"/> without resolving the platform windowing extension. On Skia the
+		/// regular <see cref="GetOrCreateForWindowId"/> path runs <see cref="Initialize"/>, which
+		/// resolves an <c>IDisplayInformationExtension</c> for a real <c>AppWindow</c> and throws for
+		/// an id with no live window. This lets the registry lifetime invariant (entry added, then
+		/// removed by <see cref="DestroyForWindowId"/> and collectible) be verified without a window.
+		/// </summary>
+		internal static DisplayInformation CreateForWindowIdForTests(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				if (!_windowIdMap.TryGetValue(windowId, out var displayInformation))
+				{
+					displayInformation = new(windowId, skipExtensionInitialization: true);
+					_windowIdMap[windowId] = displayInformation;
+				}
+
+				return displayInformation;
+			}
+		}
+#endif
+
+		/// <summary>
+		/// Removes the <see cref="DisplayInformation"/> registered for a window once that window is
+		/// closed. Without this, the static map retains the closed window's native wrapper graph
+		/// (and every event subscriber reachable from it) for the process lifetime — for a
+		/// secondary-app window in a collectible AssemblyLoadContext, that pins the entire ALC.
+		/// </summary>
+		internal static void DestroyForWindowId(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				_windowIdMap.Remove(windowId);
 			}
 		}
 
