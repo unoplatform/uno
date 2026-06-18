@@ -269,9 +269,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// Bounds are computed here — not at invalidation time — because the visual's Size/matrix are only
 	// final during the render walk. The renderer decides whether the accumulated damage is actually used
 	// to clip the present (only renderers whose surface retains the previous frame do so).
-	private void ContributeDamageOnPaint(bool contentChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage)
 	{
-		if (CompositionTarget is not { } target)
+		// No accumulator means this is an off-screen render (RenderTargetBitmap, visual surface) that doesn't
+		// track damage; the on-screen pass threads its accumulator through the PaintingSession.
+		if (damage is null)
 		{
 			return;
 		}
@@ -299,12 +301,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			if (regionPath is not null)
 			{
-				target.AddDamage(regionPath);
+				damage.AddPath(regionPath);
 				_pathPool.Free(regionPath);
 			}
 			else
 			{
-				target.AddDamage(bounds);
+				damage.AddRect(bounds);
 			}
 
 			// Erase the region this visual vacated — but only when it actually moved or resized. The bounding
@@ -313,7 +315,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// is skipped: the new region already covers everything the unchanged old one did.
 			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
 			{
-				target.AddDamage(_lastRenderBounds);
+				damage.AddRect(_lastRenderBounds);
 			}
 			_lastRenderBounds = bounds;
 			_lastRenderMatrix = matrix;
@@ -322,7 +324,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		else if (_hasLastRenderBounds)
 		{
 			// The visual no longer has paintable bounds (e.g. collapsed to zero size); repaint where it was.
-			target.AddDamage(_lastRenderBounds);
+			damage.AddRect(_lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
 	}
@@ -643,7 +645,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, DamageRegion? damage = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -673,6 +675,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						  canvas,
 						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
 						  opacity: 1.0f,
+						  damage,
 						  out var session);
 
 		using (session)
@@ -741,7 +744,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
 					PaintStep(this, childSession);
@@ -771,7 +774,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				visual.ContributeDamageOnPaint(contentChanged: true);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
 				visual.Paint(session);
 			}
 			else
@@ -782,7 +785,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._flags &= ~VisualFlags.PaintDirty;
 
 					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
-					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
@@ -801,7 +804,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					// Contribute damage on every draw (not only when the picture was re-recorded) so a visual
 					// that merely moved — e.g. content scrolling under a clip — damages both the region it now
 					// occupies and the one it vacated, even though its cached picture is reused.
-					visual.ContributeDamageOnPaint(contentChanged);
+					visual.ContributeDamageOnPaint(contentChanged, session.Damage);
 					unsafe
 					{
 						UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
@@ -859,7 +862,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
@@ -1313,7 +1316,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
-		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
+		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, parentSession.Damage, out session);
 
 		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
 		{
