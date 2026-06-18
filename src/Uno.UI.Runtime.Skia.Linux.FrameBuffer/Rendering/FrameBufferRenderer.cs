@@ -63,10 +63,12 @@ internal abstract class FrameBufferRenderer
 			DisplayOrientations.PortraitFlipped => (-90, 0, bounds.Width),
 			_ => throw new ArgumentOutOfRangeException()
 		};
+		// No per-frame Clear: the composition surface retains the previous frame, and the clipped present
+		// (damage-region rendering) clears and repaints only the changed region. PresentToOutput copies the
+		// whole retained surface to the device each frame, so the rest stays correct.
 		_surface?.Canvas.Save();
 		_surface?.Canvas.Translate(transX, transY);
 		_surface?.Canvas.RotateDegrees(degrees);
-		_surface?.Canvas.Clear(SKColors.Transparent);
 
 		ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
@@ -79,16 +81,31 @@ internal abstract class FrameBufferRenderer
 			_surface.Canvas.Save();
 			_surface.Canvas.Translate((float)transX, (float)transY);
 			_surface.Canvas.RotateDegrees(degrees);
-			_surface.Canvas.Clear(SKColors.Transparent);
 			return _surface.Canvas;
 		});
-		if (_cursorVisible ?? _receivedMouseEvent)
-		{
-			_surface?.Canvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
-			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
-		}
 		_surface?.Canvas.Restore();
 		_surface?.Flush();
+
+		PresentToOutput(degrees, transX, transY);
+	}
+
+	protected bool ShouldShowCursor => _cursorVisible ?? _receivedMouseEvent;
+
+	// Draws the mouse-cursor indicator onto the device output (NOT the retained composition surface), so the
+	// full per-frame copy/blit in PresentToOutput wipes the previous frame's cursor and there is no trail.
+	protected void DrawCursor(SKCanvas outputCanvas, int degrees, int transX, int transY)
+	{
+		if (!ShouldShowCursor)
+		{
+			return;
+		}
+
+		outputCanvas.Save();
+		outputCanvas.Translate(transX, transY);
+		outputCanvas.RotateDegrees(degrees);
+		outputCanvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
+		outputCanvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
+		outputCanvas.Restore();
 	}
 
 	public abstract void InvalidateRender();
@@ -96,6 +113,9 @@ internal abstract class FrameBufferRenderer
 	protected abstract IDisposable MakeCurrent();
 
 	protected abstract SKSurface UpdateSize(int width, int height);
+
+	// Copies/blits the retained composition surface to the device for this frame, then draws the cursor on it.
+	protected abstract void PresentToOutput(int degrees, int transX, int transY);
 
 	public virtual void Dispose() { }
 }

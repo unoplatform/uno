@@ -162,14 +162,12 @@ public partial class CompositionTarget
 	/// of the screen (e.g. Android's IRenderer.OnDrawFrame). This class does not assume that this method will only
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
+	///
+	/// Every renderer presents through a surface that retains the previous frame (a persistent bitmap, or a
+	/// retained offscreen blitted to a swapchain), so the present is always clipped to the per-frame damage
+	/// region; the only full-frame fallbacks are intrinsic (canvas (re)creation/resize, or a frame marked full).
 	/// </summary>
-	/// <param name="surfaceRetainsContents">
-	/// True if the platform surface preserves the previous frame's pixels between presents (e.g. a
-	/// persistent software bitmap). When true and damage-region rendering is enabled, the present
-	/// is clipped to the changed region. Defaults to false so swapchain/native renderers keep the
-	/// historical full-frame behavior until they opt in.
-	/// </param>
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc, bool surfaceRetainsContents = false)
+	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
@@ -178,7 +176,7 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(canvas, resizeFunc, surfaceRetainsContents);
+		return Draw(canvas, resizeFunc);
 	}
 
 	internal void OnRenderFrameOpportunity()

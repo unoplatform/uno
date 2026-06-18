@@ -32,6 +32,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly int _stencil;
 
 		private GRBackendRenderTarget? _renderTarget;
+		private SKSurface? _glFbSurface; // the GL framebuffer (swapchain); the base's _surface is the retained composition offscreen
 		private readonly IntPtr _gbmTargetSurface;
 		private readonly int _card;
 		private IntPtr _currentBo;
@@ -393,14 +394,33 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override SKSurface UpdateSize(int width, int height)
 		{
+			_glFbSurface?.Dispose();
 			_renderTarget?.Dispose();
 
 			var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
-
 			var glInfo = new GRGlFramebufferInfo(DefaultFramebuffer, SKColorType.Rgb888x.ToGlSizedFormat());
-
 			_renderTarget = new GRBackendRenderTarget(width, height, _samples, _stencil, glInfo);
-			return SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+			_glFbSurface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+
+			// The GL framebuffer is a double-buffered swapchain (gbm + drmModePageFlip) that is not preserved
+			// across flips, so the composition renders onto this persistent GPU offscreen (which retains the
+			// previous frame) and is blitted to the framebuffer each frame in PresentToOutput. This is what
+			// makes damage-region rendering correct on DRM (mirrors the X11 OpenGL renderer).
+			return SKSurface.Create(_grContext, budgeted: true, new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+				?? throw new InvalidOperationException("Failed to create the DRM retained composition surface.");
+		}
+
+		protected override void PresentToOutput(int degrees, int transX, int transY)
+		{
+			// Blit the whole retained composition offscreen onto the (non-retaining) GL framebuffer, then draw
+			// the cursor on top. The full blit wipes the previous frame's cursor. EglSwapBuffers + the page
+			// flip that present the framebuffer happen in InvalidateRender.
+			if (_surface is { } composition && _glFbSurface is { } glFb)
+			{
+				composition.Draw(glFb.Canvas, 0, 0, null);
+				DrawCursor(glFb.Canvas, degrees, transX, transY);
+				glFb.Canvas.Flush();
+			}
 		}
 
 		private uint CreateFbForBo(IntPtr bo)

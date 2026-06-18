@@ -39,13 +39,6 @@ namespace Uno.UI.Runtime.Skia
 							break;
 						}
 						Render();
-						_fbDev.VSync();
-						_surface?.ReadPixels(
-							new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul),
-							_fbDev.BufferAddress,
-							_fbDev.RowBytes,
-							0,
-							0);
 					}
 					catch (Exception ex)
 					{
@@ -66,6 +59,22 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override SKSurface UpdateSize(int width, int height)
 			=> SKSurface.Create(new SKImageInfo(width, height, _fbDev.PixelFormat, SKAlphaType.Premul));
+
+		protected override void PresentToOutput(int degrees, int transX, int transY)
+		{
+			// The composition surface retains the previous frame; copy the whole of it to the framebuffer
+			// (this wipes the previous frame's cursor, which is never drawn into the retained surface).
+			var info = new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul);
+			_fbDev.VSync();
+			_surface?.ReadPixels(info, _fbDev.BufferAddress, _fbDev.RowBytes, 0, 0);
+
+			if (ShouldShowCursor)
+			{
+				using var output = SKSurface.Create(info, _fbDev.BufferAddress, _fbDev.RowBytes);
+				DrawCursor(output.Canvas, degrees, transX, transY);
+				output.Flush();
+			}
+		}
 
 		public override void Dispose()
 		{

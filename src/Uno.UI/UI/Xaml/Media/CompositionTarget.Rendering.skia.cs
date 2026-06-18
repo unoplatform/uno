@@ -246,7 +246,7 @@ public partial class CompositionTarget
 		}
 	}
 
-	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc, bool surfaceRetainsContents)
+	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
@@ -303,15 +303,14 @@ public partial class CompositionTarget
 				targetCanvas.Scale(rasterizationScale, rasterizationScale);
 			}
 
-			// Damage-region: when the surface retains the previous frame's contents and the feature
-			// is enabled, clip the present to the changed region so only that area is cleared and
-			// repainted; the rest is preserved from the previous frame. Output is identical to a full
-			// repaint. Falls back to full-frame on canvas recreation/resize or when the frame is marked
-			// full. The clip is set in the post-scale (root/logical) coordinate space the picture uses.
+			// Damage-region: every renderer presents through a surface that retains the previous frame, so
+			// clip the present to the changed region — only that area is cleared and repainted; the rest is
+			// preserved from the previous frame. Output is identical to a full repaint. Falls back to full-frame
+			// on canvas recreation/resize or when the frame is marked full. The clip is set in the post-scale
+			// (root/logical) coordinate space the picture uses.
 			var damage = lastRenderedFrame.damage;
 			var useDamageRegion =
-				surfaceRetainsContents
-				&& !canvasRecreated
+				!canvasRecreated
 				&& !damage.IsFullFrame;
 			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 

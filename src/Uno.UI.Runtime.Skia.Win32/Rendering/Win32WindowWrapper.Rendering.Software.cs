@@ -18,10 +18,6 @@ internal partial class Win32WindowWrapper
 		public void StartPaint() { }
 		public void EndPaint() { }
 
-		// The DIB section backing the surface persists between frames (only recreated on resize) and is
-		// blitted out by CopyPixels, so it retains the previous frame and the present can be clipped.
-		bool IRenderer.SurfaceRetainsContents => true;
-
 		unsafe SKSurface IRenderer.UpdateSize(int width, int height)
 		{
 			if (_hBitmap != HBITMAP.Null)
