@@ -19,7 +19,8 @@ internal sealed class HotReloadManagerHarness : IDisposable
 
 	public HotReloadManagerHarness(
 		Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit,
-		Func<Solution, SolutionUpdateResult>? onUpdate = null)
+		Func<Solution, SolutionUpdateResult>? onUpdate = null,
+		bool warmCompilation = false)
 	{
 		_workspace = new AdhocWorkspace();
 		var project = _workspace.AddProject("TestProject", LanguageNames.CSharp);
@@ -36,7 +37,10 @@ internal sealed class HotReloadManagerHarness : IDisposable
 		var update = onUpdate ?? (solution => new SolutionUpdateResult(
 			solution.WithProjectAssemblyName(projectId, $"TestProject{Interlocked.Increment(ref _updateCount)}"),
 			ChangeSet.IgnoreAll([])));
-		var updater = new StubSolutionUpdater(update);
+		// warmCompilation forces the result solution's compilation to be computed (cached) so the
+		// manager's GetCompilationErrors — which reads TryGetCompilation, not GetCompilationAsync — can
+		// observe compile errors a test injected via a broken document (the StubWatchService never compiles).
+		var updater = new StubSolutionUpdater(update, warmCompilation);
 
 		Manager = new HotReloadManager(
 			_workspace,
@@ -103,18 +107,6 @@ internal sealed class HotReloadManagerHarness : IDisposable
 			}
 		}
 
-		/// <summary>The updates only (back-compat with success-oriented assertions).</summary>
-		public IReadOnlyList<HotReloadUpdate> Updates
-		{
-			get
-			{
-				lock (_gate)
-				{
-					return _calls.ConvertAll(c => c.Update);
-				}
-			}
-		}
-
 		public ValueTask OnHotReloadAsync(HotReloadOperationResult result, HotReloadUpdate update, CancellationToken ct)
 		{
 			lock (_gate)
@@ -150,9 +142,20 @@ internal sealed class HotReloadManagerHarness : IDisposable
 			=> ValueTask.FromResult(ChangeSet.IgnoreAll([]));
 	}
 
-	private sealed class StubSolutionUpdater(Func<Solution, SolutionUpdateResult> update) : ISolutionUpdater
+	private sealed class StubSolutionUpdater(Func<Solution, SolutionUpdateResult> update, bool warm) : ISolutionUpdater
 	{
-		public ValueTask<SolutionUpdateResult> UpdateAsync(Solution solution, ChangeSet changeSet, CancellationToken ct)
-			=> ValueTask.FromResult(update(solution));
+		public async ValueTask<SolutionUpdateResult> UpdateAsync(Solution solution, ChangeSet changeSet, CancellationToken ct)
+		{
+			var result = update(solution);
+			if (warm)
+			{
+				foreach (var project in result.Solution.Projects)
+				{
+					await project.GetCompilationAsync(ct).ConfigureAwait(false);
+				}
+			}
+
+			return result;
+		}
 	}
 }

@@ -172,6 +172,7 @@ public sealed class HotReloadManager : IDisposable
 		{
 			// Updater encountered a fatal condition (typically a csproj re-evaluation error). The
 			// manager — not the updater — owns the operation lifecycle, so we carry the diagnostics.
+			_tracker.Output($"Hot reload failed: solution updater reported {result.Diagnostics.Count(d => d.Severity == DiagnosticSeverity.Error)} error diagnostic(s).");
 			outcome = HotReloadOperationResult.Failed;
 			diagnostics = result.Diagnostics;
 		}
@@ -183,44 +184,53 @@ public sealed class HotReloadManager : IDisposable
 		else
 		{
 			// Compile the solution and get deltas.
-			var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
-			// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
+			var (updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
+			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-			var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
 
 			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
-			if (!rudeEdits.IsEmpty)
-			{
-				// Rude edit.
-				_tracker.Output("Unable to apply hot reload because of a rude edit.");
-				foreach (var diagnostic in hotReloadDiagnostics)
-				{
-					_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
-				}
+			// Emit (EnC) diagnostics carry on every outcome of this branch; deltas are populated on Success only.
+			diagnostics = emitDiagnostics;
 
-				outcome = HotReloadOperationResult.RudeEdit;
-				diagnostics = hotReloadDiagnostics;
-			}
-			else if (updates.IsEmpty)
+			switch (rudeEdits.IsEmpty, updates.IsEmpty)
 			{
-				if (GetCompilationErrors(result.Solution, ct).IsEmpty)
-				{
+				// A rude edit is unrecoverable: the user must rebuild. Surface every diagnostic.
+				case (false, _):
+					_tracker.Output("Unable to apply hot reload because of a rude edit.");
+					foreach (var diagnostic in emitDiagnostics)
+					{
+						_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
+					}
+
+					outcome = HotReloadOperationResult.RudeEdit;
+					break;
+
+				// Metadata updates were produced and are applicable.
+				case (true, false):
+					outcome = HotReloadOperationResult.Success;
+					deltas = updates;
+					break;
+
+				// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
+				// FIXME (out of this PR's scope): these compilation errors are only pushed to _tracker (console)
+				// from inside GetCompilationErrors — they are NOT carried onto the operation/handler diagnostics
+				// bag, so a structured consumer sees Failed without the reason (asymmetric with rude edits, which
+				// flow via emitDiagnostics). Side-effecting logging inside a Get... is also smelly. Carrying them
+				// would mean aggregating updater + emit + compilation diagnostics, which can duplicate the same
+				// CSxxxx (emit already reports a broken changed file that the full sweep re-finds) — so it needs a
+				// dedup (by Id+location) before it can be done cleanly. Revisit separately.
+				case (true, true) when GetCompilationErrors(result.Solution, ct) is { IsEmpty: false } compilationErrors:
+					_tracker.Output($"Hot reload blocked by {compilationErrors.Length} compilation error(s).");
+					outcome = HotReloadOperationResult.Failed;
+					break;
+
+				// (true, true) with a clean compile: genuinely nothing to apply.
+				default:
 					_tracker.Output("No hot reload changes to apply.");
 					outcome = HotReloadOperationResult.NoChanges;
-				}
-				else
-				{
-					outcome = HotReloadOperationResult.Failed;
-				}
-
-				diagnostics = hotReloadDiagnostics;
-			}
-			else
-			{
-				outcome = HotReloadOperationResult.Success;
-				deltas = updates;
-				diagnostics = hotReloadDiagnostics;
+					break;
 			}
 		}
 
@@ -241,6 +251,10 @@ public sealed class HotReloadManager : IDisposable
 		}
 		catch (Exception e)
 		{
+			// Mirror the manager-internal catch (ProcessFileChanges) so a handler-side failure (e.g. a
+			// staging error) is traceable in the console, not only via the operation's result.
+			_tracker.Warn($"Hot reload handler failed ({e.Message}).");
+			_tracker.Verbose(e.ToString());
 			await hotReload.Complete(HotReloadOperationResult.Failed, e, diagnostics).ConfigureAwait(false);
 			return;
 		}

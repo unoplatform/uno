@@ -77,7 +77,8 @@ public class Given_HotReloadManager
 		harness.Tracker.Current.Should().BeNull();
 		harness.Tracker.Last.Should().NotBeNull();
 		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.Success);
-		harness.Handler.Updates.Should().HaveCount(1);
+		harness.Handler.Calls.Should().ContainSingle()
+			.Which.Result.Should().Be(HotReloadOperationResult.Success);
 	}
 
 	[TestMethod]
@@ -233,9 +234,10 @@ public class Given_HotReloadManager
 
 	[TestMethod]
 	[Description(
-		"Spec 045 §3: OperationCanceledException from the handler is not a hot-reload failure — it propagates " +
-		"to the manager-internal catch and must not complete the operation as Failed.")]
-	public async Task When_HandlerThrowsOperationCanceled_Then_NotCompletedAsFailed()
+		"Spec 045 §3: OperationCanceledException from the handler is not a hot-reload failure — it re-throws " +
+		"past the per-handler catch into the ProcessFileChanges manager-internal catch, which completes the " +
+		"operation as InternalError (carrying the exception), not Failed.")]
+	public async Task When_HandlerThrowsOperationCanceled_Then_CompletedAsInternalError()
 	{
 		using var harness = new HotReloadManagerHarness(
 			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(
@@ -245,9 +247,62 @@ public class Given_HotReloadManager
 		var batch = ImmutableHashSet.Create("/work/Model.cs");
 		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
 
-		harness.Tracker.Last!.Result.Should().NotBe(
-			HotReloadOperationResult.Failed,
-			"cancellation is not a handler failure; it propagates to the manager-internal catch");
+		harness.Tracker.Last!.Result.Should().Be(
+			HotReloadOperationResult.InternalError,
+			"a handler cancellation is not a hot-reload failure; it re-throws into the manager-internal catch which records InternalError");
+	}
+
+	[TestMethod]
+	[Description(
+		"Spec 045 idempotency contract (IHotReloadHandler.OnHotReloadAsync remarks): a single logical edit can " +
+		"drive the handler more than once. A host that re-runs a no-delta cycle (the no-changes auto-retry path, " +
+		"which re-enters ProcessSolutionChanged) re-invokes the handler with the same NoChanges outcome each time, " +
+		"so delta-independent side-effects must be idempotent. Re-processing the same no-delta batch is the " +
+		"observable proxy for that re-run: the handler is invoked once per cycle, never coalesced.")]
+	public async Task When_NoDeltaCycleReprocessed_Then_HandlerReinvokedPerCycle()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])));
+
+		var batch = ImmutableHashSet.Create("/work/App.csproj");
+
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Handler.Calls.Should().HaveCount(2, "each cycle re-invokes the handler — side-effects must be idempotent across re-runs of the same logical change");
+		harness.Handler.Calls.Should().OnlyContain(c => c.Result == HotReloadOperationResult.NoChanges);
+	}
+
+	[TestMethod]
+	[Description(
+		"Spec 045 §1: an emitted cycle that produces no metadata updates and no rude edits, but whose solution " +
+		"carries compilation errors, completes as Failed (not NoChanges) — the manager probes the committed " +
+		"solution's compilation via GetCompilationErrors. The handler is invoked with Failed so consumers see the " +
+		"blocked reload.")]
+	public async Task When_CompilationErrors_Then_HandlerInvokedWithFailed()
+	{
+		using var harness = new HotReloadManagerHarness(
+			// No metadata updates and no diagnostics: forces the updates-empty / no-rude-edit branch
+			// that probes the committed solution's compilation for blocking errors.
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			// Mutate the solution (so it isn't the NoChanges fast-path) by adding a document with a
+			// reference-independent syntax error (CS1513 '}' expected).
+			onUpdate: solution =>
+			{
+				var projectId = solution.ProjectIds[0];
+				var broken = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {");
+				return new SolutionUpdateResult(broken, ChangeSet.IgnoreAll([]));
+			},
+			// GetCompilationErrors reads TryGetCompilation (the cached compilation), so the result
+			// solution's compilation must be computed before the manager probes it.
+			warmCompilation: true);
+
+		var batch = ImmutableHashSet.Create("/work/Broken.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.Failed, "a solution that does not compile blocks the reload");
+		harness.Handler.Calls.Should().ContainSingle()
+			.Which.Result.Should().Be(HotReloadOperationResult.Failed);
 	}
 
 	private sealed record MarkerSolutionUpdateResult(Solution Solution, ChangeSet IgnoredChanges, string Marker)

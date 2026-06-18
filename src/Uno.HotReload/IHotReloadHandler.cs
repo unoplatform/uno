@@ -27,10 +27,20 @@ public interface IHotReloadHandler
 	/// <c>SolutionUpdateResult</c> subtype's payload is visible on no-delta cycles too).
 	/// </summary>
 	/// <remarks>
+	/// <para>
 	/// Handlers that only act on a successful delta should guard on <paramref name="result"/> at the
 	/// top and return early. A thrown exception (other than <see cref="System.OperationCanceledException"/>,
 	/// which propagates) completes the operation as <see cref="HotReloadOperationResult.Failed"/> — the
 	/// reload did not take effect on the consumer side.
+	/// </para>
+	/// <para>
+	/// <b>Idempotency:</b> a single logical edit may invoke this method more than once. When a host
+	/// enables no-changes auto-retry (re-running the cycle when a <see cref="HotReloadOperationResult.NoChanges"/>
+	/// outcome is unexpected), every retry attempt re-invokes the handler with the recomputed outcome.
+	/// Delta-independent side-effects (e.g. staging resolved package assemblies derived from
+	/// <see cref="HotReloadUpdate.SolutionUpdate"/>) must therefore be idempotent — applying the same
+	/// update twice must be harmless.
+	/// </para>
 	/// </remarks>
 	ValueTask OnHotReloadAsync(HotReloadOperationResult result, HotReloadUpdate update, CancellationToken ct);
 }
