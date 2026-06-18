@@ -161,6 +161,24 @@
                 </NavigationView.MenuItems>
             </NavigationView>
 
+            <!--  Explicit RequestedTheme subtree: must also follow the accent (enhanced lifecycle)  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Subtree with explicit RequestedTheme=Light" />
+            <Border
+                Padding="12"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                CornerRadius="4"
+                RequestedTheme="Light">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Border
+                        Width="80"
+                        Height="56"
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                        CornerRadius="4" />
+                    <Button Content="Accent button" Style="{StaticResource AccentButtonStyle}" />
+                    <ToggleSwitch Header="Toggle" IsOn="True" />
+                </StackPanel>
+            </Border>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

@@ -277,7 +277,11 @@ namespace Microsoft.UI.Xaml
 			Resources["SystemAccentColorDark2"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentDark2);
 			Resources["SystemAccentColorDark3"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentDark3);
 
-			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+			// The accent resources are theme-independent, so a plain ThemeResource update would miss
+			// subtrees with an explicit RequestedTheme under UNO_HAS_ENHANCED_LIFECYCLE (skipped by
+			// PropagateResourcesChanged, and NotifyThemeChanged early-outs when the theme is unchanged).
+			// PropagatesThroughTree forces the refresh through the whole tree.
+			OnResourcesChanged(ResourceUpdateReason.PropagatesThroughTree);
 		}
 	}
 
