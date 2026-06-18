@@ -633,6 +633,8 @@ namespace Microsoft.UI.Xaml.Controls
 				ElementCompositionPreview.SetElementChildVisual(rootPanel, visual);
 			}
 
+			UpdateMirrorTransform();
+
 			if (visual != null)
 			{
 				m_canDisplayPrimaryContent = true;
@@ -661,9 +663,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_canDisplayPrimaryContent = false;
 				return false;
 			}
-
-			// This seems to be a bug in WinUI - this code cannot be reached.
-			// UpdateMirrorTransform();
 		}
 
 		private void OnFallbackIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
