@@ -246,7 +246,16 @@ public class HotReloadOperation
 		// Check if not already disposed
 		if (Interlocked.CompareExchange(ref _result, (int)result, -1) is not -1)
 		{
-			return; // Already completed
+			// Already completed. Chain-aborts from a newer operation are routine, but any other
+			// late completion carries an outcome (potentially Failed + diagnostics) that is about
+			// to be discarded — leave a trace instead of losing it silently.
+			if (!isFromNext)
+			{
+				_owner.ReportWarn(
+					$"Hot-reload operation {Id} already completed as {Result}; dropping late completion {result} ({diagnostics?.Length ?? 0} diagnostic(s)).");
+			}
+
+			return;
 		}
 
 		try

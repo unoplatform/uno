@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -24,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			this.InitializeComponent();
 
-			_tests = new TestRunner(this, Outputs);
+			_tests = TestRunner.Create(this, Outputs);
 
 			Loaded += TransformToVisual_Transform_Loaded;
 		}
@@ -194,21 +195,28 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 	internal class TestRunner
 	{
+		private const DynamicallyAccessedMemberTypes Requirements = DynamicallyAccessedMemberTypes.PublicMethods;
+
 		private readonly UserControl _target;
 		private readonly TextBlock _status;
 		private readonly Dictionary<string, Test> _tests;
 
 		private bool _isRunning;
 
-		public TestRunner(UserControl target, StackPanel testsOutput)
+		public static TestRunner Create<[DynamicallyAccessedMembers(Requirements)] T>(T target, StackPanel testsOutput)
+			where T : UserControl
+		{
+			return new TestRunner(target, typeof(T), testsOutput);
+		}
+
+		private TestRunner(UserControl target, [DynamicallyAccessedMembers(Requirements)] Type testType, StackPanel testsOutput)
 		{
 			_target = target;
 
 			_status = new TextBlock { Name = "TestsStatus" };
 			testsOutput.Children.Add(_status);
 
-			_tests = target
-				.GetType()
+			_tests = testType
 				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Where(method => method.Name.StartsWith("When_"))
 				.Select(method => new Test(this, method))

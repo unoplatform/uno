@@ -161,7 +161,7 @@ namespace SamplesApp
 
 			SetupAndroidEnvironment();
 
-#if __IOS__ && !TESTFLIGHT
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
@@ -618,13 +618,16 @@ namespace SamplesApp
 
 			var availableFlags = new Dictionary<string, PropertyInfo>();
 
+#pragma warning disable IL2075
+			// This works as intended in local testing
 			foreach (var featureClass in typeof(FeatureConfiguration).GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
 			{
-				foreach (var featureProperty in featureClass.GetProperties(BindingFlags.Public | BindingFlags.Static))
+				foreach (var featureProperty in GetPublicStaticProperties(featureClass))
 				{
 					availableFlags[$"{featureClass.Name}.{featureProperty.Name}"] = featureProperty;
 				}
 			}
+#pragma warning restore IL2075
 
 #pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
@@ -665,6 +668,11 @@ namespace SamplesApp
 					Console.WriteLine($"Ignored the CLI argument {arg} for the purposes of FeatureConfiguration.");
 				}
 			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "This works as intended in local testing.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "This works as intended in local testing.")]
+			static PropertyInfo[] GetPublicStaticProperties(Type type) =>
+				type.GetProperties(BindingFlags.Public | BindingFlags.Static);
 #endif
 		}
 

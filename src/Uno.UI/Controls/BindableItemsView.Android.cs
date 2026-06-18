@@ -223,8 +223,8 @@ namespace Uno.UI.Controls
 			command.Execute(dataProvider.DataContext ?? default(object));
 		}
 
+		#endregion
 	}
-	#endregion
 
 	public class ItemsSourceChangedEventArgs : EventArgs
 	{

@@ -6,8 +6,7 @@ jobs:
   displayName: 'Build Samples App'
   cancelTimeoutInMinutes: 0
 
-  pool:
-    vmImage: ${{ parameters.poolName }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|AnyCPU

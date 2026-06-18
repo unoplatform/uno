@@ -5,28 +5,27 @@ using Uno.Foundation;
 
 using NativeMethods = __Windows.UI.ViewManagement.ApplicationViewTitleBar.NativeMethods;
 
-namespace Windows.UI.ViewManagement
-{
-	public partial class ApplicationViewTitleBar
-	{
-		private Color? _backgroundColor;
+namespace Windows.UI.ViewManagement;
 
-		public Color? BackgroundColor
+public partial class ApplicationViewTitleBar
+{
+	private Color? _backgroundColor;
+
+	public Color? BackgroundColor
+	{
+		get => _backgroundColor;
+		set
 		{
-			get => _backgroundColor;
-			set
+			if (_backgroundColor != value)
 			{
-				if (_backgroundColor != value)
-				{
-					_backgroundColor = value;
-					UpdateBackgroundColor();
-				}
+				_backgroundColor = value;
+				UpdateBackgroundColor();
 			}
 		}
+	}
 
-		private void UpdateBackgroundColor()
-		{
-			NativeMethods.SetBackgroundColor(_backgroundColor?.ToHexString());
-		}
+	private void UpdateBackgroundColor()
+	{
+		NativeMethods.SetBackgroundColor(_backgroundColor?.ToHexString());
 	}
 }

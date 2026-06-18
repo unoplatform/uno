@@ -46,6 +46,10 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
+			<group targetFramework="net8.0-maccatalyst17.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
+			</group>
 			<group targetFramework="net9.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
@@ -58,6 +62,10 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
+			<group targetFramework="net9.0-maccatalyst18.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
+			</group>
 			<group targetFramework="net10.0-android36.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
@@ -67,6 +75,10 @@
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
 			</group>
 			<group targetFramework="net10.0-tvos26.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+			</group>
+			<group targetFramework="net10.0-maccatalyst26.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
 			</group>
@@ -90,10 +102,12 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-android\Uno.UI.MSAL.*" target="lib\net9.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-ios18.0\Uno.UI.MSAL.*" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.MSAL.*" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.MSAL.*" target="lib\net9.0-maccatalyst18.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-ios26.0\Uno.UI.MSAL.*" target="lib\net10.0-ios26.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.MSAL.*" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.MSAL.*" target="lib\net10.0-maccatalyst26.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />

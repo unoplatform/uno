@@ -627,6 +627,25 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
+	/// Returns the bounds, in root visual coordinates, of the effective clip applied to this visual's
+	/// own content by its ancestors (e.g. a ScrollViewer's viewport clip) and its own <see cref="Clip"/>.
+	/// Intersecting an element's bounds with this rect yields what's actually visible, which automation
+	/// uses to detect elements clipped entirely out of view (e.g. scrolled outside a ScrollViewer).
+	/// </summary>
+	internal Rect GetTotalClipRectInRootCoordinates()
+	{
+		var clipPath = _pathPool.Allocate();
+		using var clipPathDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), clipPath);
+		clipPath.Rewind();
+
+		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
+		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
+		GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
+
+		return clipPath.Bounds.ToRect();
+	}
+
+	/// <summary>
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>

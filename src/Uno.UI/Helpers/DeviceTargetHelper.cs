@@ -6,7 +6,7 @@ namespace Uno.UI.Helpers;
 internal static class DeviceTargetHelper
 {
 	private static readonly Lazy<bool> _usesAppleKeyboardLayout = new(() =>
-		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() ||
+		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS() ||
 		(OperatingSystem.IsBrowser() &&
 			Uno.Foundation.WebAssemblyImports.EvalBool("/Mac|iPhone|iPad|iPod/.test(navigator?.platform ?? '')")));
 
@@ -25,11 +25,12 @@ internal static class DeviceTargetHelper
 
 	internal static bool IsUIKit() =>
 		OperatingSystem.IsIOS() ||
+		OperatingSystem.IsMacCatalyst() ||
 		OperatingSystem.IsTvOS();
 
 	/// <summary>
 	/// Returns true when the keyboard layout follows Apple conventions (using Command key).
-	/// This covers native Apple platforms (macOS, iOS, tvOS) and WebAssembly
+	/// This covers native Apple platforms (macOS, iOS, Mac Catalyst, tvOS) and WebAssembly
 	/// running in a browser on Apple devices (macOS, iPhone, iPad, iPod).
 	/// </summary>
 	internal static bool UsesAppleKeyboardLayout => _usesAppleKeyboardLayout.Value;
