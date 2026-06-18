@@ -18,6 +18,13 @@ internal sealed class RetainedLayer : IDisposable
 	private int _width;
 	private int _height;
 
+	// The layer holds the whole composed frame, so it must REPLACE the swapchain, not blend into it. The
+	// swapchain back buffer is undefined after a present (it's a rotated buffer holding an old frame), so a
+	// SrcOver blit would let that stale content show through wherever the frame is non-opaque (a transparent
+	// or Mica/acrylic window background, a light-dismiss layer, shadow/rounded-corner antialiased edges) —
+	// producing intermittent "ghosts of past frames". Src copies the layer verbatim, alpha included.
+	private readonly SKPaint _blitPaint = new() { BlendMode = SKBlendMode.Src };
+
 	/// <summary>The retained surface, or null until <see cref="EnsureSurface"/> is first called.</summary>
 	public SKSurface? Surface { get; private set; }
 
@@ -49,7 +56,8 @@ internal sealed class RetainedLayer : IDisposable
 	{
 		if (Surface is { } layer)
 		{
-			layer.Draw(swapchainSurface.Canvas, 0, 0, null);
+			// Src (not SrcOver): the layer is the entire frame and must overwrite the swapchain's stale buffer.
+			layer.Draw(swapchainSurface.Canvas, 0, 0, _blitPaint);
 			swapchainSurface.Canvas.Flush();
 		}
 	}
@@ -58,5 +66,6 @@ internal sealed class RetainedLayer : IDisposable
 	{
 		Surface?.Dispose();
 		Surface = null;
+		_blitPaint.Dispose();
 	}
 }
