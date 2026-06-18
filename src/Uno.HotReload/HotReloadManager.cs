@@ -214,13 +214,8 @@ public sealed class HotReloadManager : IDisposable
 					break;
 
 				// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
-				// FIXME (out of this PR's scope): these compilation errors are only pushed to _tracker (console)
-				// from inside GetCompilationErrors — they are NOT carried onto the operation/handler diagnostics
-				// bag, so a structured consumer sees Failed without the reason (asymmetric with rude edits, which
-				// flow via emitDiagnostics). Side-effecting logging inside a Get... is also smelly. Carrying them
-				// would mean aggregating updater + emit + compilation diagnostics, which can duplicate the same
-				// CSxxxx (emit already reports a broken changed file that the full sweep re-finds) — so it needs a
-				// dedup (by Id+location) before it can be done cleanly. Revisit separately.
+				// FIXME: GetCompilationErrors side-effects into _tracker but doesn't populate `diagnostics`;
+				// consumers see Failed without the reason (asymmetric with rude edits). Needs dedup before fixing.
 				case (true, true) when GetCompilationErrors(result.Solution, ct) is { IsEmpty: false } compilationErrors:
 					_tracker.Output($"Hot reload blocked by {compilationErrors.Length} compilation error(s).");
 					outcome = HotReloadOperationResult.Failed;

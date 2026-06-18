@@ -161,6 +161,8 @@ public class Given_HotReloadManager
 		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.RudeEdit);
 		harness.Handler.Calls.Should().ContainSingle();
 		harness.Handler.Calls[0].Result.Should().Be(HotReloadOperationResult.RudeEdit);
+		harness.Handler.Calls[0].Update.Diagnostics.Should().Contain(d => d.Id == "ENC0033",
+			"handler must receive the rude-edit diagnostics so consumers can surface them");
 	}
 
 	[TestMethod]
@@ -190,6 +192,8 @@ public class Given_HotReloadManager
 		harness.Handler.Calls.Should().ContainSingle(c => c.Result == HotReloadOperationResult.Failed);
 		emitCalled.Should().BeFalse("the updater-error path short-circuits before EmitSolutionUpdateAsync");
 		harness.Manager.CurrentSolution.Should().NotBeSameAs(original, "the rebound solution is committed even on the early Failed exit (§2)");
+		harness.Handler.Calls[0].Update.Diagnostics.Should().Contain(d => d.Id == "TEST0001",
+			"the updater error diagnostic must be forwarded to the handler so consumers see the failure reason");
 	}
 
 	[TestMethod]

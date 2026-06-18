@@ -29,9 +29,11 @@ public interface IHotReloadHandler
 	/// <remarks>
 	/// <para>
 	/// Handlers that only act on a successful delta should guard on <paramref name="result"/> at the
-	/// top and return early. A thrown exception (other than <see cref="System.OperationCanceledException"/>,
-	/// which propagates) completes the operation as <see cref="HotReloadOperationResult.Failed"/> — the
-	/// reload did not take effect on the consumer side.
+	/// top and return early. A thrown exception completes the operation as
+	/// <see cref="HotReloadOperationResult.Failed"/> — the reload did not take effect on the consumer side.
+	/// <see cref="System.OperationCanceledException"/> is the exception: it is re-thrown from this hook and
+	/// the manager reports the operation as <see cref="HotReloadOperationResult.InternalError"/> (not
+	/// <see cref="HotReloadOperationResult.Failed"/>), since cancellation is not a hot-reload failure.
 	/// </para>
 	/// <para>
 	/// <b>Idempotency:</b> a single logical edit may invoke this method more than once. When a host
