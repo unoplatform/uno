@@ -465,10 +465,14 @@
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
-- name: Studio
+- name: Uno Platform Studio
   items:
     - name: Overview
       href: xref:Uno.Platform.Studio.Overview
+    - name: App
+      href: external/studio-docs/App/toc.yml
+    - name: Agent
+      href: external/studio-docs/Agent/toc.yml
     - name: Uno MCPs
       href: xref:Uno.Features.Uno.MCPs
     - name: Hot Reload
