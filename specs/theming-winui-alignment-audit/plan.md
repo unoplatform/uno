@@ -10,7 +10,14 @@ any new cross-ALC subscription must be torn down per ALC (cf. `SystemThemeHelper
 
 ---
 
-## Phase 1 — Fix runtime high contrast (HIGH, current-branch) · A3-2 / A6-3 / A9-4
+## Phase 1 — Fix runtime high contrast (HIGH, current-branch) · A3-2 / A6-3 / A9-4 — ✅ DONE on this branch
+
+> Implemented: HC flag change funnels through `SystemThemeHelper.NotifyHighContrastChanged()` →
+> `Application.OnSystemThemeChanged` (subscribed under `#if UNO_HAS_ENHANCED_LIFECYCLE`, torn down per-ALC by
+> `ClearNonDefaultAlcHandlers`) → `FrameworkTheming.OnThemeChanged` walk; the resolution leaf
+> (`ResourceDictionary.EnsureActiveThemeDictionary`) now reads `CoreServices.Instance.Theming.GetHighContrastTheme()`
+> (the snapshot) when a core exists. Regression test `Given_Theme_Materialization.When_HighContrast_Toggled_After_Load_ReResolves`
+> (red before / green after, validated on Skia Desktop). Original plan below kept for reference.
 
 **Goal.** A runtime high-contrast toggle re-resolves all `{ThemeResource}` values to the HC sub-dictionary,
 fires `HighContrastChanged`, and makes `FrameworkTheming` the single HC source of truth — matching WinUI, where
@@ -50,13 +57,12 @@ the OS HC change drives `FrameworkTheming::OnThemeChanged` → `NotifyThemeChang
 
 ## Phase 2 — Remaining current-branch adjustments · A7-1, doc/policy
 
-**2a. Native secondary-ALC theme drop (A7-1, Medium).** Wrap the `if (_isSecondaryAlcApplication) { … return; }`
-diversion in `SetExplicitRequestedTheme` (`Application.cs:326-335`) in `#if UNO_HAS_ENHANCED_LIFECYCLE` (or
-`#if __SKIA__ || __WASM__`) so native secondary apps fall through to the `#else` branch (which still applies the
-theme). If native ALC theming is intentionally unsupported, document it and make the native
-`RequestedTheme`/`IsThemeSetExplicitly` getters (`Application.cs:211,323`) read `_alcRequestedTheme` so the
-getters stay self-consistent with what was set. Test: a native (or native-simulated) secondary app's
-`RequestedTheme` is observable via the getter and applied.
+**2a. Native secondary-ALC theme drop (A7-1) — verified non-issue, no code change.** Follow-up verification
+established that ALC app **hosting** is Skia/WASM-only (`Application.Alc.cs:204` — *"ALC app hosting only exists on
+Skia and WASM ... on native platforms Window maps to the native window type which doesn't have the ALC partial"*).
+A native secondary-ALC app is never hosted, so the diverted-and-dropped theme has no native subtree to apply to;
+changing the native path would risk the maintenance-only build for an unreachable scenario. Left as-is. If native
+ALC hosting is ever added, restore the `#else` apply path at that time.
 
 **2b. Documentation & policy fixes (Low).**
 - **A9-5:** update `specs/theming-winui-alignment/README.md` status — replace "ALL PHASES (0–8) COMPLETE" with

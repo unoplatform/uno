@@ -76,6 +76,9 @@ public partial class DependencyObjectStore
 
 		// MUX Reference: CDependencyObject.h — fLive, carried here for non-UIElement DOs.
 		IsActive = 1 << 4,
+
+		// Blocks DataContext inheritance for stores owned by a ResourceDictionary item.
+		IsResourceDictionaryItem = 1 << 5,
 	}
 
 	private StoreFlags _flags;
