@@ -1,10 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ParagraphNode.h, ParagraphNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
+#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
+using Uno.UI.Extensions;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
@@ -21,6 +23,8 @@ namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 //---------------------------------------------------------------------------
 internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 {
+	private static bool IsInfiniteF(float v) => float.IsInfinity(v);
+
 	private readonly List<LineMetrics> m_lines = new();
 	private readonly ParagraphTextSource m_textSource;
 	private TextRunCache? m_pTextRunCache;
@@ -178,7 +182,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	//---------------------------------------------------------------------------
 	Size IEmbeddedElementHost.GetAvailableMeasureSize() => m_prevAvailableSize;
 
-	public bool IsAtInsertionPosition(uint position)
+	public override bool IsAtInsertionPosition(uint position)
 	{
 		uint positionInParagraph = GetPositionInParagraph(position);
 		uint lineIndex = GetLineIndexFromPosition(positionInParagraph, out _);
@@ -221,7 +225,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		}
 	}
 
-	public uint PixelPositionToTextPosition(
+	public override uint PixelPositionToTextPosition(
 		Point pixelPosition,
 		out TextGravity gravity)
 	{
@@ -289,7 +293,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		return textPosition;
 	}
 
-	public void GetTextBounds(
+	public override void GetTextBounds(
 		uint start,
 		uint length,
 		List<TextBounds> pBounds)
@@ -484,7 +488,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 			lineMetrics.Length = pTextLine.Length;
 			lineMetrics.Rect.Width = pTextLine.Width;
 			lineMetrics.Rect.Height = pTextLine.Height;
-			lineMetrics.BaselineOffset = (float)pTextLine.Baseline + lineMetrics.Rect.Y;
+			lineMetrics.BaselineOffset = (float)(pTextLine.Baseline + lineMetrics.Rect.Y);
 			lineMetrics.HasMultiCharacterClusters = pTextLine.HasMultiCharacterClusters;
 			lineMetrics.Line = pTextLine;
 
@@ -1103,7 +1107,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 				// needs to be applied.
 				//
 
-				float layoutRoundedLineWidth = pTextOwner.LayoutRound(lineWidth);
+				float layoutRoundedLineWidth = (float)pTextOwner.LayoutRound(lineWidth);
 				if (collapsingWidth < layoutRoundedLineWidth)
 				{
 					trimmingNeeded = true;

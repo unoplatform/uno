@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 /// <summary>
 /// Provides run caching services in order to improve performance.
 /// </summary>
-internal abstract class TextRunCache
+internal abstract partial class TextRunCache
 {
 	// TODO Uno: The concrete instance is created by the Skia text formatter
 	// (the C++ static Create() produced the LineServices-backed cache, which
