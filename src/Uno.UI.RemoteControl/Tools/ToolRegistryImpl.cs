@@ -29,8 +29,15 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 	private readonly ConcurrentQueue<string> _pendingResourceUpdates = new();
 	private int _raisingResource;
 
-	/// <summary>Optional UI-thread marshalling seam; null means run inline.</summary>
-	public IToolDispatcher? Dispatcher { get; set; }
+	private volatile IToolDispatcher? _dispatcher;
+
+	/// <summary>Optional UI-thread marshalling seam; null means run inline. Volatile so the invoking
+	/// thread observes a dispatcher wired from the host-initialization thread without a data race.</summary>
+	public IToolDispatcher? Dispatcher
+	{
+		get => _dispatcher;
+		set => _dispatcher = value;
+	}
 
 	/// <summary>
 	/// Upper bound on a single tool invocation / resource read before it is abandoned with an error
