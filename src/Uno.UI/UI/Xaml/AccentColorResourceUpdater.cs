@@ -29,14 +29,14 @@ internal static class AccentColorResourceUpdater
 			if (accentDictionary.ThemeDictionaries.TryGetValue(themeKey, out var themeObj) &&
 				themeObj is ResourceDictionary themeDictionary)
 			{
-				SetAccentColors(themeDictionary, palette);
+				SetAccentColors(themeDictionary, palette, isHighContrast: themeKey == "HighContrast");
 			}
 		}
 
 		accentDictionary.InvalidateNotFoundCache(true);
 	}
 
-	private static void SetAccentColors(ResourceDictionary dictionary, AccentColorPalette palette)
+	private static void SetAccentColors(ResourceDictionary dictionary, AccentColorPalette palette, bool isHighContrast)
 	{
 		dictionary["SystemAccentColor"] = palette.Accent;
 		dictionary["SystemAccentColorLight1"] = palette.Light1;
@@ -46,8 +46,15 @@ internal static class AccentColorResourceUpdater
 		dictionary["SystemAccentColorDark2"] = palette.Dark2;
 		dictionary["SystemAccentColorDark3"] = palette.Dark3;
 
-		// SystemColorHighlightColor should match accent
-		dictionary["SystemColorHighlightColor"] = palette.Accent;
+		// SystemColorHighlightColor maps to the OS COLOR_HIGHLIGHT (which tracks the accent on Windows).
+		// The HighContrast theme keeps its dedicated high-contrast value to preserve contrast.
+		if (!isHighContrast)
+		{
+			dictionary["SystemColorHighlightColor"] = palette.Accent;
+		}
+
+		// Color counterpart that WinUI injects alongside the accent brush.
+		dictionary["SystemColorControlAccentColor"] = palette.Accent;
 
 		// Rebuild the accent brush
 		dictionary["SystemColorControlAccentBrush"] = new SolidColorBrush(palette.Accent);

@@ -466,9 +466,13 @@ namespace Microsoft.UI.Xaml
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
 
 			// Some platforms piggyback accent color changes on theme change events.
-			AccentColorHelper.RefreshAccentColor();
-
-			UISettings.OnColorValuesChanged();
+			// RefreshAccentColor raises AccentColorChanged (→ OnAccentColorChanged → OnColorValuesChanged)
+			// when the accent actually changed; only notify here when it didn't, so ColorValuesChanged
+			// fires once per effective change.
+			if (!AccentColorHelper.RefreshAccentColor())
+			{
+				UISettings.OnColorValuesChanged();
+			}
 		}
 
 		private void OnAccentColorChanged(object sender, EventArgs e)
