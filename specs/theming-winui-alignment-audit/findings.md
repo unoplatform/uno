@@ -284,16 +284,18 @@ Fold into the A3-2 fix.
 
 ## G. ALC theming preservation (A7)
 
-### A7-1 — Native secondary-ALC app's explicit `RequestedTheme` is silently dropped · **Medium · CB · needs-verification (corroborated)**
-- The unconditional `if (_isSecondaryAlcApplication) { SetAlcRequestedTheme(...); return; }` at the **top** of
-  `SetExplicitRequestedTheme` (`Application.cs:326-335`, **outside** `#if UNO_HAS_ENHANCED_LIFECYCLE`) diverts
-  **all** secondary apps to `SetAlcRequestedTheme`. On native the element pin is `#if __SKIA__ || __WASM__`-gated
-  (`Application.Alc.cs:203-213`, skipped) and the native `RequestedTheme`/`IsThemeSetExplicitly` getters
-  (`Application.cs:211,323`) never read `_alcRequestedTheme` → the theme becomes a **no-op**. Before `3263aeed19`
-  the native `#else` branch applied it. The spec marks iOS/Android ALC "Supported", so this is a regression.
-- **Fix:** wrap the diversion in `#if UNO_HAS_ENHANCED_LIFECYCLE` (or `#if __SKIA__ || __WASM__`) so native
-  secondary apps fall through to the `#else` branch and still apply their theme; or make the native getters read
-  `_alcRequestedTheme`. If intentionally unsupported on native, document it and keep the getters self-consistent.
+### A7-1 — Native secondary-ALC app's explicit `RequestedTheme` is silently dropped · ~~Medium · CB~~ → **non-issue (verified) · OK**
+- **Original concern:** the unconditional `if (_isSecondaryAlcApplication) { SetAlcRequestedTheme(...); return; }`
+  at the top of `SetExplicitRequestedTheme` (`Application.cs:328`, **outside** `#if UNO_HAS_ENHANCED_LIFECYCLE`)
+  diverts native secondary apps to `SetAlcRequestedTheme`, whose element pin is `#if __SKIA__ || __WASM__`-gated
+  (`Application.Alc.cs:203-213`, skipped on native) and whose value the native getters never read → apparent no-op.
+- **Resolution (2026-06-18, follow-up verification — the original A7-1 verdict was rate-limited):** **not a real
+  regression.** `Application.Alc.cs:203-205` states it explicitly: *"ALC app hosting only exists on Skia and WASM
+  (see ExitAlcApplication); on native platforms Window maps to the native window type which doesn't have the ALC
+  partial."* A secondary-ALC app is never **hosted** on native (no window/content), so there is no native subtree
+  to theme and the "dropped" theme has nothing to apply to. Touching the native path here would risk the
+  maintenance-only native build for an unreachable scenario, contradicting the "native behavior unchanged" scope.
+  **No code change.** (If native ALC hosting is ever added, restore the `#else` apply path then.)
 
 ### A7-3 — Secondary app bootstrap runs `InitializeSystemTheme → OnThemeChanged` on the shared FrameworkTheming · **Low · FU · (no verdict)**
 - `Application.skia.cs:149-151` calls `InitializeSystemTheme()` unconditionally for secondary apps →

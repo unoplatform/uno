@@ -36,7 +36,7 @@ internal partial class CoreServices
 		_requestedThemeForSubTree = Microsoft.UI.Xaml.Theming.GetBaseValue(requestedTheme);
 
 		// TODO Uno: WinUI forwards the sub-tree theme to the walk cache here
-		// (m_themeWalkResourceCache->SetSubTreeTheme, xcpcore.cpp:8132). Uno's
+		// (m_themeWalkResourceCache->SetSubTreeTheme, xcpcore.cpp:7905). Uno's
 		// ThemeWalkResourceCache takes the theme as a lookup parameter instead of an
 		// ambient; couple it here once the cache reads the slot (Phase 5).
 	}
