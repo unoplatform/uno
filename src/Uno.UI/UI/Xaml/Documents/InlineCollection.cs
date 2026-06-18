@@ -38,6 +38,9 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 			)
 		{
+			// Invalidate the run-model position-count cache (CInlineCollection::MarkDirty).
+			ResetPositionCountsPartial();
+
 #if !IS_UNIT_TESTS
 			InvalidateTraversedTree();
 
@@ -61,6 +64,9 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 #endif
 		}
+
+		// Implemented on Skia to invalidate the run-model position-count cache.
+		partial void ResetPositionCountsPartial();
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 
