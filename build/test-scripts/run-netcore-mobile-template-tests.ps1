@@ -163,7 +163,7 @@ $sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolki
 
 $projects =
 @(
-    # 5.3 Uno App with net9
+    # 5.3 Uno App with net10
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0"), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0", $sdkFeatures), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-browserwasm"), @("macOS", "NetCore")),
