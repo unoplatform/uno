@@ -179,7 +179,7 @@ $projects =
     @(2, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
 
     # Publishing validation
-    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-p:PackageFormat=app", "-r", "osx-x64", "-p:RuntimeIdentifiers=osx-x64"), @("OnlyMacOS", "NetCore", "Publish")),
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-desktop", "-p:TargetFrameworks=net10.0-desktop", "-p:PackageFormat=app", "-r", "osx-x64", "-p:RuntimeIdentifiers=osx-x64"), @("OnlyMacOS", "NetCore", "Publish")),
 
     # Publish with no debug symbols validation
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-desktop", "-p:TargetFrameworks=net10.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
