@@ -1093,6 +1093,76 @@ public class Given_Theme_Materialization
 			await WindowHelper.WaitForIdle();
 		}
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_HighContrast_Toggled_After_Load_ReResolves()
+	{
+		// A runtime high-contrast toggle must re-resolve already-materialized {ThemeResource} values to the
+		// HighContrast sub-dictionary (and back) — WinUI drives FrameworkTheming::OnThemeChanged →
+		// NotifyThemeChange on an OS high-contrast change. Regression guard: before the HC change was wired
+		// into OnThemeChanged, toggling the flag after load did nothing (the brush stayed at its Light value),
+		// and FrameworkTheming's high-contrast snapshot never refreshed.
+		var lightSentinel = Color.FromArgb(0xFF, 0x11, 0x11, 0x11);
+		var hcSentinel = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+
+		using var lightApp = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		try
+		{
+			var root = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				        Width="50" Height="50" Background="{ThemeResource SentinelBrush}">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="HighContrast">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF00FF00" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+				</Border>
+				""");
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			Assert.AreEqual(lightSentinel, ColorOf(root),
+				"Before toggling high contrast, the Light sub-dictionary must be selected.");
+
+			// Toggle high contrast ON after load — the brush must re-resolve to the HighContrast value.
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(Uno.UI.Xaml.Core.CoreServices.Instance.Theming.HasHighContrastTheme(),
+				"Toggling the flag must refresh the FrameworkTheming high-contrast snapshot (single source of truth).");
+			Assert.AreEqual(hcSentinel, ColorOf(root),
+				"A runtime high-contrast toggle must re-resolve the brush to the HighContrast sub-dictionary.");
+
+			// Toggle high contrast OFF again — the brush must re-resolve back to Light.
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(lightSentinel, ColorOf(root),
+				"Turning high contrast off must re-resolve the brush back to the Light sub-dictionary.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
 #endif
 
 	// ---- §B leak-check guard — no global theme stack reintroduced (Phase 4) ----
