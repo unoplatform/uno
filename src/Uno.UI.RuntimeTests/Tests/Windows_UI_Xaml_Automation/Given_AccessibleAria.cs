@@ -38,9 +38,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			const string automationId = "submit-button-automation-id";
 
-			// A bare ContentControl (no Content, no Name) so the only candidate that could
-			// wrongly become the label is the AutomationId itself.
-			var control = new ContentControl();
+			// A Button with a UIElement Content (no string Content, no Name) so the only candidate
+			// that could wrongly become the label is the AutomationId itself. ResolveLabel returns
+			// null for UIElement Content (see switch in AriaMapper.ResolveLabel), so the Border
+			// child cannot become the label. Button always has an automation peer; the Border
+			// gives the control a measurable footprint.
+			var control = new Button { Content = new Border { Width = 100, Height = 30 } };
 			AutomationProperties.SetAutomationId(control, automationId);
 
 			await UITestHelper.Load(control);
@@ -67,7 +70,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			const string automationId = "save-button-automation-id";
 			const string name = "Save document";
 
-			var control = new ContentControl();
+			var control = new ContentControl { Width = 100, Height = 30 };
 			AutomationProperties.SetAutomationId(control, automationId);
 			AutomationProperties.SetName(control, name);
 
@@ -162,8 +165,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[RunsOnUIThread]
 		public async Task When_Unnamed_Control_Then_No_RoleDescription()
 		{
-			// A bare ContentControl with a LocalizedControlType but NO name/content → no accessible name.
-			var control = new ContentControl();
+			// A Button with a UIElement Content but NO name → no accessible name.
+			// ResolveLabel returns null for UIElement Content, so the Border child cannot become
+			// the label. Button always has an automation peer; the Border gives the control a
+			// measurable footprint.
+			var control = new Button { Content = new Border { Width = 100, Height = 30 } };
 			AutomationProperties.SetLocalizedControlType(control, "custom widget");
 
 			await UITestHelper.Load(control);
@@ -602,9 +608,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Unnamed_Main_Landmark_Then_Role_Kept_But_Unnamed_Region_Dropped()
 		{
-			var main = new Border();
+			// Explicit sizes on the empty Borders so the StackPanel has a measurable footprint.
+			var main = new Border { Width = 100, Height = 20 };
 			AutomationProperties.SetLandmarkType(main, AutomationLandmarkType.Main);
-			var unnamedRegion = new Border();
+			var unnamedRegion = new Border { Width = 100, Height = 20 };
 			AutomationProperties.SetLandmarkType(unnamedRegion, AutomationLandmarkType.Custom);
 			var panel = new StackPanel();
 			panel.Children.Add(main);
