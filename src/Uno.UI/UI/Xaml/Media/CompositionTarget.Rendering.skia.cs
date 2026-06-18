@@ -43,13 +43,19 @@ public partial class CompositionTarget
 	private readonly DamageRegion _pendingDamage = new();
 
 	// Snapshot of the damage region attached to a recorded frame, consumed by Draw() on the render thread.
-	// The region may be a possibly-disjoint union of arbitrary shapes. It is transported across the
-	// record/present threads as SVG path data (a GC-managed string, so the snapshot needs no native cleanup):
-	// RegionSvg is null when the region is a single rectangle (the common case) — Bounds then describes it.
-	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds, string? RegionSvg);
+	// The region may be a possibly-disjoint union of arbitrary shapes. Region is an SKPath the snapshot OWNS:
+	// a copy taken from the per-frame accumulator (which is reused/reset each frame), so it must be disposed
+	// when the frame is retired — after it is presented (Draw), carried forward (Render), or superseded
+	// (ReturnFrame). Region is null when the region is a single rectangle (the common case) — Bounds describes it.
+	private readonly record struct DamageSnapshot(bool IsFullFrame, bool IsEmpty, SKRect Bounds, SKPath? Region)
+	{
+		public void Dispose() => Region?.Dispose();
+	}
 
 	private static readonly DamageSnapshot _emptyDamage = new(IsFullFrame: false, IsEmpty: true, default, null);
 
+	// Takes an owned copy of the accumulator's region (the accumulator's path is reused/reset each frame, so
+	// the snapshot can't reference it). Common single-rectangle and empty cases need no path.
 	private static DamageSnapshot SnapshotFrom(DamageRegion region)
 	{
 		if (region.IsFullFrame)
@@ -64,33 +70,7 @@ public partial class CompositionTarget
 		{
 			return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, rect, null);
 		}
-		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, region.Region.ToSvgPathData());
-	}
-
-	// Builds an SKPath for a (non-full, non-empty) snapshot's region. Caller owns/disposes it.
-	private static SKPath ToRegionPath(DamageSnapshot damage)
-	{
-		if (damage.RegionSvg is { } svg)
-		{
-			return SKPath.ParseSvgPathData(svg);
-		}
-		var path = new SKPath();
-		path.AddRect(damage.Bounds);
-		return path;
-	}
-
-	// Builds a DamageSnapshot from a region path (rectangle fast path when possible). Does not take ownership.
-	private static DamageSnapshot SnapshotFromPath(SKPath region)
-	{
-		if (region.IsEmpty)
-		{
-			return _emptyDamage;
-		}
-		if (region.IsRect)
-		{
-			return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, null);
-		}
-		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, region.ToSvgPathData());
+		return new DamageSnapshot(IsFullFrame: false, IsEmpty: false, region.Bounds, new SKPath(region.Region));
 	}
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
@@ -160,58 +140,56 @@ public partial class CompositionTarget
 			_pendingDamage.AddRect(fpsBounds);
 		}
 
-		// Snapshot and reset the accumulated damage region for this frame. The picture above is always
-		// the full tree; the snapshot tells Draw() which region actually needs to be re-presented.
-		var damageSnapshot = SnapshotFrom(_pendingDamage);
-		_pendingDamage.Reset();
-
-		// Clamp the damage to the visual-tree bounds. Nothing outside the frame is ever presented, and an
-		// unbounded contributor (a visual that falls back to an infinite clip) would otherwise pin the damage
-		// — and, with carry-forward, every later frame — to the infinite rect, repainting the whole window.
-		if (!damageSnapshot.IsFullFrame && !damageSnapshot.IsEmpty)
-		{
-			var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
-			if (!frameRect.Contains(damageSnapshot.Bounds))
-			{
-				if (damageSnapshot.RegionSvg is null)
-				{
-					var clampedBounds = SKRect.Intersect(damageSnapshot.Bounds, frameRect);
-					damageSnapshot = clampedBounds.IsEmpty ? _emptyDamage : new DamageSnapshot(false, false, clampedBounds, null);
-				}
-				else
-				{
-					using var region = ToRegionPath(damageSnapshot);
-					using var framePath = new SKPath();
-					framePath.AddRect(frameRect);
-					region.Op(framePath, SKPathOp.Intersect, region);
-					damageSnapshot = SnapshotFromPath(region);
-				}
-			}
-		}
-
+		// Fold everything into the accumulator, then snapshot once. Doing the region algebra here (rather than
+		// on the immutable snapshot) keeps the snapshot a single owned path with a simple lifetime.
+		var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
 		var previousFrame = default((IntPtr frame, SKPath path, DamageSnapshot damage)?);
+		DamageSnapshot damageSnapshot;
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			// If a previously recorded frame was never presented (it's still here because Draw didn't
-			// borrow it), its damage region was never painted to the surface. Carry that damage forward
-			// into this frame so those regions are still repainted; otherwise damage-region would
+			// If a previously recorded frame was never presented (it's still here because Draw didn't borrow
+			// it), its damage region was never painted to the surface. Carry it forward by merging it into
+			// this frame's accumulator so those regions are still repainted; otherwise damage-region would
 			// drop the changes from the discarded frame, leaving stale pixels.
-			if (previousFrame is { } pf)
+			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
 			{
-				damageSnapshot = MergeDamage(damageSnapshot, pf.damage);
+				if (carried.IsFullFrame)
+				{
+					_pendingDamage.SetFullFrame();
+				}
+				else if (carried.Region is { } carriedPath)
+				{
+					_pendingDamage.AddPath(carriedPath);
+				}
+				else
+				{
+					_pendingDamage.AddRect(carried.Bounds);
+				}
 			}
+
+			// Clamp to the visual-tree bounds: nothing outside the frame is ever presented, and an unbounded
+			// contributor (a visual that falls back to an infinite clip) would otherwise pin the damage — and,
+			// with carry-forward, every later frame — to the infinite rect, repainting the whole window.
+			_pendingDamage.ClampTo(frameRect);
+
+			// Snapshot (owned copy) and reset the accumulator. The picture above is always the full tree;
+			// the snapshot tells Draw() which region actually needs to be re-presented.
+			damageSnapshot = SnapshotFrom(_pendingDamage);
+			_pendingDamage.Reset();
 
 			_lastRenderedFrame = (picture, path, damageSnapshot);
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
-		// Delete previous SKPicture now since we are swapping it
-		if (previousFrame != null)
+		// The previous frame is now replaced: free its picture, and dispose its damage path — its region was
+		// copied into this frame's snapshot above (or wasn't needed), so it is no longer referenced.
+		if (previousFrame is { } prev)
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
+			UnoSkiaApi.sk_refcnt_safe_unref(prev.frame);
+			prev.damage.Dispose();
 		}
 
 		if (_isRenderingActive)
@@ -253,48 +231,21 @@ public partial class CompositionTarget
 
 	void ICompositionTarget.AddFullFrameDamage() => _pendingDamage.SetFullFrame();
 
-	// Unions two per-frame damage snapshots (used to carry an un-presented frame's damage forward). The
-	// union is a true geometric union of the two (possibly non-rectangular, possibly disjoint) regions, not
-	// their bounding box, so carrying damage forward doesn't fill in the gaps between far-apart changes.
-	private static DamageSnapshot MergeDamage(DamageSnapshot current, DamageSnapshot carried)
-	{
-		if (current.IsFullFrame || carried.IsFullFrame)
-		{
-			return new DamageSnapshot(IsFullFrame: true, IsEmpty: false, default, null);
-		}
-
-		if (carried.IsEmpty)
-		{
-			return current;
-		}
-
-		if (current.IsEmpty)
-		{
-			return carried;
-		}
-
-		using var region = ToRegionPath(current);
-		using var carriedRegion = ToRegionPath(carried);
-		region.Op(carriedRegion, SKPathOp.Union, region);
-		return SnapshotFromPath(region);
-	}
-
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, in DamageSnapshot damage)
 	{
 		// Diagnostic only: tint + outline the region repainted this frame. Drawing the actual region (which
 		// may be disjoint / non-rectangular) shows the gaps between changed areas are not being repainted.
 		using var fill = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
 		using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
-		if (damage.RegionSvg is null)
+		if (damage.Region is { } region)
 		{
-			canvas.DrawRect(damage.Bounds, fill);
-			canvas.DrawRect(damage.Bounds, stroke);
+			canvas.DrawPath(region, fill);
+			canvas.DrawPath(region, stroke);
 		}
 		else
 		{
-			using var region = ToRegionPath(damage);
-			canvas.DrawPath(region, fill);
-			canvas.DrawPath(region, stroke);
+			canvas.DrawRect(damage.Bounds, fill);
+			canvas.DrawRect(damage.Bounds, stroke);
 		}
 	}
 
@@ -372,21 +323,19 @@ public partial class CompositionTarget
 			// redraw wipes the previous frame's tint) and only highlight the region that WOULD have been the
 			// damage clip. This is a diagnostic aid; it intentionally forgoes the clipped present so the marks
 			// flash on the current damage region instead of piling up.
-			SKPath? damageClipPath = null;
 			if (useDamageRegion && !overlayEnabled)
 			{
-				if (damage.IsEmpty || damage.RegionSvg is null)
-				{
-					targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
-				}
-				else
+				if (damage.Region is { } region)
 				{
 					// Non-rectangular / disjoint region: clip to the actual region so the gaps between changed
 					// areas (and the parts outside a curved clip) are preserved from the previous frame. No
 					// antialiasing on the damage clip — the regions are pixel-snapped, and an AA clip would blend
 					// boundary pixels against the retained surface, diverging from a full repaint.
-					damageClipPath = ToRegionPath(damage);
-					targetCanvas.ClipPath(damageClipPath, antialias: false);
+					targetCanvas.ClipPath(region, antialias: false);
+				}
+				else
+				{
+					targetCanvas.ClipRect(damage.IsEmpty ? SKRect.Empty : damage.Bounds);
 				}
 			}
 
@@ -403,13 +352,14 @@ public partial class CompositionTarget
 			}
 
 			targetCanvas.Restore();
-			damageClipPath?.Dispose();
 
 			// The frame has now been presented, so its damage region is consumed. ReturnFrame puts the frame
 			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
-			// otherwise carry this already-presented damage forward via MergeDamage — accumulating it forever
-			// under a continuous render loop and pinning the damage region (and the overlay) to the whole frame.
-			// Return it with an empty damage region so a re-present paints nothing and the carry stays clean.
+			// otherwise carry this already-presented damage forward — accumulating it forever under a continuous
+			// render loop and pinning the damage region (and the overlay) to the whole frame. Return it with an
+			// empty damage region so a re-present paints nothing and the carry stays clean, and dispose the
+			// consumed snapshot's path (it is no longer referenced once replaced by the empty snapshot).
+			lastRenderedFrame.damage.Dispose();
 			ReturnFrame((lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, _emptyDamage));
 
 			InvokeRendering();
@@ -436,7 +386,7 @@ public partial class CompositionTarget
 
 	private void ReturnFrame((IntPtr frame, SKPath nativeElementClipPath, DamageSnapshot damage) frame)
 	{
-		var pictureToDelete = IntPtr.Zero;
+		var supersededFrame = false;
 
 		lock (_frameGate)
 		{
@@ -447,14 +397,15 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				pictureToDelete = frame.frame;
+				supersededFrame = true;
 			}
 		}
 
-		// Delete it then
-		if (pictureToDelete != IntPtr.Zero)
+		// A newer frame is already in place: this one is discarded, so free its picture and damage path.
+		if (supersededFrame)
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
+			UnoSkiaApi.sk_refcnt_safe_unref(frame.frame);
+			frame.damage.Dispose();
 		}
 	}
 

@@ -9,29 +9,19 @@ namespace Uno.UI.Composition;
 /// previous presented frame, for damage-region rendering. The region is a possibly-disjoint union of
 /// arbitrary shapes (not merged into a single bounding rectangle), so the gaps between far-apart changes
 /// (e.g. a TextBox near the top and a ListView near the bottom) are not repainted, and non-rectangular
-/// clips (rounded corners, curves) are honored. To bound cost, once too many distinct regions accumulate
-/// the whole surface is repainted instead.
+/// clips (rounded corners, curves) are honored.
 /// </summary>
 internal sealed class DamageRegion
 {
-	// Beyond this many distinct contributions in a frame, a precise per-region clip isn't worth its cost.
-	// Instead of repainting the whole surface, collapse to the bounding box of everything accumulated so far
-	// (one cheap rectangular clip) and keep extending that box. This is correct (a superset of the exact
-	// region) and far tighter than a full-surface repaint — e.g. a scroll, where every visible row moves and
-	// contributes its own region, stays clipped to the scrolled viewport instead of the whole window.
-	private const int MaxRegions = 64;
-
 	private SKPath _region = new();
 	private SKPath _spareUnion = new();
 	private readonly SKPath _scratch = new();
-	private int _count;
-	private bool _coalescedToBounds;
 
-	/// <summary>The whole surface must be repainted this frame (e.g. resize, or too many scattered changes).</summary>
+	/// <summary>The whole surface must be repainted this frame (e.g. on resize).</summary>
 	public bool IsFullFrame { get; private set; }
 
 	/// <summary>Nothing changed this frame and a full repaint is not required.</summary>
-	public bool IsEmpty => !IsFullFrame && _count == 0;
+	public bool IsEmpty => !IsFullFrame && _region.IsEmpty;
 
 	/// <summary>The bounding box of the changed region (valid only when not empty / not full-frame).</summary>
 	public SKRect Bounds => _region.Bounds;
@@ -71,28 +61,23 @@ internal sealed class DamageRegion
 		Union(region);
 	}
 
+	/// <summary>Clips the accumulated region to <paramref name="frameRect"/> (nothing outside the frame is ever presented).</summary>
+	public void ClampTo(SKRect frameRect)
+	{
+		if (IsFullFrame || _region.IsEmpty || frameRect.Contains(_region.Bounds))
+		{
+			return;
+		}
+
+		_scratch.Rewind();
+		_scratch.AddRect(frameRect);
+		_region.Op(_scratch, SKPathOp.Intersect, _spareUnion);
+		(_region, _spareUnion) = (_spareUnion, _region);
+	}
+
 	private void Union(SKPath addition)
 	{
-		if (_coalescedToBounds)
-		{
-			// Already a single bounding rect; just extend it to include the new contribution (stays one rect).
-			ExtendBounds(addition.Bounds);
-			return;
-		}
-
-		if (_count >= MaxRegions)
-		{
-			// Too many distinct contributions to keep clipping precisely. Collapse everything accumulated so
-			// far to its bounding box and switch to extending that box from here on.
-			var bounds = SKRect.Union(_region.Bounds, addition.Bounds);
-			_region.Rewind();
-			_region.AddRect(bounds);
-			_coalescedToBounds = true;
-			_count = 1;
-			return;
-		}
-
-		if (_count == 0)
+		if (_region.IsEmpty)
 		{
 			_region.AddPath(addition);
 		}
@@ -100,33 +85,22 @@ internal sealed class DamageRegion
 		{
 			// A true geometric union keeps disjoint shapes disjoint and coalesces overlapping/adjacent ones,
 			// regardless of contour winding (so the clip never develops a hole that would drop a repaint).
+			// Overlapping contributions (e.g. every visible row of a scrolling list) collapse here, so the
+			// path's complexity tracks the actual changed geometry, not the number of contributions.
 			_region.Op(addition, SKPathOp.Union, _spareUnion);
 			(_region, _spareUnion) = (_spareUnion, _region);
 		}
-
-		_count++;
-	}
-
-	private void ExtendBounds(SKRect addition)
-	{
-		var bounds = SKRect.Union(_region.Bounds, addition);
-		_region.Rewind();
-		_region.AddRect(bounds);
 	}
 
 	public void SetFullFrame()
 	{
 		IsFullFrame = true;
 		_region.Rewind();
-		_count = 0;
-		_coalescedToBounds = false;
 	}
 
 	public void Reset()
 	{
 		_region.Rewind();
-		_count = 0;
 		IsFullFrame = false;
-		_coalescedToBounds = false;
 	}
 }
