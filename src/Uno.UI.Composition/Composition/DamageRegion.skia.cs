@@ -33,9 +33,6 @@ internal sealed class DamageRegion
 	/// <summary>Nothing changed this frame and a full repaint is not required.</summary>
 	public bool IsEmpty => !IsFullFrame && _count == 0;
 
-	/// <summary>Diagnostic: the number of distinct contributions accumulated this frame (capped at <see cref="MaxRegions"/>).</summary>
-	public int RegionCount => _count;
-
 	/// <summary>The bounding box of the changed region (valid only when not empty / not full-frame).</summary>
 	public SKRect Bounds => _region.Bounds;
 
