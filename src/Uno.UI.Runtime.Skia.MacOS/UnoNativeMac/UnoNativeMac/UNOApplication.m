@@ -7,6 +7,7 @@
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 static text_scale_factor_change_fn_ptr text_scale_factor_change;
+static accent_color_change_fn_ptr accent_color_change;
 static id<MTLDevice> device;
 
 // KVO context pointers (values are not read — only compared for identity).
@@ -68,6 +69,35 @@ double uno_get_text_scale_factor(void)
     return 1.0;
 }
 
+inline accent_color_change_fn_ptr uno_get_accent_color_change_callback(void)
+{
+    return accent_color_change;
+}
+
+void uno_set_accent_color_change_callback(accent_color_change_fn_ptr p)
+{
+    accent_color_change = p;
+}
+
+// Returns NSColor.controlAccentColor (macOS 10.14+) as 32-bit ARGB; the system resolves
+// "multicolor"/"graphite"/etc. to a concrete RGB.
+uint32 uno_get_accent_color(void)
+{
+    NSColor *raw = [NSColor controlAccentColor];
+    NSColor *rgb = [raw colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (rgb == nil) {
+        // Fallback to the Uno default accent (#FF3399FF), matching UISettings' managed fallback.
+        return 0xFF3399FF;
+    }
+    CGFloat r = 0, g = 0, b = 0, a = 0;
+    [rgb getRed:&r green:&g blue:&b alpha:&a];
+    uint32_t ar = (uint32_t)(a * 255.0);
+    uint32_t rr = (uint32_t)(r * 255.0);
+    uint32_t gr = (uint32_t)(g * 255.0);
+    uint32_t br = (uint32_t)(b * 255.0);
+    return (ar << 24) | (rr << 16) | (gr << 8) | br;
+}
+
 bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];
@@ -90,6 +120,12 @@ bool uno_app_initialize(bool *metal)
                                                 forKeyPath:@"UIPreferredContentSizeCategoryName"
                                                    options:NSKeyValueObservingOptionNew
                                                    context:kTextScaleFactorContext];
+
+        // Accent color changes post NSSystemColorsDidChangeNotification.
+        [[NSNotificationCenter defaultCenter] addObserver:ad
+                                                 selector:@selector(systemColorsChanged:)
+                                                     name:NSSystemColorsDidChangeNotification
+                                                   object:nil];
 
 
         if (app.mainMenu == nil) {
@@ -280,6 +316,19 @@ void uno_application_quit(void)
 #endif
     dispatch_async(dispatch_get_main_queue(), ^{
         text_scale_factor_change_fn_ptr cb = uno_get_text_scale_factor_change_callback();
+        if (cb != NULL) {
+            cb();
+        }
+    });
+}
+
+- (void)systemColorsChanged:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.systemColorsChanged %@", notification.name);
+#endif
+    dispatch_async(dispatch_get_main_queue(), ^{
+        accent_color_change_fn_ptr cb = uno_get_accent_color_change_callback();
         if (cb != NULL) {
             cb();
         }

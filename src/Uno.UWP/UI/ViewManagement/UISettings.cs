@@ -68,6 +68,22 @@ namespace Windows.UI.ViewManagement
 
 		static partial void ObserveTextScaleFactorChangesPlatform();
 
+		/// <summary>Starts observing OS accent color changes; raises <see cref="ColorValuesChanged"/> on change (Skia desktop). No-op elsewhere.</summary>
+		internal static void ObserveAccentColorChanges()
+		{
+			ObserveAccentColorChangesPlatform();
+		}
+
+		static partial void ObserveAccentColorChangesPlatform();
+
+		/// <summary>True when the platform provides the OS accent color (e.g. macOS); otherwise the default SystemAccentColor resources are kept.</summary>
+		internal static bool HasAccentColorExtension =>
+#if __SKIA__
+			GetAccentColorExtension() is not null;
+#else
+			false;
+#endif
+
 #pragma warning disable 67 // Event is never used — used by platform-specific partials
 		internal static event global::System.EventHandler TextScaleFactorChangedInternal;
 #pragma warning restore 67
@@ -79,6 +95,28 @@ namespace Windows.UI.ViewManagement
 		public Color GetColorValue(UIColorType desiredColor)
 		{
 			var systemTheme = SystemThemeHelper.SystemTheme;
+#if __SKIA__
+			if (desiredColor is UIColorType.Accent
+				or UIColorType.AccentDark1 or UIColorType.AccentDark2 or UIColorType.AccentDark3
+				or UIColorType.AccentLight1 or UIColorType.AccentLight2 or UIColorType.AccentLight3)
+			{
+				if (GetAccentColorExtension() is { } extension)
+				{
+					var accent = extension.GetAccentColor();
+					return desiredColor switch
+					{
+						UIColorType.Accent => accent,
+						UIColorType.AccentDark1 => AdjustLightness(accent, -0.15),
+						UIColorType.AccentDark2 => AdjustLightness(accent, -0.30),
+						UIColorType.AccentDark3 => AdjustLightness(accent, -0.45),
+						UIColorType.AccentLight1 => AdjustLightness(accent, 0.15),
+						UIColorType.AccentLight2 => AdjustLightness(accent, 0.30),
+						UIColorType.AccentLight3 => AdjustLightness(accent, 0.45),
+						_ => accent,
+					};
+				}
+			}
+#endif
 			return desiredColor switch
 			{
 				UIColorType.Background =>
@@ -97,6 +135,72 @@ namespace Windows.UI.ViewManagement
 				_ => Colors.Transparent
 			};
 		}
+
+#if __SKIA__
+		private static Color AdjustLightness(Color color, double delta)
+		{
+			// Simple HSL-based shade derivation for the AccentDark/Light variants
+			// since macOS only exposes a single accentColor.
+			var r = color.R / 255.0;
+			var g = color.G / 255.0;
+			var b = color.B / 255.0;
+
+			var max = global::System.Math.Max(r, global::System.Math.Max(g, b));
+			var min = global::System.Math.Min(r, global::System.Math.Min(g, b));
+			var l = (max + min) / 2.0;
+
+			double h = 0, s = 0;
+			if (max != min)
+			{
+				var d = max - min;
+				s = l > 0.5 ? d / (2.0 - max - min) : d / (max + min);
+				if (max == r)
+				{
+					h = (g - b) / d + (g < b ? 6 : 0);
+				}
+				else if (max == g)
+				{
+					h = (b - r) / d + 2;
+				}
+				else
+				{
+					h = (r - g) / d + 4;
+				}
+				h /= 6.0;
+			}
+
+			l = global::System.Math.Clamp(l + delta, 0.0, 1.0);
+
+			double r1, g1, b1;
+			if (s == 0)
+			{
+				r1 = g1 = b1 = l;
+			}
+			else
+			{
+				var q = l < 0.5 ? l * (1.0 + s) : l + s - l * s;
+				var p = 2.0 * l - q;
+				r1 = HueToRgb(p, q, h + 1.0 / 3.0);
+				g1 = HueToRgb(p, q, h);
+				b1 = HueToRgb(p, q, h - 1.0 / 3.0);
+			}
+
+			return Color.FromArgb(color.A,
+				(byte)global::System.Math.Round(r1 * 255),
+				(byte)global::System.Math.Round(g1 * 255),
+				(byte)global::System.Math.Round(b1 * 255));
+		}
+
+		private static double HueToRgb(double p, double q, double t)
+		{
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
+			if (t < 1.0 / 2.0) return q;
+			if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
+			return p;
+		}
+#endif
 
 		[NotImplemented]
 		public uint CaretBlinkRate

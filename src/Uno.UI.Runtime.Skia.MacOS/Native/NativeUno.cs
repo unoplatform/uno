@@ -206,6 +206,12 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial double uno_get_text_scale_factor();
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_accent_color_change_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial uint uno_get_accent_color();
+
 	// IME (Input Method Editor) callbacks
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_ime_callbacks(

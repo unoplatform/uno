@@ -13,9 +13,21 @@ internal interface ITextScaleFactorExtension
 	double GetTextScaleFactor();
 }
 
+/// <summary>
+/// Extension interface for Skia platforms to provide the OS accent color.
+/// </summary>
+internal interface IAccentColorExtension
+{
+	event global::System.EventHandler AccentColorChanged;
+	Color GetAccentColor();
+}
+
 public partial class UISettings
 {
 	private static ITextScaleFactorExtension? _textScaleFactorExtension;
+	private static IAccentColorExtension? _accentColorExtension;
+	private static bool _accentColorExtensionChecked;
+	private static bool _accentColorChangesObserved;
 
 	public double TextScaleFactor => GetTextScaleFactorValue();
 
@@ -31,6 +43,17 @@ public partial class UISettings
 		return _textScaleFactorExtension;
 	}
 
+	internal static IAccentColorExtension? GetAccentColorExtension()
+	{
+		if (!_accentColorExtensionChecked)
+		{
+			ApiExtensibility.CreateInstance(typeof(UISettings), out _accentColorExtension);
+			_accentColorExtensionChecked = true;
+		}
+
+		return _accentColorExtension;
+	}
+
 	static partial void ObserveTextScaleFactorChangesPlatform()
 	{
 		if (GetTextScaleFactorExtension() is { } extension)
@@ -39,6 +62,20 @@ public partial class UISettings
 			{
 				TextScaleFactorChangedInternal?.Invoke(null, global::System.EventArgs.Empty);
 			};
+		}
+	}
+
+	static partial void ObserveAccentColorChangesPlatform()
+	{
+		if (_accentColorChangesObserved)
+		{
+			return;
+		}
+
+		if (GetAccentColorExtension() is { } extension)
+		{
+			_accentColorChangesObserved = true;
+			extension.AccentColorChanged += (_, _) => OnColorValuesChanged();
 		}
 	}
 }

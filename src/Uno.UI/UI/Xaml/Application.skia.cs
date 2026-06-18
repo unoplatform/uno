@@ -11,6 +11,7 @@ using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
@@ -236,6 +237,47 @@ namespace Microsoft.UI.Xaml
 			{
 				CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
 			};
+
+			InitializeSystemAccentColor();
+		}
+
+		private global::Windows.UI.ViewManagement.UISettings? _accentColorUISettings;
+
+		/// <summary>Mirrors the OS accent color into the SystemAccentColor* theme resources where the platform exposes it (e.g. macOS); no-op otherwise.</summary>
+		private void InitializeSystemAccentColor()
+		{
+			// Notify ColorValuesChanged listeners when the OS accent changes.
+			global::Windows.UI.ViewManagement.UISettings.ObserveAccentColorChanges();
+
+			if (!global::Windows.UI.ViewManagement.UISettings.HasAccentColorExtension)
+			{
+				return;
+			}
+
+			// UISettings only raises events while the instance is alive, so keep a strong reference.
+			_accentColorUISettings = new global::Windows.UI.ViewManagement.UISettings();
+			_accentColorUISettings.ColorValuesChanged += (_, _) => UpdateSystemAccentColorResources();
+
+			UpdateSystemAccentColorResources();
+		}
+
+		/// <summary>Copies the OS accent color and its shades into the SystemAccentColor* resources and refreshes ThemeResource bindings.</summary>
+		private void UpdateSystemAccentColorResources()
+		{
+			if (_accentColorUISettings is not { } settings)
+			{
+				return;
+			}
+
+			Resources["SystemAccentColor"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.Accent);
+			Resources["SystemAccentColorLight1"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentLight1);
+			Resources["SystemAccentColorLight2"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentLight2);
+			Resources["SystemAccentColorLight3"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentLight3);
+			Resources["SystemAccentColorDark1"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentDark1);
+			Resources["SystemAccentColorDark2"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentDark2);
+			Resources["SystemAccentColorDark3"] = settings.GetColorValue(global::Windows.UI.ViewManagement.UIColorType.AccentDark3);
+
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
 	}
 

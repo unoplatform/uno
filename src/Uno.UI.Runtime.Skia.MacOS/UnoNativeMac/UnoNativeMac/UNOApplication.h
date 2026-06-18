@@ -18,6 +18,11 @@ text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void);
 void uno_set_text_scale_factor_change_callback(text_scale_factor_change_fn_ptr p);
 double uno_get_text_scale_factor(void);
 
+typedef void (*accent_color_change_fn_ptr)(void);
+accent_color_change_fn_ptr uno_get_accent_color_change_callback(void);
+void uno_set_accent_color_change_callback(accent_color_change_fn_ptr p);
+uint32 uno_get_accent_color(void);
+
 bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
 
@@ -48,6 +53,7 @@ void uno_application_quit(void);
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
 - (void)textScalePreferenceChanged:(NSNotification *)notification;
+- (void)systemColorsChanged:(NSNotification *)notification;
 
 @end
 
