@@ -20,6 +20,7 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 {
 	internal static Win32ImeTextBoxExtension Instance { get; } = new();
 
+	private readonly Win32TsfTextInput _tsf = new();
 	private HWND _hwnd;
 	private bool _isComposing;
 
@@ -38,10 +39,13 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 	{
 		var wrapper = (Win32WindowWrapper)XamlRootMap.GetHostForRoot(textBox.XamlRoot!)!;
 		_hwnd = (HWND)((Win32NativeWindow)wrapper.NativeWindow!).Hwnd;
+		_tsf.OnFocus(textBox, _hwnd);
 	}
 
 	public void EndImeSession()
 	{
+		_tsf.OnBlur();
+
 		if (_isComposing)
 		{
 			// Tell the IME to commit the active composition and close its windows
