@@ -254,8 +254,12 @@ public class Given_AlcContentHost
 			"Pre-condition: the secondary app's Light dictionary should overwrite the host's while projected.");
 
 		// Teardown via Unloaded (no re-projection), exercising the restore path on release.
-		TestServices.WindowHelper.WindowContent = probe;
-		await TestServices.WindowHelper.WaitForLoaded(probe);
+		// The probe renders no content, so on its own it never reaches the non-zero size WaitForLoaded
+		// requires; host it in a sized container and wait on that — the probe loads as its child, and
+		// swapping the window content then unloads it, firing the restore.
+		var container = new Border { Width = 50, Height = 50, Child = probe };
+		TestServices.WindowHelper.WindowContent = container;
+		await TestServices.WindowHelper.WaitForLoaded(container);
 		TestServices.WindowHelper.WindowContent = new Border();
 		await TestServices.WindowHelper.WaitForIdle();
 
