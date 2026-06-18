@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace Uno.UI.RemoteControl.Tools;
 internal sealed class ToolRegistryImpl : IToolRegistry
 {
 	private static readonly Logger _log = typeof(ToolRegistryImpl).Log();
-	private static readonly IDisposable _noOp = new NoOpDisposable();
+	private static readonly IDisposable _noOp = NoOpDisposable.Instance;
 
 	private ImmutableDictionary<string, ToolEntry> _tools = ImmutableDictionary.Create<string, ToolEntry>(StringComparer.Ordinal);
 	private ImmutableDictionary<string, ResourceEntry> _resources = ImmutableDictionary.Create<string, ResourceEntry>(StringComparer.Ordinal);
@@ -25,8 +26,19 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 	private int _raisingChanged;
 	private int _changedPending;
 
+	private readonly ConcurrentQueue<string> _pendingResourceUpdates = new();
+	private int _raisingResource;
+
 	/// <summary>Optional UI-thread marshalling seam; null means run inline.</summary>
 	public IToolDispatcher? Dispatcher { get; set; }
+
+	/// <summary>
+	/// Upper bound on a single tool invocation / resource read before it is abandoned with an error
+	/// result, so a hung handler can't block the consumer indefinitely. Defaults to 30s; set to
+	/// <see cref="Timeout.InfiniteTimeSpan"/> to disable. The watchdog is cooperative: it cancels the
+	/// token passed to the handler, so it only takes effect if the handler observes that token.
+	/// </summary>
+	public TimeSpan InvocationTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
 	public event EventHandler? Changed;
 
@@ -95,17 +107,35 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 		ct.ThrowIfCancellationRequested();
 
-		var invocation = new ToolInvocation(arguments ?? new JsonObject());
+		if (ToolArgumentValidator.Validate(entry.Descriptor, arguments) is { } validationError)
+		{
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.LogDebug($"Tool '{toolName}' invocation rejected: {validationError}");
+			}
+
+			return ToolResult.Error(validationError);
+		}
+
+		var invocation = new ToolInvocation(arguments);
+		using var timeout = CreateTimeoutScope(ct);
 		try
 		{
 			// Marshal only when off the UI thread: running inline when already on it avoids a
 			// re-dispatch that would self-deadlock on the single-threaded WASM runtime.
 			if (entry.RunOnUIThread && Dispatcher is { HasThreadAccess: false } dispatcher)
 			{
-				return await dispatcher.RunAsync(() => entry.Handler(invocation, ct).AsTask());
+				return await dispatcher.RunAsync(() => entry.Handler(invocation, timeout.Token).AsTask());
 			}
 
-			return await entry.Handler(invocation, ct);
+			return await entry.Handler(invocation, timeout.Token);
+		}
+		// Our watchdog fired (the linked token, not the caller's) — surface it as an error result
+		// rather than letting the timeout escape as a cancellation, and leave a server-side trace.
+		catch (OperationCanceledException) when (timeout.Token.IsCancellationRequested && !ct.IsCancellationRequested)
+		{
+			LogInvocationTimeout($"Tool '{toolName}'");
+			return ToolResult.Error($"The tool '{toolName}' timed out after {InvocationTimeout}.");
 		}
 		catch (OperationCanceledException)
 		{
@@ -113,12 +143,10 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 		}
 		catch (Exception ex)
 		{
-			if (_log.IsEnabled(LogLevel.Debug))
-			{
-				_log.LogDebug($"Tool '{toolName}' handler threw: {ex}");
-			}
+			LogInvocationError($"Tool '{toolName}' handler threw", ex);
 
-			return ToolResult.Error(ex.Message);
+			// Surface a generic message: the full exception (paths, internals) stays in the log only.
+			return ToolResult.Error($"The tool '{toolName}' failed.");
 		}
 	}
 
@@ -131,9 +159,15 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 		ct.ThrowIfCancellationRequested();
 
+		using var timeout = CreateTimeoutScope(ct);
 		try
 		{
-			return await entry.Reader(ct);
+			return await entry.Reader(timeout.Token);
+		}
+		catch (OperationCanceledException) when (timeout.Token.IsCancellationRequested && !ct.IsCancellationRequested)
+		{
+			LogInvocationTimeout($"Resource '{uri}'");
+			return ToolResult.Error($"The resource '{uri}' timed out after {InvocationTimeout}.");
 		}
 		catch (OperationCanceledException)
 		{
@@ -141,12 +175,38 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 		}
 		catch (Exception ex)
 		{
-			if (_log.IsEnabled(LogLevel.Debug))
-			{
-				_log.LogDebug($"Resource '{uri}' reader threw: {ex}");
-			}
+			LogInvocationError($"Resource '{uri}' reader threw", ex);
 
-			return ToolResult.Error(ex.Message);
+			return ToolResult.Error($"The resource '{uri}' failed.");
+		}
+	}
+
+	// Links the caller token with the invocation timeout (when one is set), so caller cancellation and
+	// our watchdog both surface through the same token. The returned source must be disposed.
+	private CancellationTokenSource CreateTimeoutScope(CancellationToken ct)
+	{
+		var source = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		if (InvocationTimeout != Timeout.InfiniteTimeSpan)
+		{
+			source.CancelAfter(InvocationTimeout);
+		}
+
+		return source;
+	}
+
+	private static void LogInvocationError(string context, Exception ex)
+	{
+		if (_log.IsEnabled(LogLevel.Warning))
+		{
+			_log.LogWarning($"{context}: {ex}");
+		}
+	}
+
+	private void LogInvocationTimeout(string context)
+	{
+		if (_log.IsEnabled(LogLevel.Warning))
+		{
+			_log.LogWarning($"{context} timed out after {InvocationTimeout} and was abandoned.");
 		}
 	}
 
@@ -180,23 +240,56 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 		}
 	}
 
+	// Reentrancy-safe per-uri raise: a subscriber that signals another update while handling
+	// ResourceUpdated enqueues it instead of recursing, so the active drain picks it up. This keeps
+	// nested updates observable without risking unbounded recursion / StackOverflowException. Unlike
+	// Changed, each raise carries a distinct uri, so updates are queued rather than coalesced to a flag.
 	private void RaiseResourceUpdated(string uri)
 	{
-		if (ResourceUpdated is not { } handlers)
-		{
-			return;
-		}
+		_pendingResourceUpdates.Enqueue(uri);
+		DrainResourceUpdates();
+	}
 
-		var args = new ResourceUpdatedEventArgs(uri);
-		foreach (var handler in handlers.GetInvocationList())
+	private void DrainResourceUpdates()
+	{
+		// Acquire-drain-release in a loop (not recursion), so a sustained stream of concurrent updates
+		// drains with a bounded stack. The CAS condition also returns immediately when another thread
+		// already holds the guard — it owns the drain and will pick up whatever we enqueued.
+		while (Interlocked.CompareExchange(ref _raisingResource, 1, 0) == 0)
 		{
 			try
 			{
-				((EventHandler<ResourceUpdatedEventArgs>)handler)(this, args);
+				while (_pendingResourceUpdates.TryDequeue(out var pendingUri))
+				{
+					if (ResourceUpdated is not { } handlers)
+					{
+						continue;
+					}
+
+					var args = new ResourceUpdatedEventArgs(pendingUri);
+					foreach (var handler in handlers.GetInvocationList())
+					{
+						try
+						{
+							((EventHandler<ResourceUpdatedEventArgs>)handler)(this, args);
+						}
+						catch (Exception ex)
+						{
+							LogSubscriberError(nameof(ResourceUpdated), ex);
+						}
+					}
+				}
 			}
-			catch (Exception ex)
+			finally
 			{
-				LogSubscriberError(nameof(ResourceUpdated), ex);
+				Volatile.Write(ref _raisingResource, 0);
+			}
+
+			// Window guard: an item enqueued between the empty-queue check and the guard release would
+			// otherwise be stranded. Re-acquire; if another thread beat us to it, our CAS fails and stops.
+			if (_pendingResourceUpdates.IsEmpty)
+			{
+				break;
 			}
 		}
 	}
@@ -207,36 +300,44 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 	private void RaiseChanged()
 	{
 		Volatile.Write(ref _changedPending, 1);
-		if (Interlocked.CompareExchange(ref _raisingChanged, 1, 0) != 0)
-		{
-			return;
-		}
 
-		try
+		// Acquire-drain-release in a loop (not recursion), so sustained concurrent raises drain with a
+		// bounded stack. The CAS condition returns immediately when another thread already holds the guard.
+		while (Interlocked.CompareExchange(ref _raisingChanged, 1, 0) == 0)
 		{
-			while (Interlocked.Exchange(ref _changedPending, 0) == 1)
+			try
 			{
-				if (Changed is not { } handlers)
+				while (Interlocked.Exchange(ref _changedPending, 0) == 1)
 				{
-					continue;
-				}
-
-				foreach (var handler in handlers.GetInvocationList())
-				{
-					try
+					if (Changed is not { } handlers)
 					{
-						((EventHandler)handler)(this, EventArgs.Empty);
+						continue;
 					}
-					catch (Exception ex)
+
+					foreach (var handler in handlers.GetInvocationList())
 					{
-						LogSubscriberError(nameof(Changed), ex);
+						try
+						{
+							((EventHandler)handler)(this, EventArgs.Empty);
+						}
+						catch (Exception ex)
+						{
+							LogSubscriberError(nameof(Changed), ex);
+						}
 					}
 				}
 			}
-		}
-		finally
-		{
-			Volatile.Write(ref _raisingChanged, 0);
+			finally
+			{
+				Volatile.Write(ref _raisingChanged, 0);
+			}
+
+			// Window guard: a concurrent raise that set the flag and failed the CAS between the loop
+			// reading 0 and the release would otherwise be stranded. Re-acquire if still pending.
+			if (Volatile.Read(ref _changedPending) == 0)
+			{
+				break;
+			}
 		}
 	}
 
@@ -288,6 +389,8 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 
 	private sealed class NoOpDisposable : IDisposable
 	{
+		public static readonly NoOpDisposable Instance = new();
+
 		public void Dispose()
 		{
 		}

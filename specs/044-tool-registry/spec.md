@@ -145,43 +145,46 @@ client's transport.
 contracts (not wire DTOs). Immutable records; `ImmutableArray<T>` for collections.
 
 ```csharp
-public sealed record ToolDescriptor(
+internal sealed record ToolDescriptor(
     string Name,
     string Description,
     ImmutableArray<ToolParameter> Parameters,
     bool IsReadOnly);
 
-public sealed record ToolParameter(
+internal sealed record ToolParameter(
     string Name,
     string Description,
     ToolParameterKind Kind,
     bool IsRequired = false,
     string? DefaultValue = null,
-    ImmutableArray<string> AllowedValues = default, // enum constraint, optional
+    ImmutableArray<string> AllowedValues = default, // enum constraint (String kind only); normalized so default reads as empty
     string? JsonSchema = null); // escape hatch: raw JSON Schema for nested/constrained shapes; overrides Kind
 
-public enum ToolParameterKind { String, Integer, Number, Boolean, Array, Object }
+internal enum ToolParameterKind { String, Integer, Number, Boolean, Array, Object }
 
-public sealed record ResourceDescriptor(
+internal sealed record ResourceDescriptor(
     string Uri,
     string Name,
     string Description,
     string? MimeType);
 
-public sealed record ToolContent(
+internal sealed record ToolContent(
     ToolContentKind Kind,
     string? Text = null,
     string? MimeType = null,
     string? Base64Data = null);
 
-public enum ToolContentKind { Text, Json, Image, Blob }
+internal enum ToolContentKind { Text, Json, Image, Blob }
 
-public sealed record ToolResult(
+internal sealed record ToolResult(
     ImmutableArray<ToolContent> Content,
     bool IsError = false)
 {
     public static ToolResult Text(string text)
         => new([new ToolContent(ToolContentKind.Text, Text: text)]);
+
+    public static ToolResult Error(string message)
+        => new([new ToolContent(ToolContentKind.Text, Text: message)], IsError: true);
 }
 ```
 
@@ -317,6 +320,16 @@ synchronous `.Wait()` / `.Result`.
 > real `IToolDispatcher` (over the app's window dispatcher) is done by the host integration that
 > owns the window and can exercise it end-to-end — see Open Items.
 
+**Invocation timeout.** `InvokeAsync` / `ReadResourceAsync` apply a watchdog timeout
+(`ToolRegistryImpl.InvocationTimeout`, default 30 s; `Timeout.InfiniteTimeSpan` disables) by
+linking the caller token with a `CancelAfter` source, so a hung handler can't block a consumer
+indefinitely. The watchdog is **cooperative**: it cancels the token handed to the handler, so it
+only fires if the handler observes that token (a handler that ignores it still runs to completion).
+A timeout that fires is logged at `Warning` and surfaced as an **error `ToolResult`** (discriminated
+from caller cancellation by checking the linked token, not merely "the caller didn't cancel"). A
+caller-initiated cancellation — and any `OperationCanceledException` the handler raises itself —
+propagates as an exception, so the two causes stay distinguishable.
+
 ### 3.2 Concurrency
 
 Lock-free, per repository preference: registrations are held in an
@@ -368,8 +381,17 @@ The registry is a **many-to-many hub** backed by **one** singleton:
 subscriber list before invoking**, **isolates exceptions per subscriber** (one throwing
 subscriber must not prevent the others from being notified, nor surface to the publisher that
 called `NotifyUpdated()`), and **guards against re-entrancy** — a subscriber that mutates the
-registry (registers/disposes) while handling an event must not cause unbounded recursion or a
-`StackOverflowException`.
+registry (registers/disposes) or signals a further update while handling an event must not cause
+unbounded recursion or a `StackOverflowException`. `Changed` coalesces re-entrant raises behind a
+single pending flag; `ResourceUpdated` (which carries a per-uri payload that can't collapse to one
+flag) **queues** nested updates and drains them iteratively. Both close the window between draining
+and releasing the guard by re-checking pending work, so a raise enqueued by a concurrent thread in
+that gap is never stranded.
+
+**Handler/reader failures** are logged at `Warning` with the full exception (kept server-side) and
+surfaced to the consumer as a **generic** error `ToolResult` that does not echo the exception
+message — so internal detail (paths, types) never leaks across the boundary once a transport is
+wired.
 
 ---
 
@@ -387,9 +409,12 @@ registry (registers/disposes) while handling an event must not cause unbounded r
 
 > **Trust model**: the registry, its publishers, and its consumers all run **in-process**,
 > under the **same trust boundary as the application itself**, and the feature is
-> **debug-only**. No authentication, authorization, or argument-sanitization layer is provided
-> or required here; any argument validation is a consumer/handler convenience, **not** a
-> security control.
+> **debug-only**. No authentication or authorization layer is provided or required here. As
+> defense-in-depth for the eventual remote transport, the registry does validate `arguments`
+> against the declared `ToolParameter[]` (required/kind/`AllowedValues`; the `JsonSchema` escape
+> hatch is delegated to the consumer) and surfaces handler failures as a generic error result
+> rather than echoing the exception — but these are robustness measures, **not** a substitute for
+> the consumer's own boundary checks once it owns a real transport.
 
 > **Publisher integration note**: `Uno.UI.RemoteControl` is a debug-only package reference. A
 > debug-only publisher must call `ToolRegistry` from a path gated the same way it consumes
@@ -421,7 +446,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**24 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**42 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -449,6 +474,24 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `Event_ReentrantRegisterDuringRaise_DoesNotRecurseUnbounded` | Reentrant register during a raise is coalesced (no stack overflow), and observed. |
 | `Publisher_And_Catalog_ResolveToSameInstance` | Both faces are the same singleton. |
 | `SetForTesting_SwapsAndRestores` | `SetForTesting(...)` swaps and restores on dispose. |
+| `ConcurrentRegisterUnregister_RemainsConsistentAndLive` | A parallel register/dispose storm converges to a consistent store and the coalescing guard is not wedged afterwards. |
+| `NotifyUpdated_ReentrantDuringRaise_DrainsWithoutUnboundedRecursion` | A `ResourceUpdated` handler that re-signals is observed via the queued drain, not recursion. |
+| `NotifyUpdated_DeepReentrancy_DoesNotStackOverflow` | Deep re-entrant updates drain iteratively without a `StackOverflowException`. |
+| `InvokeAsync_DisposeWhileHandlerParkedOnOtherThread_CompletesInFlight` | Disposing while a handler is genuinely parked on another thread lets the in-flight call complete. |
+| `Validate_MissingRequiredArgument_ReturnsError` | A missing required argument fails validation. |
+| `Validate_WrongType_ReturnsError` | An argument of the wrong `Kind` fails validation. |
+| `Validate_AllowedValuesViolation_ReturnsError` | A value outside `AllowedValues` fails validation. |
+| `Validate_JsonSchemaPresent_SkipsFlatValidation` | A parameter with a `JsonSchema` bypasses flat type validation. |
+| `Validate_ValidArguments_ReturnsNull` | Conforming arguments pass validation. |
+| `Validate_FractionalNumberForIntegerParam_ReturnsError` | A fractional Number fails Integer validation, matching `GetInt32`. |
+| `InvokeAsync_InvalidArguments_ReturnsIsError` | Validation failure surfaces as an error result before dispatch. |
+| `InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation` | A handler exceeding the timeout yields an error result, not a thrown cancellation. |
+| `InvokeAsync_CallerCancelsDuringHandler_Throws` | Caller cancellation during a running handler throws `OperationCanceledException`. |
+| `InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout` | A handler's own OCE propagates as a throw, never a phantom timeout result. |
+| `TryGetInt32_And_TryGetBoolean_ReturnTypedValues` | The typed `TryGet*` accessors read values and report false on wrong/missing. |
+| `ToolParameter_DefaultAllowedValues_ReadsAsEmpty_NotDefault` | A default (uninitialized) `AllowedValues` reads as empty, never throwing on enumeration. |
+| `InvokeAsync_TypedAccessors_IntAndBool` | `GetInt32`/`GetBoolean` read typed arguments. |
+| `TryGetString_NullValuedProperty_ReturnsFalse` | A null-valued JSON property is treated as absent. |
 
 ---
 
@@ -460,5 +503,5 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | 2 | **Live dispatcher wiring**: wire a real `IToolDispatcher` (over the app's window dispatcher) via `ToolRegistry.SetDispatcher` in the host integration that owns the window, where it can be exercised end-to-end. The registry runs inline until then. | P1 |
 | 2b | **Publisher debug-only wiring**: confirm the call path / optional shim so a debug-only publisher reaches `ToolRegistry` without a Release dependency. | P1 |
 | 3 | **Public publisher API** (bonus: applications publish their own tools): stabilize under SemVer; decide where public types live. | P2 |
-| 4 | **Built-in argument validation** (convenience, not security): a declarative validator that checks `arguments` against `ToolParameter[]` inside `InvokeAsync`. Out of v1 — validation, if any, is the consumer/handler's choice (trust model: all in-process). | P3 |
+| 4 | **Built-in argument validation** — ✅ *implemented*: `ToolArgumentValidator` checks `arguments` against `ToolParameter[]` (required/kind/`AllowedValues`; `JsonSchema` delegated) inside `InvokeAsync`, alongside an invocation timeout and generic error surfacing. Defense-in-depth for the eventual remote transport, not a replacement for consumer boundary checks. | — |
 | 5 | **Resource templates** (parameterized URIs, MCP `resourceTemplates`): evaluate whether `ResourceDescriptor` needs a template variant. (Nested/constrained *tool params* are already covered by `ToolParameter.JsonSchema`.) | P3 |

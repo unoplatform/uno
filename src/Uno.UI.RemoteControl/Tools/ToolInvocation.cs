@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
 
 namespace Uno.UI.RemoteControl.Tools;
@@ -21,18 +22,27 @@ internal sealed class ToolInvocation
 
 	public string GetString(string name)
 		=> TryGetString(name, out var value)
-			? value!
+			? value
 			: throw new ArgumentException($"Missing or non-string argument '{name}'.", nameof(name));
 
 	public int GetInt32(string name)
-		=> Get<int>(name);
+		=> TryGetInt32(name, out var value)
+			? value
+			: throw new ArgumentException($"Missing or non-Int32 argument '{name}'.", nameof(name));
 
 	public bool GetBoolean(string name)
-		=> Get<bool>(name);
+		=> TryGetBoolean(name, out var value)
+			? value
+			: throw new ArgumentException($"Missing or non-Boolean argument '{name}'.", nameof(name));
 
-	public bool TryGetString(string name, out string? value)
+	public bool TryGetString(string name, [NotNullWhen(true)] out string? value)
 	{
-		if (Arguments.TryGetPropertyValue(name, out var node) && node is JsonValue jsonValue && jsonValue.TryGetValue(out string? s))
+		// Guard on `s is not null`: an explicitly-typed JSON null reads back as a non-failing null,
+		// which would otherwise hand a null to a caller expecting a non-null string.
+		if (Arguments.TryGetPropertyValue(name, out var node)
+			&& node is JsonValue jsonValue
+			&& jsonValue.TryGetValue(out string? s)
+			&& s is not null)
 		{
 			value = s;
 			return true;
@@ -42,13 +52,21 @@ internal sealed class ToolInvocation
 		return false;
 	}
 
-	private T Get<T>(string name)
+	public bool TryGetInt32(string name, out int value)
+		=> TryGet(name, out value);
+
+	public bool TryGetBoolean(string name, out bool value)
+		=> TryGet(name, out value);
+
+	private bool TryGet<T>(string name, out T value)
 	{
-		if (Arguments.TryGetPropertyValue(name, out var node) && node is JsonValue jsonValue && jsonValue.TryGetValue(out T? value))
+		if (Arguments.TryGetPropertyValue(name, out var node) && node is JsonValue jsonValue && jsonValue.TryGetValue(out T? parsed) && parsed is not null)
 		{
-			return value!;
+			value = parsed;
+			return true;
 		}
 
-		throw new ArgumentException($"Missing or non-{typeof(T).Name} argument '{name}'.", nameof(name));
+		value = default!;
+		return false;
 	}
 }

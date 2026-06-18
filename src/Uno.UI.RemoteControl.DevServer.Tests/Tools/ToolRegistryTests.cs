@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Immutable;
 using System.Text.Json.Nodes;
@@ -99,6 +101,8 @@ public class ToolRegistryTests
 		var result = await registry.InvokeAsync("boom", new JsonObject(), default);
 
 		Assert.IsTrue(result.IsError);
+		// The raw exception message must not leak to the caller — only the server-side log carries it.
+		Assert.IsFalse(result.Content[0].Text!.Contains("nope"));
 	}
 
 	[TestMethod]
@@ -341,6 +345,269 @@ public class ToolRegistryTests
 
 		Assert.IsTrue(result.IsError);
 	}
+
+	// --- concurrency & reentrancy (lock-free invariants) ---
+
+	[TestMethod]
+	public void ConcurrentRegisterUnregister_RemainsConsistentAndLive()
+	{
+		var registry = new ToolRegistryImpl();
+		var raised = false;
+		registry.Changed += (_, _) => raised = true;
+
+		Parallel.For(0, 500, i =>
+		{
+			using (registry.RegisterTool(Tool($"t_{i}"), Ok()))
+			{
+			}
+		});
+
+		// All registrations were disposed: the lock-free store converges to empty with no corruption.
+		// (Changed is coalesced, so this asserts convergence + liveness — not a per-change raise count.)
+		Assert.AreEqual(0, registry.Snapshot().Tools.Length);
+		Assert.IsTrue(raised);
+
+		// The coalescing guard is not wedged after the storm: a later register + dispose both fire.
+		var after = 0;
+		registry.Changed += (_, _) => after++;
+		using (registry.RegisterTool(Tool("final"), Ok()))
+		{
+		}
+
+		Assert.AreEqual(2, after);
+	}
+
+	[TestMethod]
+	public void NotifyUpdated_ReentrantDuringRaise_DrainsWithoutUnboundedRecursion()
+	{
+		var registry = new ToolRegistryImpl();
+		var registration = registry.RegisterResource(Resource("u://1"), Content());
+		var raises = 0;
+		registry.ResourceUpdated += (_, _) =>
+		{
+			raises++;
+			if (raises == 1)
+			{
+				// Reentrant update while handling the first ResourceUpdated.
+				registration.NotifyUpdated();
+			}
+		};
+
+		registration.NotifyUpdated();
+
+		// The reentrant update is observed via the queued drain, not synchronous recursion.
+		Assert.AreEqual(2, raises);
+	}
+
+	[TestMethod]
+	public void NotifyUpdated_DeepReentrancy_DoesNotStackOverflow()
+	{
+		var registry = new ToolRegistryImpl();
+		var registration = registry.RegisterResource(Resource("u://1"), Content());
+		var raises = 0;
+		registry.ResourceUpdated += (_, _) =>
+		{
+			if (++raises < 10_000)
+			{
+				registration.NotifyUpdated();
+			}
+		};
+
+		registration.NotifyUpdated();
+
+		Assert.AreEqual(10_000, raises);
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_DisposeWhileHandlerParkedOnOtherThread_CompletesInFlight()
+	{
+		var registry = new ToolRegistryImpl();
+		var entered = new TaskCompletionSource();
+		var release = new TaskCompletionSource();
+		var registration = registry.RegisterTool(Tool("slow"), async (_, _) =>
+		{
+			entered.SetResult();
+			await release.Task;
+			return ToolResult.Text("done");
+		});
+
+		var invocation = Task.Run(() => registry.InvokeAsync("slow", new JsonObject(), default).AsTask());
+		await entered.Task; // handler is genuinely running and parked
+
+		registration.Dispose();
+		Assert.AreEqual(0, registry.Snapshot().Tools.Length);
+
+		release.SetResult();
+		var result = await invocation;
+		Assert.AreEqual("done", result.Content[0].Text);
+	}
+
+	// --- argument validation ---
+
+	[TestMethod]
+	public void Validate_MissingRequiredArgument_ReturnsError()
+	{
+		var descriptor = ToolWith(new ToolParameter("name", "d", ToolParameterKind.String, IsRequired: true));
+
+		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject()));
+	}
+
+	[TestMethod]
+	public void Validate_WrongType_ReturnsError()
+	{
+		var descriptor = ToolWith(new ToolParameter("count", "d", ToolParameterKind.Integer));
+
+		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = "not-a-number" }));
+	}
+
+	[TestMethod]
+	public void Validate_FractionalNumberForIntegerParam_ReturnsError()
+	{
+		var descriptor = ToolWith(new ToolParameter("count", "d", ToolParameterKind.Integer));
+
+		// A fractional Number must fail Integer validation so it agrees with ToolInvocation.GetInt32.
+		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.7 }));
+	}
+
+	[TestMethod]
+	public void Validate_AllowedValuesViolation_ReturnsError()
+	{
+		var descriptor = ToolWith(new ToolParameter(
+			"color", "d", ToolParameterKind.String, AllowedValues: ImmutableArray.Create("red", "green")));
+
+		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["color"] = "blue" }));
+	}
+
+	[TestMethod]
+	public void Validate_JsonSchemaPresent_SkipsFlatValidation()
+	{
+		var descriptor = ToolWith(new ToolParameter(
+			"payload", "d", ToolParameterKind.String, JsonSchema: "{\"type\":\"object\"}"));
+
+		// A wrong flat type is tolerated because the escape hatch owns the shape.
+		Assert.IsNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["payload"] = 123 }));
+	}
+
+	[TestMethod]
+	public void Validate_ValidArguments_ReturnsNull()
+	{
+		var descriptor = ToolWith(
+			new ToolParameter("name", "d", ToolParameterKind.String, IsRequired: true),
+			new ToolParameter("count", "d", ToolParameterKind.Integer));
+
+		Assert.IsNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["name"] = "x", ["count"] = 3 }));
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_InvalidArguments_ReturnsIsError()
+	{
+		var registry = new ToolRegistryImpl();
+		registry.RegisterTool(
+			new ToolDescriptor("t", "d", ImmutableArray.Create(new ToolParameter("v", "d", ToolParameterKind.String, IsRequired: true)), IsReadOnly: false),
+			Ok());
+
+		var result = await registry.InvokeAsync("t", new JsonObject(), default);
+
+		Assert.IsTrue(result.IsError);
+	}
+
+	// --- timeout ---
+
+	[TestMethod]
+	public async Task InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation()
+	{
+		var registry = new ToolRegistryImpl { InvocationTimeout = TimeSpan.FromMilliseconds(50) };
+		registry.RegisterTool(Tool("hang"), async (_, ct) =>
+		{
+			await Task.Delay(Timeout.Infinite, ct);
+			return ToolResult.Text("never");
+		});
+
+		var result = await registry.InvokeAsync("hang", new JsonObject(), default);
+
+		Assert.IsTrue(result.IsError);
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_CallerCancelsDuringHandler_Throws()
+	{
+		var registry = new ToolRegistryImpl();
+		using var cts = new CancellationTokenSource();
+		registry.RegisterTool(Tool("hang"), async (_, ct) =>
+		{
+			await Task.Delay(Timeout.Infinite, ct);
+			return ToolResult.Text("never");
+		});
+
+		var invocation = registry.InvokeAsync("hang", new JsonObject(), cts.Token).AsTask();
+		cts.Cancel();
+
+		// TaskCanceledException (from Task.Delay) derives from OperationCanceledException — assignable, not exact.
+		await Assert.ThrowsAsync<OperationCanceledException>(async () => await invocation);
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout()
+	{
+		var registry = new ToolRegistryImpl();
+		using var unrelated = new CancellationTokenSource();
+		unrelated.Cancel();
+		registry.RegisterTool(Tool("t"), (_, _) =>
+			// Neither the caller token nor the watchdog fired — this OCE is the handler's own.
+			throw new OperationCanceledException(unrelated.Token));
+
+		// Per the contract, OCE always propagates as a throw; it must NOT become a phantom "timed out" result.
+		await Assert.ThrowsAsync<OperationCanceledException>(
+			async () => await registry.InvokeAsync("t", new JsonObject(), default));
+	}
+
+	// --- typed parameter model ---
+
+	[TestMethod]
+	public void ToolParameter_DefaultAllowedValues_ReadsAsEmpty_NotDefault()
+	{
+		var parameter = new ToolParameter("x", "d", ToolParameterKind.String);
+
+		Assert.IsFalse(parameter.AllowedValues.IsDefault);
+		Assert.IsTrue(parameter.AllowedValues.IsEmpty);
+	}
+
+	[TestMethod]
+	public async Task InvokeAsync_TypedAccessors_IntAndBool()
+	{
+		var registry = new ToolRegistryImpl();
+		registry.RegisterTool(Tool("t"), (inv, _) =>
+			new ValueTask<ToolResult>(ToolResult.Text($"{inv.GetInt32("n")}:{inv.GetBoolean("b")}")));
+
+		var result = await registry.InvokeAsync("t", new JsonObject { ["n"] = 42, ["b"] = true }, default);
+
+		Assert.AreEqual("42:True", result.Content[0].Text);
+	}
+
+	[TestMethod]
+	public void TryGetString_NullValuedProperty_ReturnsFalse()
+	{
+		var invocation = new ToolInvocation(new JsonObject { ["x"] = null });
+
+		Assert.IsFalse(invocation.TryGetString("x", out _));
+	}
+
+	[TestMethod]
+	public void TryGetInt32_And_TryGetBoolean_ReturnTypedValues()
+	{
+		var invocation = new ToolInvocation(new JsonObject { ["n"] = 7, ["b"] = true, ["s"] = "x" });
+
+		Assert.IsTrue(invocation.TryGetInt32("n", out var n));
+		Assert.AreEqual(7, n);
+		Assert.IsTrue(invocation.TryGetBoolean("b", out var b));
+		Assert.IsTrue(b);
+		// Wrong-typed / missing values report false rather than coercing.
+		Assert.IsFalse(invocation.TryGetInt32("s", out _));
+		Assert.IsFalse(invocation.TryGetBoolean("missing", out _));
+	}
+
+	private static ToolDescriptor ToolWith(params ToolParameter[] parameters)
+		=> new("t", "desc", parameters.ToImmutableArray(), IsReadOnly: false);
 
 	private sealed class FakeDispatcher(bool hasThreadAccess) : IToolDispatcher
 	{

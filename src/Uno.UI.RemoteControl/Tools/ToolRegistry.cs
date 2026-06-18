@@ -45,9 +45,10 @@ internal static class ToolRegistry
 		public void Dispose()
 		{
 			// Restore the field only; the caller owns disposal of the swapped-in double.
+			// Volatile.Write matches the barrier intent of the Interlocked.Exchange on the write path.
 			if (Interlocked.Exchange(ref _previous, null) is { } previous)
 			{
-				_instance = previous;
+				Volatile.Write(ref _instance, previous);
 			}
 		}
 	}

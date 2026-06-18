@@ -12,12 +12,22 @@
   - [x] Segregated interfaces: `IToolPublisher` / `IToolCatalog` / combined `IToolRegistry`; `IResourceRegistration`; delegates; `ResourceUpdatedEventArgs`; `IToolDispatcher` seam.
   - [x] `ToolRegistry` facade (`Publisher` / `Catalog` / `SetDispatcher` / `SetForTesting`).
   - [x] `ToolRegistryImpl`: lock-free `ImmutableInterlocked` store; coalescing + reentrancy-safe multicast `Changed` / `ResourceUpdated` with per-subscriber exception isolation + logging; duplicate-name no-op disposable (cannot evict the winner); in-flight-invoke completes on dispose; `NotifyUpdated()` post-dispose no-op; `InvokeAsync` deadlock guard (inline when `HasThreadAccess`); cancellation propagates (not `IsError`).
-- [x] `src/Uno.UI.RemoteControl.DevServer.Tests/Tools/ToolRegistryTests.cs` — 24 tests.
+  - [x] `ToolArgumentValidator` — pure validation of `arguments` against `ToolParameter[]` (required/kind/`AllowedValues`; `JsonSchema` delegated to the consumer), invoked at the `InvokeAsync` boundary.
+- [x] Review hardening (panel + bot reviews):
+  - [x] `RaiseChanged` lost-update window closed (re-check pending after releasing the guard).
+  - [x] `RaiseResourceUpdated` made reentrancy-safe via a per-uri queue drain (was synchronous, could `StackOverflow`).
+  - [x] Handler/reader failures logged at `Warning`; generic error result to the consumer (no `ex.Message` leak).
+  - [x] Invocation timeout (`InvocationTimeout`, default 30 s) via linked `CancelAfter`; **cooperative** (cancels the handler token), logged at `Warning` on fire, discriminated from caller cancellation via the linked token; timeout → error result, caller cancel (and a handler's own OCE) → throws.
+  - [x] `AllowedValues` enforced for `String` kind only; `Integer` validation requires an integral Number (agrees with `GetInt32`).
+  - [x] `ToolParameter.AllowedValues` normalized so a `default` value reads as empty (no NRE).
+  - [x] `TryGetInt32`/`TryGetBoolean` added; `TryGetString` null-guarded; `value!` removed.
+  - [x] `RestoreToken.Dispose` uses `Volatile.Write`; non-nullable `arguments` contract honored; `NoOpDisposable.Instance` unified.
+- [x] `src/Uno.UI.RemoteControl.DevServer.Tests/Tools/ToolRegistryTests.cs` — 42 tests (added concurrency/reentrancy stress, validation, timeout, and param-model coverage; file `#nullable enable`).
 
 ## Validation
 
 - **Compile**: `dotnet build Uno.UI.RemoteControl.Skia.csproj -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true` → **0 errors**. Test project builds → **0 errors**.
-- **Runtime**: ran the MTP test assembly directly → **24 passed, 0 failed**.
+- **Runtime**: ran the MTP test assembly directly → **42 passed, 0 failed**.
   ```
   dotnet "src/Uno.UI.RemoteControl.DevServer.Tests/bin/Debug/net10.0/Uno.UI.RemoteControl.DevServer.Tests.dll" --filter "FullyQualifiedName~ToolRegistry"
   ```

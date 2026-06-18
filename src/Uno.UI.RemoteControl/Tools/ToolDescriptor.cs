@@ -31,7 +31,15 @@ internal sealed record ToolParameter(
 	bool IsRequired = false,
 	string? DefaultValue = null,
 	ImmutableArray<string> AllowedValues = default,
-	string? JsonSchema = null);
+	string? JsonSchema = null)
+{
+	/// <summary>
+	/// Optional enum constraint on the value. Normalized so an uninitialized (<c>default</c>)
+	/// <see cref="ImmutableArray{T}"/> reads as empty instead of throwing on enumeration.
+	/// </summary>
+	public ImmutableArray<string> AllowedValues { get; init; }
+		= AllowedValues.IsDefault ? ImmutableArray<string>.Empty : AllowedValues;
+}
 
 internal enum ToolParameterKind
 {
