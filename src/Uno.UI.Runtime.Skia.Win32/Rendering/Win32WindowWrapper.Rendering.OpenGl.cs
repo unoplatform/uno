@@ -29,6 +29,13 @@ internal partial class Win32WindowWrapper
 		// otherwise wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces the loop.
 		private readonly Win32RenderPacer? _pacer;
 
+		// The GL back buffer is a double-buffered swapchain that is not preserved across SwapBuffers, so
+		// the composition renders onto a persistent GPU layer (returned from UpdateSize as the surface to
+		// draw on) that is blitted to the back buffer each frame in CopyPixels. This is what makes
+		// damage-region rendering correct on the GL backend (mirrors the X11 OpenGL renderer).
+		private SKSurface? _swapchainSurface; // owned here; wraps the GL framebuffer
+		private SKSurface? _layer; // non-owning reference; the caller (Win32WindowWrapper) owns/disposes it as _surface
+
 		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext, Win32RenderPacer? pacer)
 		{
 			_hwnd = hwnd;
@@ -207,12 +214,30 @@ internal partial class Win32WindowWrapper
 
 			_renderTarget?.Dispose();
 			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat()));
-			return SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
+
+			_swapchainSurface?.Dispose();
+			_swapchainSurface = SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
+
+			// Composition renders onto the retained layer; CopyPixels blits it to the back buffer above.
+			var info = new SKImageInfo(Math.Max(1, width), Math.Max(1, height), SKColorType.Rgba8888, SKAlphaType.Premul);
+			var layer = SKSurface.Create(_grContext, budgeted: true, info)
+				?? throw new InvalidOperationException("Failed to create the damage-region retained layer surface.");
+			layer.Canvas.Clear(SKColors.Transparent);
+			_layer = layer;
+			return layer;
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
 			_pacer?.OnFrameStart();
+
+			// The GL context is current for the whole frame (StartPaint..EndPaint). Blit the retained layer
+			// onto the (non-retaining) back buffer, then present.
+			if (_layer is { } layer && _swapchainSurface is { } swapchain)
+			{
+				layer.Draw(swapchain.Canvas, 0, 0, null);
+				swapchain.Canvas.Flush();
+			}
 
 			var success = PInvoke.SwapBuffers(_hdc);
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
@@ -224,14 +249,22 @@ internal partial class Win32WindowWrapper
 
 		bool IRenderer.IsSoftware() => false;
 
+		bool IRenderer.SurfaceRetainsContents => true;
+
 		void IDisposable.Dispose()
 		{
 			_pacer?.Dispose();
+			// _layer is owned by the caller (disposed as _surface); only dispose what we own here.
+			_swapchainSurface?.Dispose();
+			_swapchainSurface = null;
 			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
 		}
 
 		void IRenderer.Reinitialize()
 		{
+			_swapchainSurface?.Dispose();
+			_swapchainSurface = null;
+			_layer = null; // owned and already disposed by the caller (as _surface)
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
 			// ReleaseGlContext disposed the render target; null it so the next UpdateSize (which
 			// recreates it) doesn't dispose the same instance again.

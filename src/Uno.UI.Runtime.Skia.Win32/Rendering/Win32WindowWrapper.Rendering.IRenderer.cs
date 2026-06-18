@@ -20,5 +20,13 @@ internal partial class Win32WindowWrapper
 		/// this; software-timer-paced ones (e.g. the DwmFlush degraded fallback) retarget.
 		/// </summary>
 		void UpdateRefreshRate(double fps);
+
+		/// <summary>
+		/// True if the surface that composition renders onto retains the previous frame's pixels between
+		/// presents, so the present can be clipped to the damage region. The software (persistent DIB) and
+		/// Vulkan (persistent intermediate image) backends retain directly; the GL backend renders onto a
+		/// persistent layer blitted to the swapchain each frame.
+		/// </summary>
+		bool SurfaceRetainsContents { get; }
 	}
 }
