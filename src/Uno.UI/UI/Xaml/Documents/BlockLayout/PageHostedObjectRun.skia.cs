@@ -1,11 +1,14 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference PageHostedObjectRun.h, PageHostedObjectRun.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
+#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using Microsoft.UI.Xaml.Documents.RichTextServices;
+using Uno.UI.Extensions;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Documents.BlockLayout;
@@ -123,7 +126,7 @@ internal class PageHostedObjectRun : ObjectRun
 
 			// TODO Uno (integrate): CInlineUIContainer::GetChildLayoutCache(out width, out height, out baseline)
 			m_pContainer.GetChildLayoutCache(out var width, out var height, out var cachedBaseline);
-			pMetrics = new ObjectRunMetrics(width, height, cachedBaseline);
+			pMetrics = new ObjectRunMetrics((float)width, (float)height, (float)cachedBaseline);
 		}
 		else
 		{
