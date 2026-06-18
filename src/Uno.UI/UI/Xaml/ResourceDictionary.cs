@@ -749,7 +749,16 @@ namespace Microsoft.UI.Xaml
 			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
 			// Uno: high contrast is a single app-global bool — the FrameworkTheming::GetHighContrastTheme()
 			// analog collapsed to HighContrast/HighContrastNone.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// Read the FrameworkTheming snapshot (the single source the change-detection and
+			// FrameworkElement also read), refreshed by OnThemeChanged on every HC toggle. Fall back to
+			// the live OS flag only when no core exists (early startup / unit tests).
+			var highContrastTheme = Uno.UI.Xaml.Core.CoreServices.HasInstance
+				? Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
+				: (Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone);
+#else
 			var highContrastTheme = Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+#endif
 			var highContrastChanged = Theming.GetHighContrastValue(_activeThemeValue) != highContrastTheme;
 
 			if (_activeThemeDictionary is null ||                                       // No active theme dictionary
