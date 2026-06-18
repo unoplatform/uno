@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
@@ -131,44 +132,51 @@ namespace Microsoft.UI.Composition
 			// Snapshot keys before iterating: SetAnimatableProperty downstream can mutate
 			// _animations (e.g. when an AnimationController completes and removes the entry,
 			// or when an expression starts a new animation reentrantly), so iterating directly
-			// throws "Collection was modified".
-			string[] keys;
+			// throws "Collection was modified". Rent the snapshot buffer to avoid a per-frame
+			// allocation; reentrant calls each rent their own.
 			var count = _animations.Count;
 			if (count == 0)
 			{
 				return;
 			}
 
-			keys = new string[count];
-			var i = 0;
-			foreach (var key in _animations.Keys)
+			var keys = ArrayPool<string>.Shared.Rent(count);
+			try
 			{
-				keys[i++] = key;
+				var i = 0;
+				foreach (var key in _animations.Keys)
+				{
+					keys[i++] = key;
+				}
+
+				for (i = 0; i < count; i++)
+				{
+					if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
+					{
+						continue;
+					}
+
+					var propertyName = keys[i];
+					ReadOnlySpan<char> firstPropertyName;
+					ReadOnlySpan<char> subPropertyName;
+					var firstDotIndex = propertyName.IndexOf('.');
+					if (firstDotIndex > -1)
+					{
+						firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
+						subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
+					}
+					else
+					{
+						firstPropertyName = propertyName;
+						subPropertyName = default;
+					}
+
+					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+				}
 			}
-
-			for (i = 0; i < count; i++)
+			finally
 			{
-				if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
-				{
-					continue;
-				}
-
-				var propertyName = keys[i];
-				ReadOnlySpan<char> firstPropertyName;
-				ReadOnlySpan<char> subPropertyName;
-				var firstDotIndex = propertyName.IndexOf('.');
-				if (firstDotIndex > -1)
-				{
-					firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
-					subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
-				}
-				else
-				{
-					firstPropertyName = propertyName;
-					subPropertyName = default;
-				}
-
-				this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+				ArrayPool<string>.Shared.Return(keys, clearArray: true);
 			}
 		}
 
@@ -186,36 +194,43 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 
-			var keys = new string[count];
-			var i = 0;
-			foreach (var key in _animations.Keys)
+			var keys = ArrayPool<string>.Shared.Rent(count);
+			try
 			{
-				keys[i++] = key;
+				var i = 0;
+				foreach (var key in _animations.Keys)
+				{
+					keys[i++] = key;
+				}
+
+				for (i = 0; i < count; i++)
+				{
+					if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
+					{
+						continue;
+					}
+
+					var propertyName = keys[i];
+					ReadOnlySpan<char> firstPropertyName;
+					ReadOnlySpan<char> subPropertyName;
+					var firstDotIndex = propertyName.IndexOf('.');
+					if (firstDotIndex > -1)
+					{
+						firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
+						subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
+					}
+					else
+					{
+						firstPropertyName = propertyName;
+						subPropertyName = default;
+					}
+
+					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate(progress));
+				}
 			}
-
-			for (i = 0; i < count; i++)
+			finally
 			{
-				if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
-				{
-					continue;
-				}
-
-				var propertyName = keys[i];
-				ReadOnlySpan<char> firstPropertyName;
-				ReadOnlySpan<char> subPropertyName;
-				var firstDotIndex = propertyName.IndexOf('.');
-				if (firstDotIndex > -1)
-				{
-					firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
-					subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
-				}
-				else
-				{
-					firstPropertyName = propertyName;
-					subPropertyName = default;
-				}
-
-				this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate(progress));
+				ArrayPool<string>.Shared.Return(keys, clearArray: true);
 			}
 		}
 
