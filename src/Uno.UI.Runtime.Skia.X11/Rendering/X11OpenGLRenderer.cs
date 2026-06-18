@@ -25,7 +25,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		}
 
 		// The window surface is a GL swapchain back buffer that is not preserved across glXSwapBuffers,
-		// so dirty rectangles render onto a persistent GPU layer that is blitted to the window each frame.
+		// so the composition renders onto a persistent GPU layer that is blitted to the window each frame.
 		protected override bool SurfaceRetainsContents => true;
 		protected override bool UsesRetainedLayer => true;
 		protected override GRContext? GpuContext => _grContext;

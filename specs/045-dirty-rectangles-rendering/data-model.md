@@ -1,8 +1,8 @@
-# Phase 1 Data Model: Dirty Rectangles Rendering
+# Phase 1 Data Model: Damage Region Rendering
 
 Internal rendering state only — no persisted/storage entities, no public API types. All live on the Skia render path.
 
-## Entity: DirtyRegion (per-frame damage accumulator)
+## Entity: DamageRegion (per-frame damage accumulator)
 
 The accumulated screen-space area that must be repainted for the next frame.
 
@@ -22,7 +22,7 @@ The accumulated screen-space area that must be repainted for the next frame.
 
 ## Entity: Invalidation (a single change contribution)
 
-A request originating from a visual change that contributes area to the current `DirtyRegion`.
+A request originating from a visual change that contributes area to the current `DamageRegion`.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -33,13 +33,13 @@ A request originating from a visual change that contributes area to the current 
 **Behavior / rules**
 - Derived inside `Visual.skia.cs` invalidation methods (`InvalidatePaint`, `SetMatrixDirty`, `InvalidateParentChildrenPicture`) from the visual's total transform/clip bounds.
 - For semi-transparent/overlapping content, the union of old+new bounds is contributed; correct compositing within the region is handled by replaying the full picture clipped to that region (no extra per-visual bookkeeping needed).
-- Not retained as objects — conceptually it is the `(old, new)` pair fed into `DirtyRegion.AddRect`; modeled here for clarity.
+- Not retained as objects — conceptually it is the `(old, new)` pair fed into `DamageRegion.AddRect`; modeled here for clarity.
 
-**Relationships**: produced by `Visual` invalidation; aggregated into `DirtyRegion`.
+**Relationships**: produced by `Visual` invalidation; aggregated into `DamageRegion`.
 
 ## Entity: RetainedLayer (GPU previous-frame surface)
 
-A single Uno-owned persistent offscreen surface that always holds the previous frame, used by GPU swapchain renderers so dirty-rect output is correct regardless of swapchain buffer rotation (Avalonia-style). Replaces the buffer-age window as the primary GPU mechanism.
+A single Uno-owned persistent offscreen surface that always holds the previous frame, used by GPU swapchain renderers so damage-region output is correct regardless of swapchain buffer rotation (Avalonia-style). Replaces the buffer-age window as the primary GPU mechanism.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -49,10 +49,10 @@ A single Uno-owned persistent offscreen surface that always holds the previous f
 **Behavior / rules**
 - GPU, `!RetainsPreviousFrameContents` (common): replay picture **damage-clipped onto `Surface`** (age-1, no cross-frame union), then blit `Surface` → back buffer.
 - GPU fast path, `RetainsPreviousFrameContents && IsSuitableForDirectRendering` (e.g. EGL `EGL_BUFFER_PRESERVED`): render damage-clipped directly to back buffer, present damage sub-rect; layer unused.
-- Persistent-surface renderers (X11/FrameBuffer software): retained backing bitmap ⇒ layer not required; use current `DirtyRegion` directly.
+- Persistent-surface renderers (X11/FrameBuffer software): retained backing bitmap ⇒ layer not required; use current `DamageRegion` directly.
 - `IsCorrupted` (device/context lost, resize) ⇒ recreate `Surface` + full-frame redraw.
 
-**Relationships**: lives on the platform renderer (or shared `Uno.UI.Runtime.Skia` base); consumes the current-frame `DirtyRegion`; gates the present clip and blit.
+**Relationships**: lives on the platform renderer (or shared `Uno.UI.Runtime.Skia` base); consumes the current-frame `DamageRegion`; gates the present clip and blit.
 
 > *Optional, deferred*: a buffer-age fast path (`EGL_EXT_buffer_age` + union of last `age` frames' damage, partial present, no layer) may be added per-backend later where it cheaply beats the blit. Not required for correctness or the initial GPU win.
 
@@ -60,26 +60,26 @@ A single Uno-owned persistent offscreen surface that always holds the previous f
 
 | Setting | Type | Default | Maps to |
 |---------|------|---------|---------|
-| `EnableDirtyRectangles` | bool | OFF (→ default-ON per renderer once SC-002 holds) | master switch (FR-009) |
-| `DirtyRectanglesOverlay` | bool | OFF | diagnostic overlay of presented damage (FR-010) |
+| `EnableDamageRegion` | bool | OFF (→ default-ON per renderer once SC-002 holds) | master switch (FR-009) |
+| `DamageRegionOverlay` | bool | OFF | diagnostic overlay of presented damage (FR-010) |
 
 ## State transitions (per frame)
 
 ```
-[visual change] → Invalidation(old,new) → DirtyRegion.AddRect (or IsFullFrame)
+[visual change] → Invalidation(old,new) → DamageRegion.AddRect (or IsFullFrame)
         │
         ▼
 RequestNewFrame → (UI) Render(): record full SKPicture (unchanged)
         │
         ▼
 (render thread) Draw():
-   if DirtyRectangles disabled OR Caps.IsCorrupted → FULL frame (recreate layer if needed)
-   else if DirtyRegion.IsEmpty → skip present (SC-004)
+   if DamageRegion disabled OR Caps.IsCorrupted → FULL frame (recreate layer if needed)
+   else if DamageRegion.IsEmpty → skip present (SC-004)
    else:
-     persistent-surface  → clip to DirtyRegion → Clear+drawPicture → present damage sub-rect
-     GPU (!retains)      → clip to DirtyRegion → drawPicture onto RetainedLayer → blit layer → back buffer
-     GPU (retains/fast)  → clip to DirtyRegion → Clear+drawPicture on back buffer → present damage sub-rect
+     persistent-surface  → clip to DamageRegion → Clear+drawPicture → present damage sub-rect
+     GPU (!retains)      → clip to DamageRegion → drawPicture onto RetainedLayer → blit layer → back buffer
+     GPU (retains/fast)  → clip to DamageRegion → Clear+drawPicture on back buffer → present damage sub-rect
         │
         ▼
-DirtyRegion.Reset()  (RetainedLayer now holds this frame)
+DamageRegion.Reset()  (RetainedLayer now holds this frame)
 ```

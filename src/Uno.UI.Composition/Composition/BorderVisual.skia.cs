@@ -382,9 +382,9 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
-	internal override float DirtyRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DirtyRegionSamplingMargin ?? 0, _borderBrush?.DirtyRegionSamplingMargin ?? 0);
+	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
 
-	// The painted background fill and border ring (rounded by CornerRadius), so the dirty region follows the
+	// The painted background fill and border ring (rounded by CornerRadius), so the damage region follows the
 	// rounded shape rather than its bounding box. (Only called when there's no shadow / sampling margin.)
 	internal override bool TryGetLocalContentPath(SKPath dst)
 	{

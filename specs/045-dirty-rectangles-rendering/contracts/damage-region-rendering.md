@@ -1,4 +1,4 @@
-# Internal Contracts: Dirty Rectangles Rendering
+# Internal Contracts: Damage Region Rendering
 
 These are **internal** rendering contracts (no public WinUI API surface). They define the seams between invalidation, the composition present step, and the platform renderers. Signatures are indicative; final names follow surrounding code.
 
@@ -10,7 +10,7 @@ The composition layer MUST contribute changed screen-space bounds to the current
 - Contract: `CompositionTarget.AddDamage(SKRect screenBounds)` (thread-safe, under the existing frame gate; no allocation on the hot path).
 - Surface resize / DPI change / surface reallocation MUST report full-frame damage.
 
-**Guarantee**: With `EnableDirtyRectangles == false`, accumulation is inert (or ignored) and the present path behaves exactly as today.
+**Guarantee**: With `EnableDamageRegion == false`, accumulation is inert (or ignored) and the present path behaves exactly as today.
 
 ## C2 — Present step (composition)
 
@@ -38,13 +38,13 @@ Each `Uno.UI.Runtime.Skia.*` renderer MUST declare how its surface preserves the
 
 ## C4 — Configuration & diagnostics
 
-- `FeatureConfiguration.Rendering.EnableDirtyRectangles` (bool) — master switch (FR-009). Off ⇒ identical to today.
-- `FeatureConfiguration.Rendering.DirtyRectanglesOverlay` (bool) — when on, the present step visibly marks the regions it repaints (FR-010); MUST NOT alter the persisted surface content used for correctness comparison beyond the overlay itself (overlay is a debug-only draw atop the presented frame).
+- `FeatureConfiguration.Rendering.EnableDamageRegion` (bool) — master switch (FR-009). Off ⇒ identical to today.
+- `FeatureConfiguration.Rendering.DamageRegionOverlay` (bool) — when on, the present step visibly marks the regions it repaints (FR-010); MUST NOT alter the persisted surface content used for correctness comparison beyond the overlay itself (overlay is a debug-only draw atop the presented frame).
 
 ## Validation contract (harness)
 
-- `build/test-scripts/run-dirty-rect-harness.sh <out-dir>` MUST:
-  1. Run `SamplesApp.Skia.Generic` under `xvfb-run` capturing `--auto-screenshots` for a fixed scene set, with `EnableDirtyRectangles=false`, for renderer ∈ {software, OpenGL}.
-  2. Repeat with `EnableDirtyRectangles=true` for the same scenes/renderers.
+- `build/test-scripts/run-damage-region-harness.sh <out-dir>` MUST:
+  1. Run `SamplesApp.Skia.Generic` under `xvfb-run` capturing `--auto-screenshots` for a fixed scene set, with `EnableDamageRegion=false`, for renderer ∈ {software, OpenGL}.
+  2. Repeat with `EnableDamageRegion=true` for the same scenes/renderers.
   3. Assert pixel-equality between the off/on screenshot sets per renderer; non-zero exit on any difference.
 - Runtime tests in `Uno.UI.RuntimeTests` MUST cover: small-update (SC-001), no-op frame skip (SC-004), moved element (old+new repaint, FR-003), overlap/transparency, scroll, resize/DPI (full-frame), theme switch (full-frame parity, SC-005) — each asserting equality vs. full-frame baseline.

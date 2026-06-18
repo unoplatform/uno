@@ -23,8 +23,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 	private SKSurface? _surface;
 	private readonly RetainedLayer _retainedLayer = new();
 
-	// The WebGL drawing buffer is not preserved across frames (preserveDrawingBuffer: 0), so dirty rectangles
-	// render onto a persistent GPU layer that is blitted to the swapchain each frame.
+	// The WebGL drawing buffer is not preserved across frames (preserveDrawingBuffer: 0), so the composition
+	// renders onto a persistent GPU layer that is blitted to the swapchain each frame.
 	public bool SurfaceRetainsContents => true;
 	public bool UsesRetainedLayer => true;
 
@@ -77,7 +77,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 		_surface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
 
 		// Render onto a persistent GPU layer that retains the previous frame; it is blitted to the (non-
-		// retaining) swapchain surface in Flush(). This is what makes dirty rectangles correct on WebGL.
+		// retaining) swapchain surface in Flush(). This is what makes damage-region rendering correct on WebGL.
 		return _retainedLayer.EnsureSurface(_context, width, height, SKColors.Transparent).Canvas;
 	}
 

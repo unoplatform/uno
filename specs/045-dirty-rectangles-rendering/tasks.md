@@ -1,11 +1,11 @@
 ---
-description: "Task list for Dirty Rectangles Rendering"
+description: "Task list for Damage Region Rendering"
 ---
 
-# Tasks: Dirty Rectangles Rendering
+# Tasks: Damage Region Rendering
 
-**Input**: Design documents from `/specs/045-dirty-rectangles-rendering/`
-**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/dirty-region-rendering.md, quickstart.md
+**Input**: Design documents from `/specs/045-damage-region-rendering/`
+**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/damage-region-rendering.md, quickstart.md
 
 **Tests**: INCLUDED — required by Constitution III (test-first runtime tests) and the explicit "visual output identical before and after" directive. Validation (xvfb harness + pixel-equality) is front-loaded.
 
@@ -15,11 +15,11 @@ description: "Task list for Dirty Rectangles Rendering"
 
 ## Implementation status (current session)
 
-**Validated and working — software + OpenGL dirty rectangles:**
-- Damage is tracked during the render walk (`Visual.PaintStep` → `ContributeDamageOnPaint`, old∪new bounds), accumulated per-`CompositionTarget`, and the present (`CompositionTarget.Draw`) clips to it when the render target retains contents. Gated by `FeatureConfiguration.Rendering.EnableDirtyRectangles` (default OFF → byte-identical to today).
+**Validated and working — software + OpenGL damage region:**
+- Damage is tracked during the render walk (`Visual.PaintStep` → `ContributeDamageOnPaint`, old∪new bounds), accumulated per-`CompositionTarget`, and the present (`CompositionTarget.Draw`) clips to it when the render target retains contents. Gated by `FeatureConfiguration.Rendering.EnableDamageRegion` (default OFF → byte-identical to today).
 - The X11 **software** renderer opts in (`SurfaceRetainsContents`, persistent bitmap). The X11 **OpenGL** renderer opts in via a **retained offscreen GPU layer** (`UsesRetainedLayer`/`CreateRetainedLayer`): the frame renders dirty-clipped onto the persistent layer, which is blitted to the (non-retaining) swapchain each frame — the Avalonia-style approach, no per-driver buffer-age handling. EGL/Vulkan/DRM keep the default (false) and **safely fall back to full-frame** (correct, no regression).
-- A discarded-but-un-presented frame carries its damage forward (`MergeDamage`) so dropped frames don't lose dirty regions.
-- **Runtime-validated under Xvfb** via `build/test-scripts/run-dirty-rect-harness.sh` (real-window byte-equality): Static, SmallUpdate, MovedElement all **0 px differ** on software **and** OpenGL, stable across repeated runs. Negative controls (disabling vacated-region erasure) produced the expected stale trails on **both** software (14400 px) and OpenGL (2880 px), proving the optimization genuinely engages and that the GPU layer truly retains.
+- A discarded-but-un-presented frame carries its damage forward (`MergeDamage`) so dropped frames don't lose damage regions.
+- **Runtime-validated under Xvfb** via `build/test-scripts/run-damage-region-harness.sh` (real-window byte-equality): Static, SmallUpdate, MovedElement all **0 px differ** on software **and** OpenGL, stable across repeated runs. Negative controls (disabling vacated-region erasure) produced the expected stale trails on **both** software (14400 px) and OpenGL (2880 px), proving the optimization genuinely engages and that the GPU layer truly retains.
 
 **Not yet implemented (safe fallback in place):** EGL/Vulkan/DRM retained layer (currently full-frame), surface-corruption/`IsCorrupted` recreate path, sub-rect blit optimization (software still blits the whole bitmap; correctness done, bandwidth opt pending), FrameBuffer software opt-in, broad edge-case suite (resize/DPI/theme/overlap beyond the validated samples), and most Phase 6 polish. Validation requires the Xvfb harness (install `xvfb fluxbox` + the X11/GL client libs; no WM — see harness header).
 
@@ -39,10 +39,10 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 
 **Purpose**: Stand up the headless xvfb + SamplesApp.Skia.Generic harness and the before/after pixel-equality gate before touching the render pipeline.
 
-- [X] T001 Add `FeatureConfiguration.Rendering.EnableDirtyRectangles` (bool, default `false`) and `DirtyRectanglesOverlay` (bool, default `false`) with XML docs, next to `EnableVisualSubtreeSkippingOptimization`, in `src/Uno.UI/FeatureConfiguration.cs`
-- [X] T002 [P] Create deterministic validation samples (small-update, moved-element) under `src/SamplesApp/SamplesApp.Samples/Windows_UI_Composition/DirtyRectangles/` with `[Sample]` attributes; formatted with `dotnet xstyler`. (More scenes — overlapping/semi-transparent, full-window/theme-switch — to be added in US2.)
-- [X] T003 Create headless harness script `build/test-scripts/run-dirty-rect-harness.sh` (modeled on `build/test-scripts/linux-skia-runtime-tests.sh`): for renderer ∈ {software, opengl}, run `SamplesApp.Skia.Generic` under `xvfb-run` with `--auto-screenshots` twice (EnableDirtyRectangles off then on) and assert byte-for-byte pixel-equality per scene; non-zero exit on any diff
-- [X] T004 Wire renderer + flag selection into the harness path via `UNO_DIRTY_RECTANGLES` / `UNO_X11_RENDERER` env vars → `FeatureConfiguration.Rendering.{EnableDirtyRectangles,UseOpenGLOnX11}` in `src/SamplesApp/SamplesApp.Skia.Generic/Program.cs` (inert unless set)
+- [X] T001 Add `FeatureConfiguration.Rendering.EnableDamageRegion` (bool, default `false`) and `DamageRegionOverlay` (bool, default `false`) with XML docs, next to `EnableVisualSubtreeSkippingOptimization`, in `src/Uno.UI/FeatureConfiguration.cs`
+- [X] T002 [P] Create deterministic validation samples (small-update, moved-element) under `src/SamplesApp/SamplesApp.Samples/Windows_UI_Composition/DamageRegion/` with `[Sample]` attributes; formatted with `dotnet xstyler`. (More scenes — overlapping/semi-transparent, full-window/theme-switch — to be added in US2.)
+- [X] T003 Create headless harness script `build/test-scripts/run-damage-region-harness.sh` (modeled on `build/test-scripts/linux-skia-runtime-tests.sh`): for renderer ∈ {software, opengl}, run `SamplesApp.Skia.Generic` under `xvfb-run` with `--auto-screenshots` twice (EnableDamageRegion off then on) and assert byte-for-byte pixel-equality per scene; non-zero exit on any diff
+- [X] T004 Wire renderer + flag selection into the harness path via `UNO_DAMAGE_REGION` / `UNO_X11_RENDERER` env vars → `FeatureConfiguration.Rendering.{EnableDamageRegion,UseOpenGLOnX11}` in `src/SamplesApp/SamplesApp.Skia.Generic/Program.cs` (inert unless set)
 - [X] T005 Establish baseline + validate: built `SamplesApp.Skia.Generic`, installed `xvfb`/`fluxbox` + X11/GL client libs, and confirmed the harness gate is green and reproducible (no WM, deterministic root-window capture) on software and OpenGL.
 
 **Checkpoint**: Harness reproducibly captures and compares screenshots on software + OpenGL. Nothing in the pipeline has changed yet.
@@ -51,14 +51,14 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 
 ## Phase 2: Foundational (Damage tracking — flag OFF ⇒ zero behavior change)
 
-**Purpose**: Accumulate per-frame screen-space damage from invalidation. With `EnableDirtyRectangles == false` this is inert and the present path is byte-identical to today. BLOCKS all user stories.
+**Purpose**: Accumulate per-frame screen-space damage from invalidation. With `EnableDamageRegion == false` this is inert and the present path is byte-identical to today. BLOCKS all user stories.
 
-- [X] T006 Create `DirtyRegion` accumulator type (capped `SKRect` list, `IsFullFrame`, `IsEmpty`, `AddRect`/`Reset`/`ToRegion`, pooled storage, no per-frame alloc) in `src/Uno.UI.Composition/Composition/DirtyRegion.skia.cs` (data-model.md → DirtyRegion)
+- [X] T006 Create `DamageRegion` accumulator type (capped `SKRect` list, `IsFullFrame`, `IsEmpty`, `AddRect`/`Reset`/`ToRegion`, pooled storage, no per-frame alloc) in `src/Uno.UI.Composition/Composition/DamageRegion.skia.cs` (data-model.md → DamageRegion)
 - [X] T007 Add a per-`CompositionTarget` damage accumulator and thread-safe `AddDamage(SKRect)` under the existing `_frameGate` in `src/Uno.UI/UI/Xaml/Media/CompositionTarget.RenderScheduling.skia.cs` (contract C1) (depends T006)
 - [X] T008 Emit old + new total-transform screen-space bounds on appearance changes (`InvalidatePaint`, `SetMatrixDirty`, opacity/visibility/z-order/clip) into the accumulator, in `src/Uno.UI.Composition/Composition/Visual.skia.cs` (FR-003, contract C1) (depends T006, T007)
 - [~] T009 SUPERSEDED — damage is captured during the render walk (`Visual.PaintStep` → `ContributeDamageOnPaint`) using final bounds, instead of at `InvalidateRenderPartial` time. Required because a visual's `Size`/matrix are not final at invalidation (layout/arrange runs later), so invalidation-time bounds are unreliable. `Compositor.skia.cs` unchanged.
 - [X] T010 Force full-frame damage on surface resize / DPI (rasterization-scale) change / surface reallocation in `src/Uno.UI/UI/Xaml/Media/CompositionTarget.Rendering.skia.cs` (FR-007) (depends T007)
-- [X] T011 Add inert-path guard test: with `EnableDirtyRectangles=false`, accumulation does not affect present; assert via a runtime test in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DirtyRectangles.cs` and re-run the harness baseline to confirm identical output (depends T006–T010)
+- [X] T011 Add inert-path guard test: with `EnableDamageRegion=false`, accumulation does not affect present; assert via a runtime test in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DamageRegion.cs` and re-run the harness baseline to confirm identical output (depends T006–T010)
 
 **Checkpoint**: Damage is tracked; flag-off output provably unchanged (harness green, FR-012 preserved).
 
@@ -72,7 +72,7 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 
 ### Tests for User Story 1 (write first, must FAIL before implementation)
 
-- [ ] T012 [P] [US1] Runtime test: small-update scene → painted area bounded to changed region + equality vs full-frame baseline, in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DirtyRectangles.cs`
+- [ ] T012 [P] [US1] Runtime test: small-update scene → painted area bounded to changed region + equality vs full-frame baseline, in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DamageRegion.cs`
 - [ ] T013 [P] [US1] Runtime test: no visible change → present skipped / zero painted area (SC-004), same file
 - [ ] T014 [P] [US1] Runtime test: moved element repaints both vacated (old) and new bounds, no stale pixels (FR-003), same file
 
@@ -85,7 +85,7 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 - [ ] T019 [P] [US1] FrameBuffer software: partial `ReadPixels`→`/dev/fb0` copy of the damage bounds; report retained caps; in `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Rendering/SoftwareRenderer.cs` (depends T016, T017)
 - [X] T020 [US1] Validate US1: run harness on **software** renderer (off==on green) and confirm T012–T014 pass; capture painted-area instrumentation for SC-001/SC-004 (depends T015–T019)
 
-**Checkpoint**: Dirty-rect rendering works correctly and reduces painted area on software renderers; flag still default-off.
+**Checkpoint**: Damage-region rendering works correctly and reduces painted area on software renderers; flag still default-off.
 
 ---
 
@@ -97,7 +97,7 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 
 ### Tests for User Story 2 (write first, must FAIL before implementation)
 
-- [ ] T021 [P] [US2] Runtime equality suite: overlapping elements, semi-transparency over changing background, scrolling reveal — vs full-frame baseline, in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DirtyRectangles.cs`
+- [ ] T021 [P] [US2] Runtime equality suite: overlapping elements, semi-transparency over changing background, scrolling reveal — vs full-frame baseline, in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DamageRegion.cs`
 - [ ] T022 [P] [US2] Runtime equality: window resize + DPI change repaint exposed/whole area correctly; theme switch is full-frame and at parity (SC-005), same file
 - [ ] T023 [P] [US2] Runtime test: many small scattered changes coalesce / fall back to full-frame past threshold without artifacts (FR-008), same file
 
@@ -109,7 +109,7 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 - [ ] T027 [P] [US2] X11 Vulkan: retained-layer path in `src/Uno.UI.Runtime.Skia.X11/Rendering/X11VulkanRenderer.cs` (depends T024)
 - [ ] T028 [P] [US2] FrameBuffer DRM/KMS: retained-layer path in `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Rendering/DRMRenderer.cs` (depends T024)
 - [ ] T029 [US2] Full-frame fallback + layer recreation on `IsCorrupted`/resize wired through the renderer base loop `src/Uno.UI.Runtime.Skia.X11/Rendering/X11Renderer.cs` and `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Rendering/FrameBufferRenderer.cs` (depends T024)
-- [ ] T030 [US2] Implement coalescing + full-repaint threshold (rect-count / surface-fraction) in `src/Uno.UI.Composition/Composition/DirtyRegion.skia.cs` (FR-008) (depends T006)
+- [ ] T030 [US2] Implement coalescing + full-repaint threshold (rect-count / surface-fraction) in `src/Uno.UI.Composition/Composition/DamageRegion.skia.cs` (FR-008) (depends T006)
 - [X] T031 [US2] Validate US2: run harness on **OpenGL** (off==on green) and full equality suite T021–T023 green; confirm theme-switch parity (SC-005) (depends T024–T030)
 
 **Checkpoint**: Pixel-identical output across all change patterns on software + GPU; SC-002 holds.
@@ -120,16 +120,16 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 
 **Goal**: Visualize repainted regions and provide a reliable kill-switch to full-frame rendering.
 
-**Independent Test**: Overlay highlights only the repainted regions; toggling `EnableDirtyRectangles=false` yields identical full-frame output.
+**Independent Test**: Overlay highlights only the repainted regions; toggling `EnableDamageRegion=false` yields identical full-frame output.
 
 ### Tests for User Story 3 (write first)
 
-- [ ] T032 [P] [US3] Runtime test: `EnableDirtyRectangles=false` ⇒ output identical to full-frame baseline (FR-009, kill-switch), in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DirtyRectangles.cs`
+- [ ] T032 [P] [US3] Runtime test: `EnableDamageRegion=false` ⇒ output identical to full-frame baseline (FR-009, kill-switch), in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Composition/Given_DamageRegion.cs`
 
 ### Implementation for User Story 3
 
-- [X] T033 [US3] Diagnostic overlay that tints/outlines the presented damage regions when `DirtyRectanglesOverlay=true`, drawn atop the presented frame without affecting persisted surface content, in `src/Uno.UI/Helpers/SkiaRenderHelper.skia.cs` and `src/Uno.UI/UI/Xaml/Media/CompositionTarget.Rendering.skia.cs` (FR-010, contract C4) (depends Phase 3)
-- [ ] T034 [US3] Document the two flags + overlay usage in `src/Uno.UI/FeatureConfiguration.cs` XML docs and `specs/045-dirty-rectangles-rendering/quickstart.md`
+- [X] T033 [US3] Diagnostic overlay that tints/outlines the presented damage regions when `DamageRegionOverlay=true`, drawn atop the presented frame without affecting persisted surface content, in `src/Uno.UI/Helpers/SkiaRenderHelper.skia.cs` and `src/Uno.UI/UI/Xaml/Media/CompositionTarget.Rendering.skia.cs` (FR-010, contract C4) (depends Phase 3)
+- [ ] T034 [US3] Document the two flags + overlay usage in `src/Uno.UI/FeatureConfiguration.cs` XML docs and `specs/045-damage-region-rendering/quickstart.md`
 
 **Checkpoint**: Diagnostics and opt-out fully functional.
 
@@ -140,7 +140,7 @@ Uno multi-project layout; rendering code is `.skia.cs`. Composition types under 
 - [ ] T035 [P] Allocation audit: confirm zero new per-frame allocations on the damage/present hot path (Constitution IV); fix any with pooling
 - [ ] T036 [P] Surface painted-area / render-cost instrumentation (extend `FpsHelper` or diagnostics) to measure SC-001/SC-003/SC-004
 - [ ] T037 Verify remaining Skia renderers (Win32, macOS Metal, Skia-on-Android/iOS/WASM) safely fall back to full-frame with no regression (Constitution II); enable per-renderer only when proven
-- [ ] T038 Tune coalescing thresholds in `DirtyRegion.skia.cs` against SC-001/SC-005 using the harness
+- [ ] T038 Tune coalescing thresholds in `DamageRegion.skia.cs` against SC-001/SC-005 using the harness
 - [ ] T039 [P] Run the full existing composition/rendering runtime test suite to confirm no regression (SC-007)
 - [ ] T040 Decide and flip default-on for software/persistent-surface renderers once SC-002 holds across the suite; document the rollout state in `FeatureConfiguration.cs`
 - [ ] T041 Run `quickstart.md` end-to-end gate (software + OpenGL, off vs on) and record pass results in the feature folder
@@ -201,7 +201,7 @@ Task: "FrameBuffer DRM retained-layer path in DRMRenderer.cs"       # T028
 
 ### Incremental Delivery
 
-- US1 → software dirty-rect rendering proven.
+- US1 → software damage-region rendering proven.
 - US2 → GPU retained layer + full pattern equality (SC-002 across sw + GPU).
 - US3 → diagnostics + opt-out.
 - Polish → perf/allocation, other renderers fallback, default-on decision.

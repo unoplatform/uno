@@ -1,4 +1,4 @@
-# Specification Quality Checklist: Dirty Rectangles Rendering
+# Specification Quality Checklist: Damage Region Rendering
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-06-16

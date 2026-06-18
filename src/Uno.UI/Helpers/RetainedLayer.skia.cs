@@ -6,12 +6,12 @@ using SkiaSharp;
 namespace Uno.UI.Helpers;
 
 /// <summary>
-/// A persistent offscreen GPU surface used by dirty-rectangles rendering on swapchain renderers (GL, Metal,
+/// A persistent offscreen GPU surface used by damage-region rendering on swapchain renderers (GL, Metal,
 /// Vulkan, WebGL). Their window/drawable surface is not preserved between presents (the swapchain rotates
 /// buffers), so the previous frame's pixels can't be retained there to clip the next present against.
 /// Instead the composition renders onto this retained layer — which <em>does</em> preserve the previous
 /// frame — and the whole layer is blitted to the (non-retaining) swapchain surface each frame. This avoids
-/// per-driver buffer-age handling and keeps the dirty-rectangles logic identical across renderers.
+/// per-driver buffer-age handling and keeps the damage-region logic identical across renderers.
 /// </summary>
 internal sealed class RetainedLayer : IDisposable
 {
@@ -35,7 +35,7 @@ internal sealed class RetainedLayer : IDisposable
 			Surface?.Dispose();
 			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 			Surface = SKSurface.Create(context, budgeted: true, info)
-				?? throw new InvalidOperationException("Failed to create the dirty-rectangles retained layer surface.");
+				?? throw new InvalidOperationException("Failed to create the damage-region retained layer surface.");
 			Surface.Canvas.Clear(clearColor);
 			_width = width;
 			_height = height;

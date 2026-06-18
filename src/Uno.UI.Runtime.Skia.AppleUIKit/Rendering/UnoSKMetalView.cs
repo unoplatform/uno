@@ -21,8 +21,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
 
-		// The Metal drawable is a swapchain buffer that is not preserved between frames, so dirty rectangles
-		// render onto this persistent GPU layer which is blitted to the drawable each frame.
+		// The Metal drawable is a swapchain buffer that is not preserved between frames, so the composition
+		// renders onto this persistent GPU layer which is blitted to the drawable each frame.
 		private readonly RetainedLayer _retainedLayer = new();
 
 		private RootViewController? _owner;
