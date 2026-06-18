@@ -97,8 +97,13 @@ Notes:
 - Serialization must go through the existing System.Text.Json source-generated context for the
   RemoteControl messages (AOT/trimming safe); add the new types to that context.
 - Keep the payload bounded: the per-type list is naturally small (the types in one delta), but a
-  cap with a "+N more" marker is advisable for pathological deltas, mirroring existing diagnostic
-  caps in the manager.
+  cap is advisable for pathological deltas, mirroring existing diagnostic caps in the manager.
+  Truncation must be represented **structurally** rather than as an informal string marker, so
+  consumers can detect it deterministically without parsing — e.g. dedicated
+  `OmittedFailedTypeCount` / `OmittedUpdatedTypeCount` fields (number of identities dropped past the
+  cap, `0` when none). The counts (`FailedElementCount` / `TotalElementCount`) remain the true
+  totals; the omitted-count fields let a consumer reconcile `FailedTypes.Length + OmittedFailedTypeCount
+  == FailedElementCount`.
 
 ## Compatibility & migration
 
@@ -108,9 +113,10 @@ Notes:
   appropriate.
 - The new array fields **must** be initialized to `ImmutableArray<HotReloadTypeOutcome>.Empty` (as
   in the sketch above), not left as the `default(ImmutableArray<T>)` struct value. A default
-  `ImmutableArray<T>` is uninitialized — not empty — and throws when enumerated, measured
-  (`.Length`), or serialized. The "older clients send empty lists" guarantee depends on these
-  explicit `.Empty` defaults so that a payload omitting the fields deserializes to empty arrays.
+  `ImmutableArray<T>` is an *uninitialized* state (`IsDefault == true`), distinct from `Empty`, and
+  may serialize/deserialize differently (`null` vs `[]`) than an empty array. Explicitly defaulting
+  to `.Empty` guarantees stable, non-null list semantics, which is what the "older clients send
+  empty lists" guarantee relies on for a payload that omits the fields.
 - No behavioral change for consumers that only read the counts.
 
 ## Risks & considerations
