@@ -385,9 +385,23 @@ public partial class Window
 		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
 	}
 
+	internal bool HasSupportedSystemBackdrop
+	{
+		get
+		{
+#if __SKIA__
+			return IsBackdropSupported(_systemBackdrop);
+#else
+			return false;
+#endif
+		}
+	}
+
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
-	private Brush? _originalRootBackground;
+	private readonly Dictionary<DependencyObject, Brush?> _savedBackdropBackgrounds = new();
+	private readonly HashSet<FrameworkElement> _backdropLoadedSubscriptions = new();
+	private bool _backdropBackgroundsApplied;
 
 	/// <summary>
 	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
@@ -397,6 +411,11 @@ public partial class Window
 		get => _systemBackdrop;
 		set
 		{
+			if (value is not null && !IsBackdropImplemented(value))
+			{
+				this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+			}
+
 			_systemBackdrop = value;
 			NativeWrapper?.SetSystemBackdrop(value);
 			UpdateRootVisualBackgroundForBackdrop(value);
@@ -405,26 +424,175 @@ public partial class Window
 
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
-		if (!IsBackdropSupported(backdrop))
+		// Always tear down first so subscriptions and saved backgrounds are released even when the
+		// root has already been torn down (RootElement is null), avoiding stale strong references.
+		if (backdrop is null || !IsBackdropSupported(backdrop))
+		{
+			ClearBackdropLoadedSubscriptions();
+			RestoreSavedBackdropBackgrounds();
+			return;
+		}
+
+		if (RootElement is null)
 		{
 			return;
 		}
 
-		if (RootElement is Controls.Panel rootPanel)
+		ApplyTransparentBackgroundsForBackdrop();
+	}
+
+	private void ApplyTransparentBackgroundsForBackdrop()
+	{
+		RestoreSavedBackdropBackgrounds();
+
+		if (RootElement is not { } root)
 		{
-			if (backdrop is not null)
+			return;
+		}
+
+		var transparent = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+		var pending = new Stack<DependencyObject>();
+		var visited = new HashSet<DependencyObject>();
+		pending.Push(root);
+
+		while (pending.Count > 0)
+		{
+			var current = pending.Pop();
+			if (!visited.Add(current))
 			{
-				_originalRootBackground ??= rootPanel.Background;
-				rootPanel.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+				continue;
 			}
-			else
+
+			if (TryGetOpaqueBackground(current, out var originalBrush))
 			{
-				rootPanel.Background = _originalRootBackground
-					?? new Media.SolidColorBrush(ThemingHelper.GetRootVisualBackground());
-				_originalRootBackground = null;
+				_savedBackdropBackgrounds[current] = originalBrush;
+				SetElementBackground(current, transparent);
+			}
+
+			// Listen for new descendants being loaded (for example after Frame.Navigate) so we can
+			// re-walk and transparentize their backgrounds as well, and for them being unloaded so we
+			// can drop the subscription and release the element instead of retaining it indefinitely.
+			if (current is FrameworkElement fe && _backdropLoadedSubscriptions.Add(fe))
+			{
+				fe.Loaded += OnBackdropElementLoaded;
+				fe.Unloaded += OnBackdropElementUnloaded;
+			}
+
+			for (var i = Media.VisualTreeHelper.GetChildrenCount(current) - 1; i >= 0; i--)
+			{
+				pending.Push(Media.VisualTreeHelper.GetChild(current, i));
+			}
+		}
+
+		_backdropBackgroundsApplied = true;
+	}
+
+	private void RestoreSavedBackdropBackgrounds()
+	{
+		if (!_backdropBackgroundsApplied)
+		{
+			return;
+		}
+
+		foreach (var (element, original) in _savedBackdropBackgrounds)
+		{
+			SetElementBackground(element, original);
+		}
+
+		_savedBackdropBackgrounds.Clear();
+		_backdropBackgroundsApplied = false;
+	}
+
+	private void ClearBackdropLoadedSubscriptions()
+	{
+		foreach (var element in _backdropLoadedSubscriptions)
+		{
+			element.Loaded -= OnBackdropElementLoaded;
+			element.Unloaded -= OnBackdropElementUnloaded;
+		}
+
+		_backdropLoadedSubscriptions.Clear();
+	}
+
+	private void OnBackdropElementLoaded(object sender, RoutedEventArgs e)
+	{
+		if (_systemBackdrop is null || !IsBackdropSupported(_systemBackdrop))
+		{
+			return;
+		}
+
+		// Re-walk so descendants newly added under the loaded element (for example a page
+		// inserted by Frame.Navigate) are picked up and transparentized.
+		ApplyTransparentBackgroundsForBackdrop();
+	}
+
+	private void OnBackdropElementUnloaded(object sender, RoutedEventArgs e)
+	{
+		// Drop the subscription when an element leaves the tree so it can be collected and we stop
+		// re-walking from stale elements. Restore its original background first so that, if it is
+		// re-inserted later, the re-walk captures the real value instead of our transparent override.
+		if (sender is FrameworkElement fe && _backdropLoadedSubscriptions.Remove(fe))
+		{
+			fe.Loaded -= OnBackdropElementLoaded;
+			fe.Unloaded -= OnBackdropElementUnloaded;
+
+			if (_savedBackdropBackgrounds.Remove(fe, out var original))
+			{
+				SetElementBackground(fe, original);
 			}
 		}
 	}
+
+	private static bool TryGetOpaqueBackground(DependencyObject element, out Brush? originalBrush)
+	{
+		// Panel/Border/ContentPresenter derive from FrameworkElement while Control (Page, UserControl,
+		// ContentControl, NavigationView, ...) is a separate branch, so these cases never overlap.
+		switch (element)
+		{
+			case Controls.Panel panel when panel.Background is Media.SolidColorBrush panelBrush && panelBrush.Color.A > 0:
+				originalBrush = panel.Background;
+				return true;
+			case Controls.Border border when border.Background is Media.SolidColorBrush borderBrush && borderBrush.Color.A > 0:
+				originalBrush = border.Background;
+				return true;
+			case Controls.ContentPresenter presenter when presenter.Background is Media.SolidColorBrush presenterBrush && presenterBrush.Color.A > 0:
+				originalBrush = presenter.Background;
+				return true;
+			case Controls.Control control when control.Background is Media.SolidColorBrush controlBrush && controlBrush.Color.A > 0:
+				originalBrush = control.Background;
+				return true;
+			default:
+				originalBrush = null;
+				return false;
+		}
+	}
+
+	private static void SetElementBackground(DependencyObject element, Brush? brush)
+	{
+		switch (element)
+		{
+			case Controls.Panel panel:
+				panel.Background = brush;
+				break;
+			case Controls.Border border:
+				border.Background = brush;
+				break;
+			case Controls.ContentPresenter presenter:
+				presenter.Background = brush;
+				break;
+			case Controls.Control control:
+				control.Background = brush;
+				break;
+		}
+	}
+
+	private static bool IsBackdropImplemented(Media.SystemBackdrop? backdrop) => backdrop switch
+	{
+		null => true,
+		Media.MicaBackdrop => true,
+		Media.DesktopAcrylicBackdrop => true,
+		_ => false,
+	};
 
 	private static bool IsBackdropSupported(Media.SystemBackdrop? backdrop) => backdrop switch
 	{

@@ -63,6 +63,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	// Subsystem managers (initialized during accessibility activation)
 	private LiveRegionManager? _liveRegionManager;
 	private FocusSynchronizer? _focusSynchronizer;
+	private UIElement? _focusSearchRoot;
+	private bool _suppressDeparture;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
 	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
 	private const int PreserveTextSelectionSentinel = -1;
@@ -730,6 +732,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
 		// and performs semantic tree resolution before calling into JS.
 		FocusManager.SuppressNativeFocus = true;
+
+		@this._focusSearchRoot = rootElement;
+		NativeMethods.InstallFocusSentinels();
+
+		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+		if (focusManager is not null)
+		{
+			focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
+			focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
+		}
 	}
 
 	[JSExport]
@@ -952,6 +964,85 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Focus leaving the semantic element is handled by the browser focus system.
 		// No explicit action needed here - the Uno FocusManager handles focus transitions.
+	}
+
+	[JSExport]
+	public static void OnFocusSentinel(bool isStart)
+	{
+		var @this = Instance;
+		var root = @this._focusSearchRoot;
+		if (root is null)
+		{
+			return;
+		}
+
+		var candidate = isStart
+			? FocusManager.FindFirstFocusableElement(root)
+			: FocusManager.FindLastFocusableElement(root);
+
+		var leaf = candidate is UIElement candidateElement
+			? @this.ResolveEntrySemanticLeaf(candidateElement, isStart)
+			: null;
+
+		if (leaf is not Control { IsFocusable: true } control)
+		{
+			return;
+		}
+
+		@this._suppressDeparture = true;
+		try
+		{
+			control.Focus(FocusState.Keyboard);
+
+			// Force the DOM sync: when control was already the XAML-focused element,
+			// GotFocus does not fire and DOM focus would stay stranded on the sentinel.
+			var semanticHandle = @this.ResolveToSemanticHandle(control);
+			if (semanticHandle != IntPtr.Zero)
+			{
+				NativeMethods.FocusSemanticElement(semanticHandle);
+			}
+		}
+		finally
+		{
+			@this._suppressDeparture = false;
+		}
+	}
+
+	// First/last descendant-or-self owning a focusable semantic element, skipping
+	// focusable containers (e.g. a navigation SplitView) that have none of their own.
+	private UIElement? ResolveEntrySemanticLeaf(UIElement root, bool first)
+	{
+		if (HasOwnFocusableSemanticElement(root))
+		{
+			return root;
+		}
+
+		var children = root.GetChildren();
+		var ordered = first ? children : children.Reverse();
+		foreach (var child in ordered)
+		{
+			if (child is UIElement childElement
+				&& ResolveEntrySemanticLeaf(childElement, first) is { } found)
+			{
+				return found;
+			}
+		}
+
+		return null;
+	}
+
+	private bool HasOwnFocusableSemanticElement(UIElement element)
+		=> HasSemanticElement(element.Visual.Handle)
+			&& IsAccessibilityFocusable(element, (element as Control)?.IsFocusable ?? element.IsFocusable);
+
+	private void OnFocusDeparting(object sender, object args)
+	{
+		if (_suppressDeparture)
+		{
+			return;
+		}
+
+		NativeMethods.FocusDepartureSentinel(BrowserKeyboardInputSource.LastTabWasForward);
 	}
 
 	private void UpdateIsFocusable(Control control, bool isFocusable)
@@ -2071,5 +2162,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
 		internal static partial void FocusSemanticElement(IntPtr handle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.installFocusSentinels")]
+		internal static partial void InstallFocusSentinels();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusDepartureSentinel")]
+		internal static partial void FocusDepartureSentinel(bool isForward);
 	}
 }

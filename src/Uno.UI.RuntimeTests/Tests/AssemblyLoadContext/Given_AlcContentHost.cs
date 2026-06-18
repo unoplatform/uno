@@ -136,6 +136,140 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// Teardown hygiene: the direct resources and theme dictionaries that AlcContentHost
+	/// copies from the secondary app onto the host control must be removed when the
+	/// secondary app content is cleared. Otherwise the host retains the previous app's
+	/// resource objects (potentially typed in the collectible ALC) after unload, keeping
+	/// them — and through them the ALC — alive across preview reloads.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAppContentCleared_Then_ProjectedResourcesRemovedFromHost()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Pre-conditions: the secondary app's DIRECT resource, theme dictionaries, and merged
+		// dictionaries were projected onto the host control.
+		Assert.IsTrue(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"Pre-condition: AlcAppDirectBrush (direct Application.Resources entry) should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var lightDictionary)
+				&& lightDictionary is ResourceDictionary lightResources
+				&& lightResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light theme dictionary should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.MergedDictionaries.Any(dict => dict.ContainsKey("TestTextBlockStyle")),
+			"Pre-condition: the secondary app's merged dictionaries should be surfaced while the secondary app is hosted");
+
+		// Teardown trigger: clear the hosted content. UpdateMergedResources re-runs and, with no
+		// content (and no source override), must release every projection rather than re-resolve
+		// to a secondary app — otherwise a collectible-ALC-typed key/style/template would stay
+		// pinned on the host control and keep the ALC alive after unload.
+		contentHost.Content = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"After content is cleared, the secondary app's direct resources must be removed from the host control's Resources");
+
+		var staleThemeEntry = contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var themeValue)
+			&& themeValue is ResourceDictionary themeResources
+			&& themeResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false);
+		Assert.IsFalse(staleThemeEntry,
+			"After content is cleared, the secondary app's theme dictionaries must be removed from the host control's Resources");
+
+		Assert.IsFalse(
+			contentHost.Resources.MergedDictionaries.Any(dict => dict.ContainsKey("TestTextBlockStyle")),
+			"After content is cleared, the secondary app's merged dictionaries (holding ALC-typed styles/templates) must be released from the host control");
+	}
+
+	/// <summary>
+	/// Teardown hygiene via Unloaded: when the host discards the AlcContentHost (removes it from the
+	/// visual tree, e.g. its reference is set to null) WITHOUT first setting Content to null, the
+	/// resources it projected from the secondary app must still be released. Otherwise the detached
+	/// control keeps referencing the previous app's resource objects (potentially typed in the
+	/// collectible ALC), pinning the ALC after unload.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_ContentHostUnloaded_Then_ProjectedResourcesRemovedFromHost()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Pre-conditions: the secondary app's direct resource and theme dictionaries were projected.
+		Assert.IsTrue(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"Pre-condition: AlcAppDirectBrush (direct Application.Resources entry) should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var lightDictionary)
+				&& lightDictionary is ResourceDictionary lightResources
+				&& lightResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light theme dictionary should be projected while the secondary app is hosted");
+
+		// Teardown trigger: remove the host from the visual tree WITHOUT clearing Content, so only the
+		// Unloaded path runs (Content remains set to the secondary app's content).
+		Assert.IsNotNull(contentHost.Content, "Sanity: content is still set (not cleared) before the host is unloaded");
+		TestServices.WindowHelper.WindowContent = new Border();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"After the host is unloaded, the secondary app's direct resources must be removed from the host control's Resources");
+
+		var staleThemeEntryAfterUnload = contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var themeValueAfterUnload)
+			&& themeValueAfterUnload is ResourceDictionary themeResourcesAfterUnload
+			&& themeResourcesAfterUnload.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false);
+		Assert.IsFalse(staleThemeEntryAfterUnload,
+			"After the host is unloaded, the secondary app's theme dictionaries must be removed from the host control's Resources");
+	}
+
+	/// <summary>
+	/// Restore-on-teardown: a theme dictionary that already existed on the host control before projection
+	/// (e.g. a consumer-defined "Light" dictionary on the AlcContentHost itself) must be RESTORED — not
+	/// dropped — when the projected secondary-app dictionaries are released on unload. Projection
+	/// overwrites the host's same-key dictionary while the secondary app is hosted, so a naive
+	/// "remove every projected key" teardown would silently lose the consumer's own dictionary.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_HostHasPreExistingThemeDictionary_Then_RestoredAfterUnload()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		var secondaryApp = Application.GetForAssemblyLoadContext(_testAlc!);
+		Assert.IsNotNull(secondaryApp, "Secondary ALC app should be registered.");
+		Assert.IsTrue(secondaryApp!.Resources.ThemeDictionaries.ContainsKey("Light"),
+			"Sanity: the secondary app defines a Light theme dictionary to project.");
+
+		// A fresh host carrying its OWN consumer-defined Light theme dictionary.
+		var probe = new AlcContentHost();
+		var hostOwnedLight = new ResourceDictionary();
+		hostOwnedLight["HostOwnedThemeColor"] = Windows.UI.Colors.Red;
+		probe.Resources.ThemeDictionaries["Light"] = hostOwnedLight;
+
+		// Project the secondary app's resources: its Light dictionary overwrites the host's same-key one.
+		probe.SourceApplicationOverride = secondaryApp;
+
+		Assert.IsTrue(
+			probe.Resources.ThemeDictionaries.TryGetValue("Light", out var projectedLight)
+				&& projectedLight is ResourceDictionary projectedResources
+				&& projectedResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light dictionary should overwrite the host's while projected.");
+
+		// Teardown via Unloaded (no re-projection), exercising the restore path on release.
+		// The probe renders no content, so on its own it never reaches the non-zero size WaitForLoaded
+		// requires; host it in a sized container and wait on that — the probe loads as its child, and
+		// swapping the window content then unloads it, firing the restore.
+		var container = new Border { Width = 50, Height = 50, Child = probe };
+		TestServices.WindowHelper.WindowContent = container;
+		await TestServices.WindowHelper.WaitForLoaded(container);
+		TestServices.WindowHelper.WindowContent = new Border();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(
+			probe.Resources.ThemeDictionaries.TryGetValue("Light", out var restoredLight)
+				&& ReferenceEquals(restoredLight, hostOwnedLight),
+			"After unload the host's own pre-existing Light theme dictionary must be restored, not removed.");
+	}
+
+	/// <summary>
 	/// Validates that ResourceDictionary.Source in App.xaml correctly resolves to the ALC-specific
 	/// dictionary when loaded from a secondary AssemblyLoadContext. This tests the fix for the issue
 	/// where both primary and secondary ALCs with the same resource URI pattern (e.g.,
@@ -1238,6 +1372,97 @@ public class Given_AlcContentHost
 		finally
 		{
 			Application.HasSecondaryApps = hadSecondaryApps;
+		}
+	}
+
+	/// <summary>
+	/// A secondary ALC app's explicit <see cref="Application.RequestedTheme"/> is per-app state: it is
+	/// pinned as an element-level theme at the <see cref="AlcContentHost"/> boundary (WinUI's per-island
+	/// theming mechanism) and never mutates the shared <c>FrameworkTheming</c>, which belongs to the host
+	/// app. Covers: follows-host by default, explicit theme reaches the inner subtree, host app state
+	/// stays untouched, and clearing the explicit theme re-follows the host.
+	/// </summary>
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcApp_ExplicitTheme_Then_IndependentFromHost()
+	{
+		var hostWasExplicit = Application.Current.IsThemeSetExplicitly;
+		var hostOriginal = Application.Current.RequestedTheme;
+		var hadSecondaryApps = Application.HasSecondaryApps;
+
+		Application.HasSecondaryApps = true;
+		Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+		try
+		{
+			// Non-themed host probe, sibling of the ALC host: follows the host app theme.
+			var probe = new Border { Width = 20, Height = 20 };
+
+			_contentHost = new AlcContentHost();
+			var container = new StackPanel { Children = { probe, _contentHost } };
+
+			WindowHelper.ContentHostOverride = _contentHost;
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(container);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var secondaryApp = await BootSecondaryAlcAppAsync();
+
+			// With no explicit theme of its own, the secondary app follows the host app theme.
+			Assert.AreEqual(ApplicationTheme.Dark, secondaryApp.RequestedTheme,
+				"A secondary app without an explicit theme must follow the host app theme.");
+			Assert.IsFalse(secondaryApp.IsThemeSetExplicitly,
+				"A freshly booted secondary app must not report an explicit theme.");
+
+			// Act: the secondary app goes explicitly Light while the host stays Dark.
+			secondaryApp.SetExplicitRequestedTheme(ApplicationTheme.Light);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ApplicationTheme.Light, secondaryApp.RequestedTheme,
+				"The secondary app must report its explicit theme.");
+			Assert.IsTrue(secondaryApp.IsThemeSetExplicitly);
+
+			// The host application's theme state must be completely untouched.
+			Assert.AreEqual(ApplicationTheme.Dark, Application.Current.RequestedTheme,
+				"A secondary app's explicit theme must not mutate the host app's theme (shared FrameworkTheming).");
+			Assert.IsTrue(Application.Current.IsThemeSetExplicitly,
+				"A secondary app's explicit theme must not clear the host app's explicit-theme state.");
+			Assert.AreEqual(ElementTheme.Dark, probe.ActualTheme,
+				"The host shell must keep the host theme when a secondary app sets an explicit theme.");
+
+			// The theme is pinned at the content-host boundary and reaches the inner subtree.
+			Assert.AreEqual(ElementTheme.Light, _contentHost.RequestedTheme,
+				"The secondary app's explicit theme must be pinned on the AlcContentHost boundary.");
+			Assert.AreEqual(ElementTheme.Light, _contentHost.ActualTheme);
+			var innerRoot = _contentHost.Content as FrameworkElement;
+			Assert.IsNotNull(innerRoot, "Secondary content should be a FrameworkElement");
+			Assert.AreEqual(ElementTheme.Light, innerRoot!.ActualTheme,
+				"The secondary app's content must use the secondary app's explicit theme.");
+
+			// Act: clearing the explicit theme re-follows the host.
+			secondaryApp.SetExplicitRequestedTheme(null);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ApplicationTheme.Dark, secondaryApp.RequestedTheme,
+				"After clearing its explicit theme, the secondary app must follow the host theme again.");
+			Assert.IsFalse(secondaryApp.IsThemeSetExplicitly);
+			Assert.AreEqual(ElementTheme.Default, _contentHost.RequestedTheme,
+				"Clearing the secondary app's explicit theme must clear the boundary pin.");
+			Assert.AreEqual(ElementTheme.Dark, innerRoot.ActualTheme,
+				"After clearing the explicit theme, the secondary content must re-follow the host theme.");
+		}
+		finally
+		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+
+			if (hostWasExplicit)
+			{
+				Application.Current.SetExplicitRequestedTheme(hostOriginal);
+			}
+			else
+			{
+				Application.Current.SetExplicitRequestedTheme(null);
+			}
 		}
 	}
 

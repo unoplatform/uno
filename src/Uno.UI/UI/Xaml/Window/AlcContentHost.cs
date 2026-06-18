@@ -17,6 +17,38 @@ public sealed partial class AlcContentHost : ContentControl
 	private Application? _sourceApplicationOverride;
 	private Application? _contentApplication;
 
+	// Keys this control copied into its own Resources / ThemeDictionaries from the source
+	// application. Tracked so the next UpdateMergedResources removes exactly those entries:
+	// when the secondary app's content is cleared (app unloading), the host must not keep
+	// referencing the previous app's resource objects — they may be typed in the secondary
+	// (collectible) AssemblyLoadContext and would otherwise pin it after unload.
+	//
+	// Direct resources are only ever copied for keys the host does not already have (see the
+	// Except filter in UpdateMergedResources), so releasing them is a plain Remove. Theme
+	// dictionaries, however, OVERWRITE the host's same-key entry, so each projection records
+	// the host's previous value (and whether one existed) to restore it on release rather than
+	// dropping a consumer-defined dictionary the projection had shadowed.
+	private readonly List<object> _copiedDirectResourceKeys = new();
+	private readonly List<ProjectedThemeDictionary> _copiedThemeDictionaries = new();
+
+	// A theme-dictionary key this control projected from the source application, paired with the
+	// host's own value for that key before the projection overwrote it.
+	private readonly struct ProjectedThemeDictionary
+	{
+		public ProjectedThemeDictionary(object key, bool hadPreviousValue, object? previousValue)
+		{
+			Key = key;
+			HadPreviousValue = hadPreviousValue;
+			PreviousValue = previousValue;
+		}
+
+		public object Key { get; }
+
+		public bool HadPreviousValue { get; }
+
+		public object? PreviousValue { get; }
+	}
+
 	public AlcContentHost()
 	{
 		HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -25,6 +57,7 @@ public sealed partial class AlcContentHost : ContentControl
 		VerticalContentAlignment = VerticalAlignment.Stretch;
 
 		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 	}
 
 	/// <summary>
@@ -62,8 +95,69 @@ public sealed partial class AlcContentHost : ContentControl
 		UpdateMergedResources();
 	}
 
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		// When the host discards this control (e.g. the previewed app is torn down and the
+		// host's reference is set to null / it is removed from the tree) without first setting
+		// Content to null, release everything projected from the secondary application so its
+		// resource objects — potentially typed in the collectible ALC — are not retained by this
+		// control after it leaves the tree, which would otherwise pin the ALC after unload.
+		// A subsequent re-Loaded re-projects via UpdateMergedResources.
+		ClearProjectedResources();
+		Resources.MergedDictionaries.Clear();
+	}
+
+	// Removes everything this control projected from the source application (direct resources and
+	// theme-dictionary entries) and clears the tracking lists. Shared by UpdateMergedResources
+	// (before recomputing the source) and OnUnloaded (on teardown).
+	private void ClearProjectedResources()
+	{
+		foreach (var key in _copiedDirectResourceKeys)
+		{
+			Resources.Remove(key);
+		}
+
+		_copiedDirectResourceKeys.Clear();
+
+		foreach (var projected in _copiedThemeDictionaries)
+		{
+			if (projected.HadPreviousValue)
+			{
+				// Restore the host's own dictionary that the projection overwrote, rather than
+				// dropping a consumer-defined entry (e.g. a host "Light" dictionary).
+				Resources.ThemeDictionaries[projected.Key] = projected.PreviousValue!;
+			}
+			else
+			{
+				Resources.ThemeDictionaries.Remove(projected.Key);
+			}
+		}
+
+		_copiedThemeDictionaries.Clear();
+	}
+
 	private void UpdateMergedResources()
 	{
+		// Remove everything previously projected from the (old) source application before
+		// recomputing the source. When the content is cleared on app unload, the previous app's
+		// resource objects must not be retained by this control (see the tracking fields for the
+		// rationale); the null-Content guard below then keeps those projections released.
+		ClearProjectedResources();
+
+		// Clear existing merged dictionaries to avoid duplicates
+		Resources.MergedDictionaries.Clear();
+
+		// When the host clears Content (the secondary app's teardown path), there is no source
+		// to project from: leave the projections released and return so the host falls back to
+		// its own ambient resources. Re-projecting from Application.Current here would re-copy
+		// the host's own keys needlessly; more importantly, never re-resolving to a secondary
+		// app on a null Content guarantees no collectible-ALC-typed key is re-pinned after the
+		// content is cleared (the projection released above stays released).
+		if (Content is null && _sourceApplicationOverride is null)
+		{
+			return;
+		}
+
 		var sourceApp = _sourceApplicationOverride
 			?? _contentApplication
 			?? Application.GetForInstance(Content)
@@ -73,9 +167,6 @@ public sealed partial class AlcContentHost : ContentControl
 		{
 			return;
 		}
-
-		// Clear existing merged dictionaries to avoid duplicates
-		Resources.MergedDictionaries.Clear();
 
 		// Merge all resource dictionaries from the source application
 		foreach (var resourceDictionary in sourceApp.Resources.MergedDictionaries)
@@ -88,7 +179,9 @@ public sealed partial class AlcContentHost : ContentControl
 		{
 			foreach (var themeDictionary in sourceApp.Resources.ThemeDictionaries)
 			{
+				var hadPreviousValue = Resources.ThemeDictionaries.TryGetValue(themeDictionary.Key, out var previousValue);
 				Resources.ThemeDictionaries[themeDictionary.Key] = themeDictionary.Value;
+				_copiedThemeDictionaries.Add(new ProjectedThemeDictionary(themeDictionary.Key, hadPreviousValue, hadPreviousValue ? previousValue : null));
 			}
 		}
 
@@ -98,6 +191,7 @@ public sealed partial class AlcContentHost : ContentControl
 		foreach (var key in sourceApp.Resources.Keys.Except(Resources.Keys).ToList())
 		{
 			Resources[key] = sourceApp.Resources[key];
+			_copiedDirectResourceKeys.Add(key);
 		}
 	}
 }

@@ -18,6 +18,10 @@ namespace Uno.UI.DataBinding
 
 			internal GetPropertyTypeKey()
 			{
+				// Seed non-null state: Clone() relies on _type/_property being non-null, and the
+				// pooled instance can be swapped (ClearCaches) while a racing GetPropertyType call
+				// is between Update() and Clone().
+				Update(typeof(object), string.Empty, allowPrivateMembers: false);
 			}
 
 			private GetPropertyTypeKey(Type type, string property, bool allowPrivateMembers, int cachedHashcode)

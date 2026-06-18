@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -15,13 +14,16 @@ namespace UITests.Microsoft_UI_Windowing;
 	Description =
 		"Demonstrates Window.SystemBackdrop support for Mica and Desktop Acrylic materials. " +
 		"On macOS, uses NSVisualEffectView with the matching vibrancy material. " +
-		"The page Background should be Transparent to let the backdrop show through.")]
+		"On Windows 11 (22621+), uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. " +
+		"The framework makes the visual tree transparent so the backdrop shows through. " +
+		"Use the 'Extend content into title bar' toggle to verify the material also fills the title bar.")]
 public sealed partial class MicaBackdropTests : Page
 {
 	public MicaBackdropTests()
 	{
 		this.InitializeComponent();
 		DataContextChanged += OnDataContextChanged;
+		Unloaded += OnUnloaded;
 	}
 
 	internal MicaBackdropTestsViewModel ViewModel { get; private set; }
@@ -30,12 +32,15 @@ public sealed partial class MicaBackdropTests : Page
 	{
 		ViewModel = args.NewValue as MicaBackdropTestsViewModel;
 	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		ViewModel?.Reset();
+	}
 }
 
 internal class MicaBackdropTestsViewModel : ViewModelBase
 {
-	private readonly List<(Panel panel, Brush original)> _savedBackgrounds = new();
-
 	public MicaBackdropTestsViewModel()
 	{
 	}
@@ -52,6 +57,20 @@ internal class MicaBackdropTestsViewModel : ViewModelBase
 				return $"Mica ({mica.Kind})";
 			}
 			return backdrop?.GetType().Name ?? "None";
+		}
+	}
+
+	/// <summary>
+	/// Mirrors <see cref="Window.ExtendsContentIntoTitleBar"/> so the sample can verify the backdrop
+	/// material also fills the title bar region when the content is extended into it.
+	/// </summary>
+	public bool ExtendsContentIntoTitleBar
+	{
+		get => App.MainWindow.ExtendsContentIntoTitleBar;
+		set
+		{
+			App.MainWindow.ExtendsContentIntoTitleBar = value;
+			RaisePropertyChanged();
 		}
 	}
 
@@ -73,50 +92,24 @@ internal class MicaBackdropTestsViewModel : ViewModelBase
 	public void ClearBackdrop()
 	{
 		App.MainWindow.SystemBackdrop = null;
-		RestoreAncestorBackgrounds();
+		RaisePropertyChanged(nameof(CurrentBackdrop));
+	}
+
+	/// <summary>
+	/// Restores the window to its default state when leaving the sample.
+	/// </summary>
+	public void Reset()
+	{
+		App.MainWindow.SystemBackdrop = null;
+		ExtendsContentIntoTitleBar = false;
 		RaisePropertyChanged(nameof(CurrentBackdrop));
 	}
 
 	private void SetBackdrop(SystemBackdrop backdrop)
 	{
+		// Setting Window.SystemBackdrop is enough: the framework transparentizes the visual tree so
+		// the material shows through. No manual background walking is required here anymore.
 		App.MainWindow.SystemBackdrop = backdrop;
-		MakeAncestorBackgroundsTransparent();
 		RaisePropertyChanged(nameof(CurrentBackdrop));
-	}
-
-	/// <summary>
-	/// Walks the visual tree from the Window content down to this page and makes all
-	/// Panel backgrounds transparent so the system backdrop material can show through.
-	/// This mirrors WinUI behavior where apps must use transparent backgrounds with Mica.
-	/// </summary>
-	private void MakeAncestorBackgroundsTransparent()
-	{
-		RestoreAncestorBackgrounds();
-
-		var transparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-		DependencyObject current = App.MainWindow.Content;
-		while (current is not null)
-		{
-			if (current is Panel panel && panel.Background is SolidColorBrush scb && scb.Color.A > 0)
-			{
-				_savedBackgrounds.Add((panel, panel.Background));
-				panel.Background = transparentBrush;
-			}
-			// Walk into the visual tree
-			current = current is ContentControl cc ? cc.Content as DependencyObject
-				: current is Panel p && p.Children.Count > 0 ? p.Children[0]
-				: Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(current) > 0
-					? Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(current, 0)
-					: null;
-		}
-	}
-
-	private void RestoreAncestorBackgrounds()
-	{
-		foreach (var (panel, original) in _savedBackgrounds)
-		{
-			panel.Background = original;
-		}
-		_savedBackgrounds.Clear();
 	}
 }

@@ -151,7 +151,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			if (label) {
@@ -198,7 +198,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			// aria-pressed for toggle button pattern (distinct from aria-checked for checkboxes)
@@ -247,7 +247,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			// role="switch" with aria-checked for ToggleSwitch (ARIA switch pattern)
@@ -301,7 +301,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			// Set range properties
@@ -360,7 +360,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			if (label) {
@@ -411,7 +411,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			if (label) {
@@ -458,7 +458,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus for screen readers
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			// Reset default heading styles so they don't affect layout
@@ -508,7 +508,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			element.value = value;
@@ -581,7 +581,7 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('role', 'combobox');
 			element.setAttribute('aria-expanded', String(expanded));
 			element.setAttribute('aria-haspopup', 'listbox');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			if (selectedValue) {
@@ -637,7 +637,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'listbox');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			if (multiselect) {
@@ -842,7 +842,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('a');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			// Native <a> has implicit role="link" — no need to set explicitly
 
@@ -889,7 +889,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tablist');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -917,7 +917,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tab');
 			element.setAttribute('aria-selected', String(selected));
-			element.tabIndex = selected ? 0 : -1;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -962,7 +962,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tree');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -1110,7 +1110,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('table');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'grid');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -1223,7 +1223,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'menu');
-			element.tabIndex = 0;
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 			if (label) {
 				element.setAttribute('aria-label', label);
