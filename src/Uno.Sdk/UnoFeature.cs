@@ -105,6 +105,7 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	Skia,
 
+	// Skia is always the renderer in 7.0; this feature is implied and kept only for back-compat.
 	[UnoArea(UnoArea.Core)]
 	SkiaRenderer,
 
