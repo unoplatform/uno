@@ -778,6 +778,8 @@ namespace Microsoft.UI.Xaml
 
 			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
 #if UNO_HAS_ENHANCED_LIFECYCLE
+			// Read the FrameworkTheming snapshot (the single source the change-detection and
+			// FrameworkElement also read), refreshed by OnThemeChanged on every high-contrast toggle.
 			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 			var highContrastTheme = core.Theming.GetHighContrastTheme();
 #else
