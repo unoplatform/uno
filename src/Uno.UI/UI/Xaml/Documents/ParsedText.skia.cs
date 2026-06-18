@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -742,6 +742,16 @@ internal readonly struct ParsedText : IParsedText
 	public bool IsBaseDirectionRightToLeft => false;
 
 	internal int LineCount => _renderLines.Count;
+
+	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
+	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
+	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
+
+	internal Size AvailableSize => _availableSize;
+
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal FlowDirection FlowDirection => _flowDirection;
 
 	#endregion
 
