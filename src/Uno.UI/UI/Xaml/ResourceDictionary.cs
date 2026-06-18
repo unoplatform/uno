@@ -588,11 +588,6 @@ namespace Microsoft.UI.Xaml
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
-					else if (newValue is IDependencyObjectStoreProvider materializedNewValueProvider)
-					{
-						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
-						materializedNewValueProvider.Store.IsResourceDictionaryItem = true;
-          }
 					else if (newValue is IDependencyObjectStoreProvider storeProvider)
 					{
 						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
