@@ -49,6 +49,13 @@ public partial class CompositionTarget
 	private static readonly bool _forceFullFramePresent =
 		Environment.GetEnvironmentVariable("UNO_DAMAGE_REGION") is "false";
 
+	// Diagnostic: when UNO_DAMAGE_REGION_LOG=true, log the accumulated damage stats for every frame that
+	// changed something (full-frame vs. a sub-frame region count + bounds). Lets a scroll/animation be
+	// inspected to see whether it coalesces to a full-frame repaint (region count hit the cap) or stays a
+	// tight sub-region. Read once to keep the render path hot.
+	private static readonly bool _logDamage =
+		Environment.GetEnvironmentVariable("UNO_DAMAGE_REGION_LOG") is "true";
+
 	// Snapshot of the damage region attached to a recorded frame, consumed by Draw() on the render thread.
 	// The region may be a possibly-disjoint union of arbitrary shapes. It is transported across the
 	// record/present threads as SVG path data (a GC-managed string, so the snapshot needs no native cleanup):
@@ -157,6 +164,11 @@ public partial class CompositionTarget
 			rootElement.Visual,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			damage: _pendingDamage);
+
+		if (_logDamage && !_pendingDamage.IsEmpty)
+		{
+			Console.WriteLine($"[damage] full={_pendingDamage.IsFullFrame} regions={_pendingDamage.RegionCount} bounds={_pendingDamage.Bounds}");
+		}
 
 		// Snapshot and reset the accumulated damage region for this frame. The picture above is always
 		// the full tree; the snapshot tells Draw() which region actually needs to be re-presented.
