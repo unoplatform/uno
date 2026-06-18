@@ -49,12 +49,6 @@ $projects =
     # Disabled for LXD setup issues
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
-    # 5.6 Android/ios/Wasm+Skia nuget package first
-    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp","NoBuildClean")),
-
-    # 5.6 Android/ios/Wasm+Skia
-    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @()),
-
     # 5.6 Win32+Skia
     @(3, "5.6/uno56net9win32/uno56net9win32/uno56net9win32.csproj", @(), @()),
 
