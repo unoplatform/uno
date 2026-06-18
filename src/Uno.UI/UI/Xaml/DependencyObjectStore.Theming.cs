@@ -765,13 +765,17 @@ public partial class DependencyObjectStore
 		// — flows through SetValue at Local precedence, which marks ModifiedValue.LocalValueNewerThanAnimatedValue
 		// and would defeat an in-effect (held) animation, e.g. a Control's filled VisualState keyframe (the
 		// "checked CheckBox renders empty until hover" bug). MUX Reference: the precedence rule
-		// (ModifiedValue.cpp CModifiedValue::GetEffectiveValue, lines 255-282) and the theme write path that marks
-		// local-newer (Theming.cpp SetThemeResourceBinding -> SetValue, line 441; PropertySystem.cpp SetValue ->
-		// SetBaseValue(BaseValueSourceLocal), line 1651). WinUI has no suppress primitive; Uno compensates with
-		// the counter-based guard already wrapping the global theme switch (CoreServices.RaiseThemeChanged,
-		// Application.OnResourcesChanged) — extend it to this per-element choke point so a re-resolved theme value
-		// cannot defeat an in-effect animation. Counter-based, so it nests safely under the global guard;
-		// try/finally so the counter unwinds on an exception in any phase.
+		// (ModifiedValue.cpp CModifiedValue::GetEffectiveValue, lines 255-282). WinUI re-resolves in the same hold
+		// window but avoids the defeat with a per-property GATE, not a suppress: SetThemeResourceBinding arms
+		// SetModifierValueBeingSet(true) when the property HasModifiers (true while animated), which makes the
+		// !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649 false and SKIPS the hardcoded
+		// SetBaseValue(.., BaseValueSourceLocal) at :1651 entirely (Theming.cpp:405-410) — so the base is never
+		// re-stamped and the local-newer bit is never set. Uno has no such gate (ApplyResource/SetResourceBinding
+		// default to Local), so it reuses the counter-based suppress it already wraps the global theme switch in
+		// (CoreServices.RaiseThemeChanged, Application.OnResourcesChanged), extended here to the per-element choke
+		// point. This masks the flag-flip rather than skipping the re-stamp; a faithful port of WinUI's
+		// modifier-being-set gate (which would let the suppress be removed) is tracked as follow-up. Counter-based,
+		// so it nests safely under the global guard; try/finally so the counter unwinds on an exception in any phase.
 		ModifiedValue.SuppressLocalCanDefeatAnimations();
 		try
 		{
