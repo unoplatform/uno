@@ -58,12 +58,12 @@ public partial class ShapeVisual
 	// Evaluated live (not cached): a fill brush's RequiresRepaintOnEveryFrame can flip to true after the
 	// shape is first assigned — e.g. a backdrop effect brush only reports it once it has detected its
 	// backdrop input during its first paint. A stale cached value would freeze the visual's picture and,
-	// under dirty rectangles, leave the backdrop effect rendering against a clip-starved backdrop.
+	// under damage region, leave the backdrop effect rendering against a clip-starved backdrop.
 	internal override bool RequiresRepaintOnEveryFrame =>
 		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
 
-	internal override float DirtyRegionSamplingMargin =>
-		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DirtyRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
+	internal override float DamageRegionSamplingMargin =>
+		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DamageRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
@@ -127,7 +127,7 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	// The painted shapes themselves (ellipse, rounded rect, arbitrary geometry), so the dirty region follows
+	// The painted shapes themselves (ellipse, rounded rect, arbitrary geometry), so the damage region follows
 	// the actual shape instead of its bounding box. (TryGetPaintDamageRegion only calls this when there's no
 	// shadow, so ExpandForShadow doesn't apply here.)
 	internal override bool TryGetLocalContentPath(SKPath dst)

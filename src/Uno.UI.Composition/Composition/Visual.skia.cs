@@ -36,7 +36,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
 	// Disabled by default: picture-collapsing folds a stable subtree into a cached picture that is no
-	// longer walked, which is incompatible with dirty-rectangles rendering — the collapsed visuals can't
+	// longer walked, which is incompatible with damage-region rendering — the collapsed visuals can't
 	// contribute their changed region to the per-frame damage, and backdrop effect brushes inside a
 	// collapsed picture would sample a clip-starved backdrop. Re-enabling this while a retaining renderer
 	// is active can therefore produce stale pixels.
@@ -59,8 +59,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _framesSinceSubtreeNotChanged;
 
 	// The root-space bounds this visual occupied the last time it was drawn, and the TotalMatrix it was
-	// drawn with, used to add the vacated region to the dirty region when it moves/resizes (e.g. scrolling)
-	// even when its cached picture is reused without repainting. Only used for dirty rectangles.
+	// drawn with, used to add the vacated region to the damage region when it moves/resizes (e.g. scrolling)
+	// even when its cached picture is reused without repainting. Only used for damage region.
 	private SKRect _lastRenderBounds;
 	private Matrix4x4 _lastRenderMatrix;
 	private bool _hasLastRenderBounds;
@@ -153,9 +153,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 	// How far (in local pixels) beyond its own bounds this visual's paint samples the surface (e.g. a backdrop
-	// blur). Dirty-rectangles rendering expands the damage region by this margin so the sampled backdrop stays
+	// blur). Damage-region rendering expands the damage region by this margin so the sampled backdrop stays
 	// fresh; otherwise the effect reads stale pixels where the surrounding content changed. 0 by default.
-	internal virtual float DirtyRegionSamplingMargin => 0;
+	internal virtual float DamageRegionSamplingMargin => 0;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -279,7 +279,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// A visual contributes damage when its content changed (it repainted) OR when it merely moved — its
 		// transform changed since the last frame, e.g. while scrolling — even though its cached picture is
 		// reused. An unchanged picture drawn at the same place needs no repaint, which is the whole point of
-		// dirty rectangles, so skip it cheaply (just a matrix comparison).
+		// damage region, so skip it cheaply (just a matrix comparison).
 		var matrix = TotalMatrix;
 		var moved = !_hasLastRenderBounds || matrix != _lastRenderMatrix;
 
@@ -327,7 +327,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	// Computes the dirty region (in root/logical coordinates) for this visual's own paint. The dirty region
+	// Computes the damage region (in root/logical coordinates) for this visual's own paint. The damage region
 	// is the intersection of two things: the clip in effect when the visual draws (the region it is *allowed*
 	// to draw into, computed via GetTotalClipPath like native-element clipping — and which can be any curve,
 	// not just a rectangle), and the bounds of what it *actually* paints (its content). The clip alone
@@ -363,7 +363,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// Non-rectangular content (a rounded border, an ellipse, an arbitrary shape): damage the actual
 			// painted shape rather than its bounding box. Skipped when a shadow or backdrop-sampling margin is
 			// involved — those expand a rectangular silhouette instead.
-			if (ShadowState is null && DirtyRegionSamplingMargin == 0)
+			if (ShadowState is null && DamageRegionSamplingMargin == 0)
 			{
 				contentPath.Rewind();
 				if (TryGetLocalContentPath(contentPath) && !contentPath.IsEmpty)
@@ -391,7 +391,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				// Expand by the backdrop-sampling margin (e.g. a blur radius): the effect reads the surface this
 				// far beyond its own bounds, so that ring must be kept fresh or the blur samples stale pixels.
-				var samplingMargin = DirtyRegionSamplingMargin;
+				var samplingMargin = DamageRegionSamplingMargin;
 				if (samplingMargin > 0)
 				{
 					local.Inflate(samplingMargin, samplingMargin);
@@ -536,13 +536,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	// Appends the actual painted shape (a path, in this visual's local coordinate space) to <paramref
 	// name="dst"/> for visuals whose content isn't rectangular (e.g. a rounded border or an ellipse), so the
-	// dirty region follows the shape instead of its bounding box. Returns false to fall back to the
+	// damage region follows the shape instead of its bounding box. Returns false to fall back to the
 	// rectangular <see cref="TryGetLocalContentBounds"/> path. Not used when a shadow or backdrop-sampling
 	// margin is involved (those expand a rectangular silhouette).
 	internal virtual bool TryGetLocalContentPath(SKPath dst) => false;
 
 	// Expands a local content rect to also cover the drop shadow this visual casts (the silhouette offset by
-	// (Dx,Dy) and blurred by ~3*sigma), so the shadow is included in the dirty region. No-op without a shadow.
+	// (Dx,Dy) and blurred by ~3*sigma), so the shadow is included in the damage region. No-op without a shadow.
 	private protected SKRect ExpandForShadow(SKRect content)
 	{
 		if (ShadowState is not { } shadow)
@@ -847,7 +847,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Walk children individually. Picture-collapsing is disabled by default (see
 				// EnablePictureCollapsingOptimization) because a collapsed subtree is not walked and would
-				// break dirty-rectangles damage tracking and backdrop-effect sampling.
+				// break damage-region damage tracking and backdrop-effect sampling.
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
 					child.Render(in session, applyChildOptimization);

@@ -22,20 +22,20 @@ internal interface ICompositionTarget
 	void RequestNewFrame();
 
 	/// <summary>
-	/// Adds a changed region (in root/logical coordinates) to the current frame's dirty region,
-	/// for dirty-rectangles rendering.
+	/// Adds a changed region (in root/logical coordinates) to the current frame's damage region,
+	/// for damage-region rendering.
 	/// </summary>
 	void AddDamage(SKRect bounds);
 
 	/// <summary>
 	/// Adds a changed region (in root/logical coordinates), possibly non-rectangular, to the current
-	/// frame's dirty region. The region is unioned with the rest of the frame's damage, which may be a
+	/// frame's damage region. The region is unioned with the rest of the frame's damage, which may be a
 	/// disjoint set of arbitrary shapes, so the gaps between changed areas are not repainted.
 	/// </summary>
 	void AddDamage(SKPath region);
 
 	/// <summary>
-	/// Marks the entire surface as dirty for the current frame (e.g. on resize), forcing a full repaint.
+	/// Marks the entire surface as damaged for the current frame (e.g. on resize), forcing a full repaint.
 	/// </summary>
 	void AddFullFrameDamage();
 #endif

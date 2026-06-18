@@ -1,9 +1,9 @@
-# Feature Specification: Dirty Rectangles Rendering
+# Feature Specification: Damage Region Rendering
 
-**Feature Branch**: `045-dirty-rectangles-rendering`  
+**Feature Branch**: `045-damage-region-rendering`  
 **Created**: 2026-06-16  
 **Status**: Draft  
-**Input**: User description: "The goal is to implement support 'dirty rectangles' rendering, i.e. draw only parts that are different from the previous frame."
+**Input**: User description: "The goal is to implement support 'damage region' rendering, i.e. draw only parts that are different from the previous frame."
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -25,11 +25,11 @@ When an application's UI changes only in a small portion of the window between t
 
 ### User Story 2 - Visually correct output under all change patterns (Priority: P1)
 
-The displayed result of dirty-rectangle rendering is always pixel-identical to what a full-frame repaint would have produced, across overlapping elements, transparency, transforms, clipping, scrolling, resizing, and rapid successive changes.
+The displayed result of damage-region rendering is always pixel-identical to what a full-frame repaint would have produced, across overlapping elements, transparency, transforms, clipping, scrolling, resizing, and rapid successive changes.
 
 **Why this priority**: A rendering optimization that produces visual artifacts (stale pixels, tearing, ghosting, missing updates) is worse than no optimization. Correctness is non-negotiable and must hold for every change pattern, so it shares top priority with the core optimization itself.
 
-**Independent Test**: Run a suite of UI scenarios (overlapping semi-transparent elements, animated transforms, scrolling lists, window resize, theme switch) with dirty-rectangle rendering enabled and compare the rendered output against a full-repaint baseline; outputs must match.
+**Independent Test**: Run a suite of UI scenarios (overlapping semi-transparent elements, animated transforms, scrolling lists, window resize, theme switch) with damage-region rendering enabled and compare the rendered output against a full-repaint baseline; outputs must match.
 
 **Acceptance Scenarios**:
 
@@ -44,9 +44,9 @@ The displayed result of dirty-rectangle rendering is always pixel-identical to w
 
 Developers can observe which regions are being treated as dirty (for tuning and bug diagnosis) and can disable the optimization to fall back to full-frame rendering when needed.
 
-**Why this priority**: Dirty-rectangle tracking is subtle and bugs manifest as visual glitches that are hard to attribute. A way to visualize the dirty regions and a reliable kill-switch back to full repaint are essential for diagnosing issues, validating correctness, and giving applications an escape hatch — but the feature delivers its value without them, so this is P2.
+**Why this priority**: Damage-region tracking is subtle and bugs manifest as visual glitches that are hard to attribute. A way to visualize the damage regions and a reliable kill-switch back to full repaint are essential for diagnosing issues, validating correctness, and giving applications an escape hatch — but the feature delivers its value without them, so this is P2.
 
-**Independent Test**: Enable the diagnostic overlay and confirm dirty regions are highlighted on screen; toggle the optimization off and confirm rendering reverts to full-frame behavior with identical visual output.
+**Independent Test**: Enable the diagnostic overlay and confirm damage regions are highlighted on screen; toggle the optimization off and confirm rendering reverts to full-frame behavior with identical visual output.
 
 **Acceptance Scenarios**:
 
@@ -59,7 +59,7 @@ Developers can observe which regions are being treated as dirty (for tuning and 
 
 - **Nothing changed**: A frame where no visible content changed performs no draw work, yet the displayed surface stays correct.
 - **Everything changed**: A change affecting the whole window (theme switch, full-screen animation, root background change) degrades gracefully to a full repaint without being slower than today.
-- **Many small scattered changes**: Numerous small dirty regions across the frame are handled without the bookkeeping cost exceeding the cost of a single full repaint (the system may coalesce regions or fall back to full repaint past a threshold).
+- **Many small scattered changes**: Numerous small damage regions across the frame are handled without the bookkeeping cost exceeding the cost of a single full repaint (the system may coalesce regions or fall back to full repaint past a threshold).
 - **Moving / transformed / animated elements**: Both old and new bounds are invalidated so the vacated area is restored.
 - **Off-screen and partially clipped changes**: Changes outside the visible surface or clipped by a parent do not trigger repaints of areas that are not visible.
 - **Window resize / DPI (scale) change**: Surface reallocation re-establishes a correct full frame.
@@ -74,12 +74,12 @@ Developers can observe which regions are being treated as dirty (for tuning and 
 - **FR-001**: The system MUST track, per frame, the region(s) of the rendered surface whose visual output differs from the previously presented frame.
 - **FR-002**: The system MUST repaint only the tracked changed region(s) and preserve unchanged areas from the previous frame, while producing output pixel-identical to a full repaint.
 - **FR-003**: When a visual element changes position, size, visibility, opacity, transform, or any property affecting its appearance, the system MUST invalidate both the element's previous and new occupied regions.
-- **FR-004**: The system MUST accumulate all invalidations that occur before a frame is presented into a single combined dirty region for that frame.
+- **FR-004**: The system MUST accumulate all invalidations that occur before a frame is presented into a single combined damage region for that frame.
 - **FR-005**: When no visible change has occurred since the last presented frame, the system MUST avoid performing redraw work for that frame.
-- **FR-006**: The system MUST correctly composite overlapping, clipped, and semi-transparent content within a dirty region so that no stale pixels or incorrect blending remain.
+- **FR-006**: The system MUST correctly composite overlapping, clipped, and semi-transparent content within a damage region so that no stale pixels or incorrect blending remain.
 - **FR-007**: The system MUST fully repaint newly exposed surface area produced by window resize, scale/DPI change, or surface reallocation.
-- **FR-008**: The system MUST degrade to a full-frame repaint when changes cover most/all of the surface or when the number/complexity of dirty regions would make partial repaint no cheaper than a full repaint.
-- **FR-009**: The system MUST provide a configuration switch to disable dirty-rectangle rendering and fall back to full-frame rendering, producing visually identical output.
+- **FR-008**: The system MUST degrade to a full-frame repaint when changes cover most/all of the surface or when the number/complexity of damage regions would make partial repaint no cheaper than a full repaint.
+- **FR-009**: The system MUST provide a configuration switch to disable damage-region rendering and fall back to full-frame rendering, producing visually identical output.
 - **FR-010**: The system MUST provide a diagnostic mode that visualizes the regions being repainted, for tuning and debugging.
 - **FR-011**: The optimization MUST be applied without requiring application code changes — existing applications benefit automatically when the optimization is enabled.
 - **FR-012**: The system MUST preserve existing public rendering API contracts and WinUI behavioral parity; the optimization is an internal rendering change only and MUST NOT alter observable application behavior other than performance.
@@ -87,8 +87,8 @@ Developers can observe which regions are being treated as dirty (for tuning and 
 
 ### Key Entities *(include if feature involves data)*
 
-- **Dirty Region**: The accumulated area of the rendered surface that must be repainted for the next frame, expressed as one or more rectangles (or an equivalent region representation). Has a relationship to the elements that contributed to it.
-- **Previous Frame Surface**: The retained pixel content of the last presented frame, used as the basis onto which only dirty regions are repainted.
+- **Damage Region**: The accumulated area of the rendered surface that must be repainted for the next frame, expressed as one or more rectangles (or an equivalent region representation). Has a relationship to the elements that contributed to it.
+- **Previous Frame Surface**: The retained pixel content of the last presented frame, used as the basis onto which only damage regions are repainted.
 - **Invalidation**: A request, originating from a visual change to an element, that marks one or more areas of the surface as needing repaint for the next frame. Carries the affected bounds (old and/or new).
 
 ## Success Criteria *(mandatory)*
@@ -107,7 +107,7 @@ Developers can observe which regions are being treated as dirty (for tuning and 
 
 - **Platform scope**: This optimization targets the **Skia rendering pipeline** (Desktop Win32/macOS/Linux and Skia-on-mobile/WASM), consistent with the project's Skia-first development scope. Native rendering targets (native Android Views, native iOS/UIKit, WASM DOM) are maintenance-only and must remain working but are out of scope for this optimization.
 - **Default state**: Whether the optimization ships enabled-by-default or behind an opt-in flag is a rollout decision; the feature provides a switch either way (FR-009). A reasonable default is to enable it once correctness is validated, with the switch available as an escape hatch.
-- **Region representation**: The system may coalesce multiple small dirty regions into a smaller set (or a bounding region) and may fall back to full repaint past a complexity threshold; exact thresholds are tuning details to be determined during implementation.
+- **Region representation**: The system may coalesce multiple small damage regions into a smaller set (or a bounding region) and may fall back to full repaint past a complexity threshold; exact thresholds are tuning details to be determined during implementation.
 - **Correctness baseline**: "Correct" is defined as pixel-identical to the existing full-frame repaint output for the same scene.
 - **Behavioral parity**: No public API or observable application behavior changes other than rendering performance; WinUI parity is preserved.
 - **Validation approach**: Correctness and performance are validated via runtime rendering tests on at least the Skia desktop target, comparing against full-repaint baselines and measuring painted area / cost.

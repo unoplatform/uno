@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_Rounded"
+    x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_Rounded"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

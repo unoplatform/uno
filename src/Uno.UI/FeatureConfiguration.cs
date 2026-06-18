@@ -1122,10 +1122,10 @@ namespace Uno.UI
 			}
 
 			/// <summary>
-			/// When dirty-rectangles rendering is active, visually highlights the regions being
+			/// When damage-region rendering is active, visually highlights the regions being
 			/// repainted each frame, for tuning and debugging. This is a diagnostic aid only.
 			/// </summary>
-			public static bool DirtyRectanglesOverlay { get; set; }
+			public static bool DamageRegionOverlay { get; set; }
 		}
 
 		public static class ElementRefHandle

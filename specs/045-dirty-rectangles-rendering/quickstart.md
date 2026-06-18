@@ -1,6 +1,6 @@
-# Quickstart: Headless validation harness for Dirty Rectangles
+# Quickstart: Headless validation harness for Damage Region
 
-This is the **first thing to build** (per the feature directive): a reproducible headless run of `SamplesApp.Skia.Generic` under xvfb, on both the **software** and **hardware (OpenGL)** X11 renderers, that proves visual output is **identical before and after** the dirty-rectangles change.
+This is the **first thing to build** (per the feature directive): a reproducible headless run of `SamplesApp.Skia.Generic` under xvfb, on both the **software** and **hardware (OpenGL)** X11 renderers, that proves visual output is **identical before and after** the damage-region change.
 
 ## Prerequisites
 
@@ -32,18 +32,18 @@ xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' \
 ```
 
 - Select renderer: **software** via `FeatureConfiguration.Rendering.UseOpenGLOnX11 = false` (or `X11HostBuilder.RenderingBackend(X11RenderingBackend.Software)`); **hardware** via `UseOpenGLOnX11 = true` (`…OpenGL`). The harness sets this per run (env var / launch arg wired during implementation).
-- Toggle the feature: `FeatureConfiguration.Rendering.EnableDirtyRectangles = true|false`.
+- Toggle the feature: `FeatureConfiguration.Rendering.EnableDamageRegion = true|false`.
 - Focus a single scene instead of all: append `"sample=<Category>/<SampleName>"` (e.g. `"sample=Windows_UI_Xaml_Controls/Button"`).
 - Screenshots land under the `--auto-screenshots` dir (`UITests-<timestamp>/*.png`).
 
 ## The before/after equality gate
 
-The harness script (`build/test-scripts/run-dirty-rect-harness.sh`, added during implementation) runs each scene set twice per renderer and compares:
+The harness script (`build/test-scripts/run-damage-region-harness.sh`, added during implementation) runs each scene set twice per renderer and compares:
 
 ```text
 for renderer in software opengl:
-    capture  EnableDirtyRectangles=false  → /tmp/dr-<renderer>-off
-    capture  EnableDirtyRectangles=true   → /tmp/dr-<renderer>-on
+    capture  EnableDamageRegion=false  → /tmp/dr-<renderer>-off
+    capture  EnableDamageRegion=true   → /tmp/dr-<renderer>-on
     assert   pixel-equal(off, on)         # non-zero exit on any diff
 ```
 
@@ -59,5 +59,5 @@ Scenarios to cover: small update (SC-001), no-op frame skip (SC-004), moved elem
 
 - Harness is green and reproducible on software **and** OpenGL.
 - All runtime-test scenarios pass equality vs. baseline.
-- Diagnostics: `DirtyRectanglesOverlay=true` visibly highlights only the regions being repainted for a small-update scene; the FPS/painted-area instrumentation shows ≥80% painted-area reduction on the ≤5% small-update scene (SC-001) and zero work on no-change frames (SC-004).
+- Diagnostics: `DamageRegionOverlay=true` visibly highlights only the regions being repainted for a small-update scene; the FPS/painted-area instrumentation shows ≥80% painted-area reduction on the ≤5% small-update scene (SC-001) and zero work on no-change frames (SC-004).
 - Full-window change (theme switch) is at parity, never slower (SC-005).

@@ -165,7 +165,7 @@ public partial class CompositionTarget
 	/// </summary>
 	/// <param name="surfaceRetainsContents">
 	/// True if the platform surface preserves the previous frame's pixels between presents (e.g. a
-	/// persistent software bitmap). When true and dirty-rectangles rendering is enabled, the present
+	/// persistent software bitmap). When true and damage-region rendering is enabled, the present
 	/// is clipped to the changed region. Defaults to false so swapchain/native renderers keep the
 	/// historical full-frame behavior until they opt in.
 	/// </param>

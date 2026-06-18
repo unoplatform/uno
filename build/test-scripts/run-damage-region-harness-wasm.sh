@@ -1,12 +1,12 @@
 #!/bin/bash
-# Dirty-rectangles validation harness for the Skia-WebAssembly (browser) backend.
+# Damage-region validation harness for the Skia-WebAssembly (browser) backend.
 #
-# Proves that dirty-rectangles rendering produces output identical to a full-frame repaint on both WASM
+# Proves that damage-region rendering produces output identical to a full-frame repaint on both WASM
 # renderers — WebGL (which presents through a retained GPU layer) and Software (a persistent backing bitmap)
 # — by driving the real app in a headless browser and comparing a dirty-accumulated frame against a
-# full-repaint of the same state (see dirty-rect-wasm-capture.mjs for how each is produced).
+# full-repaint of the same state (see damage-region-wasm-capture.mjs for how each is produced).
 #
-# Usage:   build/test-scripts/run-dirty-rect-harness-wasm.sh <published-wwwroot-dir> [out-dir]
+# Usage:   build/test-scripts/run-damage-region-harness-wasm.sh <published-wwwroot-dir> [out-dir]
 #   <published-wwwroot-dir> is the built web output, e.g.
 #     src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Debug/net10.0/wwwroot
 #
@@ -16,8 +16,8 @@
 #   - ImageMagick (compare)
 set -uo pipefail
 
-WWWROOT="${1:?Usage: run-dirty-rect-harness-wasm.sh <published-wwwroot-dir> [out-dir]}"
-OUT_DIR="${2:-/tmp/dirty-rect-harness-wasm}"
+WWWROOT="${1:?Usage: run-damage-region-harness-wasm.sh <published-wwwroot-dir> [out-dir]}"
+OUT_DIR="${2:-/tmp/damage-region-harness-wasm}"
 PORT=8088
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -58,7 +58,7 @@ overall=0
 for renderer in webgl software; do
 	a="$OUT_DIR/${renderer}_dirty.png"
 	b="$OUT_DIR/${renderer}_full.png"
-	if ! node "$SCRIPT_DIR/dirty-rect-wasm-capture.mjs" "http://localhost:$PORT/" "$renderer" "$a" "$b"; then
+	if ! node "$SCRIPT_DIR/damage-region-wasm-capture.mjs" "http://localhost:$PORT/" "$renderer" "$a" "$b"; then
 		echo "  $renderer: CAPTURE FAILED" >&2; overall=1; continue
 	fi
 	diff_px=$(compare -metric AE "$a" "$b" "$OUT_DIR/${renderer}_diff.png" 2>&1)
@@ -71,7 +71,7 @@ for renderer in webgl software; do
 done
 
 if [ "$overall" -eq 0 ]; then
-	echo "ALL PASS: Skia-WASM dirty-rectangles output is identical to a full repaint on WebGL and Software."
+	echo "ALL PASS: Skia-WASM damage-region output is identical to a full repaint on WebGL and Software."
 else
 	echo "HARNESS FAILED: see diffs above." >&2
 fi

@@ -16,7 +16,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private readonly uint _depth;
 
 		// The backing SKBitmap persists across frames (recreated only on resize) and is blitted whole
-		// each Flush, so the previous frame's pixels are preserved — dirty-rectangles can repaint just
+		// each Flush, so the previous frame's pixels are preserved — damage-region can repaint just
 		// the changed region.
 		protected override bool SurfaceRetainsContents => true;
 

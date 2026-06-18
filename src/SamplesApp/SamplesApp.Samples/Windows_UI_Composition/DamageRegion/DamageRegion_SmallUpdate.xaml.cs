@@ -3,20 +3,20 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
+namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
 	/// <summary>
 	/// A large static background with a single small label that updates on a timer.
-	/// Exercises the dirty-rectangles path: only the label region should change frame to frame.
+	/// Exercises the damage-region path: only the label region should change frame to frame.
 	/// </summary>
-	[Sample("Windows.UI.Composition", Name = "DirtyRectangles_SmallUpdate", IsManualTest = true,
-		Description = "A static background with one small element updating on a timer, for dirty-rectangles validation.")]
-	public sealed partial class DirtyRectangles_SmallUpdate : Page
+	[Sample("Windows.UI.Composition", Name = "DamageRegion_SmallUpdate", IsManualTest = true,
+		Description = "A static background with one small element updating on a timer, for damage-region validation.")]
+	public sealed partial class DamageRegion_SmallUpdate : Page
 	{
 		private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
 		private int _count;
 
-		public DirtyRectangles_SmallUpdate()
+		public DamageRegion_SmallUpdate()
 		{
 			this.InitializeComponent();
 
@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Composition.DirtyRectangles
 			Counter.Text = (++_count).ToString();
 
 			// Settle at a deterministic final state so a screenshot taken after settling is comparable
-			// between full-frame and dirty-rectangles runs.
+			// between full-frame and damage-region runs.
 			if (_count >= 5)
 			{
 				_timer.Stop();

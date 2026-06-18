@@ -681,7 +681,7 @@
                                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
                                         </ToggleMenuFlyoutItem.Icon>
                                     </ToggleMenuFlyoutItem>
-                                    <not_win:ToggleMenuFlyoutItem IsChecked="{Binding DirtyRectanglesOverlay, Mode=TwoWay}" Text="Show dirty rectangles">
+                                    <not_win:ToggleMenuFlyoutItem IsChecked="{Binding DamageRegionOverlay, Mode=TwoWay}" Text="Show damage region">
                                         <not_win:ToggleMenuFlyoutItem.Icon>
                                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
                                         </not_win:ToggleMenuFlyoutItem.Icon>

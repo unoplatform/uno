@@ -26,7 +26,7 @@ namespace SkiaSharpExample
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
 
-			// Diagnostic: let the dirty-rectangles validation harness pick the X11 renderer (software vs
+			// Diagnostic: let the damage-region validation harness pick the X11 renderer (software vs
 			// OpenGL exercise different surface-retention paths and both must stay pixel-identical).
 			if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } r)
 			{

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionMaskBrush : CompositionBrush
 	{
 		internal override bool RequiresRepaintOnEveryFrame => Source is not null && Mask is not null && (Source.RequiresRepaintOnEveryFrame || Mask.RequiresRepaintOnEveryFrame);
-		internal override float DirtyRegionSamplingMargin => global::System.Math.Max(Source?.DirtyRegionSamplingMargin ?? 0, Mask?.DirtyRegionSamplingMargin ?? 0);
+		internal override float DamageRegionSamplingMargin => global::System.Math.Max(Source?.DamageRegionSamplingMargin ?? 0, Mask?.DamageRegionSamplingMargin ?? 0);
 
 		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{

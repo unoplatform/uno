@@ -33,11 +33,11 @@ public partial class CompositionEffectBrush : CompositionBrush
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
 	// Largest Gaussian blur sigma captured during the last effect-filter generation. A backdrop blur reads
-	// ~3*sigma pixels around each output pixel, so dirty-rectangles rendering must keep that much extra
+	// ~3*sigma pixels around each output pixel, so damage-region rendering must keep that much extra
 	// backdrop around the element fresh for the blur to read the same input it would in a full-frame render.
 	private float _backdropBlurSigma;
 
-	internal override float DirtyRegionSamplingMargin => HasBackdropBrushInput ? _backdropBlurSigma * 3f : 0f;
+	internal override float DamageRegionSamplingMargin => HasBackdropBrushInput ? _backdropBlurSigma * 3f : 0f;
 
 	internal bool UseBackdropBlurClamp { get; set; }
 

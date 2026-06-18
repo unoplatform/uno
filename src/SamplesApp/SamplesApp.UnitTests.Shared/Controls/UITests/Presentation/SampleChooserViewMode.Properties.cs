@@ -549,12 +549,12 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		public bool DirtyRectanglesOverlay
+		public bool DamageRegionOverlay
 		{
-			get => FeatureConfiguration.Rendering.DirtyRectanglesOverlay;
+			get => FeatureConfiguration.Rendering.DamageRegionOverlay;
 			set
 			{
-				FeatureConfiguration.Rendering.DirtyRectanglesOverlay = value;
+				FeatureConfiguration.Rendering.DamageRegionOverlay = value;
 				RaisePropertyChanged();
 			}
 		}

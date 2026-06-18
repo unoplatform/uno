@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
 
-		internal override float DirtyRegionSamplingMargin => Brush?.DirtyRegionSamplingMargin ?? 0;
+		internal override float DamageRegionSamplingMargin => Brush?.DamageRegionSamplingMargin ?? 0;
 
 		private protected override bool TryAddShadowPaths(List<(SKPath path, float alpha)> output)
 		{

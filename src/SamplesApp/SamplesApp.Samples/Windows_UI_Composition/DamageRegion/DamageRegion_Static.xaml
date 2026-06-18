@@ -1,5 +1,5 @@
 <Page
-	x:Class="UITests.Shared.Windows_UI_Composition.DirtyRectangles.DirtyRectangles_Static"
+	x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_Static"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,8 +9,8 @@
 
 	<!--
 		A rich, fully static scene (shapes, text, overlapping semi-transparent content).
-		Used by the dirty-rectangles harness as a deterministic baseline: two captures must
-		be identical, and enabling dirty rectangles must not change the output.
+		Used by the damage-region harness as a deterministic baseline: two captures must
+		be identical, and enabling damage region must not change the output.
 	-->
 	<Grid>
 		<Border Background="{ThemeResource SystemControlBackgroundAccentBrush}" />
@@ -21,7 +21,7 @@
 			<TextBlock
 				FontSize="28"
 				Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-				Text="Uno Platform — Dirty Rectangles" />
+				Text="Uno Platform — Damage Region" />
 			<Rectangle
 				Width="200"
 				Height="60"
