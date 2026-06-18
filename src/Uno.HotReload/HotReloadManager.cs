@@ -154,75 +154,98 @@ public sealed class HotReloadManager : IDisposable
 		// before any short-circuit so the report reflects skipped inputs.
 		hotReload.NotifyIgnored(result.IgnoredChanges.GetAllPaths());
 
-		// Updater encountered a fatal condition (typically a csproj re-evaluation
-		// error). The manager — not the updater — owns the operation lifecycle, so
-		// we complete the operation here with the diagnostics and skip the rest of
-		// the cycle.
-		if (result.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error))
-		{
-			await hotReload.Complete(HotReloadOperationResult.Failed, diagnostics: result.Diagnostics).ConfigureAwait(false);
-			return;
-		}
-
-		if (result.Solution == originalSolution)
-		{
-			_tracker.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
-
-			await hotReload.Complete(HotReloadOperationResult.NoChanges).ConfigureAwait(false);
-			return;
-		}
-
-		// No matter if the build will succeed or not, we update the _currentSolution.
-		// Files needs to be updated again to fix the compilation errors.
+		// Commit unconditionally, ahead of every terminal branch (spec 045 §2): an updater may have
+		// rebound metadata/analyzer references (e.g. newly resolved packages) onto result.Solution.
+		// If a cycle exited early without committing, those references would be lost and the next
+		// cycle would restart from the stale originalSolution. The == originalSolution branch below
+		// still compares against the captured snapshot, so its NoChanges decision is unchanged.
 		workspace.CurrentSolution = result.Solution;
 
-		// Compile the solution and get deltas
-		var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
-		// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
-		// of unrecoverable errors that a user cannot fix and requires an app rebuild.
-		var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+		// Converge every terminal outcome onto a single handler call + completion (spec 045 §1) so a
+		// handler can perform delta-independent work (e.g. staging resolved package assemblies) on a
+		// no-delta cycle, not only on Success. Deltas are non-empty only on Success.
+		HotReloadOperationResult outcome;
+		var deltas = ImmutableArray<Update>.Empty;
+		var diagnostics = ImmutableArray<Diagnostic>.Empty;
 
-		_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
-		sw.Stop();
-
-		if (rudeEdits.IsEmpty && updates.IsEmpty)
+		if (result.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error))
 		{
-			var compilationErrors = GetCompilationErrors(result.Solution, ct);
-			if (compilationErrors.IsEmpty)
+			// Updater encountered a fatal condition (typically a csproj re-evaluation error). The
+			// manager — not the updater — owns the operation lifecycle, so we carry the diagnostics.
+			outcome = HotReloadOperationResult.Failed;
+			diagnostics = result.Diagnostics;
+		}
+		else if (result.Solution == originalSolution)
+		{
+			_tracker.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
+			outcome = HotReloadOperationResult.NoChanges;
+		}
+		else
+		{
+			// Compile the solution and get deltas.
+			var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
+			// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
+			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
+			var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
+
+			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
+
+			if (!rudeEdits.IsEmpty)
 			{
-				_tracker.Output("No hot reload changes to apply.");
-				await hotReload.Complete(HotReloadOperationResult.NoChanges).ConfigureAwait(false);
+				// Rude edit.
+				_tracker.Output("Unable to apply hot reload because of a rude edit.");
+				foreach (var diagnostic in hotReloadDiagnostics)
+				{
+					_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
+				}
+
+				outcome = HotReloadOperationResult.RudeEdit;
+				diagnostics = hotReloadDiagnostics;
+			}
+			else if (updates.IsEmpty)
+			{
+				if (GetCompilationErrors(result.Solution, ct).IsEmpty)
+				{
+					_tracker.Output("No hot reload changes to apply.");
+					outcome = HotReloadOperationResult.NoChanges;
+				}
+				else
+				{
+					outcome = HotReloadOperationResult.Failed;
+				}
+
+				diagnostics = hotReloadDiagnostics;
 			}
 			else
 			{
-				await hotReload.Complete(HotReloadOperationResult.Failed, diagnostics: hotReloadDiagnostics).ConfigureAwait(false);
+				outcome = HotReloadOperationResult.Success;
+				deltas = updates;
+				diagnostics = hotReloadDiagnostics;
 			}
-
-			return;
 		}
 
-		if (!rudeEdits.IsEmpty)
+		sw.Stop();
+
+		// The handler now runs real side-effects (staging assemblies, applying deltas — possibly
+		// across a worker→main boundary). A handler exception is a hot-reload failure for THIS
+		// operation, distinct from a manager-internal fault (spec 045 §3). Cancellation is not a
+		// failure and propagates to the ProcessFileChanges catch.
+		var update = new HotReloadUpdate(files, changeSet, result, diagnostics, deltas);
+		try
 		{
-			// Rude edit.
-			_tracker.Output("Unable to apply hot reload because of a rude edit.");
-			foreach (var diagnostic in hotReloadDiagnostics)
-			{
-				_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
-			}
-
-			await hotReload.Complete(HotReloadOperationResult.RudeEdit, diagnostics: hotReloadDiagnostics).ConfigureAwait(false);
+			await _handler.OnHotReloadAsync(outcome, update, ct).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException)
+		{
+			throw;
+		}
+		catch (Exception e)
+		{
+			await hotReload.Complete(HotReloadOperationResult.Failed, e, diagnostics).ConfigureAwait(false);
 			return;
 		}
 
-		var update = new HotReloadUpdate(
-			files,
-			changeSet,
-			result,
-			hotReloadDiagnostics,
-			updates);
-		await _handler.SendAsync(update, ct).ConfigureAwait(false);
-
-		await hotReload.Complete(HotReloadOperationResult.Success).ConfigureAwait(false);
+		await hotReload.Complete(outcome, diagnostics: diagnostics).ConfigureAwait(false);
 	}
 
 	/// <summary>
