@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Build highlighters for this paragraph (including selection)
 				var paragraphHighlighters = GetParagraphHighlighters(layout, p);
 
-				layout.ParsedText.Draw(session, null, paragraphHighlighters);
+				layout.ParsedText.Draw(session, null, paragraphHighlighters, compositionRange: null);
 
 				canvas.Restore();
 			}

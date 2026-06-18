@@ -1,4 +1,4 @@
-#pragma warning disable CS0109
+﻿#pragma warning disable CS0109
 
 using System;
 using System.Collections.Generic;
@@ -444,7 +444,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		protected override AutomationPeer OnCreateAutomationPeer() => new RichTextBlockAutomationPeer(this);
 
 		public override string GetAccessibilityInnerText() => GetPlainText();
 
