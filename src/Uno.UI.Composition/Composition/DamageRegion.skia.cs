@@ -14,20 +14,27 @@ namespace Uno.UI.Composition;
 /// </summary>
 internal sealed class DamageRegion
 {
-	// Beyond this many distinct contributions in a frame, coalescing into a precise region isn't worth it;
-	// repaint the whole surface instead.
+	// Beyond this many distinct contributions in a frame, a precise per-region clip isn't worth its cost.
+	// Instead of repainting the whole surface, collapse to the bounding box of everything accumulated so far
+	// (one cheap rectangular clip) and keep extending that box. This is correct (a superset of the exact
+	// region) and far tighter than a full-surface repaint — e.g. a scroll, where every visible row moves and
+	// contributes its own region, stays clipped to the scrolled viewport instead of the whole window.
 	private const int MaxRegions = 64;
 
 	private SKPath _region = new();
 	private SKPath _spareUnion = new();
 	private readonly SKPath _scratch = new();
 	private int _count;
+	private bool _coalescedToBounds;
 
 	/// <summary>The whole surface must be repainted this frame (e.g. resize, or too many scattered changes).</summary>
 	public bool IsFullFrame { get; private set; }
 
 	/// <summary>Nothing changed this frame and a full repaint is not required.</summary>
 	public bool IsEmpty => !IsFullFrame && _count == 0;
+
+	/// <summary>Diagnostic: the number of distinct contributions accumulated this frame (capped at <see cref="MaxRegions"/>).</summary>
+	public int RegionCount => _count;
 
 	/// <summary>The bounding box of the changed region (valid only when not empty / not full-frame).</summary>
 	public SKRect Bounds => _region.Bounds;
@@ -69,9 +76,22 @@ internal sealed class DamageRegion
 
 	private void Union(SKPath addition)
 	{
+		if (_coalescedToBounds)
+		{
+			// Already a single bounding rect; just extend it to include the new contribution (stays one rect).
+			ExtendBounds(addition.Bounds);
+			return;
+		}
+
 		if (_count >= MaxRegions)
 		{
-			SetFullFrame();
+			// Too many distinct contributions to keep clipping precisely. Collapse everything accumulated so
+			// far to its bounding box and switch to extending that box from here on.
+			var bounds = SKRect.Union(_region.Bounds, addition.Bounds);
+			_region.Rewind();
+			_region.AddRect(bounds);
+			_coalescedToBounds = true;
+			_count = 1;
 			return;
 		}
 
@@ -90,11 +110,19 @@ internal sealed class DamageRegion
 		_count++;
 	}
 
+	private void ExtendBounds(SKRect addition)
+	{
+		var bounds = SKRect.Union(_region.Bounds, addition);
+		_region.Rewind();
+		_region.AddRect(bounds);
+	}
+
 	public void SetFullFrame()
 	{
 		IsFullFrame = true;
 		_region.Rewind();
 		_count = 0;
+		_coalescedToBounds = false;
 	}
 
 	public void Reset()
@@ -102,5 +130,6 @@ internal sealed class DamageRegion
 		_region.Rewind();
 		_count = 0;
 		IsFullFrame = false;
+		_coalescedToBounds = false;
 	}
 }
