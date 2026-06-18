@@ -20,6 +20,9 @@ namespace Microsoft.UI.Xaml.Documents
 		private void OnCollectionChanged(
 			)
 		{
+			// Invalidate the run-model position-count cache (CInlineCollection::MarkDirty).
+			ResetPositionCountsPartial();
+
 			InvalidateTraversedTree();
 
 			switch (_collection.GetParent())
@@ -37,6 +40,9 @@ namespace Microsoft.UI.Xaml.Documents
 					break;
 			}
 		}
+
+		// Implemented on Skia to invalidate the run-model position-count cache.
+		partial void ResetPositionCountsPartial();
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 

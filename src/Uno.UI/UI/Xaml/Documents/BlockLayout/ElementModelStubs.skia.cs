@@ -18,11 +18,6 @@ internal sealed class FontContext
 {
 }
 
-// WinUI InheritedProperties — TextOptions/Typography inherited formatting.
-internal sealed class InheritedProperties
-{
-}
-
 // WinUI FontTypeface — a resolved typeface (family/weight/style/stretch/language).
 // On Uno this maps onto FontDetails / SKTypeface.
 internal sealed class FontTypeface
