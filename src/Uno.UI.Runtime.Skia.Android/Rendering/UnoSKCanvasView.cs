@@ -207,7 +207,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
 				_softwareSurface = SKSurface.Create(info);
 				return _softwareSurface.Canvas;
-			}, surfaceRetainsContents: true);
+			});
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 

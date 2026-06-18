@@ -21,12 +21,9 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
-	private readonly RetainedLayer _retainedLayer = new();
-
 	// The WebGL drawing buffer is not preserved across frames (preserveDrawingBuffer: 0), so the composition
-	// renders onto a persistent GPU layer that is blitted to the swapchain each frame.
-	public bool SurfaceRetainsContents => true;
-	public bool UsesRetainedLayer => true;
+	// renders onto a persistent GPU layer (_retainedLayer) that is blitted to the swapchain each frame.
+	private readonly RetainedLayer _retainedLayer = new();
 
 	private WebGlBrowserRenderer(JsInfo jsInfo)
 	{

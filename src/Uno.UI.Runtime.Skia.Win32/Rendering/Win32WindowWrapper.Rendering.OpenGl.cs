@@ -249,8 +249,6 @@ internal partial class Win32WindowWrapper
 
 		bool IRenderer.IsSoftware() => false;
 
-		bool IRenderer.SurfaceRetainsContents => true;
-
 		void IDisposable.Dispose()
 		{
 			_pacer?.Dispose();

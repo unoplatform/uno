@@ -36,11 +36,6 @@ internal partial class SoftwareBrowserRenderer : IBrowserRenderer
 		}
 	}
 
-	// The backing bitmap is allocated over a persistent JS pixel buffer that is not cleared between frames
-	// (blitSoftware only copies it out), so it retains the previous frame and damage-region rendering can
-	// repaint only the changed region.
-	public bool SurfaceRetainsContents => true;
-
 	public void MakeCurrent() { }
 
 	public SKCanvas Resize(int width, int height)
