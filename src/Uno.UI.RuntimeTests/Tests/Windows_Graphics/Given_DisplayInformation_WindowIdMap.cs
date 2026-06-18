@@ -1,6 +1,10 @@
 // The per-WindowId DisplayInformation registry (and its CreateForWindowIdForTests seam) is
 // compile-time excluded on Android (#if !ANDROID in DisplayInformation.cs) — Android's
-// DisplayInformation is a process singleton, not per-window — so these tests cannot exist there.
+// DisplayInformation is a process singleton, not per-window — so these tests cannot run there.
+// Two guards are needed: the #if !__ANDROID__ keeps a native-Android compilation clean, while the
+// class-level [PlatformCondition] excludes Skia-on-Android at runtime — that assembly is compiled
+// generically (so __ANDROID__ is not defined) yet loads the Android Uno.UWP, where the seam is
+// absent and the call would otherwise throw MissingMethodException.
 #if HAS_UNO && !__ANDROID__
 #nullable enable
 
@@ -24,6 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics;
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Android)]
 public class Given_DisplayInformation_WindowIdMap
 {
 	[TestMethod]
