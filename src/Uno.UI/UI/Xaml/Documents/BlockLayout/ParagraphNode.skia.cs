@@ -86,6 +86,10 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	// to detect MaxLines clipping for IsTextTrimmed.
 	internal int LineCount => m_lines.Count;
 
+	// Whether this paragraph has a trimmed (ellipsized) line. Mirrors ParagraphNode::GetHasTrimmedLine;
+	// the overflow's UpdateIsTextTrimmed walks the page's ParagraphNodes looking for one.
+	internal bool GetHasTrimmedLine() => m_hasTrimmedLine;
+
 	public IEmbeddedElementHost GetEmbeddedElementHost() => this;
 
 	//---------------------------------------------------------------------------
