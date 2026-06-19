@@ -23,21 +23,8 @@ internal sealed class DamageRegion
 	/// <summary>Nothing changed this frame and a full repaint is not required.</summary>
 	public bool IsEmpty => !IsFullFrame && _region.IsEmpty;
 
-	/// <summary>The bounding box of the changed region (valid only when not empty / not full-frame).</summary>
-	public SKRect Bounds => _region.Bounds;
-
-	/// <summary>
-	/// The accumulated changed region as a path (valid only when not empty / not full-frame). When it is a
-	/// single rectangle, <see cref="IsRect"/> returns it so the consumer can take a cheaper rectangular path.
-	/// </summary>
+	/// <summary>The accumulated changed region as a path (valid only when not empty / not full-frame).</summary>
 	public SKPath Region => _region;
-
-	/// <summary>True (and outputs the rectangle) when the whole region is a single axis-aligned rectangle.</summary>
-	public bool IsRect(out SKRect rect)
-	{
-		rect = _region.Bounds; // for a rectangular path, Bounds is exactly the rectangle
-		return _region.IsRect;
-	}
 
 	public void AddRect(SKRect rect)
 	{
