@@ -16,18 +16,15 @@ internal sealed class DamageRegion
 	private readonly SKPath _region = new();
 	private readonly SKPath _scratch = new();
 
-	/// <summary>The whole surface must be repainted this frame (e.g. on resize).</summary>
-	public bool IsFullFrame { get; private set; }
+	/// <summary>Nothing changed this frame.</summary>
+	public bool IsEmpty => _region.IsEmpty;
 
-	/// <summary>Nothing changed this frame and a full repaint is not required.</summary>
-	public bool IsEmpty => !IsFullFrame && _region.IsEmpty;
-
-	/// <summary>The accumulated changed region as a path (valid only when not empty / not full-frame).</summary>
+	/// <summary>The accumulated changed region as a path (valid only when not empty).</summary>
 	public SKPath Region => _region;
 
 	public void AddRect(SKRect rect)
 	{
-		if (IsFullFrame || rect.IsEmpty)
+		if (rect.IsEmpty)
 		{
 			return;
 		}
@@ -39,7 +36,7 @@ internal sealed class DamageRegion
 
 	public void AddPath(SKPath region)
 	{
-		if (IsFullFrame || region.IsEmpty)
+		if (region.IsEmpty)
 		{
 			return;
 		}
@@ -50,7 +47,7 @@ internal sealed class DamageRegion
 	/// <summary>Clips the accumulated region to <paramref name="frameRect"/> (nothing outside the frame is ever presented).</summary>
 	public void ClampTo(SKRect frameRect)
 	{
-		if (IsFullFrame || _region.IsEmpty || frameRect.Contains(_region.Bounds))
+		if (_region.IsEmpty || frameRect.Contains(_region.Bounds))
 		{
 			return;
 		}
@@ -80,15 +77,5 @@ internal sealed class DamageRegion
 		}
 	}
 
-	public void SetFullFrame()
-	{
-		IsFullFrame = true;
-		_region.Rewind();
-	}
-
-	public void Reset()
-	{
-		_region.Rewind();
-		IsFullFrame = false;
-	}
+	public void Reset() => _region.Rewind();
 }
