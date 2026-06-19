@@ -302,6 +302,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		// Scratch path (from the shared pool) to turn the rect contributions below into paths for unioning.
 		var scratch = _pathPool.Allocate();
+		using var scratchDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), scratch);
 		if (TryGetPaintDamageRegion(out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
@@ -332,7 +333,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			damage.UnionRect(scratch, _lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
-		_pathPool.Free(scratch);
 	}
 
 	// Computes the damage region (in root/logical coordinates) for this visual's own paint. The damage region
