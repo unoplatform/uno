@@ -171,10 +171,10 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 	//
 	//---------------------------------------------------------------------------
 	// (removed) run-model helper — Stage 4
-	
+
 
 	// (removed) run-model helper — Stage 4
-	
+
 
 	//---------------------------------------------------------------------------
 	//
@@ -187,7 +187,7 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 	//
 	//---------------------------------------------------------------------------
 	// (removed) run-model helper — Stage 4
-	
+
 
 	//---------------------------------------------------------------------------
 	//

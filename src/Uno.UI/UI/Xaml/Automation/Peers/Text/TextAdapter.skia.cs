@@ -401,7 +401,7 @@ internal sealed partial class TextAdapter : ITextProvider
 				startTextPointer = GetOverflowContentStart(pRTblo);
 				endTextPointer = GetOverflowContentEnd(pRTblo);
 				break;
-			// TODO Uno (UIA): TextBlock content pointers (served today by the DirectUI.TextAdapter path).
+				// TODO Uno (UIA): TextBlock content pointers (served today by the DirectUI.TextAdapter path).
 		}
 	}
 
