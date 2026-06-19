@@ -68,6 +68,15 @@ namespace Microsoft.UI.Xaml.Documents
 		// Implemented on Skia to invalidate the run-model position-count cache.
 		partial void ResetPositionCountsPartial();
 
+		// The owning element of this collection (the Span/Hyperlink/TextBlock it belongs to).
+		// Mirrors CInlineCollection::GetParentInternal — used by TextSchema validation.
+		internal object GetParent()
+#if __WASM__
+			=> _collection.Owner;
+#else
+			=> _collection.GetParent();
+#endif
+
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 
 		internal void InvalidateTraversedTree()

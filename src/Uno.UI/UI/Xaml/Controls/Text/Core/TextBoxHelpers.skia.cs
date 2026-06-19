@@ -33,6 +33,10 @@ internal static class TextBoxHelpers
 	// #define IS_TRAILING_SURROGATE(character) (((character) & 0xFC00) == 0xDC00)
 	private static bool IsTrailingSurrogate(char character) => (character & 0xFC00) == 0xDC00;
 
+	// CTextBoxHelpers::CharacterGravityBackward — true when the gravity leans on the backward character.
+	internal static bool CharacterGravityBackward(TextGravity eGravity)
+		=> (eGravity & TextGravity.CharacterBackward) == TextGravity.CharacterBackward;
+
 	//------------------------------------------------------------------------
 	//  Summary:
 	//  Returns the maximum valid text position taking into account the

@@ -77,26 +77,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property Blocks
 // Skipping already declared CharacterSpacing
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentEnd
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "ContentEnd");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentStart
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "ContentStart");
-			}
-		}
-#endif
+// Skipping already declared ContentEnd
+// Skipping already declared ContentStart
 // Skipping already declared FontFamily
 // Skipping already declared FontSize
 // Skipping already declared FontStretch
@@ -142,28 +124,10 @@ namespace Microsoft.UI.Xaml.Controls
 // Skipping already declared OverflowContentTarget
 // Skipping already declared Padding
 // Skipping already declared SelectedText
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionEnd
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "SelectionEnd");
-			}
-		}
-#endif
+// Skipping already declared SelectionEnd
 // Skipping already declared SelectionFlyout
 // Skipping already declared SelectionHighlightColor
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionStart
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "SelectionStart");
-			}
-		}
-#endif
+// Skipping already declared SelectionStart
 // Skipping already declared TextAlignment
 // Skipping already declared TextDecorations
 // Skipping already declared TextHighlighters
@@ -230,20 +194,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextTrimmingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextWrappingProperty.get
 // Skipping already declared SelectAll
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Select(global::Microsoft.UI.Xaml.Documents.TextPointer start, global::Microsoft.UI.Xaml.Documents.TextPointer end)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "Select(TextPointer start, TextPointer end)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "GetPositionFromPoint(Point point)");
-		}
-#endif
+// Skipping already declared Select
+// Skipping already declared GetPositionFromPoint
 // Skipping already declared CopySelectionToClipboard
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.ContextMenuOpening.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.ContextMenuOpening.remove
