@@ -1,0 +1,58 @@
+#nullable enable
+
+using System;
+using System.Threading;
+
+namespace Uno.UI.RemoteControl.Tools;
+
+/// <summary>
+/// Static accessor to the process-wide tool &amp; resource registry singleton. Exposes two
+/// segregated faces: <see cref="Publisher"/> (registration, for publishers) and <see cref="Catalog"/>
+/// (consumption, for consumers). The registry has no transport dependency; a consumer reads it
+/// in-process and owns any messaging.
+/// </summary>
+internal static class ToolRegistry
+{
+	// Read via Volatile.Read to pair with the Interlocked.Exchange / Volatile.Write on the swap path,
+	// giving an acquire fence on weak memory models. The field stays non-volatile so it can be passed
+	// by ref to Interlocked.Exchange without CS0420.
+	private static IToolRegistry _instance = new ToolRegistryImpl();
+
+	/// <summary>The registration face — used by publishers.</summary>
+	public static IToolPublisher Publisher => Volatile.Read(ref _instance);
+
+	/// <summary>The consumption face — used by consumers.</summary>
+	public static IToolCatalog Catalog => Volatile.Read(ref _instance);
+
+	/// <summary>
+	/// Wires the UI-thread dispatcher used to marshal tool invocations declared with
+	/// <c>runOnUIThread: true</c>. Supplied by the host (the Remote Control client). When unset,
+	/// handlers run inline on the caller's thread.
+	/// </summary>
+	internal static void SetDispatcher(IToolDispatcher? dispatcher)
+	{
+		if (Volatile.Read(ref _instance) is ToolRegistryImpl impl)
+		{
+			impl.Dispatcher = dispatcher;
+		}
+	}
+
+	/// <summary>Swaps the backing registry for tests; dispose the result to restore the previous one.</summary>
+	internal static IDisposable SetForTesting(IToolRegistry instance)
+		=> new RestoreToken(Interlocked.Exchange(ref _instance, instance));
+
+	private sealed class RestoreToken(IToolRegistry previous) : IDisposable
+	{
+		private IToolRegistry? _previous = previous;
+
+		public void Dispose()
+		{
+			// Restore the field only; the caller owns disposal of the swapped-in double.
+			// Volatile.Write matches the barrier intent of the Interlocked.Exchange on the write path.
+			if (Interlocked.Exchange(ref _previous, null) is { } previous)
+			{
+				Volatile.Write(ref _instance, previous);
+			}
+		}
+	}
+}
