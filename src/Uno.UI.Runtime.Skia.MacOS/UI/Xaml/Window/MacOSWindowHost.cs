@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using SkiaSharp;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -332,15 +333,31 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void MetalDraw(nint handle, double width, double height, nint texture)
 	{
-		var window = GetWindowHost(handle);
-		window?.MetalDraw(width, height, texture);
+		// This runs directly from a native callback, so an escaping managed exception would
+		// fail-fast the process. Route it through the recoverable handler like the other hosts.
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.MetalDraw(width, height, texture);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
 	{
-		var window = GetWindowHost(handle);
-		window?.SoftDraw(width, height, data, rowBytes, size);
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.SoftDraw(width, height, data, rowBytes, size);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
