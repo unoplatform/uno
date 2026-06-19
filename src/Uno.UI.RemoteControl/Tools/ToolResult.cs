@@ -27,18 +27,3 @@ internal sealed record ToolResult(
 	public static ToolResult Error(string message)
 		=> new([new ToolContent(ToolContentKind.Text, Text: message)], IsError: true);
 }
-
-/// <summary>A single piece of content produced by a tool or resource.</summary>
-internal sealed record ToolContent(
-	ToolContentKind Kind,
-	string? Text = null,
-	string? MimeType = null,
-	string? Base64Data = null);
-
-internal enum ToolContentKind
-{
-	Text,
-	Json,
-	Image,
-	Blob,
-}
