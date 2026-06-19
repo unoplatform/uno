@@ -57,20 +57,9 @@ public partial class CompositionTarget
 	// The per-frame damage region attached to a recorded frame, consumed by Draw() on the render thread, as an
 	// SKPath the frame OWNS — a copy of the per-frame accumulator (which is reused/reset each frame), so it must
 	// be disposed when the frame is retired (replaced by a newer frame in Render, or superseded in ReturnFrame).
-	// An empty path means nothing changed; a path covering the whole frame means a full repaint.
-	private static SKPath SnapshotDamage(DamageRegion region, SKRect frameRect)
-	{
-		var snapshot = new SKPath();
-		if (region.IsFullFrame)
-		{
-			snapshot.AddRect(frameRect);
-		}
-		else
-		{
-			snapshot.AddPath(region.Region);
-		}
-		return snapshot;
-	}
+	// An empty path means nothing changed. Full repaints (resize/canvas recreation) are handled in Draw via
+	// canvasRecreated, not here.
+	private static SKPath SnapshotDamage(DamageRegion region) => new(region.Region);
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
@@ -160,7 +149,7 @@ public partial class CompositionTarget
 
 			// Snapshot (owned copy) and reset the accumulator. The picture above is always the full tree;
 			// the snapshot path tells Draw() which region actually needs to be re-presented.
-			damageSnapshot = SnapshotDamage(_pendingDamage, frameRect);
+			damageSnapshot = SnapshotDamage(_pendingDamage);
 			_pendingDamage.Reset();
 
 			_lastRenderedFrame = (picture, path, damageSnapshot);
@@ -212,8 +201,6 @@ public partial class CompositionTarget
 	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.AddRect(bounds);
 
 	void ICompositionTarget.AddDamage(SKPath region) => _pendingDamage.AddPath(region);
-
-	void ICompositionTarget.AddFullFrameDamage() => _pendingDamage.SetFullFrame();
 
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
 	{
