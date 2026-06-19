@@ -40,8 +40,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// several frames — any transform/content/structural change invalidates the cached picture (via
 	// InvalidateParentChildrenPicture, which SetMatrixDirty/InvalidatePaint/child mutations all call), so a
 	// collapsed subtree has no per-frame change and correctly contributes no damage. The one kind of content
-	// that changes without invalidating is a visual that repaints every frame (a backdrop/acrylic brush);
-	// subtrees containing one are excluded from collapsing (see SubtreeRequiresRepaintOnEveryFrame) so it
+	// that changes without those flags is a visual that repaints every frame (a backdrop/acrylic brush); it
+	// invalidates its own ancestor chain each frame it paints (see PaintStep), so no ancestor collapses and it
 	// keeps being walked — painted and damaged — every frame.
 	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
@@ -779,6 +779,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
+				// This visual repaints every frame without going through the dirty flags, so it would freeze
+				// if an ancestor folded it into a collapsed picture (and its per-frame change wouldn't be
+				// damaged). Invalidate the ancestor chain so none of them collapse — which keeps this visual
+				// walked, painted and damaged every frame, and is what makes picture-collapsing compatible with
+				// both damage-region rendering and live backdrop/acrylic content.
+				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
 				visual.Paint(session);
@@ -852,13 +858,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
 					 || !applyChildOptimization
-					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold
-					 || visual.SubtreeRequiresRepaintOnEveryFrame())
+					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
 			{
-				// Walk children individually. A subtree is collapsed only when it has been fully static for
-				// several frames AND contains nothing that must repaint every frame, so the cached picture
-				// never freezes live content and a collapsed subtree contributes no per-frame damage (see
-				// EnablePictureCollapsingOptimization).
+				// Walk children individually. A subtree is collapsed only after it has been fully static for
+				// several frames, so the cached picture never freezes live content and a collapsed subtree
+				// contributes no per-frame damage (see EnablePictureCollapsingOptimization).
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
 					child.Render(in session, applyChildOptimization);
@@ -1312,12 +1316,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	internal virtual int GetSubTreeVisualCount() => 1;
-
-	// True if this visual or any descendant must be repainted every frame (e.g. a backdrop/acrylic brush
-	// that samples behind it). Such content can't be folded into a picture-collapsing cache: it would
-	// freeze, and under damage-region rendering its per-frame change wouldn't be tracked. Evaluated live
-	// (not cached) because RequiresRepaintOnEveryFrame can flip with a brush change.
-	internal virtual bool SubtreeRequiresRepaintOnEveryFrame() => RequiresRepaintOnEveryFrame;
 
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
