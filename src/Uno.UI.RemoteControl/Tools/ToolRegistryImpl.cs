@@ -121,6 +121,11 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 			resourcesBuilder.Add(entry.Descriptor);
 		}
 
+		// ImmutableDictionary enumeration order is unspecified; sort by key so consumers get a stable
+		// snapshot and don't see spurious list-changed churn when the underlying order shifts.
+		toolsBuilder.Sort(static (a, b) => string.CompareOrdinal(a.Name, b.Name));
+		resourcesBuilder.Sort(static (a, b) => string.CompareOrdinal(a.Uri, b.Uri));
+
 		return (toolsBuilder.ToImmutable(), resourcesBuilder.ToImmutable());
 	}
 

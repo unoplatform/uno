@@ -69,6 +69,19 @@ public class ToolRegistryTests
 	}
 
 	[TestMethod]
+	public void Snapshot_OrdersToolsByName_Stable()
+	{
+		var registry = new ToolRegistryImpl();
+		registry.RegisterTool(Tool("c_t"), Ok());
+		registry.RegisterTool(Tool("a_t"), Ok());
+		registry.RegisterTool(Tool("b_t"), Ok());
+
+		var names = registry.Snapshot().Tools.Select(t => t.Name).ToArray();
+
+		CollectionAssert.AreEqual(new[] { "a_t", "b_t", "c_t" }, names);
+	}
+
+	[TestMethod]
 	public void MultiplePublishers_Snapshot_AggregatesAll()
 	{
 		var registry = new ToolRegistryImpl();

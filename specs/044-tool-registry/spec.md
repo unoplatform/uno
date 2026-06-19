@@ -341,8 +341,8 @@ Lock-free, per repository preference: registrations are held in an
 ### 3.3 Name uniqueness
 
 `Name` is the key and must be unique across all publishers. A duplicate registration is
-**rejected with a `LogWarning`** naming the colliding `Name` (and both owning assemblies when
-known); the existing tool is left untouched, and the call returns a **no-op `IDisposable`**
+**rejected with a `LogWarning`** naming the colliding `Name`; the existing tool is left
+untouched, and the call returns a **no-op `IDisposable`**
 that is *not* keyed to the winner — so disposing the rejected registration can never evict the
 live one. Publishers namespace by module (a `<module>_` prefix) — see Appendix A.
 
@@ -448,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**46 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**47 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -456,6 +456,7 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `RegisterTool_Dispose_RemovesDescriptor_AndRaisesChanged` | Dispose removes the tool and raises `Changed` (on both add and remove). |
 | `RegisterTool_DuplicateName_ReturnsNoOpDisposable_DoesNotEvictWinner` | Duplicate `Name` rejected (warning), returns a no-op `IDisposable`; disposing it leaves the winner. |
 | `MultiplePublishers_Snapshot_AggregatesAll` | Tools from several publishers all appear in one `Snapshot()`. |
+| `Snapshot_OrdersToolsByName_Stable` | `Snapshot()` returns tools in a stable order (by name), not the dictionary's enumeration order. |
 | `InvokeAsync_Success_ReturnsResult` | Routes to the handler and returns its `ToolResult` (default `runOnUIThread`, no dispatcher → inline). |
 | `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError`, no exception escapes. |
 | `InvokeAsync_HandlerThrowsOnMissingArg_ReturnsIsError` | A throwing typed accessor in the handler surfaces as `IsError`. |
