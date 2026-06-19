@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -137,6 +138,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 				// The page height must agree with the live managed control measuring the same content.
 				Assert.AreEqual(SUT.DesiredSize.Height, desired.Height, 1.5, "Engine should match the managed RichTextBlock for multiple paragraphs");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		// Validates the container<->flat offset conversion that the Stage-9b selection swap relies on:
+		// RichTextBlockView.GetAdjustedPosition (flat char index -> container position) must be inverted
+		// by GetCharacterIndex (container position -> flat char index).
+		// IGNORED: documents the flat<->container impedance (plan risk R3/R11). Uno's SkiaTextLine.Length /
+		// ParagraphNode.m_length are FLAT visible-char counts (ParsedText RenderLine), but the WinUI
+		// position/conversion layer expects CONTAINER-position space (incl. 2 reserved placeholder
+		// positions per inline/collection). GetAdjustedPosition's clamp (blockStart + GetContentLength)
+		// therefore truncates the boundary position. Fixing this (make the engine's position model
+		// container-space, or reconcile the conversion to flat) is the gating work for the 9b selection
+		// swap. Round-trips for indices 0..len-2; off-by-one at the final position.
+		[Ignore("Stage 9b: flat<->container position impedance (R3/R11) not yet reconciled — see comment.")]
+		[TestMethod]
+		public async Task When_View_Position_CharacterIndex_RoundTrips()
+		{
+			var run = new Run { Text = "Hello world from RichTextBlock" };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(run);
+			var SUT = new RichTextBlock { Width = 400 };
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var width = SUT.ActualWidth;
+				var engine = new BlockLayoutEngine(SUT);
+				var page = engine.CreatePageNode(SUT.Blocks, SUT);
+				page.Measure(new Size(width, 1e6), 0, 0f, true, false, false, null, out _);
+				page.Arrange(new Size(width, Math.Ceiling(page.GetDesiredSize().Height)));
+
+				var view = new RichTextBlockView(page, SUT);
+
+				int textLen = run.Text.Length;
+				for (int i = 0; i <= textLen; i++)
+				{
+					int pos = view.GetAdjustedPosition(i);   // flat -> container
+					int back = view.GetCharacterIndex(pos);   // container -> flat
+					Assert.AreEqual(i, back, $"Round-trip failed at flat index {i} (container pos {pos})");
+				}
 			}
 			finally
 			{
