@@ -106,14 +106,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_pageNode is not null)
 			{
+				// Always use the RichTextBlockBreak object to retrieve the old page break. If the PageNode has not been
+				// deleted it should be exactly the same as the page node's break.
+				BlockNodeBreak? oldPageBreak = _break?.GetBlockBreak();
+
 				// PageNode reads Padding and MaxLines off this owner; suppressTopMargin=true matches
 				// CRichTextBlock::MeasureOverride. The engine handles padding internally, so the
 				// desired size already includes it (no manual add like the old flat path).
 				_pageNode.Measure(availableSize, (uint)MaxLines, 0f, false, false, true, null, out _);
 				desiredSize = _pageNode.GetDesiredSize();
 
+				// If PageNode bypasses Measure, its break will be exactly the same, and there's no need to notify
+				// overflow elements. If it changed, update this container's break and set it, notifying overflows.
+				// Ref-equality (not BlockNodeBreak.Equals) is intentional - see CRichTextBlock::MeasureOverride.
 				var pageBreak = _pageNode.GetBreak();
-				_break = pageBreak is not null ? new RichTextBlockBreak(pageBreak) : null;
+				if (pageBreak is not null)
+				{
+					if (!ReferenceEquals(pageBreak, oldPageBreak))
+					{
+						SetBreak(new RichTextBlockBreak(pageBreak));
+					}
+				}
+				else
+				{
+					SetBreak(null);
+				}
 			}
 
 			if (GetUseLayoutRounding())
@@ -155,15 +172,21 @@ namespace Microsoft.UI.Xaml.Controls
 			// path. (A future optimization can invalidate only on change.)
 			_pageNode = (PageNode)_blockLayout.CreatePageNode(Blocks, this);
 
-			// Rebuild the view against the fresh page node and notify the manager so its selection /
-			// text positions are recreated against the new view.
-			var oldView = _pTextView;
+			// Rebuild the per-element view against the fresh page node and notify the manager so its
+			// selection / text positions are recreated against the new view. When this control is linked
+			// to an overflow chain the manager queries through the stable LinkedRichTextBlockView, so the
+			// per-element view swap must not be reported as the manager's active view (that stays the linked
+			// view); only swap the manager when standalone.
+			var oldElementView = _pTextView;
 			_pTextView = new Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView(_pageNode, this);
 			if (_pSelectionManager is null && (IsTextSelectionEnabled || ((ITextSelectionManagerOwner)this).IsHighContrast))
 			{
 				_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
 			}
-			_pSelectionManager?.TextViewChanged(oldView, _pTextView);
+			if (_pLinkedView is null)
+			{
+				_pSelectionManager?.TextViewChanged(oldElementView, _pTextView);
+			}
 		}
 
 		// Rebuilds _paragraphLayouts (render/selection data) from the arranged PageNode tree. The
@@ -387,7 +410,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
-		partial void InvalidateRichTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		partial void InvalidateRichTextBlockPartial()
+		{
+			InvalidateInlineAndRequireRepaint();
+			// Master content/property changes invalidate the linked overflow chain so it re-measures
+			// its slice from the (re)computed master break. Mirrors CRichTextBlock::InvalidateContentMeasure
+			// driving CRichTextBlockOverflow::InvalidateAllOverflowContentMeasure down the chain.
+			InvalidateOverflowChainContentMeasure();
+		}
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
 
 		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();

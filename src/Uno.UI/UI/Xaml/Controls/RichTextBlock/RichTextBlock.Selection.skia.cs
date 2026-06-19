@@ -30,13 +30,13 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 
 	#region ITextViewHost
 
-	ITextView? ITextViewHost.GetTextView() => _pTextView;
+	ITextView? ITextViewHost.GetTextView() => GetTextView();
 
 	#endregion
 
 	#region ITextSelectionManagerOwner
 
-	ITextView? ITextSelectionManagerOwner.GetTextView() => _pTextView;
+	ITextView? ITextSelectionManagerOwner.GetTextView() => GetTextView();
 
 	void ITextSelectionManagerOwner.OnSelectionChanged(
 		uint previousSelectionStartOffset,
