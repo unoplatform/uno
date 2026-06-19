@@ -6,12 +6,12 @@
 
 namespace Microsoft.UI.Xaml.Controls.Text.Core;
 
-// Thin wrapper over CPlainTextPosition. All members delegate to the underlying plain position.
-internal struct CTextPosition
+// Thin wrapper over PlainTextPosition. All members delegate to the underlying plain position.
+internal struct TextPosition
 {
-	private CPlainTextPosition m_plainPosition;
+	private PlainTextPosition m_plainPosition;
 
-	public CTextPosition(CPlainTextPosition position)
+	public TextPosition(PlainTextPosition position)
 	{
 		m_plainPosition = position;
 	}
@@ -20,41 +20,41 @@ internal struct CTextPosition
 
 	public bool IsValid() => m_plainPosition.IsValid();
 
-	public bool Equals(CTextPosition other) => m_plainPosition.Equals(other.m_plainPosition);
+	public bool Equals(TextPosition other) => m_plainPosition.Equals(other.m_plainPosition);
 
-	public bool LessThan(CTextPosition other) => m_plainPosition.LessThan(other.m_plainPosition);
+	public bool LessThan(TextPosition other) => m_plainPosition.LessThan(other.m_plainPosition);
 
 	public bool IsAtInsertionPosition(out bool pIsAtInsertionPosition)
 		=> m_plainPosition.IsAtInsertionPosition(out pIsAtInsertionPosition);
 
 	public bool GetNextInsertionPosition(
 		out bool pFoundPosition,
-		out CTextPosition pPosition)
+		out TextPosition pPosition)
 	{
 		bool result = m_plainPosition.GetNextInsertionPosition(out pFoundPosition, out var position);
-		pPosition = new CTextPosition(position);
+		pPosition = new TextPosition(position);
 		return result;
 	}
 
 	public bool GetPreviousInsertionPosition(
 		out bool pFoundPosition,
-		out CTextPosition pPosition)
+		out TextPosition pPosition)
 	{
 		bool result = m_plainPosition.GetPreviousInsertionPosition(out pFoundPosition, out var position);
-		pPosition = new CTextPosition(position);
+		pPosition = new TextPosition(position);
 		return result;
 	}
 
 	public bool GetBackspacePosition(
 		out bool pFoundPosition,
-		out CTextPosition pPosition)
+		out TextPosition pPosition)
 	{
 		bool result = m_plainPosition.GetBackspacePosition(out pFoundPosition, out var position);
-		pPosition = new CTextPosition(position);
+		pPosition = new TextPosition(position);
 		return result;
 	}
 
-	public CPlainTextPosition GetPlainPosition() => m_plainPosition;
+	public PlainTextPosition GetPlainPosition() => m_plainPosition;
 
 	public bool IsAfterLineBreak(out bool pIsAfterLineBreak)
 	{
@@ -68,22 +68,22 @@ internal struct CTextPosition
 
 	/*
 	Overloaded comparison operators for convenience. They're all defined in terms
-	of CTextPosition::Equals and CTextPosition::LessThan.
+	of TextPosition::Equals and TextPosition::LessThan.
 	*/
 
-	public static bool operator ==(CTextPosition lhs, CTextPosition rhs) => lhs.Equals(rhs);
+	public static bool operator ==(TextPosition lhs, TextPosition rhs) => lhs.Equals(rhs);
 
-	public static bool operator !=(CTextPosition lhs, CTextPosition rhs) => !(lhs == rhs);
+	public static bool operator !=(TextPosition lhs, TextPosition rhs) => !(lhs == rhs);
 
-	public static bool operator <(CTextPosition lhs, CTextPosition rhs) => lhs.LessThan(rhs);
+	public static bool operator <(TextPosition lhs, TextPosition rhs) => lhs.LessThan(rhs);
 
-	public static bool operator <=(CTextPosition lhs, CTextPosition rhs) => lhs < rhs || lhs == rhs;
+	public static bool operator <=(TextPosition lhs, TextPosition rhs) => lhs < rhs || lhs == rhs;
 
-	public static bool operator >(CTextPosition lhs, CTextPosition rhs) => !(lhs <= rhs);
+	public static bool operator >(TextPosition lhs, TextPosition rhs) => !(lhs <= rhs);
 
-	public static bool operator >=(CTextPosition lhs, CTextPosition rhs) => !(lhs < rhs);
+	public static bool operator >=(TextPosition lhs, TextPosition rhs) => !(lhs < rhs);
 
-	public override bool Equals(object? obj) => obj is CTextPosition other && Equals(other);
+	public override bool Equals(object? obj) => obj is TextPosition other && Equals(other);
 
 	public override int GetHashCode()
 	{

@@ -5,7 +5,7 @@
 
 namespace Microsoft.UI.Xaml.Controls.Text.Core;
 
-// Uno seam: WinUI's CPlainTextPosition::GetTextView() down-casts the owner UIElement to
+// Uno seam: WinUI's PlainTextPosition::GetTextView() down-casts the owner UIElement to
 // CRichTextBlock / CTextBlock and calls their GetTextView(). The Uno controls don't yet
 // expose a typed GetTextView() (wired in Stage 6/9); this interface lets the text-position
 // layer obtain the ITextView from whatever owner element implements it, without taking a

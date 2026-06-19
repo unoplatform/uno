@@ -22,7 +22,7 @@ Remarks:
 */
 // Ported as a struct to preserve the value/copy semantics WinUI relied on
 // (copy constructor + "*pPosition = *this"). Mutating helpers operate on a copy.
-internal struct CPlainTextPosition
+internal struct PlainTextPosition
 {
 	private ITextContainer? m_pContainer;
 	private uint m_offset;
@@ -32,7 +32,7 @@ internal struct CPlainTextPosition
 	//  Summary:
 	//      Creates a position with the given offset.
 	//------------------------------------------------------------------------
-	public CPlainTextPosition(
+	public PlainTextPosition(
 		ITextContainer pContainer,
 		uint offset,
 		TextGravity gravity)
@@ -192,7 +192,7 @@ internal struct CPlainTextPosition
 	//  Summary:
 	//      Returns TRUE if both positions are equal.
 	//------------------------------------------------------------------------
-	public bool Equals(CPlainTextPosition other)
+	public bool Equals(PlainTextPosition other)
 	{
 		if (!IsValid() || !other.GetOffset(out var otherOffset))
 		{
@@ -206,7 +206,7 @@ internal struct CPlainTextPosition
 	//  Summary:
 	//      Returns TRUE if 'this' is less than 'other'.
 	//------------------------------------------------------------------------
-	public bool LessThan(CPlainTextPosition other)
+	public bool LessThan(PlainTextPosition other)
 	{
 		if (!IsValid() || !other.GetOffset(out var otherOffset))
 		{
@@ -218,22 +218,22 @@ internal struct CPlainTextPosition
 
 	/*
 	Overloaded comparison operators for convenience. They're all defined in terms
-	of CPlainTextPosition::Equals and CPlainTextPosition::LessThan.
+	of PlainTextPosition::Equals and PlainTextPosition::LessThan.
 	*/
 
-	public static bool operator ==(CPlainTextPosition lhs, CPlainTextPosition rhs) => lhs.Equals(rhs);
+	public static bool operator ==(PlainTextPosition lhs, PlainTextPosition rhs) => lhs.Equals(rhs);
 
-	public static bool operator !=(CPlainTextPosition lhs, CPlainTextPosition rhs) => !(lhs == rhs);
+	public static bool operator !=(PlainTextPosition lhs, PlainTextPosition rhs) => !(lhs == rhs);
 
-	public static bool operator <(CPlainTextPosition lhs, CPlainTextPosition rhs) => lhs.LessThan(rhs);
+	public static bool operator <(PlainTextPosition lhs, PlainTextPosition rhs) => lhs.LessThan(rhs);
 
-	public static bool operator <=(CPlainTextPosition lhs, CPlainTextPosition rhs) => lhs < rhs || lhs == rhs;
+	public static bool operator <=(PlainTextPosition lhs, PlainTextPosition rhs) => lhs < rhs || lhs == rhs;
 
-	public static bool operator >(CPlainTextPosition lhs, CPlainTextPosition rhs) => !(lhs <= rhs);
+	public static bool operator >(PlainTextPosition lhs, PlainTextPosition rhs) => !(lhs <= rhs);
 
-	public static bool operator >=(CPlainTextPosition lhs, CPlainTextPosition rhs) => !(lhs < rhs);
+	public static bool operator >=(PlainTextPosition lhs, PlainTextPosition rhs) => !(lhs < rhs);
 
-	public override bool Equals(object? obj) => obj is CPlainTextPosition other && Equals(other);
+	public override bool Equals(object? obj) => obj is PlainTextPosition other && Equals(other);
 
 	public override int GetHashCode()
 	{
@@ -243,7 +243,7 @@ internal struct CPlainTextPosition
 
 	//------------------------------------------------------------------------
 	//  Summary:
-	//      Checks whether the CPlainTextPosition represents a valid insertion position.
+	//      Checks whether the PlainTextPosition represents a valid insertion position.
 	//
 	//  Remarks:
 	//      A position is a valid insertion position
@@ -283,7 +283,7 @@ internal struct CPlainTextPosition
 	//------------------------------------------------------------------------
 	public bool GetNextInsertionPosition(
 		out bool pFoundPosition,
-		out CPlainTextPosition pPosition)
+		out PlainTextPosition pPosition)
 	{
 		pPosition = this;
 		return pPosition.MoveToNextInsertionPosition(out pFoundPosition);
@@ -299,7 +299,7 @@ internal struct CPlainTextPosition
 	//------------------------------------------------------------------------
 	public bool GetPreviousInsertionPosition(
 		out bool pFoundPosition,
-		out CPlainTextPosition pPosition)
+		out PlainTextPosition pPosition)
 	{
 		pPosition = this;
 		return pPosition.MoveToPreviousInsertionPosition(out pFoundPosition);
@@ -316,7 +316,7 @@ internal struct CPlainTextPosition
 	//------------------------------------------------------------------------
 	public bool GetBackspacePosition(
 		out bool pFoundPosition,
-		out CPlainTextPosition pPosition)
+		out PlainTextPosition pPosition)
 	{
 		pPosition = this;
 		return pPosition.MoveToBackspacePosition(out pFoundPosition);
@@ -334,13 +334,13 @@ internal struct CPlainTextPosition
 		int offset,
 		TextGravity gravity,
 		out bool pFoundPosition,
-		out CPlainTextPosition pPosition)
+		out PlainTextPosition pPosition)
 	{
 		pPosition = this;
 		return pPosition.MoveByOffset(offset, gravity, out pFoundPosition);
 	}
 
-	public bool Clone(out CPlainTextPosition pPosition)
+	public bool Clone(out PlainTextPosition pPosition)
 	{
 		pPosition = this;
 		return true; // RRETURN_REMOVAL
@@ -528,7 +528,9 @@ internal struct CPlainTextPosition
 	// On Uno the owner exposes the view through ITextViewHost (wired in Stage 6/9); until then a
 	// host that hasn't computed its view simply returns null and insertion-position scanning falls
 	// back to the empty-view behavior, exactly as WinUI does during control creation.
-	private ITextView? GetTextView()
+	// WinUI declares this protected and grants `friend class CSelectionWordBreaker`; the C# friend
+	// equivalent is internal so CSelectionWordBreaker.CanBreak can reach GetCharacterIndex.
+	internal ITextView? GetTextView()
 	{
 		if (IsValid())
 		{
