@@ -139,8 +139,10 @@ internal sealed class SkiaTextLine : TextLine
 			"TODO Uno (Stage 6): per-line drawing. Paragraph rendering currently goes through ParsedText.Draw.");
 
 	public override TextLine Collapse(double collapsingWidth, TextTrimming collapsingStyle, TextCollapsingSymbol? collapsingSymbol)
-		=> throw new NotSupportedException(
-			"TODO Uno (Stage 3/R2): line collapsing (text trimming ellipsis) is not yet ported.");
+		// TODO Uno (R2): real ellipsis truncation is net-new on the Skia engine. For now return the
+		// uncollapsed line (HasCollapsed stays false); the paragraph still reports trimming via the
+		// control's MaxLines/width detection and ParsedText renders the text clipped to bounds.
+		=> this;
 
 	public override bool HasCollapsed => false;
 
