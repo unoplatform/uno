@@ -313,7 +313,40 @@ internal sealed class RichTextBlockView : ITextView
 
 	public uint GetContentStartPosition() => m_pPageNode.GetStartPosition();
 
-	public uint GetContentLength() => m_pPageNode.GetContentLength();
+	// Uno bridge (R3): the node tree measures in flat (ParsedText) char space, but the position
+	// layer the selection manager talks to is container space (with the reserved placeholder
+	// positions per inline/collection). Compute the container content length from the run model so
+	// it matches GetAdjustedPosition/GetCharacterIndex, instead of the node's flat m_length.
+	// TODO Uno (overflow): for a linked overflow page this should be the page's slice, not the whole owner.
+	public uint GetContentLength()
+	{
+		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
+		if (owningRichTextBlock is null)
+		{
+			return m_pPageNode.GetContentLength();
+		}
+
+		int length = 0;
+		bool previousBlock = false;
+		foreach (var block in owningRichTextBlock.Blocks)
+		{
+			if (block is not Paragraph paragraph)
+			{
+				continue;
+			}
+
+			if (previousBlock)
+			{
+				length += PlaceHolderPositionsForInlines;
+			}
+
+			paragraph.Inlines.GetPositionCount(out var inlinePositions);
+			length += (int)inlinePositions - PlaceHolderPositionsForInlines;
+			previousBlock = true;
+		}
+
+		return (uint)length;
+	}
 
 	public int GetAdjustedPosition(int charIndex)
 	{
@@ -323,8 +356,10 @@ internal sealed class RichTextBlockView : ITextView
 		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
 
 		// Save the starting and ending positions of the specific RTB or RTBO currently being highlighted.
+		// NOTE (Uno R3): WinUI uses m_pPageNode->GetContentLength() here because its page node measures in
+		// container space; Uno's node tree is flat (ParsedText), so use the view's container GetContentLength.
 		int blockStartPosition = (int)GetContentStartPosition();
-		int blockEndPosition = blockStartPosition + (int)m_pPageNode.GetContentLength();
+		int blockEndPosition = blockStartPosition + (int)GetContentLength();
 
 		// Correct out of bound indexes to valid ones
 		if (charIndex < 0)

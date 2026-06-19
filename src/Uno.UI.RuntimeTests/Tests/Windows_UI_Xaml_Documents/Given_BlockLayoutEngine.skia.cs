@@ -148,14 +148,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		// Validates the container<->flat offset conversion that the Stage-9b selection swap relies on:
 		// RichTextBlockView.GetAdjustedPosition (flat char index -> container position) must be inverted
 		// by GetCharacterIndex (container position -> flat char index).
-		// IGNORED: documents the flat<->container impedance (plan risk R3/R11). Uno's SkiaTextLine.Length /
-		// ParagraphNode.m_length are FLAT visible-char counts (ParsedText RenderLine), but the WinUI
-		// position/conversion layer expects CONTAINER-position space (incl. 2 reserved placeholder
-		// positions per inline/collection). GetAdjustedPosition's clamp (blockStart + GetContentLength)
-		// therefore truncates the boundary position. Fixing this (make the engine's position model
-		// container-space, or reconcile the conversion to flat) is the gating work for the 9b selection
-		// swap. Round-trips for indices 0..len-2; off-by-one at the final position.
-		[Ignore("Stage 9b: flat<->container position impedance (R3/R11) not yet reconciled — see comment.")]
+		// R3 reconciliation: the node tree measures in flat (ParsedText) char space; the view bridges to
+		// container-position space (RichTextBlockView.GetContentLength computes the container length from
+		// the run model). GetAdjustedPosition (flat->container) must round-trip via GetCharacterIndex.
 		[TestMethod]
 		public async Task When_View_Position_CharacterIndex_RoundTrips()
 		{
@@ -180,11 +175,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 				var view = new RichTextBlockView(page, SUT);
 
 				int textLen = run.Text.Length;
+				uint contentLen = view.GetContentLength();
+				paragraph.Inlines.GetPositionCount(out var inlinePos);
 				for (int i = 0; i <= textLen; i++)
 				{
 					int pos = view.GetAdjustedPosition(i);   // flat -> container
 					int back = view.GetCharacterIndex(pos);   // container -> flat
-					Assert.AreEqual(i, back, $"Round-trip failed at flat index {i} (container pos {pos})");
+					Assert.AreEqual(i, back, $"Round-trip failed at flat index {i} (container pos {pos}); textLen={textLen} GetContentLength={contentLen} inlinePositions={inlinePos}");
 				}
 			}
 			finally
