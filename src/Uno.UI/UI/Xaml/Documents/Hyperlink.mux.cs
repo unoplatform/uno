@@ -34,5 +34,11 @@ namespace Microsoft.UI.Xaml.Documents
 #else
 			_focusableHelper;
 #endif
+
+#if !__WASM__
+		// MUX Reference Hyperlink::OnCreateAutomationPeerImpl — Hyperlink exposes a HyperlinkAutomationPeer.
+		private protected override Automation.Peers.AutomationPeer OnCreateAutomationPeerCore()
+			=> new Automation.Peers.HyperlinkAutomationPeer(this);
+#endif
 	}
 }

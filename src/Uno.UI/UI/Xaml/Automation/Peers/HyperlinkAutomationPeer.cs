@@ -1,4 +1,4 @@
-// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+﻿// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -38,6 +38,12 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 
 		throw new InvalidOperationException("Owner Hyperlink has been garbage collected.");
 	}
+
+	// Used by the Text pattern adapter (TextAdapter.RangeFromChild) to map a link peer back to its
+	// owning Hyperlink. Returns null if the owner has been collected.
+#nullable enable
+	internal Hyperlink? Owner => _ownerWeak.TryGetTarget(out var owner) ? owner : null;
+#nullable restore
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
