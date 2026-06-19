@@ -221,10 +221,15 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateElementFocusability(element: HTMLElement, isFocusable: boolean) {
+			// Focusable controls participate in the natural tab order (tabindex="0").
+			// Non-focusable controls must NOT participate, but they may still need to be
+			// programmatically focusable (for screen-reader navigation / focus recovery),
+			// so they get tabindex="-1" rather than having the attribute removed —
+			// native <button>/<input>/<a> default to tabbable when no tabindex is set.
 			if (isFocusable) {
-				element.tabIndex = -1;
+				element.tabIndex = 0;
 			} else {
-				element.removeAttribute("tabIndex");
+				element.tabIndex = -1;
 			}
 			// Semantic elements must NEVER have pointer-events: all.
 			// Mouse events must pass through to the canvas below.
@@ -388,7 +393,9 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
-			activeElement.tabIndex = -1;
+			// Promote the active element to the single tab stop (tabindex="0").
+			// Sibling group members are demoted to tabindex="-1" below.
+			activeElement.tabIndex = 0;
 
 			// Determine the group scope. Only radio buttons (sharing the
 			// same 'name') and tab-role children of a tablist are grouped.

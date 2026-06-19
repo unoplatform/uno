@@ -716,12 +716,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Named_Landmark_Then_RoleDescription_Emitted_But_Unnamed_Omitted()
 		{
-			var named = new Border();
+			// Borders need an explicit footprint — UITestHelper.Load gates on non-zero ActualSize.
+			var named = new Border { Width = 100, Height = 20 };
 			AutomationProperties.SetLandmarkType(named, AutomationLandmarkType.Custom);
 			AutomationProperties.SetName(named, "Filters");
 			AutomationProperties.SetLocalizedLandmarkType(named, "filter panel");
 
-			var unnamed = new Border();
+			var unnamed = new Border { Width = 100, Height = 20 };
 			AutomationProperties.SetLandmarkType(unnamed, AutomationLandmarkType.Custom);
 			AutomationProperties.SetLocalizedLandmarkType(unnamed, "filter panel");
 

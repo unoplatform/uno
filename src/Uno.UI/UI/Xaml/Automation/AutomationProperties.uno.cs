@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿#nullable enable
+
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -45,7 +47,7 @@ public sealed partial class AutomationProperties
 			// not from AutomationId — otherwise assistive tech announces the dev-only id.
 
 			var role = FindHtmlRole(uiElement);
-			if (role != null)
+			if (!string.IsNullOrEmpty(role))
 			{
 				uiElement.SetAttribute("role", role);
 			}
@@ -103,7 +105,7 @@ public sealed partial class AutomationProperties
 	}
 
 #if __WASM__ || __SKIA__
-	internal static string FindHtmlRole(UIElement uIElement)
+	internal static string? FindHtmlRole(UIElement uIElement)
 	{
 		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role
 		// (defined in Uno.UI.Toolkit). The provider is registered via RoleOverrideProvider.

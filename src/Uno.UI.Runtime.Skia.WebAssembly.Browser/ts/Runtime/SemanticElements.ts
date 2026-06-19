@@ -516,9 +516,10 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.fontSize = 'inherit';
 			element.style.fontWeight = 'inherit';
 
+			const trimmedLabel = (label ?? '').trim();
 			this.setAriaStringAttribute(element, 'aria-label', label);
-			if (label && label.trim().length > 0) {
-				element.textContent = label;
+			if (trimmedLabel.length > 0) {
+				element.textContent = trimmedLabel;
 			}
 
 			element.setAttribute('aria-level', String(trueLevel));
