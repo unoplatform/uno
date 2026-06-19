@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RichTextBlockOverflowAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 using System.Collections.Generic;
@@ -10,6 +10,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutomationPeer
 {
+#if __SKIA__
+	// CRichTextBlockOverflowAutomationPeer::m_pTextPattern — the faithfully-ported Text pattern provider.
+	private Text.TextAdapter m_textPattern;
+#endif
+
 	public RichTextBlockOverflowAutomationPeer(Controls.RichTextBlockOverflow owner) : base(owner)
 	{
 	}
@@ -18,28 +23,21 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-			// if (m_textPattern is null)
-			// {
-			// 	UNO TODO:
+#if __SKIA__
+			// CRichTextBlockOverflowAutomationPeer::GetPatternCore — overflows without a master
+			// RichTextBlock have no text pattern. Only create the adapter when a master exists.
+			if (m_textPattern is null
+				&& Owner is Controls.RichTextBlockOverflow owner
+				&& owner.ContentSource is not null)
+			{
+				m_textPattern = new Text.TextAdapter(owner, this);
+			}
 
-			// 		// RichTextBlockOverflows that don't have a master RichTextBlock don't have a text pattern, and should return nullptr.
-			// 		if (static_cast<CRichTextBlockOverflow*>((static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle()))->m_pMaster != nullptr)
-			// 		{
-			// 			IFC(ActivationAPI::ActivateAutomationInstance(KnownTypeIndex::TextAdapter, static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle(), spTextAdapter.GetAddressOf()));
-
-			// 			IFCPTR(spTextAdapter.Get());
-
-			// 			m_pTextPattern = spTextAdapter.Detach();
-			// 			IFC(m_pTextPattern->put_Owner(spOwner.Get()));
-			// 		}
-
-			// 	m_textPattern = Owner;
-			// }
-
-			// UNO TODO: Implement ITextProvider via TextAdapter for RichTextBlock/Overflow.
-			// Returning null is safer than returning Owner (a UIElement), which would cause
-			// InvalidCastException when the platform tries to use it as ITextProvider.
-			return null;
+			return m_textPattern;
+#else
+			// The Text pattern provider is Skia-only (container/view/position model).
+			return base.GetPatternCore(patternInterface);
+#endif
 		}
 		else
 		{
@@ -52,10 +50,47 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-	// UNO TODO: WinUI populates automation peer children from the block collection,
-	// filtering by overflow position using AppendAutomationPeerChildren. That method
-	// is currently stubbed on TextElement. Until implemented, fall back to base.
-	// See WinUI: RichTextBlockOverflowAutomationPeer_Partial.cpp
+#if __SKIA__
+	// CRichTextBlockOverflowAutomationPeer::GetChildrenCore — append the inline peers from the source
+	// (master) RichTextBlock's blocks that fall within this overflow's slice [contentStart, overflowStart).
 	protected override IList<AutomationPeer> GetChildrenCore()
-		=> base.GetChildrenCore();
+	{
+		if (Owner is not Controls.RichTextBlockOverflow owner)
+		{
+			return base.GetChildrenCore();
+		}
+
+		var sourceControl = owner.ContentSource;
+		if (sourceControl is null)
+		{
+			return base.GetChildrenCore();
+		}
+
+		var children = new List<AutomationPeer>();
+
+		int posContentStart = (int)owner.GetContentStartPosition();
+
+		int posOverflowStart = int.MaxValue;
+		if (owner.HasOverflowContent && owner.OverflowContentTarget is { } overflowControl)
+		{
+			posOverflowStart = (int)overflowControl.GetContentStartPosition();
+		}
+
+		foreach (var block in sourceControl.Blocks)
+		{
+			if (posOverflowStart != int.MaxValue)
+			{
+				var posBlockStart = block.GetContentStart()?.Offset ?? -1;
+				if (posBlockStart >= posOverflowStart)
+				{
+					break;
+				}
+			}
+
+			block.AppendAutomationPeerChildren(children, posContentStart, posOverflowStart);
+		}
+
+		return children;
+	}
+#endif
 }
