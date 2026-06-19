@@ -13,8 +13,7 @@ namespace Uno.UI.Composition;
 /// </summary>
 internal sealed class DamageRegion
 {
-	private SKPath _region = new();
-	private SKPath _spareUnion = new();
+	private readonly SKPath _region = new();
 	private readonly SKPath _scratch = new();
 
 	/// <summary>The whole surface must be repainted this frame (e.g. on resize).</summary>
@@ -58,8 +57,9 @@ internal sealed class DamageRegion
 
 		_scratch.Rewind();
 		_scratch.AddRect(frameRect);
-		_region.Op(_scratch, SKPathOp.Intersect, _spareUnion);
-		(_region, _spareUnion) = (_spareUnion, _region);
+		// SKPath.Op builds into an internal temp before assigning the result, so the result may alias the
+		// source — we intersect in place without a spare path.
+		_region.Op(_scratch, SKPathOp.Intersect, _region);
 	}
 
 	private void Union(SKPath addition)
@@ -74,8 +74,9 @@ internal sealed class DamageRegion
 			// regardless of contour winding (so the clip never develops a hole that would drop a repaint).
 			// Overlapping contributions (e.g. every visible row of a scrolling list) collapse here, so the
 			// path's complexity tracks the actual changed geometry, not the number of contributions.
-			_region.Op(addition, SKPathOp.Union, _spareUnion);
-			(_region, _spareUnion) = (_spareUnion, _region);
+			// SKPath.Op builds into an internal temp before assigning, so the result may alias the source —
+			// we union in place without a spare path.
+			_region.Op(addition, SKPathOp.Union, _region);
 		}
 	}
 
