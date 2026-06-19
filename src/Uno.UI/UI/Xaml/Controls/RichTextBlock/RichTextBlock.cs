@@ -50,13 +50,18 @@ namespace Microsoft.UI.Xaml.Controls
 		internal Range Selection
 		{
 			get => _selection;
-			set
+			set => SetSelectionInternal(value);
+		}
+
+		// Sets the flat selection + raises SelectionChanged / updates SelectedText, without routing
+		// back to the selection manager. Both the public setter (programmatic callers) and the
+		// manager's container->flat OnSelectionChanged callback funnel through here.
+		private void SetSelectionInternal(Range value)
+		{
+			if (_selection != value)
 			{
-				if (_selection != value)
-				{
-					_selection = value;
-					OnSelectionChanged();
-				}
+				_selection = value;
+				OnSelectionChanged();
 			}
 		}
 
@@ -207,6 +212,12 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture();
 			}
+#if __SKIA__
+			else if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
+			{
+				manager.OnPointerPressed(that, e, view);
+			}
+#endif
 #if !__WASM__
 			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
@@ -267,6 +278,13 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+#if __SKIA__
+			if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
+			{
+				manager.OnPointerReleased(that, e, view);
+			}
+#endif
+
 			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
@@ -303,6 +321,14 @@ namespace Microsoft.UI.Xaml.Controls
 				that._hyperlinkOver = hyperlink;
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
+
+#if __SKIA__
+			if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
+			{
+				manager.OnPointerMoved(that, e, view);
+				return;
+			}
+#endif
 
 #if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
@@ -486,6 +512,14 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CopySelectionToClipboard()
 		{
+#if __SKIA__
+			if (_pSelectionManager is not null)
+			{
+				_pSelectionManager.CopySelectionToClipboard();
+				return;
+			}
+#endif
+
 			if (Selection.start != Selection.end)
 			{
 				var dataPackage = new global::Windows.ApplicationModel.DataTransfer.DataPackage();
@@ -497,7 +531,18 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Selects all the content of the RichTextBlock.
 		/// </summary>
-		public void SelectAll() => Selection = new Range(0, GetPlainText().Length);
+		public void SelectAll()
+		{
+#if __SKIA__
+			if (_pSelectionManager is not null)
+			{
+				_pSelectionManager.SelectAll();
+				return;
+			}
+#endif
+
+			Selection = new Range(0, GetPlainText().Length);
+		}
 
 		internal record struct Range(int start, int end);
 	}
