@@ -158,7 +158,9 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 			// re-dispatch that would self-deadlock on the single-threaded WASM runtime.
 			if (entry.RunOnUIThread && Dispatcher is { HasThreadAccess: false } dispatcher)
 			{
-				return await dispatcher.RunAsync(() => entry.Handler(invocation, timeout.Token).AsTask());
+				// WaitAsync extends the watchdog to the dispatch itself: if the UI thread is blocked and
+				// RunAsync never completes, the invocation is still abandoned when the timeout token fires.
+				return await dispatcher.RunAsync(() => entry.Handler(invocation, timeout.Token).AsTask()).WaitAsync(timeout.Token);
 			}
 
 			return await entry.Handler(invocation, timeout.Token);

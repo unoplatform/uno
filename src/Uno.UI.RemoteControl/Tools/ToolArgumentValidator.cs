@@ -74,8 +74,8 @@ internal static class ToolArgumentValidator
 			_ => false,
 		};
 
-	// The node is already a JSON Number; accept it as an integer only if it agrees with what
-	// ToolInvocation.GetInt32 can read, so validation never passes a value the accessor will reject.
+	// The node is already a JSON Number; accept it as an integer only if ToolInvocation.GetInt32 could
+	// read it — i.e. it fits Int32 — so validation never passes a value the accessor would then reject.
 	private static bool IsIntegral(JsonNode node)
 	{
 		if (node is not JsonValue value)
@@ -83,15 +83,15 @@ internal static class ToolArgumentValidator
 			return false;
 		}
 
-		// Element-backed (parsed from JSON text): the number token itself must be integral
+		// Element-backed (parsed from JSON text): the number token must be an Int32 integer
 		// (ToJsonString can normalize 3.0 to "3", so the raw element is checked instead).
 		if (value.TryGetValue<JsonElement>(out var element))
 		{
-			return element.TryGetInt64(out _);
+			return element.TryGetInt32(out _);
 		}
 
-		// Value-backed (constructed in-process): accept only integral CLR numeric types.
-		return value.TryGetValue<long>(out _) || value.TryGetValue<int>(out _);
+		// Value-backed (constructed in-process): accept only an Int32-typed CLR value, matching GetInt32.
+		return value.TryGetValue<int>(out _);
 	}
 
 	private static bool IsAllowedString(JsonNode node, ImmutableArray<string> allowedValues)
