@@ -55,6 +55,12 @@ void uno_drag_drop_set_session_ended_callback(drag_session_ended_fn_ptr endedCal
 void uno_window_register_for_drag_drop(NSWindow* window);
 BOOL uno_drag_start(NSWindow* window, struct DragSourceData* data);
 
+// Records the latest left mouse-down/dragged event so an outbound drag started after an
+// async hop (e.g. the managed side awaiting bitmap I/O) still has a valid initiating event
+// for beginDraggingSessionWithItems:event:, even when [NSApp currentEvent] has moved on to a
+// non-mouse event (Pressure events on Force Touch trackpads, etc.). Called from the window pump.
+void uno_drag_drop_track_mouse_event(NSEvent* _Nullable event);
+
 // Bridge helpers invoked from NSDraggingDestination methods on the rendering views
 NSDragOperation uno_drag_drop_handle_entered(NSView* view, id<NSDraggingInfo> info);
 NSDragOperation uno_drag_drop_handle_updated(NSView* view, id<NSDraggingInfo> info);

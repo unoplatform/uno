@@ -16,7 +16,30 @@ static drag_session_ended_fn_ptr drag_session_ended;
 // advertise for the session currently originating from this view.
 static NSMapTable<NSView*, NSNumber*>* active_source_masks;
 
+// Latest left mouse-down/dragged event seen by the window pump. Used as the initiating event
+// for beginDraggingSessionWithItems:event: when [NSApp currentEvent] is no longer a mouse event
+// at the moment uno_drag_start runs (see uno_drag_drop_track_mouse_event).
+static NSEvent* last_mouse_drag_event;
+
 extern VirtualKeyModifiers get_modifiers(NSEventModifierFlags mods);
+
+void uno_drag_drop_track_mouse_event(NSEvent* event)
+{
+    if (!event) {
+        return;
+    }
+    switch (event.type) {
+        case NSEventTypeLeftMouseDown:
+        case NSEventTypeLeftMouseDragged:
+            last_mouse_drag_event = event; // ARC retains; valid initiator for a drag session
+            break;
+        case NSEventTypeLeftMouseUp:
+            last_mouse_drag_event = nil;   // gesture finished — don't reuse across gestures
+            break;
+        default:
+            break;
+    }
+}
 
 void uno_drag_drop_set_callbacks(drag_drop_fn_ptr entered, drag_drop_fn_ptr updated, drag_drop_fn_ptr exited, drag_drop_fn_ptr performed)
 {
@@ -255,7 +278,11 @@ BOOL uno_drag_start(NSWindow* window, struct DragSourceData* data)
         return NO;
     }
 
-    // beginDraggingSessionWithItems must be called from a mouse-event context.
+    // beginDraggingSessionWithItems needs a mouse-down/dragged event. Prefer [NSApp currentEvent]
+    // when it's a mouse event; otherwise fall back to the latest tracked mouse-drag event. The
+    // managed side may have awaited payload I/O (e.g. reading a bitmap stream) and resumed on a
+    // run-loop turn where a non-mouse event is current — notably Pressure events on Force Touch
+    // trackpads — which would otherwise abort an outbound drag that the user is still performing.
     NSEvent* event = [NSApp currentEvent];
     NSEventType type = event.type;
     BOOL isMouse =
@@ -265,10 +292,13 @@ BOOL uno_drag_start(NSWindow* window, struct DragSourceData* data)
         type == NSEventTypeLeftMouseDragged || type == NSEventTypeRightMouseDragged ||
         type == NSEventTypeOtherMouseDragged|| type == NSEventTypeMouseMoved;
     if (!event || !isMouse) {
-        // AppKit rejects beginDraggingSession without a mouse-tracking event — surface this
-        // to the managed side so it can signal "None" rather than silently failing.
+        event = last_mouse_drag_event;
+    }
+    if (!event) {
+        // No mouse event available from either source — surface this to the managed side so it
+        // can signal "None" rather than silently failing.
 #if DEBUG
-        NSLog(@"uno_drag_start: no current mouse event, aborting");
+        NSLog(@"uno_drag_start: no usable mouse event (current or tracked), aborting");
 #endif
         return NO;
     }

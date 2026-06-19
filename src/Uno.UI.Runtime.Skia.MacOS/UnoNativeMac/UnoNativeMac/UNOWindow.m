@@ -1322,10 +1322,15 @@ NSOperatingSystemVersion _osVersion;
 #endif
     }
 
+    // Keep the latest mouse-drag event available for outbound drag sessions that start after an
+    // async hop (e.g. the managed side awaiting bitmap I/O), where [NSApp currentEvent] may no
+    // longer be a mouse event when beginDraggingSessionWithItems:event: is finally called.
+    uno_drag_drop_track_mouse_event(event);
+
     if (_osVersion.majorVersion >= 15) {
         [MouseButtons track:event];
     }
-    
+
     if (mouse != MouseEventsNone) {
         struct MouseEventData data;
         memset(&data, 0, sizeof(struct MouseEventData));
