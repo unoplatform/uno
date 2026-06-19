@@ -72,6 +72,11 @@ internal sealed class SkiaTextLine : TextLine
 	// The render line this text line wraps.
 	internal RenderLine RenderLine => _renderLine;
 
+	// The whole-paragraph ParsedText this line was vended from. All SkiaTextLines of a
+	// paragraph share one ParsedText (the SkiaTextFormatter cache); the render path
+	// (RichTextVisual.Paint) draws the paragraph once via ParsedText.Draw.
+	internal ParsedText ParsedText => _parsedText;
+
 	// The zero-based index of this line within its paragraph.
 	internal int LineIndex => _lineIndex;
 
