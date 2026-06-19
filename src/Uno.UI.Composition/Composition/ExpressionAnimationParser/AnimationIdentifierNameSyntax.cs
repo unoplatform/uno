@@ -61,6 +61,11 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 		{
 			_result = false;
 		}
+		else if (identifierValue.Equals("this", StringComparison.OrdinalIgnoreCase))
+		{
+			// 'this.Target' (and friends) resolve against the animation itself.
+			_result = expressionAnimation;
+		}
 		else
 		{
 			throw new ArgumentException($"Unrecognized identifier '{Identifier.Value}'.");

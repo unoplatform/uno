@@ -67,8 +67,12 @@ public partial class CompositionAnimation
 	CompositionObject? _currentCompositionObject;
 #endif
 
+	// The object this animation was last started on; resolves 'this.Target' in expression keyframes.
+	internal CompositionObject? AnimationTargetObject { get; private set; }
+
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
+		AnimationTargetObject = compositionObject;
 #if __SKIA__
 		_currentCompositionObject = compositionObject;
 		Compositor.RegisterAnimation(this, compositionObject);

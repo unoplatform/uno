@@ -264,4 +264,42 @@ public partial class Given_KeyFrameAnimation
 			properties.StopAnimation("Foo");
 		}
 	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_Vector3_Expression_KeyFrame_References_This_Target()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		ElementCompositionPreview.SetIsTranslationEnabled(border, true);
+
+		var animation = visual.Compositor.CreateVector3KeyFrameAnimation();
+		animation.SetScalarParameter("contentElevation", 8f);
+		// Exactly TeachingTip's elevation keyframe: 'this.Target' resolves to the animated visual,
+		// preserving its current X/Y translation while animating Z to contentElevation.
+		animation.InsertExpressionKeyFrame(1.0f, "Vector3(this.Target.Translation.X, this.Target.Translation.Y, contentElevation)");
+		animation.Target = "Translation";
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		visual.StartAnimation("Translation", animation);
+		try
+		{
+			var value = (Vector3)animation.Evaluate(1.0f);
+			Assert.AreEqual(new Vector3(0, 0, 8), value);
+		}
+		finally
+		{
+			visual.StopAnimation("Translation");
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 }
