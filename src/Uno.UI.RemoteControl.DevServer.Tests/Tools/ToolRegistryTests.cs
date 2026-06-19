@@ -67,7 +67,7 @@ public class ToolRegistryTests
 
 		registry.Snapshot().Tools.Should().ContainSingle();
 		var result = await registry.InvokeAsync("a_x", new JsonObject(), default);
-		result.Content[0].Text.Should().Be("first");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("first");
 	}
 
 	[TestMethod]
@@ -105,7 +105,7 @@ public class ToolRegistryTests
 		var result = await registry.InvokeAsync("echo", new JsonObject { ["v"] = "hi" }, default);
 
 		result.IsError.Should().BeFalse();
-		result.Content[0].Text.Should().Be("hi");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("hi");
 	}
 
 	[TestMethod]
@@ -118,7 +118,7 @@ public class ToolRegistryTests
 		var result = await registry.InvokeAsync("boom", new JsonObject(), default);
 
 		result.IsError.Should().BeTrue();
-		result.Content[0].Text.Should().NotContain("nope");
+		result.Content.Should().ContainSingle().Which.Text.Should().NotContain("nope");
 	}
 
 	[TestMethod]
@@ -189,7 +189,7 @@ public class ToolRegistryTests
 
 		gate.SetResult();
 		var result = await invocation;
-		result.Content[0].Text.Should().Be("done");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("done");
 	}
 
 	// --- resources ---
@@ -203,7 +203,7 @@ public class ToolRegistryTests
 
 		var result = await registry.ReadResourceAsync("u://1", default);
 
-		result.Content[0].Text.Should().Be("payload");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("payload");
 	}
 
 	[TestMethod]
@@ -351,7 +351,7 @@ public class ToolRegistryTests
 
 		var result = await registry.InvokeAsync("t", new JsonObject(), default);
 
-		result.Content[0].Text.Should().Be("inline");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("inline");
 	}
 
 	[TestMethod]
@@ -486,7 +486,7 @@ public class ToolRegistryTests
 
 		release.SetResult();
 		var result = await invocation;
-		result.Content[0].Text.Should().Be("done");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("done");
 	}
 
 	// --- argument validation ---
@@ -497,7 +497,7 @@ public class ToolRegistryTests
 	{
 		var descriptor = ToolWith(new ToolParameter("name", "d", ToolParameterKind.String, IsRequired: true));
 
-		ToolArgumentValidator.Validate(descriptor, new JsonObject()).Should().NotBeNull();
+		ToolArgumentValidator.Validate(descriptor, new JsonObject()).Should().Contain("Missing required");
 	}
 
 	[TestMethod]
@@ -506,7 +506,7 @@ public class ToolRegistryTests
 	{
 		var descriptor = ToolWith(new ToolParameter("count", "d", ToolParameterKind.Integer));
 
-		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = "not-a-number" }).Should().NotBeNull();
+		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = "not-a-number" }).Should().Contain("must be of type");
 	}
 
 	[TestMethod]
@@ -515,8 +515,17 @@ public class ToolRegistryTests
 	{
 		var descriptor = ToolWith(new ToolParameter("count", "d", ToolParameterKind.Integer));
 
-		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.7 }).Should().NotBeNull();
-		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.0 }).Should().NotBeNull();
+		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.7 }).Should().Contain("must be of type");
+		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.0 }).Should().Contain("must be of type");
+	}
+
+	[TestMethod]
+	[Description("Integer means Int32 (the only accessor is GetInt32), so a value outside Int32 range must fail validation rather than pass here and then throw inside GetInt32.")]
+	public void Validate_IntegerBeyondInt32Range_ReturnsError()
+	{
+		var descriptor = ToolWith(new ToolParameter("count", "d", ToolParameterKind.Integer));
+
+		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 5_000_000_000L }).Should().Contain("must be of type");
 	}
 
 	[TestMethod]
@@ -526,7 +535,7 @@ public class ToolRegistryTests
 		var descriptor = ToolWith(new ToolParameter(
 			"color", "d", ToolParameterKind.String, AllowedValues: ImmutableArray.Create("red", "green")));
 
-		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["color"] = "blue" }).Should().NotBeNull();
+		ToolArgumentValidator.Validate(descriptor, new JsonObject { ["color"] = "blue" }).Should().Contain("must be one of");
 	}
 
 	[TestMethod]
@@ -547,7 +556,7 @@ public class ToolRegistryTests
 		ToolArgumentValidator.Validate(optional, new JsonObject { ["name"] = null }).Should().BeNull();
 
 		var required = ToolWith(new ToolParameter("name", "d", ToolParameterKind.String, IsRequired: true));
-		ToolArgumentValidator.Validate(required, new JsonObject { ["name"] = null }).Should().NotBeNull();
+		ToolArgumentValidator.Validate(required, new JsonObject { ["name"] = null }).Should().Contain("Missing required");
 	}
 
 	[TestMethod]
@@ -589,6 +598,18 @@ public class ToolRegistryTests
 		});
 
 		var result = await registry.InvokeAsync("hang", new JsonObject(), default);
+
+		result.IsError.Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("The watchdog must cover the UI-thread dispatch itself: if the dispatcher never completes (UI thread blocked), the invocation must still be abandoned as an error result rather than hang forever.")]
+	public async Task InvokeAsync_DispatcherHangs_TimesOutAsError()
+	{
+		var registry = new ToolRegistryImpl { InvocationTimeout = TimeSpan.FromMilliseconds(50), Dispatcher = new HangingDispatcher() };
+		registry.RegisterTool(Tool("t"), Ok(), runOnUIThread: true);
+
+		var result = await registry.InvokeAsync("t", new JsonObject(), default);
 
 		result.IsError.Should().BeTrue();
 	}
@@ -672,7 +693,7 @@ public class ToolRegistryTests
 		var registry = new ToolRegistryImpl();
 		registry.RegisterTool(new ToolDescriptor("t", "d", default, IsReadOnly: false), Ok());
 
-		registry.Snapshot().Tools[0].Parameters.IsDefault.Should().BeFalse();
+		registry.Snapshot().Tools.Should().ContainSingle().Which.Parameters.IsDefault.Should().BeFalse();
 		var result = await registry.InvokeAsync("t", new JsonObject(), default);
 		result.IsError.Should().BeFalse();
 	}
@@ -687,7 +708,7 @@ public class ToolRegistryTests
 
 		var result = await registry.InvokeAsync("t", new JsonObject { ["n"] = 42, ["b"] = true }, default);
 
-		result.Content[0].Text.Should().Be("42:True");
+		result.Content.Should().ContainSingle().Which.Text.Should().Be("42:True");
 	}
 
 	[TestMethod]
@@ -727,5 +748,14 @@ public class ToolRegistryTests
 			WasUsed = true;
 			return action();
 		}
+	}
+
+	private sealed class HangingDispatcher : IToolDispatcher
+	{
+		public bool HasThreadAccess => false;
+
+		// Never completes — simulates a blocked UI thread that never runs the posted work.
+		public Task<T> RunAsync<T>(Func<Task<T>> action)
+			=> new TaskCompletionSource<T>().Task;
 	}
 }

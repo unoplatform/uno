@@ -448,7 +448,7 @@ dynamic and built-in tools can coexist indefinitely.
 TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
 `[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
 
-**47 tests, all green** (`ToolRegistryTests`). The implemented suite:
+**49 tests, all green** (`ToolRegistryTests`). The implemented suite:
 
 | Test | Covers |
 |------|--------|
@@ -488,8 +488,10 @@ TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (alrea
 | `Validate_ValidArguments_ReturnsNull` | Conforming arguments pass validation. |
 | `Validate_FractionalNumberForIntegerParam_ReturnsError` | A fractional Number fails Integer validation, matching `GetInt32`. |
 | `Validate_NullArgument_TreatedAsAbsent` | A JSON null is treated as absent: optional ignored, required reports "missing". |
+| `Validate_IntegerBeyondInt32Range_ReturnsError` | An Integer value outside Int32 range fails validation, matching what `GetInt32` can read. |
 | `InvokeAsync_InvalidArguments_ReturnsIsError` | Validation failure surfaces as an error result before dispatch. |
 | `InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation` | A handler exceeding the timeout yields an error result, not a thrown cancellation. |
+| `InvokeAsync_DispatcherHangs_TimesOutAsError` | If the UI-thread dispatcher never completes, the watchdog still abandons the invocation as an error (timeout covers dispatch). |
 | `InvokeAsync_CallerCancelsDuringHandler_Throws` | Caller cancellation during a running handler throws `OperationCanceledException`. |
 | `InvokeAsync_CancelledToken_UnknownTool_Throws` | A pre-cancelled token throws even for an unknown tool (cancellation is checked first). |
 | `InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout` | A handler's own OCE propagates as a throw, never a phantom timeout result. |
