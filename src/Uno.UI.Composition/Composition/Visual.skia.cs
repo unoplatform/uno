@@ -35,12 +35,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
-	// Disabled by default: picture-collapsing folds a stable subtree into a cached picture that is no
-	// longer walked, which is incompatible with damage-region rendering — the collapsed visuals can't
-	// contribute their changed region to the per-frame damage, and backdrop effect brushes inside a
-	// collapsed picture would sample a clip-starved backdrop. Re-enabling this while a retaining renderer
-	// is active can therefore produce stale pixels.
-	internal static bool EnablePictureCollapsingOptimization { get; set; }
+	// Picture-collapsing folds a stable subtree into a cached picture that is no longer walked. It is
+	// compatible with damage-region rendering: a subtree only collapses after it has been fully static for
+	// several frames — any transform/content/structural change invalidates the cached picture (via
+	// InvalidateParentChildrenPicture, which SetMatrixDirty/InvalidatePaint/child mutations all call), so a
+	// collapsed subtree has no per-frame change and correctly contributes no damage. The one kind of content
+	// that changes without invalidating is a visual that repaints every frame (a backdrop/acrylic brush);
+	// subtrees containing one are excluded from collapsing (see SubtreeRequiresRepaintOnEveryFrame) so it
+	// keeps being walked — painted and damaged — every frame.
+	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
 
@@ -849,11 +852,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
 					 || !applyChildOptimization
-					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
+					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold
+					 || visual.SubtreeRequiresRepaintOnEveryFrame())
 			{
-				// Walk children individually. Picture-collapsing is disabled by default (see
-				// EnablePictureCollapsingOptimization) because a collapsed subtree is not walked and would
-				// break damage-region damage tracking and backdrop-effect sampling.
+				// Walk children individually. A subtree is collapsed only when it has been fully static for
+				// several frames AND contains nothing that must repaint every frame, so the cached picture
+				// never freezes live content and a collapsed subtree contributes no per-frame damage (see
+				// EnablePictureCollapsingOptimization).
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
 					child.Render(in session, applyChildOptimization);
@@ -1307,6 +1312,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	internal virtual int GetSubTreeVisualCount() => 1;
+
+	// True if this visual or any descendant must be repainted every frame (e.g. a backdrop/acrylic brush
+	// that samples behind it). Such content can't be folded into a picture-collapsing cache: it would
+	// freeze, and under damage-region rendering its per-frame change wouldn't be tracked. Evaluated live
+	// (not cached) because RequiresRepaintOnEveryFrame can flip with a brush change.
+	internal virtual bool SubtreeRequiresRepaintOnEveryFrame() => RequiresRepaintOnEveryFrame;
 
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.

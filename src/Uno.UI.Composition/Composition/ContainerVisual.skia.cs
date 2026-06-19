@@ -236,6 +236,22 @@ public partial class ContainerVisual : Visual
 		}
 	}
 
+	internal override bool SubtreeRequiresRepaintOnEveryFrame()
+	{
+		if (RequiresRepaintOnEveryFrame)
+		{
+			return true;
+		}
+		foreach (var visual in Children.InnerList)
+		{
+			if (visual.SubtreeRequiresRepaintOnEveryFrame())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	internal override int GetSubTreeVisualCount()
 	{
 		if (_subtreeVisualCount is { } count)
