@@ -33,7 +33,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath, DamageRegion? damage = null)
+	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath, SKPath? damage = null)
 	{
 		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
 		using var _ = new SKAutoCanvasRestore(canvas, true);
