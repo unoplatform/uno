@@ -12,6 +12,13 @@ internal sealed record ToolResult(
 	ImmutableArray<ToolContent> Content,
 	bool IsError = false)
 {
+	/// <summary>
+	/// The content items. Normalized so an uninitialized (<c>default</c>) <see cref="ImmutableArray{T}"/>
+	/// reads as empty instead of throwing on access.
+	/// </summary>
+	public ImmutableArray<ToolContent> Content { get; init; }
+		= Content.IsDefault ? ImmutableArray<ToolContent>.Empty : Content;
+
 	/// <summary>A successful result wrapping a single <see cref="ToolContentKind.Text"/> item.</summary>
 	public static ToolResult Text(string text)
 		=> new([new ToolContent(ToolContentKind.Text, Text: text)]);

@@ -481,6 +481,8 @@ public class ToolRegistryTests
 
 		// A fractional Number must fail Integer validation so it agrees with ToolInvocation.GetInt32.
 		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.7 }));
+		// A whole-valued double (3.0) is still CLR-double-backed, which GetInt32 rejects — so must validation.
+		Assert.IsNotNull(ToolArgumentValidator.Validate(descriptor, new JsonObject { ["count"] = 3.0 }));
 	}
 
 	[TestMethod]

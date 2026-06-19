@@ -74,12 +74,25 @@ internal static class ToolArgumentValidator
 			_ => false,
 		};
 
-	// The node is already a JSON Number; an integer literal carries no fractional or exponent part.
-	// GetValue<long> is backing-sensitive (fails on an int-backed node), so scan the raw number text.
+	// The node is already a JSON Number; accept it as an integer only if it agrees with what
+	// ToolInvocation.GetInt32 can read, so validation never passes a value the accessor will reject.
 	private static bool IsIntegral(JsonNode node)
-		=> node.ToJsonString().IndexOfAny(NonIntegralChars) < 0;
+	{
+		if (node is not JsonValue value)
+		{
+			return false;
+		}
 
-	private static readonly char[] NonIntegralChars = ['.', 'e', 'E'];
+		// Element-backed (parsed from JSON text): the number token itself must be integral
+		// (ToJsonString can normalize 3.0 to "3", so the raw element is checked instead).
+		if (value.TryGetValue<JsonElement>(out var element))
+		{
+			return element.TryGetInt64(out _);
+		}
+
+		// Value-backed (constructed in-process): accept only integral CLR numeric types.
+		return value.TryGetValue<long>(out _) || value.TryGetValue<int>(out _);
+	}
 
 	private static bool IsAllowedString(JsonNode node, ImmutableArray<string> allowedValues)
 		=> node is JsonValue value && value.TryGetValue<string>(out var s) && allowedValues.Contains(s);

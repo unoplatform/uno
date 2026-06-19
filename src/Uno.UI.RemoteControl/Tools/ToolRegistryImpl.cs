@@ -39,7 +39,9 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 		set => _dispatcher = value;
 	}
 
-	private TimeSpan _invocationTimeout = TimeSpan.FromSeconds(30);
+	// Stored as ticks so it can be read/written via Volatile (a TimeSpan struct can't be volatile),
+	// giving the same acquire/release fence used for Dispatcher when set from the host-init thread.
+	private long _invocationTimeoutTicks = TimeSpan.FromSeconds(30).Ticks;
 
 	/// <summary>
 	/// Upper bound on a single tool invocation / resource read before it is abandoned with an error
@@ -50,7 +52,7 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 	/// <exception cref="ArgumentOutOfRangeException">A negative value other than <see cref="Timeout.InfiniteTimeSpan"/>.</exception>
 	public TimeSpan InvocationTimeout
 	{
-		get => _invocationTimeout;
+		get => TimeSpan.FromTicks(Volatile.Read(ref _invocationTimeoutTicks));
 		set
 		{
 			if (value < TimeSpan.Zero && value != Timeout.InfiniteTimeSpan)
@@ -58,7 +60,7 @@ internal sealed class ToolRegistryImpl : IToolRegistry
 				throw new ArgumentOutOfRangeException(nameof(value), value, "Timeout must be non-negative or Timeout.InfiniteTimeSpan.");
 			}
 
-			_invocationTimeout = value;
+			Volatile.Write(ref _invocationTimeoutTicks, value.Ticks);
 		}
 	}
 
