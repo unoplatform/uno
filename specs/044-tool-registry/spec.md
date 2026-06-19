@@ -98,8 +98,8 @@ registration.Dispose(); // removes the tool and raises Changed
 ### Scope
 
 - **In Uno (this spec)**: `ToolRegistry` and its in-memory types in `Uno.UI.RemoteControl`,
-  `internal` (today `[InternalsVisibleTo]` only the test assemblies; IVT to publisher/consumer
-  assemblies is **deferred** to the integration work that adds them — see §7). Tools and resources
+  `internal` (`[InternalsVisibleTo]` grants the test assemblies and the MCP consumer; further
+  consumer/publisher assemblies are added as each integration is wired — see §7). Tools and resources
   both, including a resource-update signal.
 - **Publisher guide**: Appendix A (`spec-appendix-a-publisher-guide.md`).
 - **Consumer guide**: Appendix B (`spec-appendix-b-consumer-guide.md`) — the normative MCP
@@ -192,9 +192,10 @@ internal sealed record ToolResult(
 > The C# blocks in this spec are illustrative **shape sketches** (some members are shown as
 > declarations without bodies); they convey the contract, not a compilable unit.
 
-> **Visibility**: these types are `internal` (per the v1 decision) and will be reachable by
-> publishers and consumers via `[InternalsVisibleTo]` once those assemblies are wired (deferred;
-> today only the test assemblies are granted access). They are **not** serialized by Uno —
+> **Visibility**: these types are `internal` (per the v1 decision) and reachable by consumers and
+> publishers via `[InternalsVisibleTo]` (the MCP consumer is granted; further consumer/publisher
+> assemblies are added as each integration is wired). A public, SemVer-stabilized API remains a
+> separate deferred decision (§7). They are **not** serialized by Uno —
 > each consumer maps them onto its own message payloads. The **typed parameter model** lets a
 > consumer generate a JSON Schema (Appendix B) without Uno referencing any JSON-Schema or MCP
 > type; for shapes the flat model can't express (nested objects/arrays, numeric constraints), a
