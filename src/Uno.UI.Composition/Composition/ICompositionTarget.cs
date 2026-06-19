@@ -33,10 +33,5 @@ internal interface ICompositionTarget
 	/// disjoint set of arbitrary shapes, so the gaps between changed areas are not repainted.
 	/// </summary>
 	void AddDamage(SKPath region);
-
-	/// <summary>
-	/// Marks the entire surface as damaged for the current frame (e.g. on resize), forcing a full repaint.
-	/// </summary>
-	void AddFullFrameDamage();
 #endif
 }
