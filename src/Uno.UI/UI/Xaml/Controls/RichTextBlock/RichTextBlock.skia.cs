@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
@@ -53,6 +54,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private Size _lastMeasuredContentSize;
 		private bool _isContentClippedByMaxLines;
 
+		// Stage 9: the ported BlockLayout engine drives measure/arrange; the node tree is the
+		// authoritative layout. _paragraphLayouts is rebuilt from the arranged tree and still
+		// backs the render/selection path (replaced by the view layer in a later step).
+		private BlockLayoutEngine? _blockLayout;
+		private PageNode? _pageNode;
+		private RichTextBlockBreak? _break;
+
 		private protected override ContainerVisual CreateElementVisual() => new RichTextVisual(Compositor.GetSharedCompositor(), this);
 
 		partial void InitializePartial()
@@ -91,13 +99,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var padding = Padding;
-			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
+			EnsureBlockLayout();
 
-			ParseAllParagraphs(availableSizeWithoutPadding, out var contentSize);
-			_lastMeasuredContentSize = contentSize;
+			Size desiredSize = default;
 
-			var desiredSize = contentSize.Add(padding);
+			if (_pageNode is not null)
+			{
+				// PageNode reads Padding and MaxLines off this owner; suppressTopMargin=true matches
+				// CRichTextBlock::MeasureOverride. The engine handles padding internally, so the
+				// desired size already includes it (no manual add like the old flat path).
+				_pageNode.Measure(availableSize, (uint)MaxLines, 0f, false, false, true, null, out _);
+				desiredSize = _pageNode.GetDesiredSize();
+
+				var pageBreak = _pageNode.GetBreak();
+				_break = pageBreak is not null ? new RichTextBlockBreak(pageBreak) : null;
+			}
 
 			if (GetUseLayoutRounding())
 			{
@@ -112,16 +128,11 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			Visual.Compositor.InvalidateRender(Visual);
-			var padding = Padding;
-			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
-			// Re-parse if the arrange size differs from the measure size
-			var contentSize = _lastMeasuredContentSize;
-			if (_paragraphLayouts.Count == 0 ||
-				Math.Abs(availableSizeWithoutPadding.Width - _lastMeasuredContentSize.Width) > 0.5)
+			if (_pageNode is not null && !_pageNode.IsMeasureDirty())
 			{
-				ParseAllParagraphs(availableSizeWithoutPadding, out contentSize);
-				_lastMeasuredContentSize = contentSize;
+				_pageNode.Arrange(finalSize);
+				PopulateLayoutsFromTree();
 			}
 
 			var result = base.ArrangeOverride(finalSize);
@@ -129,120 +140,76 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
-		/// <summary>
-		/// Parses all Paragraph blocks and produces layout data for rendering.
-		/// </summary>
-		private void ParseAllParagraphs(Size availableSize, out Size totalContentSize)
+		// Mirrors CRichTextBlock::EnsureBlockLayout: create the layout engine + page node once.
+		// Calling GetDefaultFontDetails warms the font cache and hooks async font-load invalidation
+		// (the engine resolves fonts via BlockLayoutHelpers/FontDetailsCache).
+		private void EnsureBlockLayout()
+		{
+			_ = GetDefaultFontDetails();
+
+			_blockLayout ??= new BlockLayoutEngine(this);
+
+			// Recreate the page node each measure so content/property changes (FontSize, Padding,
+			// inlines, wrapping, MaxLines) are picked up — parity with the old re-parse-every-measure
+			// path. (A future optimization can invalidate only on change.)
+			_pageNode = (PageNode)_blockLayout.CreatePageNode(Blocks, this);
+		}
+
+		// Rebuilds _paragraphLayouts (render/selection data) from the arranged PageNode tree. The
+		// engine is the authoritative layout; each ParagraphNode shares one ParsedText with its lines,
+		// drawn once at the paragraph offset. Replaced by the view layer in a later step.
+		private void PopulateLayoutsFromTree()
 		{
 			_paragraphLayouts.Clear();
 			_isContentClippedByMaxLines = false;
-			float totalHeight = 0;
+
+			float accumHeight = 0;
 			float maxWidth = 0;
 			int globalCharOffset = 0;
-			int remainingMaxLines = MaxLines; // 0 = unlimited
+			int blockIndex = 0;
+			int blockCount = Blocks.Count;
+			int totalLines = 0;
 
-			foreach (var block in Blocks)
+			for (var child = _pageNode?.GetFirstChild(); child is not null; child = child.GetNext())
 			{
-				if (block is not Paragraph paragraph)
+				var para = blockIndex < blockCount ? Blocks[blockIndex] as Paragraph : null;
+
+				if (child is ParagraphNode paragraphNode &&
+					para is not null &&
+					paragraphNode.GetParsedText() is { } parsed)
 				{
-					continue;
+					var margin = para.Margin;
+					var boxSize = paragraphNode.GetDesiredSize(); // content + margins
+					var contentSize = new Size(
+						Math.Max(0, boxSize.Width - margin.Left - margin.Right),
+						Math.Max(0, boxSize.Height - margin.Top - margin.Bottom));
+
+					_paragraphLayouts.Add(new ParagraphLayout(
+						ParsedText: parsed,
+						YOffset: accumHeight + (float)margin.Top,
+						GlobalCharOffset: globalCharOffset,
+						Size: contentSize,
+						Margin: margin));
+
+					accumHeight += (float)boxSize.Height;
+					maxWidth = Math.Max(maxWidth, (float)boxSize.Width);
+					totalLines += paragraphNode.LineCount;
 				}
 
-				var margin = paragraph.Margin;
-				totalHeight += (float)margin.Top;
-
-				// Get effective properties for this paragraph (paragraph can override block defaults)
-				var effectiveLineHeight = GetEffectiveLineHeight(paragraph);
-				var effectiveLSS = GetEffectiveLineStackingStrategy(paragraph);
-				var effectiveAlignment = GetEffectiveTextAlignment(paragraph);
-				var effectiveWrapping = TextWrapping;
-
-				var leafInlines = paragraph.Inlines.TraversedTree.leafTree;
-				var defaultFontDetails = GetDefaultFontDetails();
-
-				var paragraphMaxLines = remainingMaxLines; // 0 = unlimited
-
-				var parsedText = ParsedText.ParseText(
-					new Size(Math.Max(0, availableSize.Width - margin.Left - margin.Right), availableSize.Height - totalHeight),
-					leafInlines,
-					defaultFontDetails.SKFontSize,
-					paragraphMaxLines,
-					(float)effectiveLineHeight,
-					effectiveLSS,
-					effectiveAlignment,
-					effectiveWrapping,
-					FlowDirection,
-					out var paragraphSize);
-
-				var layout = new ParagraphLayout(
-					ParsedText: parsedText,
-					YOffset: totalHeight,
-					GlobalCharOffset: globalCharOffset,
-					Size: paragraphSize,
-					Margin: margin);
-
-				_paragraphLayouts.Add(layout);
-
-				globalCharOffset += GetParagraphTextLength(paragraph);
-				// Add paragraph separator character for text between paragraphs
-				if (_paragraphLayouts.Count < Blocks.Count)
+				if (para is not null)
 				{
-					globalCharOffset += 2; // \r\n between paragraphs
-				}
-
-				totalHeight += (float)paragraphSize.Height + (float)margin.Bottom;
-				maxWidth = Math.Max(maxWidth, (float)(paragraphSize.Width + margin.Left + margin.Right));
-
-				if (remainingMaxLines > 0)
-				{
-					remainingMaxLines -= parsedText.LineCount;
-					if (remainingMaxLines <= 0)
+					globalCharOffset += GetParagraphTextLength(para);
+					if (blockIndex < blockCount - 1)
 					{
-						// Check if there are more blocks remaining that were clipped
-						_isContentClippedByMaxLines = true;
-						break;
+						globalCharOffset += 2; // paragraph separator
 					}
 				}
+
+				blockIndex++;
 			}
 
-			// If no paragraphs, still report a minimum height based on font
-			if (_paragraphLayouts.Count == 0)
-			{
-				var defaultFont = GetDefaultFontDetails();
-				totalHeight = defaultFont.SKFontSize;
-			}
-
-			totalContentSize = new Size(maxWidth, totalHeight);
-		}
-
-		private double GetEffectiveLineHeight(Paragraph paragraph)
-		{
-			if (paragraph.IsDependencyPropertySet(Block.LineHeightProperty))
-			{
-				return paragraph.LineHeight;
-			}
-
-			return LineHeight;
-		}
-
-		private LineStackingStrategy GetEffectiveLineStackingStrategy(Paragraph paragraph)
-		{
-			if (paragraph.IsDependencyPropertySet(Block.LineStackingStrategyProperty))
-			{
-				return paragraph.LineStackingStrategy;
-			}
-
-			return LineStackingStrategy;
-		}
-
-		private TextAlignment GetEffectiveTextAlignment(Paragraph paragraph)
-		{
-			if (paragraph.IsDependencyPropertySet(Block.TextAlignmentProperty))
-			{
-				return paragraph.TextAlignment;
-			}
-
-			return TextAlignment;
+			_isContentClippedByMaxLines = _break is not null || (MaxLines > 0 && totalLines >= MaxLines);
+			_lastMeasuredContentSize = new Size(maxWidth, accumHeight);
 		}
 
 		private static int GetParagraphTextLength(Paragraph paragraph)

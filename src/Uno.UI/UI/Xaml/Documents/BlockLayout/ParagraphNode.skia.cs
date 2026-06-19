@@ -82,6 +82,10 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	internal ParsedText? GetParsedText()
 		=> (m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line) ? line.ParsedText : null;
 
+	// Number of formatted lines in this paragraph (after MaxLines limiting), used by the control
+	// to detect MaxLines clipping for IsTextTrimmed.
+	internal int LineCount => m_lines.Count;
+
 	public IEmbeddedElementHost GetEmbeddedElementHost() => this;
 
 	//---------------------------------------------------------------------------
