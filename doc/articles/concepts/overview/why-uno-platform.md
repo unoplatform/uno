@@ -16,7 +16,15 @@ However, built on top of this foundation is also a rich platform which includes 
 
 ## Uno Platform Studio - Productivity Tools That Set Us Apart
 
-**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** revolutionizes how developers design, build, and iterate on cross-platform applications. This comprehensive suite of productivity tools is a key differentiator that sets Uno Platform apart from other alternatives.
+**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** is an AI-native productivity platform that revolutionizes how developers design, build, and iterate on cross-platform applications. This comprehensive suite of purpose-built tools, spanning prompt-to-app generation, an AI development agent, the industry-first runtime visual designer, and design handoff, is a key differentiator that sets Uno Platform apart from other alternatives.
+
+### Uno Platform Studio App - From Prompt to a Working Cross-Platform App
+
+The **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)** lets you go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building.
+
+### Uno Platform Studio Agent - AI Orchestration for Cross-Platform .NET
+
+The **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)** is the orchestration layer that connects AI models to the Uno Platform development workflow. It contributes deep, cross-platform .NET domain knowledge, manages context, scaffolds apps from best practices, grounds responses in the latest Uno Platform documentation, and invokes MCP tools to verify its own work. It ships with 70+ Uno Platform-specific skills, delivered through the single `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex, all inside a human-in-the-loop workflow.
 
 ### Hot Design® - The Industry's First Visual Designer for Cross-Platform .NET
 
@@ -26,7 +34,7 @@ However, built on top of this foundation is also a rich platform which includes 
 
 **[Hot Design Agent](xref:Uno.HotDesign.Agent)** is an AI tooling assistant that builds your UI while the app is running. It works with data contexts and live previews to help developers design and interact with user interfaces in real time.
 
-### MCP - AI-Powered Development Intelligence
+### Uno MCP - AI-Powered Development Intelligence
 
 **[Uno MCP](xref:Uno.Features.Uno.MCPs)** leverages semantic understanding to grasp your intent and deliver precise, context-aware answers. It provides instant, accurate guidance grounded in official Uno Platform documentation directly from your IDE.
 
@@ -52,7 +60,7 @@ Uno Platform supports WebAssembly, enabling your .NET apps to run natively in br
 
 ### Rich Tooling
 
-Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools like Hot Design®, Hot Design® Agent, and AI-powered development assistance through Uno MCP, providing a wide range of powerful capabilities.
+Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools, from prompt-to-app generation with the Uno Platform Studio App and the Uno Platform Studio Agent, to Hot Design®, the Hot Design® Agent, and AI-powered development assistance through the Uno MCP and App MCP, providing a wide range of powerful capabilities.
 
 ### Pixel-Perfect Control with Multiple Rendering Options
 
