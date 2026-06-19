@@ -41,5 +41,13 @@ Route to `m_pSelectionManager` (Porter-B) + `m_pTextView` (RichTextBlockView): p
 ## Remove
 `ParseAllParagraphs`, `_paragraphLayouts`, `ParagraphLayout`, `GetParagraphHighlighters`, the managed `Draw` paragraph loop, managed `GetCharacterIndexAtPointSkia` (replace with view), managed `Selection` Range backing (reshape onto manager).
 
+## Risk profile (investigated — LOWER than feared)
+- **Padding is handled by the engine**: `PageNode` reads `RichTextBlock.Padding` via `BlockLayoutHelpers.GetPagePadding` — MeasureCore subtracts it from child available size, `GetContentRenderingOffset` adds it back. So `MeasureOverride` returns `GetDesiredSize()` directly (NO manual `- padding` / `+ padding` like the managed impl).
+- **The 66 Given_RichTextBlock tests are RELATIVE/threshold assertions** (`ActualHeight > singlePara.ActualHeight`, `withPadding > noPadding`, `MaxLines=2 < unlimited`, `>= min`), not exact-pixel. So the engine's WinUI-faithful deltas (suppressTopMargin:TRUE on the first block; TextLine.Width without trailing whitespace) will NOT break them. The single margin test uses a *bottom* margin (unaffected by top-margin suppression) + a relative assert.
+- ⇒ The flip just needs to preserve QUALITATIVE behavior (more content → taller, bold → wider, MaxLines → shorter, padding/margin → taller), which the engine reproduces (validated by Given_BlockLayoutEngine). Exact-size parity is not required by the suite.
+
+## _paragraphLayouts bridge (Stage 9a, keep managed selection)
+Lowest-risk incremental: engine drives Measure/Arrange; populate the existing `_paragraphLayouts` from the arranged tree (walk PageNode ParagraphNode children: `GetParsedText()` + accumulate `GetDesiredSize().Height` for YOffset using `para.Margin` like the managed loop; content size = desired minus margins; GlobalCharOffset as before). Draw/selection/hit-test stay unchanged. Then Stage 9b swaps managed selection for TextSelectionManager + RichTextBlockView and drops `_paragraphLayouts` for a pure tree paint-walk.
+
 ## Validation
-Run `Given_RichTextBlock` (66) + `Given_BlockLayoutEngine` + `Given_SkiaTextFormatter` after the flip; iterate to 66/66. Then RichTextBlockOverflow + linked chain.
+Run `Given_RichTextBlock` (66) + `Given_BlockLayoutEngine` + `Given_SkiaTextFormatter` after the flip; iterate to 66/66. Then RichTextBlockOverflow + linked chain. NOTE: validating requires a clean Uno.UI build, which is blocked while Porter-B's TextSelectionManager is mid-write — do the flip after Porter-B lands.
