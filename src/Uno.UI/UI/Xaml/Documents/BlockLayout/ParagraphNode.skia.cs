@@ -76,6 +76,12 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		return baselineOffset;
 	}
 
+	// The whole-paragraph ParsedText for this node (shared by all its lines), or null if
+	// not yet formatted. Used by the render paint-walk (RichTextVisual.Paint draws the
+	// paragraph once via ParsedText.Draw at the node's arranged offset).
+	internal ParsedText? GetParsedText()
+		=> (m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line) ? line.ParsedText : null;
+
 	public IEmbeddedElementHost GetEmbeddedElementHost() => this;
 
 	//---------------------------------------------------------------------------
