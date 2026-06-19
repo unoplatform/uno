@@ -10,7 +10,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls.Text.Core;
 
-// Read-only subset of CTextBoxHelpers needed by CPlainTextPosition. The editable-container
+// Read-only subset of CTextBoxHelpers needed by PlainTextPosition. The editable-container
 // helpers (InsertText/DeleteText/VerifyPositionPair/GetText buffer copy, etc.) are TextBox-only
 // and are not ported for the read-only RichTextBlock path.
 internal static class TextBoxHelpers
@@ -40,6 +40,37 @@ internal static class TextBoxHelpers
 		}
 
 		return cPositions;
+	}
+
+	//------------------------------------------------------------------------
+	//  Summary:
+	//  Verifies that a pair of positions is within the container's range and
+	//  ordered. Used by selection normalization.
+	//------------------------------------------------------------------------
+	internal static bool VerifyPositionPair(
+		ITextContainer pTextContainer,
+		uint iTextPosition1,
+		uint iTextPosition2)
+	{
+		uint cPositions = GetMaxTextPosition(pTextContainer);
+
+		// Verify that their offset is within the range of the container.
+		if (!(iTextPosition1 <= cPositions))
+		{
+			return false;
+		}
+		if (!(iTextPosition2 <= cPositions))
+		{
+			return false;
+		}
+
+		// Verify that the positions are ordered.
+		if (!(iTextPosition1 <= iTextPosition2))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	internal static void IsNotInSurrogateCRLF(
