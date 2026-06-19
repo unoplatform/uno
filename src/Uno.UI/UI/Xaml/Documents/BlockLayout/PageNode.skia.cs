@@ -959,6 +959,10 @@ internal sealed class PageNode : ContainerNode
 	// Gets the absolute start position of this PageNode in the BlockCollection.
 	public uint GetStartPosition() => ((m_pPreviousBreak is null) ? 0 : ((BlockNodeBreak)m_pPreviousBreak).BreakIndex);
 
+	// Gets the block-collection index of this page's first child. Used by the overflow render
+	// walk to map the page's first ParagraphNode back to the master's Blocks slice.
+	public uint GetFirstChildIndex() => m_firstChildIndex;
+
 	// Gets FrameworkElement that hosts this page.
 	public FrameworkElement GetPageOwner() => m_pPageOwner;
 }
