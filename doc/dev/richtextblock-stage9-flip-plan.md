@@ -38,6 +38,10 @@ Accessors needed: `ParagraphNode.GetParsedText()` (the paragraph's cached Parsed
 ## Selection / hit-test / copy
 Route to `m_pSelectionManager` (Porter-B) + `m_pTextView` (RichTextBlockView): pointer/key events → manager; `GetCharacterIndexAtPoint` → `m_pTextView.PixelPositionToTextPosition`; SelectAll/Copy → manager; `Selection` Range getter/setter ↔ manager anchor/moving (keep public Range API for the 66 tests). Implement `ITextViewHost.GetTextView() => m_pTextView`.
 
+## Stage-9 view-side TODOs to implement (currently scaffolded-throwing)
+- `RichTextBlockView.GetCharacterIndex` / `GetAdjustedPosition` (and TextBlockView's) throw `NotSupportedException` — `SelectionWordBreaker.CanBreak` calls `ITextView.GetCharacterIndex`, so word-break selection (double-tap, Ctrl+arrow) will throw until these are ported (the `TextBlockViewHelpers.AdjustPositionByCharacterCount` / `AdjustCharacterIndexByPosition` inline run-model walk).
+- `RichTextBlockView.TextSelectionToTextBounds` / `GetUIScopeForPosition` (off-page) / `ContainsPosition` full impls — needed once selection renders highlights via the view.
+
 ## Remove
 `ParseAllParagraphs`, `_paragraphLayouts`, `ParagraphLayout`, `GetParagraphHighlighters`, the managed `Draw` paragraph loop, managed `GetCharacterIndexAtPointSkia` (replace with view), managed `Selection` Range backing (reshape onto manager).
 
