@@ -11,7 +11,7 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session);
+		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage, out PaintingSession session);
 	}
 
 	/// <summary>
@@ -22,13 +22,13 @@ public partial class Visual
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage, out PaintingSession session)
 			{
 				session = new PaintingSession(visual, canvas, ref rootTransform, opacity, damage);
 			}
 		}
 
-		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage)
+		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage)
 		{
 			Canvas = canvas;
 			RootTransform = ref rootTransform;
@@ -50,9 +50,10 @@ public partial class Visual
 		/// <summary>
 		/// The per-frame damage-region accumulator for the on-screen render pass, threaded through the whole
 		/// visual walk so each visual adds the region it (re)paints as the walk proceeds. Null for off-screen
-		/// renders (RenderTargetBitmap, visual surfaces), which don't track damage.
+		/// renders (RenderTargetBitmap, visual surfaces), which don't track damage. See
+		/// <see cref="Uno.UI.Composition.DamageRegionExtensions"/> for the accumulation helpers.
 		/// </summary>
-		public readonly DamageRegion? Damage;
+		public readonly SKPath? Damage;
 
 		private readonly int _saveCount;
 	}
