@@ -13,6 +13,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPeer
 {
+#if __SKIA__
+	// CRichTextBlockAutomationPeer::m_pTextPattern — the faithfully-ported Text pattern provider.
+	private Text.TextAdapter m_textPattern;
+#endif
+
 	public RichTextBlockAutomationPeer(Controls.RichTextBlock owner) : base(owner)
 	{
 	}
@@ -21,25 +26,19 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-			//if (!m_pTextPattern)
-			//{
-			//	ctl::ComPtr<IUIElement> spOwner;
-			//	ctl::ComPtr<TextAdapter> spTextAdapter;
+#if __SKIA__
+			// CRichTextBlockAutomationPeer::GetPatternCore — lazily create the TextAdapter over the owner.
+			if (m_textPattern is null && Owner is Controls.RichTextBlock owner)
+			{
+				m_textPattern = new Text.TextAdapter(owner, this);
+			}
 
-			//	IFC(get_Owner(&spOwner));
-			//	IFCPTR(spOwner.Get());
-
-			//ActivateAutomationInstance
-
-			return null;
-
-			//	IFC(ActivationAPI::ActivateAutomationInstance(KnownTypeIndex::TextAdapter, static_cast<RichTextBlock*>(spOwner.Get())->GetHandle(), spTextAdapter.GetAddressOf()));
-
-			//	m_pTextPattern = spTextAdapter.Detach();
-			//	IFC(m_pTextPattern->put_Owner(spOwner.Get()));
-			//}
-			//*ppReturnValue = ctl::as_iinspectable((m_pTextPattern));
-			//ctl::addref_interface(m_pTextPattern);
+			return m_textPattern;
+#else
+			// The Text pattern provider is Skia-only (container/view/position model). On non-Skia targets
+			// there is no plain-text position layer, so report no Text pattern.
+			return base.GetPatternCore(patternInterface);
+#endif
 		}
 		else
 		{
@@ -52,9 +51,41 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-	// UNO TODO: Populate automation peer children from block collection recursively,
-	// filtering out text elements that overflow to RichTextBlockOverflow.
-	// The previous implementation was broken (copy-pasted from RichTextBlockOverflow
-	// and used ContentSource which doesn't exist on RichTextBlock).
-	// For now, use the base implementation which walks the visual tree.
+#if __SKIA__
+	// CRichTextBlockAutomationPeer::GetChildrenCore — walk the block collection, stopping at the first
+	// block whose content starts at/after the overflow target's content start, and append each block's
+	// inline peers. Skia-only: the overflow/position filtering needs the TextPointer position layer.
+	protected override IList<AutomationPeer> GetChildrenCore()
+	{
+		if (Owner is not Controls.RichTextBlock owner)
+		{
+			return base.GetChildrenCore();
+		}
+
+		var children = new List<AutomationPeer>();
+
+		int posOverflowStart = int.MaxValue;
+		if (owner.HasOverflowContent && owner.OverflowContentTarget is { } overflowControl)
+		{
+			// CRichTextBlockOverflow::get_ContentStart offset — the position where overflow content begins.
+			posOverflowStart = (int)overflowControl.GetContentStartPosition();
+		}
+
+		foreach (var block in owner.Blocks)
+		{
+			if (posOverflowStart != int.MaxValue)
+			{
+				var posBlockStart = block.GetContentStart()?.Offset ?? -1;
+				if (posBlockStart >= posOverflowStart)
+				{
+					break;
+				}
+			}
+
+			block.AppendAutomationPeerChildren(children, 0, posOverflowStart);
+		}
+
+		return children;
+	}
+#endif
 }
