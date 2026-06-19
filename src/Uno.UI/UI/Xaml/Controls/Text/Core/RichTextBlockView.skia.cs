@@ -106,12 +106,13 @@ internal sealed class RichTextBlockView : ITextView
 	public Rect[] TextSelectionToTextBounds(IJupiterTextSelection selection)
 	{
 		// Obtain selection start and end offset, and get range bounds from the PageNode.
-		// IFC_RETURN(pSelection->GetStartTextPosition(&startPosition));
-		// IFC_RETURN(pSelection->GetEndTextPosition(&endPosition));
-		// IFC_RETURN(startPosition.GetOffset(&startOffset));
-		// IFC_RETURN(endPosition.GetOffset(&endOffset));
-		// IFC_RETURN(TextRangeToTextBounds(startOffset, endOffset, ...));
-		throw new NotSupportedException("TODO Uno (Stage 7): TextSelectionToTextBounds");
+		selection.GetStartTextPosition(out var startPosition);
+		selection.GetEndTextPosition(out var endPosition);
+
+		startPosition.GetOffset(out var startOffset);
+		endPosition.GetOffset(out var endOffset);
+
+		return TextRangeToTextBounds(startOffset, endOffset);
 	}
 
 	public bool IsAtInsertionPosition(uint iTextPosition)
@@ -316,23 +317,110 @@ internal sealed class RichTextBlockView : ITextView
 
 	public int GetAdjustedPosition(int charIndex)
 	{
-		// WinUI walks the owning RichTextBlock's block collection, accumulating
-		// PlaceHolderPositionsForInlines per paragraph boundary and using
-		// TextBlockViewHelpers::AdjustPositionByCharacterCount on each paragraph's
-		// inline collection, then snaps the result to [blockStart, blockEnd].
-		// TODO Uno (Stage 7): requires the inline run-model walk + owning-block access.
-		throw new NotSupportedException("TODO Uno (Stage 7): GetAdjustedPosition (block-collection run-model walk)");
+		int charCount = charIndex;
+		int adjustedPosition = 0;
+
+		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
+
+		// Save the starting and ending positions of the specific RTB or RTBO currently being highlighted.
+		int blockStartPosition = (int)GetContentStartPosition();
+		int blockEndPosition = blockStartPosition + (int)m_pPageNode.GetContentLength();
+
+		// Correct out of bound indexes to valid ones
+		if (charIndex < 0)
+		{
+			adjustedPosition = PlaceHolderPositionsForInlines;
+		}
+		else if (owningRichTextBlock is not null)
+		{
+			bool previousBlock = false;
+			foreach (var block in owningRichTextBlock.Blocks)
+			{
+				if (block is not Paragraph paragraph)
+				{
+					continue;
+				}
+
+				// Account for the offset at the end of each paragraph before searching the next one
+				if (previousBlock)
+				{
+					adjustedPosition += PlaceHolderPositionsForInlines;
+				}
+				// Go through each inline to see if the position we're looking for is in it
+				var inlines = paragraph.Inlines;
+				bool adjustedPositionFound = TextBlockViewHelpers.AdjustPositionByCharacterCount(inlines, ref charCount, ref adjustedPosition);
+				if (adjustedPositionFound)
+				{
+					// Don't need to search through any other paragraphs
+					break;
+				}
+				previousBlock = true;
+			}
+		}
+
+		// Since specified bounds may be outside of the RTB/RTBO that is
+		// currently being rendered, snap to those limits.
+		// If both bounds are outside of the RTB/RTBO, no highlight will
+		// render since the endOffset is decremented after it is returned,
+		// and will be smaller than the startOffset.
+		if (adjustedPosition < blockStartPosition)
+		{
+			adjustedPosition = blockStartPosition;
+		}
+		if (adjustedPosition > blockEndPosition)
+		{
+			adjustedPosition = blockEndPosition;
+		}
+
+		return adjustedPosition;
 	}
 
 	public int GetCharacterIndex(int position)
 	{
-		// WinUI walks the owning RichTextBlock's block collection, subtracting
-		// PlaceHolderPositionsForInlines per paragraph boundary and using
-		// TextBlockViewHelpers::AdjustCharacterIndexByPosition on each paragraph's
-		// inline collection.
-		// TODO Uno (Stage 7): requires the inline run-model walk + owning-block access.
-		throw new NotSupportedException("TODO Uno (Stage 7): GetCharacterIndex (block-collection run-model walk)");
+		int adjustedPosition = position;
+		int charIndex = 0;
+
+		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
+
+		// Correct out of bound indexes to valid ones
+		if (position < 0)
+		{
+			charIndex = 0;
+		}
+		else if (owningRichTextBlock is not null)
+		{
+			bool previousBlock = false;
+			foreach (var block in owningRichTextBlock.Blocks)
+			{
+				if (block is not Paragraph paragraph)
+				{
+					continue;
+				}
+
+				// Account for the offset at the end of each paragraph before searching the next one
+				if (previousBlock)
+				{
+					adjustedPosition -= PlaceHolderPositionsForInlines;
+				}
+				// Go through each inline to see if the position we're looking for is in it
+				var inlines = paragraph.Inlines;
+				bool charIndexFound = TextBlockViewHelpers.AdjustCharacterIndexByPosition(inlines, ref charIndex, ref adjustedPosition);
+				if (charIndexFound)
+				{
+					// Don't need to search through any other paragraphs
+					break;
+				}
+				previousBlock = true;
+			}
+		}
+
+		return charIndex;
 	}
+
+	// Uno seam: WinUI down-casts m_pPageNode->GetPageOwner() to CRichTextBlock (or, for an
+	// overflow, to CRichTextBlockOverflow->GetMaster()). RichTextBlockOverflow is not ported yet,
+	// so only the RichTextBlock owner is resolved here.
+	private RichTextBlock? GetOwningRichTextBlock() => m_pPageNode.GetPageOwner() as RichTextBlock;
 
 	// Gets a page-relative offset from an external offset passed to the page and vice versa.
 	// This is necessary because query methods can be called from a linked text view
