@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -269,6 +269,40 @@ namespace Microsoft.UI.Xaml
 		/// for types that commonly do not expose inherited properties, such as visual states.
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
+
+		/// <summary>
+		/// Set when this object is stored as a value in a <see cref="ResourceDictionary"/>. Such resources must not
+		/// inherit/cache the <see cref="DataContextProperty"/> from the subtree they are applied into (this matches
+		/// WinUI, where resources have no DataContext).
+		/// </summary>
+		/// <remarks>
+		/// A shared resource (e.g. a brush or shape in a <c>GlobalStaticResources</c> singleton) is rooted by a
+		/// long-lived dictionary, yet it is pulled into many short-lived subtrees via <c>{StaticResource}</c>/
+		/// <c>{ThemeResource}</c>. If it cached the inherited DataContext of one such subtree, the resource would
+		/// keep that DataContext (and everything it transitively references) alive forever. When the subtree lives
+		/// in a collectible <see cref="System.Runtime.Loader.AssemblyLoadContext"/> (e.g. a previewed app), that
+		/// retention pins the whole context and prevents it from unloading. Only DataContext is blocked; other
+		/// inherited properties (FlowDirection, theme, …) still propagate so resource visuals render correctly.
+		/// </remarks>
+		internal bool IsResourceDictionaryItem
+		{
+			get => (_storeFlags & StoreFlags.IsResourceDictionaryItem) != 0;
+			set => _storeFlags = value
+				? _storeFlags | StoreFlags.IsResourceDictionaryItem
+				: _storeFlags & ~StoreFlags.IsResourceDictionaryItem;
+		}
+
+		// Single-byte bitfield for boolean per-store flags. A DependencyObjectStore is allocated once per
+		// DependencyObject, so per-instance size matters; folding flags here keeps that footprint flat as
+		// more are added. Prefer extending StoreFlags over introducing new standalone bool fields.
+		[Flags]
+		private enum StoreFlags : byte
+		{
+			None = 0,
+			IsResourceDictionaryItem = 1 << 0,
+		}
+
+		private StoreFlags _storeFlags;
 
 		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
@@ -1305,6 +1339,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// A ResourceDictionary item must not inherit/cache DataContext (WinUI behaviour — resources
+			// have no DataContext). Blocking it here also blocks propagation to this resource's own inherited-property
+			// children (e.g. a shape resource's gradient brush), since DataContext is applied via the SetValue below.
+			// Without this, a shared resource pulled into a subtree via {StaticResource}/{ThemeResource} permanently
+			// caches that subtree's DataContext; when the subtree lives in a collectible AssemblyLoadContext it pins
+			// the whole ALC. Other inherited properties are unaffected.
+			if (IsResourceDictionaryItem && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
+			{
+				return;
+			}
+
 			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
 			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
 			// to ALL descendants. This breaks element-level theming because a parent's theme change

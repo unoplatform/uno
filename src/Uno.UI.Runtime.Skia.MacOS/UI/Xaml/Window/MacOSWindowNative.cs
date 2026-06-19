@@ -81,7 +81,9 @@ internal class MacOSWindowNative
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
+		// Only set the icon when unbundled (e.g. dev runs); a bundle already carries
+		// its own appearance-aware icon that setApplicationIconImage: would clobber.
+		if (!NativeUno.uno_application_is_bundled() && Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', IOPath.DirectorySeparatorChar);
 			var iconPath = IOPath.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);

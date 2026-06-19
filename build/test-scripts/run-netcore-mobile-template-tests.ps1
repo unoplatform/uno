@@ -36,13 +36,11 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
     ## Configurations are split to work around UWP not building with .NET new
     $dotnetBuildConfigurations =
     @(
-        @("Wasm", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )
 
     $dotnetBuildNet6Configurations =
     @(
-        @("Wasm", "", ""),
         @("Server", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )

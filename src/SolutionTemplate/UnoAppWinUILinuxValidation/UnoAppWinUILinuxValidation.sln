@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoAppWinUILinuxValidation"
 EndProject
 
 
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoAppWinUILinuxValidation.Wasm", "UnoAppWinUILinuxValidation.Wasm\UnoAppWinUILinuxValidation.Wasm.csproj", "{40EA03F7-8A22-4143-B251-79BAC3EB13D2}"
-EndProject
 
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoAppWinUILinuxValidation.Server", "UnoAppWinUILinuxValidation.Server\UnoAppWinUILinuxValidation.Server.csproj", "{40EA03F7-8A22-1234-B251-79BAC3EB13D2}"
 EndProject
@@ -23,7 +21,6 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{1aa13270-f438-4864-9435-54fd806e10ea}*SharedItemsImports = 5
 		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{F3761327-B873-46CE-845A-8470EAF3DFF3}*SharedItemsImports = 4
-		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{40ea03f7-8a22-4143-b251-79bac3eb13d2}*SharedItemsImports = 5
 		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{6770904D-9DBB-444D-BF2D-09F14CD15A05}*SharedItemsImports = 5
 		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{849527DA-A279-4A06-B52E-44A35FBB7042}*SharedItemsImports = 4
 		UnoAppWinUILinuxValidation.Shared\UnoAppWinUILinuxValidation.Shared.projitems*{65F46D38-C647-40E4-A89A-ADB701BE7360}*SharedItemsImports = 4
@@ -233,34 +230,6 @@ Global
 		{1AA13270-F438-4864-9435-54FD806E10EA}.Release|x86.Build.0 = Release|x86
 		{1AA13270-F438-4864-9435-54FD806E10EA}.Release|x86.Deploy.0 = Release|x86
 
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|ARM.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|x64.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Debug|x86.Build.0 = Debug|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|ARM.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|ARM.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|ARM64.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|iPhone.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x64.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x64.Build.0 = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x86.ActiveCfg = Release|Any CPU
-		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x86.Build.0 = Release|Any CPU
 
 		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.Build.0 = Debug|Any CPU
