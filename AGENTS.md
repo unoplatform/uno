@@ -16,6 +16,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
 | WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# |
 | WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+| Docs Build | `/docs-build` | Building, previewing & validating the docs website (DocFX), incl. external-doc commit bumps in `import_external_docs.ps1` |
 
 #### Specialized Agent Files (for deep reference)
 
