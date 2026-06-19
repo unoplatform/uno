@@ -260,6 +260,11 @@ namespace Microsoft.UI.Composition
 			{
 				return IsVisible;
 			}
+			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = Properties.TryGetVector3("Translation", out var translation);
+				return GetVector3(subPropertyName, translation);
+			}
 			else
 			{
 				return base.GetAnimatableProperty(propertyName, subPropertyName);
