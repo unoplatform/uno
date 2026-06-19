@@ -23,6 +23,11 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 	// the BlockLayout page node is (re)built; null until the first measure/arrange completes.
 	internal RichTextBlockView? _pTextView;
 
+	// The faithfully-ported selection manager. Created when selection (or high-contrast) is enabled
+	// and a view exists; drives the selection LOGIC. Its OnSelectionChanged callback converts the
+	// container offsets back to the flat public Selection that the existing render path consumes.
+	private TextSelectionManager? _pSelectionManager;
+
 	#region ITextViewHost
 
 	ITextView? ITextViewHost.GetTextView() => _pTextView;
@@ -39,10 +44,13 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 		uint newSelectionStartOffset,
 		uint newSelectionEndOffset)
 	{
-		// Mirror the managed selection model so SelectedText / SelectionChanged stay in sync, then
-		// re-render the highlight. OnSelectionChanged() (Properties partial) updates SelectedText and
-		// raises SelectionChanged; setting Selection drives the existing highlight path.
-		Selection = new Range((int)newSelectionStartOffset, (int)newSelectionEndOffset);
+		// The manager reports CONTAINER offsets; the public Selection (and the existing flat render
+		// path) is FLAT (ParsedText) space. Convert container -> flat via the view, then write through
+		// SetSelectionInternal so SelectedText / SelectionChanged stay in sync WITHOUT routing back to
+		// the manager (the public setter is reserved for programmatic callers).
+		int flatStart = _pTextView?.GetCharacterIndex((int)newSelectionStartOffset) ?? (int)newSelectionStartOffset;
+		int flatEnd = _pTextView?.GetCharacterIndex((int)newSelectionEndOffset) ?? (int)newSelectionEndOffset;
+		SetSelectionInternal(new Range(flatStart, flatEnd));
 		InvalidateInlineAndRequireRepaint();
 	}
 

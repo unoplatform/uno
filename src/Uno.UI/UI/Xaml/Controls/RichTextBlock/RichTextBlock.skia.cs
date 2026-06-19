@@ -95,6 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 			_forceFocusedForContextFlyout = false;
+			TextSelectionManager.Destroy(ref _pSelectionManager);
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -153,6 +154,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// inlines, wrapping, MaxLines) are picked up — parity with the old re-parse-every-measure
 			// path. (A future optimization can invalidate only on change.)
 			_pageNode = (PageNode)_blockLayout.CreatePageNode(Blocks, this);
+
+			// Rebuild the view against the fresh page node and notify the manager so its selection /
+			// text positions are recreated against the new view.
+			var oldView = _pTextView;
+			_pTextView = new Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView(_pageNode, this);
+			if (_pSelectionManager is null && (IsTextSelectionEnabled || ((ITextSelectionManagerOwner)this).IsHighContrast))
+			{
+				_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
+			}
+			_pSelectionManager?.TextViewChanged(oldView, _pTextView);
 		}
 
 		// Rebuilds _paragraphLayouts (render/selection data) from the arranged PageNode tree. The
@@ -456,6 +467,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			if (IsTextSelectionEnabled && _pSelectionManager is { } manager && _pTextView is { } view)
+			{
+				manager.OnKeyDown(this, args, view);
+				return;
+			}
+
 			switch (args.Key)
 			{
 				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
@@ -469,8 +486,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnTapped(TappedRoutedEventArgs _)
+		private void OnTapped(TappedRoutedEventArgs e)
 		{
+			if (IsTextSelectionEnabled && _pSelectionManager is { } manager && _pTextView is { } view)
+			{
+				manager.OnTapped(this, e, view);
+				return;
+			}
+
 			if (IsTextSelectionEnabled)
 			{
 				Selection = default;
@@ -481,6 +504,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!IsTextSelectionEnabled)
 			{
+				return;
+			}
+
+			if (_pSelectionManager is { } manager && _pTextView is { } view)
+			{
+				manager.OnDoubleTapped(this, e, view);
 				return;
 			}
 
