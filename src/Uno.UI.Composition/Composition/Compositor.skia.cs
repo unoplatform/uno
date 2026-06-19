@@ -197,7 +197,20 @@ public partial class Compositor
 
 		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
-			animation.RaiseAnimationFrame();
+			try
+			{
+				animation.RaiseAnimationFrame();
+			}
+			catch (Exception e)
+			{
+				// A single animation's expression must never wedge the render loop. Its failure is
+				// deterministic, so stop it rather than throwing every frame and stalling rendering.
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Stopping animation after an unhandled evaluation error.", e);
+				}
+				animation.Stop();
+			}
 		}
 
 #if PRINT_FRAME_TIMES
