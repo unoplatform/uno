@@ -39,15 +39,10 @@ public partial class CompositionTarget
 	// adds the region it (re)paints as the walk proceeds (see Visual.ContributeDamageOnPaint). It also collects
 	// out-of-band damage that occurs with no active walk — a visual hidden or removed between frames isn't
 	// walked, so it reports its vacated region here (via ICompositionTarget.AddDamage). Snapshotted into the
-	// rendered frame and reset each Render(). Only touched on the UI thread.
-	private readonly DamageRegion _pendingDamage = new();
-
-	// The per-frame damage region attached to a recorded frame, consumed by Draw() on the render thread, as an
-	// SKPath the frame OWNS — a copy of the per-frame accumulator (which is reused/reset each frame), so it must
-	// be disposed when the frame is retired (replaced by a newer frame in Render, or superseded in ReturnFrame).
-	// An empty path means nothing changed. Full repaints (resize/canvas recreation) are handled in Draw via
-	// canvasRecreated, not here.
-	private static SKPath SnapshotDamage(DamageRegion region) => new(region.Region);
+	// rendered frame and reset (rewound) each Render(). Accumulation uses DamageRegionExtensions. Only touched
+	// on the UI thread, as is _damageScratch (a reused scratch path for the rect/clamp unions).
+	private readonly SKPath _pendingDamage = new();
+	private readonly SKPath _damageScratch = new();
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
@@ -110,7 +105,7 @@ public partial class CompositionTarget
 		// underneath must be repainted too — adding the bounds to the damage covers both.
 		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
 		{
-			_pendingDamage.AddRect(fpsBounds);
+			_pendingDamage.UnionRect(_damageScratch, fpsBounds);
 		}
 
 		var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
@@ -127,18 +122,20 @@ public partial class CompositionTarget
 			// no-ops for it.)
 			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
 			{
-				_pendingDamage.AddPath(carried);
+				_pendingDamage.Union(carried);
 			}
 
 			// Clamp to the visual-tree bounds: nothing outside the frame is ever presented, and an unbounded
 			// contributor (a visual that falls back to an infinite clip) would otherwise pin the damage — and,
 			// with carry-forward, every later frame — to the infinite rect, repainting the whole window.
-			_pendingDamage.ClampTo(frameRect);
+			_pendingDamage.ClampTo(_damageScratch, frameRect);
 
 			// Snapshot (owned copy) and reset the accumulator. The picture above is always the full tree;
-			// the snapshot path tells Draw() which region actually needs to be re-presented.
-			damageSnapshot = SnapshotDamage(_pendingDamage);
-			_pendingDamage.Reset();
+			// the snapshot path tells Draw() which region actually needs to be re-presented. An empty path
+			// means nothing changed; full repaints (resize/canvas recreation) are handled in Draw via
+			// canvasRecreated, not here.
+			damageSnapshot = new SKPath(_pendingDamage);
+			_pendingDamage.Rewind();
 
 			_lastRenderedFrame = (picture, path, damageSnapshot);
 		}
@@ -186,9 +183,9 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.AddRect(bounds);
+	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.UnionRect(_damageScratch, bounds);
 
-	void ICompositionTarget.AddDamage(SKPath region) => _pendingDamage.AddPath(region);
+	void ICompositionTarget.AddDamage(SKPath region) => _pendingDamage.Union(region);
 
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
 	{

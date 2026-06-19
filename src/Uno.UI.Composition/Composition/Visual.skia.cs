@@ -269,7 +269,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// Bounds are computed here — not at invalidation time — because the visual's Size/matrix are only
 	// final during the render walk. The renderer decides whether the accumulated damage is actually used
 	// to clip the present (only renderers whose surface retains the previous frame do so).
-	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage)
+	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage)
 	{
 		// No accumulator means this is an off-screen render (RenderTargetBitmap, visual surface) that doesn't
 		// track damage; the on-screen pass threads its accumulator through the PaintingSession.
@@ -297,16 +297,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
+		// Scratch path (from the shared pool) to turn the rect contributions below into paths for unioning.
+		var scratch = _pathPool.Allocate();
 		if (TryGetPaintDamageRegion(out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
 			{
-				damage.AddPath(regionPath);
+				damage.Union(regionPath);
 				_pathPool.Free(regionPath);
 			}
 			else
 			{
-				damage.AddRect(bounds);
+				damage.UnionRect(scratch, bounds);
 			}
 
 			// Erase the region this visual vacated — but only when it actually moved or resized. The bounding
@@ -315,7 +317,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// is skipped: the new region already covers everything the unchanged old one did.
 			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
 			{
-				damage.AddRect(_lastRenderBounds);
+				damage.UnionRect(scratch, _lastRenderBounds);
 			}
 			_lastRenderBounds = bounds;
 			_lastRenderMatrix = matrix;
@@ -324,9 +326,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		else if (_hasLastRenderBounds)
 		{
 			// The visual no longer has paintable bounds (e.g. collapsed to zero size); repaint where it was.
-			damage.AddRect(_lastRenderBounds);
+			damage.UnionRect(scratch, _lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
+		_pathPool.Free(scratch);
 	}
 
 	// Computes the damage region (in root/logical coordinates) for this visual's own paint. The damage region
@@ -645,7 +648,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, DamageRegion? damage = null)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, SKPath? damage = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
