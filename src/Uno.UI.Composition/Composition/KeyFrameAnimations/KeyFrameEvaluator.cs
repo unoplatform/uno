@@ -81,6 +81,15 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private (object Value, bool ShouldStop) EvaluateInternal(float currentFrame)
 	{
+		// No value keyframes to interpolate — e.g. an animation defined only with expression
+		// keyframes, which Vector3/Vector4/Boolean animations discard. Hold the final value
+		// instead of indexing into an empty sequence. Evaluate() still stops it once the
+		// duration elapses.
+		if (_keyFrames.Count == 0)
+		{
+			return (Resolve(_finalValue), false);
+		}
+
 		var lastKey = _keyFrames.Keys.Last();
 		// Past the final keyframe: hold the last value. Without this the math below collapses
 		// to "previousKeyFrame == nextKeyFrame", producing a divide-by-zero in the lerp ratio

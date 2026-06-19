@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
@@ -110,6 +111,45 @@ public partial class Given_KeyFrameAnimation
 		}
 		finally
 		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_KeyFrameAnimation_Has_No_Value_KeyFrames()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+
+		// Vector3 animations discard expression keyframes, so this leaves no value keyframes —
+		// mirroring TeachingTip's elevation animation, whose render tick threw
+		// "Sequence contains no elements".
+		var animation = visual.Compositor.CreateVector3KeyFrameAnimation();
+		animation.InsertExpressionKeyFrame(1.0f, "Vector3(0, 0, 8)");
+		animation.Target = "Offset";
+		// Non-zero duration so the tick actually reaches the interpolation path (a zero duration
+		// short-circuits to the final value before it).
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		visual.StartAnimation("Offset", animation);
+		try
+		{
+			// What the compositor does every render tick; threw before the fix.
+			_ = animation.Evaluate();
+		}
+		finally
+		{
+			visual.StopAnimation("Offset");
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
