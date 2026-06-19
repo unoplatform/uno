@@ -519,9 +519,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnOverflowContentTargetChanged(RichTextBlockOverflow oldTarget, RichTextBlockOverflow newTarget)
 		{
-			// TODO: Implement content overflow support
+			OnOverflowContentTargetChangedPartial(oldTarget, newTarget);
 			InvalidateRichTextBlock();
 		}
+
+		partial void OnOverflowContentTargetChangedPartial(RichTextBlockOverflow oldTarget, RichTextBlockOverflow newTarget);
 
 		#endregion
 
