@@ -28,6 +28,11 @@ internal sealed class RichTextBlockView : ITextView
 	// already account for this adjustment.
 	private const int PlaceHolderPositionsForInlines = 2;
 
+	// Uno-specific: RichTextBlock's flat char-index space (Selection / GetPlainText /
+	// _paragraphLayouts.GlobalCharOffset) inserts a "\r\n" between paragraphs, unlike WinUI's
+	// char-index space. The container<->flat conversion adjusts charCount by this between paragraphs.
+	private const int InterParagraphSeparatorLength = 2;
+
 	// Uno adaptation: the view is constructed directly with the PageNode (and owning
 	// element). WinUI reaches the owner via m_pPageNode->GetPageOwner(); the Uno
 	// PageNode exposes the same accessor, so GetUIScopeForPosition delegates to it.
@@ -40,6 +45,8 @@ internal sealed class RichTextBlockView : ITextView
 		m_owner = owner;
 	}
 
+	// TODO Uno (9b render): container->flat for node bounds (the node measures in flat ParsedText
+	// space, so TextRangeToTextBounds / TextSelectionToTextBounds still receive flat offsets here).
 	public Rect[] TextRangeToTextBounds(uint startOffset, uint endOffset)
 	{
 		uint length;
@@ -117,22 +124,15 @@ internal sealed class RichTextBlockView : ITextView
 
 	public bool IsAtInsertionPosition(uint iTextPosition)
 	{
-		uint pageLocalPosition;
-
 		// Other RichTextBlockView APIs adjust for gravity to match the page node. IsAtInsertionPosition does not because
 		// if it's not within the page's content it's OK to return false and also because there's no concept of Insertion
 		// for RichTextBlock.
 		if (!m_pPageNode.IsMeasureDirty() &&
 			!m_pPageNode.IsArrangeDirty())
 		{
-			if (TransformPositionToPage(iTextPosition, out pageLocalPosition))
-			{
-				return m_pPageNode.IsAtInsertionPosition(pageLocalPosition);
-			}
-			else
-			{
-				return false;
-			}
+			// The manager talks in container space; the node measures in flat (ParsedText) space.
+			// Convert container -> flat before querying the node.
+			return m_pPageNode.IsAtInsertionPosition((uint)GetCharacterIndex((int)iTextPosition));
 		}
 		else
 		{
@@ -142,17 +142,19 @@ internal sealed class RichTextBlockView : ITextView
 
 	public uint PixelPositionToTextPosition(Point pixelCoordinate, bool bIncludeNewline, out TextGravity gravity)
 	{
-		uint pageLocalPosition = 0;
 		gravity = TextGravity.LineForwardCharacterForward;
 
 		if (!m_pPageNode.IsMeasureDirty() &&
 			!m_pPageNode.IsArrangeDirty())
 		{
-			pageLocalPosition = m_pPageNode.PixelPositionToTextPosition(pixelCoordinate, out gravity);
-			pageLocalPosition = TransformPositionFromPage(pageLocalPosition);
+			// The node returns a flat (ParsedText) position; the manager works in container space.
+			// Convert flat -> container at the view boundary.
+			// TODO Uno (overflow): page transform (master page start is 0, so it is dropped for now).
+			var flat = m_pPageNode.PixelPositionToTextPosition(pixelCoordinate, out gravity);
+			return (uint)GetAdjustedPosition((int)flat);
 		}
 
-		return pageLocalPosition;
+		return 0;
 	}
 
 	public void TextPositionToPixelPosition(
@@ -380,6 +382,7 @@ internal sealed class RichTextBlockView : ITextView
 				if (previousBlock)
 				{
 					adjustedPosition += PlaceHolderPositionsForInlines;
+					charCount -= InterParagraphSeparatorLength;
 				}
 				// Go through each inline to see if the position we're looking for is in it
 				var inlines = paragraph.Inlines;
@@ -436,6 +439,7 @@ internal sealed class RichTextBlockView : ITextView
 				if (previousBlock)
 				{
 					adjustedPosition -= PlaceHolderPositionsForInlines;
+					charIndex += InterParagraphSeparatorLength;
 				}
 				// Go through each inline to see if the position we're looking for is in it
 				var inlines = paragraph.Inlines;
