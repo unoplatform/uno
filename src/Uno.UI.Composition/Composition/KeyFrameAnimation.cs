@@ -77,9 +77,8 @@ namespace Microsoft.UI.Composition
 		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
 			=> InsertExpressionKeyFrameCore(normalizedProgressKey, value, easingFunction);
 
-		// Derived animations that evaluate expressions at runtime override this (ScalarKeyFrameAnimation
-		// and Vector2KeyFrameAnimation). Types without expression support (Vector3/Vector4/Boolean) fall
-		// through to this, which warns and discards the keyframe so the unsupported path stays diagnosable.
+		// Concrete keyframe animations override this to parse and evaluate the expression. This base
+		// fallback warns rather than silently ignoring the keyframe for any type that doesn't.
 		private protected virtual void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
 			=> WarnExpressionKeyFrameNotSupported();
 

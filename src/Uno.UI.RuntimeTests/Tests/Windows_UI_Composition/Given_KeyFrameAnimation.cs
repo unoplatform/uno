@@ -153,4 +153,115 @@ public partial class Given_KeyFrameAnimation
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_Vector3_Expression_KeyFrame_Is_Evaluated()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+
+		var animation = visual.Compositor.CreateVector3KeyFrameAnimation();
+		animation.SetScalarParameter("W", 4000f);
+		animation.SetScalarParameter("H", 1000f);
+		// Mirrors TeachingTip's expand keyframe: scalar parameters + Min + Vector3 constructor.
+		animation.InsertExpressionKeyFrame(1.0f, "Vector3(Min(0.01, 20.0 / W), Min(0.01, 20.0 / H), 1.0)");
+		animation.Target = "Scale";
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		visual.StartAnimation("Scale", animation);
+		try
+		{
+			var value = (Vector3)animation.Evaluate(1.0f);
+			Assert.AreEqual(0.005f, value.X, 0.0001f);
+			Assert.AreEqual(0.01f, value.Y, 0.0001f);
+			Assert.AreEqual(1.0f, value.Z, 0.0001f);
+		}
+		finally
+		{
+			visual.StopAnimation("Scale");
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_Vector4_Expression_KeyFrame_Is_Evaluated()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var properties = compositor.CreatePropertySet();
+		properties.InsertVector4("Foo", Vector4.Zero);
+
+		var animation = compositor.CreateVector4KeyFrameAnimation();
+		animation.SetScalarParameter("A", 2f);
+		animation.InsertExpressionKeyFrame(1.0f, "Vector4(A, A + 1, Max(A, 5), 0)");
+		animation.Target = "Foo";
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		properties.StartAnimation("Foo", animation);
+		try
+		{
+			var value = (Vector4)animation.Evaluate(1.0f);
+			Assert.AreEqual(new Vector4(2, 3, 5, 0), value);
+		}
+		finally
+		{
+			properties.StopAnimation("Foo");
+		}
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("KeyFrameAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_Boolean_Expression_KeyFrame_Is_Evaluated()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var properties = compositor.CreatePropertySet();
+		properties.InsertBoolean("Foo", false);
+
+		var animation = compositor.CreateBooleanKeyFrameAnimation();
+		animation.SetScalarParameter("A", 5f);
+		animation.InsertExpressionKeyFrame(1.0f, "A > 3");
+		animation.Target = "Foo";
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		properties.StartAnimation("Foo", animation);
+		try
+		{
+			var value = (bool)animation.Evaluate(1.0f);
+			Assert.IsTrue(value);
+		}
+		finally
+		{
+			properties.StopAnimation("Foo");
+		}
+	}
 }
