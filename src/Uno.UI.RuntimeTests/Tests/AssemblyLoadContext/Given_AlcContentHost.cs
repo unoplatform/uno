@@ -1478,7 +1478,7 @@ public class Given_AlcContentHost
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_ContentHostOverride_Set_Then_NativeWindowNotCreated()
 	{
-		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
 
 		// The ALC window should NOT have a native window wrapper — DesktopWindow.Initialize()
 		// must skip native window creation when ContentHostOverride is set on macOS.
