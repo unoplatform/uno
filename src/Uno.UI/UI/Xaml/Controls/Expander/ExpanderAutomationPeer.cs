@@ -53,8 +53,11 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 	{
-		// Expander has "Button" as its default control type core
-		return AutomationControlType.Button;
+		// The shipping WinUI3 runtime exposes Expander as Group (matching WPF's
+		// ExpanderAutomationPeer, cited above), even though MUX 1.8.x returned Button.
+		// Group is what Narrator/UIA clients see on WinAppSDK, so we match the runtime
+		// for parity.
+		return AutomationControlType.Group;
 	}
 
 	private AutomationPeer? GetExpanderToggleButtonPeer()
