@@ -21,6 +21,16 @@ internal class DesktopWindow : BaseWindowImplementation
 
 	public override void Initialize()
 	{
+		// macOS-only: the secondary ALC scenario collides with MacOSWindowHost's
+		// native window registration. Skipping native window/chrome/XamlSource here
+		// avoids the duplicate registration. Win32/X11 require XamlRoot/RootElement
+		// to be set up (DisplayInformation extensions dereference them), so they
+		// must continue through the normal Initialize path.
+		if (Window.ContentHostOverride is not null && OperatingSystem.IsMacOS())
+		{
+			return;
+		}
+
 		_windowChrome = new WindowChrome(Window);
 		_windowChrome.ApplyStylingForMinMaxCloseButtons();
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
@@ -41,6 +51,13 @@ internal class DesktopWindow : BaseWindowImplementation
 		{
 			if (_windowChrome is null)
 			{
+				// On macOS hosted ALC scenarios the chrome is intentionally not created;
+				// content is redirected at the Window.Content level via ContentHostOverride.
+				if (Window.ContentHostOverride is not null && OperatingSystem.IsMacOS())
+				{
+					return;
+				}
+
 				throw new InvalidOperationException(
 					"Window content is being set before the application is initialized." +
 					"Instead, set the window content later - e.g. in OnLaunched.");
