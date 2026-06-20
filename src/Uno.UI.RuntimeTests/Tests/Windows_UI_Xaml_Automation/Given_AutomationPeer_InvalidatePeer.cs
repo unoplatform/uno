@@ -15,11 +15,15 @@ public class Given_AutomationPeer_InvalidatePeer
 	// (DataGridItemAutomationPeer.GetChildrenCore and DataGridAutomationPeer.RaiseAutomationInvokeEvents
 	// both call it) to drop a peer's cached UIA node so cells refresh after a data change. With the
 	// no-op, the Skia/Win32 provider kept serving stale children → DataGridRow reported empty cells (#492).
-	// InvalidatePeer now routes through the automation listener as a StructureChanged notification.
+	//
+	// Faithful to WinUI's CAutomationPeer::InvalidatePeer: it routes through the listener's
+	// NotifyInvalidatePeer (which re-evaluates automatic properties via RaiseAutomaticPropertyChanges
+	// and, on the Win32 bridge, drops the provider children cache). It must NOT raise StructureChanged —
+	// WinUI never raises StructureChanged from this path (see CCoreServices::CallbackEventListener).
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/492")]
-	public void When_InvalidatePeer_Then_Raises_StructureChanged()
+	public void When_InvalidatePeer_Then_Notifies_Listener_Without_StructureChanged()
 	{
 		try
 		{
@@ -31,7 +35,10 @@ public class Given_AutomationPeer_InvalidatePeer
 
 			peer.InvalidatePeer();
 
-			CollectionAssert.Contains(listener.Events, AutomationEvents.StructureChanged);
+			// InvalidatePeer must route through NotifyInvalidatePeer for exactly this peer…
+			CollectionAssert.Contains(listener.InvalidatedPeers, peer);
+			// …and must not raise a StructureChanged event (WinUI parity).
+			CollectionAssert.DoesNotContain(listener.Events, AutomationEvents.StructureChanged);
 		}
 		finally
 		{
@@ -42,12 +49,15 @@ public class Given_AutomationPeer_InvalidatePeer
 	private sealed class CapturingListener : IAutomationPeerListener
 	{
 		public List<AutomationEvents> Events { get; } = new();
+		public List<AutomationPeer> InvalidatedPeers { get; } = new();
 
 		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
 
 		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Events.Add(eventId);
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Events.Add(eventId);
+
+		public void NotifyInvalidatePeer(AutomationPeer peer) => InvalidatedPeers.Add(peer);
 
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) { }
 

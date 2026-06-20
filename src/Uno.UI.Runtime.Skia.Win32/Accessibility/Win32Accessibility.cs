@@ -504,6 +504,28 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 	}
 
+	public override void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		// Faithful part: re-evaluate the peer's automatic properties and raise
+		// PropertyChanged for any that changed (matches WinUI's RaiseAutomaticPropertyChanges).
+		base.NotifyInvalidatePeer(peer);
+
+		// Skia-bridge part: WinUI relies on the OS UIA layer to cache and refetch
+		// children, invalidating implicitly. Our Win32 provider keeps its own
+		// children cache (_cachedAutomationChildren), so drop it here — cascading
+		// through the UIA child links to virtual peers (e.g. WCT DataGrid rows) that
+		// the element table can't reach — so the next UIA navigation rebuilds from
+		// current state. This raises NO client StructureChanged event, matching WinUI:
+		// InvalidatePeer never raises StructureChanged (see CCoreServices::CallbackEventListener).
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		provider?.InvalidateChildrenCache();
+	}
+
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
 		if (!IsAccessibilityEnabled)
