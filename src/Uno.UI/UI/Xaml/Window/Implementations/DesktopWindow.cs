@@ -21,12 +21,7 @@ internal class DesktopWindow : BaseWindowImplementation
 
 	public override void Initialize()
 	{
-		// macOS-only: the secondary ALC scenario collides with MacOSWindowHost's
-		// native window registration. Skipping native window/chrome/XamlSource here
-		// avoids the duplicate registration. Win32/X11 require XamlRoot/RootElement
-		// to be set up (DisplayInformation extensions dereference them), so they
-		// must continue through the normal Initialize path.
-		if (Window.ContentHostOverride is not null && OperatingSystem.IsMacOS())
+		if (OperatingSystem.IsMacOS() && Window.ContentHostOverride is not null && Window.IsAlcWindow)
 		{
 			return;
 		}
