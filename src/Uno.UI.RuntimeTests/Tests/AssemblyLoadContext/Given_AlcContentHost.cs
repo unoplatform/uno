@@ -80,7 +80,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcContentHost_Then_ResourcesInherited()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -98,7 +98,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcContentHost_Then_MergedDictionariesInherited()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -120,7 +120,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_SecondaryAlcApp_Then_ContentHosted()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -276,7 +276,7 @@ public class Given_AlcContentHost
 	/// &lt;ResourceDictionary Source="AppResources.xaml"/&gt;) would resolve to the primary ALC's dictionary.
 	/// </summary>
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcAppXaml_HasSourceDictionary_Then_ResolvesToAlcSpecificDictionary()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -311,7 +311,7 @@ public class Given_AlcContentHost
 	/// ALC-scoped registry via ResourceResolver.CurrentResolutionAlc.
 	/// </summary>
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcAppXaml_HasSubdirectorySourceDictionary_Then_ResolvesCorrectly()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -752,7 +752,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Activate_Then_ActivatedEventRaised()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -774,7 +774,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Activate_WithFrameNavigation_Then_ActivatedEventRaised()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--use-frame" });
@@ -796,7 +796,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_ActivatedRegisteredBeforeContent_Then_ActivatedEventRaised()
 	{
 		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
@@ -821,7 +821,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_ActivatedRegisteredBeforeContent_WithFrameNavigation_Then_ActivatedEventRaised()
 	{
 		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content", "--use-frame" });
@@ -846,7 +846,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Then_VisibleReturnsHostVisibility()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -856,7 +856,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Then_BoundsMatchesHostBounds()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -872,7 +872,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_HostSizeChanges_Then_SizeChangedEventRaised()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -898,7 +898,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Close_Then_ClosedEventRaised()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -915,7 +915,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Close_Then_ContentClearedFromHost()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -929,7 +929,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Close_Then_VisibilityChangedEventRaised()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -950,7 +950,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Close_Then_VisibleReturnsFalse()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -963,7 +963,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_ClosedEventHandled_Then_CloseIsCancelled()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -981,7 +981,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_ActivateAfterClose_Then_ThrowsException()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -1002,7 +1002,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Then_NotInApplicationHelperWindows()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
@@ -1013,7 +1013,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcContentHost_Then_FrameContentNavigates()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync(new[] { "--use-frame" });
@@ -1029,7 +1029,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_SecondaryAlcApp_Then_AlcWindowModeEnabled()
 	{
 		// This test verifies that the ALC window is properly set up in ALC mode.
@@ -1064,7 +1064,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_SecondaryAlcApp_Then_KeyboardInputStillWorks()
 	{
 		// This test verifies that keyboard input continues to work after loading a secondary ALC app.
@@ -1464,6 +1464,90 @@ public class Given_AlcContentHost
 				Application.Current.SetExplicitRequestedTheme(null);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Validates that on macOS, when ContentHostOverride is set, DesktopWindow.Initialize()
+	/// skips native window creation entirely. This prevents the MacOSWindowHost.Register
+	/// duplicate key error that occurred when the secondary app's Window tried to create
+	/// a native window that conflicted with the host's window. Win32/X11 are intentionally
+	/// excluded — they continue to set up XamlRoot/RootElement because their
+	/// DisplayInformation extensions dereference them.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_ContentHostOverride_Set_Then_NativeWindowNotCreated()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		// The ALC window should NOT have a native window wrapper — DesktopWindow.Initialize()
+		// must skip native window creation when ContentHostOverride is set on macOS.
+		var nativeWrapperProperty = typeof(Window).GetProperty("NativeWrapper",
+			BindingFlags.NonPublic | BindingFlags.Instance);
+		Assert.IsNotNull(nativeWrapperProperty, "Window.NativeWrapper property should exist");
+
+		var nativeWrapper = nativeWrapperProperty!.GetValue(alcWindow);
+		Assert.IsNull(nativeWrapper,
+			"ALC window should NOT have a NativeWindowWrapper when ContentHostOverride is set on macOS. " +
+			"DesktopWindow.Initialize() must skip native window creation in hosted ALC scenarios on macOS.");
+	}
+
+	/// <summary>
+	/// Validates that setting Window.Content to null does not throw in hosted ALC mode.
+	/// Window.Content redirects via ContentHostOverride before reaching DesktopWindow.Content,
+	/// so the assignment is satisfied by the host on all platforms regardless of whether
+	/// WindowChrome was created (skipped on macOS, present on Win32/X11).
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_AlcWindow_ContentSetToNull_Then_DoesNotThrow()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		Assert.IsNotNull(contentHost.Content, "Content should be set before clearing");
+
+		// Setting content to null should not throw. Window.Content setter redirects via
+		// ContentHostOverride before reaching DesktopWindow.Content.
+		alcWindow.Content = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Content host should be cleared
+		Assert.IsNull(contentHost.Content,
+			"ContentHostOverride content should be null after setting Window.Content = null");
+	}
+
+	/// <summary>
+	/// Validates that a secondary ALC app can be fully loaded on macOS without native window
+	/// registration collisions. This is an end-to-end test that the DesktopWindow.Initialize()
+	/// skip prevents the MacOSWindowHost.Register duplicate key ArgumentException.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_SecondaryAlcApp_OnMacOS_Then_LoadsWithoutNativeWindowConflict()
+	{
+		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		// Verify the app loaded successfully — content is hosted
+		Assert.IsNotNull(contentHost.Content,
+			"Secondary ALC content should be loaded without native window conflicts on macOS");
+
+		// Verify the ALC window is operating in ALC mode
+		var isAlcWindowProperty = typeof(Window).GetProperty("IsAlcWindow",
+			BindingFlags.NonPublic | BindingFlags.Instance);
+		Assert.IsNotNull(isAlcWindowProperty, "IsAlcWindow property should exist");
+		Assert.IsTrue((bool)isAlcWindowProperty!.GetValue(alcWindow)!,
+			"Window should be in ALC mode on macOS");
+
+		// Verify Activate does not throw (it should be a no-op in ALC mode)
+		alcWindow.Activate();
+
+		// Verify the main app's window is still functional
+		var mainWindow = Uno.UI.ApplicationHelper.Windows.FirstOrDefault();
+		Assert.IsNotNull(mainWindow, "Main app window should still exist");
+		var mainNativeWrapper = typeof(Window).GetProperty("NativeWrapper",
+			BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(mainWindow);
+		Assert.IsNotNull(mainNativeWrapper,
+			"Main app window should still have its NativeWindowWrapper intact");
 	}
 
 	/// <summary>
