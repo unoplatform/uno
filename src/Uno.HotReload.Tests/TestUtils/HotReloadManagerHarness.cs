@@ -17,7 +17,10 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	private readonly AdhocWorkspace _workspace;
 	private int _updateCount;
 
-	public HotReloadManagerHarness(Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit)
+	public HotReloadManagerHarness(
+		Func<int, Task<(ImmutableArray<Update> Updates, ImmutableArray<Diagnostic> Diagnostics)>> onEmit,
+		Func<Solution, SolutionUpdateResult>? onUpdate = null,
+		bool warmCompilation = false)
 	{
 		_workspace = new AdhocWorkspace();
 		var project = _workspace.AddProject("TestProject", LanguageNames.CSharp);
@@ -28,10 +31,16 @@ internal sealed class HotReloadManagerHarness : IDisposable
 
 		var projectId = project.Id;
 		var detector = new StubChangesDetector();
-		// Each pass must yield a different solution snapshot, otherwise the
-		// manager short-circuits with NoChanges before reaching the emitter.
-		var updater = new StubSolutionUpdater(solution =>
-			solution.WithProjectAssemblyName(projectId, $"TestProject{Interlocked.Increment(ref _updateCount)}"));
+		// Default updater: each pass yields a different solution snapshot, otherwise the manager
+		// short-circuits with NoChanges before reaching the emitter. Tests pass onUpdate to control
+		// the result (mutate or not, attach diagnostics, return a SolutionUpdateResult subtype).
+		var update = onUpdate ?? (solution => new SolutionUpdateResult(
+			solution.WithProjectAssemblyName(projectId, $"TestProject{Interlocked.Increment(ref _updateCount)}"),
+			ChangeSet.IgnoreAll([])));
+		// warmCompilation forces the result solution's compilation to be computed (cached) so the
+		// manager's GetCompilationErrors — which reads TryGetCompilation, not GetCompilationAsync — can
+		// observe compile errors a test injected via a broken document (the StubWatchService never compiles).
+		var updater = new StubSolutionUpdater(update, warmCompilation);
 
 		Manager = new HotReloadManager(
 			_workspace,
@@ -53,6 +62,17 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	public static Update CreateEmptyUpdate()
 		=> new(Guid.NewGuid(), [], [], [], []);
 
+	public static Diagnostic CreateErrorDiagnostic(string id = "TEST0001")
+		=> Diagnostic.Create(
+			new DiagnosticDescriptor(
+				id,
+				"Updater error",
+				"Simulated updater failure (e.g. csproj re-evaluation error)",
+				"Build",
+				DiagnosticSeverity.Error,
+				isEnabledByDefault: true),
+			Location.None);
+
 	public static Diagnostic CreateRudeEditDiagnostic()
 		=> Diagnostic.Create(
 			new DiagnosticDescriptor(
@@ -69,25 +89,34 @@ internal sealed class HotReloadManagerHarness : IDisposable
 
 	internal sealed class RecordingHandler : IHotReloadHandler
 	{
-		private readonly List<HotReloadUpdate> _updates = [];
+		private readonly List<(HotReloadOperationResult Result, HotReloadUpdate Update)> _calls = [];
 		private readonly Lock _gate = new();
 
-		public IReadOnlyList<HotReloadUpdate> Updates
+		/// <summary>When set, the handler throws this after recording the call (to test §3 failure handling).</summary>
+		public Exception? ThrowAfterRecording { get; set; }
+
+		/// <summary>Every (outcome, update) the manager handed to the handler, in order.</summary>
+		public IReadOnlyList<(HotReloadOperationResult Result, HotReloadUpdate Update)> Calls
 		{
 			get
 			{
 				lock (_gate)
 				{
-					return [.. _updates];
+					return [.. _calls];
 				}
 			}
 		}
 
-		public ValueTask SendAsync(HotReloadUpdate update, CancellationToken ct)
+		public ValueTask OnHotReloadAsync(HotReloadOperationResult result, HotReloadUpdate update, CancellationToken ct)
 		{
 			lock (_gate)
 			{
-				_updates.Add(update);
+				_calls.Add((result, update));
+			}
+
+			if (ThrowAfterRecording is { } ex)
+			{
+				throw ex;
 			}
 
 			return ValueTask.CompletedTask;
@@ -113,9 +142,20 @@ internal sealed class HotReloadManagerHarness : IDisposable
 			=> ValueTask.FromResult(ChangeSet.IgnoreAll([]));
 	}
 
-	private sealed class StubSolutionUpdater(Func<Solution, Solution> mutate) : ISolutionUpdater
+	private sealed class StubSolutionUpdater(Func<Solution, SolutionUpdateResult> update, bool warm) : ISolutionUpdater
 	{
-		public ValueTask<SolutionUpdateResult> UpdateAsync(Solution solution, ChangeSet changeSet, CancellationToken ct)
-			=> ValueTask.FromResult(new SolutionUpdateResult(mutate(solution), ChangeSet.IgnoreAll([])));
+		public async ValueTask<SolutionUpdateResult> UpdateAsync(Solution solution, ChangeSet changeSet, CancellationToken ct)
+		{
+			var result = update(solution);
+			if (warm)
+			{
+				foreach (var project in result.Solution.Projects)
+				{
+					await project.GetCompilationAsync(ct).ConfigureAwait(false);
+				}
+			}
+
+			return result;
+		}
 	}
 }
