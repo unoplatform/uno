@@ -246,13 +246,25 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets a value indicating whether the element is an element that contains data that is presented to the user.
 	/// </summary>
 	/// <returns>True if this is a content element.</returns>
-	public bool IsContentElement() => IsContentElementCore();
+	public bool IsContentElement() => !IsExplicitlyRaw() && IsContentElementCore();
 
 	/// <summary>
 	/// Gets a value indicating whether the element is an element that is relevant or essential to the user interface.
 	/// </summary>
 	/// <returns>True if this is a control element.</returns>
-	public bool IsControlElement() => IsControlElementCore();
+	public bool IsControlElement() => !IsExplicitlyRaw() && IsControlElementCore();
+
+	/// <summary>
+	/// An explicit <c>AutomationProperties.AccessibilityView="Raw"</c> removes the element from both
+	/// the Control and Content views, overriding any peer-specific <see cref="IsControlElementCore"/> /
+	/// <see cref="IsContentElementCore"/> (which several peers, e.g. ButtonBaseAutomationPeer, return
+	/// unconditionally). WinUI applies AccessibilityView as a separate layer on top of the peer's
+	/// natural view membership; mirror that here so Raw template parts (e.g. SplitButton's inner
+	/// buttons, NumberBox's InputEater) and Raw-marked content presenters are pruned as in WinUI.
+	/// </summary>
+	private bool IsExplicitlyRaw()
+		=> this is FrameworkElementAutomationPeer { Owner: { } owner }
+			&& Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(owner) == AccessibilityView.Raw;
 
 	/// <summary>
 	/// Gets a value indicating whether the element is enabled.
