@@ -28,6 +28,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return AutomationControlType.Edit;
 		}
 
+		// WinUI exposes a PasswordBox as a leaf in the UIA tree: its (masked) content is surfaced
+		// through the Value / Text patterns, not as child automation elements. The default walk would
+		// surface template parts (placeholder presenter, content presenter, reveal button), which WinUI
+		// does not. Return no children to match WinUI3.
+		protected override IList<AutomationPeer> GetChildrenCore() => new List<AutomationPeer>();
+
 		protected override bool IsPasswordCore()
 		{
 			return true;

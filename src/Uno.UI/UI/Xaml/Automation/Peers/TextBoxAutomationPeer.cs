@@ -25,6 +25,12 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Edit;
 
+	// WinUI exposes a TextBox as a leaf in the UIA tree: its text is surfaced through the Value /
+	// Text patterns, not as child automation elements. The default FrameworkElementAutomationPeer
+	// walk would surface template parts (placeholder presenter, content/scroll presenters, header,
+	// clear button), which WinUI does not. Return no children to match WinUI3.
+	protected override IList<AutomationPeer> GetChildrenCore() => new List<AutomationPeer>();
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Value)
