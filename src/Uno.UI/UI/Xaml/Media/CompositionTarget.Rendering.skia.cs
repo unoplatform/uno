@@ -194,9 +194,18 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	void ICompositionTarget.AddDamage(SKRect bounds) => _pendingDamage.UnionRect(bounds);
+	void ICompositionTarget.AddDamage(SKRect bounds)
+	{
+		// _pendingDamage is only touched on the UI thread (the same thread that runs Render).
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.UnionRect(bounds);
+	}
 
-	void ICompositionTarget.AddDamage(SKPath region) => _pendingDamage.Union(region);
+	void ICompositionTarget.AddDamage(SKPath region)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.Union(region);
+	}
 
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
 	{
