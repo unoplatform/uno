@@ -277,14 +277,12 @@ public partial class CompositionTarget
 				}
 			}
 
-			// canvas is guaranteed non-null here: it is either the (non-null) argument or freshly
-			// created by resizeFunc when canvasRecreated is true.
-			var targetCanvas = canvas!;
-
-			targetCanvas.Save();
+			// canvas is non-null here: it is either the (non-null) argument or freshly created by resizeFunc
+			// when canvasRecreated is true.
+			canvas!.Save();
 			if (rasterizationScale != 1)
 			{
-				targetCanvas.Scale(rasterizationScale, rasterizationScale);
+				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
 
 			// Damage-region: every renderer presents through a surface that retains the previous frame, so
@@ -308,22 +306,22 @@ public partial class CompositionTarget
 				// clip) are preserved from the previous frame. No antialiasing on the damage clip — the regions
 				// are pixel-snapped, and an AA clip would blend boundary pixels against the retained surface,
 				// diverging from a full repaint.
-				targetCanvas.ClipPath(damage, antialias: false);
+				canvas.ClipPath(damage, antialias: false);
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
-				targetCanvas,
+				canvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
 				_fpsHelper.DrawFps);
 
 			if (overlayEnabled && useDamageRegion && !damage.IsEmpty)
 			{
-				DrawDamageRegionOverlay(targetCanvas, damage);
+				DrawDamageRegionOverlay(canvas, damage);
 			}
 
-			targetCanvas.Restore();
+			canvas.Restore();
 
 			// The frame has now been presented, so its damage region is consumed. ReturnFrame puts the frame
 			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
