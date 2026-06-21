@@ -425,16 +425,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// Non-rectangular clip: intersect the content rect with the clip path so the damage honors the
 				// curve instead of over-damaging to the content's bounding box.
 				var rectPath = _pathPool.Allocate();
-				try
-				{
-					rectPath.Rewind();
-					rectPath.AddRect(root);
-					clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
-				}
-				finally
-				{
-					_pathPool.Free(rectPath);
-				}
+				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
+				rectPath.Rewind();
+				rectPath.AddRect(root);
+				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
 
 				if (clipPath.IsEmpty)
 				{
@@ -478,22 +472,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static void OutsetForAntialiasing(SKPath path)
 	{
 		var band = _pathPool.Allocate();
+		using var bandDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), band);
 		var result = _pathPool.Allocate();
-		try
-		{
-			band.Rewind();
-			result.Rewind();
-			// (path) ∪ (stroke band around its edge) = the path grown outward by `margin`.
-			_outsetPaint.GetFillPath(path, band);
-			path.Op(band, SKPathOp.Union, result);
-			path.Rewind();
-			path.AddPath(result);
-		}
-		finally
-		{
-			_pathPool.Free(band);
-			_pathPool.Free(result);
-		}
+		using var resultDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), result);
+
+		band.Rewind();
+		result.Rewind();
+		// (path) ∪ (stroke band around its edge) = the path grown outward by `margin`.
+		_outsetPaint.GetFillPath(path, band);
+		path.Op(band, SKPathOp.Union, result);
+		path.Rewind();
+		path.AddPath(result);
 	}
 
 	// Bounds, in this visual's local coordinate space, of what it paints *itself* (not its children).
