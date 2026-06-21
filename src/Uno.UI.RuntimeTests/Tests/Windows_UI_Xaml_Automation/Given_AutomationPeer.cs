@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -266,6 +267,118 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			finally
 			{
 				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // IsOffscreen clipping is Skia-only.
+		public async Task When_Popup_Content_InWindow_IsOffscreen()
+		{
+			var target = new Button { Content = "Subject", Width = 120, Height = 40 };
+			var popup = new Popup
+			{
+				XamlRoot = WindowHelper.XamlRoot,
+				HorizontalOffset = 50,
+				VerticalOffset = 50,
+				Child = target,
+			};
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(target);
+				await WindowHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
+				Assert.IsNotNull(peer);
+
+				Assert.IsFalse(peer.IsOffscreen(), "In-window open popup content should be on-screen (false).");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // IsOffscreen clipping is Skia-only.
+		public async Task When_Popup_Content_Outside_Window_IsOffscreen()
+		{
+			var target = new Button { Content = "Subject", Width = 120, Height = 40 };
+			var popup = new Popup
+			{
+				XamlRoot = WindowHelper.XamlRoot,
+				HorizontalOffset = 100000,
+				VerticalOffset = 100000,
+				Child = target,
+			};
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(target);
+				await WindowHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
+				Assert.IsNotNull(peer);
+
+				Assert.IsTrue(peer.IsOffscreen(), "Popup content far outside the window should be off-screen (true).");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // IsOffscreen clipping is Skia-only.
+		public async Task When_Element_Scrolled_Out_Inside_Popup_IsOffscreen()
+		{
+			var target = new Button { Content = "Subject", Width = 120, Height = 40 };
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						target,
+						new Border { Height = 1000 },
+					},
+				},
+			};
+			var popup = new Popup
+			{
+				XamlRoot = WindowHelper.XamlRoot,
+				HorizontalOffset = 50,
+				VerticalOffset = 50,
+				Child = scrollViewer,
+			};
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(scrollViewer);
+				await WindowHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
+				Assert.IsNotNull(peer);
+
+				Assert.IsFalse(peer.IsOffscreen(), "Element should be on-screen before scrolling (inside popup).");
+
+				scrollViewer.ChangeView(null, 500, null, disableAnimation: true);
+				await WindowHelper.WaitForEqual(500, () => scrollViewer.VerticalOffset);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(peer.IsOffscreen(), "Element scrolled out of a popup's ScrollViewer should be off-screen (true).");
+			}
+			finally
+			{
+				popup.IsOpen = false;
 			}
 		}
 
