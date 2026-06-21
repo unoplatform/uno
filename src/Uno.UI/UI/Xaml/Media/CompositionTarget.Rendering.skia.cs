@@ -141,12 +141,11 @@ public partial class CompositionTarget
 
 		_fpsHelper.OnFrameRecorded();
 
-		// The previous frame is now replaced: free its picture, and dispose its damage path — its region was
-		// copied into this frame's snapshot above (or wasn't needed), so it is no longer referenced.
+		// The previous frame is now replaced: free its picture. Its damage path is just left to the GC, which
+		// finalizes the SKPath's native handle.
 		if (previousFrame is { } prev)
 		{
 			UnoSkiaApi.sk_refcnt_safe_unref(prev.frame);
-			prev.damage.Dispose();
 		}
 
 		if (_isRenderingActive)
@@ -301,8 +300,8 @@ public partial class CompositionTarget
 			// The frame has now been presented, so its damage region is consumed. ReturnFrame puts the frame
 			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
 			// otherwise carry this already-presented damage forward — accumulating it forever under a continuous
-			// render loop and pinning the damage region to the whole frame. Empty the path (kept, not disposed,
-			// since the frame may be re-presented) so a re-present repaints nothing and the carry stays clean.
+			// render loop and pinning the damage region to the whole frame. Empty the path so a re-present
+			// repaints nothing and the next Render's carry-forward stays clean.
 			lastRenderedFrame.damage.Rewind();
 			ReturnFrame(lastRenderedFrame);
 
@@ -345,11 +344,11 @@ public partial class CompositionTarget
 			}
 		}
 
-		// A newer frame is already in place: this one is discarded, so free its picture and damage path.
+		// A newer frame is already in place: this one is discarded, so free its picture (its damage path is
+		// left to the GC).
 		if (supersededFrame)
 		{
 			UnoSkiaApi.sk_refcnt_safe_unref(frame.frame);
-			frame.damage.Dispose();
 		}
 	}
 
