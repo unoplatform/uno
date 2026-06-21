@@ -239,9 +239,6 @@
 
 		<IsApple>false</IsApple>
 		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsApple>
-
-		<_IsUnitTests>false</_IsUnitTests>
-		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -270,6 +267,17 @@
 		
 		<!-- Required for studio -->
 		<NoWarn>$(NoWarn);UNO0008</NoWarn>
+	</PropertyGroup>
+
+	<!--
+	UnoFastDevBuild: opt-in switch for local iteration that disables analyzers and code-style enforcement
+	to cut CoreCompile time. Guarded by ContinuousIntegrationBuild so CI never picks it up accidentally.
+	Enable per-build with `-p:UnoFastDevBuild=true` or persistently via the UNO_FAST_DEV_BUILD env var.
+	-->
+	<PropertyGroup Condition="('$(UnoFastDevBuild)' == 'true' or '$(UNO_FAST_DEV_BUILD)' == 'true') and '$(ContinuousIntegrationBuild)' != 'true'">
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+		<UnoDisableNetAnalyzers>true</UnoDisableNetAnalyzers>
 	</PropertyGroup>
 
 	<PropertyGroup>

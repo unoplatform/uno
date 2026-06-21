@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -42,7 +41,7 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 		switch (frame.Name)
 		{
 			case nameof(UpdateSingleFileRequest):
-				ProcessUpdateFile(JsonConvert.DeserializeObject<UpdateSingleFileRequest>(frame.Content)!);
+				ProcessUpdateFile(frame.GetContent<UpdateSingleFileRequest>());
 				break;
 		}
 

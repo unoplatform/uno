@@ -112,6 +112,14 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 
 		private void WaitForUnlockedFile(string filePath)
 		{
+			// if the threadpool isn't using threads assume they aren't enabled
+			ThreadPool.GetMaxThreads(out int workerThreads, out int completionPortThreads);
+			if (workerThreads == 1 && completionPortThreads == 1)
+			{
+				// Single threaded environment, skip waiting
+				return;
+			}
+
 			var sw = Stopwatch.StartNew();
 
 			while (sw.Elapsed < TimeSpan.FromSeconds(5))

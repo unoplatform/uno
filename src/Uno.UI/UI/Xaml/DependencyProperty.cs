@@ -51,6 +51,18 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static FrameworkPropertiesForTypeDictionary _getInheritedPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
+		/// <summary>
+		/// Removes all entries from DependencyProperty-related static caches whose Type keys
+		/// belong to non-default (collectible) AssemblyLoadContexts.
+		/// Called during ALC teardown so the GC can collect the ALC and its types.
+		/// </summary>
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			_registry.RemoveNonDefaultAlcEntries();
+			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
+			_getPropertyCache.RemoveNonDefaultAlcEntries();
+		}
+
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 
 		private readonly Flags _flags;
@@ -627,56 +639,17 @@ namespace Microsoft.UI.Xaml
 		// rather than the app's active theme.
 		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
 		{
-			var themeKey = GetEffectiveThemeKey(referenceObject);
-			var activeTheme = ResourceDictionary.GetActiveTheme();
-			var needsPush = themeKey is not null && !themeKey.Equals(activeTheme.Key);
-
-			if (needsPush)
+			// The lookup runs with the element's theme scoped onto the core requested-theme-for-subtree
+			// slot, like WinUI's LookupThemeResource(theme, key) (xcpcore.cpp:2371-2394); the resolution
+			// leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768), so the
+			// {StaticResource} alias (SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush)
+			// also resolves into the matching theme sub-dictionary and the resolved brush carries the
+			// element theme's color.
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(referenceObject);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
 			{
-				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			}
-
-			try
-			{
-				if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
-				{
-					return brush;
-				}
-			}
-			finally
-			{
-				if (needsPush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
-			}
-
-			return null;
-		}
-
-		// Returns the base theme key ("Light"/"Dark") that applies to the element,
-		// mirroring FrameworkElement.ActualTheme's resolution: prefer the element's
-		// own _theme (set during the theme walk), then fall back to the application
-		// theme. Returns null when neither is available.
-		private static string GetEffectiveThemeKey(DependencyObject referenceObject)
-		{
-			if (referenceObject is UIElement element)
-			{
-				var baseTheme = Theming.GetBaseValue(element.GetTheme());
-				if (baseTheme == Theme.None)
-				{
-					baseTheme = Theming.FromElementTheme(
-						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-				}
-
-				if (baseTheme == Theme.Light)
-				{
-					return "Light";
-				}
-				if (baseTheme == Theme.Dark)
-				{
-					return "Dark";
-				}
+				return brush;
 			}
 
 			return null;

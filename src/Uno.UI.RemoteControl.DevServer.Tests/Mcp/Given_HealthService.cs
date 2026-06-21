@@ -184,11 +184,11 @@ public class Given_HealthService
 	{
 		var discovery = new DiscoveryInfo
 		{
-			RequestedWorkingDirectory = @"D:\src\studio.live",
+			RequestedWorkingDirectory = @"D:\src\myapp",
 			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
 			CandidateSolutions =
 			[
-				@"D:\src\studio.live\src\App.slnx",
+				@"D:\src\myapp\src\App.slnx",
 			],
 		};
 

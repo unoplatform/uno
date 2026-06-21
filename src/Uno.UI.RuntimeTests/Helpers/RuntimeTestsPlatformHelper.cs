@@ -57,7 +57,6 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
 			RuntimeTestPlatforms.NativeMacCatalyst => IsNativeMacCatalyst(),
 			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
-			RuntimeTestPlatforms.SkiaWpf => IsSkia() && IsSkiaWpf(),
 			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
@@ -92,9 +91,6 @@ internal static class RuntimeTestsPlatformHelper
 #else
 		false;
 #endif
-
-	private static bool IsSkiaWpf()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Wpf");
 
 	private static bool IsSkiaWin32()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Win32");

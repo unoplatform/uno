@@ -30,7 +30,26 @@ namespace Microsoft.UI.Xaml.Input
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
-			_currentPoint = _pointerEventArgs.CurrentPoint;
+
+			// When a RelativeRoot is set (scoped InputInjector), coordinates are
+			// relative to that element. Transform to window-absolute so that
+			// GetCurrentPoint(relativeTo) and event routing across the full
+			// visual tree work correctly.
+			// When a RelativeRoot is set (scoped InputInjector), coordinates are
+			// relative to that element. Transform to window-absolute so that
+			// GetCurrentPoint(relativeTo) and event routing across the full
+			// visual tree work correctly.
+			if (pointerEventArgs.RelativeRoot is UIElement relativeRoot)
+			{
+				var windowPos = UIElement
+					.GetTransform(from: relativeRoot, to: null)
+					.Transform(pointerEventArgs.CurrentPoint.Position);
+				_currentPoint = pointerEventArgs.CurrentPoint.At(windowPos, windowPos);
+			}
+			else
+			{
+				_currentPoint = _pointerEventArgs.CurrentPoint;
+			}
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);

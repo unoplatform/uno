@@ -138,6 +138,7 @@ Here are the supported properties:
 | `SkiaSharpVersion`                  | [SkiaSharp.Skottie](https://www.nuget.org/packages/SkiaSharp.Skottie) and similar packages                           | Provides a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library.          |
 | `SvgSkiaVersion`                    | [Svg.Skia](https://www.nuget.org/packages/Svg.Skia)                                                                  | Renders SVG files using the SkiaSharp graphics engine.                                                         |
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
+| `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
 | `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
@@ -190,6 +191,78 @@ to your `Directory.Build.props` file or `csproj` file. You will be then able to 
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
+>
+> For the narrower scenario of a library that is essentially a *WinUI library* that also happens to support Uno cross-targets — and that should not leak `Uno.WinUI` to WinAppSDK-only consumers, or needs a strong-named output on Windows — see the [WinAppSDK-only libraries](#winappsdk-only-libraries) section below.
+
+## WinAppSDK-only libraries
+
+When you author a library that is *only* a WinUI library on the Windows App SDK target (and uses the rest of the `Uno.Sdk` solely for cross-platform target frameworks), you may want the Windows build to contain no implicit Uno dependencies. Two common motivations:
+
+- Avoid leaking `Uno.WinUI` as a transitive NuGet dependency to consumers that only target the Windows App SDK.
+- Compile to a strong-named assembly on Windows for scenarios that require a fully strong-named dependency chain (organizational policy, certain hosts, or downstream consumers that only accept strong-named references). `Uno.WinUI` is not strong-named, so leaving it as an implicit reference would block those scenarios.
+
+Enable this with:
+
+```xml
+<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
+```
+
+When set, `Uno.Sdk` stops adding the following implicit package references on the `net*-windows10*` target framework:
+
+- `Uno.WinUI` (also removes the bundled `Uno.UI.Toolkit.dll` it ships under `lib/net*-windows10.0.19041.0/`)
+- `Uno.Resizetizer`
+- `Uno.Sdk.Extras`
+- `Uno.Settings.DevServer`
+
+The property is intentionally scoped:
+
+- It only takes effect on the Windows App SDK target framework. Other targets (Android, iOS, Skia Desktop, WebAssembly, …) are unaffected, so the cross-platform side of your library still uses `Uno.WinUI` and the rest of the Uno stack.
+- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
+- Non-Uno implicit packages (`Microsoft.WindowsAppSDK`, `Microsoft.Windows.SDK.BuildTools`, `CommunityToolkit.Mvvm`, `SkiaSharp.Views.WinUI`, …) keep flowing as usual.
+
+If you still need one of the stripped packages on Windows for a specific reason, add it back explicitly:
+
+```xml
+<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+    <PackageReference Include="Uno.Resizetizer" Version="$(UnoResizetizerVersion)" PrivateAssets="all" />
+</ItemGroup>
+```
+
+> [!NOTE]
+> This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
+
+## Running packaged WinUI apps with `dotnet run`
+
+On the Windows App SDK target, the `Uno.Sdk` implicitly references the [`Microsoft.Windows.SDK.BuildTools.WinApp`](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp) package for executable (application head) projects. This package overrides the `dotnet run` behavior so that, instead of launching the raw executable, it registers a loose-layout package and launches the app **with package identity** — matching the experience of the [`dotnet new` templates for WinUI](https://devblogs.microsoft.com/ifdef-windows/introducing-dotnet-new-templates-for-winui/). This means features that require package identity (such as notifications, app data, or `ApplicationData`) work the same way they do when the app is deployed from its MSIX package.
+
+The package is referenced with `PrivateAssets="all"`, so it does not flow to consumers of your project. It is only added to executable heads — libraries never pull it in.
+
+You can control this behavior with the following properties:
+
+| Property | Default | Effect |
+|----------|---------|--------|
+| `EnableWinAppRunSupport` | `true` | Set to `false` to keep the package reference but disable the `dotnet run` interception (the app then launches as a plain executable, without package identity). |
+| `UnoDisableWinAppRunSupport` | `false` | Set to `true` to suppress the **implicit** `Microsoft.Windows.SDK.BuildTools.WinApp` reference entirely, so the package is never restored. |
+| `WinAppSdkBuildToolsWinAppVersion` | (SDK-managed) | Overrides the version of the `Microsoft.Windows.SDK.BuildTools.WinApp` package. |
+
+For example, to turn the feature off while still restoring the package (useful if you set it conditionally), add to your `csproj` or `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <EnableWinAppRunSupport>false</EnableWinAppRunSupport>
+</PropertyGroup>
+```
+
+Or, to avoid restoring the package altogether:
+
+```xml
+<PropertyGroup>
+  <UnoDisableWinAppRunSupport>true</UnoDisableWinAppRunSupport>
+</PropertyGroup>
+```
+
+> [!NOTE]
+> `EnableWinAppRunSupport` is provided by the `Microsoft.Windows.SDK.BuildTools.WinApp` package itself, so it also works when you add the package explicitly. `UnoDisableWinAppRunSupport` is specific to the `Uno.Sdk` and only affects the implicit reference.
 
 ## Supported OS Platform versions
 
@@ -316,6 +389,23 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 > ```
 >
 > This approach allows you to selectively remove pages from specific target frameworks while maintaining them in others.
+
+## Platform-Specific Folders
+
+In addition to the per-file suffixes described above, the Uno.Sdk recognizes a set of well-known sub-folders under `Platforms/` that scope their contents to a single target. Files in these folders are automatically included only when the matching TFM is being built and excluded from every other TFM (the SDK removes them from `Compile`, `Page`, `Content`, `EmbeddedResource`, and `Manifest` for inactive platforms).
+
+| Folder | TFM it applies to | Typical contents |
+|---|---|---|
+| `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
+| `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
+| `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
+| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
+| `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
+| `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
+
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
 ## Apple Privacy Manifest Support
 

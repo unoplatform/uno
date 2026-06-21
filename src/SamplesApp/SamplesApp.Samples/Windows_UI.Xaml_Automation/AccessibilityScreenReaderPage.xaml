@@ -800,11 +800,16 @@
                         <Button Click="OnShowTarget" Content="Show" />
                     </StackPanel>
                     <TextBlock
+                        x:Name="VisibilityOffscreenResult"
+                        AutomationProperties.AutomationId="VisibilityOffscreenResult"
+                        FontWeight="SemiBold"
+                        Text="IsOffscreen = …" />
+                    <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        Click "Collapse" and verify the button above reports IsOffscreen=True.
-                        Click "Show" and verify it reports IsOffscreen=False with a valid BoundingRectangle.
+                        The IsOffscreen value above is read live from the button's automation peer (no inspect.exe needed).
+                        Click "Collapse" and it should report IsOffscreen=True; click "Show" and it reports IsOffscreen=False.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -826,10 +831,15 @@
                         <Button Click="OnSetOpacityOne" Content="Set Opacity=1" />
                     </StackPanel>
                     <TextBlock
+                        x:Name="OpacityOffscreenResult"
+                        AutomationProperties.AutomationId="OpacityOffscreenResult"
+                        FontWeight="SemiBold"
+                        Text="IsOffscreen = …" />
+                    <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        An element with Opacity=0 should report IsOffscreen=True even though it is still Visible in the tree.
+                        An element with Opacity=0 should report IsOffscreen=True (shown live above) even though it is still Visible in the tree.
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -843,17 +853,80 @@
                 CornerRadius="8">
                 <StackPanel Spacing="8">
                     <StackPanel x:Name="AncestorPanel">
-                        <Button AutomationProperties.AutomationId="ChildOfCollapsibleParent" Content="Child of collapsible parent" />
+                        <Button
+                            x:Name="AncestorChildButton"
+                            AutomationProperties.AutomationId="ChildOfCollapsibleParent"
+                            Content="Child of collapsible parent" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button Click="OnCollapseAncestor" Content="Collapse parent" />
                         <Button Click="OnShowAncestor" Content="Show parent" />
                     </StackPanel>
                     <TextBlock
+                        x:Name="AncestorOffscreenResult"
+                        AutomationProperties.AutomationId="AncestorOffscreenResult"
+                        FontWeight="SemiBold"
+                        Text="IsOffscreen = …" />
+                    <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         TextWrapping="WrapWholeWords">
-                        When the parent StackPanel is collapsed, the child button should also report IsOffscreen=True.
+                        When the parent StackPanel is collapsed, the child button should also report IsOffscreen=True (shown live above).
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  Offscreen via clipping (scrolled out of a ScrollViewer)  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <ScrollViewer
+                        x:Name="ClippingScrollViewer"
+                        Height="200"
+                        Background="{ThemeResource LayerFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        ViewChanged="OnClippingViewChanged">
+                        <StackPanel Padding="8" Spacing="8">
+                            <Button
+                                x:Name="ClippedTargetButton"
+                                AutomationProperties.AutomationId="ClippedTargetButton"
+                                Content="Scroll me out of view" />
+                            <Border
+                                Height="1000"
+                                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                                CornerRadius="4">
+                                <TextBlock
+                                    Margin="8"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="Filler content — scroll down so the button above leaves the viewport."
+                                    TextWrapping="WrapWholeWords" />
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnScrollTargetOut" Content="Scroll out" />
+                        <Button Click="OnScrollTargetIntoView" Content="Scroll into view" />
+                        <Button Click="OnCheckClippedOffscreen" Content="Check IsOffscreen" />
+                    </StackPanel>
+                    <TextBlock
+                        x:Name="ClippedOffscreenResult"
+                        AutomationProperties.AutomationId="ClippedOffscreenResult"
+                        FontWeight="SemiBold"
+                        Text="IsOffscreen = (scroll or click Check)" />
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        The IsOffscreen value above is read directly from the element's automation peer
+                        (FrameworkElementAutomationPeer.IsOffscreen()) and updates live as you scroll, so no
+                        external tool such as inspect.exe is required. Scroll the button out of the viewport
+                        and it should report IsOffscreen=True (even though it is still Visible and in the live
+                        tree); scroll it back into view and it reports IsOffscreen=False.
                     </TextBlock>
                 </StackPanel>
             </Border>

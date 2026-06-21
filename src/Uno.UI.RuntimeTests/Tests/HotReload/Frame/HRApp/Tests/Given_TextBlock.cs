@@ -132,9 +132,9 @@ public class Given_TextBlock : BaseTestClass
 		}
 	}
 
-	// Another version of the test above, but pausing the TypeMapping before calling the file update
+	// Another version of the test above, but using the new UIUpdate.Pause mechanism inside UpdateFile to defer the visual-tree apply.
 	[TestMethod]
-	public async Task When_Changing_TextBlock_UsingHRClient_PausingTypeMapping()
+	public async Task When_Changing_TextBlock_UsingHRClient_With_VisualTree_Paused()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(25)).Token;
 
@@ -152,17 +152,21 @@ public class Given_TextBlock : BaseTestClass
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
 			true)
+		{
+			// Pause + Drop inside UpdateFile: the visual tree should not be
+			// updated for the types correlated with this UpdateFile call.
+			PauseUIPhases = Uno.HotReload.Client.HotReloadUIPhases.VisualTree,
+		}
 			.WithExtendedTimeouts(); // Required for CI
 		try
 		{
-			TypeMappings.Pause();
 			await hr.UpdateFileAsync(req, ct);
 
 			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText); // should NOT be changed
 		}
 		finally
 		{
-			TypeMappings.Resume();
+			// Undo without pausing so the next test starts from the original text.
 			await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
 		}
 	}

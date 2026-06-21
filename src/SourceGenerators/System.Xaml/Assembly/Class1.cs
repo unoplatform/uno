@@ -1,5 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace System.Diagnostics.CodeAnalysis
 {
@@ -81,5 +83,255 @@ namespace System.Diagnostics.CodeAnalysis
 		/// Gets or sets the justification for suppressing the code analysis message.
 		/// </summary>
 		public string Justification { get; set; }
+	}
+}
+
+namespace System.Diagnostics.CodeAnalysis
+{
+	/// <summary>
+	/// Specifies the types of members that are dynamically accessed.
+	///
+	/// This enumeration has a <see cref="FlagsAttribute"/> attribute that allows a
+	/// bitwise combination of its member values.
+	/// </summary>
+	[Flags]
+#if SYSTEM_PRIVATE_CORELIB
+	public
+#else
+	internal
+#endif
+	enum DynamicallyAccessedMemberTypes
+	{
+		/// <summary>
+		/// Specifies no members.
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Specifies the default, parameterless public constructor.
+		/// </summary>
+		PublicParameterlessConstructor = 0x0001,
+
+		/// <summary>
+		/// Specifies all public constructors.
+		/// </summary>
+		PublicConstructors = 0x0002 | PublicParameterlessConstructor,
+
+		/// <summary>
+		/// Specifies all non-public constructors.
+		/// </summary>
+		NonPublicConstructors = 0x0004,
+
+		/// <summary>
+		/// Specifies all public methods.
+		/// </summary>
+		PublicMethods = 0x0008,
+
+		/// <summary>
+		/// Specifies all non-public methods.
+		/// </summary>
+		NonPublicMethods = 0x0010,
+
+		/// <summary>
+		/// Specifies all public fields.
+		/// </summary>
+		PublicFields = 0x0020,
+
+		/// <summary>
+		/// Specifies all non-public fields.
+		/// </summary>
+		NonPublicFields = 0x0040,
+
+		/// <summary>
+		/// Specifies all public nested types.
+		/// </summary>
+		PublicNestedTypes = 0x0080,
+
+		/// <summary>
+		/// Specifies all non-public nested types.
+		/// </summary>
+		NonPublicNestedTypes = 0x0100,
+
+		/// <summary>
+		/// Specifies all public properties.
+		/// </summary>
+		PublicProperties = 0x0200,
+
+		/// <summary>
+		/// Specifies all non-public properties.
+		/// </summary>
+		NonPublicProperties = 0x0400,
+
+		/// <summary>
+		/// Specifies all public events.
+		/// </summary>
+		PublicEvents = 0x0800,
+
+		/// <summary>
+		/// Specifies all non-public events.
+		/// </summary>
+		NonPublicEvents = 0x1000,
+
+		/// <summary>
+		/// Specifies all interfaces implemented by the type.
+		/// </summary>
+		Interfaces = 0x2000,
+
+		/// <summary>
+		/// Specifies all non-public constructors, including those inherited from base classes.
+		/// </summary>
+		NonPublicConstructorsWithInherited = NonPublicConstructors | 0x4000,
+
+		/// <summary>
+		/// Specifies all non-public methods, including those inherited from base classes.
+		/// </summary>
+		NonPublicMethodsWithInherited = NonPublicMethods | 0x8000,
+
+		/// <summary>
+		/// Specifies all non-public fields, including those inherited from base classes.
+		/// </summary>
+		NonPublicFieldsWithInherited = NonPublicFields | 0x10000,
+
+		/// <summary>
+		/// Specifies all non-public nested types, including those inherited from base classes.
+		/// </summary>
+		NonPublicNestedTypesWithInherited = NonPublicNestedTypes | 0x20000,
+
+		/// <summary>
+		/// Specifies all non-public properties, including those inherited from base classes.
+		/// </summary>
+		NonPublicPropertiesWithInherited = NonPublicProperties | 0x40000,
+
+		/// <summary>
+		/// Specifies all non-public events, including those inherited from base classes.
+		/// </summary>
+		NonPublicEventsWithInherited = NonPublicEvents | 0x80000,
+
+		/// <summary>
+		/// Specifies all public constructors, including those inherited from base classes.
+		/// </summary>
+		PublicConstructorsWithInherited = PublicConstructors | 0x100000,
+
+		/// <summary>
+		/// Specifies all public nested types, including those inherited from base classes.
+		/// </summary>
+		PublicNestedTypesWithInherited = PublicNestedTypes | 0x200000,
+
+		/// <summary>
+		/// Specifies all constructors, including those inherited from base classes.
+		/// </summary>
+		AllConstructors = PublicConstructorsWithInherited | NonPublicConstructorsWithInherited,
+
+		/// <summary>
+		/// Specifies all methods, including those inherited from base classes.
+		/// </summary>
+		AllMethods = PublicMethods | NonPublicMethodsWithInherited,
+
+		/// <summary>
+		/// Specifies all fields, including those inherited from base classes.
+		/// </summary>
+		AllFields = PublicFields | NonPublicFieldsWithInherited,
+
+		/// <summary>
+		/// Specifies all nested types, including those inherited from base classes.
+		/// </summary>
+		AllNestedTypes = PublicNestedTypesWithInherited | NonPublicNestedTypesWithInherited,
+
+		/// <summary>
+		/// Specifies all properties, including those inherited from base classes.
+		/// </summary>
+		AllProperties = PublicProperties | NonPublicPropertiesWithInherited,
+
+		/// <summary>
+		/// Specifies all events, including those inherited from base classes.
+		/// </summary>
+		AllEvents = PublicEvents | NonPublicEventsWithInherited,
+
+		/// <summary>
+		/// Specifies all members.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		All = ~None
+	}
+}
+
+namespace System.Diagnostics.CodeAnalysis
+{
+	/// <summary>
+	/// Indicates that certain members on a specified <see cref="Type"/> are accessed dynamically,
+	/// for example through <see cref="Reflection"/>.
+	/// </summary>
+	/// <remarks>
+	/// This allows tools to understand which members are being accessed during the execution
+	/// of a program.
+	///
+	/// This attribute is valid on members whose type is <see cref="Type"/> or <see cref="string"/>.
+	///
+	/// When this attribute is applied to a location of type <see cref="string"/>, the assumption is
+	/// that the string represents a fully qualified type name.
+	///
+	/// When this attribute is applied to a class, interface, or struct, the members specified
+	/// can be accessed dynamically on <see cref="Type"/> instances returned from calling
+	/// <see cref="object.GetType"/> on instances of that class, interface, or struct.
+	///
+	/// If the attribute is applied to a method it's treated as a special case and it implies
+	/// the attribute should be applied to the "this" parameter of the method. As such the attribute
+	/// should only be used on instance methods of types assignable to System.Type (or string, but no methods
+	/// will use it there).
+	/// </remarks>
+	[CompilerLoweringPreserve]
+	[AttributeUsage(
+		AttributeTargets.Field | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter |
+		AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Method |
+		AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct,
+		Inherited = false)]
+#if SYSTEM_PRIVATE_CORELIB
+	public
+#else
+	internal
+#endif
+	sealed class DynamicallyAccessedMembersAttribute : Attribute
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicallyAccessedMembersAttribute"/> class
+		/// with the specified member types.
+		/// </summary>
+		/// <param name="memberTypes">The types of members dynamically accessed.</param>
+		public DynamicallyAccessedMembersAttribute(DynamicallyAccessedMemberTypes memberTypes)
+		{
+			MemberTypes = memberTypes;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="DynamicallyAccessedMemberTypes"/> which specifies the type
+		/// of members dynamically accessed.
+		/// </summary>
+		public DynamicallyAccessedMemberTypes MemberTypes { get; }
+	}
+}
+
+namespace System.Runtime.CompilerServices
+{
+	/// <summary>
+	/// When applied to an attribute class, instructs the compiler to flow applications of that attribute,
+	/// from source code down to compiler-generated symbols. This can help IL-based analysis tools.
+	/// </summary>
+	/// <remarks>
+	/// One example where this attribute applies is in C# primary constructor parameters. If an attribute
+	/// marked with <see cref="CompilerLoweringPreserveAttribute"/> gets applied to a primary constructor
+	/// parameter, the attribute will also be applied to any compiler-generated fields storing that parameter.
+	/// </remarks>
+	[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+#if SYSTEM_PRIVATE_CORELIB
+	public
+#else
+	internal
+#endif
+	sealed class CompilerLoweringPreserveAttribute : Attribute
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CompilerLoweringPreserveAttribute"/> class.
+		/// </summary>
+		public CompilerLoweringPreserveAttribute() { }
 	}
 }

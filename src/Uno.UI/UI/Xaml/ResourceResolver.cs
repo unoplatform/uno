@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using Uno.Diagnostics.Eventing;
@@ -15,12 +17,27 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 
 namespace Uno.UI
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResourceResolver
 	{
+		/// <summary>
+		/// The ambient ALC context for resource resolution. Set during App.xaml initialization
+		/// to ensure that resource dictionary lookups (including fallback paths like
+		/// <see cref="RetrieveDictionaryForSource(string, string)"/>) can find resources
+		/// registered in the correct ALC-scoped registry.
+		/// </summary>
+		[ThreadStatic]
+		private static AssemblyLoadContext _currentResolutionAlc;
+
+		/// <summary>
+		/// Gets the current ambient ALC context for resource resolution.
+		/// </summary>
+		internal static AssemblyLoadContext CurrentResolutionAlc => _currentResolutionAlc;
+
 		/// <summary>
 		/// The master system resources dictionary.
 		/// </summary>
@@ -37,6 +54,15 @@ namespace Uno.UI
 		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
 		/// </summary>
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+
+		/// <summary>
+		/// ALC-scoped resource dictionary registrations. Used to isolate resource dictionaries
+		/// loaded from secondary AssemblyLoadContexts from those in the default ALC.
+		/// </summary>
+		private static readonly ConditionalWeakTable<System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>
+			_registeredDictionariesByUriByAlc = [];
+
+		private static readonly object _alcDictionariesLock = new();
 
 		private static int _assemblyRef = -1;
 
@@ -306,58 +332,75 @@ namespace Uno.UI
 
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
+			if (isThemeResource)
+			{
+				// MUX Reference: CThemeResource::LookupResource (ThemeResource.cpp:202-256) resolves the
+				// initial value and pins the providing dictionary at parse time;
+				// CDependencyObject::SetThemeResourceBinding (Theming.cpp:349-400) then refreshes,
+				// applies the resolved value and stores the reference — that full sequence lives on the
+				// store, so this branch only constructs the reference and delegates.
+				ThemeResourceReference themeRef;
+
+				// Resolve the initial value from statically-available top-level resources, capturing the
+				// providing dictionary. Mirrors WinUI's CThemeResource::SetInitialValueAndTargetDictionary
+				// (ThemeResource.cpp:39-51): the providing dictionary is pinned into the
+				// ThemeResourceReference so RefreshValue can re-resolve from it after the element is
+				// reparented (e.g. popup/flyout/tooltip content moved under PopupRoot), where the load-time
+				// visual-tree walk can no longer reach the opener's local ThemeDictionaries. TryGetValue
+				// returns the dictionary that OWNS the ThemeDictionaries (not the Light/Dark
+				// sub-dictionary), so a later theme change re-selects the correct sub-dictionary on re-query.
+				if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var themeValue, out var providingDictionary))
+				{
+					themeRef = new ThemeResourceReference(
+						specializedKey, providingDictionary, themeValue, isResolved: true, context,
+						updateReason, effectivePrecedence);
+				}
+				else
+				{
+					// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
+					// without a pinned dictionary -- it will be resolved via tree-walk at load time.
+					themeRef = new ThemeResourceReference(
+						specializedKey, null, null, isResolved: false, context,
+						updateReason, effectivePrecedence);
+				}
+
+				if (owner is IDependencyObjectStoreProvider themeOwnerProvider)
+				{
+					themeOwnerProvider.Store.SetThemeResourceBinding(property, themeRef, precedence);
+
+					// Also register a ResourceBinding for the initial tree-walk resolution
+					// at load time, which will also pin the providing dictionary. The _resourceBindings
+					// path handles the load-time tree-walk resolution, and the _themeResources path
+					// handles efficient theme-change re-resolution.
+					themeOwnerProvider.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+				}
+				else if (themeRef.IsResolved)
+				{
+					// Defensive: a store-less owner cannot register bindings; apply the statically
+					// resolved value directly.
+					owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, themeRef.LastResolvedValue), precedence);
+				}
+
+				return;
+			}
+
 			// Set the initial value from statically-available top-level resources.
-			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
-			// the providing ResourceDictionary. For theme resources, dictionary pinning is
-			// deferred until the load-time re-resolution path.
-			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
+			if (TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
 
-				if (isThemeResource)
-				{
-					// Create ThemeResourceReference without pinned dictionary for now.
-					// The providing dictionary will be captured during the first
-					// _resourceBindings resolution at load time (via the re-pin logic
-					// in InnerUpdateResourceBindingsUnsafe).
-					var themeRef = new ThemeResourceReference(
-						specializedKey, null, value, isResolved: true, context,
-						updateReason, effectivePrecedence);
-					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
-
-					// Also register a ResourceBinding for the initial tree-walk resolution
-					// at load time, which will also pin the providing dictionary.
-					(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
-					return;
-				}
-
 				if (updateReason == ResourceUpdateReason.None)
 				{
 					// If there's no other reason, don't create a resource binding.
 					return;
 				}
-
-				// Non-theme persistent binding (HotReload) -- use old path
-				(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
-				return;
 			}
 
-			if (isThemeResource)
-			{
-				// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
-				// without a pinned dictionary -- it will be resolved via tree-walk at load time.
-				var themeRef = new ThemeResourceReference(
-					specializedKey, null, null, isResolved: false, context,
-					updateReason, effectivePrecedence);
-				(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
-			}
-
-			// Also register in the old ResourceBinding path to ensure deferred resolution
-			// on loading still works. The _resourceBindings path handles the initial tree-walk
-			// resolution, and the _themeResources path handles efficient theme-change re-resolution.
+			// Register in the ResourceBinding path to ensure deferred resolution on loading
+			// still works (and HotReload re-resolution for parse-time-resolved values).
 			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
@@ -372,14 +415,23 @@ namespace Uno.UI
 		{
 			var effectivePrecedence = precedence ?? themeRef.Precedence;
 
-			// Resolve current value from the pinned dictionary
-			var value = themeRef.RefreshValue(owner);
+			// Resolve the current value from the pinned dictionary against the owner's effective theme
+			// (the setter target), scoped onto the core requested-theme-for-subtree slot like WinUI's
+			// LookupThemeResource(theme, key) (xcpcore.cpp:2371-2394); the resolution leaf reads the slot
+			// (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			var value = themeRef.RefreshValue();
 			// MUX Reference: Theming.cpp:385-393 — SetValue uses baseValueSource (resolved precedence)
 			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), effectivePrecedence);
 
-			// Clone the reference for the target DO (with target's precedence, sharing pinned dictionary)
+			// Clone the reference for the target DO (with target's precedence, sharing pinned dictionary).
+			// TODO Uno: this flow resolves and applies the value itself (under the setter target's theme
+			// scope above) and registers via the SetThemeResource map primitive — it doesn't map cleanly
+			// onto the store's full SetThemeResourceBinding sequence yet because the value must resolve
+			// under the setter target's scoped theme before the clone exists.
 			var targetRef = themeRef.CloneForTarget(effectivePrecedence);
-			(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, targetRef);
+			(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResource(property, targetRef);
 		}
 
 		/// <summary>
@@ -395,6 +447,12 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
+			// Resolve the setter's {ThemeResource} against the target element's effective theme
+			// (bindingPath.DataContext is the setter target), scoped onto the core
+			// requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key); the
+			// resolution leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
 			{
@@ -406,11 +464,14 @@ namespace Uno.UI
 
 					if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 					{
-						// Use pinned-dictionary path for theme resources
+						// Use pinned-dictionary path for theme resources.
+						// TODO Uno: a VisualState setter applies through its SetterBindingPath (bindingPath.Value
+						// above) rather than a direct property set, so it registers via the SetThemeResource map
+						// primitive instead of the store's full SetThemeResourceBinding sequence.
 						var themeRef = new ThemeResourceReference(
 							resourceKey, providingDictionary, value, isResolved: true, context,
 							updateReason, precedence, bindingPath);
-						provider.Store.SetThemeResourceBinding(property, themeRef);
+						provider.Store.SetThemeResource(property, themeRef);
 					}
 
 					// Always register ResourceBinding for re-pin at load time and
@@ -424,9 +485,10 @@ namespace Uno.UI
 			return false;
 		}
 
-		/// <summary>
-		/// Try to retrieve a resource from the visual tree, also returning the providing dictionary.
-		/// </summary>
+		// Visual-tree retrieval used by ApplyVisualStateSetter. The Light/Dark sub-dictionary (incl.
+		// StaticResource aliases) is selected at the dictionary leaf by the ambient active theme — the
+		// caller scopes the setter target's effective theme onto the core requested-theme-for-subtree
+		// slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
 		{
 			var scope = CurrentScope.Sources.FirstOrDefault();
@@ -454,9 +516,6 @@ namespace Uno.UI
 			}
 			return topLevel;
 		}
-
-		// Old TryVisualTreeRetrieval overload removed - replaced by the overload
-		// that also returns the providing dictionary for theme resource pinning.
 
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
@@ -493,9 +552,107 @@ namespace Uno.UI
 		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
-				|| TryAssemblyResourceRetrieval(resourceKey, context, out value)
-				|| TrySystemResourceRetrieval(resourceKey, out value);
+
+			// Resource lookup priority when secondary-ALC apps are registered:
+			//  1. If parseContext.AssemblyLoadContext identifies a specific secondary app
+			//     (i.e. a non-default ALC), try that app first, then other secondary apps.
+			//     Brush XAML in a secondary-ALC assembly is uniquely owned by that app, and
+			//     a secondary app's overrides beat sibling-secondary apps' defaults.
+			//  2. The host (Application.Current). Default-ALC parse contexts (and lookups
+			//     with no parse context) resolve here — the host owns those keys and must
+			//     not be silently overruled by a secondary app's same-key value.
+			//  3. Last-resort: iterate registered secondary apps. Required when a brush in
+			//     a shared (default-ALC) assembly references a key via {StaticResource X}
+			//     and X exists ONLY in a secondary app's Application.Resources — the parse
+			//     context points at the default ALC, so we cannot identify the owning app
+			//     up front.
+			//  4. Assembly / system resources.
+			//
+			// NOTE: do NOT iterate secondary apps before the host for default-ALC parse
+			// contexts. The host's own UI elements emit default-ALC parse contexts; if we
+			// query secondary apps first, any same-key resource defined by an imported app
+			// bleeds into the host's
+			// chrome and recolors host UI. The "same-key override should win for the
+			// secondary app" scenario (BrewHouse-style ColorOverrideDictionary on a
+			// shared-ALC brush) requires an owning-app hint plumbed through brush
+			// materialization, not a guess based on parseContext alone.
+			Application contextApp = null;
+			if (Application.HasSecondaryApps
+				&& context is XamlParseContext parseContext
+				&& parseContext.AssemblyLoadContext is { } alc)
+			{
+				contextApp = Application.GetForAssemblyLoadContext(alc);
+
+				if (contextApp is not null
+					&& contextApp != Application.Current)
+				{
+					// Hot-reload guard: a parse context emitted by a previously loaded
+					// secondary-ALC build still references that build's ALC even after a
+					// new build has registered a fresh Application instance with the same
+					// Type.FullName. Resolving via the parse context's ALC would land on
+					// the stale Application whose Resources reflect the OLD build's
+					// values. Bump to the most recently registered live registration of
+					// the same app type so the lookup sees the live app's resources.
+					var liveApp = Application.GetLatestSecondaryApplicationForType(contextApp.GetType().FullName);
+					if (liveApp is not null && liveApp != contextApp)
+					{
+						contextApp = liveApp;
+					}
+
+					if (contextApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					{
+						return true;
+					}
+
+					// Lookup originates from a secondary-app context: also consult other
+					// secondary apps before the host, so that a sibling secondary app's
+					// override is preferred over the host's same-key default.
+					foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+					{
+						if (secondaryApp == contextApp)
+						{
+							continue;
+						}
+
+						if (secondaryApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+				else
+				{
+					// contextApp resolved to the host (default ALC) — treat as a host context;
+					// no secondary-app priority applies.
+					contextApp = null;
+				}
+			}
+
+			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
+			{
+				return true;
+			}
+
+			// Last-resort fallback for resources defined ONLY in a secondary ALC's
+			// Application.Resources when the lookup originated from a host / default-ALC
+			// parse context. Skipped when we already iterated above.
+			if (Application.HasSecondaryApps && contextApp is null)
+			{
+				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+				{
+					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					{
+						return true;
+					}
+				}
+			}
+
+			if (TryAssemblyResourceRetrieval(resourceKey, context, out value))
+			{
+				return true;
+			}
+
+			return TrySystemResourceRetrieval(resourceKey, out value);
 		}
 
 		/// <summary>
@@ -531,9 +688,70 @@ namespace Uno.UI
 			value = null;
 			providingDictionary = null;
 
+			// See the 3-parameter overload above for the rationale of this priority order.
+			// In short: secondary apps are queried *before* the host only when parseContext
+			// identifies a non-default (secondary) ALC. Default-ALC parse contexts (and
+			// host UI lookups) resolve against the host first, with a last-resort scan of
+			// secondary apps for keys defined only there. Iterating secondary apps before
+			// the host on every lookup would bleed secondary-app theme values into the
+			// host's chrome.
+			Application contextApp = null;
+			if (Application.HasSecondaryApps
+				&& context is XamlParseContext parseContext
+				&& parseContext.AssemblyLoadContext is { } alc)
+			{
+				contextApp = Application.GetForAssemblyLoadContext(alc);
+
+				if (contextApp is not null
+					&& contextApp != Application.Current)
+				{
+					// See the 3-parameter overload for the rationale: bump a parse-context-resolved
+					// stale Application to the live registration of the same Type.FullName so we
+					// don't read stale resources from a hot-reloaded-out instance.
+					var liveApp = Application.GetLatestSecondaryApplicationForType(contextApp.GetType().FullName);
+					if (liveApp is not null && liveApp != contextApp)
+					{
+						contextApp = liveApp;
+					}
+
+					if (contextApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					{
+						return true;
+					}
+
+					foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+					{
+						if (secondaryApp == contextApp)
+						{
+							continue;
+						}
+
+						if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+				else
+				{
+					contextApp = null;
+				}
+			}
+
 			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false) ?? false)
 			{
 				return true;
+			}
+
+			if (Application.HasSecondaryApps && contextApp is null)
+			{
+				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+				{
+					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					{
+						return true;
+					}
+				}
 			}
 
 			// Assembly and system resources don't need pinning -- RefreshValue will fall back to TryTopLevelRetrieval
@@ -546,6 +764,27 @@ namespace Uno.UI
 			if (TrySystemResourceRetrieval(resourceKey, out value))
 			{
 				providingDictionary = null;
+				return true;
+			}
+
+			return false;
+		}
+
+		// MUX: CResourceDictionary::GetKeyFromThemeDictionariesNoRef / GetKeyOverrideFromApplicationResourcesNoRef
+		// (Resources.cpp:668-682, 907-938) — "Always allow Application.Resources to override values found in the
+		// global ThemeDictionaries." When a {ThemeResource} resolves from (is pinned to) the system/Fluent
+		// dictionary, an app-level override of the same key must still win. Returns the overriding value only
+		// when Application.Resources provides the key from a NON-system dictionary (a genuine app-level override),
+		// selecting the Light/Dark sub-dictionary by the ambient active theme at the dictionary leaf
+		// (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+		internal static bool TryApplicationResourceOverride(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value)
+		{
+			value = null;
+			if (Application.Current?.Resources is { } appResources
+				&& appResources.TryGetValue(resourceKey, out var appValue, out var providingDictionary, shouldCheckSystem: false)
+				&& providingDictionary is { IsSystemDictionary: false })
+			{
+				value = appValue;
 				return true;
 			}
 
@@ -575,7 +814,18 @@ namespace Uno.UI
 				{
 					foreach (var kvp in assemblyDict)
 					{
-						var rd = kvp.Value as ResourceDictionary;
+						// `kvp.Value` is a ResourceDictionary.ResourceInitializer that materializes
+						// lazily into a ResourceDictionary. If the underlying Func targets code from
+						// an unloaded non-default AssemblyLoadContext, the materialization returns
+						// null and the `as` cast silently yields null, leading to an NRE below if
+						// left unchecked. Skip such stale entries instead of crashing the measure
+						// pass (a null rd here also signals that no further resource can be
+						// resolved through this initializer, so `continue` is the correct behavior).
+						if (kvp.Value is not ResourceDictionary rd)
+						{
+							continue;
+						}
+
 						if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 						{
 							return true;
@@ -661,8 +911,38 @@ namespace Uno.UI
 		/// external resource.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary, string filePath)
 		{
+			// Route registrations from secondary ALCs to the ALC-scoped registry rather than
+			// the global one. Without this, multiple assemblies sharing the same logical name
+			// (e.g. Uno.UI.HotDesign.Client.Core loaded in both Default and a per-sample ALC)
+			// race for the same key in `_registeredDictionariesByUri` and last-writer-wins —
+			// causing the host's Application.Resources to materialize Style/Template instances
+			// from a non-default ALC. When that ALC is later torn down, the Template's emitted
+			// Type literals become orphaned and Style lookups for them fail (no template
+			// applied → control sized 0×0). Prefer the calling-assembly's ALC; the dictionary
+			// delegate's Method.DeclaringType is the most reliable identification when the
+			// caller is the SG-emitted GlobalStaticResources.RegisterResourceDictionariesBySource.
+			var dictAlc = AssemblyLoadContext.GetLoadContext(dictionary.Method.DeclaringType?.Assembly ?? Assembly.GetCallingAssembly());
+			if (dictAlc is not null && dictAlc != AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (!_registeredDictionariesByUriByAlc.TryGetValue(dictAlc, out var alcDict))
+					{
+						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+						_registeredDictionariesByUriByAlc.Add(dictAlc, alcDict);
+					}
+					alcDict[uri] = dictionary;
+				}
+
+				// Do NOT register in the global dict for non-default ALCs — that's the bug
+				// this fix exists to prevent. We also skip the by-assembly and by-filepath
+				// caches since those are global and would have the same collision problem.
+				return;
+			}
+
 			_registeredDictionariesByUri[uri] = dictionary;
 
 			if (context != null)
@@ -691,6 +971,85 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Removes entries from global resource registrations whose Func delegate targets
+		/// belong to non-default ALCs. Called during ALC teardown.
+		/// </summary>
+		internal static void ClearNonDefaultAlcRegistrations()
+		{
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByUri);
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByFilepath);
+		}
+
+		private static void RemoveNonDefaultAlcEntries(Dictionary<string, Func<ResourceDictionary>> dictionary)
+		{
+			var keysToRemove = new List<string>();
+			foreach (var kvp in dictionary)
+			{
+				if (kvp.Value is not { } func)
+				{
+					continue;
+				}
+
+				// Check both the target instance and the method's declaring type.
+				// Static delegates (Target == null) can still reference a non-default ALC
+				// via Method.DeclaringType.
+				var assembly = func.Target?.GetType().Assembly
+					?? func.Method.DeclaringType?.Assembly;
+
+				if (assembly is not null)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+					{
+						keysToRemove.Add(kvp.Key);
+					}
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				dictionary.Remove(key);
+			}
+		}
+
+		/// <summary>
+		/// Register a dictionary for a given source with ALC awareness.
+		/// When called from a non-default AssemblyLoadContext, the registration is scoped to that ALC.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterResourceDictionaryBySource(
+			string uri,
+			XamlParseContext context,
+			Func<ResourceDictionary> dictionary,
+			string filePath,
+			System.Runtime.Loader.AssemblyLoadContext alc)
+		{
+			// Always register in the ALC-scoped registry for non-default ALCs,
+			// regardless of HasSecondaryApps. The flag may not be set yet at
+			// registration time (it's set when Application.Start runs), but
+			// registration happens earlier during GlobalStaticResources.Initialize.
+			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (!_registeredDictionariesByUriByAlc.TryGetValue(alc, out var alcDict))
+					{
+						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+						_registeredDictionariesByUriByAlc.Add(alc, alcDict);
+					}
+					alcDict[uri] = dictionary;
+				}
+
+				// Note: For non-default ALCs, we don't register by filepath for hot reload
+				// as hot reload is typically used in the main application context.
+				return;
+			}
+
+			// Default ALC - use existing global registration
+			RegisterResourceDictionaryBySource(uri, context, dictionary, filePath);
+		}
+
+		/// <summary>
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -701,6 +1060,13 @@ namespace Uno.UI
 				throw new ArgumentNullException(nameof(source));
 			}
 
+			// Only do the expensive ALC lookup if we know secondary ALCs have registered resources
+			if (Application.HasSecondaryApps)
+			{
+				var callingAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(Assembly.GetCallingAssembly());
+				return RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null, callingAlc);
+			}
+
 			return RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null);
 		}
 
@@ -708,6 +1074,7 @@ namespace Uno.UI
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		public static ResourceDictionary RetrieveDictionaryForSource(string source, string currentAbsolutePath)
 		{
 			if (source == null)
@@ -721,9 +1088,111 @@ namespace Uno.UI
 				// If we don't have an absolute path it must be a local resource reference
 				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
+
+			// When secondary ALCs are active, check the ALC-scoped registry first.
+			// Use the ambient context if set, otherwise fall back to detecting the
+			// calling assembly's ALC (for code compiled with older source generators
+			// that don't wrap resource building with SetResolutionContext).
+			if (Application.HasSecondaryApps)
+			{
+				var alc = _currentResolutionAlc
+					?? AssemblyLoadContext.GetLoadContext(Assembly.GetCallingAssembly());
+
+				if (alc is not null && alc != AssemblyLoadContext.Default)
+				{
+					lock (_alcDictionariesLock)
+					{
+						if (_registeredDictionariesByUriByAlc.TryGetValue(alc, out var alcDict) &&
+							alcDict.TryGetValue(source, out var alcFactory))
+						{
+							return alcFactory();
+						}
+					}
+				}
+			}
+
 			if (_registeredDictionariesByUri.TryGetValue(source, out var factory))
 			{
 				return factory();
+			}
+
+			// Last-resort fallback: when the ALC context couldn't be determined
+			// (e.g., older generators without SetResolutionContext, JIT inlining
+			// causing GetCallingAssembly to return a default-ALC assembly, or
+			// indirect calls from Uno.UI framework code), search all ALC-scoped
+			// registries. This handles the common single-secondary-ALC case.
+			if (Application.HasSecondaryApps)
+			{
+				lock (_alcDictionariesLock)
+				{
+					foreach (var kvp in _registeredDictionariesByUriByAlc)
+					{
+						if (kvp.Value.TryGetValue(source, out var alcFallbackFactory))
+						{
+							return alcFallbackFactory();
+						}
+					}
+				}
+			}
+
+			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
+		}
+
+		/// <summary>
+		/// Retrieve the ResourceDictionary mapping to a given source with ALC awareness.
+		/// Checks the ALC-scoped registry first for non-default ALCs, then falls back to global registry.
+		/// </summary>
+		internal static ResourceDictionary RetrieveDictionaryForSource(
+			string source,
+			string currentAbsolutePath,
+			System.Runtime.Loader.AssemblyLoadContext callingAlc)
+		{
+			if (source is null)
+			{
+				// Null is unusual but valid in this context
+				return new ResourceDictionary();
+			}
+
+			if (!XamlFilePathHelper.IsAbsolutePath(source))
+			{
+				// If we don't have an absolute path it must be a local resource reference
+				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+			}
+
+			// Try ALC-specific registry first (for non-default ALCs)
+			if (callingAlc is not null && callingAlc != AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (_registeredDictionariesByUriByAlc.TryGetValue(callingAlc, out var alcDict) &&
+						alcDict.TryGetValue(source, out var alcFactory))
+					{
+						return alcFactory();
+					}
+				}
+			}
+
+			// Fall back to global (default ALC) registry
+			if (_registeredDictionariesByUri.TryGetValue(source, out var factory))
+			{
+				return factory();
+			}
+
+			// Last-resort fallback: when callingAlc was Default (e.g., ambient context
+			// wasn't set and caller fell back to Default) but the resource is only in
+			// an ALC-scoped registry, search all ALC registries.
+			if (Application.HasSecondaryApps)
+			{
+				lock (_alcDictionariesLock)
+				{
+					foreach (var kvp in _registeredDictionariesByUriByAlc)
+					{
+						if (kvp.Value.TryGetValue(source, out var alcFallbackFactory))
+						{
+							return alcFallbackFactory();
+						}
+					}
+				}
 			}
 
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
@@ -786,8 +1255,30 @@ namespace Uno.UI
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
 		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
+
+		/// <summary>
+		/// Sets the ambient ALC context for resource resolution and returns an <see cref="IDisposable"/>
+		/// that restores the previous context when disposed.
+		/// </summary>
+		/// <param name="alc">The <see cref="AssemblyLoadContext"/> to use for resource resolution.</param>
+		/// <returns>An <see cref="IDisposable"/> that restores the previous ALC context.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IDisposable SetResolutionContext(AssemblyLoadContext alc)
+		{
+			var previous = _currentResolutionAlc;
+			_currentResolutionAlc = alc;
+			return new ResolutionContextScope(previous);
+		}
+
+		private sealed class ResolutionContextScope : IDisposable
+		{
+			private readonly AssemblyLoadContext _previous;
+
+			public ResolutionContextScope(AssemblyLoadContext previous)
+				=> _previous = previous;
+
+			public void Dispose()
+				=> _currentResolutionAlc = _previous;
+		}
 	}
-
-
-
 }

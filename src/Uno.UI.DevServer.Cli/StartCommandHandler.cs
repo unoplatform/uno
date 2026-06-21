@@ -288,6 +288,21 @@ internal sealed class StartCommandHandler
 			}
 		}
 
+		// Ensure Uno.UI.RemoteControl.Host.exe has a Private+Domain inbound Allow rule
+		// on Windows.  CreateNoWindow=true on the host process suppresses the Windows
+		// Firewall dialog, so the rule is never created automatically.  The check is
+		// by rule display name (idempotent); the UAC prompt appears once per display-name
+		// lifetime.  After a package upgrade the old rule is found and no new prompt
+		// appears — the user must delete the old rule to re-trigger it.
+		// See spec-appendix-k-windows-firewall.md.
+		if (OperatingSystem.IsWindows() && hostPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+		{
+			// Canonicalize before passing to the firewall helper so that path traversal
+			// sequences (e.g. C:\legit\..\evil.exe) are resolved before validation.
+			var canonicalHostPath = Path.GetFullPath(hostPath);
+			await WindowsFirewallHelper.EnsureFirewallRuleAsync(canonicalHostPath, _logger, CancellationToken.None);
+		}
+
 		// Allocate port if needed
 		var effectivePort = parsed.HttpPort;
 		if (effectivePort == 0)

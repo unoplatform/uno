@@ -5,12 +5,10 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests")]
-[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
@@ -19,7 +17,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
-[assembly: InternalsVisibleTo("Uno.UI.XamlHost.Skia.Wpf")]
 
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]

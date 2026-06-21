@@ -1,0 +1,517 @@
+# Spec 044: Tool & Resource Registry
+
+> **Status**: Draft - 2026-06-17
+> **Author**: Carl de Billy
+> 2026-06-17 - Draft
+
+> **Audience & boundary**: this spec covers **only the registry** added to this repository
+> — an in-process store where modules declare tools and resources. It carries **no
+> messaging and no MCP knowledge**. Everything about transporting the catalogue to a
+> devserver and exposing it as MCP lives in separate codebases.
+> Two companion guides, one per role:
+> **Appendix A — Publisher Guide** (`spec-appendix-a-publisher-guide.md`) and
+> **Appendix B — Consumer Guide** (`spec-appendix-b-consumer-guide.md`).
+> Third-party technologies are named generically; no specific internal project is named.
+
+## Terminology (defined relative to the registry)
+
+| Term | Definition | Interface | Example |
+|---|---|---|---|
+| **Publisher** | Registers (publishes) tools/resources **into** the registry. | `IToolPublisher` (`ToolRegistry.Publisher`) | a design-time tooling module |
+| **Consumer** | **Reads** the registry and exposes it to agents (over MCP), owning all messaging. | `IToolCatalog` (`ToolRegistry.Catalog`) | an MCP server |
+
+> ⚠️ **Disambiguation**: a Consumer does "provide" tools to an agent — but **relative to the
+> registry it is a reader**, hence *consumer*. Both terms are always defined relative to the
+> registry: a Publisher writes to it, a Consumer reads from it.
+>
+> The registry is a **many-to-many hub**: there can be **several Publishers** (each
+> contributing its own tools/resources) and **several Consumers** (different ways of calling
+> those tools — an MCP server, another bridge, a test harness…). A Consumer **may also** be a
+> Publisher if it chooses to publish its own tools (its decision — §5).
+
+---
+
+## Executive Summary
+
+### The Problem
+
+Uno tooling exposes capabilities to AI agents through an MCP server. Today that surface is
+**closed**: the set of tools is discovered by reflecting over a **fixed, compile-time
+list**, and app-side operations are carried by **per-operation message types** correlated
+by a sequence id. No component above the Remote Control client can contribute a tool that
+reaches an agent. A design-time tooling module (and, later, other modules — and possibly
+applications themselves, as a bonus) needs to publish its own tools dynamically.
+
+### What We're Shipping
+
+A single, in-process **Tool & Resource Registry** in this repository. It is intentionally
+**just a registry**:
+
+- **Publishers** declare *tools* and *resources* into it. The vocabulary mirrors
+  tools/resources but has **no reference to MCP** — no notion of an agent or of the
+  protocol.
+- A **Consumer** (an MCP server, in a separate codebase) reads the registry **in-process**
+  and is responsible for **all** the rest: the messaging to the devserver and the mapping
+  onto MCP. The consumer already runs inside the app process and already owns that
+  pipeline; the registry simply gives it an in-memory source of truth to read. Several
+  consumers can read the same registry concurrently.
+
+```csharp
+// A publisher declares a tool — internal API. Tool names are namespaced by the owning module.
+var registration = ToolRegistry.Publisher.RegisterTool(
+    new ToolDescriptor(
+        Name: "mymodule_select_element",
+        Description: "Selects the element identified by the given handle.",
+        Parameters:
+        [
+            new ToolParameter("handle", "Opaque element handle.", ToolParameterKind.String, IsRequired: true),
+        ],
+        IsReadOnly: false),
+    handler: static async (invocation, ct) =>
+    {
+        var handle = invocation.GetString("handle");
+        // … act on the visual tree (runs on the UI thread by default) …
+        return ToolResult.Text($"Selected {handle}.");
+    });
+
+// Later, when the feature deactivates:
+registration.Dispose(); // removes the tool and raises Changed
+```
+
+### Why This Approach
+
+- **The registry has no transport.** It depends on no messaging, no `Frame`, no
+  `RemoteControlClient`. This deliberately keeps the entire MCP pipeline — including the
+  devserver messaging — in the consumer's codebase, exactly as it is today.
+- **In-process, single source of truth.** Both publishers and consumers run in the app
+  process; a consumer reads the registry directly via the same shared-ALC singleton
+  mechanism `RemoteControlClient.Instance` already relies on. No new wire protocol.
+- **Debug-only by packaging.** The registry lives in `Uno.UI.RemoteControl` (the
+  `Uno.WinUI.DevServer` package), which is a debug-only reference — so it is absent in
+  Release, matching "same logic as the Remote Control client".
+- **MCP-free vocabulary.** Publishers depend only on `ToolDescriptor`, `ToolParameter`,
+  `ResourceDescriptor`, `ToolResult`. The fact that a consumer is an MCP server is
+  invisible to them.
+- **Dynamic.** Registrations come and go; each returns an `IDisposable`, and add/remove
+  raises `Changed` so consumers can re-publish (list-changed semantics on their side).
+
+### Scope
+
+- **In Uno (this spec)**: `ToolRegistry` and its in-memory types in `Uno.UI.RemoteControl`,
+  `internal` (`[InternalsVisibleTo]` grants the test assemblies and the MCP consumer; further
+  consumer/publisher assemblies are added as each integration is wired — see §7). Tools and resources
+  both, including a resource-update signal.
+- **Publisher guide**: Appendix A (`spec-appendix-a-publisher-guide.md`).
+- **Consumer guide**: Appendix B (`spec-appendix-b-consumer-guide.md`) — the normative MCP
+  obligations for any consumer; consumer *code* is out of scope (separate codebase), as is
+  **all** messaging and MCP mapping.
+- **Not in scope**: any wire protocol / processor / message types in Uno; a public publisher
+  API (the "applications publish tools" bonus); persistence across sessions; agent
+  authentication/authorization.
+
+### Relationship with Spec 042 (Element Ref Handle Registry)
+
+Complementary: a tool operating on a visual-tree element takes an opaque element handle
+(`ElementRefHandle`, spec 042) as a `ToolParameter` and resolves it inside its handler. 042
+addresses *elements*; this spec addresses *capabilities*.
+
+---
+
+## 1. Architecture
+
+```
+ Publishers (modules)                          [Uno.UI.RemoteControl, internal + IVT]
+        │  ToolRegistry.Publisher.RegisterTool(descriptor, handler) -> IDisposable
+        ▼
+ ToolRegistry  (singleton, in-process, lock-free — NO transport dependency)
+        │  Publisher (IToolPublisher)  |  Catalog (IToolCatalog: Snapshot/Invoke/Read + events)
+        ▼
+ Consumer(s) — in-app component(s)             [separate codebase — see Appendix B]
+   - read the registry in-process (shared-ALC singleton)
+   - OWN all messaging to the devserver + the MCP mapping
+        │  (each consumer's existing pipeline)
+        ▼
+ devserver add-in -> HTTP MCP server -> agent
+```
+
+The registry sits in `Uno.UI.RemoteControl` purely for the debug-only packaging and
+proximity ("available wherever the Remote Control client is"); it does **not** use the
+client's transport.
+
+---
+
+## 2. Registry Types
+
+`src/Uno.UI.RemoteControl/Tools/`, namespace `Uno.UI.RemoteControl.Tools`. In-memory
+contracts (not wire DTOs). Immutable records; `ImmutableArray<T>` for collections.
+
+```csharp
+internal sealed record ToolDescriptor(
+    string Name,
+    string Description,
+    ImmutableArray<ToolParameter> Parameters,
+    bool IsReadOnly);
+
+internal sealed record ToolParameter(
+    string Name,
+    string Description,
+    ToolParameterKind Kind,
+    bool IsRequired = false,
+    string? DefaultValue = null,
+    ImmutableArray<string> AllowedValues = default, // enum constraint (String kind only); normalized so default reads as empty
+    string? JsonSchema = null); // escape hatch: raw JSON Schema for nested/constrained shapes; overrides Kind
+
+internal enum ToolParameterKind { String, Integer, Number, Boolean, Array, Object }
+
+internal sealed record ResourceDescriptor(
+    string Uri,
+    string Name,
+    string Description,
+    string? MimeType);
+
+internal sealed record ToolContent(
+    ToolContentKind Kind,
+    string? Text = null,
+    string? MimeType = null,
+    string? Base64Data = null);
+
+internal enum ToolContentKind { Text, Json, Image, Blob }
+
+internal sealed record ToolResult(
+    ImmutableArray<ToolContent> Content,
+    bool IsError = false)
+{
+    public static ToolResult Text(string text)
+        => new([new ToolContent(ToolContentKind.Text, Text: text)]);
+
+    public static ToolResult Error(string message)
+        => new([new ToolContent(ToolContentKind.Text, Text: message)], IsError: true);
+}
+```
+
+> The C# blocks in this spec are illustrative **shape sketches** (some members are shown as
+> declarations without bodies); they convey the contract, not a compilable unit.
+
+> **Visibility**: these types are `internal` (per the v1 decision) and reachable by consumers and
+> publishers via `[InternalsVisibleTo]` (the MCP consumer is granted; further consumer/publisher
+> assemblies are added as each integration is wired). A public, SemVer-stabilized API remains a
+> separate deferred decision (§7). They are **not** serialized by Uno —
+> each consumer maps them onto its own message payloads. The **typed parameter model** lets a
+> consumer generate a JSON Schema (Appendix B) without Uno referencing any JSON-Schema or MCP
+> type; for shapes the flat model can't express (nested objects/arrays, numeric constraints), a
+> publisher supplies `ToolParameter.JsonSchema` and the consumer uses it verbatim.
+
+---
+
+## 3. `ToolRegistry`
+
+`src/Uno.UI.RemoteControl/Tools/`. A **process-wide singleton** exposing **two segregated
+interfaces** and **no transport dependency**:
+
+- **`IToolPublisher`** — the *publication* face, used by **publishers**.
+- **`IToolCatalog`** — the *consumption* face, used by **consumers**.
+
+A static facade `ToolRegistry` exposes each face; the singleton implements both. Splitting
+the faces means each side depends only on what it needs, both are mockable in tests, and the
+publication face can later be promoted to public (the "apps publish tools" bonus) without
+exposing the consumption face.
+
+```csharp
+namespace Uno.UI.RemoteControl.Tools;
+
+/// <summary>Static accessor to the process-wide registry singleton.</summary>
+internal static class ToolRegistry
+{
+    /// <summary>Publication face — used by publishers.</summary>
+    public static IToolPublisher Publisher => _instance;
+
+    /// <summary>Consumption face — used by consumers (read via IVT).</summary>
+    public static IToolCatalog Catalog => _instance;
+
+    private static IToolRegistry _instance = new ToolRegistryImpl();
+
+    /// <summary>Wires the UI-thread marshalling seam (host-only); when unset, handlers run inline.</summary>
+    internal static void SetDispatcher(IToolDispatcher? dispatcher);
+
+    /// <summary>Swaps the backing registry for tests; dispose the result to restore.</summary>
+    internal static IDisposable SetForTesting(IToolRegistry instance);
+}
+
+/// <summary>Combined contract; the singleton implements both faces.</summary>
+internal interface IToolRegistry : IToolPublisher, IToolCatalog;
+
+internal interface IToolPublisher
+{
+    /// <summary>Declares a tool. Dispose the result to remove it.</summary>
+    IDisposable RegisterTool(ToolDescriptor descriptor, ToolHandler handler, bool runOnUIThread = true);
+
+    /// <summary>Declares a resource. Use the result to read or signal updates.</summary>
+    IResourceRegistration RegisterResource(ResourceDescriptor descriptor, ResourceReader reader);
+}
+
+internal interface IToolCatalog
+{
+    (ImmutableArray<ToolDescriptor> Tools, ImmutableArray<ResourceDescriptor> Resources) Snapshot();
+
+    /// <summary>Invokes a tool by name; marshals to the UI thread when the registration requested it.</summary>
+    ValueTask<ToolResult> InvokeAsync(string toolName, JsonObject arguments, CancellationToken ct);
+
+    ValueTask<ToolResult> ReadResourceAsync(string uri, CancellationToken ct);
+
+    /// <summary>Raised when the set of tools or resources changes (drives re-publication by consumers).</summary>
+    event EventHandler? Changed;
+
+    /// <summary>Raised when a registered resource signals an update (each consumer maps it to its subscribers).</summary>
+    event EventHandler<ResourceUpdatedEventArgs>? ResourceUpdated;
+}
+
+internal delegate ValueTask<ToolResult> ToolHandler(ToolInvocation invocation, CancellationToken ct);
+internal delegate ValueTask<ToolResult> ResourceReader(CancellationToken ct);
+
+internal interface IResourceRegistration : IDisposable
+{
+    /// <summary>Signals that the resource content changed (raises <see cref="IToolCatalog.ResourceUpdated"/>).</summary>
+    void NotifyUpdated();
+}
+
+/// <summary>
+/// Optional UI-thread marshalling seam. Supplied by the host (which knows the dispatcher) via
+/// <see cref="ToolRegistry.SetDispatcher"/>; when none is wired, handlers run inline.
+/// </summary>
+internal interface IToolDispatcher
+{
+    bool HasThreadAccess { get; }
+    Task<T> RunAsync<T>(Func<Task<T>> action);
+}
+
+internal sealed class ResourceUpdatedEventArgs(string uri) : EventArgs
+{
+    public string Uri { get; } = uri;
+}
+
+/// <summary>Parsed arguments passed to a tool handler.</summary>
+internal sealed class ToolInvocation
+{
+    public JsonObject Arguments { get; }
+    public string GetString(string name);
+    public int GetInt32(string name);
+    public bool GetBoolean(string name);
+    // … typed accessors mirroring ToolParameterKind …
+}
+```
+
+### 3.1 UI-thread marshalling & deadlock safety
+
+`InvokeAsync` / `ReadResourceAsync` carry the marshalling: for a registration with
+`runOnUIThread: true` (the default) the registry runs the handler on the UI dispatcher; with
+`runOnUIThread: false` it runs on the caller's thread. Consumers never deal with threading —
+they just await.
+
+The dispatcher is an **injectable seam** (`IToolDispatcher`) the host wires via
+`ToolRegistry.SetDispatcher`. **When no dispatcher is wired, handlers run inline** regardless
+of `runOnUIThread` — so the registry is decoupled from any concrete dispatcher and is fully
+usable for same-thread invocation without one.
+
+**Deadlock safety (mandatory).** When a dispatcher *is* wired, the registry must **never
+block-wait** on it. It checks `HasThreadAccess`: if the caller is **already on the UI thread**,
+the handler runs **inline** (no re-dispatch). This is essential on **WASM (single-threaded)**,
+where a consumer's call path is typically already on the UI thread — a naive marshal-then-await
+there would self-deadlock. The dispatch path is `await`-based (post + await completion), never a
+synchronous `.Wait()` / `.Result`.
+
+> **Live wiring is an integration step.** This spec/PR lands the registry and the seam; wiring a
+> real `IToolDispatcher` (over the app's window dispatcher) is done by the host integration that
+> owns the window and can exercise it end-to-end — see Open Items.
+
+**Invocation timeout.** `InvokeAsync` / `ReadResourceAsync` apply a watchdog timeout
+(`ToolRegistryImpl.InvocationTimeout`, default 30 s; `Timeout.InfiniteTimeSpan` disables) by
+linking the caller token with a `CancelAfter` source, so a hung handler can't block a consumer
+indefinitely. The watchdog is **cooperative**: it cancels the token handed to the handler, so it
+only fires if the handler observes that token (a handler that ignores it still runs to completion).
+A timeout that fires is logged at `Warning` and surfaced as an **error `ToolResult`** (discriminated
+from caller cancellation by checking the linked token, not merely "the caller didn't cancel"). A
+caller-initiated cancellation — and any `OperationCanceledException` the handler raises itself —
+propagates as an exception, so the two causes stay distinguishable.
+
+### 3.2 Concurrency
+
+Lock-free, per repository preference: registrations are held in an
+`ImmutableDictionary<string, …>` mutated via `ImmutableInterlocked`. No `lock`. Events use
+`EventHandler`/`EventHandler<T>` (never `event Action`, per repo convention).
+
+### 3.3 Name uniqueness
+
+`Name` is the key and must be unique across all publishers. A duplicate registration is
+**rejected with a `LogWarning`** naming the colliding `Name`; the existing tool is left
+untouched, and the call returns a **no-op `IDisposable`**
+that is *not* keyed to the winner — so disposing the rejected registration can never evict the
+live one. Publishers namespace by module (a `<module>_` prefix) — see Appendix A.
+
+### 3.4 Inert without a consumer
+
+`Publisher.RegisterTool`/`RegisterResource` only populate the store. If no consumer reads it
+(Release, no devserver, or no consumer present), nothing is published and nothing throws. The
+registry is safe to call unconditionally from a module.
+
+### 3.5 Many publishers, many consumers (single instance)
+
+The registry is a **many-to-many hub** backed by **one** singleton:
+
+- The singleton lives in `Uno.UI.RemoteControl` as a static. **Assumption (v1):** that
+  assembly loads once in a single shared ALC, so `ToolRegistry.Publisher` and
+  `ToolRegistry.Catalog` resolve to the **same** instance for every publisher and consumer.
+  Multi-ALC isolation (a publisher and a consumer resolving the static in *different* ALCs) is
+  an **accepted limitation, out of scope for v1** — not a guarantee the registry enforces.
+- **Several publishers** contribute concurrently — names are unique, and each owns and
+  disposes its own registrations. `Snapshot()` aggregates them all.
+- **Several consumers** read concurrently. The `IToolCatalog` face is **purely
+  observational**: `Snapshot`/`InvokeAsync`/`ReadResourceAsync` are reentrant, and `Changed`
+  / `ResourceUpdated` are **multicast** events — every consumer is notified and filters
+  against **its own** subscriptions. The registry does not know its consumers (anonymous
+  observers) and holds **no per-connection state**.
+- This also covers multiple `RemoteControlClient` instances (`Instance` + each
+  `CreateAdditional(...)`, each on a **distinct devserver**): the per-devserver fan-out and
+  the tracking of which agent subscribed to which URI live in the consumer(s), not the
+  registry.
+- Concurrent invocation is **best-effort, not serialized by the registry**: a tool *may* be
+  invoked concurrently (e.g. from several consumers), though in practice almost everything runs
+  on the UI thread and is therefore effectively serialized. The registry provides **no**
+  invocation serialization; a handler needing stronger guarantees owns its own thread-safety.
+
+### 3.6 Event dispatch safety
+
+`Changed` and `ResourceUpdated` are raised defensively: the registry **snapshots the
+subscriber list before invoking**, **isolates exceptions per subscriber** (one throwing
+subscriber must not prevent the others from being notified, nor surface to the publisher that
+called `NotifyUpdated()`), and **guards against re-entrancy** — a subscriber that mutates the
+registry (registers/disposes) or signals a further update while handling an event must not cause
+unbounded recursion or a `StackOverflowException`. `Changed` coalesces re-entrant raises behind a
+single pending flag; `ResourceUpdated` (which carries a per-uri payload that can't collapse to one
+flag) **queues** nested updates and drains them iteratively. Both close the window between draining
+and releasing the guard by re-checking pending work, so a raise enqueued by a concurrent thread in
+that gap is never stranded.
+
+**Handler/reader failures** are logged at `Warning` with the full exception (kept server-side) and
+surfaced to the consumer as a **generic** error `ToolResult` that does not echo the exception
+message — so internal detail (paths, types) never leaks across the boundary once a transport is
+wired.
+
+---
+
+## 4. Debug-only & Lifetime
+
+- The registry ships in `Uno.UI.RemoteControl` (the `Uno.WinUI.DevServer` package), a
+  debug-only reference — so it is absent in Release without any `#if DEBUG`.
+- Registrations are **session-scoped** and ephemeral: alive while the publisher holds the
+  `IDisposable`; never persisted across a process restart or devserver reset.
+- A publisher that activates/deactivates registers on activate and disposes on deactivate;
+  each transition raises `Changed`.
+- **In-flight invocations complete**: disposing a tool while an `InvokeAsync` for it is in
+  flight does not cancel that call (it finishes against the captured handler). `NotifyUpdated()`
+  on an already-disposed resource registration is a silent no-op.
+
+> **Trust model**: the registry, its publishers, and its consumers all run **in-process**,
+> under the **same trust boundary as the application itself**, and the feature is
+> **debug-only**. No authentication or authorization layer is provided or required here. As
+> defense-in-depth for the eventual remote transport, the registry does validate `arguments`
+> against the declared `ToolParameter[]` (required/kind/`AllowedValues`; the `JsonSchema` escape
+> hatch is delegated to the consumer) and surfaces handler failures as a generic error result
+> rather than echoing the exception — but these are robustness measures, **not** a substitute for
+> the consumer's own boundary checks once it owns a real transport.
+
+> **Publisher integration note**: `Uno.UI.RemoteControl` is a debug-only package reference. A
+> debug-only publisher must call `ToolRegistry` from a path gated the same way it consumes
+> Remote Control today; otherwise a thin optional shim is required. Finalized per module.
+
+---
+
+## 5. Roles & Guides
+
+The registry itself imposes no policy beyond §2–§4. Each role has a dedicated guide:
+
+- **Publishers** — see **Appendix A** (`spec-appendix-a-publisher-guide.md`): how to declare
+  tools/resources, the handler contract, parameters, naming, lifetime.
+- **Consumers** — see **Appendix B** (`spec-appendix-b-consumer-guide.md`): the **normative**
+  obligations to read the registry and expose it over MCP — capability declaration,
+  list-changed, `ToolParameter[]` → JSON Schema mapping, invocation, resource
+  read/subscribe/update, content mapping — and the fact that the consumer owns **all**
+  messaging. Written generically for **a** consumer, since several may coexist.
+
+**A consumer may also be a publisher.** Whether a consumer **also** publishes its own
+(currently hard-coded) tools into the registry — unifying everything behind one mechanism —
+is **entirely its decision**. The registry imposes nothing on a consumer's existing tools;
+dynamic and built-in tools can coexist indefinitely.
+
+---
+
+## 6. Tests
+
+TDD (red → green). Location: `src/Uno.UI.RemoteControl.DevServer.Tests` (already in
+`[InternalsVisibleTo]`). Purely registry-level — there is no transport in Uno to round-trip.
+
+**49 tests, all green** (`ToolRegistryTests`). The implemented suite:
+
+| Test | Covers |
+|------|--------|
+| `RegisterTool_ThenSnapshot_ContainsDescriptor` | A registered tool appears in `Snapshot()`. |
+| `RegisterTool_Dispose_RemovesDescriptor_AndRaisesChanged` | Dispose removes the tool and raises `Changed` (on both add and remove). |
+| `RegisterTool_DuplicateName_ReturnsNoOpDisposable_DoesNotEvictWinner` | Duplicate `Name` rejected (warning), returns a no-op `IDisposable`; disposing it leaves the winner. |
+| `MultiplePublishers_Snapshot_AggregatesAll` | Tools from several publishers all appear in one `Snapshot()`. |
+| `Snapshot_OrdersToolsByName_Stable` | `Snapshot()` returns tools in a stable order (by name), not the dictionary's enumeration order. |
+| `InvokeAsync_Success_ReturnsResult` | Routes to the handler and returns its `ToolResult` (default `runOnUIThread`, no dispatcher → inline). |
+| `InvokeAsync_HandlerThrows_ReturnsIsError` | A throwing handler yields `IsError`, no exception escapes. |
+| `InvokeAsync_HandlerThrowsOnMissingArg_ReturnsIsError` | A throwing typed accessor in the handler surfaces as `IsError`. |
+| `InvokeAsync_UnknownTool_ReturnsIsError` | Unknown/removed tool returns an error result. |
+| `InvokeAsync_OffUIThread_UsesDispatcher` | With a wired dispatcher and `HasThreadAccess == false`, marshals via the dispatcher. |
+| `InvokeAsync_AlreadyOnUIThread_RunsInline_NoDispatch` | With `HasThreadAccess == true`, runs inline (WASM deadlock guard). |
+| `InvokeAsync_RunOnUIThread_NoDispatcher_RunsInline` | No dispatcher wired → runs inline regardless of `runOnUIThread`. |
+| `InvokeAsync_DisposeDuringInvoke_CompletesInFlight` | Disposing mid-invocation lets the in-flight call complete. |
+| `InvokeAsync_CancelledToken_Throws` | A cancelled token throws `OperationCanceledException` before the handler (not `IsError`). |
+| `ReadResourceAsync_ReturnsContent` | Returns the reader's `ToolResult`. |
+| `ReadResourceAsync_Unknown_ReturnsIsError` | Unknown uri returns an error result. |
+| `ReadResourceAsync_ReaderThrows_ReturnsIsError` | A throwing reader surfaces as `IsError`. |
+| `NotifyUpdated_RaisesResourceUpdated_WithUri` | `NotifyUpdated()` raises `ResourceUpdated` with the correct URI. |
+| `NotifyUpdated_AfterDispose_IsNoOp` | `NotifyUpdated()` after dispose raises nothing. |
+| `MultipleConsumers_ResourceUpdated_Multicast` | `NotifyUpdated()` reaches every subscriber. |
+| `MultipleConsumers_Changed_AllNotified` | Several `Changed` subscribers are all notified. |
+| `Event_SubscriberThrows_OthersStillNotified` | A throwing subscriber doesn't block others, nor surface to the caller. |
+| `Event_ReentrantRegisterDuringRaise_DoesNotRecurseUnbounded` | Reentrant register during a raise is coalesced (no stack overflow), and observed. |
+| `Publisher_And_Catalog_ResolveToSameInstance` | Both faces are the same singleton. |
+| `SetForTesting_SwapsAndRestores` | `SetForTesting(...)` swaps and restores on dispose. |
+| `ConcurrentRegisterUnregister_RemainsConsistentAndLive` | A parallel register/dispose storm converges to a consistent store and the coalescing guard is not wedged afterwards. |
+| `NotifyUpdated_ReentrantDuringRaise_DrainsWithoutUnboundedRecursion` | A `ResourceUpdated` handler that re-signals is observed via the queued drain, not recursion. |
+| `NotifyUpdated_DeepReentrancy_DoesNotStackOverflow` | Deep re-entrant updates drain iteratively without a `StackOverflowException`. |
+| `InvokeAsync_DisposeWhileHandlerParkedOnOtherThread_CompletesInFlight` | Disposing while a handler is genuinely parked on another thread lets the in-flight call complete. |
+| `Validate_MissingRequiredArgument_ReturnsError` | A missing required argument fails validation. |
+| `Validate_WrongType_ReturnsError` | An argument of the wrong `Kind` fails validation. |
+| `Validate_AllowedValuesViolation_ReturnsError` | A value outside `AllowedValues` fails validation. |
+| `Validate_JsonSchemaPresent_SkipsFlatValidation` | A parameter with a `JsonSchema` bypasses flat type validation. |
+| `Validate_ValidArguments_ReturnsNull` | Conforming arguments pass validation. |
+| `Validate_FractionalNumberForIntegerParam_ReturnsError` | A fractional Number fails Integer validation, matching `GetInt32`. |
+| `Validate_NullArgument_TreatedAsAbsent` | A JSON null is treated as absent: optional ignored, required reports "missing". |
+| `Validate_IntegerBeyondInt32Range_ReturnsError` | An Integer value outside Int32 range fails validation, matching what `GetInt32` can read. |
+| `InvokeAsync_InvalidArguments_ReturnsIsError` | Validation failure surfaces as an error result before dispatch. |
+| `InvokeAsync_HandlerExceedsTimeout_ReturnsIsError_NotCancellation` | A handler exceeding the timeout yields an error result, not a thrown cancellation. |
+| `InvokeAsync_DispatcherHangs_TimesOutAsError` | If the UI-thread dispatcher never completes, the watchdog still abandons the invocation as an error (timeout covers dispatch). |
+| `InvokeAsync_CallerCancelsDuringHandler_Throws` | Caller cancellation during a running handler throws `OperationCanceledException`. |
+| `InvokeAsync_CancelledToken_UnknownTool_Throws` | A pre-cancelled token throws even for an unknown tool (cancellation is checked first). |
+| `InvokeAsync_HandlerThrowsOwnCancellation_PropagatesNotMisclassifiedAsTimeout` | A handler's own OCE propagates as a throw, never a phantom timeout result. |
+| `TryGetInt32_And_TryGetBoolean_ReturnTypedValues` | The typed `TryGet*` accessors read values and report false on wrong/missing. |
+| `ToolParameter_DefaultAllowedValues_ReadsAsEmpty_NotDefault` | A default (uninitialized) `AllowedValues` reads as empty, never throwing on enumeration. |
+| `ToolDescriptor_DefaultParameters_ReadsAsEmpty_AndInvokesWithoutThrowing` | A default (uninitialized) `Parameters` reads as empty and validates/invokes without throwing. |
+| `InvokeAsync_TypedAccessors_IntAndBool` | `GetInt32`/`GetBoolean` read typed arguments. |
+| `TryGetString_NullValuedProperty_ReturnsFalse` | A null-valued JSON property is treated as absent. |
+
+---
+
+## 7. Open Items
+
+| # | Item | Priority |
+|---|------|----------|
+| 1 | **Registry location**: `Uno.UI.RemoteControl` (recommended — debug-only + proximity) vs a more neutral assembly decoupled from the DevServer package. | P2 |
+| 2 | **Live dispatcher wiring**: wire a real `IToolDispatcher` (over the app's window dispatcher) via `ToolRegistry.SetDispatcher` in the host integration that owns the window, where it can be exercised end-to-end. The registry runs inline until then. | P1 |
+| 2b | **Publisher debug-only wiring**: confirm the call path / optional shim so a debug-only publisher reaches `ToolRegistry` without a Release dependency. | P1 |
+| 3 | **Public publisher API** (bonus: applications publish their own tools): stabilize under SemVer; decide where public types live. | P2 |
+| 4 | **Built-in argument validation** — ✅ *implemented*: `ToolArgumentValidator` checks `arguments` against `ToolParameter[]` (required/kind/`AllowedValues`; `JsonSchema` delegated) inside `InvokeAsync`, alongside an invocation timeout and generic error surfacing. Defense-in-depth for the eventual remote transport, not a replacement for consumer boundary checks. | — |
+| 5 | **Resource templates** (parameterized URIs, MCP `resourceTemplates`): evaluate whether `ResourceDescriptor` needs a template variant. (Nested/constrained *tool params* are already covered by `ToolParameter.JsonSchema`.) | P3 |
+| 6 | **Registry scoping / lifetime**: v1 is a process-wide `static` singleton resolved through the same shared-ALC mechanism `RemoteControlClient.Instance` uses (so it stays transport-agnostic and acts as one many-to-many hub — §3.5). The alternative — anchoring it to a host instance for explicit per-ALC lifetime — is **deferred**, to be decided with the consumer integration. If kept static, add an ALC-unload hook / host-triggered `Clear()`; publishers must still dispose their registrations on unload (each returns an `IDisposable`). Recorded here so the decision is explicit, not inherited silently. | P2 |

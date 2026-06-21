@@ -1109,7 +1109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var transform = root.TransformToVisual(null);
 			foreach (var (point, expectedName) in pointToTarget)
 			{
-				var actualTarget = (FrameworkElement)VisualTreeHelper.HitTest(transform.TransformPoint(point), TestServices.WindowHelper.XamlRoot).element;
+				var actualTarget = (FrameworkElement)VisualTreeHelper.HitTest(transform.TransformPoint(point), TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement).element;
 				Assert.AreEqual(expectedName, actualTarget.Name);
 			}
 		}

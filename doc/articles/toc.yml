@@ -78,6 +78,8 @@
           href: xref:Uno.UI.CommonIssues.MobileDebugging
         - name: AI Agents
           href: xref:Uno.UI.CommonIssues.AIAgents
+        - name: Enterprise / Corporate Networks
+          href: xref:Uno.Features.DevServer.EnterpriseNetwork
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:
@@ -255,8 +257,6 @@
 
     - name: Embedding
       items:
-      - name: Uno Platform in WPF
-        href: guides/uno-islands.md
       - name: Native Views
         href: native-views.md
       - name: Native Views with Skia
@@ -292,7 +292,7 @@
         href: guides/xf-migration/toc.yml
       - name: WPF
         items:
-          - name: Migrating WPF Apps to Web
+          - name: Migrating WPF Apps to Uno Platform
             href: wpf-migration.md
           - name: WPF to WinUI XAML Equivalents
             href: wpf-winui-equivalents.md
@@ -416,7 +416,7 @@
         items:
           - name: Overview
             href: contributing/guidelines/creating-tests.md
-          - name: Mocked unit tests (Uno.UI.Tests)
+          - name: Unit tests (Uno.UI.Tests)
             href: uno-development/creating-mocked-tests.md
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
             href: uno-development/creating-runtime-tests.md
@@ -465,10 +465,14 @@
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
-- name: Studio
+- name: Uno Platform Studio
   items:
     - name: Overview
       href: xref:Uno.Platform.Studio.Overview
+    - name: App
+      href: external/studio-docs/App/toc.yml
+    - name: Agent
+      href: external/studio-docs/Agent/toc.yml
     - name: Uno MCPs
       href: xref:Uno.Features.Uno.MCPs
     - name: Hot Reload
@@ -631,6 +635,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: SystemBackdrop
+          href: features/system-backdrop.md
         - name: Spell checking
           href: features/spellchecking.md
         - name: String resources and localization

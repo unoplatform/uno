@@ -7,6 +7,7 @@
 #import "UNOApplication.h"
 #import "UNOSoftView.h"
 #import "UNOAccessibility.h"
+#import "UNODragDrop.h"
 
 static NSWindow *main_window;
 static NSMutableSet<NSWindow*> *windows;
@@ -272,6 +273,34 @@ NSWindow* uno_app_get_main_window(void)
     [super doCommandBySelector:selector];
 }
 
+#pragma mark - NSDraggingDestination
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_entered(self, sender);
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_updated(self, sender);
+}
+
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender {
+    uno_drag_drop_handle_exited(self, sender);
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_performed(self, sender);
+}
+
+#pragma mark - NSDraggingSource
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return uno_drag_source_operation_mask(self, context);
+}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    uno_drag_source_session_ended(self, operation);
+}
+
 @end
 
 NSWindow* uno_window_create(double width, double height)
@@ -316,6 +345,8 @@ NSWindow* uno_window_create(double width, double height)
     [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:window];
     
     [windows addObject:window];
+
+    uno_window_register_for_drag_drop(window);
 
     // do not show the window until activate has been called
     [window makeKeyWindow];
@@ -964,17 +995,21 @@ void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
 
 void uno_set_ime_active(UNOWindow* window, bool active)
 {
-    NSView *contentView = window.contentViewController.view;
+    // The NSTextInputClient lives on the rendering view (UNOMetalFlippedView / UNOSoftView),
+    // not on the container view returned by contentViewController.view. The container is a
+    // plain NSView used to host backdrop effects below the rendering view.
+    NSView *renderingView = window.renderingView;
 #if DEBUG
-    NSLog(@"uno_set_ime_active: window=%p active=%s contentView=%@ respondsToSelector=%s",
-          window, active ? "true" : "false", contentView,
-          [contentView respondsToSelector:@selector(setImeActive:)] ? "true" : "false");
+    NSLog(@"uno_set_ime_active: window=%p active=%s renderingView=%@ respondsToSelector=%s",
+          window, active ? "true" : "false", renderingView,
+          [renderingView respondsToSelector:@selector(setImeActive:)] ? "true" : "false");
 #endif
-    if ([contentView respondsToSelector:@selector(setImeActive:)]) {
-        [(id)contentView setImeActive:active];
+    if ([renderingView respondsToSelector:@selector(setImeActive:)]) {
+        [(id)renderingView setImeActive:active];
         if (active) {
-            // Ensure the content view is the first responder when activating IME
-            [window makeFirstResponder:contentView];
+            // Ensure the rendering view is the first responder when activating IME so
+            // NSTextInputContext can locate the NSTextInputClient.
+            [window makeFirstResponder:renderingView];
         }
     }
 }
@@ -1224,19 +1259,21 @@ NSOperatingSystemVersion _osVersion;
             break;
         }
         case NSEventTypeKeyDown: {
-            // When IME is active, route key events through the content view's
+            // When IME is active, route key events through the rendering view's
             // text input system (NSTextInputClient) for composition support.
-            // The content view's keyDown: calls handleEvent: which triggers
+            // The rendering view's keyDown: calls handleEvent: which triggers
             // the NSTextInputClient protocol callbacks (setMarkedText/insertText).
             // If the IME didn't consume the event (arrow keys, backspace, tab, etc.),
             // fall through to normal key handling.
-            NSView *contentView = self.contentViewController.view;
-            BOOL imeActive = [contentView respondsToSelector:@selector(imeActive)] && [(id)contentView imeActive];
+            // Note: the container view returned by contentViewController.view does NOT
+            // implement NSTextInputClient — only the rendering view does.
+            NSView *renderingView = self.renderingView;
+            BOOL imeActive = [renderingView respondsToSelector:@selector(imeActive)] && [(id)renderingView imeActive];
             if (imeActive) {
-                [self makeFirstResponder:contentView];
-                [contentView keyDown:event];
-                BOOL consumed = [contentView respondsToSelector:@selector(keyEventHandledByIME)]
-                    && [(id)contentView keyEventHandledByIME];
+                [self makeFirstResponder:renderingView];
+                [renderingView keyDown:event];
+                BOOL consumed = [renderingView respondsToSelector:@selector(keyEventHandledByIME)]
+                    && [(id)renderingView keyEventHandledByIME];
                 if (consumed) {
                     handled = true;
                 } else {
@@ -1285,10 +1322,15 @@ NSOperatingSystemVersion _osVersion;
 #endif
     }
 
+    // Keep the latest mouse-drag event available for outbound drag sessions that start after an
+    // async hop (e.g. the managed side awaiting bitmap I/O), where [NSApp currentEvent] may no
+    // longer be a mouse event when beginDraggingSessionWithItems:event: is finally called.
+    uno_drag_drop_track_mouse_event(event);
+
     if (_osVersion.majorVersion >= 15) {
         [MouseButtons track:event];
     }
-    
+
     if (mouse != MouseEventsNone) {
         struct MouseEventData data;
         memset(&data, 0, sizeof(struct MouseEventData));

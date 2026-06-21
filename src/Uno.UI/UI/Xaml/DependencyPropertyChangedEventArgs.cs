@@ -12,11 +12,9 @@ namespace Microsoft.UI.Xaml
 		internal DependencyProperty PropertyInternal;
 		internal object NewValueInternal;
 		internal object OldValueInternal;
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 		internal DependencyPropertyValuePrecedences NewPrecedenceInternal;
 		internal DependencyPropertyValuePrecedences OldPrecedenceInternal;
 		internal bool BypassesPropagationInternal;
-#endif
 
 		internal DependencyPropertyChangedEventArgs()
 		{
@@ -33,7 +31,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public object OldValue => OldValueInternal;
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 		/// <summary>
 		/// Gets the dependency property value precedence of the new value
 		/// </summary>
@@ -50,6 +47,5 @@ namespace Microsoft.UI.Xaml
 		/// in iOS.
 		/// </summary>
 		internal bool BypassesPropagation => BypassesPropagationInternal;
-#endif
 	}
 }

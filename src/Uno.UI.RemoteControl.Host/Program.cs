@@ -17,7 +17,9 @@ using Microsoft.Extensions.Options;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.Extensibility;
+using Uno.UI.RemoteControl.Host.Configuration;
 using Uno.UI.RemoteControl.Host.Helpers;
+using Uno.UI.RemoteControl.ServerCore.Configuration;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Host.Mcp;
 using Uno.UI.RemoteControl.Server.AppLaunch;
@@ -40,6 +42,12 @@ namespace Uno.UI.RemoteControl.Host
 
 			try
 			{
+				// Must run before anything else so the Resolving handler and
+				// the eager-loaded shared-framework OOB instances are in place before
+				// ASP.NET Core / Kestrel / add-in load triggers the first
+				// cross-major-version AssemblyRef lookup.
+				HostAssemblyResolution.Install();
+
 				var switchMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 				{
 					["-c"] = "command",
@@ -109,6 +117,7 @@ namespace Uno.UI.RemoteControl.Host
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
 				globalServices.AddSingleton<IConfiguration>(globalConfiguration);
+				globalServices.AddSingleton<IRemoteControlConfiguration>(_ => new ConfigurationRemoteControlConfiguration(globalConfiguration));
 
 				// Add logging services to the global container
 				// This is necessary for services like IdeChannelServer that require ILogger<T>
@@ -178,14 +187,18 @@ namespace Uno.UI.RemoteControl.Host
 				builder.Services.AddSingleton(_ =>
 					globalServiceProvider.GetRequiredService<AmbientRegistry>());
 
-				builder.Services.AddSingleton<ApplicationLaunchMonitor>(_ =>
-					globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
+				builder.Services.AddSingleton<IApplicationLaunchMonitor>(_ =>
+					globalServiceProvider.GetRequiredService<IApplicationLaunchMonitor>());
+
+				builder.Services.AddSingleton<IRemoteControlConfiguration>(_ =>
+					globalServiceProvider.GetRequiredService<IRemoteControlConfiguration>());
 
 				// Add the global service provider to the DI container
 				builder.Services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
 
 				// Add connection-specific telemetry services (Scoped)
 				builder.Services.AddConnectionTelemetry(solution);
+				builder.Services.AddRemoteControlServerCore();
 
 				// Apply Startup.ConfigureServices for compatibility with existing Startup class
 				new Startup(builder.Configuration).ConfigureServices(builder.Services);

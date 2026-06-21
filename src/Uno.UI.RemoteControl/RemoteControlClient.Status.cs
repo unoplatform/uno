@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.Messages;
-using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
+using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
 
 namespace Uno.UI.RemoteControl;
 
@@ -17,19 +17,22 @@ public partial class RemoteControlClient
 
 	public RemoteControlStatus Status => _status.BuildStatus();
 
-	private class StatusSink : DevServerDiagnostics.ISink
+	private class StatusSink : DevServerDiagnostics.ISink, IDisposable
 	{
-		private readonly RemoteControlClient _owner;
+		private RemoteControlClient? _owner;
 		private ConnectionState _state = ConnectionState.Idle;
 		private ConnectionError? _error;
 
 		private string? _hotReloadServerError;
 
-		public StatusSink(RemoteControlClient owner)
+		public StatusSink(RemoteControlClient owner, bool registerDiagnosticView)
 		{
 			_owner = owner;
 #if HAS_UNO_WINUI
-			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
+			if (registerDiagnosticView)
+			{
+				DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
+			}
 #endif
 		}
 
@@ -43,7 +46,7 @@ public partial class RemoteControlClient
 		}
 
 		private void NotifyStatusChanged()
-			=> _owner.StatusChanged?.Invoke(_owner, BuildStatus());
+			=> _owner?.StatusChanged?.Invoke(_owner, BuildStatus());
 
 		#region Connection status
 		public void ReportActiveConnection(Connection? connection)
@@ -140,6 +143,18 @@ public partial class RemoteControlClient
 			_sinceLastPing?.Stop();
 			_keepAliveState = KeepAliveState.Aborted;
 			NotifyStatusChanged();
+		}
+
+		public void Dispose()
+		{
+			Interlocked.Exchange(ref _pongTimeout, null)?.Dispose();
+			_sinceLastPing?.Stop();
+
+			// Break the StatusSink → RemoteControlClient → HotDesign → ALC reference chain.
+			// StatusSink instances are captured in AsyncLocal (via DevServerDiagnostics.Current)
+			// and persist in thread ExecutionContext even after disposal. Nulling _owner ensures
+			// the captured StatusSink no longer roots the RemoteControlClient object graph.
+			_owner = null;
 		}
 		#endregion
 

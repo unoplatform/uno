@@ -11,7 +11,7 @@ using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-public partial class ClientHotReloadProcessor : IClientProcessor
+public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 {
 	private string? _projectPath;
 	private readonly IRemoteControlClient _rcClient;
@@ -26,6 +26,12 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	}
 
 	partial void InitializeMetadataUpdater();
+
+	public void Dispose()
+	{
+		_agent?.Dispose();
+		_agent = null;
+	}
 
 	string IClientProcessor.Scope => WellKnownScopes.HotReload;
 
@@ -60,9 +66,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				break;
 
 			default:
-				if (this.Log().IsEnabled(LogLevel.Error))
+				// An unrecognized frame name does not indicate a client error: a frame can be
+				// relayed over a scope this processor participates in while being addressed to a
+				// different consumer (for example host-only diagnostics frames). Log at Debug so a
+				// benign, expected frame does not surface as a red error in the console.
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogError($"Received unknown frame [{frame.Scope}/{frame.Name}]");
+					this.Log().LogDebug($"Received unknown frame [{frame.Scope}/{frame.Name}]");
 				}
 				break;
 		}
@@ -91,7 +101,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 				if (!_supportsMetadataUpdates)
 				{
-					_status.ReportInvalidRuntime();
+					_status.ReportLocallyDisabledState("Environment not supported");
 				}
 
 				var hrDebug = Debugger.IsAttached && Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";

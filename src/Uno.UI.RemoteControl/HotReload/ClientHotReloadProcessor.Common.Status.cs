@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.Foundation.Logging;
@@ -79,7 +80,7 @@ public partial class ClientHotReloadProcessor
 
 		public Status Current { get; private set; } = null!;
 
-		public void ReportInvalidRuntime()
+		public void ReportLocallyDisabledState(string reason)
 		{
 			_serverState = HotReloadState.Disabled;
 			_isFinalServerState = true;
@@ -129,17 +130,76 @@ public partial class ClientHotReloadProcessor
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
 
-		public HotReloadClientOperation ReportLocalStarting(Type[] types)
+		/// <summary>
+		/// Starts a new local hot-reload operation using the source previously
+		/// stored via <see cref="ConfigureSourceForNextOperation"/>. Pair the two
+		/// when the source is decided one step earlier than the op itself — e.g.
+		/// the agent path sets <see cref="HotReloadSource.DevServer"/> when a
+		/// server frame arrives, then later calls <c>StartLocal(types)</c> from
+		/// the file-update handler without having to thread the source through
+		/// intermediate code.
+		/// <para>
+		/// For one-off operations whose source is known at the call site, prefer
+		/// the explicit <see cref="StartLocal(HotReloadSource, Type[])"/>
+		/// overload — it avoids the implicit dependency on the pre-configured
+		/// <c>_source</c> field and the race that comes with it when multiple
+		/// callers can mutate the source concurrently.
+		/// </para>
+		/// </summary>
+		public HotReloadClientOperation StartLocal(Type[] types)
+			=> StartLocal(_source, types);
+
+		/// <summary>
+		/// Starts a new local hot-reload operation tagged with the specified
+		/// <paramref name="source"/>, without consulting the configured
+		/// next-op source. Use this for one-off operations whose source is
+		/// known at the call site (e.g. user-initiated <c>UIUpdate.ForceRefresh</c>
+		/// → <see cref="HotReloadSource.Manual"/>) so the caller doesn't have
+		/// to round-trip through <see cref="ConfigureSourceForNextOperation"/>.
+		/// </summary>
+		public HotReloadClientOperation StartLocal(HotReloadSource source, Type[] types)
 		{
-			var op = new HotReloadClientOperation(_source, types, NotifyStatusChanged);
-			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(Compare), op);
+			var op = new HotReloadClientOperation(source, types, NotifyStatusChanged);
+			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(CompareBySequenceId), op);
 			NotifyStatusChanged();
 
 			return op;
-
-			static int Compare(HotReloadClientOperation left, HotReloadClientOperation right)
-				=> Comparer<long>.Default.Compare(left.Id, right.Id);
 		}
+
+		public HotReloadClientOperation ContinueOrStartLocal(HotReloadSource source, Type[] types)
+		{
+			// Fast path: re-use the last operation if it's still in-progress or was ignored.
+			// ReportIgnored does not set _result, so a reused ignored op is still "live":
+			// the upcoming ReportCompleted will complete it normally and the terminal event
+			// overrides the earlier Ignored one.
+			if (_localOperations is [.., { Result: null or HotReloadClientResult.Ignored } last])
+			{
+				return last;
+			}
+
+			// Slow path: atomically create a new operation if the fast-path check
+			// lost a race (another thread completed the last op between the check and here).
+			ImmutableInterlocked.Update(ref _localOperations, CreateIfNeeded, (source, types, callback: (Action)NotifyStatusChanged));
+			NotifyStatusChanged();
+			return _localOperations.Last();
+
+			static ImmutableList<HotReloadClientOperation> CreateIfNeeded(
+				ImmutableList<HotReloadClientOperation> history,
+				(HotReloadSource source, Type[] types, Action callback) args)
+			{
+				if (history is [.., { Result: null or HotReloadClientResult.Ignored }])
+				{
+					return history; // Re-use — no mutation needed.
+				}
+
+				return history
+					.Add(new HotReloadClientOperation(args.source, args.types, args.callback))
+					.Sort(CompareBySequenceId);
+			}
+		}
+
+		private static int CompareBySequenceId(HotReloadClientOperation left, HotReloadClientOperation right)
+			=> Comparer<long>.Default.Compare(left.Id, right.Id);
 
 		private void NotifyStatusChanged()
 		{
@@ -188,6 +248,12 @@ public partial class ClientHotReloadProcessor
 
 	public class HotReloadClientOperation
 	{
+		/// <summary>
+		/// No-op sentinel used when no real operation is available.
+		/// All lifecycle methods are safe to call but do nothing.
+		/// </summary>
+		internal static readonly HotReloadClientOperation Empty = new();
+
 		#region Current
 		[ThreadStatic]
 		private static HotReloadClientOperation? _opForCurrentUiThread;
@@ -197,12 +263,14 @@ public partial class ClientHotReloadProcessor
 
 		internal void SetCurrent()
 		{
+			if (this == Empty) return;
 			Debug.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
 			_opForCurrentUiThread = this;
 		}
 
 		internal void ResignCurrent()
 		{
+			if (this == Empty) return;
 			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for the current UI thread.");
 			_opForCurrentUiThread = null;
 		}
@@ -210,17 +278,27 @@ public partial class ClientHotReloadProcessor
 
 		private static int _count;
 
-		private readonly Action _onUpdated;
+		private readonly Action? _onUpdated;
+		private readonly bool _isEmpty;
 		private string[]? _curatedTypes;
 		private ImmutableList<Exception> _exceptions = ImmutableList<Exception>.Empty;
 		private int _result = -1;
+
+		/// <summary>Private constructor for the <see cref="Empty"/> sentinel.</summary>
+		private HotReloadClientOperation()
+		{
+			_isEmpty = true;
+			Source = default;
+			Types = [];
+		}
 
 		internal HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
 		{
 			Source = source;
 			Types = types;
-
 			_onUpdated = onUpdated;
+
+			SendEvent();
 		}
 
 		public int Id { get; } = Interlocked.Increment(ref _count);
@@ -303,14 +381,26 @@ public partial class ClientHotReloadProcessor
 
 		public DateTimeOffset? EndTime { get; private set; }
 
+		public DateTimeOffset? IgnoreTime { get; private set; }
+
 		public HotReloadClientResult? Result => _result is -1 ? null : (HotReloadClientResult)_result;
 
 		public ImmutableList<Exception> Exceptions => _exceptions;
 
 		public string? IgnoreReason { get; private set; }
 
+		private int _elementsReplaced;
+		private int _elementErrors;
+
+		/// <summary>Number of elements successfully replaced during the UI update.</summary>
+		public int ElementsReplaced => _elementsReplaced;
+
+		/// <summary>Number of elements that failed to replace during the UI update.</summary>
+		public int ElementErrors => _elementErrors;
+
 		internal void AddType(Type type)
 		{
+			if (_isEmpty) return;
 			if (Types.Contains(type))
 			{
 				return;
@@ -318,7 +408,7 @@ public partial class ClientHotReloadProcessor
 
 			_curatedTypes = null;
 			Types = Types.Append(type).ToArray();
-			_onUpdated();
+			_onUpdated?.Invoke();
 		}
 
 		internal void ReportError(MethodInfo source, Exception error)
@@ -326,8 +416,9 @@ public partial class ClientHotReloadProcessor
 
 		internal void ReportError(Exception error)
 		{
+			if (_isEmpty) return;
 			ImmutableInterlocked.Update(ref _exceptions, static (errors, error) => errors.Add(error), error);
-			_onUpdated();
+			_onUpdated?.Invoke();
 		}
 
 		internal void ReportWarning(Exception exception)
@@ -336,30 +427,171 @@ public partial class ClientHotReloadProcessor
 			// For now, we don't even surface it to the user in any way other than logs (by caller).
 		}
 
+		internal void ReportElementReplaced()
+		{
+			if (_isEmpty) return;
+			Interlocked.Increment(ref _elementsReplaced);
+		}
+
+		internal void ReportElementError(Exception error)
+		{
+			if (_isEmpty) return;
+			Interlocked.Increment(ref _elementErrors);
+			ReportError(error);
+		}
+
+		/// <summary>
+		/// Marks the operation as complete and sends a terminal event to the server.
+		/// </summary>
+		/// <remarks>
+		/// <para>Accepts override from <see cref="HotReloadClientResult.Ignored"/> (the
+		/// underlying state used by <see cref="ReportDeferred"/>): a deferred op is
+		/// <em>potentially</em> intermediate — the drain that fires when all pause handles
+		/// are released will call <see cref="ReportCompleted"/> to promote it to Success/Failed.
+		/// If the drain never fires (e.g. the handle is never disposed), the op stays at
+		/// Ignored/deferred and downstream timers may escalate it to <c>TimedOut</c>.</para>
+		/// <para>The CAS loop allows the transition from either <c>-1</c>
+		/// (first-time completion) or <see cref="HotReloadClientResult.Ignored"/>
+		/// (deferred-then-applied) to <see cref="HotReloadClientResult.Success"/> /
+		/// <see cref="HotReloadClientResult.Failed"/>. Any other pre-existing state
+		/// (Success/Failed) is a programming error (double-complete).</para>
+		/// <para><see cref="IgnoreTime"/> and <see cref="IgnoreReason"/> are preserved
+		/// across the override — they document that the op went through a Deferred
+		/// phase. The emitted event's <c>Kind</c> still surfaces the terminal
+		/// Succeeded/Failed because <c>HotReloadClientOperationEvent.Kind</c> gives
+		/// <see cref="EndTime"/> priority over <see cref="IgnoreTime"/>.</para>
+		/// </remarks>
 		internal void ReportCompleted()
 		{
-			var result = (_exceptions, IgnoreReason) switch
-			{
-				({ Count: > 0 }, _) => HotReloadClientResult.Failed,
-				(_, not null) => HotReloadClientResult.Ignored,
-				_ => HotReloadClientResult.Success
-			};
+			if (_isEmpty) return;
 
-			if (Interlocked.CompareExchange(ref _result, (int)result, -1) is -1)
+			// IgnoreReason is intentionally NOT consulted here: an explicit ReportCompleted
+			// overrides any prior ReportDeferred. Only _exceptions decide Success vs Failed.
+			var result = _exceptions.Count > 0
+				? HotReloadClientResult.Failed
+				: HotReloadClientResult.Success;
+
+			int previous;
+			do
 			{
-				EndTime = DateTimeOffset.Now;
-				_onUpdated();
+				previous = _result;
+				if (previous != -1 && previous != (int)HotReloadClientResult.Ignored)
+				{
+					Debug.Fail("The result should not have already been set.");
+					return;
+				}
 			}
-			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
-			{
-				Debug.Fail("The result should not have already been set.");
-			}
+			while (Interlocked.CompareExchange(ref _result, (int)result, previous) != previous);
+
+			EndTime = DateTimeOffset.Now;
+			_onUpdated?.Invoke();
+			SendEvent();
 		}
 
-		internal void ReportIgnored(string reason)
+		/// <summary>
+		/// Marks the operation as deferred: its visual-tree apply was postponed because one
+		/// or more UI-phase pauses were active. The op remains "live" — the drain that fires
+		/// when all pause handles are released will call <see cref="ReportCompleted"/> to
+		/// promote it to Success/Failed.
+		/// </summary>
+		/// <param name="reason">
+		/// Short description of who triggered the deferral (e.g. the pause holder summary).
+		/// Surfaced in diagnostic logs and the telemetry event.
+		/// </param>
+		internal void ReportDeferred(string reason)
 		{
+			if (_isEmpty) return;
+
 			IgnoreReason = reason;
-			ReportCompleted();
+			IgnoreTime = DateTimeOffset.Now;
+
+			// Set _result = Ignored (the underlying enum value) so consumers that treat
+			// "Result is not null" as "cycle reached a terminal state" still wake up —
+			// notably WaitForLocalHotReloadAsync. ReportCompleted's CAS loop can later
+			// override Ignored → Success/Failed when the drain re-applies the delta.
+			// Only transition from -1; a spurious second ReportDeferred is a no-op.
+			if (Interlocked.CompareExchange(ref _result, (int)HotReloadClientResult.Ignored, -1) == -1)
+			{
+				_onUpdated?.Invoke();
+				SendEvent();
+			}
 		}
+
+		/// <summary>
+		/// Legacy name kept for backward compat with any external callers; delegates to
+		/// <see cref="ReportDeferred"/>.
+		/// </summary>
+		[Obsolete("Use ReportDeferred — semantically identical, clearer naming.", error: false)]
+		internal void ReportIgnored(string reason) => ReportDeferred(reason);
+
+		private void SendEvent()
+		{
+#if HAS_UNO_WINUI
+			try
+			{
+				var client = RemoteControlClient.Instance;
+				if (client is null) return;
+
+				// Flatten via Type+Message walking InnerException and AggregateException.
+				// On iOS Release builds System.Private.CoreLib's SR resource strings are
+				// stripped, so a wrapping exception's Message alone is just the localization
+				// key (e.g. "TypeInitialization_Type, X") and loses the underlying failure
+				// that pinpoints the root cause. ToString() would include the stack and
+				// produce a huge wire payload, so we walk the inner chain manually and
+				// keep only TypeName: Message per frame.
+				var errorMessage = _exceptions.Count > 0
+					? string.Join("\r\n", _exceptions.Select(FlattenExceptionMessages))
+					: null;
+
+				_ = client.SendMessage(new Messages.HotReloadClientOperationEvent
+				{
+					OperationSequenceId = Id,
+					StartTime = StartTime,
+					IgnoreTime = IgnoreTime,
+					EndTime = EndTime,
+					ErrorMessage = errorMessage,
+					FailedElementCount = _elementErrors,
+					TotalElementCount = _elementsReplaced + _elementErrors,
+				});
+			}
+			catch
+			{
+				// Best-effort — never fail the operation because of a notification error.
+			}
+#endif
+		}
+
+#if HAS_UNO_WINUI
+		private static string FlattenExceptionMessages(Exception exception)
+		{
+			var sb = new StringBuilder();
+			Walk(sb, exception, indent: 0);
+			return sb.ToString();
+
+			// A causal InnerException chain stays inline with " ---> " (single root cause
+			// path). AggregateException branches each get their own indented, indexed line
+			// so sibling failures aren't misread as a single chain. Nested aggregates
+			// indent further via the carried depth.
+			static void Walk(StringBuilder sb, Exception ex, int indent)
+			{
+				sb.Append(ex.GetType().Name).Append(": ").Append(ex.Message);
+
+				if (ex is AggregateException aggregate)
+				{
+					var inners = aggregate.InnerExceptions;
+					for (var i = 0; i < inners.Count; i++)
+					{
+						sb.Append("\r\n").Append(' ', indent + 2).Append('[').Append(i).Append("] ");
+						Walk(sb, inners[i], indent + 2);
+					}
+				}
+				else if (ex.InnerException is { } inner)
+				{
+					sb.Append(" ---> ");
+					Walk(sb, inner, indent);
+				}
+			}
+		}
+#endif
 	}
 }

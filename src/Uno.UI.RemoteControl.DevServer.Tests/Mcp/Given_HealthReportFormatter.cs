@@ -14,8 +14,8 @@ public class Given_HealthReportFormatter
 		{
 			Status = HealthStatus.Degraded,
 			UpstreamConnected = false,
-			EffectiveWorkspaceDirectory = @"D:\src\studio.live\src",
-			SelectedSolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+			EffectiveWorkspaceDirectory = @"D:\src\myapp\src",
+			SelectedSolutionPath = @"D:\src\myapp\src\MyApp.slnx",
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			Issues =
 			[
@@ -31,7 +31,7 @@ public class Given_HealthReportFormatter
 		var json = HealthReportFormatter.FormatJson(report);
 
 		json.Should().Contain("\"status\":\"Degraded\"");
-		json.Should().Contain("\"effectiveWorkspaceDirectory\":\"D:\\\\src\\\\studio.live\\\\src\"");
+		json.Should().Contain("\"effectiveWorkspaceDirectory\":\"D:\\\\src\\\\myapp\\\\src\"");
 		json.Should().Contain("\"resolutionKind\":\"AutoDiscovered\"");
 	}
 
@@ -43,8 +43,8 @@ public class Given_HealthReportFormatter
 			Status = HealthStatus.Healthy,
 			UpstreamConnected = true,
 			ToolCount = 11,
-			EffectiveWorkspaceDirectory = @"D:\src\studio.live\src",
-			SelectedSolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+			EffectiveWorkspaceDirectory = @"D:\src\myapp\src",
+			SelectedSolutionPath = @"D:\src\myapp\src\MyApp.slnx",
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			Issues = [],
 		};
@@ -52,8 +52,8 @@ public class Given_HealthReportFormatter
 		var text = HealthReportFormatter.FormatPlainText(report);
 
 		text.Should().Contain("Status: Healthy");
-		text.Should().Contain(@"Workspace: D:\src\studio.live\src");
-		text.Should().Contain(@"Solution: D:\src\studio.live\src\StudioLive.slnx");
+		text.Should().Contain(@"Workspace: D:\src\myapp\src");
+		text.Should().Contain(@"Solution: D:\src\myapp\src\MyApp.slnx");
 		text.Should().Contain("Resolution: AutoDiscovered");
 	}
 
@@ -65,8 +65,8 @@ public class Given_HealthReportFormatter
 			Status = HealthStatus.Degraded,
 			UpstreamConnected = true,
 			ToolCount = 11,
-			EffectiveWorkspaceDirectory = @"D:\src\studio.live\src",
-			SelectedSolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+			EffectiveWorkspaceDirectory = @"D:\src\myapp\src",
+			SelectedSolutionPath = @"D:\src\myapp\src\MyApp.slnx",
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			Issues = [],
 			Discovery = new DiscoverySummary
@@ -80,7 +80,7 @@ public class Given_HealthReportFormatter
 						McpEndpoint = "http://localhost:61616/mcp",
 						ParentProcessId = 50,
 						IdeChannelId = "abc",
-						SolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+						SolutionPath = @"D:\src\myapp\src\MyApp.slnx",
 						IsInWorkspace = true,
 						ProcessChain =
 						[

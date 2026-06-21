@@ -157,12 +157,25 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	internal void UpdateWindowPropertiesFromCoreApplication()
 	{
+		if (Closed.IsCompleted)
+		{
+			return;
+		}
+
 		var coreApplicationView = CoreApplication.GetCurrentView();
 
 		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
 
-	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(RootX11Window, !extend, 0xFF);
+	internal void ExtendContentIntoTitleBar(bool extend)
+	{
+		if (Closed.IsCompleted)
+		{
+			return;
+		}
+
+		X11Helper.SetMotifWMDecorations(RootX11Window, !extend, 0xFF);
+	}
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
@@ -181,6 +194,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void SetWindowIcon()
 	{
+		if (Closed.IsCompleted)
+		{
+			return;
+		}
+
 		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
@@ -305,6 +323,27 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		foreach (var window in _x11WindowToXamlRootHost.Keys.ToList())
 		{
 			Close(window);
+		}
+	}
+
+	/// <summary>
+	/// Removes entries from <see cref="_windowToHost"/> whose Window is marked as a secondary ALC window.
+	/// Called during ALC teardown from <see cref="Window.CloseAlcWindows"/>.
+	/// </summary>
+	internal static void RemoveSecondaryAlcWindowEntries()
+	{
+		var keysToRemove = new List<Window>();
+		foreach (var kvp in _windowToHost)
+		{
+			if (kvp.Key.IsAlcWindow)
+			{
+				keysToRemove.Add(kvp.Key);
+			}
+		}
+
+		foreach (var key in keysToRemove)
+		{
+			_windowToHost.TryRemove(key, out _);
 		}
 	}
 

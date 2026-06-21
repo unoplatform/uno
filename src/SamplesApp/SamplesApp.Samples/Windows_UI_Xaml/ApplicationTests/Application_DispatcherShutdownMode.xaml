@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.ApplicationTests.Application_DispatcherShutdownMode"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml.ApplicationTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="16" Spacing="8">
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Application.DispatcherShutdownMode" />
+
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="Current mode:" />
+            <Run x:Name="CurrentModeText" FontWeight="Bold" />
+        </TextBlock>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button
+                x:Name="SetOnLastWindowCloseButton"
+                Click="OnSetOnLastWindowClose"
+                Content="Set OnLastWindowClose" />
+            <Button
+                x:Name="SetOnExplicitShutdownButton"
+                Click="OnSetOnExplicitShutdown"
+                Content="Set OnExplicitShutdown" />
+        </StackPanel>
+
+        <Button
+            x:Name="OpenSecondaryWindowButton"
+            Click="OnOpenSecondaryWindow"
+            Content="Open secondary Window" />
+        <Button
+            x:Name="CloseAllWindowsButton"
+            Click="OnCloseAllWindows"
+            Content="Close all windows" />
+        <Button
+            x:Name="ExitButton"
+            Click="OnExit"
+            Content="Application.Current.Exit()" />
+
+        <TextBlock
+            x:Name="LogTextBlock"
+            Margin="0,8,0,0"
+            TextWrapping="Wrap" />
+    </StackPanel>
+</Page>

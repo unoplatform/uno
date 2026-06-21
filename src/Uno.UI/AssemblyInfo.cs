@@ -4,8 +4,7 @@ using System.Runtime.CompilerServices;
 using Uno.Foundation.Diagnostics.CodeAnalysis;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests")]
-[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]

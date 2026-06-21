@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
@@ -36,6 +37,7 @@ public record ConfigureServer(
 
 	string IMessage.Name => Name;
 
+	[JsonIgnore]
 	public Dictionary<string, string> MSBuildProperties => _msbuildProperties ??= ParseMSBuildProperties(MSBuildPropertiesRaw);
 
 	public static Dictionary<string, string> ParseMSBuildProperties(string[] rawMSBuildProperties)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -124,6 +125,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await RunIsExecutingCommandCommon(command);
 		}
 
+		private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
 		[TestMethod]
 		[DataRow(typeof(Button))]
 		[DataRow(typeof(ToggleButton))]
@@ -131,8 +134,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
-		public async Task When_BorderThickness_Zero(Type type)
+		public async Task When_BorderThickness_Zero([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 		{
+			// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
+			PreserveMetadata(typeof(Button));
+			PreserveMetadata(typeof(ToggleButton));
+			PreserveMetadata(typeof(RepeatButton));
+
 			var grid = new Grid
 			{
 				Width = 120,
@@ -159,6 +167,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var opacityZero = await UITestHelper.ScreenShot(grid);
 
 			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
+
+			static void PreserveMetadata([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
+			{
+			}
 		}
 
 		[TestMethod]

@@ -8,8 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests")]
-[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
@@ -33,7 +32,6 @@ using System.Runtime.InteropServices;
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]

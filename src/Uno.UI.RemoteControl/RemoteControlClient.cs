@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -22,7 +17,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
-using Windows.Networking.Sockets;
+using Uno.UI.RemoteControl.Messaging;
 using Windows.Storage;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
 
@@ -30,8 +25,17 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
+	// Pre-configured options for the next Initialize call, set by PreConfigureNextInstance.
+	private static RemoteControlClientOptions? _pendingInstanceOptions;
+
+	// All clients created via Initialize/CreateAdditional, tracked as weak references
+	// so disposed/collected clients are automatically pruned.
+	private static readonly List<WeakReference<RemoteControlClient>> _clients = new();
+	private static readonly object _clientsLock = new();
+
 	private readonly string? _additionalServerProcessorsDiscoveryPath;
 	private readonly bool _autoRegisterAppIdentity;
+	private readonly IFrameTransport? _connectionTransportOverride;
 
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 
@@ -59,6 +63,33 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 	}
 
+	/// <summary>
+	/// Gets all currently active (non-disposed, non-collected) remote control clients,
+	/// including both the default <see cref="Instance"/> and additional clients created
+	/// for secondary apps loaded in shared ALCs.
+	/// </summary>
+	public static IReadOnlyList<RemoteControlClient> ActiveClients
+	{
+		get
+		{
+			lock (_clientsLock)
+			{
+				// Prune dead references and return alive clients
+				var alive = new List<RemoteControlClient>(_clients.Count);
+				_clients.RemoveAll(wr => !wr.TryGetTarget(out _));
+				foreach (var wr in _clients)
+				{
+					if (wr.TryGetTarget(out var client))
+					{
+						alive.Add(client);
+					}
+				}
+
+				return alive;
+			}
+		}
+	}
+
 	private static IReadOnlyCollection<Action<RemoteControlClient>>? _waitingList;
 
 	/// <summary>
@@ -69,9 +100,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	public static void OnRemoteControlClientAvailable(Action<RemoteControlClient> action)
 	{
-		if (Instance is { })
+		if (Instance is { } i1)
 		{
-			action(Instance);
+			action(i1);
 		}
 		else
 		{
@@ -83,9 +114,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					? [action]
 					: [.. waitingList, action];
 
-				if (Instance is { } i) // Last chance to avoid the waiting list
+				if (Instance is { } i2) // Last chance to avoid the waiting list
 				{
-					action(i);
+					action(i2);
 					break;
 				}
 
@@ -95,6 +126,108 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Removes queued <see cref="OnRemoteControlClientAvailable"/> callbacks whose target lives in a collectible
+	/// (non-default) <see cref="AssemblyLoadContext"/>. Such callbacks are registered by code in a previewed app's
+	/// ALC waiting for the default <see cref="Instance"/>; when that app only ever creates additional clients
+	/// (<see cref="CreateAdditional"/>, with SetAsDefaultInstance=false) the waiting list never drains, so the
+	/// captured per-ALC closures pin the collectible ALC after unload. Called on ALC teardown.
+	/// </summary>
+	internal static void RemoveCollectibleAlcWaitingCallbacks()
+	{
+		while (true)
+		{
+			var current = _waitingList;
+			if (current is null || current.Count == 0)
+			{
+				return;
+			}
+
+			var changed = false;
+			var kept = new List<Action<RemoteControlClient>>(current.Count);
+			foreach (var action in current)
+			{
+				var filtered = FilterCollectibleInvocations(action, IsCollectibleTarget);
+				if (filtered is null)
+				{
+					changed = true; // every invocation-list entry was collectible — drop the callback
+				}
+				else
+				{
+					changed |= !ReferenceEquals(filtered, action); // some entries dropped, callback rebuilt
+					kept.Add(filtered);
+				}
+			}
+
+			if (!changed)
+			{
+				return; // nothing collectible to remove
+			}
+
+			IReadOnlyCollection<Action<RemoteControlClient>>? next = kept.Count == 0 ? null : kept.ToArray();
+			if (ReferenceEquals(Interlocked.CompareExchange(ref _waitingList, next, current), current))
+			{
+				return;
+			}
+		}
+
+		static bool IsCollectibleTarget(Action<RemoteControlClient> action)
+		{
+			var declaringType = action.Target?.GetType() ?? action.Method.DeclaringType;
+			if (declaringType is null)
+			{
+				return false;
+			}
+
+			var alc = AssemblyLoadContext.GetLoadContext(declaringType.Assembly);
+			return alc is not null && alc != AssemblyLoadContext.Default && alc.IsCollectible;
+		}
+	}
+
+	/// <summary>
+	/// Filters a (possibly multicast) waiting-list callback down to the invocation-list entries that do
+	/// NOT satisfy <paramref name="isCollectible"/>. A combined delegate's <c>Target</c>/<c>Method</c>
+	/// reflect only one invocation-list entry, so classifying the whole delegate by those would wrongly
+	/// drop unrelated callbacks fused into it. This walks each entry individually and rebuilds a delegate
+	/// from the survivors.
+	/// </summary>
+	/// <returns>
+	/// The same instance when no entry is collectible; a new delegate of the surviving entries when only
+	/// some are; or <c>null</c> when every entry is collectible (the callback should be removed entirely).
+	/// </returns>
+	internal static Action<RemoteControlClient>? FilterCollectibleInvocations(
+		Action<RemoteControlClient> action,
+		Func<Action<RemoteControlClient>, bool> isCollectible)
+	{
+		var invocationList = action.GetInvocationList();
+		if (invocationList.Length == 1)
+		{
+			return isCollectible(action) ? null : action;
+		}
+
+		var survivors = new List<Delegate>(invocationList.Length);
+		var removedAny = false;
+		foreach (var entry in invocationList)
+		{
+			if (isCollectible((Action<RemoteControlClient>)entry))
+			{
+				removedAny = true;
+			}
+			else
+			{
+				survivors.Add(entry);
+			}
+		}
+
+		if (!removedAny)
+		{
+			return action;
+		}
+
+		// Rebuild the survivor delegate once rather than re-combining on each kept entry.
+		return (Action<RemoteControlClient>?)Delegate.Combine(survivors.ToArray());
 	}
 
 	/// <summary>
@@ -108,7 +241,12 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// environment variables or assembly attributes emitted at build time by the IDE integration.
 	/// </remarks>
 	public static RemoteControlClient Initialize(Type appType)
-		=> Instance = new RemoteControlClient(appType);
+	{
+		var pendingOptions = Interlocked.Exchange(ref _pendingInstanceOptions, null);
+		var options = pendingOptions ?? RemoteControlClientOptions.DefaultClient;
+
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options);
+	}
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints.
@@ -123,7 +261,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
-		=> Instance = new RemoteControlClient(appType, endpoints);
+		=> CreateClient(appType, endpoints, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient);
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints and an additional processors discovery path.
@@ -143,7 +281,75 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		ServerEndpointAttribute[]? endpoints,
 		string? additionalServerProcessorsDiscoveryPath,
 		bool autoRegisterAppIdentity = true)
-		=> Instance = new RemoteControlClient(appType, endpoints, additionalServerProcessorsDiscoveryPath, autoRegisterAppIdentity);
+		=> CreateClient(
+			appType,
+			endpoints,
+			additionalServerProcessorsDiscoveryPath,
+			RemoteControlClientOptions.DefaultClient with { AutoRegisterAppIdentity = autoRegisterAppIdentity });
+
+	/// <summary>
+	/// Creates an additional remote control client independent from <see cref="Instance"/>.
+	/// </summary>
+	/// <param name="appType">The type of the application entry point.</param>
+	/// <param name="transport">The pre-connected transport to use for this client.</param>
+	/// <param name="options">Additional client options. Defaults to <see cref="RemoteControlClientOptions.AdditionalClient"/>.</param>
+	/// <returns>The initialized additional client instance.</returns>
+	public static RemoteControlClient CreateAdditional(Type appType, IFrameTransport transport, RemoteControlClientOptions? options = null)
+	{
+		if (transport is null)
+		{
+			throw new ArgumentNullException(nameof(transport));
+		}
+
+		var effectiveOptions = (options ?? RemoteControlClientOptions.AdditionalClient) with { ConnectionTransportOverride = transport };
+		if (effectiveOptions.SetAsDefaultInstance)
+		{
+			throw new ArgumentException("Additional client options must not set SetAsDefaultInstance=true.", nameof(options));
+		}
+
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, effectiveOptions);
+	}
+
+	private static RemoteControlClient CreateClient(
+		Type appType,
+		ServerEndpointAttribute[]? endpoints,
+		string? additionalServerProcessorsDiscoveryPath,
+		RemoteControlClientOptions options)
+	{
+		Messaging.RemoteControlJsonOptions.SetSourceGeneratedContext(RemoteControlJsonContext.Default);
+
+		var client = new RemoteControlClient(
+			appType,
+			endpoints,
+			additionalServerProcessorsDiscoveryPath,
+			options);
+
+		// Track every client as a weak reference for ActiveClients enumeration.
+		lock (_clientsLock)
+		{
+			// Prune dead references while we're here
+			_clients.RemoveAll(wr => !wr.TryGetTarget(out _));
+			_clients.Add(new WeakReference<RemoteControlClient>(client));
+		}
+
+		if (options.SetAsDefaultInstance)
+		{
+			var previous = Instance;
+			Instance = client;
+			if (previous is not null && !ReferenceEquals(previous, client))
+			{
+				_ = DisposePreviousInstanceAsync(previous);
+			}
+		}
+
+		return client;
+	}
+
+	private static async Task DisposePreviousInstanceAsync(RemoteControlClient client)
+	{
+		try { await client.DisposeAsync(); }
+		catch { /* Best effort cleanup */ }
+	}
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
@@ -153,6 +359,18 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// Application type used to initialize this client.
 	/// </summary>
 	public Type AppType { get; }
+
+	/// <summary>
+	/// Pre-configures options for the next <see cref="Initialize(Type)"/> call.
+	/// Used by host applications to inject a DevServer transport and specify that
+	/// the nested app should be the default instance in its ALC.
+	/// </summary>
+	/// <param name="options">
+	/// The options to apply to the next <see cref="Initialize(Type)"/> call.
+	/// Use <see cref="RemoteControlClientOptions.ConnectionTransportOverride"/> to inject a transport.
+	/// </param>
+	public static void PreConfigureNextInstance(RemoteControlClientOptions options)
+		=> _pendingInstanceOptions = options ?? throw new ArgumentNullException(nameof(options));
 
 	/// <summary>
 	/// Gets the minimum interval between re-connection attempts.
@@ -169,11 +387,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
 	private readonly Lock _connectionGate = new();
-	private Task<Connection?> _connection; // null if no server, socket only null if connection was established once but lost since then
+	private Task<Connection?> _connection; // null if no server, transport only null if connection was established once but lost since then
 	private Timer? _keepAliveTimer;
 	private KeepAliveMessage _ping = new();
 
-	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket)
+	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, IFrameTransport? Transport)
 		: IAsyncDisposable
 	{
 		private static class States
@@ -184,14 +402,30 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 		private readonly CancellationTokenSource _ct = new();
-		private int _state = Socket is null ? States.Disposed : States.Ready;
+		private int _state = Transport is null ? States.Disposed : States.Ready;
+
+		public bool IsConnected => Transport is { IsConnected: true };
 
 		public void EnsureActive()
 		{
 			if (Interlocked.CompareExchange(ref _state, States.Active, States.Ready) is States.Ready)
 			{
+				// Scope the diagnostics sink to ProcessMessages' execution flow and restore the
+				// caller's ambient value afterwards. EnsureActive runs on the caller (e.g. UI)
+				// thread; assigning DevServerDiagnostics.Current unscoped would persist the sink
+				// in that thread's ambient ExecutionContext and flow it into every context
+				// captured thereafter (timers, continuations, dispatcher enqueues), pinning the
+				// StatusSink → owner graph and any collectible AssemblyLoadContext it reaches.
+				var previousSink = DevServerDiagnostics.Current;
 				DevServerDiagnostics.Current = Owner._status;
-				_ = Owner.ProcessMessages(Socket!, _ct.Token);
+				try
+				{
+					_ = Owner.ProcessMessages(Transport!, _ct.Token);
+				}
+				finally
+				{
+					DevServerDiagnostics.Current = previousSink;
+				}
 			}
 		}
 
@@ -202,15 +436,15 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			await _ct.CancelAsync();
 			_ct.Dispose();
 
-			if (Socket is not null)
+			if (Transport is not null)
 			{
 				try
 				{
-					await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client disconnected", CancellationToken.None);
+					await Transport.CloseAsync();
 				}
 				catch { }
 
-				Socket.Dispose();
+				Transport.Dispose();
 			}
 		}
 	}
@@ -218,13 +452,16 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private RemoteControlClient(Type appType,
 		ServerEndpointAttribute[]? endpoints = null,
 		string? additionalServerProcessorsDiscoveryPath = null,
-		bool autoRegisterAppIdentity = true)
+		RemoteControlClientOptions? options = null)
 	{
+		var effectiveOptions = options ?? RemoteControlClientOptions.DefaultClient;
+
 		AppType = appType;
 		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
-		_autoRegisterAppIdentity = autoRegisterAppIdentity;
+		_autoRegisterAppIdentity = effectiveOptions.AutoRegisterAppIdentity;
+		_connectionTransportOverride = effectiveOptions.ConnectionTransportOverride;
 
-		_status = new StatusSink(this);
+		_status = new StatusSink(this, effectiveOptions.RegisterDiagnosticView);
 		var error = default(ConnectionError?);
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
@@ -281,10 +518,23 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				.ToArray();
 		}
 
-		// Enable hot-reload
-		// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
-		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+		if (effectiveOptions.EnableHotReloadProcessor)
+		{
+			// Enable hot-reload
+			// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
+			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
+			_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+		}
+
+		if (_connectionTransportOverride is not null)
+		{
+			var connection = new Connection(this, new Uri("local://rc"), Stopwatch.StartNew(), _connectionTransportOverride);
+			_connection = Task.FromResult<Connection?>(connection);
+
+			connection.EnsureActive();
+
+			return; // No need to start the connection, we already have it here
+		}
 
 		if (_serverAddresses is null or { Length: 0 })
 		{
@@ -322,13 +572,13 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	public void RegisterPreProcessor(IRemoteControlPreProcessor preprocessor)
 		=> _preprocessors.Add(preprocessor);
 
-	private async ValueTask<WebSocket?> GetActiveSocket()
+	private async ValueTask<IFrameTransport?> GetActiveTransport()
 	{
 		var connectionTask = _connection;
 		var connection = await connectionTask;
-		if (connection is ({ Socket: null } or { Socket.State: not WebSocketState.Open }) and { Since.ElapsedMilliseconds: >= _connectionRetryInterval })
+		if (connection is { } && (!connection.IsConnected || connection.Transport is null) && connection.Since.ElapsedMilliseconds >= _connectionRetryInterval)
 		{
-			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
+			// We have a transport (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
 			{
 				_status.Report(ConnectionState.Reconnecting);
@@ -345,7 +595,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		_status.ReportActiveConnection(connection);
 
-		return connection?.Socket;
+		return connection?.Transport;
 	}
 
 	private async Task<Connection?> StartConnection()
@@ -436,7 +686,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				pending.Remove(task);
 
 				// If the connection is successful, break the loop
-				if (task is Task<Connection?> { IsCompleted: true, Result: { Socket: not null } successfulConnection })
+				if (task is Task<Connection?> { IsCompleted: true, Result: { Transport: not null } successfulConnection })
 				{
 					try
 					{
@@ -484,9 +734,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				foreach (var connection in pending.Values)
 				{
 					connection.cts.Cancel(throwOnFirstException: false);
-					if (connection is { task.Status: TaskStatus.RanToCompletion, task.Result.Socket: { } socket })
+					if (connection is { task.Status: TaskStatus.RanToCompletion, task.Result.Transport: { } transport })
 					{
-						_ = socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+						_ = transport.CloseAsync();
+						transport.Dispose();
 					}
 				}
 			}
@@ -596,7 +847,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 			await client.ConnectAsync(serverUri, ct);
 
-			return new(this, serverUri, watch, client);
+			var transport = new WebSocketFrameTransport(client);
+			return new(this, serverUri, watch, transport);
 		}
 		catch (Exception e)
 		{
@@ -610,7 +862,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 	}
 
-	private async Task ProcessMessages(WebSocket socket, CancellationToken ct)
+	private async Task ProcessMessages(IFrameTransport transport, CancellationToken ct)
 	{
 		_ = InitializeServerProcessors();
 
@@ -631,7 +883,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		StartKeepAliveTimer();
 
-		while (await WebSocketHelper.ReadFrame(socket, ct) is { } frame)
+		while (await transport.ReceiveAsync(ct) is { } frame)
 		{
 			try
 			{
@@ -824,31 +1076,40 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 		Timer? timer = default;
-		timer = new Timer(async _ =>
+
+		// Suppress ExecutionContext flow while creating the long-lived keep-alive timer. The
+		// timer is held by the process-global TimerQueue for the connection's lifetime; if it
+		// captured the current ambient context it would also capture (and pin) whatever is
+		// ambient on this thread — including the DevServerDiagnostics sink — keeping the
+		// StatusSink → owner graph and any collectible AssemblyLoadContext alive indefinitely.
+		using (System.Threading.ExecutionContext.SuppressFlow())
 		{
-			try
+			timer = new Timer(async _ =>
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				try
 				{
-					this.Log().Trace($"Sending Keepalive frame from client");
-				}
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Sending Keepalive frame from client");
+					}
 
-				_ping = _ping.Next();
-				_status.ReportPing(_ping);
-				await SendMessage(_ping);
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+					_ping = _ping.Next();
+					_status.ReportPing(_ping);
+					await SendMessage(_ping);
+				}
+				catch (Exception error)
 				{
-					this.Log().Trace("Keepalive failed");
-				}
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace("Keepalive failed");
+					}
 
-				_status.ReportKeepAliveAborted(error);
-				Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
-				timer?.Dispose();
-			}
-		});
+					_status.ReportKeepAliveAborted(error);
+					Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
+					timer?.Dispose();
+				}
+			});
+		}
 
 		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is null)
 		{
@@ -900,8 +1161,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 
-		var socket = await GetActiveSocket();
-		if (socket is null)
+		var transport = await GetActiveTransport();
+		if (transport is null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -913,8 +1174,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			return;
 		}
 
-		await WebSocketHelper.SendFrame(
-			socket,
+		await transport.SendAsync(
 			HotReload.Messages.Frame.Create(
 				1,
 				message.Scope,
@@ -963,14 +1223,42 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		_processors.Clear();
 
-		// Stop the keep alive timer
+		// Stop the keep alive timer and status monitoring
 		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+		_status.Dispose();
+
+		// Clear the AsyncLocal diagnostic sink for the current execution context.
+		// StatusSink is captured in thread ExecutionContext via DevServerDiagnostics.Current
+		// (set in Connection.EnsureActive). Without clearing, the StatusSink → owner → HotDesign
+		// chain persists in any ExecutionContext that flowed from the connection thread.
+		DevServerDiagnostics.ResetCurrent();
+
+		// ResetCurrent only covers the CURRENT flow; sinks captured in other ExecutionContext
+		// snapshots (timers, CTS registrations, pooled connections) are reachable solely through
+		// the holder registry — detach any collectible ones so they cannot pin the unloading ALC.
+		DevServerDiagnostics.ClearCollectibleSinks();
+
+		// Remove from the active clients list
+		lock (_clientsLock)
+		{
+			_clients.RemoveAll(wr => !wr.TryGetTarget(out var c) || ReferenceEquals(c, this));
+		}
 
 		// Remove the instance if it's the current one (should not happen in regular usage)
 		if (ReferenceEquals(Instance, this))
 		{
 			Instance = null;
 		}
+
+		// Drop the shared RemoteControlJsonOptions' source-generated context. CreateClient registers this
+		// client's per-ALC RemoteControlJsonContext.Default on the shared (default-ALC) RemoteControlJsonOptions;
+		// leaving it set pins the secondary app's collectible ALC after unload. Recreated lazily on next use.
+		Messaging.RemoteControlJsonOptions.Reset();
+
+		// Drain any queued OnRemoteControlClientAvailable callbacks whose target lives in a collectible ALC.
+		// A secondary app that only ever calls CreateAdditional (SetAsDefaultInstance=false) never drains the
+		// shared waiting list, so its captured per-ALC closures would pin the collectible ALC after unload.
+		RemoveCollectibleAlcWaitingCallbacks();
 	}
 
 	// The three helpers below are internal (rather than private) to allow unit testing via InternalsVisibleTo.

@@ -20,5 +20,10 @@ namespace Microsoft.UI.Xaml
 		{
 			InitializeSystemTheme();
 		}
+
+		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
+		{
+			throw new NotSupportedException("Reference implementation");
+		}
 	}
 }

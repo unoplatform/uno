@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RadioMenuFlyoutItem
@@ -15,15 +15,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsChecked
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.RadioMenuFlyoutItem()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object, bool value)
 		{
 			@object.SetValue(AreCheckStatesEnabledProperty, value);
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object)
 		{
 			return (bool)@object.GetValue(AreCheckStatesEnabledProperty);

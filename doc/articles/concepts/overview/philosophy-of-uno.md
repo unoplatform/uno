@@ -24,22 +24,23 @@ Uno Platform is built on the foundation of well-established Microsoft technologi
 
 **Key Benefits:**
 
-- Maximize productivity with cross-OS tooling like C# and XAML Hot Reload, Hot Design for real-time visual editing, AI-powered assistance through Docs MCP and App MCP, and streamlined CLI tools such as uno-check and project templates.
+- Maximize productivity with cross-OS tooling like C# and XAML Hot Reload, Hot Design for real-time visual editing, prompt-to-app generation with the Uno Platform Studio App and Agent, AI-powered assistance through the Uno MCP and App MCP, and streamlined CLI tools such as uno-check and project templates.
 - Build apps using proven Microsoft technologies and deploy to multiple platforms: WebAssembly, iOS, Android, macOS, Windows, and Linux
 - Reduce learning curve for .NET developers transitioning to cross-platform development
 - Day-0 support for the latest .NET and Visual Studio ecosystems
 
 ### 2. AI-Powered Agentic Development
 
-As of 2024-2026, Uno Platform has embraced AI-powered development workflows to dramatically increase developer productivity while maintaining full developer control.
+Uno Platform has embraced AI-powered development workflows to dramatically increase developer productivity while maintaining full developer control. These capabilities come together in **[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)**, an AI-native suite of productivity tools for building cross-platform .NET apps, including the Studio App and Studio Agent.
 
 **Innovation Highlights:**
 
-- **Hot Design:** The only visual designer that enables real-time, on-app visual editing and AI-assisted UI creation.
-- **AI Agents in Development:** Uno Platform Studio 2.0 (an AI-powered development tool suite) introduces AI assistants like the Hot Design Agent, an AI-powered design assistant that can understand your code, context, and even control the running app to suggest and implement UI changes in real time
-- **Human-in-the-Loop:** Developers preview and approve changes, ensuring quality while benefiting from AI assistance
-- **MCP Servers:** AI interacts with documentation, APIs, app states, and UI elements live via Model Context Protocol (MCP) servers, providing context-aware assistance
-- **App Live Testing:** AI agents can interact with running apps, trigger UI events, and automate testing/debugging with human approval
+- **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted):** Go from a prompt to a working, cross-platform Uno Platform app in minutes, watch it build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building.
+- **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent):** The orchestration layer that connects AI models to the Uno Platform development workflow. It contributes deep, cross-platform .NET domain knowledge, grounds responses in official documentation, and invokes MCP tools to verify its own work, delivered through the `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex.
+- **[Hot Design](xref:Uno.HotDesign.Overview) and the [Hot Design Agent](xref:Uno.HotDesign.Agent):** The industry-first runtime visual designer for cross-platform .NET, paired with an AI assistant that understands your code, data contexts, and live previews to suggest and implement UI changes in real time.
+- **Human-in-the-Loop:** Developers preview and approve changes, ensuring quality while benefiting from AI assistance.
+- **[Uno MCP and App MCP](xref:Uno.Features.Uno.MCPs):** AI interacts with documentation, APIs, app states, and UI elements live via Model Context Protocol (MCP) servers, providing context-aware assistance.
+- **App Live Testing:** AI agents can interact with running apps, trigger UI events, and automate testing/debugging with human approval.
 
 This approach represents a fundamental shift in how developers work—enabling faster iterations, better design fidelity, and reduced time-to-market without sacrificing code quality or control.
 

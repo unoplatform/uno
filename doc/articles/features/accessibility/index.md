@@ -33,7 +33,7 @@ On Skia-rendered targets, Uno maintains a **semantic accessibility tree** alongs
 - **Web (WASM)** — Generates a hidden semantic DOM overlay with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, making the app accessible to any browser-based screen reader.
 
 > [!NOTE]
-> On WASM, the accessibility layer activates when the user first presses the `Tab` key. An "Enable accessibility" button appears that must be activated (clicked or via `Space`) before the full semantic tree is available. This is done to avoid performance overhead when accessibility is not needed.
+> On WASM, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader and must be activated (click, `Enter`, or `Space`) before the full semantic tree is available. This is done to avoid performance overhead when accessibility is not needed.
 
 ## Getting started
 
@@ -64,10 +64,10 @@ To make your Uno app accessible, follow the same patterns you would use on WinUI
 
 | Topic | Description |
 |-------|-------------|
-| [AutomationProperties reference](automation-properties.md) | Supported `AutomationProperties` with per-platform mappings |
-| [Custom automation peers](automation-peers.md) | Skia accessibility architecture and ARIA role mappings |
-| [Role override](role-override.md) | Uno-specific `AutomationPropertiesExtensions.Role` attached property for explicit ARIA role control |
-| [Testing with screen readers](testing-with-screen-readers.md) | WASM activation, SamplesApp testing, and debugging the accessibility tree |
+| [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties) | Supported `AutomationProperties` with per-platform mappings |
+| [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers) | Skia accessibility architecture and ARIA role mappings |
+| [Role override](xref:Uno.Features.Accessibility.RoleOverride) | Uno-specific `AutomationPropertiesExtensions.Role` attached property for explicit ARIA role control |
+| [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders) | WASM activation, SamplesApp testing, and debugging the accessibility tree |
 
 ## AccessibilitySettings
 

@@ -1,4 +1,4 @@
-﻿// #define REPORT_FPS
+// #define REPORT_FPS
 
 #nullable enable
 
@@ -20,6 +20,7 @@ using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
 using Windows.Storage;
+using System.Runtime.Loader;
 
 
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -29,9 +30,6 @@ namespace Microsoft.UI.Xaml
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked;
-
-		[ThreadStatic]
-		private static Application _current;
 
 		[ThreadStatic]
 		private static string? _argumentsOverride;
@@ -47,13 +45,20 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			_current = this;
+			SetCurrentApplication(this);
 			SetCurrentLanguage();
 
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called (see
+			// FrameworkApplication::StartDesktop, which sets it *before* invoking the init callback).
+			// We mirror that here, in the base ctor that runs during `new App()`, so the default is
+			// established before the derived App constructor body runs and can override it.
+			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
+			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
 #if REPORT_FPS
@@ -96,27 +101,47 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
-			callback(new ApplicationInitializationCallbackParams());
+			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
+
+			if (currentApp is null)
+			{
+				throw new InvalidOperationException("Application.Start callback must return a non-null Application instance. Ensure your callback returns a valid Application.");
+			}
 
 			if (OperatingSystem.IsBrowser())
 			{
-				_ = ApplicationData.Current.EnablePersistenceAsync();
+				if (AssemblyLoadContext.GetLoadContext(currentApp.GetType().Assembly) == AssemblyLoadContext.Default)
+				{
+					// Ensure the assembly containing Application is not unloaded while running in WASM
+					_ = ApplicationData.Current.EnablePersistenceAsync();
+				}
+				else
+				{
+					// Secondary ALC uses the primary ALC's ApplicationData, so no need to initialize it again
+
+					if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(Application).Log().Debug("Skipping secondary ALC persistence initialization");
+					}
+				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				_current.InvokeOnLaunched();
+				currentApp.InvokeOnLaunched();
 			}
+
+			return currentApp;
 		}
 
 		internal Task FontPreloadTask { get; private set; }

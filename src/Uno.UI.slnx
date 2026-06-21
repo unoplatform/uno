@@ -27,9 +27,6 @@
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -92,10 +89,31 @@
     <Project Path="Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.HotReload/Uno.HotReload.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.HotReload.Tests/Uno.HotReload.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.DevServer.Cli.Tests/Uno.UI.DevServer.Cli.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithCrossMajorVersionRefs/AddInWithCrossMajorVersionRefs.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithDiServiceRegistration/AddInWithDiServiceRegistration.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/Uno.Licensing.TestContracts/Uno.Licensing.TestContracts.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractProvider/AddInWithSharedContractProvider.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractConsumer/AddInWithSharedContractConsumer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.RemoteControl.Host/Uno.UI.RemoteControl.Host.csproj">
@@ -108,6 +126,9 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.RemoteControl.Server/Uno.UI.RemoteControl.Server.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.ServerCore/Uno.UI.RemoteControl.ServerCore.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.RemoteControl.TestProcessor/Uno.UI.RemoteControl.TestProcessor.csproj">
@@ -192,16 +213,10 @@
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
-    <Project Path="SamplesApp/UnoIslands.Skia.Wpf/UnoIslands.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="SamplesApp/UnoIslands.Skia/UnoIslands.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/UnoIslands.WinForms/UnoIslands.WinForms.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="SamplesApp/UnoIslandsSamplesApp.Skia.Wpf/UnoIslandsSamplesApp.Skia.Wpf.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/UnoIslandsSamplesApp.Skia/UnoIslandsSamplesApp.Skia.csproj">
@@ -269,9 +284,6 @@
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -300,9 +312,6 @@
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -317,9 +326,6 @@
     <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -332,9 +338,6 @@
     <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -345,9 +348,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Wasm.csproj">
@@ -368,9 +368,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.Foundation/Uno.Foundation.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.Foundation/Uno.Foundation.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.Foundation/Uno.Foundation.Wasm.csproj">
@@ -407,9 +404,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Islands/">
-    <Project Path="Uno.UI.XamlHost.Skia.Wpf/Uno.UI.XamlHost.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -445,9 +439,6 @@
     <Project Path="Uno.UI.Runtime.Skia.Win32/Uno.UI.Runtime.Skia.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Wpf/Uno.UI.Runtime.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Runtime.Skia.X11/Uno.UI.Runtime.Skia.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
@@ -479,18 +470,12 @@
     <Project Path="Uno.UI.Tests.ViewLibraryProps/Uno.UI.Tests.ViewLibraryProps.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
   </Folder>
   <Folder Name="/Uno.UI/Toolkit/">
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj">
@@ -504,7 +489,7 @@
     <Project Path="Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Tests/Uno.UI.Unit.Tests.csproj">
+    <Project Path="Uno.UI.UnitTests/Uno.UI.UnitTests.csproj">
       <BuildDependency Project="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM" Project="false" />
@@ -526,9 +511,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI/Uno.UI.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI/Uno.UI.Wasm.csproj">
@@ -571,6 +553,9 @@
     </Project>
   </Folder>
   <Project Path="Uno.Sdk/Uno.Sdk.csproj">
+    <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+  </Project>
+  <Project Path="Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj">
     <BuildType Solution="Release_NoSamples|*" Project="Debug" />
   </Project>
   <Properties Name="TestCaseManagementSettings" Scope="PostLoad">

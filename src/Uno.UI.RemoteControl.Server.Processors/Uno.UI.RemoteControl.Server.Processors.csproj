@@ -10,21 +10,29 @@
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
+	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
-		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReload/%(Filename)%(Extension)" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileUpdateResult.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Uno.HotReload.IO" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
-		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->
+		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on a vulnerable version.
+		     Pinned to 8.0.3 to address GHSA-37gx-xxp4-5rgx / GHSA-w3x6-4m5h-cxqf (affects <= 8.0.2). -->
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
 	</ItemGroup>
 
@@ -56,6 +64,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
+		<ProjectReference Include="..\Uno.HotReload\Uno.HotReload.csproj" />
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

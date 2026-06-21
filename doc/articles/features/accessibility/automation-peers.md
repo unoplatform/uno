@@ -19,14 +19,14 @@ On WASM, the ARIA role is derived from the `AutomationControlType` reported by t
 | `CheckBox` | `CheckBoxAutomationPeer` | `checkbox` |
 | `RadioButton` | `RadioButtonAutomationPeer` | `radio` |
 | `Slider` | `SliderAutomationPeer` | `slider` |
-| `TextBox` | `TextBoxAutomationPeer` | `textbox` |
-| `PasswordBox` | `PasswordBoxAutomationPeer` | `textbox` (password) |
+| `TextBox` | `TextBoxAutomationPeer` | `textbox` — rendered as `<input type="text">` by default, or `<textarea>` when `AcceptsReturn` is `true` |
+| `PasswordBox` | `PasswordBoxAutomationPeer` | `textbox` — rendered as `<input type="password">` |
 | `ComboBox` | `ComboBoxAutomationPeer` | `combobox` |
-| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `button` (with `aria-pressed`) |
+| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `switch` (with `aria-checked`) |
 | `ToggleButton` | `ToggleButtonAutomationPeer` | `button` (with `aria-pressed`) |
 | `ListView` | `ListViewAutomationPeer` | `listbox` |
 | `ListViewItem` | `ListViewItemAutomationPeer` | `option` |
-| `HyperlinkButton` | `HyperlinkButtonAutomationPeer` | `link` |
+| `HyperlinkButton` | `HyperlinkButtonAutomationPeer` | `link` — rendered as `<a>` element |
 | `Image` | `ImageAutomationPeer` | `img` |
 | `ProgressBar` | `ProgressBarAutomationPeer` | `progressbar` |
 | `TextBlock` | `TextBlockAutomationPeer` | (none — text role) |
@@ -67,7 +67,8 @@ Each platform applies its own pruning strategy. For example, WASM prunes structu
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
-- [Role override](role-override.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
+- [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
 - [Custom automation peers (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/custom-automation-peers)

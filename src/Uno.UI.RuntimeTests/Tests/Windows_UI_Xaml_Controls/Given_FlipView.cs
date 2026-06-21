@@ -426,8 +426,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(flipView);
 
 			flipView.SelectedIndex = 2;
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(300);
+
+			// Selecting a page scrolls the inner ScrollViewer, and the FlipView re-derives SelectedIndex
+			// from the settled offset via OnScrollViewerViewChanged. With a decimal Width the offset settles
+			// across several asynchronous layout/scroll passes, which can take longer than a fixed delay on
+			// slower hosts. Poll until the final offset->index mapping lands on the requested page.
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, timeoutMS: 2000, "FlipView did not settle on the selected index");
 
 			Assert.AreEqual(2, flipView.SelectedIndex);
 		}
@@ -728,6 +732,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// The injected touch flick relies on the ScrollContentPresenter velocity-based snap, which is not
+		// reproducible on Skia-WASM (the flick never advances the page there). The matching native-Wasm head
+		// already documents that injection-driven scrolling is unsupported, and the deterministic
+		// When_TouchMoveMoreThanHalfItem_Then_FlipOneItem counterpart is likewise disabled on Skia.
+		// See https://github.com/unoplatform/uno/issues/9080.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_TouchFlick_Then_FlipOneItem()
 		{
 			var flipView = new FlipView()

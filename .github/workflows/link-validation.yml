@@ -1,4 +1,4 @@
-﻿name: Check Links
+name: Check Links
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ jobs:
     name: Check Docs links
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: recursive
@@ -24,7 +24,7 @@ jobs:
         run: mv "./articles/studio/Hot Design" ./doc/articles/studio
       
       - name: Check links
-        uses: lycheeverse/lychee-action@v2.4.1
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           fail: false
           args: >

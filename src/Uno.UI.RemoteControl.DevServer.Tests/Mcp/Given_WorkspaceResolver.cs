@@ -45,7 +45,7 @@ public class Given_WorkspaceResolver
 			var src = Path.Combine(root, "src");
 			Directory.CreateDirectory(src);
 			await File.WriteAllTextAsync(Path.Combine(src, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(src, "StudioLive.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(src, "MyApp.slnx"), string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 
@@ -53,7 +53,7 @@ public class Given_WorkspaceResolver
 
 			result.IsResolved.Should().BeTrue();
 			result.EffectiveWorkspaceDirectory.Should().Be(src);
-			result.SelectedSolutionPath.Should().Be(Path.Combine(src, "StudioLive.slnx"));
+			result.SelectedSolutionPath.Should().Be(Path.Combine(src, "MyApp.slnx"));
 			result.SelectedGlobalJsonPath.Should().Be(Path.Combine(src, "global.json"));
 			result.ResolutionKind.Should().Be(WorkspaceResolutionKind.AutoDiscovered);
 		}
@@ -72,14 +72,14 @@ public class Given_WorkspaceResolver
 			var src = Path.Combine(root, "src");
 			Directory.CreateDirectory(src);
 			await File.WriteAllTextAsync(Path.Combine(src, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(src, "StudioLive.sln"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(src, "MyApp.sln"), string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 
 			var result = await resolver.ResolveAsync(root);
 
 			result.IsResolved.Should().BeTrue();
-			result.SelectedSolutionPath.Should().Be(Path.Combine(src, "StudioLive.sln"));
+			result.SelectedSolutionPath.Should().Be(Path.Combine(src, "MyApp.sln"));
 			result.SelectedGlobalJsonPath.Should().Be(Path.Combine(src, "global.json"));
 		}
 		finally
@@ -135,7 +135,7 @@ public class Given_WorkspaceResolver
 		try
 		{
 			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(root, "StudioLive.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(root, "MyApp.slnx"), string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 
@@ -143,7 +143,7 @@ public class Given_WorkspaceResolver
 
 			result.IsResolved.Should().BeTrue();
 			result.EffectiveWorkspaceDirectory.Should().Be(root);
-			result.SelectedSolutionPath.Should().Be(Path.Combine(root, "StudioLive.slnx"));
+			result.SelectedSolutionPath.Should().Be(Path.Combine(root, "MyApp.slnx"));
 			result.ResolutionKind.Should().Be(WorkspaceResolutionKind.CurrentDirectory);
 		}
 		finally

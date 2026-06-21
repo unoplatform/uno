@@ -5,11 +5,13 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.HotReload.Client;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Notifications;
 
@@ -120,6 +122,47 @@ public partial class ClientHotReloadProcessor
 
 		public UpdateRequest Undo(bool waitForHotReload)
 			=> this with { Edits = [.. Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })], WaitForHotReload = waitForHotReload };
+
+		/// <summary>
+		/// Phases of UI update to suspend for the duration of this UpdateFile call.
+		/// Defaults to <see cref="HotReloadUIPhases.None"/> — no pause, the visual
+		/// tree updates as the hot-reload delta arrives. Set to
+		/// <see cref="HotReloadUIPhases.VisualTree"/> (or <see cref="HotReloadUIPhases.All"/>)
+		/// to defer the visual-tree apply for types correlated with this call.
+		/// </summary>
+		public HotReloadUIPhases PauseUIPhases { get; init; } = HotReloadUIPhases.None;
+
+		/// <summary>
+		/// Optional human-readable reason for the pause, surfaced in diagnostic logs.
+		/// Prefer a short noun phrase, e.g. <c>"UpdateFile – MyPage.xaml"</c>.
+		/// Only meaningful when <see cref="PauseUIPhases"/> is not <see cref="HotReloadUIPhases.None"/>.
+		/// </summary>
+		public string? PauseReason { get; init; }
+
+		/// <summary>Captured caller member name (diagnostic only — never sent over the wire).</summary>
+		public string? CallerMemberName { get; init; }
+
+		/// <summary>Captured caller file path (diagnostic only — never sent over the wire).</summary>
+		public string? CallerFilePath { get; init; }
+
+		/// <summary>Captured caller source line (diagnostic only — never sent over the wire).</summary>
+		public int CallerLineNumber { get; init; }
+
+		/// <summary>
+		/// Returns a copy of this <see cref="UpdateRequest"/> with caller info captured at the
+		/// call site. Use this when forwarding a request to preserve diagnostic context if the
+		/// original construction site is not the meaningful caller.
+		/// </summary>
+		public UpdateRequest WithCallerInfo(
+			[CallerMemberName] string? caller = null,
+			[CallerFilePath] string? filePath = null,
+			[CallerLineNumber] int line = 0)
+			=> this with
+			{
+				CallerMemberName = caller,
+				CallerFilePath = filePath,
+				CallerLineNumber = line,
+			};
 	}
 
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
@@ -145,6 +188,9 @@ public partial class ClientHotReloadProcessor
 	public async Task<UpdateResult> TryUpdateFilesAsync(UpdateRequest req, CancellationToken ct)
 	{
 		var result = default(UpdateResult);
+		HotReloadUIPauseHandle? pauseHandle = null;
+		var currentLocalHrId = -1;
+
 		try
 		{
 			if (req.Edits.IsDefaultOrEmpty || req.Edits.Any(edit => string.IsNullOrWhiteSpace(edit.FilePath)))
@@ -167,7 +213,24 @@ public partial class ClientHotReloadProcessor
 			}
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
-			var currentLocalHrId = GetCurrentLocalHotReloadId();
+			currentLocalHrId = GetCurrentLocalHotReloadId();
+
+			// Acquire the UI pause BEFORE sending the server message, so that any
+			// HR delta the server might already produce in flight gets queued
+			// rather than applied to the visual tree.
+			if (req.PauseUIPhases != HotReloadUIPhases.None)
+			{
+				var firstFile = req.Edits.IsDefaultOrEmpty ? "" : req.Edits[0].FilePath ?? "";
+				var reason = req.PauseReason
+					?? $"UpdateFile {Path.GetFileName(firstFile)} [{req.CallerMemberName}@{req.CallerLineNumber}]";
+
+				pauseHandle = UIUpdate.Pause(
+					req.PauseUIPhases,
+					reason: reason,
+					caller: req.CallerMemberName ?? nameof(TryUpdateFilesAsync),
+					filePath: req.CallerFilePath,
+					line: req.CallerLineNumber);
+			}
 
 			var request = new UpdateFileRequest
 			{
@@ -249,6 +312,24 @@ public partial class ClientHotReloadProcessor
 				return result with { Error = new InvalidOperationException($"Failed to update {req.Edits.Length} file(s), hot-reload failed locally: {localHr.Result}.") };
 			}
 
+			// Drop the types correlated with this UpdateFile from the pending lists.
+			// The drop set covers every local HR op id strictly greater than the
+			// pre-call snapshot, up to and including the awaited id (covers the
+			// "we awaited 3, observed 2 and 3" edge case the spec accepts).
+			if (pauseHandle is not null)
+			{
+				var typesToDrop = CurrentStatus.Local.Operations
+					.Where(op => op.Id > currentLocalHrId && op.Id <= localHr.Id)
+					.SelectMany(op => op.Types)
+					.Distinct()
+					.ToArray();
+
+				if (typesToDrop.Length > 0)
+				{
+					pauseHandle.Drop(typesToDrop);
+				}
+			}
+
 			await Task.Delay(100, ct); // Wait a bit to make sure to let the dispatcher to resume, this is just for safety.
 
 			trace?.Trace($"{tag} Successfully updated file and completed HR.");
@@ -262,6 +343,10 @@ public partial class ClientHotReloadProcessor
 		catch (Exception error)
 		{
 			return result with { Error = error };
+		}
+		finally
+		{
+			pauseHandle?.Dispose();
 		}
 	}
 

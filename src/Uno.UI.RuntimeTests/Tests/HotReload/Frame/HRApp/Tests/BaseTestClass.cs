@@ -8,10 +8,10 @@ public class BaseTestClass
 	[TestInitialize]
 	public void InitHotReload()
 	{
+		// Reset the mapping store so tests start from a known state.
+		// Pause/Resume on TypeMappings is obsolete (spec 041) — the new pause
+		// mechanism (Uno.HotReload.Client.UIUpdate) is per-handle and never
+		// retains state across tests.
 		TypeMappings.ClearMappings();
-
-		// Make sure type mappings is running
-		TypeMappings.Resume();
 	}
-
 }

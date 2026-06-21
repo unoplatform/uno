@@ -4,4 +4,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
 </Project>

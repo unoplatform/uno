@@ -6,7 +6,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
+using Uno.UI.RemoteControl.Messaging;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
@@ -34,7 +35,7 @@ public class Frame
 			version,
 			scope,
 			name,
-			JsonConvert.SerializeObject(content)
+			JsonSerializer.Serialize(content, content!.GetType(), RemoteControlJsonOptions.Default)
 		);
 
 	public T GetContent<T>()
@@ -44,7 +45,7 @@ public class Frame
 	{
 		try
 		{
-			content = JsonConvert.DeserializeObject<T>(Content);
+			content = JsonSerializer.Deserialize<T>(Content, RemoteControlJsonOptions.Default);
 			if (content is not null)
 			{
 				return true;

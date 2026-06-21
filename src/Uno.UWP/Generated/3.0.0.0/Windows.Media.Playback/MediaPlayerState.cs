@@ -3,25 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	public enum MediaPlayerState
 	{
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Closed = 0,
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Opening = 1,
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Buffering = 2,
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Playing = 3,
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Paused = 4,
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Stopped = 5,
 #endif
 	}

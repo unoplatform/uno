@@ -30,6 +30,8 @@ internal sealed class FcitxInputMethod : IX11InputMethod
 
 	public bool IsEnabled => _isEnabled;
 
+	public Task InitTask { get; }
+
 	public event Action<string>? Commit;
 	public event Action<uint, uint, uint>? ForwardKey;
 	public event Action<string?, int>? PreeditChanged;
@@ -37,7 +39,7 @@ internal sealed class FcitxInputMethod : IX11InputMethod
 	public FcitxInputMethod(string sessionBusAddress)
 	{
 		_sessionBusAddress = sessionBusAddress;
-		_ = InitAsync();
+		InitTask = InitAsync();
 	}
 
 	private async Task InitAsync()
@@ -154,7 +156,7 @@ internal sealed class FcitxInputMethod : IX11InputMethod
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Fcitx D-Bus connection lost. Falling back to XIM.");
+				this.Log().Warn("Fcitx D-Bus connection lost — IME will be disabled.");
 			}
 			_isEnabled = false;
 			return false;

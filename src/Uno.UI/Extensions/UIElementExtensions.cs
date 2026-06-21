@@ -121,4 +121,31 @@ public static partial class UIElementExtensions
 
 		return property;
 	}
+
+	/// <summary>
+	/// Removes entries from the reflection cache whose Type belongs to a non-default ALC.
+	/// Called during ALC teardown.
+	/// </summary>
+	internal static void ClearDependencyPropertyCacheForNonDefaultAlc()
+	{
+		if (_dependencyPropertyReflectionCache is null)
+		{
+			return;
+		}
+
+		var keysToRemove = new List<(Type, string)>();
+		foreach (var key in _dependencyPropertyReflectionCache.Keys)
+		{
+			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.type.Assembly);
+			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+			{
+				keysToRemove.Add(key);
+			}
+		}
+
+		foreach (var key in keysToRemove)
+		{
+			_dependencyPropertyReflectionCache.Remove(key);
+		}
+	}
 }

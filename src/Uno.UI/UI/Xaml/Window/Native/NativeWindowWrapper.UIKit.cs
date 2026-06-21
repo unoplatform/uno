@@ -40,7 +40,24 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		ObserveOrientationAndSize();
 
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		// Skip the extended-splash transition when a secondary ALC is being
+		// hosted (Window.ContentHostOverride != null). TryCreateExtendedSplashScreen
+		// calls UIWindow.MakeKeyAndVisible eagerly inside this constructor — that
+		// happens BEFORE ShowCore/Activate would otherwise gate visibility, so a
+		// secondary ALC window created via `new Window()` would immediately
+		// MakeKeyAndVisible and cover the host's UIWindow. Other platforms
+		// (X11, WASM) don't have this problem because they only make the native
+		// surface visible inside ShowCore, which ALC-mode windows never reach
+		// (Window.Activate routes to ActivateAlcWindow when _alcState is set).
+		// Matches the gating pattern in WebAssemblyWindowFactoryExtension.cs
+		// (line 48: `if (Window.ContentHostOverride == null)`) — checking
+		// ContentHostOverride at the platform layer is more reliable than
+		// Window.IsAlcWindow per its comment, since the Window may be
+		// constructed via shared (default-ALC) helpers.
+		if (MUXWindow.ContentHostOverride is null)
+		{
+			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+		}
 
 		SubscribeBackgroundNotifications();
 

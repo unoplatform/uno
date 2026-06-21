@@ -15,7 +15,6 @@
 			"Uno.WinUI.Runtime.Skia.Linux.FrameBuffer",
 			"Uno.WinUI.Runtime.Skia.MacOS",
 			"Uno.WinUI.Runtime.Skia.Win32",
-			"Uno.WinUI.Runtime.Skia.Wpf",
 			"Uno.WinUI.Runtime.Skia.X11",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.Skia.Android",
@@ -95,7 +94,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.19.0-dev.325",
+		"version": "1.18.66",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -129,9 +128,16 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.7705",
+		"version": "10.0.28000.1721",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
+		]
+	},
+	{
+		"group": "WinAppSdkBuildToolsWinApp",
+		"version": "0.3.1",
+		"packages": [
+			"Microsoft.Windows.SDK.BuildTools.WinApp"
 		]
 	},
 	{
@@ -353,7 +359,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.2.0-dev.40",
+		"version": "7.2.0-dev.44",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -383,7 +389,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.5.0-dev.29",
+		"version": "8.5.0-dev.37",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -396,7 +402,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "7.0.0-dev.12",
+		"version": "7.0.0-dev.24",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",

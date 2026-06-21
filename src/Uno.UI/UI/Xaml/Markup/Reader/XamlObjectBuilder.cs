@@ -19,7 +19,6 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Markup;
-using Uno.Xaml;
 
 using Color = Windows.UI.Color;
 using System.Text;
@@ -34,7 +33,6 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
-	using XamlParseException = Uno.Xaml.XamlParseException;
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
 	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Normal flow of operations")]
@@ -370,7 +368,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						catch (Exception ex)
 						{
-							AddParseException(new XamlParseException($"Failed to parse member ({ex.Message})", ex, member.LineNumber, member.LinePosition));
+							AddParseException(new XamlParseException(FormatLineInfo($"Failed to parse member ({ex.Message})", member.LineNumber, member.LinePosition), ex));
 						}
 					}
 				}
@@ -705,10 +703,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						// > XamlParseException: The text associated with this error code could not be found.
 						// > Run -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines' because the type 'Microsoft.UI.Xaml.Documents.Run' cannot be assigned to the type 'Microsoft.UI.Xaml.Documents.InlineCollection'. [Line: 22 Position: 8]'
 						// > string -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines'. [Line: 20 Position: 7]'
-						throw new XamlParseException(value is Inline
+						throw new XamlParseException(FormatLineInfo(value is Inline
 							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
 							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."
-						, null, control.LineNumber, control.LinePosition);
+						, control.LineNumber, control.LinePosition));
 					}
 					if (value is Inline inline)
 					{
@@ -862,11 +860,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 					else
 					{
-						throw new XamlParseException(
+						throw new XamlParseException(FormatLineInfo(
 							$"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property"
-							, null
 							, member.LineNumber
-							, member.LinePosition);
+							, member.LinePosition));
 					}
 
 					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
@@ -1095,10 +1092,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			catch (Exception ex) when (!(ex is XamlParseException))
 			{
 				throw new XamlParseException(
-					$"Failed to process custom markup extension '{extensionNode.Type.Name}'.",
-					ex,
-					extensionNode.LineNumber,
-					extensionNode.LinePosition);
+					FormatLineInfo(
+						$"Failed to process custom markup extension '{extensionNode.Type.Name}'.",
+						extensionNode.LineNumber,
+						extensionNode.LinePosition),
+					ex);
 			}
 		}
 
@@ -1347,7 +1345,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				)
 				.Any();
 
-		private bool IsCustomMarkupExtension(XamlType xamlType)
+		private bool IsCustomMarkupExtension(Uno.Xaml.XamlType xamlType)
 		{
 			var type = TypeResolver.FindType(xamlType);
 			if (type == null && !xamlType.Name.EndsWith("Extension", StringComparison.Ordinal))
@@ -1519,15 +1517,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						var normalizedValue = memberValue?.Trim();
 						if (string.IsNullOrEmpty(normalizedValue))
 						{
-							throw new XamlParseException("RoutedEvent value cannot be empty.", null, member.LineNumber, member.LinePosition);
+							throw new XamlParseException(FormatLineInfo("RoutedEvent value cannot be empty.", member.LineNumber, member.LinePosition));
 						}
 
 						var dotIndex = normalizedValue!.LastIndexOf('.');
 						if (dotIndex <= 0 || dotIndex >= normalizedValue.Length - 1)
 						{
-							throw new XamlParseException(
+							throw new XamlParseException(FormatLineInfo(
 								$"Invalid RoutedEvent format '{memberValue}'. Expected format is 'TypeName.EventName' (e.g., 'FrameworkElement.Loaded').",
-								null, member.LineNumber, member.LinePosition);
+								member.LineNumber, member.LinePosition));
 						}
 
 						var typeName = normalizedValue.Substring(0, dotIndex);
@@ -1537,18 +1535,18 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						var type = TypeResolver.FindType(typeName);
 						if (type == null)
 						{
-							throw new XamlParseException(
+							throw new XamlParseException(FormatLineInfo(
 								$"Could not find type '{typeName}' for RoutedEvent '{memberValue}'.",
-								null, member.LineNumber, member.LinePosition);
+								member.LineNumber, member.LinePosition));
 						}
 
 						// EventTrigger only supports the Loaded event on FrameworkElement-derived types.
 						var isEventTriggerProperty = member.Owner?.Type?.Name == "EventTrigger";
 						if (isEventTriggerProperty && (eventName != "Loaded" || !typeof(FrameworkElement).IsAssignableFrom(type)))
 						{
-							throw new XamlParseException(
+							throw new XamlParseException(FormatLineInfo(
 								$"EventTrigger only supports the FrameworkElement.Loaded event, but got '{normalizedValue}'.",
-								null, member.LineNumber, member.LinePosition);
+								member.LineNumber, member.LinePosition));
 						}
 
 						return new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, eventName);
@@ -1765,7 +1763,20 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		/// Queues a XamlParseException to be thrown later
 		/// </summary>
 		private void AddXamlParseException(string message, XamlObjectDefinition? lineInfo, Exception? exception = null)
-			=> AddParseException(new XamlParseException(message, exception, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0));
+			=> AddParseException(new XamlParseException(FormatLineInfo(message, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0), exception));
+
+		private static string FormatLineInfo(string message, int lineNumber, int linePosition)
+		{
+			if (lineNumber <= 0)
+			{
+				return message;
+			}
+			if (linePosition <= 0)
+			{
+				return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1}]", message, lineNumber);
+			}
+			return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1} Position: {2}]", message, lineNumber, linePosition);
+		}
 
 		private void AddParseException(XamlParseException xamlParseException)
 		{

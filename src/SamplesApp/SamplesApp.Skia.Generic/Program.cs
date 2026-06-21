@@ -38,17 +38,6 @@ namespace SkiaSharpExample
 				.App(() => _app = new SamplesApp.App())
 				.AfterInit(() =>
 				{
-					if (_app is not null && OperatingSystem.IsWindows())
-					{
-						_app.MainWindowActivated += delegate
-						{
-							var windowContent = System.Windows.Application.Current.Windows[0].Content;
-							Assert.IsInstanceOfType(windowContent, typeof(System.Windows.UIElement));
-							var windowContentAsUIElement = (System.Windows.UIElement)windowContent;
-							Assert.IsTrue(windowContentAsUIElement.IsFocused);
-						};
-					}
-
 					if (host is X11ApplicationHost)
 					{
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
@@ -56,14 +45,7 @@ namespace SkiaSharpExample
 				})
 				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
-				.UseWindows()
 				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
-				.UseWindows(b => b
-					.WpfApplication(() =>
-					{
-						// optional app creation
-						return new System.Windows.Application();
-					}))
 				.UseMacOS();
 
 			host = builder

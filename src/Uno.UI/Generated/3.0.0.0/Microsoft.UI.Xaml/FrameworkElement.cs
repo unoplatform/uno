@@ -3,29 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FrameworkElement
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualHeight), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualThemeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualTheme), typeof(global::Microsoft.UI.Xaml.ElementTheme),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementTheme)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualWidthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualWidth), typeof(double),
@@ -42,28 +42,21 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property FocusVisualSecondaryThicknessProperty
 		// Skipping already declared property HeightProperty
 		// Skipping already declared property HorizontalAlignmentProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Language), typeof(string),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MarginProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Margin), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
+		// Skipping already declared property MarginProperty
 		// Skipping already declared property MaxHeightProperty
 		// Skipping already declared property MaxWidthProperty
 		// Skipping already declared property MinHeightProperty
 		// Skipping already declared property MinWidthProperty
-#if false || false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty NameProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Name), typeof(string),
@@ -90,8 +83,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Height
 		// Skipping already declared property HorizontalAlignment
 		// Skipping already declared property IsLoaded
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Language
 		{
 			get
@@ -104,20 +97,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Microsoft.UI.Xaml.Thickness Margin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
-			}
-			set
-			{
-				this.SetValue(MarginProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property Margin
 		// Skipping already declared property MaxHeight
 		// Skipping already declared property MaxWidth
 		// Skipping already declared property MinHeight
@@ -133,8 +113,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void DeferTree(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "DeferTree(DependencyObject element)");
@@ -250,22 +230,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loading
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.SizeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Unloaded
 	}
 }

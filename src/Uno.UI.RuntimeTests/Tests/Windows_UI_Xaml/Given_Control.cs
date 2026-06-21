@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ using Windows.Foundation;
 using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 using MUXControlsTestApp.Utilities;
-
 
 #if HAS_UNO
 using Uno.UI.Controls.Legacy;
@@ -473,6 +473,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Regarding Assembly.GetTypes(): nothing ensures that `allControlTypes` are what is expected; they could all be trimmed away! Assume that other tests will keep 'interesting' types around.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Regarding Activator.CreateInstance() around `allControlTypes`; shouldn't be a problem as `allControlTypes` checks that the constructor exists, but also see IL2070 (below): they might all be trimmed away!")]
+		[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Regarding the trimming of `allControlTypes`; nothing ensures that `allControlTypes` are what is expected; they could all be trimmed away!  Assume that other tests will keep 'interesting' types around.")]
 		public async Task When_Non_BuiltIn_Control()
 		{
 			var allControlTypes = typeof(Control).Assembly.GetTypes().OfType<Type>().Where(c => typeof(Control).IsAssignableFrom(c) && !c.IsAbstract && c.IsPublic && c.GetConstructor(Array.Empty<Type>()) is not null);
@@ -553,6 +556,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(Thumb),
 				typeof(ToggleButton),
 				typeof(Uno.UI.Controls.Legacy.ProgressRing),
+				typeof(Xaml.Controls.AlcContentHost),
 			};
 
 			allControlTypes = allControlTypes.Except(builtInControls);

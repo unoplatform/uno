@@ -1337,7 +1337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var rect = await UITestHelper.Load(sut);
 
 #if HAS_UNO
-			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsTrue(sut.IsAncestorOf(element));
 #endif
 
@@ -1373,10 +1373,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 
 #if HAS_UNO
-			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 
-			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsTrue(sut.IsAncestorOf(element3));
 #endif
 		}
@@ -1446,7 +1446,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var originalVisualOffset = visual.Offset;
 
 #if __SKIA__
-			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsTrue(sut.IsAncestorOf(element));
 #endif
 
@@ -1459,10 +1459,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rect.Height * 2, matrix2.OffsetY - matrix1.OffsetY);
 
 #if __SKIA__
-			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 
-			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsTrue(sut.IsAncestorOf(element3));
 #endif
 
@@ -1554,10 +1554,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rect.Height * 2 + 50, matrix4.OffsetY);
 
 #if __SKIA__
-			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 
-			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.IsTrue(sut.IsAncestorOf(element3));
 #endif
 		}
@@ -1796,23 +1796,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var rect = await UITestHelper.Load(sut);
 
-			var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 50), sut.XamlRoot);
+			var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 50), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 150), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 150), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y + 201), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y + 201), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreNotEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X, rect.Y - 1), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X, rect.Y - 1), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreNotEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X - 1, rect.Y), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X - 1, rect.Y), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreNotEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 200, rect.Y - 1), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 200, rect.Y - 1), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreNotEqual(sut, element);
-			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y), sut.XamlRoot);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y), sut.XamlRoot?.VisualTree.RootElement);
 			Assert.AreNotEqual(sut, element);
 		}
 #endif

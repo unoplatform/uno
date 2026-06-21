@@ -9,7 +9,9 @@
 
 	<Page.Resources>
 		<DataTemplate x:Key="MyDataTemplate" x:DataType="local:MainPage">
-			<Button Content="Hello" x:Load="{x:Bind IsLoad, Mode=OneWay}" />
+			<Border>
+				<Button x:Name="HelloButton" Content="Hello" x:Load="{x:Bind IsLoad, Mode=OneWay}" />
+			</Border>
 		</DataTemplate>
 	</Page.Resources>
 

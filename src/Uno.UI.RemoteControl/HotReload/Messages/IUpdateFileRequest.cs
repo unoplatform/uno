@@ -1,6 +1,11 @@
-﻿using System;
+using System;
+using System.Collections.Immutable;
 
+#if UNO_HOTRELOAD
+namespace Uno.HotReload.IO;
+#else
 namespace Uno.UI.RemoteControl.HotReload.Messages;
+#endif
 
 public interface IUpdateFileRequest
 {
@@ -8,6 +13,11 @@ public interface IUpdateFileRequest
 	/// ID of this file update request.
 	/// </summary>
 	string RequestId { get; }
+
+	/// <summary>
+	/// Gets or sets the collection of file edits to be applied.
+	/// </summary>
+	ImmutableArray<FileEdit> Edits { get; }
 
 	/// <summary>
 	/// If true, the file will be saved on disk, even if the content is the same.

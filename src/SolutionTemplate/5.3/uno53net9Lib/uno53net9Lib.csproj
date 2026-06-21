@@ -1,14 +1,14 @@
 <Project Sdk="Uno.Sdk.Private">
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net9.0-ios;net9.0-maccatalyst;net9.0-windows10.0.19041;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+		<TargetFrameworks>net10.0;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
 		<!-- Disabled for https://github.com/unoplatform/uno.check/issues/241 -->
-		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net9.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-android</TargetFrameworks>
 
 		<!-- Disable android on msbuild .NET Framework until android 35 is supported -->
-		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-android',''))</TargetFrameworks>
-		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-ios',''))</TargetFrameworks>
-		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-maccatalyst',''))</TargetFrameworks>
+		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net10.0-android',''))</TargetFrameworks>
+		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net10.0-ios',''))</TargetFrameworks>
+		<TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net10.0-maccatalyst',''))</TargetFrameworks>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

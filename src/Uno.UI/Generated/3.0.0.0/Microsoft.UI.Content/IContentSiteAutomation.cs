@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IContentSiteAutomation
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
 		{
 			get;
 			set;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		object AutomationProvider
 		{
 			get;
@@ -32,16 +32,16 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.IContentSiteAutomation.ParentAutomationProviderRequested.remove
 		// Forced skipping of method Microsoft.UI.Content.IContentSiteAutomation.PreviousSiblingAutomationProviderRequested.add
 		// Forced skipping of method Microsoft.UI.Content.IContentSiteAutomation.PreviousSiblingAutomationProviderRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.IContentSiteAutomation, global::Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs> FragmentRootAutomationProviderRequested;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.IContentSiteAutomation, global::Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs> NextSiblingAutomationProviderRequested;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.IContentSiteAutomation, global::Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs> ParentAutomationProviderRequested;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.IContentSiteAutomation, global::Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs> PreviousSiblingAutomationProviderRequested;
 #endif
 	}

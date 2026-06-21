@@ -13,6 +13,7 @@
     <!-- See documentation for each property below -->
 
     <!--<UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>-->
+    <!--<UnoFastDevBuild>true</UnoFastDevBuild>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
     <!--<UnoNugetOverrideVersion>6.4.0-dev.354</UnoNugetOverrideVersion>-->
@@ -53,8 +54,22 @@
         Always close the solution before changing or activating this property.
         *** WARNING ***
 
+      ### UnoFastDevBuild ###
+
+        Set to 'true' to disable analyzers, code-style enforcement, and the
+        Microsoft.CodeAnalysis.NetAnalyzers package for local builds. This is
+        the fastest way to iterate on Uno.UI when you don't need the full
+        CI-strict analyzer coverage.
+
+        No effect on CI — guarded by the ContinuousIntegrationBuild property,
+        so analyzer-strict checks still run on every PR. Can also be enabled
+        machine-wide via the UNO_FAST_DEV_BUILD=true environment variable.
+
+        DO NOT commit this file — it is per-developer config and is
+        intentionally gitignored.
+
       ### UnoNugetOverrideVersion ###
-      
+
         This property allows the override of the nuget local cache.
         Set it to the version you want to override, used in another app.
         You will see the override path in the build output.

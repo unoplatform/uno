@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MediaPlayer : global::System.IDisposable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public double AudioBalance
 		{
@@ -22,7 +22,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public global::Windows.Media.Playback.MediaPlayerAudioCategory AudioCategory
 		{
@@ -36,8 +36,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceInformation AudioDevice
 		{
 			get
@@ -50,7 +50,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public global::Windows.Media.Playback.MediaPlayerAudioDeviceType AudioDeviceType
 		{
@@ -64,8 +64,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioStateMonitor AudioStateMonitor
 		{
 			get
@@ -75,8 +75,8 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Skipping already declared property AutoPlay
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaBreakManager BreakManager
 		{
 			get
@@ -85,7 +85,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public double BufferingProgress
 		{
@@ -95,7 +95,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public bool CanPause
 		{
@@ -105,7 +105,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public bool CanSeek
 		{
@@ -115,8 +115,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaPlaybackCommandManager CommandManager
 		{
 			get
@@ -125,7 +125,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public global::Windows.Media.Playback.MediaPlayerState CurrentState
 		{
@@ -135,7 +135,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public bool IsLoopingEnabled
 		{
@@ -150,7 +150,7 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Skipping already declared property IsMuted
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public bool IsProtected
 		{
@@ -160,8 +160,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsVideoFrameServerEnabled
 		{
 			get
@@ -174,7 +174,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public global::System.TimeSpan NaturalDuration
 		{
@@ -184,8 +184,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.PlaybackMediaMarkerSequence PlaybackMediaMarkers
 		{
 			get
@@ -194,7 +194,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public double PlaybackRate
 		{
@@ -210,8 +210,8 @@ namespace Windows.Media.Playback
 #endif
 		// Skipping already declared property PlaybackSession
 		// Skipping already declared property Position
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.MediaProtectionManager ProtectionManager
 		{
 			get
@@ -224,7 +224,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public bool RealTimePlayback
 		{
@@ -239,8 +239,8 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Skipping already declared property Source
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.StereoscopicVideoRenderMode StereoscopicVideoRenderMode
 		{
 			get
@@ -253,8 +253,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.SystemMediaTransportControls SystemMediaTransportControls
 		{
 			get
@@ -263,8 +263,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaTimelineController TimelineController
 		{
 			get
@@ -277,7 +277,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public global::System.TimeSpan TimelineControllerPositionOffset
 		{
@@ -296,7 +296,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Play()
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Pause()
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void SetUriSource(global::System.Uri value)
 		{
@@ -323,58 +323,58 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SeekCompleted.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.VolumeChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.VolumeChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void SetFileSource(global::Windows.Storage.IStorageFile file)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "SetFileSource(IStorageFile file)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void SetStreamSource(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "SetStreamSource(IRandomAccessStream stream)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void SetMediaSource(global::Windows.Media.Core.IMediaSource source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "SetMediaSource(IMediaSource source)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAudioEffect(string activatableClassId, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "AddAudioEffect(string activatableClassId, bool effectOptional, IPropertySet configuration)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAllEffects()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "RemoveAllEffects()");
 		}
 #endif
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Dispose()
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void StepForwardOneFrame()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "StepForwardOneFrame()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void StepBackwardOneFrame()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "StepBackwardOneFrame()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "GetAsCastingSource()");
@@ -384,7 +384,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.IsMutedChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SourceChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SourceChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public void SetSurfaceSize(global::Windows.Foundation.Size size)
 		{
@@ -392,29 +392,29 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.GetSurface(Windows.UI.Composition.Compositor)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddVideoEffect(string activatableClassId, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "AddVideoEffect(string activatableClassId, bool effectOptional, IPropertySet effectConfiguration)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyFrameToVideoSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "CopyFrameToVideoSurface(IDirect3DSurface destination)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyFrameToVideoSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination, global::Windows.Foundation.Rect targetRectangle)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "CopyFrameToVideoSurface(IDirect3DSurface destination, Rect targetRectangle)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyFrameToStereoscopicVideoSurfaces(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationLeftEye, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationRightEye)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "CopyFrameToStereoscopicVideoSurfaces(IDirect3DSurface destinationLeftEye, IDirect3DSurface destinationRightEye)");
@@ -422,15 +422,15 @@ namespace Windows.Media.Playback
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.VideoFrameAvailable.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.VideoFrameAvailable.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "RenderSubtitlesToSurface(IDirect3DSurface destination)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination, global::Windows.Foundation.Rect targetRectangle)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "RenderSubtitlesToSurface(IDirect3DSurface destination, Rect targetRectangle)");
@@ -484,7 +484,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.TimelineControllerPositionOffset.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Volume.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Volume.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> BufferingEnded
 		{
@@ -500,7 +500,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> BufferingStarted
 		{
@@ -516,7 +516,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> CurrentStateChanged
 		{
@@ -535,7 +535,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaEnded
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaFailed
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaOpened
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.MediaPlayerRateChangedEventArgs> MediaPlayerRateChanged
 		{
@@ -551,7 +551,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs> PlaybackMediaMarkerReached
 		{
@@ -571,7 +571,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.VolumeChanged
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.IsMutedChanged
 		// Skipping already declared event Windows.Media.Playback.MediaPlayer.SourceChanged
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> VideoFrameAvailable
 		{
@@ -587,7 +587,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SubtitleFrameChanged
 		{

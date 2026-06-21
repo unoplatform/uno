@@ -71,11 +71,11 @@ internal static class HotReloadHelper
 
 		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
-		var reloadWaiter = TypeMappings.WaitForResume();
-		if (!reloadWaiter.IsCompleted)
+		if (Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree))
 		{
-			// Reloads are paused (ie task hasn't completed), so don't wait for any update
-			// This is to handle testing the pause/resume feature of HR
+			// Visual-tree updates are paused (queued for drain on release).
+			// The visual tree won't change until the pause is released, so don't
+			// wait for an update — the caller is testing the pause feature.
 			return;
 		}
 
@@ -117,11 +117,11 @@ internal static class HotReloadHelper
 
 		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
-		var reloadWaiter = TypeMappings.WaitForResume();
-		if (!reloadWaiter.IsCompleted)
+		if (Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree))
 		{
-			// Reloads are paused (ie task hasn't completed), so don't wait for any update
-			// This is to handle testing the pause/resume feature of HR
+			// Visual-tree updates are paused (queued for drain on release).
+			// The visual tree won't change until the pause is released, so don't
+			// wait for an update — the caller is testing the pause feature.
 			return;
 		}
 

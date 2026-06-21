@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -22,6 +22,11 @@
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
+	</ItemGroup>
+
+	<!-- Windows-only sources (used only by the WinAppSDK target). -->
+	<ItemGroup>
+		<Compile Remove="Windows\**\*.cs" />
 	</ItemGroup>
 
 	<Choose>
@@ -51,8 +56,8 @@
 				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 				<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
-				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
-				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Extensions\WpfNativeOpenGLWrapper.cs" />
+				<Compile Include="Windows\WindowsRenderingNativeMethods.cs" />
+				<Compile Include="Windows\WinUINativeOpenGLWrapper.cs" />
 				<Compile Include="..\..\Uno.UI\Graphics\INativeOpenGLWrapper.cs" />
 			</ItemGroup>
 		</When>
@@ -62,7 +67,9 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
 	</PropertyGroup>
 
-	<Target Name="GetAngle" BeforeTargets="Build">
+	<Target Name="GetAngle"
+			Condition=" '$(TargetFramework)' == '$(NetUWPOrWinUI)' "
+			BeforeTargets="Build">
 		<DownloadFile
 			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libEGL.dylib')"
 			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libEGL.dylib"

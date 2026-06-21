@@ -37,9 +37,9 @@ public static class TestingUpdateHandler
 
 
 	/// <summary>
-	/// Gets a task that allows the called to wait for an UI Update to 
-	/// complete. This can block indefinitely if type mappings has been paused
-	/// see TypeMappings.Pause()
+	/// Gets a task that allows the called to wait for an UI Update to
+	/// complete. Can block until the visual-tree pause (if any) is released
+	/// and the queued types are drained. See <c>Uno.HotReload.Client.UIUpdate</c>.
 	/// </summary>
 	/// <returns></returns>
 	public static async Task WaitForVisualTreeUpdate()
@@ -51,9 +51,9 @@ public static class TestingUpdateHandler
 	}
 
 	/// <summary>
-	/// Gets a task that allows the called to wait for an UI Update to 
-	/// complete. This should not block indefinitely even if type mappings has been paused
-	/// see TypeMappings.Pause()
+	/// Gets a task that allows the called to wait for an UI Update to
+	/// complete. Fires for both successful applies and pause-deferred ignored
+	/// states (see <c>Uno.HotReload.Client.UIUpdate</c>).
 	/// </summary>
 	/// <returns></returns>
 	public static async Task<bool> WaitForReloadCompleted()

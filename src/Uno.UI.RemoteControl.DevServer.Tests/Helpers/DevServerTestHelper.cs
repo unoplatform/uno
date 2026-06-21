@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using StreamJsonRpc;
@@ -105,11 +107,20 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// Starts the dev server.
 	/// </summary>
 	/// <param name="ct">Cancellation token to cancel the operation.</param>
-	/// <param name="timeout">The timeout in milliseconds to wait for the server to start. Default is 30 seconds.</param>
+	/// <param name="timeout">The timeout in milliseconds to wait for the server to start. Default is 60 seconds (see remarks).</param>
 	/// <param name="extraArgs"></param>
 	/// <returns>True if the server started successfully, false otherwise.</returns>
 	/// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
-	public async Task<bool> StartAsync(CancellationToken ct, int timeout = 30000, string? extraArgs = null)
+	/// <remarks>
+	/// The default 60s timeout exists because the host cold-start (JIT + solution parse + add-in load) is
+	/// highly sensitive to machine load: it completes in a few seconds on an idle box but has been measured
+	/// well past 30s when the CI agent is saturated running the full unit-test solution filter in parallel.
+	/// A 30s window made the startup-detection loop give up before the host surfaced its "Now listening on"
+	/// indicator, returning false and producing the intermittent "Dev server not started" failure. 60s keeps
+	/// the detection window comfortably above the observed worst case while still being bounded by the
+	/// caller's <paramref name="ct"/>.
+	/// </remarks>
+	public async Task<bool> StartAsync(CancellationToken ct, int timeout = 60000, string? extraArgs = null)
 	{
 		// Use semaphore to prevent race conditions with concurrent start/stop calls
 		await _startStopSemaphore.WaitAsync(ct);
@@ -483,13 +494,19 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	}
 
 	/// <summary>
-	/// Gets a random port number between 10000 and 65535.
+	/// Reserves an ephemeral port by asking the OS for an available loopback socket.
 	/// </summary>
-	/// <remarks>
-	/// That's lazy approach that should work often enough for CI.
-	/// </remarks>
-	/// <returns>A random port number.</returns>
-	private static int GetRandomPort() => new Random().Next(10_000, 65_500);
+	/// <returns>A port number guaranteed to be free at the time of selection.</returns>
+	private static int GetRandomPort()
+	{
+		// Best-effort: another process could still bind the port after we release the socket, but this has been reliable enough for CI needs.
+		// Let the OS pick a free ephemeral port so tests never collide with privileged ranges.
+		var listener = new TcpListener(IPAddress.Loopback, 0);
+		listener.Start();
+		var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+		listener.Stop();
+		return port;
+	}
 
 	public async ValueTask DisposeAsync()
 	{

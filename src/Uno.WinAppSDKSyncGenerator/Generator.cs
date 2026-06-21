@@ -19,7 +19,6 @@ namespace Uno.WinAppSDKSyncGenerator
 		internal const string CSharpLangVersion = "12.0";
 		private static IEnumerable<PortableExecutableReference> _winuiReferences;
 
-		protected const string UnitTestsDefine = "IS_UNIT_TESTS";
 		protected const string AndroidDefine = "__ANDROID__";
 		protected const string iOSDefine = "__IOS__";
 		protected const string tvOSDefine = "__TVOS__";
@@ -121,7 +120,6 @@ namespace Uno.WinAppSDKSyncGenerator
 		private INamedTypeSymbol _tvOSBaseSymbol;
 		private INamedTypeSymbol _androidBaseSymbol;
 		private static Compilation s_referenceCompilation;
-		private Compilation _unitTestsCompilation;
 
 		private Compilation _netstdReferenceCompilation;
 		private Compilation _wasmCompilation;
@@ -171,7 +169,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-ios18.0");
 			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-tvos18.0");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-android");
-			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net9.0");
 
 			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net9.0");
 			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net9.0");
@@ -504,7 +501,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			public T AndroidSymbol;
 			public T IOSSymbol;
 			public T TvOSSymbol;
-			public T UnitTestsymbol;
 			public T UAPSymbol;
 			public T NetStdReferenceSymbol;
 			public T WasmSymbol;
@@ -518,7 +514,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				T androidType,
 				T iOSType,
 				T tvOSType,
-				T unitTestType,
 				T netStdRerefenceType,
 				T wasmType,
 				T skiaType,
@@ -528,7 +523,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
 				this.TvOSSymbol = tvOSType;
-				this.UnitTestsymbol = unitTestType;
 				this.UAPSymbol = uapType;
 				this.NetStdReferenceSymbol = netStdRerefenceType;
 				this.WasmSymbol = wasmType;
@@ -545,10 +539,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				if (IsImplemented(TvOSSymbol))
 				{
 					_implementedFor |= ImplementedFor.tvOS;
-				}
-				if (IsImplemented(UnitTestsymbol))
-				{
-					_implementedFor |= ImplementedFor.UnitTests;
 				}
 				if (IsImplemented(NetStdReferenceSymbol))
 				{
@@ -568,7 +558,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				AndroidSymbol == null
 				|| IOSSymbol == null
 				|| TvOSSymbol == null
-				|| UnitTestsymbol == null
 				|| NetStdReferenceSymbol == null
 				|| WasmSymbol == null
 				|| SkiaSymbol == null
@@ -580,7 +569,6 @@ namespace Uno.WinAppSDKSyncGenerator
 					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
 					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
 					IsNotDefinedByUno(TvOSSymbol) ? tvOSDefine : "false",
-					IsNotDefinedByUno(UnitTestsymbol) ? UnitTestsDefine : "false",
 					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
@@ -598,7 +586,6 @@ namespace Uno.WinAppSDKSyncGenerator
 					IsNotDefinedByUno(AndroidSymbol) ? $"\"{AndroidDefine}\"" : "",
 					IsNotDefinedByUno(IOSSymbol) ? $"\"{iOSDefine}\"" : "",
 					IsNotDefinedByUno(TvOSSymbol) ? $"\"{tvOSDefine}\"" : "",
-					IsNotDefinedByUno(UnitTestsymbol) ? $"\"{UnitTestsDefine}\"" : "",
 					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
 					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
@@ -611,7 +598,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				=> IsNotDefinedByUno(AndroidSymbol) &&
 					IsNotDefinedByUno(IOSSymbol) &&
 					IsNotDefinedByUno(TvOSSymbol) &&
-					IsNotDefinedByUno(UnitTestsymbol) &&
 					IsNotDefinedByUno(WasmSymbol) &&
 					IsNotDefinedByUno(SkiaSymbol) &&
 					IsNotDefinedByUno(NetStdReferenceSymbol);
@@ -660,7 +646,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
 				  iOSType: _iOSCompilation.GetTypeByMetadataName(name),
 				  tvOSType: _tvOSCompilation.GetTypeByMetadataName(name),
-				  unitTestType: _unitTestsCompilation.GetTypeByMetadataName(name),
 				  netStdRerefenceType: _netstdReferenceCompilation.GetTypeByMetadataName(name),
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
 				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
@@ -680,7 +665,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
 			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);
 			var tvos = GetNonGeneratedMembers(types.TvOSSymbol, name);
-			var unitTests = GetNonGeneratedMembers(types.UnitTestsymbol, name);
 			var netStdReference = GetNonGeneratedMembers(types.NetStdReferenceSymbol, name);
 			var wasm = GetNonGeneratedMembers(types.WasmSymbol, name);
 			var skia = GetNonGeneratedMembers(types.SkiaSymbol, name);
@@ -689,7 +673,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				androidType: filter(android),
 				iOSType: filter(ios),
 				tvOSType: filter(tvos),
-				unitTestType: filter(unitTests),
 				netStdRerefenceType: filter(netStdReference),
 				wasmType: filter(wasm),
 				skiaType: filter(skia),
@@ -702,7 +685,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				androidType: FindMatchingMethod(types.AndroidSymbol, method),
 				iOSType: FindMatchingMethod(types.IOSSymbol, method),
 				tvOSType: FindMatchingMethod(types.TvOSSymbol, method),
-				unitTestType: FindMatchingMethod(types.UnitTestsymbol, method),
 				netStdRerefenceType: FindMatchingMethod(types.NetStdReferenceSymbol, method),
 				wasmType: FindMatchingMethod(types.WasmSymbol, method),
 				skiaType: FindMatchingMethod(types.SkiaSymbol, method),
@@ -714,7 +696,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				androidType: GetMatchingPropertyMember(types.AndroidSymbol, property),
 				iOSType: GetMatchingPropertyMember(types.IOSSymbol, property),
 				tvOSType: GetMatchingPropertyMember(types.TvOSSymbol, property),
-				unitTestType: GetMatchingPropertyMember(types.UnitTestsymbol, property),
 				netStdRerefenceType: GetMatchingPropertyMember(types.NetStdReferenceSymbol, property),
 				wasmType: GetMatchingPropertyMember(types.WasmSymbol, property),
 				skiaType: GetMatchingPropertyMember(types.SkiaSymbol, property),
@@ -1163,7 +1144,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			return IsMissingOnPlatform(typeSymbols.AndroidSymbol)
 				|| IsMissingOnPlatform(typeSymbols.IOSSymbol)
 				|| IsMissingOnPlatform(typeSymbols.TvOSSymbol)
-				|| IsMissingOnPlatform(typeSymbols.UnitTestsymbol)
 				|| IsMissingOnPlatform(typeSymbols.WasmSymbol)
 				|| IsMissingOnPlatform(typeSymbols.SkiaSymbol)
 				|| IsMissingOnPlatform(typeSymbols.NetStdReferenceSymbol);
@@ -1203,7 +1183,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			return CheckPlatform(typeSymbols.AndroidSymbol, "Android")
 				?? CheckPlatform(typeSymbols.IOSSymbol, "iOS")
 				?? CheckPlatform(typeSymbols.TvOSSymbol, "tvOS")
-				?? CheckPlatform(typeSymbols.UnitTestsymbol, "UnitTests")
 				?? CheckPlatform(typeSymbols.WasmSymbol, "WASM")
 				?? CheckPlatform(typeSymbols.SkiaSymbol, "Skia")
 				?? CheckPlatform(typeSymbols.NetStdReferenceSymbol, "NetStdReference");
@@ -1310,7 +1289,7 @@ namespace Uno.WinAppSDKSyncGenerator
 					if (type.TypeKind == TypeKind.Enum && field.HasConstantValue)
 					{
 						var existingField = allmembers.AndroidSymbol ?? allmembers.IOSSymbol ?? allmembers.SkiaSymbol
-							?? allmembers.WasmSymbol ?? allmembers.UnitTestsymbol ?? allmembers.NetStdReferenceSymbol;
+							?? allmembers.WasmSymbol ?? allmembers.NetStdReferenceSymbol;
 
 						if (existingField is IFieldSymbol existingEnumField
 							&& existingEnumField.HasConstantValue

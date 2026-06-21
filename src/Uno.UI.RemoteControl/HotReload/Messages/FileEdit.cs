@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
-
+#if UNO_HOTRELOAD
+namespace Uno.HotReload.IO;
+#else
 namespace Uno.UI.RemoteControl.HotReload;
+#endif
 
 /// <summary>
 /// Represents a file edit operation.
@@ -10,8 +12,8 @@ namespace Uno.UI.RemoteControl.HotReload;
 /// <param name="NewText">The new text to replace in the file, or <c>null</c> to delete the file (only if <paramref name="IsCreateDeleteAllowed"/> is <c>true</c>).</param>
 /// <param name="IsCreateDeleteAllowed">Indicates if the file can be created or deleted.</param>
 public record FileEdit(
-	[property: JsonProperty] string FilePath,
-	[property: JsonProperty] string? OldText,
-	[property: JsonProperty] string? NewText,
-	[property: JsonProperty] bool IsCreateDeleteAllowed = false
+	string FilePath,
+	string? OldText,
+	string? NewText,
+	bool IsCreateDeleteAllowed = false
 );

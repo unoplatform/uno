@@ -3,7 +3,7 @@ parameters:
 
 stages:
 - stage: master_health
-  displayName: Validate Master Health
+  displayName: Setup - Master Health Validation
   dependsOn:
     - Setup
   condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/master'))

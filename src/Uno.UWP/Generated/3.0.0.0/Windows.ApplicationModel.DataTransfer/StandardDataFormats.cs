@@ -3,101 +3,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
+#if false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public static partial class StandardDataFormats
 	{
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string ApplicationLink
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "ApplicationLink");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Bitmap
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "Bitmap");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Html
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "Html");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Rtf
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "Rtf");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string StorageItems
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "StorageItems");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Text
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "Text");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Uri
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "Uri");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string UserActivityJsonArray
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "UserActivityJsonArray");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string WebLink
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "WebLink");
-			}
-		}
-#endif
+		// Skipping already declared property ApplicationLink
+		// Skipping already declared property Bitmap
+		// Skipping already declared property Html
+		// Skipping already declared property Rtf
+		// Skipping already declared property StorageItems
+		// Skipping already declared property Text
+		// Skipping already declared property Uri
+		// Skipping already declared property UserActivityJsonArray
+		// Skipping already declared property WebLink
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.ApplicationLink.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html.get

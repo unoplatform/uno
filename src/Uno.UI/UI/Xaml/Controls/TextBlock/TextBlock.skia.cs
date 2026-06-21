@@ -26,7 +26,7 @@ using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class TextBlock : FrameworkElement, IBlock, UnicodeText.IFontCacheUpdateListener
+	partial class TextBlock : FrameworkElement, IBlock, UnicodeText.IFontCacheUpdateListener, ITextSelectionGripperHost
 	{
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
@@ -42,6 +42,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 		private bool _forceFocusedForContextFlyout;
+
+		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
+		// TextBox there is no caret/insertion point in a TextBlock, so the grippers only ever appear in
+		// pairs around a non-empty selection (GripperMode is only ever Hidden or Both).
+		private TextSelectionGripperPresenter? _gripperPresenter;
+		private bool _grippersShown;
+		private PointerPoint? _lastPointerDownPoint;
 
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
@@ -68,6 +75,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_forceFocusedForContextFlyout = ShouldForceFocusedVisualState();
 				UpdateSelectionRendering();
+
+				if (!_forceFocusedForContextFlyout)
+				{
+					HideGrippers();
+				}
 			};
 		}
 
@@ -82,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
-		internal TextBox? OwningTextBox { private get; init; }
+		internal TextBox? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
@@ -99,6 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_forceFocusedForContextFlyout = false;
+			HideGrippers();
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -178,6 +191,11 @@ namespace Microsoft.UI.Xaml.Controls
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 
+			if (!IsTextSelectionEnabled)
+			{
+				HideGrippers();
+			}
+
 			// Enable context menu gestures when text selection is enabled.
 			// This ensures ContextRequested is raised for the default TextCommandBarFlyout.
 			// We need to call this explicitly because TextBlock's default ContextFlyout is set via
@@ -208,6 +226,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_forceFocusedForContextFlyout = false;
 			UpdateSelectionRendering();
+			HideGrippers();
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -386,6 +405,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var start = Math.Min(Selection.start, Selection.end);
 			var end = Math.Max(Selection.start, Selection.end);
 			SelectedText = Text[start..end];
+
+			if (start == end)
+			{
+				// No selection left to grab: drop the touch grippers.
+				HideGrippers();
+			}
 		}
 
 		partial void SetupInlines() => RenderSelection = IsTextSelectionEnabled;
@@ -405,9 +430,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnTapped(TappedRoutedEventArgs _)
+		private void OnTapped(TappedRoutedEventArgs e)
 		{
-			if (IsTextSelectionEnabled)
+			// Touch tapping is owned by the pointer-released touch path
+			if (IsTextSelectionEnabled && e.PointerDeviceType == PointerDeviceType.Mouse)
 			{
 				Selection = default;
 			}
@@ -422,6 +448,11 @@ namespace Microsoft.UI.Xaml.Controls
 					var chunk = ParsedText.GetWordAt(index, true);
 
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
+
+					if (e.PointerDeviceType is not PointerDeviceType.Mouse && chunk.length > 0)
+					{
+						ShowGrippers();
+					}
 				}
 			}
 		}
@@ -515,15 +546,41 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool HasSelectionFlyout() => SelectionFlyout is not null;
 
 		/// <summary>
-		/// Called from OnPointerReleased to queue SelectionFlyout visibility update for non-mouse input.
+		/// Called from OnPointerReleased to handle touch/pen tap selection and queue a SelectionFlyout
+		/// visibility update. Mouse input is handled on the pressed/move side and ignored here (matching WinUI).
 		/// </summary>
 		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e)
 		{
-			// Only show SelectionFlyout for touch/pen input, not mouse (matching WinUI behavior)
-			if (e.Pointer.PointerDeviceType is not PointerDeviceType.Mouse && IsTextSelectionEnabled)
+			// Mouse doesn't get the gripper/selection-flyout treatment (matching WinUI behavior).
+			if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse || !IsTextSelectionEnabled)
 			{
-				QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
+				return;
 			}
+
+			var down = _lastPointerDownPoint;
+			_lastPointerDownPoint = null;
+
+			if (FindHyperlinkAt(e) is not null)
+			{
+				// Tapping a hyperlink: navigation is handled elsewhere, don't start a selection.
+				return;
+			}
+
+			if (down is null)
+			{
+				return;
+			}
+
+			var touchHoldTime = e.GetCurrentPoint(null).Timestamp - down.Timestamp;
+			if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
+			{
+				// Long-press: the context menu was already opened through the Holding gesture
+				// (ContextRequested).
+				return;
+			}
+
+			TouchTap(e.GetCurrentPoint(this).Position);
+			QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
 		}
 
 		private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
@@ -603,6 +660,101 @@ namespace Microsoft.UI.Xaml.Controls
 			// Reset input device type after processing (matching WinUI behavior)
 			_lastInputDeviceType = default;
 		}
+		#endregion
+
+		#region Touch selection grippers
+		// The gripper visuals and all the drag/positioning mechanics live in the shared
+		// TextSelectionGripperPresenter (also used by TextBox). A TextBlock has no caret/insertion point,
+		// so its GripperMode is only ever Hidden or Both (a non-empty selection).
+
+		// Test hook: the pair of selection grippers when they are currently showing, otherwise null.
+		internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? SelectionGrippersForTesting
+			=> _gripperPresenter?.VisibleGrippersForTesting;
+
+		private void ShowGrippers()
+		{
+			if (!IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			_gripperPresenter ??= new TextSelectionGripperPresenter(this);
+			_grippersShown = true;
+			_gripperPresenter.Update();
+		}
+
+		private void HideGrippers()
+		{
+			_grippersShown = false;
+			_gripperPresenter?.Hide();
+		}
+
+		// Touch tap handling: select the tapped word (and show the grippers), or keep an existing
+		// selection if the tap landed inside it. The point is relative to the TextBlock.
+		private void TouchTap(Point point)
+		{
+			var textPoint = new Point(point.X - Padding.Left, point.Y - Padding.Top);
+			var index = Math.Max(0, ParsedText.GetIndexAt(textPoint, true, true));
+
+			var selStart = Math.Min(Selection.start, Selection.end);
+			var selEnd = Math.Max(Selection.start, Selection.end);
+			if (selStart != selEnd && selStart <= index && index < selEnd)
+			{
+				// Tapped inside the current selection: keep it and re-show the grippers/flyout.
+				ShowGrippers();
+				return;
+			}
+
+			var chunk = ParsedText.GetWordAt(index, true);
+			Selection = new Range(chunk.start, chunk.start + chunk.length);
+			if (chunk.length > 0)
+			{
+				ShowGrippers();
+			}
+			else
+			{
+				HideGrippers();
+			}
+		}
+
+		#region ITextSelectionGripperHost
+		TextBlock ITextSelectionGripperHost.GripperTextSurface => this;
+
+		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+		GripperMode ITextSelectionGripperHost.GripperMode => _grippersShown ? GripperMode.Both : GripperMode.Hidden;
+
+		int ITextSelectionGripperHost.SelectionLowerIndex => Math.Min(Selection.start, Selection.end);
+
+		int ITextSelectionGripperHost.SelectionUpperIndex => Math.Max(Selection.start, Selection.end);
+
+		void ITextSelectionGripperHost.SetGripperSelection(int start, int end) => Selection = new Range(start, end);
+
+		// A TextBlock never reports GripperMode.EndOnly, so this is only a defensive fallback.
+		void ITextSelectionGripperHost.MoveGripperCaret(int index) => Selection = new Range(index, index);
+
+		// A TextBlock doesn't scroll its own content, so there's nothing to bring into view.
+		void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) { }
+
+		void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+
+		// Dismiss the selection flyout (the floating copy bar) when a touch interaction begins, so it
+		// doesn't linger next to a context menu opened on the same gesture.
+		internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
+		void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+		{
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
+		}
+
+		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+
+		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+			=> TouchTap(args.GetCurrentPoint(this).Position);
+		#endregion
 		#endregion
 
 		/// <summary>

@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
@@ -7,7 +9,12 @@ namespace Microsoft.UI.Xaml;
 
 partial class Window
 {
-	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
+	[MethodImpl(MethodImplOptions.NoInlining)] // No inlining to keep Assembly.GetCallingAssembly accurate
+	public Window() : this(
+		Uno.UI.Xaml.WindowType.DesktopXamlSource,
+		// Assembly.GetCallingAssembly throws PlatformNotSupportedException on NativeAOT, so only
+		// capture the caller when ALC hosting is active (never the case on NativeAOT).
+		ContentHostOverride is not null ? Assembly.GetCallingAssembly() : null)
 	{
 	}
 

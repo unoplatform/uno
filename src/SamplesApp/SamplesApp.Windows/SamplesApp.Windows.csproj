@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>$(NetPreviousWinAppSDK)</TargetFramework>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>SamplesApp.Windows</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -50,8 +50,9 @@
 		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7175" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.3.1" PrivateAssets="all" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 

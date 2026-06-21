@@ -1,0 +1,50 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: AddIn_Version_Alignment
+  displayName: 'Run'
+  timeoutInMinutes: 15
+  cancelTimeoutInMinutes: 0
+
+  pool: ${{ parameters.poolName }}
+
+  variables:
+    CI_Build: true
+
+  steps:
+  - checkout: self
+    clean: true
+    # Full clone (no fetchDepth) — Directory.Build.props references NBGV-set properties.
+    # While this minimal step does not run the NBGV task itself, a deep clone keeps any
+    # incidental NBGV usage during restore from failing on missing git history.
+
+  # Single .NET SDK install (the one pinned in build/ci/net10/_global.json). The
+  # validation test targets $(NetCurrent) = net10.0 and the runtime/test platform that
+  # the SDK ships with is enough — no separate net8/net9 SDK is needed because the
+  # test only restores three NuGet packages and walks their static AssemblyRef tables.
+  - template: ../templates/dotnet-install.yml
+
+  # Regression gate: Uno.Sdk.AddInVersionValidation.Tests scans every DevServer add-in
+  # declared in src/Uno.Sdk/packages.json for cross-package AssemblyRef version mismatches.
+  # The job is intentionally RED whenever the add-in maintainers ship a Uno.Sdk version
+  # with misaligned dependencies, and turns GREEN once they align them. The heavier
+  # DevServer host-side integration tests run on the Windows unit_tests stage as part
+  # of the regular slnf.
+  - script: |
+      dotnet test --project src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj \
+        -c Release \
+        --report-trx \
+        --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+    displayName: 'Validate cross-add-in AssemblyRef alignment'
+
+  - task: PublishTestResults@2
+    displayName: Publish TRX Test Results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
+      testRunTitle: 'Add-in Version Alignment'
+      mergeTestResults: true
+    continueOnError: true
+    condition: always()

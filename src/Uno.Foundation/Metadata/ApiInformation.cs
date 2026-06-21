@@ -41,6 +41,42 @@ public partial class ApiInformation
 		}
 	}
 
+	/// <summary>
+	/// Removes assemblies and cached types from non-default ALCs.
+	/// Called during ALC teardown.
+	/// </summary>
+	internal static void ClearCachesForNonDefaultAlc()
+	{
+		lock (_assemblies)
+		{
+			_assemblies.RemoveAll(a =>
+			{
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(a);
+				return alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default;
+			});
+		}
+
+		// Clear type caches that may reference ALC types.
+		lock (_gate)
+		{
+			var keysToRemove = new List<string>();
+			foreach (var kvp in _typeCache)
+			{
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(kvp.Value.Assembly);
+				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					keysToRemove.Add(kvp.Key);
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				_typeCache.Remove(key);
+				_isTypePresent.Remove(key);
+			}
+		}
+	}
+
 	private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
 	public static bool IsTypePresent(

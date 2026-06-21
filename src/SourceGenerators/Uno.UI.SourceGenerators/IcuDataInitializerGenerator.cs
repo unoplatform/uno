@@ -28,10 +28,15 @@ public class IcuDataInitializerGenerator : IIncrementalGenerator
 							[global::System.Runtime.CompilerServices.ModuleInitializerAttribute]
 							internal static void Initialize()
 							{
-								var icuType = System.Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
-								var setMethod = icuType?.GetMethod("SetDataAssembly",
-									System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-								setMethod?.Invoke(null, new object[] { typeof(__IcuDataInitializer).Assembly });
+								var isDefaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(__IcuDataInitializer).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default;
+
+								if (isDefaultAlc)
+								{
+									var icuType = System.Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
+									var setMethod = icuType?.GetMethod("SetDataAssembly",
+										System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+									setMethod?.Invoke(null, new object[] { typeof(__IcuDataInitializer).Assembly });
+								}
 							}
 						}
 						""";

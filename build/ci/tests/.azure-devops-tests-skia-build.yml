@@ -41,9 +41,6 @@ jobs:
       artifact: native-assets-macos
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
-    displayName: Build WPF Islands Head
-
   - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f net10.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
     displayName: Build Generic Skia Head
 
@@ -54,13 +51,6 @@ jobs:
       targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net10.0
       artifactName: samplesapp-desktop-skia
 
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Wpf Islands Binaries'
-    retryCountOnTaskFailure: 3
-    inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net9.0-windows
-      artifactName: samplesapp-wpf-islands-skia
-
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Desktop Skia build logs'
     retryCountOnTaskFailure: 3
@@ -68,13 +58,4 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)\logs
       ArtifactName: samplesapp-desktop-skia-logs
-      ArtifactType: Container
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish WPF Islands Skia build logs'
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)\build-wpf-islands.binlog
-      ArtifactName: samplesapp-wpf-islands-skia-logs
       ArtifactType: Container

@@ -9,8 +9,7 @@ public interface IUnoPlatformHostBuilder
 {
 	internal Func<Application>? AppBuilder { get; set; }
 
-	internal void SetAppType<TApplication>()
-		where TApplication : Microsoft.UI.Xaml.Application;
+	internal void SetAppType(Type appType);
 
 	internal Action? AfterInitAction { get; set; }
 

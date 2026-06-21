@@ -15,28 +15,28 @@ Uno's implementation currently supports basic native speech recognition.
 
 The following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are currently supported:
 
-| Feature                                    | iOS | Android | Remarks                       |
-|--------------------------------------------|-----|---------|-------------------------------|
-| SpeechRecognizer()                         | X   | X       |                               |
-| SpeechRecognizer(Language)                 | X   | X       |                               |
-| Constraints                                | -   | -       |                               |
-| ContinuousRecognitionSession               | -   | -       |                               |
-| CurrentLanguage                            | X   | X       |                               |
-| State                                      | X   | X       |                               |
-| SupportedGrammarLanguages                  | -   | -       |                               |
-| SupportedTopicLanguages                    | -   | -       |                               |
-| SystemSpeechLanguage                       | -   | -       |                               |
-| Timeouts                                   | X   | X       |                               |
-| UIOptions                                  | X   | X       | Not used                      |
-| CompileConstraintsAsync()                  | X   | X       | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
-| Dispose()                                  | X   | X       |                               |
-| RecognizeAsync()                           | X   | X       |                               |
-| RecognizeWithUIAsync()                     | -   | -       |                               |
-| StopRecognitionAsync()()                   | X   | X       |                               |
-| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       |                               |
-| HypothesisGenerated                        | X   | X       |                               |
-| RecognitionQualityDegrading                | -   | -       |                               |
-| StateChanged                               | X   | X       |                               |
+| Feature                                    | iOS | Android | macOS (Skia) | WebAssembly | Remarks                       |
+|--------------------------------------------|-----|---------|--------------|-------------|-------------------------------|
+| SpeechRecognizer()                         | X   | X       | X            | X           |                               |
+| SpeechRecognizer(Language)                 | X   | X       | X            | X           |                               |
+| Constraints                                | -   | -       | -            | -           |                               |
+| ContinuousRecognitionSession               | -   | -       | -            | -           |                               |
+| CurrentLanguage                            | X   | X       | X            | X           |                               |
+| State                                      | X   | X       | X            | X           |                               |
+| SupportedGrammarLanguages                  | -   | -       | -            | -           |                               |
+| SupportedTopicLanguages                    | -   | -       | -            | -           |                               |
+| SystemSpeechLanguage                       | -   | -       | -            | -           |                               |
+| Timeouts                                   | X   | X       | X            | X           |                               |
+| UIOptions                                  | X   | X       | X            | X           | Not used                      |
+| CompileConstraintsAsync()                  | X   | X       | X            | X           | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
+| Dispose()                                  | X   | X       | X            | X           |                               |
+| RecognizeAsync()                           | X   | X       | X            | X           |                               |
+| RecognizeWithUIAsync()                     | -   | -       | -            | -           |                               |
+| StopRecognitionAsync()                     | X   | X       | X            | X           |                               |
+| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       | -            | -           |                               |
+| HypothesisGenerated                        | X   | X       | X            | X           |                               |
+| RecognitionQualityDegrading                | -   | -       | -            | -           |                               |
+| StateChanged                               | X   | X       | X            | X           |                               |
 
 ## Requirement
 
@@ -61,7 +61,44 @@ The following lines need to be added to your AndroidManifest.xml:
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 
+### macOS (Skia)
+
+* macOS 10.15 or later is required.
+* The following lines need to be added to your app bundle's `Info.plist`:
+
+  ```xml
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>[SpeechRecognition usage description]</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>[SpeechRecognition usage description]</string>
+  ```
+
+* The app must be packaged as an `.app` bundle when running speech recognition — macOS only displays the TCC authorization prompt for bundled apps. Launching the executable directly from a terminal (`dotnet run`) will result in `SFSpeechRecognizer` returning `Denied` without prompting.
+
+> [!NOTE]
+> For contributors: The Uno samples app (`SamplesApp.Skia.Generic`) ships a build target that automatically produces a minimal `.app` bundle next to the regular output on macOS. After `dotnet build`, launch it with:
+>
+> ```bash
+> open src/SamplesApp/SamplesApp.Skia.Generic/bin/Debug/net10.0/SamplesApp.Skia.Generic.app
+> ```
+
+### WebAssembly
+
+Speech recognition on WebAssembly relies on the browser's Web Speech API implementation:
+
+* `window.SpeechRecognition`, or
+* `window.webkitSpeechRecognition` (vendor-prefixed fallback).
+
+Requirements and behavior notes:
+
+* The app must run in a browser that exposes one of the APIs above.
+* The user must grant microphone permission in the browser.
+* Browsers typically require a secure context (`https://`), with `http://localhost` commonly allowed for local development.
+* Starting recognition may require user interaction (for example, a button click) depending on browser policies.
+
 ## Limitation
 
 In `Windows.Media.SpeechRecognition.SpeechRecognitionResult`, only `Text`, `Alternates`, and `GetAlternates(uint maxAlternates)` are implemented.
 In particular, `RawConfidence` and `Confidence` fields are not currently supported.
+
+On WebAssembly specifically, availability is browser-dependent. If speech recognition is not available in the current browser, `RecognizeAsync()` fails with an `InvalidOperationException`.

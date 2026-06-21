@@ -12,14 +12,15 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
+using Uno.HotReload;
+using Uno.HotReload.Microsoft;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.MetadataUpdates;
 
 internal class HotReloadWorkspace
 {
-	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<WatchHotReloadService.Update> MetadataUpdates);
+	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<Update> MetadataUpdates);
 
 #if NET9_0
 	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58

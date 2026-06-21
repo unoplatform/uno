@@ -93,8 +93,6 @@
     <None Include="Mobile\MyAppXamlTrim.Mobile.csproj" />
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
     <None Include="Skia.Linux.FrameBuffer\MyAppXamlTrim.Skia.Linux.FrameBuffer.csproj" />
-    <None Include="Skia.WPF\App.xaml.cs" />
-    <None Include="Skia.WPF\MainWindow.xaml.cs" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
     <None Include="Mobile\iOS\Main.iOS.cs" />
@@ -105,7 +103,6 @@
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Skia.WPF\MyAppXamlTrim.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Shared\App.xaml.cs" />
     <None Include="Shared\MainPage.xaml.cs" />
@@ -155,9 +152,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skia.WPF\SkiaWpf.netcore.vstemplate">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Skia.Linux.FrameBuffer\SkiaLinuxFrameBuffer.netcore.vstemplate">
       <SubType>Designer</SubType>
     </None>
@@ -232,10 +226,6 @@
     <Content Include="__TemplateIcon.png" />
     <None Include="Wasm\Wasm.netcore.vstemplate" />
     <Content Include="Wasm\MyAppXamlTrim.Wasm.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Skia.WPF\App.xaml" />
-    <None Include="Skia.WPF\MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

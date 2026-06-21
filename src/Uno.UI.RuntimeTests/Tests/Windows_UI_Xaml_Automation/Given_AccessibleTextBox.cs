@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -26,9 +27,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// T046: Verifies that a focused textbox exposes its text value
 		/// via the IValueProvider pattern.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: WinUI surfaces the TextBox Value/Text patterns at the native
+		/// UIA layer via the windowless RichEdit provider, not through the managed
+		/// AutomationPeer.GetPattern. So peer.GetPattern(PatternInterface.Value) returns null on
+		/// WinUI, whereas Uno's TextBoxAutomationPeer implements IValueProvider directly.
+		/// </remarks>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TextBox_Focused_Then_Value_Exposed()
 		{
 			// Arrange
@@ -54,9 +61,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// updates the underlying TextBox. This is the path used when text
 		/// is entered in the semantic input element.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: the managed AutomationPeer does not expose IValueProvider for
+		/// TextBox on WinUI (the Value pattern comes from the windowless RichEdit UIA provider),
+		/// so this Uno-specific peer-level value sync cannot be asserted there.
+		/// </remarks>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Entered_Then_Value_Syncs()
 		{
 			// Arrange
@@ -82,7 +94,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// When mapped to semantic DOM, this should create input[type=password].
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_PasswordBox_Then_Input_Type_Is_Password()
 		{
@@ -112,7 +123,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that TextBox automation peer has correct control type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_TextBox_Created_Then_Has_Edit_ControlType()
 		{
@@ -132,7 +142,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that TextBox with AutomationProperties.Name exposes correct name.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_TextBox_Has_AutomationName_Then_Name_Is_Exposed()
 		{
@@ -153,9 +162,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// <summary>
 		/// Verifies that a read-only TextBox reports correct state.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: TextBox does not expose IValueProvider via the managed
+		/// AutomationPeer on WinUI (the Value pattern is provided by the windowless RichEdit UIA
+		/// provider), so peer.GetPattern(PatternInterface.Value) is null there.
+		/// </remarks>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TextBox_IsReadOnly_Then_ValueProvider_IsReadOnly()
 		{
 			// Arrange
@@ -191,7 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
 			TypeCharacterIntoSemanticTextBox(textBox, "a");
@@ -222,7 +236,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
 			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
@@ -237,19 +251,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
 		}
 
-		private static void EnableAccessibilityThroughDom()
+		/// <summary>
+		/// T046/FR-016 (WASM DOM): a single-line TextBox emits a native &lt;input type="text"&gt; semantic element
+		/// whose value mirrors TextBox.Text.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_Then_Dom_Is_Text_Input_With_Value()
 		{
-			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
+			var textBox = new TextBox { Text = "Hello world" };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("input", GetSemanticElementTagName(textBox), "A single-line TextBox must emit a native <input> semantic element.");
+			Assert.AreEqual("text", GetSemanticInputType(textBox), "A single-line TextBox must emit input[type=text].");
+			Assert.AreEqual("Hello world", GetSemanticTextBoxValue(textBox), "The semantic input value must mirror TextBox.Text.");
 		}
 
-		// Targets the exact semantic element for a given TextBox. Using a generic
-		// '#uno-semantics-root input' selector would match the first semantic input in the
-		// document, which is usually not the TextBox under test (e.g. the test runner header).
-		private static string GetSemanticElementId(TextBox textBox)
-			=> $"uno-semantics-{((long)textBox.Visual.Handle)}";
+		/// <summary>
+		/// FR-016 (WASM DOM): a multiline TextBox (AcceptsReturn=true) emits a &lt;textarea&gt; semantic element
+		/// instead of an &lt;input&gt;.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_AcceptsReturn_Then_Dom_Is_Textarea()
+		{
+			var textBox = new TextBox { AcceptsReturn = true, Text = "Line 1" };
 
-		private static bool SemanticTextBoxExists(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(textBox)}') ? '1' : '0';}})()") == "1";
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the multiline semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("textarea", GetSemanticElementTagName(textBox), "A multiline TextBox (AcceptsReturn=true) must emit a <textarea> semantic element.");
+		}
+
+		/// <summary>
+		/// FR-016 (WASM DOM): a read-only TextBox emits a semantic input carrying the readonly attribute.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_IsReadOnly_Then_Dom_Input_Is_ReadOnly()
+		{
+			var textBox = new TextBox { Text = "Read only text", IsReadOnly = true };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the read-only semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SemanticElementHasAttribute(textBox, "readonly"), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
+		}
+
+		/// <summary>
+		/// T048/FR-016 (WASM DOM): a PasswordBox emits a native &lt;input type="password"&gt; semantic element so
+		/// the browser masks the value.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_PasswordBox_Then_Dom_Input_Type_Is_Password()
+		{
+			var passwordBox = new PasswordBox { Password = "secret" };
+
+			await UITestHelper.Load(passwordBox);
+			passwordBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000, message: "Timed out waiting for the password semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("input", GetSemanticElementTagName(passwordBox), "A PasswordBox must emit a native <input> semantic element.");
+			Assert.AreEqual("password", GetSemanticInputType(passwordBox), "A PasswordBox must emit input[type=password].");
+		}
+
+
+		// TextBox-specific accessors. Generic helpers (existence, attribute, tag name, input type,
+		// attribute presence) live in WasmSemanticDomHelper and are used directly via the
+		// `using static` above; only TextBox-only behaviors (value, caret, character injection,
+		// hidden native input check) stay local.
 
 		private static string GetSemanticTextBoxValue(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? element.value : '';}})()");
@@ -277,16 +369,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
-		private static string InvokeBrowserJs(string javascript)
-		{
-			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
-			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
-
-			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
-			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
-
-			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
-		}
 #endif
 
 #if HAS_UNO
@@ -294,7 +376,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly identifies TextBox semantic element type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_TextBox_Mapped_Then_SemanticElementType_Is_TextBox()
 		{
@@ -314,7 +395,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that multiline TextBox maps to TextArea element type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_TextBox_AcceptsReturn_Then_SemanticElementType_Is_TextArea()
 		{
@@ -334,7 +414,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly detects value capability.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_TextBox_Mapped_Then_PatternCapabilities_CanValue_Is_True()
 		{
