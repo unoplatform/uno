@@ -61,48 +61,31 @@ internal abstract class X11Renderer : IDisposable
 		}
 
 		// The render target must retain the previous frame outside the changed region, so we must NOT clear
-		// it here; the clipped clear of the damage region happens in Draw().
+		// it here; the clipped clear of the damage region happens in Draw(). Layer renderers draw onto the
+		// persistent retained layer (which preserves the previous frame) and blit it to the window surface
+		// after; non-layer renderers draw straight onto the (retaining) window surface.
 		var useLayer = UsesRetainedLayer;
+		var renderCanvas = useLayer ? _retainedLayer.Surface?.Canvas : _surface?.Canvas;
 
-		SKCanvas? renderCanvas;
-		Func<Size, SKCanvas> resizeFunc;
-		if (useLayer)
+		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderCanvas, size =>
 		{
-			// Draw renders onto the persistent layer (which preserves the previous frame); the layer is
-			// blitted to the window surface after.
-			renderCanvas = _retainedLayer.Surface?.Canvas;
-			resizeFunc = size =>
+			_surface?.Dispose();
+			SKSurface renderSurface;
+			using (X11Helper.XLock(display))
 			{
-				_surface?.Dispose();
-				SKSurface layerSurface;
-				using (X11Helper.XLock(display))
-				{
-					_surface = UpdateSize((int)size.Width, (int)size.Height);
-					layerSurface = _retainedLayer.EnsureSurface(GpuContext!, (int)size.Width, (int)size.Height, _background);
-				}
-				_airspaceHelper?.Dispose();
-				_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
-				return layerSurface.Canvas;
-			};
-		}
-		else
-		{
-			renderCanvas = _surface?.Canvas;
-			resizeFunc = size =>
+				_surface = UpdateSize((int)size.Width, (int)size.Height);
+				renderSurface = useLayer
+					? _retainedLayer.EnsureSurface(GpuContext!, (int)size.Width, (int)size.Height, _background)
+					: _surface;
+			}
+			if (!useLayer)
 			{
-				_surface?.Dispose();
-				using (X11Helper.XLock(display))
-				{
-					_surface = UpdateSize((int)size.Width, (int)size.Height);
-				}
-				_surface.Canvas.Clear(_background);
-				_airspaceHelper?.Dispose();
-				_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
-				return _surface.Canvas;
-			};
-		}
-
-		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderCanvas, resizeFunc);
+				renderSurface.Canvas.Clear(_background);
+			}
+			_airspaceHelper?.Dispose();
+			_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
+			return renderSurface.Canvas;
+		});
 
 		if (useLayer && _surface is { } surface)
 		{
