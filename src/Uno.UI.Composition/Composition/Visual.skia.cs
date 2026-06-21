@@ -510,22 +510,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (ShadowState is not null)
 		{
 			// A drop shadow is cast from this visual's whole silhouette — its own Size rect unioned with every
-			// descendant's, since a child can overflow the caster (e.g. positioned past its edge) and still cast
-			// a shadow. Accumulate the silhouette in root space (each painting visual's Size rect via its
-			// TotalMatrix), map it back to this caster's local space, then expand for the shadow (offset + blur).
-			// If Size can't bound the caster, fall back to the clip.
+			// descendant, since a child can overflow the caster and still cast a shadow. If Size can't bound the
+			// caster's own content, fall back to the clip.
 			if (Size is not { X: > 0, Y: > 0 })
 			{
 				return false;
 			}
-			var casterMatrix = TotalMatrix.ToSKMatrix();
-			var silhouetteInRoot = casterMatrix.MapRect(new SKRect(0, 0, Size.X, Size.Y));
-			AccumulatePaintedSizeBoundsInRoot(ref silhouetteInRoot);
-			var silhouetteLocal = casterMatrix.TryInvert(out var inverse)
-				? inverse.MapRect(silhouetteInRoot)
-				: new SKRect(0, 0, Size.X, Size.Y);
-			localBounds = ExpandForShadow(silhouetteLocal);
-			return true;
+			return TryGetShadowSilhouetteBounds(new SKRect(0, 0, Size.X, Size.Y), out localBounds);
 		}
 
 		if (!CanPaint())
@@ -556,11 +547,35 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// margin is involved (those expand a rectangular silhouette).
 	internal virtual bool TryGetLocalContentPath(SKPath dst) => false;
 
-	// Unions, into <paramref name="acc"/> (in root space), the Size rect of every painting descendant of this
-	// visual. Used to bound a shadow caster's silhouette, which includes descendants that overflow the caster.
-	// Uses Size rects (and ignores descendant clips) — consistent with the caster's own Size-based silhouette
-	// and intentionally a loose, never-under-covering bound.
-	private void AccumulatePaintedSizeBoundsInRoot(ref SKRect acc)
+	// Expands a shadow caster's OWN painted local bounds to its full drop-shadow silhouette: unions the painted
+	// bounds of every descendant (a child can overflow the caster and still cast a shadow), then offsets/blurs
+	// for the shadow. The subtree is accumulated in root space (each descendant's content bounds via its
+	// TotalMatrix) and mapped back to this caster's local space. Returns false when a descendant's painted
+	// extent can't be bounded, so the caller falls back to the clip as a safe upper bound.
+	private protected bool TryGetShadowSilhouetteBounds(SKRect ownLocalBounds, out SKRect localBounds)
+	{
+		localBounds = default;
+
+		var casterMatrix = TotalMatrix.ToSKMatrix();
+		var silhouetteInRoot = casterMatrix.MapRect(ownLocalBounds);
+		if (!TryAccumulateDescendantContentBoundsInRoot(ref silhouetteInRoot))
+		{
+			return false;
+		}
+
+		var silhouetteLocal = casterMatrix.TryInvert(out var inverse)
+			? inverse.MapRect(silhouetteInRoot)
+			: ownLocalBounds;
+		localBounds = ExpandForShadow(silhouetteLocal);
+		return true;
+	}
+
+	// Unions, into <paramref name="acc"/> (root space), the painted content bounds of every descendant of this
+	// visual (via each descendant's own TryGetLocalContentBounds, so a ShapeVisual's arbitrary geometry is
+	// covered, not just its Size). Returns false if a descendant's painted extent can't be bounded. A descendant
+	// that is itself a shadow caster already folds its own subtree (and shadow) into its content bounds, so its
+	// children aren't walked again.
+	private bool TryAccumulateDescendantContentBoundsInRoot(ref SKRect acc)
 	{
 		foreach (var child in GetChildrenInRenderOrder())
 		{
@@ -569,14 +584,24 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				continue;
 			}
 
-			if (child.CanPaint() && child.Size is { X: > 0, Y: > 0 } size)
+			if (!child.TryGetLocalContentBounds(out var childLocal))
 			{
-				var rect = child.TotalMatrix.ToSKMatrix().MapRect(new SKRect(0, 0, size.X, size.Y));
+				return false;
+			}
+
+			if (!childLocal.IsEmpty)
+			{
+				var rect = child.TotalMatrix.ToSKMatrix().MapRect(childLocal);
 				acc = acc.IsEmpty ? rect : SKRect.Union(acc, rect);
 			}
 
-			child.AccumulatePaintedSizeBoundsInRoot(ref acc);
+			if (child.ShadowState is null && !child.TryAccumulateDescendantContentBoundsInRoot(ref acc))
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 
 	// Expands a local content rect to also cover the drop shadow this visual casts (the silhouette offset by
