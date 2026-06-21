@@ -123,7 +123,14 @@ public partial class ShapeVisual
 				sy * (acc.Bottom - viewBox.Offset.Y));
 		}
 
-		localBounds = ExpandForShadow(acc);
+		// When this ShapeVisual casts a shadow, the silhouette also includes descendants (which can overflow);
+		// otherwise the shapes' own bounds are the content.
+		if (ShadowState is not null)
+		{
+			return TryGetShadowSilhouetteBounds(acc, out localBounds);
+		}
+
+		localBounds = acc;
 		return true;
 	}
 
