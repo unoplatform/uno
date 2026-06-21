@@ -27,8 +27,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// T046: Verifies that a focused textbox exposes its text value
 		/// via the IValueProvider pattern.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: WinUI surfaces the TextBox Value/Text patterns at the native
+		/// UIA layer via the windowless RichEdit provider, not through the managed
+		/// AutomationPeer.GetPattern. So peer.GetPattern(PatternInterface.Value) returns null on
+		/// WinUI, whereas Uno's TextBoxAutomationPeer implements IValueProvider directly.
+		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TextBox_Focused_Then_Value_Exposed()
 		{
 			// Arrange
@@ -54,8 +61,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// updates the underlying TextBox. This is the path used when text
 		/// is entered in the semantic input element.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: the managed AutomationPeer does not expose IValueProvider for
+		/// TextBox on WinUI (the Value pattern comes from the windowless RichEdit UIA provider),
+		/// so this Uno-specific peer-level value sync cannot be asserted there.
+		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Entered_Then_Value_Syncs()
 		{
 			// Arrange
@@ -149,8 +162,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// <summary>
 		/// Verifies that a read-only TextBox reports correct state.
 		/// </summary>
+		/// <remarks>
+		/// Excluded on NativeWinUI: TextBox does not expose IValueProvider via the managed
+		/// AutomationPeer on WinUI (the Value pattern is provided by the windowless RichEdit UIA
+		/// provider), so peer.GetPattern(PatternInterface.Value) is null there.
+		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TextBox_IsReadOnly_Then_ValueProvider_IsReadOnly()
 		{
 			// Arrange
