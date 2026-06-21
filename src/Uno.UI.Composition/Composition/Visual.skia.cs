@@ -298,9 +298,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		// Scratch path (from the shared pool) to turn the rect contributions below into paths for unioning.
-		var scratch = _pathPool.Allocate();
-		using var scratchDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), scratch);
 		if (TryGetPaintDamageRegion(out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
@@ -310,7 +307,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				damage.UnionRect(scratch, bounds);
+				damage.UnionRect(bounds);
 			}
 
 			// Erase the region this visual vacated — but only when it actually moved or resized. The bounding
@@ -319,7 +316,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// is skipped: the new region already covers everything the unchanged old one did.
 			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || bounds != _lastRenderBounds))
 			{
-				damage.UnionRect(scratch, _lastRenderBounds);
+				damage.UnionRect(_lastRenderBounds);
 			}
 			_lastRenderBounds = bounds;
 			_lastRenderMatrix = matrix;
@@ -328,7 +325,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		else if (_hasLastRenderBounds)
 		{
 			// The visual no longer has paintable bounds (e.g. collapsed to zero size); repaint where it was.
-			damage.UnionRect(scratch, _lastRenderBounds);
+			damage.UnionRect(_lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
 	}
