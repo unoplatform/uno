@@ -12,7 +12,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{
@@ -48,11 +47,6 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
-	}
-
-	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
-	{
-		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 	}
 
 	// Evaluated live (not cached): a fill brush's RequiresRepaintOnEveryFrame can flip to true after the
