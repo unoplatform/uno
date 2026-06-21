@@ -257,11 +257,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </remarks>
 	internal void InvalidatePaint()
 	{
-		if (_picture != IntPtr.Zero)
-		{
-			UnoSkiaApi.sk_refcnt_safe_unref(_picture);
-			_picture = IntPtr.Zero;
-		}
+		// sk_refcnt_safe_unref is a no-op on IntPtr.Zero, so no need to guard the not-yet-recorded case.
+		UnoSkiaApi.sk_refcnt_safe_unref(_picture);
+		_picture = IntPtr.Zero;
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 	}
@@ -511,13 +509,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		if (ShadowState is not null)
 		{
-			// A drop shadow paints this visual's silhouette beyond its own size (offset + blur). Use Size as
-			// the silhouette and expand for the shadow. If Size can't bound the silhouette, fall back to clip.
+			// A drop shadow is cast from this visual's whole silhouette — its own Size rect unioned with every
+			// descendant's, since a child can overflow the caster (e.g. positioned past its edge) and still cast
+			// a shadow. Accumulate the silhouette in root space (each painting visual's Size rect via its
+			// TotalMatrix), map it back to this caster's local space, then expand for the shadow (offset + blur).
+			// If Size can't bound the caster, fall back to the clip.
 			if (Size is not { X: > 0, Y: > 0 })
 			{
 				return false;
 			}
-			localBounds = ExpandForShadow(new SKRect(0, 0, Size.X, Size.Y));
+			var casterMatrix = TotalMatrix.ToSKMatrix();
+			var silhouetteInRoot = casterMatrix.MapRect(new SKRect(0, 0, Size.X, Size.Y));
+			AccumulatePaintedSizeBoundsInRoot(ref silhouetteInRoot);
+			var silhouetteLocal = casterMatrix.TryInvert(out var inverse)
+				? inverse.MapRect(silhouetteInRoot)
+				: new SKRect(0, 0, Size.X, Size.Y);
+			localBounds = ExpandForShadow(silhouetteLocal);
 			return true;
 		}
 
@@ -548,6 +555,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// rectangular <see cref="TryGetLocalContentBounds"/> path. Not used when a shadow or backdrop-sampling
 	// margin is involved (those expand a rectangular silhouette).
 	internal virtual bool TryGetLocalContentPath(SKPath dst) => false;
+
+	// Unions, into <paramref name="acc"/> (in root space), the Size rect of every painting descendant of this
+	// visual. Used to bound a shadow caster's silhouette, which includes descendants that overflow the caster.
+	// Uses Size rects (and ignores descendant clips) — consistent with the caster's own Size-based silhouette
+	// and intentionally a loose, never-under-covering bound.
+	private void AccumulatePaintedSizeBoundsInRoot(ref SKRect acc)
+	{
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			if (child.Opacity == 0f || !child.IsVisible)
+			{
+				continue;
+			}
+
+			if (child.CanPaint() && child.Size is { X: > 0, Y: > 0 } size)
+			{
+				var rect = child.TotalMatrix.ToSKMatrix().MapRect(new SKRect(0, 0, size.X, size.Y));
+				acc = acc.IsEmpty ? rect : SKRect.Union(acc, rect);
+			}
+
+			child.AccumulatePaintedSizeBoundsInRoot(ref acc);
+		}
+	}
 
 	// Expands a local content rect to also cover the drop shadow this visual casts (the silhouette offset by
 	// (Dx,Dy) and blurred by ~3*sigma), so the shadow is included in the damage region. No-op without a shadow.
@@ -801,13 +831,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
+					// end_recording always returns a valid (non-null) picture, and safe_unref is a no-op on
+					// IntPtr.Zero (the not-yet-recorded case), so the swap needs no null guard.
 					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
-
-					if (visual._picture != IntPtr.Zero)
-					{
-						UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
-					}
-
+					UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
 					visual._picture = picture;
 				}
 

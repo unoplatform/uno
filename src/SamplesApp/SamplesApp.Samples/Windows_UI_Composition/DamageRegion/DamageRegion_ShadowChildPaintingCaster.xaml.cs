@@ -6,10 +6,12 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
 	/// <summary>
-	/// A self-painting (opaque-background) shadow caster whose child overflows the caster and moves. The shadow
-	/// silhouette is the union of the caster and its descendants, so a moving child changes the shadow even
-	/// though the caster paints its own content and stays put. Verifies the caster re-damages its shadow region
-	/// on subtree changes — otherwise a stale shadow trails the child — while staying identical to a full repaint.
+	/// A self-painting (semi-transparent) shadow caster whose child overflows the caster and moves. The shadow
+	/// silhouette is the union of the caster and its descendants, so the overflowing child casts a shadow beyond
+	/// the caster and a moving child changes that shadow even though the caster paints its own content and stays
+	/// put. Verifies the caster re-damages its shadow region on subtree changes, and that the damage bounds cover
+	/// an overflowing descendant — otherwise a stale shadow trails the child — while staying identical to a full
+	/// repaint.
 	/// </summary>
 	[Sample("Windows.UI.Composition", Name = "DamageRegion_ShadowChildPaintingCaster", IsManualTest = true,
 		Description = "A self-painting shadow caster whose overflowing child moves, for damage-region descendant-shadow validation.")]
