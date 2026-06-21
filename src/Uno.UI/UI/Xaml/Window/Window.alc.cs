@@ -101,7 +101,49 @@ partial class Window
 		host.Content = value;
 		_secondaryAlcContent = value;
 		MarkContentAsSecondaryAlc(value);
+
+		// Pin the owning app's explicit ApplicationTheme (if any) at the host boundary so the
+		// secondary app's theme governs its subtree without touching the shared FrameworkTheming —
+		// the element-level RequestedTheme mechanism WinUI uses for per-island theming
+		// (CFrameworkElement::GetRequestedThemeOverride, framework.cpp:3399-3418).
+		if (ResolveOwningAlcApplication(value) is { } owningApp)
+		{
+			host.RequestedTheme = owningApp.AlcElementTheme;
+		}
+
 		return true;
+	}
+
+	/// <summary>
+	/// Resolves the application owning this ALC window's content: the window's
+	/// <see cref="OwnerAssemblyLoadContext"/> is authoritative (correct even when the content is a
+	/// shared default-ALC type such as a plain <c>Frame</c>); the content's own ALC is the fallback
+	/// for windows created by host code.
+	/// </summary>
+	private Application? ResolveOwningAlcApplication(object? content)
+		=> (OwnerAssemblyLoadContext is { } ownerAlc ? Application.GetForAssemblyLoadContext(ownerAlc) : null)
+			?? Application.GetForInstance(content);
+
+	/// <summary>
+	/// Re-applies <paramref name="app"/>'s explicit-theme pin to the content-host boundary of each
+	/// window owned by that secondary-ALC application. Invoked when the app's explicit theme changes
+	/// (<c>Application.SetAlcRequestedTheme</c>); the matching pull happens when content attaches in
+	/// <see cref="TrySetContentFromSecondaryAlc"/>.
+	/// </summary>
+	internal static void ApplyAlcRequestedTheme(Application app, ElementTheme theme)
+	{
+		foreach (var kvp in _appWindowMap)
+		{
+			var window = kvp.Value;
+			if (window._alcState is { IsClosed: false }
+				&& window._secondaryAlcContent is { } content
+				&& ReferenceEquals(window.ResolveOwningAlcApplication(content), app)
+				&& ContentHostOverride is { } host
+				&& ReferenceEquals(host.Content, content))
+			{
+				host.RequestedTheme = theme;
+			}
+		}
 	}
 
 	/// <summary>
@@ -261,6 +303,9 @@ partial class Window
 		if (host is not null && ReferenceEquals(host.Content, _secondaryAlcContent))
 		{
 			host.Content = null;
+
+			// Clear the secondary app's theme pin so the next hosted app starts from the host theme.
+			host.RequestedTheme = ElementTheme.Default;
 		}
 
 		// Raise visibility changed if was visible
@@ -278,6 +323,23 @@ partial class Window
 		// Remove from the static window map so the Window object can be collected.
 		// The native window was already closed during InitializeAlcWindowMode().
 		_appWindowMap.TryRemove(AppWindow, out _);
+
+		// The Window registered a DisplayInformation for its WindowId at construction; that
+		// static map has no other removal path, so it retains the closed window's
+		// implementation graph — including window-event subscribers from the secondary ALC
+		// (e.g. a designer client's Closed handler) — for the process lifetime, pinning
+		// the ALC: DisplayInformation → native wrapper → window implementation → Closed → client.
+		try
+		{
+			global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(AppWindow.Id);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] DisplayInformation.DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
 
 		// Purge Type-keyed caches (DependencyProperty registry, Style caches, etc.)
 		// that hold references to types from the ALC being torn down. Without this,

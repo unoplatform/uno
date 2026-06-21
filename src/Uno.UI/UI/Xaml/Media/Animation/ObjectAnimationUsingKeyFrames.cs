@@ -327,42 +327,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			var effectiveTheme = targetElement.GetTheme();
-			if (effectiveTheme == Theme.None)
+			// Resolve against the target's effective (inherited) theme, not its own per-object _theme: a
+			// template child (e.g. a CheckBox's NormalRectangle) is usually None even inside a themed subtree.
+			// preferAppResourceOverride lets an app-level key override win over the generic template default
+			// (WinUI GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682).
+			foreach (var keyFrame in KeyFrames)
 			{
-				return;
-			}
-
-			var baseTheme = Theming.GetBaseValue(effectiveTheme);
-			if (baseTheme == Theme.None)
-			{
-				// No base Light/Dark theme (e.g. HighContrast): resolve without overriding the active theme.
-				foreach (var keyFrame in KeyFrames)
+				if (keyFrame is IDependencyObjectStoreProvider provider)
 				{
-					if (keyFrame is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.UpdateAllThemeReferences(null);
-					}
+					provider.Store.UpdateAllThemeReferences(targetElement, preferAppResourceOverride: true);
 				}
-
-				return;
-			}
-
-			var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			try
-			{
-				foreach (var keyFrame in KeyFrames)
-				{
-					if (keyFrame is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.UpdateAllThemeReferences(null);
-					}
-				}
-			}
-			finally
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
 			}
 		}
 

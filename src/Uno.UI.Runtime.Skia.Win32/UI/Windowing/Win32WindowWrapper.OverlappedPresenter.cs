@@ -107,7 +107,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		if (extendContentIntoTitleBar && _window.AppWindow.Presenter is not FullScreenPresenter)
 		{
 			var margins = UpdateClientAreaExtensionMargins();
-			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+			ApplyFrameExtension(margins);
 
 			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
@@ -115,7 +115,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		else
 		{
 			var margins = new MARGINS();
-			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+			ApplyFrameExtension(margins);
 
 			_offScreenMargins = default;
 			_extendedMargins = default;
@@ -135,6 +135,35 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 				SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
 		}
 	}
+
+	// When a SystemBackdrop is active we must always extend the DWM frame across the whole client
+	// area ("sheet of glass"), otherwise Mica/Acrylic only show under the non-client frame and the
+	// client area renders as black. This wins over the title-bar-extension margins because the
+	// {-1,-1,-1,-1} sentinel already covers them.
+	private void ApplyFrameExtension(MARGINS margins)
+	{
+		if (HasActiveSystemBackdrop())
+		{
+			margins.cxLeftWidth = -1;
+			margins.cxRightWidth = -1;
+			margins.cyTopHeight = -1;
+			margins.cyBottomHeight = -1;
+		}
+
+		PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+	}
+
+	// Gated on the controller IsSupported() checks (which require Windows 11 22621+) so we don't
+	// force the "sheet of glass" frame extension on OS versions where SetSystemBackdrop is a no-op.
+	private bool HasActiveSystemBackdrop()
+		=> _window?.SystemBackdrop switch
+		{
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
+			_ => false,
+		};
 
 	private MARGINS UpdateClientAreaExtensionMargins()
 	{

@@ -868,6 +868,19 @@ namespace Microsoft.UI.Xaml.Controls
 			LightRefresh();
 		}
 
+		internal void MoveItems(int oldFirstItem, int newFirstItem, int count, int section)
+		{
+			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
+				startingIndex: Uno.UI.IndexPath.FromRowSection(oldFirstItem, section),
+				newStartingIndex: Uno.UI.IndexPath.FromRowSection(newFirstItem, section),
+				range: count,
+				action: NotifyCollectionChangedAction.Move,
+				elementType: CollectionChangedOperation.Element.Item
+				));
+
+			LightRefresh();
+		}
+
 		/// <summary>
 		/// Update the display of the panel without clearing caches.
 		/// </summary>

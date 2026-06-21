@@ -317,8 +317,13 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		/// <summary>
-		/// Refreshes the value to the target, as the bound source may not be observable
+		/// Re-applies the binding end-to-end (same path as a DataContext change). Unlike
+		/// <see cref="RefreshTarget"/>, this also covers the no-/null-DataContext case where the value
+		/// comes from a re-resolved <c>{ThemeResource}</c> TargetNullValue/FallbackValue, which must be
+		/// re-applied even though the DataContext itself didn't change.
 		/// </summary>
+		internal void Reapply() => ApplyBinding();
+
 		internal void RefreshTarget()
 		{
 			ApplyElementName();

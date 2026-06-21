@@ -42,8 +42,7 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 
 	protected override string GetClassNameCore()
 	{
-		// WPF uses "Expander" as its class name
-		return nameof(Expander);
+		return typeof(Expander).FullName!;
 	}
 
 	protected override string GetNameCore()

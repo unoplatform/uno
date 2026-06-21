@@ -76,6 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		/// Size = 152w x 29h
 		/// </summary>
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
+		private const double FixedSizeItemHeight = 29;
 
 		private DataTemplate NV286_Template => _testsResources["NV286_Template"] as DataTemplate;
 		private DataTemplate DefaultItemTemplate => _testsResources["DefaultItemTemplate"] as DataTemplate;
@@ -5114,50 +5115,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-		// ---------------------------------------------------------------------------
 		// {ThemeResource} inheritance for grid/list row content presented after tab reload — kahua #482.
-		//
-		// Verifies that a {ThemeResource} used inside list/grid row content resolves against the
-		// content's own inherited ActualTheme — not the ambient/application theme — when that content is
-		// presented AFTER tab-style navigation has unloaded and reloaded the tab subtree.
-		//
-		// This models the issue scenario: a view hosts an items grid inside one tab. The user navigates to
-		// a different tab (the grid tab subtree is unloaded), then navigates back (the grid tab subtree
-		// re-enters the tree). When grid row content is subsequently presented through a surface that is
-		// reparented out of the owner's visual scope (a Flyout's PopupRoot — the same mechanism a grid uses
-		// for a row's pop-up detail), its {ThemeResource} can resolve against the global/application active
-		// theme instead of the row's own inherited ActualTheme — so the row text renders with the wrong
-		// theme's color even though the row's ActualTheme is correct.
-		//
-		// The OS-vs-app mismatch is reproduced on Uno by pinning the application theme to Dark
-		// (ThemeHelper.UseApplicationDarkTheme, #if HAS_UNO — it relies on the Uno-internal
-		// SetExplicitRequestedTheme) and placing a host that pins RequestedTheme=Light. On native WinUI the
-		// app-theme pin is unavailable, so the test runs as a Light-host baseline confirming the
-		// WinUI-correct value (Green); WinUI never exhibits the regression, so it still validates the
-		// behavior the Uno fix must match. The host's Resources declare a theme-keyed sentinel
-		// brush (Light=Green, Dark=Red, Default=Red). A grid row's Foreground references that brush via
-		// {ThemeResource}, declared inline in the SAME XAML so it parses inside the host's resource scope (a
-		// standalone XamlReader.Load of a {ThemeResource} fragment throws on WinUI). A TabView provides the
-		// navigation trigger: tab 1 hosts the items grid and an owner button whose Flyout presents the row
-		// content; tab 2 is unrelated. The test switches to tab 2 (grid tab subtree unloads), switches back
-		// (grid tab subtree re-enters), then opens the flyout whose content is hosted in the PopupRoot,
-		// reparented out of the owner's visual scope.
-		//
-		// WinUI-correct behavior: the row content's {ThemeResource} resolves against the owner's inherited
-		// Light theme, so the brush evaluates to the Light sentinel (Green) — even though the application
-		// theme is Dark and the content was reached after tab navigation. Uno regression: the
-		// popup-presented row content resolves the {ThemeResource} against the global/application active
-		// theme (Dark), evaluating to the Dark sentinel (Red), despite the row's ActualTheme correctly being
-		// Light. The expected value (Green) is identical on Skia Desktop and native WinUI; only the
-		// app-level mismatch differs (forced Dark on Uno, default on WinUI, as noted above). The assertions
-		// encode the WinUI-correct behavior.
-		// ---------------------------------------------------------------------------
-
-		// One XAML document: a RequestedTheme=Light host (the themed dictionary owner) declares the
-		// theme-keyed sentinel brush. A TabView gives the navigation trigger; tab 1 hosts an items grid
-		// (ListView) plus an owner Button whose Flyout presents the grid row content (a TextBlock) using
-		// the brush via {ThemeResource}, parsed inside the host's resource scope. Mirrors a view declaring
-		// its own row text brushes in a themed ResourceDictionary and showing a row's detail in a popup.
+		// A RequestedTheme=Light host declares a theme-keyed sentinel brush (Light=Green, Dark=Red); a row's
+		// Foreground uses it via {ThemeResource} parsed in the host's scope. After tab navigation unloads and
+		// re-enters the grid subtree, opening a Flyout reparents the row content into the PopupRoot. Its
+		// {ThemeResource} must still resolve the row's inherited Light (Green); Uno regressed to the app Dark
+		// (Red). On Uno the app theme is pinned Dark (UseApplicationDarkTheme, #if HAS_UNO) to force the
+		// mismatch; native WinUI runs the Light-host baseline (also Green), so both validate the same value.
 		private static Border CreateThemeResourceLightHost()
 			=> (Border)XamlReader.Load(
 				"""
@@ -5300,6 +5264,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
 #endif
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_INCC_Move_MinimalUpdate()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 30).Select(x => $"Item {x}"));
+			var sut = new ListView
+			{
+				Height = 10 * FixedSizeItemHeight,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+#if DEBUG
+			var tree1 = sut.TreeGraph(DescribeLVI);
+#endif
+
+			// Capture containers at indices 0–3 before the move
+			var containersBefore = new ListViewItem[4];
+			for (int i = 0; i < containersBefore.Length; i++)
+			{
+				containersBefore[i] = sut.ContainerFromIndex(i) as ListViewItem;
+				Assert.IsNotNull(containersBefore[i], $"Before: container at index {i} is null");
+				Assert.AreEqual(source[i], containersBefore[i].DataContext, $"Before: container at index {i} has wrong DataContext");
+			}
+
+			// Move "Item 1" from index 1 to index 2 → source becomes [Item 0, Item 2, Item 1, Item 3, ...]
+			source.Move(1, 2);
+			await UITestHelper.WaitForIdle();
+#if DEBUG
+			var tree2 = sut.TreeGraph(DescribeLVI);
+#endif
+
+			// Source order is now correct
+			Assert.AreEqual("Item 2", source[1]);
+			Assert.AreEqual("Item 1", source[2]);
+
+			// Containers at each position should reflect the new data order, and IndexFromContainer must agree
+			var containersAfter = new ListViewItem[4];
+			for (int i = 0; i < containersAfter.Length; i++)
+			{
+				containersAfter[i] = sut.ContainerFromIndex(i) as ListViewItem;
+				Assert.IsNotNull(containersAfter[i], $"After: container at index {i} is null");
+				Assert.AreEqual(source[i], containersAfter[i].DataContext, $"After: container at index {i} has wrong DataContext");
+				Assert.AreEqual(i, sut.IndexFromContainer(containersAfter[i]), $"After: IndexFromContainer disagrees for container at index {i}");
+			}
+
+			// The same container instances must be reused — no full re-materialization.
+			// After Move(1→2): the container for "Item 1" travels to position 2, "Item 2" shifts to 1, bookends are unchanged.
+			Assert.AreSame(containersBefore[0], containersAfter[0], "Container at 0→0 must be the same instance");
+			Assert.AreSame(containersBefore[1], containersAfter[2], "Container at 1→2 must be the same instance (moved item)");
+			Assert.AreSame(containersBefore[2], containersAfter[1], "Container at 2→1 must be the same instance (displaced item)");
+			Assert.AreSame(containersBefore[3], containersAfter[3], "Container at 3→3 must be the same instance");
 		}
 	}
 
@@ -5702,6 +5723,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(reference.IsAlive);
 		}
+
+#if DEBUG
+		private static IEnumerable<string> DescribeLVI(object x)
+		{
+			if (x is not null) yield return $"Hash={x.GetHashCode()}";
+			if (x is ListViewItem lvi)
+			{
+				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
+				yield return $"DC={lvi.DataContext}";
+			}
+		}
+#endif
 
 		public partial class OnItemsChangedListView : ListView
 		{
