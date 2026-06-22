@@ -99,6 +99,54 @@
 		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 
+	<!-- App icon + splash (Resizetizer generates per-platform assets) -->
+	<ItemGroup>
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
+	</ItemGroup>
+
+	<!-- Win32 DPI-awareness manifest (desktop only) -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<Manifest Include="$(ApplicationManifest)" />
+	</ItemGroup>
+	<ItemGroup Label="AssemblyInfo" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+			<_Parameter1>false</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<!-- Fail the publish if the runtime-test fonts didn't make it into the output -->
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
+		<ItemGroup>
+			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
+			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
+		</ItemGroup>
+		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published file: %(_validationPath.Identity)" />
+	</Target>
+
+	<!--
+	On macOS, create a minimal .app bundle alongside the regular build output so that
+	TCC-gated APIs (microphone, speech recognition) can present their authorization prompt.
+	Launch via `open bin/.../SamplesApp.app`. Set SkipMacOSAppBundle=true to skip.
+	-->
+	<Target Name="_UnoBundleAppMacOS"
+	        Condition="$([MSBuild]::IsOsPlatform('OSX')) and '$(SkipMacOSAppBundle)' != 'true' and '$(OutputType)' == 'Exe' and '$(TargetFramework)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'"
+	        AfterTargets="Build">
+		<PropertyGroup>
+			<_AppBundleDir>$(OutputPath)$(AssemblyName).app</_AppBundleDir>
+			<_AppBundleContentsDir>$(_AppBundleDir)/Contents</_AppBundleContentsDir>
+			<_AppBundleMacOSDir>$(_AppBundleContentsDir)/MacOS</_AppBundleMacOSDir>
+		</PropertyGroup>
+		<RemoveDir Directories="$(_AppBundleDir)" />
+		<MakeDir Directories="$(_AppBundleMacOSDir)" />
+		<Copy SourceFiles="$(MSBuildThisFileDirectory)Resources/Info.plist" DestinationFolder="$(_AppBundleContentsDir)" />
+		<Exec Command="rsync -a --exclude='$(AssemblyName).app' '$(OutputPath)/' '$(_AppBundleMacOSDir)/'" />
+		<Message Importance="high" Text="Created macOS app bundle: $(_AppBundleDir)" />
+	</Target>
+
 	<!-- ============================ Shared content (samples, tests, benchmarks) ============================ -->
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
