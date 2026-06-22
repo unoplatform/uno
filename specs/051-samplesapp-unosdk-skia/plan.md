@@ -56,6 +56,22 @@
 
 ---
 
+## Implementation outcomes — P0 + P1 (desktop) ✅ done & committed
+
+**The hybrid approach is validated end-to-end on desktop.** Key empirical results for P2+ implementers:
+
+- **Layering risk RETIRED, zero mitigations:** `Sdk="Uno.Sdk.Private"` (local pack) layered over the repo's `Directory.Build.props/.targets` + `Uno.CrossTargetting.targets` with no conflicts. Uno.Sdk's `CustomAfterDirectoryBuildProps` ordering handles it. No opt-outs were needed.
+- **Pack mechanism:** `Uno.Sdk` has `GeneratePackageOnBuild=true` and a CoreCompile-time version-replacement dance — pack via **`dotnet build`** (not `dotnet pack`, which skips the compile → NU5026). `build/pack-local-uno-sdk.ps1` does this at sentinel `255.255.255-dev`.
+- **Gotchas found & fixed (apply the same in P2+):**
+  1. **`UnoRuntimeIdentifier=Skia` must be set EARLY** (top PropertyGroup, before the `sourcegenerators.local.props` import) for non-windows TFMs. Uno.Sdk sets it in `.targets` (too late), so the XAML source-generator props compute `IncludeXamlNamespaces` with `not_skia` → conditional namespaces like `xmlns:skia="http://uno.ui/skia"` get stripped → `CS0103` on x:Named fields (e.g. `BrowserInputHelper_Tests`). Fixed in the head csproj.
+  2. Shared imports: the targets file is `SamplesApp.UnitTests.targets` (NOT `.Shared.targets`); the props is `.Shared.props`.
+  3. `Uno.Extensions.Logging.WebAssembly.Console` package is needed on all Skia TFMs (`App.xaml.cs` uses it under `#if __SKIA__`).
+- **No manual `Uno.UI.Tasks.targets` / `uno.winui.runtime-replace.targets` imports needed** — Uno.Sdk handles resource generation. (Simplification vs the old heads.)
+- **Validation (desktop):** compile (full SamplesApp) ✓; boot (no startup crash) ✓; runtime (`Given_ThicknessConverter` 5/5 pass via `--runtime-tests`) ✓.
+- **P1.6 (CI flip) is intentionally not done locally** — it requires editing Azure DevOps YAML + pushing + watching the pipelines, which can't be verified in a local session. Do it where the pipeline run can be observed.
+
+---
+
 ## Phase 0 — Local Uno.Sdk bootstrapping + layering spike
 
 **Exit criterion:** A desktop-only (`net10.0-desktop`) skeleton head using `Sdk="Uno.Sdk.Private"` builds and launches from source locally.
