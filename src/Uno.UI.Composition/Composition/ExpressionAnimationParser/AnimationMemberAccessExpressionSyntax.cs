@@ -16,10 +16,17 @@ internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 	public AnimationExpressionSyntax Expression { get; }
 	public ExpressionAnimationToken Identifier { get; }
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		var leftValue = Expression.Evaluate(expressionAnimation);
 		var propertyName = (string)Identifier.Value;
+		if (leftValue is CompositionAnimation animation && propertyName.Equals("Target", StringComparison.OrdinalIgnoreCase))
+		{
+			// 'this.Target' is the object the animation is running on.
+			return animation.AnimationTargetObject
+				?? throw new ArgumentException("Cannot resolve 'this.Target': the animation has no target object.");
+		}
+
 		if (leftValue is CompositionObject leftCompositionObject)
 		{
 			return leftCompositionObject.GetAnimatableProperty(propertyName, string.Empty);

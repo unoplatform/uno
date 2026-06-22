@@ -19,6 +19,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 {
 	private readonly IntPtr _containerHandle;
 	private readonly Dictionary<int, IntPtr> _realizedHandles = new();
+	// Parallel set kept in sync with _realizedHandles.Values so ContainsRealizedHandle
+	// is O(1) on the focus/lookup hot path instead of O(n) Dictionary.ContainsValue.
+	private readonly HashSet<IntPtr> _realizedHandleSet = new();
 	private int _totalItemCount;
 	private bool _isFocusPinned;
 	private int? _pinnedIndex;
@@ -49,6 +52,8 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	internal bool IsFocusPinned => _isFocusPinned;
 	/// <summary>Gets the data index of the pinned (focused) item, if any.</summary>
 	internal int? PinnedIndex => _pinnedIndex;
+	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
+	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandleSet.Contains(handle);
 
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
@@ -60,7 +65,12 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			this.Log().Trace($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
 		}
 		_totalItemCount = totalCount;
+		if (_realizedHandles.TryGetValue(index, out var existing) && existing != itemHandle)
+		{
+			_realizedHandleSet.Remove(existing);
+		}
 		_realizedHandles[index] = itemHandle;
+		_realizedHandleSet.Add(itemHandle);
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
 	}
 
@@ -83,7 +93,17 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		{
 			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
 		}
-		_realizedHandles.Remove(index);
+
+		// Only clear the index mapping when it still points at the same handle. If a new item was
+		// realized into this index before the unrealize callback arrived (race that OnItemRealized
+		// already partially handles), the index now belongs to a different live handle and must
+		// not be evicted. The handle being unrealized is always purged from _realizedHandleSet
+		// independently so DOM/state stay in sync.
+		if (_realizedHandles.TryGetValue(index, out var current) && current == itemHandle)
+		{
+			_realizedHandles.Remove(index);
+		}
+		_realizedHandleSet.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 	}
 
@@ -136,6 +156,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			}
 			_disposed = true;
 			_realizedHandles.Clear();
+			_realizedHandleSet.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
 		}
 	}

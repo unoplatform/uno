@@ -38,6 +38,18 @@ public interface ISolutionUpdater
 	/// state changed, otherwise an unnecessary
 	/// <c>EmitSolutionUpdateAsync</c> roundtrip is incurred per cycle.
 	/// </para>
+	/// <para>
+	/// Coherence-under-error contract: <see cref="SolutionUpdateResult.Solution"/> must be a
+	/// <strong>coherent</strong> snapshot even when <see cref="SolutionUpdateResult.Diagnostics"/>
+	/// reports an error. An updater applies only the edits it can apply safely; when it cannot
+	/// proceed (e.g. a <c>.csproj</c> re-evaluation fails) it returns the solution at its
+	/// last-known-good state — typically the previous references, never a half-applied or
+	/// destructive diff — together with the error diagnostics. The manager commits
+	/// <c>result.Solution</c> <em>unconditionally</em>, ahead of the error short-circuit, so the
+	/// safely-applied edits survive across cycles; a half-applied snapshot would persist into and
+	/// poison the next cycle. The built-in updater honors this by skipping the diff/apply entirely
+	/// when a project re-evaluation errors, leaving the project at its prior references.
+	/// </para>
 	/// </remarks>
 	ValueTask<SolutionUpdateResult> UpdateAsync(
 		Solution solution,

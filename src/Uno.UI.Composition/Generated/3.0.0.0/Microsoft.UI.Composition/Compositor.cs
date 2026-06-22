@@ -217,13 +217,7 @@ namespace Microsoft.UI.Composition
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBounceVector3Animation()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionContainerShape CreateContainerShape()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateContainerShape()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateContainerShape()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEllipseGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateLineGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePathGeometry()
@@ -241,24 +235,12 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSpriteShape()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSpriteShape(Microsoft.UI.Composition.CompositionGeometry)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateViewBox()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction RequestCommitAsync()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "RequestCommitAsync()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.RequestCommitAsync()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateGeometricClip()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateGeometricClip(Microsoft.UI.Composition.CompositionGeometry)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRedirectVisual()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRedirectVisual(Microsoft.UI.Composition.Visual)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBooleanKeyFrameAnimation()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateBooleanKeyFrameAnimation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.AnimationPropertyInfo CreateAnimationPropertyInfo()

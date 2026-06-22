@@ -859,6 +859,16 @@ namespace Microsoft.UI.Xaml
 				var right = Math.Min(globalBounds.Right, clip.Right);
 				var bottom = Math.Min(globalBounds.Bottom, clip.Bottom);
 
+				// Clip to the window viewport too: the composition tree roots at an infinite clip,
+				// so off-window content (e.g. a Popup/Flyout) is otherwise reported as on-screen.
+				if (XamlRoot?.Size is { Width: > 0, Height: > 0 } viewport)
+				{
+					left = Math.Max(left, 0);
+					top = Math.Max(top, 0);
+					right = Math.Min(right, viewport.Width);
+					bottom = Math.Min(bottom, viewport.Height);
+				}
+
 				return right > left && bottom > top
 					? new Rect(left, top, right - left, bottom - top)
 					: default;
