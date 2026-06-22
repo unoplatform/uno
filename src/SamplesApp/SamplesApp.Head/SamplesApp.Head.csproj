@@ -88,7 +88,12 @@
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj" />
-		<Compile Include="..\..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
+		<!--
+		Unlike the old SamplesApp.Windows head (assembly "SamplesApp.Windows", no IVT), this head's
+		assembly is "SamplesApp" — which Uno.UI.Toolkit / Uno.Foundation grant InternalsVisibleTo.
+		So Toolkit.Windows's self-linked internal helpers (DependencyObjectExtensions, EnumerableExtensions,
+		AsyncLock) are already visible; do NOT re-link/re-reference them here or they collide (CS0433/CS0121).
+		-->
 	</ItemGroup>
 
 	<!-- ==================== Packages ==================== -->
