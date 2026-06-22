@@ -852,7 +852,11 @@ namespace Microsoft.UI.Xaml
 				// wrongly considered on-screen (IsOffscreen == false).
 				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
-				var clip = Visual.GetTotalClipRectInRootCoordinates();
+				// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
+				// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
+				using var clipPath = new SkiaSharp.SKPath();
+				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
+				var clip = clipPath.Bounds;
 
 				var left = Math.Max(globalBounds.Left, clip.Left);
 				var top = Math.Max(globalBounds.Top, clip.Top);
