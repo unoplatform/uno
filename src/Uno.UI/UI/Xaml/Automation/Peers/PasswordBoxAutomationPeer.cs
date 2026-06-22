@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// through the Value / Text patterns, not as child automation elements. The default walk would
 		// surface template parts (placeholder presenter, content presenter, reveal button), which WinUI
 		// does not. Return no children to match WinUI3.
-		protected override IList<AutomationPeer> GetChildrenCore() => new List<AutomationPeer>();
+		protected override IList<AutomationPeer> GetChildrenCore() => Array.Empty<AutomationPeer>();
 
 		protected override bool IsPasswordCore()
 		{

@@ -103,7 +103,7 @@ internal sealed partial class MiniGrid : ContentControl
 		=> _containers.TryGetValue(item, out var row) ? row : null;
 
 	/// <summary>
-	/// Mimics a "log refresh": bump each item's value and rebuild the realized cell content.
+	/// Mimics a "logical refresh": bump each item's value and rebuild the realized cell content.
 	/// Replacing the cell content detaches the previous cell elements — exactly the situation
 	/// that leaves stale/empty automation cells when the item peer's children cache is not
 	/// invalidated.

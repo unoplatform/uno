@@ -435,13 +435,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>
-	/// Looks up an existing provider for the given peer without creating one.
-	/// Used by event notification methods to avoid eagerly creating providers
-	/// for elements that UIA hasn't navigated to yet — creating providers in
-	/// event paths registers COM callable wrappers with UIA, which hold strong
-	/// references and prevent GC of the underlying UIElements.
-	/// </summary>
-	/// <summary>
 	/// Resolves a peer to its already-created provider without creating one.
 	/// Used by <see cref="Win32RawElementProvider.InvalidateChildrenCache()"/> to
 	/// cascade cache invalidation through the UIA child links, including to
@@ -450,6 +443,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	internal Win32RawElementProvider? TryGetExistingProviderForPeer(AutomationPeer peer)
 		=> FindExistingProviderForPeer(peer, resolveEventsSource: true);
 
+	/// <summary>
+	/// Looks up an existing provider for the given peer without creating one.
+	/// Used by event notification methods to avoid eagerly creating providers
+	/// for elements that UIA hasn't navigated to yet — creating providers in
+	/// event paths registers COM callable wrappers with UIA, which hold strong
+	/// references and prevent GC of the underlying UIElements.
+	/// </summary>
 	private Win32RawElementProvider? FindExistingProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
 	{
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource);

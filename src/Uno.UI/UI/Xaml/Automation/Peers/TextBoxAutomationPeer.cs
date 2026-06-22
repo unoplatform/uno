@@ -29,7 +29,7 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 	// Text patterns, not as child automation elements. The default FrameworkElementAutomationPeer
 	// walk would surface template parts (placeholder presenter, content/scroll presenters, header,
 	// clear button), which WinUI does not. Return no children to match WinUI3.
-	protected override IList<AutomationPeer> GetChildrenCore() => new List<AutomationPeer>();
+	protected override IList<AutomationPeer> GetChildrenCore() => Array.Empty<AutomationPeer>();
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
