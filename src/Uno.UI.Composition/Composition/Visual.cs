@@ -165,7 +165,14 @@ namespace Microsoft.UI.Composition
 			{
 				if (!ReferenceEquals(_parent, value))
 				{
-					StopAllAnimations();
+					// Stop tracked animations only when the visual is being detached from a
+					// parent (becoming an orphan). Stopping on attach would tear down animations
+					// that were configured before the visual was inserted into the tree (a common
+					// pattern with composition-driven animated visual sources, e.g. LottieGen).
+					if (value is null)
+					{
+						StopAllAnimations();
+					}
 				}
 
 				_parent = value;
@@ -229,6 +236,10 @@ namespace Microsoft.UI.Composition
 			{
 				return RotationAngle;
 			}
+			else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+			{
+				return RotationAngleInDegrees;
+			}
 			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
 			{
 				return GetVector3(subPropertyName, RotationAxis);
@@ -244,6 +255,15 @@ namespace Microsoft.UI.Composition
 			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
 			{
 				return GetVector3(subPropertyName, Scale);
+			}
+			else if (propertyName.Equals(nameof(IsVisible), StringComparison.OrdinalIgnoreCase))
+			{
+				return IsVisible;
+			}
+			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = Properties.TryGetVector3("Translation", out var translation);
+				return GetVector3(subPropertyName, translation);
 			}
 			else
 			{
@@ -277,6 +297,10 @@ namespace Microsoft.UI.Composition
 			{
 				RotationAngle = ValidateValue<float>(propertyValue);
 			}
+			else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+			{
+				RotationAngleInDegrees = ValidateValue<float>(propertyValue);
+			}
 			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
 			{
 				RotationAxis = UpdateVector3(subPropertyName, RotationAxis, propertyValue);
@@ -292,6 +316,10 @@ namespace Microsoft.UI.Composition
 			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
 			{
 				Scale = UpdateVector3(subPropertyName, Scale, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(IsVisible), StringComparison.OrdinalIgnoreCase))
+			{
+				IsVisible = ValidateValue<bool>(propertyValue);
 			}
 			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
 			{
