@@ -41,7 +41,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.3" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />

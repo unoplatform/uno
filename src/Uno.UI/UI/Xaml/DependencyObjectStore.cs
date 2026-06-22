@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -263,6 +263,40 @@ namespace Microsoft.UI.Xaml
 		/// for types that commonly do not expose inherited properties, such as visual states.
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
+
+		/// <summary>
+		/// Set when this object is stored as a value in a <see cref="ResourceDictionary"/>. Such resources must not
+		/// inherit/cache the <see cref="DataContextProperty"/> from the subtree they are applied into (this matches
+		/// WinUI, where resources have no DataContext).
+		/// </summary>
+		/// <remarks>
+		/// A shared resource (e.g. a brush or shape in a <c>GlobalStaticResources</c> singleton) is rooted by a
+		/// long-lived dictionary, yet it is pulled into many short-lived subtrees via <c>{StaticResource}</c>/
+		/// <c>{ThemeResource}</c>. If it cached the inherited DataContext of one such subtree, the resource would
+		/// keep that DataContext (and everything it transitively references) alive forever. When the subtree lives
+		/// in a collectible <see cref="System.Runtime.Loader.AssemblyLoadContext"/> (e.g. a previewed app), that
+		/// retention pins the whole context and prevents it from unloading. Only DataContext is blocked; other
+		/// inherited properties (FlowDirection, theme, …) still propagate so resource visuals render correctly.
+		/// </remarks>
+		internal bool IsResourceDictionaryItem
+		{
+			get => (_storeFlags & StoreFlags.IsResourceDictionaryItem) != 0;
+			set => _storeFlags = value
+				? _storeFlags | StoreFlags.IsResourceDictionaryItem
+				: _storeFlags & ~StoreFlags.IsResourceDictionaryItem;
+		}
+
+		// Single-byte bitfield for boolean per-store flags. A DependencyObjectStore is allocated once per
+		// DependencyObject, so per-instance size matters; folding flags here keeps that footprint flat as
+		// more are added. Prefer extending StoreFlags over introducing new standalone bool fields.
+		[Flags]
+		private enum StoreFlags : byte
+		{
+			None = 0,
+			IsResourceDictionaryItem = 1 << 0,
+		}
+
+		private StoreFlags _storeFlags;
 
 		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
@@ -639,6 +673,32 @@ namespace Microsoft.UI.Xaml
 					}
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
+					// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
+					// above), notify the new value of the theme that was applied to the property owner, so a
+					// DO value set on an already-themed owner carries the owner's theme.
+					//   // If this DP had an associated theme reference, clear it because a new value has been set.
+					//   ClearThemeResource(args.m_pDP);
+					//   if (m_theme != Theming::Theme::None)
+					//   {
+					//       IFC_RETURN(NotifyPropertyValueOfThemeChange(args.m_pDP, pEffectiveValue));
+					//   }
+					// The persistent-resource-binding flags are the ValueOperationFromSetValue analog (theme
+					// reference re-application is excluded, like WinUI's modified-value branch). The set-time
+					// Enter (UpdateAutoParent → EnterObjectProperty) covers logical-child properties; this
+					// covers the DO-valued properties WinUI notifies that carry no logical-child metadata
+					// (e.g. brushes). DataContext is excluded — Uno's core inherits user data through it,
+					// which WinUI's core property system never carries.
+					if (_theme != Theme.None
+						&& !isPersistentResourceBinding
+						&& !_isSettingPersistentResourceBinding
+						&& property != _dataContextProperty)
+					{
+						NotifyPropertyValueOfThemeChange(property, newValue);
+					}
+#endif
 				}
 				finally
 				{
@@ -1273,6 +1333,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// A ResourceDictionary item must not inherit/cache DataContext (WinUI behaviour — resources
+			// have no DataContext). Blocking it here also blocks propagation to this resource's own inherited-property
+			// children (e.g. a shape resource's gradient brush), since DataContext is applied via the SetValue below.
+			// Without this, a shared resource pulled into a subtree via {StaticResource}/{ThemeResource} permanently
+			// caches that subtree's DataContext; when the subtree lives in a collectible AssemblyLoadContext it pins
+			// the whole ALC. Other inherited properties are unaffected.
+			if (IsResourceDictionaryItem && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
+			{
+				return;
+			}
+
 			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
 			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
 			// to ALL descendants. This breaks element-level theming because a parent's theme change
@@ -1965,7 +2036,7 @@ namespace Microsoft.UI.Xaml
 		/// Updates the parent of the <paramref name="newValue"/> to the
 		/// <paramref name="actualInstanceAlias"/> and resets the parent of <paramref name="previousValue"/>.
 		/// </summary>
-		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
+		private void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
 		{
 			if (
 				previousValue is DependencyObject previousObject
@@ -1973,11 +2044,34 @@ namespace Microsoft.UI.Xaml
 			)
 			{
 				previousObject.SetParent(null);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// MUX Reference: CDependencyObject::LeaveEffectiveValue (PropertySystem.cpp:1355-1403,
+				// commit fc2f82117) — a DO value replaced on a live owner leaves the tree at set-time.
+				// TODO Uno: WinUI gates on pDP->IsVisualTreeProperty(); Uno's closest curated equivalent
+				// is the auto-parent (LogicalChild) set that reaches this method.
+				if (IsActive)
+				{
+					LeaveObjectProperty(previousObject, null, new Uno.UI.Xaml.LeaveParams(isLive: true));
+				}
+#endif
 			}
 
 			if (newValue is DependencyObject newObject)
 			{
 				newObject.SetParent(actualInstanceAlias);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// MUX Reference: CDependencyObject::EnterEffectiveValue (PropertySystem.cpp:1093-1161,
+				// commit fc2f82117) — a DO assigned to a visual-tree property of a live owner enters the
+				// tree at set-time (isLive = IsActive()), so it carries a theme before any of its
+				// {ThemeResource} values resolve. Dead (non-live) enters only serve namescope
+				// registration in WinUI, which Uno has not ported — skipped here.
+				if (IsActive)
+				{
+					EnterObjectProperty(newObject, null, new Uno.UI.Xaml.EnterParams(isLive: true));
+				}
+#endif
 			}
 		}
 

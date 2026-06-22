@@ -59,6 +59,7 @@
 			}
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.tabIndex = -1;
 			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
 			input.style.position = "absolute";

@@ -309,6 +309,17 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					}
 				}
 				break;
+			case PInvoke.WM_MOUSEACTIVATE:
+				// A WS_CHILD window's DefWindowProc only calls SetFocus, not SetForegroundWindow.
+				// Explicitly foreground the Uno top-level so clicking an inactive WebView2 brings the app forward.
+				{
+					var parentHwnd = ParentHwnd;
+					if (parentHwnd != HWND.Null)
+					{
+						PInvoke.SetForegroundWindow(parentHwnd);
+					}
+					return new LRESULT((nint)PInvoke.MA_ACTIVATE);
+				}
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}

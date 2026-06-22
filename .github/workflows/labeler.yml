@@ -10,11 +10,11 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@ac9175f8a1f3625fd0d4fb234536d26811351594 # v4
+    - uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6.1.0
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
     - name: Assign PR to its author
-      uses: actions/github-script@v6
+      uses: actions/github-script@v9
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
         script: |

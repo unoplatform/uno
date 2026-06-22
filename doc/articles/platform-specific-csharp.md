@@ -57,7 +57,8 @@ The following conditional symbols are predefined for each Uno platform:
 | Android         | `__ANDROID__`      | |
 | iOS             | `__IOS__`          | |
 | tvOS            | `__TVOS__`         | |
-| iOS or tvOS     | `__APPLE_UIKIT__`  | |
+| Catalyst        | `__MACCATALYST__`  | |
+| iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
 | WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
 | Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
 | Skia            | `__UNO_SKIA__`     | Only available with `SkiaRenderer` feature. |
@@ -104,10 +105,10 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.wasm.cs` is built only for `net10.0-browserwasm`
 * `*.browserwasm.cs` is built only for `net10.0-browserwasm`
 * `*.desktop.cs` is built only for `net10.0-desktop`
-* `*.iOS.cs` is built only for `net10.0-ios`
+* `*.iOS.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst`
 * `*.tvOS.cs` is built only for `net10.0-tvos`
-* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-tvos`
-* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-tvos`
+* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
+* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
 * `*.Android.cs` is built only for `net10.0-android`
 * `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
 

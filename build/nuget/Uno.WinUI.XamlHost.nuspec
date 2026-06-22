@@ -37,38 +37,12 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios18.0\Uno.UI.XamlHost.dll" target="lib\net9.0-ios18.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios18.0\Uno.UI.XamlHost.pdb" target="lib\net9.0-ios18.0" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.XamlHost.dll" target="lib\net9.0-tvos18.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.XamlHost.pdb" target="lib\net9.0-tvos18.0" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-android\Uno.UI.XamlHost.dll" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-android\Uno.UI.XamlHost.pdb" target="lib\net9.0-android30.0" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-ios26.0\Uno.UI.XamlHost.dll" target="lib\net10.0-ios26.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-ios26.0\Uno.UI.XamlHost.pdb" target="lib\net10.0-ios26.0" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.XamlHost.dll" target="lib\net10.0-tvos26.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.XamlHost.pdb" target="lib\net10.0-tvos26.0" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-android\Uno.UI.XamlHost.dll" target="lib\net10.0-android36.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net10.0-android\Uno.UI.XamlHost.pdb" target="lib\net10.0-android36.0" />
-
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net9.0\Uno.UI.XamlHost.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net10.0\Uno.UI.XamlHost.dll" target="lib\net10.0" />
-
-		<!-- net9.0 WebAssembly -->
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net9.0\Uno.UI.XamlHost.dll" target="uno-runtime\net9.0\webassembly" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net9.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net9.0\webassembly" />
 
 		<!-- net9.0 Skia -->
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net9.0\Uno.UI.XamlHost.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net9.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net9.0\skia" />
-
-		<!-- net10.0 WebAssembly -->
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net10.0\Uno.UI.XamlHost.dll" target="uno-runtime\net10.0\webassembly" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net10.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net10.0\webassembly" />
 
 		<!-- net10.0 Skia -->
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net10.0\Uno.UI.XamlHost.dll" target="uno-runtime\net10.0\skia" />

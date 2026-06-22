@@ -14,7 +14,7 @@ There are two ways to migrate an application to .NET 7.
 
 ## Additional considerations
 
-Since .NET 7 breaks binary compatibility with Xamarin, most of the existing nuget packages that target `monoandroidXX`, `xamarinios10` and `xamarinmac20` (bindings to native SDKs are a good example) will not work properly and will need an updated version that are compatible with `net7.0-ios` and `net7.0-android`.
+Since .NET 7 breaks binary compatibility with Xamarin, most of the existing nuget packages that target `monoandroidXX`, `xamarinios10` and `xamarinmac20` (bindings to native SDKs are a good example) will not work properly and will need an updated version that are compatible with `net7.0-ios`, `net7.0-android`, and `net7.0-maccatalyst`.
 
 ## Xamarin Support Policy
 

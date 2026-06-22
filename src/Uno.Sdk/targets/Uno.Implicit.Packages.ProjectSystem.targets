@@ -41,10 +41,6 @@
 		</Otherwise>
 	</Choose>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';maps;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';foldable;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
 	</ItemGroup>
@@ -109,6 +105,8 @@
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.iOS.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.MacCatalyst.targets"
+		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.MacOS.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Wasm.targets"

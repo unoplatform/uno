@@ -13,6 +13,9 @@ Skia-on-Android, Skia-on-iOS, and Skia-on-WebAssembly. In 7.0 it becomes the *on
 rendering path: a `UIElement` is a plain managed object backed by a `Composition.Visual`
 on all platforms, drawn into a single Skia surface.
 
+This does **not** drop platform support: Android, iOS, macOS, Windows, Linux, and
+WebAssembly all remain supported — they now all render with Skia.
+
 > [!IMPORTANT]
 > This is a hard removal in a single major version — there is no `[Obsolete]` interim.
 > Plan to recompile every Uno library against 7.0 and update your application heads.
@@ -21,8 +24,7 @@ on all platforms, drawn into a single Skia surface.
 
 - Apps that **opted out** of the Skia renderer on mobile by omitting
   `<UnoFeatures>skiarenderer</UnoFeatures>` and relying on native rendering.
-- Apps that used the **native WebAssembly DOM** renderer
-  (`Uno.WinUI.Runtime.WebAssembly`).
+- Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`).
 - Code that referenced native rendering types, native element hosting, or native-only
   `FeatureConfiguration` flags (see below).
 
@@ -33,21 +35,34 @@ native bootstrap/heads.
 
 ### Rendering is Skia everywhere
 
-`skiarenderer` is now implicit and mandatory for `android`/`ios`/`tvos`/`maccatalyst`.
-You no longer need (and can remove) `<UnoFeatures>skiarenderer</UnoFeatures>`.
+The `NativeRenderer` Uno Feature and the renderer-selection logic are gone — Skia is
+always used. `skiarenderer` is now implicit and mandatory for
+`android`/`ios`/`tvos`/`maccatalyst`; it is kept as a no-op for back-compat, so you can
+leave `<UnoFeatures>skiarenderer</UnoFeatures>` in place or remove it — either way Skia
+renders.
 
 WebAssembly renders to a canvas through Skia; there is no per-element DOM tree, no
 `Uno.UI.css` styling layer, and no `WindowManager.ts`.
+
+If your project was created before Uno Platform 6.0 and still selects a renderer, follow
+the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6) first to move to the
+Uno.SDK single-project model.
 
 ### Packages
 
 | Removed / changed | Migration |
 |---|---|
-| `Uno.WinUI.Runtime.WebAssembly` package removed | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. |
+| `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the Skia browser head is referenced implicitly — there is nothing to add. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
+| `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos/maccatalyst` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
+
+> [!NOTE]
+> Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
+> alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
+> explicit reference resolves it.
 
 ### Public API removed
 
@@ -130,5 +145,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 4. Delete native-only `FeatureConfiguration` calls.
 5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-6. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+7. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
+
+See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
+for the full Android/iOS/WebAssembly Skia bootstrapping steps.
