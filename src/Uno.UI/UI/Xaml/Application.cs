@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml
 				CoreApplication.StaticInitialize();
 
 #if __SKIA__
-			Package.SetEntryAssembly(this.GetType().Assembly);
+				Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
 				Current = this;
 				ApplicationLanguages.ApplyCulture();

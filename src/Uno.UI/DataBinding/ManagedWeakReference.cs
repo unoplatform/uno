@@ -183,7 +183,7 @@ namespace Uno.UI.DataBinding
 
 	}
 
-	
+
 	// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
 	internal interface INativeObject
 	{
