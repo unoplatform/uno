@@ -845,11 +845,17 @@ internal static partial class SemanticElementFactory
 	{
 		var rowCount = 0;
 		var colCount = 0;
+		var multiSelectable = false;
 
 		if (peer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
 		{
 			rowCount = gridProvider.RowCount;
 			colCount = gridProvider.ColumnCount;
+		}
+
+		if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
+		{
+			multiSelectable = selectionProvider.CanSelectMultiple;
 		}
 
 		NativeMethods.CreateGridElement(
@@ -863,6 +869,7 @@ internal static partial class SemanticElementFactory
 			attributes.Label,
 			rowCount,
 			colCount,
+			multiSelectable,
 			isFocusable);
 		return true;
 	}
@@ -882,8 +889,12 @@ internal static partial class SemanticElementFactory
 		AriaAttributes attributes,
 		bool isFocusable)
 	{
-		// ARIA aria-rowindex is 1-based; ensure at least 1
-		var rowIndex = Math.Max(attributes.PositionInSet ?? 1, 1);
+		// aria-rowindex is 1-based. The row peer (DataGridRowAutomationPeer) does not report a
+		// position, so emit it only when one is actually known — otherwise 0, which the JS omits.
+		// (Previously this defaulted to 1, making every row announce "row 1".) The per-row index is
+		// still conveyed by each cell's aria-rowindex, sourced from IGridItemProvider.Row.
+		var rowIndex = attributes.PositionInSet is > 0 ? attributes.PositionInSet.Value : 0;
+		var (selectable, selected) = GetSelectionState(peer);
 
 		NativeMethods.CreateGridRowElement(
 			parentHandle,
@@ -894,6 +905,8 @@ internal static partial class SemanticElementFactory
 			width,
 			height,
 			rowIndex,
+			selectable,
+			selected,
 			isFocusable);
 		return true;
 	}
@@ -923,6 +936,8 @@ internal static partial class SemanticElementFactory
 			colIndex = gridItemProvider.Column + 1;
 		}
 
+		var (selectable, selected) = GetSelectionState(peer);
+
 		NativeMethods.CreateGridCellElement(
 			parentHandle,
 			handle,
@@ -934,6 +949,8 @@ internal static partial class SemanticElementFactory
 			attributes.Label,
 			rowIndex,
 			colIndex,
+			selectable,
+			selected,
 			isFocusable);
 		return true;
 	}
@@ -953,11 +970,16 @@ internal static partial class SemanticElementFactory
 		AriaAttributes attributes,
 		bool isFocusable)
 	{
+		// aria-colindex is 1-based. GridItemProvider.Column is 0-based; map it the same way cells do
+		// so a header and its column's cells share the same aria-colindex. The WCT column-header peer
+		// does not implement GridItem, so this stays 0 (omitted) there — cells still carry the index.
 		var colIndex = 0;
 		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
 		{
-			colIndex = gridItemProvider.Column;
+			colIndex = gridItemProvider.Column + 1;
 		}
+
+		var sort = GetSortDirection(peer);
 
 		NativeMethods.CreateColumnHeaderElement(
 			parentHandle,
@@ -969,8 +991,51 @@ internal static partial class SemanticElementFactory
 			height,
 			attributes.Label,
 			colIndex,
+			sort,
 			isFocusable);
 		return true;
+	}
+
+	/// <summary>
+	/// Resolves a grid item's selection state from the SelectionItem pattern.
+	/// Returns (false, false) when the peer is not selectable so the JS omits aria-selected.
+	/// </summary>
+	private static (bool selectable, bool selected) GetSelectionState(AutomationPeer peer)
+	{
+		if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider provider)
+		{
+			return (true, provider.IsSelected);
+		}
+
+		return (false, false);
+	}
+
+	/// <summary>
+	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern and the
+	/// Community Toolkit DataGrid column-header peer does not expose sort state, so this reads the
+	/// generic ItemStatus channel ("ascending"/"descending") which an app — or an enhanced peer —
+	/// can populate. Returns null when no sort is advertised, so the JS omits aria-sort entirely.
+	/// </summary>
+	private static string? GetSortDirection(AutomationPeer peer)
+	{
+		var status = peer.GetItemStatus();
+		if (string.IsNullOrEmpty(status))
+		{
+			return null;
+		}
+
+		var normalized = status.ToLowerInvariant();
+		if (normalized.Contains("ascend"))
+		{
+			return "ascending";
+		}
+
+		if (normalized.Contains("descend"))
+		{
+			return "descending";
+		}
+
+		return null;
 	}
 
 	/// <summary>
@@ -1328,16 +1393,16 @@ internal static partial class SemanticElementFactory
 		internal static partial void CreateTreeItemElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int level, string expanded, bool selected, int positionInSet, int sizeOfSet, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridElement")]
-		internal static partial void CreateGridElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowCount, int colCount, bool isFocusable);
+		internal static partial void CreateGridElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowCount, int colCount, bool multiSelectable, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridRowElement")]
-		internal static partial void CreateGridRowElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int rowIndex, bool isFocusable);
+		internal static partial void CreateGridRowElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int rowIndex, bool selectable, bool selected, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridCellElement")]
-		internal static partial void CreateGridCellElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int colIndex, bool isFocusable);
+		internal static partial void CreateGridCellElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int colIndex, bool selectable, bool selected, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createColumnHeaderElement")]
-		internal static partial void CreateColumnHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int colIndex, bool isFocusable);
+		internal static partial void CreateColumnHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int colIndex, string? sort, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createMenuElement")]
 		internal static partial void CreateMenuElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool isFocusable);
