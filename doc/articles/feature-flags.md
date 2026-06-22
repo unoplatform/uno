@@ -147,6 +147,33 @@ See [WebView2 → Enabling native developer tools](xref:Uno.Controls.WebView2#en
 > [!IMPORTANT]
 > On Apple platforms the OS only honors this flag for development-signed apps (DEBUG builds). The legacy iOS-only `IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
+### AllowSingleSignOnUsingOSPrimaryAccount
+
+Enables single sign-on using the OS primary account (for example, the Microsoft Entra ID / Azure AD account the user is signed into Windows with) when `WebView2` authenticates against supporting resources. This is **Windows (Skia Desktop) only**; it is a no-op on other targets and on the Windows App SDK target (configure SSO through `CoreWebView2EnvironmentOptions` there). Defaults to `false`. Set it during application startup, before any `WebView2` is materialized:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount = true;
+    this.InitializeComponent();
+}
+```
+
+> [!NOTE]
+> The CoreWebView2 environment is shared process-wide per user-data folder, so this must be set before the first `WebView2` is created. In a managed tenant the flag may be necessary but not sufficient: device-registration state and administrator policy can still gate Entra ID SSO.
+
+### AdditionalBrowserArguments
+
+Additional command-line switches passed to the browser process backing `WebView2` (for example proxy configuration or Chromium feature flags), useful in locked-down or managed environments. **Windows (Skia Desktop) only**, applied when the environment is first created; a no-op elsewhere. Set it during application startup, before any `WebView2` is materialized:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AdditionalBrowserArguments = "--proxy-server=http://proxy.example:8080";
+    this.InitializeComponent();
+}
+```
+
 ## `ApplicationData`
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
