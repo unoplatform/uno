@@ -16,6 +16,8 @@ public partial class Visual
 
 	private bool _subtreeChangedThisFrame;
 
+	internal virtual float DamageRegionSamplingMargin => 0;
+
 	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage)
 	{
 		if (damage is null)
