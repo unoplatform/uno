@@ -330,8 +330,6 @@ internal static class SkiaRenderHelper
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
-		// Panel size in root/logical coordinates. The width grows to fit the current values (with per-column
-		// minimums); the height is fixed. Shared by DrawFps and TryGetDamageBounds so the two never diverge.
 		private (float panelWidth, float panelHeight, float col1Width, float col2Width) MeasurePanel()
 		{
 			var culture = CultureInfo.InvariantCulture;
@@ -349,11 +347,6 @@ internal static class SkiaRenderHelper
 			return (panelWidth, panelHeight, col1Width, col2Width);
 		}
 
-		/// <summary>
-		/// The counter panel's bounds in root/logical coordinates (top-left origin); false when the counter is
-		/// disabled. The counter is a present-time overlay redrawn every frame, so under damage-region rendering
-		/// its region must be added to the frame's damage or the clipped present would leave its digits stale.
-		/// </summary>
 		public bool TryGetDamageBounds(out SKRect bounds)
 		{
 			if (!IsEnabled)

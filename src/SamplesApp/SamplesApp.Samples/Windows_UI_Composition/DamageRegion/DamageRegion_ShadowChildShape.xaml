@@ -5,13 +5,6 @@
     xmlns:toolkit="using:Uno.UI.Toolkit"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Canvas>
-        <!--
-            A shadow caster whose child is a Shape (a ShapeVisual) that paints geometry extending well beyond
-            its own layout Size (Stretch=None Path with explicit coordinates, plus a thick stroke). The caster's
-            shadow silhouette must use the shape's actual render bounds, not its Size — otherwise the part of the
-            shape (and its shadow) outside the Size is never damaged as the shape moves. Exercises the
-            ShapeVisual-descendant case of shadow-silhouette damage.
-        -->
         <Border
             x:Name="Caster"
             Canvas.Left="120"
@@ -20,11 +13,6 @@
             Height="120"
             toolkit:UIElementExtensions.Elevation="24">
             <Canvas>
-                <!--
-                    A 60x60 shape with a very thick stroke: the stroke halo paints ~30px beyond the shape's
-                    layout Size on every side, so the ShapeVisual's render bounds exceed its Size. The caster's
-                    shadow silhouette must use the shape's render bounds (stroke included), not its Size.
-                -->
                 <Ellipse
                     x:Name="Child"
                     Canvas.Left="30"

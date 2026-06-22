@@ -62,8 +62,6 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override void PresentToOutput(int degrees, int transX, int transY)
 		{
-			// The composition surface retains the previous frame; copy the whole of it to the framebuffer
-			// (this wipes the previous frame's cursor, which is never drawn into the retained surface).
 			var info = new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul);
 			_fbDev.VSync();
 			_surface?.ReadPixels(info, _fbDev.BufferAddress, _fbDev.RowBytes, 0, 0);

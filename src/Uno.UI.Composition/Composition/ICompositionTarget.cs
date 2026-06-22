@@ -21,17 +21,8 @@ internal interface ICompositionTarget
 #if __SKIA__
 	void RequestNewFrame();
 
-	/// <summary>
-	/// Adds a changed region (in root/logical coordinates) to the current frame's damage region,
-	/// for damage-region rendering.
-	/// </summary>
 	void AddDamage(SKRect bounds);
 
-	/// <summary>
-	/// Adds a changed region (in root/logical coordinates), possibly non-rectangular, to the current
-	/// frame's damage region. The region is unioned with the rest of the frame's damage, which may be a
-	/// disjoint set of arbitrary shapes, so the gaps between changed areas are not repainted.
-	/// </summary>
 	void AddDamage(SKPath region);
 #endif
 }

@@ -150,9 +150,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		private SKSurface? _glBackedSurface;
 		private SKSurface? _softwareSurface;
 
-		// When hardware accelerated, the GL backbuffer (_glBackedSurface) is a swapchain buffer that is not
-		// preserved across eglSwapBuffers, so the composition renders onto this persistent GPU layer which is
-		// blitted to the backbuffer each frame. The software path retains its previous frame in _softwareSurface.
 		private readonly RetainedLayer _retainedLayer = new();
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
@@ -166,9 +163,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_context = GRContext.CreateGl(glInterface);
 			}
 
-			// The frame is rendered onto a surface that retains the previous frame's contents (the persistent
-			// GPU layer when hardware accelerated, the software surface otherwise); it is then blitted to the
-			// non-retaining GL backbuffer below. This is what lets damage-region rendering repaint only the changed region.
 			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
 			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
@@ -211,7 +205,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			// Blit the retained render surface onto the (non-retaining) GL backbuffer, then present.
 			if (_hardwareAccelerated)
 			{
 				if (_glBackedSurface is not null)

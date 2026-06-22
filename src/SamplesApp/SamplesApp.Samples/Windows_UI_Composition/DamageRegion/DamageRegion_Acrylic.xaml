@@ -7,13 +7,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        A translucent acrylic (backdrop-blur) panel over a small element that moves behind it and
-        settles. Acrylic is a backdrop effect brush (RequiresRepaintOnEveryFrame) that samples the
-        canvas well beyond its own bounds, so it stresses the damage-region damage region: if the
-        damage doesn't cover the acrylic's sampling area (and the changed backdrop behind it), the
-        blurred result goes stale. The settled end state must match a full-frame repaint.
-    -->
     <Grid>
         <Rectangle Fill="DarkSlateBlue" />
         <Rectangle

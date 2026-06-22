@@ -23,12 +23,8 @@ internal partial class Win32WindowWrapper
 		private GRBackendRenderTarget? _renderTarget; // recreated on size updates
 		private Win32Helper.WglCurrentContextDisposable? _paintDisposable;
 
-		// The GL back buffer is a double-buffered swapchain that is not preserved across SwapBuffers, so
-		// the composition renders onto a persistent GPU layer (returned from UpdateSize as the surface to
-		// draw on) that is blitted to the back buffer each frame in CopyPixels. This is what makes
-		// damage-region rendering correct on the GL backend (mirrors the X11 OpenGL renderer).
-		private SKSurface? _swapchainSurface; // owned here; wraps the GL framebuffer
-		private SKSurface? _layer; // non-owning reference; the caller (Win32WindowWrapper) owns/disposes it as _surface
+		private SKSurface? _swapchainSurface;
+		private SKSurface? _layer;
 
 		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext)
 		{
@@ -178,7 +174,6 @@ internal partial class Win32WindowWrapper
 			_swapchainSurface?.Dispose();
 			_swapchainSurface = SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
 
-			// Composition renders onto the retained layer; CopyPixels blits it to the back buffer above.
 			var info = new SKImageInfo(Math.Max(1, width), Math.Max(1, height), SKColorType.Rgba8888, SKAlphaType.Premul);
 			var layer = SKSurface.Create(_grContext, budgeted: true, info)
 				?? throw new InvalidOperationException("Failed to create the damage-region retained layer surface.");
@@ -189,8 +184,6 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			// The GL context is current for the whole frame (StartPaint..EndPaint). Blit the retained layer
-			// onto the (non-retaining) back buffer, then present.
 			if (_layer is { } layer && _swapchainSurface is { } swapchain)
 			{
 				layer.Draw(swapchain.Canvas, 0, 0, null);
@@ -205,7 +198,6 @@ internal partial class Win32WindowWrapper
 
 		void IDisposable.Dispose()
 		{
-			// _layer is owned by the caller (disposed as _surface); only dispose what we own here.
 			_swapchainSurface?.Dispose();
 			_swapchainSurface = null;
 			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
@@ -215,7 +207,7 @@ internal partial class Win32WindowWrapper
 		{
 			_swapchainSurface?.Dispose();
 			_swapchainSurface = null;
-			_layer = null; // owned and already disposed by the caller (as _surface)
+			_layer = null;
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
 			_glContext = PInvoke.wglCreateContext(_hdc);
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);

@@ -7,11 +7,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        Two elements far apart with a large empty gap between them, both updated on a timer. Verifies the
-        damage region is a disjoint union (the two changed areas), so the gap between them is NOT repainted —
-        while staying pixel-identical to a full repaint.
-    -->
     <Grid>
         <Border
             x:Name="TopBox"
