@@ -6,6 +6,7 @@
 		"runner": "Microsoft.Testing.Platform"
 	},
 	"msbuild-sdks": {
-		"Microsoft.Build.NoTargets": "3.7.56"
+		"Microsoft.Build.NoTargets": "3.7.56",
+		"Uno.Sdk.Private": "255.255.255-dev"
 	}
 }
