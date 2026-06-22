@@ -1,36 +1,77 @@
 #nullable enable
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+
+using System;
+using System.IO;
+using System.Runtime.Loader;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Win32;
+using Uno.WinUI.Runtime.Skia.X11;
 
 namespace SamplesApp.Head;
 
-// Minimal app used only to prove the Uno.Sdk x Directory.Build layering and Win32 boot.
-// Replaced by the real SamplesApp.App once shared content is wired (P1 Task 1.2).
-internal sealed class SpikeApp : Application
-{
-	private Window? _window;
-
-	protected internal override void OnLaunched(LaunchActivatedEventArgs args)
-	{
-		_window = new Window
-		{
-			Content = new TextBlock { Text = "Uno Platform SamplesApp head — Uno.Sdk spike" }
-		};
-		_window.Activate();
-	}
-}
-
 internal static class Program
 {
-	[System.STAThread]
+	private static SamplesApp.App? _app;
+
+	[STAThread]
 	public static void Main(string[] args)
 	{
-		var host = UnoPlatformHostBuilder.Create()
-			.App(() => new SpikeApp())
-			.UseWin32()
+		// Ensures that we're loading the Skia assemblies properly as the output is
+		// adjusted to avoid getting reference assemblies in the output folder.
+		AssemblyLoadContext.Default.Resolving += Default_Resolving;
+
+		Run();
+	}
+
+	private static void Run()
+	{
+		SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
+
+		UnoPlatformHost? host = default;
+		var builder = UnoPlatformHostBuilder.Create()
+			.App(() => _app = new SamplesApp.App())
+			.AfterInit(() =>
+			{
+				if (host is X11ApplicationHost)
+				{
+					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
+				}
+			})
+			.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+			.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+			.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
+			.UseMacOS();
+
+		host = builder
 			.Build();
 
 		host.Run();
+	}
+
+	private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
+	{
+		try
+		{
+			if (Uri.TryCreate(typeof(Program).Assembly.Location, UriKind.Absolute, out var asm))
+			{
+				var appPath = Path.GetDirectoryName(asm.LocalPath)!;
+
+				var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
+
+				if (File.Exists(asmPath))
+				{
+					return alc.LoadFromAssemblyPath(asmPath);
+				}
+			}
+
+			return null;
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			Console.WriteLine($"Error processing {assemblyName.Name}. SamplesApp head assembly location: {typeof(Program).Assembly.Location}");
+			throw;
+		}
 	}
 }
