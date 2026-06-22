@@ -153,7 +153,18 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		NativeDispatcher.Main.EnqueueAsync(async () =>
 		{
 			var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
-			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
+			// These options must be applied at environment creation time; CoreWebView2EnvironmentOptions cannot be
+			// changed once the environment exists. They are surfaced through FeatureConfiguration.WebView2 because Uno
+			// owns this CreateAsync call (the app never sees the CoreWebView2Environment), so it's the only injection point.
+			var options = new NativeWebView.CoreWebView2EnvironmentOptions
+			{
+				AllowSingleSignOnUsingOSPrimaryAccount = FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount
+			};
+			if (!string.IsNullOrEmpty(FeatureConfiguration.WebView2.AdditionalBrowserArguments))
+			{
+				options.AdditionalBrowserArguments = FeatureConfiguration.WebView2.AdditionalBrowserArguments;
+			}
+			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder, options: options);
 			var controller = await env.CreateCoreWebView2ControllerAsync(_hwnd);
 
 			// Hide until NavigationCompleted to suppress the initial black frame.
