@@ -829,7 +829,7 @@ namespace Uno.UI
 
 			/// <summary>
 			/// Enables single sign-on using the OS primary account (for example the Microsoft Entra ID / Azure AD
-			/// account the user is signed into Windows with) when the <see cref="WebView2"/> authenticates against
+			/// account the user is signed into Windows with) when the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> authenticates against
 			/// supporting resources.
 			/// </summary>
 			/// <remarks>
