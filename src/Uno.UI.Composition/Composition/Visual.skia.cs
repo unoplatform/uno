@@ -135,8 +135,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
-	internal virtual float DamageRegionSamplingMargin => 0;
-
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
