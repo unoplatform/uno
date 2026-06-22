@@ -844,7 +844,7 @@ namespace Uno.UI
 			public static bool AllowSingleSignOnUsingOSPrimaryAccount { get; set; }
 
 			/// <summary>
-			/// Additional command-line switches passed to the browser process backing the <see cref="WebView2"/>
+			/// Additional command-line switches passed to the browser process backing the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/>
 			/// (for example proxy configuration or Chromium feature flags), useful in locked-down or managed environments.
 			/// </summary>
 			/// <remarks>
