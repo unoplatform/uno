@@ -70,6 +70,16 @@
 - **Validation (desktop):** compile (full SamplesApp) ✓; boot (no startup crash) ✓; runtime (`Given_ThicknessConverter` 5/5 pass via `--runtime-tests`) ✓.
 - **P1.6 (CI flip) is intentionally not done locally** — it requires editing Azure DevOps YAML + pushing + watching the pipelines, which can't be verified in a local session. Do it where the pipeline run can be observed.
 
+### P2 (browserwasm) ✅ done & committed
+- One head builds **both** net10.0-desktop and net10.0-browserwasm from source. Uno.Sdk auto-selects `Microsoft.NET.Sdk.WebAssembly` per TFM.
+- Gotchas: `System.Management` → desktop-only (wasm wanted 9.0-rc via `Microsoft.Windows.Compatibility`); `Resizetizer`/`UnoIcon` gated off wasm (else `Uno.Wasm.Bootstrap` PWA-content generation fails — **no wasm PWA icons yet, follow-up**); TargetFrameworks desktop **not first** (UNOB0011); `Platforms/{Desktop,WebAssembly}` folders auto-stripped per TFM.
+- The Skia groups are gated on `'$(UnoRuntimeIdentifier)' == 'Skia'` (true for all non-windows TFMs via the early-set).
+
+### P3 (windows / WinAppSDK) ⚠️ wired but TFM DISABLED — one blocker
+- **`targetframework-override.props` import added** — the head now honors `UnoTargetFrameworkOverride` (required for CI per-platform builds; previously a full multi-TFM build ran every time).
+- **Toolchain confirmed:** the windows TFM needs **`MSBuild.exe`** (VS), not `dotnet build` — under dotnet the WinUI `CompileXaml` + MRT PRI tasks fail (`MetadataLoadContext disposed`). With MSBuild.exe (`-r -p:UnoTargetFrameworkOverride=$(NetCurrentWinAppSDK) -p:Platform=x64`) the WinUI XAML compiler + WinAppSDK restore + `.Windows` ref gating all work and the entire sample set compiles down to one blocker.
+- **BLOCKER:** `Uno.UI.Toolkit.Windows` (source build, 255.255.255.255) **embeds** Uno.UI/Uno.Core extensions (`Uno.UI.Extensions.DependencyObjectExtensions`, `Uno.Extensions.EnumerableExtensions`, `Uno.Threading.AsyncLock`, …) that collide (CS0121/CS0433) with the head's referenced `Uno.Core.Extensions.*` packages + the linked `DependencyObjectExtensions.cs`. The **old `SamplesApp.Windows` has the identical reference set**, so it is very likely broken on this same source — verify that first. Likely fix: on windows, *don't* reference the overlapping extension packages / linked files and let `Uno.UI.Toolkit.Windows` provide them (or vice-versa). All windows wiring is committed but `$(NetCurrentWinAppSDK)` is removed from `<TargetFrameworks>` so desktop+wasm stay green; re-add it once resolved.
+
 ---
 
 ## Phase 0 — Local Uno.Sdk bootstrapping + layering spike
