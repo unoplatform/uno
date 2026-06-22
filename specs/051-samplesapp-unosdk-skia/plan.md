@@ -75,7 +75,15 @@
 - Gotchas: `System.Management` → desktop-only (wasm wanted 9.0-rc via `Microsoft.Windows.Compatibility`); `Resizetizer`/`UnoIcon` gated off wasm (else `Uno.Wasm.Bootstrap` PWA-content generation fails — **no wasm PWA icons yet, follow-up**); TargetFrameworks desktop **not first** (UNOB0011); `Platforms/{Desktop,WebAssembly}` folders auto-stripped per TFM.
 - The Skia groups are gated on `'$(UnoRuntimeIdentifier)' == 'Skia'` (true for all non-windows TFMs via the early-set).
 
-### P3 (windows / WinAppSDK) ⚠️ wired but TFM DISABLED — one blocker
+### P3 (windows / WinAppSDK) ✅ COMPILES (enabled) — three targeted fixes
+- The windows TFM (`$(NetCurrentWinAppSDK)`) is **back in `<TargetFrameworks>`** and builds the full sample set. Three fixes:
+  1. **`AssemblyName=SamplesApp.Windows` on the windows TFM only** (per-TFM) — not in the Toolkit/Foundation IVT lists, so Toolkit.Windows's self-linked *internal* helpers stay invisible and the public `Uno.Core.Extensions` package APIs are used → no duplicate-type collision. (Skia TFMs keep `SamplesApp`.)
+  2. **Self-link `Uno.UI\Extensions\DependencyObjectExtensions.cs`** on windows (no `Uno.UI` there; the packages don't provide it) — mirrors the old head.
+  3. **Gate `sourcegenerators.local.props` to Skia only** — on WinUI the real WinUI XAML compiler handles XAML; the Uno XAML/DP generators must not run (they fail looking for Uno-internal types like `IDependencyObjectParse`).
+- **Build tool:** validated with `MSBuild.exe` (`-r -p:UnoTargetFrameworkOverride=$(NetCurrentWinAppSDK) -p:Platform=x64`). `winapp`/`dotnet run` (via the `Microsoft.Windows.SDK.BuildTools.WinApp` package the head references) is the intended dev runner — see P3 run-validation below.
+- Remaining for P3: confirm `dotnet build`/`dotnet run`/`winapp run` launch the packaged app, and flip the WinAppSDK CI stage.
+
+#### (historical) original P3 blocker — now resolved
 - **`targetframework-override.props` import added** — the head now honors `UnoTargetFrameworkOverride` (required for CI per-platform builds; previously a full multi-TFM build ran every time).
 - **Toolchain confirmed:** the windows TFM needs **`MSBuild.exe`** (VS), not `dotnet build` — under dotnet the WinUI `CompileXaml` + MRT PRI tasks fail (`MetadataLoadContext disposed`). With MSBuild.exe (`-r -p:UnoTargetFrameworkOverride=$(NetCurrentWinAppSDK) -p:Platform=x64`) the WinUI XAML compiler + WinAppSDK restore + `.Windows` ref gating all work and the entire sample set compiles down to one blocker.
 - **BLOCKER — root-caused: an `InternalsVisibleTo` × `AssemblyName` collision.** The colliding helpers (`AsyncLock`, `EnumerableExtensions`, `DependencyObjectExtensions`) are all **`internal`**. `Uno.UI.Toolkit.Windows` **self-links** their source files (it has no `Uno.UI` to reference on WinUI), and the `Uno.Core.Extensions` packages carry their own copies. Both `Uno.UI.Toolkit` and `Uno.Foundation` grant `[InternalsVisibleTo("SamplesApp")]`. This head uses `AssemblyName=SamplesApp` on **every** TFM, so on windows it sees **both** internal copies → CS0433/CS0121. The old `SamplesApp.Windows` head's assembly is named **`SamplesApp.Windows`** (not in any IVT list), so it never saw the duplicates — it self-links the sources instead. That asymmetry is the entire bug.
