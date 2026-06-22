@@ -475,13 +475,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._picture = picture;
 				}
 
-				if (visual._picture != IntPtr.Zero)
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage);
+				unsafe
 				{
-					visual.ContributeDamageOnPaint(contentChanged, session.Damage);
-					unsafe
-					{
-						UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
-					}
+					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
 				}
 			}
 #if DEBUG
