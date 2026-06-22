@@ -144,8 +144,10 @@ public partial class Given_KeyFrameAnimation
 		visual.StartAnimation("Offset", animation);
 		try
 		{
+#if __SKIA__
 			// What the compositor does every render tick; threw before the fix.
 			_ = animation.Evaluate();
+#endif
 		}
 		finally
 		{
@@ -181,10 +183,12 @@ public partial class Given_KeyFrameAnimation
 		visual.StartAnimation("Scale", animation);
 		try
 		{
+#if __SKIA__
 			var value = (Vector3)animation.Evaluate(1.0f);
 			Assert.AreEqual(0.005f, value.X, 0.0001f);
 			Assert.AreEqual(0.01f, value.Y, 0.0001f);
 			Assert.AreEqual(1.0f, value.Z, 0.0001f);
+#endif
 		}
 		finally
 		{
@@ -220,8 +224,10 @@ public partial class Given_KeyFrameAnimation
 		properties.StartAnimation("Foo", animation);
 		try
 		{
+#if __SKIA__
 			var value = (Vector4)animation.Evaluate(1.0f);
 			Assert.AreEqual(new Vector4(2, 3, 5, 0), value);
+#endif
 		}
 		finally
 		{
@@ -256,8 +262,10 @@ public partial class Given_KeyFrameAnimation
 		properties.StartAnimation("Foo", animation);
 		try
 		{
+#if __SKIA__
 			var value = (bool)animation.Evaluate(1.0f);
 			Assert.IsTrue(value);
+#endif
 		}
 		finally
 		{
@@ -293,8 +301,10 @@ public partial class Given_KeyFrameAnimation
 		visual.StartAnimation("Translation", animation);
 		try
 		{
+#if __SKIA__
 			var value = (Vector3)animation.Evaluate(1.0f);
 			Assert.AreEqual(new Vector3(0, 0, 8), value);
+#endif
 		}
 		finally
 		{
