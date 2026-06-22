@@ -7,11 +7,6 @@ using Colors = Microsoft.UI.Colors;
 
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
-	/// <summary>
-	/// Tall content scrolled to a fixed offset on a timer (via ChangeView). Scrolling shifts the whole
-	/// viewport without repainting each item, so this verifies moved-but-not-repainted content is dirtied
-	/// under damage-region, with output identical to a full-frame repaint.
-	/// </summary>
 	[Sample("Windows.UI.Composition", Name = "DamageRegion_Scroll", IsManualTest = true,
 		Description = "Tall content scrolled to a fixed offset, for damage-region validation.")]
 	public sealed partial class DamageRegion_Scroll : Page
@@ -24,7 +19,6 @@ namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 		{
 			this.InitializeComponent();
 
-			// Distinct per-row colors so any stale (un-dirtied) strip after a scroll would be obvious.
 			var colors = new[]
 			{
 				Colors.IndianRed, Colors.SteelBlue, Colors.SeaGreen, Colors.Goldenrod,
@@ -50,8 +44,6 @@ namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 			_offset += 130;
 			Scroller.ChangeView(null, _offset, null, disableAnimation: true);
 
-			// Scroll a fixed number of steps to a deterministic final offset, then settle so a post-settle
-			// screenshot is comparable between full-frame and damage-region runs.
 			if (++_steps >= 5)
 			{
 				_timer.Stop();

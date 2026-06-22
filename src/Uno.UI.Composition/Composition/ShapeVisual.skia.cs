@@ -49,10 +49,6 @@ public partial class ShapeVisual
 		base.Paint(in session);
 	}
 
-	// Evaluated live (not cached): a fill brush's RequiresRepaintOnEveryFrame can flip to true after the
-	// shape is first assigned — e.g. a backdrop effect brush only reports it once it has detected its
-	// backdrop input during its first paint. A stale cached value would freeze the visual's picture and,
-	// under damage region, leave the backdrop effect rendering against a clip-starved backdrop.
 	internal override bool RequiresRepaintOnEveryFrame =>
 		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
 
@@ -61,17 +57,12 @@ public partial class ShapeVisual
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
-	// A ShapeVisual paints arbitrary geometry that can extend past its Size (strokes, paths with their own
-	// coordinate range), so Size is not a valid bound. Use the union of the shapes' render bounds instead,
-	// mapped through the same ViewBox transform Paint applies. Falls back to the clip (returns false) for
-	// shapes whose bounds we can't compute yet, or when a drop shadow paints beyond the shapes.
 	internal override bool TryGetLocalContentBounds(out SKRect localBounds)
 	{
 		localBounds = default;
 
 		if (_shapes is not { Count: > 0 } shapes)
 		{
-			// No shapes: if there's a shadow it has no silhouette here; otherwise nothing is painted.
 			if (ShadowState is not null)
 			{
 				return false;
@@ -94,7 +85,6 @@ public partial class ShapeVisual
 			}
 			else
 			{
-				// A non-sprite shape (e.g. a container shape) we can't bound; use the clip.
 				return false;
 			}
 		}
@@ -105,7 +95,6 @@ public partial class ShapeVisual
 			return true;
 		}
 
-		// Mirror the ViewBox transform applied to the canvas in Paint (Scale, then Translate(-Offset)).
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 		{
 			var sx = Size.X / viewBox.Size.X;
@@ -117,8 +106,6 @@ public partial class ShapeVisual
 				sy * (acc.Bottom - viewBox.Offset.Y));
 		}
 
-		// When this ShapeVisual casts a shadow, the silhouette also includes descendants (which can overflow);
-		// otherwise the shapes' own bounds are the content.
 		if (ShadowState is not null)
 		{
 			return TryGetShadowSilhouetteBounds(acc, out localBounds);
@@ -128,9 +115,6 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	// The painted shapes themselves (ellipse, rounded rect, arbitrary geometry), so the damage region follows
-	// the actual shape instead of its bounding box. (TryGetPaintDamageRegion only calls this when there's no
-	// shadow, so ExpandForShadow doesn't apply here.)
 	internal override bool TryGetLocalContentPath(SKPath dst)
 	{
 		if (_shapes is not { Count: > 0 } shapes)
@@ -147,7 +131,6 @@ public partial class ShapeVisual
 			}
 			else
 			{
-				// A non-sprite shape (e.g. a container shape) we can't represent; fall back to the bounds path.
 				return false;
 			}
 		}
@@ -157,12 +140,10 @@ public partial class ShapeVisual
 			return false;
 		}
 
-		// Mirror the ViewBox transform applied to the canvas in Paint (Scale, then Translate(-Offset)).
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 		{
 			var sx = Size.X / viewBox.Size.X;
 			var sy = Size.Y / viewBox.Size.Y;
-			// Apply Translate(-Offset) first, then Scale — matching canvas.Scale(); canvas.Translate(-Offset).
 			var m = SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), SKMatrix.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y));
 			dst.Transform(m);
 		}

@@ -6,11 +6,6 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
-	/// <summary>
-	/// Two elements far apart (top and bottom), both updated on a timer, with a large empty gap between them.
-	/// Verifies that the per-frame damage region is a disjoint union of the two changed areas — the gap is not
-	/// repainted — while staying pixel-identical to a full repaint.
-	/// </summary>
 	[Sample("Windows.UI.Composition", Name = "DamageRegion_Disjoint", IsManualTest = true,
 		Description = "Two far-apart elements updating together, for damage-region disjoint-region validation.")]
 	public sealed partial class DamageRegion_Disjoint : Page
@@ -34,10 +29,6 @@ namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 			TopText.Text = "top " + label;
 			BottomText.Text = "bottom " + label;
 
-			// Settle at a deterministic final state so an after-settle screenshot is comparable between
-			// full-frame and damage-region runs. The two text updates damage only their own regions; if the
-			// gap between them were (incorrectly) repainted, output would still match — the disjoint-region win
-			// is verified visually via the repaint overlay, this sample guards correctness.
 			if (_steps >= 5)
 			{
 				_timer.Stop();

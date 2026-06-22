@@ -7,11 +7,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        Tall, visually-distinct content inside a ScrollViewer that is scrolled to a fixed offset on a timer.
-        Scrolling shifts the whole viewport via a transform without repainting each item, so it verifies that
-        moved-but-not-repainted content is dirtied. Output must stay identical to a full-frame repaint.
-    -->
     <ScrollViewer
         x:Name="Scroller"
         Width="300"

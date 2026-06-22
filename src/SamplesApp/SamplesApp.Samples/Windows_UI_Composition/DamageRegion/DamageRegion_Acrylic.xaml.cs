@@ -5,10 +5,6 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
-	/// <summary>
-	/// A backdrop-blur acrylic panel over a small element that moves behind it and settles. Stresses
-	/// the damage-region damage region for backdrop effect brushes (which sample beyond their bounds).
-	/// </summary>
 	[Sample("Windows.UI.Composition", Name = "DamageRegion_Acrylic", IsManualTest = true,
 		Description = "An acrylic backdrop-blur panel over a moving element, for damage-region effect-brush validation.")]
 	public sealed partial class DamageRegion_Acrylic : Page
@@ -31,7 +27,6 @@ namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 			_left += 90;
 			Canvas.SetLeft(Mover, _left);
 
-			// Move behind the centered acrylic panel and settle at a deterministic position.
 			if (++_steps >= 5)
 			{
 				_timer.Stop();

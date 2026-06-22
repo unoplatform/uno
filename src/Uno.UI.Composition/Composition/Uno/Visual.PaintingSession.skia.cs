@@ -47,12 +47,6 @@ public partial class Visual
 
 		public readonly float Opacity;
 
-		/// <summary>
-		/// The per-frame damage-region accumulator for the on-screen render pass, threaded through the whole
-		/// visual walk so each visual adds the region it (re)paints as the walk proceeds. Null for off-screen
-		/// renders (RenderTargetBitmap, visual surfaces), which don't track damage. See
-		/// <see cref="Uno.UI.Composition.DamageRegionExtensions"/> for the accumulation helpers.
-		/// </summary>
 		public readonly SKPath? Damage;
 
 		private readonly int _saveCount;

@@ -7,11 +7,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        A small element that moves across a static background on a timer. Used to verify
-        that both the vacated (old) and new regions are repainted with no stale pixels,
-        and that output stays identical to a full-frame repaint.
-    -->
     <Canvas>
         <Border
             x:Name="Mover"

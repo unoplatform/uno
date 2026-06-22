@@ -61,13 +61,10 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		set => SetObjectProperty(ref _noiseImage, value);
 	}
 
-	// How far the backdrop blur samples beyond the brush bounds (see EnsureFilter's blurBounds).
 	private const int BlurPadding = 100;
 
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
 
-	// The translucent path blurs the backdrop over bounds ± BlurPadding, so damage region must keep that
-	// padded region fresh for the blur to sample correct pixels.
 	internal override float DamageRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
 
 	internal override bool CanPaint() => true;

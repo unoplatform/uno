@@ -5,7 +5,6 @@
     xmlns:toolkit="using:Uno.UI.Toolkit"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Canvas>
-        <!--  Fixed, transparent shadow caster; its shadow is cast by the moving child below.  -->
         <Border
             x:Name="Caster"
             Canvas.Left="100"
