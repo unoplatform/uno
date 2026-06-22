@@ -5,19 +5,82 @@
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
 
+		<!-- Keep full exception strings in release, as the current heads do -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+
 		<SamplesAppUseImplicitPackages Condition="'$(SamplesAppUseImplicitPackages)' == ''">false</SamplesAppUseImplicitPackages>
 		<DisableImplicitUnoPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoPackages>
 		<DisableImplicitUnoWinAppSdkPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoWinAppSdkPackages>
+
+		<!-- Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the source heads do -->
+		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
-	<!-- Spike: reference only Uno.UI.Skia + the Win32 runtime to prove the SDK/Directory.Build layering -->
+	<!-- ============================ Source mode (default) ============================ -->
+	<!-- Cross-Skia framework + AddIns shared by every Skia TFM -->
 	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+	</ItemGroup>
+
+	<!-- Desktop-specific framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
+	</ItemGroup>
+
+	<!-- Non-framework packages shared across Skia TFMs -->
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Resizetizer" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
+		<PackageReference Include="System.CommandLine" />
+		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<!-- TODO: Use version 8 when compiling against .NET 8? (carried from SamplesApp.Skia) -->
+		<PackageReference Include="System.Management" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
+			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
+		</PackageReference>
+		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 pulled in by Microsoft.Graph -->
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
+	</ItemGroup>
+
+	<!-- Desktop-specific packages -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
 	</ItemGroup>
 </Project>
