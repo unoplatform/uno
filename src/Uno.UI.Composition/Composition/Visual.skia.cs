@@ -361,7 +361,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
-			Render(session);
+
+			var rootClip = _pathPool.Allocate();
+			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
+			rootClip.Rewind();
+			rootClip.AddRect(InfiniteClipRect);
+			Render(session, rootClip);
 		}
 	}
 
@@ -369,7 +374,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true)
+	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -397,24 +402,50 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		CreateLocalSession(in parentSession, out var session);
 
+		// The clip in effect for this visual's own content (the inherited clip intersected with this visual's
+		// pre-painting clip) and for its children (additionally intersected with the post-painting clip),
+		// accumulated in root coordinates as we descend so each visual's total clip is computed once instead
+		// of re-walking the ancestor chain per visual.
+		var ownClip = _pathPool.Allocate();
+		using var ownClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), ownClip);
+		var childClip = _pathPool.Allocate();
+		using var childClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), childClip);
+
 		using (session)
 		{
 			var canvas = session.Canvas;
 
-			var preClip = _spareRenderPath;
+			var toRoot = TotalMatrix.ToSKMatrix();
 
+			var preClip = _spareRenderPath;
 			preClip.Rewind();
 
+			ownClip.Rewind();
+			ownClip.AddPath(clipInRoot);
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
+				preClip.Transform(toRoot);
+				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
+			}
+
+			childClip.Rewind();
+			childClip.AddPath(ownClip);
+			if (GetPostPaintingClipping() is { } postClip)
+			{
+				var postClipInRoot = _pathPool.Allocate();
+				postClipInRoot.Rewind();
+				postClipInRoot.AddPath(postClip);
+				postClipInRoot.Transform(toRoot);
+				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
+				_pathPool.Free(postClipInRoot);
 			}
 
 			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
 			{
-				PaintStep(this, session);
+				PaintStep(this, session, ownClip);
 				PostPaintingClipStep(this, canvas);
-				RenderChildrenStep(this, session, applyChildOptimization);
+				RenderChildrenStep(this, session, childClip, applyChildOptimization);
 			}
 			else
 			{
@@ -425,9 +456,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
-					PaintStep(this, childSession);
+					PaintStep(this, childSession, ownClip);
 					PostPaintingClipStep(this, recordingCanvas);
-					RenderChildrenStep(this, childSession, applyChildOptimization);
+					RenderChildrenStep(this, childSession, childClip, applyChildOptimization);
 				}
 
 				unsafe
@@ -442,7 +473,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session)
+		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -453,7 +484,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip);
 				visual.Paint(session);
 			}
 			else
@@ -473,7 +504,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._picture = picture;
 				}
 
-				visual.ContributeDamageOnPaint(contentChanged, session.Damage);
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clip);
 				unsafe
 				{
 					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
@@ -502,7 +533,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 		}
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization)
 		{
 			if (visual._childrenPicture != IntPtr.Zero)
 			{
@@ -518,7 +549,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, applyChildOptimization);
+					child.Render(in session, childClip, applyChildOptimization);
 				}
 			}
 			else
@@ -532,7 +563,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
-						child.Render(in childSession, applyChildOptimization: false);
+						child.Render(in childSession, childClip, applyChildOptimization: false);
 					}
 				}
 

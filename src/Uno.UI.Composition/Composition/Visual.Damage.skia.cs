@@ -18,7 +18,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage)
+	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip)
 	{
 		if (damage is null)
 		{
@@ -35,7 +35,7 @@ public partial class Visual
 			return;
 		}
 
-		if (TryGetPaintDamageRegion(out var bounds, out var regionPath))
+		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
 			{
@@ -62,7 +62,7 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(out SKRect bounds, out SKPath? regionPath)
+	private bool TryGetPaintDamageRegion(SKPath clip, out SKRect bounds, out SKPath? regionPath)
 	{
 		bounds = default;
 		regionPath = null;
@@ -74,7 +74,7 @@ public partial class Visual
 		try
 		{
 			clipPath.Rewind();
-			GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
+			clipPath.AddPath(clip);
 			if (clipPath.IsEmpty)
 			{
 				return false;
