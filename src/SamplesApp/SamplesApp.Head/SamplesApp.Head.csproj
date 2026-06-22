@@ -5,6 +5,15 @@
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
 
+		<!--
+		Set Skia early (before the source-generator props evaluate) so XAML conditional
+		namespaces like xmlns:skia="http://uno.ui/skia" are recognized. Uno.Sdk also sets
+		this, but in .targets (too late for Uno.UI.SourceGenerators.props, which computes the
+		Include/ExcludeXamlNamespaces lists during property evaluation). Not set for the
+		WinUI/WinAppSDK target, which renders natively.
+		-->
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">Skia</UnoRuntimeIdentifier>
+
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 
@@ -54,6 +63,7 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
 		<PackageReference Include="MSTest.TestFramework" />
@@ -83,4 +93,17 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
 	</ItemGroup>
+
+	<!-- App identity manifest read at runtime by SamplesApp -->
+	<ItemGroup>
+		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	</ItemGroup>
+
+	<!-- ============================ Shared content (samples, tests, benchmarks) ============================ -->
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 </Project>
