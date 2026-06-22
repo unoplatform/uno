@@ -63,9 +63,6 @@ internal abstract class FrameBufferRenderer
 			DisplayOrientations.PortraitFlipped => (-90, 0, bounds.Width),
 			_ => throw new ArgumentOutOfRangeException()
 		};
-		// No per-frame Clear: the composition surface retains the previous frame, and the clipped present
-		// (damage-region rendering) clears and repaints only the changed region. PresentToOutput copies the
-		// whole retained surface to the device each frame, so the rest stays correct.
 		_surface?.Canvas.Save();
 		_surface?.Canvas.Translate(transX, transY);
 		_surface?.Canvas.RotateDegrees(degrees);
@@ -91,8 +88,6 @@ internal abstract class FrameBufferRenderer
 
 	protected bool ShouldShowCursor => _cursorVisible ?? _receivedMouseEvent;
 
-	// Draws the mouse-cursor indicator onto the device output (NOT the retained composition surface), so the
-	// full per-frame copy/blit in PresentToOutput wipes the previous frame's cursor and there is no trail.
 	protected void DrawCursor(SKCanvas outputCanvas, int degrees, int transX, int transY)
 	{
 		if (!ShouldShowCursor)
@@ -114,7 +109,6 @@ internal abstract class FrameBufferRenderer
 
 	protected abstract SKSurface UpdateSize(int width, int height);
 
-	// Copies/blits the retained composition surface to the device for this frame, then draws the cursor on it.
 	protected abstract void PresentToOutput(int degrees, int transX, int transY);
 
 	public virtual void Dispose() { }

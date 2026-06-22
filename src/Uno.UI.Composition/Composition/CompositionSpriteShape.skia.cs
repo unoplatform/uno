@@ -80,10 +80,6 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
-		// Bounds of what this shape renders, in the owning ShapeVisual's coordinate space (before any ViewBox
-		// transform the visual applies on the canvas). Used to compute the damage region for damage-region
-		// rendering. Returns false when the (transformed) geometry hasn't been built yet, so the caller falls
-		// back to a safe bound.
 		internal bool TryGetRenderBounds(out SKRect bounds)
 		{
 			bounds = default;
@@ -98,8 +94,6 @@ namespace Microsoft.UI.Composition
 			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
 			{
 				var strokeBounds = strokeGeometry.Bounds;
-				// The stroke straddles the path by ~half the thickness; inflate by the full thickness so caps
-				// and joins are covered too — the damage must never under-cover the painted stroke.
 				strokeBounds.Inflate(StrokeThickness, StrokeThickness);
 				bounds = any ? SKRect.Union(bounds, strokeBounds) : strokeBounds;
 				any = true;
@@ -111,10 +105,6 @@ namespace Microsoft.UI.Composition
 		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
 		private static readonly SKPath _spareRenderPathStroke = new SKPath();
 
-		// Appends the actual rendered shape (its geometry, not just a bounding box) to <paramref name="dst"/>,
-		// in the owning visual's coordinate space (before any ViewBox transform). Used to compute a tight,
-		// non-rectangular damage region for damage-region rendering (e.g. an ellipse or rounded rectangle).
-		// Returns false when the (transformed) geometry hasn't been built yet.
 		internal bool TryGetRenderPath(SKPath dst)
 		{
 			var any = false;
@@ -127,8 +117,6 @@ namespace Microsoft.UI.Composition
 
 			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
 			{
-				// The stroke covers a band of width StrokeThickness centered on the geometry; outline it so the
-				// damage follows the stroked shape (not just the centerline).
 				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
 				_spareRenderPathStroke.Rewind();
 				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStroke);

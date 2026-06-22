@@ -47,12 +47,6 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
-	// The per-frame damage region. During Render() it is threaded through the PaintingSession so each visual
-	// adds the region it (re)paints as the walk proceeds (see Visual.ContributeDamageOnPaint). It also collects
-	// out-of-band damage that occurs with no active walk — a visual hidden or removed between frames isn't
-	// walked, so it reports its vacated region here (via ICompositionTarget.AddDamage). Snapshotted into the
-	// rendered frame and reset (rewound) each Render(). Accumulation uses DamageRegionExtensions (which keeps its
-	// own scratch path). Only touched on the UI thread.
 	private readonly SKPath _pendingDamage = new();
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
@@ -110,10 +104,6 @@ public partial class CompositionTarget
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			damage: _pendingDamage);
 
-		// The frame-rate counter is a present-time overlay (drawn in Draw, clipped to the damage region) that
-		// changes every frame, so its panel region must be damaged each frame or the clipped present would
-		// leave stale digits. It paints over composition content with a semi-transparent panel, so the content
-		// underneath must be repainted too — adding the bounds to the damage covers both.
 		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
 		{
 			_pendingDamage.UnionRect(fpsBounds);
@@ -126,25 +116,13 @@ public partial class CompositionTarget
 		{
 			previousFrame = _lastRenderedFrame;
 
-			// If a previously recorded frame was never presented (it's still here because Draw didn't borrow
-			// it), its damage region was never painted to the surface. Carry it forward into this frame's
-			// accumulator so those regions are still repainted; otherwise damage-region would drop the changes
-			// from the discarded frame, leaving stale pixels. (Draw empties a presented frame's path, so this
-			// no-ops for it.)
 			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
 			{
 				_pendingDamage.Union(carried);
 			}
 
-			// Clamp to the visual-tree bounds: nothing outside the frame is ever presented, and an unbounded
-			// contributor (a visual that falls back to an infinite clip) would otherwise pin the damage — and,
-			// with carry-forward, every later frame — to the infinite rect, repainting the whole window.
 			_pendingDamage.ClampTo(frameRect);
 
-			// Snapshot (owned copy) and reset the accumulator. The picture above is always the full tree;
-			// the snapshot path tells Draw() which region actually needs to be re-presented. An empty path
-			// means nothing changed; full repaints (resize/canvas recreation) are handled in Draw via
-			// canvasRecreated, not here.
 			damageSnapshot = new SKPath(_pendingDamage);
 			_pendingDamage.Rewind();
 
@@ -153,8 +131,6 @@ public partial class CompositionTarget
 
 		_fpsHelper.OnFrameRecorded();
 
-		// The previous frame is now replaced: free its picture. Its damage path is just left to the GC, which
-		// finalizes the SKPath's native handle.
 		if (previousFrame is { } prev)
 		{
 			UnoSkiaApi.sk_refcnt_safe_unref(prev.frame);
@@ -195,7 +171,6 @@ public partial class CompositionTarget
 
 	void ICompositionTarget.AddDamage(SKRect bounds)
 	{
-		// _pendingDamage is only touched on the UI thread (the same thread that runs Render).
 		NativeDispatcher.CheckThreadAccess();
 		_pendingDamage.UnionRect(bounds);
 	}
@@ -208,8 +183,6 @@ public partial class CompositionTarget
 
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
 	{
-		// Diagnostic only: tint + outline the region repainted this frame. Drawing the actual region (which
-		// may be disjoint / non-rectangular) shows the gaps between changed areas are not being repainted.
 		using var fill = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
 		using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
 		canvas.DrawPath(damage, fill);
@@ -259,8 +232,6 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			// A (re)created or resized canvas has undefined contents, so the whole surface must be
-			// repainted this frame regardless of the tracked damage region.
 			var canvasRecreated = canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
 			if (canvasRecreated)
 			{
@@ -276,35 +247,18 @@ public partial class CompositionTarget
 				}
 			}
 
-			// canvas is non-null here: it is either the (non-null) argument or freshly created by resizeFunc
-			// when canvasRecreated is true.
 			canvas!.Save();
 			if (rasterizationScale != 1)
 			{
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
 
-			// Damage-region: every renderer presents through a surface that retains the previous frame, so
-			// clip the present to the changed region — only that area is cleared and repainted; the rest is
-			// preserved from the previous frame. Output is identical to a full repaint. Falls back to full-frame
-			// on canvas recreation/resize. The clip is set in the post-scale (root/logical) coordinate space the
-			// picture uses. An empty damage path clips out everything (a re-present repaints nothing); a frame-
-			// covering path clips to the whole frame (a full repaint).
 			var damage = lastRenderedFrame.damage;
 			var useDamageRegion = !canvasRecreated;
 			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 
-			// The overlay tint is drawn into the retained surface, so a clipped present would let the marks
-			// accumulate and never clear. When the overlay is on we therefore present full-frame (the full
-			// redraw wipes the previous frame's tint) and only highlight the region that WOULD have been the
-			// damage clip. This is a diagnostic aid; it intentionally forgoes the clipped present so the marks
-			// flash on the current damage region instead of piling up.
 			if (useDamageRegion && !overlayEnabled)
 			{
-				// Clip to the changed region so the gaps between changed areas (and the parts outside a curved
-				// clip) are preserved from the previous frame. No antialiasing on the damage clip — the regions
-				// are pixel-snapped, and an AA clip would blend boundary pixels against the retained surface,
-				// diverging from a full repaint.
 				canvas.ClipPath(damage, antialias: false);
 			}
 
@@ -322,11 +276,6 @@ public partial class CompositionTarget
 
 			canvas.Restore();
 
-			// The frame has now been presented, so its damage region is consumed. ReturnFrame puts the frame
-			// back as _lastRenderedFrame (the platform may re-present the same frame), and the next Render would
-			// otherwise carry this already-presented damage forward — accumulating it forever under a continuous
-			// render loop and pinning the damage region to the whole frame. Empty the path so a re-present
-			// repaints nothing and the next Render's carry-forward stays clean.
 			lastRenderedFrame.damage.Rewind();
 			ReturnFrame(lastRenderedFrame);
 
@@ -449,8 +398,6 @@ public partial class CompositionTarget
 			}
 		}
 
-		// A newer frame is already in place: this one is discarded, so free its picture (its damage path is
-		// left to the GC).
 		if (supersededFrame)
 		{
 			UnoSkiaApi.sk_refcnt_safe_unref(frame.frame);

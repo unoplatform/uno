@@ -5,14 +5,6 @@
     xmlns:toolkit="using:Uno.UI.Toolkit"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Canvas>
-        <!--
-            A SELF-PAINTING shadow caster (it has its own semi-transparent Background, so CanPaint() is true)
-            whose child OVERFLOWS the caster and moves. The shadow silhouette is the union of the caster and its
-            descendants, so the overflowing child casts a shadow beyond the caster's own bounds, and moving the
-            child changes that shadow even though the caster paints its own content and never moves. Exercises
-            both the self-painting-caster case (vs the transparent ShadowChild sample) and the overflowing-child
-            case (the caster's shadow-damage bounds must include descendants, not just its own Size).
-        -->
         <Border
             x:Name="Caster"
             Canvas.Left="120"
@@ -22,7 +14,6 @@
             toolkit:UIElementExtensions.Elevation="24"
             Background="#40808080">
             <Canvas>
-                <!--  Top 120 + Height 120 = 240 overflows the 160-tall caster, so the child's lower half sits outside it.  -->
                 <Border
                     x:Name="Child"
                     Canvas.Left="0"

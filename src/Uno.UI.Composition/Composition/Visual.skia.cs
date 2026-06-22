@@ -35,14 +35,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
-	// Picture-collapsing folds a stable subtree into a cached picture that is no longer walked. It is
-	// compatible with damage-region rendering: a subtree only collapses after it has been fully static for
-	// several frames — any transform/content/structural change invalidates the cached picture (via
-	// InvalidateParentChildrenPicture, which SetMatrixDirty/InvalidatePaint/child mutations all call), so a
-	// collapsed subtree has no per-frame change and correctly contributes no damage. The one kind of content
-	// that changes without those flags is a visual that repaints every frame (a backdrop/acrylic brush); it
-	// invalidates its own ancestor chain each frame it paints (see PaintStep), so no ancestor collapses and it
-	// keeps being walked — painted and damaged — every frame.
 	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
@@ -143,9 +135,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
-	// How far (in local pixels) beyond its own bounds this visual's paint samples the surface (e.g. a backdrop
-	// blur). Damage-region rendering expands the damage region by this margin so the sampled backdrop stays
-	// fresh; otherwise the effect reads stale pixels where the surrounding content changed. 0 by default.
 	internal virtual float DamageRegionSamplingMargin => 0;
 
 	/// <returns>true if wasn't dirty</returns>
@@ -245,7 +234,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </remarks>
 	internal void InvalidatePaint()
 	{
-		// sk_refcnt_safe_unref is a no-op on IntPtr.Zero, so no need to guard the not-yet-recorded case.
 		UnoSkiaApi.sk_refcnt_safe_unref(_picture);
 		_picture = IntPtr.Zero;
 		_flags |= VisualFlags.PaintDirty;
@@ -314,17 +302,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
-		// When hidden, this visual (and its subtree) is no longer walked, so it can't contribute its
-		// vacated region to the dirty area; damage what it last painted so the content underneath repaints.
 		if (!value && CompositionTarget is { } target)
 		{
 			DamageLastRenderedRegion(target);
 		}
 	}
 
-	// Damages the region this visual last painted (for containers, recursively for the subtree), so that
-	// when it's removed from the tree or hidden — and therefore no longer walked — the content that was
-	// underneath it is repainted instead of leaving stale pixels. Bounds are already in root coordinates.
 	internal virtual void DamageLastRenderedRegion(ICompositionTarget target)
 	{
 		if (_hasLastRenderBounds)
@@ -467,11 +450,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
-				// This visual repaints every frame without going through the dirty flags, so it would freeze
-				// if an ancestor folded it into a collapsed picture (and its per-frame change wouldn't be
-				// damaged). Invalidate the ancestor chain so none of them collapse — which keeps this visual
-				// walked, painted and damaged every frame, and is what makes picture-collapsing compatible with
-				// both damage-region rendering and live backdrop/acrylic content.
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
@@ -489,8 +467,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
-					// end_recording always returns a valid (non-null) picture, and safe_unref is a no-op on
-					// IntPtr.Zero (the not-yet-recorded case), so the swap needs no null guard.
 					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 					UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
 					visual._picture = picture;
@@ -498,9 +474,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				if (visual._picture != IntPtr.Zero)
 				{
-					// Contribute damage on every draw (not only when the picture was re-recorded) so a visual
-					// that merely moved — e.g. content scrolling under a clip — damages both the region it now
-					// occupies and the one it vacated, even though its cached picture is reused.
 					visual.ContributeDamageOnPaint(contentChanged, session.Damage);
 					unsafe
 					{
@@ -545,9 +518,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					 || !applyChildOptimization
 					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
 			{
-				// Walk children individually. A subtree is collapsed only after it has been fully static for
-				// several frames, so the cached picture never freezes live content and a collapsed subtree
-				// contributes no per-frame damage (see EnablePictureCollapsingOptimization).
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
 					child.Render(in session, applyChildOptimization);

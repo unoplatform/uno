@@ -7,12 +7,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        A large static background with a single small element that updates on a timer.
-        Used by the damage-region harness to verify that only the small region is
-        repainted while the static background is preserved (and that output stays
-        identical to a full-frame repaint).
-    -->
     <Grid>
         <Border Background="{ThemeResource SystemControlBackgroundAccentBrush}" />
 

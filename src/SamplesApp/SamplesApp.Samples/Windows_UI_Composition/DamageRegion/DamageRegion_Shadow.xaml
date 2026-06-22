@@ -8,11 +8,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <!--
-        A small element that casts a drop shadow (via toolkit Elevation) and moves across a static
-        background on a timer. Verifies that the shadow extent is included in the damage region: both the
-        vacated and the new shadow regions must be repainted, with output identical to a full-frame repaint.
-    -->
     <Canvas>
         <Border
             x:Name="Mover"

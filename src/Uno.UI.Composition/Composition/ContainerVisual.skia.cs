@@ -55,9 +55,6 @@ public partial class ContainerVisual : Visual
 						compositionObject.StopAllAnimations();
 					}
 
-					// A removed visual is no longer walked, so it can't contribute its vacated region to the
-					// dirty area (e.g. a closed popup). Damage what its subtree last painted, via this (still
-					// attached) parent's composition target, so the content underneath is repainted.
 					if (target is not null && i is Visual removedVisual)
 					{
 						removedVisual.DamageLastRenderedRegion(target);
