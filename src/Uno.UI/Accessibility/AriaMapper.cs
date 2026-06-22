@@ -82,6 +82,21 @@ public static class AriaMapper
 
 		var controlType = peer.GetAutomationControlType();
 
+		// A column header (e.g. DataGridColumnHeaderAutomationPeer) reports HeaderItem. ARIA has no
+		// "headeritem" role, so without this it fell through to a role-less generic <div>.
+		if (controlType is AutomationControlType.HeaderItem)
+		{
+			return SemanticElementType.ColumnHeader;
+		}
+
+		// A grid cell (e.g. DataGridCellAutomationPeer) reports Custom, which is too generic to map by
+		// type. Identify it by the GridItem pattern instead so it becomes a role="gridcell" carrying
+		// aria-rowindex/aria-colindex. Grid/row/header peers don't implement GridItem, so this is safe.
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider)
+		{
+			return SemanticElementType.GridCell;
+		}
+
 		return controlType switch
 		{
 			AutomationControlType.Button => GetButtonType(peer),
