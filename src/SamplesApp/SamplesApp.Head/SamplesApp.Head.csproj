@@ -1,6 +1,7 @@
 <Project Sdk="Uno.Sdk.Private">
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-desktop</TargetFrameworks>
+		<!-- Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working -->
+		<TargetFrameworks>net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
@@ -61,11 +62,11 @@
 
 	<!-- Non-framework packages shared across Skia TFMs -->
 	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Uno.Resizetizer" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="System.CommandLine" />
@@ -76,8 +77,6 @@
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-		<!-- TODO: Use version 8 when compiling against .NET 8? (carried from SamplesApp.Skia) -->
-		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
 			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
 			<Version>5.56.0</Version>
@@ -88,19 +87,96 @@
 
 	<!-- Desktop-specific packages -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
-		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
+		<!-- WMI / system info (desktop-only; Microsoft.Windows.Compatibility provides it on wasm) -->
+		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
+
+	<!-- ============================ browserwasm (WebAssembly + Skia) ============================ -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<!-- Required for net9+ workloads -->
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
+		<!-- To remove when all linker warnings have been fixed -->
+		<NoWarn>$(NoWarn);IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057;IL2045;IL2111;IL2062;IL2104;IL2080;IL2065;IL2090;IL2007;IL2122</NoWarn>
+		<!-- IL linking disabled in Debug; see docs for Release -->
+		<PublishTrimmed>false</PublishTrimmed>
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
+		<InvariantGlobalization>false</InvariantGlobalization>
+		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
+		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+		<WasmBuildNative>true</WasmBuildNative>
+		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
+		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
+		<Content Include="..\LinkedFiles\WebContent\**\*.*">
+			<Link>WebContent\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<WasmShellExtraFilesToDeploy Include="..\LinkedFiles\WebContent\**\*.*">
+			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+		</WasmShellExtraFilesToDeploy>
+	</ItemGroup>
+
+	<!-- https://github.com/dotnet/runtime/issues/109289 — reorder SkiaSharp native files for emcc linking -->
+	<Target Name="Issue109289_Workaround"
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'"
+	        AfterTargets="_BrowserWasmWriteRspForLinking">
+		<ItemGroup>
+			<_WasmLinkStepArgs Remove="@(_EmccLinkStepArgs)" />
+			<_EmccLinkStepArgs Remove="&quot;%(_WasmNativeFileForLinking.Identity)&quot;" />
+			<_WasmLinkDependencies Remove="@(_WasmNativeFileForLinking)" />
+
+			<_SkiaSharpToReorder Include="@(_WasmNativeFileForLinking)" Condition="$([System.String]::Copy('%(FullPath)').Contains('SkiaSharp'))" />
+			<_WasmNativeFileForLinking Remove="@(_SkiaSharpToReorder)" />
+			<_WasmNativeFileForLinking Include="@(_SkiaSharpToReorder)" />
+
+			<_EmccLinkStepArgs Include="&quot;%(_WasmNativeFileForLinking.Identity)&quot;" />
+			<_WasmLinkDependencies Include="@(_WasmNativeFileForLinking)" />
+			<_WasmLinkStepArgs Include="@(_EmccLinkStepArgs)" />
+		</ItemGroup>
+	</Target>
 
 	<!-- App identity manifest read at runtime by SamplesApp -->
 	<ItemGroup>
 		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 
-	<!-- App icon + splash (Resizetizer generates per-platform assets) -->
-	<ItemGroup>
+	<!--
+	App icon + splash via Resizetizer. Excluded on browserwasm to match the previous WASM head
+	(which shipped no Resizetizer/PWA icons); enabling it there trips Uno.Wasm.Bootstrap's PWA
+	content generation. PWA icons on wasm are a follow-up.
+	-->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
+		<PackageReference Include="Uno.Resizetizer" />
 		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
 	</ItemGroup>
