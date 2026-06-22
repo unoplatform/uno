@@ -2,18 +2,22 @@
 	<PropertyGroup>
 		<!--
 		Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working.
-		The WinUI/WinAppSDK target ($(NetCurrentWinAppSDK)) is wired below but temporarily
-		disabled: Uno.UI.Toolkit.Windows (source build) embeds Uno.UI/Uno.Core extensions
-		(DependencyObjectExtensions, EnumerableExtensions, AsyncLock, …) that collide with the
-		head's referenced extension packages + linked files (CS0121/CS0433). Re-enable by adding
-		$(NetCurrentWinAppSDK) here once that duplicate-type collision is resolved. Build the
-		windows TFM with MSBuild.exe (the WinUI XAML compiler + PRI tasks don't load under dotnet build).
+		The windows duplicate-internal collision is resolved by naming the WinUI assembly
+		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
 		-->
-		<TargetFrameworks>net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
+		<!--
+		On WinUI the assembly is named like the old SamplesApp.Windows head, which is deliberately
+		NOT in the Uno.UI.Toolkit / Uno.Foundation InternalsVisibleTo lists. That keeps Toolkit.Windows's
+		self-linked *internal* helpers (AsyncLock, EnumerableExtensions, DependencyObjectExtensions)
+		invisible, so the head uses the public Uno.Core.Extensions package APIs instead and there's no
+		duplicate-type collision. (On Skia the "SamplesApp" name keeps the IVT the shared code relies on.)
+		-->
+		<AssemblyName Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
 		Set Skia early (before the source-generator props evaluate) so XAML conditional
@@ -88,12 +92,9 @@
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj" />
-		<!--
-		Unlike the old SamplesApp.Windows head (assembly "SamplesApp.Windows", no IVT), this head's
-		assembly is "SamplesApp" — which Uno.UI.Toolkit / Uno.Foundation grant InternalsVisibleTo.
-		So Toolkit.Windows's self-linked internal helpers (DependencyObjectExtensions, EnumerableExtensions,
-		AsyncLock) are already visible; do NOT re-link/re-reference them here or they collide (CS0433/CS0121).
-		-->
+		<!-- No Uno.UI on WinUI: self-link the one Uno.UI extension the samples use that the
+		     Uno.Core.Extensions packages don't provide (matches the old SamplesApp.Windows head). -->
+		<Compile Include="..\..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
 	</ItemGroup>
 
 	<!-- ==================== Packages ==================== -->
@@ -304,7 +305,8 @@
 	</Target>
 
 	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
-	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+	<!-- Uno's XAML/DP source generators only on Skia; WinUI uses the real WinUI XAML compiler. -->
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(UnoRuntimeIdentifier)' == 'Skia'" />
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
 	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
