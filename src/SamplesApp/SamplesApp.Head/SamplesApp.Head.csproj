@@ -5,6 +5,15 @@
 		The windows duplicate-internal collision is resolved by naming the WinUI assembly
 		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
 		-->
+		<!--
+		android wired below but temporarily NOT enabled: Skia-on-Android compiles the app code as
+		*generic Skia* (UnoRuntimeIdentifier=Skia, IsAndroid effectively false, __SKIA__/.skia.cs, NO
+		__ANDROID__) with only a thin native android host — driven by the repo's RuntimeAssetsSelectorTask.
+		This head currently compiles android as native (IsAndroid=true -> __ANDROID__ -> samples like
+		Button_UseUWPDefaultStyles demand native types such as BindableButtonEx that aren't in Uno.UI.Skia).
+		Re-add net10.0-android here once that Skia-on-mobile compilation model is wired. ios/tvos use the
+		same model and additionally require macOS to build.
+		-->
 		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
@@ -20,13 +29,18 @@
 		<AssemblyName Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Set Skia early (before the source-generator props evaluate) so XAML conditional
-		namespaces like xmlns:skia="http://uno.ui/skia" are recognized. Uno.Sdk also sets
-		this, but in .targets (too late for Uno.UI.SourceGenerators.props, which computes the
-		Include/ExcludeXamlNamespaces lists during property evaluation). Not set for the
-		WinUI/WinAppSDK target, which renders natively. Doubles as the Skia-vs-WinUI gate below.
+		Set Skia early (before the source-generator props evaluate) so XAML conditional namespaces
+		like xmlns:skia="http://uno.ui/skia" are recognized and .skia.cs files are included. Uno.Sdk
+		also sets it, but in .targets (too late for Uno.UI.SourceGenerators.props / Uno.CrossTargetting).
+		ONLY for desktop + browserwasm (generic netX Skia, which use .skia.cs). On android/ios/tvos it
+		must stay empty here so Uno.CrossTargetting picks the native .Android.cs/.iOS.cs/.UIKit.cs file
+		variants (Skia rendering still comes from the Runtime.Skia.* runtime, set later) — matching the
+		old netcoremobile head. On WinUI it stays empty (native rendering).
 		-->
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">Skia</UnoRuntimeIdentifier>
+		<_IsDesktopOrWasm Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">true</_IsDesktopOrWasm>
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
+		<_IsSkiaTfm Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">true</_IsSkiaTfm>
 
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
@@ -45,7 +59,7 @@
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
 
 	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(UnoRuntimeIdentifier)' == 'Skia'">
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
@@ -56,7 +70,6 @@
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
@@ -75,6 +88,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 	</ItemGroup>
 
 	<!-- browserwasm framework variants + runtime -->
@@ -83,6 +97,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
@@ -122,7 +137,7 @@
 	</ItemGroup>
 
 	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->
-	<ItemGroup Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
@@ -209,6 +224,57 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- ==================== android (Skia) ==================== -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(TargetFramework)' == 'net10.0-android'">
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
+		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+		<!-- We need all the intermediate assemblies for the runtime tests -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+		<!-- Temporarily disabled due to uno-private #647 -->
+		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
+		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+		<PublishAot Condition=" '$(SkiaPublishAot)' != '' ">$(SkiaPublishAot)</PublishAot>
+		<NoWarn>$(NoWarn);NU1703;SYSLIB1045;IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(Configuration)'=='Release'">
+		<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidAsset Include="Platforms\Android\Assets\sound.mp3" Link="Assets\sound.mp3" />
+		<AndroidAsset Include="Platforms\Android\Assets\Lottie\**\*.json" Link="Assets\Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
+		<AndroidEnvironment Include="Platforms\Android\environment.conf" />
+		<TrimmerRootDescriptor Include="Platforms\Android\LinkerConfig.xml" />
+	</ItemGroup>
+
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
+
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -256,7 +322,7 @@
 	previous WASM head (enabling it trips Uno.Wasm.Bootstrap's PWA generation) and on windows,
 	which uses the MSIX logo assets above. PWA icons on wasm are a follow-up.
 	-->
-	<ItemGroup Condition="'$(UnoRuntimeIdentifier)' == 'Skia' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
 		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
@@ -276,7 +342,7 @@
 	</ItemGroup>
 
 	<!-- Fail the publish if the runtime-test fonts didn't make it into the output (Skia only) -->
-	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
 			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
@@ -305,8 +371,8 @@
 	</Target>
 
 	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
-	<!-- Uno's XAML/DP source generators only on Skia; WinUI uses the real WinUI XAML compiler. -->
-	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(UnoRuntimeIdentifier)' == 'Skia'" />
+	<!-- Uno's XAML/DP source generators on all Skia TFMs; WinUI uses the real WinUI XAML compiler. -->
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(_IsSkiaTfm)' == 'true'" />
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
 	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
