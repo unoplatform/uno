@@ -234,8 +234,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </remarks>
 	internal void InvalidatePaint()
 	{
-		UnoSkiaApi.sk_refcnt_safe_unref(_picture);
-		_picture = IntPtr.Zero;
+		if (_picture != IntPtr.Zero)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(_picture);
+			_picture = IntPtr.Zero;
+		}
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 	}
