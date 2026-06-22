@@ -1,8 +1,17 @@
 <Project Sdk="Uno.Sdk.Private">
 	<PropertyGroup>
-		<!-- Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working -->
+		<!--
+		Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working.
+		The WinUI/WinAppSDK target ($(NetCurrentWinAppSDK)) is wired below but temporarily
+		disabled: Uno.UI.Toolkit.Windows (source build) embeds Uno.UI/Uno.Core extensions
+		(DependencyObjectExtensions, EnumerableExtensions, AsyncLock, …) that collide with the
+		head's referenced extension packages + linked files (CS0121/CS0433). Re-enable by adding
+		$(NetCurrentWinAppSDK) here once that duplicate-type collision is resolved. Build the
+		windows TFM with MSBuild.exe (the WinUI XAML compiler + PRI tasks don't load under dotnet build).
+		-->
 		<TargetFrameworks>net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
+		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
 
@@ -11,7 +20,7 @@
 		namespaces like xmlns:skia="http://uno.ui/skia" are recognized. Uno.Sdk also sets
 		this, but in .targets (too late for Uno.UI.SourceGenerators.props, which computes the
 		Include/ExcludeXamlNamespaces lists during property evaluation). Not set for the
-		WinUI/WinAppSDK target, which renders natively.
+		WinUI/WinAppSDK target, which renders natively. Doubles as the Skia-vs-WinUI gate below.
 		-->
 		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">Skia</UnoRuntimeIdentifier>
 
@@ -26,9 +35,13 @@
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
-	<!-- ============================ Source mode (default) ============================ -->
-	<!-- Cross-Skia framework + AddIns shared by every Skia TFM -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">
+	<!-- Honor UnoTargetFrameworkOverride (CI + local single-TFM builds), as the other heads do -->
+	<Import Project="..\..\targetframework-override.props" />
+
+	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
+
+	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(UnoRuntimeIdentifier)' == 'Skia'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
@@ -45,7 +58,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
-	<!-- Desktop-specific framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
+	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
 	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
@@ -60,13 +73,30 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
 	</ItemGroup>
 
-	<!-- Non-framework packages shared across Skia TFMs -->
+	<!-- browserwasm framework variants + runtime -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
+	</ItemGroup>
+
+	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj" />
+		<Compile Include="..\..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
+	</ItemGroup>
+
+	<!-- ==================== Packages ==================== -->
+
+	<!-- Platform-agnostic packages (all TFMs incl. windows) -->
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
-		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
-		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="System.CommandLine" />
@@ -85,6 +115,13 @@
 		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
 	</ItemGroup>
 
+	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->
+	<ItemGroup Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
+	</ItemGroup>
+
 	<!-- Desktop-specific packages -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
@@ -94,27 +131,33 @@
 		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
 
-	<!-- ============================ browserwasm (WebAssembly + Skia) ============================ -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
-	</ItemGroup>
-
+	<!-- browserwasm packages -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" />
 	</ItemGroup>
 
+	<!-- Windows / WinAppSDK packages (real WinUI) -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.3.1" PrivateAssets="all" />
+		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
+		<!-- Provided transitively via Uno.UI on Skia; explicit on native WinUI. -->
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+	</ItemGroup>
+
+	<!-- ==================== WASM build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 		<!-- Required for net9+ workloads -->
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
 		<!-- To remove when all linker warnings have been fixed -->
 		<NoWarn>$(NoWarn);IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057;IL2045;IL2111;IL2062;IL2104;IL2080;IL2065;IL2090;IL2007;IL2122</NoWarn>
-		<!-- IL linking disabled in Debug; see docs for Release -->
 		<PublishTrimmed>false</PublishTrimmed>
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
@@ -125,14 +168,12 @@
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
 	</PropertyGroup>
-
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
-
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
@@ -145,7 +186,6 @@
 			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
-
 	<!-- https://github.com/dotnet/runtime/issues/109289 — reorder SkiaSharp native files for emcc linking -->
 	<Target Name="Issue109289_Workaround"
 	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'"
@@ -154,34 +194,69 @@
 			<_WasmLinkStepArgs Remove="@(_EmccLinkStepArgs)" />
 			<_EmccLinkStepArgs Remove="&quot;%(_WasmNativeFileForLinking.Identity)&quot;" />
 			<_WasmLinkDependencies Remove="@(_WasmNativeFileForLinking)" />
-
 			<_SkiaSharpToReorder Include="@(_WasmNativeFileForLinking)" Condition="$([System.String]::Copy('%(FullPath)').Contains('SkiaSharp'))" />
 			<_WasmNativeFileForLinking Remove="@(_SkiaSharpToReorder)" />
 			<_WasmNativeFileForLinking Include="@(_SkiaSharpToReorder)" />
-
 			<_EmccLinkStepArgs Include="&quot;%(_WasmNativeFileForLinking.Identity)&quot;" />
 			<_WasmLinkDependencies Include="@(_WasmNativeFileForLinking)" />
 			<_WasmLinkStepArgs Include="@(_EmccLinkStepArgs)" />
 		</ItemGroup>
 	</Target>
 
-	<!-- App identity manifest read at runtime by SamplesApp -->
-	<ItemGroup>
+	<!-- ==================== Windows build configuration ==================== -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<UseWinUI>true</UseWinUI>
+		<EnableMsixTooling>true</EnableMsixTooling>
+		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+		<Platforms>x86;x64;ARM64</Platforms>
+		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
+		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
+		<!-- MSIX signing is configured via CI -->
+		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>false</AppxAutoIncrementPackageRevision>
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+		<ApplicationManifest>Platforms\Windows\app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<AppxManifest Include="Platforms\Windows\Package.appxmanifest">
+			<SubType>Designer</SubType>
+		</AppxManifest>
+		<Content Include="Platforms\Windows\Assets\*.png" Link="Assets\%(Filename)%(Extension)" />
+		<Manifest Include="$(ApplicationManifest)" />
+		<Content Include="..\LinkedFiles\WebContent\index.html" Link="WebContent\index.html" />
+		<Content Include="..\LinkedFiles\WebContent\css\site.css" Link="WebContent\css\site.css" />
+		<Content Include="..\LinkedFiles\WebContent\js\site.js" Link="WebContent\js\site.js" />
+	</ItemGroup>
+	<!-- Activate the MSIX single-project tooling even before the WindowsAppSDK package is restored -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<ProjectCapability Include="Msix" />
+	</ItemGroup>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+	</PropertyGroup>
+
+	<!-- ==================== App identity / icons / manifests ==================== -->
+
+	<!-- App identity manifest read at runtime by SamplesApp on Skia (windows uses the real MSIX manifest) -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
 		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 
 	<!--
-	App icon + splash via Resizetizer. Excluded on browserwasm to match the previous WASM head
-	(which shipped no Resizetizer/PWA icons); enabling it there trips Uno.Wasm.Bootstrap's PWA
-	content generation. PWA icons on wasm are a follow-up.
+	App icon + splash via Resizetizer (desktop + mobile). Excluded on browserwasm to match the
+	previous WASM head (enabling it trips Uno.Wasm.Bootstrap's PWA generation) and on windows,
+	which uses the MSIX logo assets above. PWA icons on wasm are a follow-up.
 	-->
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
+	<ItemGroup Condition="'$(UnoRuntimeIdentifier)' == 'Skia' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
 		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
 	</ItemGroup>
 
-	<!-- Win32 DPI-awareness manifest (desktop only) -->
+	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
@@ -194,8 +269,8 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<!-- Fail the publish if the runtime-test fonts didn't make it into the output -->
-	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
+	<!-- Fail the publish if the runtime-test fonts didn't make it into the output (Skia only) -->
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
 			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
@@ -223,7 +298,7 @@
 		<Message Importance="high" Text="Created macOS app bundle: $(_AppBundleDir)" />
 	</Target>
 
-	<!-- ============================ Shared content (samples, tests, benchmarks) ============================ -->
+	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
 	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
