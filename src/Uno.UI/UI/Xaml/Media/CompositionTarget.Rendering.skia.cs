@@ -251,6 +251,7 @@ public partial class CompositionTarget
 
 			canvas.Restore();
 
+			// This frame's damage is now presented; clear it so Render's carry-forward doesn't re-damage it next frame.
 			lastRenderedFrame.damage.Rewind();
 			ReturnFrame(lastRenderedFrame);
 
@@ -276,9 +277,9 @@ public partial class CompositionTarget
 		}
 	}
 
-	private void ReturnFrame((IntPtr frame, SKPath nativeElementClipPath, SKPath damage) frame)
+	private void ReturnFrame((IntPtr picture, SKPath path, SKPath damage) frame)
 	{
-		var supersededFrame = false;
+		var pictureToDelete = IntPtr.Zero;
 
 		lock (_frameGate)
 		{
@@ -289,13 +290,14 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				supersededFrame = true;
+				pictureToDelete = frame.picture;
 			}
 		}
 
-		if (supersededFrame)
+		// Delete it then
+		if (pictureToDelete != IntPtr.Zero)
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(frame.frame);
+			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
 		}
 	}
 
