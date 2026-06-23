@@ -76,7 +76,9 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	// SkiaWasm excluded: ScrollIntoView/virtualization realization stalls under the headless xvfb browser (flaky). #23524
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 	public async Task When_Virtualized_Item_In_Light_Island_Under_Dark_Ambient_Resolves_Light()
 	{
 		// S1. A ListView item realized (initially and after ScrollIntoView) inside a
@@ -197,7 +199,9 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	// SkiaWasm excluded: ScrollIntoView/virtualization realization stalls under the headless xvfb browser (flaky). #23524
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 	public async Task When_Nested_Template_Cell_Scrolled_Into_View_Resolves_Light()
 	{
 		// S3. A cell materialized on scroll — through a nested ContentControl template, like a data

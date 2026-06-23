@@ -281,7 +281,9 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	// SkiaWasm excluded: rapid-click month scroll animations re-target/rewind under the headless xvfb browser (flaky). #23524
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 	public async Task When_NextMonth_InQuickSequence()
 	{
 		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };

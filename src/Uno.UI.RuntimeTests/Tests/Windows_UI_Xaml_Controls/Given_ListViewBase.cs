@@ -4652,6 +4652,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// SkiaWasm excluded: ScrollIntoView scroll/realization stalls under the headless xvfb browser (flaky). #23524
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("This test is for managed ListViewBase.")]
 #endif

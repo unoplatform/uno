@@ -20,7 +20,9 @@ public partial class Given_PipsPager
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+	// SkiaWasm excluded: render-loop-driven BringIntoView scroll stalls under the headless xvfb browser (flaky). #23524
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 	public async Task When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized()
 	{
 		// Repro for the trailing-pips-disappear bug: with NumberOfPages > MaxVisiblePips,
