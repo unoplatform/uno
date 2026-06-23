@@ -48,6 +48,9 @@ internal readonly struct AccentColorPalette
 	/// <remarks>
 	/// Light shades are blended toward white, dark shades toward black.
 	/// Factors were reverse-engineered from Windows default blue (#0078D7) and its palette.
+	/// This is a linear-RGB approximation and diverges from the Windows HSL-based palette
+	/// (most visibly for warm hues). It is only used where the OS exposes a single accent color
+	/// (macOS, Android); the Win32 host reads the real OS palette from the registry.
 	/// </remarks>
 	public static AccentColorPalette FromAccentColor(Color accent)
 	{
@@ -64,6 +67,7 @@ internal readonly struct AccentColorPalette
 
 	private static Color Lerp(Color from, Color to, double factor)
 	{
+		// Accent shades are always fully opaque, so the output alpha is intentionally pinned to 0xFF.
 		return Color.FromArgb(
 			0xFF,
 			(byte)(from.R + (to.R - from.R) * factor),
