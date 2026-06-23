@@ -31,6 +31,12 @@
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
 
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
+
 			<Color x:Key="SystemColorButtonFaceColor">#FFF0F0F0</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FF000000</Color>
 			<Color x:Key="SystemColorGrayTextColor">#FF6D6D6D</Color>
@@ -1336,6 +1342,12 @@
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
 
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
+
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
 			<Color x:Key="SystemColorGrayTextColor">#FF3FF23F</Color>
@@ -2628,6 +2640,12 @@
 			<Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
