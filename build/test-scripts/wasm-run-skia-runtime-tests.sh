@@ -66,13 +66,14 @@ while [ $TRY_COUNT -lt 5 ]; do
     killall -9 Xvfb || true
     killall -9 chrome_crashpad_handler || true
     rm -fr /tmp/.X99-lock || true
-    # The window runs under xvfb with no window manager, so Chromium's occlusion detection treats it
-    # as background and throttles requestAnimationFrame/timers to ~1Hz. That stalls render-loop-driven
-    # scroll/BringIntoView/virtualization animations, making the runtime tests that wait on them flaky
-    # (they time out before the animation settles). Disable background throttling so these complete.
-    xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox \
-        --disable-background-timer-throttling --disable-renderer-backgrounding \
-        --disable-backgrounding-occluded-windows "${RUNTIME_TESTS_URL}" &
+    # Under xvfb the browser needs a real screen (size + 24-bit depth) AND a window manager, otherwise
+    # the window is treated as background/zero-size and Chromium throttles requestAnimationFrame/timers
+    # to ~1Hz, stalling render-loop-driven scroll/BringIntoView/virtualization animations -> the runtime
+    # tests that wait on them time out (flaky WASM-Skia). Mirror linux-skia-runtime-tests.sh: define a
+    # screen, run a window manager (fluxbox), keep a visible window size, and disable bg throttling.
+    # (fluxbox degrades gracefully: if it is unavailable the backgrounded launch is a no-op and chrome
+    # still runs.) The URL is passed as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
+    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
