@@ -485,7 +485,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip);
-				visual.CacheOwnContentPath(visual.Paint(session));
+				visual._ownContentPath = visual.Paint(session);
 			}
 			else
 			{
@@ -497,7 +497,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual.CacheOwnContentPath(visual.Paint(in recorderSession));
+					visual._ownContentPath = visual.Paint(in recorderSession);
 
 					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 					UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);

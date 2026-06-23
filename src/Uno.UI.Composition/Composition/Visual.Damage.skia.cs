@@ -16,30 +16,13 @@ public partial class Visual
 
 	private bool _subtreeChangedThisFrame;
 
-	// The local-space geometry this visual paints, captured by Paint when the picture is (re)recorded and
+	// The local-space geometry this visual paints, returned by Paint when the picture is (re)recorded and
 	// reused for the per-frame damage region instead of being rebuilt every frame. A moved-but-unchanged
-	// visual keeps the cached path (its picture isn't re-recorded, so neither is this). Empty/false means the
-	// visual paints nothing analytically describable, and damage falls back to its bounds.
+	// visual keeps it (its picture isn't re-recorded, so neither is this). Null means the visual paints
+	// nothing analytically describable, and damage falls back to its bounds.
 	private SKPath? _ownContentPath;
-	private bool _hasOwnContentPath;
 
 	internal virtual float DamageRegionSamplingMargin => 0;
-
-	// Caches the geometry a visual's Paint returned (local coordinates), so the per-frame damage region reuses
-	// it instead of rebuilding it. Null means the visual paints nothing analytically describable.
-	private void CacheOwnContentPath(SKPath? localContentPath)
-	{
-		if (localContentPath is null || localContentPath.IsEmpty)
-		{
-			_hasOwnContentPath = false;
-			return;
-		}
-
-		_ownContentPath ??= new SKPath();
-		_ownContentPath.Rewind();
-		_ownContentPath.AddPath(localContentPath);
-		_hasOwnContentPath = true;
-	}
 
 	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip)
 	{
@@ -106,10 +89,10 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _hasOwnContentPath)
+			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
 				contentPath.Rewind();
-				contentPath.AddPath(_ownContentPath!);
+				contentPath.AddPath(ownContent);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
 				OutsetForAntialiasing(contentPath);
 				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);

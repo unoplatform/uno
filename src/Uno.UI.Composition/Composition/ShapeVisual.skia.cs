@@ -117,9 +117,6 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	[ThreadStatic]
-	private static SKPath? _ownContentPathScratch;
-
 	private SKPath? BuildOwnContentPath()
 	{
 		if (_shapes is not { Count: > 0 } shapes)
@@ -127,8 +124,7 @@ public partial class ShapeVisual
 			return null;
 		}
 
-		var dst = _ownContentPathScratch ??= new SKPath();
-		dst.Rewind();
+		var dst = new SKPath();
 
 		var any = false;
 		for (var i = 0; i < shapes.Count; i++)
