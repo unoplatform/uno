@@ -397,11 +397,11 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		var any = false;
 		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
 		{
-			any |= bg.TryGetRenderPath(dst);
+			any |= bg.GetRenderPath(dst);
 		}
 		if (_borderShape is { } border && (BorderBrush?.CanPaint() ?? false))
 		{
-			any |= border.TryGetRenderPath(dst);
+			any |= border.GetRenderPath(dst);
 		}
 		return any ? dst : null;
 	}
