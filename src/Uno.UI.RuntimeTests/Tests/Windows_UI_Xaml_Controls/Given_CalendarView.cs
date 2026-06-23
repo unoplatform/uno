@@ -272,9 +272,12 @@ public class Given_CalendarView
 
 		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
 
-		await TestServices.WindowHelper.WaitForIdle();
-
-		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
+		// Switching to Year mode updates the header asynchronously; poll for it rather than asserting
+		// after a single WaitForIdle, which raced on slower runtimes (e.g. WASM).
+		await UITestHelper.WaitFor(
+			() => calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal),
+			timeoutMS: 3000,
+			message: $"Year-mode header should end with {now.Year}, was '{calendarView.TemplateSettings.HeaderText}'");
 	}
 
 	[TestMethod]

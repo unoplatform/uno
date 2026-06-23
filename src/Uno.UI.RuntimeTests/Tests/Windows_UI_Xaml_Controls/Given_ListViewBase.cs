@@ -4655,10 +4655,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(lv);
 
 			lv.ScrollIntoView(source[50]);
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			var sv = lv.FindFirstDescendant<ScrollViewer>();
-			var container = (ContentControl)lv.ContainerFromIndex(50);
+			// Wait for the scrolled-to container to realize; on slower runtimes (e.g. WASM) it was not
+			// yet realized after a single WaitForIdle, so the cast/dereference below threw an NRE.
+			var container = await WindowHelper.WaitForNonNull(() => lv.ContainerFromIndex(50) as ContentControl, timeoutMS: 5000);
 
 			var offset = container.TransformToVisual(lv).TransformPoint(default);
 			var (offsetStart, vpExtent) = (offset.Y, sv.ViewportHeight);
