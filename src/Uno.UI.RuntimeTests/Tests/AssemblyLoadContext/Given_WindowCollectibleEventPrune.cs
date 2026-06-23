@@ -21,6 +21,11 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
+// The prune runs identically on every Skia target, but the assertion depends on GC reclaiming the
+// now-unreferenced collectible target within a bounded GC.Collect() loop. The WASM and UIKit (Mono)
+// runtimes have non-deterministic/conservative GC and don't reliably reclaim it, so the assertion is
+// unreliable there. Coverage stays on CoreCLR-backed Skia (Desktop/Android) + WinAppSDK.
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 public class Given_WindowCollectibleEventPrune
 {
 	[TestMethod]
