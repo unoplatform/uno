@@ -56,7 +56,9 @@ internal static class AccentColorResourceUpdater
 		// Color counterpart that WinUI injects alongside the accent brush.
 		dictionary["SystemColorControlAccentColor"] = palette.Accent;
 
-		// Rebuild the accent brush
+		// Match WinUI's UpdateColorAndBrushResources: replace the brush each update (WinUI clears and
+		// recreates the system brushes). {ThemeResource} users re-resolve via OnResourcesChanged; like
+		// WinUI, {StaticResource} users keep the previous brush.
 		dictionary["SystemColorControlAccentBrush"] = new SolidColorBrush(palette.Accent);
 
 		// SystemListAccent colors (accent with varying alpha)
@@ -65,13 +67,21 @@ internal static class AccentColorResourceUpdater
 		dictionary["SystemListAccentHighColor"] = Color.FromArgb(0xB2, palette.Accent.R, palette.Accent.G, palette.Accent.B);
 	}
 
+	private static ResourceDictionary? _accentDictionary;
+
 	/// <summary>
 	/// Finds the merged dictionary in MasterDictionary that contains SystemAccentColor
 	/// in its ThemeDictionaries, following the same pattern as FindSymbolFontFamilyDictionary
-	/// in ResourceResolver.cs.
+	/// in ResourceResolver.cs. The result is cached since the dictionary structure is stable
+	/// after initialization.
 	/// </summary>
 	private static ResourceDictionary? FindAccentColorDictionary()
 	{
+		if (_accentDictionary is not null)
+		{
+			return _accentDictionary;
+		}
+
 		var masterDictionary =
 #if __NETSTD_REFERENCE__
 			(ResourceDictionary?)null;
@@ -93,6 +103,7 @@ internal static class AccentColorResourceUpdater
 				if (theme.Value is ResourceDictionary themeDictionary &&
 					themeDictionary.ContainsKey("SystemAccentColor"))
 				{
+					_accentDictionary = merged;
 					return merged;
 				}
 			}
