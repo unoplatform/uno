@@ -135,7 +135,7 @@ public partial class ShapeVisual
 		{
 			if (shapes[i] is CompositionSpriteShape sprite)
 			{
-				any |= sprite.TryGetRenderPath(dst);
+				any |= sprite.GetRenderPath(dst);
 			}
 			else
 			{
