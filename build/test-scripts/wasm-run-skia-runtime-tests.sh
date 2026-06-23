@@ -66,7 +66,13 @@ while [ $TRY_COUNT -lt 5 ]; do
     killall -9 Xvfb || true
     killall -9 chrome_crashpad_handler || true
     rm -fr /tmp/.X99-lock || true
-    xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+    # The window runs under xvfb with no window manager, so Chromium's occlusion detection treats it
+    # as background and throttles requestAnimationFrame/timers to ~1Hz. That stalls render-loop-driven
+    # scroll/BringIntoView/virtualization animations, making the runtime tests that wait on them flaky
+    # (they time out before the animation settles). Disable background throttling so these complete.
+    xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox \
+        --disable-background-timer-throttling --disable-renderer-backgrounding \
+        --disable-backgrounding-occluded-windows "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
