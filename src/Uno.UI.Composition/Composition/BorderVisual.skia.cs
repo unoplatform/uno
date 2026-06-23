@@ -123,7 +123,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		}
 	}
 
-	internal override void Paint(in PaintingSession session)
+	internal override SKPath? Paint(in PaintingSession session)
 	{
 		UpdatePathsAndCornerClip();
 
@@ -141,7 +141,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		_borderShape?.Render(in session);
 
-		CacheOwnContentPath(BuildOwnContentPath());
+		return BuildOwnContentPath();
 	}
 
 	internal override bool GetPrePaintingClipping(SKPath dst)

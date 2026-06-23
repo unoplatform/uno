@@ -10,7 +10,11 @@ namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		internal override void Paint(in PaintingSession session) => Brush?.Paint(session.Canvas, session.Opacity, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+		internal override SKPath? Paint(in PaintingSession session)
+		{
+			Brush?.Paint(session.Canvas, session.Opacity, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+			return null;
+		}
 
 		internal override bool CanPaint() => Brush?.CanPaint() ?? false;
 

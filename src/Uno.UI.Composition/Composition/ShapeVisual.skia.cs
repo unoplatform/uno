@@ -13,14 +13,13 @@ namespace Microsoft.UI.Composition;
 public partial class ShapeVisual
 {
 	/// <inheritdoc />
-	internal override void Paint(in PaintingSession session)
+	internal override SKPath? Paint(in PaintingSession session)
 	{
 		var canvas = session.Canvas;
 
 		if (Size.X == 0 || Size.Y == 0)
 		{
-			CacheOwnContentPath(null);
-			return;
+			return null;
 		}
 
 		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
@@ -49,7 +48,7 @@ public partial class ShapeVisual
 
 		base.Paint(in session);
 
-		CacheOwnContentPath(BuildOwnContentPath());
+		return BuildOwnContentPath();
 	}
 
 	internal override bool RequiresRepaintOnEveryFrame =>
