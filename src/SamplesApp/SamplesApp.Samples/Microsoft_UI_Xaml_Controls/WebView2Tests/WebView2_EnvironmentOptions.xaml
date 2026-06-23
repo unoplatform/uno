@@ -19,7 +19,7 @@
         <StackPanel Padding="12" Spacing="6">
             <TextBlock
                 FontWeight="SemiBold"
-                Text="WebView2 environment options (Windows / Skia Desktop)"
+                Text="WebView2 environment options (Skia Desktop on Windows)"
                 TextWrapping="Wrap" />
             <TextBlock
                 Foreground="{ThemeResource SystemBaseMediumColor}"
