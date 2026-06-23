@@ -31,6 +31,18 @@ partial class Application
 	/// </summary>
 	internal long AlcRegistrationId;
 
+	// Per-type cache of delegate-typed instance fields, to keep the teardown tree walk cheap.
+	// Concurrent: the cleanup can be triggered from multiple teardown paths at once
+	// (Window.CloseAlcWindows, Application.RemoveAlcApplication, host sweeps).
+	private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<Type, global::System.Reflection.FieldInfo[]> _delegateFieldsCache = new();
+
+	// Set while pruning a single content root's tree to record whether that tree contained an
+	// element from an unloading ALC (so an orphaned root can be removed). [ThreadStatic] because ALC
+	// teardown sweeps can run concurrently on multiple threads; the flag is transient per-walk state
+	// and must stay thread-local, otherwise one walk would observe another's result.
+	[ThreadStatic]
+	private static bool _treeContainsUnloadingAlcElement;
+
 	private static void SetCurrentApplication(Application app)
 	{
 		if (app is null)
@@ -377,6 +389,22 @@ partial class Application
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
 
+		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
+		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
+		// removed when the secondary app unloads and each one pins the collectible ALC. Walk
+		// every live content root and prune delegate fields of invocation-list entries whose
+		// target or method lives in a collectible ALC.
+		RunCleanupStep(nameof(PruneCollectibleAlcEventSubscriptions), PruneCollectibleAlcEventSubscriptions);
+
+		// The delegate-field cache is keyed by Type; a collectible key (including a host generic
+		// instantiated over a collectible argument) pins its ALC. Drop them — re-cached on demand.
+		RunCleanupStep(nameof(PruneCollectibleDelegateFieldsCache), PruneCollectibleDelegateFieldsCache);
+
+		// NativeDispatcher render registrations are never removed; prune entries whose
+		// CompositionTarget's ContentRoot is no longer registered (a closed secondary-app
+		// surface). Runs AFTER the tree prune above so orphaned roots are already unregistered.
+		RunCleanupStep(nameof(PruneOrphanedCompositionTargets), PruneOrphanedCompositionTargets);
+
 		// ResourceDictionary — invalidate _keyNotFoundCache on the host Application.
 		// The cache accumulates ResourceKey entries with TypeKey referencing ALC types.
 		// These entries pin RuntimeType → LoaderAllocator → ALC.
@@ -427,6 +455,289 @@ partial class Application
 		Uno.UI.GlobalStaticResources.MasterDictionary.ClearCollectibleAssociatedParents();
 #endif
 		_current?.Resources?.ClearCollectibleAssociatedParents();
+	}
+
+	// The delegate-field cache (keyed by Type) outlives a teardown; a collectible key — including a
+	// host generic instantiated over a collectible argument — pins its ALC. Drop every collectible
+	// key on teardown; entries are cheap to rebuild on demand.
+	private static void PruneCollectibleDelegateFieldsCache()
+	{
+		foreach (var key in _delegateFieldsCache.Keys)
+		{
+			if (key.IsCollectible)
+			{
+				_delegateFieldsCache.TryRemove(key, out _);
+			}
+		}
+	}
+
+	private static void PruneOrphanedCompositionTargets()
+	{
+		var rootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
+		Uno.UI.Dispatching.NativeDispatcher.Main.RemoveCompositionTargets(target =>
+			target is Media.CompositionTarget compositionTarget
+			&& !rootCoordinator.ContentRoots.Contains(compositionTarget.ContentRoot));
+	}
+
+	/// <summary>
+	/// Whether the type's collectibility means "owned by a dying AssemblyLoadContext". This is
+	/// the discriminator for DESTRUCTIVE prunes: <see cref="Type.IsCollectible"/> alone also
+	/// matches session-lifetime add-in ALCs (e.g. a designer host) whose live subscriptions must
+	/// survive a secondary app's teardown.
+	/// </summary>
+	/// <remarks>
+	/// A collectible type whose load context resolves to the default ALC (or unknown) is only
+	/// genuinely owned by a dying context when its DEFINITION is dynamic/RunAndCollect. A
+	/// constructed generic such as <c>HostType&lt;TAddIn&gt;</c> reports <see cref="Type.IsCollectible"/>
+	/// == <see langword="true"/> merely because a generic ARGUMENT is collectible, even though the
+	/// definition lives in the non-collectible host assembly; pruning delegate fields off such a
+	/// host type would wrongly strip live host subscriptions. We therefore re-evaluate constructed
+	/// generics against their generic type DEFINITION.
+	/// </remarks>
+	private static bool IsFromUnloadInitiatedAlc(Type type)
+	{
+		if (!type.IsCollectible)
+		{
+			return false;
+		}
+
+		// For a constructed generic, collectibility can stem solely from a generic ARGUMENT while
+		// the DEFINITION is host-owned. Judge by the definition so HostType<TAddIn> is not pruned
+		// just because TAddIn is collectible. (Non-constructed types fall through to direct checks.)
+		if (type.IsConstructedGenericType)
+		{
+			var definition = type.GetGenericTypeDefinition();
+
+			// A host-defined definition (default/null ALC, non-dynamic assembly) is NOT prunable via
+			// this path: its collectibility is borrowed from the argument, not the definition itself.
+			var definitionAlc = AssemblyLoadContext.GetLoadContext(definition.Assembly);
+			if ((definitionAlc is null || definitionAlc == AssemblyLoadContext.Default)
+				&& !definition.Assembly.IsDynamic)
+			{
+				return false;
+			}
+
+			// Otherwise judge the definition's own load context like any other type.
+			type = definition;
+		}
+
+		var alc = AssemblyLoadContext.GetLoadContext(type.Assembly);
+		if (alc is null || alc == AssemblyLoadContext.Default)
+		{
+			// Default/unknown ALC is only "dying" when the assembly is a dynamic/RunAndCollect
+			// builder (which legitimately maps to a collectible context). A genuinely static
+			// host assembly that is collectible here would be a false positive, so guard on it.
+			return type.Assembly.IsDynamic;
+		}
+
+		// Conservative when the unload state can't be read: do NOT treat the ALC as dying, so this
+		// destructive prune never strips handlers off a still-live (e.g. session add-in) ALC. A
+		// runtime that breaks the state read is surfaced in dev via
+		// FeatureConfiguration.Alc.ThrowOnUnloadStateReadFailure rather than by silent over-pruning.
+		return global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(alc, valueIfUnknown: false);
+	}
+
+	/// <summary>
+	/// Walks every live content root's visual tree and removes, from each element's delegate
+	/// fields (compiler-generated event backing fields included), any invocation-list entry
+	/// whose target or declaring method lives in a collectible AssemblyLoadContext. Such
+	/// subscriptions are made by secondary-ALC code on host elements and are never undone when
+	/// the secondary app unloads — each one pins the unloaded ALC. Runs only during ALC teardown.
+	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "ALC cleanup reflection over live instances")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
+	private static void PruneCollectibleAlcEventSubscriptions()
+	{
+		// Window-owned content roots are NEVER removed here, no matter what their trees contain:
+		// the host main window's tree legitimately hosts a previewed app's (collectible-typed)
+		// content, and unregistering the host root would take down the host window.
+		var windows = global::Uno.UI.ApplicationHelper.WindowsInternal.ToArray();
+		var windowRoots = new HashSet<object>();
+		foreach (var window in windows)
+		{
+			if (window.WindowImplementation?.XamlRoot?.VisualTree?.ContentRoot is { } windowRoot)
+			{
+				windowRoots.Add(windowRoot);
+			}
+		}
+
+		var coordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
+		var roots = coordinator.ContentRoots;
+		// Reverse iteration: RemoveContentRoot below mutates this collection, so walking from the end
+		// keeps the remaining indices valid as entries are removed.
+		for (var i = roots.Count - 1; i >= 0; i--)
+		{
+			if (i < roots.Count && roots[i] is { } root && root.VisualTree?.RootElement is { } rootElement)
+			{
+				_treeContainsUnloadingAlcElement = false;
+				PruneCollectibleAlcEventSubscriptions(rootElement);
+
+				// A non-window content root whose tree contains unloading-ALC elements belongs to
+				// a dead secondary app's surface (e.g. a designer popup island) — the window's
+				// own root is removed at CloseAlcWindow, but popup/island roots otherwise stay
+				// registered forever and pin the ALC through the coordinator.
+				if (_treeContainsUnloadingAlcElement && !windowRoots.Contains(root))
+				{
+					coordinator.RemoveContentRoot(root);
+				}
+			}
+		}
+
+		// Window-level events (Activated / SizeChanged / VisibilityChanged / Closed) live on the
+		// window implementation object, which is not part of any visual tree — a secondary-ALC
+		// subscriber on the HOST window (e.g. a designer client hooking Closed) is never undone
+		// by the tree walk above and would pin its ALC.
+		foreach (var window in windows)
+		{
+			try
+			{
+				PruneCollectibleDelegateFields(window);
+				if (window.WindowImplementation is { } windowImplementation)
+				{
+					PruneCollectibleDelegateFields(windowImplementation);
+				}
+			}
+			catch (Exception)
+			{
+				// One window refusing reflection must not abort pruning of the remaining windows.
+			}
+		}
+	}
+
+	private static void PruneCollectibleAlcEventSubscriptions(DependencyObject element)
+	{
+		if (IsFromUnloadInitiatedAlc(element.GetType()))
+		{
+			_treeContainsUnloadingAlcElement = true;
+		}
+
+		try
+		{
+			PruneCollectibleDelegateFields(element);
+		}
+		catch (Exception)
+		{
+			// One element refusing reflection must not abort the sweep of the rest of the tree.
+		}
+
+		// Element-level Resources dictionaries are not reachable from Application.Resources or
+		// the master theme set; their shared values can hold InheritanceContext associations
+		// into the unloaded app's elements just like app-level resources do.
+		try
+		{
+			if (element is FrameworkElement { Resources: { } elementResources })
+			{
+				elementResources.ClearCollectibleAssociatedParents();
+			}
+		}
+		catch (Exception)
+		{
+		}
+
+		// FrameworkElement content (e.g. a ContentControl's value) is normally also a visual
+		// child, but prune the Content DP value explicitly in case the visual link differs
+		// during teardown.
+		try
+		{
+			if (element is Controls.ContentControl { Content: DependencyObject contentChild })
+			{
+				PruneCollectibleDelegateFields(contentChild);
+			}
+		}
+		catch (Exception)
+		{
+		}
+
+		try
+		{
+			var childCount = Media.VisualTreeHelper.GetChildrenCount(element);
+			for (var i = 0; i < childCount; i++)
+			{
+				PruneCollectibleAlcEventSubscriptions(Media.VisualTreeHelper.GetChild(element, i));
+			}
+		}
+		catch (Exception)
+		{
+			// A subtree that cannot be enumerated mid-teardown must not abort the rest of the sweep.
+		}
+	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "ALC cleanup reflection over live instances")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
+	internal static void PruneCollectibleDelegateFields(object instance, AssemblyLoadContext dyingAlc = null)
+	{
+		var type = instance.GetType();
+		if (IsFromUnloadInitiatedAlc(type))
+		{
+			// Instances genuinely owned by the dying ALC die with it, so there is nothing to prune.
+			// Type.IsCollectible alone would also skip host-lifetime instances that are collectible
+			// only via a generic argument (e.g. HostType<TAddIn>), leaving dying-ALC handlers attached.
+			return;
+		}
+
+		var fields = _delegateFieldsCache.GetOrAdd(type, static t =>
+		{
+			var list = new List<global::System.Reflection.FieldInfo>();
+			for (var current = t; current is not null && current != typeof(object); current = current.BaseType)
+			{
+				foreach (var field in current.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
+				{
+					if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+					{
+						list.Add(field);
+					}
+				}
+			}
+
+			return list.ToArray();
+		});
+
+		if (fields.Length == 0)
+		{
+			return;
+		}
+
+		foreach (var field in fields)
+		{
+			try
+			{
+				if (field.GetValue(instance) is not Delegate current)
+				{
+					continue;
+				}
+
+				Delegate updated = current;
+				foreach (var invocation in current.GetInvocationList())
+				{
+					// Destructive prune: only remove subscriptions whose owner is DYING — the
+					// explicitly provided ALC (known at ALC-window close, before Unload() is
+					// initiated) or an ALC whose unload has begun. A merely-collectible target
+					// can belong to a live session-lifetime add-in ALC and must survive.
+					var ownerType = invocation.Target?.GetType() ?? invocation.Method.DeclaringType;
+					if (ownerType is null)
+					{
+						continue;
+					}
+
+					var prune = IsFromUnloadInitiatedAlc(ownerType)
+						|| (dyingAlc is not null && ownerType.IsCollectible && AssemblyLoadContext.GetLoadContext(ownerType.Assembly) == dyingAlc);
+
+					if (prune)
+					{
+						updated = Delegate.Remove(updated, invocation);
+					}
+				}
+
+				if (!ReferenceEquals(updated, current))
+				{
+					field.SetValue(instance, updated);
+				}
+			}
+			catch (Exception)
+			{
+				// A single inaccessible field must not abort pruning of the remaining fields.
+			}
+		}
 	}
 
 	private static void ClearNonDefaultAlcApplications()
