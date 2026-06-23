@@ -22,6 +22,12 @@
 			<Color x:Key="SystemColorHotlightColor">#FF0066CC</Color>
 			<Color x:Key="SystemColorWindowColor">#FFFFFFFF</Color>
 			<Color x:Key="SystemColorWindowTextColor">#FF000000</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 		</ResourceDictionary>
 
 		<ResourceDictionary x:Key="HighContrast">
@@ -43,6 +49,12 @@
 			<Color x:Key="SystemColorHotlightColor">#FFFFFF00</Color>
 			<Color x:Key="SystemColorWindowColor">#FF000000</Color>
 			<Color x:Key="SystemColorWindowTextColor">#FF000000</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 		</ResourceDictionary>
 
 		<ResourceDictionary x:Key="Light">
@@ -64,6 +76,12 @@
 			<Color x:Key="SystemColorHotlightColor">#FFFFFF00</Color>
 			<Color x:Key="SystemColorWindowColor">#FF000000</Color>
 			<Color x:Key="SystemColorWindowTextColor">#FF000000</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
