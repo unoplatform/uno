@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIKit;
+using Uno.Helpers;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -23,6 +24,14 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 	{
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
+
+		// A single AppleUIKit Skia host serves iOS, tvOS and Mac Catalyst; resolve the
+		// specific platform at runtime since the build only defines the __SKIA__ symbol.
+		RuntimePlatformHelper.SkiaPlatform = OperatingSystem.IsMacCatalyst()
+			? RuntimePlatform.SkiaMacCatalyst
+			: OperatingSystem.IsTvOS()
+				? RuntimePlatform.SkiaTvOS
+				: RuntimePlatform.SkiaIOS;
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }

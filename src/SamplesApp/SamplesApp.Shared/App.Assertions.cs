@@ -132,6 +132,18 @@ partial class App
 	}
 
 	/// <summary>
+	/// Verifies that the current Uno runtime platform is detected (not Unknown), guarding against
+	/// a new platform being added without being wired into the RuntimePlatformHelper.
+	/// </summary>
+	public void AssertRuntimePlatformIsKnown()
+	{
+		Assert.AreNotEqual(
+			Uno.UI.Toolkit.UnoRuntimePlatform.Unknown,
+			Uno.UI.Toolkit.RuntimePlatformHelper.Current,
+			"The current runtime platform could not be determined (Unknown). A new platform may need to be wired into RuntimePlatformHelper.");
+	}
+
+	/// <summary>
 	/// Verifies that ApplicationData are available immediately after the application class is created
 	/// and the data are stored in proper application specific lcoations.
 	/// </summary>

@@ -23,6 +23,7 @@ using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.Helpers.Theming;
 using Uno.Media.Playback;
 using Uno.UI.Dispatching;
@@ -52,6 +53,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	private static bool _isRunning;
 	static Win32Host()
 	{
+		RuntimePlatformHelper.SkiaPlatform = RuntimePlatform.SkiaWin32;
+
 		var hResult = PInvoke.OleInitialize();
 		if (hResult.Failed)
 		{

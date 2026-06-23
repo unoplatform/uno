@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
@@ -24,6 +24,8 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
+		<Compile Include="..\Uno.UWP\Helpers\UnoRuntimePlatform.cs" Link="RuntimePlatform\UnoRuntimePlatform.cs" />
+		<Compile Include="..\Uno.UWP\Extensions\UnoRuntimePlatformExtensions.cs" Link="RuntimePlatform\UnoRuntimePlatformExtensions.cs" />
 	</ItemGroup>
 
 	<PropertyGroup>
