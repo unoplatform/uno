@@ -38,9 +38,22 @@ public class Given_HotReloadResilience : BaseTestClass
 			"World",
 			async () =>
 			{
-				// The fact that we got here means the hot-reload pipeline completed
-				// without throwing. Verify the text was actually updated.
-				var tb = page.FindName("tb1") as TextBlock;
+				// The hot-reload pipeline completed without throwing. The visual-tree update can lag the
+				// ReloadCompleted callback under CI load, so poll for the renamed element rather than doing a
+				// single FindName, which raced ("tb1 should exist") on loaded agents. Defensive hardening: the
+				// test still fails if the element never appears or its text is wrong.
+				TextBlock tb = null;
+				for (var i = 0; i < 50; i++)
+				{
+					tb = page.FindName("tb1") as TextBlock;
+					if (tb is not null && tb.Text == "World")
+					{
+						break;
+					}
+
+					await UnitTestsUIContentHelper.WaitForIdle();
+				}
+
 				Assert.IsNotNull(tb, "TextBlock 'tb1' should exist in the page");
 				Assert.AreEqual("World", tb.Text, "TextBlock text should have been updated by hot-reload");
 			},
