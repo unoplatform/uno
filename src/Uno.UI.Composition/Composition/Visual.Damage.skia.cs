@@ -196,11 +196,24 @@ public partial class Visual
 
 		if (ShadowState is not null)
 		{
-			if (Size is not { X: > 0, Y: > 0 })
+			// Seed the silhouette with the caster's OWN painted bounds, derived the same way as the
+			// non-shadow case below (and as WalkShadowSilhouette bounds a visual's own contribution): empty
+			// when it paints nothing, its Size when it paints within Size, otherwise we can't bound it and
+			// fall back to the clip. TryGetShadowSilhouetteBounds then unions descendants and the shadow.
+			SKRect ownContent;
+			if (!CanPaint())
+			{
+				ownContent = SKRect.Empty;
+			}
+			else if (PaintsWithinOwnSize && Size is { X: > 0, Y: > 0 })
+			{
+				ownContent = new SKRect(0, 0, Size.X, Size.Y);
+			}
+			else
 			{
 				return false;
 			}
-			return TryGetShadowSilhouetteBounds(new SKRect(0, 0, Size.X, Size.Y), out localBounds);
+			return TryGetShadowSilhouetteBounds(ownContent, out localBounds);
 		}
 
 		if (!CanPaint())
@@ -229,6 +242,14 @@ public partial class Visual
 		if (!TryAccumulateDescendantContentBoundsInRoot(ref silhouetteInRoot))
 		{
 			return false;
+		}
+
+		if (silhouetteInRoot.IsEmpty)
+		{
+			// Neither the caster nor its descendants paint anything, so there's no silhouette to cast a
+			// shadow (and ExpandForShadow would otherwise inflate an empty rect into a spurious region).
+			localBounds = SKRect.Empty;
+			return true;
 		}
 
 		var silhouetteLocal = casterMatrix.TryInvert(out var inverse)
