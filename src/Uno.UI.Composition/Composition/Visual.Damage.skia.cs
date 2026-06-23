@@ -198,41 +198,32 @@ public partial class Visual
 	{
 		localBounds = default;
 
+		// What this visual paints itself, in local coordinates: nothing for non-painting visuals (containers),
+		// its Size when it paints within Size (the same bound WalkShadowSilhouette uses for an own contribution),
+		// otherwise it can't be bounded here and we fall back to the clip.
+		SKRect ownContent;
+		if (!CanPaint())
+		{
+			ownContent = SKRect.Empty;
+		}
+		else if (PaintsWithinOwnSize)
+		{
+			ownContent = new SKRect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
+		}
+		else
+		{
+			return false;
+		}
+
+		// A drop shadow's silhouette is this own content unioned with every descendant, then offset and
+		// blurred; without a shadow the content is just what this visual paints.
 		if (ShadowState is not null)
 		{
-			// Seed the silhouette with the caster's OWN painted bounds, derived the same way as the
-			// non-shadow case below (and as WalkShadowSilhouette bounds a visual's own contribution): empty
-			// when it paints nothing, its Size when it paints within Size, otherwise we can't bound it and
-			// fall back to the clip. TryGetShadowSilhouetteBounds then unions descendants and the shadow.
-			SKRect ownContent;
-			if (!CanPaint())
-			{
-				ownContent = SKRect.Empty;
-			}
-			else if (PaintsWithinOwnSize && Size is { X: > 0, Y: > 0 })
-			{
-				ownContent = new SKRect(0, 0, Size.X, Size.Y);
-			}
-			else
-			{
-				return false;
-			}
 			return TryGetShadowSilhouetteBounds(ownContent, out localBounds);
 		}
 
-		if (!CanPaint())
-		{
-			localBounds = SKRect.Empty;
-			return true;
-		}
-
-		if (PaintsWithinOwnSize)
-		{
-			localBounds = new SKRect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
-			return true;
-		}
-
-		return false;
+		localBounds = ownContent;
+		return true;
 	}
 
 	private protected bool TryGetShadowSilhouetteBounds(SKRect ownLocalBounds, out SKRect localBounds)
