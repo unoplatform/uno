@@ -9,6 +9,10 @@ using Uno.UI.RuntimeTests.Helpers;
 #if HAS_UNO
 using Uno.UI;
 #endif
+#if __SKIA__
+using SkiaSharp;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
@@ -134,5 +138,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Missing_Font_Falls_Back_To_MsAppx_Default()
+		{
+			var original = FeatureConfiguration.Font.DefaultTextFontFamily;
+			try
+			{
+				var defaultFontUri = "ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf";
+				FeatureConfiguration.Font.DefaultTextFontFamily = defaultFontUri;
+
+				var probe = new TextBlock();
+
+				// Load and cache the ms-appx default font so the fallback can resolve it synchronously.
+				var defaultTypeface = (await FontDetailsCache
+					.GetFont(defaultFontUri, (float)probe.FontSize, probe.FontWeight, probe.FontStretch, probe.FontStyle)
+					.loadedTask).SKFont.Typeface;
+
+				// Guards against the asset not being packaged, which would make the assertion meaningless.
+				Assert.AreNotEqual(SKTypeface.FromFamilyName(null).FamilyName, defaultTypeface.FamilyName,
+					"The ms-appx default font should have loaded as a distinct typeface.");
+
+				// A non-existing font must fall back to the ms-appx default font, not the system font.
+				var fallbackTypeface = (await FontDetailsCache
+					.GetFont("ms-appx:///Assets/Fonts/ThisFontDoesNotExist.ttf#Nope", (float)probe.FontSize, probe.FontWeight, probe.FontStretch, probe.FontStyle)
+					.loadedTask).SKFont.Typeface;
+
+				Assert.AreEqual(defaultTypeface.FamilyName, fallbackTypeface.FamilyName,
+					"A missing font should fall back to the ms-appx default font, not the system font.");
+			}
+			finally
+			{
+				FeatureConfiguration.Font.DefaultTextFontFamily = original;
+			}
+		}
+#endif
 	}
 }
