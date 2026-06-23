@@ -267,7 +267,7 @@ public partial class Visual
 		return true;
 	}
 
-	private protected SKRect ExpandForShadow(SKRect content)
+	private SKRect ExpandForShadow(SKRect content)
 	{
 		if (ShadowState is not { } shadow)
 		{
