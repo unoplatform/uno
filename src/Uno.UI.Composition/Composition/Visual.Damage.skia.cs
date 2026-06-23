@@ -16,7 +16,31 @@ public partial class Visual
 
 	private bool _subtreeChangedThisFrame;
 
+	// The local-space geometry this visual paints, captured by Paint when the picture is (re)recorded and
+	// reused for the per-frame damage region instead of being rebuilt every frame. A moved-but-unchanged
+	// visual keeps the cached path (its picture isn't re-recorded, so neither is this). Empty/false means the
+	// visual paints nothing analytically describable, and damage falls back to its bounds.
+	private SKPath? _ownContentPath;
+	private bool _hasOwnContentPath;
+
 	internal virtual float DamageRegionSamplingMargin => 0;
+
+	// Called from a visual's Paint to record what it paints (local coordinates), so the geometry comes from
+	// the same place that draws it rather than a parallel reconstruction. Pass null when nothing analytically
+	// describable was painted.
+	private protected void CacheOwnContentPath(SKPath? localContentPath)
+	{
+		if (localContentPath is null || localContentPath.IsEmpty)
+		{
+			_hasOwnContentPath = false;
+			return;
+		}
+
+		_ownContentPath ??= new SKPath();
+		_ownContentPath.Rewind();
+		_ownContentPath.AddPath(localContentPath);
+		_hasOwnContentPath = true;
+	}
 
 	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip)
 	{
@@ -83,23 +107,21 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			if (ShadowState is null && DamageRegionSamplingMargin == 0)
+			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _hasOwnContentPath)
 			{
 				contentPath.Rewind();
-				if (TryGetLocalContentPath(contentPath) && !contentPath.IsEmpty)
+				contentPath.AddPath(_ownContentPath!);
+				contentPath.Transform(TotalMatrix.ToSKMatrix());
+				OutsetForAntialiasing(contentPath);
+				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
+				if (contentPath.IsEmpty)
 				{
-					contentPath.Transform(TotalMatrix.ToSKMatrix());
-					OutsetForAntialiasing(contentPath);
-					contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
-					if (contentPath.IsEmpty)
-					{
-						return false;
-					}
-					bounds = contentPath.Bounds;
-					regionPath = contentPath;
-					keepContentPath = true;
-					return true;
+					return false;
 				}
+				bounds = contentPath.Bounds;
+				regionPath = contentPath;
+				keepContentPath = true;
+				return true;
 			}
 
 			if (TryGetLocalContentBounds(out var local))
@@ -230,8 +252,6 @@ public partial class Visual
 
 		return false;
 	}
-
-	internal virtual bool TryGetLocalContentPath(SKPath dst) => false;
 
 	private protected bool TryGetShadowSilhouetteBounds(SKRect ownLocalBounds, out SKRect localBounds)
 	{

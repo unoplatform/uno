@@ -140,6 +140,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		base.Paint(in session);
 
 		_borderShape?.Render(in session);
+
+		CacheOwnContentPath(BuildOwnContentPath());
 	}
 
 	internal override bool GetPrePaintingClipping(SKPath dst)
@@ -384,9 +386,14 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
 
-	internal override bool TryGetLocalContentPath(SKPath dst)
+	[ThreadStatic]
+	private static SKPath? _ownContentPathScratch;
+
+	private SKPath? BuildOwnContentPath()
 	{
 		UpdatePathsAndCornerClip();
+		var dst = _ownContentPathScratch ??= new SKPath();
+		dst.Rewind();
 		var any = false;
 		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
 		{
@@ -396,7 +403,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		{
 			any |= border.TryGetRenderPath(dst);
 		}
-		return any;
+		return any ? dst : null;
 	}
 
 	internal override bool HitTest(Point point)
