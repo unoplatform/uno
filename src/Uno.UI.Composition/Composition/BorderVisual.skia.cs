@@ -386,14 +386,10 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
 
-	[ThreadStatic]
-	private static SKPath? _ownContentPathScratch;
-
 	private SKPath? BuildOwnContentPath()
 	{
 		UpdatePathsAndCornerClip();
-		var dst = _ownContentPathScratch ??= new SKPath();
-		dst.Rewind();
+		var dst = new SKPath();
 		var any = false;
 		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
 		{
