@@ -105,7 +105,8 @@ namespace Microsoft.UI.Composition
 		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
 		private static readonly SKPath _spareRenderPathStroke = new SKPath();
 
-		internal bool TryGetRenderPath(SKPath dst)
+		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
+		internal bool GetRenderPath(SKPath dst)
 		{
 			var any = false;
 
