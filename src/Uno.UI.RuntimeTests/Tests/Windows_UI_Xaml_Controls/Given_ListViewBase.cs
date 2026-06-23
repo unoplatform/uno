@@ -3897,18 +3897,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			var initial = GetCurrenState();
 
-			// scroll to bottom
+			// scroll to bottom; wait for the async incremental load + materialization to advance past
+			// the initial state (the batch load Task.Delay + layout can exceed a fixed delay on WASM).
 			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await UITestHelper.WaitFor(
+				() => GetCurrenState().LastMaterialized > initial.LastMaterialized,
+				timeoutMS: 5000,
+				message: $"No extra item materialized after first scroll (initial last={initial.LastMaterialized})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var firstScroll = GetCurrenState();
 
 			// Has'No'MoreItems
 			source.HasMoreItems = false;
 
-			// scroll to bottom
+			// scroll to bottom again; with HasMoreItems=false no new batch loads, but wait for the last
+			// existing item to materialize (reaching the end) instead of a fixed delay.
 			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await UITestHelper.WaitFor(
+				() => GetCurrenState().LastMaterialized >= firstScroll.Count - 1,
+				timeoutMS: 5000,
+				message: $"Did not reach end of list on second scroll (expected last index {firstScroll.Count - 1})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 

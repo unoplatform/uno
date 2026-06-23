@@ -5242,7 +5242,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The outer ScrollViewer should have scrolled down to bring the caret into view.
 			await WindowHelper.WaitFor(
 				() => outerScrollViewer.VerticalOffset > 0,
-				timeoutMS: 2000,
+				timeoutMS: 5000,
 				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
 
 			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
@@ -5252,9 +5252,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
 			await WindowHelper.WaitForIdle();
 
+			// The Enter triggers a re-layout + BringIntoView scroll that can exceed a short timeout on
+			// slower runtimes (e.g. WASM); give the settle enough room.
 			await WindowHelper.WaitFor(
 				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
-				timeoutMS: 2000,
+				timeoutMS: 5000,
 				message: "Outer ScrollViewer should scroll further after adding a new line.");
 		}
 
