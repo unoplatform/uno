@@ -35,11 +35,23 @@ internal class MacOSAccentColorExtension : IAccentColorExtension
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()
 	{
-		if (typeof(MacOSAccentColorExtension).Log().IsEnabled(LogLevel.Trace))
+		// Called directly from native code; an exception escaping into the native stack is undefined
+		// behavior, so swallow any thrown by AccentColorChanged subscribers (as other native callbacks do).
+		try
 		{
-			typeof(MacOSAccentColorExtension).Log().Trace("MacOSAccentColorExtension.AccentColorChanged");
-		}
+			if (typeof(MacOSAccentColorExtension).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSAccentColorExtension).Log().Trace("MacOSAccentColorExtension.AccentColorChanged");
+			}
 
-		_instance.AccentColorChanged?.Invoke(_instance, EventArgs.Empty);
+			_instance.AccentColorChanged?.Invoke(_instance, EventArgs.Empty);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(MacOSAccentColorExtension).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(MacOSAccentColorExtension).Log().Error("Exception in accent color change callback", ex);
+			}
+		}
 	}
 }
