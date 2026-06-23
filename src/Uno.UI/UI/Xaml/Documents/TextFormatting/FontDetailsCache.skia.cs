@@ -133,15 +133,7 @@ internal static class FontDetailsCache
 		var (skWeight, skWidth, skSlant) = (weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
 		var key = new FontEntry(name, skWeight, skWidth, skSlant);
 
-		Task<SKTypeface?> typefaceTask;
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var nullableTask))
-			{
-				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style);
-			}
-			typefaceTask = nullableTask;
-		}
+		var typefaceTask = GetTypefaceTask(name, weight, stretch, style, key);
 
 		var canChange = !typefaceTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
 		var typeface = !canChange ? typefaceTask.Result : null;
@@ -160,7 +152,16 @@ internal static class FontDetailsCache
 				}
 			}
 
-			typeface = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
+			// The configured default font family may itself be an ms-appx:/// URI, which
+			// SKTypeface.FromFamilyName cannot resolve. Try to load it as a typeface first.
+			var defaultName = FeatureConfiguration.Font.DefaultTextFontFamily;
+			if (name != defaultName)
+			{
+				var defaultTask = GetTypefaceTask(defaultName, weight, stretch, style, new FontEntry(defaultName, skWeight, skWidth, skSlant));
+				typeface = defaultTask.IsCompletedSuccessfully ? defaultTask.Result : null;
+			}
+
+			typeface ??= SKTypeface.FromFamilyName(defaultName, skWeight, skWidth, skSlant)
 						?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
 						?? SKTypeface.FromFamilyName(null);
 		}
@@ -198,6 +199,19 @@ internal static class FontDetailsCache
 			}
 		}
 	});
+
+	private static Task<SKTypeface?> GetTypefaceTask(string name, FontWeight weight, FontStretch stretch, FontStyle style, FontEntry key)
+	{
+		lock (_fontCacheGate)
+		{
+			if (!_fontCache.TryGetValue(key, out var task))
+			{
+				_fontCache[key] = task = GetFontInternal(name, weight, stretch, style);
+			}
+
+			return task;
+		}
+	}
 
 	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
 		string? name,
