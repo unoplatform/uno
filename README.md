@@ -44,11 +44,14 @@ Develop fully native applications for a wide range of platforms from a single co
 
 ### Uno Platform Studio
 
-An optional premium toolkit that integrates with Visual Studio, VS Code, and JetBrains Rider to offer an unparalleled development loop.
+The AI-native productivity suite for building enterprise-grade, cross-platform .NET applications. It spans prompt-to-app generation in the browser, an AI development agent, design handoff, and the industry-first runtime visual designer for .NET — integrating with Visual Studio, VS Code, and JetBrains Rider to deliver an unparalleled development loop.
 
-* **[Hot Design](https://aka.platform.uno/hot-design)**: A next-generation visual designer that transforms your live app into a design surface with a single click.
+* **[Uno Platform Studio App](https://studio.platform.uno/)**: Go from a prompt (or a curated Gallery sample) to a working, cross-platform Uno Platform app in minutes. Watch it build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building.
+* **[Uno Platform Studio Agent](https://github.com/unoplatform/studio)**: The orchestration layer that makes AI Uno-aware — it sees your running app, knows your design system, validates changes across every target, and grounds its answers in official Uno Platform docs, all in a human-in-the-loop workflow. It ships 70+ Uno Platform-specific skills through the `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex.
+* **[Hot Design](https://aka.platform.uno/hot-design)**: The industry-first, patented runtime visual designer that transforms your live app into a design surface with a single click. Pair it with the **Hot Design Agent** for AI-powered UX/UI creation driven by your live data and previews.
 * **[Hot Reload](https://aka.platform.uno/hot-reload)**: Instantly modify XAML and C# on a running app, allowing for rapid iteration without losing the app's state.
 * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**: Export Figma designs to clean, responsive XAML or C# markup in seconds.
+* **Uno Platform MCPs**: The **Uno MCP** gives AI agents structured, semantic access to Uno Platform's full knowledge base (docs, APIs, and best practices), while the **App MCP** lets agents interact directly with your live, running app.
 <img alt="Uno Platform Studio - Hot Design" align=center width="95%" src="https://github.com/user-attachments/assets/0962dbac-2130-4d2d-b187-71974160ddbe" />
 
 ---
@@ -131,10 +134,13 @@ Uno Platform unifies cross-platform development by abstracting platform-specific
 ![YouTube Followers](https://img.shields.io/youtube/channel/subscribers/UC8GkqD6hsSkwYof6n2Wk1hg?label=Follow%20%40UnoPlatform&style=flat&color=f85977&logo=Youtube)
 
 * **[Official Documentation](https://aka.platform.uno/uno-docs-intro)**: The complete guide to Uno Platform.
-* **[Uno Platform Studio](https://aka.platform.uno/studio)**: Details for the set of productivity tools Uno Platform Studio, that includes:
+* **[Uno Platform Studio](https://aka.platform.uno/studio)**: Details for the AI-native suite of productivity tools, which includes:
+  * **[Uno Platform Studio App](https://studio.platform.uno/)**
+  * **[Uno Platform Studio Agent](https://github.com/unoplatform/studio)**
   * **[Hot Design](https://aka.platform.uno/hot-design)**
   * **[Hot Reload](https://aka.platform.uno/hot-reload)**
   * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**
+  * **Uno Platform MCPs** (Uno MCP &amp; App MCP)
 * **[Uno Playground](https://playground.platform.uno/)**: Experiment with code snippets and see live previews.
 * **[Uno Gallery](https://gallery.platform.uno/)**: Explore various UI themes and components in action.
 * **[Workshops & Code Samples](https://aka.platform.uno/samples-tutorials)**: Access practical tutorials and sample projects to accelerate learning.
