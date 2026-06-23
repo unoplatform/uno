@@ -122,9 +122,11 @@ public class Given_Theme_Materialization
 			"Initially-realized item in a Light island should resolve Light, not the Dark ambient.");
 
 		list.ScrollIntoView(list.Items[150]);
-		await WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
-		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem);
+		// Realizing the scrolled-to container can take longer than the default 1s timeout on slower
+		// runtimes (e.g. WASM), where scrolling ~150 virtualized items is not instant; give it room.
+		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem, timeoutMS: 5000);
 		var scrolledCell = scrolled.FindFirstDescendant<Border>("cell");
 		Assert.AreEqual(LightSentinel, ColorOf(scrolledCell),
 			"Item realized after ScrollIntoView should also resolve the Light island sentinel.");
@@ -241,9 +243,11 @@ public class Given_Theme_Materialization
 		await WindowHelper.WaitForIdle();
 
 		list.ScrollIntoView(list.Items[150]);
-		await WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
-		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem);
+		// Realizing the scrolled-to container can take longer than the default 1s timeout on slower
+		// runtimes (e.g. WASM), where scrolling ~150 virtualized items is not instant; give it room.
+		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem, timeoutMS: 5000);
 		var scrolledCell = scrolled.FindFirstDescendant<Border>("cell");
 		Assert.AreEqual(LightSentinel, ColorOf(scrolledCell),
 			"Nested-template cell materialized on scroll in a Light island should resolve Light, not the Dark ambient.");

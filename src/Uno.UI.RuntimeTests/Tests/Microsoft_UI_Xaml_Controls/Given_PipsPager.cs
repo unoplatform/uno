@@ -51,9 +51,23 @@ public partial class Given_PipsPager
 		Assert.IsNotNull(scrollViewer, "Inner ScrollViewer not found");
 
 		SUT.SelectedPageIndex = 5;
-		await TestServices.WindowHelper.WaitForIdle();
-		// Allow the BringIntoView animation (≈1s on Skia) to complete before sampling.
-		await Task.Delay(1500);
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+		// Wait for the BringIntoView scroll to actually bring the trailing pip (index 7) into the
+		// viewport — the post-condition asserted below — instead of a fixed delay, which on slower
+		// runtimes (e.g. WASM) elapsed before the scroll settled and left the offset short, flaking CI.
+		await UITestHelper.WaitFor(
+			() =>
+			{
+				if (repeater.TryGetElement(7) is not FrameworkElement trailingPip)
+				{
+					return false;
+				}
+
+				var x = trailingPip.TransformToVisual(SUT).TransformPoint(new Windows.Foundation.Point(0, 0)).X;
+				return scrollViewer.HorizontalOffset > 0 && x >= 0 && x < SUT.ActualWidth;
+			},
+			timeoutMS: 5000,
+			message: "Trailing pip did not scroll into the viewport after navigating to SelectedPageIndex 5");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var horizontalOffset = scrollViewer.HorizontalOffset;
