@@ -25,10 +25,9 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	// Called from a visual's Paint to record what it paints (local coordinates), so the geometry comes from
-	// the same place that draws it rather than a parallel reconstruction. Pass null when nothing analytically
-	// describable was painted.
-	private protected void CacheOwnContentPath(SKPath? localContentPath)
+	// Caches the geometry a visual's Paint returned (local coordinates), so the per-frame damage region reuses
+	// it instead of rebuilding it. Null means the visual paints nothing analytically describable.
+	private void CacheOwnContentPath(SKPath? localContentPath)
 	{
 		if (localContentPath is null || localContentPath.IsEmpty)
 		{
