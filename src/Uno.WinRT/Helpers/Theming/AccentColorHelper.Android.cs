@@ -7,6 +7,9 @@ namespace Uno.Helpers.Theming;
 
 internal static partial class AccentColorHelper
 {
+	// The Material You accent is read once at startup. There is no ObserveAccentColorChanges partial
+	// because a palette change (e.g. wallpaper swap) only takes effect after the activity is recreated,
+	// so it cannot be observed live; the accent refreshes on the next RefreshAccentColor() call.
 	private static partial AccentColorPalette? GetPlatformAccentColorPalette()
 	{
 		// Android 12 (API 31) introduced dynamic Material You colors
