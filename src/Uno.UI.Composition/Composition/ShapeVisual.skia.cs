@@ -19,6 +19,7 @@ public partial class ShapeVisual
 
 		if (Size.X == 0 || Size.Y == 0)
 		{
+			CacheOwnContentPath(null);
 			return;
 		}
 
@@ -47,6 +48,8 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
+
+		CacheOwnContentPath(BuildOwnContentPath());
 	}
 
 	internal override bool RequiresRepaintOnEveryFrame =>
@@ -115,12 +118,18 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	internal override bool TryGetLocalContentPath(SKPath dst)
+	[ThreadStatic]
+	private static SKPath? _ownContentPathScratch;
+
+	private SKPath? BuildOwnContentPath()
 	{
 		if (_shapes is not { Count: > 0 } shapes)
 		{
-			return false;
+			return null;
 		}
+
+		var dst = _ownContentPathScratch ??= new SKPath();
+		dst.Rewind();
 
 		var any = false;
 		for (var i = 0; i < shapes.Count; i++)
@@ -131,13 +140,13 @@ public partial class ShapeVisual
 			}
 			else
 			{
-				return false;
+				return null;
 			}
 		}
 
 		if (!any)
 		{
-			return false;
+			return null;
 		}
 
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
@@ -148,7 +157,7 @@ public partial class ShapeVisual
 			dst.Transform(m);
 		}
 
-		return true;
+		return dst;
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
