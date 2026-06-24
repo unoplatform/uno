@@ -56,6 +56,25 @@
 
 ---
 
+## Implementation status snapshot (2026-06-24)
+
+**One `Uno.Sdk` head (`src/SamplesApp/SamplesApp.Head`) targets all of `net10.0-{browserwasm,desktop,android,ios,tvos}` + `$(NetCurrentWinAppSDK)`.**
+
+| Target | Builds from head | Validated |
+|--------|------------------|-----------|
+| desktop | ✅ `dotnet build` | locally (build+boot+runtime-test slice) |
+| browserwasm | ✅ `dotnet build` | locally (build) |
+| windows/WinUI | ✅ `MSBuild.exe` | locally (build) |
+| android | ✅ `dotnet build` | locally (build) |
+| ios + tvos | wired | ⚠️ needs macOS (not buildable on Windows) |
+
+- **Content model:** all Skia TFMs reference the generic-Skia `SamplesApp.Skia` base lib (samples compile once as Skia); WinUI inlines + uses the real WinUI XAML compiler.
+- **CI:** all platform stages + scripts repointed to the head (commit `f2f030edba`) — pending Azure DevOps validation.
+- **Old heads NOT deleted** — entangled with shared `SamplesApp.Windows` resources (base lib + native `SamplesApp.Wasm`) and RuntimeTests app bin refs; do alongside the native-head removal.
+- **Follow-ups:** wasm PWA icons; android Resizetizer splash-raster registration under Uno.Sdk single-project (worked around with a manual `splash_screen.png`); windows `dotnet run`/winapp dev-loop.
+
+---
+
 ## Implementation outcomes — P0 + P1 (desktop) ✅ done & committed
 
 **The hybrid approach is validated end-to-end on desktop.** Key empirical results for P2+ implementers:
