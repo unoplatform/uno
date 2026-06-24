@@ -2855,6 +2855,13 @@
 
 		  <!-- Layout.CreateDefaultItemTransitionProvider narrowed from public to protected internal virtual to match WinUI's protected virtual (docs: learn.microsoft.com/.../layout.createdefaultitemtransitionprovider). Uno adds 'internal' so ItemsRepeater (same assembly) can invoke the protected-for-external method. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
+
+		  <!-- AnimatedIcon rework: the Uno-specific legacy IAnimatedVisualSource hooks
+		       (Load/Unload/Update/Play/Pause/Resume/Stop/SetProgress/Measure) are no-ops
+		       that never existed in WinUI. They are now explicit interface implementations
+		       on the generated Animated*VisualSource sources, so they drop off the concrete
+		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
 	  </Methods>
 
 	  <Events>

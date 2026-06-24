@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -10,6 +11,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -26,7 +28,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// via the IRangeValueProvider pattern. These map to aria-valuenow, aria-valuemin, aria-valuemax.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Focused_Then_Value_MinMax_Exposed()
 		{
@@ -58,7 +59,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// pressed on the semantic input[type=range] element.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_ArrowKey_Pressed_Then_Value_Changes()
 		{
@@ -92,7 +92,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// aria-valuenow attribute stays in sync.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Value_Changes_Then_AriaValueNow_Updates()
 		{
@@ -132,7 +131,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that slider automation peer has correct control type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Created_Then_Has_Slider_ControlType()
 		{
@@ -152,7 +150,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that a slider with custom range boundaries works correctly.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Has_Custom_Range_Then_Values_Are_Correct()
 		{
@@ -182,7 +179,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that a read-only slider cannot be modified via automation.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Is_Disabled_Then_IsReadOnly()
 		{
@@ -210,7 +206,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that slider with AutomationProperties.Name exposes correct name.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Has_AutomationName_Then_Name_Is_Exposed()
 		{
@@ -228,12 +223,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("Volume control", name, "Automation name should be exposed");
 		}
 
+		/// <summary>
+		/// T029/T032 (cross-platform): Verifies that <see cref="AutomationProperties.Level"/>,
+		/// <see cref="AutomationProperties.ItemStatus"/> and <see cref="AutomationProperties.Culture"/>
+		/// round-trip on a Slider so unrelated platforms still smoke-test the DP set/read path.
+		/// The actual a11y-mapping assertions (aria-level, aria-busy, lang) live in the
+		/// SkiaWasm-gated DOM tests below; this one only guards against an attached-DP regression.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AutomationProperties_Set_Then_RoundTrip()
+		{
+			var slider = new Slider { Value = 50 };
+			AutomationProperties.SetLevel(slider, 3);
+			AutomationProperties.SetItemStatus(slider, "Busy");
+			AutomationProperties.SetCulture(slider, 1033); // en-US
+
+			await UITestHelper.Load(slider);
+
+			Assert.AreEqual(3, AutomationProperties.GetLevel(slider));
+			Assert.AreEqual("Busy", AutomationProperties.GetItemStatus(slider));
+			Assert.AreEqual(1033, AutomationProperties.GetCulture(slider));
+		}
+
 #if HAS_UNO
 		/// <summary>
 		/// Verifies that AriaMapper correctly identifies slider semantic element type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_SemanticElementType_Is_Slider()
 		{
@@ -253,7 +270,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper produces correct ARIA role for sliders.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_AriaRole_Is_Slider()
 		{
@@ -273,7 +289,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly detects range value capability.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_PatternCapabilities_CanRangeValue_Is_True()
 		{
@@ -289,5 +304,133 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(capabilities.CanRangeValue, "Slider should have CanRangeValue capability");
 		}
 #endif
+#if __SKIA__
+
+		/// <summary>
+		/// T026/FR-016 (WASM DOM): a Slider emits a native &lt;input type="range"&gt; whose aria-valuenow/min/max
+		/// reflect the XAML Value/Minimum/Maximum.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Slider_Then_Dom_ValueNow_Min_Max_Are_Set()
+		{
+			var slider = new Slider { Minimum = 0, Maximum = 100, Value = 50 };
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("input", GetSemanticElementTagName(slider), "A Slider must emit a native <input> semantic element.");
+			Assert.AreEqual("range", GetSemanticInputType(slider), "A Slider must emit input[type=range].");
+			Assert.AreEqual("50", GetSemanticAttribute(slider, "aria-valuenow"), "A Slider must emit aria-valuenow reflecting its Value.");
+			Assert.AreEqual("0", GetSemanticAttribute(slider, "aria-valuemin"), "A Slider must emit aria-valuemin reflecting its Minimum.");
+			Assert.AreEqual("100", GetSemanticAttribute(slider, "aria-valuemax"), "A Slider must emit aria-valuemax reflecting its Maximum.");
+		}
+
+		/// <summary>
+		/// T028/FR-016 (WASM DOM): when the Slider Value changes at runtime, aria-valuenow live-syncs to the new
+		/// value on the semantic element.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Slider_Value_Changes_Then_Dom_ValueNow_Live_Syncs()
+		{
+			var slider = new Slider { Minimum = 0, Maximum = 100, Value = 25 };
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("25", GetSemanticAttribute(slider, "aria-valuenow"), "Initial aria-valuenow must reflect the starting Value.");
+
+			slider.Value = 75;
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(slider, "aria-valuenow") == "75", timeoutMS: 5000, message: "Timed out waiting for aria-valuenow to live-sync to the new Slider value.");
+
+			Assert.AreEqual("75", GetSemanticAttribute(slider, "aria-valuenow"), "A runtime Slider Value change must live-update aria-valuenow.");
+		}
+
+		/// <summary>
+		/// T027/FR-016 (WASM DOM): a vertical Slider emits aria-orientation="vertical" on the semantic
+		/// input[type=range], so assistive tech announces the axis.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Slider_Is_Vertical_Then_Dom_AriaOrientation_Is_Vertical()
+		{
+			var slider = new Slider { Orientation = Orientation.Vertical, Value = 50 };
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the vertical slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("vertical", GetSemanticAttribute(slider, "aria-orientation"), "A vertical Slider must emit aria-orientation=\"vertical\".");
+		}
+
+		/// <summary>
+		/// T029/FR-018 (WASM DOM): a non-zero AutomationProperties.Level emits aria-level on
+		/// the semantic node, so AT exposes the structural depth.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_AutomationLevel_Set_Then_Dom_AriaLevel_Is_Set()
+		{
+			var slider = new Slider { Value = 50 };
+			AutomationProperties.SetLevel(slider, 3);
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("3", GetSemanticAttribute(slider, "aria-level"), "AutomationProperties.Level=3 must emit aria-level=\"3\".");
+		}
+
+		/// <summary>
+		/// T032/FR-019 (WASM DOM): a busy ItemStatus emits aria-busy="true" and a Culture LCID
+		/// emits the matching lang attribute on the semantic node.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ItemStatus_And_Culture_Set_Then_Dom_AriaBusy_And_Lang_Are_Set()
+		{
+			var slider = new Slider { Value = 50 };
+			AutomationProperties.SetItemStatus(slider, "Busy");
+			AutomationProperties.SetCulture(slider, 1033); // en-US
+
+			await UITestHelper.Load(slider);
+			slider.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("true", GetSemanticAttribute(slider, "aria-busy"), "ItemStatus=\"Busy\" must emit aria-busy=\"true\".");
+			Assert.AreEqual("en-US", GetSemanticAttribute(slider, "lang"), "Culture LCID 1033 must emit lang=\"en-US\".");
+		}
+
+
+
+
+
+
+
+#endif
+
 	}
 }

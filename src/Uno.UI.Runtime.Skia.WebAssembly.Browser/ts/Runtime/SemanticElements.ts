@@ -9,6 +9,7 @@ namespace Uno.UI.Runtime.Skia {
 		| 'togglebutton' // <button aria-pressed>
 		| 'switch'       // <button role="switch" aria-checked>
 		| 'heading'      // <h1>-<h6> (VoiceOver rotor heading navigation)
+		| 'text'         // <p> (block) / <span> (inline) non-interactive body text
 		| 'checkbox'     // <input type="checkbox">
 		| 'radio'        // <input type="radio">
 		| 'slider'       // <input type="range">
@@ -48,6 +49,32 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		private static getCallbacks() {
 			return Accessibility.getCallbacks();
+		}
+
+		/**
+		 * Sets an ARIA string attribute only when the value has meaningful (non-whitespace)
+		 * content; otherwise the attribute is removed/omitted entirely.
+		 *
+		 * Emitting an empty (or whitespace-only) value such as `aria-label=""` is worse than
+		 * omitting it: some screen readers announce "blank", and an empty value explicitly
+		 * clears the accessible name rather than letting other name sources apply. A control
+		 * with no accessible name must therefore have NO such attribute at all. This mirrors
+		 * the omit-when-empty guard used by the generic Accessibility.ts setters.
+		 */
+		private static setAriaStringAttribute(
+			element: HTMLElement,
+			name: string,
+			value: string | null | undefined
+		): void {
+			// Normalize: set the trimmed value (not the raw input). Leading/trailing whitespace
+			// in aria-label causes inconsistent AT announcements (e.g. "  Name  " announces
+			// differently across screen readers) and is never the author's intent.
+			const trimmed = value ? value.trim() : "";
+			if (trimmed.length > 0) {
+				element.setAttribute(name, trimmed);
+			} else {
+				element.removeAttribute(name);
+			}
 		}
 
 		/**
@@ -145,18 +172,16 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			label: string | null,
-			disabled: boolean
+			disabled: boolean,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus and interaction
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			// A disabled control must not be a tab stop (T017), regardless of the peer focusability.
+			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			if (disabled) {
 				element.disabled = true;
@@ -193,20 +218,19 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			pressed: string,
-			disabled: boolean
+			disabled: boolean,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			// A disabled control must not be a tab stop (T017).
+			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
 			// aria-pressed for toggle button pattern (distinct from aria-checked for checkboxes)
 			element.setAttribute('aria-pressed', pressed);
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			if (disabled) {
 				element.disabled = true;
@@ -242,21 +266,20 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			isOn: string,
-			disabled: boolean
+			disabled: boolean,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			// A disabled control must not be a tab stop (T017).
+			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
 			// role="switch" with aria-checked for ToggleSwitch (ARIA switch pattern)
 			element.setAttribute('role', 'switch');
 			element.setAttribute('aria-checked', isOn);
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			if (disabled) {
 				element.disabled = true;
@@ -294,15 +317,14 @@ namespace Uno.UI.Runtime.Skia {
 			max: number,
 			step: number,
 			orientation: string,
-			valueText: string | null
+			valueText: string | null,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('input');
 			element.type = 'range';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus and interaction
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			Accessibility.updateElementFocusability(element, isFocusable);
 
 			// Set range properties
 			element.min = String(min);
@@ -317,13 +339,16 @@ namespace Uno.UI.Runtime.Skia {
 
 			// aria-valuetext: VoiceOver reads this instead of the raw number
 			// when a human-readable value description is available
-			if (valueText) {
-				element.setAttribute('aria-valuetext', valueText);
-			}
+			this.setAriaStringAttribute(element, 'aria-valuetext', valueText);
+
+			// aria-orientation reflects the XAML Slider.Orientation so screen readers
+			// announce the axis. Emitted for both axes (the implicit default is
+			// horizontal, but being explicit is clearer for AT and tests).
+			element.setAttribute('aria-orientation', orientation === 'vertical' ? 'vertical' : 'horizontal');
 
 			if (orientation === 'vertical') {
-				// Some browsers support orient attribute, others need CSS
-				element.setAttribute('orient', 'vertical');
+				// CSS still drives the native vertical rendering; this is presentational
+				// only and complements the semantic aria-orientation above.
 				element.style.writingMode = 'bt-lr';
 				element.style.webkitAppearance = 'slider-vertical';
 			}
@@ -353,19 +378,16 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			checkedState: string | null,
-			label: string | null
+			label: string | null,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('input');
 			element.type = 'checkbox';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus and interaction
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			Accessibility.updateElementFocusability(element, isFocusable);
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			// Set checked state (WCAG 4.1.2: aria-checked must match visual state)
 			if (checkedState === 'true') {
@@ -404,19 +426,22 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			checked: boolean,
 			label: string | null,
-			groupName: string | null
+			groupName: string | null,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('input');
 			element.type = 'radio';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus and interaction
-			element.tabIndex = -1;
+			// Roving tabindex: only the checked radio in a group is a tab stop; others are
+			// reachable via arrow keys. A non-focusable (e.g. disabled) radio is never a
+			// tab stop (T017). When no radio in the group is checked yet, the APG roving
+			// pattern requires exactly one tab stop -- promote this radio if it is the
+			// first focusable one in its name group (checked below, after append).
+			element.tabIndex = (isFocusable && checked) ? 0 : -1;
 			element.style.pointerEvents = 'none';
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			if (groupName) {
 				element.name = groupName;
@@ -426,14 +451,35 @@ namespace Uno.UI.Runtime.Skia {
 
 			const callbacks = this.getCallbacks();
 
-			// Change event handler for toggle events
+			// RadioButton exposes ISelectionItemProvider (not Toggle); route DOM activation to
+			// OnSelection -> Select(). onToggle would be a no-op (the radio peer has no Toggle pattern).
 			element.addEventListener('change', () => {
-				if (callbacks.onToggle) {
-					callbacks.onToggle(handle);
+				if (callbacks.onSelection) {
+					callbacks.onSelection(handle);
 				}
 			});
 
 			this.appendToParent(element, parentHandle, index);
+
+			// APG roving-tabindex fallback: if this focusable, unchecked radio joined a
+			// named group that still has no tab stop, promote it to tabIndex=0 so the
+			// group can be reached via Tab. Without this, a group where nothing is
+			// initially checked would be entirely unreachable from the keyboard.
+			if (isFocusable && !checked && groupName) {
+				const groupRadios = document.querySelectorAll<HTMLInputElement>(
+					`input[type="radio"][name="${CSS.escape(groupName)}"]`);
+				let hasTabStop = false;
+				for (let i = 0; i < groupRadios.length; i++) {
+					const r = groupRadios[i];
+					if (r !== element && r.tabIndex === 0) {
+						hasTabStop = true;
+						break;
+					}
+				}
+				if (!hasTabStop) {
+					element.tabIndex = 0;
+				}
+			}
 		}
 
 		/**
@@ -450,15 +496,18 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			level: number,
-			label: string | null
+			label: string | null,
+			_isFocusable: boolean
 		): void {
-			// Clamp heading level to valid h1-h6 range
-			const clampedLevel = Math.max(1, Math.min(6, level));
-			const element = document.createElement(`h${clampedLevel}`) as HTMLHeadingElement;
+			// HTML only has <h1>-<h6>, so the tag is clamped to that range, but the TRUE WinUI
+			// level (1-9) is preserved on aria-level so assistive tech sees the real depth (FR-011).
+			const trueLevel = Math.max(1, Math.min(9, level));
+			const tagLevel = Math.min(6, trueLevel);
+			const element = document.createElement(`h${tagLevel}`) as HTMLHeadingElement;
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus for screen readers
-			element.tabIndex = -1;
+			// A heading is a structural/rotor landmark, not a tab stop: it gets NO tabindex (T014).
+			// _isFocusable is accepted for interop-signature uniformity but intentionally unused here.
 			element.style.pointerEvents = 'none';
 
 			// Reset default heading styles so they don't affect layout
@@ -467,12 +516,41 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.fontSize = 'inherit';
 			element.style.fontWeight = 'inherit';
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-				element.textContent = label;
+			const trimmedLabel = (label ?? '').trim();
+			this.setAriaStringAttribute(element, 'aria-label', label);
+			if (trimmedLabel.length > 0) {
+				element.textContent = trimmedLabel;
 			}
 
-			element.setAttribute('aria-level', String(clampedLevel));
+			element.setAttribute('aria-level', String(trueLevel));
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		public static createTextElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			text: string,
+			isBlock: boolean,
+			_isFocusable: boolean
+		): void {
+			const element = document.createElement(isBlock ? 'p' : 'span');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+
+			// Standalone body text: non-interactive, not a tab stop. Only textContent is exposed
+			// (no aria-label, no role) so it is read once as plain text. _isFocusable is unused.
+			element.style.pointerEvents = 'none';
+			element.style.margin = '0';
+			element.style.padding = '0';
+			element.style.fontSize = 'inherit';
+			element.style.fontWeight = 'inherit';
+
+			element.textContent = text;
 
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -494,7 +572,8 @@ namespace Uno.UI.Runtime.Skia {
 			password: boolean,
 			isReadOnly: boolean,
 			selectionStart: number,
-			selectionEnd: number
+			selectionEnd: number,
+			isFocusable: boolean
 		): void {
 			let element: HTMLInputElement | HTMLTextAreaElement;
 
@@ -507,9 +586,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			// Enable focus and interaction
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			Accessibility.updateElementFocusability(element, isFocusable);
 
 			element.value = value;
 			const maxLen = value.length;
@@ -573,20 +650,19 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			expanded: boolean,
-			selectedValue: string | null
+			selectedValue: string | null,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'combobox');
 			element.setAttribute('aria-expanded', String(expanded));
-			element.setAttribute('aria-haspopup', 'listbox');
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			// aria-haspopup is applied post-create from the C# value (AriaAttributes.HasPopup),
+			// not hardcoded here (FR-028).
+			Accessibility.updateElementFocusability(element, isFocusable);
 
-			if (selectedValue) {
-				element.setAttribute('aria-label', selectedValue);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
 
 			const callbacks = this.getCallbacks();
 
@@ -631,12 +707,15 @@ namespace Uno.UI.Runtime.Skia {
 			y: number,
 			width: number,
 			height: number,
-			multiselect: boolean
+			multiselect: boolean,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'listbox');
+			// Roving model (T015): the composite container is not itself a tab stop; focus rests on
+			// the active descendant item. _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
@@ -661,7 +740,8 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			selected: boolean,
 			positionInSet: number,
-			sizeOfSet: number
+			sizeOfSet: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
@@ -670,7 +750,9 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('aria-selected', String(selected));
 			element.setAttribute('aria-posinset', String(positionInSet));
 			element.setAttribute('aria-setsize', String(sizeOfSet));
-			element.tabIndex = -1; // Focusable but not in tab order (parent listbox manages focus)
+			// Composite item stays at -1 (parent listbox manages focus via roving / activedescendant).
+			// _isFocusable is accepted for signature uniformity.
+			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			const callbacks = this.getCallbacks();
@@ -837,18 +919,16 @@ namespace Uno.UI.Runtime.Skia {
 			y: number,
 			width: number,
 			height: number,
-			label: string | null
+			label: string | null,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('a');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
-			element.tabIndex = -1;
-			element.style.pointerEvents = 'none';
+			Accessibility.updateElementFocusability(element, isFocusable);
 			// Native <a> has implicit role="link" — no need to set explicitly
 
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 
 			const callbacks = this.getCallbacks();
 
@@ -884,16 +964,17 @@ namespace Uno.UI.Runtime.Skia {
 			y: number,
 			width: number,
 			height: number,
-			label: string | null
+			label: string | null,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tablist');
+			// Roving model (T015): the composite container is not itself a tab stop; the active tab is.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			this.appendToParent(element, parentHandle, index);
 		}
 
@@ -911,17 +992,17 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			selected: boolean,
 			positionInSet: number,
-			sizeOfSet: number
+			sizeOfSet: number,
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tab');
 			element.setAttribute('aria-selected', String(selected));
-			element.tabIndex = -1;
+			// Roving tabindex: only the selected tab is a tab stop; a non-focusable tab is never one.
+			element.tabIndex = (isFocusable && selected) ? 0 : -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (positionInSet > 0 && sizeOfSet > 0) {
 				element.setAttribute('aria-posinset', String(positionInSet));
 				element.setAttribute('aria-setsize', String(sizeOfSet));
@@ -957,16 +1038,17 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			label: string | null,
-			multiselectable: boolean
+			multiselectable: boolean,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'tree');
+			// Roving model (T015): the composite container is not itself a tab stop; the active treeitem is.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (multiselectable) {
 				element.setAttribute('aria-multiselectable', 'true');
 			}
@@ -989,16 +1071,17 @@ namespace Uno.UI.Runtime.Skia {
 			expanded: string,
 			selected: boolean,
 			positionInSet: number,
-			sizeOfSet: number
+			sizeOfSet: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'treeitem');
+			// Composite item stays at -1 (parent tree manages focus via roving / activedescendant).
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (level > 0) {
 				element.setAttribute('aria-level', String(level));
 			}
@@ -1105,16 +1188,17 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			rowCount: number,
-			colCount: number
+			colCount: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('table');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'grid');
+			// Roving model (T015): the composite container is not itself a tab stop; the active cell is.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (rowCount > 0) {
 				element.setAttribute('aria-rowcount', String(rowCount));
 			}
@@ -1135,12 +1219,15 @@ namespace Uno.UI.Runtime.Skia {
 			y: number,
 			width: number,
 			height: number,
-			rowIndex: number
+			rowIndex: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'row');
 			element.style.pointerEvents = 'none';
+			// A row is a structural grouping, not a tab stop: it gets no tabindex.
+			// _isFocusable is accepted for signature uniformity.
 			if (rowIndex > 0) {
 				element.setAttribute('aria-rowindex', String(rowIndex));
 			}
@@ -1160,16 +1247,17 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			rowIndex: number,
-			colIndex: number
+			colIndex: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'gridcell');
+			// Composite item stays at -1 (parent grid manages focus via roving / activedescendant).
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (rowIndex > 0) {
 				element.setAttribute('aria-rowindex', String(rowIndex));
 			}
@@ -1191,16 +1279,17 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			label: string | null,
-			colIndex: number
+			colIndex: number,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'columnheader');
+			// Composite item stays at -1 (parent grid manages focus via roving / activedescendant).
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (colIndex > 0) {
 				element.setAttribute('aria-colindex', String(colIndex));
 			}
@@ -1218,16 +1307,17 @@ namespace Uno.UI.Runtime.Skia {
 			y: number,
 			width: number,
 			height: number,
-			label: string | null
+			label: string | null,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'menu');
+			// Roving model (T015): the composite container is not itself a tab stop; the active menuitem is.
+			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			this.appendToParent(element, parentHandle, index);
 		}
 
@@ -1244,16 +1334,17 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			disabled: boolean,
-			hasSubmenu: boolean
+			hasSubmenu: boolean,
+			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'menuitem');
+			// Composite item stays at -1 (parent menu manages focus via roving). A disabled menuitem
+			// is likewise not a tab stop (T017). _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
-			if (label) {
-				element.setAttribute('aria-label', label);
-			}
+			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (disabled) {
 				element.setAttribute('aria-disabled', 'true');
 			}
@@ -1372,6 +1463,9 @@ namespace Uno.UI.Runtime.Skia {
 			element.id = `uno-semantics-${containerHandle}`;
 			element.setAttribute('role', role);
 			element.style.position = 'absolute';
+			// Roving model (T015): the virtualized composite container is not itself a tab stop;
+			// focus rests on the active descendant item, consistent with createListBoxElement.
+			element.tabIndex = -1;
 
 			if (label) {
 				element.setAttribute('aria-label', label);

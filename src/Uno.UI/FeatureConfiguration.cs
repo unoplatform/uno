@@ -17,6 +17,21 @@ namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		/// <summary>
+		/// Configuration for collectible AssemblyLoadContext (secondary-app) teardown.
+		/// </summary>
+		public static class Alc
+		{
+			/// <summary>
+			/// When true, a failure to read an <see cref="System.Runtime.Loader.AssemblyLoadContext"/>'s
+			/// unload state (e.g. a future runtime renaming the private state field) throws instead of
+			/// silently falling back. The fallback keeps teardown leak-safe, but it would also let a
+			/// broken read silently degrade every ALC cleanup scenario — enable this in tests/CI so such
+			/// a regression fails loudly rather than going unnoticed. Defaults to false.
+			/// </summary>
+			public static bool ThrowOnUnloadStateReadFailure { get; set; }
+		}
+
 		public static class ApiInformation
 		{
 			/// <summary>
@@ -826,6 +841,36 @@ namespace Uno.UI
 #if DEBUG
 				= true;
 #endif
+
+			/// <summary>
+			/// Enables single sign-on using the OS primary account (for example the Microsoft Entra ID / Azure AD
+			/// account the user is signed into Windows with) when the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> authenticates against
+			/// supporting resources.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>Windows (Skia Desktop) only.</b> The value is passed to the underlying CoreWebView2 environment
+			/// options when the environment is first created. It is a no-op on every other target, and on the Windows
+			/// App SDK (WinUI) target where SSO is configured through <c>CoreWebView2EnvironmentOptions</c> directly.</para>
+			/// <para>Must be set once during application startup, before any <c>WebView2</c> is materialized. The
+			/// CoreWebView2 environment is shared process-wide per user-data folder, so changing this after the first
+			/// <c>WebView2</c> is created has no effect (and creating a second environment with different options throws).</para>
+			/// <para>Defaults to <c>false</c>, matching the WebView2 default.</para>
+			/// </remarks>
+			public static bool AllowSingleSignOnUsingOSPrimaryAccount { get; set; }
+
+			/// <summary>
+			/// Additional command-line switches passed to the browser process backing the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/>
+			/// (for example proxy configuration or Chromium feature flags), useful in locked-down or managed environments.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>Windows (Skia Desktop) only.</b> The value is applied to the underlying CoreWebView2 environment
+			/// options when the environment is first created. It is a no-op on every other target, and on the Windows
+			/// App SDK (WinUI) target where <c>CoreWebView2EnvironmentOptions.AdditionalBrowserArguments</c> is used directly.</para>
+			/// <para>Must be set once during application startup, before any <c>WebView2</c> is materialized (see
+			/// <see cref="AllowSingleSignOnUsingOSPrimaryAccount"/> for why). Refer to the WebView2 documentation for the
+			/// list of supported switches.</para>
+			/// </remarks>
+			public static string AdditionalBrowserArguments { get; set; }
 
 #if __IOS__ || UNO_REFERENCE_API
 			/// <summary>

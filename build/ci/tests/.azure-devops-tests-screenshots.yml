@@ -4,7 +4,7 @@ parameters:
 jobs:
 
 - job: UITests_Screenshots_Compare
-  displayName: 'UI Tests Screenshots Comparison'
+  displayName: 'Screenshot Comparison'
 
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 0

@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS0109
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -10,7 +11,6 @@ using Uno.Extensions;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
-using System;
 using Uno.UI;
 using System.Collections;
 using System.Diagnostics;
@@ -341,9 +341,61 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				AutomationHelper.RaiseEventIfListener(this, AutomationEvents.LiveRegionChanged);
 			}
+
+			RaiseAutomationNameChangedIfNeeded(oldValue, newValue);
 		}
 
 		partial void OnTextChangedPartial();
+
+		/// <summary>
+		/// When the TextBlock's accessible name is derived from its <see cref="Text"/> (i.e. no
+		/// explicit <see cref="AutomationProperties.NameProperty"/> overrides it), a runtime Text
+		/// change also changes the accessible name. UI Automation must be notified so assistive
+		/// technologies (and the semantic DOM on Skia-WASM) re-read the name; otherwise the
+		/// accessibility tree keeps the stale name. In WinUI3 the OS UIA framework derives and
+		/// re-evaluates the Name from the text automatically — we replicate that here.
+		/// </summary>
+		private void RaiseAutomationNameChangedIfNeeded(string oldValue, string newValue)
+		{
+#if __SKIA__
+			// Only the accessible-name-from-Text case matters: an explicit AutomationProperties.Name
+			// takes precedence in GetNameCore and is already routed via OnNamePropertyChanged, so
+			// raising here would be redundant (and would report an unchanged name).
+			if (!string.IsNullOrEmpty(AutomationProperties.GetName(this)))
+			{
+				return;
+			}
+
+			// AutomationProperties.LabeledBy also overrides the Text-derived name. When it's set,
+			// the accessible name comes from the labeller (which didn't change with our Text), so
+			// reporting (oldText -> newText) here would emit a bogus name-change notification.
+			if (AutomationProperties.GetLabeledBy(this) is not null)
+			{
+				return;
+			}
+
+			var listener = AutomationPeer.AutomationPeerListener;
+			if (listener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) != true)
+			{
+				return;
+			}
+
+			if (GetOrCreateAutomationPeer() is { } peer)
+			{
+				// Confirm the peer's resolved name truly tracks Text (e.g. ContentPresenter / inline
+				// composition could divert it). If not, oldValue/newValue would not be valid old/new
+				// accessible names and we'd emit a misleading event.
+				var newName = peer.GetName() ?? string.Empty;
+				var newText = newValue ?? string.Empty;
+				if (!string.Equals(newName, newText, StringComparison.Ordinal))
+				{
+					return;
+				}
+
+				listener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.NameProperty, oldValue ?? string.Empty, newName);
+			}
+#endif
+		}
 
 		#endregion
 

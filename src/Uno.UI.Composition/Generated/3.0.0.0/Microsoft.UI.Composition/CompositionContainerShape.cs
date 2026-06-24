@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionContainerShape : global::Microsoft.UI.Composition.CompositionShape
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionContainerShape()
-		{
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionShapeCollection Shapes
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionContainerShape", "Shapes");
-			}
-		}
-#endif
+		// Skipping already declared property Shapes
 		// Forced skipping of method Microsoft.UI.Composition.CompositionContainerShape.Shapes.get
 	}
 }

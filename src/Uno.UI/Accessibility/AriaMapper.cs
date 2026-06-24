@@ -102,8 +102,30 @@ public static class AriaMapper
 			AutomationControlType.DataItem => SemanticElementType.GridRow,
 			AutomationControlType.Menu => SemanticElementType.Menu,
 			AutomationControlType.MenuItem => SemanticElementType.MenuItem,
+			AutomationControlType.Text => GetTextSemanticType(owner),
 			_ => SemanticElementType.Generic
 		};
+	}
+
+	/// <summary>
+	/// Classifies a non-heading text element. A TextBlock reaches the factory either as plain
+	/// standalone body text (FR-015 — emit a bare &lt;p&gt; carrying only its text) or because it was
+	/// kept for an explicit automation property (Name / Landmark / LiveSetting / AutomationId), which
+	/// needs the full ARIA surface (role, aria-label, aria-live, xamlautomationid). Only the former is
+	/// a Text element; the latter takes the generic path so those attributes are still emitted.
+	/// </summary>
+	private static SemanticElementType GetTextSemanticType(UIElement? owner)
+	{
+		if (owner is not null &&
+			(!string.IsNullOrEmpty(AutomationProperties.GetName(owner)) ||
+			AutomationProperties.GetLandmarkType(owner) != AutomationLandmarkType.None ||
+			AutomationProperties.GetLiveSetting(owner) != AutomationLiveSetting.Off ||
+			!string.IsNullOrEmpty(AutomationProperties.GetAutomationId(owner))))
+		{
+			return SemanticElementType.Generic;
+		}
+
+		return SemanticElementType.Text;
 	}
 
 	private static SemanticElementType GetButtonType(AutomationPeer peer)
@@ -186,18 +208,41 @@ public static class AriaMapper
 			attributes.Required = true;
 		}
 
+		// aria-invalid has inverted polarity: IsDataValidForForm() defaults to true (valid),
+		// so the attribute is emitted only when the field is explicitly marked invalid (WCAG 3.3.1).
+		if (!peer.IsDataValidForForm())
+		{
+			attributes.Invalid = true;
+		}
+
 		// VoiceOver uses landmark roles for rotor navigation
 		var landmarkType = peer.GetLandmarkType();
 		if (landmarkType != AutomationLandmarkType.None)
 		{
 			attributes.LandmarkRole = GetLandmarkRole(landmarkType);
+		}
 
-			if (landmarkType == AutomationLandmarkType.Custom)
+		// aria-roledescription is sourced from the AUTHORED AutomationProperties.LocalizedLandmarkType /
+		// LocalizedControlType attached properties (null when unset) — NOT the peer's GetLocalized*Type(),
+		// which DEFAULTS to the role name (e.g. "button") and would restate the role on every named
+		// control, an ARIA anti-pattern. roledescription is also not a name substitute (FR-014/FR-025):
+		// emit it only when the element has an accessible name AND the app explicitly authored a type.
+		if (!string.IsNullOrEmpty(attributes.Label)
+			&& peer is FrameworkElementAutomationPeer { Owner: { } roleDescriptionOwner })
+		{
+			var localizedLandmarkType = landmarkType != AutomationLandmarkType.None
+				? AutomationProperties.GetLocalizedLandmarkType(roleDescriptionOwner)
+				: null;
+			if (!string.IsNullOrEmpty(localizedLandmarkType))
 			{
-				var localizedLandmarkType = peer.GetLocalizedLandmarkType();
-				if (!string.IsNullOrEmpty(localizedLandmarkType))
+				attributes.RoleDescription = localizedLandmarkType;
+			}
+			else
+			{
+				var localizedControlType = AutomationProperties.GetLocalizedControlType(roleDescriptionOwner);
+				if (!string.IsNullOrEmpty(localizedControlType))
 				{
-					attributes.RoleDescription = localizedLandmarkType;
+					attributes.RoleDescription = localizedControlType;
 				}
 			}
 		}
@@ -220,15 +265,20 @@ public static class AriaMapper
 			attributes.Level = (int)headingLevel;
 		}
 
-		// aria-keyshortcuts: WinUI3 surfaces both AcceleratorKey (e.g. "Ctrl+S") and AccessKey
-		// (mnemonic, e.g. "Alt+F"). NVDA, JAWS and VoiceOver announce key shortcuts when present.
+		// aria-keyshortcuts is sourced ONLY from AcceleratorKey (e.g. "Ctrl+S"), the activation
+		// shortcut NVDA/JAWS/VoiceOver announce. AccessKey is a mnemonic (e.g. "F" for Alt+F) and
+		// maps to the HTML `accesskey` attribute instead (FR-028) — conflating it into
+		// aria-keyshortcuts was a wrong-target mapping.
 		var acceleratorKey = peer.GetAcceleratorKey();
-		var accessKey = peer.GetAccessKey();
-		if (!string.IsNullOrEmpty(acceleratorKey) || !string.IsNullOrEmpty(accessKey))
+		if (!string.IsNullOrEmpty(acceleratorKey))
 		{
-			attributes.KeyShortcuts = string.IsNullOrEmpty(accessKey)
-				? acceleratorKey
-				: string.IsNullOrEmpty(acceleratorKey) ? accessKey : $"{acceleratorKey} {accessKey}";
+			attributes.KeyShortcuts = acceleratorKey;
+		}
+
+		var accessKey = peer.GetAccessKey();
+		if (!string.IsNullOrEmpty(accessKey))
+		{
+			attributes.AccessKey = accessKey;
 		}
 
 		// Pattern queries are wrapped in try-catch because some peers (e.g.,
@@ -264,6 +314,15 @@ public static class AriaMapper
 			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
 				attributes.Selected = selectionItemProvider.IsSelected;
+
+				// RadioButton renders as a native <input type="radio">; its state is the native
+				// "checked" property, not aria-selected (invalid on role="radio"). RadioButton's
+				// peer exposes only SelectionItem (not Toggle), so without this Checked stays null
+				// and the radio always renders unchecked.
+				if (controlType == AutomationControlType.RadioButton)
+				{
+					attributes.Checked = selectionItemProvider.IsSelected ? "true" : "false";
+				}
 			}
 			else if (peer is FrameworkElementAutomationPeer { Owner: SelectorItem selectorItem })
 			{
@@ -380,6 +439,9 @@ public static class AriaMapper
 				var contentString = contentControl.Content switch
 				{
 					string s => s,
+					// FR-033: a direct TextBlock content names the control (its inner text is otherwise
+					// unreachable — the visual child-walk only sees the ContentPresenter).
+					TextBlock textBlockContent => textBlockContent.Text,
 					// Avoid calling ToString() on UIElement / complex objects
 					UIElement => null,
 					_ => contentControl.Content.ToString()
@@ -412,6 +474,70 @@ public static class AriaMapper
 			System.Diagnostics.Debug.WriteLine($"[A11y] AriaMapper.ResolveLabel failed for {peer.GetType().Name}: {ex.Message}");
 			return null;
 		}
+	}
+
+	/// <summary>
+	/// Resolves the element that provides the accessible label for a peer's owner via
+	/// <see cref="AutomationProperties.LabeledByProperty"/> (FR-019). Distinct from <see cref="ResolveLabel"/>:
+	/// this returns the *labeller element* (so its semantic node id can be referenced by
+	/// <c>aria-labelledby</c>), rather than flattening the label into an <c>aria-label</c> string.
+	/// </summary>
+	/// <param name="peer">The automation peer whose owner may carry an <c>AutomationProperties.LabeledBy</c>.</param>
+	/// <returns>The labelling <see cref="UIElement"/>, or <c>null</c> when none is set or the peer has no owner.</returns>
+	public static UIElement? ResolveLabelledByElement(AutomationPeer peer)
+	{
+		if (peer is not FrameworkElementAutomationPeer frameworkPeer)
+		{
+			return null;
+		}
+
+		var owner = frameworkPeer.Owner;
+		if (owner is null)
+		{
+			return null;
+		}
+
+		// GetLabeledBy is declared non-nullable but returns null when the attached property is unset.
+		return AutomationProperties.GetLabeledBy(owner);
+	}
+
+	/// <summary>
+	/// Determines whether an element is actually scrollable for accessibility purposes (FR-013).
+	/// A ScrollViewer that cannot scroll its content is not a meaningful <c>role=region</c> landmark.
+	/// Scrollability is taken from the <see cref="IScrollProvider"/> pattern when present, falling back
+	/// to the element's <c>IsScrollPort</c> flag for scroll ports without a scroll-aware peer.
+	/// </summary>
+	/// <param name="peer">The automation peer (may expose <see cref="IScrollProvider"/>).</param>
+	/// <param name="owner">The owning UIElement, used for the <c>IsScrollPort</c> fallback.</param>
+	/// <returns>True when the element can scroll along at least one axis.</returns>
+	public static bool IsScrollable(AutomationPeer? peer, UIElement? owner)
+	{
+		if (peer?.GetPattern(PatternInterface.Scroll) is IScrollProvider scrollProvider)
+		{
+			return scrollProvider.HorizontallyScrollable || scrollProvider.VerticallyScrollable;
+		}
+
+		return owner?.IsScrollPort == true;
+	}
+
+	/// <summary>
+	/// Gates the <c>region</c> landmark role (FR-013/FR-014). A ScrollViewer (control type <c>Pane</c>)
+	/// or a custom landmark only earns <c>role=region</c> when it is actually scrollable AND has a real
+	/// accessible name resolved through <see cref="ResolveLabel"/> (never raw <c>GetName()</c> or a
+	/// descendant-text dump). An unnamed or non-scrollable candidate MUST NOT be exposed as a region,
+	/// since an unlabeled landmark is an axe "region must have a name" violation.
+	/// </summary>
+	/// <param name="peer">The automation peer.</param>
+	/// <param name="owner">The owning UIElement, used for the <c>IsScrollPort</c> fallback.</param>
+	/// <returns>True when the element qualifies as a named, scrollable region.</returns>
+	public static bool QualifiesAsNamedScrollRegion(AutomationPeer? peer, UIElement? owner)
+	{
+		if (peer is null)
+		{
+			return false;
+		}
+
+		return IsScrollable(peer, owner) && !string.IsNullOrEmpty(ResolveLabel(peer));
 	}
 
 	/// <summary>
@@ -458,6 +584,8 @@ public enum SemanticElementType
 {
 	/// <summary>div with ARIA role</summary>
 	Generic,
+	/// <summary>non-interactive <p>/<span> standalone body text (no role, no tabindex)</summary>
+	Text,
 	/// <summary>button element</summary>
 	Button,
 	/// <summary>heading element (h1-h6)</summary>
@@ -532,6 +660,9 @@ public class AriaAttributes
 	/// <summary>aria-required</summary>
 	public bool Required { get; set; }
 
+	/// <summary>aria-invalid (true when the form field's value is not valid for submission)</summary>
+	public bool Invalid { get; set; }
+
 	/// <summary>aria-valuenow</summary>
 	public double? ValueNow { get; set; }
 
@@ -577,8 +708,11 @@ public class AriaAttributes
 	/// <summary>aria-roledescription (custom role description for VoiceOver)</summary>
 	public string? RoleDescription { get; set; }
 
-	/// <summary>aria-keyshortcuts (formatted from AcceleratorKey / AccessKey)</summary>
+	/// <summary>aria-keyshortcuts (from AcceleratorKey only)</summary>
 	public string? KeyShortcuts { get; set; }
+
+	/// <summary>HTML accesskey attribute (from AccessKey mnemonic)</summary>
+	public string? AccessKey { get; set; }
 
 	/// <summary>aria-modal (true when the peer's IsDialog() is true)</summary>
 	public bool? Modal { get; set; }
