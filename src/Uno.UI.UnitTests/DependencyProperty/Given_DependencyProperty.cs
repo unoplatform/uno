@@ -1802,7 +1802,7 @@ namespace Uno.UI.Tests.BinderTests
 
 	#region DependencyObjects
 
-	partial class MockDependencyObject : DependencyObject
+	partial class MockDependencyObject : FrameworkElement
 	{
 
 	}

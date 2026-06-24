@@ -949,28 +949,10 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(2, parentChanged);
 		}
 
-		[TestMethod]
-		public void When_NonUI_DependencyObject_NonUISub_Content()
-		{
-			var SUT = new NonUIDependencyObject();
-			SUT.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
-			var SUT2 = new NonUIDependencyObject();
-			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
-			var model = new NonUIDependencyObject_Model();
-
-			Assert.AreEqual(-1, SUT2.MyValue);
-			Assert.AreEqual(-1, SUT.MyValue);
-
-			SUT.SubProperty = SUT2;
-
-			Assert.AreEqual(-1, SUT2.MyValue);
-			Assert.AreEqual(-1, SUT.MyValue);
-
-			SUT.DataContext = model;
-
-			Assert.AreEqual(0, SUT2.MyValue);
-			Assert.AreEqual(0, SUT.MyValue);
-		}
+		// BC58: removed When_NonUI_DependencyObject_NonUISub_Content — it set DataContext directly on a root
+		// non-FrameworkElement DependencyObject, which has no DataContext (WinUI parity). The FE-rooted variant
+		// below (When_UI_DependencyObject_NonUISub_Content) keeps coverage of a non-FE sub-object's binding
+		// resolving against the connected FrameworkElement's DataContext.
 
 		[TestMethod]
 		public void When_UI_DependencyObject_NonUISub_Content()
@@ -1096,7 +1078,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(0, SUT.MyProperty);
 		}
 
-		public partial class BaseTarget : DependencyObject
+		public partial class BaseTarget : FrameworkElement
 		{
 			private List<object> _dataContextChangedList = new List<object>();
 
@@ -1109,8 +1091,9 @@ namespace Uno.UI.Tests.BinderTests
 
 			public int DataContextChangedCount { get; private set; }
 
-			partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+			internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 			{
+				base.OnDataContextChanged(e);
 				_dataContextChangedList.Add(DataContext);
 				DataContextChangedCount++;
 			}
@@ -1417,7 +1400,7 @@ namespace Uno.UI.Tests.BinderTests
 	}
 
 
-	public partial class MyControl : DependencyObject
+	public partial class MyControl : FrameworkElement
 	{
 		public MyControl()
 		{

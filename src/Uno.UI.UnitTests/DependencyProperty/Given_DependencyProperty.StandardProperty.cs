@@ -36,14 +36,8 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 		}
 	}
 
-	public partial class MyObject : DependencyObject
+	public partial class MyObject : FrameworkElement
 	{
-		public string Name
-		{
-			get => _name;
-			set => _name = value;
-		}
-
 		#region InnerObject DependencyProperty
 
 		public MyObject InnerObject
@@ -64,7 +58,6 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 					propertyChangedCallback: (s, e) => ((MyObject)s)?.OnInnerObjectChanged(e)
 				)
 			);
-		private string _name;
 
 		private void OnInnerObjectChanged(DependencyPropertyChangedEventArgs e)
 		{

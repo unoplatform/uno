@@ -620,24 +620,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var groups = VisualStateManager.GetVisualStateGroups(root);
 
 			var visualStateGroup = groups.FirstOrDefault();
-			object visualStateGroupDataContext;
-			visualStateGroup.DataContextChanged += (s2, e2) => visualStateGroupDataContext = e2.NewValue;
-
 			var visualState = visualStateGroup.States.FirstOrDefault();
-			object visualStateDataContext;
-			visualStateGroup.DataContextChanged += (s2, e2) => visualStateDataContext = e2.NewValue;
-
 			var trigger = visualState.StateTriggers.FirstOrDefault() as StateTrigger;
-			object triggerDataContext;
-			trigger.DataContextChanged += (s2, e2) => triggerDataContext = e2.NewValue;
 
+			// DataContext is public on FrameworkElement only (WinUI parity); the StateTrigger keeps the internal
+			// inheritance mechanism so its {Binding} still resolves (asserted via trigger.IsActive below).
 			Assert.IsFalse(trigger.IsActive);
 			Assert.AreEqual(1, myPanel.Opacity);
 
 			r.DataContext = new { a = true };
 
 			Assert.IsTrue(trigger.IsActive);
-			Assert.IsNotNull(trigger.DataContext);
 			Assert.AreEqual(.5, myPanel.Opacity);
 		}
 
