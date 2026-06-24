@@ -140,6 +140,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		}
 
 		_ = XLib.XFlush(display);
+		_ = XLib.XFlush(topDisplay);
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
