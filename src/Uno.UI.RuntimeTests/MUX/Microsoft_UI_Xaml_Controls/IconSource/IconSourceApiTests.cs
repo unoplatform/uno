@@ -35,6 +35,11 @@ using System.Threading.Tasks;
 #if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 #endif
+
+#if HAS_UNO
+using Uno.UI;
+#endif
+
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
@@ -230,8 +235,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(FontStyle.Oblique, fontIcon.FontStyle);
 				Verify.AreEqual(250, iconSource.FontWeight.Weight);
 				Verify.AreEqual(250, fontIcon.FontWeight.Weight);
+#if !HAS_UNO
 				Verify.AreEqual("Segoe UI Symbol", iconSource.FontFamily.Source);
 				Verify.AreEqual("Segoe UI Symbol", fontIcon.FontFamily.Source);
+#else
+				// In case of Uno the Source is equal to FeatureConfiguration.Font.SymbolsFont
+				Verify.AreEqual(FeatureConfiguration.Font.SymbolsFont, iconSource.FontFamily.Source);
+				Verify.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontIcon.FontFamily.Source);
+#endif
 				Verify.AreEqual(true, iconSource.IsTextScaleFactorEnabled);
 				Verify.AreEqual(true, fontIcon.IsTextScaleFactorEnabled);
 				Verify.AreEqual(true, iconSource.MirroredWhenRightToLeft);

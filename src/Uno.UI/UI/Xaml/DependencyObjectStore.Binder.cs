@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 // fallback option for legacy DepObj from external library generated before templated-parent rework.
@@ -711,6 +711,7 @@ namespace Microsoft.UI.Xaml
 			if (_associatedParent == null)
 			{
 				_associatedParent = parent;
+				RegisterCollectibleParentAssociation(parent);
 			}
 			else
 			{

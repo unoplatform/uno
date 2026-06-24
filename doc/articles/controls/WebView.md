@@ -174,6 +174,37 @@ The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
 > [!NOTE]
 > The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
+## Customizing the WebView2 environment (Windows)
+
+On Windows (Skia Desktop) the `WebView2` is backed by the Microsoft Edge WebView2 runtime. A couple of environment-level options can be configured through `Uno.UI.FeatureConfiguration.WebView2` during application startup, before any `WebView2` is materialized. These are Windows-only and have no effect on other targets or on the Windows App SDK target (use `CoreWebView2EnvironmentOptions` directly there).
+
+### Single sign-on with the OS primary account
+
+Set `AllowSingleSignOnUsingOSPrimaryAccount` to `true` to let the `WebView2` use the OS primary account (for example, the Microsoft Entra ID / Azure AD account the user is signed into Windows with) for single sign-on against supporting resources:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount = true;
+    this.InitializeComponent();
+}
+```
+
+> [!NOTE]
+> In a heavily managed environment the flag is necessary but may not be sufficient: device-registration state and administrator policy can still gate Entra ID SSO. Confirm with the environment's administrators that WebView2 AAD SSO is permitted.
+
+### Additional browser arguments
+
+Set `AdditionalBrowserArguments` to pass extra command-line switches (such as proxy configuration or Chromium feature flags) to the underlying browser process, which is often required in locked-down environments:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AdditionalBrowserArguments = "--proxy-server=http://proxy.example:8080";
+    this.InitializeComponent();
+}
+```
+
 ## Linux specifics
 
 In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:

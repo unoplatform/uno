@@ -298,6 +298,21 @@ partial class Window
 
 		state.IsClosed = true;
 
+		// Capture the dying ALC BEFORE the content reference is cleared: at window-close time the
+		// secondary app's Unload() has not been initiated yet, so the delegate prune below cannot
+		// discriminate by unload state and needs the ALC identity explicitly. OwnerAssemblyLoadContext
+		// is authoritative — it stays correct even when the secondary app rooted a shared framework
+		// type (Frame, Grid, …) whose own type resolves to the default ALC. Fall back to the content
+		// type's ALC only when the owner was never captured.
+		var dyingAlc = OwnerAssemblyLoadContext;
+		if (dyingAlc is null
+			&& _secondaryAlcContent is { } secondaryContent
+			&& AssemblyLoadContext.GetLoadContext(secondaryContent.GetType().Assembly) is { IsCollectible: true } contentAlc
+			&& contentAlc != AssemblyLoadContext.Default)
+		{
+			dyingAlc = contentAlc;
+		}
+
 		// Clear content from host
 		var host = ContentHostOverride;
 		if (host is not null && ReferenceEquals(host.Content, _secondaryAlcContent))
@@ -338,6 +353,38 @@ partial class Window
 			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(Window).Log().Debug($"[ALC-CLEANUP] DisplayInformation.DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
+		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
+		// RemoveContentRoot has no other caller, so an ALC window's content root otherwise
+		// stays registered forever — and its Window.Closed subscribers (e.g. Hot Design's
+		// client host) keep the collectible ALC pinned via the coordinator's list:
+		// CoreServices → ContentRootCoordinator → ContentRoot → XamlIslandRoot → Window →
+		// Closed handlers → per-ALC subscriber → LoaderAllocator.
+		var alcContentRoot = _windowImplementation.XamlRoot?.VisualTree?.ContentRoot;
+		if (alcContentRoot is not null)
+		{
+			Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.RemoveContentRoot(alcContentRoot);
+		}
+
+		// WindowId-keyed statics (DisplayInformation, CoreDragDropManager's map, input managers,
+		// …) can retain the closed window's implementation graph. Rather than chasing every
+		// registry, strip the window-event subscriptions whose targets live in the collectible
+		// ALC (Closed/Activated/SizeChanged/VisibilityChanged on the implementation object).
+		// This window was removed from ApplicationHelper at InitializeAlcWindowMode, so the
+		// ALC-teardown window sweep in Application.CleanupNonDefaultAlcCaches never visits it —
+		// prune here, after RaiseClosed.
+		try
+		{
+			Application.PruneCollectibleDelegateFields(this, dyingAlc);
+			Application.PruneCollectibleDelegateFields(_windowImplementation, dyingAlc);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] window delegate prune error: {ex.GetType().Name}: {ex.Message}");
 			}
 		}
 
