@@ -50,31 +50,26 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 				WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
 				var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 
-				WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(
-					default,
-					PWSTR.From(userDataFolder),
-					null!, // no custom options needed
-					new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
+				CreateCoreWebView2Environment(userDataFolder, new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
+				{
+					if (errorCode.IsError)
 					{
-						if (errorCode.IsError)
+						tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 environment."));
+						return;
+					}
+
+					environment.CreateCoreWebView2Controller(new DirectN.HWND((IntPtr)Hwnd.Value), new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
+					{
+						if (controllerError.IsError)
 						{
-							tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 environment."));
+							tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
 							return;
 						}
 
-						environment.CreateCoreWebView2Controller(new DirectN.HWND((IntPtr)Hwnd.Value), new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
-						{
-							if (controllerError.IsError)
-							{
-								tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
-								return;
-							}
-
-							controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
-							tcs.TrySetResult((controller, (WebView2.ICoreWebView2_22)coreWebView));
-						})).ThrowOnError();
-					})
-				).ThrowOnError();
+						controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
+						tcs.TrySetResult((controller, (WebView2.ICoreWebView2_22)coreWebView));
+					})).ThrowOnError();
+				}));
 			}
 			catch (Exception e)
 			{
@@ -317,16 +312,17 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 		_coreWebView.RaiseHistoryChanged();
 	}
 
-	public override Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
+	public override unsafe Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		var tcs = new TaskCompletionSource<string?>();
-		_nativeWebView.ExecuteScript(PWSTR.From(script), new WebView2.Utilities.CoreWebView2ExecuteScriptCompletedHandler((errorCode, result) =>
-		{
-			if (errorCode.IsError)
-				tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("ExecuteScript failed."));
-			else
-				tcs.TrySetResult(result.ToString());
-		})).ThrowOnError();
+		fixed (char* p_script = script)
+			_nativeWebView.ExecuteScript(new PWSTR(p_script), new WebView2.Utilities.CoreWebView2ExecuteScriptCompletedHandler((errorCode, result) =>
+			{
+				if (errorCode.IsError)
+					tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("ExecuteScript failed."));
+				else
+					tcs.TrySetResult(result.ToString());
+			})).ThrowOnError();
 		return tcs.Task;
 	}
 
@@ -362,13 +358,22 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 		return ExecuteScriptAsync(adjustedScript.ToString(), token);
 	}
 
-	public override void ProcessNavigation(Uri uri) => _nativeWebView.Navigate(PWSTR.From(uri.ToString())).ThrowOnError();
+	public override unsafe void ProcessNavigation(Uri uri)
+	{
+		var uriString = uri.ToString();
+		fixed (char* p_uri = uriString)
+			_nativeWebView.Navigate(new PWSTR(p_uri)).ThrowOnError();
+	}
 
-	public override void ProcessNavigation(string html) => _nativeWebView.NavigateToString(PWSTR.From(html)).ThrowOnError();
+	public override unsafe void ProcessNavigation(string html)
+	{
+		fixed (char* p_html = html)
+			_nativeWebView.NavigateToString(new PWSTR(p_html)).ThrowOnError();
+	}
 
 	public override void ProcessNavigation(HttpRequestMessage httpRequestMessage) => ProcessNavigationCore(httpRequestMessage);
 
-	private void ProcessNavigationCore(HttpRequestMessage httpRequestMessage)
+	private unsafe void ProcessNavigationCore(HttpRequestMessage httpRequestMessage)
 	{
 		var builder = new StringBuilder();
 		foreach (var header in httpRequestMessage.Headers)
@@ -391,14 +396,20 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 			bodyIStream = new ByteArrayIStream(ms.ToArray());
 		}
 
-		env2.CreateWebResourceRequest(
-		PWSTR.From(httpRequestMessage.RequestUri!.ToString()),
-		PWSTR.From(httpRequestMessage.Method.Method),
-		bodyIStream!,
-		PWSTR.From(builder.ToString()),
-		out var request).ThrowOnError();
+		var requestUri = httpRequestMessage.RequestUri!.ToString();
+		var requestMethod = httpRequestMessage.Method.Method;
+		var requestHeaders = builder.ToString();
+		fixed (char* p_requestUri = requestUri, p_requestMethod = requestMethod, p_requestHeaders = requestHeaders)
+		{
+			env2.CreateWebResourceRequest(
+				new PWSTR(p_requestUri),
+				new PWSTR(p_requestMethod),
+				bodyIStream!,
+				new PWSTR(p_requestHeaders),
+				out var request).ThrowOnError();
 
-		_nativeWebView.NavigateWithWebResourceRequest(request).ThrowOnError();
+			_nativeWebView.NavigateWithWebResourceRequest(request).ThrowOnError();
+		}
 	}
 
 	public override void Reload()
@@ -411,29 +422,52 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 	public override void Stop()
 		=> _nativeWebView.Stop().ThrowOnError();
 
-	public void ClearVirtualHostNameToFolderMapping(string hostName)
-		=> _nativeWebView.ClearVirtualHostNameToFolderMapping(PWSTR.From(hostName)).ThrowOnError();
+	public unsafe void ClearVirtualHostNameToFolderMapping(string hostName)
+	{
+		fixed (char* p_hostName = hostName)
+			_nativeWebView.ClearVirtualHostNameToFolderMapping(new PWSTR(p_hostName)).ThrowOnError();
+	}
 
-	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
-		=> _nativeWebView.SetVirtualHostNameToFolderMapping(
-			PWSTR.From(hostName),
-			PWSTR.From(folderPath),
-			(WebView2.COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND)(int)accessKind
-		).ThrowOnError();
+	public unsafe void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
+	{
+		fixed (char* p_hostName = hostName, p_folderPath = folderPath)
+			_nativeWebView.SetVirtualHostNameToFolderMapping(
+				new PWSTR(p_hostName),
+				new PWSTR(p_folderPath),
+				(WebView2.COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND)(int)accessKind
+			).ThrowOnError();
+	}
 
-	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-		=> _nativeWebView.AddWebResourceRequestedFilterWithRequestSourceKinds(
-			PWSTR.From(uri),
-			(WebView2.COREWEBVIEW2_WEB_RESOURCE_CONTEXT)(int)resourceContext,
-			(WebView2.COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS)(int)requestSourceKinds
-		).ThrowOnError();
+	public unsafe void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		fixed (char* p_uri = uri)
+			_nativeWebView.AddWebResourceRequestedFilterWithRequestSourceKinds(
+				new PWSTR(p_uri),
+				(WebView2.COREWEBVIEW2_WEB_RESOURCE_CONTEXT)(int)resourceContext,
+				(WebView2.COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS)(int)requestSourceKinds
+			).ThrowOnError();
+	}
 
-	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-		=> _nativeWebView.RemoveWebResourceRequestedFilterWithRequestSourceKinds(
-			PWSTR.From(uri),
-			(WebView2.COREWEBVIEW2_WEB_RESOURCE_CONTEXT)(int)resourceContext,
-			(WebView2.COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS)(int)requestSourceKinds
-		).ThrowOnError();
+	public unsafe void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		fixed (char* p_uri = uri)
+			_nativeWebView.RemoveWebResourceRequestedFilterWithRequestSourceKinds(
+				new PWSTR(p_uri),
+				(WebView2.COREWEBVIEW2_WEB_RESOURCE_CONTEXT)(int)resourceContext,
+				(WebView2.COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS)(int)requestSourceKinds
+			).ThrowOnError();
+	}
+
+	private static unsafe void CreateCoreWebView2Environment(string userDataFolder, WebView2.ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler handler)
+	{
+		fixed (char* p_userDataFolder = userDataFolder)
+			WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(
+				default,
+				new PWSTR(p_userDataFolder),
+				null!,
+				handler
+			).ThrowOnError();
+	}
 }
 
 // --- AOT-specific WebResourceRequested wrappers ---
@@ -514,16 +548,16 @@ internal sealed class AotWebResourceRequest : INativeWebResourceRequest
 		Headers = new AotHttpRequestHeaders(headers);
 	}
 
-	public string Uri
+	public unsafe string Uri
 	{
 		get { _request.get_Uri(out var v).ThrowOnError(); return v.ToString()!; }
-		set => _request.put_Uri(PWSTR.From(value)).ThrowOnError();
+		set { fixed (char* p_value = value) _request.put_Uri(new PWSTR(p_value)).ThrowOnError(); }
 	}
 
-	public string Method
+	public unsafe string Method
 	{
 		get { _request.get_Method(out var v).ThrowOnError(); return v.ToString()!; }
-		set => _request.put_Method(PWSTR.From(value)).ThrowOnError();
+		set { fixed (char* p_value = value) _request.put_Method(new PWSTR(p_value)).ThrowOnError(); }
 	}
 
 	public IRandomAccessStream Content
@@ -549,28 +583,43 @@ internal sealed class AotHttpRequestHeaders : INativeHttpRequestHeaders
 
 	public AotHttpRequestHeaders(WebView2.ICoreWebView2HttpRequestHeaders headers) => _headers = headers;
 
-	public string GetHeader(string name)
+	public unsafe string GetHeader(string name)
 	{
-		_headers.GetHeader(PWSTR.From(name), out var value).ThrowOnError();
-		return value.ToString()!;
+		fixed (char* p_name = name)
+		{
+			_headers.GetHeader(new PWSTR(p_name), out var value).ThrowOnError();
+			return value.ToString()!;
+		}
 	}
 
-	public INativeHttpHeadersCollectionIterator GetHeaders(string name)
+	public unsafe INativeHttpHeadersCollectionIterator GetHeaders(string name)
 	{
-		_headers.GetHeaders(PWSTR.From(name), out var iter).ThrowOnError();
-		return new AotHttpHeadersCollectionIterator(iter);
+		fixed (char* p_name = name)
+		{
+			_headers.GetHeaders(new PWSTR(p_name), out var iter).ThrowOnError();
+			return new AotHttpHeadersCollectionIterator(iter);
+		}
 	}
 
-	public bool Contains(string name)
+	public unsafe bool Contains(string name)
 	{
 		BOOL result = default;
-		_headers.Contains(PWSTR.From(name), ref result).ThrowOnError();
+		fixed (char* p_name = name)
+			_headers.Contains(new PWSTR(p_name), ref result).ThrowOnError();
 		return result.Value != 0;
 	}
 
-	public void SetHeader(string name, string value) => _headers.SetHeader(PWSTR.From(name), PWSTR.From(value)).ThrowOnError();
+	public unsafe void SetHeader(string name, string value)
+	{
+		fixed (char* p_name = name, p_value = value)
+			_headers.SetHeader(new PWSTR(p_name), new PWSTR(p_value)).ThrowOnError();
+	}
 
-	public void RemoveHeader(string name) => _headers.RemoveHeader(PWSTR.From(name)).ThrowOnError();
+	public unsafe void RemoveHeader(string name)
+	{
+		fixed (char* p_name = name)
+			_headers.RemoveHeader(new PWSTR(p_name)).ThrowOnError();
+	}
 
 	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
 	{
@@ -706,10 +755,10 @@ internal sealed class AotWebResourceResponse : INativeWebResourceResponse
 		set => NativeResponse.put_StatusCode(value).ThrowOnError();
 	}
 
-	public string ReasonPhrase
+	public unsafe string ReasonPhrase
 	{
 		get { NativeResponse.get_ReasonPhrase(out var v).ThrowOnError(); return v.ToString()!; }
-		set => NativeResponse.put_ReasonPhrase(PWSTR.From(value)).ThrowOnError();
+		set { fixed (char* p_value = value) NativeResponse.put_ReasonPhrase(new PWSTR(p_value)).ThrowOnError(); }
 	}
 }
 
@@ -719,25 +768,36 @@ internal sealed class AotHttpResponseHeaders : INativeHttpResponseHeaders
 
 	public AotHttpResponseHeaders(WebView2.ICoreWebView2HttpResponseHeaders headers) => _headers = headers;
 
-	public void AppendHeader(string name, string value) => _headers.AppendHeader(PWSTR.From(name), PWSTR.From(value)).ThrowOnError();
+	public unsafe void AppendHeader(string name, string value)
+	{
+		fixed (char* p_name = name, p_value = value)
+			_headers.AppendHeader(new PWSTR(p_name), new PWSTR(p_value)).ThrowOnError();
+	}
 
-	public bool Contains(string name)
+	public unsafe bool Contains(string name)
 	{
 		BOOL result = default;
-		_headers.Contains(PWSTR.From(name), ref result).ThrowOnError();
+		fixed (char* p_name = name)
+			_headers.Contains(new PWSTR(p_name), ref result).ThrowOnError();
 		return result.Value != 0;
 	}
 
-	public string GetHeader(string name)
+	public unsafe string GetHeader(string name)
 	{
-		_headers.GetHeader(PWSTR.From(name), out var value).ThrowOnError();
-		return value.ToString()!;
+		fixed (char* p_name = name)
+		{
+			_headers.GetHeader(new PWSTR(p_name), out var value).ThrowOnError();
+			return value.ToString()!;
+		}
 	}
 
-	public object GetHeaders(string name)
+	public unsafe object GetHeaders(string name)
 	{
-		_headers.GetHeaders(PWSTR.From(name), out var iter).ThrowOnError();
-		return new AotHttpHeadersCollectionIterator(iter);
+		fixed (char* p_name = name)
+		{
+			_headers.GetHeaders(new PWSTR(p_name), out var iter).ThrowOnError();
+			return new AotHttpHeadersCollectionIterator(iter);
+		}
 	}
 
 	public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
