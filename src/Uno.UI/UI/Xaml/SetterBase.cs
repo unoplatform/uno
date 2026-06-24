@@ -1,8 +1,6 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml
 {
@@ -26,11 +24,6 @@ namespace Microsoft.UI.Xaml
 		public void set_Property(string name) => OnStringPropertyChanged(name);
 
 		internal virtual void OnStringPropertyChanged(string name) { }
-
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			this.Log().Debug("SetterBase.DataContextChanged");
-		}
 
 		public bool IsSealed
 		{

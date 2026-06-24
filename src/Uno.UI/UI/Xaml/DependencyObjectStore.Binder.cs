@@ -51,7 +51,9 @@ namespace Microsoft.UI.Xaml
 
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
-		private readonly DependencyProperty _dataContextProperty;
+		// Null when the owning DependencyObject is not a FrameworkElement: DataContext is a
+		// FrameworkElement-only property (WinUI parity), so non-FE stores carry no DataContext.
+		private readonly DependencyProperty? _dataContextProperty;
 		private bool _inheritanceContextEnabled = true;
 
 #if ENABLE_LEGACY_DO_TP_SUPPORT
@@ -152,13 +154,23 @@ namespace Microsoft.UI.Xaml
 
 		private void SetInheritedDataContext(object? dataContext)
 		{
+			if (_dataContextProperty is not { } dataContextProperty)
+			{
+				// Non-FE store: no DataContextProperty. Resolve the inherited (mentor/parent) DataContext directly
+				// into this object's bindings and forward it to its inheriting children. This is WinUI's
+				// inheritance-context: a non-FrameworkElement DependencyObject has no DataContext of its own; its
+				// {Binding}s resolve against the ambient DataContext of the FrameworkElement it is connected to.
+				ApplyDataContext(_inheritanceContextEnabled ? dataContext : null);
+				return;
+			}
+
 			if (_inheritanceContextEnabled)
 			{
-				SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
+				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails!);
 			}
 			else
 			{
-				ClearValue(_dataContextProperty!, DependencyPropertyValuePrecedences.Inheritance);
+				ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
 			}
 		}
 
@@ -189,7 +201,7 @@ namespace Microsoft.UI.Xaml
 			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
-		internal DependencyProperty DataContextProperty => _dataContextProperty!;
+		internal DependencyProperty? DataContextProperty => _dataContextProperty;
 
 		/// <summary>
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
@@ -329,6 +341,21 @@ namespace Microsoft.UI.Xaml
 			_properties.ApplyDataContext(actualDataContext);
 			ApplyChildrenBindable(actualDataContext);
 			ApplyMentoredChildrenDataContext(actualDataContext);
+
+			// A non-FrameworkElement store has no DataContextProperty, so the inherited-property SetValue path that
+			// normally pushes DataContext to parent-inheritance children never runs for it. DependencyObjectCollection
+			// items attach via SetParent (they become _childrenStores, not _childrenBindable), so propagate the
+			// inherited DataContext to them here — otherwise {Binding}s on collection items (e.g. the StateTriggers of
+			// a VisualState) never resolve. FrameworkElement stores reach these children through SetValue/Inheritance.
+			if (_dataContextProperty is null && _childrenStores.Count != 0)
+			{
+				var instanceRef = _originalObjectRef ?? ThisWeakReference;
+				var localChildrenStores = _childrenStores;
+				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				{
+					CallChildCallback(localChildrenStores[storeIndex], instanceRef, FrameworkElement.DataContextProperty, actualDataContext);
+				}
+			}
 		}
 
 		private IDisposable? TryWriteDataContextChangedEventActivity()
@@ -611,16 +638,21 @@ namespace Microsoft.UI.Xaml
 				// non-FrameworkElement property values get a weak ref to the owning element.
 				// Exclude FrameworkTemplate (DataTemplate, ControlTemplate) and IMultiParentShareableDependencyObject
 				// (Style, Brush, etc.) since those are shareable and must not inherit DataContext via the mentor path.
+				// Also exclude FlyoutBase: a flyout is not part of its owner's visual tree and gets no DataContext of
+				// its own (WinUI parity). The owner/placement-target DataContext is forwarded to the presenter and
+				// content/items only when the flyout is shown (FlyoutBase.ForwardTargetPropertiesToPresenter), not via
+				// the mentor before show.
 				if (newValue is IDependencyObjectStoreProvider newProvider
 					&& newProvider is not UIElement
 					&& newProvider is not FrameworkTemplate
+					&& newProvider is not Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
 					&& newProvider is not IMultiParentShareableDependencyObject)
 				{
 					SetMentoredChild(propertyDetails, newProvider);
 				}
 				else
 				{
-					// Clear the old mentored child (value is null, a UIElement, a FrameworkTemplate, or an IMultiParentShareableDependencyObject)
+					// Clear the old mentored child (value is null, a UIElement, a FrameworkTemplate, a FlyoutBase, or an IMultiParentShareableDependencyObject)
 					SetMentoredChild(propertyDetails, null);
 				}
 			}
@@ -654,6 +686,24 @@ namespace Microsoft.UI.Xaml
 					newValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } newStore })
 				{
 					newStore.AssociateParent(ActualInstance);
+				}
+
+				// A non-FE bindable child added after this owner already has a DataContext must receive the current
+				// value now — ApplyChildrenBindable only fires on a DataContext *change*. This mirrors the on-attach
+				// propagation the removed per-object DataContextProperty used to provide. Scoped to non-FE children
+				// (DataContextProperty is null): a FrameworkElement child gets its DataContext through the normal
+				// inheritance/tree mechanism, and pushing onto it here would retain it (e.g. a flyout presenter's
+				// content keeping the owner's ViewModel alive after close). SetInheritedDataContext still respects the
+				// child's inheritance-context, so a brush shared across parents won't re-inherit.
+				if (newValue is IDependencyObjectStoreProvider addedProvider
+					&& addedProvider.Store.DataContextProperty is null
+					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
+				{
+					var currentDataContext = GetValue(dataContextDetails);
+					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
+					{
+						addedProvider.Store.SetInheritedDataContext(currentDataContext);
+					}
 				}
 			}
 		}
@@ -811,8 +861,8 @@ namespace Microsoft.UI.Xaml
 				_mentoredChildren[index] = WeakReferencePool.RentWeakReference(this, newValue);
 				newValue.Store.SetMentor(ActualInstance);
 
-				// Immediately propagate current DataContext
-				var currentDC = GetValue(_properties.DataContextPropertyDetails);
+				// Immediately propagate current DataContext (null when this mentor is not a FrameworkElement).
+				var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 				newValue.Store.SetInheritedDataContext(currentDC);
 			}
 			else
@@ -884,7 +934,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var currentDC = GetValue(_properties.DataContextPropertyDetails);
+			var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 			ApplyMentoredChildrenDataContext(currentDC);
 		}
 

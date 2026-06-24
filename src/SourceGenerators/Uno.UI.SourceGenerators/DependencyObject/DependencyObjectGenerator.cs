@@ -44,7 +44,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _androidFragmentSymbol;
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
-			private readonly INamedTypeSymbol? _frameworkElementSymbol;
 			private readonly bool _isUnoSolution;
 			private readonly string[] _analyzerSuppressions;
 
@@ -64,7 +63,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
 				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
-				_frameworkElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
@@ -471,8 +469,6 @@ public BinderDetails GetBinderDetail()
 private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 private BinderReferenceHolder _refHolder;
 
-public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
-
 partial void InitializeBinder();
 
 private void __InitializeBinder()
@@ -596,57 +592,11 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
 
-				string dataContextChangedInvokeArgument;
-				if (typeSymbol.Is(_frameworkElementSymbol))
-				{
-					// We can pass 'this' safely to a parameter of type FrameworkElement.
-					dataContextChangedInvokeArgument = "this";
-				}
-				else if (_frameworkElementSymbol.Is(typeSymbol))
-				{
-					// Example: Border -> FrameworkElement -> BindableView
-					// If we have a BindableView, it may or may not be FrameworkElement.
-					dataContextChangedInvokeArgument = "this as FrameworkElement";
-				}
-				else
-				{
-					// This can't be a FrameworkElement. Just pass null.
-					// Passing `this as FrameworkElement` will produce a compile-time error.
-					// error CS0039: Cannot convert type '{0}' to '{1}' via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion
-					dataContextChangedInvokeArgument = "null";
-				}
+				// DataContext is a FrameworkElement-only property (WinUI parity). It is hand-written on
+				// FrameworkElement (and kept internal on FlyoutBase); the generator no longer emits it on
+				// every DependencyObject.
 
 				builder.AppendMultiLineIndented($@"
-
-#region DataContext DependencyProperty
-
-public object DataContext
-{{
-	get => GetValue(DataContextProperty);
-	set => SetValue(DataContextProperty, value);
-}}
-
-// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
-[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(""Trimming"", ""IL2111"")]
-public static DependencyProperty DataContextProperty {{ get ; }} =
-	DependencyProperty.Register(
-		name: nameof(DataContext),
-		propertyType: typeof(object),
-		ownerType: typeof({typeSymbol.Name}),
-		typeMetadata: new FrameworkPropertyMetadata(
-			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits,
-			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnDataContextChanged(e)
-		)
-);
-
-{protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-{{
-	OnDataContextChangedPartial(e);
-	DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
-}}
-
-#endregion
 
 #region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 
@@ -703,8 +653,6 @@ public void SetBindingValue(object value, [CallerMemberName] string propertyName
 [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }}
 
-partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
-
 {legacyNonBrowsable}
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -760,13 +708,25 @@ public override bool Equals(object other)
 					builder.AppendLineIndented(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
 				}
 
+				// DataContext is FrameworkElement-only (WinUI parity). A type that hand-declares its own
+				// static DataContextProperty (e.g. FlyoutBase's internal one) wires it explicitly; everything
+				// else lets the store resolve it: FrameworkElement.DataContextProperty for FrameworkElement
+				// instances, otherwise none.
+				var hasDeclaredDataContextProperty = typeSymbol
+					.GetMembers("DataContextProperty")
+					.Any(m => m is IPropertySymbol { IsStatic: true } or IFieldSymbol { IsStatic: true });
+
+				var storeCreation = hasDeclaredDataContextProperty
+					? "new DependencyObjectStore(this, DataContextProperty)"
+					: "new DependencyObjectStore(this)";
+
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))
 				{
 					using (builder.BlockInvariant($"get"))
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty);");
+							builder.AppendLineIndented($"__storeBackingField = {storeCreation};");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 
