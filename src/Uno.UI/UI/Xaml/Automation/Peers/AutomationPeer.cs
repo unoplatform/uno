@@ -246,13 +246,25 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets a value indicating whether the element is an element that contains data that is presented to the user.
 	/// </summary>
 	/// <returns>True if this is a content element.</returns>
-	public bool IsContentElement() => IsContentElementCore();
+	public bool IsContentElement() => !IsExplicitlyRaw() && IsContentElementCore();
 
 	/// <summary>
 	/// Gets a value indicating whether the element is an element that is relevant or essential to the user interface.
 	/// </summary>
 	/// <returns>True if this is a control element.</returns>
-	public bool IsControlElement() => IsControlElementCore();
+	public bool IsControlElement() => !IsExplicitlyRaw() && IsControlElementCore();
+
+	/// <summary>
+	/// An explicit <c>AutomationProperties.AccessibilityView="Raw"</c> removes the element from both
+	/// the Control and Content views, overriding any peer-specific <see cref="IsControlElementCore"/> /
+	/// <see cref="IsContentElementCore"/> (which several peers, e.g. ButtonBaseAutomationPeer, return
+	/// unconditionally). WinUI applies AccessibilityView as a separate layer on top of the peer's
+	/// natural view membership; mirror that here so Raw template parts (e.g. SplitButton's inner
+	/// buttons, NumberBox's InputEater) and Raw-marked content presenters are pruned as in WinUI.
+	/// </summary>
+	private bool IsExplicitlyRaw()
+		=> this is FrameworkElementAutomationPeer { Owner: { } owner }
+			&& Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(owner) == AccessibilityView.Raw;
 
 	/// <summary>
 	/// Gets a value indicating whether the element is enabled.
@@ -509,8 +521,24 @@ public partial class AutomationPeer : DependencyObject
 	/// </summary>
 	public void InvalidatePeer()
 	{
-		// TODO Uno: Implement InvalidatePeer when UIA infrastructure is available.
-		// In WinUI, this triggers an async callback to re-evaluate cached properties.
+#if __SKIA__
+		// Faithful to WinUI's CAutomationPeer::InvalidatePeer (dxaml AutomationPeer.cpp):
+		// it schedules an async RaiseAutomaticPropertyChanges, which re-evaluates the
+		// peer's automatic properties (IsEnabled/IsOffscreen/Name/ItemStatus) and raises
+		// PropertyChanged for any that changed. It explicitly does NOT raise
+		// StructureChanged (see CCoreServices::CallbackEventListener, which warns that
+		// StructureChanged is only valid once layout is stable).
+		//
+		// WinUI gets fresh children "for free" because GetChildren() always rebuilds and
+		// the OS UIA layer owns the provider cache. Our Win32 bridge keeps its own
+		// provider-level children cache, so the listener additionally drops it (cascading
+		// to virtual peers) — that is what lets WCT's DataGrid refresh row/cell content
+		// after a data change (DataGridItemAutomationPeer.GetChildrenCore and
+		// DataGridAutomationPeer.RaiseAutomationInvokeEvents both call InvalidatePeer).
+		AutomationPeerListener?.NotifyInvalidatePeer(this);
+#endif
+		// Native (maintenance-only) targets have no managed UIA provider tree to
+		// invalidate, so this remains a no-op there.
 	}
 
 	/// <summary>
