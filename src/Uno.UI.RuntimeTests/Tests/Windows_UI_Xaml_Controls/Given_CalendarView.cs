@@ -274,10 +274,12 @@ public class Given_CalendarView
 
 		// Switching to Year mode updates the header asynchronously; poll for it rather than asserting
 		// after a single WaitForIdle, which raced on slower runtimes (e.g. WASM).
-		await UITestHelper.WaitFor(
-			() => calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal),
-			timeoutMS: 3000,
-			message: $"Year-mode header should end with {now.Year}, was '{calendarView.TemplateSettings.HeaderText}'");
+		await TestServices.WindowHelper.WaitFor(
+			() => calendarView.TemplateSettings.HeaderText,
+			now.Year.ToString(),
+			messageBuilder: actual => $"Year-mode header should end with {now.Year}, was '{actual}'",
+			comparer: (actual, year) => actual is not null && actual.EndsWith(year, StringComparison.Ordinal),
+			timeoutMS: 3000);
 	}
 
 	[TestMethod]
