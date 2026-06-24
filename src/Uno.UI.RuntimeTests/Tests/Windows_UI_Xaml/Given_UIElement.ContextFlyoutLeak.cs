@@ -266,5 +266,33 @@ public partial class Given_UIElement
 		await TestServices.WindowHelper.WaitForIdle();
 		root.Children.Clear();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedMenuFlyout_Closed_ItemsReleaseOwnerDataContext()
+	{
+		// Deterministic guard for the shared-flyout leak (When_SharedContextFlyout_DoesNotLeak_ViewModel): a shared
+		// MenuFlyout keeps its items alive, so once it closes the items must not still carry the owner's DataContext.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		var item = new MenuFlyoutItem { Text = "Cut" };
+		flyout.Items.Add(item);
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(viewModel, item.DataContext, "Item should inherit the owner's DataContext while the flyout is open.");
+
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreNotEqual(viewModel, item.DataContext, "Item must not retain the owner's DataContext after the flyout is closed.");
+
+		root.Children.Clear();
+	}
 #endif
 }
