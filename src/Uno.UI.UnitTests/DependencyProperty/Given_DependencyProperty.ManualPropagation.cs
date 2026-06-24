@@ -145,14 +145,10 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			groups.Add(group);
 			VisualStateManager.SetVisualStateGroups(SUT, groups);
 
-			Assert.IsNull(trigger.DataContext);
 			Assert.IsFalse(trigger.IsActive);
 
 			SUT.DataContext = new { a = true };
 
-			Assert.IsNotNull(group.DataContext);
-			Assert.IsNotNull(state.DataContext);
-			Assert.IsNotNull(trigger.DataContext);
 			Assert.IsTrue(trigger.IsActive);
 		}
 
@@ -177,41 +173,10 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			state.StateTriggers.Add(trigger);
 			VisualStateManager.SetVisualStateGroups(SUT, groups);
 
-			Assert.IsNull(trigger.DataContext);
 			Assert.IsFalse(trigger.IsActive);
 
 			SUT.DataContext = new { a = true };
 
-			Assert.IsNotNull(group.DataContext);
-			Assert.IsNotNull(state.DataContext);
-			Assert.IsNotNull(trigger.DataContext);
-			Assert.IsTrue(trigger.IsActive);
-		}
-
-		[TestMethod]
-		public void When_StateTrigger_DataBound_Early()
-		{
-			var group = new VisualStateGroup();
-			group.DataContext = new { a = true };
-
-			var state = new VisualState();
-			object stateDataContextValue = null;
-			state.DataContextChanged += (_, e) =>
-			{
-				stateDataContextValue = e.NewValue;
-			};
-
-			var trigger = new StateTrigger();
-			state.StateTriggers.Add(trigger);
-
-			group.States.Add(state);
-
-			Assert.IsNull(stateDataContextValue);
-			Assert.IsFalse(trigger.IsActive);
-
-			trigger.SetBinding(StateTrigger.IsActiveProperty, new Binding() { Path = "a" });
-
-			Assert.IsNotNull(stateDataContextValue);
 			Assert.IsTrue(trigger.IsActive);
 		}
 
@@ -223,42 +188,27 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			var columnDefinition = new ColumnDefinition();
 
-			object columnDefinitionDataContextValue = null;
-			columnDefinition.DataContextChanged += (_, e) =>
-			{
-				columnDefinitionDataContextValue = e.NewValue;
-			};
-
 			grid.ColumnDefinitions.Add(columnDefinition);
 
 			var rowDefinition = new RowDefinition();
 
-			object rowDefinitionDataContextValue = null;
-			rowDefinition.DataContextChanged += (_, e) =>
-			{
-				rowDefinitionDataContextValue = e.NewValue;
-			};
-
 			grid.RowDefinitions.Add(rowDefinition);
 
-			Assert.IsNull(rowDefinitionDataContextValue);
+			// DataContext is public on FrameworkElement only (WinUI parity). ColumnDefinition/RowDefinition have no
+			// DataContext of their own; their {Binding}s resolve against the ambient DataContext of the connected
+			// Grid (WinUI inheritance-context). The bound Width/Height resolving proves that resolution works.
 			Assert.AreEqual(GridUnitType.Star, columnDefinition.Width.GridUnitType);
-
-			Assert.IsNull(columnDefinitionDataContextValue);
 			Assert.AreEqual(GridUnitType.Star, rowDefinition.Height.GridUnitType);
 
 			columnDefinition.SetBinding(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
 
-			Assert.IsNotNull(columnDefinitionDataContextValue);
 			Assert.AreEqual(GridUnitType.Pixel, columnDefinition.Width.GridUnitType);
 			Assert.AreEqual(42, columnDefinition.Width.Value);
 
-			Assert.IsNull(rowDefinitionDataContextValue);
 			Assert.AreEqual(GridUnitType.Star, rowDefinition.Height.GridUnitType);
 
 			rowDefinition.SetBinding(RowDefinition.HeightProperty, new Binding() { Path = "b" });
 
-			Assert.IsNotNull(rowDefinitionDataContextValue);
 			Assert.AreEqual(GridUnitType.Pixel, rowDefinition.Height.GridUnitType);
 			Assert.AreEqual(43, rowDefinition.Height.Value);
 		}
@@ -270,19 +220,14 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 
-			object brushDataContextValue = null;
-			brush.DataContextChanged += (_, e) =>
-			{
-				brushDataContextValue = e.NewValue;
-			};
-
 			grid.Background = brush;
 
 			grid.DataContext = new { a = "#FF00ff00" };
 
 			brush.SetBinding(Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
 
-			Assert.IsNotNull(brushDataContextValue);
+			// DataContext is public on FrameworkElement only (WinUI parity). A brush has no DataContext of its own;
+			// its {Binding}s resolve against the ambient DataContext of the connected element (WinUI inheritance-context).
 			Assert.AreEqual(Microsoft.UI.Colors.Lime, brush.Color);
 		}
 	}
@@ -319,7 +264,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 
 
-	public partial class MyObject : DependencyObject
+	public partial class MyObject : FrameworkElement
 	{
 		public MyObject()
 		{
@@ -356,7 +301,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		#endregion
 	}
 
-	public partial class SubObject : DependencyObject
+	public partial class SubObject : FrameworkElement
 	{
 		public SubObject()
 		{
@@ -365,8 +310,9 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		public object LastDataContextChangedValue { get; private set; }
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
+			base.OnDataContextChanged(e);
 			LastDataContextChangedValue = e.NewValue;
 		}
 

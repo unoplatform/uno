@@ -107,7 +107,7 @@ namespace Uno.UI.Tests.BinderTests
 			public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
 		}
 
-		public partial class MyControl : DependencyObject
+		public partial class MyControl : FrameworkElement
 		{
 			public string MyProperty
 			{
