@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 // Repro tests for https://github.com/unoplatform/uno/issues/2872
@@ -24,38 +22,45 @@ public class Given_XBind_NavigatedTo
 
 		var frame = new Frame();
 		WindowHelper.WindowContent = frame;
-		await WindowHelper.WaitForIdle();
+		try
+		{
+			await WindowHelper.WaitForIdle();
 
-		// Simulate the "await before navigation" scenario from the issue:
-		// an async continuation break on the UI thread before navigating.
-		await Task.Yield();
+			// Simulate the "await before navigation" scenario from the issue:
+			// an async continuation break on the UI thread before navigating.
+			await Task.Yield();
 
-		var navigated = false;
-		frame.Navigated += (s, e) => navigated = true;
-		frame.Navigate(typeof(XBind_NavigatedTo_Page));
-		await WindowHelper.WaitFor(() => navigated, timeoutMS: 5000);
-		await WindowHelper.WaitForIdle();
+			var navigated = false;
+			frame.Navigated += (s, e) => navigated = true;
+			frame.Navigate(typeof(XBind_NavigatedTo_Page));
+			await WindowHelper.WaitFor(() => navigated, timeoutMS: 5000);
+			await WindowHelper.WaitForIdle();
 
-		var page = frame.Content as XBind_NavigatedTo_Page;
-		Assert.IsNotNull(page, "Expected Frame.Content to be XBind_NavigatedTo_Page.");
+			var page = frame.Content as XBind_NavigatedTo_Page;
+			Assert.IsNotNull(page, "Expected Frame.Content to be XBind_NavigatedTo_Page.");
 
-		// After OnNavigatedTo sets DataContext, DataContextChanged fires and updates BoundText.
-		// x:Bind (evaluated at Loading, after OnNavigatedTo) must reflect that in the rendered TextBlock,
-		// without any manual Bindings.Update() papering over the timing.
-		Assert.AreEqual("datacontext-changed", page.BoundText,
-			$"Expected BoundText to be 'datacontext-changed' after DataContext set in OnNavigatedTo, " +
-			$"but got '{page.BoundText}'.");
+			// After OnNavigatedTo sets DataContext, DataContextChanged fires and updates BoundText.
+			// x:Bind (evaluated at Loading, after OnNavigatedTo) must reflect that in the rendered TextBlock,
+			// without any manual Bindings.Update() papering over the timing.
+			Assert.AreEqual("datacontext-changed", page.BoundText,
+				$"Expected BoundText to be 'datacontext-changed' after DataContext set in OnNavigatedTo, " +
+				$"but got '{page.BoundText}'.");
 
-		var textBlock = page.FindName("TheTextBlock") as TextBlock;
-		Assert.IsNotNull(textBlock, "Expected to find TextBlock named 'TheTextBlock' on the page.");
+			var textBlock = page.FindName("TheTextBlock") as TextBlock;
+			Assert.IsNotNull(textBlock, "Expected to find TextBlock named 'TheTextBlock' on the page.");
 
-		await WindowHelper.WaitFor(
-			() => textBlock.Text == "datacontext-changed",
-			timeoutMS: 5000);
+			await WindowHelper.WaitFor(
+				() => textBlock.Text == "datacontext-changed",
+				timeoutMS: 5000);
 
-		Assert.AreEqual("datacontext-changed", textBlock.Text,
-			$"Expected x:Bind to update TheTextBlock.Text to 'datacontext-changed' after DataContext set in OnNavigatedTo, " +
-			$"but got '{textBlock.Text}'. " +
-			$"This reproduces x:Bind being evaluated too early (before OnNavigatedTo DataContext changes).");
+			Assert.AreEqual("datacontext-changed", textBlock.Text,
+				$"Expected x:Bind to update TheTextBlock.Text to 'datacontext-changed' after DataContext set in OnNavigatedTo, " +
+				$"but got '{textBlock.Text}'. " +
+				$"This reproduces x:Bind being evaluated too early (before OnNavigatedTo DataContext changes).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 }
