@@ -583,6 +583,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// SkiaWasm excluded: real WASM-specific TextBox bug — Ctrl+Delete leaves the wrong caret/selection
+		// (passes on all other Skia targets). Tracked for a proper fix, not flakiness. #23525
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23525")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Ctrl_Delete()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -4241,6 +4245,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// SkiaWasm excluded: real WASM-specific TextBox bug — repeated Delete + Undo coalesces to the
+		// wrong undo granularity (passes on all other Skia targets). Tracked for a proper fix. #23525
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23525")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Repeated_Delete_Undo_Redo()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
