@@ -16,36 +16,4 @@ partial class NavigationViewItem
 #pragma warning disable CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
 	private DispatcherQueueTimer _uno_pointerDeferring;
 #pragma warning restore CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
-
-#if __ANDROID__
-	private void DeferUpdateVisualStateForPointer()
-	{
-		// Note: As we use only one timer for both pressed and over state, we stop this timer only if cancelled / capture lost
-		//		 Other cases will be handle the "normal" way using the m_isPointerOver and m_isPressed flags.
-
-		if (_uno_isDefferingOverState || _uno_isDefferingPressedState)
-		{
-			if (_uno_pointerDeferring is null)
-			{
-				_uno_pointerDeferring = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
-				_uno_pointerDeferring.Interval = TimeSpan.FromMilliseconds(200);
-				_uno_pointerDeferring.IsRepeating = false;
-				_uno_pointerDeferring.Tick += (snd, e) =>
-				{
-					if (_uno_isDefferingOverState || _uno_isDefferingPressedState)
-					{
-						_uno_isDefferingOverState = false;
-						_uno_isDefferingPressedState = false;
-						UpdateVisualStateForPointer();
-					}
-				};
-			}
-
-			if (!_uno_pointerDeferring.IsRunning)
-			{
-				_uno_pointerDeferring.Start();
-			}
-		}
-	}
-#endif
 }

@@ -3,17 +3,7 @@ using System;
 using Windows.Foundation;
 using Uno.UI;
 using Windows.System;
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -62,20 +52,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
 		internal double TargetHorizontalOffset =>
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
-			_pendingScrollTo?.horizontal ?? HorizontalOffset;
-#else
 			HorizontalOffset;
-#endif
 
 		internal double TargetVerticalOffset =>
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
-			_pendingScrollTo?.vertical ?? VerticalOffset;
-#else
 			VerticalOffset;
-#endif
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -104,15 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return args.TargetRect;
 		}
 
-#if __WASM__
-		bool _forceChangeToCurrentView;
-		bool IScrollContentPresenter.ForceChangeToCurrentView
-		{
-			get => _forceChangeToCurrentView;
-			set => _forceChangeToCurrentView = value;
-		}
-
-#elif __SKIA__
+#if __SKIA__
 		bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
@@ -160,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -294,11 +268,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-#if __WASM__
-					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
-						disableAnimation: false);
-#else
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -329,15 +298,9 @@ namespace Microsoft.UI.Xaml.Controls
 							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 							disableAnimation: false);
 					}
-#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-#if __WASM__
-					success = Set(
-						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-						disableAnimation: false);
-#else
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
 						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
@@ -353,7 +316,6 @@ namespace Microsoft.UI.Xaml.Controls
 							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 							disableAnimation: false);
 					}
-#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
@@ -390,29 +352,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
-
-#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
-		protected override Size MeasureOverride(Size size)
-		{
-			var result = base.MeasureOverride(size);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
-		}
-
-		/// <inheritdoc />
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var result = base.ArrangeOverride(finalSize);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
-		}
 #endif
 
-#if __WASM__ || __NETSTD_REFERENCE__
+#if __NETSTD_REFERENCE__
 		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
 #endif
 	}

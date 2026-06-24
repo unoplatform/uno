@@ -16,20 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override Orientation? PhysicalOrientation => Orientation;
 
-#if __ANDROID__
-		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
-		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
-
-		partial void OnItemWidthChangedPartial(double oldItemWidth, double newItemWidth)
-		{
-			_layout?.Refresh();
-		}
-
-		partial void OnItemHeightChangedPartial(double oldItemHeight, double newItemHeight)
-		{
-			_layout?.Refresh();
-		}
-#endif
 		public ItemsWrapGrid()
 		{
 			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
@@ -50,9 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(MaximumRowsOrColumns));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if __ANDROID__
-				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
-#endif
 			}
 			return _layout;
 		}

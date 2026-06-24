@@ -9,11 +9,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __APPLE_UIKIT__
-using CoreGraphics;
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup : FrameworkElement, IPopup, IBackButtonListener

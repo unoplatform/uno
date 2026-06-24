@@ -25,14 +25,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
 using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
 
-#if __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#else
 using _View = Microsoft.UI.Xaml.DependencyObject;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

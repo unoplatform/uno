@@ -162,9 +162,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsEnabledInternal() => IsEnabled();
 
 		internal
-#if __ANDROID__
-			new
-#endif
 			bool IsFocused => FocusState != FocusState.Unfocused;
 
 		internal bool IsKeyboardFocused => FocusState == FocusState.Keyboard;
