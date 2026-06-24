@@ -519,12 +519,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var asyncTaskCompleted = false;
 			var asyncTaskStarted = new TaskCompletionSource<bool>();
+			// Keeps the Click handler in flight until the test has asserted the visual state,
+			// so the assertion can't race the handler completing (no wall-clock delay to tune).
+			var asyncHandlerGate = new TaskCompletionSource<bool>();
 
 			var button = new Button { Content = "Async Button", Width = 200, Height = 50 };
 			button.Click += async (_, _) =>
 			{
-				asyncTaskStarted.SetResult(true);
-				await Task.Delay(500); // simulate long-running async work
+				asyncTaskStarted.TrySetResult(true);
+				await asyncHandlerGate.Task;
 				asyncTaskCompleted = true;
 			};
 
@@ -532,38 +535,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var center = buttonRect.GetCenter();
+			var center = new Point(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
+
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetChildrenCount(button) > 0, timeoutMS: 2000);
+			var templateRoot = VisualTreeHelper.GetChildrenCount(button) > 0
+				? VisualTreeHelper.GetChild(button, 0) as FrameworkElement
+				: null;
+			var commonStatesGroup = templateRoot is null
+				? null
+				: VisualStateManager.GetVisualStateGroups(templateRoot)?.FirstOrDefault(g => g.Name == "CommonStates");
+			Assert.IsNotNull(commonStatesGroup, "CommonStates group should exist in button template");
 
 			// Move over button (sets PointerOver state)
 			mouse.MoveTo(center);
 			await WindowHelper.WaitForIdle();
 
-			// Press the button
-			mouse.Press();
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
 
-			// Verify "Pressed" state is active while held
-			var templateRoot = VisualTreeHelper.GetChild(button, 0) as FrameworkElement;
-			var commonStatesGroup = templateRoot == null ? null :
-				VisualStateManager.GetVisualStateGroups(templateRoot)
-					.FirstOrDefault(g => g.Name == "CommonStates");
+				// Sanity check: the visual-state logic actually engaged before we test that it disengages.
+				Assert.AreEqual("Pressed", commonStatesGroup.CurrentState?.Name, "Button should be in Pressed state while the pointer is held down");
 
-			// Release — Click fires, async handler starts
-			mouse.Release();
-			await asyncTaskStarted.Task.WaitAsync(TimeSpan.FromSeconds(3));
-			await WindowHelper.WaitForIdle();
+				// Release — Click fires, async handler starts and blocks on the gate.
+				mouse.Release();
+				await asyncTaskStarted.Task.WaitAsync(TimeSpan.FromSeconds(3));
+				await WindowHelper.WaitForIdle();
 
-			// After pointer release, button must NOT be in Pressed state anymore
-			Assert.IsFalse(asyncTaskCompleted, "Async should still be running at this point");
-			Assert.IsNotNull(commonStatesGroup, "CommonStates group should exist in button template");
+				Assert.IsFalse(asyncTaskCompleted, "Async handler should still be running at this point");
 
-			var currentState = commonStatesGroup.CurrentState?.Name;
-			Assert.AreNotEqual(
-				"Pressed",
-				currentState,
-				$"Button must not remain in Pressed state after pointer release (async task still running). Current state: '{currentState}'");
+				var currentState = commonStatesGroup.CurrentState?.Name;
+				Assert.AreNotEqual(
+					"Pressed",
+					currentState,
+					$"Button must not remain in Pressed state after pointer release (async task still running). Current state: '{currentState}'");
+			}
+			finally
+			{
+				// Always release the gate so a failed assertion can't leave the handler awaiting forever.
+				asyncHandlerGate.TrySetResult(true);
+			}
 
-			// Wait for async to finish to clean up
 			await WindowHelper.WaitFor(() => asyncTaskCompleted, timeoutMS: 2000);
 		}
 	}
