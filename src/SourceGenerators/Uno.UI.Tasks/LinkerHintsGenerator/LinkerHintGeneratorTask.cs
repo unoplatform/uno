@@ -244,6 +244,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
+			// DependencyObject is a base class; the recursion below bottoms out here when it is reached.
+			if (type.FullName == "Microsoft.UI.Xaml.DependencyObject")
+			{
+				return true;
+			}
+
 			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Microsoft.UI.Xaml.DependencyObject"))
 			{
 				return true;

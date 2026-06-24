@@ -204,7 +204,19 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				ContainingNamespace = dpSymbol.ContainingNamespace.ToString();
 				ContainingTypeName = dpSymbol.ContainingType.Name;
 
-				var isDependencyObject = dpSymbol.ContainingType.AllInterfaces
+				// DependencyObject is a base class, so detection must walk the base-type chain.
+				// The interface fallback keeps this correct for any legacy interface-shaped declaration.
+				var isDependencyObject = false;
+				for (var current = dpSymbol.ContainingType; current is not null; current = current.BaseType)
+				{
+					if (current.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject)
+					{
+						isDependencyObject = true;
+						break;
+					}
+				}
+
+				isDependencyObject = isDependencyObject || dpSymbol.ContainingType.AllInterfaces
 					.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject);
 
 				if (dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
