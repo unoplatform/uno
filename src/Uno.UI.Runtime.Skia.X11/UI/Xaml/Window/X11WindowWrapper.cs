@@ -104,12 +104,42 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
-	protected override void ShowCore()
+	protected override void ShowCore() => SetNativeVisible(true);
+
+	protected override void HideCore() => SetNativeVisible(false);
+
+	private void SetNativeVisible(bool visible)
 	{
-		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
-		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
-		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
-		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
+		if (_host.Closed.IsCompleted)
+		{
+			return;
+		}
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+
+		var topWindow = _host.TopX11Window.Window;
+		var topDisplay = _host.TopX11Window.Display;
+
+		using var lockDiposable = X11Helper.XLock(display);
+		using var lockDiposable2 = X11Helper.XLock(topDisplay);
+
+		if (!visible)
+		{
+			SetFullScreenMode(false);
+		}
+
+		if (visible)
+		{
+			_ = XLib.XMapWindow(display, window);
+			_ = XLib.XMapWindow(topDisplay, topWindow);
+		}
+		else
+		{
+			_ = XLib.XUnmapWindow(display, window);
+			_ = XLib.XUnmapWindow(topDisplay, topWindow);
+		}
+
+		_ = XLib.XFlush(display);
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
