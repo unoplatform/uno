@@ -358,7 +358,7 @@
 
 	<!-- App identity manifest read at runtime by SamplesApp on Skia (windows uses the real MSIX manifest) -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
-		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<EmbeddedResource Include="Platforms\Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 
 	<!--
