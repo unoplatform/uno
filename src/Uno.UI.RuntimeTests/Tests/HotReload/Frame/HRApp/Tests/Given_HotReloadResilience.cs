@@ -22,6 +22,12 @@ public class Given_HotReloadResilience : BaseTestClass
 	/// per-element error isolation or handler try/catch is broken, the
 	/// ReloadCompleted callback would not fire or would report uiUpdated=false.
 	/// </summary>
+	// FLAKY IN CI ONLY (passes locally 8/8; ~12/15 Windows-Skia CI builds fail with
+	// "tb1 should exist"). Under CI load, page.FindName("tb1") is not resolved at ReloadCompleted
+	// time. Not a simple timing race — polling for the element did not help (build 219526) — and
+	// "tb1" is not in HR_Frame_Pages_Page1's static XAML, so the element depends entirely on the
+	// hot-reload pipeline. Root cause is in the DevServer/HotReload reload behavior under CI
+	// conditions; needs that subsystem's investigation. https://github.com/unoplatform/uno/issues/9080
 	[TestMethod]
 	public async Task When_HotReload_Succeeds_Then_ReloadCompleted_ReportsSuccess()
 	{
