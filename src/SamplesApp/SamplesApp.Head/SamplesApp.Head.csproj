@@ -5,7 +5,7 @@
 		The windows duplicate-internal collision is resolved by naming the WinUI assembly
 		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
 		-->
-		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-desktop</TargetFrameworks>
+		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-ios;net10.0-tvos;net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
@@ -35,6 +35,9 @@
 		<!-- Skia mobile (android/ios/tvos): consumes samples from the SamplesApp.Skia base lib (generic
 		     Skia) rather than inlining them, so they don't compile with native platform symbols. -->
 		<_IsMobile Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsMobile>
+		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
+		     compile-validated on Windows. Wiring mirrors the old netcoremobile head's apple <When> blocks. -->
+		<_IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsUIKit>
 
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
@@ -268,6 +271,53 @@
 
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
+
+	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
+	<!-- Mirrors the old SamplesApp.Skia.netcoremobile apple <When> blocks. Samples come from the
+	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
+	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(_IsUIKit)' == 'true'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
+		<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+		<!-- iOS 17 compatibility -->
+		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+		<!-- AOT currently fails (uno-private #648): interpret instead -->
+		<MtouchUseLlvm>false</MtouchUseLlvm>
+		<UseInterpreter>true</UseInterpreter>
+		<MtouchInterpreter>all</MtouchInterpreter>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Resources\WebContent\js\site.js" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
+	</ItemGroup>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<!-- https://github.com/dotnet/runtime/issues/109966 -->
+		<_IsDedupEnabled>false</_IsDedupEnabled>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+		<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+	</ItemGroup>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
