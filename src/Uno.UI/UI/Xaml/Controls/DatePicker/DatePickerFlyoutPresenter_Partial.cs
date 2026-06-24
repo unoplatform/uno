@@ -362,7 +362,10 @@ namespace Microsoft.UI.Xaml.Controls
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "YearLoopingSelector";
-				if (_tpSecondPickerHost != null)
+				// The MUX source guards this assignment with _tpSecondPickerHost, which is a typo
+				// (the year picker is hosted by the third host); checking _tpThirdPickerHost avoids
+				// an NRE / mis-attachment if a template provides the third host without the second.
+				if (_tpThirdPickerHost != null)
 				{
 					_tpThirdPickerHost.Child = spYearPicker;
 				}
