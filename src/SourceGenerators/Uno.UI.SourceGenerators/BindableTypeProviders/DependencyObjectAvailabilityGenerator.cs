@@ -87,7 +87,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						var propertyNames = (from module in modules
 											 from type in module.GlobalNamespace.GetNamespaceTypes()
 											 where (
-												 type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
+												 IsDependencyObject(type, _dependencyObjectSymbol)
 												 || additionalLinkerHintSymbols.Contains(type)
 											 )
 											 select LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName())).ToList();
@@ -126,6 +126,21 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					context.ReportDiagnostic(diagnostic);
 				}
+			}
+
+			// DependencyObject is a base class, so detection must walk the base-type chain.
+			// The interface fallback keeps this correct for any legacy interface-shaped declaration.
+			private static bool IsDependencyObject(ITypeSymbol? type, INamedTypeSymbol? dependencyObjectSymbol)
+			{
+				for (var current = type; current is not null; current = current.BaseType)
+				{
+					if (SymbolEqualityComparer.Default.Equals(current, dependencyObjectSymbol))
+					{
+						return true;
+					}
+				}
+
+				return type?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, dependencyObjectSymbol)) ?? false;
 			}
 
 			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(GeneratorExecutionContext context)
