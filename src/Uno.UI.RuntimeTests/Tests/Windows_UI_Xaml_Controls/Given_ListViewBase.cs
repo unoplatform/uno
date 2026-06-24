@@ -3897,18 +3897,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			var initial = GetCurrenState();
 
-			// scroll to bottom
+			// scroll to bottom; wait for the async incremental load + materialization to advance past
+			// the initial state (the batch load Task.Delay + layout can exceed a fixed delay on WASM).
 			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await UITestHelper.WaitFor(
+				() => GetCurrenState().LastMaterialized > initial.LastMaterialized,
+				timeoutMS: 5000,
+				message: $"No extra item materialized after first scroll (initial last={initial.LastMaterialized})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var firstScroll = GetCurrenState();
 
 			// Has'No'MoreItems
 			source.HasMoreItems = false;
 
-			// scroll to bottom
+			// scroll to bottom again; with HasMoreItems=false no new batch loads, but wait for the last
+			// existing item to materialize (reaching the end) instead of a fixed delay.
 			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await UITestHelper.WaitFor(
+				() => GetCurrenState().LastMaterialized >= firstScroll.Count - 1,
+				timeoutMS: 5000,
+				message: $"Did not reach end of list on second scroll (expected last index {firstScroll.Count - 1})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
@@ -4644,6 +4652,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// SkiaWasm excluded: ScrollIntoView scroll/realization stalls under the headless xvfb browser (flaky). #23524
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("This test is for managed ListViewBase.")]
 #endif
@@ -4655,10 +4666,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(lv);
 
 			lv.ScrollIntoView(source[50]);
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			var sv = lv.FindFirstDescendant<ScrollViewer>();
-			var container = (ContentControl)lv.ContainerFromIndex(50);
+			// Wait for the scrolled-to container to realize; on slower runtimes (e.g. WASM) it was not
+			// yet realized after a single WaitForIdle, so the cast/dereference below threw an NRE.
+			var container = await WindowHelper.WaitForNonNull(() => lv.ContainerFromIndex(50) as ContentControl, timeoutMS: 5000);
 
 			var offset = container.TransformToVisual(lv).TransformPoint(default);
 			var (offsetStart, vpExtent) = (offset.Y, sv.ViewportHeight);
