@@ -1551,6 +1551,25 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// A macOS hosted-ALC window has no native window (DesktopWindow.Initialize skips it), so the
+	/// Window ctor must skip DisplayInformation.GetOrCreateForWindowId for it. Otherwise the macOS
+	/// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and never
+	/// unsubscribes (no native window is coming) — pinning the extension/DisplayInformation (and the
+	/// collectible ALC) and binding to the next unrelated native window that gets created.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_MacOSAlcWindow_Then_NoDisplayInformationRegistered()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+		Assert.IsFalse(
+			Windows.Graphics.Display.DisplayInformation.IsRegisteredForWindowId(alcWindow.AppWindow.Id),
+			"A macOS hosted-ALC window must not register a DisplayInformation — doing so leaves " +
+			"MacOSDisplayInformationExtension subscribed to NativeWindowReady forever, pinning the ALC.");
+	}
+
+	/// <summary>
 	/// Boots the AlcApp test application into a secondary ALC, assuming the caller has already set up
 	/// <see cref="WindowHelper.ContentHostOverride"/> and the window content. Returns the registered
 	/// secondary <see cref="Application"/>. Use <see cref="StartSecondaryAlcAppAsync"/> instead when the
