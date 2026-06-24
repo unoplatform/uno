@@ -319,6 +319,19 @@
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
+	<!--
+	WASM: register referenced content (the Uno.UI.RuntimeTests test assets/fonts) into the
+	Uno ms-appx asset manifest (wwwroot/package_*/uno-assets.txt) that the runtime fetches.
+	Uno.Sdk manifests the base-lib samples content, but not the head's directly-referenced
+	RuntimeTests content for browserwasm, so image/font-loading runtime tests can't find
+	their assets at runtime. The old WebAssembly head imported this; mirror it, gated to wasm.
+	-->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets"
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(SkipUnoResourceGeneration)' == ''" />
+
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
