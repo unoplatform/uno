@@ -91,9 +91,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
 
-		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(Target?.DataContext); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
+		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
 
-		private void EnsurePopupCreated(object dataContext)
+		private void EnsurePopupCreated()
 		{
 			if (_popup == null)
 			{
@@ -122,7 +122,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.DataContextProperty, dataContext);
+				// The popup deliberately carries no DataContext (WinUI parity): a flyout has none, and forwarding the
+				// owner's DataContext onto the kept-alive popup leaks it. The placement target's DataContext is set on
+				// the presenter at show-time (ForwardTargetPropertiesToPresenter) and cleared on close instead.
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
@@ -513,7 +515,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
 		{
-			EnsurePopupCreated(placementTarget.DataContext);
+			EnsurePopupCreated();
 
 			m_hasPlacementOverride = false;
 
@@ -881,7 +883,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Open()
 		{
-			EnsurePopupCreated(Target?.DataContext);
+			EnsurePopupCreated();
+
+			// Forward the target's DataContext (and theme) to the presenter, as ShowAtCore does — the popup no
+			// longer carries the DataContext.
+			ForwardTargetPropertiesToPresenter();
 
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
