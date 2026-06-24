@@ -127,7 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateMeasure();
+				((DependencyObject)parent).InvalidateMeasure();
 			}
 		}
 		#endregion
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateMeasure();
+				((DependencyObject)parent).InvalidateMeasure();
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateMeasure();
+				((DependencyObject)parent).InvalidateMeasure();
 			}
 		}
 		#endregion
@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateMeasure();
+				((DependencyObject)parent).InvalidateMeasure();
 			}
 		}
 		#endregion

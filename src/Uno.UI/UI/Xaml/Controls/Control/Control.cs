@@ -529,7 +529,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <typeparam name="T">The type of the template part.</typeparam>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		internal T GetTemplateChild<T>(string childName) where T : DependencyObject
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
@@ -538,7 +538,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return root != null
 				&& name != null
-				&& NameScope.GetNameScope(root) is INameScope nameScope
+				&& NameScope.GetNameScope((DependencyObject)root) is INameScope nameScope
 				&& nameScope.FindName(name) is DependencyObject element
 				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
 				&& !(element is ElementStub)
