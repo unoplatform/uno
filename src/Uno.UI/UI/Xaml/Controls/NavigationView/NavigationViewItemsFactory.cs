@@ -145,7 +145,11 @@ internal class NavigationViewItemsFactory : ElementFactory
 	{
 		// We want to unlink the containers from the parent repeater
 		// in case we are required to move it to a different repeater.
-		if (args.Parent is Panel panel)
+		// WinUI uses try_as<Panel>() here — an interface query that succeeds on an ItemsRepeater because its
+		// implementation derives from DeriveFromPanelHelper_base (public base is still FrameworkElement). Uno
+		// models that split as `FrameworkElement, IPanel`, so the faithful equivalent is `is IPanel`, not the
+		// class check `is Panel` (Panel implements IPanel too, so real panels are still covered).
+		if (args.Parent is IPanel panel)
 		{
 			var children = panel.Children;
 			var childIndex = children.IndexOf(args.Element);
