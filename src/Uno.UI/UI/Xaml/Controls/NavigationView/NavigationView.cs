@@ -1178,26 +1178,6 @@ public partial class NavigationView : ContentControl
 
 		if (updateSelection)
 		{
-#if IS_UNO
-			// Uno specific: WinUI only calls CloseFlyoutIfRequired(nvi) here. We additionally move the
-			// selection indicator to the topmost collapsed parent so the indicator stays reliable in
-			// minimal display mode and for collapsed multi-level items.
-			var indicatorTarget = nvi;
-
-			// Move indicator to topmost collapsed parent
-			var parent = GetParentNavigationViewItemForContainer(nvi);
-			while (parent != null)
-			{
-				if (!parent.IsExpanded)
-				{
-					indicatorTarget = parent;
-				}
-				parent = GetParentNavigationViewItemForContainer(parent);
-			}
-
-			AnimateSelectionChanged(indicatorTarget);
-#endif
-
 			CloseFlyoutIfRequired(nvi);
 		}
 	}
