@@ -505,5 +505,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(defaultButton.Padding, accentButton.Padding, "Padding should match between default and AccentButtonStyle buttons");
 			Assert.AreEqual(defaultButton.ActualHeight, accentButton.ActualHeight, "ActualHeight should match between default and AccentButtonStyle buttons");
 		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12028")]
+		public async Task When_Button_Does_Not_Stay_Pressed_During_Async_Click_Handler()
+		{
+			// A Button should return to Normal/PointerOver visual state as soon as the
+			// pointer is released, even when the Click handler starts a long-running async operation.
+			// If the button stays in "Pressed" state during the async operation, that is a visual state bug.
+
+			var asyncTaskCompleted = false;
+			var asyncTaskStarted = new TaskCompletionSource<bool>();
+			// Keeps the Click handler in flight until the test has asserted the visual state,
+			// so the assertion can't race the handler completing (no wall-clock delay to tune).
+			var asyncHandlerGate = new TaskCompletionSource<bool>();
+
+			var button = new Button { Content = "Async Button", Width = 200, Height = 50 };
+			button.Click += async (_, _) =>
+			{
+				asyncTaskStarted.TrySetResult(true);
+				await asyncHandlerGate.Task;
+				asyncTaskCompleted = true;
+			};
+
+			var buttonRect = await UITestHelper.Load(button);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var center = new Point(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
+
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetChildrenCount(button) > 0, timeoutMS: 2000);
+			var templateRoot = VisualTreeHelper.GetChildrenCount(button) > 0
+				? VisualTreeHelper.GetChild(button, 0) as FrameworkElement
+				: null;
+			var commonStatesGroup = templateRoot is null
+				? null
+				: VisualStateManager.GetVisualStateGroups(templateRoot)?.FirstOrDefault(g => g.Name == "CommonStates");
+			Assert.IsNotNull(commonStatesGroup, "CommonStates group should exist in button template");
+
+			// Move over button (sets PointerOver state)
+			mouse.MoveTo(center);
+			await WindowHelper.WaitForIdle();
+
+			try
+			{
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+
+				// Sanity check: the visual-state logic actually engaged before we test that it disengages.
+				Assert.AreEqual("Pressed", commonStatesGroup.CurrentState?.Name, "Button should be in Pressed state while the pointer is held down");
+
+				// Release — Click fires, async handler starts and blocks on the gate.
+				mouse.Release();
+				await asyncTaskStarted.Task.WaitAsync(TimeSpan.FromSeconds(3));
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(asyncTaskCompleted, "Async handler should still be running at this point");
+
+				var currentState = commonStatesGroup.CurrentState?.Name;
+				Assert.AreNotEqual(
+					"Pressed",
+					currentState,
+					$"Button must not remain in Pressed state after pointer release (async task still running). Current state: '{currentState}'");
+			}
+			finally
+			{
+				// Always release the gate so a failed assertion can't leave the handler awaiting forever.
+				asyncHandlerGate.TrySetResult(true);
+			}
+
+			await WindowHelper.WaitFor(() => asyncTaskCompleted, timeoutMS: 2000);
+		}
 	}
 }
