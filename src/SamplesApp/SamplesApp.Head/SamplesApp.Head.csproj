@@ -5,16 +5,7 @@
 		The windows duplicate-internal collision is resolved by naming the WinUI assembly
 		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
 		-->
-		<!--
-		android wired below but temporarily NOT enabled: Skia-on-Android compiles the app code as
-		*generic Skia* (UnoRuntimeIdentifier=Skia, IsAndroid effectively false, __SKIA__/.skia.cs, NO
-		__ANDROID__) with only a thin native android host — driven by the repo's RuntimeAssetsSelectorTask.
-		This head currently compiles android as native (IsAndroid=true -> __ANDROID__ -> samples like
-		Button_UseUWPDefaultStyles demand native types such as BindableButtonEx that aren't in Uno.UI.Skia).
-		Re-add net10.0-android here once that Skia-on-mobile compilation model is wired. ios/tvos use the
-		same model and additionally require macOS to build.
-		-->
-		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-desktop</TargetFrameworks>
+		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
@@ -41,6 +32,9 @@
 		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">true</_IsSkiaTfm>
+		<!-- Skia mobile (android/ios/tvos): consumes samples from the SamplesApp.Skia base lib (generic
+		     Skia) rather than inlining them, so they don't compile with native platform symbols. -->
+		<_IsMobile Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsMobile>
 
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
@@ -324,8 +318,8 @@
 	-->
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
-		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 	</ItemGroup>
 
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
@@ -371,11 +365,26 @@
 	</Target>
 
 	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
-	<!-- Uno's XAML/DP source generators on all Skia TFMs; WinUI uses the real WinUI XAML compiler. -->
-	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(_IsSkiaTfm)' == 'true'" />
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
-	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
-	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
+	<!--
+	Content sourcing:
+	  - Skia TFMs (desktop/wasm/android/ios/tvos): reference the generic-Skia SamplesApp.Skia library,
+	    which compiles the samples ONCE as Skia (__SKIA__, the Skia/#else branches). This is what every
+	    old Skia head did, and it's why mobile works: inlining would compile samples with the native
+	    platform symbol (__ANDROID__/__APPLE_UIKIT__) and pull native-only types (e.g. BindableButtonEx)
+	    that aren't in Uno.UI.Skia. The base lib provides App, samples, unit tests and benchmarks + the
+	    Uno XAML/DP source generators.
+	  - WinUI/WinAppSDK: the base lib is compiled against Uno's Microsoft.UI.Xaml (Uno.UI.Skia), a
+	    different type identity than the real WinAppSDK WinUI, so windows can't reference it. It inlines
+	    the shared content and lets the real WinUI XAML compiler build it (as the old SamplesApp.Windows
+	    head did) — no Uno source generators here.
+	-->
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" Condition="'$(_IsSkiaTfm)' != 'true'" />
 </Project>
