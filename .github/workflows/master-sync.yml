@@ -44,10 +44,8 @@ on:
         required: false
         default: false
 
-permissions:
-  contents: write
-  pull-requests: write
-
+# Permissions are set per-job below (least privilege): enumerate only reads,
+# sync needs write to push branches and manage PRs.
 concurrency:
   group: master-sync
   cancel-in-progress: false
@@ -57,6 +55,8 @@ jobs:
     name: Find active feature branches
     if: github.repository == 'unoplatform/uno'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       branches: ${{ steps.list.outputs.branches }}
       count: ${{ steps.list.outputs.count }}
@@ -114,6 +114,9 @@ jobs:
     needs: enumerate
     if: needs.enumerate.outputs.count != '0'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -267,13 +270,14 @@ jobs:
               "$conflict_files" \
               '```' \
               "" \
-              "Resolve locally:" \
+              "Resolve locally (the merge is already committed *with* the conflict markers):" \
               '```bash' \
               "git fetch origin" \
               "git checkout ${SYNC_BRANCH}" \
-              "git merge origin/master" \
-              "# fix conflicts, then:" \
-              "git commit && git push" \
+              "# Open the conflicted files, resolve all <<<<<<< / ======= / >>>>>>> markers, then:" \
+              "git add -u" \
+              "git commit -m 'fix: resolve merge conflicts with master'" \
+              "git push" \
               '```')"
           else
             detail="- Auto-merge: **enabled** — lands once required CI is green and a reviewer approves."
