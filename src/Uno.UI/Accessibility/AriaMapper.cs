@@ -91,8 +91,9 @@ public static class AriaMapper
 
 		// A grid cell (e.g. DataGridCellAutomationPeer) reports Custom, which is too generic to map by
 		// type. Identify it by the GridItem pattern instead so it becomes a role="gridcell" carrying
-		// aria-rowindex/aria-colindex. Grid/row/header peers don't implement GridItem, so this is safe.
-		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider)
+		// aria-rowindex/aria-colindex.
+		if (controlType is AutomationControlType.Custom &&
+			peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider)
 		{
 			return SemanticElementType.GridCell;
 		}
