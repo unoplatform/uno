@@ -1,5 +1,4 @@
 <Project>
-	<!-- CI flaky-test investigation marker (cycle 1) -->
 
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />

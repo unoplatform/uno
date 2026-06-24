@@ -65,6 +65,9 @@ while [ $TRY_COUNT -lt 5 ]; do
     killall -9 xvfb-run || true
     killall -9 Xvfb || true
     killall -9 chrome_crashpad_handler || true
+    # We now launch a fluxbox window manager alongside chrome (see below); kill any stray instance
+    # from a previous attempt so retries do not accumulate fluxbox processes.
+    killall -9 fluxbox || true
     rm -fr /tmp/.X99-lock || true
     # Under xvfb the browser needs a real screen (size + 24-bit depth) AND a window manager, otherwise
     # the window is treated as background/zero-size and Chromium throttles requestAnimationFrame/timers
