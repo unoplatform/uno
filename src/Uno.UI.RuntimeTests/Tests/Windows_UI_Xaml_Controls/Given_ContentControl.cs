@@ -251,7 +251,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
 		public async Task When_ListView_ItemTemplate_DataContext_Preserved_After_ContentTemplate_Change()
 		{
@@ -352,7 +351,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
 		public async Task When_ItemsControl_Items_Order_Preserved_After_ContentTemplate_Toggle()
 		{
@@ -434,14 +432,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// Issue #11926 reverses the *rendered* order after toggling. Items mirrors ItemsSource
 				// (always source order), so assert on realized item visuals to actually catch a reversal.
+				// Wait until all visuals are realized AND their text bindings resolved, capturing the
+				// snapshot in the same tick so the assertion can't observe a half-bound (empty-text) state.
+				string[] realizedTexts = null;
 				await WindowHelper.WaitFor(
-					() => GetRealizedTextBlocks(capturedItemsControl).Count() == expectedItems.Length,
-					message: "ItemsControl should realize all item visuals after double toggle");
+					() =>
+					{
+						var texts = GetRealizedTextBlocks(capturedItemsControl).Select(tb => tb.Text).ToArray();
+						if (texts.Length != expectedItems.Length || texts.Any(string.IsNullOrEmpty))
+						{
+							return false;
+						}
 
-				var realizedTexts = GetRealizedTextBlocks(capturedItemsControl)
-					.Select(tb => tb.Text)
-					.ToArray();
+						realizedTexts = texts;
+						return true;
+					},
+					message: "ItemsControl should realize all item visuals with bound text after double toggle");
 
+				Assert.IsNotNull(realizedTexts);
 				CollectionAssert.AreEqual(
 					expectedItems,
 					realizedTexts,
