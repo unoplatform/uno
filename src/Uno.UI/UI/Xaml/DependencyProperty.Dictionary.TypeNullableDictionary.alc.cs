@@ -20,10 +20,17 @@ namespace Microsoft.UI.Xaml
 
 				foreach (Type key in _entries.Keys)
 				{
-					// Type.IsCollectible also catches generic instantiations over collectible
-					// type arguments, whose declaring assembly is a shared (default-ALC) one.
+					// Type.IsCollectible is the fast path — it also catches generic instantiations
+					// over collectible type arguments, whose declaring assembly is a shared
+					// (default-ALC) one. Only fall back to the load-context lookup otherwise.
+					if (key.IsCollectible)
+					{
+						keysToRemove.Add(key);
+						continue;
+					}
+
 					var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-					if (key.IsCollectible || (alc is not null && alc != defaultAlc))
+					if (alc is not null && alc != defaultAlc)
 					{
 						keysToRemove.Add(key);
 					}
