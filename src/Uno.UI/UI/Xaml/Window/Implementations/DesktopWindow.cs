@@ -21,7 +21,7 @@ internal class DesktopWindow : BaseWindowImplementation
 
 	public override void Initialize()
 	{
-		if (OperatingSystem.IsMacOS() && Window.ContentHostOverride is not null && Window.IsAlcWindow)
+		if (Window.IsMacOSHostedAlcWindow)
 		{
 			return;
 		}
@@ -48,7 +48,7 @@ internal class DesktopWindow : BaseWindowImplementation
 			{
 				// On macOS hosted ALC scenarios the chrome is intentionally not created;
 				// content is redirected at the Window.Content level via ContentHostOverride.
-				if (OperatingSystem.IsMacOS() && Window.ContentHostOverride is not null && Window.IsAlcWindow)
+				if (Window.IsMacOSHostedAlcWindow)
 				{
 					return;
 				}
