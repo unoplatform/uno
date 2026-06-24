@@ -7,7 +7,7 @@ parameters:
 jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
-  displayName: 'Windows Tests'
+  displayName: 'Windows' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
@@ -15,13 +15,13 @@ jobs:
 
   strategy:
     matrix:
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
-      group_4:
+      'Tests 4':
         TestGroup: '4'
 
   variables:
@@ -67,7 +67,7 @@ jobs:
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
-  displayName: 'macOS Tests'
+  displayName: 'macOS' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
@@ -76,13 +76,13 @@ jobs:
 
   strategy:
     matrix:
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
-      group_4:
+      'Tests 4':
         TestGroup: '4'
 
   variables:
@@ -144,19 +144,19 @@ jobs:
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_net7_Linux
-  displayName: 'Linux Tests'
+  displayName: 'Linux' ## Name is concatenated with the matrix group name
 
   pool: ${{ parameters.vmPoolLinux }}
 
   strategy:
     matrix:
-      group_0:
+      'Tests 0':
         TestGroup: '0'
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
 
   variables:
@@ -252,13 +252,13 @@ jobs:
 
   strategy:
     matrix:
-      hosted_ubuntu:
+      Linux:
         poolName: '${{ parameters.vmPoolLinux }}'
         vmImage:
-      hosted_windows:
+      Windows:
         poolName: '${{ parameters.poolName }}'
         vmImage:
-      macos:
+      macOS:
         vmImage: 'macOS-15' # explicit because of parsing issues with matrix and parameters
         poolName:
 
@@ -331,13 +331,13 @@ jobs:
 
   strategy:
     matrix:
-      hosted_ubuntu:
+      Linux:
         poolName: '${{ parameters.vmPoolLinux }}'
         vmImage:
-      hosted_windows:
+      Windows:
         poolName: '${{ parameters.poolName }}'
         vmImage:
-      macos:
+      macOS:
         vmImage: 'macOS-15'
         poolName:
 

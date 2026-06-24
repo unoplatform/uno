@@ -210,6 +210,104 @@ public class Given_CompositionSpriteShape
 		await RenderPath(new CompositionPath(CanvasGeometry.CreatePolygon(CanvasDevice.GetSharedDevice(), points)), expected);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Stroke_With_Identity_Transform()
+	{
+		// Control case: no shape Scale, no parent Visual.Scale. A 100x100 horizontal line
+		// stroked at 10px should render as a ~10px-tall red band. Wide tolerance — this is just
+		// a baseline, not a bug-fix discriminator.
+		await AssertStrokedLineThickness(
+			shapeScale: Vector2.One,
+			containerScale: Vector3.One,
+			strokeThickness: 10f,
+			expectedStrokePixels: 10f,
+			tolerance: 2.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Stroke_With_Shape_Scale()
+	{
+		// The bug-fix case: setting CompositionSpriteShape.Scale must scale the stroke too,
+		// matching WinUI's CompositionSpriteShape semantics (and the behavior that
+		// AnimatedVisualSource generated code depends on).
+		// 10px stroke under shape Scale=0.5 should render as ~5px on screen.
+		// Pre-fix would render at ~9px (no shape-scale applied to stroke). ±1.5 discriminates.
+		await AssertStrokedLineThickness(
+			shapeScale: new Vector2(0.5f),
+			containerScale: Vector3.One,
+			strokeThickness: 10f,
+			expectedStrokePixels: 5f,
+			tolerance: 1.5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Stroke_With_Parent_Visual_And_Shape_Scale()
+	{
+		// Composite case mirrors AnimatedIcon's actual usage: parent ContainerVisual scales the
+		// AnimatedVisual to fit, and the inner CompositionSpriteShape applies its own scale.
+		// Both must compose: 10 * 0.5 (container) * 0.5 (shape) = 2.5px stroke. Pre-fix would
+		// render at ~5px (only container-scale applied to stroke). Tight ±1.0 tolerance to
+		// discriminate against the 5px pre-fix value.
+		await AssertStrokedLineThickness(
+			shapeScale: new Vector2(0.5f),
+			containerScale: new Vector3(0.5f, 0.5f, 1f),
+			strokeThickness: 10f,
+			expectedStrokePixels: 2.5f,
+			tolerance: 1.0);
+	}
+
+	private async Task AssertStrokedLineThickness(Vector2 shapeScale, Vector3 containerScale, float strokeThickness, float expectedStrokePixels, double tolerance)
+	{
+		// Build a horizontal line geometry from (0, 50) to (100, 50) using Win2D/CanvasGeometry.
+		using var builder = new CanvasPathBuilder(CanvasDevice.GetSharedDevice());
+		builder.BeginFigure(new Vector2(0, 50));
+		builder.AddLine(new Vector2(100, 50));
+		builder.EndFigure(CanvasFigureLoop.Open);
+		var path = new CompositionPath(CanvasGeometry.CreatePath(builder));
+
+		var compositor = Compositor.GetSharedCompositor();
+		var pathGeometry = compositor.CreatePathGeometry(path);
+		var shape = compositor.CreateSpriteShape(pathGeometry);
+		shape.Scale = shapeScale;
+		shape.StrokeThickness = strokeThickness;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(100, 100);
+		shapeVisual.Scale = containerScale;
+		// CenterPoint at the line midpoint so scaling doesn't shift the line off-screen.
+		shapeVisual.CenterPoint = new Vector3(50, 50, 0);
+
+		var host = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		var screenshot = await UITestHelper.ScreenShot(host);
+
+		// Get bounding box of the red pixels — for a horizontal line, .Height is the rasterized
+		// stroke thickness. Use a wide color tolerance (200) so antialiased fringe pixels (which
+		// shade from pure red toward white at the stroke edges) still register as "red" — without
+		// this, GetColorBounds reports only the densely-saturated centre and underestimates the
+		// geometric stroke width by ~20%.
+		var bounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 200);
+		Assert.IsFalse(bounds.IsEmpty, "Stroke not rendered (no red pixels found).");
+
+		// Tolerance is supplied per-call: tighter for cases that must discriminate against the
+		// pre-fix value, looser for the no-scale baseline case.
+		Assert.AreEqual(expectedStrokePixels, bounds.Height, tolerance,
+			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {bounds.Height}px (bounds: {bounds}).");
+	}
+
 	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null, Windows.UI.Color? color = null)
 	{
 		var compositor = Compositor.GetSharedCompositor();

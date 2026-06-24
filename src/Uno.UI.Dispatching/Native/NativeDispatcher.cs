@@ -35,6 +35,57 @@ namespace Uno.UI.Dispatching
 
 		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
+		/// <summary>
+		/// Removes composition-target render registrations matching the predicate. Nothing else
+		/// ever removes entries, so a closed secondary-app window's CompositionTarget otherwise
+		/// stays registered forever — pinning its visual tree (and its collectible
+		/// AssemblyLoadContext) through this process-lifetime dispatcher.
+		/// </summary>
+		internal void RemoveCompositionTargets(Predicate<object> shouldRemove)
+		{
+			ArgumentNullException.ThrowIfNull(shouldRemove);
+
+			// The predicate is caller-provided: evaluate it OUTSIDE the gate so arbitrary work
+			// (or a predicate that re-enters dispatcher APIs taking the gate) cannot deadlock or
+			// extend the lock's hold time.
+			object[] snapshot;
+			lock (_gate)
+			{
+				snapshot = new object[_compositionTargets.Keys.Count];
+				_compositionTargets.Keys.CopyTo(snapshot, 0);
+			}
+
+			List<object>? toRemove = null;
+			foreach (var key in snapshot)
+			{
+				if (shouldRemove(key))
+				{
+					(toRemove ??= new()).Add(key);
+				}
+			}
+
+			if (toRemove is not null)
+			{
+				lock (_gate)
+				{
+					foreach (var key in toRemove)
+					{
+						// A pending renderAction was counted in _globalCount by EnqueueRender and is
+						// normally decremented when TryGetRenderAction consumes it. Removing the entry
+						// here would skip that decrement, leaving _globalCount permanently elevated and
+						// breaking the 0→1 transition future scheduling relies on — so account for it.
+						if (_compositionTargets.TryGetValue(key, out var details)
+							&& details.renderAction is not null)
+						{
+							Interlocked.Decrement(ref _globalCount);
+						}
+
+						_compositionTargets.Remove(key);
+					}
+				}
+			}
+		}
+
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;

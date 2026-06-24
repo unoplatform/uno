@@ -406,31 +406,31 @@ namespace Microsoft.UI.Xaml
 
 		public void StartAnimation(ICompositionAnimationBase animation)
 		{
-			if (animation is ExpressionAnimation expressionAnimation)
+			if (animation is CompositionAnimation compositionAnimation)
 			{
-				if (expressionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
-					expressionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
+				if (compositionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
+					compositionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
 				{
 					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
 				}
 
-				Visual.StartAnimation(expressionAnimation.Target, expressionAnimation);
+				Visual.StartAnimation(compositionAnimation.Target, compositionAnimation);
 			}
 			else
 			{
-				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'CompositionAnimation'.");
 			}
 		}
 
 		public void StopAnimation(ICompositionAnimationBase animation)
 		{
-			if (animation is ExpressionAnimation expressionAnimation)
+			if (animation is CompositionAnimation compositionAnimation)
 			{
-				Visual.StopAnimation(expressionAnimation.Target);
+				Visual.StopAnimation(compositionAnimation.Target);
 			}
 			else
 			{
-				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+				throw new NotSupportedException("The method 'UIElement.StopAnimation' currently only supports 'CompositionAnimation'.");
 			}
 		}
 

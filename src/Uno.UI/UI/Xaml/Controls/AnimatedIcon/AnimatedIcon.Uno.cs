@@ -39,6 +39,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnIconUnloaded(object sender, RoutedEventArgs args)
 		{
 			m_foregroundColorPropertyChangedRevoker.Disposable = null;
+
+			// m_progressPropertySet lives on the app-lifetime shared compositor, so a Progress
+			// animation left running as the icon leaves the tree keeps it (via the property set's
+			// Owner visual) registered there. Stopping it releases that registration.
+			m_progressPropertySet?.StopAnimation(s_progressPropertyName);
 		}
 	}
 }

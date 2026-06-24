@@ -5,9 +5,10 @@ using Uno.HotReload.Diffing;
 namespace Uno.HotReload;
 
 /// <summary>
-/// Payload handed to <see cref="IHotReloadHandler.SendAsync"/> after a
-/// successful hot-reload cycle. Carries every piece of state the manager has
-/// at the point where deltas are ready to be shipped to consumers.
+/// Payload handed to <see cref="IHotReloadHandler.OnHotReloadAsync"/> on every terminal
+/// hot-reload cycle outcome. Carries every piece of state the manager has at the point the
+/// outcome is decided. <see cref="Deltas"/> is non-empty only on a <c>Success</c> cycle;
+/// <see cref="SolutionUpdate"/> is populated on every path reached after the solution update.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload;
 
@@ -22,6 +23,11 @@ public delegate ValueTask SendUpdatesAsync(ImmutableHashSet<string> files, Immut
 /// </summary>
 public sealed class DelegateHotReloadHandler(SendUpdatesAsync send) : IHotReloadHandler
 {
-	public ValueTask SendAsync(HotReloadUpdate update, CancellationToken ct)
-		=> send(update.Files, update.Deltas, ct);
+	// The handler is now invoked on every terminal outcome, but the legacy (files, updates)
+	// delegate only carries deltas — fire it on Success only so existing consumers are unaffected
+	// by no-delta (NoChanges / RudeEdit / Failed) cycles.
+	public ValueTask OnHotReloadAsync(HotReloadOperationResult result, HotReloadUpdate update, CancellationToken ct)
+		=> result is HotReloadOperationResult.Success
+			? send(update.Files, update.Deltas, ct)
+			: ValueTask.CompletedTask;
 }

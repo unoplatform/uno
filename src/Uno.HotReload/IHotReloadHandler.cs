@@ -1,25 +1,48 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload;
 
 /// <summary>
-/// Consumer end of the hot-reload pipeline. Receives the full
-/// <see cref="HotReloadUpdate"/> after a successful cycle and is responsible
-/// for shipping the deltas (and any subtype-specific side-effects) downstream.
+/// Consumer end of the hot-reload pipeline. Invoked by <see cref="HotReloadManager"/> on
+/// <b>every</b> terminal cycle outcome — with the computed <see cref="HotReloadOperationResult"/>
+/// and the full <see cref="HotReloadUpdate"/> — so a handler can react per-outcome, including
+/// performing delta-independent side-effects (e.g. staging resolved package assemblies) on a
+/// no-delta cycle that mutated the solution but emitted no IL/metadata delta.
 /// </summary>
 /// <remarks>
-/// Implementations may chain (decorator pattern): a wrapping handler can
-/// inspect the update, perform side-effects (e.g. stage resolved NuGet
-/// packages onto disk), then delegate to an inner handler for the actual
-/// delta transport.
+/// Implementations may chain (decorator pattern): a wrapping handler can inspect the update,
+/// perform side-effects, then delegate to an inner handler for the actual delta transport.
 /// </remarks>
 public interface IHotReloadHandler
 {
 	/// <summary>
-	/// Process the post-validated <paramref name="update"/>. Called by
-	/// <see cref="HotReloadManager"/> on the success path only — handlers
-	/// never see <c>NoChanges</c>, <c>RudeEdit</c>, or <c>Failed</c> cycles.
+	/// Process a completed hot-reload cycle. Called for each terminal outcome —
+	/// <see cref="HotReloadOperationResult.Success"/>, <see cref="HotReloadOperationResult.NoChanges"/>,
+	/// <see cref="HotReloadOperationResult.RudeEdit"/> and <see cref="HotReloadOperationResult.Failed"/>.
+	/// <paramref name="update"/>'s <see cref="HotReloadUpdate.Deltas"/> is non-empty only on
+	/// <see cref="HotReloadOperationResult.Success"/>; its <see cref="HotReloadUpdate.SolutionUpdate"/>
+	/// is populated on every path reached after the solution update (so a custom
+	/// <c>SolutionUpdateResult</c> subtype's payload is visible on no-delta cycles too).
 	/// </summary>
-	ValueTask SendAsync(HotReloadUpdate update, CancellationToken ct);
+	/// <remarks>
+	/// <para>
+	/// Handlers that only act on a successful delta should guard on <paramref name="result"/> at the
+	/// top and return early. A thrown exception completes the operation as
+	/// <see cref="HotReloadOperationResult.Failed"/> — the reload did not take effect on the consumer side.
+	/// <see cref="System.OperationCanceledException"/> is the exception: it is re-thrown from this hook and
+	/// the manager reports the operation as <see cref="HotReloadOperationResult.InternalError"/> (not
+	/// <see cref="HotReloadOperationResult.Failed"/>), since cancellation is not a hot-reload failure.
+	/// </para>
+	/// <para>
+	/// <b>Idempotency:</b> a single logical edit may invoke this method more than once. When a host
+	/// enables no-changes auto-retry (re-running the cycle when a <see cref="HotReloadOperationResult.NoChanges"/>
+	/// outcome is unexpected), every retry attempt re-invokes the handler with the recomputed outcome.
+	/// Delta-independent side-effects (e.g. staging resolved package assemblies derived from
+	/// <see cref="HotReloadUpdate.SolutionUpdate"/>) must therefore be idempotent — applying the same
+	/// update twice must be harmless.
+	/// </para>
+	/// </remarks>
+	ValueTask OnHotReloadAsync(HotReloadOperationResult result, HotReloadUpdate update, CancellationToken ct);
 }

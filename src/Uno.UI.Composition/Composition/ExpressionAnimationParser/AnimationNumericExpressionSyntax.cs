@@ -9,7 +9,7 @@ internal class AnimationNumericExpressionSyntax : AnimationExpressionSyntax
 		_number = number;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		return _number.Value;
 	}

@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿#nullable enable
+
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -25,8 +27,38 @@ public sealed partial class AutomationProperties
 #endif
 	}
 
+	// FR-011: a runtime HeadingLevel change must reach assistive tech. The attached property is not
+	// polled by RaiseAutomaticPropertyChanges, so we raise the change here; the accessibility router
+	// then live-updates aria-level (the <hN> tag, clamped to <h6> at creation, is not re-created).
+	private static void OnHeadingLevelChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
 #if __SKIA__
-	internal static string FindHtmlRole(UIElement uIElement)
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.HeadingLevelProperty, args.OldValue, args.NewValue);
+		}
+#endif
+	}
+
+	// FR-023: a runtime IsDataValidForForm change must reach assistive tech. The attached property is not
+	// polled by RaiseAutomaticPropertyChanges, so we raise the change here; the accessibility router then
+	// live-updates aria-invalid (inverted polarity — false means invalid).
+	private static void OnIsDataValidForFormChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.IsDataValidForFormProperty, args.OldValue, args.NewValue);
+		}
+#endif
+	}
+
+#if __SKIA__
+	internal static string? FindHtmlRole(UIElement uIElement)
 	{
 		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role
 		// (defined in Uno.UI.Toolkit). The provider is registered via RoleOverrideProvider.
@@ -59,7 +91,7 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is Image)
 		{
-			return "image";
+			return "img";
 		}
 		if (uIElement is HyperlinkButton)
 		{
@@ -67,11 +99,11 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is PasswordBox)
 		{
-			return "edit";
+			return "textbox";
 		}
 		if (uIElement is RichEditBox)
 		{
-			return "edit";
+			return "textbox";
 		}
 		if (uIElement is ComboBox)
 		{
@@ -87,7 +119,7 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is ToggleSwitch)
 		{
-			return "checkbox";
+			return "switch";
 		}
 		if (uIElement is ListView or ListBox)
 		{
@@ -99,7 +131,8 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is ScrollViewer)
 		{
-			return "pane";
+			// "pane" is not a valid WAI-ARIA role; ScrollViewer carries no semantic role here.
+			return null;
 		}
 		if (uIElement is MenuBar)
 		{
@@ -127,11 +160,14 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is PivotItem)
 		{
-			return "tabitem";
+			return "tab";
 		}
 		if (uIElement is AppBar or CommandBar)
 		{
-			return "appbar";
+			// "appbar" is not a valid WAI-ARIA role token (UWP/macOS terminology).
+			// CommandBar is closest to a toolbar; emit null here and let the caller
+			// decide (the AutomationControlType.AppBar arm below also returns null).
+			return null;
 		}
 		if (uIElement is AppBarButton)
 		{
@@ -144,14 +180,13 @@ public sealed partial class AutomationProperties
 			return type switch
 			{
 				AutomationControlType.Button => "button",
-				AutomationControlType.Calendar => "calendar",
 				AutomationControlType.CheckBox => "checkbox",
 				AutomationControlType.Edit => "textbox",
 				AutomationControlType.Slider => "slider",
-				AutomationControlType.Spinner => "spinner",
-				AutomationControlType.StatusBar => "statusbar",
+				AutomationControlType.Spinner => "spinbutton",
+				AutomationControlType.StatusBar => "status",
 				AutomationControlType.Tab => "tab",
-				AutomationControlType.TabItem => "tabitem",
+				AutomationControlType.TabItem => "tab",
 				// "label" is NOT a valid WAI-ARIA role. Screen readers (VoiceOver)
 				// ignore it and may announce the element as "group" instead.
 				// Text elements should use no explicit role — their text is
@@ -161,22 +196,31 @@ public sealed partial class AutomationProperties
 				AutomationControlType.ToolTip => "tooltip",
 				AutomationControlType.Tree => "tree",
 				AutomationControlType.TreeItem => "treeitem",
-				AutomationControlType.Custom => "custom",
 				AutomationControlType.Group => "group",
-				AutomationControlType.Thumb => "thumb",
-				AutomationControlType.DataGrid => "datagrid",
-				AutomationControlType.DataItem => "dataitem",
+				AutomationControlType.DataGrid => "grid",
+				// "dataitem", "header", and "appbar" are NOT valid WAI-ARIA role tokens.
+				// DataItem outside a grid has no native ARIA equivalent; Header maps to HTML
+				// <header>'s implicit role (banner/generic) not a literal "header" token;
+				// AppBar is UWP/macOS terminology. Emit null so we don't push rejected tokens
+				// into the accessibility tree.
+				AutomationControlType.DataItem => null,
 				AutomationControlType.Document => "document",
-				AutomationControlType.SplitButton => "splitbutton",
-				AutomationControlType.Window => "window",
-				AutomationControlType.Pane => "pane",
-				AutomationControlType.Header => "header",
-				AutomationControlType.HeaderItem => "headeritem",
+				AutomationControlType.Header => null,
 				AutomationControlType.Table => "table",
-				AutomationControlType.TitleBar => "titlebar",
 				AutomationControlType.Separator => "separator",
-				AutomationControlType.SemanticZoom => "semanticzoom",
-				AutomationControlType.AppBar => "appbar",
+				AutomationControlType.AppBar => null,
+				// The following UIA control types have no valid WAI-ARIA role.
+				// Emitting them as a "role" attribute is rejected by the
+				// accessibility tree, so map them to null (no role) instead.
+				AutomationControlType.Calendar => null,
+				AutomationControlType.Custom => null,
+				AutomationControlType.Thumb => null,
+				AutomationControlType.SplitButton => null,
+				AutomationControlType.Window => null,
+				AutomationControlType.Pane => null,
+				AutomationControlType.HeaderItem => null,
+				AutomationControlType.TitleBar => null,
+				AutomationControlType.SemanticZoom => null,
 				_ => null,
 			};
 		}

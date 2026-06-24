@@ -1,10 +1,17 @@
 ﻿#nullable enable
 
+using System;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private float _strokeThickness;
+		// Match WinUI's default. CompositionSpriteShape with a stroke brush and no explicit
+		// StrokeThickness should render a 1px stroke (used by Lottie sources like
+		// AnimatedChevronUpDownSmallVisualSource that don't set StrokeThickness explicitly).
+		private float _strokeThickness = 1.0f;
 		private CompositionStrokeCap _strokeStartCap;
 		private float _strokeMiterLimit;
 		private CompositionStrokeLineJoin _strokeLineJoin;
@@ -92,6 +99,46 @@ namespace Microsoft.UI.Composition
 		{
 			get => _strokeDashArray;
 			set => SetProperty(ref _strokeDashArray, value);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(StrokeThickness), StringComparison.OrdinalIgnoreCase))
+			{
+				return StrokeThickness;
+			}
+			else if (propertyName.Equals(nameof(StrokeMiterLimit), StringComparison.OrdinalIgnoreCase))
+			{
+				return StrokeMiterLimit;
+			}
+			else if (propertyName.Equals(nameof(StrokeDashOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				return StrokeDashOffset;
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(StrokeThickness), StringComparison.OrdinalIgnoreCase))
+			{
+				StrokeThickness = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(StrokeMiterLimit), StringComparison.OrdinalIgnoreCase))
+			{
+				StrokeMiterLimit = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(StrokeDashOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				StrokeDashOffset = ValidateValue<float>(propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }

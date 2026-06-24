@@ -33,29 +33,54 @@ public partial class Compositor
 
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
-	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject visual)
+	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
-		if (animation.IsTrackedByCompositor)
+		// Feed the animation into the innermost active scoped batch so its Completed event waits
+		// for the animation to actually stop instead of firing synchronously when batch.End() is
+		// called.
+		if (animation is KeyFrameAnimation keyFrameAnimation && _scopedBatchStack.Count > 0)
 		{
-			if (visual is Visual { CompositionTarget: { } target })
-			{
-				_runningAnimations.Add(animation, target);
+			_scopedBatchStack.Peek().TrackAnimation(keyFrameAnimation);
+		}
 
-				if (_runningTargets.TryGetValue(target, out int count))
-				{
-					_runningTargets[target] = count + 1;
-				}
-				else
-				{
-					_runningTargets[target] = 1;
-					target.RequestNewFrame();
-				}
+		if (!animation.IsTrackedByCompositor)
+		{
+			return;
+		}
 
-				if (this.Log().IsTraceEnabled())
-				{
-					this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
-				}
-			}
+		// Resolve the CompositionTarget that needs invalidation. For Visuals it's the visual's
+		// own target; for a CompositionPropertySet it's the owning Visual's target so animations
+		// on `someVisual.Properties.Foo` still get ticked. A property set created standalone via
+		// Compositor.CreatePropertySet (e.g. AnimatedIcon's progress property set) must therefore
+		// have its Owner set to a Visual — AnimatedIcon does this before starting its animations.
+		// Without an owning Visual there is no target and the animation never ticks.
+		ICompositionTarget? target = host switch
+		{
+			Visual visual => visual.CompositionTarget,
+			CompositionPropertySet { Owner: Visual ownerVisual } => ownerVisual.CompositionTarget,
+			_ => null,
+		};
+
+		if (target is null)
+		{
+			return;
+		}
+
+		_runningAnimations.Add(animation, target);
+
+		if (_runningTargets.TryGetValue(target, out int count))
+		{
+			_runningTargets[target] = count + 1;
+		}
+		else
+		{
+			_runningTargets[target] = 1;
+			target.RequestNewFrame();
+		}
+
+		if (this.Log().IsTraceEnabled())
+		{
+			this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
 		}
 	}
 
@@ -172,7 +197,20 @@ public partial class Compositor
 
 		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
-			animation.RaiseAnimationFrame();
+			try
+			{
+				animation.RaiseAnimationFrame();
+			}
+			catch (Exception e)
+			{
+				// A single animation's expression must never wedge the render loop. Its failure is
+				// deterministic, so stop it rather than throwing every frame and stalling rendering.
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Stopping animation after an unhandled evaluation error.", e);
+				}
+				animation.Stop();
+			}
 		}
 
 #if PRINT_FRAME_TIMES
