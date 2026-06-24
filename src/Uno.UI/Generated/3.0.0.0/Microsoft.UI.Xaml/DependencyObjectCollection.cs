@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml
 #if false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DependencyObjectCollection : global::Microsoft.UI.Xaml.DependencyObject, global::Windows.Foundation.Collections.IObservableVector<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.IEnumerable
+	public partial class DependencyObjectCollection : global::Windows.Foundation.Collections.IObservableVector<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.DependencyObject>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly

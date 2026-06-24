@@ -916,8 +916,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
 			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+			base.OnDataContextChanged(e);
+		}
 
 		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{

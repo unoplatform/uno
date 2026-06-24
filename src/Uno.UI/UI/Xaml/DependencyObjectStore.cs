@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 
-		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
+		private DependencyProperty _parentDataContextProperty = DependencyObject.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;

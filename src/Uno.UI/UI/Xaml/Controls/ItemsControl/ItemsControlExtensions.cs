@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 				itemsControl.ItemTemplate,
 				itemsControl.ItemTemplateSelector,
 				item,
-				itemsControl
+				(DependencyObject)itemsControl
 			);
 		}
 	}

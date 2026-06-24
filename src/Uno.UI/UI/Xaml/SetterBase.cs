@@ -27,9 +27,10 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void OnStringPropertyChanged(string name) { }
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
 			this.Log().Debug("SetterBase.DataContextChanged");
+			base.OnDataContextChanged(e);
 		}
 
 		public bool IsSealed
