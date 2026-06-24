@@ -260,8 +260,8 @@ public class Given_TreeView
 
 	[TestMethod]
 	// SkiaWasm excluded: selection BringIntoView + container realization stalls under the headless xvfb browser (flaky). #23524
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_SelectNode_DoesNotToggle_OtherNodesExpansion()
 	{
 		// We had an issue where in a treeview of mixed expanded/collapsed nodes,
