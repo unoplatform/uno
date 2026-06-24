@@ -11,12 +11,10 @@ namespace Microsoft.UI.Xaml.Documents
 	[ContentProperty(Name = nameof(Inlines))]
 	public partial class Span : Inline
 	{
-#if !__WASM__
 		public Span()
 		{
 			Inlines = new InlineCollection(this);
 		}
-#endif
 
 		public InlineCollection Inlines { get; set; }
 	}

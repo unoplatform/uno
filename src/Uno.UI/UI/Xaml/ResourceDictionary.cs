@@ -235,7 +235,7 @@ namespace Microsoft.UI.Xaml
 
 			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
 			Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(keyToRemove);
-#if __SKIA__ || __WASM__ || __ANDROID__
+#if __SKIA__
 			if (_values.TryGetValue(keyToRemove, out var value))
 			{
 				_values.Remove(keyToRemove);

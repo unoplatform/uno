@@ -16,12 +16,7 @@ static partial class UIElementExtensions
 		=> elt switch
 		{
 			null => "--null--",
-#if __WASM__
-			FrameworkElement fwElt when !string.IsNullOrWhiteSpace(fwElt.Name) => $"{fwElt.Name}-{fwElt.HtmlId}",
-			UIElement uiElt => $"{elt.GetType().Name}-{uiElt.HtmlId}",
-#else
 			FrameworkElement fwElt when !string.IsNullOrWhiteSpace(fwElt.Name) => $"{fwElt.Name}-{elt.GetHashCode():X8}",
-#endif
 			_ => $"{elt.GetType().Name}-{elt.GetHashCode():X8}",
 		};
 
@@ -202,11 +197,6 @@ static partial class UIElementExtensions
 			UIElement fwElt => fwElt.Depth,
 #elif HAS_UNO
 			UIElement { IsVisualTreeRoot: true } => 0,
-#endif
-#if __APPLE_UIKIT__
-			UIKit.UIView native => native.Superview?.GetDebugDepth() + 1 ?? 0,
-#elif __ANDROID__
-			Android.Views.View native => native.Parent?.GetDebugDepth() + 1 ?? 0,
 #endif
 #if HAS_UNO
 			_ => elt.GetParent()?.GetDebugDepth() + 1 ?? 0,

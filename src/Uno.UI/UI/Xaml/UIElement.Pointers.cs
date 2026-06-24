@@ -179,16 +179,6 @@ namespace Microsoft.UI.Xaml
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		/// <summary>
-		/// Validates that this element is able to manage pointer events.
-		/// If this element is only the shadow of a ghost native view that was instantiated for marshalling purposes by Xamarin,
-		/// the _gestures instance will be invalid and trying to interpret a native pointer event might crash the app.
-		/// This flag should be checked when receiving a pointer related event from the native view to prevent this case.
-		/// </summary>
-		private bool ArePointersEnabled { get; set; }
-#endif
-
 		// ctor
 		private void InitializePointers()
 		{
@@ -1056,11 +1046,7 @@ namespace Microsoft.UI.Xaml
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
-#if __APPLE_UIKIT__ || __ANDROID__
-					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
-#else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
-#endif
 					break;
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
@@ -1076,11 +1062,6 @@ namespace Microsoft.UI.Xaml
 					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #else
-#if __APPLE_UIKIT__
-					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
-					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
-					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
-#else // __WASM__ || __ANDROID__
 					// On WASM the pointer 'exit' is raise by the platform for all pointer types,
 					// while on Android they are raised only for mouses and pens (i.e. not for touch).
 					// (For touch on Android we are "re-dispatching exit" in managed code only (i.e. we will pass here)
@@ -1096,7 +1077,6 @@ namespace Microsoft.UI.Xaml
 						(global::Microsoft.UI.Input.PointerDeviceType.Touch, false) => false,
 						_ => ptArgs.IsPointCoordinatesOver(this),
 					};
-#endif
 
 					if (isOver)
 					{
@@ -1575,11 +1555,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Indicates if this UIElement has any active ** EXPLICIT ** pointer capture.
 		/// </summary>
-#if __ANDROID__
-		internal new bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
-#else
 		internal bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
-#endif
 
 		internal bool IsCaptured(Pointer pointer)
 			=> HasPointerCapture

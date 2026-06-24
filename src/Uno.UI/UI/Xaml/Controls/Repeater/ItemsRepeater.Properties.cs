@@ -49,11 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyChangedCallback: OnPropertyChanged
 			));
 
-#if __ANDROID__
-		public new Layout Layout
-#else
 		public Layout Layout
-#endif
 		{
 			get => (Layout)GetValue(LayoutProperty);
 			set => SetValue(LayoutProperty, value);

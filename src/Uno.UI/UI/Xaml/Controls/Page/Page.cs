@@ -83,9 +83,6 @@ public partial class Page : UserControl
 	#region Frame
 
 	public
-#if __APPLE_UIKIT__
-		new
-#endif
 		Frame Frame
 	{
 		get => (Frame)this.GetValue(FrameProperty);

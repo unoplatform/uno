@@ -7,12 +7,7 @@ using Uno.Extensions;
 
 using Uno.Foundation.Logging;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-using ObjCRuntime;
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
@@ -56,9 +51,6 @@ namespace Microsoft.UI.Xaml.Controls
 						Height = desiredSize.Height,
 					};
 
-#if __APPLE_UIKIT__
-					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
-#endif
 					child.EnsureLayoutStorage();
 					ArrangeElement(child, childRect);
 				}
@@ -67,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return finalSize;
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin) => null;
 #elif !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
