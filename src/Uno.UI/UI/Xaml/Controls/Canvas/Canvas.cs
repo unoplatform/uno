@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				((DependencyObject)parent).InvalidateArrange();
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				((DependencyObject)parent).InvalidateArrange();
 			}
 		}
 
@@ -50,7 +50,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+			if (dependencyObject is IFrameworkElement)
+			{
+				dependencyObject.InvalidateArrange();
+			}
 			if (dependencyObject is UIElement element)
 			{
 				var zindex = args.NewValue is int d ? (int?)d : null;
