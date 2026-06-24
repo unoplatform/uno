@@ -91,9 +91,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
 
-		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
+		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(Target?.DataContext); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
 
-		private void EnsurePopupCreated()
+		private void EnsurePopupCreated(object dataContext)
 		{
 			if (_popup == null)
 			{
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+				SynchronizePropertyToPopup(Popup.DataContextProperty, dataContext);
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
@@ -513,7 +513,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
 		{
-			EnsurePopupCreated();
+			EnsurePopupCreated(placementTarget.DataContext);
 
 			m_hasPlacementOverride = false;
 
@@ -729,6 +729,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					presenter.ClearValue(FrameworkElement.DataContextProperty);
 				}
 			}
+
 		}
 
 		/// <summary>
@@ -880,7 +881,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Open()
 		{
-			EnsurePopupCreated();
+			EnsurePopupCreated(Target?.DataContext);
 
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
@@ -916,9 +917,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
-
 		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{
 			// This is present to force properties to be propagated to the popup of the flyout
@@ -951,12 +949,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			var flyout = GetAttachedFlyout(flyoutOwner);
 
-			flyout?.SetValue(
-				FlyoutBase.DataContextProperty,
-				flyoutOwner.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
-
+			// FlyoutBase has no DataContext of its own (it is a DependencyObject, not a FrameworkElement — WinUI parity).
+			// ShowAt → ShowAtCore → ForwardTargetPropertiesToPresenter forwards the owner's DataContext to the presenter;
+			// content and items then resolve their {Binding}s through normal visual-tree inheritance from the presenter.
 			flyout?.ShowAt(flyoutOwner);
 		}
 
