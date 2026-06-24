@@ -357,9 +357,11 @@ partial class Window
 		}
 
 		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
-		// RemoveContentRoot has no other caller, so an ALC window's content root otherwise
-		// stays registered forever — and its Window.Closed subscribers (e.g. Hot Design's
-		// client host) keep the collectible ALC pinned via the coordinator's list:
+		// This is the only path that removes a window-owned content root — the teardown sweep
+		// in Application.PruneCollectibleAlcEventSubscriptions deliberately skips window roots —
+		// so an ALC window's content root otherwise stays registered forever, and its
+		// Window.Closed subscribers (e.g. Hot Design's client host) keep the collectible ALC
+		// pinned via the coordinator's list:
 		// CoreServices → ContentRootCoordinator → ContentRoot → XamlIslandRoot → Window →
 		// Closed handlers → per-ALC subscriber → LoaderAllocator.
 		var alcContentRoot = _windowImplementation.XamlRoot?.VisualTree?.ContentRoot;
