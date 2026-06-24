@@ -359,6 +359,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// a button to be focused before asserting which one (raced on slower runtimes, e.g. WASM).
 				await UITestHelper.WaitFor(
 					() => FocusManager.GetFocusedElement(SUT.XamlRoot) is Button,
+					timeoutMS: 5000,
 					message: "A button should receive initial focus once the dialog has opened");
 
 				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);

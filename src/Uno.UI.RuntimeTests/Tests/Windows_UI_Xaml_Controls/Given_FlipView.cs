@@ -602,20 +602,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.WheelDown();
 			// SelectedIndex updates asynchronously once the wheel delta is processed; wait for the
 			// expected value rather than asserting synchronously (which raced on slower runtimes, e.g. WASM).
-			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, message: "WheelDown should advance SelectedIndex to 1");
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 5000, message: "WheelDown should advance SelectedIndex to 1");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
-			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, message: "WheelDown should advance SelectedIndex to 2");
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, timeoutMS: 5000, message: "WheelDown should advance SelectedIndex to 2");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
 			await UITestHelper.WaitForIdle();
 			Assert.AreEqual(2, flipView.SelectedIndex, "SelectedIndex should not advance past the last item");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, message: "WheelUp should move SelectedIndex to 1");
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 5000, message: "WheelUp should move SelectedIndex to 1");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 0, message: "WheelUp should move SelectedIndex to 0");
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 0, timeoutMS: 5000, message: "WheelUp should move SelectedIndex to 0");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
 			await UITestHelper.WaitForIdle();
