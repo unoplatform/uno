@@ -13,11 +13,14 @@ public sealed partial class XBind_NavigatedTo_Page : Page
 		DataContextChanged += (s, e) =>
 		{
 			BoundText = "datacontext-changed";
-			Bindings.Update();
 		};
 	}
 
-	protected internal override void OnNavigatedTo(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedTo(NavigationEventArgs e)
 	{
 		base.OnNavigatedTo(e);
 		DataContext = new object();
