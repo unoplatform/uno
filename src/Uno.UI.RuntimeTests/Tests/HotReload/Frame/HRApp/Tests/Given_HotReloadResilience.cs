@@ -22,6 +22,12 @@ public class Given_HotReloadResilience : BaseTestClass
 	/// per-element error isolation or handler try/catch is broken, the
 	/// ReloadCompleted callback would not fire or would report uiUpdated=false.
 	/// </summary>
+	// FLAKY IN CI ONLY (passes locally 8/8; ~12/15 Windows-Skia CI builds fail with
+	// "tb1 should exist"). Under CI load, page.FindName("tb1") is not resolved at ReloadCompleted
+	// time. Not a simple timing race — polling for the element did not help (build 219526) — and
+	// "tb1" is not in HR_Frame_Pages_Page1's static XAML, so the element depends entirely on the
+	// hot-reload pipeline. Root cause is in the DevServer/HotReload reload behavior under CI
+	// conditions; needs that subsystem's investigation. https://github.com/unoplatform/uno/issues/9080
 	[TestMethod]
 	public async Task When_HotReload_Succeeds_Then_ReloadCompleted_ReportsSuccess()
 	{
@@ -38,22 +44,9 @@ public class Given_HotReloadResilience : BaseTestClass
 			"World",
 			async () =>
 			{
-				// The hot-reload pipeline completed without throwing. The visual-tree update can lag the
-				// ReloadCompleted callback under CI load, so poll for the renamed element rather than doing a
-				// single FindName, which raced ("tb1 should exist") on loaded agents. Defensive hardening: the
-				// test still fails if the element never appears or its text is wrong.
-				TextBlock tb = null;
-				for (var i = 0; i < 50; i++)
-				{
-					tb = page.FindName("tb1") as TextBlock;
-					if (tb is not null && tb.Text == "World")
-					{
-						break;
-					}
-
-					await UnitTestsUIContentHelper.WaitForIdle();
-				}
-
+				// The fact that we got here means the hot-reload pipeline completed
+				// without throwing. Verify the text was actually updated.
+				var tb = page.FindName("tb1") as TextBlock;
 				Assert.IsNotNull(tb, "TextBlock 'tb1' should exist in the page");
 				Assert.AreEqual("World", tb.Text, "TextBlock text should have been updated by hot-reload");
 			},
