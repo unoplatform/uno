@@ -1,0 +1,338 @@
+name: Sync master into feature branches
+
+# Keeps long-lived `feature/*` integration branches current with `master`.
+#
+# Per active feature branch it maintains ONE pull request whose merge brings the
+# latest master in:
+#   - Builds a disposable `automation/master-sync/<feature>` branch by *raw git
+#     merge* of master into the feature branch (NOT peter-evans — we must keep
+#     master in the merge ancestry, or every night re-merges all of master).
+#   - Clean merge  -> ready PR + auto-merge (merge-commit method, ancestry-preserving).
+#   - Conflicts    -> commits the conflict markers, opens the PR as a DRAFT so a
+#     half-merge can never auto-land, labels it and pings the team once.
+#   - Already current / nothing new -> closes the PR and deletes the branch.
+#   - A human's pushed resolution on the sync branch is never clobbered: when the
+#     sync branch carries non-bot commits, the next run re-merges master *on top*
+#     of their work instead of resetting to the feature tip.
+#
+# "Active" = a `feature/*` branch with a commit within ACTIVITY_DAYS (default 30).
+#
+# Token: uses the default GITHUB_TOKEN today. The gating CI is Azure Pipelines,
+# whose GitHub App receives PR webhooks regardless of the pusher, so CI runs and
+# auto-merge can complete. Swap-seam: drop a `SYNC_BOT_TOKEN` secret (PAT or App
+# token, ideally with read:org) later and it takes over with zero edits — needed
+# for (a) any *required* check that is itself a GitHub Actions workflow (those are
+# suppressed under the default token) and (b) reliable team-reviewer requests
+# (the repo-scoped default token cannot read org team membership).
+#
+# Repo prerequisite: Settings -> General -> "Allow auto-merge" must be ON, and
+# `feature/*` must have its required-review + required-CI protection. The
+# enumerate job warns loudly if auto-merge is disabled.
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # nightly 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      activity_days:
+        description: 'Only sync feature/* branches with a commit within this many days'
+        required: false
+        default: '30'
+      dry_run:
+        description: 'Compute and log target branches but make no changes'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: master-sync
+  cancel-in-progress: false
+
+jobs:
+  enumerate:
+    name: Find active feature branches
+    if: github.repository == 'unoplatform/uno'
+    runs-on: ubuntu-latest
+    outputs:
+      branches: ${{ steps.list.outputs.branches }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Preflight — verify auto-merge is allowed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          allowed="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.allow_auto_merge' 2>/dev/null || echo unknown)"
+          if [ "$allowed" != "true" ]; then
+            echo "::warning::Repository 'Allow auto-merge' is '${allowed}'. Sync PRs will be created but cannot auto-merge until it is enabled (Settings → General → Allow auto-merge)."
+            echo "> ⚠️ **Allow auto-merge is not enabled** — sync PRs will need manual merge." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Enumerate active feature/* branches
+        id: list
+        shell: bash
+        env:
+          ACTIVITY_DAYS: ${{ github.event.inputs.activity_days || '30' }}
+        run: |
+          set -euo pipefail
+          git fetch origin '+refs/heads/feature/*:refs/remotes/origin/feature/*' --prune
+          now=$(date +%s)
+          cutoff=$(( now - ACTIVITY_DAYS * 86400 ))
+          json='[]'
+          while IFS=$'\t' read -r ts ref; do
+            [ -z "${ref:-}" ] && continue
+            if [ "$ts" -ge "$cutoff" ]; then
+              name="${ref#origin/}"
+              json=$(jq -cn --argjson cur "$json" --arg b "$name" '$cur + [$b]')
+            fi
+          done < <(git for-each-ref --sort=-committerdate \
+                     --format='%(committerdate:unix)%09%(refname:short)' \
+                     'refs/remotes/origin/feature/*')
+          echo "branches=$json" >> "$GITHUB_OUTPUT"
+          echo "count=$(jq 'length' <<<"$json")" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Active \`feature/*\` branches (≤ ${ACTIVITY_DAYS}d)"
+            if [ "$(jq 'length' <<<"$json")" -eq 0 ]; then
+              echo "_None._"
+            else
+              jq -r '.[] | "- `\(.)`"' <<<"$json"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  sync:
+    name: 'Sync: ${{ matrix.branch }}'
+    needs: enumerate
+    if: needs.enumerate.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: ${{ fromJson(needs.enumerate.outputs.branches) }}
+    env:
+      # Swap-seam: SYNC_BOT_TOKEN (PAT/App) wins if present, else the default token.
+      SYNC_TOKEN: ${{ secrets.SYNC_BOT_TOKEN || github.token }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ env.SYNC_TOKEN }}
+
+      - name: Sync master into ${{ matrix.branch }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ env.SYNC_TOKEN }}
+          FEATURE: ${{ matrix.branch }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          REVIEW_TEAM: unoplatform/uno-core-team
+          BOT_NAME: 'github-actions[bot]'
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          SYNC_BRANCH="automation/master-sync/${FEATURE}"
+          TITLE="chore(automation): Sync master → ${FEATURE}"
+          CMARKER="<!-- master-sync-bot:conflict -->"
+
+          # Guarantee exactly ONE summary row per matrix leg, however we exit.
+          STATUS=""
+          note() { STATUS="$1"; }
+          trap '{ echo "### \`${FEATURE}\`"; echo "${STATUS:-❌ errored — see logs}"; } >> "$GITHUB_STEP_SUMMARY"' EXIT
+
+          git config user.name "$BOT_NAME"
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git fetch origin master "${FEATURE}" --prune
+          git fetch origin "${SYNC_BRANCH}" >/dev/null 2>&1 || true
+
+          # gh pr lookup that never aborts the step (set -e safe).
+          open_pr() { gh pr list --head "$SYNC_BRANCH" --base "$FEATURE" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true; }
+
+          # --- 1. Already current: feature already contains master -> nothing to do. ---
+          if git merge-base --is-ancestor "origin/master" "origin/${FEATURE}"; then
+            pr="$(open_pr)"
+            if [ -n "$pr" ]; then
+              if [ "$DRY_RUN" = "true" ]; then
+                note "already current — would close stale PR #$pr (dry-run)"
+              else
+                gh pr close "$pr" --comment "\`${FEATURE}\` is already up to date with \`master\`; closing this sync PR." --delete-branch || true
+                note "already current — closed stale PR #$pr"
+              fi
+            else
+              note "already current — nothing to do"
+            fi
+            exit 0
+          fi
+
+          incoming="$(git rev-list --count "origin/${FEATURE}..origin/master")" || { note "❌ rev-list failed"; exit 1; }
+          range="$(git rev-parse --short "origin/${FEATURE}")..$(git rev-parse --short origin/master)" || { note "❌ rev-parse failed"; exit 1; }
+
+          # Does the existing sync branch carry non-bot (human resolution) commits?
+          HAS_HUMAN_WORK=0
+          SYNC_EXISTS=0
+          if git rev-parse --verify --quiet "origin/${SYNC_BRANCH}" >/dev/null; then
+            SYNC_EXISTS=1
+            # Commits unique to the sync branch are the bot's merge commit(s) plus any
+            # human resolution. List their committer names and drop the bot's; whatever
+            # remains is human work. (Note: --invert-grep only inverts --grep, NOT
+            # --committer, so a committer filter cannot be used here.)
+            if [ -n "$(git log --format='%cn' \
+                        "origin/${SYNC_BRANCH}" --not "origin/${FEATURE}" "origin/master" 2>/dev/null \
+                        | grep -vxF "$BOT_NAME" || true)" ]; then
+              HAS_HUMAN_WORK=1
+            fi
+          fi
+
+          # --- 2. No-op guard: sync branch already contains BOTH current master and
+          #        current feature tip -> don't rebuild/force-push (avoids restarting CI
+          #        or dismissing a pending approval). Just ensure PR + auto-merge state. ---
+          if [ "$SYNC_EXISTS" = "1" ] \
+             && git merge-base --is-ancestor "origin/master" "origin/${SYNC_BRANCH}" \
+             && git merge-base --is-ancestor "origin/${FEATURE}" "origin/${SYNC_BRANCH}"; then
+            pr="$(open_pr)"
+            if [ -n "$pr" ]; then
+              is_draft="$(gh pr view "$pr" --json isDraft --jq '.isDraft' 2>/dev/null || echo '')"
+              if [ "$is_draft" != "true" ] && [ "$DRY_RUN" != "true" ]; then
+                gh pr merge "$pr" --auto --merge >/dev/null 2>&1 || true
+              fi
+              note "up to date — PR #$pr unchanged"
+            else
+              note "sync branch current but no open PR; rebuilds next run"
+            fi
+            exit 0
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            note "would sync ${incoming} commit(s) [\`$range\`] (dry-run)"
+            exit 0
+          fi
+
+          # --- 3. Build the sync branch by RAW merge (ancestry-preserving). When a human
+          #        resolution exists, base on the sync branch so their work is preserved. ---
+          if [ "$HAS_HUMAN_WORK" = "1" ]; then
+            git checkout -B "$SYNC_BRANCH" "origin/${SYNC_BRANCH}"
+          else
+            git checkout -B "$SYNC_BRANCH" "origin/${FEATURE}"
+          fi
+
+          CONFLICT=0
+          conflict_files=""
+          if git merge --no-ff --no-edit origin/master; then
+            CONFLICT=0
+          elif git ls-files -u | grep -q .; then
+            CONFLICT=1
+            conflict_files="$(git diff --name-only --diff-filter=U || true)"
+            git add -A
+            git commit --no-edit || { git merge --abort 2>/dev/null || true; note "❌ conflict commit failed"; exit 1; }
+          else
+            git merge --abort 2>/dev/null || true
+            note "❌ merge failed (non-conflict) — see logs"
+            exit 1
+          fi
+
+          pr="$(open_pr)"
+
+          # Quarantine BEFORE publishing a conflicted tree: demote an existing ready PR to
+          # draft and disable any prior auto-merge, so a half-merge can never auto-land.
+          if [ "$CONFLICT" = "1" ] && [ -n "$pr" ]; then
+            gh pr ready "$pr" --undo >/dev/null 2>&1 || true
+            gh pr merge "$pr" --disable-auto >/dev/null 2>&1 || true
+          fi
+
+          git push --force-with-lease origin "HEAD:refs/heads/${SYNC_BRANCH}"
+
+          # Ensure our labels exist (idempotent). '🤖 Project automation' is pre-existing;
+          # create without --force so we never overwrite its established style.
+          gh label create 'master-sync' --color '1d76db' --description 'Automated master→feature sync PR' --force >/dev/null 2>&1 || true
+          gh label create 'conflicts'   --color 'b60205' --description 'Automated merge hit conflicts'   --force >/dev/null 2>&1 || true
+          gh label create '🤖 Project automation' --color 'ededed' >/dev/null 2>&1 || true
+
+          # --- 4. Body (printf-built; indented to stay inside the YAML block scalar). ---
+          if [ "$CONFLICT" = "1" ]; then
+            detail="$(printf '%s\n' \
+              "> [!WARNING]" \
+              "> **Merge conflicts** — opened as a **draft** so it cannot auto-merge. Resolve, then mark *Ready for review*." \
+              "" \
+              "Conflicted files:" \
+              '```' \
+              "$conflict_files" \
+              '```' \
+              "" \
+              "Resolve locally:" \
+              '```bash' \
+              "git fetch origin" \
+              "git checkout ${SYNC_BRANCH}" \
+              "git merge origin/master" \
+              "# fix conflicts, then:" \
+              "git commit && git push" \
+              '```')"
+          else
+            detail="- Auto-merge: **enabled** — lands once required CI is green and a reviewer approves."
+          fi
+
+          body="$(printf '%s\n' \
+            "Automated sync — merges the latest \`master\` into \`${FEATURE}\`." \
+            "" \
+            "- Incoming commits from master: **${incoming}**" \
+            "- Range: \`${range}\`" \
+            "- Merge method: **merge commit** (preserves ancestry so future syncs stay minimal)" \
+            "" \
+            "${detail}" \
+            "" \
+            "_Maintained automatically; updates in place. Generated by [this run](${RUN_URL})._")"
+
+          # --- 5. Create or update the PR. Create with the minimum so a label/reviewer
+          #        issue can never sink creation; add labels + reviewer best-effort after. ---
+          if [ -z "$pr" ]; then
+            if [ "$CONFLICT" = "1" ]; then
+              gh pr create --base "$FEATURE" --head "$SYNC_BRANCH" --draft --title "$TITLE" --body "$body" \
+                || { note "❌ PR create failed"; exit 1; }
+            else
+              gh pr create --base "$FEATURE" --head "$SYNC_BRANCH" --title "$TITLE" --body "$body" \
+                || { note "❌ PR create failed"; exit 1; }
+            fi
+            pr="$(open_pr)"
+          else
+            gh pr edit "$pr" --title "$TITLE" --body "$body" >/dev/null 2>&1 || true
+            if [ "$CONFLICT" != "1" ]; then
+              gh pr ready "$pr" >/dev/null 2>&1 || true
+            fi
+          fi
+
+          # Labels (best-effort, idempotent).
+          gh pr edit "$pr" --add-label '🤖 Project automation' --add-label 'master-sync' >/dev/null 2>&1 || true
+          if [ "$CONFLICT" = "1" ]; then
+            gh pr edit "$pr" --add-label 'conflicts' >/dev/null 2>&1 || true
+          else
+            gh pr edit "$pr" --remove-label 'conflicts' >/dev/null 2>&1 || true
+          fi
+
+          # Reviewer request (best-effort; needs read:org via SYNC_BOT_TOKEN to succeed).
+          gh pr edit "$pr" --add-reviewer "$REVIEW_TEAM" >/dev/null 2>&1 || true
+
+          if [ "$CONFLICT" = "1" ]; then
+            # One-time sticky comment so a human is pinged exactly once, even under the
+            # default token (which can't request a team review).
+            existing="$(gh pr view "$pr" --json comments --jq "[.comments[] | select(.body | contains(\"$CMARKER\"))] | length" 2>/dev/null || echo 0)"
+            if [ "${existing:-0}" = "0" ]; then
+              gh pr comment "$pr" --body "$(printf '%s\n' "$CMARKER" \
+                "@${REVIEW_TEAM} — \`master\` has merge conflicts into \`${FEATURE}\`. This sync PR is a draft; see its description for the resolution steps.")" \
+                >/dev/null 2>&1 || true
+            fi
+            note "⚠️ conflicts (${incoming} commits) — draft PR #${pr:-?}"
+          else
+            if [ -n "$pr" ]; then
+              gh pr merge "$pr" --auto --merge >/dev/null 2>&1 \
+                || echo "::warning::Could not enable auto-merge on PR #$pr (check 'Allow auto-merge' / branch protection / token)."
+            fi
+            note "✅ synced ${incoming} commits [\`$range\`] — PR #${pr:-?}"
+          fi
