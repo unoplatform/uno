@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
 	<!-- 
@@ -72,8 +72,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>4.2.1</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>4.2.3</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>2.2.3</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.2.1</UnoICUVersion>
@@ -88,7 +88,7 @@
 		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-		<PackageReference Update="Uno.Wasm.Bootstrap" Version="10.0.0-dev.24" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="10.1.0-dev.212" />
 		<PackageReference Update="MSTest" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.TestFramework" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.TestAdapter" Version="$(MSTestVersion)" />
@@ -137,12 +137,12 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.2.25502.107" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.9" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
-		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Update="GtkSharp" Version="3.24.24.95" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
-		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
+		<PackageReference Update="AwesomeAssertions" Version="9.4.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
@@ -152,13 +152,13 @@
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.4022.49" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
 		<PackageReference Update="WebView2Aot" Version="1.5.0" />
 
-		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
+		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.9" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">

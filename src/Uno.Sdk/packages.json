@@ -39,7 +39,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.137"
+			"net10.0": "10.1.0-dev.212"
 		}
 	},
 	{
@@ -147,7 +147,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.9"
 		}
 	},
 	{
@@ -157,7 +157,7 @@
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.9"
 		}
 	},
 	{
@@ -170,7 +170,7 @@
 	},
 	{
 		"group": "Mvvm",
-		"version": "8.4.0",
+		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
 		]
@@ -230,7 +230,7 @@
 			"Xamarin.AndroidX.AppCompat"
 		],
 		"versionOverride": {
-			"net10.0": "1.7.1.1"
+			"net10.0": "1.7.1.3"
 		}
 	},
 	{
@@ -240,7 +240,7 @@
 			"Xamarin.AndroidX.RecyclerView"
 		],
 		"versionOverride": {
-			"net10.0": "1.4.0.3"
+			"net10.0": "1.4.0.5"
 		}
 	},
 	{
@@ -421,7 +421,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3856.49",
+		"version": "1.0.4022.49",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
