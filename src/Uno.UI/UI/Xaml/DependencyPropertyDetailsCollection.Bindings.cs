@@ -20,6 +20,12 @@ namespace Microsoft.UI.Xaml
 
 		private bool _bindingsSuspended;
 
+		// For non-FrameworkElement owners there is no DataContextProperty (WinUI parity: a non-FE DependencyObject has
+		// no DataContext of its own). The ambient DataContext pushed down from the owner's mentor/parent FrameworkElement
+		// is cached here so newly-added and resumed bindings can resolve against it — this is the inheritance-context,
+		// not a DataContext stored on the object.
+		private object _inheritedDataContext;
+
 		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
 		/// <summary>
@@ -27,6 +33,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public void ApplyDataContext(object dataContext)
 		{
+			// Cache the ambient DataContext so a binding added later (or resumed) on a non-FE owner can resolve
+			// against the same inherited value (FrameworkElement owners read their DataContextProperty instead).
+			_inheritedDataContext = dataContext;
+
 			var bindings = _bindings.Data;
 
 			for (int i = 0; i < bindings.Length; i++)
@@ -116,8 +126,10 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				var value = DataContextPropertyDetails.GetEffectiveValue();
-				if (value == DependencyProperty.UnsetValue)
+				// FrameworkElement owners read their DataContextProperty; non-FE owners use the cached inherited
+				// (mentor/parent) DataContext instead, since they have no DataContextProperty of their own.
+				var value = DataContextPropertyDetails is { } dataContextDetails ? dataContextDetails.GetEffectiveValue() : _inheritedDataContext;
+				if (value is null || value == DependencyProperty.UnsetValue)
 				{
 					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
 					// In this case, we know for sure that DataContext's default value is null.
@@ -132,7 +144,7 @@ namespace Microsoft.UI.Xaml
 		/// Gets the DataContext <see cref="Binding"/> instance, if any
 		/// </summary>
 		/// <returns></returns>
-		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails.GetBinding();
+		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails?.GetBinding();
 
 		/// <summary>
 		/// Sets the specified <paramref name="binding"/> on the <paramref name="target"/> instance.
@@ -156,21 +168,30 @@ namespace Microsoft.UI.Xaml
 
 				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
+					if (DataContextPropertyDetails is { } dataContextDetails)
 					{
-						bindingExpression.DataContext = details.GetInheritedValue();
+						if (bindingExpression.TargetPropertyDetails.Property.UniqueId == dataContextDetails.Property.UniqueId)
+						{
+							bindingExpression.DataContext = details.GetInheritedValue();
+						}
+						else
+						{
+							var value = dataContextDetails.GetEffectiveValue();
+							if (value == DependencyProperty.UnsetValue)
+							{
+								// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+								// In this case, we know for sure that DataContext's default value is null.
+								value = null;
+							}
+
+							ApplyBinding(bindingExpression, value);
+						}
 					}
 					else
 					{
-						var value = DataContextPropertyDetails.GetEffectiveValue();
-						if (value == DependencyProperty.UnsetValue)
-						{
-							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
-							// In this case, we know for sure that DataContext's default value is null.
-							value = null;
-						}
-
-						ApplyBinding(bindingExpression, value);
+						// Non-FE owner: no DataContextProperty. Resolve the binding against the ambient DataContext
+						// inherited from the owner's mentor/parent FrameworkElement (WinUI inheritance-context).
+						ApplyBinding(bindingExpression, _inheritedDataContext);
 					}
 				}
 			}
@@ -184,7 +205,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				var isDataContextBinding = binding.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId;
+				var isDataContextBinding = DataContextPropertyDetails is { } dataContextDetails && binding.TargetPropertyDetails.Property.UniqueId == dataContextDetails.Property.UniqueId;
 
 				if (!isDataContextBinding)
 				{
