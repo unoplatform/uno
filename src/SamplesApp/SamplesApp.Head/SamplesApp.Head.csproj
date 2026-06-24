@@ -385,8 +385,13 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<!-- Fail the publish if the runtime-test fonts didn't make it into the output (Skia only) -->
-	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_IsSkiaTfm)' == 'true'">
+	<!--
+	Fail the publish if the runtime-test fonts didn't make it into the output. Only meaningful on
+	desktop + browserwasm, whose publish lays package content out flat under $(PublishDir) (this is
+	where the original Skia.Generic/WebAssembly heads ran it). Android/iOS bundle assets inside the
+	APK/.app, so this flat-path check can never pass there — and the old netcoremobile head never ran it.
+	-->
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
 			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
