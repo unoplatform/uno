@@ -12,7 +12,7 @@ jobs:
   strategy:
     matrix:
       Skia:
-        _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.Skia.netcoremobile'
+        _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.Head'
         _PackageArtifactName: 'samplesapp-ios-skia-testflight'
         _LogsArtifactName: 'samplesapp-ios-skia-testflight-logs'
         _VariantName: 'Skia'
@@ -78,7 +78,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(_BuildFolder)/bin/Release/net10.0-ios/ios-arm64/publish
+      SourceFolder: $(_BuildFolder)/bin/SamplesApp.Head/Release/net10.0-ios/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false
