@@ -2329,12 +2329,14 @@ namespace Uno.WinAppSDKSyncGenerator
 			_projects[key] = compilation;
 			var externalCompilationReferences = compilation.ExternalReferences.OfType<CompilationReference>().Select(r => r.Display).ToArray();
 			// The top Uno.UI heads (Skia/Reference) pull in the full platform-layered graph; the Uno.UWP
-			// head used for native/WASM symbols only sits on top of Uno.Foundation (+ Uno.UI.Dispatching).
-			// Validate restore against the references each project actually has.
+			// head used for native/WASM symbols sits on top of Uno.Foundation and Uno.UI.Dispatching.
+			// Asserting Uno.UI.Dispatching is load-bearing: native/WASM Dispatching symbols are resolved
+			// transitively through this head, so a missing reference would otherwise silently strip the
+			// Microsoft.UI.Dispatching native #if defines instead of failing the restore loudly.
 			var isTopProject = projectFile.Replace('/', '\\').Contains(@"\Uno.UI\Uno.UI.", StringComparison.Ordinal);
 			string[] expectedRefs = isTopProject
 				? ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"]
-				: ["Uno.Foundation"];
+				: ["Uno.Foundation", "Uno.UI.Dispatching"];
 			foreach (var expectedRef in expectedRefs)
 			{
 				if (!externalCompilationReferences.Contains(expectedRef))
