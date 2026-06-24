@@ -2508,6 +2508,13 @@
 
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+
+		  <!-- BC58: DataContext restricted to FrameworkElement (uno-private#2057). DataContext / DataContextProperty are
+		       removed from UIElement and every non-FrameworkElement DependencyObject (Brush, Transform, Setter,
+		       GradientStop, Timeline, FlyoutBase, DependencyObjectCollection, ResourceDictionary, VisualState, ElementFactory, ...).
+		       FrameworkElement keeps them, so its members are never reported as removed and are unaffected by these patterns. -->
+		  <Member fullName="System\.Object .+(::|\.)DataContext\(\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)DataContextProperty\(\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Properties>
 
 	  <Methods>
@@ -2873,6 +2880,13 @@
 		       on the generated Animated*VisualSource sources, so they drop off the concrete
 		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+
+		  <!-- BC58: DataContext restricted to FrameworkElement (uno-private#2057) — accessor methods removed from UIElement and every non-FE DependencyObject. -->
+		  <Member fullName="System\.Object .+(::|\.)get_DataContext\(\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)set_DataContext\(System\.Object value\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)get_DataContextProperty\(\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)add_DataContextChanged\(.+\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)remove_DataContextChanged\(.+\)" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Methods>
 
 	  <Events>
@@ -2912,6 +2926,9 @@
 		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.ViewManagement.Core.CoreInputView,Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs&gt; Windows.UI.ViewManagement.Core.CoreInputView::PrimaryViewAnimationStarting" reason="WinUI sync: uses removed CoreInputViewAnimationStartingEventArgs (Group 11e)" />
 
 		  <!-- END WinUI sync (Category B): shadow event removals -->
+
+		  <!-- BC58: DataContext restricted to FrameworkElement (uno-private#2057) — DataContextChanged removed from UIElement and every non-FE DependencyObject. -->
+		  <Member fullName="Windows\.Foundation\.TypedEventHandler.+(::|\.)DataContextChanged" reason="BC58: DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Events>
 	</IgnoreSet>
 
