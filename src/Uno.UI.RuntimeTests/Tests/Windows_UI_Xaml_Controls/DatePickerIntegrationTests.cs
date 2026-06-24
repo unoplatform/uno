@@ -764,7 +764,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				var yearSelector = VisualTreeUtils.FindVisualChildByName(presenter, "YearLoopingSelector") as LoopingSelector;
 				Assert.IsNotNull(yearSelector, "YearLoopingSelector should be found");
 
-				var scrollViewer = (ScrollViewer)VisualTreeUtils.FindVisualChildByName(yearSelector, "ScrollViewer");
+				var scrollViewer = VisualTreeUtils.FindVisualChildByName(yearSelector, "ScrollViewer") as ScrollViewer;
+				Assert.IsNotNull(scrollViewer, "ScrollViewer should be found");
+
 				var panel = scrollViewer.Content as LoopingSelectorPanel;
 				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
 
