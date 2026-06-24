@@ -245,6 +245,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			IsVisible = true;
 			Shown?.Invoke(this, EventArgs.Empty);
 		}
+		else if (!IsVisible)
+		{
+			ShowCore();
+			IsVisible = true;
+		}
 
 		if (activateWindow)
 		{
@@ -299,7 +304,13 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Destroy() { }
 
-	public void Hide() => IsVisible = false;
+	public void Hide()
+	{
+		HideCore();
+		IsVisible = false;
+	}
+
+	protected virtual void HideCore() { }
 
 	public virtual void SetIcon(string iconPath)
 	{
