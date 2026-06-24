@@ -108,16 +108,6 @@ namespace Microsoft.UI.Xaml.Controls
 			base.Open();
 		}
 
-		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			if (Content is IDependencyObjectStoreProvider binder)
-			{
-				binder.Store.SetValue(binder.Store.DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
-			}
-		}
-
 		protected override Control CreatePresenter()
 		{
 			_presenter = new FlyoutPresenter();
