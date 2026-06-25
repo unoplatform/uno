@@ -89,42 +89,22 @@ internal partial class Win32WindowWrapper
 			}
 		}
 
-		public void Dispose() => DisposeAndTryJoin();
-
 		/// <summary>
-		/// Stops the render thread. Returns <c>false</c> when the thread had to be abandoned
-		/// (stuck in a native present); the caller must then not dispose renderer/surface
-		/// resources the abandoned thread might still be touching.
+		/// Stops the render thread, waits for it to exit, then releases its synchronization
+		/// primitives. The join is intentionally unbounded: the loop only delays observing
+		/// <see cref="_disposed"/> while a present is in flight, and a present completes in bounded
+		/// time (a vsync wait, or a GPU TDR reset for a hung present), so the thread always exits.
+		/// The caller must dispose the renderer and surface only after this returns — once the
+		/// thread, the sole user of those resources, is guaranteed stopped.
 		/// </summary>
-		internal bool DisposeAndTryJoin()
+		public void Dispose()
 		{
 			_disposed = true;
-			_frameSignal.Set(); // Unblock if waiting
-
-			// 250 ms covers a present (~16 ms at 60 Hz) plus slack; after one more bounded wait
-			// (2 s), abandon the background thread — leaking the renderer and synchronization
-			// primitives until process exit beats hanging the UI thread on window close.
-			var joined = _thread.Join(timeout: TimeSpan.FromMilliseconds(250));
-			if (!joined)
-			{
-				typeof(RenderThread).LogWarn()?.Warn(
-					"Render thread did not exit within 250 ms during dispose; waiting up to 2 s more " +
-					"before abandoning. This usually indicates a stuck GPU present " +
-					"(SwapBuffers/BitBlt/DwmFlush blocked).");
-
-				joined = _thread.Join(timeout: TimeSpan.FromSeconds(2));
-				if (!joined)
-				{
-					typeof(RenderThread).LogError()?.Error(
-						"Render thread still alive after 2 s; abandoning to keep window close responsive. " +
-						"Leaking _frameSignal, _presentedEvent and renderer until process exit.");
-					return false;
-				}
-			}
+			_frameSignal.Set(); // Wake the loop if it's parked in WaitOne
+			_thread.Join();
 
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
-			return true;
 		}
 	}
 }

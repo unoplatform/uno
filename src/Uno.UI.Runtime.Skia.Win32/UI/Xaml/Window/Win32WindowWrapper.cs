@@ -506,25 +506,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		Win32Host.UnregisterWindow(_hwnd);
-		// An abandoned render thread (stuck in a native present) may still be executing inside
-		// _renderer.CopyPixels — disposing the renderer/surface then would be a use-after-free.
-		var renderThreadJoined = _renderThread?.DisposeAndTryJoin() ?? true;
+		// Stop and join the render thread before touching its resources: once Dispose returns, the
+		// thread — the sole user of the renderer/surface — has exited, so freeing them here cannot
+		// race an in-flight present.
+		_renderThread?.Dispose();
 		_renderThread = null;
-		if (renderThreadJoined)
-		{
-			// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU
-			// resources owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
-			_surface?.Dispose();
-			_surface = null;
-			_renderer.Dispose();
-			_rendererDisposed = true;
-		}
-		else
-		{
-			this.LogError()?.Error(
-				"Render thread was abandoned during dispose; leaking the renderer and cached surface " +
-				"until process exit to avoid a use-after-free on native GPU resources.");
-		}
+		// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU resources
+		// owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
+		_surface?.Dispose();
+		_surface = null;
+		_renderer.Dispose();
+		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
 		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
