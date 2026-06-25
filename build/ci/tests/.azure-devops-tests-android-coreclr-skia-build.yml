@@ -27,6 +27,8 @@ jobs:
     parameters:
       UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-android'
 
+  - template: ../templates/pack-local-uno-sdk.yml
+
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -c Release -r android-x64 -f $(netCurrentTargetFramework)-android -p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework)-android -p:ApplicationId=uno.platform.samplesapp.skia.coreclr -p:UseMonoRuntime=false -p:SkiaSharpVersion=4.148.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-coreclr.binlog
     displayName: Build Android+CoreCLR Skia Head
 
