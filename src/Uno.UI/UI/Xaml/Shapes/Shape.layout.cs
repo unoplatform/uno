@@ -55,7 +55,18 @@ namespace Microsoft.UI.Xaml.Shapes
 					width = Math.Max(width, height);
 				}
 
-				return new Size(width, height);
+				// Yes, it's intentional that the height is set to width.
+				// This is what WinUI does (CEllipse/CRectangle::MeasureOverride). For example:
+				//
+				//   <Grid Width="150" Height="150">
+				//       <Ellipse Width="300" Stretch="UniformToFill"
+				//                HorizontalAlignment="Left" VerticalAlignment="Bottom" Fill="Red" />
+				//   </Grid>
+				//
+				// The shape is a 300x300 circle, so its desired height must be 300 (= width) and not
+				// the available height. Otherwise there's no vertical overflow and VerticalAlignment
+				// has no effect.
+				return new Size(width, width);
 			}
 
 			return new Size(feWidth, feHeight);

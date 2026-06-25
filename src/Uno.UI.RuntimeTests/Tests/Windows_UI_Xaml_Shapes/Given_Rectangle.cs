@@ -30,6 +30,9 @@ public class Given_Rectangle
 	[DataRow(Stretch.Fill, double.NaN, 30d, 10d, 20d, 50d, 50d, 10d, 30d)]
 	[DataRow(Stretch.UniformToFill, double.NaN, double.NaN, 0d, 0d, double.PositiveInfinity, double.PositiveInfinity, 0d, 0d)]
 	[DataRow(Stretch.UniformToFill, double.NaN, double.NaN, 10d, 20d, double.PositiveInfinity, double.PositiveInfinity, 10d, 20d)]
+	// UniformToFill makes the measure square (max of the two dims, see #18265), but an explicit
+	// Width+Height still clamps the desired size back, so this stays 120x80 (no visible change).
+	[DataRow(Stretch.UniformToFill, 120d, 80d, 0d, 0d, 500d, 500d, 120d, 80d)]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_RectangleMeasure(
 		Stretch stretch,
