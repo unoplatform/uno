@@ -1,3 +1,5 @@
+#nullable enable
+
 using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
@@ -6,7 +8,7 @@ namespace Microsoft.UI.Xaml
 	{
 		#region DataContext DependencyProperty
 
-		public object DataContext
+		public object? DataContext
 		{
 			get => GetValue(DataContextProperty);
 			set => SetValue(DataContextProperty, value);
@@ -25,7 +27,7 @@ namespace Microsoft.UI.Xaml
 				)
 		);
 
-		public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+		public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>? DataContextChanged;
 
 		internal protected virtual void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{

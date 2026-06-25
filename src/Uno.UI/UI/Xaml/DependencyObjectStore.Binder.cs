@@ -349,7 +349,7 @@ namespace Microsoft.UI.Xaml
 			// a VisualState) never resolve. FrameworkElement stores reach these children through SetValue/Inheritance.
 			if (_dataContextProperty is null && _childrenStores.Count != 0)
 			{
-				var instanceRef = _originalObjectRef ?? ThisWeakReference;
+				var instanceRef = _originalObjectRef;
 				var localChildrenStores = _childrenStores;
 				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 				{
