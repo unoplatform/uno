@@ -79,7 +79,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.ApplyXBind();
 
 			// Forward conversion should still work
-			Assert.AreEqual("Hello", SUT.MyProperty);
+			Assert.AreEqual(nameof(TestEnum.Hello), SUT.MyProperty);
 
 			// Backward conversion - targetType should fall back to _bindingPath.ValueType which is null for x:Bind
 			SUT.MyProperty = "World";
@@ -117,7 +117,7 @@ namespace Uno.UI.Tests.BinderTests
 			{
 				LastConvertBackTargetType = targetType; // Track what targetType we receive
 
-				if (value is string s && targetType != null && targetType.IsEnum)
+				if (value is string s && targetType?.IsEnum is true)
 				{
 					return Enum.Parse(targetType, s);
 				}
