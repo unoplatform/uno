@@ -51,7 +51,7 @@ The AI-native productivity suite for building enterprise-grade, cross-platform .
 * **[Hot Design](https://aka.platform.uno/hot-design)**: The industry-first, patented runtime visual designer that transforms your live app into a design surface with a single click.
 * **[Hot Reload](https://aka.platform.uno/hot-reload)**: Instantly modify XAML and C# on a running app, allowing for rapid iteration without losing the app's state.
 * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**: Export Figma designs to clean, responsive XAML or C# markup in seconds.
-* **Uno Platform MCPs**: The **Uno MCP** gives AI agents structured, semantic access to Uno Platform's full knowledge base (docs, APIs, and best practices), while the **App MCP** lets agents interact directly with your live, running app.
+* **[Uno Platform MCP](https://platform.uno/docs/articles/features/using-the-uno-mcps.html)s**: The **Uno MCP** gives AI agents structured, semantic access to Uno Platform's full knowledge base (docs, APIs, and best practices), while the **App MCP** lets agents interact directly with your live, running app.
 <img alt="Uno Platform Studio - Hot Design" align=center width="95%" src="https://github.com/user-attachments/assets/0962dbac-2130-4d2d-b187-71974160ddbe" />
 
 ---
