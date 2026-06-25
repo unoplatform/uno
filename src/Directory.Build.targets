@@ -4,8 +4,8 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-		<!-- Pinned: the generator's assembly version is stamped into Given_MvvmGeneratedMembers goldens. Bump requires regenerating those goldens. Uno.Sdk ships a newer version to consumers via packages.json. -->
-		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<!-- The generator's assembly version is stamped into Given_MvvmGeneratedMembers goldens; regenerate them (WRITE_EXPECTED) when bumping. -->
+		<CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
 	<!-- 
@@ -156,8 +156,7 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<!-- Pinned: newer versions inject Microsoft.Web.WebView2.Core unaliased, breaking the `mswebview2` extern alias in Skia.Win32 (no _UnoWebView2Workaround here, unlike Uno.Sdk). Uno.Sdk ships a newer version to consumers via packages.json. -->
-		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.4022.49" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
 
 		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.9" />
 	</ItemGroup>
