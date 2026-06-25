@@ -356,5 +356,31 @@ public partial class Given_UIElement
 		Assert.AreNotEqual(viewModel, flyoutStore.GetInheritedDataContextValue(),
 			"The shared flyout must not retain the owner's DataContext after the owner leaves the tree.");
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Resource_PulledIntoSubtree_DoesNotCacheDataContext()
+	{
+		// Root-cause guard for the deeper shared-flyout leak (GC-independent, reliable on the headless runner): a
+		// non-FE resource (e.g. a templated brush from a merged/theme dictionary) pulled into a subtree that has a
+		// DataContext must NOT cache it (WinUI: resources have no DataContext). Otherwise the resource, kept alive by
+		// its dictionary, pins the owner's ViewModel - the path by which the flyout presenter's templated brushes leaked it.
+		var viewModel = new object();
+		var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+		_ = new ResourceDictionary { ["LeakGuardBrush"] = brush };
+		var brushStore = ((IDependencyObjectStoreProvider)brush).Store;
+		Assert.IsTrue(brushStore.IsResourceDictionaryItem, "Precondition: the brush must be flagged as a ResourceDictionary item.");
+
+		var border = new Border { DataContext = viewModel, Background = brush };
+		var root = new Grid();
+		root.Children.Add(border);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		Assert.AreNotEqual(viewModel, brushStore.GetInheritedDataContextValue(),
+			"A ResourceDictionary item must not cache the DataContext of a subtree it is pulled into.");
+
+		GC.KeepAlive(brush);
+	}
 #endif
 }
