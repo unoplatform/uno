@@ -61,7 +61,7 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.Button
 							{
 								IsParsing = true,
-								Content = @"Button",
+								Content = "Button",
 								// Source MainPage.xaml (Line 12:4)
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 

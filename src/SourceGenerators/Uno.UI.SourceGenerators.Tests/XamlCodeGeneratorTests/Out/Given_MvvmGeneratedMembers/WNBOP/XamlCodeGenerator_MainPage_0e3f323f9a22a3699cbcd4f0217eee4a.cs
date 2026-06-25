@@ -61,8 +61,8 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.ToggleSwitch
 							{
 								IsParsing = true,
-								OnContent = @"Enabled",
-								OffContent = @"Disabled",
+								OnContent = "Enabled",
+								OffContent = "Disabled",
 								// Source MainPage.xaml (Line 7:4)
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 

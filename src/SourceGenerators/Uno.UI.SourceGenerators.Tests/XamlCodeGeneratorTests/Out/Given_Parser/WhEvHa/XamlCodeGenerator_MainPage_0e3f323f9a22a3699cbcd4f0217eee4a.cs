@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 							{
 								IsParsing = true,
 								Name = "namedButton",
-								Content = @"Button With Handler",
+								Content = "Button With Handler",
 								// Source MainPage.xaml (Line 14:4)
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
