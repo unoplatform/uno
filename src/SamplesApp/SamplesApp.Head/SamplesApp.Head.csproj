@@ -261,6 +261,12 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(Configuration)'=='Release'">
 		<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<!-- Package id for the plain (mono) APK. Without it the package derives from the assembly
+		     (SamplesApp.SamplesApp-Signed.apk) and the CI artifact copy can't find it. The
+		     coreclr/nativeaot CI stages override this with .coreclr/.nativeaot suffixes. -->
+		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
+	</PropertyGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidAsset Include="Platforms\Android\Assets\sound.mp3" Link="Assets\sound.mp3" />
@@ -293,10 +299,18 @@
 		<MtouchInterpreter>all</MtouchInterpreter>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
-		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Resources\WebContent\css\site.css" />
-		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Resources\WebContent\index.html" />
-		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Resources\WebContent\js\site.js" />
+	<!-- iOS/tvOS bundle the WebView2 test content. The .NET iOS/tvOS toolchain reserves the
+	     top-level bundle folder name 'Resources' (_CollectBundleResources errors on it), so prefix
+	     the Link with the platform name as the old netcoremobile head did. -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />
+	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="tvOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="tvOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="tvOS\Resources\WebContent\js\site.js" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
@@ -392,6 +406,27 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
+
+	<!-- Desktop: deploy the WebView2 test content folder (the old Skia.Generic head deployed it;
+	     Given_WebView2.When_LocalFolder_File needs WebContent next to the app). -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<Content Include="..\LinkedFiles\WebContent\**\*.*">
+			<Link>WebContent\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<!-- Desktop: stage the macOS native host dylib into runtimes/osx/native so the published
+	     desktop artifact (built on Windows, run on macOS agents) can dlopen it. The dylib comes
+	     from the downloaded native-assets-macos artifact, not the ProjectReference, so it must be
+	     copied explicitly — mirrors the old Skia.Generic head's BuildUnoNativeMac target. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.Skia.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
+	</PropertyGroup>
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile"
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' AND Exists('$(_libUnoNativeMacPath)')">
+		<Copy SourceFiles="$(_libUnoNativeMacPath)" DestinationFolder="$(OutDir)runtimes\osx\native\" />
+	</Target>
 	<ItemGroup Label="AssemblyInfo" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
 			<_Parameter1>false</_Parameter1>
