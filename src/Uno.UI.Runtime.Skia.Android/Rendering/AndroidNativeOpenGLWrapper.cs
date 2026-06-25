@@ -31,7 +31,7 @@ internal class AndroidNativeOpenGLWrapper : INativeOpenGLWrapper
 	public AndroidNativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
 		_eglDisplay = EGL14.EglGetDisplay(EGL14.EglDefaultDisplay);
-		if (_eglDisplay is null || _eglDisplay.NativeHandle == EGL14.EglNoDisplay.NativeHandle)
+		if (_eglDisplay is null || _eglDisplay.NativeHandle == 0L) // EGL_NO_DISPLAY
 		{
 			throw new InvalidOperationException($"{nameof(EGL14.EglGetDisplay)} failed.");
 		}
@@ -65,7 +65,7 @@ internal class AndroidNativeOpenGLWrapper : INativeOpenGLWrapper
 		// support ES 3.0: https://developer.android.com/about/dashboards#OpenGL
 		int[] contextAttribs = { EGL14.EglContextClientVersion, 3, EGL14.EglNone };
 		_glContext = EGL14.EglCreateContext(_eglDisplay, configs[0], EGL14.EglNoContext, contextAttribs, 0);
-		if (_glContext is null || _glContext.NativeHandle == EGL14.EglNoContext.NativeHandle)
+		if (_glContext is null || _glContext.NativeHandle == 0L) // EGL_NO_CONTEXT
 		{
 			throw new InvalidOperationException("OpenGL ES context creation failed.");
 		}
@@ -74,7 +74,7 @@ internal class AndroidNativeOpenGLWrapper : INativeOpenGLWrapper
 		// are irrelevant - it only exists to satisfy eglMakeCurrent.
 		int[] surfaceAttribs = { EGL14.EglWidth, 1, EGL14.EglHeight, 1, EGL14.EglNone };
 		_pBufferSurface = EGL14.EglCreatePbufferSurface(_eglDisplay, configs[0], surfaceAttribs, 0);
-		if (_pBufferSurface is null || _pBufferSurface.NativeHandle == EGL14.EglNoSurface.NativeHandle)
+		if (_pBufferSurface is null || _pBufferSurface.NativeHandle == 0L) // EGL_NO_SURFACE
 		{
 			throw new InvalidOperationException("EGL pbuffer surface creation failed.");
 		}
@@ -136,9 +136,10 @@ internal class AndroidNativeOpenGLWrapper : INativeOpenGLWrapper
 
 		return Disposable.Create(() =>
 		{
-			// Restoring requires a display; eglGetCurrentDisplay returns EGL_NO_DISPLAY when there
-			// was no current context, in which case our own display is the right one to unbind on.
-			var restoreDisplay = previousDisplay is { } d && d.NativeHandle != EGL14.EglNoDisplay.NativeHandle ? d : _eglDisplay;
+			// Restoring requires a display; eglGetCurrentDisplay returns EGL_NO_DISPLAY (handle 0)
+			// when there was no current context, in which case our own display is the right one
+			// to unbind on.
+			var restoreDisplay = previousDisplay is { } d && d.NativeHandle != 0L ? d : _eglDisplay;
 			if (!EGL14.EglMakeCurrent(restoreDisplay, previousDrawSurface, previousReadSurface, previousContext))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
