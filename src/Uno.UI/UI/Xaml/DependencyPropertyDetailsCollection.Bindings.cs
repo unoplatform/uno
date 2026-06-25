@@ -26,6 +26,10 @@ namespace Microsoft.UI.Xaml
 		// not a DataContext stored on the object.
 		private object _inheritedDataContext;
 
+		// The ambient (mentor) DataContext cached for a non-FE owner. Exposed so the store can inspect/clear it
+		// the same way it would read a FrameworkElement owner's DataContextProperty value (e.g. ALC teardown).
+		internal object InheritedDataContext => _inheritedDataContext;
+
 		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
 		/// <summary>
