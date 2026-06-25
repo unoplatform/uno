@@ -687,7 +687,7 @@ public class Given_BindingExpression
 			""";
 
 		var page = (Page)XamlReader.Load(xaml);
-		var vm = new XamlReaderEnumBindingTestViewModel();
+		var vm = new XamlReaderEnumBindingTestViewModel { EnumValue = XBindTestEnum.Hello };
 		page.DataContext = vm;
 
 		TestServices.WindowHelper.WindowContent = page;
