@@ -324,5 +324,37 @@ public partial class Given_UIElement
 		Assert.AreNotEqual(viewModel, itemsCollectionStore.GetInheritedDataContextValue(),
 			"The MenuFlyout Items collection must not retain the owner's DataContext after the flyout closes.");
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedFlyout_Detached_ReleasesOwnerDataContext()
+	{
+		// Root-cause guard for the shared-flyout ViewModel leak (When_SharedContextFlyout_DoesNotLeak_ViewModel),
+		// GC-independent so it is reliable on the headless runner unlike the WeakReference tests above. A FlyoutBase
+		// is a non-FrameworkElement: it has no DataContextProperty for the inheritance system to reset on detach.
+		// When the owner enters the tree, UIElement.EnterImpl parents the ContextFlyout to it and the owner's
+		// DataContext is cached in the flyout's inheritance-context; once the owner leaves the tree that cache must
+		// be cleared, or a shared flyout kept alive (e.g. TextCommandBarFlyout) pins the last owner's ViewModel.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		var flyoutStore = ((IDependencyObjectStoreProvider)flyout).Store;
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(viewModel, flyoutStore.GetInheritedDataContextValue(),
+			"The shared flyout must not retain the owner's DataContext after the owner leaves the tree.");
+	}
 #endif
 }

@@ -161,6 +161,13 @@ namespace Microsoft.UI.Xaml
 					{
 						TryRegisterInheritedProperties(parentProvider);
 					}
+					else if (_dataContextProperty is null)
+					{
+						// A non-FE store has no DataContextProperty for the DP-inheritance system to reset on detach,
+						// so its cached mentor/parent DataContext would persist — leaking the owner's DataContext through
+						// any object kept alive past detach (e.g. a shared ContextFlyout holding the target's ViewModel).
+						ApplyDataContext(null);
+					}
 
 					OnParentChanged(previousParent, value);
 				}
@@ -202,10 +209,6 @@ namespace Microsoft.UI.Xaml
 			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
 		}
 
-		/// <summary>
-		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
-		/// </summary>
-		/// <param name="originalObject"></param>
 		/// <summary>
 		/// Creates a store for the specified <paramref name="originalObject"/>, resolving its DataContext
 		/// property automatically: <see cref="FrameworkElement.DataContextProperty"/> when the object is a
