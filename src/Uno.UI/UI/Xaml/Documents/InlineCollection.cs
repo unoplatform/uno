@@ -154,7 +154,11 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 
 		/// <inheritdoc />
-		public void Add(Inline item) => _collection.Add(item);
+		public void Add(Inline item)
+		{
+			ValidateInline(item);
+			_collection.Add(item);
+		}
 
 		/// <inheritdoc />
 		public void Clear() => _collection.Clear();
@@ -178,7 +182,11 @@ namespace Microsoft.UI.Xaml.Documents
 		public int IndexOf(Inline item) => _collection.IndexOf(item);
 
 		/// <inheritdoc />
-		public void Insert(int index, Inline item) => _collection.Insert(index, item);
+		public void Insert(int index, Inline item)
+		{
+			ValidateInline(item);
+			_collection.Insert(index, item);
+		}
 
 		/// <inheritdoc />
 		public void RemoveAt(int index) => _collection.RemoveAt(index);
@@ -187,7 +195,77 @@ namespace Microsoft.UI.Xaml.Documents
 		public Inline this[int index]
 		{
 			get => (Inline)_collection[index];
-			set => _collection[index] = value;
+			set
+			{
+				ValidateInline(value);
+				_collection[index] = value;
+			}
+		}
+
+		/// <summary>
+		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a
+		/// <see cref="TextBlock"/> throws. We match that contract instead of silently dropping the element. See uno#23510.
+		/// </summary>
+		private void ValidateInline(Inline item)
+		{
+			// Check the (cheap) item shape first so the common Run-add path avoids the owner walk entirely.
+			if (ContainsInlineUIContainer(item) && IsOwnedByTextBlock())
+			{
+				throw new ArgumentException(
+					"InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock.");
+			}
+		}
+
+		private static bool ContainsInlineUIContainer(Inline item)
+		{
+			if (item is InlineUIContainer)
+			{
+				return true;
+			}
+
+			if (item is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					if (ContainsInlineUIContainer(child))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsOwnedByTextBlock()
+		{
+			var current =
+#if __WASM__
+				(object)_collection.Owner;
+#else
+				_collection.GetParent();
+#endif
+
+			while (current is not null)
+			{
+				switch (current)
+				{
+					case TextBlock:
+						return true;
+					// A RichTextBlock hosts its inlines through a Paragraph; InlineUIContainer is valid there.
+					case Paragraph:
+					case RichTextBlock:
+						return false;
+					// Walk up through Span/Hyperlink/etc. to find the owning control.
+					case Inline inline:
+						current = inline.GetParent();
+						break;
+					default:
+						return false;
+				}
+			}
+
+			return false;
 		}
 	}
 }
