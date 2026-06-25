@@ -49,8 +49,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreSame(child, VisualTreeHelper.GetChild(userControl, 0));
 
 			// And it must be measured/arranged through Control's single-child layout.
-			Assert.AreEqual(100, child.ActualWidth);
-			Assert.AreEqual(50, child.ActualHeight);
+			// Tolerance accommodates sub-pixel layout rounding on fractional-DPI heads (e.g. WASM browser).
+			Assert.AreEqual(100, child.ActualWidth, 1d);
+			Assert.AreEqual(50, child.ActualHeight, 1d);
 		}
 
 		[TestMethod]
