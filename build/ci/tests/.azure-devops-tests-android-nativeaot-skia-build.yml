@@ -25,6 +25,8 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-android'
 
+  - template: ../templates/pack-local-uno-sdk.yml
+
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot -p:SkiaPublishAot=true -p:SkiaSharpVersion=3.119.2-preview.1 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-nativeaot.binlog
     displayName: Build Android+NativeAOT Skia Head
 

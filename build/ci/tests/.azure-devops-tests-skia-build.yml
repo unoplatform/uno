@@ -30,6 +30,8 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-desktop'
 
+  - template: ../templates/pack-local-uno-sdk.yml
+
   - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

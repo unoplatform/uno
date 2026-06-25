@@ -31,6 +31,8 @@ jobs:
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
       UnoCheckParameters: '--tfm net10.0-browserwasm'
+
+  - template: ../templates/pack-local-uno-sdk.yml
  
   - template: ../templates/nuget-cache.yml
     parameters:
