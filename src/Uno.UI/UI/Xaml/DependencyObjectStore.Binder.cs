@@ -338,6 +338,17 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyDataContext(object? actualDataContext)
 		{
+			// A ResourceDictionary item must not cache/inherit DataContext (WinUI — resources have no DataContext).
+			// OnParentPropertyChangedCallback blocks the parent-inheritance path; this blocks the bindable-child path
+			// (ApplyChildrenBindable / on-attach push → SetInheritedDataContext) too, so a resource pulled into a
+			// subtree via {StaticResource}/{ThemeResource} can't permanently cache that subtree's DataContext — which
+			// otherwise pins the owner's ViewModel (the resource is kept alive by a merged/theme dictionary) or a
+			// collectible AssemblyLoadContext.
+			if (IsResourceDictionaryItem)
+			{
+				return;
+			}
+
 			_properties.ApplyDataContext(actualDataContext);
 			ApplyChildrenBindable(actualDataContext);
 			ApplyMentoredChildrenDataContext(actualDataContext);
