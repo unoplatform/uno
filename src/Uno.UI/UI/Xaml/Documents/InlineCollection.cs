@@ -156,7 +156,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// <inheritdoc />
 		public void Add(Inline item)
 		{
-			ValidateInline(item);
+			ValidateInline(item, nameof(item));
 			_collection.Add(item);
 		}
 
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// <inheritdoc />
 		public void Insert(int index, Inline item)
 		{
-			ValidateInline(item);
+			ValidateInline(item, nameof(item));
 			_collection.Insert(index, item);
 		}
 
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Documents
 			get => (Inline)_collection[index];
 			set
 			{
-				ValidateInline(value);
+				ValidateInline(value, nameof(value));
 				_collection[index] = value;
 			}
 		}
@@ -206,13 +206,22 @@ namespace Microsoft.UI.Xaml.Documents
 		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a
 		/// <see cref="TextBlock"/> throws. We match that contract instead of silently dropping the element. See uno#23510.
 		/// </summary>
-		private void ValidateInline(Inline item)
+		private void ValidateInline(Inline item, string paramName)
 		{
-			// Check the (cheap) item shape first so the common Run-add path avoids the owner walk entirely.
-			if (ContainsInlineUIContainer(item) && IsOwnedByTextBlock())
+			// Only an InlineUIContainer (or a Span that may nest one) can ever be invalid; a plain Run/LineBreak
+			// is always fine, so it skips both the owner walk and the Span recursion.
+			if (item is not (InlineUIContainer or Span))
+			{
+				return;
+			}
+
+			// Resolve ownership before recursing: a Paragraph/RichTextBlock-owned collection always allows the
+			// container, so there is no need to scan Span content in rich-text scenarios.
+			if (IsOwnedByTextBlock() && ContainsInlineUIContainer(item))
 			{
 				throw new ArgumentException(
-					"InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock.");
+					"InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock.",
+					paramName);
 			}
 		}
 
