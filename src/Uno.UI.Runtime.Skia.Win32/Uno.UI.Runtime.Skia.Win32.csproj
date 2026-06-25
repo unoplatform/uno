@@ -56,39 +56,6 @@
 		</Content>
 	</ItemGroup>
 
-	<!--
-		WebView2 ships a WPF assembly (lib_manual) that gets auto-referenced and drags in
-		WindowsBase, conflicting with the net10.0 framework reference. We only use the Core
-		assembly, so drop the WPF one. Mirrors the WPF-removal target in Uno.Sdk.
-	-->
-	<Target Name="_UnoWin32RemoveWebView2Wpf" BeforeTargets="ResolveAssemblyReferences">
-		<ItemGroup>
-			<_unoWpfWebViewReference Include="@(Reference)" Condition="'%(Reference.FileName)' == 'Microsoft.Web.WebView2.Wpf'" />
-			<Reference Remove="@(_unoWpfWebViewReference)" Condition=" '@(_unoWpfWebViewReference)' != '' " />
-		</ItemGroup>
-	</Target>
-
-	<!--
-		The Microsoft.Web.WebView2 build targets inject Microsoft.Web.WebView2.Core as a plain
-		Reference, which drops the `Aliases` metadata set on the PackageReference. Without it the
-		`mswebview2` extern alias is never passed to csc and CoreWebView2 collides with Uno.UI's
-		own projection. Re-apply the alias to the resolved reference after it is resolved.
-		Mirrors _UnoWebView2Workaround in Uno.Sdk's Uno.SingleProject.Desktop.targets.
-	-->
-	<Target Name="_UnoWin32WebView2AliasWorkaround" AfterTargets="ResolveAssemblyReferences">
-		<ItemGroup>
-			<_unoWebView2WithAliases Include="@(PackageReference)" Condition="'%(PackageReference.Aliases)' != ''" />
-		</ItemGroup>
-		<PropertyGroup Condition=" '@(_unoWebView2WithAliases)' != ''">
-			<_unoWebView2Aliases>%(_unoWebView2WithAliases.Aliases)</_unoWebView2Aliases>
-		</PropertyGroup>
-		<ItemGroup Condition=" '@(_unoWebView2WithAliases)' != ''">
-			<ReferencePath Update="@(ReferencePath)" Condition="'%(FileName)' == 'Microsoft.Web.WebView2.Core'">
-				<Aliases>$(_unoWebView2Aliases)</Aliases>
-			</ReferencePath>
-		</ItemGroup>
-	</Target>
-
 	<Target Name="_UnoUpdateAdditionalAssemblies" AfterTargets="DispatchToInnerBuilds">
 		<ItemGroup>
 			<Content Include="../Uno.UI.Runtime.Skia.Win32.Support/bin/$(Configuration)/$(NetPrevious)/*.dll">

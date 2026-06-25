@@ -217,6 +217,36 @@
 		</ItemGroup>
 	</Target>
 
+	<!--
+		Microsoft.Web.WebView2's build targets inject Microsoft.Web.WebView2.Core as a plain
+		Reference (dropping the `Aliases` set on the PackageReference) and pull in a WPF assembly
+		that conflicts with WindowsBase. Repo projects that alias WebView2 but don't consume the
+		Uno.Sdk (Uno.UI.Runtime.Skia.Win32, SamplesApp.Skia.Generic, …) therefore lose the alias
+		and hit a CoreWebView2 collision with Uno.UI's own projection. Re-apply the alias to the
+		resolved Core reference and drop the unused WPF one. Mirrors the workarounds in Uno.Sdk's
+		Uno.SingleProject.Desktop.targets. Both targets are no-ops when WebView2 isn't referenced.
+	-->
+	<Target Name="_UnoRemoveWebView2WpfReference" BeforeTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<_unoWpfWebView2Reference Include="@(Reference)" Condition="'%(Reference.FileName)' == 'Microsoft.Web.WebView2.Wpf'" />
+			<Reference Remove="@(_unoWpfWebView2Reference)" Condition=" '@(_unoWpfWebView2Reference)' != '' " />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoReapplyWebView2Alias" AfterTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<_unoWebView2AliasedRef Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' == 'Microsoft.Web.WebView2' and '%(PackageReference.Aliases)' != ''" />
+		</ItemGroup>
+		<PropertyGroup Condition=" '@(_unoWebView2AliasedRef)' != ''">
+			<_unoWebView2Alias>%(_unoWebView2AliasedRef.Aliases)</_unoWebView2Alias>
+		</PropertyGroup>
+		<ItemGroup Condition=" '@(_unoWebView2AliasedRef)' != ''">
+			<ReferencePath Update="@(ReferencePath)" Condition="'%(FileName)' == 'Microsoft.Web.WebView2.Core'">
+				<Aliases>$(_unoWebView2Alias)</Aliases>
+			</ReferencePath>
+		</ItemGroup>
+	</Target>
+
 	<!-- Workaround for https://github.com/xamarin/xamarin-macios/issues/17005 -->
 	<Target Name="_DisableRemoteBuildForLibraries" BeforeTargets="_SayHello" Condition="'$(OutputType)'=='Library'">
 		<PropertyGroup>
