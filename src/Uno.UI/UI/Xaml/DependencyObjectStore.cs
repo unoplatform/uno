@@ -801,6 +801,12 @@ namespace Microsoft.UI.Xaml
 			{
 				ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
 			}
+			else
+			{
+				// Non-FE store: no DataContextProperty. Drop the cached mentor DataContext and re-resolve bindings
+				// against null so the previously-inherited value is released (e.g. on ALC teardown / mentor clear).
+				ApplyDataContext(null);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -809,6 +815,10 @@ namespace Microsoft.UI.Xaml
 			if (_dataContextProperty is { } dataContextProperty)
 			{
 				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+			}
+			else
+			{
+				ApplyDataContext(dataContext);
 			}
 		}
 
