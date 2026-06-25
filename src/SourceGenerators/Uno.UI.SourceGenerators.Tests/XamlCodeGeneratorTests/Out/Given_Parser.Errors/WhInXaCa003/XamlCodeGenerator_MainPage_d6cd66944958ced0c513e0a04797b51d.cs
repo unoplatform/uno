@@ -263,7 +263,7 @@ namespace TestRepro
 																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
-																	Path = @"TravelIdeas",
+																	Path = "TravelIdeas",
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -373,7 +373,7 @@ namespace TestRepro
 																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
-																	Path = @"SavedPlaces",
+																	Path = "SavedPlaces",
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -553,7 +553,7 @@ namespace TestRepro
 												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 												new Microsoft.UI.Xaml.Data.Binding()
 												{
-													Path = @"imageUri",
+													Path = "imageUri",
 												}
 											);
 											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -585,7 +585,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"title",
+																Path = "title",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "SubtitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -611,7 +611,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"description",
+																Path = "description",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -634,7 +634,7 @@ namespace TestRepro
 																	new global::Microsoft.UI.Xaml.Controls.Button
 																	{
 																		IsParsing = true,
-																		Content = @"Explorer",
+																		Content = "Explorer",
 																		HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Left,
 																		// Source 0\MainPage.xaml (Line 52:26)
 																	}
@@ -828,7 +828,7 @@ namespace TestRepro
 												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 												new Microsoft.UI.Xaml.Data.Binding()
 												{
-													Path = @"imageUri",
+													Path = "imageUri",
 												}
 											);
 											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -861,7 +861,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"name",
+																Path = "name",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyStrongTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -887,7 +887,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"location",
+																Path = "location",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -912,7 +912,7 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.Button
 											{
 												IsParsing = true,
-												Content = @"Supprimer",
+												Content = "Supprimer",
 												Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
 												Padding = new global::Microsoft.UI.Xaml.Thickness(8,4,8,4),
 												HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Right,

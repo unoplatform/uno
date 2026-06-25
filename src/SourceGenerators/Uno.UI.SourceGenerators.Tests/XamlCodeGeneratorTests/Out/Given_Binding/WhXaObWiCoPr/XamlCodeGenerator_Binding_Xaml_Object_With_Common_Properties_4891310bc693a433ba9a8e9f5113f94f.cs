@@ -70,7 +70,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 14:10)
 							}
 							.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -84,17 +84,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"Tag",
+									Path = "Tag",
 									ElementName = _topLevelSubject,
 									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-									ConverterParameter = @"topLevel",
+									ConverterParameter = "topLevel",
 									ConverterLanguage = "topLevel",
 									UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
-									TargetNullValue = @"TargetNullValue",
-									FallbackValue = @"FallbackValue",
+									TargetNullValue = "TargetNullValue",
+									FallbackValue = "FallbackValue",
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 									RelativeSource = new RelativeSource(RelativeSourceMode.None),
-									Source = @"Source",
+									Source = "Source",
 								}
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);

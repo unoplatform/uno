@@ -170,7 +170,7 @@ namespace TestRepro
 													{
 														IsParsing = true,
 														Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,8,0),
-														Content = @"Sync",
+														Content = "Sync",
 														// Source 0\MainPage.xaml (Line 8:6)
 													}
 													.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -183,7 +183,7 @@ namespace TestRepro
 														global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
-															Path = @"SyncCommand",
+															Path = "SyncCommand",
 														}
 													);
 													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -196,7 +196,7 @@ namespace TestRepro
 													new global::Microsoft.UI.Xaml.Controls.Button
 													{
 														IsParsing = true,
-														Content = @"Push sélection",
+														Content = "Push sélection",
 														// Source 0\MainPage.xaml (Line 9:10)
 													}
 													.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -209,7 +209,7 @@ namespace TestRepro
 														global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
-															Path = @"PushToBambooCommand",
+															Path = "PushToBambooCommand",
 														}
 													);
 													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -299,14 +299,14 @@ namespace TestRepro
 											global::Microsoft.UI.Xaml.Controls.ListView.SelectedItemProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
-												Path = @"SelectedActivity",
+												Path = "SelectedActivity",
 											}
 										);
 										__p1.SetBinding(
 											global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
-												Path = @"Activities",
+												Path = "Activities",
 											}
 										);
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
@@ -348,7 +348,7 @@ namespace TestRepro
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
-																	Path = @"SelectedActivity.Title",
+																	Path = "SelectedActivity.Title",
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -374,7 +374,7 @@ namespace TestRepro
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
-																	Path = @"SelectedActivity.Description",
+																	Path = "SelectedActivity.Description",
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -418,7 +418,7 @@ namespace TestRepro
 																global::Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
-																	Path = @"SelectedActivity.DurationMinutes",
+																	Path = "SelectedActivity.DurationMinutes",
 																}
 															);
 															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -440,7 +440,7 @@ namespace TestRepro
 																		new global::Microsoft.UI.Xaml.Controls.Button
 																		{
 																			IsParsing = true,
-																			Content = @"Approuver",
+																			Content = "Approuver",
 																			// Source 0\MainPage.xaml (Line 62:6)
 																		}
 																		.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -453,14 +453,14 @@ namespace TestRepro
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
-																				Path = @"SelectedActivity",
+																				Path = "SelectedActivity",
 																			}
 																		);
 																		__p1.SetBinding(
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
-																				Path = @"ApproveCommand",
+																				Path = "ApproveCommand",
 																			}
 																		);
 																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -474,7 +474,7 @@ namespace TestRepro
 																		{
 																			IsParsing = true,
 																			Margin = new global::Microsoft.UI.Xaml.Thickness(8,0,0,0),
-																			Content = @"Ignorer",
+																			Content = "Ignorer",
 																			// Source 0\MainPage.xaml (Line 63:10)
 																		}
 																		.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -487,14 +487,14 @@ namespace TestRepro
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
-																				Path = @"SelectedActivity",
+																				Path = "SelectedActivity",
 																			}
 																		);
 																		__p1.SetBinding(
 																			global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																			new Microsoft.UI.Xaml.Data.Binding()
 																			{
-																				Path = @"SkipCommand",
+																				Path = "SkipCommand",
 																			}
 																		);
 																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -559,7 +559,7 @@ namespace TestRepro
 										new global::Microsoft.UI.Xaml.Controls.Button
 										{
 											IsParsing = true,
-											Content = @"Charger plus",
+											Content = "Charger plus",
 											// Source 0\MainPage.xaml (Line 73:6)
 										}
 										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -572,7 +572,7 @@ namespace TestRepro
 											global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
-												Path = @"LoadMoreCommand",
+												Path = "LoadMoreCommand",
 											}
 										);
 										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -756,7 +756,7 @@ namespace TestRepro
 														global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
-															Path = @"SourceIconPath",
+															Path = "SourceIconPath",
 														}
 													);
 													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -807,7 +807,7 @@ namespace TestRepro
 																					global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 																					new Microsoft.UI.Xaml.Data.Binding()
 																					{
-																						Path = @"RepoName",
+																						Path = "RepoName",
 																					}
 																				);
 																				}
@@ -849,7 +849,7 @@ namespace TestRepro
 																					global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 																					new Microsoft.UI.Xaml.Data.Binding()
 																					{
-																						Path = @"Type",
+																						Path = "Type",
 																					}
 																				);
 																				}
@@ -895,7 +895,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"Title",
+																Path = "Title",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -921,7 +921,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"Description",
+																Path = "Description",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -966,7 +966,7 @@ namespace TestRepro
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
-																Path = @"Timestamp",
+																Path = "Timestamp",
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -1002,7 +1002,7 @@ namespace TestRepro
 																		global::Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
-																			Path = @"DurationMinutes",
+																			Path = "DurationMinutes",
 																		}
 																	);
 																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -1016,7 +1016,7 @@ namespace TestRepro
 																	{
 																		IsParsing = true,
 																		Margin = new global::Microsoft.UI.Xaml.Thickness(8,0,0,0),
-																		Content = @"Edit",
+																		Content = "Edit",
 																		// Source 0\MainPage.xaml (Line 39:18)
 																	}
 																	.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
@@ -1032,7 +1032,7 @@ namespace TestRepro
 																		global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
-																			Path = @"EditDurationCommand",
+																			Path = "EditDurationCommand",
 																			ElementName = _ActivitiesListSubject,
 																		}
 																	);
@@ -1066,7 +1066,7 @@ namespace TestRepro
 																	new global::Microsoft.UI.Xaml.Controls.CheckBox
 																	{
 																		IsParsing = true,
-																		Content = @"Exporter",
+																		Content = "Exporter",
 																		// Source 0\MainPage.xaml (Line 42:18)
 																	}
 																	.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler12)(__p1 => 
@@ -1076,7 +1076,7 @@ namespace TestRepro
 																		global::Microsoft.UI.Xaml.Controls.CheckBox.IsCheckedProperty,
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
-																			Path = @"MarkForExport",
+																			Path = "MarkForExport",
 																		}
 																	);
 																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
