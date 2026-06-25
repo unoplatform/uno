@@ -53,11 +53,11 @@ jobs:
       # ---
       # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
       # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
-      # /p:TargetFramework forces a single-TFM (inner) build: the head is multi-targeted, and
-      # `/t:Publish` on the cross-targeting outer build fails with NETSDK1129 (the old single-TFM
-      # SamplesApp.Windows head never hit this). dotnet build/publish on other TFMs pass `-f`, which
-      # sets TargetFramework the same way.
-      msbuildArguments: /r /t:Publish /m /v:m /p:UnoTargetFrameworkOverride=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      # The head collapses to a single windows TargetFramework in its csproj when
+      # UnoTargetFrameworkOverride is a windows TFM, so /t:Publish runs the inner build (avoids
+      # NETSDK1129). Do NOT pass a global /p:TargetFramework here — it leaks onto dependencies
+      # (e.g. the netstandard2.0 Uno.UI.Tasks pre-build) and breaks them with CS0234.
+      msbuildArguments: /r /t:Publish /m /v:m /p:UnoTargetFrameworkOverride=net10.0-windows10.0.19041.0 /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

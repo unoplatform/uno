@@ -53,6 +53,18 @@
 	<!-- Honor UnoTargetFrameworkOverride (CI + local single-TFM builds), as the other heads do -->
 	<Import Project="..\..\targetframework-override.props" />
 
+	<!--
+	Windows MSIX is built with MSBuild.exe /t:Publish (no `dotnet -f`). A single-valued but still
+	*plural* <TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects
+	it (NETSDK1129). Collapse the head to a single TargetFramework for the windows override so Publish
+	runs the inner build directly. Scope it to THIS project (not a global /p:TargetFramework, which
+	would also force the TFM onto dependencies like the netstandard2.0 Uno.UI.Tasks pre-build → CS0234).
+	-->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)')) == 'windows'">
+		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
+		<TargetFrameworks></TargetFrameworks>
+	</PropertyGroup>
+
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
 
 	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
