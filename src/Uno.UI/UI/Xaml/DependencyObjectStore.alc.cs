@@ -59,14 +59,9 @@ namespace Microsoft.UI.Xaml
 			// Drop it only when the association was cleared, or when the value itself belongs to
 			// a collectible ALC whose unload has begun — a value from a still-live add-in ALC
 			// must be preserved (mirrors the conservative _associatedParent gating above).
-			// A FrameworkElement owner stores it under its DataContextProperty; a non-FE owner has
-			// no DataContextProperty (BC58) and keeps the inherited value in its mentor cache instead.
-			var inheritedDataContext = _dataContextProperty is { } dataContextProperty
-				? GetValue(dataContextProperty)
-				: _properties.InheritedDataContext;
 			var dataContextFromUnloadingAlc = false;
 			if (!associationCleared
-				&& inheritedDataContext is { } dataContext
+				&& GetInheritedDataContextValue() is { } dataContext
 				&& dataContext.GetType().IsCollectible)
 			{
 				var valueAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(dataContext.GetType().Assembly);

@@ -294,5 +294,35 @@ public partial class Given_UIElement
 
 		root.Children.Clear();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedMenuFlyout_Closed_ItemsCollectionReleasesDataContext()
+	{
+		// Root-cause guard for the shared-flyout ViewModel leak: the MenuFlyout's Items collection (a non-FE
+		// DependencyObjectCollection permanently held by the flyout) is set as the presenter's ItemsSource on show.
+		// Its parent is the flyout, not the presenter, so the presenter's DataContext clear skips it — it must not be
+		// given (and left holding) the owner's DataContext in its inheritance-context cache.
+		var viewModel = new object();
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		var itemsCollectionStore = ((IDependencyObjectStoreProvider)flyout.Items).Store;
+
+		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(viewModel, itemsCollectionStore.GetInheritedDataContextValue(),
+			"The MenuFlyout Items collection must not retain the owner's DataContext after the flyout closes.");
+	}
 #endif
 }

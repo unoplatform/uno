@@ -695,8 +695,13 @@ namespace Microsoft.UI.Xaml
 				// inheritance/tree mechanism, and pushing onto it here would retain it (e.g. a flyout presenter's
 				// content keeping the owner's ViewModel alive after close). SetInheritedDataContext still respects the
 				// child's inheritance-context, so a brush shared across parents won't re-inherit.
+				// The parent guard mirrors ApplyChildrenBindable: only push onto a child this owner actually owns
+				// (parent null or == this). A value owned by another object (e.g. a MenuFlyout's Items collection set
+				// as a presenter's ItemsSource — parent is the flyout, not the presenter) is skipped by the matching
+				// clear path, so pushing onto it here would cache a DataContext that is never released.
 				if (newValue is IDependencyObjectStoreProvider addedProvider
 					&& addedProvider.Store.DataContextProperty is null
+					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
 					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
 				{
 					var currentDataContext = GetValue(dataContextDetails);
