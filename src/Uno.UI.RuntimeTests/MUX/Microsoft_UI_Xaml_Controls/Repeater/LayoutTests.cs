@@ -133,6 +133,91 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		public void VerifyItemsRepeaterNullLayoutIsTreatedAsStackLayout()
+		{
+			// ItemsRepeater.Layout defaults to 'null'.
+			// The null Layout is internally treated as a StackLayout.
+			// Verify that it behaves correctly and that if we switch Layout away from null and back again it
+			// continues to work correctly.
+			RunOnUIThread.Execute(() =>
+			{
+				var repeater = new ItemsRepeater();
+				repeater.ItemsSource = Enumerable.Range(0, 10);
+				repeater.ItemTemplate = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                         <Button Content='{Binding}' Height='10' Width='100' />
+                    </DataTemplate>");
+
+				Action validateStackLayout = () =>
+				{
+					double expectedYOffset = 0;
+					for (int i = 0; i < repeater.ItemsSourceView.Count; i++)
+					{
+						var child = repeater.TryGetElement(i) as Button;
+						Verify.IsNotNull(child);
+						var layoutBounds = LayoutInformation.GetLayoutSlot(child);
+						Verify.AreEqual(expectedYOffset, layoutBounds.Y);
+						Verify.AreEqual(i, child.Content);
+						expectedYOffset += 10;
+					}
+				};
+
+				Action validateGridLayout = () =>
+				{
+					int totalColumns = 5;
+					int currentCol = 0;
+					int currentRow = 0;
+					for (int i = 0; i < repeater.ItemsSourceView.Count; i++)
+					{
+						double expectedYOffset = currentRow * 10;
+						double expectedXOffset = currentCol * 100;
+						var child = repeater.TryGetElement(i) as Button;
+						Verify.IsNotNull(child);
+						var layoutBounds = LayoutInformation.GetLayoutSlot(child);
+						Verify.AreEqual(expectedYOffset, layoutBounds.Y);
+						Verify.AreEqual(expectedXOffset, layoutBounds.X);
+						Verify.AreEqual(i, child.Content);
+						currentCol++;
+						if (currentCol == totalColumns)
+						{
+							currentCol = 0;
+							currentRow++;
+						}
+					}
+				};
+
+				Grid grid = new Grid
+				{
+					Width = 500,
+					Height = 500,
+				};
+				grid.Children.Add(repeater);
+				Content = grid;
+
+				Log.Comment("Validate repeater with default 'null' Layout");
+				Verify.IsNull(repeater.Layout);
+				Content.UpdateLayout();
+				validateStackLayout();
+
+				Log.Comment("Switch Layout to UniformGridLayout ");
+				var uniformGridLayout = new UniformGridLayout
+				{
+					MaximumRowsOrColumns = 5,
+					MinItemHeight = 10,
+					MinItemWidth = 100,
+				};
+				repeater.Layout = uniformGridLayout;
+				Content.UpdateLayout();
+				validateGridLayout();
+
+				Log.Comment("Switch Layout back to 'null' Layout");
+				repeater.Layout = null;
+				Content.UpdateLayout();
+				validateStackLayout();
+			});
+		}
+
+		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateNonVirtualLayoutDoesNotGetMeasuredForViewportChanges()
 		{
@@ -209,7 +294,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var repeater = new ItemsRepeater();
 				var stackLayout = new StackLayout();
-				stackLayout.DisableVirtualization = true;
+				stackLayout.IsVirtualizationEnabled = false;
 				repeater.Layout = stackLayout;
 				repeater.ItemsSource = Enumerable.Range(0, 10);
 				repeater.ItemTemplate = (DataTemplate)XamlReader.Load(

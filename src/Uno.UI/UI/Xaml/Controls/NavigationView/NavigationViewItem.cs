@@ -197,7 +197,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 				if (repeater.Layout is StackLayout stackLayout)
 				{
-					stackLayout.DisableVirtualization = true;
+					stackLayout.IsVirtualizationEnabled = false;
 				}
 
 				// Primary element setup happens in NavigationView

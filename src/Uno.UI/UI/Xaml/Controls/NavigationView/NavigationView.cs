@@ -186,15 +186,6 @@ public partial class NavigationView : ContentControl
 
 		m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
-#if IS_UNO
-		//TODO: Uno specific - remove when #4689 is fixed
-		m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-#endif
-
 		if (isFromDestructor)
 		{
 			m_selectionChangedRevoker.Disposable = null;
@@ -486,14 +477,8 @@ public partial class NavigationView : ContentControl
 				if (leftNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if IS_UNO
-				//TODO: Uno specific - remove when #4689 is fixed
-				leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -519,14 +504,8 @@ public partial class NavigationView : ContentControl
 				if (topNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if IS_UNO
-				//TODO: Uno specific - remove when #4689 is fixed
-				topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -553,14 +532,8 @@ public partial class NavigationView : ContentControl
 				if (topNavListOverflowRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if IS_UNO
-				//TODO: Uno specific - remove when #4689 is fixed
-				topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -611,14 +584,8 @@ public partial class NavigationView : ContentControl
 				if (leftFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if IS_UNO
-				//TODO: Uno specific - remove when #4689 is fixed
-				leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -645,14 +612,8 @@ public partial class NavigationView : ContentControl
 				if (topFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if IS_UNO
-				//TODO: Uno specific - remove when #4689 is fixed
-				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);

@@ -520,7 +520,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.UpdateLayout();
 
 				// Make sure data was requested because during a normal reset elements (already bound with data) are not reused.
-				Verify.AreEqual(3, dataSource.GetAtCallCount);
+				Verify.AreEqual(4, dataSource.GetAtCallCount);
 				var realized = VerifyRealizedRange(repeater, dataSource);
 				Verify.AreEqual(3, realized);
 			});

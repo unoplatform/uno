@@ -1,46 +1,72 @@
-﻿using System;
-using System.Linq;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference StackLayout.idl, commit 4b206bce3
+
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class StackLayout
 {
-	partial class StackLayout
+	private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		=> ((StackLayout)sender).OnPropertyChanged(args);
+
+	/// <summary>
+	/// Gets or sets the axis along which items are laid out.
+	/// </summary>
+	/// <value>The axis along which items are laid out. The default is <see cref="Orientation.Vertical"/>.</value>
+	public Orientation Orientation
 	{
-		private static void OnDependencyPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-			=> ((StackLayout)sender).OnPropertyChanged(args);
-
-		#region Orientation - DP with common callback
-		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
-
-		public Orientation Orientation
-		{
-			get { return (Orientation)GetValue(OrientationProperty); }
-			set { SetValue(OrientationProperty, value); }
-		}
-		#endregion
-
-		#region Spacing - DP with common callback
-		public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
-			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
-
-		public double Spacing
-		{
-			get { return (double)GetValue(SpacingProperty); }
-			set { SetValue(SpacingProperty, value); }
-		}
-		#endregion
-
-		#region DisableVirtualization
-		public static DependencyProperty DisableVirtualizationProperty { get; } = DependencyProperty.Register(
-			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(default(bool), OnDependencyPropertyChanged));
-
-		public bool DisableVirtualization
-		{
-			get { return (bool)GetValue(DisableVirtualizationProperty); }
-			set { SetValue(DisableVirtualizationProperty, value); }
-		}
-		#endregion
+		get => (Orientation)GetValue(OrientationProperty);
+		set => SetValue(OrientationProperty, value);
 	}
+
+	/// <summary>
+	/// Identifies the <see cref="Orientation"/> dependency property.
+	/// </summary>
+	public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
+		nameof(Orientation),
+		typeof(Orientation),
+		typeof(StackLayout),
+		new FrameworkPropertyMetadata(Orientation.Vertical, OnPropertyChanged));
+
+	/// <summary>
+	/// Gets or sets a uniform distance (in pixels) between stacked items.
+	/// It is applied in the direction of the layout's <see cref="Orientation"/>.
+	/// </summary>
+	/// <value>The uniform distance (in pixels) between stacked items. The default is 0.</value>
+	public double Spacing
+	{
+		get => (double)GetValue(SpacingProperty);
+		set => SetValue(SpacingProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the <see cref="Spacing"/> dependency property.
+	/// </summary>
+	public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
+		nameof(Spacing),
+		typeof(double),
+		typeof(StackLayout),
+		new FrameworkPropertyMetadata(0.0, OnPropertyChanged));
+
+	// [MUX_PREVIEW] in StackLayout.idl — default true.
+	/// <summary>
+	/// Gets or sets a value that indicates whether the layout virtualizes items.
+	/// </summary>
+	/// <value><c>true</c> if the layout virtualizes items; otherwise, <c>false</c>. The default is <c>true</c>.</value>
+	public bool IsVirtualizationEnabled
+	{
+		get => (bool)GetValue(IsVirtualizationEnabledProperty);
+		set => SetValue(IsVirtualizationEnabledProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the <see cref="IsVirtualizationEnabled"/> dependency property.
+	/// </summary>
+	public static DependencyProperty IsVirtualizationEnabledProperty { get; } = DependencyProperty.Register(
+		nameof(IsVirtualizationEnabled),
+		typeof(bool),
+		typeof(StackLayout),
+		new FrameworkPropertyMetadata(true, OnPropertyChanged));
 }
