@@ -346,17 +346,19 @@
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
 	<!--
-	WASM: register referenced content (the Uno.UI.RuntimeTests test assets/fonts) into the
-	Uno ms-appx asset manifest (wwwroot/package_*/uno-assets.txt) that the runtime fetches.
-	Uno.Sdk manifests the base-lib samples content, but not the head's directly-referenced
-	RuntimeTests content for browserwasm, so image/font-loading runtime tests can't find
-	their assets at runtime. The old WebAssembly head imported this; mirror it, gated to wasm.
+	WASM + mobile: bundle the head's directly-referenced content (the Uno.UI.RuntimeTests test
+	assets/fonts) into the app. Uno.UI.Tasks.targets retargets Content into the wasm ms-appx
+	manifest, AndroidAssets, and iOS/tvOS BundleResources (see its _UnoUnderlyingPlatform logic).
+	The framework projects are referenced from source (DisableImplicitUnoPackages), so this isn't
+	imported transitively the way a package reference would — import it explicitly, as the old
+	per-platform heads got it. Excluded on desktop, which loads ms-appx straight from the flat
+	output dir (and where the runtime image tests already pass). Windows uses native WinUI.
 	-->
-	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'desktop'">
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets"
-	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(SkipUnoResourceGeneration)' == ''" />
+	        Condition="'$(_IsSkiaTfm)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
