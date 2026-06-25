@@ -56,13 +56,8 @@ namespace Microsoft.UI.Xaml
 			// The association may already have propagated the parent's DataContext into this
 			// store at Inheritance precedence; that propagated value (e.g. the secondary app's
 			// view model) survives the parent's removal and pins the value's ALC on its own.
-			// A FrameworkElement owner stores it under its DataContextProperty; a non-FE owner has
-			// no DataContextProperty (BC58) and keeps the inherited value in its mentor cache instead.
-			var inheritedDataContext = _dataContextProperty is { } dataContextProperty
-				? GetValue(dataContextProperty)
-				: _properties.InheritedDataContext;
 			if (associationCleared
-				|| inheritedDataContext?.GetType().IsCollectible == true)
+				|| GetInheritedDataContextValue()?.GetType().IsCollectible == true)
 			{
 				ClearInheritedDataContext();
 			}
