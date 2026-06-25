@@ -163,7 +163,7 @@ partial class AppWindow
 	/// <summary>
 	/// Hides the window.
 	/// </summary>
-	public void Hide() => _nativeAppWindow?.Hide();
+	public void Hide() => _nativeAppWindow.Hide();
 #endif
 
 	/// <summary>
