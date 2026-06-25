@@ -819,7 +819,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// The view generator is the only provider that prepares the element.
 			var repeater = m_owner;
 
-#if IS_UNO  //TODO: Uno specific - remove when #4689 is fixed
+#if IS_UNO && !UNO_HAS_ENHANCED_LIFECYCLE // Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 			repeater.OnUnoBeforeElementPrepared(element, index);
 #endif
 

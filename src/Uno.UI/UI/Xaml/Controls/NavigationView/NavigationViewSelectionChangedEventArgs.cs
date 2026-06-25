@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewSelectionChangedEventArgs.cpp, commit d883cf3
+// MUX reference NavigationViewSelectionChangedEventArgs.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml.Media.Animation;
 
@@ -11,6 +11,10 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class NavigationViewSelectionChangedEventArgs
 {
+	internal NavigationViewSelectionChangedEventArgs()
+	{
+	}
+
 	/// <summary>
 	/// Gets the newly selected menu item.
 	/// </summary>

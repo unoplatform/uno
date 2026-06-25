@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemAutomationPeer.cpp, commit a564c49
+// MUX reference NavigationViewItemAutomationPeer.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -197,7 +197,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 			   ExpandCollapseState.Collapsed :
 			   ExpandCollapseState.Expanded;
 
-			//oldState doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
+			// box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
 			RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
 			   oldState,
 			   newState);

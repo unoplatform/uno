@@ -389,6 +389,10 @@ partial class Application
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
 
+		// ContentControl memoizes "does this DefaultStyleKey type have a default template" per
+		// Type; keys from the unloaded app's controls pin the ALC.
+		RunCleanupStep(nameof(Controls.ContentControl.ClearHasDefaultTemplateCache), Controls.ContentControl.ClearHasDefaultTemplateCache);
+
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
 		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
 		// removed when the secondary app unloads and each one pins the collectible ALC. Walk

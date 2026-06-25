@@ -277,6 +277,30 @@ namespace Microsoft.UI.Xaml
 
 			// Notify UIA clients that IsOffscreen (and potentially other properties) may have changed.
 			CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+
+			// Faithful to WinUI: a Visibility toggle on a live element enters/leaves the
+			// composition (PC) scene, and WinUI registers a StructureChanged event for it
+			// (Added when becoming visible, Removed when collapsing — see
+			// CUIElement::EnterPCSceneRecursive / LeavePCSceneRecursive in uielement.cpp).
+			// Collapsed elements are pruned from the automation tree (GetAPChildren filters
+			// to Visible children, mirrored here by FrameworkElementAutomationPeer.ChildIsAcceptable).
+			// The Skia bridge keeps a provider-level children cache that a visibility toggle
+			// would otherwise leave stale, so route the toggle through the same child
+			// added/removed path real tree mutations use. Without this, content revealed by a
+			// horizontal scroll/resize (e.g. WCT DataGrid columns scrolled into view, which
+			// flip cells from Collapsed to Visible rather than re-adding them) renders visually
+			// but never materializes in the UIA tree.
+			if (IsActiveInVisualTree && this.GetParent() is UIElement visibilityParent)
+			{
+				if (newValue == Visibility.Visible)
+				{
+					Uno.Helpers.UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(visibilityParent, this, null);
+				}
+				else
+				{
+					Uno.Helpers.UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(visibilityParent, this);
+				}
+			}
 		}
 
 		partial void OnRenderTransformSet()
