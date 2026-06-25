@@ -17,8 +17,6 @@ partial class NavigationViewItem
 #pragma warning disable CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
 	private DispatcherQueueTimer _uno_pointerDeferring;
 #pragma warning restore CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
-<<<<<<< HEAD
-=======
 
 #if __ANDROID__
 	private void DeferUpdateVisualStateForPointer()
@@ -52,5 +50,4 @@ partial class NavigationViewItem
 	}
 #endif
 #endif
->>>>>>> origin/master
 }
