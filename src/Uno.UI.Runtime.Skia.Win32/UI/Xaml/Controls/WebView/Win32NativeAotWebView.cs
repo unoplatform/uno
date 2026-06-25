@@ -50,7 +50,26 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 				WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
 				var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 
-				CreateCoreWebView2Environment(userDataFolder, new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
+				// These options must be applied at environment creation time; CoreWebView2EnvironmentOptions cannot be
+				// changed once the environment exists. They are surfaced through FeatureConfiguration.WebView2 because Uno
+				// owns this CreateAsync call (the app never sees the CoreWebView2Environment), so it's the only injection point.
+				var options = new WebView2.CoreWebView2EnvironmentOptions();
+				options.put_AllowSingleSignOnUsingOSPrimaryAccount(
+					FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount ? BOOL.TRUE : BOOL.FALSE
+				).ThrowOnError();
+				var additionalBrowserArguments = FeatureConfiguration.WebView2.AdditionalBrowserArguments;
+				if (!string.IsNullOrEmpty(additionalBrowserArguments))
+				{
+					unsafe
+					{
+						fixed (char* p_args = additionalBrowserArguments)
+						{
+							options.put_AdditionalBrowserArguments(new PWSTR(p_args)).ThrowOnError();
+						}
+					}
+				}
+
+				CreateCoreWebView2Environment(userDataFolder, options, new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
 				{
 					if (errorCode.IsError)
 					{
@@ -458,13 +477,13 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 			).ThrowOnError();
 	}
 
-	private static unsafe void CreateCoreWebView2Environment(string userDataFolder, WebView2.ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler handler)
+	private static unsafe void CreateCoreWebView2Environment(string userDataFolder, WebView2.ICoreWebView2EnvironmentOptions options, WebView2.ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler handler)
 	{
 		fixed (char* p_userDataFolder = userDataFolder)
 			WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(
 				default,
 				new PWSTR(p_userDataFolder),
-				null!,
+				options,
 				handler
 			).ThrowOnError();
 	}

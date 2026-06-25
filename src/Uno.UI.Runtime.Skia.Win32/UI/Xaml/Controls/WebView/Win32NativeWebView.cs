@@ -227,9 +227,9 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 	private void NativeWebView_NewWindowRequested(object? sender, NativeWebView.CoreWebView2NewWindowRequestedEventArgs e)
 	{
 		_coreWebView.RaiseNewWindowRequested(
-		e.Uri,
-		CoreWebView2.BlankUri,
-		out var handled);
+			e.Uri,
+			CoreWebView2.BlankUri,
+			out var handled);
 
 		e.Handled = handled;
 	}
@@ -248,13 +248,13 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 	}
 
 	public override Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
-	=> _nativeWebView.ExecuteScriptAsync(script);
+		=> _nativeWebView.ExecuteScriptAsync(script);
 
 	public override void GoBack()
-	=> _nativeWebView.GoBack();
+		=> _nativeWebView.GoBack();
 
 	public override void GoForward()
-	=> _nativeWebView.GoForward();
+		=> _nativeWebView.GoForward();
 
 	public override Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
 	{
@@ -304,24 +304,24 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 	}
 
 	public override void Reload()
-	=> _nativeWebView.Reload();
+		=> _nativeWebView.Reload();
 
 	public override void SetScrollingEnabled(bool isScrollingEnabled)
 	{
 	}
 
 	public override void Stop()
-	=> _nativeWebView.Stop();
+		=> _nativeWebView.Stop();
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
-	=> _nativeWebView.ClearVirtualHostNameToFolderMapping(hostName);
+		=> _nativeWebView.ClearVirtualHostNameToFolderMapping(hostName);
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
-	=> _nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (NativeWebView.CoreWebView2HostResourceAccessKind)accessKind);
+		=> _nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (NativeWebView.CoreWebView2HostResourceAccessKind)accessKind);
 
 	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-	=> _nativeWebView.AddWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+		=> _nativeWebView.AddWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
 
 	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-	=> _nativeWebView.RemoveWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+		=> _nativeWebView.RemoveWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
 }
