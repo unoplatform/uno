@@ -45,3 +45,10 @@
 .DocSearch.DocSearch-Container {
   z-index: 9999;
 }
+
+.DocSearch-SearchBar {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+}
