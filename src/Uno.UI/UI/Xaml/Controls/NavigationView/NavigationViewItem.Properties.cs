@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.properties.cpp, commit fd22d7f
+// MUX reference NavigationViewItem.properties.cpp, commit bac7a9c33
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
@@ -13,7 +13,7 @@ public partial class NavigationViewItem
 	public double CompactPaneLength
 	{
 		get => (double)GetValue(CompactPaneLengthProperty);
-		set => SetValue(CompactPaneLengthProperty, value);
+		private set => SetValue(CompactPaneLengthProperty, value);
 	}
 
 	public static DependencyProperty CompactPaneLengthProperty { get; } =
@@ -67,7 +67,7 @@ public partial class NavigationViewItem
 	public IList<object> MenuItems
 	{
 		get => (IList<object>)GetValue(MenuItemsProperty);
-		set => SetValue(MenuItemsProperty, value);
+		private set => SetValue(MenuItemsProperty, value);
 	}
 
 	public static DependencyProperty MenuItemsProperty { get; } =

@@ -1,22 +1,22 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemBase.cpp, commit 574e5ed 
+// MUX reference NavigationViewItemBase.cpp, commit bac7a9c33 
 
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemBase : ContentControl
 {
-	protected override void OnApplyTemplate()
-	{
-		base.OnApplyTemplate();
+#if HAS_UNO // Uno: replaces the WinUI attached-DP s_NavigationViewItemBaseRevokersProperty (stored on NavigationView) by holding the revokers directly on the item.
+	internal CompositeDisposable EventRevokers { get; set; }
+#endif
 
-		// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
-		// as OnApplyTemplate will be called repeatedly.
-		Loaded -= OnLoaded;
+	public NavigationViewItemBase()
+	{
 		Loaded += OnLoaded;
 	}
 
@@ -89,10 +89,12 @@ public partial class NavigationViewItemBase : ContentControl
 		}
 	}
 
-#if IS_UNO
-	// TODO: Uno specific: Remove when #4689 is fixed
-
-	protected bool _fullyInitialized = false;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+	// so an item may be prepared before its template was applied; reapply it on demand.
+	// private protected (not protected): gated by !UNO_HAS_ENHANCED_LIFECYCLE, which the reference build
+	// doesn't define, so an accessible member here would diverge from the Skia/WASM API surface.
+	private protected bool _fullyInitialized = false;
 
 	internal void Reinitialize()
 	{
