@@ -47,6 +47,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private bool _changingGlInitialized;
 
+	// On GLES (Android), glReadPixels with BGRA is the optional GL_EXT_read_format_bgra extension.
+	// When it's absent we read RGBA and swap R/B into the BGRA back buffer. Desktop GL/ANGLE keep
+	// BGRA (core), and WASM keeps BGRA too (its JS shim swaps internally), so this stays false there.
+	private bool _readbackAsRgbaWithSwap;
+
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
@@ -315,6 +320,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 			try
 			{
+				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
 				Init(_gl);
 			}
 			catch (Exception e)
@@ -487,7 +493,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
-				_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				if (_readbackAsRgbaWithSwap)
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
+					SwapRedBlue((byte*)ptr, (int)RenderSize.Width * (int)RenderSize.Height);
+				}
+				else
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				}
 			});
 			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
@@ -501,6 +515,36 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			}
 
 			IsGLInitialized = false;
+		}
+	}
+
+	// Decides the readback format once, while the context is current. Only GLES (Android) can lack
+	// BGRA read support; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
+	private static bool NeedsRgbaReadbackSwap(GL gl)
+	{
+		if (!OperatingSystem.IsAndroid())
+		{
+			return false;
+		}
+
+		gl.GetInteger(GLEnum.NumExtensions, out var extensionCount);
+		for (uint i = 0; i < extensionCount; i++)
+		{
+			if (gl.GetStringS(StringName.Extensions, i) == "GL_EXT_read_format_bgra")
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static unsafe void SwapRedBlue(byte* pixels, int pixelCount)
+	{
+		for (var i = 0; i < pixelCount; i++)
+		{
+			var offset = i * BytesPerPixel;
+			(pixels[offset], pixels[offset + 2]) = (pixels[offset + 2], pixels[offset]);
 		}
 	}
 
