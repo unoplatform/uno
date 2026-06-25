@@ -709,7 +709,7 @@ public override bool Equals(object other)
 				}
 
 				// DataContext is FrameworkElement-only (WinUI parity). A type that hand-declares its own
-				// static DataContextProperty (e.g. FlyoutBase's internal one) wires it explicitly; everything
+				// static DataContextProperty (e.g. FrameworkElement's hand-written one) wires it explicitly; everything
 				// else lets the store resolve it: FrameworkElement.DataContextProperty for FrameworkElement
 				// instances, otherwise none.
 				var hasDeclaredDataContextProperty = typeSymbol

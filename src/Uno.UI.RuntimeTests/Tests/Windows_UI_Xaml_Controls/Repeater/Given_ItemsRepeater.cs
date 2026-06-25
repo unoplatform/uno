@@ -610,7 +610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);
 
-			public IEnumerable<T> MaterializedItems => MaterializedElements.Select(elt => (T)((FrameworkElement)elt).DataContext);
+			public IEnumerable<T> MaterializedItems => MaterializedElements.Select(elt => (T)((FrameworkElement)elt).DataContext!);
 
 			public IEnumerable<UIElement> MaterializedElements => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0);
 

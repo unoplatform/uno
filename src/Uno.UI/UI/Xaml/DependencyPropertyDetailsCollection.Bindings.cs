@@ -148,7 +148,9 @@ namespace Microsoft.UI.Xaml
 		/// Gets the DataContext <see cref="Binding"/> instance, if any
 		/// </summary>
 		/// <returns></returns>
-		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails?.GetBinding();
+#nullable enable
+		internal BindingExpression? FindDataContextBinding() => DataContextPropertyDetails?.GetBinding();
+#nullable restore
 
 		/// <summary>
 		/// Sets the specified <paramref name="binding"/> on the <paramref name="target"/> instance.
