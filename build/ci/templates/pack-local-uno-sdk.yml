@@ -1,0 +1,9 @@
+# Packs the in-repo Uno.Sdk as Uno.Sdk.Private 255.255.255-dev into the src/PackageCache feed,
+# so the consolidated SamplesApp.Head (Sdk="Uno.Sdk.Private", pinned to that sentinel in
+# global.json) can resolve it. Include this ONLY in stages that build the head — NOT in
+# dotnet-install.yml: running it everywhere builds src/Uno.Sdk before the packaging stage
+# packs Uno.Sdk.Private at the NBGV version, leaving obj/ dirty so that pack drops packages.json
+# (breaking the Templates/DevServer restores that consume the NBGV package).
+steps:
+  - pwsh: ./build/pack-local-uno-sdk.ps1
+    displayName: 'Pack local Uno.Sdk.Private into PackageCache feed'

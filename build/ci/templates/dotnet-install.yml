@@ -33,14 +33,6 @@ steps:
       includePreviewVersions: true
       installationPath: $(DOTNET_INSTALL_DIR)
 
-  # The consolidated SamplesApp head builds with Sdk="Uno.Sdk.Private", pinned to the
-  # 255.255.255-dev sentinel in global.json. That package is gitignored, so each agent
-  # must pack it from src/Uno.Sdk into the src/PackageCache feed before any project
-  # referencing the SDK is evaluated (the pin alone resolves to nothing otherwise).
-  - pwsh: ./build/pack-local-uno-sdk.ps1
-    displayName: 'Pack local Uno.Sdk.Private into PackageCache feed'
-    condition: ${{ eq(parameters.haveCheckout, true) }}
-
   - task: UseDotNet@2
     displayName: 'Use .NET SDK ${{ parameters.defaultDotNetSdkVersion }}'
     retryCountOnTaskFailure: 3
