@@ -41,8 +41,8 @@ public class Given_Ellipse
 		var screenshot = await UITestHelper.ScreenShot(grid);
 
 		// Top-left is inside the visible lower hemisphere, bottom-left is outside it.
-		ImageAssert.HasColorAt(screenshot, 20, 20, Colors.Red, tolerance: 20);
-		ImageAssert.HasColorAt(screenshot, 20, 130, Colors.White, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 20, 20, Colors.Red, tolerance: 5);
+		ImageAssert.HasColorAt(screenshot, 20, 130, Colors.White, tolerance: 5);
 	}
 
 	// Mirror of the scenario above: with VerticalAlignment=Top the upper hemisphere is visible
@@ -71,8 +71,8 @@ public class Given_Ellipse
 		await UITestHelper.Load(grid);
 		var screenshot = await UITestHelper.ScreenShot(grid);
 
-		ImageAssert.HasColorAt(screenshot, 20, 20, Colors.White, tolerance: 20);
-		ImageAssert.HasColorAt(screenshot, 20, 130, Colors.Red, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 20, 20, Colors.White, tolerance: 5);
+		ImageAssert.HasColorAt(screenshot, 20, 130, Colors.Red, tolerance: 5);
 	}
 }
 #endif

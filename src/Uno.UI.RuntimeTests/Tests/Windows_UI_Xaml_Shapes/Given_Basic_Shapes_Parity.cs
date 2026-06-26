@@ -165,7 +165,7 @@ public class Given_Basic_Shapes_Parity
 			foreach (var (sizeId, sizeAlter) in _sizes)
 			{
 				var id = $"{shapeName}_{stretchId}_{sizeId}";
-				var golden = await TryLoadGoldenAsync(id);
+				using var golden = await TryLoadGoldenAsync(id);
 				if (golden is null)
 				{
 					continue; // only compare configs that have a captured WinUI golden
@@ -195,7 +195,6 @@ public class Given_Basic_Shapes_Parity
 				}
 
 				host.Child = null;
-				golden.Dispose();
 			}
 		}
 
