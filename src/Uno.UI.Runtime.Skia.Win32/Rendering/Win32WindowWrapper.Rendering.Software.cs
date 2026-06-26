@@ -14,16 +14,18 @@ internal partial class Win32WindowWrapper
 	private class SoftwareRenderer : IRenderer
 	{
 		private readonly HWND _hwnd;
-		private readonly Win32VSyncPacer _vsyncPacer;
+		private readonly Win32RenderPacer _pacer;
 
 		private HBITMAP _hBitmap;
 
 		public SoftwareRenderer(HWND hwnd)
 		{
 			_hwnd = hwnd;
-			// BitBlt returns instantly, so the loop is paced to vsync here; retargeted to the
-			// screen refresh rate via UpdateRefreshRate when SetFrameRateAsScreenRefreshRate is on.
-			_vsyncPacer = new Win32VSyncPacer(FeatureConfiguration.CompositionTarget.FrameRate);
+			// BitBlt returns instantly, so the loop is paced here: to the display refresh when
+			// SetFrameRateAsScreenRefreshRate is on, otherwise to the configured FrameRate.
+			_pacer = new Win32RenderPacer(
+				FeatureConfiguration.CompositionTarget.FrameRate,
+				FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 		}
 
 		public void StartPaint() { }
@@ -61,7 +63,7 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			_vsyncPacer.OnFrameStart();
+			_pacer.OnFrameStart();
 
 			var paintDc = PInvoke.GetDC(_hwnd);
 			if (paintDc == new HDC(IntPtr.Zero))
@@ -97,18 +99,18 @@ internal partial class Win32WindowWrapper
 			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 			// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
-			_vsyncPacer.WaitForVSync();
+			_pacer.WaitForNextFrame();
 		}
 
 		bool IRenderer.IsSoftware() => true;
 
 		void IRenderer.Reinitialize() { }
 
-		void IRenderer.UpdateRefreshRate(double fps) => _vsyncPacer.UpdateTargetFps(fps);
+		void IRenderer.UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
 
 		void IDisposable.Dispose()
 		{
-			_vsyncPacer.Dispose();
+			_pacer.Dispose();
 			var success = PInvoke.DeleteObject(_hBitmap) == 1;
 			if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}

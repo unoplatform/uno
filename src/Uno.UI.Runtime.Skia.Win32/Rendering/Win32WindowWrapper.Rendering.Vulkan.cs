@@ -24,7 +24,9 @@ internal partial class Win32WindowWrapper
 	private class VulkanRenderer : IRenderer
 	{
 		private readonly HWND _hwnd;
-		private readonly Win32VSyncPacer _vsyncPacer = new(FeatureConfiguration.CompositionTarget.FrameRate);
+		private readonly Win32RenderPacer _pacer = new(
+			FeatureConfiguration.CompositionTarget.FrameRate,
+			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 		private VulkanContext _vulkanContext;
 		private IDisposable? _deviceLock;
 		private bool _skipPresent;
@@ -112,7 +114,7 @@ internal partial class Win32WindowWrapper
 			if (_vulkanContext.CachedSkSurface == null || _vulkanContext.GrContext == null)
 				return;
 
-			_vsyncPacer.OnFrameStart();
+			_pacer.OnFrameStart();
 
 			// Flush Skia commands to the Vulkan intermediate image
 			_vulkanContext.CachedSkSurface.Canvas.Flush();
@@ -126,7 +128,7 @@ internal partial class Win32WindowWrapper
 				// MAILBOX present returns without blocking, so pace the render thread to the
 				// compositor's vsync here; otherwise it spins at thousands of fps rendering frames
 				// the presentation engine discards. MAILBOX keeps latency low and stays tear-free.
-				_vsyncPacer.WaitForVSync();
+				_pacer.WaitForNextFrame();
 			}
 			_skipPresent = false;
 		}
@@ -158,12 +160,12 @@ internal partial class Win32WindowWrapper
 		{
 			_deviceLock?.Dispose();
 			_deviceLock = null;
-			_vsyncPacer.Dispose();
+			_pacer.Dispose();
 			_vulkanContext.Dispose();
 		}
 
 		// Retargets the vsync pacer's degraded timer fallback (MAILBOX itself ignores this);
 		// mirrors the software renderer for the SetFrameRateAsScreenRefreshRate path.
-		public void UpdateRefreshRate(double fps) => _vsyncPacer.UpdateTargetFps(fps);
+		public void UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
 	}
 }
