@@ -359,8 +359,8 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 			HtmlPointerButtonUpdate.Right => PointerUpdateKind.RightButtonReleased,
 			HtmlPointerButtonUpdate.X1 when props.IsXButton1Pressed => PointerUpdateKind.XButton1Pressed,
 			HtmlPointerButtonUpdate.X1 => PointerUpdateKind.XButton1Released,
-			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton1Pressed,
-			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton1Released,
+			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton2Pressed,
+			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton2Released,
 			_ => PointerUpdateKind.Other
 		};
 
