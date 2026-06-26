@@ -231,6 +231,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	{
 	}
 
+	protected override Task InitializeAsync()
+		=> X11InputMethodDetector.DetectAsync();
+
 	public void Dispose()
 	{
 	}

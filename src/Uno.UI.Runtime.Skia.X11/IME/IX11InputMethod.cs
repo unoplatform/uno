@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Abstraction for X11 input method backends (IBus D-Bus, Fcitx D-Bus, XIM fallback).
+/// Abstraction for X11 D-Bus input method backends (IBus, Fcitx).
 /// Consumed by <see cref="X11KeyboardInputSource"/> and <see cref="X11ImeTextBoxExtension"/>.
 /// </summary>
 internal interface IX11InputMethod : IDisposable
@@ -13,6 +13,13 @@ internal interface IX11InputMethod : IDisposable
 	/// Whether this input method is connected and ready to process key events.
 	/// </summary>
 	bool IsEnabled { get; }
+
+	/// <summary>
+	/// Completes when the backend has finished its asynchronous initialization,
+	/// regardless of success. After this completes, <see cref="IsEnabled"/> reflects
+	/// the final connection state.
+	/// </summary>
+	Task InitTask { get; }
 
 	/// <summary>
 	/// Forward a key event to the IME for processing.
