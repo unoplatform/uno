@@ -73,14 +73,26 @@
 	</PropertyGroup>
 
 	<!--
-	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
-
-	  Note: For Apple UIKit and Android, it must be run early in the build process, but no publicly stable target is available
-	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
+	  Setup target that defines path properties during target execution (not project load).
+	  This ensures $(IntermediateOutputPath) is correctly resolved for multi-targeted projects.
+	  This target is a dependency of _UnoResourcesGenerationCore; because MSBuild evaluates
+	  Inputs/Outputs AFTER DependsOnTargets complete, the property values are available.
 	-->
-	<Target Name="UnoResourcesGeneration"
-				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
-				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
+	<Target Name="_UnoResourcesGenerationSetupProperties">
+		<PropertyGroup>
+			<_ResourceOutputPath>$(IntermediateOutputPath)g\ResourcesGenerator</_ResourceOutputPath>
+			<_ResourceStampFile>$(IntermediateOutputPath)g\uno.stamp</_ResourceStampFile>
+		</PropertyGroup>
+	</Target>
+
+	<!--
+	  Inner incremental target: only runs when PRIResource inputs are newer than the stamp file.
+	  Generates the actual resource files and updates the stamp file.
+	-->
+	<Target Name="_UnoResourcesGenerationCore"
+				Inputs="@(PRIResource)"
+				Outputs="$(_ResourceStampFile)"
+				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup;_UnoResourcesGenerationSetupProperties"
 				Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.slnx' and '$(MSBuildRuntimeType)'!='Core'" />
@@ -117,11 +129,6 @@
 			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
 		</AssignTargetPath>
 
-		<PropertyGroup>
-			<_ResourceOutputPath>$(IntermediateOutputPath)g\ResourcesGenerator</_ResourceOutputPath>
-			<_ResourceStampFile>$(IntermediateOutputPath)g\uno.stamp</_ResourceStampFile>
-		</PropertyGroup>
-
 		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(_UnoUnderlyingPlatform)"
@@ -130,22 +137,94 @@
 									 IsUnoHead="$(_IsUnoHead)"
 									 ProjectName="$(AssemblyName)"
 									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
-			<Output TaskParameter="GeneratedFiles"
-							ItemName="GeneratedFiles" />
+			<Output TaskParameter="GeneratedFiles" ItemName="GeneratedFiles" />
+			<Output TaskParameter="OutputsChanged" PropertyName="_ResourcesOutputsChanged" />
 		</ResourcesGenerationTask_v0>
-		<ItemGroup>
-			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='UIKit'" Include="@(GeneratedFiles)" />
-			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
-			<LibraryResourceDirectories Condition="'@(_UnoAndroidResources->Count ())' != '0' " Include="$(_ResourceOutputPath)\r">
-				<StampFile>$(_ResourceStampFile)</StampFile>
-			</LibraryResourceDirectories>
-			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 
+		<ItemGroup>
 			<!-- Clear temporary group -->
 			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
 
 			<!-- Ensure files are tracked properly for incremental build and clean targets -->
 			<FileWrites Include="@(GeneratedFiles)" />
+			<FileWrites Include="$(_ResourceStampFile)" />
+		</ItemGroup>
+
+		<!--
+		  Always touch the stamp file after the task runs so that MSBuild can compare subsequent
+		  inputs against it and skip this target when nothing has changed.
+		  The stamp file is also referenced by LibraryResourceDirectories.StampFile so that
+		  dotnet-android can detect when library resources need reprocessing.
+		-->
+		<MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(_ResourceStampFile)'))" />
+		<Touch Files="$(_ResourceStampFile)" AlwaysCreate="true" />
+
+	</Target>
+
+	<!--
+	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
+
+	  Note: For Apple UIKit and Android, it must be run early in the build process, but no publicly stable target is available
+	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
+
+	  This outer target always runs (no Inputs/Outputs) so that it can populate the item groups that downstream
+	  targets depend on. The expensive work is delegated to _UnoResourcesGenerationCore which IS incremental.
+	  When _UnoResourcesGenerationCore is skipped, GeneratedFiles is empty and we recover the item list from disk.
+	-->
+	<Target Name="UnoResourcesGeneration"
+				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
+				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup;_UnoResourcesGenerationCore"
+				Condition="'$(DesignTimeBuild)' != 'true'">
+
+		<!--
+		  When _UnoResourcesGenerationCore was skipped (inputs unchanged), GeneratedFiles is empty.
+		  Recover .upri and UIKit .strings items from disk so that downstream targets still work.
+		  Android resources are recovered by checking the android resources directory directly.
+		-->
+		<ItemGroup Condition="'@(GeneratedFiles)' == '' and Exists('$(_ResourceStampFile)')">
+			<_UnoExistingUpriFiles Include="$(_ResourceOutputPath)\**\*.upri" />
+			<_UnoExistingStringsFiles Condition="'$(_UnoUnderlyingPlatform)'=='uikit'" Include="$(_ResourceOutputPath)\**\*.strings" />
+		</ItemGroup>
+
+		<!-- Reconstruct GeneratedFiles from disk-scanned .upri files with computed metadata -->
+		<ItemGroup Condition="'@(_UnoExistingUpriFiles)' != ''">
+			<GeneratedFiles Include="@(_UnoExistingUpriFiles)">
+				<UnoResourceTarget>Uno</UnoResourceTarget>
+				<!--
+				  LogicalName: path relative to _ResourceOutputPath with dir separators replaced by dots.
+				  e.g. "$(_ResourceOutputPath)\en\Resources.upri" -> "en.Resources.upri"
+				-->
+				<LogicalName>$([System.String]::new($([MSBuild]::MakeRelative('$([MSBuild]::EnsureTrailingSlash("$(_ResourceOutputPath)"))', '%(FullPath)'))).Replace('\','.').Replace('/','.'))</LogicalName>
+				<!--
+				  Language: the immediate parent directory of the .upri file is always the language qualifier.
+				  e.g. "$(_ResourceOutputPath)\en\Resources.upri"         -> "en"
+				       "$(_ResourceOutputPath)\Strings\en\Resources.upri" -> "en"
+				-->
+				<Language>$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName('%(FullPath)'))))</Language>
+			</GeneratedFiles>
+		</ItemGroup>
+
+		<!-- Reconstruct GeneratedFiles from disk-scanned UIKit .strings files -->
+		<ItemGroup Condition="'@(_UnoExistingStringsFiles)' != ''">
+			<GeneratedFiles Include="@(_UnoExistingStringsFiles)">
+				<UnoResourceTarget>UIKit</UnoResourceTarget>
+				<LogicalName>$([System.String]::new($([MSBuild]::MakeRelative('$([MSBuild]::EnsureTrailingSlash("$(_ResourceOutputPath)"))', '%(FullPath)'))).Replace('\','.').Replace('/','.'))</LogicalName>
+			</GeneratedFiles>
+		</ItemGroup>
+
+		<ItemGroup>
+			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='UIKit'" Include="@(GeneratedFiles)" />
+			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<!--
+			  Always add the Android resources directory when it exists, even when GeneratedFiles is empty
+			  (recovery case after _UnoResourcesGenerationCore was skipped).
+			-->
+			<LibraryResourceDirectories
+				Condition="'$(_UnoUnderlyingPlatform)'=='android' and Exists('$(_ResourceOutputPath)\r')"
+				Include="$(_ResourceOutputPath)\r">
+				<StampFile>$(_ResourceStampFile)</StampFile>
+			</LibraryResourceDirectories>
+			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 		</ItemGroup>
 	</Target>
 
