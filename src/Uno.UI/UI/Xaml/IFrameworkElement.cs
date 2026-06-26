@@ -167,6 +167,12 @@ namespace Microsoft.UI.Xaml
 				content = innerContent;
 			}
 			else if (!hasAnyChildren &&
+				e is UserControl userControl &&
+				userControl.Content is IFrameworkElement userControlContent)
+			{
+				content = userControlContent;
+			}
+			else if (!hasAnyChildren &&
 				e is Controls.Primitives.Popup popup)
 			{
 				content = popup.Child as IFrameworkElement;
