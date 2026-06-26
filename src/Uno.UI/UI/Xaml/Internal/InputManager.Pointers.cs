@@ -131,11 +131,6 @@ partial class InputManager
 					// Raise the event to the target
 					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerDown(args);
-#if __APPLE_UIKIT__
-					// Also as the FlyoutPopupPanel is being removed from the UI tree, we won't get any ProcessPointerUp, so we are forcefully causing it here.
-					args.Reset(canBubbleNatively: false);
-					reRouted.To.OnPointerUp(args);
-#endif
 
 					args.Handled = true; // Make sure the event is flagged as handled so it won't be bubbled by native code to us again from the FlyoutPopupPanel.
 					return; // The event already came back to us (due to reRouted.To.OnPointerDown(args)).
@@ -162,26 +157,6 @@ partial class InputManager
 			{
 				return;
 			}
-
-#if __ANDROID__ || __APPLE_UIKIT__ // Not needed on WASM as we do have native support of the exit event
-			// On iOS we use the RootVisual to raise the UWP-only exit event (in managed only)
-			// Note: This is useless for managed pointers where the Exit is raised properly
-
-			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch
-				&& args.OriginalSource is UIElement src)
-			{
-				// It's acceptable to use only the OriginalSource on Android and iOS:
-				// since those platforms have "implicit capture" and captures are propagated to the OS,
-				// the OriginalSource will be the element that has capture (if any).
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Re-dispatching pointer {args.Pointer} to {src.GetDebugName()} to inject exit event.");
-				}
-
-				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
-			}
-#endif
 
 			// Uno specific: To ensure focus is properly lost when clicking "outside" the app's content,
 			// we set focus here. In the case of UWP, the focus is set to the root ScrollViewer instead,

@@ -28,10 +28,6 @@ using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 #endif
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObjectStore

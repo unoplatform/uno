@@ -15,17 +15,10 @@ using Uno.UI.Xaml.Controls;
 using System.Collections;
 using Microsoft.UI.Composition;
 
-#if __APPLE_UIKIT__
-using __View = UIKit.UIView;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 [Markup.ContentProperty(Name = "Children")]
 public partial class Panel : FrameworkElement, IPanel
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
-	, ICustomClippingElement
-#endif
 {
 #if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
@@ -47,7 +40,7 @@ public partial class Panel : FrameworkElement, IPanel
 		_children = new UIElementCollection(this);
 	}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
@@ -147,17 +140,6 @@ public partial class Panel : FrameworkElement, IPanel
 		get => _borderBrushInternal;
 		set
 		{
-#if __WASM__
-			if (((_borderBrushInternal is null) ^ (value is null)) && BorderThicknessInternal != default)
-			{
-				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-				foreach (var child in _children)
-				{
-					child.InvalidateArrange();
-				}
-			}
-#endif
-
 			_borderBrushInternal = value;
 		}
 	}
@@ -280,14 +262,7 @@ public partial class Panel : FrameworkElement, IPanel
 	/// </summary>
 	/// <param name="view"></param>
 	public
-#if __APPLE_UIKIT__
-	new
-#endif
 	void Add(
-#if !__APPLE_UIKIT__
 		UIElement view
-#else
-		__View view
-#endif
 		) => Children.Add(view);
 }

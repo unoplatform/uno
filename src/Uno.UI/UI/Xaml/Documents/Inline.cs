@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 		}
 
-#if __WASM__ || __NETSTD_REFERENCE__
+#if __NETSTD_REFERENCE__
 		protected override void OnFontFamilyChanged() => base.OnFontFamilyChanged();
 
 		protected override void OnFontStyleChanged() => base.OnFontStyleChanged();

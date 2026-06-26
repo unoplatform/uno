@@ -9,13 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls;
 
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using Android.Views;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
