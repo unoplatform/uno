@@ -14,23 +14,19 @@ using Colors = Windows.UI.Colors;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-	// Regression tests for an application-level {ThemeResource} override of the stock Fluent v2 CheckBox
-	// brushes. The stock CheckBox template applies its checked-state brushes through storyboard key-frames
-	// (e.g. <DiscreteObjectKeyFrame Value="{ThemeResource CheckBoxCheckBackgroundFillChecked}" />), and the
-	// per-storyboard-begin refresh re-resolves each key-frame against the dictionary it was pinned to. When the
-	// override lives at application level (merged after XamlControlsResources) it is reachable only through the
-	// top-level resource fallback, so it must be re-pinned there; otherwise a checked CheckBox reverts to the
-	// stock brush on a visual-state re-entry.
+	// Regression tests for {ThemeResource} resolution of controls living in a subtree pinned to an explicit
+	// RequestedTheme that differs from the application theme (a Light-pinned subtree under a Dark application).
 	[TestClass]
 	[RunsOnUIThread]
 	public class Given_CheckBox_ThemeResource_Regression
 	{
 #if HAS_UNO
-		// App-level override (merged after XamlControlsResources), a Dark application with a Light-pinned
-		// subtree, a checked CheckBox, and a post-load visual-state re-entry (IsChecked toggled off then on).
-		// The re-entry runs ObjectAnimationUsingKeyFrames.Begin() -> EnsureKeyFrameThemeResources(), which
-		// re-resolves the key-frame against its pinned dictionary only. Without the top-level re-pin the box
-		// reverts from the Blue override to the stock brush.
+		// App-level override (merged after XamlControlsResources) of the stock Fluent v2 CheckBox brushes. The stock
+		// template applies its checked-state brushes through storyboard key-frames (e.g.
+		// <DiscreteObjectKeyFrame Value="{ThemeResource CheckBoxCheckBackgroundFillChecked}" />), and the
+		// per-storyboard-begin refresh re-resolves each key-frame against the dictionary it was pinned to. When the
+		// override lives at application level it is reachable only through the top-level resource fallback, so it
+		// must be re-pinned there; otherwise a checked CheckBox reverts to the stock brush on a visual-state re-entry.
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_App_Override_Checked_Survives_IsChecked_Reentry_Under_Dark_App()
@@ -114,6 +110,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Application.Current.Resources.MergedDictionaries.Remove(overrides);
 			}
+		}
+
+		// kahua-private#482: a control's PointerOver background applied through a VisualState.Setter whose value is a
+		// {ThemeResource} (the shape used by Kahua's flat icon buttons / DataGrid date cells) must resolve against the
+		// owner's inherited theme, not the application theme. Here the button lives in a Light-pinned Frame under a
+		// Dark application; the override resolves Blue in Light and Red in Default(Dark). Re-materialising the page
+		// through Frame navigation and re-entering PointerOver must keep the Light (Blue) value.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_VisualStateSetter_PointerOver_Keeps_Light_After_Frame_Navigation_Under_Dark_App()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var overrides = new ThemeNavReproOverrides();
+			Application.Current.Resources.MergedDictionaries.Add(overrides);
+			try
+			{
+				// The Light pin lives on the Frame, mirroring Kahua's ThemeAssist RequestedTheme=Light on the root Frame.
+				var frame = new Frame { RequestedTheme = ElementTheme.Light };
+				await UITestHelper.Load(frame);
+
+				var firstButton = await NavigateAndGetFlatButton(frame);
+				var first = await EnterPointerOverAndScreenShot(firstButton);
+				ImageAssert.HasColorAt(first, first.Width / 2, first.Height / 2, Colors.Blue, tolerance: 40);
+
+				// Navigate away, then back to a fresh instance of the page (re-materialisation under the Light pin).
+				frame.Navigate(typeof(CheckBoxNavReproOtherPage));
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var secondButton = await NavigateAndGetFlatButton(frame);
+				var second = await EnterPointerOverAndScreenShot(secondButton);
+				// Must still be Blue (Light); Red would mean the setter resolved the Dark sub-dictionary.
+				ImageAssert.HasColorAt(second, second.Width / 2, second.Height / 2, Colors.Blue, tolerance: 40);
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(overrides);
+			}
+		}
+
+		private static async Task<Button> NavigateAndGetFlatButton(Frame frame)
+		{
+			frame.Navigate(typeof(FlatButtonNavReproPage));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var page = (FlatButtonNavReproPage)frame.Content;
+			await TestServices.WindowHelper.WaitForLoaded(page.SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+			return page.SUT;
+		}
+
+		private static async Task<RawBitmap> EnterPointerOverAndScreenShot(Button button)
+		{
+			VisualStateManager.GoToState(button, "PointerOver", useTransitions: true);
+			await TestServices.WindowHelper.WaitForIdle();
+			return await UITestHelper.ScreenShot(button);
 		}
 #endif
 	}
