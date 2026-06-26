@@ -174,16 +174,20 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		_ => Win32NonClientHitTestKind.HTCLIENT
 	};
 
-	private bool ShouldRedirectNonClientInput(HWND hWnd, WPARAM wParam, IntPtr lParam)
-	{
-		var hitTestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
-
-		return hitTestResult
+	// A caption button (min/max/close/...) whose pointer input is redirected into the matching XAML button.
+	private static bool IsCaptionButton(Win32NonClientHitTestKind hitTest)
+		=> hitTest
 			is Win32NonClientHitTestKind.HTMINBUTTON
 			or Win32NonClientHitTestKind.HTMAXBUTTON
 			or Win32NonClientHitTestKind.HTCLOSE
 			or Win32NonClientHitTestKind.HTHELP
 			or Win32NonClientHitTestKind.HTMENU
 			or Win32NonClientHitTestKind.HTSYSMENU;
-	}
+
+	// The whole title bar: the caption buttons plus the caption/drag area to their left.
+	private static bool IsOverTitleBar(Win32NonClientHitTestKind hitTest)
+		=> IsCaptionButton(hitTest) || hitTest is Win32NonClientHitTestKind.HTCAPTION;
+
+	private bool ShouldRedirectNonClientInput(HWND hWnd, WPARAM wParam, IntPtr lParam)
+		=> IsCaptionButton(NonClientAreaHitTest(hWnd, wParam, lParam));
 }

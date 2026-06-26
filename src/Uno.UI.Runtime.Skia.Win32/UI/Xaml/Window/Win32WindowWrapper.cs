@@ -432,6 +432,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_NCPOINTERUPDATE:
+				// Redirect pointer moves over the whole title bar (caption drag area + caption buttons) into XAML,
+				// not just over the buttons. Caption-button hover (PointerOver) is driven by these redirected
+				// moves; without redirecting caption moves, sliding off a button sideways into the drag area
+				// delivers no move at the new position, so the button stays stuck in the hovered state.
+				if (!handled
+					&& IsOverTitleBar(NonClientAreaHitTest(hWnd, wParam, lParam)))
+				{
+					OnPointer(msg, wParam, hWnd);
+					handled = true;
+				}
+				break;
 			case PInvoke.WM_NCPOINTERDOWN:
 			case PInvoke.WM_NCPOINTERUP:
 				if (!handled
