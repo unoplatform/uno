@@ -26,19 +26,21 @@ If your app references these legacy namespaces, remove or migrate those usages b
 
 This change was introduced in [PR #22377](https://github.com/unoplatform/uno/pull/22377).
 
-<!-- REVIEW (draft PR): the two items below were surfaced from the 6.6 changelog as candidate
-     migration notes. Each needs validation before merge — confirm accuracy and remove this
-     comment along with any item that does not apply. -->
-
 ### Mouse wheel direction on Linux Framebuffer
 
-On the Linux Framebuffer target, the default mouse wheel scroll direction has been reversed to align with the other platforms. If your app relied on the previous behavior, set the `ReverseMouseWheel` option when configuring the Framebuffer host to restore it.
+On the Linux Framebuffer target, the default mouse wheel scroll direction is now inverted from the raw device values, so scrolling behaves consistently with the other targets. If your app relied on the previous direction, call `ReverseMouseWheel()` on the Framebuffer host builder to restore it.
 
 This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pull/22924).
 
-### Uno.Extensions MVUX generated view model naming
+### Uno.Extensions MVUX bindable generation tool
 
-Uno.Extensions 7.2 (shipped with Uno Platform 6.6) updates the MVUX code generator. Generated inner view model types are renamed (for example, `_ViewModel` becomes `_Model`). If your code references these generated bindable types directly, update those references.
+Uno.Extensions 7.2 (shipped with Uno Platform 6.6) changes the default MVUX bindable generation tool from version 2 to version 3 (a Hot Reload-friendly generator). This changes the generated bindable view model naming convention — the doubled `ViewViewModel` suffix is dropped (for example, a `MainModel` now generates `MainViewModel`).
+
+If your code or XAML references the generated bindable types directly, update those references to the new names. To keep the previous generator, pin its version at the assembly level:
+
+```csharp
+[assembly: Uno.Extensions.Reactive.Config.BindableGenerationTool(2)]
+```
 
 This change was introduced in [Uno.Extensions PR #3055](https://github.com/unoplatform/uno.extensions/pull/3055).
 
