@@ -35,10 +35,18 @@ partial class TitleBar
 			OnFlowDirectionChanged);
 		m_flowDirectionChangedRevoker.Disposable = Disposable.Create(() =>
 			UnregisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, flowDirectionChangedToken));
+
+		// Uno specific: scope the InputActivationListener subscription to the live tree
+		// (the Uno equivalent of the C++ ~TitleBar cleanup below).
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 	}
 
-	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
-	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
+	// Uno specific: Uno has no deterministic finalizer for the original C++ destructor (~TitleBar,
+	// below). The only leak-prone subscription — the external InputActivationListener — is instead
+	// scoped to the live tree via OnLoaded/OnUnloaded. The SizeChanged/FlowDirection revokers observe
+	// only this control's own events (self-references, no leak), and the destructor's ResetTitle-on-GC
+	// cannot be reproduced without a finalizer (title reset is still handled by HandleTitleChange).
 	//
 	// TitleBar::~TitleBar()
 	// {
@@ -61,6 +69,33 @@ partial class TitleBar
 	//     }
 	// }
 
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		AttachInputActivationListener();
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		// Uno specific: detach the InputActivationListener so it does not root this TitleBar
+		// while it is out of the visual tree (the C++ destructor's revoke equivalent).
+		m_inputActivationChangedToken.Disposable = null;
+		m_inputActivationListener = null;
+	}
+
+	// Uno specific: extracted from OnApplyTemplate so the subscription can be (re)attached on Loaded.
+	private void AttachInputActivationListener()
+	{
+		var appWindowId = GetAppWindowId();
+
+		if (appWindowId.Value != 0)
+		{
+			var inputActivationListener = InputActivationListener.GetForWindowId(appWindowId);
+			m_inputActivationListener = inputActivationListener;
+			inputActivationListener.InputActivationChanged += OnInputActivationChanged;
+			m_inputActivationChangedToken.Disposable = Disposable.Create(() => inputActivationListener.InputActivationChanged -= OnInputActivationChanged);
+		}
+	}
+
 	protected override AutomationPeer OnCreateAutomationPeer() =>
 		new TitleBarAutomationPeer(this);
 
@@ -73,15 +108,8 @@ partial class TitleBar
 		m_leftPaddingColumn = GetTemplateChild<ColumnDefinition>(s_leftPaddingColumnName);
 		m_rightPaddingColumn = GetTemplateChild<ColumnDefinition>(s_rightPaddingColumnName);
 
-		var appWindowId = GetAppWindowId();
-
-		if (appWindowId.Value != 0)
-		{
-			var inputActivationListener = InputActivationListener.GetForWindowId(appWindowId);
-			m_inputActivationListener = inputActivationListener;
-			inputActivationListener.InputActivationChanged += OnInputActivationChanged;
-			m_inputActivationChangedToken.Disposable = Disposable.Create(() => inputActivationListener.InputActivationChanged -= OnInputActivationChanged);
-		}
+		// Uno specific: the InputActivationListener subscription that WinUI performs here is
+		// instead attached on Loaded (and detached on Unloaded) — see AttachInputActivationListener.
 
 		UpdateHeight();
 		UpdatePadding();
