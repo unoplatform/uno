@@ -738,7 +738,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
 			{
-				return Background != null;
+				return this is IBorderInfoProvider { Background: { } };
 			}
 
 			return false;

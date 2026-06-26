@@ -685,9 +685,9 @@ public partial class Slider
 		_tpSliderContainer = spSliderContainerAsDO as FrameworkElement;
 
 		// TODO Uno specific: Set background of slider container to ensure touch events are captured, but allow it to be overwritten by bindings etc
-		if (_tpSliderContainer.Background == null)
+		if (_tpSliderContainer is Panel sliderContainer && sliderContainer.Background == null)
 		{
-			_tpSliderContainer.SetValue(BackgroundProperty, SolidColorBrushHelper.Transparent, DependencyPropertyValuePrecedences.ImplicitStyle);
+			sliderContainer.SetValue(Panel.BackgroundProperty, SolidColorBrushHelper.Transparent, DependencyPropertyValuePrecedences.ImplicitStyle);
 		}
 
 		// Attach the event handlers

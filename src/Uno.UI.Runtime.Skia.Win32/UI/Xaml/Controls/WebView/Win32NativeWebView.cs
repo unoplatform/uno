@@ -216,7 +216,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	{
 		if (_coreWebView.Owner is WebView2 view && _presenter is { } cp)
 		{
-			cp.SetBinding(FrameworkElement.BackgroundProperty, new Binding()
+			cp.SetBinding(ContentPresenter.BackgroundProperty, new Binding()
 			{
 				Path = new(nameof(view.Background)),
 				Source = view,
