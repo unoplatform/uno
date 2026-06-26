@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Foundation;
@@ -13,9 +14,11 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 
 	private X11XamlRootHost _host;
 
-	// D-Bus IME backend (null if using XIM fallback)
-	private IX11InputMethod? _dbusIme;
-	private bool _dbusImeInitialized;
+	// D-Bus IME backend, populated asynchronously after we probe the session bus
+	// for an actually-running ibus/fcitx service. Reads from other threads (the X11
+	// event thread checks IsDBusImeActive on every keystroke) see null until the
+	// detection completes — until then we transparently fall back to XIM.
+	private volatile IX11InputMethod? _dbusIme;
 
 	internal bool IsDBusImeActive => _dbusIme?.IsEnabled == true;
 
@@ -29,30 +32,25 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 		_host = (X11XamlRootHost)host;
 		_host.SetKeyboardSource(this);
 
-		InitDBusIme();
+		// Fire-and-forget: detection involves D-Bus probes which we don't want to
+		// block the keyboard source constructor on. Any keystrokes that arrive before
+		// detection finishes will be routed through XIM.
+		_ = InitDBusImeAsync();
 	}
 
-	private void InitDBusIme()
+	private async Task InitDBusImeAsync()
 	{
-		if (_dbusImeInitialized)
+		var ime = await X11InputMethodDetector.DetectAndCreateAsync();
+		if (ime is null)
 		{
 			return;
 		}
-		_dbusImeInitialized = true;
 
-		_dbusIme = X11InputMethodDetector.DetectAndCreate();
+		ime.Commit += OnDBusImeCommit;
+		ime.ForwardKey += OnDBusImeForwardKey;
+		ime.PreeditChanged += OnDBusImePreeditChanged;
 
-		if (_dbusIme is not null)
-		{
-			// Wire Commit signal to the IME TextBox extension
-			_dbusIme.Commit += OnDBusImeCommit;
-
-			// Wire ForwardKey signal back into key processing
-			_dbusIme.ForwardKey += OnDBusImeForwardKey;
-
-			// Wire PreeditChanged signal
-			_dbusIme.PreeditChanged += OnDBusImePreeditChanged;
-		}
+		_dbusIme = ime;
 	}
 
 	internal IX11InputMethod? GetDBusIme() => _dbusIme;
