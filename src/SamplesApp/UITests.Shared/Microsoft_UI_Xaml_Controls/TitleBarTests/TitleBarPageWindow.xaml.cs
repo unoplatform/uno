@@ -24,7 +24,7 @@ public sealed partial class TitleBarPageWindow : Window
 		this.ExtendsContentIntoTitleBar = true;
 		this.SetTitleBar(this.WindowingTitleBar);
 
-		// Set titlebar's title to window's title.
+		// Initialize the window title to match the TitleBar's title.
 		this.Title = this.WindowingTitleBar.Title;
 	}
 
