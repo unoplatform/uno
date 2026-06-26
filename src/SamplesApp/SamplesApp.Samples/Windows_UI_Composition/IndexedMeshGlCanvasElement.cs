@@ -148,9 +148,15 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.Enable(EnableCap.DepthTest);
 			gl.DepthFunc(DepthFunction.Lequal);
 			gl.DepthMask(true);
-			// Silk.NET's double-precision desktop names; aliased to the f-variants on WebGL2.
-			gl.ClearDepth(1.0);
-			gl.DepthRange(0.0, 1.0);
+			// These set the GL defaults (clear depth 1.0, depth range [0,1]). The double-precision
+			// glClearDepth/glDepthRange are desktop GL (aliased on WebGL2) but absent on native
+			// GLES, which only has the f-suffixed entry points; since the values are the defaults,
+			// skip the calls there rather than pull in the ES-only variants.
+			if (!OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
+			{
+				gl.ClearDepth(1.0);
+				gl.DepthRange(0.0, 1.0);
+			}
 			gl.Enable(EnableCap.CullFace);
 			gl.CullFace(CullFaceMode.Back);
 			gl.FrontFace(FrontFaceDirection.Ccw);
