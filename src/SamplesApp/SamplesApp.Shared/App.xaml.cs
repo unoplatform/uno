@@ -415,17 +415,21 @@ namespace SamplesApp
 
 			Console.WriteLine($"HandleLaunchArguments: {args}");
 
+			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
+			// platforms where Console.ResetColor throws (Android, WebAssembly), System.CommandLine's
+			// parse-error path throws PlatformNotSupportedException and would abort argument handling
+			// before the deep link is ever evaluated.
+			if (TryNavigateToLaunchSample(args))
+			{
+				return;
+			}
+
 			if (HandleAutoScreenshots(args))
 			{
 				return;
 			}
 
 			if (await HandleRuntimeTests(args))
-			{
-				return;
-			}
-
-			if (TryNavigateToLaunchSample(args))
 			{
 				return;
 			}
