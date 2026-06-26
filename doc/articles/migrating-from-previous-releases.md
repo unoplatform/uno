@@ -8,7 +8,7 @@ To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.De
 
 ## Uno Platform 6.6
 
-Uno Platform 6.6 contains a single breaking change, related to the removal of legacy Windows Phone namespaces.
+Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.
 
 ### Visual Studio, Visual Studio Code, and Rider
 
@@ -25,6 +25,22 @@ As part of the migration of the API surface to a generated model aligned with th
 If your app references these legacy namespaces, remove or migrate those usages before upgrading.
 
 This change was introduced in [PR #22377](https://github.com/unoplatform/uno/pull/22377).
+
+<!-- REVIEW (draft PR): the two items below were surfaced from the 6.6 changelog as candidate
+     migration notes. Each needs validation before merge — confirm accuracy and remove this
+     comment along with any item that does not apply. -->
+
+### Mouse wheel direction on Linux Framebuffer
+
+On the Linux Framebuffer target, the default mouse wheel scroll direction has been reversed to align with the other platforms. If your app relied on the previous behavior, set the `ReverseMouseWheel` option when configuring the Framebuffer host to restore it.
+
+This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pull/22924).
+
+### Uno.Extensions MVUX generated view model naming
+
+Uno.Extensions 7.2 (shipped with Uno Platform 6.6) updates the MVUX code generator. Generated inner view model types are renamed (for example, `_ViewModel` becomes `_Model`). If your code references these generated bindable types directly, update those references.
+
+This change was introduced in [Uno.Extensions PR #3055](https://github.com/unoplatform/uno.extensions/pull/3055).
 
 ## Uno Platform 6.5
 
