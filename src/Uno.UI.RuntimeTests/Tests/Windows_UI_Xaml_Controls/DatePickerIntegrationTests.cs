@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Windows.Globalization;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -730,6 +731,108 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MinYear = CreateDate(1, 1, 1995);
 				VerifyDatesAreEqual(CreateDate(1, 1, 1995), datePicker.Date);
 			});
+		}
+
+		[TestMethod]
+		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23538")]
+		public async Task When_MinYear_Equals_MaxYear_Year_Should_Not_Loop()
+		{
+			var datePicker = await SetupDatePickerTest();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				// Collapse the selectable range to a single year (repro for #23538), mirroring the
+				// issue's `MinYear = MaxYear = DateTimeOffset.Now`. Use the same midday-UTC instant for
+				// both bounds so the local-time year is identical (and stable) in every time zone.
+				var singleYear = new DateTimeOffset(2026, 6, 24, 12, 0, 0, TimeSpan.Zero);
+				datePicker.MinYear = singleYear;
+				datePicker.MaxYear = singleYear;
+				datePicker.SelectedDate = singleYear;
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var yearTexts = new global::System.Collections.Generic.List<string>();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				var presenter = GetDatePickerFlyoutPresenter();
+				Assert.IsNotNull(presenter, "DatePickerFlyoutPresenter should be open");
+
+				var yearSelector = VisualTreeUtils.FindVisualChildByName(presenter, "YearLoopingSelector") as LoopingSelector;
+				Assert.IsNotNull(yearSelector, "YearLoopingSelector should be found");
+
+				var scrollViewer = VisualTreeUtils.FindVisualChildByName(yearSelector, "ScrollViewer") as ScrollViewer;
+				Assert.IsNotNull(scrollViewer, "ScrollViewer should be found");
+
+				var panel = scrollViewer.Content as LoopingSelectorPanel;
+				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
+
+				foreach (var child in panel.Children)
+				{
+					if (child is ContentControl cc && cc.Content is DatePickerFlyoutItem item && !string.IsNullOrEmpty(item.PrimaryText))
+					{
+						yearTexts.Add(item.PrimaryText);
+					}
+				}
+			});
+
+			// WinUI renders the single selectable year exactly once (the year column does not loop).
+			// Before the fix Uno looped the single item, realizing many duplicate "2026" rows.
+			Assert.AreEqual(1, yearTexts.Count,
+				$"Year selector should show a single non-looping year once, but showed: [{string.Join(", ", yearTexts)}]");
+
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, false /* isAccept */);
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23538")]
+		public async Task When_Year_Range_Spans_Multiple_Years_Year_Column_Is_Populated()
+		{
+			// Adjacent regression scenario: a normal multi-year range must still fill the
+			// year column (the fix only suppresses looping, it must not blank out the years).
+			var datePicker = await SetupDatePickerTest();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				datePicker.MinYear = CreateDate(1, 1, 2000);
+				datePicker.MaxYear = CreateDate(12, 31, 2030);
+				datePicker.SelectedDate = CreateDate(6, 24, 2015);
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var realizedYearItems = -1;
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				var presenter = GetDatePickerFlyoutPresenter();
+				Assert.IsNotNull(presenter, "DatePickerFlyoutPresenter should be open");
+
+				var yearSelector = VisualTreeUtils.FindVisualChildByName(presenter, "YearLoopingSelector") as LoopingSelector;
+				Assert.IsNotNull(yearSelector, "YearLoopingSelector should be found");
+
+				var scrollViewer = VisualTreeUtils.FindVisualChildByName(yearSelector, "ScrollViewer") as ScrollViewer;
+				Assert.IsNotNull(scrollViewer, "ScrollViewer should be found");
+
+				var panel = scrollViewer.Content as LoopingSelectorPanel;
+				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
+
+				realizedYearItems = panel.Children.Count;
+			});
+
+			Assert.IsGreaterThan(1, realizedYearItems,
+				$"Year selector should display the range of years, but realized only {realizedYearItems} item(s).");
+
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, false /* isAccept */);
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
