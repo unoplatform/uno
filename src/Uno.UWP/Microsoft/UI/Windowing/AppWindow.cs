@@ -149,6 +149,13 @@ partial class AppWindow
 		_nativeAppWindow.SetIcon(iconPath);
 	}
 
+#if __SKIA__
+	/// <summary>
+	/// Hides the window.
+	/// </summary>
+	public void Hide() => _nativeAppWindow.Hide();
+#endif
+
 	/// <summary>
 	/// Shows the window and activates it.
 	/// </summary>
