@@ -1,18 +1,23 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemHeader.cpp, commit f2df41d
+// MUX reference NavigationViewItemHeader.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemHeader : NavigationViewItemBase
 {
-	private Grid m_rootGrid = null;
 	private bool m_isClosedCompact = false;
+
+	private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new SerialDisposable();
+
+	private Grid m_rootGrid = null;
 	private const string c_rootGrid = "NavigationViewItemHeaderRootGrid";
 
 	public NavigationViewItemHeader()
@@ -22,23 +27,27 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 
 	protected override void OnApplyTemplate()
 	{
-		// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+		// so the parent NavigationView may not be set yet; postpone and reapply once it is.
 		if (GetNavigationView() is null)
 		{
 			// Postpone template application for later
 			return;
 		}
+#endif
 
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			//TODO: MZ: Probably should be unsubscribed
-			splitView.RegisterPropertyChangedCallback(
+			var isPaneOpenToken = splitView.RegisterPropertyChangedCallback(
 				SplitView.IsPaneOpenProperty,
 				OnSplitViewPropertyChanged);
-			splitView.RegisterPropertyChangedCallback(
+			m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, isPaneOpenToken));
+			var displayModeToken = splitView.RegisterPropertyChangedCallback(
 				SplitView.DisplayModeProperty,
 				OnSplitViewPropertyChanged);
+			m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, displayModeToken));
 
 			UpdateIsClosedCompact();
 		}
@@ -55,7 +64,9 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 		var visual = ElementCompositionPreview.GetElementVisual(this);
 		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		_fullyInitialized = true;
+#endif
 	}
 
 	private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)

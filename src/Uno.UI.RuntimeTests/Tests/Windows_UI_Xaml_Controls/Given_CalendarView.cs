@@ -272,13 +272,20 @@ public class Given_CalendarView
 
 		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
 
-		await TestServices.WindowHelper.WaitForIdle();
-
-		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
+		// Switching to Year mode updates the header asynchronously; poll for it rather than asserting
+		// after a single WaitForIdle, which raced on slower runtimes (e.g. WASM).
+		await TestServices.WindowHelper.WaitFor(
+			() => calendarView.TemplateSettings.HeaderText,
+			now.Year.ToString(),
+			messageBuilder: actual => $"Year-mode header should end with {now.Year}, was '{actual}'",
+			comparer: (actual, year) => actual is not null && actual.EndsWith(year, StringComparison.Ordinal),
+			timeoutMS: 3000);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	// SkiaWasm excluded: rapid-click month scroll animations re-target/rewind under the headless xvfb browser (flaky). #23524
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 	public async Task When_NextMonth_InQuickSequence()
 	{
 		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };

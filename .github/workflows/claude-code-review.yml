@@ -57,7 +57,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           # Don't leave the GITHUB_TOKEN in .git/config where a hijacked
@@ -89,7 +89,7 @@ jobs:
         # blocks exfil URL patterns (`gh ... view https://attacker/<secret>`),
         # run-summary disabled by default, and ignoring issues/comments edited
         # after trigger.
-        uses: anthropics/claude-code-action@eee73e2ae5399c561de4ff038aa7b36a7aa991a7 # v1.0.143
+        uses: anthropics/claude-code-action@428971d2ecd6e3a7cb0ee0da2a3a8b33fdb3678d # v1.0.157
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # Use the job's scoped Actions token instead of OIDC/GitHub App auth,

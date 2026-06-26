@@ -2,8 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //
-// This file is a C# translation of the SplitVector.cpp file from WinUI controls.
+// This file is a C# translation of the SplitDataSourceBase.h file from WinUI controls.
 //
+
+// MUX Reference SplitDataSourceBase.h, commit bac7a9c33
 
 using System;
 using System.Collections.Generic;
@@ -51,7 +53,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			for (int i = 0; i < m_indexesInOriginalVector.Count; i++)
 			{
-				if (m_indexesInOriginalVector[i] > indexInOriginalVector)
+				if (m_indexesInOriginalVector[i] >= indexInOriginalVector)
 				{
 					m_indexesInOriginalVector[i]++;
 				}

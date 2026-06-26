@@ -56,8 +56,20 @@ namespace Microsoft.UI.Xaml
 			// The association may already have propagated the parent's DataContext into this
 			// store at Inheritance precedence; that propagated value (e.g. the secondary app's
 			// view model) survives the parent's removal and pins the value's ALC on its own.
-			if (associationCleared
-				|| GetValue(_dataContextProperty)?.GetType().IsCollectible == true)
+			// Drop it only when the association was cleared, or when the value itself belongs to
+			// a collectible ALC whose unload has begun — a value from a still-live add-in ALC
+			// must be preserved (mirrors the conservative _associatedParent gating above).
+			var dataContextFromUnloadingAlc = false;
+			if (!associationCleared
+				&& GetValue(_dataContextProperty) is { } dataContext
+				&& dataContext.GetType().IsCollectible)
+			{
+				var valueAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(dataContext.GetType().Assembly);
+				dataContextFromUnloadingAlc = valueAlc is not null
+					&& global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(valueAlc, valueIfUnknown: false);
+			}
+
+			if (associationCleared || dataContextFromUnloadingAlc)
 			{
 				ClearInheritedDataContext();
 			}

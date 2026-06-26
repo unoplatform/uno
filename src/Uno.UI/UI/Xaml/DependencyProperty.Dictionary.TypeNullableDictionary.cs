@@ -16,13 +16,24 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
 			{
-				_isTypeNullableDictionary.Add(type, isNullable = type.IsNullable());
+				isNullable = type.IsNullable();
+
+				// Never cache collectible types: the app-lifetime dictionary would pin the
+				// type's AssemblyLoadContext after unload — and teardown sweeps themselves can
+				// re-query such types, racing any clear-on-teardown approach. Type.IsCollectible
+				// (not Assembly.IsCollectible) also covers generic instantiations whose
+				// DEFINITION lives in a shared assembly (e.g. ObservableCollection<T> from
+				// CoreLib) but whose type ARGUMENT is collectible.
+				if (!type.IsCollectible)
+				{
+					_isTypeNullableDictionary.Add(type, isNullable);
+				}
 			}
 
 			return isNullable;
 		}
 
-		private class TypeNullableDictionary
+		private partial class TypeNullableDictionary
 		{
 			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
 			// So we don't use pooling to not cause pool exhaustion by renting without returning.

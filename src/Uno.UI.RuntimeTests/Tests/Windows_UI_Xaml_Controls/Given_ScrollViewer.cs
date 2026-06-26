@@ -1816,7 +1816,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				from: center,
 				to: new(center.X, center.Y - 1000));
 
-			await Task.Delay(500); // Wait for the inertia to run
+			// Wait for the drag-induced scroll (and chaining to the parent) to settle at the end,
+			// instead of a fixed delay that was too short on slower runtimes (e.g. WASM) and flaked CI.
+			await TestServices.WindowHelper.WaitFor(
+				() => (parent.VerticalOffset, child.VerticalOffset),
+				(parentEndOffset, childEndOffset),
+				messageBuilder: actual => $"Scroll did not chain to the end: parent {actual.Item1}/{parentEndOffset}, child {actual.Item2}/{childEndOffset}",
+				comparer: (actual, end) => Math.Abs(end.Item1 - actual.Item1) < 1d && Math.Abs(end.Item2 - actual.Item2) < 1d,
+				timeoutMS: 3000);
 
 			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset), $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
 			Assert.IsLessThan(1d, Math.Abs(childEndOffset - child.VerticalOffset), $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");

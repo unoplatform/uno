@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemsFactory.cpp, commit f6b2101
+// MUX Reference NavigationViewItemsFactory.cpp, commit bac7a9c33
 
 using System;
 using System.Collections.Generic;
@@ -13,23 +13,23 @@ internal class NavigationViewItemsFactory : ElementFactory
 {
 	private IElementFactoryShim m_itemTemplateWrapper = null;
 	private NavigationViewItemBase m_settingsItem = null;
-	private List<NavigationViewItem> navigationViewItemPool;
+	private List<NavigationViewItem> navigationViewItemPool = new List<NavigationViewItem>();
 
 	internal void UserElementFactory(object newValue)
 	{
-		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		if (m_itemTemplateWrapper == null)
+		if (newValue is DataTemplate dataTemplate)
 		{
-			// ItemTemplate set does not implement IElementFactoryShim. We also 
-			// want to support DataTemplate and DataTemplateSelectors automagically.
-			if (newValue is DataTemplate dataTemplate)
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-			}
-			else if (newValue is DataTemplateSelector selector)
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
-			}
+			m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
+		}
+		else if (newValue is DataTemplateSelector selector)
+		{
+			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+		}
+		else if (newValue is IElementFactory customElementFactory)
+		{
+			// Mirrors the upstream QI: a custom IElementFactory that does not also implement
+			// IElementFactoryShim degrades to plain NavigationViewItem wrapping instead of throwing.
+			m_itemTemplateWrapper = customElementFactory as IElementFactoryShim;
 		}
 
 		navigationViewItemPool = new List<NavigationViewItem>();
@@ -92,7 +92,6 @@ internal class NavigationViewItemsFactory : ElementFactory
 				tempArgs.Element = newContent as UIElement;
 				m_itemTemplateWrapper.RecycleElement(tempArgs);
 
-
 				nviImpl.Content = args.Data;
 				nviImpl.ContentTemplate = itemTemplateWrapper.Template;
 				nviImpl.ContentTemplateSelector = itemTemplateWrapper.TemplateSelector;
@@ -146,13 +145,18 @@ internal class NavigationViewItemsFactory : ElementFactory
 	{
 		// We want to unlink the containers from the parent repeater
 		// in case we are required to move it to a different repeater.
-		if (args.Parent is Panel panel)
+		// WinUI uses try_as<Panel>() here — an interface query that succeeds on an ItemsRepeater because its
+		// implementation derives from DeriveFromPanelHelper_base (public base is still FrameworkElement). Uno
+		// models that split as `FrameworkElement, IPanel`, so the faithful equivalent is `is IPanel`, not the
+		// class check `is Panel` (Panel implements IPanel too, so real panels are still covered).
+		if (args.Parent is IPanel panel)
 		{
 			var children = panel.Children;
 			var childIndex = children.IndexOf(args.Element);
 			if (childIndex >= 0)
 			{
 				children.RemoveAt(childIndex);
+				args.Parent = null;
 			}
 		}
 	}

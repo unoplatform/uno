@@ -435,6 +435,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>
+	/// Resolves a peer to its already-created provider without creating one.
+	/// Used by <see cref="Win32RawElementProvider.InvalidateChildrenCache()"/> to
+	/// cascade cache invalidation through the UIA child links, including to
+	/// virtual peers that are not keyed by element.
+	/// </summary>
+	internal Win32RawElementProvider? TryGetExistingProviderForPeer(AutomationPeer peer)
+		=> FindExistingProviderForPeer(peer, resolveEventsSource: true);
+
+	/// <summary>
 	/// Looks up an existing provider for the given peer without creating one.
 	/// Used by event notification methods to avoid eagerly creating providers
 	/// for elements that UIA hasn't navigated to yet — creating providers in
@@ -493,6 +502,28 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				this.Log().Debug($"NotifyPropertyChangedEvent failed for {automationProperty}: {ex.Message}");
 			}
 		}
+	}
+
+	public override void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		// Faithful part: re-evaluate the peer's automatic properties and raise
+		// PropertyChanged for any that changed (matches WinUI's RaiseAutomaticPropertyChanges).
+		base.NotifyInvalidatePeer(peer);
+
+		// Skia-bridge part: WinUI relies on the OS UIA layer to cache and refetch
+		// children, invalidating implicitly. Our Win32 provider keeps its own
+		// children cache (_cachedAutomationChildren), so drop it here — cascading
+		// through the UIA child links to virtual peers (e.g. WCT DataGrid rows) that
+		// the element table can't reach — so the next UIA navigation rebuilds from
+		// current state. This raises NO client StructureChanged event, matching WinUI:
+		// InvalidatePeer never raises StructureChanged (see CCoreServices::CallbackEventListener).
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		provider?.InvalidateChildrenCache();
 	}
 
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
@@ -561,8 +592,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 						provider, Win32UIAutomationInterop.UIA_Text_TextSelectionChangedEventId);
 					break;
 				case AutomationEvents.StructureChanged:
-					_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(
-						provider, StructureChangeType.ChildrenInvalidated, provider.GetRuntimeId());
+					// Drop the cached subtree (cascading to virtual peers) and coalesce
+					// the UIA notification on the dispatcher. Deferring rather than
+					// raising synchronously avoids UIA re-entering GetChildren while a
+					// peer is still computing its children — WCT's
+					// DataGridItemAutomationPeer.GetChildrenCore calls
+					// OwningRowPeer.InvalidatePeer() from inside that very call.
+					RaiseStructureChanged(provider);
 					break;
 				case AutomationEvents.MenuOpened:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(

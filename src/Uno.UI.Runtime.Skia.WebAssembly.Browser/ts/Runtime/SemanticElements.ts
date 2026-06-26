@@ -1189,6 +1189,7 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			rowCount: number,
 			colCount: number,
+			multiSelectable: boolean,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('table');
@@ -1205,6 +1206,9 @@ namespace Uno.UI.Runtime.Skia {
 			if (colCount > 0) {
 				element.setAttribute('aria-colcount', String(colCount));
 			}
+			if (multiSelectable) {
+				element.setAttribute('aria-multiselectable', 'true');
+			}
 			this.appendToParent(element, parentHandle, index);
 		}
 
@@ -1220,6 +1224,8 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			rowIndex: number,
+			selectable: boolean,
+			selected: boolean,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
@@ -1230,6 +1236,9 @@ namespace Uno.UI.Runtime.Skia {
 			// _isFocusable is accepted for signature uniformity.
 			if (rowIndex > 0) {
 				element.setAttribute('aria-rowindex', String(rowIndex));
+			}
+			if (selectable) {
+				element.setAttribute('aria-selected', String(selected));
 			}
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -1248,6 +1257,8 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			rowIndex: number,
 			colIndex: number,
+			selectable: boolean,
+			selected: boolean,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
@@ -1263,6 +1274,9 @@ namespace Uno.UI.Runtime.Skia {
 			}
 			if (colIndex > 0) {
 				element.setAttribute('aria-colindex', String(colIndex));
+			}
+			if (selectable) {
+				element.setAttribute('aria-selected', String(selected));
 			}
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -1280,6 +1294,7 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			colIndex: number,
+			sort: string | null,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
@@ -1292,6 +1307,9 @@ namespace Uno.UI.Runtime.Skia {
 			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (colIndex > 0) {
 				element.setAttribute('aria-colindex', String(colIndex));
+			}
+			if (sort) {
+				element.setAttribute('aria-sort', sort);
 			}
 			this.appendToParent(element, parentHandle, index);
 		}

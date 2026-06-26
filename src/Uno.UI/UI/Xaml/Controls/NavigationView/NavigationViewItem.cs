@@ -1,25 +1,30 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 9f7c129
+// MUX reference NavigationViewItem.cpp, commit bac7a9c33
 
-using System.Collections.Generic;
+#if __ANDROID__
+// For performance considerations, we prefer to delay pressed and over state in order to avoid
+// visual state updates when starting scroll start or while scrolling, especially with touch.
+// This has a great impact on Android where ScrollViewer does not capture pointer while scrolling.
+#define UNO_USE_DEFERRED_VISUAL_STATES
+#endif
+
 using System.Collections.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using FlyoutBase = Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase;
 using FlyoutBaseClosingEventArgs = Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs;
 using NavigationViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer;
-
-using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -83,15 +88,19 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	protected override void OnApplyTemplate()
 	{
-		// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+		// so the parent NavigationView may not be set yet; postpone and reapply once it is.
 		if (GetNavigationView() is null)
 		{
 			// Postpone template application for later
 			return;
 		}
+#endif
 
 		// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
 		m_appliedTemplate = false;
+		m_restoreToExpandedState = false;
 
 		UnhookEventsAndClearFields();
 
@@ -158,7 +167,9 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var visual = ElementCompositionPreview.GetElementVisual(this);
 		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		_fullyInitialized = true;
+#endif
 	}
 
 	private void LoadElementsForDisplayingChildren()
@@ -190,7 +201,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 				if (repeater.Layout is StackLayout stackLayout)
 				{
-					stackLayout.DisableVirtualization = true;
+					stackLayout.IsVirtualizationEnabled = false;
 				}
 
 				// Primary element setup happens in NavigationView
@@ -257,12 +268,14 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		if (args == SplitView.CompactPaneLengthProperty)
 		{
 			UpdateCompactPaneLength();
+			UpdateVisualStateNoTransition();
 		}
 		else if (args == SplitView.IsPaneOpenProperty ||
 			args == SplitView.DisplayModeProperty)
 		{
 			UpdateIsClosedCompact();
 			ReparentRepeater();
+			HandleExpansionStateMemory();
 		}
 	}
 
@@ -291,6 +304,28 @@ public partial class NavigationViewItem : NavigationViewItemBase
 				&& (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
 
 			UpdateVisualState(true /*useTransitions*/);
+		}
+	}
+
+	// NavigationView needs to force collapse top level items when the pane closes.
+	// This is done to avoid a compact state with children showing.
+	// This is done in a way that allows the control to restore the expanded
+	// state when the pane is opened again.
+	private void HandleExpansionStateMemory()
+	{
+		if (IsTopLevelItem)
+		{
+			if (GetSplitView() is { } splitView)
+			{
+				if (splitView.IsPaneOpen)
+				{
+					RestoreExpandedState();
+				}
+				else
+				{
+					ForceCollapse();
+				}
+			}
 		}
 	}
 
@@ -347,6 +382,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
+		m_restoreToExpandedState = false;
+
 		AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
 		if (peer != null)
 		{
@@ -458,10 +495,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		{
 			case NavigationViewRepeaterPosition.LeftNav:
 			case NavigationViewRepeaterPosition.LeftFooter:
-				if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
+				if (Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 				{
-					// OnLeftNavigationReveal is introduced in RS6 and only in the V1 style.
-					// Fallback to OnLeftNavigation for other styles.
 					if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnLeftNavigationReveal, false /*useTransitions*/))
 					{
 						handled = true;
@@ -471,7 +506,9 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			case NavigationViewRepeaterPosition.TopPrimary:
 			case NavigationViewRepeaterPosition.TopFooter:
 				stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
-				if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
+				m_restoreToExpandedState = false;
+
+				if (Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 				{
 					// OnTopNavigationPrimaryReveal is introduced in RS6 and only in the V1 style.
 					// Fallback to c_OnTopNavigationPrimary for other styles.
@@ -483,6 +520,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 				break;
 			case NavigationViewRepeaterPosition.TopOverflow:
 				stateName = NavigationViewItemHelper.c_OnTopNavigationOverflow;
+				m_restoreToExpandedState = false;
 				break;
 		}
 
@@ -540,6 +578,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			{
 				if (isSelected)
 				{
+#if !__SKIA__ // Uno workaround: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf). Skia uses plain m_isPressed/m_isPointerOver (WinUI behavior).
 					if (m_isPressed && !_uno_isDefferingPressedState)
 					{
 						return c_pressedSelected;
@@ -548,11 +587,22 @@ public partial class NavigationViewItem : NavigationViewItemBase
 					{
 						return c_pointerOverSelected;
 					}
+#else
+					if (m_isPressed)
+					{
+						return c_pressedSelected;
+					}
+					else if (m_isPointerOver)
+					{
+						return c_pointerOverSelected;
+					}
+#endif
 					else
 					{
 						return c_selected;
 					}
 				}
+#if !__SKIA__ // Uno workaround: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf). Skia uses plain m_isPressed/m_isPointerOver (WinUI behavior).
 				else if (m_isPointerOver && !_uno_isDefferingOverState)
 				{
 					if (m_isPressed && !_uno_isDefferingPressedState)
@@ -568,6 +618,23 @@ public partial class NavigationViewItem : NavigationViewItemBase
 				{
 					return c_pressed;
 				}
+#else
+				else if (m_isPointerOver)
+				{
+					if (m_isPressed)
+					{
+						return c_pressed;
+					}
+					else
+					{
+						return c_pointerOver;
+					}
+				}
+				else if (m_isPressed)
+				{
+					return c_pressed;
+				}
+#endif
 			}
 			else
 			{
@@ -790,7 +857,16 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private bool IsOnTopPrimary()
 	{
-		return Position == NavigationViewRepeaterPosition.TopPrimary;
+		bool isPaneDisplayModeTop = true;
+		if (GetNavigationView() is { } navigationView)
+		{
+			// There is a delay between the NavigationViewPaneDisplayMode update and the 
+			// position property of NavigationViewItem being updated. This function gets called
+			// in that delay period, so we need to check the PaneDisplayMode as further verification
+			// of whether we are in Top mode or switching away from it.
+			isPaneDisplayModeTop = navigationView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top;
+		}
+		return Position == NavigationViewRepeaterPosition.TopPrimary && isPaneDisplayModeTop;
 	}
 
 	private UIElement GetPresenterOrItem()
@@ -839,12 +915,14 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 					// There seems to be a race condition happening which sometimes
 					// prevents the opening of the flyout. Queue callback as a workaround.
-
-					// TODO: Uno specific - Queue callback for composition rendering is not implemented yet - #4690
-					//SharedHelpers.QueueCallbackForCompositionRendering(() =>
-					//{
+#if !__SKIA__ // Uno workaround: non-Skia opens the flyout synchronously; QueueCallbackForCompositionRendering is not validated there yet (#4690).
 					FlyoutBase.ShowAttachedFlyout(m_rootGrid);
-					//});
+#else
+					SharedHelpers.QueueCallbackForCompositionRendering(() =>
+					{
+						FlyoutBase.ShowAttachedFlyout(m_rootGrid);
+					});
+#endif
 				}
 				else
 				{
@@ -855,6 +933,24 @@ public partial class NavigationViewItem : NavigationViewItemBase
 					}
 				}
 			}
+		}
+	}
+
+	private void ForceCollapse()
+	{
+		if (IsExpanded)
+		{
+			IsExpanded = false;
+			m_restoreToExpandedState = true;
+		}
+	}
+
+	private void RestoreExpandedState()
+	{
+		if (m_restoreToExpandedState)
+		{
+			IsExpanded = true;
+			m_restoreToExpandedState = false;
 		}
 	}
 
@@ -912,7 +1008,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	internal void PropagateDepthToChildren(int depth)
 	{
-		var repeater = m_repeater; if (repeater != null)
+		if (m_repeater is { } repeater)
 		{
 			var itemsCount = repeater.ItemsSourceView.Count;
 			for (int index = 0; index < itemsCount; index++)
@@ -930,16 +1026,9 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		}
 	}
 
-	internal void OnExpandCollapseChevronTapped(object sender, TappedRoutedEventArgs args)
+	internal void OnExpandCollapseChevronPointerReleased()
 	{
-		// TODO Uno specific - OnExpandCollapseChevronTapped is not necessary because NavigationViewMenuItem explicitly
-		// captures the pointer, so when the pointer is released, NVMI's Tapped will trigger first, flipping
-		// IsExpanded. So, flipping it here again undoes the change. Now, if the chevron itself it clicked, we will
-		// bubble up to OnNavigationViewItemTapped, which will take care of IsExpanded.
-#if !HAS_UNO
 		IsExpanded = !IsExpanded;
-#endif
-		args.Handled = true;
 	}
 
 	private void OnFlyoutClosing(object sender, FlyoutBaseClosingEventArgs args)
@@ -1024,29 +1113,63 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void OnPresenterPointerPressed(object sender, PointerRoutedEventArgs args)
 	{
-		if (IgnorePointerId(args))
+		UIElement presenter = null;
+		bool ignorePointerId = IgnorePointerId(args);
+		if (ignorePointerId)
 		{
+			// FUTURE: Remove this workaround, which always switches to a new Touch or Pen input
+			//         in case a previous touch/input got lost due to a missing PointerCaptureLost event.
+			var pointerDeviceType = args.Pointer.PointerDeviceType;
+			if (
+				pointerDeviceType == PointerDeviceType.Touch ||
+				pointerDeviceType == PointerDeviceType.Pen)
+			{
+				m_isPressed = false;
+				m_isPointerOver = false;
+
+				if (m_capturedPointer is not null)
+				{
+					presenter = GetPresenterOrItem();
+
+					MUX_ASSERT(presenter is not null);
+
+					presenter.ReleasePointerCapture(m_capturedPointer);
+					m_capturedPointer = null;
+				}
+
+				ResetTrackedPointerId();
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		var pointerProperties = args.GetCurrentPoint(this).Properties;
+		if (!pointerProperties.IsLeftButtonPressed)
+		{
+			// We are only interested in the primary action of the pointer device 
+			// (e.g. left click of a mouse)
+			// Despite the name, IsLeftButtonPressed covers the primary action regardless of device.
 			return;
 		}
 
 		MUX_ASSERT(!m_isPressed);
-		MUX_ASSERT(m_capturedPointer == null);
+		MUX_ASSERT(m_capturedPointer is null);
 
-		// WinUI TODO: Update to look at presenter instead
-		var pointerProperties = args.GetCurrentPoint(this).Properties;
-		m_isPressed = pointerProperties.IsLeftButtonPressed || pointerProperties.IsRightButtonPressed;
+		m_isPressed = true;
 
 		var pointer = args.Pointer;
-		var presenter = GetPresenterOrItem();
+		presenter = GetPresenterOrItem();
 
-		MUX_ASSERT(presenter != null);
+		MUX_ASSERT(presenter is not null);
 
 		if (presenter.CapturePointer(pointer))
 		{
 			m_capturedPointer = pointer;
 		}
 
-#if UNO_USE_DEFERRED_VISUAL_STATES
+#if UNO_USE_DEFERRED_VISUAL_STATES // TODO Uno: native-Android deferred pressed visual state, no WinUI equivalent
 		_uno_isDefferingPressedState = true;
 		DeferUpdateVisualStateForPointer();
 #endif
@@ -1056,7 +1179,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void OnPresenterPointerReleased(object sender, PointerRoutedEventArgs args)
 	{
-		if (IgnorePointerId(args))
+		bool ignorePointerId = IgnorePointerId(args);
+		if (ignorePointerId)
 		{
 			return;
 		}
@@ -1065,13 +1189,24 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		{
 			m_isPressed = false;
 
-			if (m_capturedPointer != null)
+			if (!IsOutOfControlBounds(args.GetCurrentPoint(this).Position) &&
+				IsInNavigationViewOwnedRepeater)
+			{
+				if (GetNavigationView() is { } nvImpl)
+				{
+					nvImpl.OnNavigationViewItemClicked(this);
+					args.Handled = true;
+				}
+			}
+
+			if (m_capturedPointer is not null)
 			{
 				var presenter = GetPresenterOrItem();
 
-				MUX_ASSERT(presenter != null);
+				MUX_ASSERT(presenter is not null);
 
 				presenter.ReleasePointerCapture(m_capturedPointer);
+				m_capturedPointer = null;
 			}
 
 			UpdateVisualState(true);
@@ -1095,7 +1230,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void OnPresenterPointerExited(object sender, PointerRoutedEventArgs args)
 	{
-		if (IgnorePointerId(args))
+		bool ignorePointerId = IgnorePointerId(args);
+		if (ignorePointerId)
 		{
 			return;
 		}
@@ -1153,39 +1289,35 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void ProcessPointerCanceled(PointerRoutedEventArgs args)
 	{
-		if (IgnorePointerId(args))
+		var ignorePointerId = IgnorePointerId(args);
+		if (ignorePointerId)
 		{
 			return;
 		}
 
+#if !__SKIA__ // Uno workaround: clear deferred-visual-state flags and stop the timer on cancel/capture-lost; no upstream equivalent (Skia has no deferred states).
 		_uno_isDefferingPressedState = false;
 		_uno_isDefferingOverState = false;
 		_uno_pointerDeferring?.Stop();
+#endif
 
 		m_isPressed = false;
-#if false
-		// UNO specific: This seems to be only for Animated icons (https://github.com/microsoft/microsoft-ui-xaml/commit/c27a05caa0eeebaacdbd2106aebd12a6fc3dd912)
-
-		// which are not supported yet and causes some trouble with current pointers and lifecycle implementation when used with a minimal NavView
-		// (cf. https://github.com/unoplatform/uno/issues/7327 and https://github.com/unoplatform/uno/issues/11610)
-		// Note: That check has been modified in the WinUI repo to exclude the case where the pointer is touch https://github.com/microsoft/microsoft-ui-xaml/commit/18a981d03ec46763872c9b76bfc2351dc93ab197
-
 		// m_isPointerOver should be true before this event so this doesn't need to be set to true in the else block...
 		// What this flag tracks is complicated because of the NavigationView sub items and the m_capturedPointers that are being tracked..
 		// We do this check because PointerCaptureLost can sometimes take the place of PointerReleased events.
 		// In these cases we need to test if the pointer is over the item to maintain the proper state.
 		// In the case of touch input, we want to cancel anyway since there will be no pointer exited due to the pointer being cancelled.
-		if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position) || args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
-#endif
+		if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position) ||
+			args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
 			m_isPointerOver = false;
 		}
+
 		m_capturedPointer = null;
 		ResetTrackedPointerId();
 		UpdateVisualState(true);
 	}
 
-#if false // Not used in Uno
 	private bool IsOutOfControlBounds(Point point)
 	{
 		// This is a conservative check. It is okay to say we are
@@ -1199,11 +1331,11 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			point.Y < tolerance ||
 			point.Y > actualHeight - tolerance;
 	}
-#endif
 
 	private void ProcessPointerOver(PointerRoutedEventArgs args)
 	{
-		if (IgnorePointerId(args))
+		bool ignorePointerId = IgnorePointerId(args);
+		if (ignorePointerId)
 		{
 			return;
 		}
