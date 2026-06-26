@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Content))]
 	public partial class UserControl : Control
 	{
 		public UserControl()
