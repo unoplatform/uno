@@ -476,6 +476,14 @@ namespace Microsoft.UI.Xaml
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
+<<<<<<< HEAD
+=======
+					else if (newValue is IDependencyObjectStoreProvider storeProvider)
+					{
+						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+						storeProvider.Store.IsResourceDictionaryItem = true;
+					}
+>>>>>>> bbea80b3e1 (fix: Resolve duplicate materializedProvider local)
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
 					{
