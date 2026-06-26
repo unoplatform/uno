@@ -115,7 +115,11 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			uRow = 2;
 		}
 
-		var titleBarHeightForDraggingRects = _hasTitleBar ? borderThickness.top : 0;
+		// Region rects are in physical client coordinates; map them to screen space using the actual client
+		// origin. When maximized, the client rect is inset from the window rect (see WM_NCCALCSIZE), so the
+		// window origin no longer coincides with the client origin and must not be used for this mapping.
+		var clientOrigin = default(System.Drawing.Point);
+		PInvoke.ClientToScreen(hWnd, ref clientOrigin);
 
 		bool hasCustomDragRects = false;
 		if (!onResizeBorder)
@@ -131,8 +135,8 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 				foreach (var rect in region.Value)
 				{
 					var adjustedRect = new RectInt32(
-						rect.X + windowRectangle.left,
-						titleBarHeightForDraggingRects + rect.Y + windowRectangle.top,
+						rect.X + clientOrigin.X,
+						rect.Y + clientOrigin.Y,
 						rect.Width,
 						rect.Height);
 					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
