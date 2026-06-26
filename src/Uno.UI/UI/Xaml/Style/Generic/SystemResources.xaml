@@ -21,7 +21,7 @@
 			<Color x:Key="SystemColorHighlightColor">#FF3399FF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
-					 Color="{StaticResource SystemAccentColor}" />
+					 Color="{ThemeResource SystemAccentColor}" />
 
 			<!-- See https://docs.microsoft.com/en-us/windows/uwp/design/style/color?#accent-color-palette-->
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
@@ -30,6 +30,12 @@
 			<Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 
 			<Color x:Key="SystemColorButtonFaceColor">#FFF0F0F0</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FF000000</Color>
@@ -838,8 +844,8 @@
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPointerOver" Color="{StaticResource SystemBaseMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundDisabled" Color="{StaticResource SystemBaseMediumLowColor}" />
-			<SolidColorBrush x:Key="PivotHeaderItemFocusPipeFill" Color="{StaticResource SystemAccentColor}" />
-			<SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="PivotHeaderItemFocusPipeFill" Color="{ThemeResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="{ThemeResource SystemAccentColor}" />
 
 			<SolidColorBrush x:Key="ProgressBarBackgroundThemeBrush" Color="#59FFFFFF" />
 			<SolidColorBrush x:Key="ProgressBarBorderThemeBrush" Color="Transparent" />
@@ -1094,16 +1100,16 @@
 			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{ThemeResource SystemAccentColorDark3}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{ThemeResource SystemAccentColorDark2}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{ThemeResource SystemAccentColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{ThemeResource SystemAccentColorDark3}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
@@ -1326,7 +1332,7 @@
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
-			                 Color="{StaticResource SystemAccentColor}" />
+			                 Color="{ThemeResource SystemAccentColor}" />
 
 			<!-- See https://docs.microsoft.com/en-us/windows/uwp/design/style/color?#accent-color-palette-->
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
@@ -1335,6 +1341,12 @@
 			<Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
@@ -2619,7 +2631,7 @@
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
-					 Color="{StaticResource SystemAccentColor}" />
+					 Color="{ThemeResource SystemAccentColor}" />
 
 			<!-- See https://docs.microsoft.com/en-us/windows/uwp/design/style/color?#accent-color-palette-->
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
@@ -2628,6 +2640,12 @@
 			<Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
 			<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
 			<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
+
+			<!-- Accent color with the alpha values WinUI applies for list selection (0x66/0x99/0xB2).
+			     Runtime-injected by AccentColorResourceUpdater; these are the default-accent fallbacks. -->
+			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
+			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
+			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
 
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
@@ -3433,8 +3451,8 @@
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPointerOver" Color="{StaticResource SystemBaseMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotHeaderItemForegroundDisabled" Color="{StaticResource SystemBaseMediumLowColor}" />
-			<SolidColorBrush x:Key="PivotHeaderItemFocusPipeFill" Color="{StaticResource SystemAccentColor}" />
-			<SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="PivotHeaderItemFocusPipeFill" Color="{ThemeResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="{ThemeResource SystemAccentColor}" />
 
 			<SolidColorBrush x:Key="ProgressBarBackgroundThemeBrush" Color="#30000000" />
 			<SolidColorBrush x:Key="ProgressBarBorderThemeBrush" Color="Transparent" />
@@ -3688,16 +3706,16 @@
 			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight3}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{ThemeResource SystemAccentColorLight3}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight2}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight2}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{ThemeResource SystemAccentColorLight2}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{ThemeResource SystemAccentColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{ThemeResource SystemAccentColorLight3}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
