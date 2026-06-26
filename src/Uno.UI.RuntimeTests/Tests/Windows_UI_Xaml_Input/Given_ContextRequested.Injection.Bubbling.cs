@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 /// stop at the first element that shows a flyout (which sets Handled=true) and never bubble
 /// on to also open an ancestor's flyout. These tests exercise the real input path (gesture
 /// recognizer -> ContextRequested) across several tree shapes, which the direct-RaiseEvent
-/// tests in <see cref="Given_UIElement_ContextFlyoutParentChain"/> do not cover.
+/// tests in <see cref="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_UIElement_ContextFlyoutParentChain"/> do not cover.
 /// </summary>
 public partial class Given_ContextRequested_Injection
 {
