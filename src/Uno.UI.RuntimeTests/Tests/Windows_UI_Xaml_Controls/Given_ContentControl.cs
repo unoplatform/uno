@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -249,6 +250,237 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
+		public async Task When_ListView_ItemTemplate_DataContext_Preserved_After_ContentTemplate_Change()
+		{
+			var expectedItems = new[] { "Apple", "Banana", "Cherry" };
+			var viewModel = new ListViewDataContextViewModel { Items = expectedItems };
+
+			ListView capturedListView = null;
+
+			// DynamicDataTemplate is used (instead of the Uno-only `new DataTemplate(Func)`)
+			// so the test also compiles against native WinUI.
+			using var listViewItemTemplate = new DynamicDataTemplate(() =>
+			{
+				var border = new Border();
+				border.SetBinding(FrameworkElement.DataContextProperty, new Binding());
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Binding());
+				border.Child = tb;
+				return border;
+			});
+
+			using var listViewTemplate = new DynamicDataTemplate(() =>
+			{
+				var lv = new ListView();
+				capturedListView = lv;
+				lv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				lv.ItemTemplate = listViewItemTemplate.Value;
+				return lv;
+			});
+
+			using var itemsControlItemTemplate = new DynamicDataTemplate(() =>
+			{
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Binding());
+				return tb;
+			});
+
+			using var itemsControlTemplate = new DynamicDataTemplate(() =>
+			{
+				var ic = new ItemsControl();
+				ic.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				ic.ItemTemplate = itemsControlItemTemplate.Value;
+				return ic;
+			});
+
+			var contentControl = new ContentControl
+			{
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				ContentTemplate = listViewTemplate.Value,
+			};
+			contentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+
+			var grid = new Grid { DataContext = viewModel };
+			grid.Children.Add(contentControl);
+
+			WindowHelper.WindowContent = grid;
+			try
+			{
+				await WindowHelper.WaitForLoaded(grid);
+				await WindowHelper.WaitForIdle();
+
+				capturedListView = await WindowHelper.WaitForNonNull(
+					() => capturedListView,
+					message: "ListView should have been created by template");
+				await WindowHelper.WaitFor(() => capturedListView.Items.Count == 3, message: "ListView should have 3 items initially");
+
+				// Switch to ItemsControl template
+				contentControl.ContentTemplate = itemsControlTemplate.Value;
+				await WindowHelper.WaitForIdle();
+
+				// Switch back to ListView template — captures a fresh ListView reference
+				capturedListView = null;
+				contentControl.ContentTemplate = listViewTemplate.Value;
+				await WindowHelper.WaitForIdle();
+
+				capturedListView = await WindowHelper.WaitForNonNull(
+					() => capturedListView,
+					message: "ListView should have been recreated by template");
+				await WindowHelper.WaitFor(() => capturedListView.Items.Count == 3, message: "ListView should still have 3 items after template switch");
+
+				// Each container's DataContext should still be the original string item, not the ViewModel
+				for (int i = 0; i < expectedItems.Length; i++)
+				{
+					var index = i;
+					var container = await WindowHelper.WaitForNonNull(
+						() => capturedListView.ContainerFromIndex(index) as ListViewItem,
+						message: $"Container {index} should exist after template switch");
+					Assert.AreEqual(
+						expectedItems[index],
+						container.DataContext,
+						$"Item[{index}] DataContext was altered. Expected '{expectedItems[index]}' but got: {container.DataContext?.GetType().Name}: '{container.DataContext}'");
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
+		public async Task When_ItemsControl_Items_Order_Preserved_After_ContentTemplate_Toggle()
+		{
+			var expectedItems = new[] { "First", "Second", "Third" };
+			var viewModel = new ListViewDataContextViewModel { Items = expectedItems };
+
+			ItemsControl capturedItemsControl = null;
+
+			using var listViewItemTemplate = new DynamicDataTemplate(() =>
+			{
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Binding());
+				return tb;
+			});
+
+			using var listViewTemplate = new DynamicDataTemplate(() =>
+			{
+				var lv = new ListView();
+				lv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				lv.ItemTemplate = listViewItemTemplate.Value;
+				return lv;
+			});
+
+			using var itemsControlItemTemplate = new DynamicDataTemplate(() =>
+			{
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Binding());
+				return tb;
+			});
+
+			using var itemsControlTemplate = new DynamicDataTemplate(() =>
+			{
+				var ic = new ItemsControl();
+				capturedItemsControl = ic;
+				ic.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				ic.ItemTemplate = itemsControlItemTemplate.Value;
+				return ic;
+			});
+
+			var contentControl = new ContentControl
+			{
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				ContentTemplate = listViewTemplate.Value,
+			};
+			contentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+
+			var grid = new Grid { DataContext = viewModel };
+			grid.Children.Add(contentControl);
+
+			WindowHelper.WindowContent = grid;
+			try
+			{
+				await WindowHelper.WaitForLoaded(grid);
+				await WindowHelper.WaitForIdle();
+
+				// Switch to ItemsControl template
+				capturedItemsControl = null;
+				contentControl.ContentTemplate = itemsControlTemplate.Value;
+				await WindowHelper.WaitForIdle();
+
+				capturedItemsControl = await WindowHelper.WaitForNonNull(
+					() => capturedItemsControl,
+					message: "ItemsControl should have been created");
+				await WindowHelper.WaitFor(() => capturedItemsControl.Items.Count == 3, message: "ItemsControl should have 3 items");
+
+				// Toggle back and forth (2x as described in the issue)
+				contentControl.ContentTemplate = listViewTemplate.Value;
+				await WindowHelper.WaitForIdle();
+
+				capturedItemsControl = null;
+				contentControl.ContentTemplate = itemsControlTemplate.Value;
+				await WindowHelper.WaitForIdle();
+
+				capturedItemsControl = await WindowHelper.WaitForNonNull(
+					() => capturedItemsControl,
+					message: "ItemsControl should have been recreated after double toggle");
+				await WindowHelper.WaitFor(() => capturedItemsControl.Items.Count == 3, message: "ItemsControl should have 3 items after double toggle");
+
+				// Issue #11926 reverses the *rendered* order after toggling. Items mirrors ItemsSource
+				// (always source order), so assert on realized item visuals to actually catch a reversal.
+				// Wait until all visuals are realized AND their text bindings resolved, capturing the
+				// snapshot in the same tick so the assertion can't observe a half-bound (empty-text) state.
+				string[] realizedTexts = null;
+				await WindowHelper.WaitFor(
+					() =>
+					{
+						var texts = GetRealizedTextBlocks(capturedItemsControl).Select(tb => tb.Text).ToArray();
+						if (texts.Length != expectedItems.Length || texts.Any(string.IsNullOrEmpty))
+						{
+							return false;
+						}
+
+						realizedTexts = texts;
+						return true;
+					},
+					message: "ItemsControl should realize all item visuals with bound text after double toggle");
+
+				Assert.IsNotNull(realizedTexts);
+				CollectionAssert.AreEqual(
+					expectedItems,
+					realizedTexts,
+					$"Item visual order must be preserved. Expected [{string.Join(", ", expectedItems)}] but got [{string.Join(", ", realizedTexts)}]");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static IEnumerable<TextBlock> GetRealizedTextBlocks(DependencyObject root)
+		{
+			var count = VisualTreeHelper.GetChildrenCount(root);
+			for (var i = 0; i < count; i++)
+			{
+				var child = VisualTreeHelper.GetChild(root, i);
+				if (child is TextBlock tb)
+				{
+					yield return tb;
+				}
+				else
+				{
+					foreach (var nested in GetRealizedTextBlocks(child))
+					{
+						yield return nested;
+					}
+				}
+			}
+		}
+
 		private class SignInViewModel
 		{
 			public string UserName { get; set; } = "Steve";
@@ -273,6 +505,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public IEnumerable<Item> Items => _items;
 
 			public int SelectedIndex { get; set; } = 1;
+		}
+
+		private class ListViewDataContextViewModel
+		{
+			public string[] Items { get; set; }
 		}
 	}
 
