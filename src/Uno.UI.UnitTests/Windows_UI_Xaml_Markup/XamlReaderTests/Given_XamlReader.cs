@@ -1004,7 +1004,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Color_Thickness_GridLength_As_String()
 		{
 			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
-			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
+			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
 			Assert.AreEqual(Microsoft.UI.Colors.Red, r.Resources["Color01"]);
 			Assert.AreEqual(Microsoft.UI.Colors.Blue, (r.Resources["scb01"] as SolidColorBrush).Color);
