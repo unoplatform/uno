@@ -52,23 +52,57 @@ public partial class DependencyObjectStore
 	/// </summary>
 	internal void SetTheme(Theme theme) => _theme = theme;
 
-	// MUX Reference: CDependencyObject.h:300-302
-	//   XUINT32 fIsProcessingThemeWalk : 1;  // bit 16
-	//   "Indicates whether the DO is currently processing themes. It is used to prevent stack
-	//    overflows caused by cycles."
-	// WinUI packs this with other lifecycle bits on every CDependencyObject (corep.h:224-348), so it
-	// lives here on the store.
-	private bool _isProcessingThemeWalk;
+	// Per-store transient lifecycle/theme flags, packed into one field instead of one bool field per
+	// flag — WinUI packs the equivalent state into CDependencyObject's m_bitFields (corep.h:224-348).
+	[global::System.Flags]
+	private enum StoreFlags : byte
+	{
+		None = 0,
+
+		// MUX Reference: CDependencyObject.h:300-302 — fIsProcessingThemeWalk. "Indicates whether the DO
+		// is currently processing themes ... to prevent stack overflows caused by cycles."
+		IsProcessingThemeWalk = 1 << 0,
+
+		// Re-entrancy guard for UpdateChildResourceBindings.
+		IsUpdatingChildResourceBindings = 1 << 1,
+
+		// The members below are only written on enhanced-lifecycle targets (see their gated call sites).
+
+		// Transient forceRefresh of the theme walk this object is currently processing.
+		WalkForceRefresh = 1 << 2,
+
+		// MUX Reference: CDependencyObject.h:302 — fIsProcessingEnterLeave.
+		IsProcessingEnterLeave = 1 << 3,
+
+		// MUX Reference: CDependencyObject.h — fLive, carried here for non-UIElement DOs.
+		IsActive = 1 << 4,
+	}
+
+	private StoreFlags _flags;
+
+	private bool GetFlag(StoreFlags flag) => (_flags & flag) != 0;
+
+	private void SetFlag(StoreFlags flag, bool value)
+	{
+		if (value)
+		{
+			_flags |= flag;
+		}
+		else
+		{
+			_flags &= ~flag;
+		}
+	}
 
 	/// <summary>
 	/// Gets whether this object is currently processing a theme walk (re-entrancy guard).
 	/// </summary>
-	internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+	internal bool IsProcessingThemeWalk => GetFlag(StoreFlags.IsProcessingThemeWalk);
 
 	/// <summary>
 	/// Sets whether this object is currently processing a theme walk.
 	/// </summary>
-	internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+	internal void SetIsProcessingThemeWalk(bool value) => SetFlag(StoreFlags.IsProcessingThemeWalk, value);
 
 	#endregion
 
@@ -84,12 +118,11 @@ public partial class DependencyObjectStore
 	// UpdateChildResourceBindings, which has no walk parameters, so the walking store carries them
 	// here while IsProcessingThemeWalk is set.
 	private Theme _walkTheme;
-	private bool _walkForceRefresh;
 
 	// Valid only while IsProcessingThemeWalk — read by FrameworkElement.UpdateThemeBindings to
 	// thread the walk context into the Resources dictionary's per-child notification.
 	internal Theme WalkTheme => _walkTheme;
-	internal bool WalkForceRefresh => _walkForceRefresh;
+	internal bool WalkForceRefresh => GetFlag(StoreFlags.WalkForceRefresh);
 
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
@@ -137,7 +170,7 @@ public partial class DependencyObjectStore
 		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
 
 		_walkTheme = theme;
-		_walkForceRefresh = forceRefresh;
+		SetFlag(StoreFlags.WalkForceRefresh, forceRefresh);
 
 		try
 		{
@@ -279,7 +312,7 @@ public partial class DependencyObjectStore
 	/// WinUI snapshots property indices into a stack_vector (size 50 to handle ListViewItemPresenter
 	/// with 41+ theme refs), then calls UpdateThemeReference(propertyIndex) for each.
 	/// </remarks>
-	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null, bool preferAppResourceOverride = false)
+	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null)
 	{
 		if (_themeResources is not { HasEntries: true })
 		{
@@ -299,7 +332,7 @@ public partial class DependencyObjectStore
 		if (snapshotCount == 1)
 		{
 			var entry = entries[0];
-			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride, preferAppResourceOverride);
+			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride);
 			return;
 		}
 
@@ -320,8 +353,7 @@ public partial class DependencyObjectStore
 					snapshot[i].Reference,
 					owner,
 					cache,
-					ownerThemeOverride,
-					preferAppResourceOverride);
+					ownerThemeOverride);
 			}
 		}
 		finally
@@ -354,8 +386,7 @@ public partial class DependencyObjectStore
 		ThemeResourceReference themeRef,
 		DependencyObject? owner,
 		ThemeWalkResourceCache? cache,
-		Theme? ownerThemeOverride = null,
-		bool preferAppResourceOverride = false)
+		Theme? ownerThemeOverride = null)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
@@ -452,7 +483,7 @@ public partial class DependencyObjectStore
 			if (!resolved)
 #endif
 			{
-				themeRef.RefreshValue(cache, preferAppResourceOverride);
+				themeRef.RefreshValue(cache);
 			}
 
 			// MUX: Theming.cpp:385-387 — GetLastResolvedThemeValue: the value to apply is the ref's
@@ -518,8 +549,6 @@ public partial class DependencyObjectStore
 	#endregion
 
 	#region Property-value theme propagation — WinUI: NotifyThemeChangedCoreImpl property walk (Theming.cpp lines 166-255)
-
-	private bool _isUpdatingChildResourceBindings;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	// Notifies new property value of theme change that was applied to the property owner.
@@ -616,7 +645,7 @@ public partial class DependencyObjectStore
 	/// </remarks>
 	private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		if (_isUpdatingChildResourceBindings)
+		if (GetFlag(StoreFlags.IsUpdatingChildResourceBindings))
 		{
 			// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
 			return;
@@ -630,7 +659,7 @@ public partial class DependencyObjectStore
 			}
 			finally
 			{
-				_isUpdatingChildResourceBindings = false;
+				SetFlag(StoreFlags.IsUpdatingChildResourceBindings, false);
 			}
 
 			if (ActualInstance is IThemeChangeAware themeChangeAware)
@@ -653,7 +682,7 @@ public partial class DependencyObjectStore
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		_isUpdatingChildResourceBindings = true;
+		SetFlag(StoreFlags.IsUpdatingChildResourceBindings, true);
 
 		foreach (var propertyDetail in _properties.GetAllDetails())
 		{
@@ -724,7 +753,7 @@ public partial class DependencyObjectStore
 			if (dependencyObject is not UIElement { IsActiveInVisualTree: true }
 				&& dependencyObject is IDependencyObjectStoreProvider walkProvider)
 			{
-				walkProvider.Store.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+				walkProvider.Store.NotifyThemeChanged(_walkTheme, WalkForceRefresh);
 			}
 
 			return;
@@ -762,6 +791,35 @@ public partial class DependencyObjectStore
 			throw new ArgumentException();
 		}
 
+		// A theme-resolved {ThemeResource}/{StaticResource} value re-applied during a per-element re-resolution
+		// — load-time (FrameworkElement.OnFwEltLoading) and element/subtree theme change (NotifyThemeChangedCore)
+		// — flows through SetValue at Local precedence, which marks ModifiedValue.LocalValueNewerThanAnimatedValue
+		// and would defeat an in-effect (held) animation, e.g. a Control's filled VisualState keyframe (the
+		// "checked CheckBox renders empty until hover" bug). MUX Reference: the precedence rule
+		// (ModifiedValue.cpp CModifiedValue::GetEffectiveValue, lines 255-282). WinUI re-resolves in the same hold
+		// window but avoids the defeat with a per-property GATE, not a suppress: SetThemeResourceBinding arms
+		// SetModifierValueBeingSet(true) when the property HasModifiers (true while animated), which makes the
+		// !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649 false and SKIPS the hardcoded
+		// SetBaseValue(.., BaseValueSourceLocal) at :1651 entirely (Theming.cpp:405-410) — so the base is never
+		// re-stamped and the local-newer bit is never set. Uno has no such gate (ApplyResource/SetResourceBinding
+		// default to Local), so it reuses the counter-based suppress it already wraps the global theme switch in
+		// (CoreServices.RaiseThemeChanged, Application.OnResourcesChanged), extended here to the per-element choke
+		// point. This masks the flag-flip rather than skipping the re-stamp; a faithful port of WinUI's
+		// modifier-being-set gate (which would let the suppress be removed) is tracked as follow-up. Counter-based,
+		// so it nests safely under the global guard; try/finally so the counter unwinds on an exception in any phase.
+		ModifiedValue.SuppressLocalCanDefeatAnimations();
+		try
+		{
+			UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
+		}
+		finally
+		{
+			ModifiedValue.ContinueLocalCanDefeatAnimations();
+		}
+	}
+
+	private void UpdateResourceBindingsCore(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider, ResourceDictionary? containingDictionary)
+	{
 		// The owner whose effective theme drives every {ThemeResource} resolution below: this element, or —
 		// for a standalone resource DO with no inheritance parent — the injected resource-context element
 		// (the dictionary's owning element), matching WinUI's per-owner {ThemeResource} resolution. Resolve

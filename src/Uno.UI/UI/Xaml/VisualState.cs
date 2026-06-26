@@ -178,11 +178,22 @@ namespace Microsoft.UI.Xaml
 #endif
 				}
 
-				// Resolve all theme resources from storyboard children
-				// and setters values. This step is needed to ensure that
-				// Theme Resources are resolved using the proper visual tree
-				// parents, particularly when resources a locally overriden.
+				// Establish the per-object theme on the lazily-built VisualState chain (storyboard,
+				// animations, keyframes, setters) the same way the Enter theme walk does for non-lazy DOs.
+				// MUX: WinUI carries m_theme on every DO, inherited from the inheritance parent at Enter
+				// (CDependencyObject::EnterImpl, depends.cpp:1044-1054), and CVisualState::EnterImpl enters
+				// its storyboard — so the keyframes carry an established theme. Uno builds this chain lazily
+				// HERE, outside the Enter walk, so without this a value DO (keyframe) keeps _theme=None and
+				// later re-resolves its {ThemeResource} against the (unscoped) app base theme on a non-walk
+				// path (element loading / visual-state re-entry). NotifyThemeChanged runs the same per-child
+				// establishment recursion (DependencyObjectStore.UpdateResourceBindingsIfNeeded) against the
+				// part's inherited theme; on non-enhanced-lifecycle targets it falls back to plain resolution.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var ownerTheme = ThemeResolution.ResolveOwnerTheme(this.GetTemplatedParent() as DependencyObject);
+				((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(ownerTheme, forceRefresh: true);
+#else
 				this.UpdateResourceBindings();
+#endif
 			}
 		}
 

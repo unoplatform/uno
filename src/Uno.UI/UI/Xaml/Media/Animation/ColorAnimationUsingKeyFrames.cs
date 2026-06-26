@@ -423,8 +423,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private protected override void OnThemeChanged()
 		{
-			// Value may have changed
+			// The keyframe {ThemeResource} values may have re-resolved with the new theme; recompute the
+			// final value and re-apply it while the animation is live so the rendered value tracks the
+			// theme — the ObjectAnimationUsingKeyFrames.OnThemeChanged / WinUI RequestTickForPendingThemeChange
+			// analog. Without the re-apply, an Active (mid-transition) color animation keeps the stale
+			// pre-switch color until it completes.
 			_finalValue = FindFinalValue() ?? default;
+			if (State != TimelineState.Stopped)
+			{
+				SetValue(_finalValue);
+			}
 		}
 
 		partial void OnFrame(IValueAnimator currentAnimator);
