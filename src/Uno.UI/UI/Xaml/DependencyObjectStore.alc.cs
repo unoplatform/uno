@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 			// store at Inheritance precedence; that propagated value (e.g. the secondary app's
 			// view model) survives the parent's removal and pins the value's ALC on its own.
 			if (associationCleared
-				|| GetValue(_dataContextProperty)?.GetType().IsCollectible == true)
+				|| GetInheritedDataContextValue()?.GetType().IsCollectible == true)
 			{
 				ClearInheritedDataContext();
 			}

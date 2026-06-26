@@ -151,7 +151,7 @@ public partial class Given_DependencyPropertyHelper
 	public void When_GetPropertyDetails_DataContext()
 	{
 		// Arrange
-		var property = UIElement.DataContextProperty;
+		var property = FrameworkElement.DataContextProperty;
 
 		// Act
 		var (valueType, _, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetDetails(property);

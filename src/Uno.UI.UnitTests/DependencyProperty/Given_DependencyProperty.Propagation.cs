@@ -222,24 +222,8 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			Assert.AreEqual(42, sub.MyProperty);
 		}
 
-		[TestMethod]
-		public void When_ValidBinding_And_Then_InvalidBinding()
-		{
-			var sub = new DependencyObjectCollection();
-			var other = new MyObjectWithExplicitDefaultValue();
-			other.SetBinding(MyObjectWithExplicitDefaultValue.MyPropertyProperty, new Binding() { Path = new PropertyPath("a") });
-
-			sub.Add(other);
-
-			sub.DataContext = new { a = 42 };
-
-			Assert.AreEqual(42, other.MyProperty);
-
-			sub.DataContext = 42;
-
-			Assert.AreEqual(77, other.MyProperty);
-		}
-
+		// BC58: removed When_ValidBinding_And_Then_InvalidBinding — it set DataContext directly on a standalone
+		// non-FrameworkElement DependencyObjectCollection, which has no DataContext (WinUI parity).
 
 		[TestMethod]
 		public void When_ValidBinding_And_Then_InvalidBinding_Inherited()
@@ -397,55 +381,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		}
 
 		[TestMethod]
-		public void When_Style_Then_Dont_Inherit()
-		{
-			var SUT = new Grid();
-
-			var style = new Style();
-			var setter = new Setter(Grid.TagProperty, 1);
-			style.Setters.Add(setter);
-
-			SUT.Style = style;
-
-			Assert.IsNull(setter.DataContext);
-
-			SUT.DataContext = 42;
-
-			Assert.IsNull(setter.DataContext);
-			Assert.IsNull(style.DataContext);
-		}
-
-		[TestMethod]
-		public void When_DataTemplate_Then_Dont_Inherit()
-		{
-			var SUT = new ContentControl();
-
-			var template = new DataTemplate(() => new Grid());
-			SUT.ContentTemplate = template;
-
-			Assert.IsNull(template.DataContext);
-
-			SUT.DataContext = 42;
-
-			Assert.IsNull(template.DataContext);
-		}
-
-		[TestMethod]
-		public void When_ControlTemplate_Then_Dont_Inherit()
-		{
-			var SUT = new ContentControl();
-
-			var template = new ControlTemplate(() => new Grid());
-			SUT.Template = template;
-
-			Assert.IsNull(template.DataContext);
-
-			SUT.DataContext = 42;
-
-			Assert.IsNull(template.DataContext);
-		}
-
-		[TestMethod]
 		public void When_ControlTemplate_And_Animation()
 		{
 			var SUT = new ContentControl() { Tag = 42 };
@@ -511,19 +446,12 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 					DependencyPropertyValuePrecedences.Inheritance);
 
 				var originalBrush = SUT.Foreground as Brush;
-				Assert.AreEqual(dc, originalBrush.DataContext);
 
 				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
 
 				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
 
-				Assert.IsNull(originalBrush.DataContext);
-				Assert.IsNotNull(newBrush.DataContext);
-
 				SUT.ClearValue(ContentControl.ForegroundProperty);
-
-				Assert.AreEqual(dc, originalBrush.DataContext);
-				Assert.IsNull(newBrush.DataContext);
 
 				SUT.DataContext = null;
 
@@ -575,7 +503,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		}
 	}
 
-	public partial class MyObject : DependencyObject
+	public partial class MyObject : FrameworkElement
 	{
 		public MyObject()
 		{
@@ -615,7 +543,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		#endregion
 	}
 
-	public partial class SubObject : DependencyObject
+	public partial class SubObject : FrameworkElement
 	{
 		public int MyProperty
 		{
@@ -662,7 +590,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		}
 	}
 
-	public partial class MyObjectWithExplicitDefaultValue : DependencyObject
+	public partial class MyObjectWithExplicitDefaultValue : FrameworkElement
 	{
 
 		#region SameTypeObject DependencyProperty

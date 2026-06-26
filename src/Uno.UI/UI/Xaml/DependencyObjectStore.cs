@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 
-		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
+		private DependencyProperty _parentDataContextProperty = FrameworkElement.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
@@ -161,6 +161,13 @@ namespace Microsoft.UI.Xaml
 					{
 						TryRegisterInheritedProperties(parentProvider);
 					}
+					else if (_dataContextProperty is null)
+					{
+						// A non-FE store has no DataContextProperty for the DP-inheritance system to reset on detach,
+						// so its cached mentor/parent DataContext would persist — leaking the owner's DataContext through
+						// any object kept alive past detach (e.g. a shared ContextFlyout holding the target's ViewModel).
+						ApplyDataContext(null);
+					}
 
 					OnParentChanged(previousParent, value);
 				}
@@ -203,11 +210,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
+		/// Creates a store for the specified <paramref name="originalObject"/>, resolving its DataContext
+		/// property automatically: <see cref="FrameworkElement.DataContextProperty"/> when the object is a
+		/// <see cref="FrameworkElement"/>, otherwise none (DataContext is a FrameworkElement-only property).
 		/// </summary>
-		/// <param name="originalObject"></param>
+		public DependencyObjectStore(object originalObject)
+			: this(originalObject, ResolveDataContextProperty(originalObject))
+		{
+		}
+
 		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
-		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty)
+		public DependencyObjectStore(object originalObject, DependencyProperty? dataContextProperty)
 		{
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
@@ -229,9 +242,15 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyObjectStore(object originalObject, DependencyProperty? dataContextProperty, DependencyProperty templatedParentProperty)
 			: this(originalObject, dataContextProperty)
 		{
+		}
+
+		private static DependencyProperty? ResolveDataContextProperty(object originalObject)
+		{
+			var owner = originalObject is AttachedDependencyObject a ? a.Owner : originalObject;
+			return owner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 		}
 
 		~DependencyObjectStore()
@@ -314,7 +333,7 @@ namespace Microsoft.UI.Xaml
 				return GetValueFromMethodCall(property);
 			}
 
-			if (_properties.DataContextPropertyDetails.Property == property)
+			if (_properties.DataContextPropertyDetails?.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
 				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
@@ -724,6 +743,13 @@ namespace Microsoft.UI.Xaml
 			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence)
 		{
+			if (_dataContextProperty is null)
+			{
+				// A non-FE store carries no DataContext, so it has nothing to propagate to (or clear from)
+				// its inheriting DependencyObject values.
+				return;
+			}
+
 			if (property.IsUnoType
 				&& propertyDetails.HasValueInherits
 				&& !propertyDetails.HasValueDoesNotInherit)
@@ -748,7 +774,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
 					}
 				}
 
@@ -759,7 +785,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
+						childProviderSet.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
 					}
 
 					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
@@ -771,16 +797,37 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		// The inherited (mentor/parent) DataContext value as this store currently holds it: a FrameworkElement owner
+		// keeps it under its DataContextProperty; a non-FE owner has no DataContextProperty (BC58) and caches it.
+		internal object? GetInheritedDataContextValue()
+			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties.InheritedDataContext;
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ClearInheritedDataContext()
 		{
-			ClearValue(_dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+			if (_dataContextProperty is { } dataContextProperty)
+			{
+				ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+			}
+			else
+			{
+				// Non-FE store: no DataContextProperty. Drop the cached mentor DataContext and re-resolve bindings
+				// against null so the previously-inherited value is released (e.g. on ALC teardown / mentor clear).
+				ApplyDataContext(null);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void RestoreInheritedDataContext(object? dataContext)
 		{
-			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+			if (_dataContextProperty is { } dataContextProperty)
+			{
+				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+			}
+			else
+			{
+				ApplyDataContext(dataContext);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1143,6 +1190,13 @@ namespace Microsoft.UI.Xaml
 		{
 			_childrenStores = _childrenStores.Add(childStore);
 
+			// An object that opted out of auto-inheritance (e.g. VisualState/VisualStateGroup, which set
+			// IsAutoPropertyInheritanceEnabled = false) is not registered against its own parent until it has a
+			// child store. Now that it gained one it satisfies the _childrenStores condition in
+			// TryRegisterInheritedProperties, so connect the chain upward — otherwise an inherited DataContext set
+			// after this object joined the tree (e.g. a StateTrigger added late) can never reach the new child.
+			TryRegisterInheritedProperties();
+
 			PropagateInheritedProperties(childStore);
 
 			// This weak reference ensure that the disposable will not link
@@ -1355,6 +1409,15 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			// Non-FrameworkElement DependencyObject: it has no DataContextProperty of its own (WinUI parity). Route the
+			// inherited DataContext through ApplyDataContext so its own {Binding}s resolve against the mentor/parent
+			// FrameworkElement's value and it cascades to its bindable children — without storing a DataContext on it.
+			if (_dataContextProperty is null && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
+			{
+				ApplyDataContext(newValue == DependencyProperty.UnsetValue ? null : newValue);
+				return;
+			}
+
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
 			if (localProperty != null)
@@ -1445,7 +1508,12 @@ namespace Microsoft.UI.Xaml
 
 		private InheritedPropertiesDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
 		{
-			_parentDataContextProperty = parentProvider.Store.DataContextProperty;
+			// A non-FE parent exposes no DataContext property; keep the FrameworkElement.DataContextProperty
+			// default so the UniqueId match below stays valid (it simply never matches such a parent).
+			if (parentProvider.Store.DataContextProperty is { } parentDataContextProperty)
+			{
+				_parentDataContextProperty = parentDataContextProperty;
+			}
 
 			// The propagation of the inherited properties is performed by setting the
 			// Inherited precedence level value of each control of the visual tree.
@@ -1484,7 +1552,10 @@ namespace Microsoft.UI.Xaml
 					}
 
 
-					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					if (_dataContextProperty is { } dataContextProperty)
+					{
+						SetValue(dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					}
 				}
 			}
 			finally

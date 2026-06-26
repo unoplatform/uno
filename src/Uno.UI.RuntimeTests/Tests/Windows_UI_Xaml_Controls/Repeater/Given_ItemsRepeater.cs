@@ -171,10 +171,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				sv.ChangeView(null, sv.ExtentHeight / 2, null, disableAnimation: true);
 				await TestServices.WindowHelper.WaitForIdle();
 
-				var groupView = sut.Children.Single(g => g.DataContext as string == "Group #05");
+				var groupView = sut.Children.Single(g => ((FrameworkElement)g).DataContext as string == "Group #05");
 				var groupIr = (ItemsRepeater)((StackPanel)groupView).Children[1];
 
-				var beforeVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+				var beforeVisibleItems = groupIr.Children.Select(i => ((FrameworkElement)i).DataContext?.ToString()).OrderBy(i => i).ToArray();
 
 				// Scroll by baby step to not be above the threshold which would cause a complete redraw
 				const int step = 10;
@@ -184,7 +184,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 					await TestServices.WindowHelper.WaitForIdle();
 				}
 
-				var afterVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+				var afterVisibleItems = groupIr.Children.Select(i => ((FrameworkElement)i).DataContext?.ToString()).OrderBy(i => i).ToArray();
 
 				afterVisibleItems.Should().NotContain(beforeVisibleItems);
 			}
@@ -287,7 +287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			// Edit an item
 			source[1] = "Item #1 - Edited";
 			await TestServices.WindowHelper.WaitForIdle();
-			sut.Children.FirstOrDefault(g => g.DataContext as string == "Item #1 - Edited").Should().NotBeNull();
+			sut.Children.FirstOrDefault(g => ((FrameworkElement)g).DataContext as string == "Item #1 - Edited").Should().NotBeNull();
 
 			// Remove an item
 			source.RemoveAt(2);
@@ -382,7 +382,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			await sut.Load();
 
-			sut.Repeater.Children.FirstOrDefault(g => g.DataContext as string == "Item #1 - Edited").Should().NotBeNull();
+			sut.Repeater.Children.FirstOrDefault(g => ((FrameworkElement)g).DataContext as string == "Item #1 - Edited").Should().NotBeNull();
 		}
 
 		[TestMethod]
@@ -490,7 +490,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.MaterializedItems.Should().NotContain(sut.Source[15]);
 
 			// Item 0 should be at offset 0
-			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => e.DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
+			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => ((FrameworkElement)e).DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
 		}
 
 		[TestMethod]
@@ -610,7 +610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);
 
-			public IEnumerable<T> MaterializedItems => MaterializedElements.Select(elt => (T)elt.DataContext);
+			public IEnumerable<T> MaterializedItems => MaterializedElements.Select(elt => (T)((FrameworkElement)elt).DataContext!);
 
 			public IEnumerable<UIElement> MaterializedElements => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0);
 
