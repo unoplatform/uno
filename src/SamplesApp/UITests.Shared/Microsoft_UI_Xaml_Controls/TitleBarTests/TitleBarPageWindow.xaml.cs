@@ -59,6 +59,15 @@ public sealed partial class TitleBarPageWindow : Window
 
 	private void UpdateCaptionButtonDirection(FlowDirection direction)
 	{
+		// The caption-button layout swap uses Win32 user32.dll, only available on Windows. UITests.Shared
+		// is compiled into every SamplesApp head and the Skia head runs on macOS/Linux too, so guard at
+		// runtime. (A #if WINDOWS guard would also disable this on the Skia-on-Windows head, which has no
+		// WINDOWS symbol yet still runs on Windows.)
+		if (!OperatingSystem.IsWindows())
+		{
+			return;
+		}
+
 		var hwnd = GetWindowHandleForCurrentWindow(this);
 
 		if (hwnd != 0)
