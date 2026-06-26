@@ -108,7 +108,10 @@ internal readonly partial struct UnicodeText
 							// some environments only have a versioned library and don't symlink it to libicuuc.so
 							var name = $"libicuuc.so.{j}";
 							attempts.Add(name);
-							if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+							// Use the same search directories as the primary attempt: a versioned ICU shipped
+							// app-locally (e.g. the Microsoft.ICU.ICU4C.Runtime package, the standard remedy for
+							// minimal images without a system ICU) sits next to the assembly, not in UserDirectories.
+							if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 							{
 								break;
 							}
