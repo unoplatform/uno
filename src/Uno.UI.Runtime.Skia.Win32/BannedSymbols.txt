@@ -1,0 +1,1 @@
+M:DirectN.PWSTR.From(System.String); instead of `PWSTR.From(s)`, use `fixed(char* p = s) new PWSTR(p)`
