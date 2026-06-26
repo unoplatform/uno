@@ -196,6 +196,13 @@ namespace Microsoft.UI.Composition
 			if (propertyName == nameof(Opacity))
 			{
 				RecursiveInvalidate(this);
+
+				// Render() early-returns when Opacity is 0, so PaintStep never runs to damage the vacated
+				// region. Mirror OnIsVisibleChanged and damage the last-rendered region (recursively).
+				if (Opacity == 0 && CompositionTarget is { } target)
+				{
+					DamageLastRenderedRegion(target);
+				}
 			}
 
 			void RecursiveInvalidate(Visual visual)

@@ -66,7 +66,6 @@ internal abstract class FrameBufferRenderer
 		_surface?.Canvas.Save();
 		_surface?.Canvas.Translate(transX, transY);
 		_surface?.Canvas.RotateDegrees(degrees);
-		_surface?.Canvas.Clear(SKColors.Transparent);
 
 		ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
@@ -79,16 +78,29 @@ internal abstract class FrameBufferRenderer
 			_surface.Canvas.Save();
 			_surface.Canvas.Translate((float)transX, (float)transY);
 			_surface.Canvas.RotateDegrees(degrees);
-			_surface.Canvas.Clear(SKColors.Transparent);
 			return _surface.Canvas;
 		});
-		if (_cursorVisible ?? _receivedMouseEvent)
-		{
-			_surface?.Canvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
-			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
-		}
 		_surface?.Canvas.Restore();
 		_surface?.Flush();
+
+		PresentToOutput(degrees, transX, transY);
+	}
+
+	protected bool ShouldShowCursor => _cursorVisible ?? _receivedMouseEvent;
+
+	protected void DrawCursor(SKCanvas outputCanvas, int degrees, int transX, int transY)
+	{
+		if (!ShouldShowCursor)
+		{
+			return;
+		}
+
+		outputCanvas.Save();
+		outputCanvas.Translate(transX, transY);
+		outputCanvas.RotateDegrees(degrees);
+		outputCanvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
+		outputCanvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
+		outputCanvas.Restore();
 	}
 
 	public abstract void InvalidateRender();
@@ -96,6 +108,8 @@ internal abstract class FrameBufferRenderer
 	protected abstract IDisposable MakeCurrent();
 
 	protected abstract SKSurface UpdateSize(int width, int height);
+
+	protected abstract void PresentToOutput(int degrees, int transX, int transY);
 
 	public virtual void Dispose() { }
 }

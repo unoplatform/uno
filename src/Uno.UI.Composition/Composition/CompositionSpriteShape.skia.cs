@@ -80,6 +80,54 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
+		internal bool TryGetRenderBounds(out SKRect bounds)
+		{
+			bounds = default;
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				bounds = fillGeometry.Bounds;
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				var strokeBounds = strokeGeometry.Bounds;
+				strokeBounds.Inflate(StrokeThickness, StrokeThickness);
+				bounds = any ? SKRect.Union(bounds, strokeBounds) : strokeBounds;
+				any = true;
+			}
+
+			return any;
+		}
+
+		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+		private static readonly SKPath _spareRenderPathStroke = new SKPath();
+
+		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
+		internal bool GetRenderPath(SKPath dst)
+		{
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				dst.AddPath(fillGeometry.Geometry);
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
+				_spareRenderPathStroke.Rewind();
+				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStroke);
+				dst.AddPath(_spareRenderPathStroke);
+				any = true;
+			}
+
+			return any;
+		}
+
 		private static readonly SKPaint _sparePaint = new SKPaint();
 		private static readonly SKPath _sparePath = new SKPath();
 
