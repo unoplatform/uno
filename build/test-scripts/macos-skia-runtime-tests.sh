@@ -19,6 +19,8 @@ fi
 
 cd $SamplesAppArtifactPath
 
+mkdir -p "$BUILD_SOURCESDIRECTORY/build/uitests-failure-results"
+
 # https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/xplat-minidump-generation.md#configurationpolicy
 export DOTNET_DbgEnableMiniDump=1
 export DOTNET_DbgMiniDumpName="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/coredump-macos.%p"
