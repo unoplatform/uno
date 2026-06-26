@@ -1104,10 +1104,23 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void RegisterContentTemplateRoot();
 
+	public Brush Background
+	{
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
+
+	public static DependencyProperty BackgroundProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Background),
+			typeof(Brush),
+			typeof(ContentPresenter),
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnBackgroundChanged(e)));
+
 	/// <remarks>
 	/// Don't call base, the UpdateBorder() method handles drawing the background.
 	/// </remarks>
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
