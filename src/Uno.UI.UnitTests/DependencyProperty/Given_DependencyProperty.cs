@@ -396,11 +396,32 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		public void When_Property_RegisterTwice_then_Fail()
+		public void When_Property_RegisterTwice_With_Same_Type_Then_Returns_Existing()
 		{
-			var SUT = new MockDependencyObject();
-			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			Assert.ThrowsExactly<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42")));
+			// WinUI does not throw when the same (name, ownerType, propertyType) is registered
+			// twice (the official WinUI Gallery relies on this). Match that by returning the
+			// already-registered property instead of throwing.
+			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_With_Same_Type_Then_Returns_Existing), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var secondProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_With_Same_Type_Then_Returns_Existing), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+
+			Assert.AreSame(testProperty, secondProperty);
+		}
+
+		[TestMethod]
+		public void When_Property_RegisterTwice_With_Different_Type_Then_Fail()
+		{
+			// A same-name registration with a different property type is still a genuine conflict.
+			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_With_Different_Type_Then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			Assert.ThrowsExactly<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_With_Different_Type_Then_Fail), typeof(int), typeof(MockDependencyObject), new PropertyMetadata(42)));
+		}
+
+		[TestMethod]
+		public void When_AttachedProperty_RegisterTwice_With_Same_Type_Then_Returns_Existing()
+		{
+			var testProperty = DependencyProperty.RegisterAttached(nameof(When_AttachedProperty_RegisterTwice_With_Same_Type_Then_Returns_Existing), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			var secondProperty = DependencyProperty.RegisterAttached(nameof(When_AttachedProperty_RegisterTwice_With_Same_Type_Then_Returns_Existing), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+
+			Assert.AreSame(testProperty, secondProperty);
 		}
 
 		[TestMethod]
