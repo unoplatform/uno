@@ -237,6 +237,11 @@ internal partial class Win32WindowWrapper
 			// recreates it) doesn't dispose the same instance again.
 			_renderTarget = null;
 			_glContext = PInvoke.wglCreateContext(_hdc);
+			if (_glContext == HGLRC.Null)
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglCreateContext)} failed during {nameof(IRenderer.Reinitialize)}: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			SetSwapInterval(_pacer is null ? 1 : 0);
 			_grContext = GRContext.CreateGl(_grGlInterface);
