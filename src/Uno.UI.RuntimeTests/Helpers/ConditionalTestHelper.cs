@@ -59,13 +59,23 @@ internal static class ConditionalTestHelper
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
 			RuntimeTestPlatforms.SkiaIslands => IsSkia() && IsSkiaIslands(),
 			RuntimeTestPlatforms.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
+			// Need to include `SkiaFrameBuffer` to avoid ArgumentException, but in SamplesApp.Skia.WebAssembly.Browser SkiaWasm is also set; ignore to avoid "Multiple runtime platforms detected"
+			RuntimeTestPlatforms.SkiaFrameBuffer => false,
 			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
 			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
-			_ => throw new ArgumentException(nameof(singlePlatform)),
+			_ => throw new ArgumentException($"Unknown value {singlePlatform} 0x{singlePlatform.ToString("x")}; Platforms: {GetDescription()}.", nameof(singlePlatform)),
 		};
 	}
+
+	static string GetDescription() =>
+		$"IsSkia={IsSkia()}; IsSkiaWin32={IsSkiaWin32()}; IsSkiaX11={IsSkiaX11()}; IsSkiaMacOS={IsSkiaMacOS()}; IsSkiaIslands={IsSkiaIslands()}; " +
+		$"OSVersion.Platform={Environment.OSVersion.Platform}; OperatingSystem.IsBrowser={OperatingSystem.IsBrowser()}; " +
+		$"OperatingSystem.IsAndroid={OperatingSystem.IsAndroid()}; OperatingSystem.IsIOS={OperatingSystem.IsIOS()}; OperatingSystem.IsTvOS={OperatingSystem.IsTvOS()}; " +
+		$"OperatingSystem.IsMacCatalyst={OperatingSystem.IsMacCatalyst()}; " +
+		$"IsWinUI={IsWinUI()}; IsNativeWasm={IsNativeWasm()}; IsNativeAndroid={IsNativeAndroid()}; IsNativeIOS={IsNativeIOS()}; " +
+		$"IsNativeMacCatalyst={IsNativeMacCatalyst()}; IsNativetvOS={IsNativetvOS()}";
 
 	private static bool IsSkiaHostAssembly(string name)
 #if __SKIA__
