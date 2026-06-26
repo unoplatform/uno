@@ -365,9 +365,10 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		public object LastDataContextChangedValue { get; private set; }
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
 			LastDataContextChangedValue = e.NewValue;
+			base.OnDataContextChanged(e);
 		}
 
 		public int MyProperty

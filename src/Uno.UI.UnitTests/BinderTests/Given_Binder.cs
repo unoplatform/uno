@@ -1109,10 +1109,11 @@ namespace Uno.UI.Tests.BinderTests
 
 			public int DataContextChangedCount { get; private set; }
 
-			partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+			internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 			{
 				_dataContextChangedList.Add(DataContext);
 				DataContextChangedCount++;
+				base.OnDataContextChanged(e);
 			}
 
 			#region ChildrenBinders DependencyProperty

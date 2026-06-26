@@ -1152,6 +1152,9 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private static bool HasValidBaseType(INamedTypeSymbol type)
 			=> type.BaseType is { } baseType && baseType.SpecialType is not (SpecialType.System_Object or SpecialType.System_ValueType or SpecialType.System_Enum) &&
+				// DependencyObject is the root base class of the whole hierarchy and is always provided by the
+				// hand-written partial; emitting it here would clash with Uno's intermediate base classes.
+				baseType.ToString() != BaseXamlNamespace + ".DependencyObject" &&
 				!_skipBaseTypes.Contains(type.ToString());
 
 		protected void BuildDelegate(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
