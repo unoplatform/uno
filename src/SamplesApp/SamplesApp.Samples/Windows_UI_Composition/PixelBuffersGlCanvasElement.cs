@@ -77,9 +77,23 @@ namespace UITests.Shared.Windows_UI_Composition
 
 			// --- Round-trip self-check: pack PBO -> CPU, byte-exact against the source ---
 			var readBack = new byte[pixels.Length];
-			fixed (byte* p = readBack)
+			if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
 			{
-				gl.GetBufferSubData(BufferTargetARB.PixelPackBuffer, 0, (nuint)readBack.Length, p);
+				// Native GLES has no glGetBufferSubData; map the pack PBO and copy it out.
+				var mapped = (byte*)gl.MapBufferRange(BufferTargetARB.PixelPackBuffer, 0, (nuint)readBack.Length, MapBufferAccessMask.MapReadBit);
+				if (mapped is null)
+				{
+					throw new Exception("MapBufferRange(PixelPackBuffer) returned null");
+				}
+				new ReadOnlySpan<byte>(mapped, readBack.Length).CopyTo(readBack);
+				gl.UnmapBuffer(BufferTargetARB.PixelPackBuffer);
+			}
+			else
+			{
+				fixed (byte* p = readBack)
+				{
+					gl.GetBufferSubData(BufferTargetARB.PixelPackBuffer, 0, (nuint)readBack.Length, p);
+				}
 			}
 			gl.BindBuffer(BufferTargetARB.PixelPackBuffer, 0);
 			for (int i = 0; i < pixels.Length; i++)
