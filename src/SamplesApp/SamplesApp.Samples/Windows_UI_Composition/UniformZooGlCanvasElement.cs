@@ -76,7 +76,9 @@ namespace UITests.Shared.Windows_UI_Composition
 				uniform mat4x2 m42;
 				uniform mat4x3 m43;
 				layout(std140) uniform ZooBlock { vec4 zb; };
-				out vec4 fragColor;
+				// Explicit location: GLES drivers (Adreno/Mali) return -1 from
+				// glGetFragDataLocation for an output with no layout qualifier.
+				layout(location = 0) out vec4 fragColor;
 				void main() {
 				    // Reference every uniform so all of them stay active; scale the sum down so the
 				    // quad stays visibly green when the values are as expected.
@@ -104,7 +106,13 @@ namespace UITests.Shared.Windows_UI_Composition
 				throw new Exception("Program link failed: " + gl.GetProgramInfoLog(_program));
 			}
 			Check(gl.GetAttribLocation(_program, "aPos") == 2, "BindAttribLocation was not honored");
-			Check(gl.GetFragDataLocation(_program, "fragColor") >= 0, "GetFragDataLocation(fragColor) < 0");
+			// glGetFragDataLocation is reliable on desktop GL and WebGL2, but native GLES drivers
+			// (and swiftshader) can return -1 even for an explicitly-located output, so only assert
+			// it off native GLES.
+			if (!OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
+			{
+				Check(gl.GetFragDataLocation(_program, "fragColor") >= 0, "GetFragDataLocation(fragColor) < 0");
+			}
 
 			// glGetShaderSource round-trip while the shader is still alive.
 			gl.GetShaderSource(fs, 16 * 1024, out _, out string fetchedSource);
@@ -311,9 +319,14 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.GetInteger(GLEnum.NumCompressedTextureFormats, out int compressedCount);
 			Check(compressedCount >= 0, $"GetIntegerv(NUM_COMPRESSED_TEXTURE_FORMATS) returned {compressedCount}");
 
-			// Capabilities WebGL2 has no toggle for must still report truthfully.
-			gl.Enable(EnableCap.Multisample);
-			Check(gl.IsEnabled(EnableCap.Multisample), "IsEnabled(MULTISAMPLE) returned false");
+			// MULTISAMPLE is a toggleable capability on desktop GL and WebGL2, but native GLES
+			// has no such enable (multisampling is governed by the surface config), so
+			// glEnable(MULTISAMPLE) would raise GL_INVALID_ENUM there.
+			if (!OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
+			{
+				gl.Enable(EnableCap.Multisample);
+				Check(gl.IsEnabled(EnableCap.Multisample), "IsEnabled(MULTISAMPLE) returned false");
+			}
 
 			if (isEs)
 			{
