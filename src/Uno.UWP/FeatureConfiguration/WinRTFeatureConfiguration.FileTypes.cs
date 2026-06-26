@@ -22,7 +22,7 @@ partial class WinRTFeatureConfiguration
 	{
 		public static class Pickers
 		{
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || __NETSTD_REFERENCE__
 			/// <summary>
 			/// Gets or sets a value indicating whether the file pickers based on
 			/// JS File System Access API are used. When set to false, or if the user's
@@ -37,7 +37,7 @@ partial class WinRTFeatureConfiguration
 	}
 }
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || __NETSTD_REFERENCE__
 [Flags]
 public enum WasmPickerConfiguration
 {
