@@ -25,13 +25,15 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
 
+  - template: ../templates/pack-local-uno-sdk.yml
+
   # Required until Uno.Xaml can build without all targets enabled
   - template: ../templates/jdk-setup.yml
 
   - pwsh: |
       # Decode the base64-encoded signing certificate from the variable
       $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
-      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
+      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx"
       [IO.File]::WriteAllBytes($certPath, $certBytes)
       Write-Host "Certificate written to: $certPath"
     displayName: Decode Signing Certificate
@@ -39,7 +41,7 @@ jobs:
   - task: MSBuild@1
     name: BuildMSIX
     inputs:
-      solution: src\SamplesApp\SamplesApp.Windows\SamplesApp.Windows.csproj
+      solution: src\SamplesApp\SamplesApp.Head\SamplesApp.Head.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
@@ -51,7 +53,11 @@ jobs:
       # ---
       # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
       # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      # The head collapses to a single windows TargetFramework in its csproj when
+      # UnoTargetFrameworkOverride is a windows TFM, so /t:Publish runs the inner build (avoids
+      # NETSDK1129). Do NOT pass a global /p:TargetFramework here — it leaks onto dependencies
+      # (e.g. the netstandard2.0 Uno.UI.Tasks pre-build) and breaks them with CS0234.
+      msbuildArguments: /r /t:Publish /m /v:m /p:UnoTargetFrameworkOverride=net10.0-windows10.0.19041.0 /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -59,7 +65,7 @@ jobs:
 
   - pwsh: |
       # Clean up the build-time signing certificate
-      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
+      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx"
       if (Test-Path $certPath) {
         Remove-Item $certPath -Force
         Write-Host "Build signing certificate cleaned up"
@@ -71,7 +77,7 @@ jobs:
     displayName: 'Copy MSIX Packages'
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Head/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/AppPackages
       CleanTargetFolder: false
@@ -141,7 +147,7 @@ jobs:
 
   - pwsh: |
       # Install the Windows App Runtime that matches the Microsoft.WindowsAppSDK NuGet
-      # version referenced by SamplesApp.Windows (see SamplesApp.Windows.csproj). Pin the
+      # version referenced by the SamplesApp head (see SamplesApp.Head.csproj). Pin the
       # exact stable version and keep it in sync with that NuGet reference.
       # Do NOT use the "2.1/latest" shortlink: it currently redirects to the experimental
       # 2.1.4 build, whose framework does not satisfy the MSIX's

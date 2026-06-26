@@ -18,7 +18,7 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 fi
 
 cd $SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
