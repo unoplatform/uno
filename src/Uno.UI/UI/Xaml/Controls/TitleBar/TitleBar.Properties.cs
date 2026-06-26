@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TitleBar.idl, TitleBar.properties.cpp, TitleBar.properties.h, commit fc2f82117
 
+using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -238,8 +239,12 @@ public partial class TitleBar
 	/// <summary>
 	/// Identifies the IsDragRegion attached dependency property.
 	/// </summary>
-	public static DependencyProperty IsDragRegionProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty IsDragRegionProperty
+	{
+		[DynamicDependency(nameof(GetIsDragRegion))]
+		[DynamicDependency(nameof(SetIsDragRegion))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"IsDragRegion",
 			typeof(bool?),
 			typeof(TitleBar),
