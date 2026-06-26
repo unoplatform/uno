@@ -1,10 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
@@ -15,26 +13,17 @@ internal partial class Win32WindowWrapper
 {
 	private class SoftwareRenderer : IRenderer
 	{
-		// After this many consecutive DwmFlush failures (DWM paused, RDP reconnect, fast user
-		// switch, GPU TDR), we stop calling DwmFlush and pace via FramePacer instead.
-		private const int DwmFlushFailureThreshold = 3;
-
 		private readonly HWND _hwnd;
-		private readonly FramePacer _framePacer;
-		private readonly AutoResetEvent _frameDeadlineReached = new(false);
+		private readonly Win32VSyncPacer _vsyncPacer;
 
 		private HBITMAP _hBitmap;
-		private int _consecutiveDwmFlushFailures;
-		private bool _dwmFlushDegraded;
 
 		public SoftwareRenderer(HWND hwnd)
 		{
 			_hwnd = hwnd;
-			// Fallback pacer used when DwmFlush is degraded; retargeted to the screen refresh
-			// rate via UpdateRefreshRate when SetFrameRateAsScreenRefreshRate is on.
-			_framePacer = new FramePacer(
-				FeatureConfiguration.CompositionTarget.FrameRate,
-				() => _frameDeadlineReached.Set());
+			// BitBlt returns instantly, so the loop is paced to vsync here; retargeted to the
+			// screen refresh rate via UpdateRefreshRate when SetFrameRateAsScreenRefreshRate is on.
+			_vsyncPacer = new Win32VSyncPacer(FeatureConfiguration.CompositionTarget.FrameRate);
 		}
 
 		public void StartPaint() { }
@@ -72,9 +61,7 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			// Anchor the absolute target tick at the start of every frame so a subsequent
-			// FramePacer.RequestFrame schedules wake-up at the next deadline (no drift).
-			_framePacer.OnFrameStart();
+			_vsyncPacer.OnFrameStart();
 
 			var paintDc = PInvoke.GetDC(_hwnd);
 			if (paintDc == new HDC(IntPtr.Zero))
@@ -109,56 +96,19 @@ internal partial class Win32WindowWrapper
 			var success2 = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
 			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
 
-			// Pace the frame: DwmFlush blocks until the compositor's next VSync (BitBlt returns
-			// instantly, so the loop would otherwise spin unthrottled). After repeated failures,
-			// degrade permanently to FramePacer pacing — losing vsync alignment beats risking a
-			// hung render thread on every frame.
-			var paceViaFramePacer = _dwmFlushDegraded;
-
-			if (!_dwmFlushDegraded)
-			{
-				var dwmFlushResult = PInvoke.DwmFlush();
-				if (dwmFlushResult.Failed)
-				{
-					_consecutiveDwmFlushFailures++;
-					this.LogError()?.Error($"{nameof(PInvoke.DwmFlush)} failed: {dwmFlushResult} (failure {_consecutiveDwmFlushFailures}/{DwmFlushFailureThreshold})");
-
-					if (_consecutiveDwmFlushFailures >= DwmFlushFailureThreshold)
-					{
-						_dwmFlushDegraded = true;
-						this.LogWarn()?.Warn(
-							$"{nameof(PInvoke.DwmFlush)} failed {DwmFlushFailureThreshold} times consecutively; " +
-							$"falling back to FramePacer-driven pacing at {_framePacer.TargetIntervalMs:F1} ms. " +
-							"Frame timing will not be vsync-aligned for the rest of this window's lifetime.");
-					}
-
-					// Pace this failed frame via FramePacer; subsequent frames will also use the
-					// degraded branch above and pace the same way.
-					paceViaFramePacer = true;
-				}
-				else
-				{
-					_consecutiveDwmFlushFailures = 0;
-				}
-			}
-
-			if (paceViaFramePacer)
-			{
-				_framePacer.RequestFrame();
-				_frameDeadlineReached.WaitOne();
-			}
+			// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
+			_vsyncPacer.WaitForVSync();
 		}
 
 		bool IRenderer.IsSoftware() => true;
 
 		void IRenderer.Reinitialize() { }
 
-		void IRenderer.UpdateRefreshRate(double fps) => _framePacer.UpdateTargetFps(fps);
+		void IRenderer.UpdateRefreshRate(double fps) => _vsyncPacer.UpdateTargetFps(fps);
 
 		void IDisposable.Dispose()
 		{
-			_framePacer.Dispose();
-			_frameDeadlineReached.Dispose();
+			_vsyncPacer.Dispose();
 			var success = PInvoke.DeleteObject(_hBitmap) == 1;
 			if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
