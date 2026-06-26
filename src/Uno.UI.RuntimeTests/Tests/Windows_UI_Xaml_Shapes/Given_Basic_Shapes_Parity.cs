@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -20,10 +20,10 @@ using WinColors = Microsoft.UI.Colors;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes;
 
-// Skia version of the (native-only, currently [Ignore]d) Basics_Shapes_Tests UI test. For each
-// shape x stretch x size, it builds the same 4x4 HorizontalAlignment x VerticalAlignment grid that
-// produced the WinUI golden screenshots, renders it via RenderTargetBitmap at the same logical size,
-// and compares against the embedded WinUI golden. Guards #18265 (UniformToFill vertical alignment).
+// Skia replacement for the native-only Basic_Shapes golden UI test. For each shape x stretch x size,
+// it builds the same 4x4 HorizontalAlignment x VerticalAlignment grid that produced the WinUI golden
+// screenshots, renders it via RenderTargetBitmap at the same logical size, and compares against the
+// WinUI golden (Assets/ShapeParityGoldens, loaded via ms-appx). Guards #18265 (UniformToFill alignment).
 [TestClass]
 [RunsOnUIThread]
 public class Given_Basic_Shapes_Parity
@@ -48,6 +48,58 @@ public class Given_Basic_Shapes_Parity
 		Fill = new SolidColorBrush(WinColor.FromArgb(160, 255, 128, 0)),
 		Stroke = new SolidColorBrush(WinColor.FromArgb(255, 255, 128, 0)),
 		StrokeThickness = 6
+	};
+
+	private static Shape NewLine() => new Line
+	{
+		Fill = new SolidColorBrush(WinColor.FromArgb(160, 255, 255, 0)),
+		Stroke = new SolidColorBrush(WinColor.FromArgb(255, 255, 255, 0)),
+		StrokeThickness = 6,
+		X1 = 50,
+		Y1 = 25,
+		X2 = 125,
+		Y2 = 100
+	};
+
+	private static Shape NewPath() => new Microsoft.UI.Xaml.Shapes.Path
+	{
+		Fill = new SolidColorBrush(WinColor.FromArgb(160, 0, 128, 0)),
+		Stroke = new SolidColorBrush(WinColor.FromArgb(255, 0, 128, 0)),
+		StrokeThickness = 6,
+		Data = new PathGeometry
+		{
+			Figures =
+			{
+				new PathFigure
+				{
+					IsClosed = true,
+					StartPoint = new Point(25, 25),
+					Segments =
+					{
+						new LineSegment { Point = new Point(25, 125) },
+						new LineSegment { Point = new Point(75, 125) },
+						new BezierSegment { Point1 = new Point(125, 125), Point2 = new Point(125, 25), Point3 = new Point(75, 25) },
+						new LineSegment { Point = new Point(25, 25) }
+					}
+				}
+			}
+		}
+	};
+
+	private static Shape NewPolygon() => new Polygon
+	{
+		Fill = new SolidColorBrush(WinColor.FromArgb(160, 0, 0, 255)),
+		Stroke = new SolidColorBrush(WinColor.FromArgb(255, 0, 0, 255)),
+		StrokeThickness = 6,
+		Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
+	};
+
+	private static Shape NewPolyline() => new Polyline
+	{
+		Fill = new SolidColorBrush(WinColor.FromArgb(160, 160, 0, 192)),
+		Stroke = new SolidColorBrush(WinColor.FromArgb(255, 160, 0, 192)),
+		StrokeThickness = 6,
+		Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
 	};
 
 	private static readonly (string id, Action<Shape> alter)[] _stretches =
@@ -88,6 +140,18 @@ public class Given_Basic_Shapes_Parity
 	[TestMethod]
 	public async Task When_Rectangle() => await ValidateShape("Rectangle", NewRectangle);
 
+	[TestMethod]
+	public async Task When_Line() => await ValidateShape("Line", NewLine);
+
+	[TestMethod]
+	public async Task When_Path() => await ValidateShape("Path", NewPath);
+
+	[TestMethod]
+	public async Task When_Polygon() => await ValidateShape("Polygon", NewPolygon);
+
+	[TestMethod]
+	public async Task When_Polyline() => await ValidateShape("Polyline", NewPolyline);
+
 	private static async Task ValidateShape(string shapeName, Func<Shape> create)
 	{
 		var host = new Border { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
@@ -101,7 +165,7 @@ public class Given_Basic_Shapes_Parity
 			foreach (var (sizeId, sizeAlter) in _sizes)
 			{
 				var id = $"{shapeName}_{stretchId}_{sizeId}";
-				var golden = TryLoadGolden(id);
+				var golden = await TryLoadGoldenAsync(id);
 				if (golden is null)
 				{
 					continue; // only compare configs that have a captured WinUI golden
@@ -141,16 +205,19 @@ public class Given_Basic_Shapes_Parity
 			$"{failures.Count}/{compared} {shapeName} configurations differ from WinUI:{Environment.NewLine}{string.Join(Environment.NewLine, failures)}");
 	}
 
-	private static SKBitmap TryLoadGolden(string id)
+	private static async Task<SKBitmap> TryLoadGoldenAsync(string id)
 	{
-		var assembly = typeof(Given_Basic_Shapes_Parity).Assembly;
-		var name = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith($".{id}.png", StringComparison.Ordinal));
-		if (name is null)
+		StorageFile file;
+		try
+		{
+			file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Uno.UI.RuntimeTests/Assets/ShapeParityGoldens/{id}.png"));
+		}
+		catch (FileNotFoundException)
 		{
 			return null;
 		}
 
-		using var stream = assembly.GetManifestResourceStream(name);
+		using var stream = await file.OpenStreamForReadAsync();
 		return SKBitmap.Decode(stream);
 	}
 
