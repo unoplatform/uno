@@ -233,6 +233,9 @@ internal partial class Win32WindowWrapper
 		void IRenderer.Reinitialize()
 		{
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
+			// ReleaseGlContext disposed the render target; null it so the next UpdateSize (which
+			// recreates it) doesn't dispose the same instance again.
+			_renderTarget = null;
 			_glContext = PInvoke.wglCreateContext(_hdc);
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			SetSwapInterval(_pacer is null ? 1 : 0);
