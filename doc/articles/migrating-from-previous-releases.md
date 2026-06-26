@@ -6,6 +6,26 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 6.6
+
+Uno Platform 6.6 contains a single breaking change, related to the removal of legacy Windows Phone namespaces.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.6, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
+### Removal of legacy Windows.Phone namespaces
+
+As part of the migration of the API surface to a generated model aligned with the Windows App SDK, Uno Platform 6.6 removes the legacy `Windows.Phone` namespaces inherited from the Windows Phone API set. Only the types that were already implemented remain available.
+
+If your app references these legacy namespaces, remove or migrate those usages before upgrading.
+
+This change was introduced in [PR #22377](https://github.com/unoplatform/uno/pull/22377).
+
 ## Uno Platform 6.5
 
 Uno Platform 6.5 does not contain breaking changes that require attention when upgrading
