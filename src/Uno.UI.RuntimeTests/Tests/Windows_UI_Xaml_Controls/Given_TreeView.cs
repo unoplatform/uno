@@ -259,6 +259,9 @@ public class Given_TreeView
 	}
 
 	[TestMethod]
+	// SkiaWasm excluded: selection BringIntoView + container realization stalls under the headless xvfb browser (flaky). #23524
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_SelectNode_DoesNotToggle_OtherNodesExpansion()
 	{
 		// We had an issue where in a treeview of mixed expanded/collapsed nodes,
@@ -293,15 +296,16 @@ public class Given_TreeView
 			"""),
 		};
 		await UITestHelper.Load(SUT);
-		await TestServices.WindowHelper.WaitFor(() => IsWithinViewport(SUT.ContainerFromItem(sources[0])));
+		await TestServices.WindowHelper.WaitFor(() => IsWithinViewport(SUT.ContainerFromItem(sources[0])), timeoutMS: 5000);
 
 		foreach (var c in "BCDEFGHI")
 		{
-			// select and wait for the selection BringIntoView to occur
+			// select and wait for the selection BringIntoView to occur. The container realization
+			// after the BringIntoView can exceed the default 1s timeout on slower runtimes (e.g. WASM).
 			var node = flattened.First(x => x.Name == $"{c}A");
 			SUT.SelectedItem = node;
 			await TestServices.WindowHelper.WaitForIdle();
-			await TestServices.WindowHelper.WaitFor(() => SUT.ContainerFromItem(node) is { });
+			await TestServices.WindowHelper.WaitFor(() => SUT.ContainerFromItem(node) is { }, timeoutMS: 5000);
 		}
 
 		Assert.IsTrue(sources.All(x => x.IsExpanded), "All top-level nodes should remain expanded.");
