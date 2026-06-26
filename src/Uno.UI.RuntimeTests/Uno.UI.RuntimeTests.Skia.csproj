@@ -63,6 +63,10 @@
 		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />
 		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
 		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
+		<!-- WinUI golden screenshots reused (not copied) from the Basic_Shapes UI test, for the Skia shapes-parity runtime test. -->
+		<EmbeddedResource Include="..\SamplesApp\SamplesApp.UITests\Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\Ellipse_*.png;..\SamplesApp\SamplesApp.UITests\Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\Rectangle_*.png">
+			<Link>Assets\ShapeParityGoldens\%(Filename)%(Extension)</Link>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
