@@ -1,0 +1,12 @@
+<Page x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup.MarkupExtension_SiblingExtension"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+	<StackPanel>
+		<!-- A control whose name + "Extension" matches a sibling markup extension in the same namespace.
+		     The element must be treated as the control, not the markup extension (#21992). -->
+		<local:SiblingExtensionControl x:Name="Literal" x:FieldModifier="Public" Value="literal" />
+		<local:SiblingExtensionControl x:Name="XBind" x:FieldModifier="Public" Value="{x:Bind BoundValue}" />
+		<local:SiblingExtensionControl x:Name="Bound" x:FieldModifier="Public" Value="{Binding BoundValue}" />
+	</StackPanel>
+</Page>

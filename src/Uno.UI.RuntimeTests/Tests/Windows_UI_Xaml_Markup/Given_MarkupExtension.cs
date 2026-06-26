@@ -121,6 +121,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 			Assert.AreEqual(nameof(TargetValueExtension), (page.Nested as TextBlock).Tag);
 		}
+
+		[TestMethod]
+		public async Task When_MarkupExtension_SiblingControlExtension()
+		{
+			// A control element (SiblingExtensionControl) must not be misidentified as a markup extension just
+			// because a sibling SiblingExtensionControlExtension exists in the same namespace. The element must be
+			// instantiated and its bindings must be emitted. See https://github.com/unoplatform/uno/issues/21992.
+			var page = new MarkupExtension_SiblingExtension();
+			await UITestHelper.Load(page, isLoaded: x => x.IsLoaded);
+
+			Assert.AreEqual("literal", (page.Literal as SiblingExtensionControl).Value, "Literal value was not set (control was likely dropped).");
+			Assert.AreEqual("bound", (page.XBind as SiblingExtensionControl).Value, "x:Bind binding code was not emitted.");
+			Assert.AreEqual("bound", (page.Bound as SiblingExtensionControl).Value, "Binding code was not emitted.");
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_MarkupExtension_SiblingControlExtension_XamlReader()
+		{
+			// Same scenario as When_MarkupExtension_SiblingControlExtension, but exercising the runtime XamlReader.
+			var panel = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				            xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<local:SiblingExtensionControl x:Name="Literal" Value="literal" />
+					<local:SiblingExtensionControl x:Name="Bound" Value="{Binding}" />
+				</StackPanel>
+				""");
+
+			panel.DataContext = "bound";
+			await UITestHelper.Load(panel, isLoaded: x => x.IsLoaded); // bare Control has no template => 0 size, so bypass the size-based load check
+
+			var literal = (SiblingExtensionControl)panel.FindName("Literal");
+			var bound = (SiblingExtensionControl)panel.FindName("Bound");
+
+			Assert.AreEqual("literal", literal.Value, "Literal value was not set (control was likely dropped).");
+			Assert.AreEqual("bound", bound.Value, "Binding was not processed for the control.");
+		}
 #endif
 	}
 }
