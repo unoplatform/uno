@@ -322,10 +322,10 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private static void SetNearestFilters(GL gl, TextureTarget target)
 		{
-			gl.TexParameterI(target, GLEnum.TextureMinFilter, (uint)GLEnum.Nearest);
-			gl.TexParameterI(target, GLEnum.TextureMagFilter, (uint)GLEnum.Nearest);
-			gl.TexParameterI(target, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(target, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(target, GLEnum.TextureMinFilter, (int)GLEnum.Nearest);
+			gl.TexParameter(target, GLEnum.TextureMagFilter, (int)GLEnum.Nearest);
+			gl.TexParameter(target, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(target, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
 		}
 
 		protected override void OnDestroy(GL gl)

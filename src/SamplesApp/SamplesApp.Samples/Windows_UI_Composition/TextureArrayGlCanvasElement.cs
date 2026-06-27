@@ -108,10 +108,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			_dynamicTexture = gl.GenTexture();
 			gl.BindTexture(TextureTarget.Texture2D, _dynamicTexture);
 			gl.TexStorage2D(TextureTarget.Texture2D, 1, SizedInternalFormat.Rgba8, TexSize, TexSize);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Nearest);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Nearest);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
 
 			// --- TEXTURE_3D volume via the mutable-storage path (glTexImage3D C shim) ---
 			_volumeTexture = gl.GenTexture();
@@ -148,11 +148,11 @@ namespace UITests.Shared.Windows_UI_Composition
 			{
 				gl.TexSubImage3D(TextureTarget.Texture3D, 0, VolumeSize / 4, VolumeSize / 4, VolumeSize / 4, VolumeSize / 2, VolumeSize / 2, VolumeSize / 2, GLEnum.Rgba, GLEnum.UnsignedByte, p);
 			}
-			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapR, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture3D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture3D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture3D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture3D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture3D, GLEnum.TextureWrapR, (int)GLEnum.ClampToEdge);
 
 			// --- Geometry + shaders ---
 			_vao = gl.GenVertexArray();

@@ -103,11 +103,11 @@ namespace UITests.Shared.Windows_UI_Composition
 					gl.TexImage2D(_faceTargets[face], 0, InternalFormat.Rgba, FaceSize, FaceSize, 0, GLEnum.Rgba, GLEnum.UnsignedByte, p);
 				}
 			}
-			gl.TexParameterI(TextureTarget.TextureCubeMap, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.TextureCubeMap, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.TextureCubeMap, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.TextureCubeMap, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.TextureCubeMap, GLEnum.TextureWrapR, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.TextureCubeMap, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.TextureCubeMap, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.TextureCubeMap, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.TextureCubeMap, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.TextureCubeMap, GLEnum.TextureWrapR, (int)GLEnum.ClampToEdge);
 
 			var slVersion = gl.GetStringS(StringName.ShadingLanguageVersion);
 			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)

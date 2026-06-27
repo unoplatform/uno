@@ -197,10 +197,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			var tex = gl.GenTexture();
 			gl.BindTexture(TextureTarget.Texture2D, tex);
 			gl.TexStorage2D(TextureTarget.Texture2D, 1, SizedInternalFormat.Rgba8, Size, Size);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
 			gl.BindTexture(TextureTarget.Texture2D, 0);
 			return tex;
 		}

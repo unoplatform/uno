@@ -54,10 +54,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			_texture = gl.GenTexture();
 			gl.BindTexture(TextureTarget.Texture2D, _texture);
 			gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, TexSize, TexSize, 0, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)0);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Nearest);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Nearest);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Nearest);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Nearest);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
 			gl.BindBuffer(BufferTargetARB.PixelUnpackBuffer, 0);
 
 			// --- Readback path: texture -> FBO -> ReadPixels -> pack PBO ---
