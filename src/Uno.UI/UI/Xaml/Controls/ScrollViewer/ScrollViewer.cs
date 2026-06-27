@@ -1217,7 +1217,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (e.ScrollEventType == ScrollEventType.EndScroll)
 			{
-				FlushDeferredScrollbarThumbTrackChanges();
+				if (FlushDeferredScrollbarThumbTrackChanges())
+				{
+					return;
+				}
 			}
 
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
@@ -1256,7 +1259,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (e.ScrollEventType == ScrollEventType.EndScroll)
 			{
-				FlushDeferredScrollbarThumbTrackChanges();
+				if (FlushDeferredScrollbarThumbTrackChanges())
+				{
+					return;
+				}
 			}
 
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
@@ -1316,7 +1322,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_isScrollbarThumbTrackFlushQueued = true;
 
 				var dispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
-				if (dispatcherQueue is null || !dispatcherQueue.TryEnqueue(FlushDeferredScrollbarThumbTrackChanges))
+				if (dispatcherQueue is null || !dispatcherQueue.TryEnqueue(() =>
+					{
+						FlushDeferredScrollbarThumbTrackChanges();
+					}))
 				{
 					FlushDeferredScrollbarThumbTrackChanges();
 				}
@@ -1325,11 +1334,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
-		private void FlushDeferredScrollbarThumbTrackChanges()
+		private bool FlushDeferredScrollbarThumbTrackChanges()
 		{
 			if (!ShouldDeferScrollbarThumbTrack() || !_isScrollbarThumbTrackFlushQueued)
 			{
-				return;
+				return false;
 			}
 
 			_isScrollbarThumbTrackFlushQueued = false;
@@ -1342,32 +1351,28 @@ namespace Microsoft.UI.Xaml.Controls
 			if (verticalOffset is { } vertical)
 			{
 				_verticalOffsetIntent = vertical;
-				ChangeViewCore(
-					horizontalOffset: null,
-					verticalOffset: vertical,
-					zoomFactor: null,
-					disableAnimation: true,
-					shouldSnap: true);
 			}
 
 			if (horizontalOffset is { } horizontal)
 			{
 				_horizontalOffsetIntent = horizontal;
-				ChangeViewCore(
-					horizontalOffset: horizontal,
-					verticalOffset: null,
-					zoomFactor: null,
-					disableAnimation: true,
-					shouldSnap: true);
 			}
+
+			ChangeViewCore(
+				horizontalOffset: horizontalOffset,
+				verticalOffset: verticalOffset,
+				zoomFactor: null,
+				disableAnimation: true,
+				shouldSnap: true);
+
+			return true;
 		}
 #else
 		private static bool TryDeferScrollbarThumbTrack(bool isVertical, double offset)
 			=> false;
 
-		private static void FlushDeferredScrollbarThumbTrackChanges()
-		{
-		}
+		private static bool FlushDeferredScrollbarThumbTrackChanges()
+			=> false;
 #endif
 		#endregion
 
