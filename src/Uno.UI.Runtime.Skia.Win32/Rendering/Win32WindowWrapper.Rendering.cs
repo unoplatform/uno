@@ -16,15 +16,12 @@ internal partial class Win32WindowWrapper
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
-	unsafe void IXamlRootHost.InvalidateRender()
-	{
-		// Mark the window dirty and let Windows coalesce it into a WM_PAINT, whose handler
-		// signals the render thread — the single present path, like WPF's HwndTarget.
-		if (!PInvoke.InvalidateRect(_hwnd, default(RECT*), false))
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-	}
+	// Wake the render thread directly rather than via InvalidateRect/WM_PAINT. A synthesized
+	// WM_PAINT is the lowest-priority Win32 message, so the dispatcher's own posted messages
+	// (e.g. a WaitForIdle loop) outrank it in GetMessage and can starve it indefinitely —
+	// freezing the present and any per-present animation tick. OS-driven repaints
+	// (resize/uncover/show) still arrive through WM_PAINT. SignalNewFrame coalesces bursts.
+	void IXamlRootHost.InvalidateRender() => _renderThread?.SignalNewFrame();
 
 	private void ReinitializeRenderer()
 	{
