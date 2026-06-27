@@ -320,6 +320,12 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 			try
 			{
+				// Bind the element's offscreen framebuffer before Init so initialization runs against
+				// the same valid draw framebuffer used while rendering. FrameBufferDetails leaves FBO 0
+				// bound, but on iOS/tvOS there is no usable default framebuffer (EAGL has no window-backed
+				// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
+				// fail with "Current draw framebuffer is invalid".
+				_gl.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
 				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
 				Init(_gl);
 			}
