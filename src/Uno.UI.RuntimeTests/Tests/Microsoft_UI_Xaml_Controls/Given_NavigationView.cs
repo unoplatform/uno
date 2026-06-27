@@ -189,6 +189,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20199")]
+		// Flaky on WinUI, excluded there pending investigation: https://github.com/unoplatform/uno/issues/23561
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CompactPaneLength_Changed_PaneToggleButton_Updates()
 		{
 			var navView = new MUXC.NavigationView()
