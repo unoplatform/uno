@@ -59,10 +59,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			_offscreenColor = gl.GenTexture();
 			gl.BindTexture(TextureTarget.Texture2D, _offscreenColor);
 			gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, OffscreenSize, OffscreenSize, 0, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)0);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
-			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
+			gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
 
 			// --- Offscreen FBO ---
 			_offscreenFbo = gl.GenFramebuffer();
