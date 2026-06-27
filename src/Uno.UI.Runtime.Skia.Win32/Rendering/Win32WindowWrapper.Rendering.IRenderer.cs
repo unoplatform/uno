@@ -14,5 +14,11 @@ internal partial class Win32WindowWrapper
 		void CopyPixels(int width, int height);
 		bool IsSoftware();
 		void Reinitialize();
+
+		/// <summary>
+		/// Notifies the renderer of a screen refresh rate change. VSync-paced renderers ignore
+		/// this; software-timer-paced ones (e.g. the DwmFlush degraded fallback) retarget.
+		/// </summary>
+		void UpdateRefreshRate(double fps);
 	}
 }

@@ -15,6 +15,9 @@ internal partial class Win32WindowWrapper
 {
 	private class GlRenderer : IRenderer
 	{
+		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+		private delegate int WglSwapIntervalEXT(int interval);
+
 		private readonly HWND _hwnd;
 		private readonly HDC _hdc;
 		private HGLRC _glContext; // recreated when window is extended into titlebar
@@ -22,14 +25,18 @@ internal partial class Win32WindowWrapper
 		private GRContext _grContext; // recreated when window is extended into titlebar
 		private GRBackendRenderTarget? _renderTarget; // recreated on size updates
 		private Win32Helper.WglCurrentContextDisposable? _paintDisposable;
+		// Non-null only when honoring a fixed FrameRate (SetFrameRateAsScreenRefreshRate = false);
+		// otherwise wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces the loop.
+		private readonly Win32RenderPacer? _pacer;
 
-		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext)
+		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext, Win32RenderPacer? pacer)
 		{
 			_hwnd = hwnd;
 			_hdc = hdc;
 			_glContext = glContext;
 			_grGlInterface = grGlInterface;
 			_grContext = grContext;
+			_pacer = pacer;
 		}
 
 		public static unsafe GlRenderer? TryCreateGlRenderer(HWND hwnd)
@@ -105,6 +112,11 @@ internal partial class Win32WindowWrapper
 						: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}");
 			}
 
+			var followRefreshRate = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
+			// Swap interval 1 blocks SwapBuffers at the refresh; for a fixed FrameRate use 0 and let
+			// the timer pace the loop instead.
+			SetSwapInterval(followRefreshRate ? 1 : 0);
+
 			var grGlInterface = GRGlInterface.Create();
 
 			if (grGlInterface is null)
@@ -121,7 +133,35 @@ internal partial class Win32WindowWrapper
 				return null;
 			}
 
-			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
+			// Detach the GL context from the calling thread so the render thread can make it
+			// current later (WglCurrentContextDisposable doesn't restore to "no context").
+			if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			var pacer = followRefreshRate
+				? null
+				: new Win32RenderPacer(FeatureConfiguration.CompositionTarget.FrameRate, followRefreshRate: false);
+			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext, pacer);
+		}
+
+		// Sets the GL swap interval: 1 blocks SwapBuffers until the next display refresh (vsync),
+		// 0 doesn't block (used when a fixed FrameRate is paced by the timer instead). Some drivers
+		// default to 0, letting the render loop spin. Per-context, so re-apply whenever an HGLRC
+		// is created.
+		private static void SetSwapInterval(int interval)
+		{
+			var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
+			if (wglSwapIntervalAddr != IntPtr.Zero)
+			{
+				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
+				if (wglSwapInterval(interval) == 0)
+				{
+					typeof(GlRenderer).LogWarn()?.Warn(
+						$"Failed to set GL swap interval {interval} via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
+				}
+			}
 		}
 
 		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext, GRBackendRenderTarget? renderTarget)
@@ -172,23 +212,43 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
+			_pacer?.OnFrameStart();
+
 			var success = PInvoke.SwapBuffers(_hdc);
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
+
+			// Fixed-FrameRate path: SwapBuffers ran with swap interval 0 (non-blocking), so pace the
+			// loop with the timer. When following the refresh, swap interval 1 already blocked above.
+			_pacer?.WaitForNextFrame();
 		}
 
 		bool IRenderer.IsSoftware() => false;
 
 		void IDisposable.Dispose()
 		{
+			_pacer?.Dispose();
 			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
 		}
 
 		void IRenderer.Reinitialize()
 		{
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
+			// ReleaseGlContext disposed the render target; null it so the next UpdateSize (which
+			// recreates it) doesn't dispose the same instance again.
+			_renderTarget = null;
 			_glContext = PInvoke.wglCreateContext(_hdc);
+			if (_glContext == HGLRC.Null)
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglCreateContext)} failed during {nameof(IRenderer.Reinitialize)}: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
+			SetSwapInterval(_pacer is null ? 1 : 0);
 			_grContext = GRContext.CreateGl(_grGlInterface);
 		}
+
+		// Following the refresh: swap interval 1 paces SwapBuffers, nothing to retarget. Fixed
+		// FrameRate uses a static timer rate. UpdateRefreshRate only fires in the former case.
+		void IRenderer.UpdateRefreshRate(double fps) { }
 	}
 }
