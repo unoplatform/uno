@@ -33,7 +33,8 @@
 		}
 
 		private static createScheduler(): (callback: () => void) => void {
-			const scheduler = (<any>globalThis).scheduler;
+			const global = <any>globalThis;
+			const scheduler = global.scheduler;
 
 			if (scheduler?.postTask instanceof Function) {
 				return callback => scheduler.postTask(() => {
@@ -41,17 +42,25 @@
 						callback();
 					}
 					catch (e) {
-						window.setTimeout(() => { throw e; }, 0);
+						global.setTimeout(() => { throw e; }, 0);
 					}
 				});
 			}
 
-			if (globalThis.MessageChannel instanceof Function) {
-				const channel = new MessageChannel();
-				const callbacks: (() => void)[] = [];
+			if (global.MessageChannel instanceof Function) {
+				const channel = new global.MessageChannel();
+				const callbacks: { [id: number]: () => void } = {};
+				let readIndex = 0;
+				let writeIndex = 0;
 
 				channel.port1.onmessage = () => {
-					const callback = callbacks.shift();
+					const callback = callbacks[readIndex];
+					delete callbacks[readIndex++];
+
+					if (readIndex === writeIndex) {
+						readIndex = 0;
+						writeIndex = 0;
+					}
 
 					if (callback) {
 						callback();
@@ -59,18 +68,18 @@
 				};
 
 				return callback => {
-					callbacks.push(callback);
+					callbacks[writeIndex++] = callback;
 					channel.port2.postMessage(undefined);
 				};
 			}
 
-			const setImmediate = (<any>window).setImmediate;
+			const setImmediate = global.setImmediate;
 
 			if (setImmediate instanceof Function) {
 				return callback => setImmediate(callback);
 			}
 
-			return callback => window.setTimeout(callback, 0);
+			return callback => global.setTimeout(callback, 0);
 		}
 	}
 }
