@@ -1210,6 +1210,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// internal so runtime tests can drive the scrollbar-drag path directly.
 		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
+			if (e.ScrollEventType == ScrollEventType.ThumbTrack && TryDeferScrollbarThumbTrack(isVertical: true, e.NewValue))
+			{
+				return;
+			}
+
+			if (e.ScrollEventType == ScrollEventType.EndScroll)
+			{
+				FlushDeferredScrollbarThumbTrackChanges();
+			}
+
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
 
@@ -1239,6 +1249,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
+			if (e.ScrollEventType == ScrollEventType.ThumbTrack && TryDeferScrollbarThumbTrack(isVertical: false, e.NewValue))
+			{
+				return;
+			}
+
+			if (e.ScrollEventType == ScrollEventType.EndScroll)
+			{
+				FlushDeferredScrollbarThumbTrackChanges();
+			}
+
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
 
@@ -1264,6 +1284,91 @@ namespace Microsoft.UI.Xaml.Controls
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
+
+#if __WASM__ || __SKIA__
+		private bool _isScrollbarThumbTrackFlushQueued;
+		private double? _deferredVerticalScrollbarThumbTrackOffset;
+		private double? _deferredHorizontalScrollbarThumbTrackOffset;
+
+		private static bool ShouldDeferScrollbarThumbTrack()
+			=> OperatingSystem.IsBrowser();
+
+		private bool TryDeferScrollbarThumbTrack(bool isVertical, double offset)
+		{
+			if (!ShouldDeferScrollbarThumbTrack())
+			{
+				return false;
+			}
+
+			// Browser pointer events run synchronously; defer content scrolling so thumb drags
+			// do not block pointermove dispatch on expensive virtualized layout work.
+			if (isVertical)
+			{
+				_deferredVerticalScrollbarThumbTrackOffset = offset;
+			}
+			else
+			{
+				_deferredHorizontalScrollbarThumbTrackOffset = offset;
+			}
+
+			if (!_isScrollbarThumbTrackFlushQueued)
+			{
+				_isScrollbarThumbTrackFlushQueued = true;
+
+				var dispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
+				if (dispatcherQueue is null || !dispatcherQueue.TryEnqueue(FlushDeferredScrollbarThumbTrackChanges))
+				{
+					FlushDeferredScrollbarThumbTrackChanges();
+				}
+			}
+
+			return true;
+		}
+
+		private void FlushDeferredScrollbarThumbTrackChanges()
+		{
+			if (!ShouldDeferScrollbarThumbTrack() || !_isScrollbarThumbTrackFlushQueued)
+			{
+				return;
+			}
+
+			_isScrollbarThumbTrackFlushQueued = false;
+
+			var verticalOffset = _deferredVerticalScrollbarThumbTrackOffset;
+			var horizontalOffset = _deferredHorizontalScrollbarThumbTrackOffset;
+			_deferredVerticalScrollbarThumbTrackOffset = null;
+			_deferredHorizontalScrollbarThumbTrackOffset = null;
+
+			if (verticalOffset is { } vertical)
+			{
+				_verticalOffsetIntent = vertical;
+				ChangeViewCore(
+					horizontalOffset: null,
+					verticalOffset: vertical,
+					zoomFactor: null,
+					disableAnimation: true,
+					shouldSnap: true);
+			}
+
+			if (horizontalOffset is { } horizontal)
+			{
+				_horizontalOffsetIntent = horizontal;
+				ChangeViewCore(
+					horizontalOffset: horizontal,
+					verticalOffset: null,
+					zoomFactor: null,
+					disableAnimation: true,
+					shouldSnap: true);
+			}
+		}
+#else
+		private static bool TryDeferScrollbarThumbTrack(bool isVertical, double offset)
+			=> false;
+
+		private static void FlushDeferredScrollbarThumbTrackChanges()
+		{
+		}
+#endif
 		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
