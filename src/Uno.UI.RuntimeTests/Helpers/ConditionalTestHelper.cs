@@ -25,12 +25,12 @@ internal static class ConditionalTestHelper
 
 		if (counter == 0)
 		{
-			throw new InvalidOperationException("Unrecognized runtime platform.");
+			throw new InvalidOperationException($"Unrecognized runtime platform. Platform Dump: {GetDescription()}");
 		}
 
 		if (counter > 1)
 		{
-			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g})");
+			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g}). Platform DUmp: {GetDescription()}");
 		}
 
 		return currentPlatform;
@@ -59,8 +59,6 @@ internal static class ConditionalTestHelper
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
 			RuntimeTestPlatforms.SkiaIslands => IsSkia() && IsSkiaIslands(),
 			RuntimeTestPlatforms.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
-			// Need to include `SkiaFrameBuffer` to avoid ArgumentException, but in SamplesApp.Skia.WebAssembly.Browser SkiaWasm is also set; ignore to avoid "Multiple runtime platforms detected"
-			RuntimeTestPlatforms.SkiaFrameBuffer => false,
 			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),

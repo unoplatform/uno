@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			});
 
 #if !__WASM__
-			if (!ConditionalTestHelper.CurrentPlatform.HasFlag(RuntimeTestPlatforms.SkiaWasm))
+			if (!OperatingSystem.IsBrowser())
 			{
 				if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
 				{
@@ -488,7 +488,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					//}
 
 #if !__WASM__
-					if (!ConditionalTestHelper.CurrentPlatform.HasFlag(RuntimeTestPlatforms.SkiaWasm))
+					if (!OperatingSystem.IsBrowser())
 					{
 						if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
 						{
