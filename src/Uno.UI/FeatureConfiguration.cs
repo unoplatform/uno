@@ -922,35 +922,5 @@ namespace Uno.UI
 #endif
 		}
 
-#if __ANDROID__ || UNO_REFERENCE_API
-		public static class AndroidSettings
-		{
-#if NET9_0_OR_GREATER
-			private static bool _isEdgeToEdgeEnabled = true;
-#else
-			private static bool _isEdgeToEdgeEnabled;
-#endif
-
-			/// <summary>
-			/// Gets or sets a value indicating whether the app should use the "edge-to-edge" experience
-			/// <see href="https://developer.android.com/develop/ui/views/layout/edge-to-edge" />.
-			/// When enabled, the system UI becomes transparent and the app's UI flows behind it.
-			/// Use Uno Toolkit SafeArea to accomodate for it.
-			/// This flag has no effect on Android 15 and newer, where the edge-to-edge experience
-			/// is enforced by the OS.
-			/// </summary>
-			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
-			public static bool IsEdgeToEdgeEnabled
-			{
-#if __ANDROID__
-				get => _isEdgeToEdgeEnabled || (int)Android.OS.Build.VERSION.SdkInt >= 35;
-#else
-				get => _isEdgeToEdgeEnabled;
-#endif
-				set => _isEdgeToEdgeEnabled = value;
-			}
-		}
-#endif
-
 	}
 }

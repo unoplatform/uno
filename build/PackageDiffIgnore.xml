@@ -2922,6 +2922,7 @@
 		  <!-- Native-only FeatureConfiguration knobs removed with the native renderers (#2052, breaking changes for 7.0). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors::UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2::IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings::IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2931,6 +2932,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Cursors.set_UseHandForInteraction(System.Boolean value)" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2.get_IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/WebView2.set_IsInspectable(System.Boolean value)" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings.get_IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/AndroidSettings.set_IsEdgeToEdgeEnabled(System.Boolean value)" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
