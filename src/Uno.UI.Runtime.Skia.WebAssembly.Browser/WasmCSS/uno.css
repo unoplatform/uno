@@ -16,6 +16,17 @@ body {
     Remarks 2: If applied only on the root of the app, this won't break the scrolling (unlike if applied on all UIElement).
   */
   touch-action: none;
+  /*
+    Disable the browser's text-selection and long-press callout gestures.
+    On touch devices the browser starts a text-selection gesture on long-press (firing a haptic
+    buzz and showing selection/callout UI) before the cancelable 'contextmenu' event. Uno draws all
+    text and selection with Skia, so the browser selection is never useful and only conflicts with
+    the app's own gestures (e.g. press-and-hold to open a ContextFlyout). The hidden IME input
+    re-enables selection on itself so text editing keeps working.
+  */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .uno-root-element {
