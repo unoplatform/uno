@@ -1,78 +1,80 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	<!--
-	  Exclude the source per-control XAML (merged into themeresources_v2.xaml below) and the merged
-	  file itself from the automatic Page glob. The merged file is added to @(Page) explicitly by
-	  _IncludeThemeResourceV2Page so it doesn't depend on existing on disk at evaluation time.
-	-->
-	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(MSBuildThisFileDirectory)themeresources_v2.xaml</PageExclusions>
+	<_Uno_XamlMerge_Task_Version>1.27.0-dev.44</_Uno_XamlMerge_Task_Version>
   </PropertyGroup>
 
   <ItemGroup>
-	<!-- Expand merge inputs at evaluation time so target incremental checks can compare timestamps. -->
-	<ThemeResourceV2MergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
-	<ThemeResourceV2MergeInput Include="$(MSBuildThisFileFullPath)" />
+	<!--
+	  ExcludeAssets="build" so the package's targets are not auto-imported into every variant (which
+	  would run the merge in the Reference stub too); they are imported explicitly below only for the
+	  variants that carry theme resources.
+	-->
+	<PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" ExcludeAssets="build;buildTransitive" />
   </ItemGroup>
 
-  <!--
-    Merge the per-control source XAML into the single themeresources_v2.xaml that the XAML source
-    generator consumes as a Page. This runs in the inner (per-TFM) build before the source generator
-    reads its inputs (_InjectAdditionalFiles), not in the outer cross-targeting build: the file is a
-    build artifact (no longer committed), and v2 is consumed by app heads purely through a
-    ProjectReference, which builds the inner build directly and never runs DispatchToInnerBuilds. An
-    outer-only hook would therefore never fire for those consumers, leaving the file ungenerated and
-    the resource unregistered at runtime. Concurrent writers (multiple TFMs/variants sharing this one
-    file) are made safe by the atomic write in BatchMergeXaml. themeresources_v2.xaml is in Outputs so
-    a missing/deleted file forces regeneration.
-  -->
-  <Target Name="GenerateThemeResourceV2File"
-          BeforeTargets="BeforeBuild;GenerateMSBuildEditorConfigFileCore;_InjectAdditionalFiles"
-          Inputs="@(ThemeResourceV2MergeInput)"
-          Outputs="$(MSBuildThisFileDirectory)themeresources_v2.xaml;$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog">
-    <ItemGroup>
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />      
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
-	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SplitView_themeresources.xaml" />
-      <WinUIStylePageV2
-		  Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
-      <WinUIStylePageV2
-		  Remove="@(ExcludedTemplatesV2)" />
-    </ItemGroup>
-
-    <Message Importance="high" Text="Generating theme resources XAML file " />
-    <MakeDir Directories="$(IntermediateOutputPath)\Version2" />
-    <BatchMergeXaml
-	  Pages="@(WinUIStylePageV2)"
-	  MergedXamlFile="$(MSBuildThisFileDirectory)themeresources_v2.xaml"
-	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.read.1u.tlog"
-	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog" />
-    <Message Text="Theme resources XAML file was generated" />
-  </Target>
-
-  <!--
-    Add the generated themeresources_v2.xaml to @(Page) at build time (the automatic glob excludes it
-    via PageExclusions because it may not exist at evaluation on a clean build). Must run before the
-    source generator collects its inputs in _InjectAdditionalFiles. Gated on the same flag as the
-    automatic Page glob so the Reference stub assembly keeps excluding it.
-  -->
-  <Target Name="_IncludeThemeResourceV2Page"
-          DependsOnTargets="GenerateThemeResourceV2File"
-          BeforeTargets="BeforeBuild;GenerateMSBuildEditorConfigFileCore;_InjectAdditionalFiles"
-          Condition="'$(EnableAutomaticXamlPageInclusion)' != 'false'">
-    <ItemGroup>
-      <Page Include="$(MSBuildThisFileDirectory)themeresources_v2.xaml" />
-    </ItemGroup>
-  </Target>
-
-  <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
-    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+  <PropertyGroup>
+	<!--
+	  The per-control source XAML is merged into a single themeresources_v2.xaml (a build artifact, no
+	  longer committed - see #23399) that the XAML source generator consumes. Keep both the sources and
+	  the merged output out of the automatic Page glob; the merge feeds on the explicit XamlMergeInput
+	  below, and the Uno.XamlMerge.Task targets add the merged file to @(Page).
+	-->
+	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(MSBuildThisFileDirectory)themeresources_v2.xaml</PageExclusions>
+	<XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v2.xaml</XamlMergeOutputFile>
   </PropertyGroup>
 
+  <ItemGroup>
+	<!--
+	  Templates intentionally dropped from the v2 theme: either broken under Uno or superseded by an
+	  Uno-specific implementation (ProgressRing, ScrollViewer, SplitView, RadioMenuFlyoutItem).
+	-->
+	<_ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+	<_ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
+	<_ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
+	<_ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
+	<!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
+	<_ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SplitView_themeresources.xaml" />
+
+	<!--
+	  Explicit merge inputs (not @(Page)) so every variant merges the same content into the shared
+	  output file - this avoids a variant that disables the Page glob writing an empty file over it.
+	-->
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(_ExcludedTemplatesV2)" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
+	<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+  </PropertyGroup>
+
+  <!--
+    Merge the per-control XAML using Uno.XamlMerge.Task, mirroring how Uno.UI generates mergedstyles.xaml.
+    The task loads from the restored NuGet package, so - unlike the in-repo Uno.UI.Tasks BatchMergeXaml -
+    it has no dependency on the Uno.UI.Tasks build output ($(Configuration)_Shadow). That build-ordering
+    dependency is what failed CI once the merge started running in Release (#23399 / #23400): the merge
+    runs before ResolveProjectReferences, so the shadow copy did not yet exist.
+
+    Imported for every variant except the Reference stub, which carries no theme resources (matching the
+    previous committed-file behaviour, where the Reference variant disables the Page glob). The import is
+    not gated on TargetFramework, so GenerateMergedXaml is available in both the outer and inner builds.
+  -->
+  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
+		  Condition="'$(UnoRuntimeIdentifier)' != 'Reference' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
+
+  <!--
+    Generate the merged file in the outer (cross-targeting) build before DispatchToInnerBuilds, so it
+    exists on disk when the inner builds evaluate. The inner builds also import the targets above, so
+    a consumer that builds an inner build directly still regenerates it.
+  -->
+  <Target Name="_GenerateMergedThemeResourceV2"
+		  DependsOnTargets="GenerateMergedXaml"
+		  BeforeTargets="DispatchToInnerBuilds"
+		  Condition="'$(TargetFramework)' == '' and '$(UnoRuntimeIdentifier)' != 'Reference' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')">
+  </Target>
+
   <PropertyGroup>
+	<!-- Used by the other Uno.UI.Tasks tasks (e.g. ResourcesGenerationTask) imported via
+	     Uno.UI.Tasks.targets; those run after ResolveProjectReferences, so the shadow copy exists. -->
 	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
   </PropertyGroup>
 
