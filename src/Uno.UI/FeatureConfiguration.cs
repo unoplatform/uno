@@ -670,20 +670,6 @@ namespace Uno.UI
 			public static bool ApplySettersBeforeTransition { get; set; }
 		}
 
-		public static class WebView
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Prevent the WebView from using hardware rendering.
-			/// This was previously the default behavior in Uno to work around a keyboard-related visual glitch in Android 5.0 (http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop), however it prevents video and 3d content from being rendered.
-			/// </summary>
-			/// <remarks>
-			/// See this for more info: https://github.com/unoplatform/uno/blob/26c5cc5992cae3c8c25adf51eb77ca4b0dd34e93/src/Uno.UI/UI/Xaml/Controls/WebView/WebView.Android.cs#L251_L255
-			/// </remarks>
-			public static bool ForceSoftwareRendering { get; set; }
-#endif
-		}
-
 		public static class WebView2
 		{
 			/// <summary>
