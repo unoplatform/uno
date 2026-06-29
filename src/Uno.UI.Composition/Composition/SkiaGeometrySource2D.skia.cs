@@ -4,6 +4,8 @@ using System;
 using SkiaSharp;
 using Windows.Graphics;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Composition
 {
 	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable

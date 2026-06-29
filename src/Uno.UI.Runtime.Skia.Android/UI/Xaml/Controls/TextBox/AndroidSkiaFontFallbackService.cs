@@ -8,6 +8,8 @@ using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Text;
 
+#pragma warning disable CS0618 // SkiaSharp 4: deprecated SKTypeface.ContainsGlyph kept intentionally (SKFont migration deferred)
+
 namespace Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 internal class AndroidSkiaFontFallbackService : IFontFallbackService

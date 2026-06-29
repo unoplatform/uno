@@ -7,6 +7,8 @@ using SamplesApp.UITests;
 using SkiaSharp;
 using Uno.WinUI.Graphics2DSK;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace UITests.Shared.Windows_UI_Composition
 {
 	[Sample("Microsoft.UI.Composition")]

@@ -4,6 +4,8 @@ using Microsoft.UI.Composition;
 using System.Numerics;
 using SkiaSharp;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Ellipse : Shape

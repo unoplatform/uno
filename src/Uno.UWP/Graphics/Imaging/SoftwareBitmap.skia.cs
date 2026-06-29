@@ -3,6 +3,8 @@ using SkiaSharp;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Windows.Graphics.Imaging
 {
 	static class SoftwareBitmapExtensions

@@ -6,6 +6,8 @@ using Uno.UI.Composition;
 
 using Color = global::Windows.UI.Color;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
