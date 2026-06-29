@@ -565,15 +565,6 @@ namespace Uno.UI
 			/// <remarks>This is effective only for managed scrollbars (WASM, macOS and Skia for now)</remarks>
 			public static TimeSpan? DefaultAutoHideDelay { get; set; }
 
-#if __ANDROID__
-			/// <summary>
-			/// This value defines an optional delay to be set for native ScrollBar thumbs to disapear. The
-			/// platform default is 300ms, which can make the thumbs appear on screenshots, changing this value
-			/// to <see cref="TimeSpan.Zero"/> makes those disapear faster.
-			/// </summary>
-			public static TimeSpan? AndroidScrollbarFadeDelay { get; set; }
-#endif
-
 			/// <summary>
 			/// Defines the delay of after which the ScrollViewer starts to move to snap points. The default value is 250ms.
 			/// </summary>
