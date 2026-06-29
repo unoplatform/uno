@@ -34,9 +34,9 @@ This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pul
 
 ### Uno.Extensions MVUX bindable generation tool
 
-Uno.Extensions 7.2 (shipped with Uno Platform 6.6) changes the default MVUX bindable generation tool from version 2 to version 3 (a Hot Reload-friendly generator). This changes the generated bindable view model naming convention — the doubled `ViewViewModel` suffix is dropped (for example, a `MainModel` now generates `MainViewModel`).
+Uno.Extensions 7.2 (shipped with Uno Platform 6.6) changes the default MVUX bindable generation tool from version 2 to version 3, which improves Hot Reload support. Typical MVUX code is unaffected, because navigation and bindings reference your model type rather than the generated bindable. However, the *name* of the generated bindable view model changes: version 2 generated `Bindable{ModelName}` (for example, `BindableMainModel`), while version 3 generates `{Name}ViewModel` (for example, `MainModel` generates `MainViewModel`).
 
-If your code or XAML references the generated bindable types directly, update those references to the new names. To keep the previous generator, pin its version at the assembly level:
+If your code references the generated bindable type by name directly, update those references. To keep the previous generator, pin its version at the assembly level:
 
 ```csharp
 [assembly: Uno.Extensions.Reactive.Config.BindableGenerationTool(2)]
