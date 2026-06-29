@@ -591,17 +591,6 @@ namespace Uno.UI
 			public static int ShowDuration { get; set; } = 5000;
 		}
 
-		public static class NativeFramePresenter
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Determines if pages in the backstack are kept in the visual tree.
-			/// Defaults to false for performance considerations.
-			/// </summary>
-			public static bool AndroidUnloadInactivePages { get; set; }
-#endif
-		}
-
 		public static class UIElement
 		{
 			/// <summary>
