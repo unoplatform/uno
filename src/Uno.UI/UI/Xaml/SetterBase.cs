@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System.ComponentModel;
-
 namespace Microsoft.UI.Xaml
 {
 	public abstract partial class SetterBase : DependencyObject, IMultiParentShareableDependencyObject
@@ -14,15 +12,6 @@ namespace Microsoft.UI.Xaml
 		internal abstract void ApplyTo(DependencyObject o);
 
 		internal abstract bool TryGetSetterValue(out object? value);
-
-		/// <summary>
-		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.
-		/// Use <see cref="Setter.Property"/> or <see cref="Setter{T}.Property"/> instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void set_Property(string name) => OnStringPropertyChanged(name);
-
-		internal virtual void OnStringPropertyChanged(string name) { }
 
 		public bool IsSealed
 		{
