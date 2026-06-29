@@ -54,6 +54,10 @@ public partial class CompositionTarget
 	// _frameGate, like the frame slot itself.
 	private readonly Stack<SKPath> _damageSnapshotPool = new();
 
+	// Returned as the native-element clip path when there's no recorded frame yet. The clip path is
+	// borrowed read-only by hosts (never mutated or disposed), so a single shared instance is safe.
+	private static readonly SKPath _emptyPath = new();
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
@@ -228,7 +232,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return _emptyPath;
 		}
 		else
 		{
