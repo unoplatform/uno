@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests
 
 		private void MenuFlyout_Opening(object sender, object e)
 		{
-			// BC58/WinUI parity: a MenuFlyout has no DataContext of its own; the placement target's DataContext is
+			// WinUI parity: a MenuFlyout has no DataContext of its own; the placement target's DataContext is
 			// forwarded to the presenter and items when the flyout is shown, so no manual seeding is needed here.
 		}
 

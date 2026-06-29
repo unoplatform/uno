@@ -949,10 +949,8 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(2, parentChanged);
 		}
 
-		// BC58: removed When_NonUI_DependencyObject_NonUISub_Content — it set DataContext directly on a root
-		// non-FrameworkElement DependencyObject, which has no DataContext (WinUI parity). The FE-rooted variant
-		// below (When_UI_DependencyObject_NonUISub_Content) keeps coverage of a non-FE sub-object's binding
-		// resolving against the connected FrameworkElement's DataContext.
+		// When_UI_DependencyObject_NonUISub_Content covers a non-FE sub-object's binding resolving against the
+		// connected FrameworkElement's DataContext (a non-FE root has no DataContext of its own — WinUI parity).
 
 		[TestMethod]
 		public void When_UI_DependencyObject_NonUISub_Content()

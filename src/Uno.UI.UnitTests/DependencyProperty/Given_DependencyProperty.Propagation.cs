@@ -222,9 +222,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			Assert.AreEqual(42, sub.MyProperty);
 		}
 
-		// BC58: removed When_ValidBinding_And_Then_InvalidBinding — it set DataContext directly on a standalone
-		// non-FrameworkElement DependencyObjectCollection, which has no DataContext (WinUI parity).
-
 		[TestMethod]
 		public void When_ValidBinding_And_Then_InvalidBinding_Inherited()
 		{

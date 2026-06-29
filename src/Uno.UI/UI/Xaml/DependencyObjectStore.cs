@@ -798,7 +798,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// The inherited (mentor/parent) DataContext value as this store currently holds it: a FrameworkElement owner
-		// keeps it under its DataContextProperty; a non-FE owner has no DataContextProperty (BC58) and caches it.
+		// keeps it under its DataContextProperty; a non-FE owner has no DataContextProperty and caches it.
 		internal object? GetInheritedDataContextValue()
 			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties.InheritedDataContext;
 
