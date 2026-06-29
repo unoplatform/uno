@@ -6441,19 +6441,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildInitializer(writer, xamlObjectDefinition, owner);
 						Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 					}
-					// TODO: Remove this else if in Uno 6 as a breaking change.
-					else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
-					{
-						var propertyType = GetDependencyPropertyTypeForSetter(propertyName);
-						var valueNode = FindMember(xamlObjectDefinition, "Value");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => o.{1} = {2})",
-							currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
-							propertyName,
-							BuildLiteralValue(valueNode!, propertyType)
-						);
-
-					}
 					else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 					{
 						InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
@@ -6543,18 +6530,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"default! /* {xamlGenError.Message} (line: {xamlGenError.LineNumber} | pos: {xamlGenError.LinePosition}) */");
 				}
 			}
-		}
-
-		private bool IsLegacySetter(XamlObjectDefinition xamlObjectDefinition, out string propertyName)
-		{
-			var propertyNode = FindMember(xamlObjectDefinition, "Property");
-			propertyName = propertyNode?.Value?.ToString()!;
-			if (propertyName is not null && !propertyName.Contains('.'))
-			{
-				return !IsDependencyProperty(CurrentStyleTargetType, propertyName);
-			}
-
-			return false;
 		}
 
 		/// <summary>
