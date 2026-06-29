@@ -2266,6 +2266,9 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+
+		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
+		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
 	  </Types>
 
 	  <Fields>
@@ -2873,6 +2876,9 @@
 		       on the generated Animated*VisualSource sources, so they drop off the concrete
 		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+
+		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
@@ -2915,28 +2921,6 @@
 	  </Events>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="6.6">
-	  <Types>
-		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
-		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
-	  </Types>
-	  <Properties>
-		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
-	  </Properties>
-	  <Methods>
-		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
-		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
-		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
-		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
-	  </Methods>
-	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
