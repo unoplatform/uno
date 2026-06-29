@@ -29,6 +29,10 @@ internal partial class ContextMenuProcessor
 	private DispatcherTimer? _contextMenuTimer;
 	private Point _contextMenuOnHoldingTouchPoint = new(-1, -1);
 
+	// Uno specific: the touch pointer that triggered the holding gesture, so its capture can be
+	// released once the context menu is shown (see ReleaseContextMenuHoldingPointerCapture).
+	private uint _contextMenuOnHoldingPointerId;
+
 	public ContextMenuProcessor(ContentRoot contentRoot)
 	{
 		_contentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
@@ -95,6 +99,32 @@ internal partial class ContextMenuProcessor
 		if (args.Handled && isTouchInput)
 		{
 			_isContextMenuOnHolding = true;
+
+			// A context menu was shown in response to a touch press-and-hold. WinUI suppresses the
+			// pending Click/Tapped because opening the menu's popup steals the OS pointer capture
+			// (raising PointerCaptureLost on the pressing element). Uno's popups don't steal capture,
+			// so release it explicitly here, matching that behavior across all targets.
+			ReleaseContextMenuHoldingPointerCapture();
+		}
+	}
+
+	/// <summary>
+	/// Releases the explicit pointer capture held for the touch pointer that triggered the holding
+	/// gesture, raising PointerCaptureLost so the pressing element (e.g. a Button) clears its pressed
+	/// state and does not raise Click/Tapped on release (issue #22229).
+	/// </summary>
+	private void ReleaseContextMenuHoldingPointerCapture()
+	{
+		if (PointerCapture.Any(out var captures))
+		{
+			foreach (var capture in captures)
+			{
+				if (capture.Pointer.PointerId == _contextMenuOnHoldingPointerId
+					&& capture.ExplicitTarget is { } captureTarget)
+				{
+					captureTarget.ReleasePointerCaptureForContextMenu(capture.Pointer);
+				}
+			}
 		}
 	}
 
@@ -166,4 +196,9 @@ internal partial class ContextMenuProcessor
 	/// Sets the touch point for context menu on holding gesture.
 	/// </summary>
 	public void SetContextMenuOnHoldingTouchPoint(Point point) => _contextMenuOnHoldingTouchPoint = point;
+
+	/// <summary>
+	/// Sets the touch pointer id that triggered the holding gesture.
+	/// </summary>
+	public void SetContextMenuOnHoldingPointer(uint pointerId) => _contextMenuOnHoldingPointerId = pointerId;
 }
