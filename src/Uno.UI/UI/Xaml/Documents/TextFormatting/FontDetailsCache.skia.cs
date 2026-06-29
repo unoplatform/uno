@@ -33,6 +33,12 @@ internal static class FontDetailsCache
 		SKFontStyleWidth Width,
 		SKFontStyleSlant Slant);
 
+	// Standard OpenType variation axes that map to the WinUI font properties.
+	private static readonly SKFourByteTag WeightAxis = SKFourByteTag.Parse("wght");
+	private static readonly SKFourByteTag WidthAxis = SKFourByteTag.Parse("wdth");
+	private static readonly SKFourByteTag ItalicAxis = SKFourByteTag.Parse("ital");
+	private static readonly SKFourByteTag SlantAxis = SKFourByteTag.Parse("slnt");
+
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
 	private static readonly IFontFallbackService? _fontFallbackService =
@@ -95,7 +101,8 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			var uriTypeface = await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			return uriTypeface is null ? null : ApplyVariableFontAxes(uriTypeface, weight, stretch, style);
 		}
 
 		SKTypeface? fallbackTypeface = null;
@@ -115,7 +122,75 @@ internal static class FontDetailsCache
 		}
 
 		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-		return fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+		var typeface = fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+		return typeface is null ? null : ApplyVariableFontAxes(typeface, weight, stretch, style);
+	}
+
+	/// <summary>
+	/// If <paramref name="typeface"/> is a variable font, returns an instance positioned on its weight/width/
+	/// slant/italic axes to match the requested style. Static fonts (and fonts already at the requested
+	/// position) are returned unchanged.
+	/// </summary>
+	private static SKTypeface ApplyVariableFontAxes(SKTypeface typeface, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
+		try
+		{
+			var axes = typeface.VariationDesignParameters;
+			if (axes is not { Length: > 0 })
+			{
+				return typeface; // Not a variable font.
+			}
+
+			List<SKFontVariationPositionCoordinate>? coordinates = null;
+			foreach (var axis in axes)
+			{
+				float target;
+				if (axis.Tag == WeightAxis)
+				{
+					target = weight.Weight;
+				}
+				else if (axis.Tag == WidthAxis)
+				{
+					target = stretch.ToVariableFontWidth();
+				}
+				else if (axis.Tag == ItalicAxis)
+				{
+					target = style == FontStyle.Italic ? 1f : 0f;
+				}
+				else if (axis.Tag == SlantAxis)
+				{
+					// The slnt axis is the slant in counter-clockwise degrees; italic/oblique fonts slant
+					// the other way, so a typical oblique sits around -10° (clamped to what the font allows).
+					target = style is FontStyle.Italic or FontStyle.Oblique ? -10f : 0f;
+				}
+				else
+				{
+					continue; // Leave any other axis (e.g. opsz) at its default.
+				}
+
+				target = Math.Clamp(target, Math.Min(axis.Min, axis.Max), Math.Max(axis.Min, axis.Max));
+				if (Math.Abs(target - axis.Default) < 0.01f)
+				{
+					continue; // Already at the default for this axis.
+				}
+
+				(coordinates ??= new()).Add(new SKFontVariationPositionCoordinate { Axis = axis.Tag, Value = target });
+			}
+
+			if (coordinates is null)
+			{
+				return typeface; // Nothing to adjust.
+			}
+
+			var arguments = new SKFontArguments();
+			arguments.VariationDesignPosition = coordinates.ToArray();
+			return typeface.Clone(arguments) ?? typeface;
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error("Failed to apply variable font axes", e);
+			return typeface;
+		}
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
