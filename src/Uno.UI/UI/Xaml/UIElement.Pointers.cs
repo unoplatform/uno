@@ -483,6 +483,9 @@ namespace Microsoft.UI.Xaml
 						// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
 						var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
 						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingTouchPoint(globalPosition);
+						// Record the pointer so that, once the context menu is actually shown, its capture
+						// can be released to cancel the pending Click/Tapped on the pressing element.
+						contentRoot.InputManager.ContextMenuProcessor.SetContextMenuOnHoldingPointer(args.PointerId);
 						contentRoot.InputManager.ContextMenuProcessor.ProcessContextRequestOnHoldingGesture(src);
 					}
 					else if (args.HoldingState == HoldingState.Canceled)
@@ -1640,6 +1643,33 @@ namespace Microsoft.UI.Xaml
 			}
 
 			Release(PointerCaptureKind.Explicit);
+		}
+
+		/// <summary>
+		/// Releases the explicit pointer capture and raises an <em>unhandled</em> PointerCaptureLost so the
+		/// pressing control clears its pressed state. Used when a context menu is shown on a touch press-and-hold:
+		/// WinUI clears the pressed state via the OS pointer-capture-changed raised when the menu's popup steals
+		/// capture, but Uno's popups don't, so we do it explicitly (issue #22229).
+		/// </summary>
+		/// <remarks>
+		/// The capture tracks the args from the PointerPressed, which the pressing control marks as Handled.
+		/// PointerCaptureLost reuses those args, so we reset Handled first - otherwise the control's class handler
+		/// (which only runs for unhandled events) never clears the pressed state.
+		/// </remarks>
+		internal void ReleasePointerCaptureForContextMenu(Pointer pointer)
+		{
+			if (PointerCapture.TryGet(pointer, out var capture))
+			{
+				foreach (var target in capture.GetTargets(PointerCaptureKind.Explicit))
+				{
+					if (target.LastDispatched is { } lastDispatched)
+					{
+						lastDispatched.Handled = false;
+					}
+				}
+			}
+
+			ReleasePointerCapture(pointer);
 		}
 		#endregion
 
