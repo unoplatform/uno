@@ -35,10 +35,10 @@
             <_FilteredRuntimeCopyLocalItems
               Include="@(RuntimeCopyLocalItems)"
               Condition=" '%(Filename)' == 'Uno.UI.RemoteControl'
-                  and $([System.String]::Copy('%(RelativeDir)').Replace('\','/').ToLowerInvariant().Contains('net10.0/skia')) " />
+                  and $([System.String]::Copy('%(RelativeDir)').Replace('\','/').ToLowerInvariant().Contains('net11.0/skia')) " />
         </ItemGroup>
 
-        <Error Text="The project must not reference Uno.UI.RemoteControl.dll from a net10.0 folder."
+        <Error Text="The project must not reference Uno.UI.RemoteControl.dll from a net11.0 folder."
                Condition=" '@(_FilteredRuntimeCopyLocalItems)' != '' " />
     </Target>
 
