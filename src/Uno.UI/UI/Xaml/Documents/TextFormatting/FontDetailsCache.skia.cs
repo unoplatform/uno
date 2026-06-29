@@ -45,7 +45,7 @@ internal static class FontDetailsCache
 		FeatureConfiguration.Font.FallbackService
 		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
-	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
+	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch, string? familyNameHint)
 	{
 		try
 		{
@@ -74,7 +74,7 @@ internal static class FontDetailsCache
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			return SKTypeface.FromStream(stream);
+			return LoadTypefaceWithFace(stream, familyNameHint);
 		}
 		catch (Exception e)
 		{
@@ -82,6 +82,60 @@ internal static class FontDetailsCache
 			return null;
 		}
 	}
+
+	// Upper bound on the number of faces probed in a font collection; guards against a malformed file
+	// (or a backend that doesn't return null past the last face) causing an unbounded loop.
+	private const int MaxFontCollectionFaces = 256;
+
+	/// <summary>
+	/// Loads the default face from <paramref name="stream"/>. If the file is a TrueType/OpenType collection
+	/// (.ttc/.otc) and <paramref name="familyNameHint"/> is given, selects the face whose family or PostScript
+	/// name matches the hint instead of always using face 0.
+	/// </summary>
+	private static SKTypeface? LoadTypefaceWithFace(Stream stream, string? familyNameHint)
+	{
+		var typeface = SKTypeface.FromStream(stream);
+		if (typeface is null || string.IsNullOrEmpty(familyNameHint) || FaceMatches(typeface, familyNameHint))
+		{
+			return typeface;
+		}
+
+		// face 0 didn't match: the file may pack several faces, so probe the rest of the collection by name.
+		try
+		{
+			using var asset = typeface.OpenStream(out _);
+			using var data = asset?.GetData();
+			if (data is not null)
+			{
+				for (var index = 1; index < MaxFontCollectionFaces; index++)
+				{
+					var candidate = SKTypeface.FromData(data, index);
+					if (candidate is null)
+					{
+						break; // No more faces in the collection.
+					}
+
+					if (FaceMatches(candidate, familyNameHint))
+					{
+						typeface.Dispose();
+						return candidate;
+					}
+
+					candidate.Dispose();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error("Failed to select font collection face", e);
+		}
+
+		return typeface; // The hint didn't match any face; use the default face.
+	}
+
+	private static bool FaceMatches(SKTypeface typeface, string familyNameHint) =>
+		string.Equals(typeface.FamilyName, familyNameHint, StringComparison.OrdinalIgnoreCase) ||
+		string.Equals(typeface.PostScriptName, familyNameHint, StringComparison.OrdinalIgnoreCase);
 
 	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
@@ -93,15 +147,19 @@ internal static class FontDetailsCache
 		var skWidth = stretch.ToSkiaWidth();
 		var skSlant = style.ToSkiaSlant();
 
+		// A font family can be specified as "<file-uri>#<family name>". The part after '#' selects a
+		// specific family within the file, which matters for TrueType/OpenType collections (.ttc/.otc).
 		var hashIndex = name.IndexOf('#');
+		string? familyNameHint = null;
 		if (hashIndex > 0)
 		{
+			familyNameHint = name.Substring(hashIndex + 1);
 			name = name.Substring(0, hashIndex);
 		}
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			var uriTypeface = await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			var uriTypeface = await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch, familyNameHint);
 			return uriTypeface is null ? null : ApplyVariableFontAxes(uriTypeface, weight, stretch, style);
 		}
 
@@ -122,8 +180,15 @@ internal static class FontDetailsCache
 		}
 
 		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
+		// It can also return the empty typeface on some platforms when the family isn't found; treat both
+		// as "not found" so the caller falls back to the default font.
 		var typeface = fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
-		return typeface is null ? null : ApplyVariableFontAxes(typeface, weight, stretch, style);
+		if (typeface is null || typeface.IsEmpty)
+		{
+			return null;
+		}
+
+		return ApplyVariableFontAxes(typeface, weight, stretch, style);
 	}
 
 	/// <summary>
