@@ -146,7 +146,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.EnableVertexAttribArray(0);
 			gl.VertexAttribPointer(1, 2, GLEnum.Float, false, FloatsPerParticle * sizeof(float), (void*)(2 * sizeof(float)));
 			gl.EnableVertexAttribArray(1);
-			// Leave ARRAY_BUFTER unbound. VAOs capture the per-attribute buffer references but
+			// Leave ARRAY_BUFFER unbound. VAOs capture the per-attribute buffer references but
 			// NOT the generic ARRAY_BUFFER binding, so leaving this set could let the buffer
 			// linger as a non-TF binding and trip WebGL2's "TF buffer also bound elsewhere" check.
 			gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);

@@ -24,7 +24,7 @@
 			WasmShellNativeCompile (not WasmShellNativeFileReference) is the item that runs emcc
 			on raw .c sources; NativeFileReference filters to .o/.a only.
 		-->
-		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native\uno_gl_shim.c" Visible="false" />
+		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_gl_shim.c" Visible="false" />
 	</ItemGroup>
 
 	<Target Name="_UnoSkiaWebAssemblyFeatureDefines" AfterTargets="PrepareForBuild">
