@@ -23,7 +23,6 @@ using Uno.UI.Dispatching;
 using Buffer = HarfBuzzSharp.Buffer;
 using FontWeights = Microsoft.UI.Text.FontWeights;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -923,7 +922,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var amplitude = 2 * scale;
 					var yOffset = 2 * scale;
 
-					var p = new SKPath();
+					var p = new SKPathBuilder();
 					var underlineY = y + line.baselineOffset + yOffset;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
@@ -939,7 +938,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 					p.LineTo(underlineRightX, underlineY);
 
-					spellCheckUnderlines.Add((p, scale));
+					spellCheckUnderlines.Add((p.Detach(), scale));
 				}
 			}
 

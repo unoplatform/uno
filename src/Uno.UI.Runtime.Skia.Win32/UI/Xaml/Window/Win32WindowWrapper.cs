@@ -35,7 +35,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -835,7 +834,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			surfaceCanvas.Translate(0, targetSize);
 			surfaceCanvas.Scale(1, -1);
 			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0);
+			surfaceCanvas.DrawImage(scaledImage, 0, 0, default(SKSamplingOptions), null);
 			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
 		}
 

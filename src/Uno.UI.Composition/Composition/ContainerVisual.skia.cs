@@ -9,7 +9,6 @@ using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Microsoft.UI.Composition;
 
@@ -120,7 +119,7 @@ public partial class ContainerVisual : Visual
 		}
 
 		var clipRect = rect.ToSKRect();
-		dst.AddRect(clipRect);
+		SetPathToRect(dst, clipRect);
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
@@ -160,7 +159,7 @@ public partial class ContainerVisual : Visual
 	{
 		var prePaintingClipPath = _sparePrePaintingClippingPath;
 
-		prePaintingClipPath.Rewind();
+		prePaintingClipPath.Reset();
 
 		if (base.GetPrePaintingClipping(dst))
 		{
@@ -190,8 +189,7 @@ public partial class ContainerVisual : Visual
 
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				dst.Reset();
-				dst.AddPath(prePaintingClipPath);
+				CopyPath(prePaintingClipPath, dst);
 
 				return true;
 			}

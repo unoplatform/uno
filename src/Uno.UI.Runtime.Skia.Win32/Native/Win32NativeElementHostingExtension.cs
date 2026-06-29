@@ -20,7 +20,6 @@ using SkiaSharp;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -206,11 +205,17 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
+	private static SKPath CreateRectPath(SKRect rect)
+	{
+		var builder = new SKPathBuilder();
+		builder.AddRect(rect);
+		return builder.Detach();
+	}
+
 	private unsafe void ApplyClipPath(SKPath path)
 	{
-		_tempPath.Rewind();
-		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
-		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
+		using var rectPath = CreateRectPath(_lastArrangeRect.ToSKRect());
+		path.Op(rectPath, SKPathOp.Intersect, _tempPath);
 		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 
 		if (_tempPath.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath && !_lastClipHrgn.IsNull)

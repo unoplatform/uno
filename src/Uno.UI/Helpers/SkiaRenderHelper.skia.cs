@@ -13,13 +13,28 @@ using SkiaSharp;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
-
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
 	private static readonly SKPictureRecorder _recorder = new();
+
+	private static readonly SKMatrix _identityMatrix = SKMatrix.CreateIdentity();
+
+	// SkiaSharp 4 routes SKPath construction through the immutable SKPathBuilder. These build a
+	// fresh rect path / (re)seed an existing reusable SKPath without the deprecated AddRect.
+	private static SKPath CreateRectPath(SKRect rect)
+	{
+		var builder = new SKPathBuilder();
+		builder.AddRect(rect);
+		return builder.Detach();
+	}
+
+	private static void SetPathToRect(SKPath dst, SKRect rect)
+	{
+		using var rectPath = CreateRectPath(rect);
+		rectPath.Transform(in _identityMatrix, dst);
+	}
 
 	private static readonly List<Visual> _emptyList = new();
 
@@ -84,8 +99,7 @@ internal static class SkiaRenderHelper
 		var rect = new SKRect(0f, 0f, width, height);
 
 		var parentClipPath = _spareParentClipPath;
-		parentClipPath.Rewind();
-		parentClipPath.AddRect(rect);
+		SetPathToRect(parentClipPath, rect);
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
@@ -96,8 +110,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var invertedPath = new SKPath();
-			invertedPath.AddRect(rect);
+			var invertedPath = CreateRectPath(rect);
 			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
 
 			clipPath.Dispose();
@@ -114,8 +127,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var result = new SKPath();
-			result.AddRect(new SKRect(0f, 0f, width, height));
+			var result = CreateRectPath(new SKRect(0f, 0f, width, height));
 			result.Op(_emptyClipPath, SKPathOp.Difference, result);
 
 			_invertedClipPathWidth = width;
@@ -395,7 +407,7 @@ internal static class SkiaRenderHelper
 
 			_font.MeasureText(value, out var textRect);
 			var textY = rowTop + (RowHeight - textRect.Height) / 2 - textRect.Top;
-			canvas.DrawText(value, textX, textY, _font, _textPaint);
+			canvas.DrawText(value, textX, textY, SKTextAlign.Left, _font, _textPaint);
 		}
 
 		private static void DrawSpeedometerIcon(SKCanvas canvas, float x, float y)

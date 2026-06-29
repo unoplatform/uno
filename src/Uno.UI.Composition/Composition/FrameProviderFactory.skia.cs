@@ -5,8 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SkiaSharp;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
-
 namespace Microsoft.UI.Composition;
 
 internal static class FrameProviderFactory
@@ -78,7 +76,7 @@ internal static class FrameProviderFactory
 				// need to restore its pixels into the bitmap before decoding.
 				using var restoreCanvas = new SKCanvas(bitmap);
 				restoreCanvas.Clear(SKColor.Empty);
-				restoreCanvas.DrawImage(images[requiredFrame], 0, 0);
+				restoreCanvas.DrawImage(images[requiredFrame], 0, 0, default(SKSamplingOptions), null);
 			}
 			// When requiredFrame == i - 1, the bitmap already contains the
 			// correct prior frame pixels from the previous iteration.
@@ -265,7 +263,7 @@ internal static class FrameProviderFactory
 		var newBitmap = new SKBitmap(info);
 		using var canvas = new SKCanvas(newBitmap);
 		canvas.SetMatrix(matrix);
-		canvas.DrawBitmap(bitmap, 0, 0);
+		canvas.DrawBitmap(bitmap, 0, 0, default(SKSamplingOptions), null);
 		return SKImage.FromBitmap(newBitmap);
 	}
 
