@@ -583,7 +583,6 @@ namespace SamplesApp
 		static void ConfigureFeatureFlags()
 		{
 #if __APPLE_UIKIT__
-			Uno.UI.FeatureConfiguration.CommandBar.AllowNativePresenterContent = true;
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 #endif
 #if HAS_UNO
