@@ -744,32 +744,6 @@ namespace Uno.UI
 			public static bool FailOnUnknownProperties { get; set; }
 		}
 
-		public static class DatePicker
-		{
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
-			/// </summary>
-			/// <remarks>
-			/// Important: This flag will only have an impact on iOS 14 devices
-			/// </remarks>
-			public static bool UseLegacyStyle { get; set; }
-#endif
-		}
-
-		public static class TimePicker
-		{
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
-			/// </summary>
-			/// <remarks>
-			/// Important: This flag will only have an impact on iOS 14 devices
-			/// </remarks>
-			public static bool UseLegacyStyle { get; set; }
-#endif
-		}
-
 		public static class TimePickerFlyout
 		{
 #if __ANDROID__
