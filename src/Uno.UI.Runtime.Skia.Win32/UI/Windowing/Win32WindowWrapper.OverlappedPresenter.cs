@@ -180,7 +180,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			PInvoke.AdjustWindowRectExForDpi(ref borderCaptionThickness, GetStyle(), false, 0, scaling);
 		}
 
-		borderCaptionThickness.left *= -1;
 		borderCaptionThickness.top *= -1;
 
 		bool hasSystemTitleBar = _hasTitleBar;
