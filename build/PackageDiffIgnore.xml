@@ -2919,10 +2919,15 @@
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- Native-only FeatureConfiguration knob removed with the native renderers (#2052, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors::UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- Cursors.UseHandForInteraction accessors: paired with the removed property (see <Properties> above). Native-only knob removed with the native renderers (#2052). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors.get_UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Cursors.set_UseHandForInteraction(System.Boolean value)" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
