@@ -37,6 +37,11 @@ public partial class CompositionTarget
 
 	private readonly SKPath _pendingDamage = new();
 
+	// Recycled per-frame damage snapshot paths. At most a couple of frames are ever in flight, so reusing
+	// their SKPaths avoids allocating (and finalizing) a native path every frame. Only touched under
+	// _frameGate, like the frame slot itself.
+	private readonly Stack<SKPath> _damageSnapshotPool = new();
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
@@ -111,10 +116,19 @@ public partial class CompositionTarget
 
 			_pendingDamage.ClampTo(frameRect);
 
-			damageSnapshot = new SKPath(_pendingDamage);
+			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
+			damageSnapshot.Rewind();
+			damageSnapshot.AddPath(_pendingDamage);
 			_pendingDamage.Rewind();
 
 			_lastRenderedFrame = (picture, path, damageSnapshot);
+
+			// The previous frame is being superseded in place (it wasn't borrowed for present, since the
+			// slot was non-null); its snapshot is no longer referenced, so recycle it for the next frame.
+			if (previousFrame is { damage: var superseded })
+			{
+				_damageSnapshotPool.Push(superseded);
+			}
 		}
 
 		_fpsHelper.OnFrameRecorded();
@@ -291,6 +305,9 @@ public partial class CompositionTarget
 			else
 			{
 				pictureToDelete = frame.picture;
+				// This presented frame is superseded by a newer one; its snapshot (already rewound in Draw)
+				// is done — recycle it.
+				_damageSnapshotPool.Push(frame.damage);
 			}
 		}
 
