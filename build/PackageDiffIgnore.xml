@@ -2916,6 +2916,10 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="6.6">
+	  <Types>
+		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
+		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
+	  </Types>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />

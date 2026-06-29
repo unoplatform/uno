@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml
 			Style activeStyle = GetActiveStyle();
 			if (activeStyle is not null)
 			{
-				return activeStyle.TryGetPropertyValue(dp, out value, this);
+				return activeStyle.TryGetPropertyValue(dp, out value);
 			}
 
 			value = null;
