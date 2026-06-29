@@ -32,8 +32,23 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
-	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
+	// Pending StructureChanged events, coalesced onto the dispatcher. We record the specific
+	// add/remove/invalidate so the flush can emit the WinUI-faithful event type (ChildAdded on the
+	// added element, ChildRemoved on the container with the removed child's runtime id) rather than
+	// a blanket ChildrenInvalidated. See AutomationEventsHelper::StructureChangedEventInformation
+	// (microsoft-ui-xaml). Kind.Invalidated is the coarse fallback for peer-initiated changes.
+	private enum StructureChangeKind { Added, Removed, Invalidated }
+	private readonly record struct PendingStructureChange(
+		Win32RawElementProvider Container,
+		Win32RawElementProvider? Child,
+		StructureChangeKind Kind,
+		int[]? ChildRuntimeId);
+	private readonly List<PendingStructureChange> _pendingStructureChanges = new();
 	private bool _structureChangeFlushQueued;
+
+	// Matches WinUI's AP_BULK_CHILDREN_LIMIT: more than this many add/remove on one container in a
+	// single coalescing window collapses to a single ChildrenInvalidated/ChildrenBulk* event.
+	private const int BulkChildrenLimit = 20;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
 
@@ -272,26 +287,130 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		// Raise structure changed event on the nearest ancestor that has a provider.
-		// Child providers will be lazily created when UIA navigates to them.
+		// A child entered the tree / the composition (PC) scene (e.g. a DataGrid cell flipped
+		// Collapsed->Visible when its column scrolled into view). Faithful to WinUI: when a UIA
+		// client is listening, this raises a ChildAdded event ON THE ADDED ELEMENT itself (with a
+		// null runtime id) — see CUIElement::EnterPCScene -> RegisterForStructureChangedEvent(Added)
+		// -> AutomationEventsHelper. A blanket ChildrenInvalidated on an ancestor (the prior
+		// behaviour) is invisible to screen readers like Narrator that key off ChildAdded to
+		// incorporate/announce a newly revealed element, so the revealed content was rendered but
+		// never surfaced to automation.
 		var ancestorProvider = FindNearestAncestorProvider(parent);
-		if (ancestorProvider is not null)
+		if (ancestorProvider is null)
 		{
-			RaiseStructureChanged(ancestorProvider);
+			return;
+		}
+
+		// Drop the cached children along the path so the next navigation rebuilds from current state.
+		ancestorProvider.InvalidateChildrenCache();
+
+		if (!Win32UIAutomationInterop.UiaClientsAreListening())
+		{
+			return;
+		}
+
+		// ChildAdded is associated with the added element, so we must materialize its provider.
+		// Gated above on a listening client to avoid COM-wrapper churn during normal layout.
+		var childProvider = GetOrCreateProvider(child);
+		if (childProvider is not null)
+		{
+			QueueStructureChange(new PendingStructureChange(ancestorProvider, childProvider, StructureChangeKind.Added, null));
+			return;
+		}
+
+		// The entering element has no automation peer of its own (e.g. a WCT DataGridCell whose
+		// only automation content is a flattened TextBlock descendant). Faithful to WinUI's
+		// EnterPCSceneRecursive, walk into the now-visible subtree and raise ChildAdded for each
+		// shallowest peer-bearing descendant — otherwise the revealed text (the cell value) would
+		// be announced by no event at all. Fall back to the coarse signal only if none is found.
+		var entering = new List<Win32RawElementProvider>();
+		CollectEnteringProviders(child, entering, 0);
+		if (entering.Count > 0)
+		{
+			foreach (var provider in entering)
+			{
+				QueueStructureChange(new PendingStructureChange(ancestorProvider, provider, StructureChangeKind.Added, null));
+			}
+		}
+		else
+		{
+			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+		}
+	}
+
+	/// <summary>
+	/// Collects the shallowest peer-bearing descendant providers of an element entering the scene,
+	/// recursing through peer-less (flattened) elements and skipping Collapsed branches. Mirrors the
+	/// flattening of <see cref="Win32RawElementProvider"/>'s child walk / WinUI EnterPCSceneRecursive.
+	/// </summary>
+	private void CollectEnteringProviders(UIElement element, List<Win32RawElementProvider> result, int depth)
+	{
+		if (depth > 64)
+		{
+			return;
+		}
+
+		foreach (var child in element.GetChildren())
+		{
+			if (child.Visibility == Visibility.Collapsed)
+			{
+				continue;
+			}
+
+			if (GetOrCreateProvider(child) is { } provider)
+			{
+				result.Add(provider);
+			}
+			else
+			{
+				CollectEnteringProviders(child, result, depth + 1);
+			}
 		}
 	}
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		// Clean up cached providers for the removed subtree
+		// Capture the removed child's runtime id BEFORE cleanup — ChildRemoved carries it so a
+		// client can drop exactly that node. Only an already-existing provider is meaningful here.
+		var listening = Win32UIAutomationInterop.UiaClientsAreListening();
+		int[]? childRuntimeId = listening ? TryGetExistingProviderForElement(child)?.GetRuntimeId() : null;
+
+		// Clean up cached providers for the removed subtree.
 		CleanupProviders(child);
 
-		// Raise structure changed event on the nearest ancestor
+		// Faithful to WinUI: a child leaving the PC scene (e.g. a cell collapsing as its column
+		// scrolls off) raises ChildRemoved ON THE CONTAINER with the removed child's runtime id
+		// (CUIElement::LeavePCScene -> RegisterForStructureChangedEvent(Removed)).
 		var ancestorProvider = FindNearestAncestorProvider(parent);
-		if (ancestorProvider is not null)
+		if (ancestorProvider is null)
 		{
-			RaiseStructureChanged(ancestorProvider);
+			return;
 		}
+
+		ancestorProvider.InvalidateChildrenCache();
+
+		if (!listening)
+		{
+			return;
+		}
+
+		QueueStructureChange(childRuntimeId is not null
+			? new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Removed, childRuntimeId)
+			: new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+	}
+
+	/// <summary>
+	/// Resolves an element's already-created provider (element- or peer-keyed) without creating one.
+	/// </summary>
+	private Win32RawElementProvider? TryGetExistingProviderForElement(UIElement element)
+	{
+		if (_providers.TryGetValue(element, out var provider))
+		{
+			return provider;
+		}
+
+		var peer = element.GetOrCreateAutomationPeer();
+		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
 	}
 
 	protected override void OnSizeOrOffsetChanged(Visual visual)
@@ -336,7 +455,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				// Clear cached peer lists so a stale provider cannot keep the
 				// removed subtree alive.
 				provider.InvalidateChildrenCache();
-				_pendingStructureChanges.Remove(provider);
+				_pendingStructureChanges.RemoveAll(p => ReferenceEquals(p.Container, provider) || ReferenceEquals(p.Child, provider));
 
 				_providers.Remove(current);
 				if (provider.RepresentedPeer is { } representedPeer)
@@ -379,13 +498,26 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		return _rootProvider;
 	}
 
+	/// <summary>
+	/// Coarse StructureChanged (ChildrenInvalidated) for peer-initiated changes where we don't know
+	/// the specific added/removed child (e.g. a peer raising AutomationEvents.StructureChanged).
+	/// </summary>
 	private void RaiseStructureChanged(Win32RawElementProvider provider)
 	{
-		// Invalidate the children cache so the next navigation rebuilds the list
+		// Invalidate the children cache (cascading) so the next navigation rebuilds the list.
 		provider.InvalidateChildrenCache();
+		QueueStructureChange(new PendingStructureChange(provider, null, StructureChangeKind.Invalidated, null));
+	}
 
-		// Coalesce rapid StructureChanged events into a single deferred dispatch.
-		_pendingStructureChanges.Add(provider);
+	/// <summary>
+	/// Records a pending StructureChanged and schedules a coalesced flush on the dispatcher.
+	/// Deferring rather than raising synchronously avoids UIA re-entering GetChildren while a peer
+	/// is still computing its children (WCT's DataGridItemAutomationPeer.GetChildrenCore calls
+	/// OwningRowPeer.InvalidatePeer() from inside that very call).
+	/// </summary>
+	private void QueueStructureChange(PendingStructureChange change)
+	{
+		_pendingStructureChanges.Add(change);
 		if (_structureChangeFlushQueued)
 		{
 			return;
@@ -396,36 +528,103 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			_structureChangeFlushQueued = false;
 
-			// Short-circuit the flush if the window was closed while this callback
-			// was queued (edge case "Window close during dispatch").
+			// Short-circuit the flush if the window was closed while this callback was queued.
 			if (IsDisposed)
 			{
 				_pendingStructureChanges.Clear();
 				return;
 			}
 
-			foreach (var pending in _pendingStructureChanges)
-			{
-				RaiseStructureChangedCore(pending);
-			}
-			_pendingStructureChanges.Clear();
+			FlushStructureChanges();
 		});
 	}
 
-	private void RaiseStructureChangedCore(Win32RawElementProvider provider)
+	/// <summary>
+	/// Emits the queued StructureChanged events, grouped per container and applying WinUI's bulk
+	/// thresholding (AutomationEventsHelper::StructureChangedEventInformation::RaiseStructureChangedEvent):
+	/// up to <see cref="BulkChildrenLimit"/> changes per container emit individual ChildAdded (on the
+	/// added element) / ChildRemoved (on the container, carrying the child runtime id); beyond that
+	/// they collapse to ChildrenBulkAdded / ChildrenBulkRemoved / ChildrenInvalidated on the container.
+	/// </summary>
+	private void FlushStructureChanges()
+	{
+		var groups = new Dictionary<Win32RawElementProvider, (List<Win32RawElementProvider> Added, List<int[]> Removed, bool Invalidated)>(ReferenceEqualityComparer.Instance);
+
+		foreach (var change in _pendingStructureChanges)
+		{
+			if (!groups.TryGetValue(change.Container, out var group))
+			{
+				group = (new List<Win32RawElementProvider>(), new List<int[]>(), false);
+			}
+
+			switch (change.Kind)
+			{
+				case StructureChangeKind.Added when change.Child is not null:
+					group.Added.Add(change.Child);
+					break;
+				case StructureChangeKind.Removed when change.ChildRuntimeId is not null:
+					group.Removed.Add(change.ChildRuntimeId);
+					break;
+				default:
+					group.Invalidated = true;
+					break;
+			}
+
+			groups[change.Container] = group;
+		}
+
+		_pendingStructureChanges.Clear();
+
+		foreach (var (container, group) in groups)
+		{
+			var total = group.Added.Count + group.Removed.Count;
+
+			// Too many changes (or an explicit coarse request) -> a single ChildrenInvalidated.
+			if (group.Invalidated || total > BulkChildrenLimit)
+			{
+				RaiseStructureChangedCore(container, StructureChangeType.ChildrenInvalidated, null);
+				continue;
+			}
+
+			if (group.Added.Count >= BulkChildrenLimit)
+			{
+				RaiseStructureChangedCore(container, StructureChangeType.ChildrenBulkAdded, null);
+			}
+			else
+			{
+				// ChildAdded is raised on the added element itself, with a null runtime id.
+				foreach (var child in group.Added)
+				{
+					RaiseStructureChangedCore(child, StructureChangeType.ChildAdded, null);
+				}
+			}
+
+			if (group.Removed.Count >= BulkChildrenLimit)
+			{
+				RaiseStructureChangedCore(container, StructureChangeType.ChildrenBulkRemoved, null);
+			}
+			else
+			{
+				// ChildRemoved is raised on the container, carrying the removed child's runtime id.
+				foreach (var removedRuntimeId in group.Removed)
+				{
+					RaiseStructureChangedCore(container, StructureChangeType.ChildRemoved, removedRuntimeId);
+				}
+			}
+		}
+	}
+
+	private void RaiseStructureChangedCore(Win32RawElementProvider provider, StructureChangeType type, int[]? runtimeId)
 	{
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(
-				provider,
-				StructureChangeType.ChildrenInvalidated,
-				provider.GetRuntimeId());
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId);
 		}
 		catch (Exception ex)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"RaiseStructureChanged failed: {ex.Message}");
+				this.Log().Debug($"RaiseStructureChanged ({type}) failed: {ex.Message}");
 			}
 		}
 	}
