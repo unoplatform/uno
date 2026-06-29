@@ -7,8 +7,8 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
-// BC58 parity guard: DataContext is a FrameworkElement-only *public* property, but {Binding} must still resolve
-// on non-FrameworkElement DependencyObjects that are connected to an FE tree. These four cases were confirmed to
+// WinUI parity guard: DataContext is a FrameworkElement-only *public* property, but {Binding} must still resolve
+// on non-FrameworkElement DependencyObjects that are connected to an FE tree. These cases were confirmed to
 // resolve on native WinUI (Setter.Value binding does NOT resolve in WinUI and is intentionally not covered).
 [TestClass]
 public class Given_NonFE_DataContextBinding
@@ -53,16 +53,18 @@ public class Given_NonFE_DataContextBinding
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_StateTrigger_IsActive_Bound()
+	[DataRow(true)]
+	[DataRow(false)]
+	public async Task When_StateTrigger_IsActive_Bound(bool flag)
 	{
 		var root = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
 			$"<Grid {Ns}><VisualStateManager.VisualStateGroups><VisualStateGroup><VisualState x:Name='S'><VisualState.StateTriggers><StateTrigger IsActive='{{Binding Flag}}' /></VisualState.StateTriggers><VisualState.Setters><Setter Target='tb.Opacity' Value='0.5' /></VisualState.Setters></VisualState></VisualStateGroup></VisualStateManager.VisualStateGroups><TextBlock x:Name='tb' Text='x' /></Grid>");
-		root.DataContext = new Vm();
+		root.DataContext = new Vm { Flag = flag };
 		await UITestHelper.Load(root, x => x.IsLoaded);
 
 		var groups = VisualStateManager.GetVisualStateGroups(root);
 		var trigger = (StateTrigger)groups[0].States[0].StateTriggers[0];
-		Assert.IsTrue(trigger.IsActive, "StateTrigger.IsActive should resolve {Binding} from the ambient DataContext");
+		Assert.AreEqual(flag, trigger.IsActive, "StateTrigger.IsActive should resolve {Binding} from the ambient DataContext");
 	}
 
 	public sealed class Vm
@@ -70,6 +72,6 @@ public class Given_NonFE_DataContextBinding
 		public GridLength ColWidth { get; } = new GridLength(123);
 		public GridLength RowHeight { get; } = new GridLength(45);
 		public string Msg { get; } = "hello";
-		public bool Flag { get; } = true;
+		public bool Flag { get; init; } = true;
 	}
 }

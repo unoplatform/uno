@@ -228,8 +228,6 @@ public partial class Given_UIElement
 
 		flyout.Hide();
 		await TestServices.WindowHelper.WaitForIdle();
-
-		root.Children.Clear();
 	}
 
 	[TestMethod]
@@ -264,7 +262,6 @@ public partial class Given_UIElement
 
 		flyout.Hide();
 		await TestServices.WindowHelper.WaitForIdle();
-		root.Children.Clear();
 	}
 
 	[TestMethod]
@@ -291,8 +288,6 @@ public partial class Given_UIElement
 		flyout.Hide();
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreNotEqual(viewModel, item.DataContext, "Item must not retain the owner's DataContext after the flyout is closed.");
-
-		root.Children.Clear();
 	}
 
 	[TestMethod]
