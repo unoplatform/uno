@@ -341,13 +341,6 @@ namespace Uno.UI
 
 		public static class Popup
 		{
-#if __ANDROID__
-			/// <summary>
-			/// Use a native popup to display the popup content. Otherwise use the <see cref="PopupRoot"/>.
-			/// </summary>
-			public static bool UseNativePopup { get; set; }
-#endif
-
 			/// <summary>
 			/// By default, light dismiss is disabled in UWP/WinUI unless
 			/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
