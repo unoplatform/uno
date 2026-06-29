@@ -117,6 +117,10 @@ public partial class ShapeVisual
 		return true;
 	}
 
+	// Reused across repaints (one per visual): the damage consumer copies it, so rebuilding in place is safe
+	// and avoids allocating a native path on every repaint.
+	private SKPath? _ownContentPathBuffer;
+
 	private SKPath? BuildOwnContentPath()
 	{
 		if (_shapes is not { Count: > 0 } shapes)
@@ -124,7 +128,8 @@ public partial class ShapeVisual
 			return null;
 		}
 
-		var dst = new SKPath();
+		var dst = _ownContentPathBuffer ??= new SKPath();
+		dst.Rewind();
 
 		var any = false;
 		for (var i = 0; i < shapes.Count; i++)
