@@ -382,31 +382,6 @@ namespace Uno.UI
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 		}
 
-#if __ANDROID__
-		public static class NativeListViewBase
-		{
-			/// <summary>
-			/// Sets this value to remove item animation for <see cref="UnoRecyclerView"/>. This prevents <see cref="UnoRecyclerView"/>
-			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
-			/// </summary>
-			public static bool RemoveItemAnimator { get; set; } = true;
-
-			/// <summary>
-			/// Indicates if a full recycling pass should be achieved on drop (re-order) on a ListView instead of a simple layout pass.
-			/// </summary>
-			/// <remarks>
-			/// This flag should be kept to 'false' if you turned <see cref="RemoveItemAnimator"/> to 'false'.
-			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
-			/// </remarks>
-			public static bool ForceRecycleOnDrop { get; set; }
-
-			/// <summary>
-			/// Sets a value indicating whether the item snapping will be implemented by the native <see cref="AndroidX.RecyclerView.Widget.SnapHelper"/> or by Uno.
-			/// </summary>
-			public static bool UseNativeSnapHelper { get; set; } = true;
-		}
-#endif
-
 		public static class Page
 		{
 			/// <summary>
