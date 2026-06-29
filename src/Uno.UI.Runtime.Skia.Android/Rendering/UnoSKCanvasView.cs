@@ -221,6 +221,14 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			}
 
 			_context!.Flush();
+
+			if (!ApplicationActivity.Instance.FirstFrameRendered)
+			{
+				ApplicationActivity.Instance.FirstFrameRendered = true;
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
