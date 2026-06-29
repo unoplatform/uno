@@ -710,21 +710,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
-#if __IOS__ || UNO_REFERENCE_API
-			/// <summary>
-			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
-			/// </summary>
-			/// <remarks>
-			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
-			/// Important: It will only work when the app runs in Debug mode.
-			/// </remarks>
-			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
-			public static bool IsInspectable
-			{
-				get => EnableDevTools;
-				set => EnableDevTools = value;
-			}
-#endif
 		}
 
 		public static class Xaml
