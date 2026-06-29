@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System.ComponentModel;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
@@ -15,17 +14,7 @@ namespace Microsoft.UI.Xaml
 
 		internal abstract void ApplyTo(DependencyObject o);
 
-		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
-		internal abstract bool TryGetSetterValue(out object? value, DependencyObject @do);
-
-		/// <summary>
-		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.
-		/// Use <see cref="Setter.Property"/> or <see cref="Setter{T}.Property"/> instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void set_Property(string name) => OnStringPropertyChanged(name);
-
-		internal virtual void OnStringPropertyChanged(string name) { }
+		internal abstract bool TryGetSetterValue(out object? value);
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
