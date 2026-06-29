@@ -2933,6 +2933,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
