@@ -244,7 +244,12 @@ internal partial class Win32WindowWrapper
 			}
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			SetSwapInterval(_pacer is null ? 1 : 0);
-			_grContext = GRContext.CreateGl(_grGlInterface);
+			if (GRContext.CreateGl(_grGlInterface) is not { } grContext)
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(GRContext)}.{nameof(GRContext.CreateGl)} failed during {nameof(IRenderer.Reinitialize)}.");
+				return;
+			}
+			_grContext = grContext;
 		}
 
 		// Following the refresh: swap interval 1 paces SwapBuffers, nothing to retarget. Fixed
