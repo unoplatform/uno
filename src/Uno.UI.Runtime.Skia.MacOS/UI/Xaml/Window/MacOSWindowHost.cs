@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -31,6 +32,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
+	private MacOSRenderThread? _metalRenderThread;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
 	private readonly RetainedLayer _retainedLayer = new();
@@ -61,6 +63,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					QueueHandle = queue,
 				};
 				_context = GRContext.CreateMetal(ctx);
+				InitializeMetalRenderThread();
 				break;
 			case RenderSurfaceType.Software:
 				break;
@@ -81,6 +84,60 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		_nativeWindowSize = new Size(nativeWidth, nativeHeight);
 		SizeChanged?.Invoke(this, _nativeWindowSize);
+	}
+
+	private void InitializeMetalRenderThread()
+	{
+		if (_context is null)
+		{
+			return;
+		}
+
+		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, _context, RenderThreadMetalDraw);
+	}
+
+	/// <summary>
+	/// Called on the render thread. Draws the recorded SKPicture into the Metal texture
+	/// acquired from the layer; the render loop flushes and presents after this returns.
+	/// </summary>
+	private void RenderThreadMetalDraw(double nativeWidth, double nativeHeight, nint texture)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight} texture: {texture}");
+		}
+
+		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		{
+			return;
+		}
+
+		// The texture differs every frame, so nothing here can be cached.
+		GRBackendRenderTarget? target = null;
+		SKSurface? surface = null;
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(null, size =>
+		{
+			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
+			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+			return surface.Canvas;
+		});
+
+		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
+		// main thread; this method runs on the render thread, so marshal the update there.
+		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		if (clip != Volatile.Read(ref _lastSvgClipPath))
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+				{
+					Volatile.Write(ref _lastSvgClipPath, clip);
+				}
+			}, NativeDispatcherPriority.Normal);
+		}
+
+		target?.Dispose();
+		surface?.Dispose();
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -285,7 +342,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		AccessibilityRouter.NotifyDisposed(this);
 	}
 
-	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+	void IXamlRootHost.InvalidateRender()
+	{
+		if (_metalRenderThread is not null)
+		{
+			// Metal path: wake the dedicated render thread so draw + present run off the UI thread.
+			_metalRenderThread.SignalNewFrame();
+		}
+		else
+		{
+			// Software path: drive AppKit's display loop on the UI thread.
+			NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+		}
+	}
 
 	void IXamlRootHost.ResignNativeFocus() => NativeUno.uno_window_resign_native_first_responder(_nativeWindow.Handle);
 
@@ -741,6 +810,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			if (window is not null)
 			{
+				// Stop the render thread before tearing down the native window / GRContext.
+				window._metalRenderThread?.Dispose();
+				window._metalRenderThread = null;
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
@@ -793,6 +865,90 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		catch (Exception e)
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// --- Render thread ---
+
+	/// <summary>
+	/// Dedicated render thread for macOS Metal: acquires a drawable, draws the recorded
+	/// SKPicture, flushes, then presents — all off the UI thread so a slow present / VSync
+	/// wait never blocks input or layout. Mirrors the Win32 render thread and the iOS
+	/// CADisplayLink render thread.
+	/// </summary>
+	private sealed class MacOSRenderThread : IDisposable
+	{
+		private readonly Thread _thread;
+		private readonly AutoResetEvent _frameSignal = new(false);
+		private readonly ManualResetEventSlim _presentedEvent = new(false);
+		private readonly nint _windowHandle;
+		private readonly GRContext _context;
+		private readonly Action<double, double, nint> _drawFrame;
+		private volatile bool _disposed;
+
+		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame)
+		{
+			_windowHandle = windowHandle;
+			_context = context;
+			_drawFrame = drawFrame;
+			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
+			_thread.Start();
+		}
+
+		/// <summary>
+		/// Wakes the render thread to present a new frame. Calls made while it is busy
+		/// coalesce into a single wake-up.
+		/// </summary>
+		internal void SignalNewFrame() => _frameSignal.Set();
+
+		/// <summary>
+		/// Blocks until the render thread finishes presenting the current frame, or the timeout elapses.
+		/// </summary>
+		internal void WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
+
+		private void RenderLoop()
+		{
+			while (!_disposed)
+			{
+				_frameSignal.WaitOne();
+				if (_disposed)
+				{
+					break;
+				}
+
+				_presentedEvent.Reset();
+				try
+				{
+					if (NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height))
+					{
+						_drawFrame(width, height, texture);
+
+						// submit: true commits the Metal command buffer before present (matches the iOS path).
+						_context.Flush(submit: true);
+
+						// Present the drawable; may block on VSync / drawable availability.
+						NativeUno.uno_window_present_frame(_windowHandle);
+					}
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"macOS render thread error: {ex}");
+					}
+				}
+
+				_presentedEvent.Set();
+			}
+		}
+
+		public void Dispose()
+		{
+			_disposed = true;
+			_frameSignal.Set();
+			_thread.Join(TimeSpan.FromSeconds(2));
+			_frameSignal.Dispose();
+			_presentedEvent.Dispose();
 		}
 	}
 }
