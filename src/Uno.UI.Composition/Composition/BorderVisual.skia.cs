@@ -386,10 +386,15 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
 
+	// Reused across repaints (one per visual): the damage consumer copies it, so rebuilding in place is safe
+	// and avoids allocating a native path on every repaint.
+	private SKPath? _ownContentPathBuffer;
+
 	private SKPath? BuildOwnContentPath()
 	{
 		UpdatePathsAndCornerClip();
-		var dst = new SKPath();
+		var dst = _ownContentPathBuffer ??= new SKPath();
+		dst.Rewind();
 		var any = false;
 		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
 		{
