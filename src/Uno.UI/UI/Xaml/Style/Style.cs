@@ -236,10 +236,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
-		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value, DependencyObject @do)
+		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value)
 		{
-			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value) && value != DependencyProperty.UnsetValue)
 			{
 				return true;
 			}
@@ -291,10 +290,6 @@ namespace Microsoft.UI.Xaml
 							throw new InvalidOperationException("Property must be set on Setter used in Style"); // TODO: We should also support Setter.Target inside Style https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter#remarks
 						}
 						map[s.Property] = setter;
-					}
-					else if (setter is ICSharpPropertySetter propertySetter)
-					{
-						map[propertySetter.Property] = setter;
 					}
 				}
 			}
