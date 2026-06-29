@@ -645,17 +645,17 @@ namespace Uno.UI
 
 			/// <summary>
 			/// Determines if Vulkan rendering should be enabled on the X11 target.
-			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
 			/// OpenGL (or software rendering) if Vulkan is unavailable.
 			/// </summary>
-			public static bool UseVulkanOnX11 { get; set; }
+			public static bool UseVulkanOnX11 { get; set; } = true;
 
 			/// <summary>
 			/// Determines if Vulkan rendering should be enabled on the Win32 target.
-			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
 			/// OpenGL (or software rendering) if Vulkan is unavailable.
 			/// </summary>
-			public static bool UseVulkanOnWin32 { get; set; }
+			public static bool UseVulkanOnWin32 { get; set; } = true;
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
@@ -664,10 +664,10 @@ namespace Uno.UI
 
 			/// <summary>
 			/// Determines if Vulkan rendering should be enabled on the Android target when using the skia renderer.
-			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to OpenGL ES
-			/// (or software rendering) if Vulkan is unavailable.
+			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
+			/// OpenGL ES (or software rendering) if Vulkan is unavailable.
 			/// </summary>
-			public static bool UseVulkanOnSkiaAndroid { get; set; }
+			public static bool UseVulkanOnSkiaAndroid { get; set; } = true;
 
 			/// <summary>
 			/// Enables certain optimizations that skip rendering some subtrees
