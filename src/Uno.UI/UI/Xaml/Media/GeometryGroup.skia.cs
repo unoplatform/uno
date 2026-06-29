@@ -1,7 +1,6 @@
 ﻿using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -9,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		internal override SKPath GetSKPath()
 		{
-			var path = new SKPath();
+			var builder = new SKPathBuilder();
 
 			foreach (var geometry in Children)
 			{
 				// Use GetTransformedSKPath so each child's own Transform is applied
 				var geometryPath = geometry.GetTransformedSKPath();
-				path.AddPath(geometryPath);
+				builder.AddPath(geometryPath, SKPathAddMode.Append);
 			}
 
-			path.FillType = FillRule.ToSkiaFillType();
-			return path;
+			builder.FillType = FillRule.ToSkiaFillType();
+			return builder.Detach();
 		}
 	}
 }

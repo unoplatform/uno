@@ -3,7 +3,6 @@ using SkiaSharp;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Windows.Graphics.Imaging
 {
@@ -102,7 +101,7 @@ namespace Windows.Graphics.Imaging
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
 			using var canvas = new SKCanvas(bitmap._bitmap);
-			canvas.DrawBitmap(_bitmap, 0, 0);
+			canvas.DrawBitmap(_bitmap, 0, 0, default(SKSamplingOptions), null);
 			canvas.Flush();
 		}
 

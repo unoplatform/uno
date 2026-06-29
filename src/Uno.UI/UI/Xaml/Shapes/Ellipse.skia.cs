@@ -4,7 +4,6 @@ using Microsoft.UI.Composition;
 using System.Numerics;
 using SkiaSharp;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -27,9 +26,9 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private SkiaGeometrySource2D GetGeometry(Rect renderingArea)
 		{
-			var path = new SKPath();
-			path.AddOval(new SKRect((float)renderingArea.X, (float)renderingArea.Y, (float)renderingArea.Right, (float)renderingArea.Bottom));
-			var geometry = new SkiaGeometrySource2D(path);
+			var builder = new SKPathBuilder();
+			builder.AddOval(new SKRect((float)renderingArea.X, (float)renderingArea.Y, (float)renderingArea.Right, (float)renderingArea.Bottom));
+			var geometry = new SkiaGeometrySource2D(builder.Detach());
 
 			return geometry;
 		}

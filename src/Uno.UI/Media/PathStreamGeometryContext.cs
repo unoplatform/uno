@@ -8,12 +8,10 @@ using static System.Math;
 using Uno.Extensions;
 
 #if __SKIA__
-using Path = SkiaSharp.SKPath;
+using PathBuilder = SkiaSharp.SKPathBuilder;
 #else
-using Path = System.Object;
+using PathBuilder = System.Object;
 #endif
-
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Uno.Media
 {
@@ -21,7 +19,7 @@ namespace Uno.Media
 	{
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;
-		private Path bezierPath = new Path();
+		private PathBuilder bezierPath = new PathBuilder();
 
 		internal PathStreamGeometryContext(StreamGeometry owner)
 		{
@@ -182,7 +180,11 @@ namespace Uno.Media
 
 		public override void Dispose()
 		{
+#if __SKIA__
+			_owner.Close(bezierPath.Detach());
+#else
 			_owner.Close(bezierPath);
+#endif
 		}
 	}
 }

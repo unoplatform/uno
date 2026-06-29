@@ -3,7 +3,6 @@ using Uno.UI.UI.Xaml.Media;
 
 using Rect = Windows.Foundation.Rect;
 
-#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -28,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private SKPath GetSKPath(bool skipUnfilled)
 		{
-			var path = new SKPath();
+			var builder = new SKPathBuilder();
 
 			foreach (PathFigure figure in Figures)
 			{
@@ -37,24 +36,24 @@ namespace Microsoft.UI.Xaml.Media
 					continue;
 				}
 
-				path.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
+				builder.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
 
 				foreach (PathSegment segment in figure.Segments)
 				{
 					if (segment is LineSegment lineSegment)
 					{
-						path.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
+						builder.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
 					}
 					else if (segment is PolyLineSegment polyLineSegment)
 					{
 						foreach (var point in polyLineSegment.Points)
 						{
-							path.LineTo((float)point.X, (float)point.Y);
+							builder.LineTo((float)point.X, (float)point.Y);
 						}
 					}
 					else if (segment is BezierSegment bezierSegment)
 					{
-						path.CubicTo(
+						builder.CubicTo(
 							 (float)bezierSegment.Point1.X, (float)bezierSegment.Point1.Y,
 							 (float)bezierSegment.Point2.X, (float)bezierSegment.Point2.Y,
 							 (float)bezierSegment.Point3.X, (float)bezierSegment.Point3.Y);
@@ -63,7 +62,7 @@ namespace Microsoft.UI.Xaml.Media
 					{
 						for (var i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
 						{
-							path.CubicTo(
+							builder.CubicTo(
 								 (float)polyBezierSegment.Points[i].X, (float)polyBezierSegment.Points[i].Y,
 								 (float)polyBezierSegment.Points[i + 1].X, (float)polyBezierSegment.Points[i + 1].Y,
 								 (float)polyBezierSegment.Points[i + 2].X, (float)polyBezierSegment.Points[i + 2].Y);
@@ -71,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media
 					}
 					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
-						path.QuadTo(
+						builder.QuadTo(
 							 (float)quadraticBezierSegment.Point1.X, (float)quadraticBezierSegment.Point1.Y,
 							 (float)quadraticBezierSegment.Point2.X, (float)quadraticBezierSegment.Point2.Y);
 					}
@@ -79,14 +78,14 @@ namespace Microsoft.UI.Xaml.Media
 					{
 						for (var i = 0; i < polyQuadraticBezierSegment.Points.Count - 1; i += 2)
 						{
-							path.QuadTo(
+							builder.QuadTo(
 								 (float)polyQuadraticBezierSegment.Points[i].X, (float)polyQuadraticBezierSegment.Points[i].Y,
 								 (float)polyQuadraticBezierSegment.Points[i + 1].X, (float)polyQuadraticBezierSegment.Points[i + 1].Y);
 						}
 					}
 					else if (segment is ArcSegment arcSegment)
 					{
-						path.ArcTo(
+						builder.ArcTo(
 							 (float)arcSegment.Size.Width, (float)arcSegment.Size.Height,
 							 (float)arcSegment.RotationAngle,
 							 arcSegment.IsLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
@@ -97,13 +96,13 @@ namespace Microsoft.UI.Xaml.Media
 
 				if (figure.IsClosed)
 				{
-					path.Close();
+					builder.Close();
 				}
 			}
 
-			path.FillType = FillRule.ToSkiaFillType();
+			builder.FillType = FillRule.ToSkiaFillType();
 
-			return path;
+			return builder.Detach();
 		}
 	}
 }

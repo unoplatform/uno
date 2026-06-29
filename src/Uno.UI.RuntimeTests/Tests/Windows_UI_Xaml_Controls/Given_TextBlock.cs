@@ -38,7 +38,6 @@ using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
 
-#pragma warning disable CS0618 // SkiaSharp 4: deprecated SKTypeface.ContainsGlyph kept intentionally (SKFont migration deferred)
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -143,7 +142,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
 
@@ -176,7 +176,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock
 			{
