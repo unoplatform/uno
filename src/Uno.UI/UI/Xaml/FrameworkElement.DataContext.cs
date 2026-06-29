@@ -1,6 +1,8 @@
 #nullable enable
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Data;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml
 {
@@ -14,7 +16,7 @@ namespace Microsoft.UI.Xaml
 			set => SetValue(DataContextProperty, value);
 		}
 
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+		[UnconditionalSuppressMessage("Trimming", "IL2111")]
 		public static DependencyProperty DataContextProperty { get; } =
 			DependencyProperty.Register(
 				name: nameof(DataContext),
@@ -27,7 +29,7 @@ namespace Microsoft.UI.Xaml
 				)
 		);
 
-		public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>? DataContextChanged;
+		public event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs>? DataContextChanged;
 
 		internal protected virtual void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{

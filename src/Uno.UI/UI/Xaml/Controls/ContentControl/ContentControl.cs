@@ -433,7 +433,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ResetContentDataContextOverride()
 		{
-			if (_localContentDataContextOverride && ContentTemplateRoot is IDependencyObjectStoreProvider provider && provider.Store.DataContextProperty is { } dataContextProperty)
+			if (_localContentDataContextOverride &&
+				ContentTemplateRoot is IDependencyObjectStoreProvider provider &&
+				provider.Store.DataContextProperty is { } dataContextProperty)
 			{
 				_localContentDataContextOverride = false;
 				provider.Store.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
