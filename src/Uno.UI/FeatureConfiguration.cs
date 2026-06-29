@@ -744,23 +744,6 @@ namespace Uno.UI
 			public static bool FailOnUnknownProperties { get; set; }
 		}
 
-		public static class AppBarButton
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Gets or set whether the EnableBitmapIconTint feature is on or off.
-			/// </summary>
-			/// <remarks>
-			/// This Feature will allow any <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>
-			/// inside a <see cref="Microsoft.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
-			/// as their tint Color.
-			/// <para/>Default value is False.
-			/// </remarks>
-			/// <returns>True if this feature is on, False otherwise</returns>
-			public static bool EnableBitmapIconTint { get; set; }
-#endif
-		}
-
 		public static class Cursors
 		{
 #if UNO_REFERENCE_API
