@@ -177,6 +177,7 @@ DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
 DWM_SYSTEMBACKDROP_TYPE
+DwmFlush
 EmptyClipboard
 EnableMouseInPointer
 EndPaint
