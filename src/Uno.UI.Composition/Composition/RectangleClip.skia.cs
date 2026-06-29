@@ -6,6 +6,8 @@ using SkiaSharp;
 using Uno.Extensions;
 using Windows.Foundation;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Composition;
 
 partial class RectangleClip

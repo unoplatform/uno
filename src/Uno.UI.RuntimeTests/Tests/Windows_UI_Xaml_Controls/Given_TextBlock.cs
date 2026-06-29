@@ -38,6 +38,8 @@ using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
 
+#pragma warning disable CS0618 // SkiaSharp 4: deprecated SKTypeface.ContainsGlyph kept intentionally (SKFont migration deferred)
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]

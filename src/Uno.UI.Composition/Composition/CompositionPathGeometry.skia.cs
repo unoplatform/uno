@@ -11,6 +11,8 @@ using Windows.Graphics.Interop;
 using static Uno.FoundationFeatureConfiguration;
 using Windows.Graphics.Interop.Direct2D;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Composition;
 
 public partial class CompositionPathGeometry : CompositionGeometry, ID2D1GeometrySink

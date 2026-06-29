@@ -13,6 +13,8 @@ using SkiaSharp;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper

@@ -3,6 +3,8 @@ using Uno.UI.UI.Xaml.Media;
 
 using Rect = Windows.Foundation.Rect;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class PathGeometry

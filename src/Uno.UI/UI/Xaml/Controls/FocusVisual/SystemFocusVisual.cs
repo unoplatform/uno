@@ -10,6 +10,8 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using Uno.Extensions;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control

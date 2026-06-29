@@ -13,6 +13,8 @@ using Path = SkiaSharp.SKPath;
 using Path = System.Object;
 #endif
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Uno.Media
 {
 	class PathStreamGeometryContext : StreamGeometryContext

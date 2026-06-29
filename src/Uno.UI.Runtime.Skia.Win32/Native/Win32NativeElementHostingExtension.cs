@@ -20,6 +20,8 @@ using SkiaSharp;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension

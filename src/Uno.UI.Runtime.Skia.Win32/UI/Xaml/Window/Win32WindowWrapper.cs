@@ -35,6 +35,8 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IAccessibilityOwner
