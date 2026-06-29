@@ -152,6 +152,7 @@ AdjustWindowRectEx
 AdjustWindowRectExForDpi
 AddClipboardFormatListener
 BeginPaint
+ClientToScreen
 BitBlt
 ChoosePixelFormat
 CloseClipboard
@@ -230,12 +231,14 @@ GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
 IsChild
+IsZoomed
 LoadCursor
 LoadRegTypeLib
 LocalFree
 MapWindowPoints
 MonitorFromWindow
 MonitorFromPoint
+MonitorFromRect
 OleInitialize
 OpenClipboard
 PeekMessage

@@ -386,6 +386,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_NCCALCSIZE:
 				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
 				{
+					// Custom-chrome windows remove the system frame so content fills the whole window. When such
+					// a window is maximized, Windows still positions it so the resize frame overhangs the monitor
+					// on every edge; left uncorrected, content and the caption buttons would spill off-screen and
+					// the reported client size would exceed the visible area. Inset the proposed client rect back
+					// to the monitor work area so the chrome fills exactly the visible screen, matching WinUI.
+					// FullScreenPresenter is excluded: it also reports a maximized window but must own the whole
+					// monitor. IsZoomed reflects the live maximized state even before WM_SIZE arrives.
+					if (Window?.AppWindow?.Presenter is OverlappedPresenter && PInvoke.IsZoomed(hwnd))
+					{
+						// rgrc[0] is the first field of NCCALCSIZE_PARAMS, so lParam can be read as its RECT.
+						ref var client = ref *(RECT*)lParam.Value;
+						ApplyMaximizedClientInset(ref client);
+					}
 					return new LRESULT(IntPtr.Zero);
 				}
 				break;

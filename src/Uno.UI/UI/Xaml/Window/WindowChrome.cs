@@ -492,14 +492,8 @@ internal sealed partial class WindowChrome : ContentControl
 			Visibility.Visible :
 			Visibility.Collapsed;
 
-		// On Windows, maximized window stretches out of the bounds of the screen slightly.
-		// https://www.reddit.com/r/csharp/comments/921k9l/fixing_8_pixel_overhang_on_maximized_window_state/
-		var isClientAreaExtended = appWindowTitleBar.ExtendsContentIntoTitleBar || !hasPresenterTitleBar;
-		var shouldHavePadding =
-			OperatingSystem.IsWindows() &&
-			IsWindowMaximized() &&
-			isClientAreaExtended;
-		Padding = new(shouldHavePadding ? 4 : 0);
+		// The maximized-window overhang is corrected natively in the Win32 windowing layer (the client rect is
+		// inset back to the work area in WM_NCCALCSIZE), so the chrome simply fills the client area on all states.
 
 		ResizeCaptionButtons();
 	}
