@@ -259,26 +259,6 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-#if __ANDROID__
-			/// <summary>
-			/// Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
-			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on Android.
-			/// Setting it to true avoids the use of costly Java->C# interop.
-			/// </remarks>
-			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
-#endif
-
-#if __ANDROID__
-			/// <summary>
-			/// Invalidate native android measure cache when measure-spec has changed since last measure.
-			/// </summary>
-			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
-#endif
-
 			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
