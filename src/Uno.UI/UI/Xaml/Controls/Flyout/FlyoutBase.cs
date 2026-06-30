@@ -876,11 +876,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected internal virtual void Close()
-		{
-			Hide(canCancel: true);
-		}
-
 		protected internal virtual void Open()
 		{
 			EnsurePopupCreated();
