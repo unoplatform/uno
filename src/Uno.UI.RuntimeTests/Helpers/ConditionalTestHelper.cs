@@ -25,12 +25,12 @@ internal static class ConditionalTestHelper
 
 		if (counter == 0)
 		{
-			throw new InvalidOperationException("Unrecognized runtime platform.");
+			throw new InvalidOperationException($"Unrecognized runtime platform. Platform Dump: {GetDescription()}");
 		}
 
 		if (counter > 1)
 		{
-			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g})");
+			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g}). Platform DUmp: {GetDescription()}");
 		}
 
 		return currentPlatform;
@@ -63,9 +63,17 @@ internal static class ConditionalTestHelper
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
 			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
 			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
-			_ => throw new ArgumentException(nameof(singlePlatform)),
+			_ => throw new ArgumentException($"Unknown value {singlePlatform} 0x{singlePlatform.ToString("x")}; Platforms: {GetDescription()}.", nameof(singlePlatform)),
 		};
 	}
+
+	static string GetDescription() =>
+		$"IsSkia={IsSkia()}; IsSkiaWin32={IsSkiaWin32()}; IsSkiaX11={IsSkiaX11()}; IsSkiaMacOS={IsSkiaMacOS()}; IsSkiaIslands={IsSkiaIslands()}; " +
+		$"OSVersion.Platform={Environment.OSVersion.Platform}; OperatingSystem.IsBrowser={OperatingSystem.IsBrowser()}; " +
+		$"OperatingSystem.IsAndroid={OperatingSystem.IsAndroid()}; OperatingSystem.IsIOS={OperatingSystem.IsIOS()}; OperatingSystem.IsTvOS={OperatingSystem.IsTvOS()}; " +
+		$"OperatingSystem.IsMacCatalyst={OperatingSystem.IsMacCatalyst()}; " +
+		$"IsWinUI={IsWinUI()}; IsNativeWasm={IsNativeWasm()}; IsNativeAndroid={IsNativeAndroid()}; IsNativeIOS={IsNativeIOS()}; " +
+		$"IsNativeMacCatalyst={IsNativeMacCatalyst()}; IsNativetvOS={IsNativetvOS()}";
 
 	private static bool IsSkiaHostAssembly(string name)
 #if __SKIA__

@@ -7,7 +7,7 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<!-- When building for the generic net target (e.g., via UnoTargetFrameworkOverride=net10.0),
+		<!-- When building for the generic net target (e.g., via UnoTargetFrameworkOverride=net11.0),
 		     use the Skia runtime identifier so that NativeDispatcher.skia.cs is included.
 		     Use GetTargetPlatformIdentifier() instead of $(TargetPlatformIdentifier) because the latter
 		     is set in Sdk.targets (after project file evaluation) and would always be empty here. -->

@@ -110,13 +110,16 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			});
 
 #if !__WASM__
-			if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
+			if (!OperatingSystem.IsBrowser())
 			{
-				this.CaptureWindowAsync("Before").Wait(this.DefaultTimeout);
-			}
-			if (this.options.HasFlag(EventTesterOptions.CaptureScreenBefore))
-			{
-				this.CaptureScreenAsync("Before").Wait(this.DefaultTimeout);
+				if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
+				{
+					this.CaptureWindowAsync("Before").Wait(this.DefaultTimeout);
+				}
+				if (this.options.HasFlag(EventTesterOptions.CaptureScreenBefore))
+				{
+					this.CaptureScreenAsync("Before").Wait(this.DefaultTimeout);
+				}
 			}
 #endif
 
@@ -485,13 +488,16 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					//}
 
 #if !__WASM__
-					if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
+					if (!OperatingSystem.IsBrowser())
 					{
-						this.CaptureWindowAsync("After").Wait(this.DefaultTimeout);
-					}
-					if (this.options.HasFlag(EventTesterOptions.CaptureScreenAfter))
-					{
-						this.CaptureScreenAsync("After").Wait(this.DefaultTimeout);
+						if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
+						{
+							this.CaptureWindowAsync("After").Wait(this.DefaultTimeout);
+						}
+						if (this.options.HasFlag(EventTesterOptions.CaptureScreenAfter))
+						{
+							this.CaptureScreenAsync("After").Wait(this.DefaultTimeout);
+						}
 					}
 #endif
 

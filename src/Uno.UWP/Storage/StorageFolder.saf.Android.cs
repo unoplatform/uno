@@ -40,10 +40,10 @@ namespace Windows.Storage
 				}
 			}
 
-			internal SafFolder(DocumentFile directoryDocument) : base(directoryDocument.Uri.Path ?? directoryDocument.Name ?? "")
+			internal SafFolder(DocumentFile directoryDocument) : base(directoryDocument.Uri?.Path ?? directoryDocument.Name ?? "")
 			{
 				_directoryDocument = directoryDocument ?? throw new ArgumentNullException(nameof(directoryDocument));
-				_folderUri = _directoryDocument.Uri;
+				_folderUri = _directoryDocument.Uri ?? throw new ArgumentException($"directoryDocument.Uri must not be null.", nameof(directoryDocument));
 			}
 
 			public override StorageProvider Provider => StorageProviders.AndroidSaf;
@@ -192,8 +192,8 @@ namespace Windows.Storage
 			{
 				return await Task.Run(() =>
 				{
-					var contents = _directoryDocument
-						.ListFiles()
+					var contents = (_directoryDocument
+						 .ListFiles() ?? [])
 						.Where(f => f.IsFile)
 						.Select(d => StorageFile.GetFromSafDocument(d))
 						.ToArray();
@@ -224,8 +224,8 @@ namespace Windows.Storage
 			{
 				return await Task.Run(() =>
 				{
-					var contents = _directoryDocument
-						.ListFiles()
+					var contents = (_directoryDocument
+						 .ListFiles() ?? [])
 						.Where(f => f.IsDirectory)
 						.Select(d => GetFromSafDocument(d))
 						.ToArray();
@@ -256,7 +256,7 @@ namespace Windows.Storage
 			{
 				return await Task.Run(() =>
 				{
-					var items = _directoryDocument.ListFiles();
+					var items = _directoryDocument.ListFiles() ?? [];
 					var folders = items.Where(i => i.IsDirectory).Select(i => GetFromSafDocument(i));
 					var files = items.Where(i => i.IsFile).Select(i => StorageFile.GetFromSafDocument(i));
 					return Task.FromResult((IReadOnlyList<IStorageItem>)folders.OfType<IStorageItem>().Union(files).ToArray());

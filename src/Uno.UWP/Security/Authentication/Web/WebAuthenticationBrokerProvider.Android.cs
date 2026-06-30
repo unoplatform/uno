@@ -158,19 +158,25 @@ namespace Uno.AuthenticationBroker
 			var success = false;
 			var parentActivity = CurrentActivity;
 
-			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity);
+#pragma warning disable CS0618
+			// obsolete API; don't want to migrate now.
+			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity!)!;
+#pragma warning restore CS0618
 			try
 			{
 				if (await BindServiceAsync(customTabsActivityManager, ct))
 				{
 					var customTabsIntent = new CustomTabsIntent.Builder(customTabsActivityManager.Session)
-						.SetShowTitle(true)
-						.Build();
+						.SetShowTitle(true)!
+						.Build()!;
 
-					customTabsIntent.Intent.SetData(global::Android.Net.Uri.Parse(url.OriginalString));
+					if (!string.IsNullOrEmpty(url.OriginalString))
+					{
+						customTabsIntent.Intent!.SetData(global::Android.Net.Uri.Parse(url.OriginalString));
+					}
 
 					if (parentActivity?.PackageManager is { } packageManager &&
-						customTabsIntent.Intent.ResolveActivity(packageManager) != null)
+						customTabsIntent.Intent!.ResolveActivity(packageManager) != null)
 					{
 						WebAuthenticationBrokerRedirectActivity.StartActivity(parentActivity, customTabsIntent.Intent);
 						success = true;
