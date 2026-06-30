@@ -1387,10 +1387,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override string GetAccessibilityInnerText() => Text;
 
-		// TODO: Remove as a breaking change for Uno 6
-		// Also, make OnVerticalContentAlignmentChanged private protected.
-		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment) { }
-
 		public void Select(int start, int length)
 		{
 			if (start < 0)
