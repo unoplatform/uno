@@ -210,9 +210,10 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M`
   - See notes.
   - Files: `src/Uno.UI/UI/Xaml/Window/WindowActivatedEventArgs.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/WindowActivationState.cs`, `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`
-- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
+- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S` — **DEFERRED (mis-sized; needs decision)**
   - See notes.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.wasm.cs`
+  - **Tried & reverted.** The `IEnumerable` (+ `GetEnumerator`) is load-bearing: it enables C# **collection-initializer syntax** (`new StackPanel { child1, child2 }`), a popular Uno convenience WinUI lacks. Removing it breaks that pattern across tests, samples, and **user app code** (200+ candidate sites repo-wide; 14 compile errors in `Given_ListViewBase` alone). This is a disruptive feature removal, not the effort-`S` interface tidy the assessment assumed. Needs an explicit decision + a dedicated migration sweep of every `new <Panel/Control> { ... }` initializer before it can land.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.reference.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`
 - [x] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
   - Delete the `TextBox` override; make base `OnVerticalContentAlignmentChanged` `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
