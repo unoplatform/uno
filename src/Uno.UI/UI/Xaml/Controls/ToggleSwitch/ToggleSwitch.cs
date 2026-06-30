@@ -191,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
 
-		public void OnTemplateRecycled()
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
 			try
 			{
