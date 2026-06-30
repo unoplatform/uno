@@ -35,7 +35,7 @@ partial class PageStackEntry
 	{
 		[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "Relying on the declaring property to track this.")]
 		get => (Type)GetValue(SourcePageTypeProperty);
-		set => SetValue(SourcePageTypeProperty, value);
+		internal set => SetValue(SourcePageTypeProperty, value);
 	}
 
 	/// <summary>
