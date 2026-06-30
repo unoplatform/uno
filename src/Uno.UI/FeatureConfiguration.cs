@@ -107,14 +107,6 @@ namespace Uno.UI
 			/// referencing the ** type ** ComboBox in any way.
 			/// </remarks>
 			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
-
-#if __ANDROID__
-			/// <summary>
-			/// Gets or sets a value indicating whether the ComboBox popup should be allowed
-			/// to be displayed under translucent status bar on Android. Defaults to false.
-			/// </summary>
-			public static bool AllowPopupUnderTranslucentStatusBar { get; set; }
-#endif
 		}
 
 		public static class CompositionTarget
@@ -267,26 +259,6 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-#if __ANDROID__
-			/// <summary>
-			/// Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
-			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on Android.
-			/// Setting it to true avoids the use of costly Java->C# interop.
-			/// </remarks>
-			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
-#endif
-
-#if __ANDROID__
-			/// <summary>
-			/// Invalidate native android measure cache when measure-spec has changed since last measure.
-			/// </summary>
-			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
-#endif
-
 			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
@@ -299,15 +271,6 @@ namespace Uno.UI
 			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
-
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
-			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
-			/// Default value is false, setting it to true will restore the behavior of uno v4.7 and earlier.
-			/// </summary>
-			public static bool IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews { get; set; }
-#endif
 		}
 
 		public static class FrameworkTemplate
@@ -378,13 +341,6 @@ namespace Uno.UI
 
 		public static class Popup
 		{
-#if __ANDROID__
-			/// <summary>
-			/// Use a native popup to display the popup content. Otherwise use the <see cref="PopupRoot"/>.
-			/// </summary>
-			public static bool UseNativePopup { get; set; }
-#endif
-
 			/// <summary>
 			/// By default, light dismiss is disabled in UWP/WinUI unless
 			/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
@@ -424,44 +380,7 @@ namespace Uno.UI
 			/// the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength { get; set; } = 1.0;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			/// <summary>
-			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
-			/// </summary>
-			/// <remarks>
-			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
-			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
-			/// can be used to force a specific behavior.
-			/// </remarks>
-			public static bool AnimateScrollIntoView { get; set; } = true;
-#endif
 		}
-
-#if __ANDROID__
-		public static class NativeListViewBase
-		{
-			/// <summary>
-			/// Sets this value to remove item animation for <see cref="UnoRecyclerView"/>. This prevents <see cref="UnoRecyclerView"/>
-			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
-			/// </summary>
-			public static bool RemoveItemAnimator { get; set; } = true;
-
-			/// <summary>
-			/// Indicates if a full recycling pass should be achieved on drop (re-order) on a ListView instead of a simple layout pass.
-			/// </summary>
-			/// <remarks>
-			/// This flag should be kept to 'false' if you turned <see cref="RemoveItemAnimator"/> to 'false'.
-			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
-			/// </remarks>
-			public static bool ForceRecycleOnDrop { get; set; }
-
-			/// <summary>
-			/// Sets a value indicating whether the item snapping will be implemented by the native <see cref="AndroidX.RecyclerView.Widget.SnapHelper"/> or by Uno.
-			/// </summary>
-			public static bool UseNativeSnapHelper { get; set; } = true;
-		}
-#endif
 
 		public static class Page
 		{
@@ -480,22 +399,6 @@ namespace Uno.UI
 			public static bool UseWinUIBehavior { get; set; }
 #if __SKIA__
 				= true;
-#endif
-		}
-
-		public static class PointerRoutedEventArgs
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Defines if the PointerPoint.Timestamp retrieved from PointerRoutedEventArgs.GetCurrentPoint(relativeTo)
-			/// or PointerRoutedEventArgs.GetIntermediatePoints(relativeTo) can be relative using the Android's
-			/// "SystemClock.uptimeMillis()" or if they must be converted into an absolute scale
-			/// (using the "elapsedRealtime()", cf. https://developer.android.com/reference/android/os/SystemClock).
-			/// Disabling it negatively impacts the performance it requires to compute the "sleep time"
-			/// (i.e. [real elapsed time] - [up time]) for each event (as the up time is paused when device is in deep sleep).
-			/// By default this is `true`.
-			/// </summary>
-			public static bool AllowRelativeTimeStamp { get; set; } = true;
 #endif
 		}
 
@@ -637,18 +540,6 @@ namespace Uno.UI
 			/// on iOS versions prior to 26.
 			/// </remarks>
 			public static bool DisableNumberPadPopover { get; set; }
-
-#if __ANDROID__
-			/// <summary>
-			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
-			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
-			/// but doesn't do any validation.
-			/// </summary>
-			/// <remarks>
-			/// This is available on Android only
-			/// </remarks>
-			public static bool UseLegacyInputScope { get; set; }
-#endif
 		}
 
 		public static class ScrollViewer
@@ -673,15 +564,6 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>This is effective only for managed scrollbars (WASM, macOS and Skia for now)</remarks>
 			public static TimeSpan? DefaultAutoHideDelay { get; set; }
-
-#if __ANDROID__
-			/// <summary>
-			/// This value defines an optional delay to be set for native ScrollBar thumbs to disapear. The
-			/// platform default is 300ms, which can make the thumbs appear on screenshots, changing this value
-			/// to <see cref="TimeSpan.Zero"/> makes those disapear faster.
-			/// </summary>
-			public static TimeSpan? AndroidScrollbarFadeDelay { get; set; }
-#endif
 
 			/// <summary>
 			/// Defines the delay of after which the ScrollViewer starts to move to snap points. The default value is 250ms.
@@ -709,17 +591,6 @@ namespace Uno.UI
 			public static int ShowDuration { get; set; } = 5000;
 		}
 
-		public static class NativeFramePresenter
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Determines if pages in the backstack are kept in the visual tree.
-			/// Defaults to false for performance considerations.
-			/// </summary>
-			public static bool AndroidUnloadInactivePages { get; set; }
-#endif
-		}
-
 		public static class UIElement
 		{
 			/// <summary>
@@ -733,14 +604,6 @@ namespace Uno.UI
 			/// their arrange and when the final rect is changing.
 			/// </summary>
 			public static bool UseInvalidateArrangePath { get; set; } = true;
-
-#if __ANDROID__
-			/// <summary>
-			/// On Android, rollback the clipping to the previous behavior, which was to apply the clipping
-			/// on the assigned children bounds instead of the parent bounds. 
-			/// </summary>
-			public static bool UseLegacyClipping { get; set; }
-#endif
 
 			/// <summary>
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
@@ -774,17 +637,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; }
 
-#if __ANDROID__
-			/// <summary>
-			/// When this is set, non-UIElements will always be clipped to their bounds (<see cref="Android.Views.ViewGroup.ClipChildren"/> will
-			/// always be set to true on their parent).
-			/// </summary>
-			/// <remarks>
-			/// This is true by default as most native views assume that they will be clipped, and can display incorrectly otherwise.
-			/// </remarks>
-			public static bool AlwaysClipNativeChildren { get; set; } = true;
-#endif
-
 			/// <summary>
 			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
 			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
@@ -805,20 +657,6 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
 			public static bool ApplySettersBeforeTransition { get; set; }
-		}
-
-		public static class WebView
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Prevent the WebView from using hardware rendering.
-			/// This was previously the default behavior in Uno to work around a keyboard-related visual glitch in Android 5.0 (http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop), however it prevents video and 3d content from being rendered.
-			/// </summary>
-			/// <remarks>
-			/// See this for more info: https://github.com/unoplatform/uno/blob/26c5cc5992cae3c8c25adf51eb77ca4b0dd34e93/src/Uno.UI/UI/Xaml/Controls/WebView/WebView.Android.cs#L251_L255
-			/// </remarks>
-			public static bool ForceSoftwareRendering { get; set; }
-#endif
 		}
 
 		public static class WebView2
@@ -872,21 +710,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
-#if __IOS__ || UNO_REFERENCE_API
-			/// <summary>
-			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
-			/// </summary>
-			/// <remarks>
-			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
-			/// Important: It will only work when the app runs in Debug mode.
-			/// </remarks>
-			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
-			public static bool IsInspectable
-			{
-				get => EnableDevTools;
-				set => EnableDevTools = value;
-			}
-#endif
 		}
 
 		public static class Xaml
@@ -904,94 +727,6 @@ namespace Uno.UI
 			/// the XAML that do not map to a property on the target object.
 			/// </summary>
 			public static bool FailOnUnknownProperties { get; set; }
-		}
-
-		public static class DatePicker
-		{
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
-			/// </summary>
-			/// <remarks>
-			/// Important: This flag will only have an impact on iOS 14 devices
-			/// </remarks>
-			public static bool UseLegacyStyle { get; set; }
-#endif
-		}
-
-		public static class TimePicker
-		{
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
-			/// </summary>
-			/// <remarks>
-			/// Important: This flag will only have an impact on iOS 14 devices
-			/// </remarks>
-			public static bool UseLegacyStyle { get; set; }
-#endif
-		}
-
-		public static class TimePickerFlyout
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Gets or sets whether the <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
-			/// Legacy time setting is about preserving days, seconds, and milliseconds of
-			/// <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
-			/// </summary>
-			/// <remarks>
-			/// This flag defaults to <see langword="false"/> to match UWP behavior, where a value set from UI is
-			/// only hours and minutes, and any previously set (programmatically) days, seconds, or milliseconds are cleared.
-			/// This flag is Android only.
-			/// </remarks>
-			public static bool UseLegacyTimeSetting { get; set; }
-#endif
-		}
-
-		public static class CommandBar
-		{
-#if __APPLE_UIKIT__
-			/// <summary>
-			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
-			/// </summary>
-			/// <remarks>
-			/// This feature is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for
-			/// UI Testing. In general cases, this should not happen as the bar may be moved back to to this presenter while
-			/// another page is already visible, making this bar overlay on top of another.
-			/// </remarks>
-			/// <returns>True if this feature is on, False otherwise</returns>
-			public static bool AllowNativePresenterContent { get; set; }
-#endif
-		}
-
-		public static class AppBarButton
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Gets or set whether the EnableBitmapIconTint feature is on or off.
-			/// </summary>
-			/// <remarks>
-			/// This Feature will allow any <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>
-			/// inside a <see cref="Microsoft.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
-			/// as their tint Color.
-			/// <para/>Default value is False.
-			/// </remarks>
-			/// <returns>True if this feature is on, False otherwise</returns>
-			public static bool EnableBitmapIconTint { get; set; }
-#endif
-		}
-
-		public static class Cursors
-		{
-#if UNO_REFERENCE_API
-			/// <summary>
-			/// Gets or sets a value indicating whether "interactive" controls like
-			/// Buttons and ToggleSwitches use the pointer cursor in WebAssembly
-			/// to emulate a "web-like" feel. Default is <see langword="true"/>.
-			/// </summary>
-			public static bool UseHandForInteraction { get; set; } = true;
-#endif
 		}
 
 		public static class Timeline
@@ -1184,46 +919,6 @@ namespace Uno.UI
 			}
 #else
 			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
-#endif
-		}
-
-#if __ANDROID__ || UNO_REFERENCE_API
-		public static class AndroidSettings
-		{
-#if NET9_0_OR_GREATER
-			private static bool _isEdgeToEdgeEnabled = true;
-#else
-			private static bool _isEdgeToEdgeEnabled;
-#endif
-
-			/// <summary>
-			/// Gets or sets a value indicating whether the app should use the "edge-to-edge" experience
-			/// <see href="https://developer.android.com/develop/ui/views/layout/edge-to-edge" />.
-			/// When enabled, the system UI becomes transparent and the app's UI flows behind it.
-			/// Use Uno Toolkit SafeArea to accomodate for it.
-			/// This flag has no effect on Android 15 and newer, where the edge-to-edge experience
-			/// is enforced by the OS.
-			/// </summary>
-			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
-			public static bool IsEdgeToEdgeEnabled
-			{
-#if __ANDROID__
-				get => _isEdgeToEdgeEnabled || (int)Android.OS.Build.VERSION.SdkInt >= 35;
-#else
-				get => _isEdgeToEdgeEnabled;
-#endif
-				set => _isEdgeToEdgeEnabled = value;
-			}
-		}
-#endif
-
-		public static class NavigationView
-		{
-#if __ANDROID__
-			/// <summary>
-			/// Workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
-			/// </summary>
-			public static bool EnableUno19516Workaround { get; set; } = true;
 #endif
 		}
 

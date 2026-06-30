@@ -99,14 +99,22 @@ Skia/WinUI behavior:
   `UIElement.AlwaysClipNativeChildren`, `ScrollViewer.AndroidScrollbarFadeDelay`,
   `WebView.ForceSoftwareRendering`, `PointerRoutedEventArgs.AllowRelativeTimeStamp`,
   `TextBlock.IsJavaStringCachedEnabled` / `JavaStringCachedCapacity`,
-  `AndroidSettings.IsEdgeToEdgeEnabled`.
+  `AppBarButton.EnableBitmapIconTint`, `TimePickerFlyout.UseLegacyTimeSetting`,
+  `NavigationView.EnableUno19516Workaround`, `AndroidSettings.IsEdgeToEdgeEnabled`.
 - **iOS:** `Image.LegacyIosAlignment`,
-  `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`.
+  `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`,
+  `CommandBar.AllowNativePresenterContent`, `DatePicker.UseLegacyStyle`,
+  `TimePicker.UseLegacyStyle`.
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
-  `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`.
+  `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`,
+  `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
+  now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
 - **Native styling:** `Style.UseUWPDefaultStyles`, `Style.ConfigureNativeFrameNavigation()`.
 - **Skia overlay:** `TextBox.UseOverlayOnSkia`.
+
+`WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
+`WebView2.EnableDevTools` instead.
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 

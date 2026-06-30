@@ -168,8 +168,12 @@ then
 
 	# 2) Install helpers
 	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
+	# Homebrew 6.0 stopped auto-tapping untrusted taps and refuses to load their
+	# formulae without an explicit trust, so trust facebook/fb and install the
+	# fully-qualified formula (a bare "idb-companion" now resolves to the wrong cask).
 	brew tap facebook/fb >/dev/null 2>&1 || true
-	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
+	brew trust facebook/fb >/dev/null 2>&1 || true
+	brew list --versions idb-companion >/dev/null 2>&1 || brew install facebook/fb/idb-companion
 
 	# 3) Install fb-idb under Python 3.12
 	pipx uninstall fb-idb >/dev/null 2>&1 || true

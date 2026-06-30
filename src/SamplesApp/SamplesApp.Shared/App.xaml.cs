@@ -583,10 +583,7 @@ namespace SamplesApp
 		static void ConfigureFeatureFlags()
 		{
 #if __APPLE_UIKIT__
-			Uno.UI.FeatureConfiguration.CommandBar.AllowNativePresenterContent = true;
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
-			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
-			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
