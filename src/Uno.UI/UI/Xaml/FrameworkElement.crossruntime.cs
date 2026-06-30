@@ -24,7 +24,7 @@ using System.Dynamic;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement : IEnumerable
+	public partial class FrameworkElement
 	{
 #pragma warning disable CS0067 // Unused only in reference API.
 		public event SizeChangedEventHandler SizeChanged;
