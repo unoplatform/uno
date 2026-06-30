@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public DurationType Type;
-		public TimeSpan TimeSpan;
+		public TimeSpan TimeSpan { get; }
 
 		public static implicit operator Duration(string timeSpan)
 			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture)) : new Duration(TimeSpan.Zero);
@@ -178,7 +178,7 @@ namespace Microsoft.UI.Xaml
 
 		public static Duration operator +(Duration duration)
 		{
-			return new Duration() { Type = duration.Type, TimeSpan = duration.TimeSpan };
+			return duration;
 		}
 
 		#endregion
