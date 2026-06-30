@@ -207,11 +207,10 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC73** — `TimePickerFlyoutPresenter` -> `Control` base  `d3·S`
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.Properties.cs`, `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.partial.mux.cs`
-- [ ] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M` — **BLOCKED (cross-target)**
+- [ ] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M`
   - See notes.
-  - **Blocked: not mechanical.** The correct WinUI type `Microsoft.UI.Xaml.WindowActivationState` is generated only under `#if __SKIA__ || __NETSTD_REFERENCE__`, but `Microsoft.UI.Xaml.WindowActivatedEventArgs` is cross-target (no platform gate). Retyping the property would break native Android/iOS/WASM compilation. The enum values map 1:1 to `CoreWindowActivationState` (`CodeActivated`/`Deactivated`/`PointerActivated` = 0/1/2), so the conversion itself is trivial — but it must first be made available on all targets (sync-generator de-gate) or wait until native targets are actually dropped. Deferred from the mechanical sweep.
   - Files: `src/Uno.UI/UI/Xaml/Window/WindowActivatedEventArgs.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/WindowActivationState.cs`, `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`
-- [x] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
+- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
   - See notes.
   - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.wasm.cs`
 - [x] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
