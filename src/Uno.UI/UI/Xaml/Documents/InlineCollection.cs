@@ -255,26 +255,11 @@ namespace Microsoft.UI.Xaml.Documents
 				_collection.GetParent();
 #endif
 
-			while (current is not null)
-			{
-				switch (current)
-				{
-					case TextBlock:
-						return true;
-					// A RichTextBlock hosts its inlines through a Paragraph; InlineUIContainer is valid there.
-					case Paragraph:
-					case RichTextBlock:
-						return false;
-					// Walk up through Span/Hyperlink/etc. to find the owning control.
-					case Inline inline:
-						current = inline.GetParent();
-						break;
-					default:
-						return false;
-				}
-			}
-
-			return false;
+			// Walk up through Span/Hyperlink/etc. to find the owning control.
+			while (current is Inline inline)
+				current = inline.GetParent();
+	
+			return current is TextBlock;
 		}
 	}
 }
