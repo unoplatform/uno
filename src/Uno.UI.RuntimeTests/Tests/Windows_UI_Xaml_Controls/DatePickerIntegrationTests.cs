@@ -810,7 +810,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var realizedYearItems = -1;
+			var yearTexts = new global::System.Collections.Generic.List<string>();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var presenter = GetDatePickerFlyoutPresenter();
@@ -825,11 +825,20 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				var panel = scrollViewer.Content as LoopingSelectorPanel;
 				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
 
-				realizedYearItems = panel.Children.Count;
+				// Count realized year items by their populated PrimaryText rather than raw child count:
+				// the panel also keeps recycled/offscreen container shells as children, so Children.Count
+				// can stay >1 even if the column is effectively blank.
+				foreach (var child in panel.Children)
+				{
+					if (child is ContentControl cc && cc.Content is DatePickerFlyoutItem item && !string.IsNullOrEmpty(item.PrimaryText))
+					{
+						yearTexts.Add(item.PrimaryText);
+					}
+				}
 			});
 
-			Assert.IsGreaterThan(1, realizedYearItems,
-				$"Year selector should display the range of years, but realized only {realizedYearItems} item(s).");
+			Assert.IsGreaterThan(1, yearTexts.Count,
+				$"Year selector should display the range of years, but realized only: [{string.Join(", ", yearTexts)}].");
 
 			await ControlHelper.ClickFlyoutCloseButton(datePicker, false /* isAccept */);
 			await TestServices.WindowHelper.WaitForIdle();
