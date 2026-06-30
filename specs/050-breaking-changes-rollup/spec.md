@@ -128,7 +128,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC44** — Remove `Setter<T>`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/Uno.UI/UI/Xaml/SetterBase.cs`, `src/Uno.UI/UI/Xaml/Style/Style.cs`
-- [ ] **BC63** — Remove `SetterBase.set_Property` shim  `d2·S` · #13050
+- [x] **BC63** — Remove `SetterBase.set_Property` shim  `d2·S` · #13050
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/SetterBase.cs`, `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`
 
@@ -201,7 +201,7 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/Flyout.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/Button.cs`
-- [ ] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
+- [x] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/DoubleCollection.cs`, `src/Uno.UI/UI/Xaml/Media/PointCollection.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml.Media/DoubleCollection.cs`
 - [ ] **BC73** — `TimePickerFlyoutPresenter` -> `Control` base  `d3·S`
