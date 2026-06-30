@@ -214,6 +214,26 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		}
 
 		[TestMethod]
+		public void When_Grid_NonFE_Child_PreBound_Added_After_DataContext()
+		{
+			// A non-FE child carrying a pre-existing {Binding} that joins the collection AFTER the owner already
+			// has a DataContext must still resolve it: the on-attach push delivers the ambient DataContext since
+			// there is no DataContext change to trigger normal propagation.
+			var grid = new Grid();
+			grid.DataContext = new { a = "42" };
+
+			var columnDefinition = new ColumnDefinition();
+			columnDefinition.SetBinding(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
+
+			Assert.AreEqual(GridUnitType.Star, columnDefinition.Width.GridUnitType);
+
+			grid.ColumnDefinitions.Add(columnDefinition);
+
+			Assert.AreEqual(GridUnitType.Pixel, columnDefinition.Width.GridUnitType);
+			Assert.AreEqual(42, columnDefinition.Width.Value);
+		}
+
+		[TestMethod]
 		public void When_SolidColorBrush_DataBound_Setters()
 		{
 			var grid = new Grid();
