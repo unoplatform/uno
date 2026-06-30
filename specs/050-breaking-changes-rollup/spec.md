@@ -138,52 +138,54 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 
 _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/sealed/explicit-interface/hide) plus tiny signature & typo fixes. Each is narrow and independent; effort S. Ideal single sweep._
 
-- [ ] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
+- [x] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/BrushConverter.cs`, `src/Uno.UI/UI/Xaml/Media/Brush.cs`, `src/Uno.UI/LinkerDefinition.Wasm.xml`
-- [ ] **BC15** — Seal `PropertyPath`  `d2·S`
+- [x] **BC15** — Seal `PropertyPath`  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Data/PropertyPath.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/PropertyPath.cs`
-- [ ] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
+- [x] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenu.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenuPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/ISubMenuOwner.cs`
-- [ ] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
+- [x] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkTemplatePoolAware.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ToggleSwitch/ToggleSwitch.cs`
-- [ ] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
+- [x] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UWP/Collections/MaterializableList.cs`, `src/Uno.UI/UI/Xaml/Media/VisualTreeHelper.cs`, `src/Uno.UI/UI/Xaml/UIElement.crossruntime.cs`
-- [ ] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
+- [x] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/NavigatingCancelEventArgs.cs`, `src/Uno.UI/UI/Xaml/Navigation/NavigationHelpers.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
+- [x] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.Properties.cs`, `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
+- [x] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.Properties.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.partial.mux.cs`
-- [ ] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
+- [x] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
   - Make `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.custom.cs`, `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.partial.mux.cs`
-- [ ] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
+- [x] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
   - Make `DefaultUpdateSourceTrigger` internal/remove. Optional stretch: make the whole `FrameworkPropertyMetadata` internal (verify no custom-control author relies on it).
   - Files: `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadata.cs`, `src/Uno.UI/DataBinding/BindingExpression.cs`, `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadataOptions.cs`
-- [ ] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
+- [x] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
   - Make the DP `internal` (keep the DP, hide the field) to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`, `src/Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.cs`
-- [ ] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414
+- [x] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414 — **DROPPED**
   - **VERIFY design first.** The post-revert pooled `DependencyPropertyChangedEventArgs` may already capture the allocation win, and the struct drops precedence/bypass fields. Decide whether re-applying is still desired before doing it.
+  - **Decision: drop.** `DependencyObjectStore.DependencyPropertyChangedEventArgsPool` (Rent/Return) already pools the args and captures the allocation win the struct targeted. `PropertyChangedParams` is also `internal` (no public-surface impact, so out of scope for this phase) and re-introducing it would drop the precedence/bypass fields. Left disabled (`#if false`); not re-applied.
   - Files: `src/Uno.UI/UI/Xaml/PropertyChangedParams.cs`, `src/Uno.UI/UI/Xaml/IDependencyObjectInternal.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`
-- [ ] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
+- [x] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Application.cs`, `src/Uno.UI/UI/Xaml/Application.skia.cs`, `src/Uno.UI/UI/Xaml/Application.wasm.cs`
-- [ ] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S`
+- [ ] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S` — **BLOCKED (deferred)**
   - Adjust signature to match WinUI.
+  - **Blocked: not a mechanical signature flip.** `VisualInteractionSource.TryRedirectForManipulation` is declared in `Uno.UI.Composition`, but `Microsoft.UI.Input.PointerPoint` exists only in `Uno.UI` (the `IS_UNO_UI_PROJECT` branch of `PointerPoint.cs`). `Uno.UI.Composition` references `Uno.UWP`/`Uno.Foundation`, not `Uno.UI`, so it cannot name that type in the public signature — the param stays `Windows.UI.Input.PointerPoint`. Genuinely matching WinUI requires relocating `Microsoft.UI.Input.PointerPoint` to a lower assembly (broad, risky, not effort-S). Deferred out of this sweep; left as-is with the existing divergence comment.
   - Files: `src/Uno.UI.Composition/Composition/VisualInteractionSource.cs`, `src/Uno.UI.Composition/Composition/ICompositionTarget.cs`, `src/Uno.UI/UI/Xaml/Media/CompositionTarget.cs`
-- [ ] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
+- [x] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI.Composition/Composition/CompositionSpriteShape.cs`, `src/Uno.UI.Composition/Composition/CompositionSpriteShape.skia.cs`, `src/Uno.UI.Composition/Composition/CompositionStrokeDashArray.cs`
-- [ ] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
+- [x] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
   - Make `TimeSpan` a read-only property (WinUI). Confirm treatment of the WinUI-divergent public `Type` field (issue notes UWP may differ).
   - Files: `src/Uno.UI/UI/Xaml/Duration.cs`, `src/Uno.UI/UI/Xaml/DurationType.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/Duration.cs`
 
