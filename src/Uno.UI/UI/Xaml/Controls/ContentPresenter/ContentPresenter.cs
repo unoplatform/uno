@@ -826,14 +826,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void UnregisterContentTemplateRoot();
 
-	public View ContentTemplateRoot
+	internal View ContentTemplateRoot
 	{
 		get
 		{
 			return _contentTemplateRoot;
 		}
 
-		protected set
+		set
 		{
 			var previousValue = _contentTemplateRoot;
 

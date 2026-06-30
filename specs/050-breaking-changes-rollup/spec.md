@@ -195,10 +195,10 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
 
 _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type base-class realignments, enum/type-shape changes, and behaviour-changing defaults. Several silently change runtime behaviour even on defaults — gate each on a migration note + runtime/visual validation, not compile-only._
 
-- [ ] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
+- [x] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.cs`, `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.skia.cs`, `src/Uno.UI/UI/Xaml/Media/AcrylicBrush/AcrylicBrush.skia.cs`
-- [ ] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
+- [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/Flyout.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/Button.cs`
 - [ ] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
@@ -216,7 +216,7 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
   - Delete the `TextBox` override; make base `OnVerticalContentAlignmentChanged` `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
-- [ ] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
+- [x] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
 - [ ] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
