@@ -239,17 +239,32 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
   (a `UIResponder`; devs supply their own via `UseUIApplicationDelegate<T>` —
   [`AppleUIKitHostBuilder.cs`](../../../src/Uno.UI.Runtime.Skia.AppleUIKit/Builder/AppleUIKitHostBuilder.cs)).
   The host's `BuildMenu` reads the current model and emits `UIMenu`/`UICommand`/`UIKeyCommand`.
+  The backend targets the **iPadOS 26 always-available, macOS-like system menu bar** — a
+  first-class menu bar that the OS reveals via swipe-from-top (also pointer-to-top, or Globe+M)
+  and that works **without a hardware keyboard**. The underlying `UIMenuBuilder` /
+  `UIResponder.buildMenu(with:)` API is unchanged; iPadOS 26 simply presents the same content as
+  an always-on bar. On earlier iPadOS (15–25) the identical content surfaces as the older
+  transient menu shown with a hardware keyboard (⌘-hold). We supply the content; the OS presents
+  it per version. iPhone shows no menu bar (`UIKeyCommand`s still work with a hardware keyboard).
+- **Discoverability:** the iPadOS 26 bar is meant to display **all** app commands, including
+  unavailable ones, so users can discover capabilities. The host therefore keeps disabled
+  commands **visible but disabled** (does not remove them), matching our push-based enablement —
+  prefer toggling `IsEnabled` over `IsVisible = false` / removal for menu commands.
 - **App-wide only in v1.** Uno AppleUIKit is single-window/single-scene
   ([`NativeWindowFactoryExtension.cs:16`](../../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/NativeWindowFactoryExtension.cs)),
   so `SetMenu(ForWindow(w), …)` is treated as the application menu. Per-scene override is deferred
   until Uno gains multi-scene; the seam already accommodates it via `NativeMenuScope`.
-- `SetMenu(...)` requests a rebuild via `UIMenuSystem.Main.SetNeedsRebuild()`; UIKit then calls
-  back into `BuildMenu`. Rebuild-only — no incremental diffing.
+- `SetMenu(...)` requests a rebuild via `UIMainMenuSystem.Shared.SetNeedsRebuild()` (the new
+  `UIMenuSystem` subclass that drives the iPad menu bar on iOS/iPadOS 26), falling back to
+  `UIMenuSystem.Main.SetNeedsRebuild()` on earlier OS; UIKit then calls back into `BuildMenu`.
+  Rebuild-only — no incremental diffing.
 - OS std items map to UIKit standard command identifiers where available (About/Settings via app
   menu group, Services N/A on iPadOS); edit roles map to `UIResponderStandardEditActions` only
   when the developer supplies a `Command`.
-- `IsExported` reflects "menu content provided"; **bar visibility is OS-controlled** (reveal on
-  ⌘-hold, hidden in full-screen) — there is no force-show API.
+- `IsExported` reflects "menu content provided" — the content is always supplied; **bar
+  visibility is OS-controlled** (on iPadOS 26 the always-available bar is OS-revealed via
+  swipe-from-top, no hardware keyboard needed; on earlier iPadOS the same content surfaces as the
+  transient hardware-keyboard menu) — there is no force-show API.
 
 ### 4.3 Skia.X11 — DBusMenu (post-v1, designed-for)
 

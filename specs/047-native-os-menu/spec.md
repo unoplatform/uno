@@ -4,8 +4,9 @@
 **Created**: 2026-06-30
 **Status**: Draft
 **Input**: "Cross-platform apps should feel native. Desktop and tablet operating systems
-expose a system menu (the macOS top-of-screen menu bar, the iPadOS hardware-keyboard menu
-bar, the Linux global menu on some desktop environments). Uno Platform has no native OS
+expose a system menu (the macOS top-of-screen menu bar, the always-available iPadOS 26
+menu bar revealed by swiping from the top of the screen, the Linux global menu on some
+desktop environments). Uno Platform has no native OS
 menu integration today. Provide a unified API to define application- and window-scoped
 menus that project to each platform's native menu system, with an in-app fallback control
 where there is none." (issue intent, paraphrased neutrally)
@@ -14,8 +15,9 @@ where there is none." (issue intent, paraphrased neutrally)
 
 Applications built with Uno Platform draw their own UI on every target, but on desktop and
 tablet operating systems the *menu* is special: it lives outside the app's render surface
-(the macOS bar at the top of the screen, the iPadOS bar revealed by a hardware keyboard,
-the Linux global menu on supporting desktop environments). To feel native, a cross-platform
+(the macOS bar at the top of the screen, the always-available iPadOS 26 bar revealed by
+swiping down from the top of the screen, the Linux global menu on supporting desktop
+environments). To feel native, a cross-platform
 app must populate that OS-owned menu, not draw its own bar in the window. Uno Platform offers
 no way to do this today. This feature introduces a lightweight, code-first menu model
 (`NativeMenu` / `NativeMenuItem`) and a projection seam that maps it onto each platform's
@@ -219,29 +221,35 @@ the freshly added items appear.
 
 ---
 
-### User Story 6 - iPadOS app-wide menu via the hardware keyboard (Priority: P3)
+### User Story 6 - First-class app-wide menu on the always-available iPadOS 26 menu bar (Priority: P2)
 
-A user with a hardware keyboard attached to an iPad presses and holds the Command key (or
-focuses the menu bar) and sees the app's menu in the iPadOS menu bar, with the developer's
-items and working keyboard shortcuts.
+A user on iPadOS 26 swipes down from the top of the screen (or moves the pointer to the top,
+or presses Globe+M) and sees the app's menu in the always-available, macOS-like iPadOS menu
+bar — no hardware keyboard required — with the developer's items and working keyboard
+shortcuts. The bar lists all of the app's commands, including those that are currently
+unavailable, so the user can discover what the app can do.
 
-**Why this priority**: iPadOS is part of the Apple-first v1 promise, but it is app-wide-only
-in v1 (Uno AppleUIKit is single-scene today), the bar is OS-revealed rather than always
-visible, and it reaches fewer users than the macOS bar — so it ranks P3 while still shipping
-in v1.
+**Why this priority**: iPadOS 26 brings the macOS menu bar to iPad as a first-class,
+always-available surface, so this is a first-class Apple target rather than a niche one. It
+is app-wide-only in v1 (Uno AppleUIKit is single-scene today), and it ranks just below macOS
+only because macOS is the canonical/reference desktop menu — not because iPadOS is niche.
 
-**Independent Test**: Run an iPadOS Skia app with an application menu set, attach a hardware
-keyboard, reveal the menu bar, and assert the developer's top-level items and shortcuts are
-present and invoke their commands. Verify `IsSupported` reports `true` on iPadOS.
+**Independent Test**: Run an iPadOS 26 Skia app with an application menu set, reveal the
+always-available menu bar by swiping down from the top of the screen (no hardware keyboard
+needed), and assert the developer's top-level items and shortcuts are present and invoke
+their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 **Acceptance Scenarios**:
 
 1. **Given** an application menu set via `SetApplicationMenu`, **When** the iPadOS app's
    `BuildMenu(IUIMenuBuilder)` runs, **Then** the menu reflects the model's items.
-2. **Given** a hardware keyboard, **When** the user reveals the menu bar, **Then** the
-   developer's items and their shortcuts appear; activating one runs its command.
+2. **Given** an iPadOS 26 device, **When** the user reveals the menu bar by swiping down from
+   the top of the screen (no hardware keyboard), **Then** the developer's items and their
+   shortcuts appear — including currently-unavailable commands shown visible-but-disabled —
+   and activating an enabled one runs its command.
 3. **Given** a model change, **When** it is coalesced, **Then** the app requests a menu
-   rebuild (`setNeedsRebuild`) and the next `BuildMenu` reflects the change.
+   rebuild on `UIMainMenuSystem` where available (falling back to `UIMenuSystem.main`) via
+   `setNeedsRebuild`, and the next `BuildMenu` reflects the change.
 4. **Given** no menu has been set, **When** the app runs, **Then** no developer items appear
    and `IsSupported` still reports `true` (a native menu system is present).
 
@@ -269,8 +277,10 @@ present and invoke their commands. Verify `IsSupported` reports `true` on iPadOS
   unchecks the rest.
 - **`Opening` handler throws / is slow** → submenu population is best-effort; a failed handler
   leaves the previously-projected submenu content rather than crashing the menu.
-- **iPadOS in full-screen / no hardware keyboard** → the menu bar is OS-controlled and may be
-  hidden; the app exposes content only and offers no force-show API.
+- **iPadOS in full-screen / no hardware keyboard** → on iPadOS 26 the always-available menu
+  bar is still reachable by swiping down from the top of the screen even with no hardware
+  keyboard attached; its visibility remains OS-controlled (the app exposes content only and
+  offers no force-show API).
 
 ## Requirements *(mandatory)*
 
@@ -338,9 +348,11 @@ present and invoke their commands. Verify `IsSupported` reports `true` on iPadOS
   Application-level fallback: the OS menu reflects the key/focused window's menu if it set one,
   otherwise the Application-level menu. macOS MUST swap `NSApp.mainMenu` on
   `windowDidBecomeKey` and restore on resign (per-window supported in v1). iPadOS MUST request
-  a rebuild (`UIMenuSystem.main.setNeedsRebuild()`) on scene-focus change, but because Uno
-  AppleUIKit is single-scene today, **iPadOS v1 is app-wide only** — per-scene override is
-  deferred until Uno gains multi-scene (the design accommodates it).
+  a rebuild on the always-available macOS-like menu bar (`UIMainMenuSystem.setNeedsRebuild()`
+  on iOS/iPadOS 26 where available, falling back to `UIMenuSystem.main.setNeedsRebuild()` on
+  earlier OS) on scene-focus change, but because Uno AppleUIKit is single-scene today,
+  **iPadOS v1 is app-wide only** — per-scene override is deferred until Uno gains multi-scene
+  (the design accommodates it).
 
 **Observable updates (P2/P3)**
 
@@ -383,7 +395,20 @@ present and invoke their commands. Verify `IsSupported` reports `true` on iPadOS
   multi-window support.
 - **FR-022**: The Skia.AppleUIKit implementation MUST project to `UIMenuBuilder` by overriding
   `UnoUIApplicationDelegate.BuildMenu(IUIMenuBuilder)` (the delegate is a `UIResponder` and is
-  overridable by developers via `UseUIApplicationDelegate<T>`), app-wide in v1.
+  overridable by developers via `UseUIApplicationDelegate<T>`), populating the always-available
+  macOS-like iPadOS 26 menu bar, app-wide in v1. Rebuilds MUST be driven on `UIMainMenuSystem`
+  (the iOS/iPadOS 26 `UIMenuSystem` subclass for the iPad menu bar) where available, falling
+  back to `UIMenuSystem.main` on earlier OS. Per the single-scene caveat above, iPadOS v1 is
+  app-wide only.
+- **FR-022a**: For discoverability on the iPadOS menu bar, the system MUST keep an app's
+  commands **visible but disabled** when they are currently unavailable rather than removing
+  them, so users can discover the app's capabilities — aligning with the push-based enablement
+  rule (prefer toggling `IsEnabled` over `IsVisible=false`/removal for menu commands). The
+  always-available macOS-like menu bar requires **iPadOS 26+**; on earlier iPadOS (15–25) the
+  same `UIMenuBuilder` content surfaces as the older transient menu shown with a hardware
+  keyboard (Cmd-hold), and on iPhone no menu bar is shown (the same `UIKeyCommand` shortcuts
+  still work with a hardware keyboard). Uno supplies the content; the OS presents it per
+  version.
 - **FR-023**: The Win32 implementation MUST be a no-op with `IsExported = false` (no HMENU);
   the in-app `AppMenuBar` renders the real `MenuBar` there.
 - **FR-024**: A Skia.X11 implementation projecting to a DBusMenu server
@@ -497,8 +522,9 @@ shipped core seam. The dependency is strictly one-way (Toolkit → core).
   in-app `MenuBar` with the same items.
 - **SC-008**: The same `AppMenuBar` markup yields a native menu (zero in-app footprint) on
   macOS/iPadOS and an in-app `MenuBar` on Windows, with no per-platform markup change.
-- **SC-009**: On iPadOS with a hardware keyboard, the app's items and shortcuts appear in the
-  OS menu bar and invoke their commands, and `IsSupported` reports `true`.
+- **SC-009**: On the always-available iPadOS 26 menu bar (revealed by swiping from the top of
+  the screen, no hardware keyboard required), the app's items and shortcuts appear in the OS
+  menu bar and invoke their commands, and `IsSupported` reports `true`.
 - **SC-010**: `IsRoleSupported` correctly reports which roles a given platform honors, so an
   app can hide or relabel items it cannot project.
 - **SC-011**: No regression to existing Uno menu controls (`MenuBar`, `MenuFlyout*`) or to the
@@ -513,9 +539,13 @@ shipped core seam. The dependency is strictly one-way (Toolkit → core).
   why attachment is code-first via setters rather than attached properties.
 - Uno's macOS live-input modifier mapping (Command→Windows, Control→Control, Option→Menu,
   Shift→Shift) is the contract that the literal-modifier shortcut rule must stay coherent with.
-- Uno AppleUIKit is single-window/single-scene today; iPadOS per-scene override is deferred
-  until multi-scene support lands, and the model is shaped to accommodate it without breaking
-  changes.
+- iPadOS 26 brings the always-available, macOS-like system menu bar to iPad (revealed by
+  swiping down from the top of the screen, pointer-to-top, or Globe+M, with no hardware
+  keyboard required); on earlier iPadOS (15–25) the same `UIMenuBuilder` content instead
+  surfaces as the older transient menu shown with a hardware keyboard. Uno AppleUIKit is
+  single-window/single-scene today; iPadOS per-scene override is deferred until multi-scene
+  support lands, and the model is shaped to accommodate it without breaking changes (iPadOS v1
+  is app-wide only).
 - The `ApiExtensibility` per-host registration pattern is the supported way to resolve a
   platform implementation from `Uno.UI`.
 - Icon translation fidelity is best-effort by design; SF-Symbol passthrough is the highest-

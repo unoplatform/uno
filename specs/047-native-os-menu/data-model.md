@@ -400,7 +400,7 @@ effective menu for the system  =  GetMenu(focused/key window)  ??  GetApplicatio
 | Platform | Mechanism |
 |---|---|
 | macOS | Swap `NSApp.mainMenu` on `windowDidBecomeKey`, restore on resign (per-window supported v1; multi-window exists). |
-| iPadOS | `UIMenuSystem.main.setNeedsRebuild()` on scene-focus change; `buildMenu(with:)` reads the focused scene menu. **v1 = app-wide only** (Uno AppleUIKit is single-scene — [NativeWindowFactoryExtension.cs:16](../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/NativeWindowFactoryExtension.cs)); per-scene override deferred until multi-scene exists. |
+| iPadOS | `UIMainMenuSystem` (iOS/iPadOS 26) `setNeedsRebuild()` on scene-focus change, falling back to `UIMenuSystem.main` on earlier OS; `buildMenu(with:)` reads the focused scene menu. This drives the **always-available iPadOS 26 menu bar** (swipe from top; earlier OS = transient hardware-keyboard menu). **v1 = app-wide only** (Uno AppleUIKit is single-scene — [NativeWindowFactoryExtension.cs:16](../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/NativeWindowFactoryExtension.cs)); per-scene override deferred until multi-scene exists. |
 | Linux | Per-window is the native DBusMenu model. |
 | Windows | Per-window == per in-app control. |
 
