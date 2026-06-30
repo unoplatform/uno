@@ -98,7 +98,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC33** — Remove `UseInvalidate(Measure/Arrange)Path` flags  `d2·M`
   - Hard-delete both flags; inline the always-true dirty-path branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/UIElement.Layout.crossruntime.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
-- [ ] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
+- [x] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/FrameworkElementUIKitMixinGenerator.cs`
 - [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
@@ -110,7 +110,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
   - **Verify** not already removed, then hard-delete the meta-packages.
   - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
-- [ ] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
+- [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
