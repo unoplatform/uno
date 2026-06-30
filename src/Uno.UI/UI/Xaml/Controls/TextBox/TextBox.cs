@@ -1376,7 +1376,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 
-		public void OnTemplateRecycled()
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
 			_suppressTextChanged = true;
 			Text = string.Empty;
