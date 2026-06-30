@@ -10,7 +10,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement
+	public partial class FrameworkElement : IEnumerable
 	{
 
 		public string Name { get; set; }
@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml
 		internal void SuspendRendering() => throw new NotSupportedException("Reference assembly");
 
 		internal void ResumeRendering() => throw new NotSupportedException();
+		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 #pragma warning disable 67
 #pragma warning disable IDE0051

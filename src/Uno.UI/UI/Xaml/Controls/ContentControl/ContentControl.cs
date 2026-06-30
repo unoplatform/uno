@@ -19,7 +19,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
-	public partial class ContentControl : Control
+	public partial class ContentControl : Control, IEnumerable
 	{
 		private View? _contentTemplateRoot;
 

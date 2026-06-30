@@ -11,7 +11,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement
+	public partial class FrameworkElement : IEnumerable
 	{
 		protected FrameworkElement()
 		{
@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml
 		internal void SuspendRendering() => throw new NotSupportedException();
 
 		internal void ResumeRendering() => throw new NotSupportedException();
+		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		#region Name Dependency Property
 
