@@ -592,9 +592,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
 
-				// DataContext is a FrameworkElement-only property (WinUI parity). It is hand-written on
-				// FrameworkElement (and kept internal on FlyoutBase); the generator no longer emits it on
-				// every DependencyObject.
+				// DataContext is a FrameworkElement-only property (WinUI parity): it is hand-written on
+				// FrameworkElement and the generator no longer emits it on every DependencyObject.
 
 				builder.AppendMultiLineIndented($@"
 
