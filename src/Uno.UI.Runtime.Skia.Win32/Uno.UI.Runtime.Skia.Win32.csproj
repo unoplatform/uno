@@ -26,13 +26,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="mswebview2" PrivateAssets="all" />
-		<PackageReference Include="WebView2Aot" Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))" />
-
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="All" />
 
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
+		<PackageReference Include="WebView2Aot" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="All" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,7 +54,6 @@
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
-		<AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
 	</ItemGroup>
 
 	<Target Name="_UnoUpdateAdditionalAssemblies" AfterTargets="DispatchToInnerBuilds">
