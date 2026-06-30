@@ -32,29 +32,33 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 #if NET10_0_OR_GREATER
 			case "webview2aot":
 				return CreateWin32NativeAotWebView(contentPresenter);
-#endif  // NET10_0_OR_GREATER
+#endif // NET10_0_OR_GREATER
 			case "microsoft.web.webview2":
 				return CreateWin32NativeWebView(contentPresenter);
 			case "":
 			case null:
 				break;
 			default:
-				typeof(Win32Host).LogError()?.Error($"Unsupported `UNO_WEBVIEW2_BACKEND` value `{backend}!");
+				typeof(Win32Host).LogError()?.Error($"Unsupported `UNO_WEBVIEW2_BACKEND` value `{backend}`! {SupportedUnoWebview2BackendValues}");
 				break;
 		}
 		return CreateDefaultWebView(contentPresenter);
 	}
 
 #if NET10_0_OR_GREATER
+	private const string SupportedUnoWebview2BackendValues = "Supported values: `webview2aot`, `microsoft.web.webview2`.";
+
 	private INativeWebView CreateWin32NativeAotWebView(ContentPresenter contentPresenter)
 		=> new Win32NativeAotWebView(owner, contentPresenter);
 
 	private INativeWebView CreateDefaultWebView(ContentPresenter contentPresenter)
 		=> CreateWin32NativeAotWebView(contentPresenter);
-#else   // !NET10_0_OR_GREATER
+#else // !NET10_0_OR_GREATER
+	private const string SupportedUnoWebview2BackendValues = "Supported value: `microsoft.web.webview2`.";
+
 	private INativeWebView CreateDefaultWebView(ContentPresenter contentPresenter)
 		=> CreateWin32NativeWebView(contentPresenter);
-#endif  // !NET10_0_OR_GREATER
+#endif // !NET10_0_OR_GREATER
 
 	private INativeWebView CreateWin32NativeWebView(ContentPresenter contentPresenter)
 	{
