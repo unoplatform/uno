@@ -332,7 +332,10 @@ automatically.
 > Window↔menu associations are stored in a `ConditionalWeakTable` side-table (because
 > `Window` is not a `DependencyObject`), so they do not keep windows alive.
 
-> **iPadOS v1 = app-wide only.** Uno AppleUIKit is single-scene today
+> **iPadOS v1 = app-wide only.** On iPadOS 26 the same `NativeMenu` model surfaces in the
+> always-available, macOS-like system menu bar (swipe down from the top of the screen — no
+> hardware keyboard required), built via `UIMenuBuilder`/`UIMainMenuSystem`. Uno AppleUIKit is
+> single-scene today
 > ([NativeWindowFactoryExtension.cs](../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/NativeWindowFactoryExtension.cs)),
 > so `SetMenu(window, ...)` resolves to the app-global menu there. Per-scene override is
 > designed-for and lands when Uno gains multi-scene. On Windows, per-window == per-control
@@ -486,7 +489,7 @@ What shows where, at a glance:
 
 | Capability | macOS | iPadOS | Linux (DBusMenu) | Windows |
 |------------|-------|--------|------------------|---------|
-| App-wide menu | Yes (`NSApp.mainMenu`) | Yes (`buildMenu`) | No (per-window only) | No native (in-app) |
+| App-wide menu | Yes (`NSApp.mainMenu`) | Yes — always-available bar on iPadOS 26 (`UIMenuBuilder`/`UIMainMenuSystem`) | No (per-window only) | No native (in-app) |
 | Per-window menu | Yes (swap on key) | No in v1 (single-scene) | Yes (the only model) | Per-control (in-app) |
 | Submenu / separator / checkable | Yes | Yes | Yes | Yes (in-app) |
 | Radio | Framework-coordinated | Inline single-selection | `toggle-type=radio` | In-app |
@@ -499,3 +502,7 @@ What shows where, at a glance:
 > **Rule of thumb:** build one `NativeMenu` tree, attach it once, and probe
 > `IsSupported` / `IsRoleSupported` only where you need to adapt the surrounding UI. The
 > projection seam handles the rest per host.
+
+> **iPadOS discoverability tip:** on the iPadOS 26 menu bar, keep unavailable commands
+> **visible but disabled** (toggle `IsEnabled`, don't remove them) so users can discover
+> what the app can do.

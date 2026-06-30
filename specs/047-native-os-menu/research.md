@@ -292,12 +292,17 @@ the entire menu tree. The builder lets you **insert / replace / remove** `UIMenu
 
 ### 5.2 Rebuild-only updates (A3)
 
-There is **no live mutation**. To change the menu you call
-**`UIMenuSystem.main.setNeedsRebuild()`** (or `setNeedsRevalidate()` for enabled-state-only),
-and UIKit calls `buildMenu(with:)` again to reconstruct the tree. This is the canonical
-**rebuild-only** platform and the reason Uno's common update path is a full rebuild. Uno's
-observable model marks dirty → coalesces → calls `setNeedsRebuild()`, and the
-`buildMenu` override reads the current `NativeMenu` to emit `UIMenu`/`UICommand`s.
+There is **no live mutation**. To change the menu you request a rebuild on the menu system
+(`setNeedsRebuild()`, or `setNeedsRevalidate()` for enabled-state-only), and UIKit calls
+`buildMenu(with:)` again to reconstruct the tree. iOS/iPadOS 26 adds **`UIMainMenuSystem`**
+— a new `UIMenuSystem` subclass that represents the iPad menu bar — so the Uno backend
+requests the rebuild on **`UIMainMenuSystem.shared`** where available, falling back to
+**`UIMenuSystem.main`** on earlier OS. This is the canonical **rebuild-only** platform and
+the reason Uno's common update path is a full rebuild. Uno's observable model marks dirty →
+coalesces → requests the rebuild, and the `buildMenu` override reads the current
+`NativeMenu` to emit `UIMenu`/`UICommand`s. The `UIMenuBuilder` API itself is **unchanged**
+and remains the correct seam (iOS/iPadOS 26 only enhanced it with new convenience methods,
+faster construction, and better diagnostics).
 
 ### 5.3 Validation
 
@@ -308,12 +313,24 @@ is the enabled-only fast path.
 
 ### 5.4 When the bar appears
 
-- The menu bar is shown when a **hardware keyboard** is attached (iPad) — it is *not*
-  always visible. On **iPhone** there is no menu bar at all (the menu system surfaces only
-  via key commands / edit menus).
-- **iPadOS 26** moves to a **reveal-on-demand** menu bar (hover/gesture at the top edge),
-  hidden during full-screen. **Bar visibility is OS-controlled** — there is deliberately
-  **no force-show API** in the Uno design; the app contributes *content* only.
+- **iPadOS 26 brings the macOS menu bar to iPad as an always-available, first-class system
+  menu bar** — it does **not** require a hardware keyboard. Users reveal it by **swiping
+  down from the top of the screen** (also by moving the pointer to the top edge, or via
+  Globe+M), and it works on any iPad regardless of input device. This is a real macOS-like
+  menu bar, not a transient Cmd-hold HUD. **Bar visibility is OS-controlled** — there is
+  deliberately **no force-show API** in the Uno design; the app contributes *content* only.
+- **Version nuance.** The same `UIMenuBuilder` content surfaces differently per OS version:
+  on **iPadOS 26+** it is the always-available menu bar above; on **earlier iPadOS (15–25)**
+  the identical content is presented as the older **transient menu shown with a hardware
+  keyboard** (Cmd-hold). We supply the content once; the OS presents it per version.
+- On **iPhone** there is no menu bar at all (`UIKeyCommand`s still work with a hardware
+  keyboard, but the menu system does not surface a bar).
+- **Discoverability convention.** Because the iPadOS 26 menu bar is meant to advertise an
+  app's full capability surface, it should display **all** app commands — **including
+  currently-unavailable ones**. Keep disabled commands **visible but disabled** (do not
+  remove them) so users discover what the app can do. This aligns cleanly with Uno's
+  push-based enablement (A2): prefer toggling `IsEnabled` over `IsVisible=false`/removal for
+  menu commands.
 
 ### 5.5 Catalyst unification & Uno reach
 
