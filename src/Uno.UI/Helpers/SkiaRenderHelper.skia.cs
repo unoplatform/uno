@@ -19,23 +19,6 @@ internal static class SkiaRenderHelper
 {
 	private static readonly SKPictureRecorder _recorder = new();
 
-	private static readonly SKMatrix _identityMatrix = SKMatrix.CreateIdentity();
-
-	// SkiaSharp 4 routes SKPath construction through the immutable SKPathBuilder. These build a
-	// fresh rect path / (re)seed an existing reusable SKPath without the deprecated AddRect.
-	private static SKPath CreateRectPath(SKRect rect)
-	{
-		var builder = new SKPathBuilder();
-		builder.AddRect(rect);
-		return builder.Detach();
-	}
-
-	private static void SetPathToRect(SKPath dst, SKRect rect)
-	{
-		using var rectPath = CreateRectPath(rect);
-		rectPath.Transform(in _identityMatrix, dst);
-	}
-
 	private static readonly List<Visual> _emptyList = new();
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
@@ -87,8 +70,6 @@ internal static class SkiaRenderHelper
 		canvas.Flush();
 	}
 
-	private static readonly SKPath _spareParentClipPath = new();
-
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// </summary>
@@ -98,8 +79,7 @@ internal static class SkiaRenderHelper
 
 		var rect = new SKRect(0f, 0f, width, height);
 
-		var parentClipPath = _spareParentClipPath;
-		SetPathToRect(parentClipPath, rect);
+		using var parentClipPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
@@ -110,7 +90,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var invertedPath = CreateRectPath(rect);
+			var invertedPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
 
 			clipPath.Dispose();
@@ -127,7 +107,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var result = CreateRectPath(new SKRect(0f, 0f, width, height));
+			var result = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(new SKRect(0f, 0f, width, height));
 			result.Op(_emptyClipPath, SKPathOp.Difference, result);
 
 			_invertedClipPathWidth = width;

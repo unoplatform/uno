@@ -792,7 +792,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			surfaceCanvas.Translate(0, targetSize);
 			surfaceCanvas.Scale(1, -1);
 			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0, default(SKSamplingOptions), null);
+			surfaceCanvas.DrawImage(scaledImage, 0, 0, SKSamplingOptions.Default, null);
 			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
 		}
 

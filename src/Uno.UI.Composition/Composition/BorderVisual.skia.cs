@@ -157,7 +157,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			}
 			else
 			{
-				CopyPath(roundRectPath, dst);
+				roundRectPath.Transform(SKMatrix.Identity, dst);
 				return true;
 			}
 		}

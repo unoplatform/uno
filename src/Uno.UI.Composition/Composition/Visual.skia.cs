@@ -33,22 +33,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// single static instance is safe.
 	private static readonly List<(SKPath path, float alpha)> _spareShadowContributions = new();
 
-	private static readonly SKMatrix _identityMatrix = SKMatrix.CreateIdentity();
-
-	// SkiaSharp 4 makes SKPath construction go through the immutable SKPathBuilder. These helpers
-	// replace the deprecated in-place dst.AddPath(src)/dst.AddRect(rect) used to (re)seed a reusable
-	// or scratch SKPath: Transform(identity, dst) overwrites dst with an exact copy of the source,
-	// preserving verbs and fill type.
-	private protected static void CopyPath(SKPath src, SKPath dst) => src.Transform(in _identityMatrix, dst);
-
-	private protected static void SetPathToRect(SKPath dst, SKRect rect)
-	{
-		using var builder = new SKPathBuilder();
-		builder.AddRect(rect);
-		using var rectPath = builder.Detach();
-		rectPath.Transform(in _identityMatrix, dst);
-	}
-
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
@@ -576,17 +560,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var localClipCombinedByClipFromParent = _pathPool.Allocate();
 		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
-		localClipCombinedByClipFromParent.Reset();
-
+		var localMatrix = TotalMatrix.ToSKMatrix();
 		if (GetPrePaintingClipping(_spareRenderPath))
 		{
-			CopyPath(_spareRenderPath, localClipCombinedByClipFromParent);
+			_spareRenderPath.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
 		else
 		{
-			SetPathToRect(localClipCombinedByClipFromParent, new SKRect(0, 0, Size.X, Size.Y));
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, Size.X, Size.Y));
+			sizeRect.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
-		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
 		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
 
 		if (IsNativeHostVisual || CanPaint())
@@ -618,7 +601,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		else
 		{
-			SetPathToRect(dst, InfiniteClipRect);
+			// Root: seed the caller's accumulator with the unclipped (infinite) region; ancestor clips
+			// get intersected into it below. dst is caller-owned and Op'd in place, hence the copy.
+			using var infiniteRect = SkiaExtensions.CreateRectPath(InfiniteClipRect);
+			infiniteRect.Transform(SKMatrix.Identity, dst);
 		}
 
 		var localPath = _pathPool.Allocate();
@@ -806,7 +792,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				CopyPath(ancestorClipInRoot, clipPath);
+				ancestorClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -821,8 +807,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
 			var sizeCandidate = _spareShadowPath;
-			SetPathToRect(sizeCandidate, new SKRect(0, 0, size.X, size.Y));
-			sizeCandidate.Transform(toRoot);
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, size.X, size.Y));
+			sizeRect.Transform(toRoot, sizeCandidate);
 			if (hasClip)
 			{
 				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
@@ -882,7 +868,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				CopyPath(postClipInRoot, clipPath);
+				postClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -941,7 +927,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			dst.Reset();
 			if (Clip.GetClipPath(this) is { } clipPath)
 			{
-				CopyPath(clipPath, dst);
+				clipPath.Transform(SKMatrix.Identity, dst);
 			}
 			return true;
 		}
