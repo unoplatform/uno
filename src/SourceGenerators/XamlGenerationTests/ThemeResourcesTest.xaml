@@ -45,6 +45,6 @@
 		<Rectangle Fill="{StaticResource LocalColor}" Stroke="{ThemeResource LocalThemeColor}" />
 		<Rectangle Fill="{ThemeResource LocalColor}" Stroke="{StaticResource LocalThemeColor}" />
 
-		<TextBlock Background="{ThemeResource StaticResourceWithForwardReference}" />
+		<TextBlock Foreground="{ThemeResource StaticResourceWithForwardReference}" />
 	</Grid>
 </Page>

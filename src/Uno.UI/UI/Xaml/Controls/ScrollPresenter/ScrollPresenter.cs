@@ -71,7 +71,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		// Uno specific
 		InitializePartial();
 		Children = new UIElementCollection(this);
-		base.Background = new SolidColorBrush(Colors.Transparent); // TODO: Remove when Background is moved from FrameworkElement to Control
 
 		// Set the default Transparent background so that hit-testing allows to start a touch manipulation
 		// outside the boundaries of the Content, when it's smaller than the ScrollPresenter.
