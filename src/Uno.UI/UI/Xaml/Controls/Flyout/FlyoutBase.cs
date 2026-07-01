@@ -122,7 +122,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+				// The popup deliberately carries no DataContext (WinUI parity): a flyout has none, and forwarding the
+				// owner's DataContext onto the kept-alive popup leaks it. The placement target's DataContext is set on
+				// the presenter at show-time (ForwardTargetPropertiesToPresenter) and cleared on close instead.
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
@@ -729,6 +731,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					presenter.ClearValue(FrameworkElement.DataContextProperty);
 				}
 			}
+
 		}
 
 		/// <summary>
@@ -882,6 +885,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			EnsurePopupCreated();
 
+			// Forward the target's DataContext (and theme) to the presenter, as ShowAtCore does — the popup no
+			// longer carries the DataContext.
+			ForwardTargetPropertiesToPresenter();
+
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
 
@@ -916,9 +923,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
-
 		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{
 			// This is present to force properties to be propagated to the popup of the flyout
@@ -951,12 +955,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			var flyout = GetAttachedFlyout(flyoutOwner);
 
-			flyout?.SetValue(
-				FlyoutBase.DataContextProperty,
-				flyoutOwner.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
-
+			// FlyoutBase has no DataContext of its own (it is a DependencyObject, not a FrameworkElement — WinUI parity).
+			// ShowAt → ShowAtCore → ForwardTargetPropertiesToPresenter forwards the owner's DataContext to the presenter;
+			// content and items then resolve their {Binding}s through normal visual-tree inheritance from the presenter.
 			flyout?.ShowAt(flyoutOwner);
 		}
 

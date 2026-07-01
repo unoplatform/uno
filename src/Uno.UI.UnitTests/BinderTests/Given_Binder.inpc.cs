@@ -101,7 +101,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 	}
 
-	public partial class Binder_INPC_Data : DependencyObject
+	public partial class Binder_INPC_Data : FrameworkElement
 	{
 		public string MyValuePropertyValueDuringChange { get; private set; }
 
