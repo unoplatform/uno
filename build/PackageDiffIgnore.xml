@@ -2940,6 +2940,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors::UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2::IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings::IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- BC38: Background is declared per-type (Control/Panel/Border/ContentPresenter/ItemsRepeater/...) to match WinUI, not on FrameworkElement. -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.FrameworkElement::Background()" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::BackgroundProperty()" reason="WinUI sync (BC38): BackgroundProperty declared per-type, not on FrameworkElement" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2951,6 +2954,12 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/WebView2.set_IsInspectable(System.Boolean value)" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings.get_IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/AndroidSettings.set_IsEdgeToEdgeEnabled(System.Boolean value)" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- BC38: Background moved off FrameworkElement (accessors + protected OnBackgroundChanged); Shape no longer paints a Background (WinUI uses Fill). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.FrameworkElement.get_Background()" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Background(Microsoft.UI.Xaml.Media.Brush value)" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_BackgroundProperty()" reason="WinUI sync (BC38): BackgroundProperty declared per-type, not on FrameworkElement" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged moved to the declaring types (Control/Panel/Border/ContentPresenter)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Shapes.Shape.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): Shape has no Background in WinUI (uses Fill)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
