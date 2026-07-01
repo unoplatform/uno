@@ -46,6 +46,11 @@ internal static class DiagnosticViewRegistry
 			ref _registrations,
 			static (regs, defAlc) => regs.RemoveAll(r => IsFromNonDefaultAlc(r.View.GetType(), defAlc)),
 			defaultAlc);
+
+		// Notify listeners (e.g. DiagnosticsOverlay) that the registration set changed so they reconcile
+		// their materialized views and drop the ones just removed. Without this the overlay's add-only refresh
+		// keeps a now-unregistered collectible-ALC view materialized, pinning its LoaderAllocator (uno #23614).
+		Added?.Invoke(null, _registrations);
 	}
 
 	private static bool IsFromNonDefaultAlc(Type type, System.Runtime.Loader.AssemblyLoadContext defaultAlc)
