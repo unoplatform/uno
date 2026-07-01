@@ -476,7 +476,8 @@ public sealed partial class DiagnosticsOverlay : Control
 					.Select(reg => reg.View)
 					.Concat(_localRegistrations)
 					.OrderBy(r => (int)r.Position)
-					.Distinct();
+					.Distinct()
+					.ToList();
 
 				foreach (var view in viewsThatShouldBeMaterialized)
 				{
@@ -485,6 +486,26 @@ public sealed partial class DiagnosticsOverlay : Control
 					{
 						element = new DiagnosticElement(this, view, _context!);
 						_elementsPanel.Children.Add(element.Value);
+					}
+				}
+
+				// Reconcile REMOVALS: drop any materialized element whose view is no longer registered — e.g. a
+				// view registered from a collectible AssemblyLoadContext that was unregistered by
+				// DiagnosticViewRegistry.ClearNonDefaultAlcRegistrations on ALC teardown. The materialization loop
+				// above is add-only; without this the overlay keeps the view (and its DataTemplate → the ALC's
+				// generated resources → LoaderAllocator), pinning the collectible ALC forever (uno #23614).
+				if (_elements.Count > viewsThatShouldBeMaterialized.Count)
+				{
+					var live = new HashSet<IDiagnosticView>(viewsThatShouldBeMaterialized);
+					foreach (var view in _elements.Keys.Where(v => !live.Contains(v)).ToList())
+					{
+						if (_elements.Remove(view, out var stale))
+						{
+							_elementsPanel.Children.Remove(stale.Value);
+							stale.Dispose();
+						}
+
+						_localRegistrations.Remove(view);
 					}
 				}
 
