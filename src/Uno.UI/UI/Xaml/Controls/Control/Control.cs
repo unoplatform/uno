@@ -63,7 +63,9 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Control)s)?.OnBackgroundChanged(e)));
 
-		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		// Uno-only plumbing (WinUI has no OnBackgroundChanged); kept as narrow as possible while
+		// still allowing same-assembly painters (Page, CalendarViewBaseItem) to react.
+		private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// A Control doesn't paint its own Background; the value is used as a placeholder
 			// applied by the template's root painter (a Border/Panel/ContentPresenter).

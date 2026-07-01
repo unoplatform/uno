@@ -1120,7 +1120,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>
 	/// Don't call base, the UpdateBorder() method handles drawing the background.
 	/// </remarks>
-	protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();

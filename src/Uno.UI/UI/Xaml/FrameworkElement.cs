@@ -738,7 +738,11 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
 			{
-				return this is IBorderInfoProvider { Background: { } };
+				// Background moved off FrameworkElement to the individual painter types (Control/Panel/Border/
+				// ContentPresenter/ItemsRepeater/ScrollPresenter). Resolve it on the actual type so the legacy
+				// "any element with a Background is hit-testable" behavior is preserved for all of them.
+				var backgroundProperty = DependencyProperty.GetProperty(GetType(), "Background");
+				return backgroundProperty is not null && GetValue(backgroundProperty) is not null;
 			}
 
 			return false;

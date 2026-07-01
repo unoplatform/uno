@@ -303,7 +303,7 @@ public partial class Border : FrameworkElement
 			typeof(Border),
 			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Border)s)?.OnBackgroundChanged(e)));
 
-	protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
