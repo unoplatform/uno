@@ -155,7 +155,9 @@ namespace UITests.Shared.Windows_UI_Composition
 				TranslateY = 0f,
 				Rotation = t * 1.2f,
 				Size = 0.35f,
-				ColorR = 0.95f, ColorG = 0.3f, ColorB = 0.7f,
+				ColorR = 0.95f,
+				ColorG = 0.3f,
+				ColorB = 0.7f,
 			};
 			gl.BindBuffer(BufferTargetARB.UniformBuffer, _transformUbo);
 			gl.BufferSubData(BufferTargetARB.UniformBuffer, 0, (nuint)Marshal.SizeOf<TransformBlock>(), &transformA);
@@ -168,7 +170,9 @@ namespace UITests.Shared.Windows_UI_Composition
 				TranslateY = 0f,
 				Rotation = -t * 0.8f,
 				Size = 0.35f,
-				ColorR = 0.3f, ColorG = 0.85f, ColorB = 0.95f,
+				ColorR = 0.3f,
+				ColorG = 0.85f,
+				ColorB = 0.95f,
 			};
 			gl.BufferSubData(BufferTargetARB.UniformBuffer, 0, (nuint)Marshal.SizeOf<TransformBlock>(), &transformB);
 			gl.DrawArrays(PrimitiveType.Triangles, 0, 6);

@@ -80,7 +80,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
 			{
 				// Native GLES has no glGetBufferSubData; map the pack PBO and copy it out.
-				var mapped = (byte*)gl.MapBufferRange(BufferTargetARB.PixelPackBuffer, 0, (nuint)readBack.Length, MapBufferAccessMask.MapReadBit);
+				var mapped = (byte*)gl.MapBufferRange(BufferTargetARB.PixelPackBuffer, 0, (nuint)readBack.Length, MapBufferAccessMask.ReadBit);
 				if (mapped is null)
 				{
 					throw new Exception("MapBufferRange(PixelPackBuffer) returned null");

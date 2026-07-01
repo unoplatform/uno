@@ -183,14 +183,14 @@ namespace UITests.Shared.Windows_UI_Composition
 			Check(blockIndex != unchecked((uint)-1), "GetUniformBlockIndex(ZooBlock) failed");
 			gl.GetActiveUniformBlockName(_program, blockIndex, 256, out _, out string blockName);
 			Check(blockName == "ZooBlock", $"GetActiveUniformBlockName returned '{blockName}'");
-			gl.GetActiveUniformBlock(_program, blockIndex, UniformBlockPName.UniformBlockDataSize, out int blockSize);
+			gl.GetActiveUniformBlock(_program, blockIndex, UniformBlockPName.DataSize, out int blockSize);
 			Check(blockSize >= 16, $"GetActiveUniformBlockiv(DataSize) returned {blockSize}");
 
 			var indices = new uint[1];
 			gl.GetUniformIndices(_program, 1, new string[] { "zb" }, out indices[0]);
 			Check(indices[0] != unchecked((uint)-1), "GetUniformIndices(zb) failed");
 			var types = new int[1];
-			gl.GetActiveUniforms(_program, 1, indices, UniformPName.UniformType, types);
+			gl.GetActiveUniforms(_program, 1, indices, UniformPName.Type, types);
 			Check(types[0] == (int)GLEnum.FloatVec4, $"GetActiveUniformsiv(zb) returned type 0x{types[0]:x}");
 
 			gl.UniformBlockBinding(_program, blockIndex, 0);
@@ -228,11 +228,11 @@ namespace UITests.Shared.Windows_UI_Composition
 			Check(Math.Abs(maxLod - 5f) < 0.001f, $"GetTexParameterfv(MaxLod) returned {maxLod}");
 
 			var sampler = gl.GenSampler();
-			gl.SamplerParameter(sampler, SamplerParameterF.TextureMaxLod, 3f);
-			gl.SamplerParameter(sampler, SamplerParameterF.TextureMinLod, new ReadOnlySpan<float>(new float[] { -1f }));
+			gl.SamplerParameter(sampler, SamplerParameterF.MaxLod, 3f);
+			gl.SamplerParameter(sampler, SamplerParameterF.MinLod, new ReadOnlySpan<float>(new float[] { -1f }));
 			gl.SamplerParameter(sampler, SamplerParameterI.WrapT, new ReadOnlySpan<int>(new int[] { (int)GLEnum.Repeat }));
 			Check(gl.IsSampler(sampler), "IsSampler was false");
-			gl.GetSamplerParameter(sampler, SamplerParameterF.TextureMaxLod, out float samplerMaxLod);
+			gl.GetSamplerParameter(sampler, SamplerParameterF.MaxLod, out float samplerMaxLod);
 			Check(Math.Abs(samplerMaxLod - 3f) < 0.001f, $"GetSamplerParameterfv returned {samplerMaxLod}");
 			gl.GetSamplerParameter(sampler, SamplerParameterI.WrapT, out int samplerWrapT);
 			Check(samplerWrapT == (int)GLEnum.Repeat, $"GetSamplerParameteriv returned 0x{samplerWrapT:x}");
