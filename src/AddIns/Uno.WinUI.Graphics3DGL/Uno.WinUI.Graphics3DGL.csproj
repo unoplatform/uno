@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
