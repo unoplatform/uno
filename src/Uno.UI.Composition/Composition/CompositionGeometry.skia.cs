@@ -4,6 +4,7 @@ using System;
 using System.Numerics;
 using SkiaSharp;
 
+
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGeometry : CompositionObject
@@ -17,30 +18,30 @@ namespace Microsoft.UI.Composition
 
 		internal static SKPath BuildLineGeometry(Vector2 start, Vector2 end)
 		{
-			SKPath path = new SKPath();
+			var builder = new SKPathBuilder();
 
-			path.MoveTo(start.ToSKPoint());
-			path.LineTo(end.ToSKPoint());
+			builder.MoveTo(start.ToSKPoint());
+			builder.LineTo(end.ToSKPoint());
 
-			return path;
+			return builder.Detach();
 		}
 
 		internal static SKPath BuildRectangleGeometry(Vector2 offset, Vector2 size)
 		{
-			SKPath path = new SKPath();
+			var builder = new SKPathBuilder();
 
 			// Top left
-			path.MoveTo(new SKPoint(offset.X, offset.Y));
+			builder.MoveTo(new SKPoint(offset.X, offset.Y));
 			// Top right
-			path.RLineTo(new SKPoint(size.X, 0));
+			builder.RLineTo(new SKPoint(size.X, 0));
 			// Bottom right
-			path.RLineTo(new SKPoint(0, size.Y));
+			builder.RLineTo(new SKPoint(0, size.Y));
 			// Bottom left
-			path.RLineTo(new SKPoint(-size.X, 0));
+			builder.RLineTo(new SKPoint(-size.X, 0));
 			// Top left
-			path.Close();
+			builder.Close();
 
-			return path;
+			return builder.Detach();
 		}
 
 		internal static SKPath BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius)
@@ -51,52 +52,52 @@ namespace Microsoft.UI.Composition
 			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusX);
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusY);
 
-			SKPath path = new SKPath();
+			var builder = new SKPathBuilder();
 			var lastPoint = new SKPoint(offset.X + radiusX, offset.Y);
 
-			path.MoveTo(lastPoint);
+			builder.MoveTo(lastPoint);
 			// Top line
-			path.LineTo(lastPoint + new SKPoint(size.X - 2 * radiusX, 0));
+			builder.LineTo(lastPoint + new SKPoint(size.X - 2 * radiusX, 0));
 			lastPoint += new SKPoint(size.X - 2 * radiusX, 0);
 			// Top-right Arc
-			path.CubicTo(
+			builder.CubicTo(
 				lastPoint + new SKPoint(radiusX - bezierX, 0),   // 1st control point
 				lastPoint + new SKPoint(radiusX, bezierY),       // 2nd control point
 				lastPoint + new SKPoint(radiusX, radiusY));      // End point
 			lastPoint += new SKPoint(radiusX, radiusY);
 
 			// Right line
-			path.LineTo(lastPoint + new SKPoint(0, size.Y - 2 * radiusY));
+			builder.LineTo(lastPoint + new SKPoint(0, size.Y - 2 * radiusY));
 			lastPoint += new SKPoint(0, size.Y - 2 * radiusY);
 			// Bottom-right Arc
-			path.CubicTo(
+			builder.CubicTo(
 				lastPoint + new SKPoint(0, bezierY),             // 1st control point
 				lastPoint + new SKPoint(-bezierX, radiusY),      // 2nd control point
 				lastPoint + new SKPoint(-radiusX, radiusY));     // End point
 			lastPoint += new SKPoint(-radiusX, radiusY);
 
 			// Bottom line
-			path.LineTo(lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0));
+			builder.LineTo(lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0));
 			lastPoint = lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0);
 			// Bottom-left Arc
-			path.CubicTo(
+			builder.CubicTo(
 				lastPoint + new SKPoint(-radiusX + bezierX, 0),  // 1st control point
 				lastPoint + new SKPoint(-radiusX, -bezierY),     // 2nd control point
 				lastPoint + new SKPoint(-radiusX, -radiusY));    // End point
 			lastPoint += new SKPoint(-radiusX, -radiusY);
 
 			// Left line
-			path.LineTo(lastPoint + new SKPoint(0, -(size.Y - 2 * radiusY)));
+			builder.LineTo(lastPoint + new SKPoint(0, -(size.Y - 2 * radiusY)));
 			lastPoint += new SKPoint(0, -(size.Y - 2 * radiusY));
 			// Top-left Arc
-			path.CubicTo(
+			builder.CubicTo(
 				lastPoint + new SKPoint(0, -radiusY + bezierY),  // 1st control point
 				lastPoint + new SKPoint(bezierX, -radiusY),      // 2nd control point
 				lastPoint + new SKPoint(radiusX, -radiusY));     // End point
 
-			path.Close();
+			builder.Close();
 
-			return path;
+			return builder.Detach();
 		}
 
 		internal static SKPath BuildEllipseGeometry(Vector2 center, Vector2 radius)
@@ -112,36 +113,36 @@ namespace Microsoft.UI.Composition
 			// - WPF starts with bottom right ellipse arc.
 			// - TODO: Verify UWP behavior
 
-			SKPath path = new SKPath();
+			var builder = new SKPathBuilder();
 
-			path.MoveTo(new SKPoint(rect.Right, rect.Top + radius.Y));
+			builder.MoveTo(new SKPoint(rect.Right, rect.Top + radius.Y));
 			// Bottom-right Arc
-			path.CubicTo(
+			builder.CubicTo(
 				new SKPoint(rect.Right, rect.Bottom - bezierY),  // 1st control point
 				new SKPoint(rect.Right - bezierX, rect.Bottom),  // 2nd control point
 				new SKPoint(rect.Right - radius.X, rect.Bottom)); // End point
 
 			// Bottom-left Arc
-			path.CubicTo(
+			builder.CubicTo(
 				new SKPoint(rect.Left + bezierX, rect.Bottom),      // 1st control point
 				new SKPoint(rect.Left, rect.Bottom - bezierY),      // 2nd control point
 				new SKPoint(rect.Left, rect.Bottom - radius.Y));     // End point
 
 			// Top-left Arc
-			path.CubicTo(
+			builder.CubicTo(
 				new SKPoint(rect.Left, rect.Top + bezierY),           // 1st control point
 				new SKPoint(rect.Left + bezierX, rect.Top),           // 2nd control point
 				new SKPoint(rect.Left + radius.X, rect.Top));          // End point
 
 			// Top-right Arc
-			path.CubicTo(
+			builder.CubicTo(
 				new SKPoint(rect.Right - bezierX, rect.Top),       // 1st control point
 				new SKPoint(rect.Right, rect.Top + bezierY),       // 2nd control point
 				new SKPoint(rect.Right, rect.Top + radius.Y));      // End point
 
-			path.Close();
+			builder.Close();
 
-			return path;
+			return builder.Detach();
 		}
 
 		private static float Clamp(float value, float minValue, float maxValue)

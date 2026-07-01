@@ -70,8 +70,6 @@ internal static class SkiaRenderHelper
 		canvas.Flush();
 	}
 
-	private static readonly SKPath _spareParentClipPath = new();
-
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// </summary>
@@ -81,9 +79,7 @@ internal static class SkiaRenderHelper
 
 		var rect = new SKRect(0f, 0f, width, height);
 
-		var parentClipPath = _spareParentClipPath;
-		parentClipPath.Rewind();
-		parentClipPath.AddRect(rect);
+		using var parentClipPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
@@ -94,8 +90,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var invertedPath = new SKPath();
-			invertedPath.AddRect(rect);
+			var invertedPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
 
 			clipPath.Dispose();
@@ -112,8 +107,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var result = new SKPath();
-			result.AddRect(new SKRect(0f, 0f, width, height));
+			var result = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(new SKRect(0f, 0f, width, height));
 			result.Op(_emptyClipPath, SKPathOp.Difference, result);
 
 			_invertedClipPathWidth = width;
@@ -393,7 +387,7 @@ internal static class SkiaRenderHelper
 
 			_font.MeasureText(value, out var textRect);
 			var textY = rowTop + (RowHeight - textRect.Height) / 2 - textRect.Top;
-			canvas.DrawText(value, textX, textY, _font, _textPaint);
+			canvas.DrawText(value, textX, textY, SKTextAlign.Left, _font, _textPaint);
 		}
 
 		private static void DrawSpeedometerIcon(SKCanvas canvas, float x, float y)
