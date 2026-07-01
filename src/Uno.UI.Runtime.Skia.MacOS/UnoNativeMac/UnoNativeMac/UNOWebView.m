@@ -2,6 +2,8 @@
 //  UNOWebView.m
 //
 
+#define DEBUG 1
+
 #import "UNONative.h"
 #import "UNOWebView.h"
 
@@ -231,13 +233,13 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #endif
     NSString *js = [NSString stringWithUTF8String:javascript];
     [webview evaluateJavaScript:js completionHandler:^(NSObject* result, NSError *error) {
-        const char* r = nil;
-        const char* e = nil;
+        char* r = nil;
+        char* e = nil;
         if (error) {
 #if DEBUG
             NSLog(@"uno_webview_execute_script %p completionHandler error: %@", webview, error);
 #endif
-            e = error.description.UTF8String;
+            e = strdup(error.description.UTF8String);
         } else if (result != nil) {
             if ([NSJSONSerialization isValidJSONObject:result]) {
 #if DEBUG
@@ -249,12 +251,12 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #if DEBUG
                     NSLog(@"uno_webview_execute_script %p completionHandler jsonError: %@", webview, jsonError);
 #endif
-                    e = jsonError.description.UTF8String;
+                    e = strdup(jsonError.description.UTF8String);
                 } else {
 #if DEBUG
                     NSLog(@"uno_webview_execute_script %p completionHandler data: %@", webview, data);
 #endif
-                    r = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] UTF8String];
+                    r = strdup([[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] UTF8String]);
                 }
             } else if ([result isKindOfClass:NSString.class]) {
                 // double quote existing quotes so we can quote the whole thing
@@ -263,16 +265,18 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #if DEBUG
                 NSLog(@"uno_webview_execute_script %p completionHandler string: %@", webview, quoted);
 #endif
-                r = quoted.UTF8String;
+                r = strdup(quoted.UTF8String);
             } else {
                 NSString *s = result.description;
 #if DEBUG
                 NSLog(@"uno_webview_execute_script %p completionHandler object: %@", webview, s);
 #endif
-                r = s.UTF8String;
+                r = strdup(s.UTF8String);
             }
         }
         uno_get_execute_callback()(handle, r, e);
+        free(r);
+        free(e);
     }];
 }
 
