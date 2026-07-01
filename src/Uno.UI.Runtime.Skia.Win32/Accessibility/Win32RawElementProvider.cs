@@ -38,9 +38,11 @@ internal class Win32RawElementProvider :
 	private readonly Win32Accessibility _accessibility;
 	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
+	private bool _isInvalidated;
 	private const int MaxHitTestDepth = 1024;
 
 	internal UIElement Owner => _owner;
+	internal bool IsInvalidated => _isInvalidated;
 	internal AutomationPeer? RepresentedPeer => _representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null;
 
 	internal Win32RawElementProvider(
@@ -63,13 +65,94 @@ internal class Win32RawElementProvider :
 	internal bool RepresentsPeer(AutomationPeer peer)
 		=> ReferenceEquals(GetAutomationPeer(), peer);
 
+	// MUX Reference AutomationPeer.cpp CAutomationPeer::Deinit → CUIAWrapper::Invalidate
+	/// <summary>
+	/// Detaches this provider from its element when the underlying subtree is
+	/// removed. Mirrors WinUI's <c>CUIAWrapper::Invalidate</c>: the provider is
+	/// disconnected from UIA (<c>UiaDisconnectProvider</c>) and every subsequent
+	/// call fails with <c>UIA_E_ELEMENTNOTAVAILABLE</c> via <see cref="ThrowIfDisconnected"/>.
+	/// </summary>
+	/// <remarks>
+	/// This is the fix for out-of-proc clients (Narrator, FlaUI, WinAppDriver)
+	/// that cache element references: without a clean disconnect the provider's
+	/// COM-callable wrapper could be GC'd while the client still held the proxy,
+	/// so the next call marshalled back to a severed object and surfaced as
+	/// <c>0x80070002</c> (FileNotFound) instead of the expected
+	/// element-not-available error. The cascade disconnects cached (possibly
+	/// virtual) children too — e.g. WCT DataGrid row/cell providers that are keyed
+	/// only by peer and are never reachable through the element table.
+	/// </remarks>
+	internal void Invalidate(HashSet<Win32RawElementProvider>? visited = null)
+	{
+		if (_isRoot || _isInvalidated)
+		{
+			return;
+		}
+
+		visited ??= new HashSet<Win32RawElementProvider>(ReferenceEqualityComparer.Instance);
+		if (!visited.Add(this))
+		{
+			return;
+		}
+
+		_isInvalidated = true;
+
+		var children = _cachedAutomationChildren;
+		_cachedAutomationChildren = null;
+		if (children is not null)
+		{
+			for (var i = 0; i < children.Count; i++)
+			{
+				var childProvider = _accessibility.TryGetExistingProviderForPeer(children[i]);
+				if (childProvider is not null && !ReferenceEquals(childProvider, this))
+				{
+					childProvider.Invalidate(visited);
+				}
+			}
+		}
+
+		_accessibility.OnProviderInvalidated(this);
+
+		try
+		{
+			_ = Win32UIAutomationInterop.UiaDisconnectProvider(this);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"UiaDisconnectProvider failed for {DescribeElement()}: {ex.Message}");
+			}
+		}
+	}
+
+	// MUX Reference UIAWrapper.cpp — the `if (!m_pAP) IFC(E_FAIL)` guard at the
+	// top of each provider method. We use UIA_E_ELEMENTNOTAVAILABLE (the standard
+	// code UiaDisconnectProvider makes clients observe) rather than E_FAIL.
+	private void ThrowIfDisconnected()
+	{
+		if (_isInvalidated)
+		{
+			throw new COMException(
+				"The UI Automation element is no longer available.",
+				Win32UIAutomationInterop.UIA_E_ELEMENTNOTAVAILABLE);
+		}
+	}
+
 	// IRawElementProviderSimple
 
-	public ProviderOptions ProviderOptions =>
-		ProviderOptions.ServerSideProvider | ProviderOptions.UseComThreading;
+	public ProviderOptions ProviderOptions
+	{
+		get
+		{
+			ThrowIfDisconnected();
+			return ProviderOptions.ServerSideProvider | ProviderOptions.UseComThreading;
+		}
+	}
 
 	public object? GetPatternProvider(int patternId)
 	{
+		ThrowIfDisconnected();
 		try
 		{
 			var peer = GetAutomationPeer();
@@ -202,6 +285,7 @@ internal class Win32RawElementProvider :
 
 	public object? GetPropertyValue(int propertyId)
 	{
+		ThrowIfDisconnected();
 		try
 		{
 			var peer = GetAutomationPeer();
@@ -218,6 +302,7 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_ProviderDescriptionPropertyId => "Uno Platform UIA Provider",
 				Win32UIAutomationInterop.UIA_ProcessIdPropertyId => GetProcessId(),
 				Win32UIAutomationInterop.UIA_NativeWindowHandlePropertyId => _isRoot ? (int)_hwnd : 0,
+				Win32UIAutomationInterop.UIA_ClickablePointPropertyId => GetClickablePoint(peer),
 
 				// State
 				Win32UIAutomationInterop.UIA_IsEnabledPropertyId => peer?.IsEnabled() ?? (_owner is Control c ? c.IsEnabled : true),
@@ -316,6 +401,7 @@ internal class Win32RawElementProvider :
 
 	public IRawElementProviderFragment? Navigate(NavigateDirection direction)
 	{
+		ThrowIfDisconnected();
 		try
 		{
 			var result = direction switch
@@ -350,6 +436,7 @@ internal class Win32RawElementProvider :
 
 	public int[]? GetRuntimeId()
 	{
+		ThrowIfDisconnected();
 		return [Win32UIAutomationInterop.UiaAppendRuntimeId, _runtimeId];
 	}
 
@@ -357,6 +444,7 @@ internal class Win32RawElementProvider :
 	{
 		get
 		{
+			ThrowIfDisconnected();
 			try
 			{
 				Windows.Foundation.Rect logicalRect;
@@ -425,10 +513,50 @@ internal class Win32RawElementProvider :
 		}
 	}
 
+	// MUX Reference UIAWrapper.cpp CUIAWrapper::GetPropertyValueImpl (ClickablePoint_Property)
+	// Returns the peer-supplied clickable point converted to physical screen
+	// coordinates. A (0,0) point is treated as unset (VT_EMPTY → null) so UIA
+	// falls back to its bounding-rectangle heuristic — matching WinUI, whose
+	// default GetClickablePointCore also returns (0,0). Only peers that override
+	// GetClickablePointCore produce a non-empty value here.
+	private double[]? GetClickablePoint(AutomationPeer? peer)
+	{
+		if (peer is null)
+		{
+			return null;
+		}
+
+		var point = peer.GetClickablePoint();
+		if (point.X == 0 && point.Y == 0)
+		{
+			return null;
+		}
+
+		// Convert logical client coordinates to physical screen coordinates,
+		// mirroring BoundingRectangle's DPI scale + ClientToScreen step.
+		float dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
+			/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
+		if (dpiScale <= 0)
+		{
+			dpiScale = 1.0f;
+		}
+
+		var clientOrigin = new System.Drawing.Point(0, 0);
+		Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin);
+
+		// UIA_ClickablePointPropertyId is a VT_R8 | VT_ARRAY of [x, y].
+		return
+		[
+			clientOrigin.X + point.X * dpiScale,
+			clientOrigin.Y + point.Y * dpiScale,
+		];
+	}
+
 	public IRawElementProviderFragment[]? GetEmbeddedFragmentRoots() => null;
 
 	public void SetFocus()
 	{
+		ThrowIfDisconnected();
 		if (_owner is Control control)
 		{
 			control.Focus(FocusState.Programmatic);
@@ -447,6 +575,7 @@ internal class Win32RawElementProvider :
 
 	public IRawElementProviderFragment? ElementProviderFromPoint(double x, double y)
 	{
+		ThrowIfDisconnected();
 		try
 		{
 			var deepest = FindDeepestProviderAtPoint(x, y) ?? this;
@@ -557,6 +686,7 @@ internal class Win32RawElementProvider :
 
 	public IRawElementProviderFragment? GetFocus()
 	{
+		ThrowIfDisconnected();
 		try
 		{
 			var xamlRoot = _owner.XamlRoot;

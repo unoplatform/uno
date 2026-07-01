@@ -297,6 +297,9 @@ internal static class Win32UIAutomationInterop
 	internal const int OrientationType_Horizontal = 1;
 	internal const int OrientationType_Vertical = 2;
 
+	// UIA error HRESULTs
+	internal const int UIA_E_ELEMENTNOTAVAILABLE = unchecked((int)0x80040201);
+
 	// Win32 helpers for coordinate conversion
 
 	internal const uint USER_DEFAULT_SCREEN_DPI = 96;
