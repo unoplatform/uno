@@ -13,6 +13,6 @@
         Height="400"
         HorizontalAlignment="Left"
         VerticalAlignment="Top">
-        <StackPanel x:Name="Content" />
+        <StackPanel x:Name="ContentPanel" />
     </ScrollViewer>
 </Page>

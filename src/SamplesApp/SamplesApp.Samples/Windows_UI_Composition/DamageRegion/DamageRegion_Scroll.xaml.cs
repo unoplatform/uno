@@ -1,9 +1,9 @@
 using System;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
-using Colors = Microsoft.UI.Colors;
 
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 			};
 			for (var i = 0; i < 40; i++)
 			{
-				Content.Children.Add(new Border
+				ContentPanel.Children.Add(new Border
 				{
 					Height = 50,
 					Background = new SolidColorBrush(colors[i % colors.Length]),

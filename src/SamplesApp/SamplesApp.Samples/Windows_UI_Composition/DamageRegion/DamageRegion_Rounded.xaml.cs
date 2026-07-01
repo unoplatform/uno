@@ -1,9 +1,9 @@
 using System;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
-using Colors = Microsoft.UI.Colors;
 
 namespace UITests.Shared.Windows_UI_Composition.DamageRegion
 {
