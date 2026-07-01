@@ -26,6 +26,8 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="Uno.UI\Behaviors\VisibleBoundsPadding.cs" />
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
+		<Compile Include="..\Uno.UWP\Helpers\UnoRuntimePlatform.cs" Link="RuntimePlatform\UnoRuntimePlatform.cs" />
+		<Compile Include="..\Uno.UWP\Extensions\UnoRuntimePlatformExtensions.cs" Link="RuntimePlatform\UnoRuntimePlatformExtensions.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

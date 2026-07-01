@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
@@ -40,6 +41,8 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 	static MacSkiaHost()
 	{
+		RuntimePlatformHelper.SkiaPlatform = RuntimePlatform.SkiaMacOS;
+
 		MacOSWindowHost.Register(); // must be initialized first to load libSkiaSharp
 
 		MacOSAnalyticsInfoExtension.Register();
