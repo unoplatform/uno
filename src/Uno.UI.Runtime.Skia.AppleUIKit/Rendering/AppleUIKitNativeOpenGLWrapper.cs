@@ -15,6 +15,10 @@ using Uno.Graphics;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
+// Apple deprecated OpenGL ES in favor of Metal, so the EAGL APIs are flagged obsolete-on-platform
+// (CA1422). GLCanvasElement is an OpenGL control, so using EAGL here is intentional.
+#pragma warning disable CA1422
+
 // GLCanvasElement renders into its own offscreen FBO and reads it back, so an EAGL context made
 // current (without any layer-backed drawable) is sufficient - EAGL has no pbuffer concept; an
 // FBO bound while the context is current is the offscreen target.
@@ -109,5 +113,7 @@ internal class AppleUIKitNativeOpenGLWrapper : INativeOpenGLWrapper
 		}
 	}
 }
+
+#pragma warning restore CA1422
 
 #endif
