@@ -108,8 +108,11 @@ internal static unsafe partial class WasmGLFunctions
 	}
 
 	// Referenced from RegisterLargeArityShimEntries behind an always-false volatile guard so the
-	// IL trimmer keeps the SignaturePrimer DllImports without them ever being called.
-	private static volatile bool _neverTrue = false;
+	// IL trimmer keeps the SignaturePrimer DllImports without them ever being called. Never assigned
+	// by design (always default false), hence the CS0649 suppression.
+#pragma warning disable CS0649
+	private static volatile bool _neverTrue;
+#pragma warning restore CS0649
 
 	private static void KeepSignaturePrimer()
 	{
