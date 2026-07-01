@@ -8,7 +8,7 @@ namespace Uno.UI.Graphics;
 
 internal class SKCanvasVisual(Action<object, Size> renderCallback, Compositor compositor) : SKCanvasVisualBase(renderCallback, compositor)
 {
-	internal override void Paint(in PaintingSession session)
+	internal override SKPath Paint(in PaintingSession session)
 	{
 		// We save and restore the canvas state ourselves so that the inheritor doesn't accidentally forget to.
 		session.Canvas.Save();
@@ -16,6 +16,8 @@ internal class SKCanvasVisual(Action<object, Size> renderCallback, Compositor co
 		session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
 		RenderCallback(session.Canvas, Size.ToSize());
 		session.Canvas.Restore();
+
+		return null;
 	}
 
 	internal override bool CanPaint() => true;

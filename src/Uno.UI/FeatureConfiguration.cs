@@ -1102,6 +1102,12 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// When damage-region rendering is active, visually highlights the regions being
+			/// repainted each frame, for tuning and debugging. This is a diagnostic aid only.
+			/// </summary>
+			public static bool DamageRegionOverlay { get; set; }
 		}
 
 		public static class ElementRefHandle
