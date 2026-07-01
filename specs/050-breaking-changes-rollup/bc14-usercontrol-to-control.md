@@ -31,9 +31,9 @@ WinUI hierarchy is **`Control` → `UserControl` → `Page`**, with `UserControl
 - `x is ContentControl` checks and `ContentControl`-typed casts against a `UserControl`/`Page` **flip from `true` to `false`** — can silently change behaviour in framework and app code.
 - Re-implementing content hosting without `ContentPresenter` is non-trivial: focus, automation peers, and visual-state hosting all currently lean on the `ContentControl` path.
 
-## Open decision (needs maintainer confirmation)
+## Decision (resolved)
 
-Commit to WinUI parity (accept that `ContentTemplate`/`ContentTemplateSelector`/`ContentTransitions` vanish from `UserControl`/`Page`, and `is ContentControl` flips), **or** keep the extra `ContentControl` for back-compat? This is the single highest-risk break in the epic — get explicit sign-off before starting.
+**Commit to WinUI parity.** `ContentTemplate`/`ContentTemplateSelector`/`ContentTransitions` and the `object`-typed `Content` setter are removed from `UserControl`/`Page`; `Content` is typed `UIElement`; `is ContentControl` against a `UserControl`/`Page` flips to `false`. The back-compat alternative (keeping the extra `ContentControl`) was rejected.
 
 ## Affected files (starting set)
 
@@ -47,4 +47,17 @@ Commit to WinUI parity (accept that `ContentTemplate`/`ContentTemplateSelector`/
 
 ## Sequencing
 
-Do **BC38 (Background → Control)** first so the `Background` relocation onto `Control` is not redone during this re-parenting. Independent of the DataContext / DependencyObject items. Own stabilized PR; never batch.
+Originally planned after **BC38 (Background → Control)**. In practice BC14 is **independent of BC38**: `Background` is declared on `FrameworkElement`, so `UserControl` keeps inheriting it through `FrameworkElement` → `Control` → `UserControl` regardless of BC38; if BC38 lands later it relocates `Background` onto `Control` without disturbing this change. Independent of the DataContext / DependencyObject items. Own stabilized PR; never batch.
+
+## Implementation (as landed)
+
+`UserControl : Control` with its own `UIElement`-typed `Content` (`[GeneratedDependencyProperty]`, `AffectsMeasure | ValueDoesNotInheritDataContext`). Single-child hosting is done directly via `AddChild`/`RemoveChild` in `OnContentChanged` — these primitives exist on every platform, so no per-platform partial and no `ContentPresenter`/template plumbing is needed. `Control`'s existing single-child `MeasureOverride`/`ArrangeOverride` (`FindFirstChild`/`ArrangeFirstChild`) handles layout, so `UserControl` adds none. `Page` inherits the new base unchanged (its `OnBackgroundChanged` override still works). The generated `UserControl`/`Page` stubs already matched the target shape (stub skips `Content`/`ContentProperty`), so no regeneration was required — confirmed by a clean full-samples build.
+
+Consumer adaptation was minimal: `IFrameworkElement.FindName` gained a `UserControl.Content` branch (covers `Page`), and hot reload's `SwapViews` gained a `UserControl` parent path. The other `is ContentControl` sites (AriaMapper, FocusManager, VisualStateUtil, WASM a11y) correctly stop matching `UserControl`/`Page` and needed no code change.
+
+Files changed: `…/Controls/UserControl/UserControl.cs`, `…/Controls/UserControl/UserControl.Properties.cs` (new), `…/UI/Xaml/IFrameworkElement.cs`, `Uno.UI.RemoteControl/HotReload/ClientHotReloadProcessor.Common.cs`, plus `Uno.UI.RuntimeTests/.../Given_UserControl.cs` (new). `ContentControl.cs` and the generated stubs were **not** touched.
+
+## Validation status
+
+- **Done (Skia Desktop, runtime):** `Given_UserControl` (5/5) plus a regression batch of **407/0** across `Given_Control`, `Given_ContentControl` (incl. FindName), `Given_ContentPresenter`, `Given_Frame` (navigation), `Given_VisualStateManager`, `Given_FocusManager`, `Given_FrameworkElement`. Full-samples Skia build clean (Uno.UI, RemoteControl, SamplesApp).
+- **Pending (PR-stabilization):** WinUI-parity run (`/winui-runtime-tests`), SamplesApp light/dark visual sweep (layout-equivalence headline risk), WASM Skia head, HotReload app-harness tests.

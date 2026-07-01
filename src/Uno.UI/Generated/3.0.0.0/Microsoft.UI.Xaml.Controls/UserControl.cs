@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Content")]
 #if false || false
 	[global::Uno.NotImplemented]
 #endif

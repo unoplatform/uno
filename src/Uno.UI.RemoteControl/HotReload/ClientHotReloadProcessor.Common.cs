@@ -135,6 +135,7 @@ namespace Uno.UI.RemoteControl.HotReload
 #if !WINUI
 			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
+			var parentAsUserControl = oldView.GetVisualTreeParent() as UserControl;
 #else
 			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
@@ -148,6 +149,12 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				parentAsContentControl.Content = newView;
 			}
+#if !WINUI
+			else if ((parentAsUserControl?.Content as FrameworkElement) == oldView)
+			{
+				parentAsUserControl.Content = newView;
+			}
+#endif
 			else if (newView is Page newPage && oldView is Page oldPage)
 			{
 				// In the case of Page, swapping the actual page is not supported, so we
