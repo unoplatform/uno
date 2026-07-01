@@ -101,7 +101,7 @@ namespace Windows.Graphics.Imaging
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
 			using var canvas = new SKCanvas(bitmap._bitmap);
-			canvas.DrawBitmap(_bitmap, 0, 0, default(SKSamplingOptions), null);
+			canvas.DrawBitmap(_bitmap, 0, 0, SKSamplingOptions.Default, null);
 			canvas.Flush();
 		}
 

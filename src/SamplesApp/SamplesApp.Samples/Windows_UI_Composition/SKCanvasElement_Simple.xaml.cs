@@ -99,12 +99,10 @@ public partial class SKCanvasElementImpl : SKCanvasElement
 		var rect = SKRect.Create(10, 10, 100, 160);
 		canvas.DrawRect(rect, paint);
 
-		var ovalBuilder = new SKPathBuilder();
-		ovalBuilder.AddRoundRect(rect, 20, 20);
-		var oval = ovalBuilder.Detach();
-		oval.Offset(new SKPoint(40, 80));
+		var ovalRect = rect;
+		ovalRect.Offset(40, 80);
 		paint.Color = new SKColor(0xffDB4437);
-		canvas.DrawPath(oval, paint);
+		canvas.DrawRoundRect(ovalRect, 20, 20, paint);
 
 		paint.Color = new SKColor(0xff0F9D58);
 		canvas.DrawCircle(180, 50, 25, paint);

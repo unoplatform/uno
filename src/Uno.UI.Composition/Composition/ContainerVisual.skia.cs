@@ -118,17 +118,19 @@ public partial class ContainerVisual : Visual
 			return false;
 		}
 
-		var clipRect = rect.ToSKRect();
-		SetPathToRect(dst, clipRect);
+		var matrix = SKMatrix.Identity;
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
 			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
-				dst.Transform(childToParentTransform.ToSKMatrix());
+				matrix = childToParentTransform.ToSKMatrix();
 			}
 		}
+
+		using var rectPath = SkiaExtensions.CreateRectPath(rect.ToSKRect());
+		rectPath.Transform(matrix, dst);
 
 		return true;
 	}
@@ -189,7 +191,7 @@ public partial class ContainerVisual : Visual
 
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				CopyPath(prePaintingClipPath, dst);
+				prePaintingClipPath.Transform(SKMatrix.Identity, dst);
 
 				return true;
 			}
