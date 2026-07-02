@@ -133,6 +133,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11914")]
+		public async Task When_Pivot_LoadedWithItemsSource_Then_FirstItemContentIsVisible()
+		{
+			var items = new[]
+			{
+				new PivotItem { Header = "Tab 1", Content = new TextBlock { Text = "Content 1" } },
+				new PivotItem { Header = "Tab 2", Content = new TextBlock { Text = "Content 2" } },
+				new PivotItem { Header = "Tab 3", Content = new TextBlock { Text = "Content 3" } },
+			};
+
+			var SUT = new Pivot
+			{
+				ItemsSource = items,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// The first item should be selected by default
+			SUT.SelectedIndex.Should().Be(0);
+
+			// The content of the first item should be visible immediately without needing to reselect
+			var container = SUT.ContainerFromIndex(0) as PivotItem;
+			container.Should().NotBeNull("PivotItem container at index 0 should exist");
+			container!.Content.Should().NotBeNull("First PivotItem content should not be null after initial load");
+
+			// Find the ContentPresenter to verify it has content
+			var contentPresenter = container.FindFirstChild<ContentPresenter>();
+			contentPresenter.Should().NotBeNull("ContentPresenter inside PivotItem should exist");
+			contentPresenter!.Content.Should().NotBeNull("ContentPresenter content should not be null on initial load (issue #11914: Pivot content is not set at once on Android)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11914")]
+		public async Task When_Pivot_LoadedWithInlineItems_Then_FirstItemContentVisible()
+		{
+			var SUT = new Pivot();
+			SUT.Items.Add(new PivotItem { Header = "Tab 1", Content = new TextBlock { Text = "Hello World" } });
+			SUT.Items.Add(new PivotItem { Header = "Tab 2", Content = new TextBlock { Text = "Second Tab" } });
+
+			await UITestHelper.Load(SUT);
+
+			// SelectedIndex should be 0 after initial load
+			SUT.SelectedIndex.Should().Be(0);
+			SUT.SelectedItem.Should().NotBeNull("SelectedItem should not be null after initial load");
+
+			// The selected PivotItem should have visible content without requiring reselection
+			var selectedContainer = SUT.ContainerFromIndex(0) as PivotItem;
+			selectedContainer.Should().NotBeNull();
+
+			var contentPresenter = selectedContainer!.FindFirstChild<ContentPresenter>();
+			contentPresenter.Should().NotBeNull("ContentPresenter inside PivotItem should exist");
+			contentPresenter!.Content.Should().NotBeNull("Content of selected PivotItem should be set on initial load (issue #11914)");
+
+			var tb = contentPresenter.FindFirstChild<TextBlock>();
+			tb.Should().NotBeNull("TextBlock inside ContentPresenter should exist after initial load");
+			tb!.Text.Should().Be("Hello World", "TextBlock content should match PivotItem content");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Pivot_Single_ItemContent_Visible()
 		{
