@@ -320,8 +320,16 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        v.enableSetNeedsDisplay = YES;
+        // Disable MTKView auto-draw; frames are driven by the managed render thread via
+        // uno_window_acquire_next_frame / uno_window_present_frame.
+        v.paused = YES;
+        v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+        // Double-buffering (2 drawables) instead of the default triple-buffering reduces
+        // present latency by one VSync; the render thread is already paced by the UI thread.
+        CAMetalLayer* metalLayer = (CAMetalLayer*)v.layer;
+        metalLayer.maximumDrawableCount = 2;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         window.renderingView = v;
