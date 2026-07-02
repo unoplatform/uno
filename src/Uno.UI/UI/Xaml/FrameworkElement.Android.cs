@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml
 
 			if (this.Resources is not null)
 			{
-				foreach (var resource in Resources.Values)
+				foreach (var resource in Resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsFrameworkElement)
 					{
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this.Resources is not null)
 			{
-				foreach (var resource in this.Resources.Values)
+				foreach (var resource in this.Resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement fe)
 					{
