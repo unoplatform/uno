@@ -147,6 +147,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					TimeManager.Instance.AddTimeline(this);
 				}
 
+				// Keep the VSync loop alive from Begin, not just from the first Active tick.
+				// A storyboard delayed by BeginTime stays NotStarted until its begin time, and
+				// ComputeState returns before the Active branch that would call EnsureTicking.
+				// Without this, an otherwise-idle app never ticks the storyboard into its active
+				// period (RequestAdditionalFrame is suppressed while OnTick is running).
+				TimeManager.Instance.EnsureTicking();
+
 				// Request an immediate tick so the first ComputeState happens before the next layout.
 				Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
 			}
