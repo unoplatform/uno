@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Windows.System;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 
 namespace Windows.UI.Core
 {

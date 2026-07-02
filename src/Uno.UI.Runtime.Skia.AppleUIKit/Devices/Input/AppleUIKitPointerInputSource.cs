@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.UI.Input;
+using PointerPoint = Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = Microsoft.UI.Input.PointerPointProperties;
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Foundation.Logging;
@@ -14,10 +16,6 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 

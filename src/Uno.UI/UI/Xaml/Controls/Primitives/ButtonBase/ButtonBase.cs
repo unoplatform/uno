@@ -6,7 +6,7 @@ using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;

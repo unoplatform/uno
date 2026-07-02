@@ -6,7 +6,7 @@ using Windows.Devices.Input;
 using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 
 namespace Windows.UI.Core;
 

@@ -317,6 +317,34 @@ namespace Uno.WinAppSDKSyncGenerator
 			"Windows.Media.Playlists",                          // WPL / ZPL playlist files
 		};
 
+		// Legacy Windows.UI.Input pointer/gesture/manipulation types whose modern Microsoft.UI.Input.*
+		// variants are now the sole surface. These UWP-projected legacy stubs are no longer generated.
+		private static readonly HashSet<string> _droppedLegacyPointerTypes = new(StringComparer.Ordinal)
+		{
+			"PointerPoint",
+			"PointerPointProperties",
+			"PointerUpdateKind",
+			"IPointerPointTransform",
+			"GestureRecognizer",
+			"GestureSettings",
+			"DraggingEventArgs",
+			"DraggingState",
+			"HoldingEventArgs",
+			"HoldingState",
+			"ManipulationCompletedEventArgs",
+			"ManipulationDelta",
+			"ManipulationInertiaStartingEventArgs",
+			"ManipulationStartedEventArgs",
+			"ManipulationUpdatedEventArgs",
+			"ManipulationVelocities",
+			"RightTappedEventArgs",
+			"TappedEventArgs",
+		};
+
+		private static bool ReferencesDroppedLegacyPointerType(ITypeSymbol type)
+			=> type.ContainingNamespace?.ToDisplayString() == "Windows.UI.Input"
+				&& _droppedLegacyPointerTypes.Contains(type.Name);
+
 		private static bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
 			var @namespace = namedTypeSymbol.ContainingNamespace.ToDisplayString();
@@ -333,6 +361,14 @@ namespace Uno.WinAppSDKSyncGenerator
 			if (@namespace.StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
 			{
 				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
+				return true;
+			}
+			else if (@namespace == "Windows.UI.Input" && _droppedLegacyPointerTypes.Contains(namedTypeSymbol.Name))
+			{
+				// The legacy Windows.UI.Input pointer/gesture/manipulation family is dropped: the modern
+				// Microsoft.UI.Input.* variants are the sole surface. PointerPoint/PointerPointProperties/
+				// PointerUpdateKind/IPointerPointTransform live in Uno.UWP; the gesture/manipulation types
+				// live in Uno.UI. Do not regenerate the UWP-projected legacy stubs.
 				return true;
 			}
 			else if (@namespace.StartsWith("ABI.", StringComparison.Ordinal))
@@ -410,6 +446,15 @@ namespace Uno.WinAppSDKSyncGenerator
 			else if (@namespace.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
+			}
+			// Microsoft.UI.Input.PointerPoint family: relocated to Uno.UWP so that lower assemblies
+			// (Uno.UI.Composition) can name Microsoft.UI.Input.PointerPoint in their public API. The rest
+			// of Microsoft.UI.Input (GestureRecognizer, Manipulation*, …) stays in Uno.UI — it depends on
+			// Uno.UI.Composition and cannot move down.
+			else if (@namespace == "Microsoft.UI.Input"
+				&& type.Name is "PointerPoint" or "PointerPointProperties" or "PointerUpdateKind" or "IPointerPointTransform" or "PointerDeviceType")
+			{
+				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
 			else if (@namespace.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal) ||
 				@namespace.StartsWith("Microsoft.UI.Xaml.Automation", StringComparison.Ordinal))
@@ -1682,6 +1727,15 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			if (method.MethodKind == MethodKind.Constructor && method.Parameters.Length == 1 &&
 				method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed")
+			{
+				return true;
+			}
+
+			// The legacy Windows.UI.Input pointer/gesture family was dropped (Microsoft.UI.Input.* is now
+			// the sole surface). Skip any UWP member that would reference one of those removed types, so we
+			// don't emit stubs that fail to compile (e.g. Windows.UI.Input.Inking.InkManager.ProcessPointerDown).
+			if (ReferencesDroppedLegacyPointerType(method.ReturnType)
+				|| method.Parameters.Any(p => ReferencesDroppedLegacyPointerType(p.Type)))
 			{
 				return true;
 			}

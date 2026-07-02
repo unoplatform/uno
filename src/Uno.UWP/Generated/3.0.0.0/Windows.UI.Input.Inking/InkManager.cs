@@ -40,27 +40,7 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkManager.InkManager()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ProcessPointerDown(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkManager", "ProcessPointerDown(PointerPoint pointerPoint)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object ProcessPointerUpdate(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkManager", "ProcessPointerUpdate(PointerPoint pointerPoint)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect ProcessPointerUp(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkManager", "ProcessPointerUp(PointerPoint pointerPoint)");
-		}
-#endif
+		// Skipped ProcessPointerDown/ProcessPointerUpdate/ProcessPointerUp: reference the dropped legacy Windows.UI.Input.PointerPoint.
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDefaultDrawingAttributes(global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes)

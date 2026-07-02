@@ -7,12 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
 using Point = Windows.Foundation.Point;
 using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
 namespace Uno.UI.Tests.Windows_UI_Input
 {
@@ -2013,7 +2015,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				AreEquals(nameof(args.Delta), _delta, args.Delta);
 				AreEquals(nameof(args.Cumulative), _cumulative, args.Cumulative);
 				AreEquals(nameof(args.Velocities), _velocities, args.Velocities);
-				AreEquals(nameof(args.PointerDeviceType), _pointer, args.PointerDeviceType);
+				AreEquals(nameof(args.PointerDeviceType), _pointer, (PointerDeviceType)args.PointerDeviceType);
 				AreEquals(nameof(args.ContactCount), _contactCount, args.ContactCount);
 			}
 		}
@@ -2097,13 +2099,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(1, (MuxPointerDeviceType)(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch), new Point(x, y), tapCount);
 
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
-			=> new RightTappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
+			=> new RightTappedEventArgs(1, (MuxPointerDeviceType)(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch), new Point(x, y));
 
 		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint? ptId = null)
-			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
+			=> new HoldingEventArgs(ptId ?? 1, (MuxPointerDeviceType)(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch), new Point(x, y), state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
 			=> new DraggingEventArgs(point, state, 1);

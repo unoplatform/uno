@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using PointerPointProperties = Microsoft.UI.Input.PointerPointProperties;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 

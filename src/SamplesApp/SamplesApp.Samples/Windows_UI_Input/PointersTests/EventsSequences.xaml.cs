@@ -7,12 +7,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Samples.Controls;
 using V = System.Collections.Generic.Dictionary<string, object>;
 
