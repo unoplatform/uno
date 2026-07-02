@@ -163,8 +163,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If a property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
@@ -175,19 +175,7 @@ namespace Microsoft.UI.Xaml
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
-			try
-			{
-				RegisterProperty(ownerType, name, newProperty);
-			}
-			catch (ArgumentException e)
-			{
-				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
-					e
-				);
-			}
-
-			return newProperty;
+			return RegisterProperty(ownerType, name, propertyType, newProperty);
 		}
 
 		private static PropertyMetadata FixMetadataIfNeeded(
@@ -237,8 +225,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If a property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
@@ -249,19 +237,7 @@ namespace Microsoft.UI.Xaml
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
-			try
-			{
-				RegisterProperty(ownerType, name, newProperty);
-			}
-			catch (ArgumentException e)
-			{
-				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
-					e
-				);
-			}
-
-			return newProperty;
+			return RegisterProperty(ownerType, name, propertyType, newProperty);
 		}
 
 		/// <summary>
@@ -456,11 +432,41 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
-		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
+		private static DependencyProperty RegisterProperty(
+			Type ownerType,
+			string name,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			DependencyProperty newProperty)
 		{
+			// WinUI does not validate or de-duplicate registrations: every call to
+			// MetadataAPI::RegisterDependencyProperty creates a fresh DP, so registering the
+			// same (name, ownerType, propertyType) twice is allowed there. The official WinUI
+			// Gallery relies on this (ControlExample and SampleCodePresenter both register
+			// "Substitutions" on typeof(ControlExample)). To stay faithful while keeping Uno's
+			// (ownerType, name) registry unique, return the already-registered property on an
+			// exact duplicate instead of throwing. A same-name registration with a different
+			// propertyType is still a genuine conflict and keeps throwing.
+			if (_registry.TryGetValue(ownerType, name, out var existingProperty) &&
+				existingProperty!.Type == propertyType)
+			{
+				return existingProperty;
+			}
+
 			ResetGetPropertyCache(ownerType, name);
 
-			_registry.Add(ownerType, name, newProperty);
+			try
+			{
+				_registry.Add(ownerType, name, newProperty);
+			}
+			catch (ArgumentException e)
+			{
+				throw new InvalidOperationException(
+					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
+					e
+				);
+			}
+
+			return newProperty;
 		}
 
 		/// <summary>
