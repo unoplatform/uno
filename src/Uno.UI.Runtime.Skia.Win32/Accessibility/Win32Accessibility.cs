@@ -33,6 +33,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
+	// Strong references to just-invalidated providers. Keeps their COM-callable
+	// wrappers alive across the window between UiaDisconnectProvider and UIA
+	// delivering the structure-changed notification, so an out-of-proc client
+	// that still holds the proxy observes UIA_E_ELEMENTNOTAVAILABLE rather than a
+	// severed-CCW 0x80070002. Drained once the structure-change flush completes.
+	private readonly HashSet<Win32RawElementProvider> _disconnectedProviders = new(ReferenceEqualityComparer.Instance);
 	private bool _structureChangeFlushQueued;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
@@ -333,29 +339,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			if (_providers.TryGetValue(current, out var provider))
 			{
-				// Clear cached peer lists so a stale provider cannot keep the
-				// removed subtree alive.
-				provider.InvalidateChildrenCache();
-				_pendingStructureChanges.Remove(provider);
-
-				_providers.Remove(current);
-				if (provider.RepresentedPeer is { } representedPeer)
-				{
-					_peerProviders.Remove(representedPeer);
-				}
-
-				// Disconnect the provider from UIA so stale COM references are released.
-				try
-				{
-					_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
-				}
-				catch (Exception ex)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
-					}
-				}
+				// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
+				// cached children, cascades the disconnect to virtual children —
+				// e.g. WCT DataGrid rows/cells not reachable via the element table —
+				// disconnects from UIA, and updates the lookup tables + tombstone
+				// via OnProviderInvalidated. Every subsequent call on the provider
+				// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
+				// GC'd out from under a client's proxy (0x80070002).
+				provider.Invalidate();
 			}
 
 			foreach (var child in current.GetChildren())
@@ -363,6 +354,34 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				stack.Push(child);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Bookkeeping invoked by <see cref="Win32RawElementProvider.Invalidate"/>:
+	/// drops the provider from the lookup tables (so a re-added element is issued
+	/// a fresh provider) and roots it in the tombstone set until the pending
+	/// structure-change flush completes, guaranteeing the COM-callable wrapper
+	/// outlives UIA's processing of the disconnect.
+	/// </summary>
+	internal void OnProviderInvalidated(Win32RawElementProvider provider)
+	{
+		_pendingStructureChanges.Remove(provider);
+
+		if (provider.RepresentedPeer is { } representedPeer)
+		{
+			_peerProviders.Remove(representedPeer);
+		}
+
+		// Only drop the element→provider mapping when this provider owns it.
+		// Virtual providers share their owner UIElement with the canonical peer's
+		// provider and must not evict it.
+		if (_providers.TryGetValue(provider.Owner, out var byElement)
+			&& ReferenceEquals(byElement, provider))
+		{
+			_providers.Remove(provider.Owner);
+		}
+
+		_disconnectedProviders.Add(provider);
 	}
 
 	private Win32RawElementProvider? FindNearestAncestorProvider(UIElement element)
@@ -401,6 +420,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			if (IsDisposed)
 			{
 				_pendingStructureChanges.Clear();
+				_disconnectedProviders.Clear();
 				return;
 			}
 
@@ -409,6 +429,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				RaiseStructureChangedCore(pending);
 			}
 			_pendingStructureChanges.Clear();
+
+			// UIA has now been notified of the structure change and any disconnects
+			// have been delivered, so it is safe to release the tombstoned providers.
+			_disconnectedProviders.Clear();
 		});
 	}
 
@@ -766,6 +790,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		_providers.Clear();
 		_peerProviders.Clear();
 		_pendingStructureChanges.Clear();
+		_disconnectedProviders.Clear();
 	}
 
 	// ──────────────────────────────────────────────────────────────
