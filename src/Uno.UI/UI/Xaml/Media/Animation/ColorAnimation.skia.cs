@@ -85,11 +85,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return (ColorOffset)From.Value;
 			}
 
-			if (By.HasValue && To.HasValue)
-			{
-				return (ColorOffset)To.Value - (ColorOffset)By.Value;
-			}
-
+			// When To is set, By is ignored and From defaults to the base value
+			// (MUX: ReadBaseValuesFromTargetOrHandoff — To set => isToAnimation, By unused).
 			var value = GetNonAnimatedValue();
 			if (value is Color c)
 			{
