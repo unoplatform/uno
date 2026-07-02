@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-		<TargetFrameworks>$(NetSkiaPreviousAndCurrent);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<!-- Skia + mobile by default; the Windows samples head (BuildGraphics3DGLForWindows) builds
+		     Skia + WinUI only, since that CI agent has no Android/Apple mobile workloads. -->
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' == ''">$(TargetFrameworks);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
