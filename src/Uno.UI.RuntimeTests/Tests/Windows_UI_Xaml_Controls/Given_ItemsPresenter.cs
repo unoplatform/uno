@@ -1200,5 +1200,56 @@ public class Given_ItemsPresenter
 		Assert.AreNotEqual(double.PositiveInfinity, availableSize.Width);
 	}
 
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Header_Set_To_Null_Layout_Space_Reclaimed()
+	{
+		var lv = new ListView
+		{
+			Width = 300,
+			Height = 300,
+			Header = "My Header",
+			Footer = "My Footer",
+			ItemsSource = new[] { "Item 1", "Item 2" }
+		};
+
+		await UITestHelper.Load(lv);
+
+		var sv = (ScrollViewer)((Border)VisualTreeHelper.GetChild(lv, 0)).Child;
+		var ip = (ItemsPresenter)sv.Content;
+		var headerCC = ip.HeaderContentControl;
+		var footerCC = ip.FooterContentControl;
+
+		Assert.IsNotNull(headerCC, "HeaderContentControl should exist");
+		Assert.IsNotNull(footerCC, "FooterContentControl should exist");
+		Assert.AreEqual(Visibility.Visible, headerCC.Visibility);
+		Assert.AreEqual(Visibility.Visible, footerCC.Visibility);
+
+		var headerHeightBefore = headerCC.ActualHeight;
+		var footerHeightBefore = footerCC.ActualHeight;
+		Assert.IsTrue(headerHeightBefore > 0, "Header should have non-zero height");
+		Assert.IsTrue(footerHeightBefore > 0, "Footer should have non-zero height");
+
+		// Set Header to null and verify layout space is reclaimed
+		lv.Header = null;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0.0, headerCC.ActualHeight, "Header should have zero height when set to null");
+
+		// Set Footer to null and verify layout space is reclaimed
+		lv.Footer = null;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0.0, footerCC.ActualHeight, "Footer should have zero height when set to null");
+
+		// Set Header back and verify it becomes visible again
+		lv.Header = "New Header";
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(headerCC.ActualHeight > 0, "Header should have non-zero height after being re-set");
+	}
+#endif
+
 	public record MyTextModel(string MyText);
 }
