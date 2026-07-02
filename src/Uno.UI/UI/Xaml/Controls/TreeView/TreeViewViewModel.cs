@@ -711,6 +711,15 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 						ExpandNode(resetNode);
 					}
 
+					if (IsContentMode)
+					{
+						// Uno-specific: a Reset (e.g. ItemsSource collection Clear) removes the nodes but
+						// left their item -> node mappings behind, retaining every cleared item (and, when
+						// items come from a collectible AssemblyLoadContext, pinning that ALC) for the
+						// TreeView's lifetime. Drop mappings whose node is no longer attached to the origin.
+						PruneDetachedNodesFromItemMap();
+					}
+
 					break;
 				}
 
@@ -801,6 +810,38 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 					break;
 				}
+		}
+	}
+
+	/// <summary>
+	/// Uno-specific: removes <see cref="m_itemToNodeMap"/> entries whose node is no longer attached to
+	/// the origin node. The WinUI-derived collection-change handling only removes mappings on
+	/// <c>ItemRemoved</c> with an expanded parent; a <c>Reset</c> (collection Clear) or a removal under a
+	/// collapsed parent leaks the mapping — and with it the item — for the TreeView's lifetime.
+	/// </summary>
+	private void PruneDetachedNodesFromItemMap()
+	{
+		List<object> keysToRemove = null;
+		foreach (var pair in m_itemToNodeMap)
+		{
+			var node = pair.Value;
+			while (node.Parent is { } parent)
+			{
+				node = parent;
+			}
+
+			if (node != m_originNode)
+			{
+				(keysToRemove ??= new List<object>()).Add(pair.Key);
+			}
+		}
+
+		if (keysToRemove is not null)
+		{
+			foreach (var key in keysToRemove)
+			{
+				m_itemToNodeMap.Remove(key);
+			}
 		}
 	}
 
