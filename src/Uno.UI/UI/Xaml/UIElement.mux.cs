@@ -827,6 +827,13 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if __SKIA__
+		// Reused per-thread so the automation/IsOffscreen path doesn't allocate a native SKPath per call.
+		// GetTotalClipPath rewinds it at the root, so no explicit reset is needed here.
+		[ThreadStatic]
+		private static SkiaSharp.SKPath? _globalBoundsClipScratch;
+#endif
+
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
 		{
 #if __SKIA__
@@ -854,7 +861,7 @@ namespace Microsoft.UI.Xaml
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
 				// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
 				// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-				using var clipPath = new SkiaSharp.SKPath();
+				var clipPath = _globalBoundsClipScratch ??= new SkiaSharp.SKPath();
 				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
 				var clip = clipPath.Bounds;
 
