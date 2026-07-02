@@ -61,7 +61,7 @@ jobs:
       branches: ${{ steps.list.outputs.branches }}
       count: ${{ steps.list.outputs.count }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: master
           fetch-depth: 0
@@ -125,7 +125,7 @@ jobs:
       # Swap-seam: SYNC_BOT_TOKEN (PAT/App) wins if present, else the default token.
       SYNC_TOKEN: ${{ secrets.SYNC_BOT_TOKEN || github.token }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ env.SYNC_TOKEN }}
