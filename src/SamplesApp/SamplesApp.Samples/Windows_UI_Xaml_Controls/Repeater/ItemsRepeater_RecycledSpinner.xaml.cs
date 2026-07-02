@@ -17,11 +17,11 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater;
 	"ItemsRepeater",
 	IsManualTest = true,
 	Description =
-		"Repro for the recycled-spinner render-loop leak on Skia: an active ProgressRing inside an " +
-		"ItemsRepeater item keeps invalidating the canvas after its item is removed, because the recycled " +
+		"Repro for the recycled-spinner render-loop leak on Skia (#23446): an active ProgressRing inside an " +
+		"ItemsRepeater item kept invalidating the canvas after its item was removed, because the recycled " +
 		"element stays parented with its stale DataContext and is never reused (the remaining items use a " +
-		"different template). Measure CPU before/after removal; after removal it should be near-idle but " +
-		"stays at ~100% of one core.")]
+		"different template). Measure CPU before/after removal: with the pooled-visual suspension fix it " +
+		"drops to near-idle within ~1 s; on builds without the fix it stays at ~100% of one core.")]
 public sealed partial class ItemsRepeater_RecycledSpinner : Page
 {
 	private readonly ObservableCollection<RecycledSpinnerItem> _items = new();
@@ -108,7 +108,8 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 			$"Recycled element after removal: stillParented={isParented}, " +
 			$"dataContextUnchanged={dataContextUnchanged}, " +
 			$"ringIsActive={(ring is null ? "ring not found" : ring.IsActive.ToString())} " +
-			"(expected on Uno Platform/Skia: True / True / True — nothing visible, yet the ring keeps invalidating the canvas; " +
+			"(expected on Uno Platform/Skia: True / True / True — with the fix the pooled visual is suspended, so the render loop idles; " +
+			"on builds without the fix the ring keeps invalidating the canvas with nothing visible; " +
 			"on WinUI: True / False / True — WinUI clears the DataContext on recycle, yet the ring stays active there too, at no render cost).";
 	}
 

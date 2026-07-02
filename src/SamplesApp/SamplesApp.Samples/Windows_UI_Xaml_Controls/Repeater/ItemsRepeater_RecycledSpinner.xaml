@@ -58,10 +58,10 @@
             HorizontalAlignment="Left"
             Style="{ThemeResource BodyTextBlockStyle}"
             TextWrapping="Wrap">
-            Repro: an active ProgressRing inside an ItemsRepeater item keeps the Skia render loop pinned after its item is removed.
+            Repro for issue #23446: an active ProgressRing inside an ItemsRepeater item used to keep the Skia render loop pinned after its item was removed.
             Steps: (1) press "Measure CPU (2 s)" for a baseline while the spinner is visible (expected: high — the spinner is animating);
             (2) press "Remove spinner item" — the spinner disappears, its element is recycled but never reused (remaining rows use a different template);
-            (3) press "Measure CPU (2 s)" again. Expected: near-idle. Actual: still ~100% of one core, indefinitely, with nothing animating on screen.
+            (3) press "Measure CPU (2 s)" again. With the fix (pooled element visuals suspended): near-idle within ~1 s. On builds without the fix: still ~100% of one core, indefinitely, with nothing animating on screen.
             The mechanism line shows the recycled element is still parented, with its stale DataContext and an active ring.
         </TextBlock>
 
