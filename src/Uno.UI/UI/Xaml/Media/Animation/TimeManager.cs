@@ -341,7 +341,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			var current = _head;
 			while (current is not null)
 			{
-				if (current.Timeline is { State: Timeline.TimelineState.Active or Timeline.TimelineState.Paused })
+				// Only actively-running timelines keep the render loop alive. Paused timelines
+				// stay registered (so they resume in place) but must not toll VSync while idle;
+				// Resume re-arms ticking. MUX: RequestAdditionalFrame is guarded by !isPaused.
+				if (current.Timeline is { State: Timeline.TimelineState.Active })
 				{
 					return true;
 				}

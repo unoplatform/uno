@@ -275,8 +275,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					// MUX: CParallelTimeline::UpdateAnimation calls RequestAdditionalFrame via
 					// the frame scheduler. In Uno, TimeManager.EnsureTicking subscribes to
 					// CompositionTarget.Rendering (VSync-driven, not dispatcher Normal queue)
-					// to avoid blocking WaitForIdle/RunIdleAsync.
-					TimeManager.Instance.EnsureTicking();
+					// to avoid blocking WaitForIdle/RunIdleAsync. Guarded by !isPaused
+					// (MUX: !myParams.isPaused) so a paused storyboard doesn't keep the
+					// render loop hot; Resume re-arms ticking.
+					if (!_isPausedForTimeManager)
+					{
+						TimeManager.Instance.EnsureTicking();
+					}
 					break;
 
 				case InternalClockState.Filling:
