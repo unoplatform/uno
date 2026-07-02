@@ -62,14 +62,21 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
-		_pendingInvalidate = false;
-
 		// The RootElement may not be set yet during startup because the JavaScript
-		// requestAnimationFrame can fire before the app initialization completes.
+		// requestAnimationFrame can fire before app initialization completes. When that
+		// happens, re-arm another frame instead of dropping the pending request, otherwise
+		// the render pump stalls and the splash screen is never removed (#23586).
 		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
 		{
+			if (_pendingInvalidate && _nativeInstance is not null)
+			{
+				NativeMethods.Invalidate(_nativeInstance);
+			}
+
 			return;
 		}
+
+		_pendingInvalidate = false;
 
 		_renderStopwatch.Restart();
 
