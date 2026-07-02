@@ -41,10 +41,6 @@
 		</Otherwise>
 	</Choose>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';maps;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';foldable;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
 	</ItemGroup>

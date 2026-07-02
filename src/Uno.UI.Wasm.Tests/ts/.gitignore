@@ -1,3 +1,0 @@
-﻿# Ignore the import of the definition file, as it cannot be added manually on the cli
-# because of the use of tsconfig.json
-Uno.UI.d.ts

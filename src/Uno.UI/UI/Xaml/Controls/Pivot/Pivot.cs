@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatePivotProperties();
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
 			//OnApplyTemplate() is comming too late when using bindings
 			UpdateItems(null);

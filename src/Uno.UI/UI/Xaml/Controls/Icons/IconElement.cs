@@ -29,9 +29,6 @@ public partial class IconElement : FrameworkElement
 	/// Gets or sets a brush that describes the foreground color.
 	/// </summary>
 	public
-#if __ANDROID__
-	new
-#endif
 	Brush Foreground
 	{
 		get => (Brush)GetValue(ForegroundProperty);

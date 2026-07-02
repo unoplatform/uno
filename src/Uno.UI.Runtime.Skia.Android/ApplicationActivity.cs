@@ -247,10 +247,9 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnCreate(Bundle? bundle)
 		{
-			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
-			{
-				EdgeToEdge.Enable(this);
-			}
+			// Once the app targets SDK 35+, edge-to-edge is enforced.
+			// Calling EdgeToEdge.Enable keeps this behavior consistent on earlier SDK levels too.
+			EdgeToEdge.Enable(this);
 
 			base.OnCreate(bundle);
 

@@ -28,7 +28,7 @@ stages:
 
   - job: DetermineScope
     cancelTimeoutInMinutes: 0
-    displayName: Determine Native Test Scope
+    displayName: Determine Test Scope
 
     pool:
       vmImage: $(linuxVMImage)
@@ -41,7 +41,7 @@ stages:
 
     - task: PowerShell@2
       name: SetScope
-      displayName: Evaluate native-impacting changes
+      displayName: Evaluate template/screenshot-impacting changes
       inputs:
         pwsh: true
         filePath: build/ci/scripts/determine-test-scope.ps1
@@ -114,18 +114,6 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- stage: wasm_tests
-  displayName: Tests - WebAssembly Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
-  dependsOn:
-    - Setup
-
-  jobs:
-  
-  - template: tests/.azure-devops-tests-webassembly-native.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-
 - template: tests/.azure-devops-tests-skia-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
@@ -137,36 +125,6 @@ stages:
     xCodeRootBuild: '$(xCodeRoot)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
     XAML_FLAVOR_BUILD: WinUI
-
-- stage: android_tests
-  displayName: Tests - Android Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: tests/.azure-devops-tests-android-native.yml
-    parameters:
-      vmWindowsImage: '$(windows2019HostedVMImage)'
-      vmLinuxImage: '$(linuxVMImage)'
-      vmMacOSImage: '$(macOSVMImage)'
-      vmLinuxPool: '$(linuxScaledPool)'
-      xCodeRoot: '$(xCodeRoot)'
-
-- stage: ios_tests
-  displayName: Tests - iOS Native
-  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
-  condition: false
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: tests/.azure-devops-tests-ios-native.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      vmImageTest: '$(macOSVMImage_UITests)'
-      xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
 
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK
@@ -184,9 +142,6 @@ stages:
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
   dependsOn:
     - Setup
-    - wasm_tests
-    - ios_tests
-    - android_tests
     - runtime_tests_skia_browser
     - runtime_tests_skia_android
     - runtime_tests_skia_ios

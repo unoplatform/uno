@@ -49,7 +49,7 @@ public partial class NavigationViewItemBase : ContentControl
 
 	// TODO: MZ Uno specific: existing Depth property inherited from base class
 	internal
-#if __NETSTD_REFERENCE__ || __SKIA__ || __WASM__
+#if __NETSTD_REFERENCE__ || __SKIA__
 		new
 #endif
 		int Depth

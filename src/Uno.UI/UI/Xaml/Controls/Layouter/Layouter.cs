@@ -19,16 +19,7 @@ using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-#if __ANDROID__
-using Android.Views;
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using CoreGraphics;
-#elif IS_UNIT_TESTS || __WASM__
+#if IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
@@ -560,20 +551,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ArrangeChildOverride(view, finalFrame);
 		}
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		private void LogArrange(View view, Rect frame)
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				var viewName = (view as IFrameworkElement).SelectOrDefault(f => f.Name, "NativeView");
-				var margin = (view as IFrameworkElement).SelectOrDefault(f => f.Margin, Thickness.Empty);
-
-				this.Log().DebugFormat("[{0}/{1}] ArrangeChild({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, view.GetType(), viewName, frame, margin);
-			}
-
-		}
-#endif
 
 		protected abstract string Name { get; }
 

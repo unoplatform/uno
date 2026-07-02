@@ -16,10 +16,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Helpers;
 using Uno.UI.Xaml.Core;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupPanel : Panel
@@ -137,22 +133,6 @@ internal partial class PopupPanel : Panel
 				anchorLocation = Popup.TransformToVisual(null).TransformPoint(default);
 			}
 
-#if __ANDROID__
-			// for android, the above line returns the absolute coordinates of anchor on the screen
-			// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
-			// therefore, we need to make the relative adjustment
-			if (this.NativeVisualParent is AView view)
-			{
-				var windowLocation = Point.From(view.GetLocationInWindow);
-				var screenLocation = Point.From(view.GetLocationOnScreen);
-
-				if (windowLocation == default)
-				{
-					anchorLocation -= ViewHelper.PhysicalToLogicalPixels(screenLocation);
-				}
-			}
-#endif
-
 			var finalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
@@ -163,15 +143,9 @@ internal partial class PopupPanel : Panel
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
 				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
-#if __ANDROID__ || __IOS__
-				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
-#endif
 				;
 
 			if ((!isFlyoutManagedDatePicker
-#if __ANDROID__ || __APPLE_UIKIT__
-				 || NativeAnchor is not null
-#endif
 				 || !MathHelpers.DoesRectContainRect(GetVisibleBounds(), finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
 				) && Popup.PlacementTarget is not null
 			   )
@@ -184,7 +158,6 @@ internal partial class PopupPanel : Panel
 			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
 			// MenuFlyout so, for now, we restrict to to only Android
 			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
-#if !__APPLE_UIKIT__
 			var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
@@ -201,7 +174,6 @@ internal partial class PopupPanel : Panel
 				// See MenuFlyoutSubItem_Placement sample.
 				ArrangeElement(child, updatedFinalFrame);
 			}
-#endif
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
