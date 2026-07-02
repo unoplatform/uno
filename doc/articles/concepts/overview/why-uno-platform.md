@@ -30,10 +30,6 @@ The **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)** is the orches
 
 **[Hot Design](xref:Uno.HotDesign.Overview)** is the industry's first runtime visual designer for cross-platform .NET applications. It transforms your running app into a designer from any IDE on any OS, offering unprecedented productivity gains. Hot Design provides true WYSIWYG design capabilities at runtime across all platforms.
 
-### Hot Design® Agent - AI-Powered UX/UI Creation
-
-**[Hot Design Agent](xref:Uno.HotDesign.Agent)** is an AI tooling assistant that builds your UI while the app is running. It works with data contexts and live previews to help developers design and interact with user interfaces in real time.
-
 ### Uno MCP - AI-Powered Development Intelligence
 
 **[Uno MCP](xref:Uno.Features.Uno.MCPs)** leverages semantic understanding to grasp your intent and deliver precise, context-aware answers. It provides instant, accurate guidance grounded in official Uno Platform documentation directly from your IDE.
@@ -60,7 +56,7 @@ Uno Platform supports WebAssembly, enabling your .NET apps to run natively in br
 
 ### Rich Tooling
 
-Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools, from prompt-to-app generation with the Uno Platform Studio App and the Uno Platform Studio Agent, to Hot Design®, the Hot Design® Agent, and AI-powered development assistance through the Uno MCP and App MCP, providing a wide range of powerful capabilities.
+Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools, from prompt-to-app generation with the Uno Platform Studio App and the Uno Platform Studio Agent, to Hot Design® and AI-powered development assistance through the Uno MCP and App MCP, providing a wide range of powerful capabilities.
 
 ### Pixel-Perfect Control with Multiple Rendering Options
 
