@@ -469,15 +469,30 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.
 		/// </summary>
-		private static Func<Type, bool> HasDefaultTemplate =
-			Funcs.CreateMemoized((Type type) =>
-				Style.GetDefaultStyleForType(type) is Style defaultStyle
-					&& defaultStyle
-						.Flatten(s => s.BasedOn!)
-						.SelectMany(s => s.Setters)
-						.OfType<Setter>()
-						.Any(s => s.Property == TemplateProperty && s.Value != null)
-			);
+		// Memoized per type, but keyed through a ConditionalWeakTable rather than a Dictionary<Type,bool>.
+		// This static, process-lifetime cache is queried with the type of every ContentControl that is
+		// measured — including control types loaded into a collectible AssemblyLoadContext (plugin/preview
+		// hosting). A strong Dictionary key would retain such a type's RuntimeType -> LoaderAllocator and
+		// pin the entire ALC for the process lifetime. Type identity is canonical, so weak-keyed
+		// memoization is equivalent for lookup while letting a collectible type be collected once unused.
+		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<Type, global::System.Runtime.CompilerServices.StrongBox<bool>> _hasDefaultTemplateCache = new();
+
+		private static bool ComputeHasDefaultTemplate(Type? type)
+			=> Style.GetDefaultStyleForType(type!) is Style defaultStyle
+				&& defaultStyle
+					.Flatten(s => s.BasedOn!)
+					.SelectMany(s => s.Setters)
+					.OfType<Setter>()
+					.Any(s => s.Property == TemplateProperty && s.Value != null);
+
+		// A ConditionalWeakTable key must be non-null (unlike the previous Dictionary-based memoize, which
+		// special-cased a null key). GetDefaultStyleKey() can be null, so compute directly in that case.
+		private static readonly Func<Type, bool> HasDefaultTemplate = static type =>
+			type is null
+				? ComputeHasDefaultTemplate(type)
+				: _hasDefaultTemplateCache.GetValue(
+					type,
+					static t => new global::System.Runtime.CompilerServices.StrongBox<bool>(ComputeHasDefaultTemplate(t))).Value;
 
 		/// <summary>
 		/// Creates a ContentControl which can be measured without being added to the visual tree (eg as container in virtualized lists).
