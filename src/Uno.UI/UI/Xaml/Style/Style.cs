@@ -21,19 +21,28 @@ namespace Microsoft.UI.Xaml
 		public delegate Style StyleProviderHandler();
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
+
+		// Resolved default styles are cached per type through a ConditionalWeakTable rather than a
+		// Dictionary<Type,Style>. This cache is process-lifetime and is queried during rendering with the
+		// type of every styled control — including control types from a collectible AssemblyLoadContext
+		// (plugin / preview hosting). A strong Dictionary key retains that type's RuntimeType ->
+		// LoaderAllocator and pins the whole ALC; the eviction sweep (ClearCachesForNonDefaultAlc) cannot
+		// win the race against a render that re-populates the entry after unload. Weak (identity) keys let
+		// a collectible type be collected once otherwise unreferenced, structurally removing the pin. A
+		// StrongBox wraps the value so a legitimately-null resolved style can still be cached.
+		private readonly static global::System.Runtime.CompilerServices.ConditionalWeakTable<Type, global::System.Runtime.CompilerServices.StrongBox<Style?>> _defaultStyleCache = new();
+		private readonly static global::System.Runtime.CompilerServices.ConditionalWeakTable<Type, global::System.Runtime.CompilerServices.StrongBox<Style?>> _nativeDefaultStyleCache = new();
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
 		/// </summary>
 		internal static void ClearCachesForNonDefaultAlc()
 		{
+			// The default-style caches are ConditionalWeakTables (weak type keys) and self-clean, so only
+			// the strongly-keyed provider lookups need explicit eviction here.
 			RemoveNonDefaultAlcEntries(_lookup);
-			RemoveNonDefaultAlcEntries(_defaultStyleCache);
 			RemoveNonDefaultAlcEntries(_nativeLookup);
-			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
 		}
 
 		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
@@ -350,16 +359,18 @@ namespace Microsoft.UI.Xaml
 			var lookup = useUWPDefaultStyles ? _lookup
 				: _nativeLookup;
 
-			if (!styleCache.TryGetValue(type, out Style? style))
+			Style? style = null;
+			if (styleCache.TryGetValue(type, out var cachedBox))
 			{
-				if (lookup.TryGetValue(type, out var styleProvider))
-				{
-					style = styleProvider();
+				style = cachedBox.Value;
+			}
+			else if (lookup.TryGetValue(type, out var styleProvider))
+			{
+				style = styleProvider();
 
-					styleCache[type] = style;
+				styleCache.AddOrUpdate(type, new global::System.Runtime.CompilerServices.StrongBox<Style?>(style));
 
-					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
-				}
+				lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 			}
 
 			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
