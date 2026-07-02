@@ -16,6 +16,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{
+			// A null KeySpline holds the segment start value rather than throwing (MUX parity).
+			if (KeySpline is null)
+			{
+				return startValue;
+			}
+
 			// 0 <= t <= 1
 			var t = currentTime / duration;
 
