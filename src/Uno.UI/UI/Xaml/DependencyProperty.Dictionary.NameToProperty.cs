@@ -45,7 +45,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			internal void Add(PropertyCacheEntry key, DependencyProperty? dependencyProperty)
-				=> _entries.Add(key, dependencyProperty);
+			{
+				// Do not cache entries whose owner type is from a collectible (non-default) ALC. The key is
+				// a composite (CachedType + name), so it cannot be weak-keyed like the Type-keyed caches;
+				// caching it here would retain the type (via DependencyProperty._ownerType) and pin its
+				// ALC, and the eviction sweep loses the race to the unloading app re-populating it. Such
+				// lookups re-resolve through the (weak-keyed) registry — cheap and pin-free. Framework
+				// (default-ALC) types are cached as before.
+				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.CachedType.Assembly);
+				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					return;
+				}
+
+				_entries.Add(key, dependencyProperty);
+			}
 
 			internal void Remove(PropertyCacheEntry propertyCacheEntry)
 				=> _entries.Remove(propertyCacheEntry);
