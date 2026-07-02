@@ -161,6 +161,29 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsSystemDictionary { get; set; }
 
+		/// <summary>
+		/// Whether this dictionary belongs to the framework's global theme resources (the Uno.UI /
+		/// FluentTheme generic dictionaries). Mirrors WinUI's <c>m_isGlobal</c>, which it sets on the
+		/// framework theme resources via <c>MarkAllIsGlobal()</c> when they are loaded (xcpcore.cpp:7990).
+		/// Uno has no single global theme-resources root to mark at load, so the source generator flags
+		/// the framework dictionaries at generation time (parallel to <see cref="IsSystemDictionary"/>).
+		/// </summary>
+		/// <remarks>MUX Reference: CResourceDictionary::m_isGlobal (Resources.h:516), MarkIsGlobal (Resources.h:331).</remarks>
+		internal bool IsGlobal { get; set; }
+
+		/// <summary>
+		/// Whether this dictionary is one of the framework's global theme dictionaries — i.e. it is global
+		/// and owns a ThemeDictionaries collection. App-level resources are always allowed to override
+		/// values found here (GetKeyFromThemeDictionariesNoRef, Resources.cpp:675-684).
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: CResourceDictionary::IsGlobalThemeDictionaries (Resources.h:347) —
+		/// <c>m_isGlobal &amp;&amp; m_bIsThemeDictionaries</c>. WinUI evaluates this on the ThemeDictionaries
+		/// collection itself; Uno pins the dictionary that OWNS the ThemeDictionaries (see
+		/// ResourceResolver.ApplyResource), and marks owner and collection together at generation, so the
+		/// owner-side check (<see cref="IsGlobal"/> + owns theme dictionaries) is equivalent.
+		/// </remarks>
+		internal bool IsGlobalThemeDictionaries => IsGlobal && _themeDictionaries is not null;
 
 		private HashSet<ResourceKey> KeyNotFoundCache
 			=> _keyNotFoundCache ??= new(SpecializedResourceDictionary.ResourceKeyComparer.Default);
@@ -753,7 +776,16 @@ namespace Microsoft.UI.Xaml
 			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
 			// Uno: high contrast is a single app-global bool — the FrameworkTheming::GetHighContrastTheme()
 			// analog collapsed to HighContrast/HighContrastNone.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// Read the FrameworkTheming snapshot (the single source the change-detection and
+			// FrameworkElement also read), refreshed by OnThemeChanged on every HC toggle. Fall back to
+			// the live OS flag only when no core exists (early startup / unit tests).
+			var highContrastTheme = Uno.UI.Xaml.Core.CoreServices.HasInstance
+				? Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
+				: (Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone);
+#else
 			var highContrastTheme = Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+#endif
 			var highContrastChanged = Theming.GetHighContrastValue(_activeThemeValue) != highContrastTheme;
 
 			if (_activeThemeDictionary is null ||                                       // No active theme dictionary

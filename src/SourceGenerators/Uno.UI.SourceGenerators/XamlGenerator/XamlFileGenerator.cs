@@ -1568,6 +1568,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
 											}
+											// Mark the framework theme resources global so app-level resources can override
+											// their values (MUX: m_pThemeResources->MarkAllIsGlobal(), xcpcore.cpp:7990).
+											if (_isUnoAssembly || _isUnoFluentAssembly)
+											{
+												writer.AppendLineInvariantIndented("{0}.IsGlobal = true;", dictVarId);
+											}
 											BuildMergedDictionaries(writer, mergedDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildThemeDictionaries(writer, themeDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
@@ -1853,6 +1859,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (_isUnoAssembly)
 					{
 						writer.AppendLineIndented("IsSystemDictionary = true,");
+					}
+					// Mark the framework theme resources global so app-level resources can override
+					// their values (MUX: m_pThemeResources->MarkAllIsGlobal(), xcpcore.cpp:7990).
+					if (_isUnoAssembly || _isUnoFluentAssembly)
+					{
+						writer.AppendLineIndented("IsGlobal = true,");
 					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
