@@ -7,11 +7,7 @@ using System.Threading;
 using Windows.Devices.Input;
 using Windows.Foundation;
 
-#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
-#else
-namespace Windows.UI.Input
-#endif
 {
 	public partial class PointerPoint
 	{
@@ -35,57 +31,6 @@ namespace Windows.UI.Input
 			IsInContact = isInContact;
 			Properties = properties;
 		}
-
-#nullable enable
-#if IS_UNO_UI_PROJECT
-		private global::Windows.UI.Input.PointerPoint? _wuxPoint;
-
-		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
-		{
-			_wuxPoint = point;
-			point._muxPoint = this;
-
-			FrameId = point.FrameId;
-			Timestamp = point.Timestamp;
-			PointerDevice = point.PointerDevice;
-			PointerId = point.PointerId;
-			RawPosition = point.RawPosition;
-			Position = point.Position;
-			IsInContact = point.IsInContact;
-			PointerDeviceType = (PointerDeviceType)point.PointerDevice.PointerDeviceType;
-
-			Properties = new PointerPointProperties(point.Properties);
-		}
-
-		public static implicit operator global::Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
-		{
-			if (muxPointerPoint._wuxPoint is global::Windows.UI.Input.PointerPoint wuxPoint)
-			{
-				return wuxPoint;
-			}
-
-			wuxPoint = new global::Windows.UI.Input.PointerPoint(
-				muxPointerPoint.FrameId,
-				muxPointerPoint.Timestamp,
-				muxPointerPoint.PointerDevice,
-				muxPointerPoint.PointerId,
-				muxPointerPoint.RawPosition,
-				muxPointerPoint.Position,
-				muxPointerPoint.IsInContact,
-				(global::Windows.UI.Input.PointerPointProperties)muxPointerPoint.Properties);
-
-			wuxPoint._muxPoint = muxPointerPoint;
-			muxPointerPoint._wuxPoint = wuxPoint;
-
-			return wuxPoint;
-		}
-
-		public static implicit operator global::Microsoft.UI.Input.PointerPoint(global::Windows.UI.Input.PointerPoint wuxPointerPoint)
-			=> wuxPointerPoint._muxPoint as global::Microsoft.UI.Input.PointerPoint ?? new global::Microsoft.UI.Input.PointerPoint(wuxPointerPoint);
-#else
-		internal object? _muxPoint;
-#endif
-#nullable restore
 
 		internal PointerPoint At(Point position)
 			=> new(

@@ -10,7 +10,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;

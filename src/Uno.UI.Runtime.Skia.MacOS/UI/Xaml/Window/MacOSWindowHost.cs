@@ -17,7 +17,11 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerPoint = Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = Microsoft.UI.Input.PointerPointProperties;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 

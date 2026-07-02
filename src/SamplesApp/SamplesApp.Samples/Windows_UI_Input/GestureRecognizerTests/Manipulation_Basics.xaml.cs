@@ -10,7 +10,7 @@ using Uno.UI.Samples.Controls;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 #endif
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
