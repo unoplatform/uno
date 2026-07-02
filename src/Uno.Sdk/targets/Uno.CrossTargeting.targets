@@ -15,8 +15,8 @@
 		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 
-		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
-		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia' AND ('$(IsBrowserWasm)'!='true' OR !$(UnoFeatures.Contains(';skiarenderer;')))" />
+		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia' AND ('$(IsBrowserWasm)'!='true' OR !$(UnoFeatures.Contains(';skiarenderer;')))" />
 
 		<None Include="**\*.desktop.cs" Exclude="bin\**\*.desktop.cs;obj\**\*.desktop.cs" Condition="!$(IsDesktop)" />
 		<Compile Remove="**\*.desktop.cs" Condition="!$(IsDesktop)" />
