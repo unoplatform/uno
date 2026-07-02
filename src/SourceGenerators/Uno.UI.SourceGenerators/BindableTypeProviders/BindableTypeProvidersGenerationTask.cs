@@ -493,7 +493,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 
 			// DependencyObject is a base class, so detection must walk the base-type chain.
-			// The interface fallback keeps this correct for any legacy interface-shaped declaration.
 			private bool IsDependencyObject(ITypeSymbol? type)
 			{
 				for (var current = type; current is not null; current = current.BaseType)
@@ -504,7 +503,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					}
 				}
 
-				return type?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)) ?? false;
+				return false;
 			}
 
 			private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)

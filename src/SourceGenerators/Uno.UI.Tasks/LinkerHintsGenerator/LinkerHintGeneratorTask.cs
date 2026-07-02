@@ -250,11 +250,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return true;
 			}
 
-			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Microsoft.UI.Xaml.DependencyObject"))
-			{
-				return true;
-			}
-
 			try
 			{
 				if (type.BaseType != null && IsDependencyObject(type.BaseType.Resolve()))
