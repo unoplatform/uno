@@ -46,53 +46,67 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			// Duration.Automatic: max of children's effective durations.
-			var maxDuration = TimeSpan.Zero;
+			// MUX: CParallelTimeline::GetNaturalDuration -> child.GetDurationWithProperties
+			// (AutoReverse -> RepeatBehavior -> /SpeedRatio -> +BeginTime).
+			var maxDurationSeconds = 0.0;
 			if (Children is { Count: > 0 })
 			{
 				for (int i = 0; i < Children.Count; i++)
 				{
 					var child = Children[i];
+					var repeat = child.RepeatBehavior;
 
-					// A child with RepeatBehavior.Forever makes the storyboard infinite.
-					// MUX: CParallelTimeline::GetNaturalDuration considers effective duration.
-					if (child.RepeatBehavior.Type == RepeatBehaviorType.Forever)
+					// A child that never ends makes the storyboard infinite.
+					// MUX: DurationType::Forever child -> parent natural duration Forever.
+					if (repeat.Type == RepeatBehaviorType.Forever)
 					{
 						return TimeSpan.MaxValue;
 					}
 
-					var childSingleDuration = child.GetCalculatedDuration();
-					var childBeginTime = child.BeginTime ?? TimeSpan.Zero;
+					var childSingle = child.GetCalculatedDuration();
+					if (childSingle == TimeSpan.MaxValue)
+					{
+						// Duration="Forever" child.
+						return TimeSpan.MaxValue;
+					}
 
-					// Compute effective duration considering RepeatBehavior and AutoReverse.
-					TimeSpan effectiveDuration;
-					var repeat = child.RepeatBehavior;
+					var durationSeconds = childSingle.TotalSeconds;
+
+					// ExtendDurationWithReverse.
+					if (child.AutoReverse)
+					{
+						durationSeconds *= 2.0;
+					}
+
+					// ExtendDurationWithRepeat: a Duration-type repeat replaces the duration;
+					// a Count repeat multiplies it (default count 1).
 					if (repeat.HasDuration)
 					{
-						effectiveDuration = repeat.Duration;
+						durationSeconds = repeat.Duration.TotalSeconds;
 					}
-					else if (repeat.HasCount && repeat.Count > 0)
+					else if (repeat.HasCount)
 					{
-						var scale = repeat.Count;
-						if (child.AutoReverse) { scale *= 2.0; }
-						effectiveDuration = TimeSpan.FromSeconds(childSingleDuration.TotalSeconds * scale);
-					}
-					else
-					{
-						// Default (play once): scale by 2 if AutoReverse, else single duration.
-						effectiveDuration = child.AutoReverse
-							? TimeSpan.FromSeconds(childSingleDuration.TotalSeconds * 2.0)
-							: childSingleDuration;
+						durationSeconds *= repeat.Count;
 					}
 
-					var childTotal = childBeginTime + effectiveDuration;
-					if (childTotal > maxDuration)
+					// AdjustDurationWithSpeedRatio.
+					var speedRatio = child.SpeedRatio;
+					if (speedRatio > 0 && speedRatio != 1.0)
 					{
-						maxDuration = childTotal;
+						durationSeconds /= speedRatio;
+					}
+
+					// AdjustDurationWithBeginTime.
+					durationSeconds += (child.BeginTime ?? TimeSpan.Zero).TotalSeconds;
+
+					if (durationSeconds > maxDurationSeconds)
+					{
+						maxDurationSeconds = durationSeconds;
 					}
 				}
 			}
 
-			return maxDuration;
+			return TimeSpan.FromSeconds(maxDurationSeconds);
 		}
 
 		/// <summary>
@@ -213,8 +227,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// transition to Filling/Stopped on the first tick.
 			if (effectiveDurationSeconds >= 0 && localTime >= effectiveDurationSeconds - 0.0005)
 			{
-				// Expired — clamp child time to end of the last iteration.
-				_computedCurrentTime = singleIterationSeconds;
+				// Expired — clamp child time to the final position of the last iteration.
+				// MUX: CTimeline::ComputeLocalProgressAndTime — a full AutoReverse cycle returns
+				// to the start, so an AutoReverse timeline fills at time 0 (its From value), not
+				// at the end. Non-reversing timelines hold at the end of the iteration.
+				_computedCurrentTime = AutoReverse ? 0.0 : singleIterationSeconds;
 
 				if (FillBehavior == FillBehavior.HoldEnd)
 				{
