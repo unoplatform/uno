@@ -173,7 +173,7 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
   - Files: `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`, `src/Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.cs`
 - [x] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414 — **DROPPED**
   - **VERIFY design first.** The post-revert pooled `DependencyPropertyChangedEventArgs` may already capture the allocation win, and the struct drops precedence/bypass fields. Decide whether re-applying is still desired before doing it.
-  - **Decision: drop.** `DependencyObjectStore.DependencyPropertyChangedEventArgsPool` (Rent/Return) already pools the args and captures the allocation win the struct targeted. `PropertyChangedParams` is also `internal` (no public-surface impact, so out of scope for this phase) and re-introducing it would drop the precedence/bypass fields. Left disabled (`#if false`); not re-applied.
+  - **Decision: drop.** `DependencyObjectStore.DependencyPropertyChangedEventArgsPool` (Rent/Return) already pools the args and captures the allocation win the struct targeted. `PropertyChangedParams` is also `internal` (no public-surface impact, so out of scope for this phase) and re-introducing it would drop the precedence/bypass fields. **Deleted the dead `#if false` struct (`PropertyChangedParams.cs`) and its stale commented reference** rather than leaving misleading "bring back in Uno 6" dead code.
   - Files: `src/Uno.UI/UI/Xaml/PropertyChangedParams.cs`, `src/Uno.UI/UI/Xaml/IDependencyObjectInternal.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`
 - [x] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
   - Adjust signature to match WinUI.
