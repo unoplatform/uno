@@ -2,13 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObjectStore
 	{
 		/// <summary>
-		/// Drops <see cref="_associatedParent"/> — and any DataContext it propagated into this store —
+		/// Drops <see cref="_associatedParentRef"/> — and any DataContext it propagated into this store —
 		/// when the parent is owned by an unloading collectible ALC, is an unloaded
 		/// <see cref="FrameworkElement"/>, or is orphaned from the content-root coordinator, so a
 		/// host-lifetime resource cannot pin a secondary app's ALC. A live host element re-associates
@@ -33,8 +34,9 @@ namespace Microsoft.UI.Xaml
 			// The collectible branch is gated on the parent's ALC unload having actually been
 			// initiated: a still-live session-lifetime add-in ALC (e.g. a designer host) is also
 			// collectible, but its associations must be preserved until it really unloads.
+			var associatedParent = _associatedParentRef?.Target;
 			var collectibleAndUnloading = false;
-			if (_associatedParent is { } collectibleCandidate && collectibleCandidate.GetType().IsCollectible)
+			if (associatedParent is { } collectibleCandidate && collectibleCandidate.GetType().IsCollectible)
 			{
 				var parentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(collectibleCandidate.GetType().Assembly);
 				// Conservative when the unload state can't be read: do NOT clear, so a still-live add-in
@@ -44,12 +46,17 @@ namespace Microsoft.UI.Xaml
 					&& global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(parentAlc, valueIfUnknown: false);
 			}
 
-			if (_associatedParent is { } parent
+			if (associatedParent is { } parent
 				&& (collectibleAndUnloading
 					|| parent is FrameworkElement { IsLoaded: false }
 					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
-				_associatedParent = null;
+				if (_associatedParentRef is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _associatedParentRef);
+					_associatedParentRef = null;
+				}
+
 				associationCleared = true;
 			}
 

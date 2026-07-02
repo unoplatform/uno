@@ -38,7 +38,15 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly object _gate = new object();
 
-		private object? _associatedParent; // see note in AssociateParent(object)
+		// WEAK reference to the associated (inheritance-context) parent — see note in AssociateParent(object).
+		// A shareable value (IMultiParentShareableDependencyObject, e.g. a Brush) must NOT strongly pin the
+		// element that consumed it: shared/process-lifetime values (DependencyProperty metadata defaults,
+		// theme brushes, static resources) would otherwise retain every transient element they were ever set
+		// on until the property is overwritten — a leak for any long-running app, since visual-tree detach
+		// alone does not run UnassociateParent. This mirrors _mentorRef and WinUI's
+		// SetParentForInheritanceContextOnly (xref::weakref_ptr). The field is read only for multi-parent
+		// detection and teardown; DataContext inheritance is push-based via the parent's ChildrenBindable.
+		private ManagedWeakReference? _associatedParentRef;
 
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
 		private List<object?>? _childrenBindable;
@@ -708,20 +716,28 @@ namespace Microsoft.UI.Xaml
 			//		two parents.
 			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
 
-			if (_associatedParent == null)
+			// A previously-associated parent that has since been collected (weak target is null) no longer
+			// counts: the value is single-parent again, so re-associate rather than treating it as shared.
+			var current = _associatedParentRef?.Target;
+			if (current is null)
 			{
-				_associatedParent = parent;
+				if (_associatedParentRef is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _associatedParentRef);
+				}
+
+				_associatedParentRef = WeakReferencePool.RentWeakReference(this, parent);
 				RegisterCollectibleParentAssociation(parent);
 			}
-			else
+			else if (!ReferenceEquals(current, parent))
 			{
-				// if there are multiple parents (would be if we count the previous one `_associatedParent` and the current one `parent`),
-				// it means that the current instance is shared across multiple owners/parents,
-				// which means that it should no longer participate in any dc propagation.
+				// A second, simultaneously-alive parent means the instance is shared across multiple
+				// owners/parents, so it should no longer participate in any dc propagation.
 				_inheritanceContextEnabled = false;
 
 				ClearInheritedDataContext();
-				_associatedParent = null;
+				WeakReferencePool.ReturnWeakReference(this, _associatedParentRef);
+				_associatedParentRef = null;
 			}
 		}
 		private void UnassociateParent(object? parent)
@@ -729,9 +745,10 @@ namespace Microsoft.UI.Xaml
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
 
-			if (ReferenceEquals(_associatedParent, parent))
+			if (ReferenceEquals(_associatedParentRef?.Target, parent))
 			{
-				_associatedParent = null;
+				WeakReferencePool.ReturnWeakReference(this, _associatedParentRef!);
+				_associatedParentRef = null;
 			}
 		}
 
