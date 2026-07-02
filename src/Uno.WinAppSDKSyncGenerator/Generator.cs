@@ -111,6 +111,10 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
 			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
+			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
+			// carries the DependencyObject base and the IList implementation; emitting the metadata
+			// DependencyObject base here would clash with that hand-written hierarchy.
+			BaseXamlNamespace + ".DependencyObjectCollection",
 		};
 
 		// Native/WASM symbols come from Uno.UWP after the 7.0 native drop: it still ships per-platform
@@ -1152,9 +1156,6 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private static bool HasValidBaseType(INamedTypeSymbol type)
 			=> type.BaseType is { } baseType && baseType.SpecialType is not (SpecialType.System_Object or SpecialType.System_ValueType or SpecialType.System_Enum) &&
-				// DependencyObject is the root base class of the whole hierarchy and is always provided by the
-				// hand-written partial; emitting it here would clash with Uno's intermediate base classes.
-				baseType.ToString() != BaseXamlNamespace + ".DependencyObject" &&
 				!_skipBaseTypes.Contains(type.ToString());
 
 		protected void BuildDelegate(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
