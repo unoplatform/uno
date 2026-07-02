@@ -3,7 +3,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Media;
 

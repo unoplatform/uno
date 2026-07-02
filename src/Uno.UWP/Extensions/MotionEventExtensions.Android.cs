@@ -4,7 +4,7 @@ using System.Text;
 using Android.Views;
 using Windows.Devices.Input;
 using Windows.System;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 
 namespace Uno.UI.Xaml.Extensions
 {

@@ -17,7 +17,6 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
-using Windows.UI.Input;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;

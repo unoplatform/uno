@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -15,6 +15,7 @@ using static Microsoft.UI.Xaml.UIElement;
 
 using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
 namespace Uno.UI.Xaml.Core;
 

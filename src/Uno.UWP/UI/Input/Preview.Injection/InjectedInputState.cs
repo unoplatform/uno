@@ -3,9 +3,11 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 namespace Windows.UI.Input.Preview.Injection;
 

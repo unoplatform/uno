@@ -15,7 +15,7 @@ using ICommand = System.Windows.Input.ICommand;
 #if HAS_UNO_WINUI
 #else
 using Windows.Devices.Input;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;

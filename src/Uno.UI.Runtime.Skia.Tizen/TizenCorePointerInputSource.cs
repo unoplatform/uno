@@ -4,7 +4,11 @@ using System;
 using ElmSharp;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerPoint = Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = Microsoft.UI.Input.PointerPointProperties;
 using Uno.Foundation.Logging;
 using Windows.System;
 using System.Threading;
@@ -98,7 +102,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerMoved(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: Math.Max(data.VerticalSwipeTimestamp, data.HorizontalSwipeTimestamp),
 						device: PointerDevice.For(PointerDeviceType.Touch),
@@ -128,7 +132,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerPressed(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: (uint)data.Timestamp,
 						device: PointerDevice.For(PointerDeviceType.Touch),
@@ -158,7 +162,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerReleased(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: (uint)data.Timestamp,
 						device: PointerDevice.For(PointerDeviceType.Touch),

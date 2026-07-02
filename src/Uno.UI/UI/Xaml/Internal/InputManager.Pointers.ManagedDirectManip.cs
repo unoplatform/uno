@@ -57,7 +57,7 @@ partial class InputManager
 		internal void RegisterDirectManipulationHandler(PointerIdentifier pointer, IDirectManipulationHandler handler)
 			=> RegisterDirectManipulationHandlerCore(pointer, handler);
 
-		internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, InteractionTracker tracker)
+		internal void RedirectPointer(Microsoft.UI.Input.PointerPoint pointer, InteractionTracker tracker)
 			=> RegisterDirectManipulationHandlerCore(pointer.Pointer, new InteractionTrackerToDirectManipulationHandler(tracker));
 
 		private void RegisterDirectManipulationHandlerCore(PointerIdentifier pointer, IDirectManipulationHandler handler)
@@ -263,7 +263,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessEnter(args))
 				{
@@ -287,7 +287,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessDown(args))
 				{
@@ -308,7 +308,7 @@ partial class InputManager
 			// Direct-manipulation handlers are typically registering them during the PointerPressed event bubbling, then once bubbling is over,
 			// we forward the press event to the gesture recognizers (which will fire the ManipStarting event)
 
-			if (_gestureRecognizers.TryGetValue(args.CurrentPoint.PointerDeviceType, out var recognizers))
+			if (_gestureRecognizers.TryGetValue((PointerDeviceType)args.CurrentPoint.PointerDeviceType, out var recognizers))
 			{
 				foreach (var recognizer in recognizers)
 				{
@@ -328,7 +328,7 @@ partial class InputManager
 
 		private void AfterMoveForManipulations(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_gestureRecognizers.TryGetValue(args.CurrentPoint.PointerDeviceType, out var recognizers))
+			if (_gestureRecognizers.TryGetValue((PointerDeviceType)args.CurrentPoint.PointerDeviceType, out var recognizers))
 			{
 				foreach (var recognizer in recognizers)
 				{
@@ -354,14 +354,14 @@ partial class InputManager
 
 		private void AfterReleaseForManipulations(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_gestureRecognizers.TryGetValue(args.CurrentPoint.PointerDeviceType, out var recognizers))
+			if (_gestureRecognizers.TryGetValue((PointerDeviceType)args.CurrentPoint.PointerDeviceType, out var recognizers))
 			{
 				foreach (var recognizer in recognizers)
 				{
 					recognizer.ProcessUp(args);
 				}
 
-				_gestureRecognizers.Remove(args.CurrentPoint.PointerDeviceType); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.PointerDeviceType); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 			}
 		}
 
@@ -382,14 +382,14 @@ partial class InputManager
 
 		private void AfterCancelForManipulations(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_gestureRecognizers.TryGetValue(args.CurrentPoint.PointerDeviceType, out var recognizers))
+			if (_gestureRecognizers.TryGetValue((PointerDeviceType)args.CurrentPoint.PointerDeviceType, out var recognizers))
 			{
 				foreach (var recognizer in recognizers)
 				{
 					recognizer.ProcessCancel(args);
 				}
 
-				_gestureRecognizers.Remove(args.CurrentPoint.PointerDeviceType); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.PointerDeviceType); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 			}
 		}
 

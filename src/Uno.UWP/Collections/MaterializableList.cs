@@ -16,7 +16,7 @@ namespace Uno.Collections
 	/// THIS IS NOT THREAD-SAFE. It is designed to be used on
 	/// the UI thread.
 	/// </remarks>
-	public class MaterializableList<T> : IList<T>, IReadOnlyList<T>
+	internal class MaterializableList<T> : IList<T>, IReadOnlyList<T>
 	{
 		private readonly List<T> _innerList;
 		private List<T>? _materialized;

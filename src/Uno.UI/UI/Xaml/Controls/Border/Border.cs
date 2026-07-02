@@ -83,7 +83,7 @@ public partial class Border : FrameworkElement
 		}
 	}
 
-	public static DependencyProperty ChildProperty { get; } =
+	internal static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Child),
 			typeof(UIElement),

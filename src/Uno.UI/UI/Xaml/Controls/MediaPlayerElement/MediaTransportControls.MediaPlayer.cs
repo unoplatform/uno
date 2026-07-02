@@ -8,7 +8,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 

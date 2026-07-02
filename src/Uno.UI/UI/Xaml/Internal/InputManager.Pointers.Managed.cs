@@ -16,9 +16,8 @@ using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Input;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,8 +25,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Composition;
 
@@ -228,9 +228,9 @@ internal partial class InputManager
 				// Then notify all external components that the dispatching is starting
 				_manager._inputManager.LastInputDeviceType = args.CoreArgs.CurrentPoint.PointerDeviceType switch
 				{
-					PointerDeviceType.Touch => InputDeviceType.Touch,
-					PointerDeviceType.Pen => InputDeviceType.Pen,
-					PointerDeviceType.Mouse => InputDeviceType.Mouse,
+					MuxPointerDeviceType.Touch => InputDeviceType.Touch,
+					MuxPointerDeviceType.Pen => InputDeviceType.Pen,
+					MuxPointerDeviceType.Mouse => InputDeviceType.Mouse,
 					_ => _manager._inputManager.LastInputDeviceType
 				};
 				UIElement.BeginPointerEventDispatch();
@@ -446,7 +446,7 @@ internal partial class InputManager
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			// If 2+ mouse buttons are pressed, we only respond to the first.
-			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
+			if (args.CurrentPoint is { PointerDeviceType: MuxPointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{
 				Trace("Mouse second button pressed ignored!");
 				return;
@@ -486,7 +486,7 @@ internal partial class InputManager
 		{
 			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
 			// (i.e when no more buttons are still pressed).
-			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
+			if (args.CurrentPoint.PointerDeviceType == MuxPointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
 			{
 				Trace("Mouse second button released ignored!");
 				return;
