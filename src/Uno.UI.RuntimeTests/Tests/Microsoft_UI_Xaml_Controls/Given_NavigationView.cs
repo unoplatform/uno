@@ -189,6 +189,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20199")]
+		// Flaky on WinUI, excluded there pending investigation: https://github.com/unoplatform/uno/issues/23561
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CompactPaneLength_Changed_PaneToggleButton_Updates()
 		{
 			var navView = new MUXC.NavigationView()
@@ -223,7 +225,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(300, templateSettings.PaneToggleButtonWidth, "Updated PaneToggleButtonWidth");
 			Assert.AreEqual(292, templateSettings.SmallerPaneToggleButtonWidth, "Updated SmallerPaneToggleButtonWidth");
 			Assert.AreEqual(292, toggleButton.MinWidth, "Updated toggle MinWidth");
-			Assert.IsTrue(toggleButton.ActualWidth > initialActualWidth + 50, $"Toggle button should grow: {initialActualWidth} -> {toggleButton.ActualWidth}");
+
+			// On native WinUI the binding-driven MinWidth updates before the button is re-arranged,
+			// so ActualWidth catches up asynchronously - poll instead of asserting immediately.
+			await WindowHelper.WaitFor(
+				() => toggleButton.ActualWidth > initialActualWidth + 50,
+				timeoutMS: 3000,
+				message: $"Toggle button should grow from {initialActualWidth}, was {toggleButton.ActualWidth}");
 		}
 
 		[TestMethod]

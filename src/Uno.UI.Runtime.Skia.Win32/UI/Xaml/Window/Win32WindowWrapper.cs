@@ -104,7 +104,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_framePacer = CreateFramePacer();
 		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
 			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
 				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
@@ -113,6 +112,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 				: new SoftwareRenderer(_hwnd);
+
+		InitializeRenderThread();
 
 		RegisterForBackgroundColor();
 
@@ -282,13 +283,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
-				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-				// and our render timer.
-				SynchronousRenderAndDraw(false);
+				// No present here: the DWM backing surface survives the move, and the OS
+				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
+			case PInvoke.WM_PAINT:
+				// Signal the render thread to re-blit the current frame; DefWindowProc
+				// validates the update region via BeginPaint/EndPaint.
+				_renderThread?.SignalNewFrame();
+				break;
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
@@ -308,16 +310,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					_forcePaintOnNextEraseBkgndOrNcPaint = false;
-					// This call is necessary to avoid an initial blank frame during window startup.
-					// This follows from the SynchronousRenderAndDraw call in ShowCore
-					// The render timer might already be running. This is fine. The CompositionTarget
-					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					Render();
+					// Signal the render thread to re-blit. The first frame was already painted
+					// by ShowCore (which waited for present), so the framebuffer has content.
+					_renderThread?.SignalNewFrame();
 					return new LRESULT(1);
 				}
 				else
 				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// Painting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
@@ -386,6 +386,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_NCCALCSIZE:
 				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
 				{
+					// Custom-chrome windows remove the system frame so content fills the whole window. When such
+					// a window is maximized, Windows still positions it so the resize frame overhangs the monitor
+					// on every edge; left uncorrected, content and the caption buttons would spill off-screen and
+					// the reported client size would exceed the visible area. Inset the proposed client rect back
+					// to the monitor work area so the chrome fills exactly the visible screen, matching WinUI.
+					// FullScreenPresenter is excluded: it also reports a maximized window but must own the whole
+					// monitor. IsZoomed reflects the live maximized state even before WM_SIZE arrives.
+					if (Window?.AppWindow?.Presenter is OverlappedPresenter && PInvoke.IsZoomed(hwnd))
+					{
+						// rgrc[0] is the first field of NCCALCSIZE_PARAMS, so lParam can be read as its RECT.
+						ref var client = ref *(RECT*)lParam.Value;
+						ApplyMaximizedClientInset(ref client);
+					}
 					return new LRESULT(IntPtr.Zero);
 				}
 				break;
@@ -401,8 +414,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		Render();
+		// Force an early SKPicture record so the render thread has fresh content to present.
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+		// Signal the render thread and wait briefly for the present to land.
+		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.
+		_renderThread?.SignalNewFrame();
+		var presentCompleted = _renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
+		if (presentCompleted == false)
+		{
+			this.LogWarn()?.Warn(
+				"Timed out waiting for the next present during synchronous render; " +
+				"the window may be shown before the first frame is displayed.");
+		}
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -432,6 +455,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_NCPOINTERUPDATE:
+				// Redirect pointer moves over the whole title bar (caption drag area + caption buttons) into XAML,
+				// not just over the buttons. Caption-button hover (PointerOver) is driven by these redirected
+				// moves; without redirecting caption moves, sliding off a button sideways into the drag area
+				// delivers no move at the new position, so the button stays stuck in the hovered state.
+				if (!handled
+					&& IsOverTitleBar(NonClientAreaHitTest(hWnd, wParam, lParam)))
+				{
+					OnPointer(msg, wParam, hWnd);
+					handled = true;
+				}
+				break;
 			case PInvoke.WM_NCPOINTERDOWN:
 			case PInvoke.WM_NCPOINTERUP:
 				if (!handled
@@ -483,7 +517,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		Win32Host.UnregisterWindow(_hwnd);
-		_framePacer.Dispose();
+		// Stop and join the render thread before touching its resources: once Dispose returns, the
+		// thread — the sole user of the renderer/surface — has exited, so freeing them here cannot
+		// race an in-flight present.
+		_renderThread?.Dispose();
+		_renderThread = null;
+		// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU resources
+		// owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
+		_surface?.Dispose();
+		_surface = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();

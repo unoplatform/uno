@@ -55,7 +55,9 @@ namespace Microsoft.UI.Xaml.Shapes
 					width = Math.Max(width, height);
 				}
 
-				return new Size(width, height);
+				// Square, as in WinUI (CEllipse/CRectangle::MeasureOverride): the desired height must
+				// follow the width, else there's no overflow for VerticalAlignment to act on (#18265).
+				return new Size(width, width);
 			}
 
 			return new Size(feWidth, feHeight);
