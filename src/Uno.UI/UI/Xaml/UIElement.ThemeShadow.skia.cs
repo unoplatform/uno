@@ -14,6 +14,10 @@ public partial class UIElement
 	partial void UnsetShadow()
 	{
 		Visual.ShadowState = null;
+		// Release the cached blurred shadow image so a recycled container
+		// (e.g. a ListView ItemContainer reused for a different item) doesn't
+		// keep the cache alive after its shadow is gone.
+		Visual.DisposeShadowCache();
 	}
 
 	partial void SetShadow()
