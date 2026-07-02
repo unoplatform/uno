@@ -94,11 +94,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return (float)From.Value;
 			}
 
-			if (By.HasValue && To.HasValue)
-			{
-				return (float)(To.Value - By.Value);
-			}
-
+			// When To is set, By is ignored and From defaults to the base value
+			// (MUX: ReadBaseValuesFromTargetOrHandoff — To set => isToAnimation, By unused).
 			// Read current property value.
 			var value = GetNonAnimatedValue();
 			if (value != null)

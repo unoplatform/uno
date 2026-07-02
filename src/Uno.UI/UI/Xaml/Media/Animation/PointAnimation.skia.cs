@@ -95,11 +95,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return From.Value;
 			}
 
-			if (By.HasValue && To.HasValue)
-			{
-				return new Point(To.Value.X - By.Value.X, To.Value.Y - By.Value.Y);
-			}
-
+			// When To is set, By is ignored and From defaults to the base value
+			// (MUX: ReadBaseValuesFromTargetOrHandoff — To set => isToAnimation, By unused).
 			var value = GetNonAnimatedValue();
 			if (value is Point p)
 			{

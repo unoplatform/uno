@@ -383,10 +383,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if __SKIA__
 			if (_isRegisteredWithTimeManager)
 			{
-				// MUX: SkipToFill uses SeekAlignedToLastTick to seek to the end.
-				// This synchronously applies the final animation values.
-				var duration = GetNaturalDurationFromChildren();
-				SeekAlignedToLastTick(duration);
+				// MUX: CStoryboard::SkipToFill -> CompleteInternal(stopInfiniteTimelines:false,
+				// isSynchronous:true). Seeks past the true expiration (accounting for the
+				// storyboard's own RepeatBehavior/AutoReverse/BeginTime) so the fill values are
+				// applied synchronously; no-ops for storyboards with an infinite expiration.
+				var naturalDuration = GetNaturalDurationFromChildren();
+				if (naturalDuration == TimeSpan.MaxValue)
+				{
+					return;
+				}
+
+				var effectiveSeconds = ComputeStoryboardEffectiveDuration(naturalDuration.TotalSeconds);
+				if (double.IsInfinity(effectiveSeconds) || effectiveSeconds >= double.MaxValue)
+				{
+					return;
+				}
+
+				var beginTimeSeconds = BeginTime?.TotalSeconds ?? 0.0;
+				SeekAlignedToLastTick(TimeSpan.FromSeconds(beginTimeSeconds + effectiveSeconds + 1.0));
 				return;
 			}
 #endif
@@ -488,7 +502,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return TimeSpan.FromSeconds(_computedCurrentTime);
 			}
 #endif
-			throw new NotImplementedException();
+			// MUX: GetCurrentTime returns 0 for a storyboard that is not running
+			// (before Begin or after Stop) rather than throwing.
+			return TimeSpan.Zero;
 		}
 
 		void ITimelineListener.ChildFailed(Timeline child)
