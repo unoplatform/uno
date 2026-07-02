@@ -65,8 +65,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal override TimeSpan GetCalculatedDuration()
 		{
+			// MUX: CAnimation::GetNaturalDuration — an explicit TimeSpan Duration wins, but a
+			// keyframe animation otherwise resolves its duration from its key frames *ahead of*
+			// Duration="Forever" (WinUI compat quirk), defaulting to 1s when there are none
+			// (NULL_DURATION_DEFAULT).
 			var duration = Duration;
-			if (duration != Duration.Automatic)
+			if (duration.Type == DurationType.TimeSpan)
 			{
 				return base.GetCalculatedDuration();
 			}
@@ -77,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return lastKeyTime.TimeSpan;
 			}
 
-			return base.GetCalculatedDuration();
+			return TimeSpan.FromSeconds(1.0);
 		}
 
 		void ITimeline.Begin()
