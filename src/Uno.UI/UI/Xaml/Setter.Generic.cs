@@ -36,13 +36,13 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				Action?.Invoke((T)o);
+				Action?.Invoke((T)(object)o);
 			}
 		}
 
 		internal override bool TryGetSetterValue(out object value, DependencyObject @do)
 		{
-			Action?.Invoke((T)@do);
+			Action?.Invoke((T)(object)@do);
 			value = null;
 			return false;
 		}

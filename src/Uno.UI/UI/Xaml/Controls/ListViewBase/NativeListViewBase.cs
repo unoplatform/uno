@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class NativeListViewBase : IFrameworkElement, DependencyObject, IScrollSnapPointsInfo
+	public partial class NativeListViewBase : DependencyObject, IFrameworkElement, IScrollSnapPointsInfo
 	{
 		internal bool UseNativeSnapping { get; private set; }
 

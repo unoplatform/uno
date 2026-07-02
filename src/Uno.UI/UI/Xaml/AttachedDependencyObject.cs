@@ -12,8 +12,6 @@ namespace Microsoft.UI.Xaml
 
 		public AttachedDependencyObject(object owner)
 		{
-			InitializeBinder();
-
 			Owner = owner;
 			OwnerWeakReference = WeakReferencePool.RentWeakReference(this, owner);
 		}
