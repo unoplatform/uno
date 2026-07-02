@@ -2,7 +2,10 @@
 uid: Uno.Controls.MapControl
 ---
 
-# MapControl
+# MapControl (Deprecated)
+
+> [!WARNING]
+> The `Uno.WinUI.Maps` package is deprecated. We recommend using [MapsUI](mapsui.md) as the preferred community-based mapping solution for Uno Platform apps. MapsUI supports all Uno Platform targets including iOS, Android, WebAssembly, macOS, Linux, and Windows.
 
 The `MapControl` is a control that allows you to display maps in your app. Currently, Uno supports `MapControl` on iOS and Android.
 
