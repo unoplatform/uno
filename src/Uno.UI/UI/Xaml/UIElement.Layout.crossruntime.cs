@@ -234,12 +234,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var remainingTries = MaxLayoutIterations;
+			var hasMaxWidth = false;
+
+			// Check whether this element has an explicit MaxWidth constraint.
+			if (this is FrameworkElement frameworkElement)
+			{
+				var (_, maxSize) = frameworkElement.GetMinMax();
+				hasMaxWidth = maxSize.Width is not double.PositiveInfinity;
+			}
 
 			// remember whether we need to set this value back
 			var wasInNonClippingTree = IsInNonClippingTree;
-			// once entering a tree that is non-clipping, we don't get out of it
-			// remember this for down-stream
-			IsInNonClippingTree = IsNonClippingSubtree || wasInNonClippingTree;
+			// Once measure enters a non-clipping subtree, descendants normally remain in
+			// non-clipping mode. However, when a user-defined MaxWidth is present, the
+			// desired size must still respect that maximum constraint.
+			IsInNonClippingTree = (IsNonClippingSubtree || wasInNonClippingTree) && !hasMaxWidth;
 
 			while (--remainingTries > 0)
 			{
