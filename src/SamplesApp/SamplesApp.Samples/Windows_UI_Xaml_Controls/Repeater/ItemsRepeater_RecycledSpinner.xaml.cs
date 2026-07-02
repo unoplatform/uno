@@ -108,7 +108,8 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 			$"Recycled element after removal: stillParented={isParented}, " +
 			$"dataContextUnchanged={dataContextUnchanged}, " +
 			$"ringIsActive={(ring is null ? "ring not found" : ring.IsActive.ToString())} " +
-			"(expected by this bug: True / True / True — nothing visible, yet the ring keeps invalidating the canvas).";
+			"(expected on Uno Platform/Skia: True / True / True — nothing visible, yet the ring keeps invalidating the canvas; " +
+			"on WinUI: True / False / True — WinUI clears the DataContext on recycle, yet the ring stays active there too, at no render cost).";
 	}
 
 	private async void OnMeasureCpuClick(object sender, RoutedEventArgs e)
