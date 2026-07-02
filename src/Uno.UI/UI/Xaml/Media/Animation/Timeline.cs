@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty RepeatBehaviorProperty { get; } =
-			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
+			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior(1)));
 
 
 		void ITimeline.RegisterListener(ITimelineListener listener)

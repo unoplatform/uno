@@ -66,9 +66,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// MUX: ComputeExpirationTime (line 209)
 			// Zero-duration animations expire at beginTime (WinUI: rDurationValue <= 0 → progress=1.0).
 			double? expirationTime = null;
-			if (hasDuration)
+			var effectiveDuration = ComputeEffectiveDuration(durationSeconds, hasDuration, SpeedRatio);
+			if (effectiveDuration.HasValue)
 			{
-				expirationTime = beginTime + ComputeEffectiveDuration(durationSeconds);
+				expirationTime = beginTime + effectiveDuration.Value;
 			}
 
 			// Determine clock state from parent time.
@@ -222,41 +223,68 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Computes the effective duration accounting for RepeatBehavior and AutoReverse.
-		/// Simplified port of CTimeline::ComputeEffectiveDuration (Timeline.cpp lines 727-800).
+		/// Computes the effective duration (the length of the active period in local time,
+		/// accounting for SpeedRatio, RepeatBehavior and AutoReverse). A null result means an
+		/// infinite (never-expiring) effective duration.
+		/// Ported from CTimeline::ComputeEffectiveDuration (Timeline.cpp lines 711-784).
 		/// </summary>
-		private double ComputeEffectiveDuration(double singleIterationDuration)
+		private double? ComputeEffectiveDuration(double singleIterationDuration, bool hasFiniteDuration, double appliedSpeedRatio)
 		{
+			// MUX asserts rAppliedSpeedRatio > 0; mirror the coercion used elsewhere.
+			if (appliedSpeedRatio <= 0)
+			{
+				appliedSpeedRatio = 1.0;
+			}
+
 			var repeat = RepeatBehavior;
-			double scalingFactor;
+			var repeatType = repeat.Type;
 
-			if (repeat.Type == RepeatBehaviorType.Forever)
-			{
-				return double.MaxValue; // Infinite
-			}
+			double rRepeatBehavior = 1.0;
+			double rLimitingTime = double.MaxValue;
 
-			if (repeat.HasDuration)
+			if (repeatType == RepeatBehaviorType.Duration)
 			{
-				return repeat.Duration.TotalSeconds;
-			}
-
-			if (repeat.HasCount && repeat.Count > 0)
-			{
-				scalingFactor = repeat.Count;
+				rLimitingTime = repeat.Duration.TotalSeconds;
 			}
 			else
 			{
-				// Default RepeatBehavior (Count=0 in Uno's struct default) means "play once".
-				// WinUI's default RepeatBehavior has Count=1.
-				scalingFactor = 1.0;
+				// Repeat is either forever or count, so look at the count field.
+				rRepeatBehavior *= repeat.HasCount ? repeat.Count : 1.0;
 			}
+
+			// Zero or negative duration or repeat -> effective duration is ZERO.
+			if ((hasFiniteDuration && singleIterationDuration <= 0.0)
+				|| (rRepeatBehavior <= 0.0))
+			{
+				return 0.0;
+			}
+
+			// We repeat forever, or we last forever without any clipping RepeatBehavior.
+			if (repeatType == RepeatBehaviorType.Forever
+				|| (!hasFiniteDuration && repeatType == RepeatBehaviorType.Count))
+			{
+				return null; // no value == forever
+			}
+
+			// We last forever, but we have a clipping RepeatBehavior.
+			if (!hasFiniteDuration)
+			{
+				return repeatType == RepeatBehaviorType.Duration
+					? rLimitingTime
+					: rRepeatBehavior / appliedSpeedRatio;
+			}
+
+			// We repeat for a specific number of iterations (or a clipping duration).
+			var rScalingFactor = repeatType == RepeatBehaviorType.Duration
+				? rLimitingTime / appliedSpeedRatio
+				: rRepeatBehavior / appliedSpeedRatio;
 
 			if (AutoReverse)
 			{
-				scalingFactor *= 2.0;
+				rScalingFactor *= 2.0;
 			}
 
-			return scalingFactor * singleIterationDuration;
+			return Math.Min(rScalingFactor * singleIterationDuration, rLimitingTime);
 		}
 
 		/// <summary>
