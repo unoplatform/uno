@@ -1975,7 +1975,6 @@ namespace Microsoft.UI.Xaml
 			bool bypassesPropagation = false
 		)
 		{
-			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = property.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
