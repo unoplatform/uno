@@ -78,7 +78,7 @@
             <Button Click="OnMeasureCpuClick" Content="Measure CPU (2 s)" />
         </StackPanel>
 
-        <StackPanel x:Name="DiagnosticsPanel" Grid.Row="2">
+        <StackPanel Grid.Row="2">
             <TextBlock
                 x:Name="FramesText"
                 FontSize="12"

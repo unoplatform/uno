@@ -10,11 +10,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using MuxProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
-#if __SKIA__
-using Windows.Foundation;
-using SkiaSharp;
-using Uno.WinUI.Graphics2DSK;
-#endif
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater;
 
@@ -32,15 +27,13 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 {
 	private readonly ObservableCollection<RecycledSpinnerItem> _items = new();
 
-	private const string FrameProbeUnavailableText =
-		"Frame probe not available on this target — observe frame production externally (e.g. PresentMon).";
-
 	private UIElement? _recycledSpinnerElement;
 	private object? _spinnerDataContextAtRemoval;
 
 #if __SKIA__
-	private FrameProbe? _frameProbe;
-	private long _lastFramesPainted;
+	private CompositionTarget? _frameSource;
+	private long _framesRendered;
+	private long _lastFramesRendered;
 #endif
 
 	public ItemsRepeater_RecycledSpinner()
@@ -54,45 +47,48 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 	private void InitializeFrameProbe()
 	{
 #if __SKIA__
-		if (SKCanvasElement.IsSupportedOnCurrentPlatform())
+		// Counts composed frames passively via the Uno-internal CompositionTarget.FrameRendered,
+		// raised at the end of every frame render. Element-level paints can't be used as the
+		// signal (per-visual picture caching replays unchanged visuals without repainting them),
+		// and the public CompositionTarget.Rendering forces the render loop to keep producing
+		// frames while subscribed.
+		Loaded += (_, _) =>
 		{
-			// A passive probe: its RenderOverride runs once per composed frame, so sampling the
-			// counter at 1 Hz reads ~1-2 frames/s when the render loop idles (the once-a-second
-			// text update itself causes a frame) vs the full frame rate while the loop is awake.
-			_frameProbe = new FrameProbe { Width = 8, Height = 8 };
-			DiagnosticsPanel.Children.Insert(0, _frameProbe);
+			if (_frameSource is null && XamlRoot?.VisualTree.ContentRoot.CompositionTarget is { } target)
+			{
+				_frameSource = target;
+				target.FrameRendered += OnFrameRendered;
+			}
+		};
+		Unloaded += (_, _) =>
+		{
+			if (_frameSource is { } target)
+			{
+				_frameSource = null;
+				target.FrameRendered -= OnFrameRendered;
+			}
+		};
 
-			var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-			timer.Tick += OnFrameTimerTick;
-			timer.Start();
-			Unloaded += (_, _) => timer.Stop();
-			return;
-		}
+		var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+		timer.Tick += OnFrameTimerTick;
+		timer.Start();
+		Unloaded += (_, _) => timer.Stop();
+#else
+		FramesText.Text = "Frame probe not available on this target — observe frame production externally (e.g. PresentMon).";
 #endif
-		FramesText.Text = FrameProbeUnavailableText;
 	}
 
 #if __SKIA__
+	private void OnFrameRendered() => _framesRendered++;
+
 	private void OnFrameTimerTick(object? sender, object e)
 	{
-		if (_frameProbe is not { } probe)
-		{
-			return;
-		}
+		var rendered = _framesRendered;
+		var delta = rendered - _lastFramesRendered;
+		_lastFramesRendered = rendered;
 
-		var painted = probe.FramesPainted;
-		var delta = painted - _lastFramesPainted;
-		_lastFramesPainted = painted;
-
-		FramesText.Text = $"Frames painted in the last second: {delta} " +
+		FramesText.Text = $"Frames rendered in the last second: {delta} " +
 			(delta > 10 ? "— render loop is awake." : "— render loop is idle.");
-	}
-
-	private sealed partial class FrameProbe : SKCanvasElement
-	{
-		public long FramesPainted { get; private set; }
-
-		protected override void RenderOverride(SKCanvas canvas, Size area) => FramesPainted++;
 	}
 #endif
 
