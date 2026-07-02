@@ -63,7 +63,7 @@
             (2) press "Remove spinner item" — the spinner disappears, its element is recycled but never reused (remaining rows use a different template);
             (3) watch the frame probe. With the fix (pooled element visuals suspended): ~1–2 frames/s within ~1 s. On builds without the fix: still full frame rate, indefinitely, with nothing animating on screen.
             "Measure CPU (2 s)" is a secondary signal: it shows the same contrast only on software-rasterized targets (e.g. X11 without a GPU); GPU-accelerated desktops read near-idle CPU even while the render loop is pinned.
-            The mechanism line shows the recycled element is still parented, with its stale DataContext and an active ring.
+            The mechanism line shows the recycled element is still parented with an active ring — and, on Uno Platform, its stale DataContext (WinUI clears the DataContext on recycle).
         </TextBlock>
 
         <StackPanel

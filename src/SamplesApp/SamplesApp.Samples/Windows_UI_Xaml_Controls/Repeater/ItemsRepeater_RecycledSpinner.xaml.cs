@@ -188,7 +188,7 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 			CpuText.Text =
 				$"Process CPU over {stopwatch.Elapsed.TotalMilliseconds:F0} ms: {coresUsed:P0} of one core " +
 				(coresUsed > 0.5 ? "— render loop is busy/pinned." : "— near idle.") +
-				" CPU only tracks the render loop on software-rasterized targets; on GPU-accelerated desktops rely on the frame probe.";
+				" CPU only tracks the render loop on software-rasterized targets; on GPU-accelerated desktops use the frame readout above instead.";
 		}
 		catch (Exception ex)
 		{
