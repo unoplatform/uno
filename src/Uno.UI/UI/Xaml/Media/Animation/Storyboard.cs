@@ -260,6 +260,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// MUX: CStoryboard::Resume — set resuming flag for next ComputeState tick.
 			_isPausedForTimeManager = false;
 			_isResuming = true;
+			// Re-arm the VSync loop that Pause allowed to stop.
+			TimeManager.Instance.EnsureTicking();
 			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
 #endif
 
