@@ -20,7 +20,7 @@ jobs:
         run: cp build/ci/net10/_global.json global.json
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5.3.0
+        uses: actions/setup-dotnet@v5.4.0
         with:
           global-json-file: global.json
 
