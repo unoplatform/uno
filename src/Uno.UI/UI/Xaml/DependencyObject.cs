@@ -5,11 +5,11 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Data;
 
@@ -26,13 +26,11 @@ namespace Microsoft.UI.Xaml
 	[global::Microsoft.UI.Xaml.Data.Bindable]
 	public partial class DependencyObject : IDependencyObjectStoreProvider, IDependencyObjectInternal, IWeakReferenceProvider
 	{
-		private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
-
 		private DependencyObjectStore __storeBackingField;
 		private BinderReferenceHolder _refHolder;
 		private ManagedWeakReference _selfWeakReference;
 
-		public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
+		public CoreDispatcher Dispatcher => CoreApplication.MainView.Dispatcher;
 
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
@@ -68,9 +66,9 @@ namespace Microsoft.UI.Xaml
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);
 
-		void IDependencyObjectInternal.OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);
+		void IDependencyObjectInternal.OnPropertyChanged2(DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);
 
-		internal virtual void OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) { }
+		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args) { }
 
 		private void __InitializeBinder()
 		{
@@ -87,19 +85,19 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Obsolete method kept for binary compatibility
 		/// </summary>
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ClearBindings() => __Store.ClearBindings();
 
 		/// <summary>
 		/// Obsolete method kept for binary compatibility
 		/// </summary>
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RestoreBindings() => __Store.RestoreBindings();
 
-		global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference
-			=> _selfWeakReference ??= global::Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
+		ManagedWeakReference IWeakReferenceProvider.WeakReference
+			=> _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
 		public override string ToString() => GetType().FullName;
 
@@ -114,7 +112,7 @@ namespace Microsoft.UI.Xaml
 
 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+		[UnconditionalSuppressMessage("Trimming", "IL2111")]
 		public static DependencyProperty TemplatedParentProperty { get; } =
 			DependencyProperty.Register(
 				name: nameof(TemplatedParent),
@@ -134,22 +132,22 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+		public void SetBinding(object target, string dependencyProperty, BindingBase binding)
 			=> __Store.SetBinding(target, dependencyProperty, binding);
 
-		public void SetBinding(string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+		public void SetBinding(string dependencyProperty, BindingBase binding)
 			=> __Store.SetBinding(dependencyProperty, binding);
 
-		public void SetBinding(DependencyProperty dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding)
 			=> __Store.SetBinding(dependencyProperty, binding);
 
 		public void SetBindingValue(object value, [CallerMemberName] string propertyName = null)
 			=> __Store.SetBindingValue(value, propertyName);
 
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal bool IsAutoPropertyInheritanceEnabled { get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }
 
-		public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> __Store.GetBindingExpression(dependencyProperty);
 
 		public void ResumeBindings() => __Store.ResumeBindings();
