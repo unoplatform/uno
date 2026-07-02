@@ -19,15 +19,18 @@ namespace Microsoft.UI.Xaml
 	{
 		private class FrameworkPropertiesForTypeDictionary
 		{
-			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
-			// So we don't use pooling to not cause pool exhaustion by renting without returning.
-			private readonly HashtableEx _entries = new HashtableEx(usePooling: false);
+			// Single process-lifetime instance, keyed by owner Type through a ConditionalWeakTable (weak
+			// keys) so a collectible-ALC control type is not pinned here (Type -> RuntimeType ->
+			// LoaderAllocator). Eviction alone loses the race to the unloading app's residual DP activity;
+			// weak identity keys remove the pin structurally. Type identity is canonical, so weak-keyed
+			// lookup is equivalent to the previous strong table.
+			private readonly ConditionalWeakTable<Type, DependencyProperty[]> _entries = new();
 
 			internal bool TryGetValue(Type key, out DependencyProperty[]? result)
 			{
 				if (_entries.TryGetValue(key, out var value))
 				{
-					result = (DependencyProperty[])value!;
+					result = value;
 
 					return true;
 				}
@@ -37,25 +40,23 @@ namespace Microsoft.UI.Xaml
 			}
 
 			internal void Add(Type key, DependencyProperty[] value)
-				=> _entries.Add(key, value);
+				=> _entries.AddOrUpdate(key, value);
 
 			internal void Clear() => _entries.Clear();
 
 			/// <summary>
-			/// Removes entries whose Type key belongs to a non-default ALC.
+			/// Eagerly removes entries whose Type key belongs to a non-default ALC (weak keys also let
+			/// them be collected once the type is otherwise unreferenced).
 			/// </summary>
 			internal void RemoveNonDefaultAlcEntries()
 			{
 				var keysToRemove = new List<Type>();
-				foreach (var key in _entries.Keys)
+				foreach (var entry in _entries)
 				{
-					if (key is Type t)
+					var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(entry.Key.Assembly);
+					if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
 					{
-						var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(t.Assembly);
-						if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
-						{
-							keysToRemove.Add(t);
-						}
+						keysToRemove.Add(entry.Key);
 					}
 				}
 
