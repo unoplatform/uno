@@ -15,6 +15,7 @@ using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 using SkiaSharp;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -25,6 +26,12 @@ namespace SamplesApp.UITests
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
 		private static bool _firstRun = true;
+		// Set by AfterEachTest when an iOS test fails with an NUnit [Timeout] expiry.
+		// Observed when the Calabash backend inside the running app dies mid-run:
+		// every subsequent test burns its 60 s timeout on cancelled GET /version calls
+		// before Xamarin.UITest's internal retry loop surfaces the failure. Resetting
+		// the simulator before the next run breaks the cascade.
+		private static bool _pendingIosRecovery;
 		private DateTime _startTime;
 		private readonly string _screenShotPath = Environment.GetEnvironmentVariable("UNO_UITEST_SCREENSHOT_PATH");
 
@@ -62,40 +69,40 @@ namespace SamplesApp.UITests
 			// Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
 			// Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot");
 
-			try
+			// Retry cold-start in-process so a stuck iOS Calabash backend (Xamarin.UITest's
+			// internal EnsureCalabashRunning can otherwise poll for ~30 minutes) fails fast
+			// per attempt and recovers via a simulator erase between attempts, instead of
+			// poisoning the static ctor and failing every test with TypeInitializationException.
+			var isIos = AppInitializer.GetLocalPlatform() == Platform.iOS;
+			var perAttemptTimeout = isIos ? TimeSpan.FromMinutes(4) : TimeSpan.FromMinutes(5);
+			// Only iOS has a recovery step (simulator erase) between attempts; on other
+			// platforms a retry without recovery just masks real failures.
+			var maxAttempts = isIos ? 3 : 1;
+
+			Exception lastError = null;
+			for (int attempt = 1; attempt <= maxAttempts; attempt++)
 			{
-				if (AppInitializer.GetLocalPlatform() == Platform.iOS)
+				try
 				{
-					AppInitializer.ColdStartApp();
+					RunColdStartWithTimeout(perAttemptTimeout);
+					lastError = null;
+					break;
 				}
-				else
+				catch (Exception ex)
 				{
-					// Start the app only once, so the tests runs don't restart it
-					// and gain some time for the tests.
-					var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
-
-					// Force an explicit timeout to avoid excessive waiting on iOS
-					var timeout = TimeSpan.FromMinutes(5);
-					var timeoutTask = Task.Delay(timeout);
-
-					var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
-					allTasks.Wait();
-
-					if (allTasks.Result == timeoutTask)
+					lastError = ex;
+					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex.Message}");
+					if (attempt < maxAttempts && isIos)
 					{
-						throw new Exception($"Cold start timeout after {timeout}");
-					}
-
-					if (coldStartTask.Exception is not null)
-					{
-						throw coldStartTask.Exception;
+						Console.WriteLine("Resetting iOS simulator before retry...");
+						ShutdownAndEraseIosSimulator();
 					}
 				}
 			}
-			catch
+
+			if (lastError is not null)
 			{
-				ResetSimulator();
-				throw;
+				ExceptionDispatchInfo.Capture(lastError).Throw();
 			}
 
 			TryInitializeSkiaSharpLoader();
@@ -220,8 +227,24 @@ namespace SamplesApp.UITests
 				}
 			}
 
-			var app = AppInitializer.AttachToApp();
-			_app = app ?? _app;
+			var isIos = AppInitializer.GetLocalPlatform() == Platform.iOS;
+
+			if (_pendingIosRecovery && isIos)
+			{
+				Console.WriteLine("Prior test timed out on iOS; resetting simulator before next run.");
+				_pendingIosRecovery = false;
+				_app = ResetSimulator() ?? _app;
+			}
+			else
+			{
+				// On iOS, bound the attach so a dead Calabash backend can't consume the
+				// full NUnit [Timeout] before we recover. 20 s is well under 60 s and
+				// far above a healthy attach (<1 s in practice).
+				var app = isIos
+					? RunAttachWithTimeout(TimeSpan.FromSeconds(20))
+					: AppInitializer.AttachToApp();
+				_app = app ?? _app;
+			}
 
 			Helpers.App = _app;
 		}
@@ -239,31 +262,139 @@ namespace SamplesApp.UITests
 			}
 
 			WriteSystemLogs(GetCurrentStepTitle("log"));
+
+			if (AppInitializer.GetLocalPlatform() == Platform.iOS)
+			{
+				var result = TestContext.CurrentContext.Result;
+				if (result.Message is { } message
+					&& message.Contains("Test exceeded Timeout value of"))
+				{
+					_pendingIosRecovery = true;
+					Console.WriteLine("iOS test hit NUnit [Timeout]; flagging simulator reset for next run.");
+				}
+				else if (result.Outcome == ResultState.Success)
+				{
+					_pendingIosRecovery = false;
+				}
+			}
 		}
 
 		private static IApp ResetSimulator()
 		{
-			if (AppInitializer.GetLocalPlatform() == Platform.iOS
-								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
-			{
-				// Shutdown the simulator to avoid errors like
-				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
-				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
-				// libc++abi: terminating due to uncaught exception of type NSException
-				// Simulator is already booted.
-				// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
-				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
-				// --DeviceAgentException
-				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
-				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
-				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
-
-				// Retry a cold startup after the erasure
-				return AppInitializer.ColdStartApp();
-			}
-			else
+			if (AppInitializer.GetLocalPlatform() != Platform.iOS)
 			{
 				return null;
+			}
+
+			// Shutdown the simulator to avoid errors like
+			// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
+			// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
+			// libc++abi: terminating due to uncaught exception of type NSException
+			// Simulator is already booted.
+			// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+			//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
+			// --DeviceAgentException
+			//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
+			//
+			// ShutdownAndEraseIosSimulator() is a no-op without UITEST_IOSDEVICE_ID,
+			// so we don't re-check it here.
+			ShutdownAndEraseIosSimulator();
+
+			// Retry a cold startup after the erasure, with the same timeout
+			// guard used by the static-ctor retry loop so a stuck Calabash
+			// backend can't hang here either.
+			return RunColdStartWithTimeout(TimeSpan.FromMinutes(4));
+		}
+
+		private static IApp RunColdStartWithTimeout(TimeSpan timeout)
+		{
+			var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
+			var timeoutTask = Task.Delay(timeout);
+
+			var winner = Task.WhenAny(coldStartTask, timeoutTask);
+			winner.Wait();
+
+			if (winner.Result == timeoutTask)
+			{
+				// Observe the orphan launch so it doesn't surface as an
+				// UnobservedTaskException later. The simctl erase performed
+				// by the caller before the next attempt kills the in-flight
+				// launch by tearing down the simulator the launcher is
+				// talking to.
+				_ = coldStartTask.ContinueWith(
+					t => Console.WriteLine($"Orphaned cold-start completed after timeout: {t.Exception?.GetBaseException().Message ?? "ok"}"),
+					TaskScheduler.Default);
+
+				throw new TimeoutException($"Cold start timeout after {timeout}");
+			}
+
+			// GetAwaiter().GetResult() rethrows the original exception (not
+			// the wrapping AggregateException) and preserves the stack trace.
+			return coldStartTask.GetAwaiter().GetResult();
+		}
+
+		private static IApp RunAttachWithTimeout(TimeSpan timeout)
+		{
+			var attachTask = Task.Run(() => AppInitializer.AttachToApp());
+			var timeoutTask = Task.Delay(timeout);
+
+			var winner = Task.WhenAny(attachTask, timeoutTask);
+			winner.Wait();
+
+			if (winner.Result == timeoutTask)
+			{
+				// Observe the orphan attach so it doesn't surface as an
+				// UnobservedTaskException later. The simctl erase performed
+				// by ResetSimulator below tears down the simulator the
+				// launcher is talking to, which forces the orphan to fail.
+				_ = attachTask.ContinueWith(
+					t => Console.WriteLine($"Orphaned attach completed after timeout: {t.Exception?.GetBaseException().Message ?? "ok"}"),
+					TaskScheduler.Default);
+
+				Console.WriteLine($"AttachToApp exceeded {timeout}; resetting iOS simulator.");
+				return ResetSimulator();
+			}
+
+			if (attachTask.Exception is not null)
+			{
+				Console.WriteLine($"AttachToApp failed ({attachTask.Exception.GetBaseException().Message}); resetting iOS simulator.");
+				return ResetSimulator();
+			}
+
+			return attachTask.Result;
+		}
+
+		private static void ShutdownAndEraseIosSimulator()
+		{
+			if (Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
+			{
+				// Shutdown may fail if the sim isn't booted; ignore and continue to erase.
+				TryRunXcrun($"simctl shutdown \"{simId}\"");
+				TryRunXcrun($"simctl erase \"{simId}\"");
+			}
+		}
+
+		private static void TryRunXcrun(string args)
+		{
+			try
+			{
+				using var process = System.Diagnostics.Process.Start("xcrun", args);
+				if (process is null)
+				{
+					Console.WriteLine($"xcrun {args} failed to start");
+					return;
+				}
+				process.WaitForExit();
+				if (process.ExitCode != 0)
+				{
+					// Surface non-zero exits (e.g. transient simctl shutdown/erase
+					// failures on CI) so logs show why a recovery step didn't take.
+					Console.WriteLine($"xcrun {args} exited with code {process.ExitCode}");
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"xcrun {args} failed: {ex.Message}");
 			}
 		}
 

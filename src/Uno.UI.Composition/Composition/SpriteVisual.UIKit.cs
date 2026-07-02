@@ -81,6 +81,7 @@ namespace Microsoft.UI.Composition
 			);
 		}
 
+		// No finalization required; CoreAnimation reverts to the model value automatically.
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
