@@ -59,9 +59,10 @@
             Style="{ThemeResource BodyTextBlockStyle}"
             TextWrapping="Wrap">
             Repro for issue #23446: an active ProgressRing inside an ItemsRepeater item used to keep the Skia render loop pinned after its item was removed.
-            Steps: (1) press "Measure CPU (2 s)" for a baseline while the spinner is visible (expected: high — the spinner is animating);
+            Steps: (1) note the frame probe while the spinner is visible (expected: full frame rate — the spinner is animating);
             (2) press "Remove spinner item" — the spinner disappears, its element is recycled but never reused (remaining rows use a different template);
-            (3) press "Measure CPU (2 s)" again. With the fix (pooled element visuals suspended): near-idle within ~1 s. On builds without the fix: still ~100% of one core, indefinitely, with nothing animating on screen.
+            (3) watch the frame probe. With the fix (pooled element visuals suspended): ~1–2 frames/s within ~1 s. On builds without the fix: still full frame rate, indefinitely, with nothing animating on screen.
+            "Measure CPU (2 s)" is a secondary signal: it shows the same contrast only on software-rasterized targets (e.g. X11 without a GPU); GPU-accelerated desktops read near-idle CPU even while the render loop is pinned.
             The mechanism line shows the recycled element is still parented, with its stale DataContext and an active ring.
         </TextBlock>
 
@@ -77,7 +78,11 @@
             <Button Click="OnMeasureCpuClick" Content="Measure CPU (2 s)" />
         </StackPanel>
 
-        <StackPanel Grid.Row="2">
+        <StackPanel x:Name="DiagnosticsPanel" Grid.Row="2">
+            <TextBlock
+                x:Name="FramesText"
+                FontSize="12"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
             <TextBlock
                 x:Name="MechanismText"
                 FontSize="12"

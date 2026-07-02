@@ -10,6 +10,11 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using MuxProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
+#if __SKIA__
+using Windows.Foundation;
+using SkiaSharp;
+using Uno.WinUI.Graphics2DSK;
+#endif
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater;
 
@@ -20,21 +25,76 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater;
 		"Repro for the recycled-spinner render-loop leak on Skia (#23446): an active ProgressRing inside an " +
 		"ItemsRepeater item kept invalidating the canvas after its item was removed, because the recycled " +
 		"element stays parented with its stale DataContext and is never reused (the remaining items use a " +
-		"different template). Measure CPU before/after removal: with the pooled-visual suspension fix it " +
-		"drops to near-idle within ~1 s; on builds without the fix it stays at ~100% of one core.")]
+		"different template). Watch the frame probe before/after removal: with the pooled-visual suspension " +
+		"fix it drops to ~1-2 frames/s within ~1 s; on builds without the fix the render loop stays at full " +
+		"frame rate indefinitely. CPU shows the same contrast only on software-rasterized targets.")]
 public sealed partial class ItemsRepeater_RecycledSpinner : Page
 {
 	private readonly ObservableCollection<RecycledSpinnerItem> _items = new();
 
+	private const string FrameProbeUnavailableText =
+		"Frame probe not available on this target — observe frame production externally (e.g. PresentMon).";
+
 	private UIElement? _recycledSpinnerElement;
 	private object? _spinnerDataContextAtRemoval;
+
+#if __SKIA__
+	private FrameProbe? _frameProbe;
+	private long _lastFramesPainted;
+#endif
 
 	public ItemsRepeater_RecycledSpinner()
 	{
 		InitializeComponent();
 		Repeater.ItemsSource = _items;
 		ResetItems();
+		InitializeFrameProbe();
 	}
+
+	private void InitializeFrameProbe()
+	{
+#if __SKIA__
+		if (SKCanvasElement.IsSupportedOnCurrentPlatform())
+		{
+			// A passive probe: its RenderOverride runs once per composed frame, so sampling the
+			// counter at 1 Hz reads ~1-2 frames/s when the render loop idles (the once-a-second
+			// text update itself causes a frame) vs the full frame rate while the loop is awake.
+			_frameProbe = new FrameProbe { Width = 8, Height = 8 };
+			DiagnosticsPanel.Children.Insert(0, _frameProbe);
+
+			var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+			timer.Tick += OnFrameTimerTick;
+			timer.Start();
+			Unloaded += (_, _) => timer.Stop();
+			return;
+		}
+#endif
+		FramesText.Text = FrameProbeUnavailableText;
+	}
+
+#if __SKIA__
+	private void OnFrameTimerTick(object? sender, object e)
+	{
+		if (_frameProbe is not { } probe)
+		{
+			return;
+		}
+
+		var painted = probe.FramesPainted;
+		var delta = painted - _lastFramesPainted;
+		_lastFramesPainted = painted;
+
+		FramesText.Text = $"Frames painted in the last second: {delta} " +
+			(delta > 10 ? "— render loop is awake." : "— render loop is idle.");
+	}
+
+	private sealed partial class FrameProbe : SKCanvasElement
+	{
+		public long FramesPainted { get; private set; }
+
+		protected override void RenderOverride(SKCanvas canvas, Size area) => FramesPainted++;
+	}
+#endif
 
 	private void ResetItems()
 	{
@@ -131,7 +191,8 @@ public sealed partial class ItemsRepeater_RecycledSpinner : Page
 
 			CpuText.Text =
 				$"Process CPU over {stopwatch.Elapsed.TotalMilliseconds:F0} ms: {coresUsed:P0} of one core " +
-				(coresUsed > 0.5 ? "— render loop is busy/pinned." : "— near idle.");
+				(coresUsed > 0.5 ? "— render loop is busy/pinned." : "— near idle.") +
+				" CPU only tracks the render loop on software-rasterized targets; on GPU-accelerated desktops rely on the frame probe.";
 		}
 		catch (Exception ex)
 		{
