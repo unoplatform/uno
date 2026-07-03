@@ -154,12 +154,11 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		// Run pending render jobs even when there's no frame to present; the canvas is only
-		// used to reach the GRContext. When it doesn't exist yet, jobs stay queued for the
-		// next pass (the one that will create it).
-		if (canvas is not null)
+		// Run pending render jobs even when there's no frame to present. When the canvas
+		// doesn't exist yet, jobs stay queued for the next pass (the one that will create it).
+		if (canvas is not null && !_renderJobs.IsEmpty)
 		{
-			RunRenderJobs(canvas);
+			RunRenderJobs(canvas.Context as GRContext);
 		}
 
 		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
@@ -202,7 +201,10 @@ public partial class CompositionTarget
 				_lastScaledNativeClipPath = null;
 
 				// Jobs that couldn't run at method entry because the canvas didn't exist yet.
-				RunRenderJobs(canvas);
+				if (!_renderJobs.IsEmpty)
+				{
+					RunRenderJobs(canvas.Context as GRContext);
+				}
 			}
 
 			canvas.Save();
@@ -251,6 +253,8 @@ public partial class CompositionTarget
 	/// </summary>
 	internal Task<bool> TryExecuteOnNextRenderAsync(Action<GRContext> render)
 	{
+		NativeDispatcher.CheckThreadAccess();
+
 		var job = new RenderJob(render);
 		_renderJobs.Enqueue(job);
 
@@ -267,17 +271,13 @@ public partial class CompositionTarget
 		return job.Task;
 	}
 
-	private void RunRenderJobs(SKCanvas canvas)
+	private void RunRenderJobs(GRContext? context)
 	{
-		if (_renderJobs.IsEmpty)
+		if (context is null)
 		{
-			return;
-		}
-
-		if (canvas.Context is not GRContext context)
-		{
-			// Raster canvas: this target renders in software. Fail the jobs so callers fall
-			// back to software rendering instead of waiting for a context that never comes.
+			// No GPU context (raster canvas): this target renders in software. Fail the jobs so
+			// callers fall back to software rendering instead of waiting for a context that
+			// never comes.
 			FailPendingRenderJobs();
 			return;
 		}
