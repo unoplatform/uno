@@ -1164,21 +1164,10 @@ partial class ItemsView : Control
 		}
 	}
 
-#if DEBUG
-	void OnLayoutMeasureInvalidatedDbg(
-		Layout sender,
-		object args)
-	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-	}
-
-	void OnLayoutArrangeInvalidatedDbg(
-		Layout sender,
-		object args)
-	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-	}
-#endif
+	// NOTE: the DEBUG-only OnLayoutMeasureInvalidatedDbg / OnLayoutArrangeInvalidatedDbg handlers were
+	// removed together with their leaking subscription (see OnLayoutChangedDbg below). They were empty
+	// no-ops (trace calls commented out); if the diagnostics are ever restored, re-add them and
+	// subscribe via a WEAK handler so the shared default-Style Layout cannot pin every ItemsView.
 
 	void OnCompositionTargetRendering(
 		object sender,
