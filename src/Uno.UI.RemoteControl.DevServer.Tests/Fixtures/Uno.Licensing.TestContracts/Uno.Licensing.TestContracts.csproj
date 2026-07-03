@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test contracts fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Mimics Uno.Licensing.Sdk.Contracts: an unsigned contract assembly that is physically
+		present in the *provider* add-in's output directory but NOT in the consumer's, and
+		NOT listed in either add-in's deps.json. This reproduces the production scenario
+		where the contract DLL ships only in one add-in's runtime payload, yet a sibling
+		add-in needs to consume the contract via DI. With a single Default ALC for all
+		add-ins (the new behaviour), Assembly.LoadFrom's directory probing finds the
+		co-located contract DLL naturally, giving both add-ins a single Type identity.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+</Project>
