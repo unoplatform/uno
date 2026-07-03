@@ -8,26 +8,8 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class AnimationController : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MaxPlaybackRate
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MaxPlaybackRate");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MinPlaybackRate
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MinPlaybackRate");
-			}
-		}
-#endif
+		// Skipping already declared property MaxPlaybackRate
+		// Skipping already declared property MinPlaybackRate
 		// Skipping already declared property PlaybackRate
 		// Skipping already declared property Progress
 #if __SKIA__ || __NETSTD_REFERENCE__
