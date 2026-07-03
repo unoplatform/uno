@@ -58,6 +58,15 @@ public partial class ExpressionAnimation : CompositionAnimation
 	internal override object? Evaluate()
 		=> _parsedExpression?.Evaluate(this);
 
+	// Snapshot the expression + reference parameters so each target this animation is started on
+	// evaluates independently, even if the source instance is later reconfigured for another target.
+	internal override CompositionAnimation CloneAnimation()
+	{
+		var clone = new ExpressionAnimation(Compositor) { Expression = Expression };
+		CopyParametersTo(clone);
+		return clone;
+	}
+
 	internal override void Stop()
 	{
 		base.Stop();

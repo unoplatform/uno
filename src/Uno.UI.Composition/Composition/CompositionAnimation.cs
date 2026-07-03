@@ -103,4 +103,35 @@ public partial class CompositionAnimation
 	}
 
 	internal void RaiseAnimationFrame() => AnimationFrame?.Invoke(this);
+
+	// WinUI snapshots an animation's state when it is started on a target, so a single instance can be
+	// reconfigured and started on many targets (e.g. LottieGen's _reusableExpressionAnimation, which
+	// sets a different Expression + reference parameters per shape). Animations with immutable state
+	// (keyframe animations) share the instance; ExpressionAnimation overrides this to snapshot.
+	internal virtual CompositionAnimation CloneAnimation() => this;
+
+	private protected void CopyParametersTo(CompositionAnimation other)
+	{
+		foreach (var (key, value) in ReferenceParameters)
+		{
+			other.ReferenceParameters[key] = value;
+		}
+
+		foreach (var (key, value) in ScalarParameters)
+		{
+			other.ScalarParameters[key] = value;
+		}
+
+		foreach (var (key, value) in Vector2Parameters)
+		{
+			other.Vector2Parameters[key] = value;
+		}
+
+		foreach (var (key, value) in Vector3Parameters)
+		{
+			other.Vector3Parameters[key] = value;
+		}
+
+		other.Target = Target;
+	}
 }
