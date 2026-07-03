@@ -824,13 +824,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		List<object> keysToRemove = null;
 		foreach (var pair in m_itemToNodeMap)
 		{
-			var node = pair.Value;
-			while (node.Parent is { } parent)
-			{
-				node = parent;
-			}
-
-			if (node != m_originNode)
+			if (IsDetachedFromOrigin(pair.Value))
 			{
 				(keysToRemove ??= new List<object>()).Add(pair.Key);
 			}
@@ -843,6 +837,35 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 				m_itemToNodeMap.Remove(key);
 			}
 		}
+
+		// The selection vectors are a second retention path with the same defect: a selected node
+		// removed via Reset stays in m_selectedNodes / m_selectedItems indefinitely, keeping the node
+		// and its item alive. Prune detached selected nodes; SelectedItemsVector.RemoveAt keeps the
+		// two vectors in sync (and raises the appropriate selection-change notifications).
+		for (var i = m_selectedNodes.Count - 1; i >= 0; i--)
+		{
+			if (IsDetachedFromOrigin(m_selectedNodes[i]))
+			{
+				if (i < m_selectedItems.Count)
+				{
+					m_selectedItems.RemoveAt(i);
+				}
+				else
+				{
+					m_selectedNodes.RemoveAt(i);
+				}
+			}
+		}
+	}
+
+	private bool IsDetachedFromOrigin(TreeViewNode node)
+	{
+		while (node.Parent is { } parent)
+		{
+			node = parent;
+		}
+
+		return node != m_originNode;
 	}
 
 	private void SelectedNodeChildrenChanged(TreeViewNode sender, object args)
