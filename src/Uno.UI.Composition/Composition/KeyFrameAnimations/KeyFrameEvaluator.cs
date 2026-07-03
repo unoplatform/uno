@@ -20,6 +20,14 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private long? _pauseTimestamp;
 	private long _totalPause;
 
+	// PlaybackRate scales the wall-clock → animation-time mapping. Because the rate can change while
+	// the animation is running (AnimatedVisualPlayer flips it mid-play), elapsed time is accumulated
+	// against an anchor: virtual (rate-scaled) elapsed frozen at the last rate change, plus the raw
+	// elapsed since then multiplied by the current rate. A negative rate runs the animation backwards.
+	private double _playbackRate = 1.0;
+	private double _virtualElapsedAtAnchorTicks;
+	private long _rawElapsedAtAnchorTicks;
+
 	/// <summary>
 	/// Initializes the evaluator. The <c>resolve</c> delegate resolves a keyframe to its value,
 	/// evaluating an expression keyframe when present: the lerp path resolves its own endpoints,
@@ -52,21 +60,58 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private T Resolve(AnimationKeyFrame<T> frame) => _resolve is null ? frame.Value : _resolve(frame);
 
+	// Raw elapsed ticks excluding time spent paused.
+	private long RawElapsedTicks(long nowTimestamp) => nowTimestamp - _totalPause - _startTimestamp;
+
+	// Rate-scaled elapsed ticks. Equals RawElapsedTicks when the rate is a constant 1.
+	private double VirtualElapsedTicks(long nowTimestamp)
+		=> _virtualElapsedAtAnchorTicks + (RawElapsedTicks(nowTimestamp) - _rawElapsedAtAnchorTicks) * _playbackRate;
+
+	public void SetPlaybackRate(float playbackRate)
+	{
+		if (playbackRate == _playbackRate)
+		{
+			return;
+		}
+
+		// Freeze the virtual elapsed at the current point before switching rate so the animation keeps
+		// advancing continuously from wherever it is rather than jumping.
+		var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+		var rawElapsed = RawElapsedTicks(nowTimestamp);
+		_virtualElapsedAtAnchorTicks += (rawElapsed - _rawElapsedAtAnchorTicks) * _playbackRate;
+		_rawElapsedAtAnchorTicks = rawElapsed;
+		_playbackRate = playbackRate;
+	}
+
 	public (object Value, bool ShouldStop) Evaluate()
 	{
 		// While paused, freeze elapsed time at the pause point — otherwise the evaluator would
 		// keep advancing as wall-clock time passes (and report "shouldStop" once it exceeds the
 		// duration), even though the animation is being held in place by an AnimationController.
 		var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
-		var elapsed = new TimeSpan(nowTimestamp - _totalPause - _startTimestamp);
-		if (_pauseTimestamp is null && elapsed >= _totalDuration)
+		var virtualTicks = VirtualElapsedTicks(nowTimestamp);
+		if (_pauseTimestamp is null)
 		{
-			return (Resolve(_finalValue), true);
+			// Forward playback ends past the final iteration; reverse playback ends back at the start.
+			if (_playbackRate >= 0 && virtualTicks >= _totalDuration.Ticks)
+			{
+				return (Resolve(_finalValue), true);
+			}
+
+			if (_playbackRate < 0 && virtualTicks <= 0)
+			{
+				return (Resolve(_initialValue), true);
+			}
 		}
 
-		elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
+		if (virtualTicks < 0)
+		{
+			virtualTicks = 0;
+		}
 
-		return EvaluateInternal((float)elapsed.Ticks / _duration.Ticks);
+		var frameTicks = (long)(virtualTicks % _duration.Ticks);
+
+		return EvaluateInternal((float)frameTicks / _duration.Ticks);
 	}
 
 	public object Evaluate(float progress)
@@ -140,16 +185,21 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	{
 		get
 		{
-			var timestamp = _pauseTimestamp ?? _compositor.TimestampInTicks - _totalPause;
-			var elapsed = new TimeSpan(timestamp - _startTimestamp);
-			if (elapsed >= _totalDuration)
+			var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+			var virtualTicks = VirtualElapsedTicks(nowTimestamp);
+			if (_playbackRate >= 0 && virtualTicks >= _totalDuration.Ticks)
 			{
 				return 1.0f;
 			}
 
-			elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
+			if (virtualTicks <= 0)
+			{
+				return 0.0f;
+			}
 
-			return (float)elapsed.Ticks / _duration.Ticks;
+			var frameTicks = (long)(virtualTicks % _duration.Ticks);
+
+			return (float)frameTicks / _duration.Ticks;
 		}
 	}
 
@@ -165,14 +215,27 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 				return TimeSpan.MaxValue;
 			}
 
-			var timestamp = _pauseTimestamp ?? _compositor.TimestampInTicks - _totalPause;
-			var elapsed = new TimeSpan(timestamp - _startTimestamp);
-			if (elapsed >= _totalDuration)
+			var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+			var virtualTicks = VirtualElapsedTicks(nowTimestamp);
+
+			// Remaining wall-clock time depends on the current rate: the faster we play, the sooner
+			// the (fixed) animation-time distance to the end is covered.
+			var rateMagnitude = Math.Abs(_playbackRate);
+			if (rateMagnitude == 0)
+			{
+				return TimeSpan.MaxValue;
+			}
+
+			var remainingVirtualTicks = _playbackRate >= 0
+				? _totalDuration.Ticks - virtualTicks
+				: virtualTicks;
+
+			if (remainingVirtualTicks <= 0)
 			{
 				return TimeSpan.Zero;
 			}
 
-			return _totalDuration - elapsed;
+			return TimeSpan.FromTicks((long)(remainingVirtualTicks / rateMagnitude));
 		}
 	}
 }

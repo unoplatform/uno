@@ -10,7 +10,20 @@ namespace Microsoft.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{
-		private protected IKeyFrameEvaluator? _keyframeEvaluator;
+		private IKeyFrameEvaluator? _keyframeEvaluatorField;
+		private float _playbackRate = 1.0f;
+
+		// Concrete keyframe animations assign this when they Start(); routing through the property lets
+		// a PlaybackRate set before Start() take effect the moment the evaluator is created.
+		private protected IKeyFrameEvaluator? _keyframeEvaluator
+		{
+			get => _keyframeEvaluatorField;
+			set
+			{
+				_keyframeEvaluatorField = value;
+				value?.SetPlaybackRate(_playbackRate);
+			}
+		}
 
 		internal KeyFrameAnimation() => throw new NotSupportedException();
 
@@ -93,6 +106,14 @@ namespace Microsoft.UI.Composition
 		internal void Resume()
 		{
 			_keyframeEvaluator!.Resume();
+		}
+
+		// Driven by AnimationController.PlaybackRate. Stored so a rate set before Start() (before the
+		// evaluator exists) is applied on creation via the _keyframeEvaluator setter.
+		internal void SetPlaybackRate(float playbackRate)
+		{
+			_playbackRate = playbackRate;
+			_keyframeEvaluator?.SetPlaybackRate(playbackRate);
 		}
 
 		internal float Progress => _keyframeEvaluator!.Progress;
