@@ -63,15 +63,21 @@ public partial class AnimationController
 		}
 	}
 
+	// The playback-rate range the controller supports. WinUI exposes system limits here; Uno accepts a
+	// wide symmetric range and clamps PlaybackRate into it.
+	public static float MinPlaybackRate => -1e6f;
+
+	public static float MaxPlaybackRate => 1e6f;
+
 	public float PlaybackRate
 	{
 		get => _playbackRate;
 		set
 		{
-			_playbackRate = value;
+			_playbackRate = Math.Clamp(value, MinPlaybackRate, MaxPlaybackRate);
 			foreach (var (_, _, animation) in _associations)
 			{
-				animation.SetPlaybackRate(value);
+				animation.SetPlaybackRate(_playbackRate);
 			}
 		}
 	}
