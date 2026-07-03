@@ -15,7 +15,7 @@ using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
-internal class CanvasPathBuilder : IDisposable
+public class CanvasPathBuilder : IDisposable
 {
 	private List<CompositionPathCommand> _commands = new List<CompositionPathCommand>();
 

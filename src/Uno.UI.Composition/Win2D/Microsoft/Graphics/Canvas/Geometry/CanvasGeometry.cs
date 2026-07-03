@@ -12,7 +12,7 @@ using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
-internal class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2DInterop
+public class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2DInterop
 {
 	private ID2D1Geometry _geometry;
 

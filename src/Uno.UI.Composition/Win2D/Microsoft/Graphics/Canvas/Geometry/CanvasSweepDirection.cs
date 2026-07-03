@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
-internal enum CanvasSweepDirection
+public enum CanvasSweepDirection
 {
 	CounterClockwise = 0,
 	Clockwise = 1

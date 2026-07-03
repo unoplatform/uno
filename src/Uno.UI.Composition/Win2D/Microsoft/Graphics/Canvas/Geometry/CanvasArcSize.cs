@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
-internal enum CanvasArcSize
+public enum CanvasArcSize
 {
 	Small = 0,
 	Large = 1

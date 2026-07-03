@@ -2,7 +2,7 @@
 
 namespace Microsoft.Graphics.Canvas;
 
-internal class CanvasDevice : ICanvasResourceCreator, IDisposable
+public class CanvasDevice : ICanvasResourceCreator, IDisposable
 {
 	private static Lazy<CanvasDevice> _sharedDeviceLazy = new(() => new());
 
