@@ -127,6 +127,8 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_isPaused = true;
 	}
 
+	public void SeekTo(float progress) => Seek(progress);
+
 	public void Resume()
 	{
 		if (!_isPaused)

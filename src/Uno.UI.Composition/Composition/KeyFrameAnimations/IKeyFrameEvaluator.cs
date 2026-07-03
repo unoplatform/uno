@@ -12,6 +12,12 @@ internal interface IKeyFrameEvaluator
 
 	float PlaybackRate { get; set; }
 
+	/// <summary>
+	/// Re-anchors playback to <paramref name="progress"/> without pausing. Clock-driven playback (at
+	/// the current rate) continues from the new position.
+	/// </summary>
+	void SeekTo(float progress);
+
 	float Progress { get; }
 
 	bool IsPaused { get; }
