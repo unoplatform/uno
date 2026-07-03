@@ -850,42 +850,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresScaling(1.0f)]
 		public async Task When_CornerRadius_AntiAliasing()
 		{
-			var background = new Border
+			// The reference asset was rendered by the software rasterizer; GPU rasterization
+			// produces slightly different (but equally valid) anti-aliasing along the rounded
+			// edge, so pin RenderTargetBitmap to software for this byte-exact comparison.
+			var previousUseGpuRenderTargetBitmap = Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap;
+			Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap = false;
+			try
 			{
-				Width = 60,
-				Height = 60,
-				Background = new SolidColorBrush(Colors.Green),
-			};
-
-			var roundedCorner = new Border
-			{
-				Width = 60,
-				Height = 60,
-				CornerRadius = new CornerRadius(30),
-				Background = new SolidColorBrush(Colors.Red),
-			};
-
-			var stackPanel = new Grid()
-			{
-				Children =
+				var background = new Border
 				{
-					background,
-					roundedCorner
-				}
-			};
+					Width = 60,
+					Height = 60,
+					Background = new SolidColorBrush(Colors.Green),
+				};
 
-			await UITestHelper.Load(stackPanel);
-			// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
-			var screenShot = await UITestHelper.ScreenShot(stackPanel);
+				var roundedCorner = new Border
+				{
+					Width = 60,
+					Height = 60,
+					CornerRadius = new CornerRadius(30),
+					Background = new SolidColorBrush(Colors.Red),
+				};
 
-			var image = new Image()
+				var stackPanel = new Grid()
+				{
+					Children =
+					{
+						background,
+						roundedCorner
+					}
+				};
+
+				await UITestHelper.Load(stackPanel);
+				// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
+				var screenShot = await UITestHelper.ScreenShot(stackPanel);
+
+				var image = new Image()
+				{
+					Height = 60,
+					Width = 60,
+					Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
+				};
+				await UITestHelper.Load(image);
+				await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+			}
+			finally
 			{
-				Height = 60,
-				Width = 60,
-				Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
-			};
-			await UITestHelper.Load(image);
-			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+				Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap = previousUseGpuRenderTargetBitmap;
+			}
 		}
 #endif
 
