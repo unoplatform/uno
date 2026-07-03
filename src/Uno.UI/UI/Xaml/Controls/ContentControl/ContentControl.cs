@@ -478,7 +478,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<Type, global::System.Runtime.CompilerServices.StrongBox<bool>> _hasDefaultTemplateCache = new();
 
 		private static bool ComputeHasDefaultTemplate(Type? type)
-			=> Style.GetDefaultStyleForType(type!) is Style defaultStyle
+			=> type is not null
+				&& Style.GetDefaultStyleForType(type) is Style defaultStyle
 				&& defaultStyle
 					.Flatten(s => s.BasedOn!)
 					.SelectMany(s => s.Setters)
