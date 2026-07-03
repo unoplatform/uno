@@ -53,6 +53,9 @@ public class X11NativeWebView : INativeWebView
 
 	private bool _dontRaiseNextNavigationCompleted;
 
+	[DllImport("libc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+	private static extern int setenv(string name, string value, int overwrite);
+
 	[DllImport("libwebkit2gtk-4.1.so", CallingConvention = CallingConvention.Cdecl)]
 	private static extern IntPtr webkit_uri_request_get_http_headers(IntPtr request);
 
@@ -66,6 +69,15 @@ public class X11NativeWebView : INativeWebView
 	{
 		try
 		{
+			if (setenv("GDK_BACKEND", "x11", 0) != 0)
+			{
+				int errno = Marshal.GetLastWin32Error();
+				if (typeof(X11NativeWebView).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(X11NativeWebView).Log().Error($"setenv(3) failed; errno={errno}");
+				}
+			}
+
 			// webkit2gtk-4.1 adds support for exposing libsoup objects, most importantly in webkit_uri_request_get_http_headers.
 			// Gtk# by default loads libwebkit2gtk-4.0 (+ libsoup-2.0), but we want libwebkit2gtk-4.1 (+ libsoup-3.0), so what
 			// we do is that before WebKitGtk# makes its dlopen calls, we load libwebkit2gtk-4.1 and put it where the handle to
