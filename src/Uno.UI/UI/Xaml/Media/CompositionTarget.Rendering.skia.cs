@@ -1,9 +1,11 @@
 #nullable enable
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
@@ -24,6 +26,16 @@ public partial class CompositionTarget
 	// We're using this table as a set with weakref keys. values are always null
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
+
+	// Enqueued from the UI thread, drained on the rendering thread during Draw.
+	private readonly ConcurrentQueue<RenderJob> _renderJobs = new();
+
+	static CompositionTarget()
+	{
+		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
+		// back to software rendering instead of hanging.
+		XamlRootMap.Unregistered += (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.FailPendingRenderJobs();
+	}
 
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
@@ -142,6 +154,14 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
+		// Run pending render jobs even when there's no frame to present; the canvas is only
+		// used to reach the GRContext. When it doesn't exist yet, jobs stay queued for the
+		// next pass (the one that will create it).
+		if (canvas is not null)
+		{
+			RunRenderJobs(canvas);
+		}
+
 		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
@@ -180,6 +200,9 @@ public partial class CompositionTarget
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
 				_lastScaledNativeClipPath = null;
+
+				// Jobs that couldn't run at method entry because the canvas didn't exist yet.
+				RunRenderJobs(canvas);
 			}
 
 			canvas.Save();
@@ -217,6 +240,88 @@ public partial class CompositionTarget
 
 			return lastRenderedFrame.nativeElementClipPath;
 		}
+	}
+
+	/// <summary>
+	/// Schedules <paramref name="render"/> to run during the next native render pass — on the
+	/// rendering thread, with the GRContext current — and invalidates so that pass happens
+	/// promptly. The task completes true once the action has run, or false when it couldn't be
+	/// executed (software rendering, the window is shutting down, or the action threw); the
+	/// caller should then fall back to rendering in software.
+	/// </summary>
+	internal Task<bool> TryExecuteOnNextRenderAsync(Action<GRContext> render)
+	{
+		var job = new RenderJob(render);
+		_renderJobs.Enqueue(job);
+
+		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+		{
+			host.InvalidateRender();
+		}
+		else
+		{
+			// No host to render a pass; don't leave the awaiter hanging.
+			FailPendingRenderJobs();
+		}
+
+		return job.Task;
+	}
+
+	private void RunRenderJobs(SKCanvas canvas)
+	{
+		if (_renderJobs.IsEmpty)
+		{
+			return;
+		}
+
+		if (canvas.Context is not GRContext context)
+		{
+			// Raster canvas: this target renders in software. Fail the jobs so callers fall
+			// back to software rendering instead of waiting for a context that never comes.
+			FailPendingRenderJobs();
+			return;
+		}
+
+		while (_renderJobs.TryDequeue(out var job))
+		{
+			job.Run(context);
+		}
+	}
+
+	private void FailPendingRenderJobs()
+	{
+		while (_renderJobs.TryDequeue(out var job))
+		{
+			job.Fail();
+		}
+	}
+
+	private sealed class RenderJob(Action<GRContext> render)
+	{
+		// RunContinuationsAsynchronously so completing a job never runs the awaiter's
+		// continuation inline on the rendering thread, which would stall frame presentation.
+		private readonly TaskCompletionSource<bool> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		public Task<bool> Task => _tcs.Task;
+
+		public void Run(GRContext context)
+		{
+			try
+			{
+				render(context);
+				_tcs.TrySetResult(true);
+			}
+			catch (Exception e)
+			{
+				if (typeof(CompositionTarget).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CompositionTarget).Log().Error("Render job failed.", e);
+				}
+				_tcs.TrySetResult(false);
+			}
+		}
+
+		public void Fail() => _tcs.TrySetResult(false);
 	}
 
 	private void ReturnFrame((IntPtr picture, SKPath path) frame)

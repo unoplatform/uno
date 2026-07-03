@@ -1039,6 +1039,14 @@ namespace Uno.UI
 			public static bool UseVulkanOnWin32 { get; set; }
 
 			/// <summary>
+			/// Determines if RenderTargetBitmap renders through the window's GPU context when the
+			/// current renderer provides one. GPU rasterization can produce slightly different
+			/// anti-aliasing than the software rasterizer; set to false to always render
+			/// RenderTargetBitmap in software.
+			/// </summary>
+			public static bool UseGpuRenderTargetBitmap { get; set; } = true;
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
