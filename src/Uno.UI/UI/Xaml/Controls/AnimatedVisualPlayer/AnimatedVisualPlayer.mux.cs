@@ -70,12 +70,12 @@ partial class AnimatedVisualPlayer
 	{
 		get
 		{
-			EnsureWinUIRootVisual();
+			EnsureRootVisual();
 			return m_progressPropertySet!;
 		}
 	}
 
-	private void EnsureWinUIRootVisual()
+	private void EnsureRootVisual()
 	{
 #if __SKIA__
 		if (m_rootVisual is not null)
@@ -95,13 +95,15 @@ partial class AnimatedVisualPlayer
 #endif
 	}
 
-	// Pauses the currently playing animated visual, or does nothing if no play is underway.
-	private void PauseWinUI()
+	/// <summary>
+	/// Pauses the currently playing animation. If no animation is playing, this is a no-op.
+	/// </summary>
+	public void Pause()
 	{
 		m_nowPlaying?.Pause();
 	}
 
-	private async Task PlayAsyncWinUI(double fromProgress, double toProgress, bool looped)
+	private async Task PlayAsyncCore(double fromProgress, double toProgress, bool looped)
 	{
 		// Make sure that animations are created.
 		CreateAnimations();
@@ -152,12 +154,15 @@ partial class AnimatedVisualPlayer
 		await thisPlay.Task;
 	}
 
-	private void ResumeWinUI()
+	/// <summary>Resumes the animation if it has been paused.</summary>
+	public void Resume()
 	{
 		m_nowPlaying?.Resume();
 	}
 
-	private void SetProgressWinUI(double progress)
+	/// <summary>Sets the animation progress to a specific normalized value.</summary>
+	/// <param name="progress">A normalized progress value between 0.0 and 1.0.</param>
+	public void SetProgress(double progress)
 	{
 		// Make sure that animations are created.
 		CreateAnimations();
@@ -170,19 +175,20 @@ partial class AnimatedVisualPlayer
 		m_nowPlaying?.Complete();
 	}
 
-	private void StopWinUI()
+	/// <summary>Stops the currently playing animation, returning it to its starting position.</summary>
+	public void Stop()
 	{
 		if (m_nowPlaying is not null)
 		{
-			SetProgressWinUI(m_currentPlayFromProgress);
+			SetProgress(m_currentPlayFromProgress);
 		}
 	}
 
-	private void OnSourceChangedWinUI()
+	private void OnSourceChangedCore()
 	{
-		EnsureWinUIRootVisual();
+		EnsureRootVisual();
 
-		// On non-composition targets EnsureWinUIRootVisual is a no-op, so there is no compositor
+		// On non-composition targets EnsureRootVisual is a no-op, so there is no compositor
 		// root to host an IAnimatedVisual. Leave the WinUI flow inactive and let the caller fall
 		// back to the legacy source path.
 		if (m_rootVisual is null)
@@ -202,21 +208,21 @@ partial class AnimatedVisualPlayer
 		UpdateContent();
 	}
 
-	private void OnAutoPlayChangedWinUI(DependencyPropertyChangedEventArgs args)
+	private void OnAutoPlayChanged(DependencyPropertyChangedEventArgs args)
 	{
 		var newValue = (bool)args.NewValue;
 		if (newValue && IsAnimatedVisualLoaded && m_nowPlaying is null)
 		{
-			_ = PlayAsyncWinUI(0, 1, true);
+			_ = PlayAsyncCore(0, 1, true);
 		}
 	}
 
-	private void OnPlaybackRateChangedWinUI(DependencyPropertyChangedEventArgs args)
+	private void OnPlaybackRateChanged(DependencyPropertyChangedEventArgs args)
 	{
 		m_nowPlaying?.SetPlaybackRate((float)(double)args.NewValue);
 	}
 
-	private void OnFallbackContentChangedWinUI(DependencyPropertyChangedEventArgs args)
+	private void OnFallbackContentChanged(DependencyPropertyChangedEventArgs args)
 	{
 		if (m_isFallenBack)
 		{
@@ -370,7 +376,7 @@ partial class AnimatedVisualPlayer
 		else if (AutoPlay)
 		{
 			// Start playing immediately.
-			_ = PlayAsyncWinUI(0, 1, true);
+			_ = PlayAsyncCore(0, 1, true);
 		}
 
 		// Resources optimization: with nothing playing, release the animations until the next play.
@@ -382,19 +388,40 @@ partial class AnimatedVisualPlayer
 
 	private void LoadFallbackContent()
 	{
-		// TODO Uno: Fallback content rendering is currently a no-op. The WinUI implementation
-		// loads FallbackContent's DataTemplate and adds the resulting UIElement as a Panel child.
-		// AnimatedVisualPlayer in Uno derives from FrameworkElement directly, so a future change
-		// should switch the base type to Panel (matching WinUI) before this can be wired up.
+		UIElement? fallbackContentElement = null;
+
+		if (FallbackContent is { } fallbackContentDataTemplate)
+		{
+			fallbackContentElement = fallbackContentDataTemplate.LoadContent() as UIElement;
+		}
+
+		SetFallbackContent(fallbackContentElement);
 	}
 
-	private void UnloadFallbackContent()
+	private void UnloadFallbackContent() => SetFallbackContent(null);
+
+	private void SetFallbackContent(UIElement? uiElement)
 	{
-		// See LoadFallbackContent.
+		Children.Clear();
+
+		if (uiElement is not null)
+		{
+			Children.Add(uiElement);
+		}
+
+		InvalidateMeasure();
 	}
 
-	private Size MeasureOverrideWinUI(Size availableSize)
+	protected override Size MeasureOverride(Size availableSize)
 	{
+		// If we are showing fallback content, measure it like a ContentPresenter would.
+		if (m_isFallenBack && Children.Count > 0)
+		{
+			var fallbackContentElement = Children[0];
+			fallbackContentElement.Measure(availableSize);
+			return fallbackContentElement.DesiredSize;
+		}
+
 		if (m_animatedVisualRoot is null || m_animatedVisualSize == Vector2.Zero)
 		{
 			return new Size(0, 0);
@@ -438,8 +465,15 @@ partial class AnimatedVisualPlayer
 			: new Size(m_animatedVisualSize.X * heightScale, availableSize.Height);
 	}
 
-	private Size ArrangeOverrideWinUI(Size finalSize)
+	protected override Size ArrangeOverride(Size finalSize)
 	{
+		// If we are showing fallback content, arrange it to fill the player.
+		if (m_isFallenBack && Children.Count > 0)
+		{
+			Children[0].Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+			return finalSize;
+		}
+
 		if (m_rootVisual is null)
 		{
 			return finalSize;
@@ -532,11 +566,6 @@ partial class AnimatedVisualPlayer
 	// ---------- Public API ----------
 
 	/// <summary>
-	/// Pauses the currently playing animation. If no animation is playing, this is a no-op.
-	/// </summary>
-	public void Pause() => PauseWinUI();
-
-	/// <summary>
 	/// Plays the animation between the specified progress points.
 	/// </summary>
 	/// <param name="fromProgress">The starting progress value (0..1).</param>
@@ -544,17 +573,7 @@ partial class AnimatedVisualPlayer
 	/// <param name="looped">Whether the play should repeat indefinitely.</param>
 	/// <returns>An async action that completes when the play finishes (or never, when <paramref name="looped"/> is <c>true</c>).</returns>
 	public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
-		=> PlayAsyncWinUI(fromProgress, toProgress, looped).AsAsyncAction();
-
-	/// <summary>Resumes the animation if it has been paused.</summary>
-	public void Resume() => ResumeWinUI();
-
-	/// <summary>Sets the animation progress to a specific normalized value.</summary>
-	/// <param name="progress">A normalized progress value between 0.0 and 1.0.</param>
-	public void SetProgress(double progress) => SetProgressWinUI(progress);
-
-	/// <summary>Stops the currently playing animation, returning it to its starting position.</summary>
-	public void Stop() => StopWinUI();
+		=> PlayAsyncCore(fromProgress, toProgress, looped).AsAsyncAction();
 
 	private void OnSourceChanged(DependencyPropertyChangedEventArgs args)
 	{
@@ -574,7 +593,7 @@ partial class AnimatedVisualPlayer
 
 		if (IsLoaded)
 		{
-			OnSourceChangedWinUI();
+			OnSourceChangedCore();
 		}
 	}
 
@@ -586,20 +605,10 @@ partial class AnimatedVisualPlayer
 		}
 	}
 
-	private void OnAutoPlayChanged(DependencyPropertyChangedEventArgs args) => OnAutoPlayChangedWinUI(args);
-
-	private void OnPlaybackRateChanged(DependencyPropertyChangedEventArgs args) => OnPlaybackRateChangedWinUI(args);
-
-	private void OnFallbackContentChanged(DependencyPropertyChangedEventArgs args) => OnFallbackContentChangedWinUI(args);
-
-	protected override Size MeasureOverride(Size availableSize) => MeasureOverrideWinUI(availableSize);
-
-	protected override Size ArrangeOverride(Size finalSize) => ArrangeOverrideWinUI(finalSize);
-
 	private protected override void OnLoaded()
 	{
 #if __SKIA__
-		EnsureWinUIRootVisual();
+		EnsureRootVisual();
 		// First load: wire up the WinUI flow now that we have a XamlRoot.
 		if (Source is not null && m_animatedVisual is null)
 		{
@@ -669,7 +678,7 @@ partial class AnimatedVisualPlayer
 			// If the duration is really short (< 20ms) don't bother trying to animate.
 			if (_playDuration < TimeSpan.FromMilliseconds(20))
 			{
-				_owner.SetProgressWinUI(_fromProgress);
+				_owner.SetProgress(_fromProgress);
 				return;
 			}
 

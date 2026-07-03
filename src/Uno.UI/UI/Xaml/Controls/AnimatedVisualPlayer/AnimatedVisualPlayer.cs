@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AnimatedVisualPlayer.cpp/.h, commit 5f9e85113
 
@@ -16,11 +16,11 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 /// <remarks>
 /// On Skia, the player drives the underlying composition tree directly via composition animations,
-/// matching the WinUI implementation. On other platforms (and for sources that do not return an
-/// <see cref="IAnimatedVisual"/> from <see cref="IAnimatedVisualSource.TryCreateAnimatedVisual"/>),
-/// the player falls back to invoking the legacy Uno <see cref="IAnimatedVisualSource"/> hooks.
+/// matching the WinUI implementation. It derives from <see cref="Panel"/> so that
+/// <see cref="AnimatedVisualPlayer.FallbackContent"/> can be hosted as a child when a source cannot
+/// produce an <see cref="IAnimatedVisual"/> (matching WinUI, which uses a Panel-derived base).
 /// </remarks>
 [ContentProperty(Name = "Source")]
-public partial class AnimatedVisualPlayer : FrameworkElement
+public partial class AnimatedVisualPlayer : Panel
 {
 }
