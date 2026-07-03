@@ -16,6 +16,9 @@ public partial class AnimationController
 
 	private float? _progress;
 	private float _playbackRate = 1.0f;
+	// True after an explicit Pause(): setting Progress then HOLDS (scrub). While not paused, setting
+	// Progress only re-positions and clock-driven playback (e.g. reverse PlaybackRate) continues.
+	private bool _isPaused;
 
 	internal AnimationController(CompositionObject ownerObject, string propertyName, KeyFrameAnimation animation) : base(ownerObject.Compositor)
 	{
@@ -31,6 +34,11 @@ public partial class AnimationController
 		// A newly-attached animation must inherit the controller's current state so all animations it
 		// drives stay in sync (they are registered one after another, and Progress may already be set).
 		animation.SetPlaybackRate(_playbackRate);
+		if (_isPaused)
+		{
+			ownerObject.PauseAnimation(animation);
+		}
+
 		if (_progress is { } progress)
 		{
 			ownerObject.SeekAnimation(animation, progress);
@@ -45,6 +53,7 @@ public partial class AnimationController
 
 	public void Resume()
 	{
+		_isPaused = false;
 		_progress = null;
 		foreach (var (owner, _, animation) in _associations)
 		{
@@ -55,6 +64,7 @@ public partial class AnimationController
 
 	public void Pause()
 	{
+		_isPaused = true;
 		foreach (var (owner, _, animation) in _associations)
 		{
 			// Detach the compositor's frame-driven re-evaluation so it doesn't auto-stop or overwrite
@@ -91,7 +101,16 @@ public partial class AnimationController
 			OnPropertyChanged(nameof(Progress), false);
 			foreach (var (owner, _, animation) in _associations)
 			{
-				owner.SeekAnimation(animation, value);
+				// Paused controller = scrubbing (hold). Running controller = reposition and keep playing
+				// (this is how AnimatedVisualPlayer starts a reverse play at the end).
+				if (_isPaused)
+				{
+					owner.SeekAnimation(animation, value);
+				}
+				else
+				{
+					owner.SeekAnimationProgress(animation, value);
+				}
 			}
 		}
 	}

@@ -735,9 +735,8 @@ partial class AnimatedVisualPlayer
 
 				if (playbackRate < 0)
 				{
-					// Play from end to beginning if playing in reverse.
-					// TODO Uno: unlike WinUI, AnimationController.Progress seeks by pausing the
-					// animation, so reverse playback currently holds at the end. Tracked as a follow-up.
+					// Play from end to beginning if playing in reverse. The controller is not paused, so
+					// setting Progress repositions the play to the end and the negative rate drives it back.
 					_controller.Progress = 1;
 				}
 			}
