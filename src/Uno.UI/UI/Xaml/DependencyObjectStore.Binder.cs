@@ -714,7 +714,7 @@ namespace Microsoft.UI.Xaml
 			//		of ResourceDictionary and ContentControl.  It is ok to have multiple parents as long as
 			//		the first parent is a ResourceDictionary, or if the first parent is a ContentControl and there are at most
 			//		two parents.
-			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
+			// todo: if we are to implement that in the future, we should promote the weak `_associatedParentRef` into a collection of weak references (e.g. `List<ManagedWeakReference>? _associatedParentRefs`)
 
 			// A previously-associated parent that has since been collected (weak target is null) no longer
 			// counts: the value is single-parent again, so re-associate rather than treating it as shared.

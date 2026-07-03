@@ -68,6 +68,28 @@ public class Given_CollectibleAlcAssociations
 	}
 
 	[TestMethod]
+	public void When_SharedValueConsumerDetached_Then_CollectableWithoutCleanupSweep()
+	{
+		// Structural guard for the weak `_associatedParentRef`: with the parent held weakly, the
+		// consuming element must be collectable on its own once it is otherwise unreferenced — WITHOUT
+		// relying on the CleanupNonDefaultAlcCaches eviction sweep (which loses the race against
+		// residual activity). Note: this test intentionally does NOT call CleanupNonDefaultAlcCaches.
+		var weakElement = StageHostResourceAssociation();
+
+		for (var i = 0; i < 10 && weakElement.IsAlive; i++)
+		{
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+		}
+
+		Assert.IsFalse(
+			weakElement.IsAlive,
+			"A shared value's InheritanceContext parent is held weakly, so the consuming element must " +
+			"be collected once unreferenced even without the ALC cleanup sweep. If it survives, the " +
+			"associated-parent field is pinning it strongly again.");
+	}
+
+	[TestMethod]
 	public void When_ThemeDictionaryResourceAssociatedToCollectibleElement_Then_CleanupReleasesAssociation()
 	{
 		var weakElement = StageThemeDictionaryAssociation();
