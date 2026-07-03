@@ -357,6 +357,34 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23641")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_DocumentTitle_Before_Navigation()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+
+			// A freshly created native web view has no title yet. Reading it must return ""
+			// rather than crashing the native accessor (macOS strdup(NULL) on a nil title).
+			var title = webView.CoreWebView2.DocumentTitle;
+
+			Assert.AreEqual("", title);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
