@@ -61,20 +61,24 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-#if __SKIA__
-	// TODO: This should not be here as it is possible to re-use animations across
-	// CompositionObjects.
-	CompositionObject? _currentCompositionObject;
-#endif
+	// Targets this animation is currently started on. The same animation instance can be
+	// shared across multiple CompositionObjects (e.g. LottieGen's shared progress
+	// ExpressionAnimation started on many controllers), so we track every active target
+	// rather than only the last one — otherwise teardown only ever unregisters the last.
+	private readonly List<CompositionObject> _startedObjects = new();
 
 	// The object this animation was last started on; resolves 'this.Target' in expression keyframes.
 	internal CompositionObject? AnimationTargetObject { get; private set; }
 
+	// Number of targets this animation is currently started on. Start/Stop are balanced one-to-one
+	// per target, so this reaches zero only once every target has stopped.
+	internal int StartedObjectCount => _startedObjects.Count;
+
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		AnimationTargetObject = compositionObject;
+		_startedObjects.Add(compositionObject);
 #if __SKIA__
-		_currentCompositionObject = compositionObject;
 		Compositor.RegisterAnimation(this, compositionObject);
 #endif
 		return null;
@@ -84,12 +88,18 @@ public partial class CompositionAnimation
 
 	internal virtual void Stop()
 	{
-#if __SKIA__
-		if (_currentCompositionObject is not null)
+		if (_startedObjects.Count == 0)
 		{
-			Compositor.UnregisterAnimation(this, _currentCompositionObject);
+			return;
 		}
+
+		// Stop() carries no target — CompositionObject.StopAnimation calls it without one — and
+		// Start/Stop are balanced one-to-one per target, so unwind the most recent registration.
+		var index = _startedObjects.Count - 1;
+#if __SKIA__
+		Compositor.UnregisterAnimation(this, _startedObjects[index]);
 #endif
+		_startedObjects.RemoveAt(index);
 	}
 
 	internal void RaiseAnimationFrame() => AnimationFrame?.Invoke(this);
