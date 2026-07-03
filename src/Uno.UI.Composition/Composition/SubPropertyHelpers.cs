@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
@@ -237,6 +237,13 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			// A scalar assigned to a whole vector broadcasts to every component (WinUI semantics).
+			// LottieGen animates e.g. a shape's Scale with a single scalar keyframe for uniform show/hide.
+			if (propertyValue is float scalar)
+			{
+				return new Vector2(scalar);
+			}
+
 			return ValidateValue<Vector2>(propertyValue);
 		}
 
@@ -260,6 +267,11 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			if (propertyValue is float scalar)
+			{
+				return new Vector3(scalar);
+			}
+
 			return ValidateValue<Vector3>(propertyValue);
 		}
 
@@ -293,6 +305,11 @@ internal static class SubPropertyHelpers
 	{
 		if (subPropertyName.Length == 0)
 		{
+			if (propertyValue is float scalar)
+			{
+				return new Vector4(scalar);
+			}
+
 			return ValidateValue<Vector4>(propertyValue);
 		}
 
