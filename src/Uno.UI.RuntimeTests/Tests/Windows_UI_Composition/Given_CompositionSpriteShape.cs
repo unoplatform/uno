@@ -259,6 +259,69 @@ public class Given_CompositionSpriteShape
 			tolerance: 1.0);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ellipse_Trim_Starts_At_Top()
+	{
+		// A CompositionEllipseGeometry trimmed to its first quarter [0, 0.25] must fill the
+		// top-right quadrant (12 o'clock clockwise to 3 o'clock), matching Windows.UI.Composition
+		// and the After Effects/Lottie convention. This is what LottieGen-generated progress arcs
+		// (e.g. the determinate ProgressRing) rely on to grow from the top. A 3 o'clock start
+		// (the old WPF-style ellipse origin) would instead fill the bottom-right quadrant.
+		// Reference the full ring's centre (rendered separately) rather than assuming how the
+		// child visual's coordinates map to screenshot pixels — the quadrant check must hold
+		// regardless of rasterization scale.
+		var fullBounds = await RenderTrimmedEllipseBounds(trimEnd: null);
+		var arcBounds = await RenderTrimmedEllipseBounds(trimEnd: 0.25f);
+
+		var ringCenterX = fullBounds.X + fullBounds.Width / 2;
+		var ringCenterY = fullBounds.Y + fullBounds.Height / 2;
+		var arcCenterX = arcBounds.X + arcBounds.Width / 2;
+		var arcCenterY = arcBounds.Y + arcBounds.Height / 2;
+
+		// Top-right quadrant relative to the ring centre. The vertical check is the discriminator —
+		// a 3 o'clock start would place the first quarter below the centre (bottom-right).
+		Assert.IsTrue(arcCenterX > ringCenterX, $"Arc should be right of the ring centre (arc={arcCenterX}, ring={ringCenterX}).");
+		Assert.IsTrue(arcCenterY < ringCenterY, $"Arc should be above the ring centre (arc={arcCenterY}, ring={ringCenterY}).");
+	}
+
+	private async Task<Rect> RenderTrimmedEllipseBounds(float? trimEnd)
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var ellipse = compositor.CreateEllipseGeometry();
+		ellipse.Center = new Vector2(50, 50);
+		ellipse.Radius = new Vector2(40, 40);
+		if (trimEnd is { } end)
+		{
+			ellipse.TrimStart = 0f;
+			ellipse.TrimEnd = end;
+		}
+
+		var shape = compositor.CreateSpriteShape(ellipse);
+		shape.StrokeThickness = 8f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(100, 100);
+
+		var host = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		var screenshot = await UITestHelper.ScreenShot(host);
+
+		var bounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 200);
+		Assert.IsFalse(bounds.IsEmpty, "Ellipse not rendered (no red pixels found).");
+		return bounds;
+	}
+
 	private async Task AssertStrokedLineThickness(Vector2 shapeScale, Vector3 containerScale, float strokeThickness, float expectedStrokePixels, double tolerance)
 	{
 		// Build a horizontal line geometry from (0, 50) to (100, 50) using Win2D/CanvasGeometry.
