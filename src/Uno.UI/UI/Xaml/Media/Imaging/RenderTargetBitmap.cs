@@ -157,44 +157,29 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
+			=> RenderAsync(element, new Size(scaledWidth, scaledHeight));
+
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
+		public IAsyncAction RenderAsync(UIElement? element)
+			=> RenderAsync(element, scaledSize: null);
+
+		private IAsyncAction RenderAsync(UIElement? element, Size? scaledSize)
 			=> AsyncAction.FromTask(async ct =>
 			{
 				try
 				{
-					element ??= WinUICoreServices.Instance.MainVisualTree?.PublicRootVisual;
+					// A null element renders the window's root visual (what's presented on
+					// screen, including popups).
+					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
 
 					if (element is null)
 					{
 						throw new InvalidOperationException("No visual tree is available and no UIElement was provided for render");
 					}
 
-					(_bufferSize, PixelWidth, PixelHeight) = await RenderAsBgra8_PremulAsync(element!, new Size(scaledWidth, scaledHeight));
-#if __WASM__ || __SKIA__
-					InvalidateSource();
-#endif
-				}
-				catch (Exception error)
-				{
-					this.Log().Error("Failed to render element to bitmap.", error);
-				}
-			});
-
-#if !HAS_RENDER_TARGET_BITMAP
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
-		public IAsyncAction RenderAsync(UIElement? element)
-			=> AsyncAction.FromTask(async ct =>
-			{
-				try
-				{
-					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
-
-					if (element is null)
-					{
-						throw new InvalidOperationException("No window or element to render");
-					}
-
-					(_bufferSize, PixelWidth, PixelHeight) = await RenderAsBgra8_PremulAsync(element!);
+					(_bufferSize, PixelWidth, PixelHeight) = await RenderAsBgra8_PremulAsync(element, scaledSize);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
