@@ -879,10 +879,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await screenShot.Populate();
 
 			// The circle's edge must blend between the red circle and the green background: a render
-			// without anti-aliasing contains only pure red/green pixels, whereas any rasterizer's
-			// anti-aliasing (software or GPU) blends over 30% of the pixels in this one-and-a-half
-			// pixel wide ring around the edge. Sampling the edge instead of comparing against a
-			// reference image keeps the test independent of which rasterizer produced the pixels.
+			// without anti-aliasing contains only pure red/green pixels, whereas anti-aliasing blends
+			// ~34% of the pixels in this one-and-a-half pixel wide ring around the edge (measured on
+			// the software rasterizer; asserted at 20% to leave margin for rasterizer variance).
+			// Sampling the edge instead of comparing against a reference image keeps the test
+			// independent of which rasterizer produced the pixels.
 			var edge = 0;
 			var blended = 0;
 			for (var x = 0; x < 60; x++)
