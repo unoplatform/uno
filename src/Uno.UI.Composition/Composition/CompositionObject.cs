@@ -292,6 +292,15 @@ namespace Microsoft.UI.Composition
 			ReEvaluateAnimation(animation, progress);
 		}
 
+		// Re-positions a running animation without pausing it, so clock-driven playback (e.g. reverse
+		// PlaybackRate) continues from the new position. Used for AnimationController.Progress on a
+		// controller that has NOT been explicitly paused.
+		internal void SeekAnimationProgress(KeyFrameAnimation animation, float progress)
+		{
+			animation.SeekTo(progress);
+			ReEvaluateAnimation(animation, progress);
+		}
+
 		internal KeyFrameAnimation? GetKeyFrameAnimation(string propertyName)
 		{
 			if (_animations?.TryGetValue(propertyName, out var animation) == true && animation is KeyFrameAnimation keyFrameAnimation)

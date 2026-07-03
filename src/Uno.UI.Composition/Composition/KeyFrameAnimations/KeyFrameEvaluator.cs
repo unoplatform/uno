@@ -170,6 +170,16 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_pauseTimestamp = _compositor.TimestampInTicks;
 	}
 
+	public void SeekTo(float progress)
+	{
+		// Re-anchor virtual elapsed to the given progress WITHOUT pausing, so clock-driven playback (at
+		// the current, possibly negative, rate) continues from here. A paused animation stays paused and
+		// simply holds the new position.
+		var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+		_virtualElapsedAtAnchorTicks = (double)progress * _duration.Ticks;
+		_rawElapsedAtAnchorTicks = RawElapsedTicks(nowTimestamp);
+	}
+
 	public void Resume()
 	{
 		if (_pauseTimestamp is null)

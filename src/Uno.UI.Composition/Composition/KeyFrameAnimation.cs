@@ -116,6 +116,8 @@ namespace Microsoft.UI.Composition
 			_keyframeEvaluator?.SetPlaybackRate(playbackRate);
 		}
 
+		internal void SeekTo(float progress) => _keyframeEvaluator?.SeekTo(progress);
+
 		internal float Progress => _keyframeEvaluator!.Progress;
 
 		internal TimeSpan Remaining => _keyframeEvaluator!.Remaining;

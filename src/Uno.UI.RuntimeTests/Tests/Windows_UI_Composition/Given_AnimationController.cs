@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -84,5 +85,41 @@ public partial class Given_AnimationController
 
 		controller.PlaybackRate = 2.0f;
 		Assert.AreEqual(2.0f, controller.PlaybackRate, 0.001f);
+	}
+
+	// A running (not explicitly paused) controller must let Progress REPOSITION the animation without
+	// pausing it, so a reverse PlaybackRate can keep driving from the new position (this is how
+	// AnimatedVisualPlayer starts a reverse play at the end). Clock advancement itself is not asserted
+	// here because the runtime-test host does not pump continuous composition frames.
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("AnimationController is Skia-only")]
+#endif
+	public async Task When_Progress_Set_On_Running_Controller_Repositions()
+	{
+		var border = new Border() { Width = 100, Height = 100 };
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var properties = compositor.CreatePropertySet();
+		properties.InsertScalar("A", 0f);
+
+		var linear = compositor.CreateLinearEasingFunction();
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.Duration = TimeSpan.FromSeconds(1);
+		animation.InsertKeyFrame(0f, 0f, linear);
+		animation.InsertKeyFrame(1f, 10f, linear);
+
+		var controller = compositor.CreateAnimationController();
+		properties.StartAnimation("A", animation, controller);
+		controller.PlaybackRate = -1f;
+
+		controller.Progress = 1f;
+		properties.TryGetScalar("A", out var atEnd);
+		Assert.AreEqual(10f, atEnd, 0.001f);
+
+		controller.Progress = 0.3f;
+		properties.TryGetScalar("A", out var atMid);
+		Assert.AreEqual(3f, atMid, 0.001f);
 	}
 }
