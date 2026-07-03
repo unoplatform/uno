@@ -200,7 +200,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private void SetIsPlaying(bool isPlaying) => _player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
 #endif
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
+		public Size Measure(Size availableSize)
 		{
 			if (_player == null)
 			{

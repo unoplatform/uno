@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AnimatedVisualPlayer.cpp/.h, commit 5f9e85113
 
@@ -48,9 +48,9 @@ partial class AnimatedVisualPlayer
 
 	private bool m_isFallenBack;
 
-	// True while the WinUI-aligned playback path owns the player. When false, the legacy Uno
-	// IAnimatedVisualSource hooks are used (Lottie JSON, etc.).
-	private bool m_useWinUIFlow;
+	// The current source when it implements IDynamicAnimatedVisualSource, tracked so we can detach
+	// from its AnimatedVisualInvalidated event when the source changes.
+	private IDynamicAnimatedVisualSource? m_dynamicAnimatedVisualInvalidatedSource;
 
 	// Whether the current animated visual has its progress animations created.
 	private bool m_isAnimationsCreated;
@@ -233,16 +233,14 @@ partial class AnimatedVisualPlayer
 			return;
 		}
 
-		// IAnimatedVisual2 is not represented in Uno today; sources that opt into the V3 surface
-		// will create animations themselves on first frame.
+		if (m_animatedVisual is IAnimatedVisual2 animatedVisual2)
+		{
+			animatedVisual2.CreateAnimations();
+		}
+
 		m_isAnimationsCreated = true;
 	}
 
-	// TODO Uno: faithful port of WinUI's DestroyAnimations. WinUI invokes it only from the
-	// AnimationOptimization (PlayerAnimationOptimization.Resources) and IAnimatedVisual2 paths,
-	// neither of which is ported yet, so it currently has no call site. Kept as parity scaffolding
-	// for that deferred work — IDE0051 suppressed here for the same reason as the CS0649 fields above.
-#pragma warning disable IDE0051 // Remove unused private members
 	private void DestroyAnimations()
 	{
 		if (!m_isAnimationsCreated || m_animatedVisual is null)
@@ -250,12 +248,16 @@ partial class AnimatedVisualPlayer
 			return;
 		}
 
-		// On WinUI this awaits Compositor::RequestCommitAsync to ensure ongoing GPU work has
-		// drained before tearing down the animations. Uno's compositor commits synchronously
-		// from the UI thread, so it is safe to flip the flag here without scheduling.
+		if (m_animatedVisual is IAnimatedVisual2 animatedVisual2)
+		{
+			// On WinUI this awaits Compositor::RequestCommitAsync to ensure ongoing GPU work has
+			// drained before tearing down the animations. Uno's compositor commits synchronously
+			// from the UI thread, so it is safe to destroy here without scheduling.
+			animatedVisual2.DestroyAnimations();
+		}
+
 		m_isAnimationsCreated = false;
 	}
-#pragma warning restore IDE0051
 
 	// Unload the current animated visual (if any).
 	private void UnloadContent()
@@ -279,6 +281,7 @@ partial class AnimatedVisualPlayer
 			InvalidateMeasure();
 
 			Duration = TimeSpan.Zero;
+			SetValue(DiagnosticsProperty, null);
 			IsAnimatedVisualLoaded = false;
 		}
 	}
@@ -295,7 +298,7 @@ partial class AnimatedVisualPlayer
 			return;
 		}
 
-		object? diagnostics;
+		object? diagnostics = null;
 		IAnimatedVisual? animatedVisual = null;
 		try
 		{
@@ -309,18 +312,21 @@ partial class AnimatedVisualPlayer
 
 		m_animatedVisual = animatedVisual;
 		m_isAnimationsCreated = animatedVisual is not null;
+		SetValue(DiagnosticsProperty, diagnostics);
 
 		if (animatedVisual is null)
 		{
-			// Source didn't return an animated visual: this player will leave the legacy path
-			// in charge for sources that still rely on it (e.g. Lottie JSON via SKCanvasElement).
-			m_useWinUIFlow = false;
+			// Source didn't return an animated visual: fall back to FallbackContent (WinUI parity).
+			if (!m_isFallenBack)
+			{
+				m_isFallenBack = true;
+				LoadFallbackContent();
+			}
+
 			return;
 		}
 
-		m_useWinUIFlow = true;
-
-		// If the content is empty, leave the player in fallback mode but mark the WinUI flow active.
+		// If the content is empty, leave the player in fallback mode.
 		if (animatedVisual.RootVisual is null || animatedVisual.Size == Vector2.Zero)
 		{
 			return;
@@ -365,6 +371,12 @@ partial class AnimatedVisualPlayer
 		{
 			// Start playing immediately.
 			_ = PlayAsyncWinUI(0, 1, true);
+		}
+
+		// Resources optimization: with nothing playing, release the animations until the next play.
+		if (AnimationOptimization == PlayerAnimationOptimization.Resources && m_nowPlaying is null)
+		{
+			DestroyAnimations();
 		}
 	}
 
@@ -522,19 +534,7 @@ partial class AnimatedVisualPlayer
 	/// <summary>
 	/// Pauses the currently playing animation. If no animation is playing, this is a no-op.
 	/// </summary>
-	public void Pause()
-	{
-		if (m_useWinUIFlow)
-		{
-			PauseWinUI();
-		}
-		else
-		{
-			// LEGACY: Uno's pre-7.0 path delegates back into the source for sources that still own
-			// the animation timeline themselves (e.g. Lottie JSON via SKCanvasElement).
-			Source?.Pause();
-		}
-	}
+	public void Pause() => PauseWinUI();
 
 	/// <summary>
 	/// Plays the animation between the specified progress points.
@@ -544,168 +544,79 @@ partial class AnimatedVisualPlayer
 	/// <param name="looped">Whether the play should repeat indefinitely.</param>
 	/// <returns>An async action that completes when the play finishes (or never, when <paramref name="looped"/> is <c>true</c>).</returns>
 	public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
-	{
-		if (m_useWinUIFlow)
-		{
-			return PlayAsyncWinUI(fromProgress, toProgress, looped).AsAsyncAction();
-		}
-
-		// LEGACY: drive playback through the source itself.
-		Source?.Play(fromProgress, toProgress, looped);
-		return Task.CompletedTask.AsAsyncAction();
-	}
+		=> PlayAsyncWinUI(fromProgress, toProgress, looped).AsAsyncAction();
 
 	/// <summary>Resumes the animation if it has been paused.</summary>
-	public void Resume()
-	{
-		if (m_useWinUIFlow)
-		{
-			ResumeWinUI();
-		}
-		else
-		{
-			// LEGACY:
-			Source?.Resume();
-		}
-	}
+	public void Resume() => ResumeWinUI();
 
 	/// <summary>Sets the animation progress to a specific normalized value.</summary>
 	/// <param name="progress">A normalized progress value between 0.0 and 1.0.</param>
-	public void SetProgress(double progress)
-	{
-		if (m_useWinUIFlow)
-		{
-			SetProgressWinUI(progress);
-		}
-		else
-		{
-			// LEGACY:
-			Source?.SetProgress(progress);
-		}
-	}
+	public void SetProgress(double progress) => SetProgressWinUI(progress);
 
 	/// <summary>Stops the currently playing animation, returning it to its starting position.</summary>
-	public void Stop()
-	{
-		if (m_useWinUIFlow)
-		{
-			StopWinUI();
-		}
-		else
-		{
-			// LEGACY:
-			Source?.Stop();
-		}
-	}
+	public void Stop() => StopWinUI();
 
 	private void OnSourceChanged(DependencyPropertyChangedEventArgs args)
 	{
-		// Clear cached animated visual so we re-evaluate the WinUI flow with the new source.
-		m_useWinUIFlow = false;
+		// Detach from the previous dynamic source's invalidation event.
+		if (m_dynamicAnimatedVisualInvalidatedSource is not null)
+		{
+			m_dynamicAnimatedVisualInvalidatedSource.AnimatedVisualInvalidated -= OnAnimatedVisualInvalidated;
+			m_dynamicAnimatedVisualInvalidatedSource = null;
+		}
+
+		// A dynamic source can ask the player to re-create its animated visual (e.g. a URI reload).
+		if (args.NewValue is IDynamicAnimatedVisualSource dynamicSource)
+		{
+			m_dynamicAnimatedVisualInvalidatedSource = dynamicSource;
+			dynamicSource.AnimatedVisualInvalidated += OnAnimatedVisualInvalidated;
+		}
 
 		if (IsLoaded)
 		{
 			OnSourceChangedWinUI();
 		}
-
-		if (!m_useWinUIFlow)
-		{
-			// LEGACY fallback: source did not provide an IAnimatedVisual, so use the legacy Uno path.
-			OnSourceChangedLegacy();
-		}
 	}
 
-	private void OnAutoPlayChanged(DependencyPropertyChangedEventArgs args)
+	private void OnAnimatedVisualInvalidated(IDynamicAnimatedVisualSource sender, object args)
 	{
-		if (m_useWinUIFlow)
+		if (IsLoaded)
 		{
-			OnAutoPlayChangedWinUI(args);
-			return;
+			UpdateContent();
 		}
-
-		// LEGACY: ask the source to update auto-play state.
-		Source?.Update(this);
 	}
 
-	private void OnPlaybackRateChanged(DependencyPropertyChangedEventArgs args)
-	{
-		if (m_useWinUIFlow)
-		{
-			OnPlaybackRateChangedWinUI(args);
-			return;
-		}
+	private void OnAutoPlayChanged(DependencyPropertyChangedEventArgs args) => OnAutoPlayChangedWinUI(args);
 
-		// LEGACY:
-		Source?.Update(this);
-	}
+	private void OnPlaybackRateChanged(DependencyPropertyChangedEventArgs args) => OnPlaybackRateChangedWinUI(args);
 
-	private void OnFallbackContentChanged(DependencyPropertyChangedEventArgs args)
-	{
-		if (m_useWinUIFlow)
-		{
-			OnFallbackContentChangedWinUI(args);
-			return;
-		}
+	private void OnFallbackContentChanged(DependencyPropertyChangedEventArgs args) => OnFallbackContentChangedWinUI(args);
 
-		// LEGACY: nothing to do on the legacy path today.
-	}
+	protected override Size MeasureOverride(Size availableSize) => MeasureOverrideWinUI(availableSize);
 
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		if (m_useWinUIFlow)
-		{
-			return MeasureOverrideWinUI(availableSize);
-		}
-
-		// LEGACY:
-		return MeasureOverrideLegacy(availableSize);
-	}
-
-	protected override Size ArrangeOverride(Size finalSize)
-	{
-		if (m_useWinUIFlow)
-		{
-			return ArrangeOverrideWinUI(finalSize);
-		}
-
-		// LEGACY:
-		return ArrangeOverrideLegacy(finalSize);
-	}
+	protected override Size ArrangeOverride(Size finalSize) => ArrangeOverrideWinUI(finalSize);
 
 	private protected override void OnLoaded()
 	{
 #if __SKIA__
 		EnsureWinUIRootVisual();
-		// First load: try to wire up the WinUI flow now that we have a XamlRoot.
+		// First load: wire up the WinUI flow now that we have a XamlRoot.
 		if (Source is not null && m_animatedVisual is null)
 		{
-			m_useWinUIFlow = false;
 			UpdateContent();
 		}
 #endif
-
-		if (!m_useWinUIFlow)
-		{
-			OnLoadedLegacy();
-		}
 
 		base.OnLoaded();
 	}
 
 	private protected override void OnUnloaded()
 	{
-		if (m_useWinUIFlow)
-		{
 #if __SKIA__
-			// Tear down any in-flight play so it can't leak across loaded/unloaded transitions.
-			m_nowPlaying?.Complete();
-			UnloadContent();
+		// Tear down any in-flight play so it can't leak across loaded/unloaded transitions.
+		m_nowPlaying?.Complete();
+		UnloadContent();
 #endif
-		}
-		else
-		{
-			OnUnloadedLegacy();
-		}
 
 		base.OnUnloaded();
 	}
@@ -807,8 +718,20 @@ partial class AnimatedVisualPlayer
 				_controller?.Pause();
 			}
 
-			// TODO Uno: AnimationController in Uno does not expose PlaybackRate yet (assumed 1.0);
-			// wire _owner.PlaybackRate through to the controller once it is implemented.
+			// Set the playback rate.
+			var playbackRate = (float)_owner.PlaybackRate;
+			if (_controller is not null)
+			{
+				_controller.PlaybackRate = playbackRate;
+
+				if (playbackRate < 0)
+				{
+					// Play from end to beginning if playing in reverse.
+					// TODO Uno: unlike WinUI, AnimationController.Progress seeks by pausing the
+					// animation, so reverse playback currently holds at the end. Tracked as a follow-up.
+					_controller.Progress = 1;
+				}
+			}
 
 			_owner.IsPlaying = true;
 		}
@@ -827,7 +750,10 @@ partial class AnimatedVisualPlayer
 
 		public void SetPlaybackRate(float value)
 		{
-			// TODO Uno: AnimationController.PlaybackRate is not implemented yet.
+			if (_controller is not null)
+			{
+				_controller.PlaybackRate = value;
+			}
 		}
 
 		public void Complete()
