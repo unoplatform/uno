@@ -507,6 +507,13 @@ public sealed partial class DiagnosticsOverlay : Control
 
 						_localRegistrations.Remove(view);
 					}
+
+					// A currently-displayed notification may have been raised by one of the views
+					// just removed and can hold a DataTemplate/content from its collectible ALC.
+					// Hide it so the presenter drops those references (HideNotification clears
+					// Content/ContentTemplate); otherwise a persistent (no-duration) notification
+					// keeps pinning the ALC after its view is gone (#23614).
+					HideNotification();
 				}
 
 				foreach (var element in _elements.Values)
