@@ -3,7 +3,7 @@
 namespace Microsoft.Graphics.Canvas.Geometry;
 
 [Flags]
-internal enum CanvasFigureSegmentOptions
+public enum CanvasFigureSegmentOptions
 {
 	None = 0,
 	ForceUnstroked = 1,
