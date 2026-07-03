@@ -1,6 +1,9 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition
 {
@@ -32,6 +35,46 @@ namespace Microsoft.UI.Composition
 		{
 			get => _ellipseCenter;
 			set => SetProperty(ref _ellipseCenter, value);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(EllipseCenter), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, EllipseCenter);
+			}
+			else if (propertyName.Equals(nameof(EllipseRadius), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, EllipseRadius);
+			}
+			else if (propertyName.Equals(nameof(GradientOriginOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, GradientOriginOffset);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(EllipseCenter), StringComparison.OrdinalIgnoreCase))
+			{
+				EllipseCenter = UpdateVector2(subPropertyName, EllipseCenter, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(EllipseRadius), StringComparison.OrdinalIgnoreCase))
+			{
+				EllipseRadius = UpdateVector2(subPropertyName, EllipseRadius, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(GradientOriginOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				GradientOriginOffset = UpdateVector2(subPropertyName, GradientOriginOffset, propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }
