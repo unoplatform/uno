@@ -77,8 +77,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		/// </summary>
 		private async Task<(int ByteCount, int Width, int Height)?> TryRenderHardwareAcceleratedAsync(UIElement element, double dpi, int width, int height, Size? scaledSize)
 		{
-			if (!Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap
-				|| element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget is not { } compositionTarget)
+			if (element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget is not { } compositionTarget)
 			{
 				return null;
 			}

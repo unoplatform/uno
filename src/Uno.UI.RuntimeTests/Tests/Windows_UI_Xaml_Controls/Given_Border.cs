@@ -850,54 +850,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresScaling(1.0f)]
 		public async Task When_CornerRadius_AntiAliasing()
 		{
-			// The reference asset was rendered by the software rasterizer; GPU rasterization
-			// produces slightly different (but equally valid) anti-aliasing along the rounded
-			// edge, so pin RenderTargetBitmap to software for this byte-exact comparison.
-			var previousUseGpuRenderTargetBitmap = Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap;
-			Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap = false;
-			try
+			var background = new Border
 			{
-				var background = new Border
-				{
-					Width = 60,
-					Height = 60,
-					Background = new SolidColorBrush(Colors.Green),
-				};
+				Width = 60,
+				Height = 60,
+				Background = new SolidColorBrush(Colors.Green),
+			};
 
-				var roundedCorner = new Border
-				{
-					Width = 60,
-					Height = 60,
-					CornerRadius = new CornerRadius(30),
-					Background = new SolidColorBrush(Colors.Red),
-				};
+			var roundedCorner = new Border
+			{
+				Width = 60,
+				Height = 60,
+				CornerRadius = new CornerRadius(30),
+				Background = new SolidColorBrush(Colors.Red),
+			};
 
-				var stackPanel = new Grid()
+			var stackPanel = new Grid()
+			{
+				Children =
 				{
-					Children =
+					background,
+					roundedCorner
+				}
+			};
+
+			await UITestHelper.Load(stackPanel);
+			var screenShot = await UITestHelper.ScreenShot(stackPanel);
+			await screenShot.Populate();
+
+			// The circle's edge must blend between the red circle and the green background: a render
+			// without anti-aliasing contains only pure red/green pixels, whereas any rasterizer's
+			// anti-aliasing (software or GPU) blends over 30% of the pixels in this one-and-a-half
+			// pixel wide ring around the edge. Sampling the edge instead of comparing against a
+			// reference image keeps the test independent of which rasterizer produced the pixels.
+			var edge = 0;
+			var blended = 0;
+			for (var x = 0; x < 60; x++)
+			{
+				for (var y = 0; y < 60; y++)
+				{
+					var distanceToCenter = Math.Sqrt(Math.Pow(x + 0.5 - 30, 2) + Math.Pow(y + 0.5 - 30, 2));
+					if (Math.Abs(distanceToCenter - 30) <= 1.5)
 					{
-						background,
-						roundedCorner
+						edge++;
+						var color = screenShot.GetPixel(x, y);
+						var isRed = color is { R: > 250, G: < 5 };
+						var isGreen = color is { R: < 5, G: > 100 };
+						if (!isRed && !isGreen)
+						{
+							blended++;
+						}
 					}
-				};
-
-				await UITestHelper.Load(stackPanel);
-				// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
-				var screenShot = await UITestHelper.ScreenShot(stackPanel);
-
-				var image = new Image()
-				{
-					Height = 60,
-					Width = 60,
-					Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
-				};
-				await UITestHelper.Load(image);
-				await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+				}
 			}
-			finally
-			{
-				Uno.UI.FeatureConfiguration.Rendering.UseGpuRenderTargetBitmap = previousUseGpuRenderTargetBitmap;
-			}
+
+			Assert.IsTrue(blended >= edge / 5, $"Expected anti-aliased (blended) pixels along the rounded edge, found {blended}/{edge}.");
 		}
 #endif
 
