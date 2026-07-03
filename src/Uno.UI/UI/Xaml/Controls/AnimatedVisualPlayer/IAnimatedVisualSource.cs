@@ -4,21 +4,9 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial interface IAnimatedVisualSource
-	{
-		void Update(AnimatedVisualPlayer player);
-		void Load();
-		void Unload();
-		void Play(double fromProgress, double toProgress, bool looped);
-		void Stop();
-		void Pause();
-		void Resume();
-
-		void SetProgress(double progress);
-
-		Size Measure(Size availableSize);
-	}
-
+	// The only member of IAnimatedVisualSource is the WinUI TryCreateAnimatedVisual (declared in the
+	// generated partial). The pre-7.0 Uno-legacy playback hooks (Update/Load/Play/…) were removed so a
+	// standard WinUI/LottieGen source that only implements TryCreateAnimatedVisual satisfies the contract.
 	internal partial interface IAnimatedVisualSourceWithUri
 	{
 		Uri UriSource { get; set; }
