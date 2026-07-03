@@ -73,6 +73,11 @@ namespace Microsoft.UI.Composition
 			}
 #endif
 
+			// Snapshot the animation for this target (WinUI semantics). ExpressionAnimation clones so a
+			// reusable instance reconfigured per target (LottieGen's _reusableExpressionAnimation) stays
+			// bound to the reference parameters it had when started here; other animations share.
+			animation = animation.CloneAnimation();
+
 			ReadOnlySpan<char> firstPropertyName;
 			ReadOnlySpan<char> subPropertyName;
 			var firstDotIndex = propertyName.IndexOf('.');
