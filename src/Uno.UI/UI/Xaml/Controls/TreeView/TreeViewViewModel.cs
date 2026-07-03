@@ -840,22 +840,23 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 		// The selection vectors are a second retention path with the same defect: a selected node
 		// removed via Reset stays in m_selectedNodes / m_selectedItems indefinitely, keeping the node
-		// and its item alive. Prune detached selected nodes; SelectedItemsVector.RemoveAt keeps the
-		// two vectors in sync (and raises the appropriate selection-change notifications).
+		// and its item alive. Prune detached selected nodes the same way the ItemRemoved/Reset cases
+		// above do — via SelectedTreeNodeVector.RemoveAtCore, which keeps m_selectedItems in sync and
+		// records the unselect (TrackItemUnselected). Removing from m_selectedItems directly would
+		// bypass that tracking (RemoveAtCore then can't correlate the already-removed item), so
+		// SelectionChanged would not be raised in multi-select mode. Batch the removals inside
+		// Begin/EndSelectionChanges so a single aggregate SelectionChanged is raised.
+		BeginSelectionChanges();
 		for (var i = m_selectedNodes.Count - 1; i >= 0; i--)
 		{
-			if (IsDetachedFromOrigin(m_selectedNodes[i]))
+			var selectNode = m_selectedNodes[i];
+			if (IsDetachedFromOrigin(selectNode))
 			{
-				if (i < m_selectedItems.Count)
-				{
-					m_selectedItems.RemoveAt(i);
-				}
-				else
-				{
-					m_selectedNodes.RemoveAt(i);
-				}
+				m_selectedNodes.RemoveAtCore(i);
+				selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
 			}
 		}
+		EndSelectionChanges();
 	}
 
 	private bool IsDetachedFromOrigin(TreeViewNode node)
