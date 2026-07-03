@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -7,6 +7,7 @@ namespace Microsoft.UI.Composition;
 public partial class ExpressionAnimation : CompositionAnimation
 {
 	private AnimationExpressionSyntax? _parsedExpression;
+	private string? _parsedExpressionText;
 	private string _expression = string.Empty;
 
 	internal ExpressionAnimation(Compositor compositor) : base(compositor)
@@ -39,8 +40,17 @@ public partial class ExpressionAnimation : CompositionAnimation
 			throw new InvalidOperationException("Property 'Expression' should not be empty when starting an ExpressionAnimation");
 		}
 
-		// TODO: Check what to do if this is a second Start call and we already have non-null _parsedExpression;
-		_parsedExpression = new ExpressionAnimationParser(Expression).Parse();
+		// Parse the expression once and reuse the tree across every target this animation is
+		// started on. Re-parsing per Start would re-register the reference-parameter contexts each
+		// time (AnimationIdentifierNameSyntax.Evaluate calls AddContext once per tree), so a single
+		// referenced-object change would fan out to O(N^2) re-evaluations when the same animation is
+		// shared across N targets, and every extra registration would leak on teardown.
+		if (_parsedExpression is null || !string.Equals(_parsedExpressionText, Expression, StringComparison.Ordinal))
+		{
+			_parsedExpression?.Dispose();
+			_parsedExpression = new ExpressionAnimationParser(Expression).Parse();
+			_parsedExpressionText = Expression;
+		}
 
 		return _parsedExpression.Evaluate(this);
 	}
@@ -52,7 +62,13 @@ public partial class ExpressionAnimation : CompositionAnimation
 	{
 		base.Stop();
 
-		_parsedExpression?.Dispose();
-		_parsedExpression = null;
+		// Only tear down the shared parse tree (whose Dispose removes the reference-parameter
+		// contexts) once the animation has been stopped on every target it was started on.
+		if (StartedObjectCount == 0)
+		{
+			_parsedExpression?.Dispose();
+			_parsedExpression = null;
+			_parsedExpressionText = null;
+		}
 	}
 }
