@@ -13,6 +13,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_animationImplementation = new AnimationImplementation<ColorOffset>(this);
 		}
 
+		/// <summary>
+		/// Returns 1 second for Automatic duration (WinUI NULL_DURATION_DEFAULT).
+		/// MUX: CAnimation::GetNaturalDuration returns 1.0f when Duration is not set.
+		/// </summary>
+		internal override TimeSpan GetCalculatedDuration()
+		{
+			if (Duration.Type == DurationType.Automatic)
+			{
+				return TimeSpan.FromSeconds(1);
+			}
+			return base.GetCalculatedDuration();
+		}
+
 		public Color? To
 		{
 			get => (Color?)this.GetValue(ToProperty);
@@ -47,6 +60,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		bool IAnimation<ColorOffset>.EnableDependentAnimation => EnableDependentAnimation;
+
+		public EasingFunctionBase EasingFunction
+		{
+			get => (EasingFunctionBase)GetValue(EasingFunctionProperty);
+			set => SetValue(EasingFunctionProperty, value);
+		}
+
+		public static DependencyProperty EasingFunctionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(EasingFunction), typeof(EasingFunctionBase),
+				typeof(ColorAnimation),
+				new FrameworkPropertyMetadata(default(EasingFunctionBase)));
 
 		public Color? By
 		{
@@ -90,24 +115,95 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		ColorOffset? IAnimation<ColorOffset>.By => (ColorOffset?)By;
 
-		[NotImplemented]
-		IEasingFunction IAnimation<ColorOffset>.EasingFunction => null;
+		IEasingFunction IAnimation<ColorOffset>.EasingFunction => EasingFunction;
 
-		void ITimeline.Begin() => _animationImplementation.Begin();
+		void ITimeline.Begin()
+		{
+#if __SKIA__
+			if (IsParentStoryboardRegistered())
+			{
+				_isTimeManagerDriven = true;
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
+				State = TimelineState.Active;
+				return;
+			}
+#endif
+			_animationImplementation.Begin();
+		}
 
-		void ITimeline.Stop() => _animationImplementation.Stop();
+		void ITimeline.Stop()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				ClearValue();
+				State = TimelineState.Stopped;
+				return;
+			}
+#endif
+			_animationImplementation.Stop();
+		}
 
-		void ITimeline.Resume() => _animationImplementation.Resume();
+		void ITimeline.Resume()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
+			_animationImplementation.Resume();
+		}
 
-		void ITimeline.Pause() => _animationImplementation.Pause();
+		void ITimeline.Pause()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
+			_animationImplementation.Pause();
+		}
 
 		void ITimeline.Seek(TimeSpan offset) => _animationImplementation.Seek(offset);
 
 		void ITimeline.SeekAlignedToLastTick(TimeSpan offset) => _animationImplementation.SeekAlignedToLastTick(offset);
 
-		void ITimeline.SkipToFill() => _animationImplementation.SkipToFill();
+		void ITimeline.SkipToFill()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				SetValue(_tmToValue);
+				State = TimelineState.Filling;
+				OnCompleted();
+				return;
+			}
+#endif
+			_animationImplementation.SkipToFill();
+		}
 
-		void ITimeline.Deactivate() => _animationImplementation.Deactivate();
+		void ITimeline.Deactivate()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				State = TimelineState.Stopped;
+				return;
+			}
+#endif
+			_animationImplementation.Deactivate();
+		}
 
 		/// <summary>
 		/// Dispose the Double animation.

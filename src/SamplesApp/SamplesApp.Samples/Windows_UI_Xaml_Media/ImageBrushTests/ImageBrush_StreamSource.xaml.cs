@@ -42,21 +42,12 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 
 			this.RunWhileLoaded(async ct =>
 			{
-				using var httpClient = new HttpClient();
 				const string imageUrl = "https://uno-assets.platform.uno/tests/images/uno-overalls.jpg";
-				var data = await httpClient.GetByteArrayAsync(imageUrl);
 
-				BitmapImage bitmapImage;
-				MySource = bitmapImage = new BitmapImage();
-
-#if WINAPPSDK
-				using var stream = new MemoryStream(data).AsRandomAccessStream();
-#else
-				using var stream = new MemoryStream(data);
-#endif
-				await bitmapImage.SetSourceAsync(stream);
-				MySource = bitmapImage;
-
+				// Subscribe before assigning MySource below. The brushes bind to MySource via x:Bind,
+				// and assigning an already-decoded BitmapImage can raise ImageOpened/ImageFailed
+				// synchronously. Subscribing afterwards would miss those events, so _tcs would never
+				// complete and IWaitableSample.SamplePreparedTask would hang the snapshot run.
 				imageBrush1.ImageOpened += ImageOpened;
 				imageBrush1.ImageFailed += ImageFailed;
 				imageBrush2.ImageOpened += ImageOpened;
@@ -69,6 +60,20 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 				imageBrush5.ImageFailed += ImageFailed;
 				imageBrush6.ImageOpened += ImageOpened;
 				imageBrush6.ImageFailed += ImageFailed;
+
+				using var httpClient = new HttpClient();
+				var data = await httpClient.GetByteArrayAsync(imageUrl);
+
+				BitmapImage bitmapImage;
+				MySource = bitmapImage = new BitmapImage();
+
+#if WINAPPSDK
+				using var stream = new MemoryStream(data).AsRandomAccessStream();
+#else
+				using var stream = new MemoryStream(data);
+#endif
+				await bitmapImage.SetSourceAsync(stream);
+				MySource = bitmapImage;
 			});
 		}
 

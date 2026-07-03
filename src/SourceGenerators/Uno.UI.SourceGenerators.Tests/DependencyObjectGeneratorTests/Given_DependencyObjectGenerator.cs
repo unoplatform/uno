@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -133,7 +133,7 @@ public class Given_DependencyObjectGenerator
 	 			{
 	 				if(__storeBackingField == null)
 	 				{
-	 					__storeBackingField = new DependencyObjectStore(this, DataContextProperty);
+	 					__storeBackingField = new DependencyObjectStore(this);
 	 					__InitializeBinder();
 	 				}
 	 				return __storeBackingField;
@@ -151,8 +151,6 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 	 		private BinderReferenceHolder _refHolder;
-	 		
-	 		public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 	 		
 	 		partial void InitializeBinder();
 	 		
@@ -200,36 +198,6 @@ public class Given_DependencyObjectGenerator
 	 						
 	 		public override string ToString() => GetType().FullName;		// hasOverridesAttachedToWindowiOS=false		// hasOverridesAttachedToWindowiOS=false		// Skipped _iosViewSymbol: False, hasNoWillMoveToSuperviewMethod: True		// Skipped _macosViewSymbol: False, hasNoViewWillMoveToSuperviewMethod: True
 	 		
-	 		
-	 		#region DataContext DependencyProperty
-	 		
-	 		public object DataContext
-	 		{
-	 			get => GetValue(DataContextProperty);
-	 			set => SetValue(DataContextProperty, value);
-	 		}
-	 		
-	 		// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
-	 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-	 		public static DependencyProperty DataContextProperty { get ; } =
-	 			DependencyProperty.Register(
-	 				name: nameof(DataContext),
-	 				propertyType: typeof(object),
-	 				ownerType: typeof(Inner),
-	 				typeMetadata: new FrameworkPropertyMetadata(
-	 					defaultValue: null,
-	 					options: FrameworkPropertyMetadataOptions.Inherits,
-	 					propertyChangedCallback: (s, e) => ((Inner)s).OnDataContextChanged(e)
-	 				)
-	 		);
-	 		
-	 		internal protected virtual void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-	 		{
-	 			OnDataContextChangedPartial(e);
-	 			DataContextChanged?.Invoke(null, new DataContextChangedEventArgs(DataContext));
-	 		}
-	 		
-	 		#endregion
 	 		
 	 		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 	 		
@@ -285,8 +253,6 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	 		internal bool IsAutoPropertyInheritanceEnabled { get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }
-	 		
-	 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
 	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);

@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
-		private bool _wasBeginScheduled;
-		private bool _wasRequestedToStop;
 		private int _replayCount = 1;
 		private double? _startingValue;
 		private double _finalValue;
@@ -44,8 +42,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal override TimeSpan GetCalculatedDuration()
 		{
+			// MUX: CAnimation::GetNaturalDuration — an explicit TimeSpan Duration wins, but a
+			// keyframe animation otherwise resolves its duration from its key frames *ahead of*
+			// Duration="Forever" (WinUI compat quirk), defaulting to 1s when there are none
+			// (NULL_DURATION_DEFAULT).
 			var duration = Duration;
-			if (duration != Duration.Automatic)
+			if (duration.Type == DurationType.TimeSpan)
 			{
 				return base.GetCalculatedDuration();
 			}
@@ -56,52 +58,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return lastKeyTime.TimeSpan;
 			}
 
-			return base.GetCalculatedDuration();
+			return TimeSpan.FromSeconds(1.0);
 		}
 
 		void ITimeline.Begin()
 		{
-			// It's important to keep this line here, and not
-			// inside the if (!_wasBeginScheduled)
-			// If Begin(), Stop(), Begin() are called successively in sequence,
-			// we want _wasRequestedToStop to be false.
-			_wasRequestedToStop = false;
-
-			if (!_wasBeginScheduled)
+			if (KeyFrames.Count < 1)
 			{
-				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
-				// This works because the template bindings are executed just after the constructor.
-				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
-
-				_wasBeginScheduled = true;
-
-#if !IS_UNIT_TESTS
-#if __ANDROID__
-				_ = Dispatcher.RunAnimation(() =>
-#else
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-#endif
-#endif
-				{
-					_wasBeginScheduled = false;
-
-					if (KeyFrames.Count < 1 || // nothing to do
-						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
-					)
-					{
-						return;
-					}
-
-					_activeDuration.Restart();
-					_replayCount = 1;
-
-					//Start the animation
-					Play();
-				}
-#if !IS_UNIT_TESTS
-				);
-#endif
+				return;
 			}
+
+			_activeDuration.Restart();
+			_replayCount = 1;
+
+			Play();
 		}
 
 		void ITimeline.Pause()
@@ -110,6 +80,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
 
 			_currentAnimator.Pause();
 
@@ -122,6 +100,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
 
 			_currentAnimator.Resume();
 
@@ -171,19 +157,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
 
-			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's CAnimation::UpdateAnimationUsingKeyFrames which reads
+			// keyframe values at tick time via pKeyFrame->GetValue().
+			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);
 
 			OnEnd();
 		}
 
 		void ITimeline.Deactivate()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
@@ -191,23 +188,39 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Stopped;
-			_wasRequestedToStop = true;
 		}
 
 		void ITimeline.Stop()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
 
 			State = TimelineState.Stopped;
-			_wasRequestedToStop = true;
 		}
 
 		/// <summary>
-		/// Creates a new animator and animates the view
+		/// Starts the animation. On Skia, defers animator initialization to the first
+		/// rendering tick so keyframe binding values are read after layout (matching WinUI
+		/// where keyframe values are read at tick time, not at Begin time).
 		/// </summary>
 		private void Play()
+		{
+#if __SKIA__
+			PlayDeferred();
+#else
+			PlayImmediate();
+#endif
+		}
+
+		/// <summary>
+		/// Creates animators and starts the animation immediately.
+		/// </summary>
+		private void PlayImmediate()
 		{
 			_subscriptions.Clear(); // Dispose all current animators
 			InitializeAnimators(); // Create the animator
@@ -251,8 +264,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
+				var animator = AnimatorFactory.Create(this, fromValue, toValue, duration);
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
 				animator.DisposeWith(_subscriptions);
@@ -272,13 +285,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 
 				var i = index;
-
-#if __ANDROID__
-				if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
-				{
-					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
-				}
-#endif
 
 				animator.AnimationEnd += (a, _) =>
 				{

@@ -24,20 +24,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using DependencyObject = System.Object;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

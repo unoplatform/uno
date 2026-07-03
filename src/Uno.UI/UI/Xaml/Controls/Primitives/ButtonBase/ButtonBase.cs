@@ -13,22 +13,13 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
 		public
-#if __ANDROID__
-			new
-#endif
 			event RoutedEventHandler Click;
 
 		public ButtonBase()
@@ -138,13 +129,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
 		partial void RegisterEvents();
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		private void OnCanExecuteChanged()
-		{
-			this.CoerceValue(IsEnabledProperty);
-		}
-#endif
 
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{

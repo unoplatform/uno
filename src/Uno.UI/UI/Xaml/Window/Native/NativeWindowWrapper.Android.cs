@@ -63,20 +63,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void OnNativeClosed() => RaiseClosing();
 
-	internal bool IsStatusBarTranslucent()
-	{
-		if (!(ContextHelper.Current is Activity activity))
-		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
-		}
-
-		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
-
-			//  Both TranslucentStatus and LayoutNoLimits are false when EdgeToEdge is set (default mode in net9).
-			|| FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
-	}
-
 	internal void RaiseNativeSizeChanged()
 	{
 		var (windowSize, visibleBounds) = GetVisualBounds();
@@ -140,58 +126,33 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		var decorView = activity.Window.DecorView;
 		var fitsSystemWindows = decorView.FitsSystemWindows;
 
-		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+		var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			this.Log().LogDebug($"Insets: {insets}");
+		}
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Insets: {insets}");
-			}
+		if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
+		{
+			// quick refresher:
+			// - windowBounds: size of the rendered area, its location is ignored/unused
+			// - visibleBounds: area WITHIN windowBounds that isn't occluded/blocked by system overlays (status-bar, navigation-bar, etc.)
+			//		^ since VB calculated from WB, it is important that WB doesn't have an location/offset to be inherited by VB.
 
-			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
-			{
-				// quick refresher:
-				// - windowBounds: size of the rendered area, its location is ignored/unused
-				// - visibleBounds: area WITHIN windowBounds that isn't occluded/blocked by system overlays (status-bar, navigation-bar, etc.)
-				//		^ since VB calculated from WB, it is important that WB doesn't have an location/offset to be inherited by VB.
+			// see: StatusBar.SetStatusBarBackgroundColor (StatusBar.Android.cs)
+			// Setting a non-null StatusBar.Background in v35, will add a padding to the decor-view.
+			// This will move down the coordinates system for both windowBounds and visibleBounds,
+			// their zero(0,0) will be (0, inset.top) on the physical display.
 
-				// see: StatusBar.SetStatusBarBackgroundColor (StatusBar.Android.cs)
-				// Setting a non-null StatusBar.Background in v35, will add a padding to the decor-view.
-				// This will move down the coordinates system for both windowBounds and visibleBounds,
-				// their zero(0,0) will be (0, inset.top) on the physical display.
-
-				var size = GetWindowSize();
-				windowBounds = new Rect(0, 0, size.Width, size.Height - insets.Top); // exclude top inset from rendering area
-				visibleBounds = windowBounds.DeflateBy(insets with { Top = 0 }); // apply the rest of the insets, skipping Top that is already excluded
-			}
-			else
-			{
-				windowBounds = new Rect(default, GetWindowSize());
-				visibleBounds = windowBounds.DeflateBy(insets);
-			}
+			var size = GetWindowSize();
+			windowBounds = new Rect(0, 0, size.Width, size.Height - insets.Top); // exclude top inset from rendering area
+			visibleBounds = windowBounds.DeflateBy(insets with { Top = 0 }); // apply the rest of the insets, skipping Top that is already excluded
 		}
 		else
 		{
-			var opaqueInsetsTypes = insetsTypes;
-			if (IsStatusBarTranslucent())
-			{
-				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
-			}
-			if (IsNavigationBarTranslucent())
-			{
-				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
-			}
-
-			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
-			var translucentInsets = insets.Minus(opaqueInsets);
-
-			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
-
-			// The visible bounds is the windows bounds on which we remove also translucentInsets
-			visibleBounds = windowBounds.DeflateBy(translucentInsets);
+			windowBounds = new Rect(default, GetWindowSize());
+			visibleBounds = windowBounds.DeflateBy(insets);
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -203,18 +164,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		var visibleBoundsLogical = visibleBounds.PhysicalToLogicalPixels();
 
 		return (windowBoundsLogical.Size, visibleBoundsLogical);
-	}
-
-	private bool IsNavigationBarTranslucent()
-	{
-		if (!(ContextHelper.Current is Activity activity))
-		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
-		}
-
-		var flags = activity.Window.Attributes.Flags;
-		return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
-			|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 	}
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)
@@ -238,21 +187,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		// Only apply theming if the app hasn't explicitly set a foreground
 		if (StatusBar.GetForCurrentView().ForegroundColor is null)
 		{
-			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
+			if (Microsoft.UI.Xaml.Application.Current is { } application &&
+				(ContextHelper.TryGetCurrent(out var context)) &&
+				context is Activity activity &&
+				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
 			{
-				// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
-				if (Microsoft.UI.Xaml.Application.Current is { } application &&
-					(ContextHelper.TryGetCurrent(out var context)) &&
-					context is Activity activity &&
-					activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
-				{
-					var requestedTheme = application.RequestedTheme;
+				var requestedTheme = application.RequestedTheme;
 
-					var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 
-					// "appearance light" refers to status bar set to light theme == dark foreground
-					insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
-				}
+				// "appearance light" refers to status bar set to light theme == dark foreground
+				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
 			}
 		}
 	}

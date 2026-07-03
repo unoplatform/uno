@@ -31,7 +31,12 @@ namespace Windows.UI
 
 		public static ColorOffset FromArgb(int a, int r, int g, int b) => new ColorOffset(a, r, g, b);
 
-		public static explicit operator Color(ColorOffset colorOffset) => Color.FromArgb((byte)colorOffset.A, (byte)colorOffset.R, (byte)colorOffset.G, (byte)colorOffset.B);
+		public static explicit operator Color(ColorOffset colorOffset) => Color.FromArgb(ByteSaturate(colorOffset.A), ByteSaturate(colorOffset.R), ByteSaturate(colorOffset.G), ByteSaturate(colorOffset.B));
+
+		// Clamps an integer channel to the [0, 255] range, matching WinUI's ByteSaturate
+		// (pixelformatutils.h). Overshooting easing functions can drive a channel outside
+		// the byte range; without saturation the raw (byte) cast wraps and flashes a wrong color.
+		private static byte ByteSaturate(int value) => (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
 
 		public static explicit operator ColorOffset(Color color) => FromArgb(color.A, color.R, color.G, color.B);
 

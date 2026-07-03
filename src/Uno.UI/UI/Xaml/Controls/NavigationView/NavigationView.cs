@@ -4442,18 +4442,6 @@ public partial class NavigationView : ContentControl
 				backButton.UpdateLayout();
 			}
 
-#if __ANDROID__
-			// workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
-			if (global::Uno.UI.FeatureConfiguration.NavigationView.EnableUno19516Workaround &&
-				m_appliedTemplate && IsLoaded)
-			{
-				foreach (var ir in this.EnumerateDescendants().OfType<ItemsRepeater>())
-				{
-					ir.InvalidateMeasure();
-				}
-			}
-#endif
-
 			UpdatePaneLayout();
 		}
 

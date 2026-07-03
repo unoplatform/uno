@@ -57,13 +57,7 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 				minutes = minutes * MinuteIncrement;
 			}
 
-#if ANDROID_SKIA
 			var time = new TimeSpan(0, hourOfDay, minutes, 0);
-#else
-			var time = FeatureConfiguration.TimePickerFlyout.UseLegacyTimeSetting
-				? new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds)
-				: new TimeSpan(0, hourOfDay, minutes, 0);
-#endif
 			SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 		}
 

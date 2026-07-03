@@ -1,7 +1,4 @@
-﻿#if __IOS__ || __ANDROID__
-#define SUPPORTS_NATIVE_DATEPICKER
-#endif
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;

@@ -3,120 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PointKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.IEnumerable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Count");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "IsReadOnly");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame this[int index]
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "this[int index]");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "this[int index]");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PointKeyFrameCollection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "PointKeyFrameCollection()");
-		}
-#endif
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping collection property provided by base class: this[]
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.this[int].get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.this[int].set
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "IndexOf(PointKeyFrame item)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Insert(int index, PointKeyFrame item)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "RemoveAt(int index)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Add(PointKeyFrame item)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Clear()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Contains(PointKeyFrame item)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame[] array, int arrayIndex)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "CopyTo(PointKeyFrame[] array, int arrayIndex)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "Remove(PointKeyFrame item)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame> GetEnumerator()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "GetEnumerator()");
-		}
-#endif
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Insert(int, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.RemoveAt(int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Add(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Clear()
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Contains(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame[], int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
@@ -124,13 +33,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
 		// Processing: System.Collections.IEnumerable
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.IEnumerable
 	}
 }

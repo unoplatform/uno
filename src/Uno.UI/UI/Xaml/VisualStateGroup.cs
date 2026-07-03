@@ -13,10 +13,6 @@ using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
@@ -349,7 +345,7 @@ namespace Microsoft.UI.Xaml
 
 			void ApplyTargetState()
 			{
-				// Apply target state setters (the right time to do it!) 
+				// Apply target state setters (the right time to do it!)
 				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
 				{
 					ApplyTargetStateSetters();

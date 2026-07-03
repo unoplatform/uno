@@ -87,9 +87,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Occurs when text is pasted into the control.
 		/// </summary>
 		public
-#if __APPLE_UIKIT__
-			new
-#endif
 			event TextControlPasteEventHandler Paste;
 
 		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);

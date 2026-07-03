@@ -21,13 +21,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

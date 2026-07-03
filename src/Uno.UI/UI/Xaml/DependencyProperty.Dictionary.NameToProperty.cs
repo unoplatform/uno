@@ -13,13 +13,7 @@ using System.Threading;
 using Uno.Collections;
 using System.Collections;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
