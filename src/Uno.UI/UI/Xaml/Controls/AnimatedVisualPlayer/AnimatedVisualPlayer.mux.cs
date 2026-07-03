@@ -306,18 +306,30 @@ partial class AnimatedVisualPlayer
 
 		object? diagnostics = null;
 		IAnimatedVisual? animatedVisual = null;
+		var createAnimations = AnimationOptimization == PlayerAnimationOptimization.Latency;
 		try
 		{
-			animatedVisual = source.TryCreateAnimatedVisual(m_rootVisual!.Compositor, out diagnostics);
+			if (source is IAnimatedVisualSource3 source3)
+			{
+				// The source creates (or not) its own animations up front.
+				animatedVisual = source3.TryCreateAnimatedVisual(m_rootVisual!.Compositor, out diagnostics, createAnimations);
+				m_isAnimationsCreated = createAnimations && animatedVisual is not null;
+			}
+			else
+			{
+				animatedVisual = source.TryCreateAnimatedVisual(m_rootVisual!.Compositor, out diagnostics);
+				// The IAnimatedVisualSource contract always creates animations.
+				m_isAnimationsCreated = animatedVisual is not null;
+			}
 		}
 		catch
 		{
 			// Fall through to fallback content below.
 			animatedVisual = null;
+			m_isAnimationsCreated = false;
 		}
 
 		m_animatedVisual = animatedVisual;
-		m_isAnimationsCreated = animatedVisual is not null;
 		SetValue(DiagnosticsProperty, diagnostics);
 
 		if (animatedVisual is null)
