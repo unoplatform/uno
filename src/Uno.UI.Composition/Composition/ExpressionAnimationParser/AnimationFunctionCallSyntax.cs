@@ -21,7 +21,43 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		ClampFloatFloatFloatFunctionSpecification.Instance,
 		PowFloatFloatFunctionSpecification.Instance,
 		SquareFloatFunctionSpecification.Instance,
-		ColorRgbFunctionSpecification.Instance
+		ColorRgbFunctionSpecification.Instance,
+
+		// Scalar math
+		SqrtFloatFunctionSpecification.Instance,
+		SinFloatFunctionSpecification.Instance,
+		CosFloatFunctionSpecification.Instance,
+		TanFloatFunctionSpecification.Instance,
+		AsinFloatFunctionSpecification.Instance,
+		AcosFloatFunctionSpecification.Instance,
+		AtanFloatFunctionSpecification.Instance,
+		CeilFloatFunctionSpecification.Instance,
+		FloorFloatFunctionSpecification.Instance,
+		RoundFloatFunctionSpecification.Instance,
+		ModFloatFloatFunctionSpecification.Instance,
+		LogFloatFunctionSpecification.Instance,
+		Log10FloatFunctionSpecification.Instance,
+		ExpFloatFunctionSpecification.Instance,
+
+		// Matrix3x2 factories
+		Matrix3x2FunctionSpecification.Instance,
+		Matrix3x2CreateFromScaleVector2FunctionSpecification.Instance,
+		Matrix3x2CreateScaleVector2FunctionSpecification.Instance,
+		Matrix3x2CreateFromTranslationVector2FunctionSpecification.Instance,
+		Matrix3x2CreateTranslationVector2FunctionSpecification.Instance,
+		Matrix3x2CreateRotationFloatFunctionSpecification.Instance,
+		Matrix3x2CreateSkewFloatFloatVector2FunctionSpecification.Instance,
+
+		// Matrix4x4 factories
+		Matrix4x4FunctionSpecification.Instance,
+		Matrix4x4CreateFromScaleVector3FunctionSpecification.Instance,
+		Matrix4x4CreateScaleVector3FunctionSpecification.Instance,
+		Matrix4x4CreateFromTranslationVector3FunctionSpecification.Instance,
+		Matrix4x4CreateTranslationVector3FunctionSpecification.Instance,
+		Matrix4x4CreateFromAxisAngleVector3FloatFunctionSpecification.Instance,
+
+		// Quaternion factories
+		QuaternionCreateFromAxisAngleVector3FloatFunctionSpecification.Instance
 		);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
