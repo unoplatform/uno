@@ -14,8 +14,8 @@ namespace Uno.UI.RemoteControl.Host.Helpers;
 /// default ALC when a simple-name match is found, so that host and add-ins
 /// share a single <see cref="System.Type"/> identity for cross-boundary types.
 /// When nothing compatible is loaded yet, an on-demand pass loads the assembly
-/// from the runtime (version-less TPA bind) or from a registered add-in
-/// directory, so resolution does not depend on what happened to load first.
+/// from an identity-validated runtime/TPA file or a registered add-in directory,
+/// so resolution does not depend on what happened to load first.
 /// </summary>
 /// <remarks>
 /// Diagnostic messages go to <see cref="Console.Out"/> / <see cref="Console.Error"/>
@@ -43,12 +43,16 @@ internal static class HostAssemblyResolution
 	private static ImmutableArray<string> s_probingDirectories = ImmutableArray<string>.Empty;
 
 	/// <summary>
-	/// Simple names currently being resolved on this thread. The version-less
-	/// load in <see cref="TryLoadOnDemand"/> re-fires <c>Resolving</c> for the
-	/// same name when the runtime has no match; this guard breaks that recursion.
+	/// Runtime/TPA assembly file paths indexed by simple name, letting the
+	/// on-demand pass validate a candidate's identity from file metadata before
+	/// loading it. The TPA list is process-constant, hence the one-time parse.
 	/// </summary>
-	[ThreadStatic]
-	private static HashSet<string>? t_resolving;
+	private static readonly Lazy<ILookup<string, string>> s_tpaBySimpleName = new(static () =>
+		(AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string ?? string.Empty)
+			.Split(System.IO.Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+			.ToLookup(
+				static path => System.IO.Path.GetFileNameWithoutExtension(path),
+				StringComparer.OrdinalIgnoreCase));
 
 	/// <summary>
 	/// File-name globs used by <see cref="EagerLoadFromDirectory"/> to pre-load the
@@ -320,11 +324,12 @@ internal static class HostAssemblyResolution
 	}
 
 	/// <summary>
-	/// On-demand pass, used when nothing compatible is loaded yet: first a
-	/// version-less load so the default binder can serve the runtime/TPA copy even
-	/// though the versioned bind failed, then a probe of the registered add-in
-	/// directories. Both paths apply the same PKT / no-downgrade guards as
-	/// <see cref="TryBridgeBySimpleName"/>.
+	/// On-demand pass, used when nothing compatible is loaded yet: probes the
+	/// runtime/TPA file list first, then the registered add-in directories. Every
+	/// candidate's identity is validated from file metadata (same PKT / no-downgrade
+	/// guards as <see cref="TryBridgeBySimpleName"/>, plus a simple-name match)
+	/// BEFORE loading — a load-then-check would pin an incompatible copy in the ALC
+	/// (one assembly per simple name) and block the remaining candidates.
 	/// </summary>
 	internal static Assembly? TryLoadOnDemand(AssemblyLoadContext context, AssemblyName requested)
 	{
@@ -334,69 +339,69 @@ internal static class HostAssemblyResolution
 			return null;
 		}
 
-		var resolving = t_resolving ??= new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-		if (!resolving.Add(simpleName))
+		var requestedPkt = requested.GetPublicKeyToken();
+		var requestedVersion = requested.Version;
+
+		foreach (var candidatePath in s_tpaBySimpleName.Value[simpleName])
 		{
-			return null;
-		}
-
-		try
-		{
-			var requestedPkt = requested.GetPublicKeyToken();
-			var requestedVersion = requested.Version;
-
-			try
+			if (TryLoadValidatedCandidate(context, candidatePath, simpleName, requestedPkt, requestedVersion) is { } fromRuntime)
 			{
-				var fromRuntime = context.LoadFromAssemblyName(new AssemblyName(simpleName));
-				if (SatisfiesIdentity(fromRuntime.GetName(), requestedPkt, requestedVersion))
-				{
-					Console.Out.WriteLine(
-						$"Uno.UI.RemoteControl.Host: loaded '{simpleName}' on demand from the runtime " +
-						$"(requested Version={requestedVersion?.ToString() ?? "<none>"}, " +
-						$"loaded Version={fromRuntime.GetName().Version?.ToString() ?? "<none>"}).");
-					return fromRuntime;
-				}
-			}
-			catch (Exception)
-			{
-				// Not available from the runtime/TPA — fall through to directory probing.
-			}
-
-			foreach (var dir in s_probingDirectories)
-			{
-				var candidatePath = System.IO.Path.Combine(dir, simpleName + ".dll");
-				try
-				{
-					if (!System.IO.File.Exists(candidatePath))
-					{
-						continue;
-					}
-
-					if (!SatisfiesIdentity(AssemblyName.GetAssemblyName(candidatePath), requestedPkt, requestedVersion))
-					{
-						continue;
-					}
-
-					var fromDirectory = context.LoadFromAssemblyPath(candidatePath);
-					Console.Out.WriteLine(
-						$"Uno.UI.RemoteControl.Host: loaded '{simpleName}' on demand from '{candidatePath}' " +
-						$"(Version={fromDirectory.GetName().Version?.ToString() ?? "<none>"}).");
-					return fromDirectory;
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine(
-						$"Uno.UI.RemoteControl.Host: on-demand load of '{simpleName}' from '{candidatePath}' failed " +
-						$"({ex.GetType().Name}: {ex.Message}).");
-				}
+				return fromRuntime;
 			}
 		}
-		finally
+
+		foreach (var dir in s_probingDirectories)
 		{
-			resolving.Remove(simpleName);
+			var candidatePath = System.IO.Path.Combine(dir, simpleName + ".dll");
+			if (TryLoadValidatedCandidate(context, candidatePath, simpleName, requestedPkt, requestedVersion) is { } fromDirectory)
+			{
+				return fromDirectory;
+			}
 		}
 
 		return null;
+	}
+
+	/// <summary>
+	/// Loads <paramref name="candidatePath"/> only when its file metadata carries the
+	/// requested simple name and passes <see cref="SatisfiesIdentity"/>. The name check
+	/// guards against a file whose name does not match the assembly it contains.
+	/// </summary>
+	private static Assembly? TryLoadValidatedCandidate(
+		AssemblyLoadContext context,
+		string candidatePath,
+		string simpleName,
+		byte[]? requestedPkt,
+		Version? requestedVersion)
+	{
+		try
+		{
+			if (!System.IO.File.Exists(candidatePath))
+			{
+				return null;
+			}
+
+			var candidateName = AssemblyName.GetAssemblyName(candidatePath);
+			if (!string.Equals(candidateName.Name, simpleName, StringComparison.OrdinalIgnoreCase)
+				|| !SatisfiesIdentity(candidateName, requestedPkt, requestedVersion))
+			{
+				return null;
+			}
+
+			var loaded = context.LoadFromAssemblyPath(candidatePath);
+			Console.Out.WriteLine(
+				$"Uno.UI.RemoteControl.Host: loaded '{simpleName}' on demand from '{candidatePath}' " +
+				$"(requested Version={requestedVersion?.ToString() ?? "<none>"}, " +
+				$"loaded Version={loaded.GetName().Version?.ToString() ?? "<none>"}).");
+			return loaded;
+		}
+		catch (Exception ex)
+		{
+			Console.Error.WriteLine(
+				$"Uno.UI.RemoteControl.Host: on-demand load of '{simpleName}' from '{candidatePath}' failed " +
+				$"({ex.GetType().Name}: {ex.Message}).");
+			return null;
+		}
 	}
 
 	/// <summary>
