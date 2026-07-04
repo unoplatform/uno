@@ -49,6 +49,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+#if !__SKIA__
+		// Skia provides a natively async implementation (GPU-accelerated when available);
+		// other platforms wrap their synchronous implementation.
+		private Task<(int ByteCount, int Width, int Height)> RenderAsBgra8_PremulAsync(UIElement element, Size? scaledSize = null)
+			=> Task.FromResult(RenderAsBgra8_Premul(element, ref _buffer, scaledSize));
+#endif
+
 		#region PixelWidth
 #if !HAS_RENDER_TARGET_BITMAP
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -150,18 +157,29 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
-			=> AsyncAction.FromTask(ct =>
+			=> RenderAsync(element, new Size(scaledWidth, scaledHeight));
+
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
+		public IAsyncAction RenderAsync(UIElement? element)
+			=> RenderAsync(element, scaledSize: null);
+
+		private IAsyncAction RenderAsync(UIElement? element, Size? scaledSize)
+			=> AsyncAction.FromTask(async ct =>
 			{
 				try
 				{
-					element ??= WinUICoreServices.Instance.MainVisualTree?.PublicRootVisual;
+					// A null element renders the window's root visual (what's presented on
+					// screen, including popups).
+					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
 
 					if (element is null)
 					{
 						throw new InvalidOperationException("No visual tree is available and no UIElement was provided for render");
 					}
 
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer, new Size(scaledWidth, scaledHeight));
+					(_bufferSize, PixelWidth, PixelHeight) = await RenderAsBgra8_PremulAsync(element, scaledSize);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -170,36 +188,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				{
 					this.Log().Error("Failed to render element to bitmap.", error);
 				}
-
-				return Task.CompletedTask;
-			});
-
-#if !HAS_RENDER_TARGET_BITMAP
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
-		public IAsyncAction RenderAsync(UIElement? element)
-			=> AsyncAction.FromTask(ct =>
-			{
-				try
-				{
-					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
-
-					if (element is null)
-					{
-						throw new InvalidOperationException("No window or element to render");
-					}
-
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
-#if __WASM__ || __SKIA__
-					InvalidateSource();
-#endif
-				}
-				catch (Exception error)
-				{
-					this.Log().Error("Failed to render element to bitmap.", error);
-				}
-
-				return Task.CompletedTask;
 			});
 
 #if !HAS_RENDER_TARGET_BITMAP
