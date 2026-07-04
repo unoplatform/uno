@@ -251,6 +251,14 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
+  <Folder Name="/Uno.UI/Graphics.Win2D/">
+    <Project Path="Uno.WinUI.Graphics.Win2D/Uno.WinUI.Graphics.Win2D.Reference.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.WinUI.Graphics.Win2D/Uno.WinUI.Graphics.Win2D.Skia.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+  </Folder>
   <Folder Name="/Uno.UI/DevServer/">
     <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />

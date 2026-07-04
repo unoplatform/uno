@@ -47,6 +47,8 @@
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
+      "Uno.WinUI.Graphics.Win2D\\Uno.WinUI.Graphics.Win2D.Reference.csproj",
+      "Uno.WinUI.Graphics.Win2D\\Uno.WinUI.Graphics.Win2D.Skia.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",

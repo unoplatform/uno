@@ -63,6 +63,9 @@
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Reference.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
+		<ProjectReference Include="..\Uno.WinUI.Graphics.Win2D\Uno.WinUI.Graphics.Win2D.Reference.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>

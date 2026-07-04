@@ -14,6 +14,7 @@
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
+      "Uno.WinUI.Graphics.Win2D\\Uno.WinUI.Graphics.Win2D.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Reference.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Reference.csproj",
