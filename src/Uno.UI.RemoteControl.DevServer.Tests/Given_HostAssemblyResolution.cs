@@ -309,9 +309,13 @@ public class Given_HostAssemblyResolution
 
 				try
 				{
-					// Skip resource/native files that are not managed assemblies, and
-					// candidates whose version would fail the lower-version request below.
-					return AssemblyName.GetAssemblyName(path).Version >= new Version(1, 0, 0, 0);
+					// Skip resource/native files that are not managed assemblies, candidates
+					// whose version would fail the lower-version request below, and unsigned
+					// assemblies (the request mirrors a signed AssemblyRef, so SetPublicKeyToken
+					// needs a real token).
+					var name = AssemblyName.GetAssemblyName(path);
+					return name.Version >= new Version(1, 0, 0, 0)
+						&& name.GetPublicKeyToken() is { Length: > 0 };
 				}
 				catch
 				{
@@ -394,7 +398,7 @@ public class Given_HostAssemblyResolution
 	// ------------------------------------------------------------------ on-demand: guards preserved
 
 	[TestMethod]
-	[Description("The on-demand path must preserve the no-downgrade guard: a request for a version higher than anything available must return null (and must not recurse infinitely through the Resolving handler).")]
+	[Description("The on-demand path must preserve the no-downgrade guard: a request for a version higher than anything available must return null.")]
 	public void Resolve_StillRejectsDowngrade_WhenRequestedVersionHigherThanAvailable()
 	{
 		var loaded = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
