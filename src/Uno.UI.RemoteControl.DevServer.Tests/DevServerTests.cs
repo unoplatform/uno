@@ -264,6 +264,27 @@ public class DevServerTests
 		}
 	}
 
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Safe-mode sentinel: '--addins \";\"' must start the host with zero add-ins and no MSBuild discovery — this is the launch the CLI's safe-mode retry issues after a startup crash, and it must be viable on every host version.")]
+	public async Task DevServer_ShouldStart_WithSafeModeAddinsSentinel()
+	{
+		await using var helper = new DevServerTestHelper(_logger);
+
+		try
+		{
+			var started = await helper.StartAsync(CT, extraArgs: "--addins \";\"");
+			helper.EnsureStarted();
+
+			started.Should().BeTrue("the host must become ready with the zero-add-ins sentinel");
+			helper.AssertRunning();
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+		}
+	}
+
 	// ------------------------------------------------------------------ cross-major version regression (#23287)
 
 	[TestMethod]

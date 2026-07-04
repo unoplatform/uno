@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AwesomeAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
@@ -148,7 +149,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: psi =>
 			{
 				capturedStartInfo = psi;
-				return Task.FromResult(0);
+				return Task.FromResult(DirectSpawnResult.Ready);
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -186,7 +187,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: psi =>
 			{
 				capturedStartInfo = psi;
-				return Task.FromResult(0);
+				return Task.FromResult(DirectSpawnResult.Ready);
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -211,7 +212,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: psi =>
 			{
 				capturedStartInfo = psi;
-				return Task.FromResult(0);
+				return Task.FromResult(DirectSpawnResult.Ready);
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -252,19 +253,137 @@ public class Given_StartCommandHandler
 		rebindCalled.Should().BeTrue();
 	}
 
+	// --- Safe-mode retry (uno-private#1968) ---
+
+	[TestMethod]
+	[Description("When the host dies before becoming ready and add-ins were in play, the handler must retry exactly once in safe mode (--addins with the zero-paths sentinel) and succeed.")]
+	public async Task RunAsync_HostDiesBeforeReady_RetriesOnceInSafeMode()
+	{
+		var spawns = new List<ProcessStartInfo>();
+		var results = new Queue<DirectSpawnResult>([
+			new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -532462766, "Unhandled exception. FileNotFoundException: System.Text.Encodings.Web"),
+			DirectSpawnResult.Ready,
+		]);
+
+		var handler = CreateHandler(
+			onSpawnProcess: psi =>
+			{
+				spawns.Add(psi);
+				return Task.FromResult(results.Dequeue());
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--solution", "/app/app.sln"],
+			workingDirectory: "/app",
+			addins: "/path/to/addin.dll");
+
+		exitCode.Should().Be(0, "the safe-mode attempt succeeded");
+		spawns.Should().HaveCount(2, "one normal attempt, one safe-mode retry");
+		spawns[0].Arguments.Should().Contain("/path/to/addin.dll");
+		spawns[1].Arguments.Should().Contain($"--addins {StartCommandHandler.SafeModeAddInsValue}",
+			"the retry must disable add-ins via the zero-paths sentinel");
+		spawns[1].Arguments.Should().NotContain("/path/to/addin.dll");
+	}
+
+	[TestMethod]
+	[Description("When the safe-mode attempt also dies, there must be no third attempt — the crash is not add-in related and the failure exit code propagates.")]
+	public async Task RunAsync_SafeModeAlsoDies_NoThirdAttempt()
+	{
+		var spawnCount = 0;
+		var handler = CreateHandler(
+			onSpawnProcess: _ =>
+			{
+				spawnCount++;
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1, "boom"));
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--solution", "/app/app.sln"],
+			workingDirectory: "/app",
+			addins: null);
+
+		exitCode.Should().Be(1);
+		spawnCount.Should().Be(2, "exactly one normal attempt and one safe-mode retry, never more");
+	}
+
+	[TestMethod]
+	[Description("When neither pre-resolved add-ins nor a solution are in play, the host loads no add-ins — a startup crash must not trigger a pointless safe-mode retry.")]
+	public async Task RunAsync_NoAddInsInPlay_NoSafeModeRetry()
+	{
+		var spawnCount = 0;
+		var handler = CreateHandler(
+			onSpawnProcess: _ =>
+			{
+				spawnCount++;
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1, "boom"));
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000"],
+			workingDirectory: "/app",
+			addins: null);
+
+		exitCode.Should().Be(1);
+		spawnCount.Should().Be(1);
+	}
+
+	[TestMethod]
+	[Description("A readiness timeout (process alive, port unreachable) is a different failure class — no safe-mode retry.")]
+	public async Task RunAsync_ReadinessTimeout_NoSafeModeRetry()
+	{
+		var spawnCount = 0;
+		var handler = CreateHandler(
+			onSpawnProcess: _ =>
+			{
+				spawnCount++;
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.ReadinessTimeout, null, ""));
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--solution", "/app/app.sln"],
+			workingDirectory: "/app",
+			addins: "/path/to/addin.dll");
+
+		exitCode.Should().Be(1);
+		spawnCount.Should().Be(1);
+	}
+
+	[TestMethod]
+	[DataRow((int)DirectSpawnFailure.DiedBeforeReady, "/a.dll", null, true, DisplayName = "died + pre-resolved add-ins → retry")]
+	[DataRow((int)DirectSpawnFailure.DiedBeforeReady, null, "/app.sln", true, DisplayName = "died + solution discovery → retry")]
+	[DataRow((int)DirectSpawnFailure.DiedBeforeReady, null, null, false, DisplayName = "died + nothing to load → no retry")]
+	[DataRow((int)DirectSpawnFailure.DiedBeforeReady, ";", "/app.sln", false, DisplayName = "died in safe mode → no second retry")]
+	[DataRow((int)DirectSpawnFailure.ReadinessTimeout, "/a.dll", null, false, DisplayName = "timeout → no retry")]
+	[DataRow((int)DirectSpawnFailure.None, "/a.dll", null, false, DisplayName = "success → no retry")]
+	[Description("Decision matrix for the safe-mode retry: only a died-before-ready crash with add-ins actually in play qualifies. The failure kind is passed as int because the enum is internal to the CLI assembly while MSTest requires a public method signature.")]
+	public void ShouldRetryInSafeMode_DecisionMatrix(
+		int failureKind, string? addins, string? solution, bool expected)
+	{
+		var failure = (DirectSpawnFailure)failureKind;
+		var result = new DirectSpawnResult(
+			failure == DirectSpawnFailure.None ? 0 : 1, failure, null, "");
+
+		StartCommandHandler.ShouldRetryInSafeMode(result, addins, solution)
+			.Should().Be(expected);
+	}
+
 	// --- Helpers ---
 
 	private static StartCommandHandler CreateHandler(
 		FakeServerInfo? existingServerBySolution = null,
 		FakeServerInfo? existingServerByPort = null,
 		Func<int, string, Task<bool>>? onRebindIdeChannel = null,
-		Func<ProcessStartInfo, Task<int>>? onSpawnProcess = null)
+		Func<ProcessStartInfo, Task<DirectSpawnResult>>? onSpawnProcess = null)
 	{
 		return new StartCommandHandler(
 			NullLogger.Instance,
 			new FakeAmbientLookup(existingServerBySolution, existingServerByPort),
 			onRebindIdeChannel ?? ((_, _) => Task.FromResult(true)),
-			onSpawnProcess ?? (_ => Task.FromResult(0)));
+			onSpawnProcess ?? (_ => Task.FromResult(DirectSpawnResult.Ready)));
 	}
 
 	internal record FakeServerInfo(int ProcessId, int Port, string? SolutionPath, int ParentProcessId = 0);
