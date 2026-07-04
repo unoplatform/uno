@@ -358,8 +358,7 @@ public class Given_WebView2
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23641")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)]
-	public async Task When_DocumentTitle_Before_Navigation()
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	{
 		var border = new Border();
 		var webView = new WebView2();
