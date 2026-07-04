@@ -221,7 +221,7 @@ namespace Microsoft.UI.Composition
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
 					float[]? dashValues = null;
-					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
@@ -421,7 +421,7 @@ namespace Microsoft.UI.Composition
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
 					float[]? dashValues = null;
-					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels

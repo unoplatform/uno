@@ -95,9 +95,11 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _fillBrush, value);
 		}
 
-		public CompositionStrokeDashArray? StrokeDashArray
+		// WinUI returns a live, non-null collection so callers can mutate it directly
+		// (LottieGen-generated code does `StrokeDashArray.Add(...)` without a null check).
+		public CompositionStrokeDashArray StrokeDashArray
 		{
-			get => _strokeDashArray;
+			get => _strokeDashArray ??= new CompositionStrokeDashArray(Compositor);
 			set => SetProperty(ref _strokeDashArray, value);
 		}
 
