@@ -12,6 +12,27 @@ using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
+/// <summary>
+/// How a direct-mode host spawn failed, when it did — lets callers distinguish a
+/// startup crash (candidate for a safe-mode retry) from a readiness timeout.
+/// </summary>
+internal enum DirectSpawnFailure
+{
+	None,
+	DiedBeforeReady,
+	ReadinessTimeout,
+}
+
+/// <summary>
+/// Outcome of <see cref="DevServerProcessHelper.RunDirectProcessAsync"/>:
+/// the CLI exit code plus enough failure context (kind, host exit code, captured
+/// stderr) for the caller to decide on a retry and to surface an actionable error.
+/// </summary>
+internal sealed record DirectSpawnResult(int ExitCode, DirectSpawnFailure Failure, int? HostExitCode, string StdErr)
+{
+	public static DirectSpawnResult Ready { get; } = new(0, DirectSpawnFailure.None, null, "");
+}
+
 internal static class DevServerProcessHelper
 {
 	/// <summary>
@@ -304,10 +325,11 @@ internal static class DevServerProcessHelper
 
 	/// <summary>
 	/// Spawns the host in direct mode (no <c>--command</c>) and waits for
-	/// the HTTP port to become reachable.  Returns 0 on success, 1 on timeout
-	/// or process failure.
+	/// the HTTP port to become reachable.  The result's <c>ExitCode</c> is 0 on
+	/// success and 1 on timeout or process failure; the failure kind, host exit
+	/// code and captured stderr let the caller decide on a safe-mode retry.
 	/// </summary>
-	public static async Task<int> RunDirectProcessAsync(
+	public static async Task<DirectSpawnResult> RunDirectProcessAsync(
 		ProcessStartInfo startInfo,
 		ILogger logger,
 		int readinessTimeoutMs = 30_000)
@@ -359,13 +381,14 @@ internal static class DevServerProcessHelper
 		if (port <= 0)
 		{
 			logger.LogWarning("Unable to extract HTTP port from host arguments; skipping readiness wait.");
-			return 0;
+			return DirectSpawnResult.Ready;
 		}
 
 		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs);
 		if (!ready)
 		{
-			if (process.HasExited)
+			var died = process.HasExited;
+			if (died)
 			{
 				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);
 			}
@@ -386,7 +409,11 @@ internal static class DevServerProcessHelper
 				logger.LogError("Host stderr:\n{ErrorOutput}", stdErr);
 			}
 
-			return 1;
+			return new DirectSpawnResult(
+				1,
+				died ? DirectSpawnFailure.DiedBeforeReady : DirectSpawnFailure.ReadinessTimeout,
+				died ? process.ExitCode : null,
+				stdErr);
 		}
 
 		logger.LogInformation("DevServer is ready on port {Port}.", port);
@@ -404,10 +431,10 @@ internal static class DevServerProcessHelper
 				process.Id);
 			await process.WaitForExitAsync();
 			logger.LogDebug("Host process exited with code {ExitCode}.", process.ExitCode);
-			return process.ExitCode;
+			return new DirectSpawnResult(process.ExitCode, DirectSpawnFailure.None, process.ExitCode, errorSb.ToString());
 		}
 
-		return 0;
+		return DirectSpawnResult.Ready;
 	}
 
 	/// <summary>

@@ -29,16 +29,23 @@ internal sealed record StartCommandArgs(
 /// </summary>
 internal sealed class StartCommandHandler
 {
+	/// <summary>
+	/// <c>--addins</c> value that disables add-ins on every host version: it splits to
+	/// zero add-in paths (semicolon separator, empty entries removed) while its presence
+	/// suppresses the host's MSBuild-based add-in discovery.
+	/// </summary>
+	internal const string SafeModeAddInsValue = ";";
+
 	private readonly ILogger _logger;
 	private readonly IDevServerLookup _lookup;
 	private readonly Func<int, string, Task<bool>> _rebindIdeChannel;
-	private readonly Func<ProcessStartInfo, Task<int>> _spawnProcess;
+	private readonly Func<ProcessStartInfo, Task<DirectSpawnResult>> _spawnProcess;
 
 	public StartCommandHandler(
 		ILogger logger,
 		IDevServerLookup lookup,
 		Func<int, string, Task<bool>> rebindIdeChannel,
-		Func<ProcessStartInfo, Task<int>> spawnProcess)
+		Func<ProcessStartInfo, Task<DirectSpawnResult>> spawnProcess)
 	{
 		_logger = logger;
 		_lookup = lookup;
@@ -310,8 +317,54 @@ internal sealed class StartCommandHandler
 		_logger.LogInformation("Starting DevServer in direct mode: {Command} {Args}",
 			startInfo.FileName, startInfo.Arguments);
 
-		return await _spawnProcess(startInfo);
+		var result = await _spawnProcess(startInfo);
+
+		if (ShouldRetryInSafeMode(result, addins, effectiveParsed.Solution))
+		{
+			_logger.LogWarning(
+				"The DevServer host crashed during startup (exit code {HostExitCode}) before becoming ready — most often a " +
+				"broken add-in dependency. Retrying once in safe mode with add-ins disabled: Hot Reload stays available, " +
+				"but IDE add-ins (Hot Design, Uno Settings) are unavailable for this session. Host error output:\n{StdErr}",
+				result.HostExitCode, result.StdErr);
+
+			var safeModeStartInfo = BuildDirectLaunchArgs(
+				hostPath, effectiveParsed, SafeModeAddInsValue, workingDirectory, enableMajorRollForward: enableMajorRollForward);
+
+			var safeModeResult = await _spawnProcess(safeModeStartInfo);
+
+			if (safeModeResult.ExitCode == 0)
+			{
+				_logger.LogWarning(
+					"DevServer started in safe mode (add-ins disabled). Fix the add-in failure above to restore full functionality.");
+			}
+			else
+			{
+				_logger.LogError(
+					"DevServer failed to start even in safe mode, so the crash is not add-in related. Host error output:\n{StdErr}",
+					safeModeResult.StdErr);
+			}
+
+			return safeModeResult.ExitCode;
+		}
+
+		return result.ExitCode;
 	}
+
+	/// <summary>
+	/// A safe-mode retry is worthwhile only when the host process died before becoming
+	/// ready (a startup crash, not a readiness timeout) AND the launch would actually
+	/// have loaded add-ins — either pre-resolved paths or MSBuild discovery via the
+	/// solution. <see cref="SafeModeAddInsValue"/> itself yields zero paths, so a
+	/// safe-mode launch can never trigger a second retry.
+	/// </summary>
+	internal static bool ShouldRetryInSafeMode(DirectSpawnResult result, string? addins, string? solution)
+		=> result.Failure == DirectSpawnFailure.DiedBeforeReady
+			&& WouldLoadAddIns(addins, solution);
+
+	private static bool WouldLoadAddIns(string? addins, string? solution)
+		=> addins is not null
+			? addins.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length > 0
+			: solution is not null;
 
 	private async Task TryUpdateCsprojUserAsync(string? solution, int port)
 	{
