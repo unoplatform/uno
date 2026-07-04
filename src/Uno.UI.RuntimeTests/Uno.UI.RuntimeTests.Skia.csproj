@@ -72,6 +72,7 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinUI.Graphics.Win2D\Uno.WinUI.Graphics.Win2D.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
