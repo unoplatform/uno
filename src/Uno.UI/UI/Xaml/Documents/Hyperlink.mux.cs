@@ -20,8 +20,10 @@ namespace Microsoft.UI.Xaml.Documents
 			var element = GetContainingFrameworkElement();
 			return
 				element != null &&
-				// Concept of IsActive is currently not present in Uno
-				//element.IsActive && IsActive &&
+#if __CROSSRUNTIME__
+				// WinUI checks element.IsActive && IsActive; the TextElement side has no Uno equivalent yet.
+				element.IsActiveOrAttachedUnderActiveAncestor() &&
+#endif
 				element is not Control { IsEnabled: false } &&
 				element.Visibility == Visibility.Visible &&
 				element.AreAllAncestorsVisible() &&
