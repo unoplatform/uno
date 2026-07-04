@@ -46,8 +46,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly List<PendingStructureChange> _pendingStructureChanges = new();
 	private bool _structureChangeFlushQueued;
 
-	// Matches WinUI's AP_BULK_CHILDREN_LIMIT: more than this many add/remove on one container in a
-	// single coalescing window collapses to a single ChildrenInvalidated/ChildrenBulk* event.
+	// Matches WinUI's AP_BULK_CHILDREN_LIMIT. Within one coalescing window, per container:
+	// if total add+remove exceeds this, collapse to a single ChildrenInvalidated; otherwise a
+	// per-type count that reaches this emits ChildrenBulkAdded/ChildrenBulkRemoved, and below it
+	// individual ChildAdded/ChildRemoved.
 	private const int BulkChildrenLimit = 20;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
@@ -296,10 +298,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// incorporate/announce a newly revealed element, so the revealed content was rendered but
 		// never surfaced to automation.
 		var ancestorProvider = FindNearestAncestorProvider(parent);
-		if (ancestorProvider is null)
-		{
-			return;
-		}
 
 		// Drop the cached children along the path so the next navigation rebuilds from current state.
 		ancestorProvider.InvalidateChildrenCache();
@@ -382,11 +380,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// scrolls off) raises ChildRemoved ON THE CONTAINER with the removed child's runtime id
 		// (CUIElement::LeavePCScene -> RegisterForStructureChangedEvent(Removed)).
 		var ancestorProvider = FindNearestAncestorProvider(parent);
-		if (ancestorProvider is null)
-		{
-			return;
-		}
-
 		ancestorProvider.InvalidateChildrenCache();
 
 		if (!listening)
@@ -409,7 +402,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return provider;
 		}
 
-		var peer = element.GetOrCreateAutomationPeer();
+		var peer = element.CachedAutomationPeer;
 		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
 	}
 
@@ -484,7 +477,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 	}
 
-	private Win32RawElementProvider? FindNearestAncestorProvider(UIElement element)
+	private Win32RawElementProvider FindNearestAncestorProvider(UIElement element)
 	{
 		UIElement? current = element;
 		while (current is not null)
@@ -524,7 +517,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		_structureChangeFlushQueued = true;
-		_dispatcherQueue.TryEnqueue(() =>
+		if (!_dispatcherQueue.TryEnqueue(() =>
 		{
 			_structureChangeFlushQueued = false;
 
@@ -536,7 +529,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			}
 
 			FlushStructureChanges();
-		});
+		}))
+		{
+			_structureChangeFlushQueued = false;
+		}
 	}
 
 	/// <summary>
