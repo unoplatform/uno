@@ -79,14 +79,14 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashArray()
 		{
-			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			var strokeDashArray = StrokeDashArray;
 			if (strokeDashArray is null)
 			{
-				_shape.StrokeDashArray = null;
+				_shape.StrokeDashArray.Clear();
 				return;
 			}
 
+			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			for (int i = 0; i < strokeDashArray.Count; i++)
 			{
 				compositionStrokeDashArray.Add((float)strokeDashArray[i]);
