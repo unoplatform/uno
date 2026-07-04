@@ -382,6 +382,7 @@ internal class Win32RawElementProvider :
 	{
 		get
 		{
+			ThrowIfDisconnected();
 			if (_isRoot)
 			{
 				var hr = Win32UIAutomationInterop.UiaHostProviderFromHwnd(_hwnd, out var hostProvider);
@@ -552,7 +553,11 @@ internal class Win32RawElementProvider :
 		];
 	}
 
-	public IRawElementProviderFragment[]? GetEmbeddedFragmentRoots() => null;
+	public IRawElementProviderFragment[]? GetEmbeddedFragmentRoots()
+	{
+		ThrowIfDisconnected();
+		return null;
+	}
 
 	public void SetFocus()
 	{
@@ -569,7 +574,13 @@ internal class Win32RawElementProvider :
 	}
 
 	public IRawElementProviderFragmentRoot? FragmentRoot
-		=> _accessibility.RootProvider;
+	{
+		get
+		{
+			ThrowIfDisconnected();
+			return _accessibility.RootProvider;
+		}
+	}
 
 	// IRawElementProviderFragmentRoot (only meaningful on root element)
 
