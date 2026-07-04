@@ -79,6 +79,9 @@
 		<!-- Link host-side assembly resolution helper for unit testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\HostAssemblyResolution.cs" Link="Helpers\HostAssemblyResolution.cs" />
 
+		<!-- Link add-in hosted-service quarantine for unit testing -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Extensibility\AddInHostedServiceQuarantine.cs" Link="Extensibility\AddInHostedServiceQuarantine.cs" />
+
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IIdeChannelManager.cs" Link="IDEChannel\IIdeChannelManager.cs" />
@@ -114,6 +117,11 @@
 		                  UndefineProperties="TargetFramework"
 		                  Private="false" />
 		<ProjectReference Include="Fixtures\AddInWithDiServiceRegistration\AddInWithDiServiceRegistration.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithFailingHostedService\AddInWithFailingHostedService.csproj"
 		                  ReferenceOutputAssembly="false"
 		                  SkipGetTargetFrameworkProperties="true"
 		                  UndefineProperties="TargetFramework"
@@ -181,6 +189,20 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_DiFixtureBinFiles)"
 		      DestinationFolder="$(OutDir)Fixtures\AddInWithDiServiceRegistration\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!-- AddInWithFailingHostedService: net9.0 fixture whose hosted-service ctor throws (quarantine coverage) -->
+		<MSBuild Projects="Fixtures\AddInWithFailingHostedService\AddInWithFailingHostedService.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_FailingHostedFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_FailingHostedFixtureBinFiles Include="%(_FailingHostedFixtureOutput.RootDir)%(_FailingHostedFixtureOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_FailingHostedFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithFailingHostedService\%(RecursiveDir)"
 		      SkipUnchangedFiles="true" />
 
 		<!--

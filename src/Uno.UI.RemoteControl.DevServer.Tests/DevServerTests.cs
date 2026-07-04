@@ -210,6 +210,60 @@ public class DevServerTests
 		}
 	}
 
+	// ------------------------------------------------------------------ hosted-service quarantine (uno-private#1968)
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Quarantine regression for uno-private#1968: an add-in hosted service whose constructor throws (e.g. a missing licensing dependency) must not kill the host — the DevServer must become ready and still start the add-in's remaining hosted services.")]
+	public async Task DevServer_ShouldBecomeReady_WhenAddInHostedServiceCtorThrows()
+	{
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var fixtureDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithFailingHostedService", "AddInWithFailingHostedService.dll");
+
+		File.Exists(fixtureDll).Should()
+			.BeTrue("failing hosted-service fixture must be staged by _BuildAndCopyAddInTestFixtures");
+
+		var healthySentinel = Path.Combine(Path.GetTempPath(), $"quarantine-healthy-{Guid.NewGuid():N}.txt");
+		try
+		{
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_QUARANTINE_HEALTHY_SENTINEL"] = healthySentinel,
+				});
+
+			try
+			{
+				var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
+				helper.EnsureStarted();
+
+				// Without quarantine, ThrowingCtorHostedService's FileNotFoundException
+				// propagates out of Host.StartAsync and the host dies before ready —
+				// the exact uno-private#1968 failure shape.
+				started.Should().BeTrue("the host must become ready despite the failing add-in hosted service");
+				helper.AssertRunning();
+
+				// The healthy hosted service is registered AFTER the throwing one; its
+				// sentinel proves startup continued past the quarantined failure.
+				File.Exists(healthySentinel).Should().BeTrue(
+					"the add-in's healthy hosted service must still have been started after the failing one was quarantined");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
+		}
+		finally
+		{
+			if (File.Exists(healthySentinel))
+			{
+				File.Delete(healthySentinel);
+			}
+		}
+	}
+
 	// ------------------------------------------------------------------ cross-major version regression (#23287)
 
 	[TestMethod]
