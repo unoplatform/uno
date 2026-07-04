@@ -356,19 +356,47 @@ public class Given_CompositionSpriteShape
 		await UITestHelper.Load(host);
 		await UITestHelper.WaitForIdle();
 		var screenshot = await UITestHelper.ScreenShot(host);
+		var rasterizationScale = host.XamlRoot?.RasterizationScale ?? 1d;
 
-		// Get bounding box of the red pixels — for a horizontal line, .Height is the rasterized
-		// stroke thickness. Use a wide color tolerance (200) so antialiased fringe pixels (which
-		// shade from pure red toward white at the stroke edges) still register as "red" — without
-		// this, GetColorBounds reports only the densely-saturated centre and underestimates the
-		// geometric stroke width by ~20%.
-		var bounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 200);
-		Assert.IsFalse(bounds.IsEmpty, "Stroke not rendered (no red pixels found).");
+		// Measure the stroke thickness from the raw physical bitmap. ImageAssert.GetColorBounds samples
+		// the physical screenshot only at logical-grid positions (every RasterizationScale physical px)
+		// and reports maxY-minY; at high DPI (e.g. 2.5) that sparse sampling under-reports a correct
+		// ~2.5px stroke as ~1px. Native WinUI, rendered and measured the same way, fails the identical
+		// assertion — so this is a measurement artifact, not a rendering difference (Uno's stroke matches
+		// WinUI to within 0.01 logical px). Instead we integrate the red coverage down the band's centre
+		// column, which conserves the true geometric thickness regardless of antialiasing.
+		var pixels = screenshot.GetPixels(); // physical, un-multiplied BGRA
+		int pw = screenshot.Bitmap.PixelWidth, ph = screenshot.Bitmap.PixelHeight;
+
+		int minX = int.MaxValue, maxX = int.MinValue;
+		for (int y = 0; y < ph; y++)
+		{
+			for (int x = 0; x < pw; x++)
+			{
+				var off = (y * pw + x) * 4;
+				if (pixels[off + 2] > 120 && pixels[off + 1] < 120 && pixels[off + 0] < 120 && pixels[off + 3] > 120)
+				{
+					if (x < minX) { minX = x; }
+					if (x > maxX) { maxX = x; }
+				}
+			}
+		}
+		Assert.IsTrue(maxX >= minX, "Stroke not rendered (no red pixels found).");
+
+		// Red-over-white coverage integral (Σ (255-G)/255) down the band's centre column = geometric
+		// stroke thickness in physical px; divide by the rasterization scale to get logical px.
+		var centreX = (minX + maxX) / 2;
+		double coveragePhysical = 0;
+		for (int y = 0; y < ph; y++)
+		{
+			coveragePhysical += (255 - pixels[(y * pw + centreX) * 4 + 1]) / 255.0;
+		}
+		var strokePixels = coveragePhysical / rasterizationScale;
 
 		// Tolerance is supplied per-call: tighter for cases that must discriminate against the
 		// pre-fix value, looser for the no-scale baseline case.
-		Assert.AreEqual(expectedStrokePixels, bounds.Height, tolerance,
-			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {bounds.Height}px (bounds: {bounds}).");
+		Assert.AreEqual(expectedStrokePixels, strokePixels, tolerance,
+			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {strokePixels:F2}px (physical coverage: {coveragePhysical:F2}, scale: {rasterizationScale}).");
 	}
 
 	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null, Windows.UI.Color? color = null)
