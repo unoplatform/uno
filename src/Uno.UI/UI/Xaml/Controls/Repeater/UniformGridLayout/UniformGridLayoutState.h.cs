@@ -34,10 +34,12 @@ namespace Microsoft.UI.Xaml.Controls
 		//	double minRowSpacing,
 		//	double minColumnSpacing,
 		//	uint maxItemsPerLine);
+		//void InvalidateElementSize();
 
 		// private
 		FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
 
+		bool m_isEffectiveSizeValid = false;
 		double m_effectiveItemWidth = 0.0;
 		double m_effectiveItemHeight = 0.0;
 
