@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateResizingFirstItemResizesOtherItemsInGridLayout()
 		{
 			RunOnUIThread.Execute(() =>
@@ -299,21 +299,21 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateDefaultWidthForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Width);
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateDefaultHeightForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Height);
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateDefaultSizeForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Size);
@@ -352,21 +352,21 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementWidthForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Width);
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementHeightForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Height);
 		}
 
 		[TestMethod]
-		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
+		[Ignore("UNO: asserts WinUI's default Button height (32); Uno's default Button measures 30.5 (ButtonPadding 8,4,8,5 + text metrics vs WinUI 11,5,11,6). UniformGridLayout correctly uses the first item's measured size, so this is a Button/theming metric gap, not a Repeater/layout bug.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementSizeForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Size);
