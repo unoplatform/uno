@@ -1009,7 +1009,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Common.LayoutExtension.SetOrientation throws 'layout unknown' for this shared-layout scenario (test helper gap).")]
 		public void ValidateLayoutSharing()
 		{
 			RunOnUIThread.Execute(() =>
