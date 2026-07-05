@@ -373,7 +373,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: FlowLayoutAlgorithm justification/line-alignment offsets the minor axis with an inverted sign vs WinUI (expected +Y, got -Y). Pending layout-algorithm parity refresh.")]
 		public void ValidateGridLayoutJustificationAndStretch()
 		{
 			RunOnUIThread.Execute(() =>
@@ -772,7 +771,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: FlowLayoutAlgorithm justification/line-alignment offsets the minor axis with an inverted sign vs WinUI (expected +Y, got -Y). Pending layout-algorithm parity refresh.")]
 		public void ValidateFlowLayoutLineAlignment()
 		{
 			RunOnUIThread.Execute(() =>
