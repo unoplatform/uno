@@ -1,4 +1,4 @@
-﻿#if false
+﻿#if true // MUX FlowLayout parity tests, re-enabled for Uno. Scroll/effective-viewport estimation cases are #if false'd below (obsolete IdleSynchronizer, timing-dependent) pending a ViewportManager refresh; the layout-geometry tests are active.
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -38,6 +38,10 @@ using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
 using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
+// Uno-specific: these helper types now collide with Uno's internal Microsoft.UI.Xaml.Controls
+// equivalents (which became visible to the test assembly), so alias them to the test Common helpers.
+using OrientationBasedMeasures = Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.OrientationBasedMeasures;
+using ScrollOrientation = Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.ScrollOrientation;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -163,6 +167,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateResizingFirstItemResizesOtherItemsInGridLayout()
 		{
 			RunOnUIThread.Execute(() =>
@@ -294,18 +299,21 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateDefaultWidthForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Width);
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateDefaultHeightForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Height);
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateDefaultSizeForGridLayoutItemsIsBasedOnFirstItem()
 		{
 			ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice.Size);
@@ -344,24 +352,28 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementWidthForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Width);
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementHeightForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Height);
 		}
 
 		[TestMethod]
+		[Ignore("UNO: UniformGridLayout default/adaptive item sizing based on the first item differs from WinUI (e.g. 30.5 vs 32). Pending layout parity refresh.")]
 		public void ValidateAdaptabilityWhenChangingFirstElementSizeForGridLayout()
 		{
 			ValidateAdaptabilityWhenChangingTheFirstElementForGridLayout(DimensionChoice.Size);
 		}
 
 		[TestMethod]
+		[Ignore("UNO: FlowLayoutAlgorithm justification/line-alignment offsets the minor axis with an inverted sign vs WinUI (expected +Y, got -Y). Pending layout-algorithm parity refresh.")]
 		public void ValidateGridLayoutJustificationAndStretch()
 		{
 			RunOnUIThread.Execute(() =>
@@ -760,6 +772,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: FlowLayoutAlgorithm justification/line-alignment offsets the minor axis with an inverted sign vs WinUI (expected +Y, got -Y). Pending layout-algorithm parity refresh.")]
 		public void ValidateFlowLayoutLineAlignment()
 		{
 			RunOnUIThread.Execute(() =>
@@ -913,6 +926,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Validate that the extent and realized items look fine with connected and disconnected
 		// jumps for stack/grid and flow layouts.
 
+#if false // Scroll/effective-viewport estimation tests: obsolete IdleSynchronizer + timing-dependent. Re-enable with async idle-sync once ViewportManager effective-viewport support is refreshed. Layout-geometry tests remain active.
 		[TestMethod]
 		public void ValidateEstimations_Stack_Horizontal()
 		{
@@ -948,6 +962,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			ValidateLayoutEstimations(ScrollOrientation.Vertical, LayoutChoice.Flow);
 		}
+#endif
 
 		[TestMethod]
 		public void VerifyFlowLayoutOnLineArranged()
@@ -994,6 +1009,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: Common.LayoutExtension.SetOrientation throws 'layout unknown' for this shared-layout scenario (test helper gap).")]
 		public void ValidateLayoutSharing()
 		{
 			RunOnUIThread.Execute(() =>
@@ -1287,6 +1303,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Make sure that GridLayout does not end up de-virtualizing if scrolling in the 
 		// same orientation as items are being laid out. It will layout in one line and 
 		// never wrap, but we should avoid devirtualizing.
+#if false // Scroll/effective-viewport test: obsolete IdleSynchronizer + timing-dependent. Re-enable with async idle-sync once ViewportManager effective-viewport support is refreshed.
 		[TestMethod]
 		public void ValidateGridLayoutWithSameOrientationAsScrolling()
 		{
@@ -1355,6 +1372,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 			}
 		}
+#endif
 
 		[TestMethod]
 		public void VerifyItemsGetFullSpaceInMajorDirectionWhenSmallerThanLineSize()
@@ -1584,6 +1602,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			};
 		}
 
+#if false // Helper for the disabled scroll/effective-viewport estimation tests above. Uses obsolete IdleSynchronizer.
 		private void ValidateLayoutEstimations(ScrollOrientation scrollOrientation, LayoutChoice layoutChoice)
 		{
 			Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
@@ -1789,6 +1808,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 			});
 		}
+#endif
 
 		private void ValidateDimensionForGridLayoutItemsIsBasedOnFirstItem(DimensionChoice dimension)
 		{
@@ -2010,7 +2030,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 		}
 
+#if false // Only used by the disabled scroll/effective-viewport tests above.
 		private int DefaultWaitTime = 2000;
+#endif
 
 		#endregion
 	}
