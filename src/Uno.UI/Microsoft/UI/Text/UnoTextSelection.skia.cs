@@ -7,12 +7,9 @@ namespace Microsoft.UI.Text
 	// Uno-specific functional Text Object Model selection over the RichEditBox plain-text buffer.
 	//
 	// Inherits the functional plain-text range behavior from UnoTextRange and adds the selection-only
-	// surface (TypeText, Options, Type, horizontal Move*/HomeKey/EndKey). This is a programmatic
-	// selection: it edits and navigates the buffer and drives rendering, but is not yet bound to an
-	// interactive caret (that arrives with the shared editing engine extraction).
-	//
-	// TODO Uno: Vertical navigation (MoveUp/MoveDown) and per-line Home/End need the layout-aware
-	// engine and are treated as no-ops for now.
+	// surface (TypeText, Options, Type, horizontal Move*/HomeKey/EndKey plus layout-aware vertical
+	// MoveUp/MoveDown and per-line Home/End). This is a programmatic selection: it edits and navigates
+	// the buffer and drives rendering, and mirrors its changes onto the interactive caret.
 	internal sealed class UnoTextSelection : UnoTextRange, global::Microsoft.UI.Text.ITextSelection
 	{
 		private global::Microsoft.UI.Text.SelectionOptions _options;
@@ -89,7 +86,30 @@ namespace Microsoft.UI.Text
 
 		public int HomeKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			// Only the Story unit (document start) is supported without a line-aware engine.
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				// The caret (range end) determines the current visual line.
+				if (!_document.TryGetLineBounds(_end, out var lineStart, out _, out _, out _))
+				{
+					return 0;
+				}
+
+				var oldStart = _start;
+				_start = lineStart;
+				if (!extend)
+				{
+					_end = lineStart;
+				}
+				else if (_end < _start)
+				{
+					(_start, _end) = (_end, _start);
+				}
+
+				OnRangeChanged();
+				return Math.Abs(oldStart - _start);
+			}
+
+			// Only the Story unit (document start) is otherwise supported.
 			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Story)
 			{
 				return 0;
@@ -108,7 +128,29 @@ namespace Microsoft.UI.Text
 
 		public int EndKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			// Only the Story unit (document end) is supported without a line-aware engine.
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				if (!_document.TryGetLineBounds(_end, out _, out var lineEnd, out _, out _))
+				{
+					return 0;
+				}
+
+				var oldEnd = _end;
+				_end = lineEnd;
+				if (!extend)
+				{
+					_start = lineEnd;
+				}
+				else if (_start > _end)
+				{
+					(_start, _end) = (_end, _start);
+				}
+
+				OnRangeChanged();
+				return Math.Abs(_end - oldEnd);
+			}
+
+			// Only the Story unit (document end) is otherwise supported.
 			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Story)
 			{
 				return 0;
@@ -126,10 +168,43 @@ namespace Microsoft.UI.Text
 			return Math.Abs(length - old);
 		}
 
-		// TODO Uno: Vertical caret navigation requires the layout-aware editing engine.
-		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend) => 0;
+		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
+			=> MoveVertical(up: true, count, extend);
 
-		public int MoveDown(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend) => 0;
+		public int MoveDown(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
+			=> MoveVertical(up: false, count, extend);
+
+		// Vertical caret movement over the shared layout, preserving the sticky horizontal offset.
+		// TODO Uno: honor Window/Screen page units and report the exact number of lines moved.
+		private int MoveVertical(bool up, int count, bool extend)
+		{
+			if (count <= 0)
+			{
+				return 0;
+			}
+
+			// The caret sits at the range end; move it up/down from there.
+			if (!_document.TryGetVerticalTarget(_end, up, count, out var target) || target == _end)
+			{
+				return 0;
+			}
+
+			if (extend)
+			{
+				_end = target;
+				if (_end < _start)
+				{
+					(_start, _end) = (_end, _start);
+				}
+			}
+			else
+			{
+				_start = _end = target;
+			}
+
+			OnRangeChanged();
+			return count;
+		}
 
 		// Sync the owning control's interactive caret/selection when this programmatic selection changes.
 		private protected override void OnRangeChanged() => _document.NotifySelectionChanged();

@@ -498,6 +498,17 @@ namespace Microsoft.UI.Text
 				// The end of a single character is one position forward from a degenerate range.
 				target = Math.Min(_end + (_start == _end ? 1 : 0), _document.TextLength);
 			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				// The visual line end is geometry-based (wrap-aware); probe end-1 for a non-degenerate range.
+				var probe = _end > _start ? _end - 1 : _end;
+				if (!_document.TryGetLineBounds(probe, out _, out var lineEnd, out _, out _))
+				{
+					return 0;
+				}
+
+				target = lineEnd;
+			}
 			else
 			{
 				var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
@@ -539,6 +550,15 @@ namespace Microsoft.UI.Text
 			{
 				// The start of a character is the range's own start; nothing to move.
 				target = _start;
+			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				if (!_document.TryGetLineBounds(_start, out var lineStart, out _, out _, out _))
+				{
+					return 0;
+				}
+
+				target = lineStart;
 			}
 			else
 			{
@@ -591,6 +611,21 @@ namespace Microsoft.UI.Text
 				return 0;
 			}
 
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				if (!_document.TryGetLineBounds(_start, out var lineStart, out _, out _, out _))
+				{
+					return 0;
+				}
+
+				var probe = _end > _start ? _end - 1 : _end;
+				_document.TryGetLineBounds(probe, out _, out var lineEnd, out _, out _);
+				_start = lineStart;
+				_end = Math.Max(lineEnd, lineStart);
+				OnRangeChanged();
+				return (_end - _start) - originalLength;
+			}
+
 			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
 			if (chunks is null || chunks.Count == 0)
 			{
@@ -617,6 +652,11 @@ namespace Microsoft.UI.Text
 			{
 				// 1-based character index of the range start; 0 when past the end of the story.
 				return _start >= _document.TextLength && _document.TextLength > 0 ? 0 : _start + 1;
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				return _document.TryGetLineBounds(_start, out _, out _, out var lineIndex, out _) ? lineIndex + 1 : 0;
 			}
 
 			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
