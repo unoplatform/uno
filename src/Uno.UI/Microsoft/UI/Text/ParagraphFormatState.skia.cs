@@ -31,10 +31,11 @@ namespace Microsoft.UI.Text
 	// Object Model. Unlike ITextParagraphFormat (which is tri-state and can be "undefined" over a
 	// mixed range), a resolved paragraph state always holds concrete values.
 	//
-	// TODO Uno: None of these attributes is rendered yet — the shared DisplayBlock is a single
-	// TextBlock and cannot show per-paragraph alignment/indents/spacing/lists. The state round-trips
-	// faithfully through the Text Object Model (get/set/clone/undo/IsEqual); visual rendering of
-	// paragraph formatting is a documented gap.
+	// TODO Uno: A *uniform* paragraph alignment (all paragraphs sharing one Center/Right/Justify value)
+	// is now projected onto the shared single-TextBlock DisplayBlock (see RichEditBox.ApplyParagraphAlignment),
+	// using the same TextAlignment render path as TextBox. Per-paragraph alignment divergence, indents,
+	// spacing, and lists still cannot be shown by a single TextBlock and remain a documented gap — the
+	// state round-trips faithfully through the Text Object Model (get/set/clone/undo/IsEqual) regardless.
 	internal sealed class ParagraphFormatState : IEquatable<ParagraphFormatState>
 	{
 		public global::Microsoft.UI.Text.ParagraphAlignment Alignment = global::Microsoft.UI.Text.ParagraphAlignment.Left;
