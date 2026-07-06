@@ -8139,7 +8139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(TextBoxCore core) { }
+			public void StartImeSession(IImeSessionHost host) { }
 
 			public void EndImeSession()
 			{

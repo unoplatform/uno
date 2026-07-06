@@ -20,7 +20,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 
 	private bool _isComposing;
 	private string _lastComposingText = string.Empty;
-	private TextBoxCore? _activeTextBox;
+	private IImeSessionHost? _activeTextBox;
 
 	public bool IsComposing => _isComposing;
 
@@ -29,14 +29,14 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBoxCore core)
+	public void StartImeSession(IImeSessionHost host)
 	{
-		if (core.IsPassword)
+		if (host is PasswordBox)
 		{
 			return;
 		}
 
-		_activeTextBox = core;
+		_activeTextBox = host;
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -151,7 +151,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, Owner.XamlRoot: { } })
+		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } })
 		{
 			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
 			var caretRect = parsedText.GetRectForIndex(selEnd);

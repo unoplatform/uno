@@ -20,7 +20,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 
 	private bool _isComposing;
 	private string _lastComposingText = string.Empty;
-	private TextBoxCore? _activeTextBox;
+	private IImeSessionHost? _activeTextBox;
 	private nint _activeWindowHandle;
 
 	public bool IsComposing => _isComposing;
@@ -30,19 +30,19 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBoxCore core)
+	public void StartImeSession(IImeSessionHost host)
 	{
 		// Don't wire up composition events for PasswordBox — IME composition
 		// reveals characters, which is not appropriate for password fields.
-		if (core.IsPassword)
+		if (host is PasswordBox)
 		{
 			return;
 		}
 
-		_activeTextBox = core;
+		_activeTextBox = host;
 
 		// Find the native window handle to activate IME routing on the native view
-		_activeWindowHandle = MacOSWindowHost.GetNativeHandleForXamlRoot(core.Owner.XamlRoot);
+		_activeWindowHandle = MacOSWindowHost.GetNativeHandleForXamlRoot(host.XamlRoot);
 		if (_activeWindowHandle != 0)
 		{
 			NativeUno.uno_set_ime_active(_activeWindowHandle, true);
@@ -172,7 +172,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, Owner.XamlRoot: { } xamlRoot })
+		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
 		{
 			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
 			var caretRect = parsedText.GetRectForIndex(selEnd);
