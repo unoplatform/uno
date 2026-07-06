@@ -419,6 +419,23 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// std::vector::resize(count, value) equivalent that preserves existing elements: grows by appending
+		// `value` or truncates from the end. Used by the fast path which progressively grows m_lineItemCounts.
+		private static void ResizeList<T>(List<T> list, int count, T value)
+		{
+			if (count < list.Count)
+			{
+				list.RemoveRange(count, list.Count - count);
+			}
+			else
+			{
+				while (list.Count < count)
+				{
+					list.Add(value);
+				}
+			}
+		}
+
 		private void EnsureItemsInfoDesiredAspectRatios(int itemCount) => ClearAndFill(m_itemsInfoDesiredAspectRatiosForRegularPath, itemCount, -1.0);
 
 		private void EnsureItemsInfoMinWidths(int itemCount) => ClearAndFill(m_itemsInfoMinWidthsForRegularPath, itemCount, -1.0);
@@ -2773,6 +2790,263 @@ namespace Microsoft.UI.Xaml.Controls
 				endSizedItemIndex,
 				beginLineVectorIndex,
 				isLastSizedLineStretchEnabled);
+		}
+
+		#endregion
+
+		#region Measure engine: fast-path layout (ComputeItemsLayoutFastPath) (WS-D3c)
+
+		// Applies the given scale factor to items [beginItemIndex, endItemIndex]'s items-info arrange widths,
+		// returning their total (unscaled by spacing) arrange width. MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal float SetItemRangeArrangeWidth(
+			int beginItemIndex,
+			int endItemIndex,
+			double actualLineHeight,
+			double averageAspectRatio,
+			double scaleFactor = 1.0)
+		{
+			MUX_ASSERT(beginItemIndex <= endItemIndex);
+			MUX_ASSERT(beginItemIndex >= 0);
+			MUX_ASSERT(endItemIndex < m_itemsInfoArrangeWidths.Count);
+
+			float totalArrangeWidth = 0.0f;
+
+			for (int itemIndex = beginItemIndex; itemIndex <= endItemIndex; itemIndex++)
+			{
+				float arrangeWidth = GetArrangeWidthFromItemsInfo(itemIndex, actualLineHeight, averageAspectRatio, scaleFactor);
+
+				SetArrangeWidthFromItemsInfo(itemIndex, arrangeWidth);
+
+				totalArrangeWidth += arrangeWidth;
+			}
+
+			return totalArrangeWidth;
+		}
+
+		// Fast-path layout used when the ItemsInfoRequested handler supplied aspect ratios for the entire source
+		// collection: performs a single greedy forward pass over m_itemsInfoArrangeWidths, deciding for each item
+		// whether to cumulate it on the current line or start a new one by comparing the shrink vs expand scale
+		// factors, growing m_lineItemCounts as needed. Returns the largest resulting line width.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal float ComputeItemsLayoutFastPath(
+			float availableWidth,
+			double actualLineHeight)
+		{
+			MUX_ASSERT(m_itemCount > 0);
+
+			EnsureItemsInfoArrangeWidths(m_itemCount);
+
+			MUX_ASSERT(UsesFastPathLayout());
+
+			// The existing average aspect ratio is used as a fallback aspect ratio for items
+			// given an aspect ratio <= 0 by the ItemsInfoRequested handler.
+			double averageAspectRatio = GetAverageAspectRatio(availableWidth, actualLineHeight);
+
+			for (int itemIndex = 0; itemIndex < m_itemCount; itemIndex++)
+			{
+				float arrangeWidth = GetArrangeWidthFromItemsInfo(itemIndex, actualLineHeight, averageAspectRatio);
+
+				SetArrangeWidthFromItemsInfo(itemIndex, arrangeWidth);
+			}
+
+			// Final line count is originally unknown. m_lineItemCounts is originally allocated to accommodate 5 items per line.
+			// The vector is progressively grown as needed when that assumption is too optimistic.
+			const int c_itemsPerLineAllocation = 5;
+			// The vector capacity is increased by 25% each time its size becomes too small.
+			const double c_lineCountGrowthFactor = 1.25;
+			int allocatedLineCount = m_itemCount / c_itemsPerLineAllocation + 1;
+
+			EnsureLineItemCounts(allocatedLineCount);
+
+			float minItemSpacing = (float)MinItemSpacing;
+			bool itemsAreStretched = ItemsStretch == LinedFlowLayoutItemsStretch.Fill;
+			int lineIndex = -1;
+			int lineItemCount = 0;
+			float lineWidth = 0.0f;
+			float maxLineWidth = 0.0f;
+
+			for (int itemIndex = 0; itemIndex < m_itemCount; itemIndex++)
+			{
+				float arrangeWidth = m_itemsInfoArrangeWidths[itemIndex];
+				double scaleFactor = 1.0;
+
+				if (lineWidth == 0.0f || lineWidth + minItemSpacing + arrangeWidth > availableWidth)
+				{
+					bool cumulate = lineWidth != 0.0f;
+
+					if (cumulate)
+					{
+						// Additional item goes beyond the available width.
+						MUX_ASSERT(lineWidth > 0.0);
+						MUX_ASSERT(lineWidth + minItemSpacing + arrangeWidth > availableWidth);
+						MUX_ASSERT(lineItemCount > 0);
+
+						// Determine whether it is better to create a new line or not.
+						double shrinkScaleFactor = ComputeLineShrinkFactor(
+							true /*forward*/,
+							itemIndex - lineItemCount /*sizedItemIndex*/,
+							lineItemCount + 1,
+							(double)lineWidth + minItemSpacing + arrangeWidth /*lineItemsWidth*/,
+							availableWidth,
+							(double)lineItemCount * minItemSpacing /*minItemSpacings*/,
+							actualLineHeight,
+							averageAspectRatio);
+
+						MUX_ASSERT(shrinkScaleFactor >= 0.0);
+						MUX_ASSERT(shrinkScaleFactor < 1.0);
+
+						double expandScaleFactor = ComputeLineExpandFactor(
+							true /*forward*/,
+							itemIndex - lineItemCount /*sizedItemIndex*/,
+							lineItemCount,
+							lineWidth /*lineItemsWidth*/,
+							availableWidth,
+							((double)lineItemCount - 1) * minItemSpacing /*minItemSpacings*/,
+							actualLineHeight,
+							averageAspectRatio);
+
+						MUX_ASSERT(expandScaleFactor > 1.0);
+
+						if (expandScaleFactor - 1.0 < 1.0 - shrinkScaleFactor || shrinkScaleFactor == 0.0)
+						{
+							// Creating a new line and leaving a gap in the current one requires a smaller
+							// expansion than the shrinkage required to add this item.
+							// Or the items' min widths prevent the shrinkage required to fit them in the line.
+							cumulate = false;
+
+							if (itemsAreStretched)
+							{
+								// Only expand the items when ItemsStretch is LinedFlowLayoutItemsStretch::Fill.
+								scaleFactor = expandScaleFactor;
+							}
+						}
+						else
+						{
+							// The line items need to shrink less to accommodate this additional item than expand to fill the gap,
+							// let it belong to the current line (cumulate == true).
+							scaleFactor = shrinkScaleFactor;
+						}
+					}
+
+					if (cumulate)
+					{
+						lineWidth += minItemSpacing + arrangeWidth;
+						lineItemCount++;
+					}
+					else
+					{
+						if (lineIndex >= 0 && m_lineItemCounts[lineIndex] == 0)
+						{
+							MUX_ASSERT(lineIndex < allocatedLineCount);
+							MUX_ASSERT(lineItemCount > 0);
+							MUX_ASSERT(lineWidth > 0);
+
+							m_lineItemCounts[lineIndex] = lineItemCount;
+
+							if (lineIndex + 1 == allocatedLineCount)
+							{
+								allocatedLineCount = Math.Max(allocatedLineCount + 1, (int)(c_lineCountGrowthFactor * allocatedLineCount));
+								ResizeList(m_lineItemCounts, allocatedLineCount, 0);
+							}
+
+							if (scaleFactor == 1.0)
+							{
+								maxLineWidth = Math.Max(lineWidth, maxLineWidth);
+							}
+							else
+							{
+								// Apply shrinking or expanding scale factor to line's m_itemsInfoArrangeWidths.
+								float totalArrangeWidth = SetItemRangeArrangeWidth(
+									itemIndex - lineItemCount /*beginItemIndex*/,
+									itemIndex - 1 /*endItemIndex*/,
+									actualLineHeight,
+									averageAspectRatio,
+									scaleFactor);
+
+								maxLineWidth = Math.Max(totalArrangeWidth + (lineItemCount - 1) * minItemSpacing, maxLineWidth);
+							}
+						}
+
+						lineWidth = arrangeWidth;
+						lineItemCount = 1;
+						lineIndex++;
+					}
+				}
+				else
+				{
+					lineWidth += minItemSpacing + arrangeWidth;
+					lineItemCount++;
+				}
+
+				if (lineWidth >= availableWidth)
+				{
+					MUX_ASSERT(lineIndex >= 0);
+					MUX_ASSERT(lineIndex < allocatedLineCount);
+					MUX_ASSERT(lineItemCount > 0);
+					MUX_ASSERT(lineWidth > 0);
+
+					m_lineItemCounts[lineIndex] = lineItemCount;
+
+					if (lineIndex + 1 == allocatedLineCount)
+					{
+						allocatedLineCount = Math.Max(allocatedLineCount + 1, (int)(c_lineCountGrowthFactor * allocatedLineCount));
+						ResizeList(m_lineItemCounts, allocatedLineCount, 0);
+					}
+
+					if (lineItemCount == 1 && lineWidth != availableWidth)
+					{
+						// The single item on the line is bigger than the available width.
+						scaleFactor = ComputeLineShrinkFactor(
+							true /*forward*/,
+							itemIndex /*sizedItemIndex*/,
+							1 /*lineItemCount*/,
+							lineWidth /*lineItemsWidth*/,
+							availableWidth,
+							0.0 /*minItemSpacings*/,
+							actualLineHeight,
+							averageAspectRatio);
+
+						MUX_ASSERT(scaleFactor >= 0.0);
+						MUX_ASSERT(scaleFactor < 1.0);
+					}
+
+					if (scaleFactor != 0.0 && scaleFactor != 1.0)
+					{
+						// Apply shrinking scale factor to line's m_itemsInfoArrangeWidths.
+						float totalArrangeWidth = SetItemRangeArrangeWidth(
+							itemIndex - lineItemCount + 1 /*beginItemIndex*/,
+							itemIndex /*endItemIndex*/,
+							actualLineHeight,
+							averageAspectRatio,
+							scaleFactor);
+
+						maxLineWidth = Math.Max(totalArrangeWidth + (lineItemCount - 1) * minItemSpacing, maxLineWidth);
+					}
+					else
+					{
+						maxLineWidth = Math.Max(lineWidth, maxLineWidth);
+					}
+
+					lineWidth = 0.0f;
+					lineItemCount = 0;
+				}
+			}
+
+			MUX_ASSERT(lineIndex >= 0);
+			MUX_ASSERT(lineIndex < allocatedLineCount);
+
+			if (lineItemCount > 0)
+			{
+				MUX_ASSERT(lineWidth > 0);
+				MUX_ASSERT(availableWidth >= lineWidth);
+
+				maxLineWidth = Math.Max(lineWidth, maxLineWidth);
+				m_lineItemCounts[lineIndex] = lineItemCount;
+			}
+
+			ResizeList(m_lineItemCounts, lineIndex + 1, 0);
+
+			return maxLineWidth;
 		}
 
 		#endregion
