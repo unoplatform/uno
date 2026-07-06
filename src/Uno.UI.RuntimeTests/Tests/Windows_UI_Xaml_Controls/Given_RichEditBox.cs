@@ -10,6 +10,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 #if __SKIA__
+using Windows.System;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Extensions;
 #endif
 
@@ -744,6 +746,254 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(brush);
 			Assert.AreEqual(red, brush.Color);
 		}
+		#region Interactive keyboard editing (IE-4)
+
+		private static void RaiseKey(RichEditBox sut, VirtualKey key, VirtualKeyModifiers modifiers = VirtualKeyModifiers.None, char unicodeKey = '\0')
+		{
+			var args = unicodeKey != '\0'
+				? new KeyRoutedEventArgs(sut, key, modifiers, unicodeKey: unicodeKey)
+				: new KeyRoutedEventArgs(sut, key, modifiers);
+			sut.SafeRaiseEvent(UIElement.KeyDownEvent, args);
+		}
+
+		private static async Task TypeAsync(RichEditBox sut, string text)
+		{
+			foreach (var c in text)
+			{
+				RaiseKey(sut, VirtualKey.None, VirtualKeyModifiers.None, c);
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Inserts_At_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abc", text);
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Backspace_Deletes_Before_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.Back);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("ab", text);
+			Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Delete_Removes_After_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.Home);
+			await WindowHelper.WaitForIdle();
+			RaiseKey(SUT, VirtualKey.Delete);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("bc", text);
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Left_Right_Arrows_Move_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			RaiseKey(SUT, VirtualKey.Left);
+			await WindowHelper.WaitForIdle();
+			RaiseKey(SUT, VirtualKey.Left);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+
+			RaiseKey(SUT, VirtualKey.Right);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Shift_Left_Extends_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Home_And_End_Move_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			RaiseKey(SUT, VirtualKey.Home);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+
+			RaiseKey(SUT, VirtualKey.End);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_CtrlA_Selects_All()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Replaces_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			await TypeAsync(SUT, "X");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("X", text);
+			Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Z_And_Y_Undo_Redo()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "ab");
+
+			RaiseKey(SUT, VirtualKey.Z, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("a", afterUndo);
+
+			RaiseKey(SUT, VirtualKey.Y, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			SUT.Document.GetText(TextGetOptions.None, out var afterRedo);
+			Assert.AreEqual("ab", afterRedo);
+		}
+
+		[TestMethod]
+		public async Task When_Enter_Inserts_Paragraph_Break()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "a");
+			RaiseKey(SUT, VirtualKey.Enter, VirtualKeyModifiers.None, '\r');
+			await WindowHelper.WaitForIdle();
+			await TypeAsync(SUT, "b");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("a\rb", text);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Ignores_Typing()
+		{
+			var SUT = new RichEditBox { IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(string.Empty, text);
+		}
+
+		#endregion
 #endif
 	}
 }
