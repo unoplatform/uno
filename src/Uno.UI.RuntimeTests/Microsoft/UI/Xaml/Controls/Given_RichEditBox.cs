@@ -109,6 +109,270 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsReadOnly = true;
 			Assert.IsTrue(SUT.IsReadOnly);
 		}
+
+		[TestMethod]
+		public async Task When_GetRange_Returns_Positions_And_Text()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			var range = SUT.Document.GetRange(0, 5);
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+			Assert.AreEqual(5, range.Length);
+			Assert.AreEqual("Hello", range.Text);
+			Assert.AreEqual("Hello World".Length + 1, range.StoryLength);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Text_Set_Edits_Document_And_Renders()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			var range = SUT.Document.GetRange(0, 5);
+			range.Text = "Howdy";
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Howdy World", text);
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+
+			await WindowHelper.WaitForIdle();
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.AreEqual("Howdy World", displayBlock.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_SetRange_Normalizes_And_Collapses()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			var range = SUT.Document.GetRange(0, 0);
+			range.SetRange(4, 1);
+			Assert.AreEqual(1, range.StartPosition);
+			Assert.AreEqual(4, range.EndPosition);
+
+			range.Collapse(true);
+			Assert.AreEqual(1, range.StartPosition);
+			Assert.AreEqual(1, range.EndPosition);
+
+			range.SetRange(1, 4);
+			range.Collapse(false);
+			Assert.AreEqual(4, range.StartPosition);
+			Assert.AreEqual(4, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Honors_Case()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "the quick brown fox");
+
+			var range = SUT.Document.GetRange(0, 0);
+			var found = range.FindText("quick", 100, FindOptions.None);
+			Assert.AreEqual(5, found);
+			Assert.AreEqual(4, range.StartPosition);
+			Assert.AreEqual(9, range.EndPosition);
+
+			// Case-insensitive by default.
+			var ci = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(3, ci.FindText("THE", 100, FindOptions.None));
+
+			// Case-sensitive miss leaves the range untouched.
+			var cs = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(0, cs.FindText("THE", 100, FindOptions.Case));
+			Assert.AreEqual(0, cs.StartPosition);
+			Assert.AreEqual(0, cs.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_ChangeCase_Rewrites_Content()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "hello world");
+
+			var range = SUT.Document.GetRange(0, 5);
+			range.ChangeCase(LetterCase.Upper);
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("HELLO world", text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Delete_Removes_Selection_And_Characters()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			// A non-degenerate range deletes its own content.
+			var range = SUT.Document.GetRange(5, 11);
+			var removed = range.Delete(TextRangeUnit.Character, 1);
+			Assert.AreEqual(6, removed);
+			SUT.Document.GetText(TextGetOptions.None, out var afterSelection);
+			Assert.AreEqual("Hello", afterSelection);
+			Assert.AreEqual(5, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+
+			// A degenerate range deletes forward by count.
+			var caret = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(2, caret.Delete(TextRangeUnit.Character, 2));
+			SUT.Document.GetText(TextGetOptions.None, out var afterForward);
+			Assert.AreEqual("llo", afterForward);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Move_Collapses_And_Clamps()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			var range = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(3, range.Move(TextRangeUnit.Character, 3));
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(3, range.EndPosition);
+
+			// Movement clamps at the end of the story.
+			Assert.AreEqual(2, range.Move(TextRangeUnit.Character, 10));
+			Assert.AreEqual(5, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+
+			// MoveStart / MoveEnd adjust each edge independently.
+			var edges = SUT.Document.GetRange(2, 2);
+			Assert.AreEqual(2, edges.MoveEnd(TextRangeUnit.Character, 2));
+			Assert.AreEqual(2, edges.StartPosition);
+			Assert.AreEqual(4, edges.EndPosition);
+			Assert.AreEqual(-1, edges.MoveStart(TextRangeUnit.Character, -1));
+			Assert.AreEqual(1, edges.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_GetClone_And_Comparisons()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			var range = SUT.Document.GetRange(0, 5);
+			var clone = range.GetClone();
+			Assert.AreEqual(0, clone.StartPosition);
+			Assert.AreEqual(5, clone.EndPosition);
+			Assert.IsTrue(range.IsEqual(clone));
+
+			var inner = SUT.Document.GetRange(1, 3);
+			Assert.IsTrue(inner.InRange(range));
+			Assert.IsFalse(range.InRange(inner));
+			Assert.IsTrue(range.InStory(inner));
+		}
+
+		[TestMethod]
+		public async Task When_Selection_TypeText_Drives_Document_And_Renders()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var selection = SUT.Document.Selection;
+			Assert.AreSame(selection, SUT.Document.Selection);
+			Assert.AreEqual(SelectionType.InsertionPoint, selection.Type);
+
+			selection.TypeText("Hi");
+			Assert.AreEqual(2, selection.StartPosition);
+			Assert.AreEqual(2, selection.EndPosition);
+
+			selection.TypeText(" there");
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Hi there", text);
+
+			await WindowHelper.WaitForIdle();
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.AreEqual("Hi there", displayBlock.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_MoveRight_Extends_And_TypeText_Replaces()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			var selection = SUT.Document.Selection;
+			selection.SetRange(0, 0);
+			Assert.AreEqual(SelectionType.InsertionPoint, selection.Type);
+
+			Assert.AreEqual(3, selection.MoveRight(TextRangeUnit.Character, 3, true));
+			Assert.AreEqual(0, selection.StartPosition);
+			Assert.AreEqual(3, selection.EndPosition);
+			Assert.AreEqual(SelectionType.Normal, selection.Type);
+
+			selection.TypeText("X");
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Xlo", text);
+			Assert.AreEqual(1, selection.StartPosition);
+			Assert.AreEqual(1, selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_HomeKey_EndKey_On_Story()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			var selection = SUT.Document.Selection;
+			selection.SetRange(2, 2);
+
+			selection.EndKey(TextRangeUnit.Story, false);
+			Assert.AreEqual(5, selection.StartPosition);
+			Assert.AreEqual(5, selection.EndPosition);
+
+			selection.HomeKey(TextRangeUnit.Story, false);
+			Assert.AreEqual(0, selection.StartPosition);
+			Assert.AreEqual(0, selection.EndPosition);
+		}
 #endif
 	}
 }

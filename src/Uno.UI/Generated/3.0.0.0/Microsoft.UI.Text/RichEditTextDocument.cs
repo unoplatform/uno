@@ -69,7 +69,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Text.ITextSelection Selection
 		{
@@ -163,7 +163,7 @@ namespace Microsoft.UI.Text
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetDefaultParagraphFormat()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Text.ITextRange GetRange(int startPosition, int endPosition)
 		{
