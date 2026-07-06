@@ -328,7 +328,23 @@ namespace Uno.UI
 
 		partial void InnerDestroy();
 
-		partial void InnerDestroy() => ResignCurrent();
+		partial void InnerDestroy()
+		{
+			ResignCurrent();
+
+			// Don't leave a destroyed activity as the ambient foreground context: repoint to
+			// another live activity, or clear it so ContextHelper falls back to the application context.
+			if (ContextHelper.TryGetCurrent(out var current) && ReferenceEquals(current, this))
+			{
+				BaseActivity? next;
+				lock (_instances)
+				{
+					next = _instances.Values.FirstOrDefault(activity => !ReferenceEquals(activity, this));
+				}
+
+				ContextHelper.SetForeground(next);
+			}
+		}
 
 		private void SetAsCurrent()
 		{
