@@ -16,15 +16,19 @@ namespace Microsoft.UI.Text
 	// per-paragraph alignment/indents/spacing/lists. Visual rendering is a documented gap.
 	internal sealed class UnoTextParagraphFormat : global::Microsoft.UI.Text.ITextParagraphFormat
 	{
-		// When bound to a range (via the range's ParagraphFormat getter), each setter applies
-		// immediately to that range's paragraphs — this makes the canonical
-		// `range.ParagraphFormat.Alignment = Center` idiom work, matching WinUI's live paragraph-format
-		// object. A cloned or default-constructed format is unbound and behaves as a plain value object.
-		private UnoTextRange? _boundRange;
+		// When bound, each setter applies immediately through the bound callback: for a range-bound
+		// format (via the range's ParagraphFormat getter) this pushes into that range's paragraphs —
+		// making the canonical `range.ParagraphFormat.Alignment = Center` idiom work, matching WinUI's
+		// live paragraph-format object; for the document default (GetDefaultParagraphFormat) it writes
+		// the document's default state. A cloned or default-constructed format is unbound and behaves as
+		// a plain value object.
+		private Action<UnoTextParagraphFormat>? _apply;
 
-		internal void Bind(UnoTextRange range) => _boundRange = range;
+		internal void Bind(UnoTextRange range) => _apply = range.ApplyParagraphFormat;
 
-		private void ApplyIfBound() => _boundRange?.ApplyParagraphFormat(this);
+		internal void BindApply(Action<UnoTextParagraphFormat> apply) => _apply = apply;
+
+		private void ApplyIfBound() => _apply?.Invoke(this);
 
 		// Enum-typed properties use their Undefined member as the "not defined" marker; FormatEffect
 		// properties use FormatEffect.Undefined; numeric properties carry an explicit "defined" flag.

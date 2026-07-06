@@ -15,15 +15,19 @@ namespace Microsoft.UI.Text
 	// persisted per run or rendered — see the TODO Uno note below.
 	internal sealed class UnoTextCharacterFormat : global::Microsoft.UI.Text.ITextCharacterFormat
 	{
-		// When bound to a range (via the range's CharacterFormat getter), each tracked-property setter
-		// applies immediately to that range — this makes the canonical `range.CharacterFormat.Bold = On`
-		// idiom work, matching WinUI's live character-format object. A cloned or default-constructed
-		// format is unbound and behaves as a plain value object.
-		private UnoTextRange? _boundRange;
+		// When bound, each tracked-property setter applies immediately through the bound callback: for a
+		// range-bound format (via the range's CharacterFormat getter) this pushes into that range's
+		// characters — making the canonical `range.CharacterFormat.Bold = On` idiom work, matching
+		// WinUI's live character-format object; for the document default (GetDefaultCharacterFormat) it
+		// writes the document's default state. A cloned or default-constructed format is unbound and
+		// behaves as a plain value object.
+		private Action<UnoTextCharacterFormat>? _apply;
 
-		internal void Bind(UnoTextRange range) => _boundRange = range;
+		internal void Bind(UnoTextRange range) => _apply = range.ApplyCharacterFormat;
 
-		private void ApplyIfBound() => _boundRange?.ApplyCharacterFormat(this);
+		internal void BindApply(Action<UnoTextCharacterFormat> apply) => _apply = apply;
+
+		private void ApplyIfBound() => _apply?.Invoke(this);
 
 		// Tracked subset (persisted to the run model).
 		internal global::Microsoft.UI.Text.FormatEffect BoldEffect = global::Microsoft.UI.Text.FormatEffect.Undefined;
