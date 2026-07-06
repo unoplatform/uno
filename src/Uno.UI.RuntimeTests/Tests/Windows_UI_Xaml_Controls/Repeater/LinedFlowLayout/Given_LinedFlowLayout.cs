@@ -568,4 +568,24 @@ public class Given_LinedFlowLayout
 		locked.Should().BeFalse();
 		internalLocked.Should().BeEmpty();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_ComputeItemsLayoutFastPath_Then_BreaksLinesGreedily()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Drive the all-source-items fast path (m_itemsInfoFirstIndex == -1, arrange widths seeded):
+		// 6 items, all aspect ratio 1.0, line height 100 => every item is 100px wide (no min/max clamp).
+		sut.m_itemCount = 6;
+		sut.m_itemsInfoFirstIndex = -1;
+		sut.SetDesiredAspectRatios(new[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 });
+
+		// availableWidth 300, spacing 0 (default) => exactly 3 items (3*100) fill each of the 2 lines.
+		float maxLineWidth = sut.ComputeItemsLayoutFastPath(300.0f, 100.0);
+
+		maxLineWidth.Should().Be(300.0f);
+		sut.m_lineItemCounts.Should().Equal(new[] { 3, 3 });
+	}
 }
