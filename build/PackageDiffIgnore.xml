@@ -2952,6 +2952,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (no consumers) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline::DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag; animations always default the starting value from the animated value (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2973,6 +2974,8 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline.get_DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag (get-only) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState.get_ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/VisualState.set_ApplySettersBeforeTransition(System.Boolean value)" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

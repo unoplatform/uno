@@ -144,13 +144,6 @@ namespace Uno.UI
 			public static bool UseLegacyContentAlignment { get; set; }
 
 			/// <summary>
-			/// Enables the lazy materialization of <see cref="Microsoft.UI.Xaml.Controls.Control"/> template. This behavior
-			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
-			/// in the constructor of a control.
-			/// </summary>
-			public static bool UseLegacyLazyApplyTemplate { get; set; }
-
-			/// <summary>
 			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
 			/// </summary>
 			/// <remarks>
