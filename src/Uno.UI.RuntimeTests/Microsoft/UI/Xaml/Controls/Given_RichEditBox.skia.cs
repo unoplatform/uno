@@ -479,5 +479,172 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStartForTesting);
 			Assert.AreEqual(6, SUT.SelectionLengthForTesting);
 		}
+
+		[TestMethod]
+		public async Task When_StartOf_Line_Moves_To_Line_Start()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(4, 4);
+			range.StartOf(TextRangeUnit.Line, false);
+
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(3, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_EndOf_Line_Moves_To_Line_End_Before_Paragraph_Mark()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(4, 4);
+			range.EndOf(TextRangeUnit.Line, false);
+
+			// The visual line end stops before the trailing carriage return.
+			Assert.AreEqual(5, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Expand_Line_Selects_Whole_Line()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(4, 4);
+			range.Expand(TextRangeUnit.Line);
+
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_GetIndex_Line_Returns_One_Based_Line_Number()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.Document.GetRange(0, 0).GetIndex(TextRangeUnit.Line));
+			Assert.AreEqual(2, SUT.Document.GetRange(4, 4).GetIndex(TextRangeUnit.Line));
+			Assert.AreEqual(3, SUT.Document.GetRange(7, 7).GetIndex(TextRangeUnit.Line));
+		}
+
+		[TestMethod]
+		public async Task When_Selection_HomeKey_Line_Moves_Caret_To_Line_Start()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(4, 4);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.HomeKey(TextRangeUnit.Line, false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.SelectionStartForTesting);
+			Assert.AreEqual(0, SUT.SelectionLengthForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_EndKey_Line_Moves_Caret_To_Line_End()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(3, 3);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.EndKey(TextRangeUnit.Line, false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(5, SUT.SelectionStartForTesting);
+			Assert.AreEqual(0, SUT.SelectionLengthForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_MoveDown_Moves_Caret_To_Next_Line()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Caret at the start of the first line (column 0).
+			SUT.Document.Selection.SetRange(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var moved = SUT.Document.Selection.MoveDown(TextRangeUnit.Line, 1, false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, moved);
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.SelectionStartForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_MoveUp_Moves_Caret_To_Previous_Line()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Caret at the start of the third line (column 0).
+			SUT.Document.Selection.SetRange(6, 6);
+			await WindowHelper.WaitForIdle();
+
+			var moved = SUT.Document.Selection.MoveUp(TextRangeUnit.Line, 1, false);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, moved);
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.SelectionStartForTesting);
+		}
 	}
 }
