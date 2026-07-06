@@ -258,7 +258,7 @@ namespace Microsoft.UI.Xaml.Documents
 			// Walk up through Span/Hyperlink/etc. to find the owning control.
 			while (current is Inline inline)
 				current = inline.GetParent();
-	
+
 			return current is TextBlock;
 		}
 	}
