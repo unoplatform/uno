@@ -4769,5 +4769,77 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: unconstrained-line measure (WS-D3c sub-slice 5)
+
+		// Measures all items in a single unconstrained (infinite-width) line, returning the total desired width.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private float MeasureUnconstrainedLine(
+			VirtualizingLayoutContext context)
+		{
+			MUX_ASSERT(m_itemCount == context.ItemCount);
+			MUX_ASSERT(m_isVirtualizingContext == IsVirtualizingContext(context));
+			MUX_ASSERT(!UsesArrangeWidthInfo());
+
+			float actualLineHeight = (float)ActualLineHeight;
+			Size measureAvailableSize = new Size(float.PositiveInfinity, actualLineHeight);
+			float desiredWidth = 0.0f;
+			bool isNewlyRealizedElementMeasuredWithMinWidth = false;
+
+			for (int itemIndex = 0; itemIndex < m_itemCount; itemIndex++)
+			{
+				bool isElementNewlyRealized = false;
+
+				if (m_isVirtualizingContext && !m_elementManager.IsDataIndexRealized(itemIndex))
+				{
+					EnsureElementRealized(true /*forward*/, itemIndex);
+
+					isElementNewlyRealized = true;
+				}
+
+				if (m_elementManager.GetAt(itemIndex) is { } element)
+				{
+					element.Measure(measureAvailableSize);
+
+					if (element is FrameworkElement frameworkElement)
+					{
+						float minWidth = (float)frameworkElement.MinWidth;
+
+						if ((float)element.DesiredSize.Width == minWidth)
+						{
+							// Making sure the item is stretched according to the MinWidth value.
+							element.Measure(new Size(minWidth, actualLineHeight));
+
+							if (isElementNewlyRealized)
+							{
+								isNewlyRealizedElementMeasuredWithMinWidth = true;
+							}
+						}
+					}
+
+					desiredWidth += (float)element.DesiredSize.Width;
+				}
+			}
+
+			if (isNewlyRealizedElementMeasuredWithMinWidth)
+			{
+				InvalidateMeasureTimerStart(0 /*tickCount*/);
+			}
+
+			SetAverageItemsPerLine(
+				SnapAverageItemsPerLine(
+					m_averageItemsPerLine.first /*oldAverageItemsPerLineRaw*/,
+					m_itemCount /*newAverageItemsPerLineRaw*/),
+				true /*unlockItems*/);
+
+			if (m_itemCount > 0)
+			{
+				desiredWidth += (float)((m_itemCount - 1) * MinItemSpacing);
+			}
+
+			return desiredWidth;
+		}
+
+		#endregion
 	}
 }
