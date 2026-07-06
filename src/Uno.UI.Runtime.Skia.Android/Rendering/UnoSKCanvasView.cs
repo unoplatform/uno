@@ -175,8 +175,14 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_context = GRContext.CreateGl(glInterface);
 			}
 
+			if (_activity.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+			{
+				// The window isn't ready (e.g. mid teardown during activity re-creation); skip the frame.
+				return;
+			}
+
 			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)_activity.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer
@@ -215,7 +221,10 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				return _softwareSurface.Canvas;
 			});
 
-			_activity.NativeLayerHost!.Path = nativeClipPath;
+			if (_activity.NativeLayerHost is { } nativeLayerHost)
+			{
+				nativeLayerHost.Path = nativeClipPath;
+			}
 
 			if (_hardwareAccelerated)
 			{
