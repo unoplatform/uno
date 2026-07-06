@@ -2939,6 +2939,7 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Timeline" reason="Removed empty FeatureConfiguration.Timeline holder after deleting DefaultsStartingValueFromAnimatedValue (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/VisualState" reason="Removed empty FeatureConfiguration.VisualState holder after deleting ApplySettersBeforeTransition (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/DataTemplateSelector" reason="Removed empty FeatureConfiguration.DataTemplateSelector holder after deleting UseLegacyTemplateSelectorOverload (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs" reason="Removed empty FeatureConfiguration.ManipulationRoutedEventArgs holder after deleting IsAbsolutePositionEnabled (#2053, breaking changes for 7.0)" />
 	  </Types>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
@@ -2955,6 +2956,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2980,6 +2982,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector.get_UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.set_IsAbsolutePositionEnabled(System.Boolean value)" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
