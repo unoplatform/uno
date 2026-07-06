@@ -5,7 +5,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI;
 
-public class OnSystemUiVisibilityChangeListener
+internal class OnSystemUiVisibilityChangeListener
 	: Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
 {
 	private readonly Microsoft.UI.Xaml.ApplicationActivity _activity;
