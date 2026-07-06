@@ -215,13 +215,7 @@ internal static class SymbolMatchingHelpers
 			return false;
 		}
 
-		if (!AreMatching(uapProperty.Type, unoProperty.Type) &&
-			// object vs UIElement
-			uapProperty.Name != "Content" &&
-			// IEasingFunction vs EasingFunctionBase
-			uapProperty.Name != "EasingFunction" &&
-			// string vs object
-			uapProperty.Name != "ElementName")
+		if (!AreMatching(uapProperty.Type, unoProperty.Type))
 		{
 			return false;
 		}

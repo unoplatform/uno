@@ -164,7 +164,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
 								Path = @"Tag",
-								ElementName = _topLevelSubject,
+								ElementNameSubject = _topLevelSubject,
 							}
 						);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e);
