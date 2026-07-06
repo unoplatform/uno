@@ -153,14 +153,36 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
 		{
-			// TODO (WS-D3): port LinedFlowLayoutState initialization from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.InitializeForContextCore is not yet ported (WS-D3).");
+			if (m_wasInitializedForContext)
+			{
+				throw new InvalidOperationException(s_cannotShareLinedFlowLayout);
+			}
+
+			base.InitializeForContextCore(context);
+
+			m_wasInitializedForContext = true;
+			m_isVirtualizingContext = IsVirtualizingContext(context);
+			m_itemCount = context.ItemCount;
+			m_elementManager.SetContext(context);
 		}
 
 		protected internal override void UninitializeForContextCore(VirtualizingLayoutContext context)
 		{
-			// TODO (WS-D3): port LinedFlowLayoutState teardown from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.UninitializeForContextCore is not yet ported (WS-D3).");
+			MUX_ASSERT(m_wasInitializedForContext);
+			MUX_ASSERT(m_isVirtualizingContext == IsVirtualizingContext(context));
+
+			base.UninitializeForContextCore(context);
+
+			m_wasInitializedForContext = false;
+			m_itemCount = 0;
+			if (m_isVirtualizingContext)
+			{
+				m_isVirtualizingContext = false;
+				m_elementManager.ClearRealizedRange();
+			}
+
+			InvalidateMeasureTimerStop(false /*isForDestructor*/);
+			UnlockItems();
 		}
 
 		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
@@ -177,8 +199,122 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected internal override void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 		{
-			// TODO (WS-D3): port collection-change handling from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.OnItemsChangedCore is not yet ported (WS-D3).");
+			// TODO (WS-D3f): port collection-change handling from LinedFlowLayout.cpp.
+			throw new NotImplementedException("LinedFlowLayout.OnItemsChangedCore is not yet ported (WS-D3f).");
+		}
+
+		#endregion
+
+		#region State helpers
+
+		private bool IsVirtualizingContext(VirtualizingLayoutContext context)
+		{
+			if (context != null)
+			{
+				var rect = context.RealizationRect;
+				bool hasInfiniteSize = double.IsInfinity(rect.Height) || double.IsInfinity(rect.Width);
+				return !hasInfiniteSize;
+			}
+			return false;
+		}
+
+		// Stops the timer used to trigger an asynchronous measure pass when no items info was provided
+		// by the ItemsInfoRequested event. The full timer subsystem lands in WS-D3f; this null-safe
+		// stop is required by UninitializeForContextCore.
+		private void InvalidateMeasureTimerStop(bool isForDestructor)
+		{
+			if (m_invalidateMeasureTimer is not null && m_invalidateMeasureTimer.IsEnabled)
+			{
+				m_invalidateMeasureTimer.Stop();
+			}
+		}
+
+		// Raises the ItemsUnlocked event when there are locked items. Raised when previously locked
+		// items are cleared because the source collection or the average items per line changed.
+		private void UnlockItems()
+		{
+			if (m_lockedItemIndexes.Count > 0 || m_isFirstOrLastItemLocked)
+			{
+				m_lockedItemIndexes.Clear();
+				m_isFirstOrLastItemLocked = false;
+				ItemsUnlocked?.Invoke(this, null!);
+			}
+		}
+
+		#endregion
+
+		#region Line geometry & snapping (pure helpers)
+
+		// internal (rather than WinUI's private) so the pure-math slices can be unit/runtime-tested
+		// in isolation before the measure algorithm that consumes them is ported.
+		internal int GetLineCount(double averageItemsPerLine)
+		{
+			if (m_itemCount == 0)
+			{
+				return 0;
+			}
+
+			MUX_ASSERT(m_itemCount > 0);
+
+			int lineCount = GetLineIndexFromAverageItemsPerLine(m_itemCount - 1, averageItemsPerLine) + 1;
+
+			return lineCount;
+		}
+
+		internal int GetLineIndexFromAverageItemsPerLine(int itemIndex, double averageItemsPerLine)
+		{
+			MUX_ASSERT(averageItemsPerLine >= 1.0);
+
+			int lineIndex = (int)(itemIndex / averageItemsPerLine);
+
+			return lineIndex;
+		}
+
+		internal (double first, double second) SnapAverageItemsPerLine(
+			double oldAverageItemsPerLineRaw,
+			double newAverageItemsPerLineRaw)
+		{
+			MUX_ASSERT(oldAverageItemsPerLineRaw == 0.0 || oldAverageItemsPerLineRaw >= 1.0);
+			MUX_ASSERT(newAverageItemsPerLineRaw == 0.0 || newAverageItemsPerLineRaw >= 1.0);
+
+			// A snapped average-items-per-line value must be a power of 1.1.
+			const double valuePower = 1.1;
+			// When the raw value crosses the median between two successive powers of 1.1, the old snapped
+			// value is retained unless the raw delta is greater than 0.1.
+			const double distanceThreshold = 0.1;
+			double appliedValuePower = m_forcedAverageItemsPerLineDividerDbg == 0.0 ? valuePower : m_forcedAverageItemsPerLineDividerDbg;
+			double oldAverageItemsPerLineSnapped = (oldAverageItemsPerLineRaw == 0.0) ? 0.0 : SnapToPower(oldAverageItemsPerLineRaw, appliedValuePower);
+			double newAverageItemsPerLineSnapped = (newAverageItemsPerLineRaw == 0.0) ? 0.0 : SnapToPower(newAverageItemsPerLineRaw, appliedValuePower);
+
+			if (oldAverageItemsPerLineSnapped != newAverageItemsPerLineSnapped &&
+				Math.Abs(oldAverageItemsPerLineRaw - newAverageItemsPerLineRaw) <= distanceThreshold)
+			{
+				// The snapped values differ but the raw values are close: keep the old pair so the applied
+				// average items per line is stable when the raw values hover around the 1.1^N midpoint.
+				return (oldAverageItemsPerLineRaw, oldAverageItemsPerLineSnapped);
+			}
+
+			return (newAverageItemsPerLineRaw, newAverageItemsPerLineSnapped);
+		}
+
+		// Snaps the provided value to a power of valuePower. Example: value=3.75 snaps to 1.1^14 = 3.7975.
+		internal double SnapToPower(double value, double valuePower)
+		{
+			double dividerLog = Math.Log(valuePower);
+			double valueLog = Math.Log(value);
+			double valueExp = Math.Ceiling(valueLog / dividerLog);
+			double valueRndCeil = Math.Pow(valuePower, valueExp);
+			double valueRndFloor = valueRndCeil / valuePower;
+
+			// Return valuePower^valueExp or valuePower^(valueExp - 1), whichever is closest to value.
+			if (Math.Abs(valueRndCeil - value) <= Math.Abs(valueRndFloor - value))
+			{
+				return valueRndCeil;
+			}
+			else
+			{
+				return valueRndFloor;
+			}
 		}
 
 		#endregion
