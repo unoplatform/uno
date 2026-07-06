@@ -110,7 +110,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Items info collected through the ItemsInfoRequested event for the regular (non-fast) path.
-		private readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
+		// WinUI declares this private; it is internal here so GetItemsLayout can be white-box tested with
+		// a hand-built aspect-ratio list before the measure path (WS-D3c sub-slice 5) that fills it is ported.
+		internal readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
 		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
 		private readonly List<double> m_itemsInfoMaxWidthsForRegularPath = new();
 		// WinUI: std::vector<float>. Holds the per-item arrange widths (fast or regular path).
@@ -118,7 +120,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// First index of the regular-path items info (-1 when the fast path is used or no info is available).
 		// Read by UsesFastPathLayout()/RequestedRangeStartIndex (WS-D3b); written by ResetItemsInfo (WS-D3c: ExitRegularPath).
-		private int m_itemsInfoFirstIndex = -1;
+		// WinUI declares this private; it is internal here so GetItemsLayout can be white-box tested (see above).
+		internal int m_itemsInfoFirstIndex = -1;
 
 		// Items info collected through the ItemsInfoRequested event for the fast path.
 		// WinUI: winrt::com_array<double>. Written by the Set*Widths seams; read by Get*FromItemsInfo (WS-D3c).

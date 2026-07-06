@@ -479,4 +479,40 @@ public class Given_LinedFlowLayout
 		// Line 2 has no locked item => false regardless of before.
 		sut.LineHasInternalLockedItem(internalLocked, lineIndex: 2, before: false, itemIndex: 0).Should().BeFalse();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetItemsLayout_Then_GreedilyFillsLinesFromItemsInfo()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Drive the regular items-info path (m_itemsInfoFirstIndex != -1) so no realized elements are needed:
+		// 6 items, all aspect ratio 1.0, line height 100 => every item is 100px wide (no min/max clamp).
+		sut.m_itemsInfoFirstIndex = 0;
+		sut.m_itemsInfoDesiredAspectRatiosForRegularPath.Clear();
+		sut.m_itemsInfoDesiredAspectRatiosForRegularPath.AddRange(new[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 });
+
+		// availableWidth 300, spacing 0 (default) => exactly 3 items (3*100) fill each of the 2 lines.
+		// averageLineItemsWidth 0 disables the equalization heuristic => pure greedy fill.
+		var itemsLayout = sut.GetItemsLayout(
+			internalLockedItemIndexes: new SortedDictionary<int, int>(),
+			scrollViewport: double.PositiveInfinity,
+			availableWidth: 300.0,
+			adjustedAvailableWidth: 300.0,
+			averageLineItemsWidth: 0.0,
+			averageAspectRatio: 1.0,
+			lineSpacing: 0.0,
+			actualLineHeight: 100.0,
+			beginSizedLineIndex: 0,
+			endSizedLineIndex: 1,
+			beginSizedItemIndex: 0,
+			endSizedItemIndex: 5,
+			beginLineVectorIndex: 0,
+			isLastSizedLineStretchEnabled: false);
+
+		itemsLayout.m_lineItemCounts.Should().Equal(new[] { 3, 3 });
+		itemsLayout.m_lineItemWidths.Should().Equal(new[] { 300.0, 300.0 });
+		itemsLayout.m_availableLineItemsWidth.Should().Be(300.0);
+	}
 }
