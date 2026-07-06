@@ -754,7 +754,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichEditBox, global::Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs> SelectionChanging
 		{
@@ -786,7 +786,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichEditBox, global::Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs> TextChanging
 		{
