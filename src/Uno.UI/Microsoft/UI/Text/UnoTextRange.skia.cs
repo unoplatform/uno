@@ -40,6 +40,16 @@ namespace Microsoft.UI.Text
 			}
 		}
 
+		/// <summary>
+		/// Called after a public API mutation changes this range's positions. The base range does not
+		/// react; <see cref="UnoTextSelection"/> overrides this to sync the owning control's interactive
+		/// caret/selection (the reverse of <see cref="SetRangeInternal"/>, which is the control pushing in
+		/// and therefore does NOT call this).
+		/// </summary>
+		private protected virtual void OnRangeChanged()
+		{
+		}
+
 		private static Exception NotImplemented(string member)
 			=> new NotImplementedException($"Microsoft.UI.Text range member '{member}' is not yet implemented on Uno. TODO Uno: arrives with the rich-content model / shared editing engine.");
 
@@ -54,6 +64,8 @@ namespace Microsoft.UI.Text
 				{
 					_end = _start;
 				}
+
+				OnRangeChanged();
 			}
 		}
 
@@ -68,6 +80,8 @@ namespace Microsoft.UI.Text
 				{
 					_start = _end;
 				}
+
+				OnRangeChanged();
 			}
 		}
 
@@ -95,6 +109,7 @@ namespace Microsoft.UI.Text
 				var replacement = value ?? string.Empty;
 				_document.ReplaceRange(_start, _end, replacement);
 				_end = _start + replacement.Length;
+				OnRangeChanged();
 			}
 		}
 
@@ -120,6 +135,7 @@ namespace Microsoft.UI.Text
 			_start = startPosition;
 			_end = endPosition;
 			Normalize();
+			OnRangeChanged();
 		}
 
 		public void Collapse(bool value)
@@ -133,6 +149,8 @@ namespace Microsoft.UI.Text
 			{
 				_start = _end;
 			}
+
+			OnRangeChanged();
 		}
 
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
@@ -147,6 +165,7 @@ namespace Microsoft.UI.Text
 			var replacement = value ?? string.Empty;
 			_document.ReplaceRange(_start, _end, replacement);
 			_end = _start + replacement.Length;
+			OnRangeChanged();
 		}
 
 		public global::Microsoft.UI.Text.ITextRange GetClone()
@@ -193,6 +212,7 @@ namespace Microsoft.UI.Text
 
 			_start = index;
 			_end = index + value.Length;
+			OnRangeChanged();
 			return value.Length;
 		}
 
@@ -206,6 +226,7 @@ namespace Microsoft.UI.Text
 				var removed = _end - _start;
 				_document.ReplaceRange(_start, _end, string.Empty);
 				_end = _start;
+				OnRangeChanged();
 				return removed;
 			}
 
@@ -230,6 +251,7 @@ namespace Microsoft.UI.Text
 			var deleted = deleteEnd - deleteStart;
 			_document.ReplaceRange(deleteStart, deleteEnd, string.Empty);
 			_start = _end = deleteStart;
+			OnRangeChanged();
 			return deleted;
 		}
 
@@ -274,6 +296,7 @@ namespace Microsoft.UI.Text
 			var target = Math.Clamp(position + count, 0, length);
 			var moved = target - position;
 			_start = _end = target;
+			OnRangeChanged();
 			return moved;
 		}
 
@@ -292,6 +315,7 @@ namespace Microsoft.UI.Text
 				_end = _start;
 			}
 
+			OnRangeChanged();
 			return _start - old;
 		}
 
@@ -310,6 +334,7 @@ namespace Microsoft.UI.Text
 				_start = _end;
 			}
 
+			OnRangeChanged();
 			return _end - old;
 		}
 

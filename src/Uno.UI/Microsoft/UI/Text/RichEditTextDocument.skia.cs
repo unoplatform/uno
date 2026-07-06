@@ -121,8 +121,6 @@ namespace Microsoft.UI.Text
 		/// <summary>
 		/// Gets the current text selection as an <see cref="ITextSelection"/>.
 		/// </summary>
-		// TODO Uno: This is a programmatic selection over the plain-text buffer; it is not yet wired to
-		// an interactive caret/selection (which arrives with the shared editing engine extraction).
 		public global::Microsoft.UI.Text.ITextSelection Selection => _selection ??= new UnoTextSelection(this);
 
 		/// <summary>
@@ -131,6 +129,13 @@ namespace Microsoft.UI.Text
 		/// </summary>
 		internal void SetSelectionRangeInternal(int start, int end)
 			=> ((UnoTextRange)Selection).SetRangeInternal(start, end);
+
+		/// <summary>
+		/// Raised by <see cref="UnoTextSelection"/> when the programmatic selection changes through the
+		/// public API, so the owning control can sync its interactive caret/selection and re-render.
+		/// This is the reverse of <see cref="SetSelectionRangeInternal"/> and is not called by it.
+		/// </summary>
+		internal void NotifySelectionChanged() => _owner.OnTomSelectionChanged();
 
 		/// <summary>
 		/// Sets the text in this document to the specified plain text.

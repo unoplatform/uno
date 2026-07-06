@@ -38,6 +38,7 @@ namespace Microsoft.UI.Text
 			var text = value ?? string.Empty;
 			_document.ReplaceRange(_start, _end, text);
 			_start = _end = _start + text.Length;
+			OnRangeChanged();
 		}
 
 		public int MoveLeft(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
@@ -51,6 +52,7 @@ namespace Microsoft.UI.Text
 			{
 				var old = _start;
 				_start = Math.Clamp(_start - count, 0, _document.TextLength);
+				OnRangeChanged();
 				return Math.Abs(_start - old);
 			}
 
@@ -58,6 +60,7 @@ namespace Microsoft.UI.Text
 			_end = _start;
 			var previous = _start;
 			_start = _end = Math.Clamp(_start - count, 0, _document.TextLength);
+			OnRangeChanged();
 			return Math.Abs(_start - previous);
 		}
 
@@ -72,6 +75,7 @@ namespace Microsoft.UI.Text
 			{
 				var old = _end;
 				_end = Math.Clamp(_end + count, 0, _document.TextLength);
+				OnRangeChanged();
 				return Math.Abs(_end - old);
 			}
 
@@ -79,6 +83,7 @@ namespace Microsoft.UI.Text
 			_start = _end;
 			var previous = _end;
 			_start = _end = Math.Clamp(_end + count, 0, _document.TextLength);
+			OnRangeChanged();
 			return Math.Abs(_end - previous);
 		}
 
@@ -97,6 +102,7 @@ namespace Microsoft.UI.Text
 				_end = 0;
 			}
 
+			OnRangeChanged();
 			return Math.Abs(old - _start);
 		}
 
@@ -116,6 +122,7 @@ namespace Microsoft.UI.Text
 				_start = length;
 			}
 
+			OnRangeChanged();
 			return Math.Abs(length - old);
 		}
 
@@ -123,5 +130,8 @@ namespace Microsoft.UI.Text
 		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend) => 0;
 
 		public int MoveDown(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend) => 0;
+
+		// Sync the owning control's interactive caret/selection when this programmatic selection changes.
+		private protected override void OnRangeChanged() => _document.NotifySelectionChanged();
 	}
 }
