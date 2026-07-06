@@ -4,7 +4,6 @@ using System;
 using ElmSharp;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Microsoft.UI.Input;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerPoint = Microsoft.UI.Input.PointerPoint;
@@ -96,7 +95,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var properties = global::Microsoft.UI.Input.PointerPointPropertiesExtensions.SetUpdateKindFromPrevious(BuildProperties(true, false), _previous?.CurrentPoint.Properties);
 			var modifiers = VirtualKeyModifiers.None;
 			var point = GetPoint(data.X2, data.Y2);
 
@@ -126,7 +125,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var properties = global::Microsoft.UI.Input.PointerPointPropertiesExtensions.SetUpdateKindFromPrevious(BuildProperties(true, false), _previous?.CurrentPoint.Properties);
 			var modifiers = VirtualKeyModifiers.None;
 			var point = GetPoint(data.X, data.Y);
 
@@ -156,7 +155,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			var properties = BuildProperties(false, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var properties = global::Microsoft.UI.Input.PointerPointPropertiesExtensions.SetUpdateKindFromPrevious(BuildProperties(false, false), _previous?.CurrentPoint.Properties);
 			var modifiers = VirtualKeyModifiers.None;
 			var point = GetPoint(data.X, data.Y);
 

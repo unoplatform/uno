@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using Windows.Devices.Input;
 using Microsoft.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 namespace Uno.UI.Xaml.Extensions;
 

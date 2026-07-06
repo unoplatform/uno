@@ -40,7 +40,9 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkManager.InkManager()
-		// Skipped ProcessPointerDown/ProcessPointerUpdate/ProcessPointerUp: reference the dropped legacy Windows.UI.Input.PointerPoint.
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.ProcessPointerDown(Windows.UI.Input.PointerPoint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.ProcessPointerUpdate(Windows.UI.Input.PointerPoint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkManager.ProcessPointerUp(Windows.UI.Input.PointerPoint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDefaultDrawingAttributes(global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes)

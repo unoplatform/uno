@@ -21,7 +21,6 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
-using Microsoft.UI.Input;
 #endif
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer

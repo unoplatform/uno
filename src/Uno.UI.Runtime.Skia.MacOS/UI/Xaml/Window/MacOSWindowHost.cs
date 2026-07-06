@@ -17,7 +17,6 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Input;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerPoint = Microsoft.UI.Input.PointerPoint;
@@ -654,7 +653,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		var position = new Point(data.X, data.Y);
 		var pointerDevice = PointerDevice.For(data.PointerDeviceType);
-		var properties = GetPointerProperties(data).SetUpdateKindFromPrevious(_previousProperties);
+		var properties = global::Microsoft.UI.Input.PointerPointPropertiesExtensions.SetUpdateKindFromPrevious(GetPointerProperties(data), _previousProperties);
 
 		var point = new PointerPoint(data.FrameId, data.Timestamp, pointerDevice, data.Pid, position, position, data.InContact, properties);
 		var args = new PointerEventArgs(point, data.KeyModifiers);

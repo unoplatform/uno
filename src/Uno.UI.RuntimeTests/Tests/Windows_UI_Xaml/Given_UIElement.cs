@@ -39,7 +39,6 @@ using Combinatorial.MSTest;
 using Uno.UI.Toolkit.DevTools.Input;
 
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Input;
 #endif
 
 #if __APPLE_UIKIT__
