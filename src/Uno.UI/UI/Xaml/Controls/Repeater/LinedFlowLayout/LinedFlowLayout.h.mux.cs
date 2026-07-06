@@ -29,6 +29,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// using those weights to stabilize m_averageItemsPerLine and reduce total re-layouts (LinedFlowLayout.cpp).
 		private const int c_maxAspectRatioWeight = 16;
 
+		// Frozen lines before/after the displayed lines use 80% of a scroll viewport (or 40% of the
+		// sized area, whichever is largest) so small scroll deltas don't force a re-layout.
+		private const double c_frozenLinesRatio = 0.8;
+
+		// Scroll offsets within this epsilon of 0 are snapped to 0 to avoid sub-pixel line-index jitter.
+		private const double c_offsetEqualityEpsilon = 0.01;
+
 		// Sizing info returned by the ItemsInfoRequested event handler for a range of items.
 		// WinUI declares ItemsInfo private; it is internal here so RaiseItemsInfoRequested's return
 		// value can be validated by tests before the measure path that consumes it (WS-D3c) is ported.
