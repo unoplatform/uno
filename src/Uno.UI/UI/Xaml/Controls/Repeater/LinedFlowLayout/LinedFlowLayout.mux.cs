@@ -3819,5 +3819,354 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: frozen-window layout assembly (WS-D3c sub-slice 4)
+
+		// Last major phase of a measure pass:
+		// - updates the range of frozen lines and items (ComputeFrozenItemsRange calls).
+		// - breaks down all the sized lines into blocks on lines that require an items distribution (ComputeItemsLayout calls).
+		//   * when a full re-layout is required, a single block of all sized lines produces a single items distribution.
+		//   * otherwise two unfrozen blocks before and after the frozen lines can produce up to two items distributions.
+		//     These two distributions are getting lines at the edges of the unfrozen blocks ready to become frozen due to a scroll viewport size or scroll offset change.
+		// Returns True when a still sized item has a new desired width.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private bool ComputeFrozenItemsAndLayout(
+			VirtualizingLayoutContext context,
+			List<int> oldLineItemCounts,
+			Dictionary<UIElement, float>? oldElementAvailableWidths,
+			Dictionary<UIElement, float>? oldElementDesiredWidths,
+			double scrollViewport,
+			double scrollOffset,
+			double lineSpacing,
+			double actualLineHeight,
+			float availableWidth,
+			float nearSizedItemsRect,
+			float farSizedItemsRect,
+			float nearRealizationRect,
+			float farRealizationRect,
+			int lineCount,
+			int sizedLineCount,
+			int unsizedNearItemCount,
+			int sizedItemCount,
+			int firstStillSizedLineIndex,
+			int lastStillSizedLineIndex,
+			int firstStillSizedItemIndex,
+			int lastStillSizedItemIndex)
+		{
+			bool itemHasNewDesiredWidth = false;
+
+			if (firstStillSizedLineIndex != -1)
+			{
+				// Some line indexes are present in the previous measure pass and this new one.
+				int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex();
+				int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
+
+				MUX_ASSERT(firstRealizedItemIndex >= 0);
+				MUX_ASSERT(lastRealizedItemIndex >= 0);
+
+				int adjustedFirstStillSizedItemIndex;
+				int adjustedLastStillSizedItemIndex;
+				bool preFrozenItemHasNewDesiredWidth = false;
+				bool postFrozenItemHasNewDesiredWidth = false;
+
+				bool forceRelayout = ComputeFrozenItemsRange(
+					scrollViewport,
+					scrollOffset,
+					lineSpacing,
+					actualLineHeight,
+					lineCount,
+					firstStillSizedLineIndex /*beginSizedLineIndex*/,
+					lastStillSizedLineIndex  /*endSizedLineIndex*/,
+					firstStillSizedItemIndex /*beginSizedItemIndex*/,
+					lastStillSizedItemIndex  /*endSizedItemIndex*/,
+					out adjustedFirstStillSizedItemIndex,
+					out adjustedLastStillSizedItemIndex);
+
+				if (!forceRelayout)
+				{
+					// m_firstFrozenItemIndex & m_lastFrozenItemIndex may still be -1 for example when scrollViewport==0.0.
+
+					if (m_itemsInfoFirstIndex == -1)
+					{
+						if (oldElementDesiredWidths != null && oldElementAvailableWidths != null)
+						{
+							int clampedAdjustedFirstStillSizedItemIndex = Math.Clamp(adjustedFirstStillSizedItemIndex, firstRealizedItemIndex, lastRealizedItemIndex);
+							int clampedAdjustedLastStillSizedItemIndex = Math.Clamp(adjustedLastStillSizedItemIndex, firstRealizedItemIndex, lastRealizedItemIndex);
+
+							EnsureAndMeasureItemRange(
+								context,
+								availableWidth,
+								actualLineHeight,
+								true /*forward*/,
+								clampedAdjustedFirstStillSizedItemIndex /*beginRealizedItemIndex*/,
+								clampedAdjustedLastStillSizedItemIndex /*endRealizedItemIndex*/);
+
+							// Check if any of the elements from m_firstFrozenItemIndex to m_lastFrozenItemIndex has a new or modified DesiredSize.
+							// In that case, a full re-layout is required.
+							// When a sized item before the frozen ones has a modified DesiredSize, it does not cause a full re-layout, but
+							// the pre-frozen-range is laid out in isolation. The same is applicable to the post-frozen-range.
+							var itemRangesHaveNewDesiredWidths =
+								ItemRangesHaveNewDesiredWidths(
+									oldElementDesiredWidths,
+									Math.Min(firstStillSizedItemIndex, m_firstFrozenItemIndex),
+									Math.Max(lastStillSizedItemIndex, m_lastFrozenItemIndex));
+
+							// forceRelayout is set to True when a frozen item has a new or modified DesiredSize.
+							forceRelayout = itemRangesHaveNewDesiredWidths.frozenItemHasNewDesiredWidth;
+
+							itemHasNewDesiredWidth = forceRelayout || itemRangesHaveNewDesiredWidths.preFrozenItemHasNewDesiredWidth || itemRangesHaveNewDesiredWidths.postFrozenItemHasNewDesiredWidth;
+
+							if (!forceRelayout)
+							{
+								// preFrozenItemHasNewDesiredWidth is set to True when a sized item before the frozen ones has a modified DesiredSize.
+								preFrozenItemHasNewDesiredWidth = itemRangesHaveNewDesiredWidths.preFrozenItemHasNewDesiredWidth;
+
+								// postFrozenItemHasNewDesiredWidth is set to True when a sized item after the frozen ones has a modified DesiredSize.
+								postFrozenItemHasNewDesiredWidth = itemRangesHaveNewDesiredWidths.postFrozenItemHasNewDesiredWidth;
+
+								if (!preFrozenItemHasNewDesiredWidth && !postFrozenItemHasNewDesiredWidth)
+								{
+									// Measure realized items based on previously computed available widths 'oldElementAvailableWidths'.
+									// Re-populate m_elementAvailableWidths with the old & re-applied available widths.
+									MeasureItemRangeRegularPath(
+										oldElementAvailableWidths,
+										actualLineHeight,
+										clampedAdjustedFirstStillSizedItemIndex /*beginRealizedItemIndex*/,
+										clampedAdjustedLastStillSizedItemIndex /*endRealizedItemIndex*/);
+								}
+								else
+								{
+									MUX_ASSERT(clampedAdjustedFirstStillSizedItemIndex <= m_firstFrozenItemIndex);
+									MUX_ASSERT(clampedAdjustedLastStillSizedItemIndex >= m_lastFrozenItemIndex);
+
+									// Measure frozen items based on previously computed available widths 'oldElementAvailableWidths'.
+									// Re-populate m_elementAvailableWidths with the old & re-applied available widths.
+									MeasureItemRangeRegularPath(
+										oldElementAvailableWidths,
+										actualLineHeight,
+										m_firstFrozenItemIndex /*beginRealizedItemIndex*/,
+										m_lastFrozenItemIndex /*endRealizedItemIndex*/);
+
+									if (!preFrozenItemHasNewDesiredWidth && clampedAdjustedFirstStillSizedItemIndex <= m_firstFrozenItemIndex - 1)
+									{
+										// Measure pre-frozen items based on previously computed available widths 'oldElementAvailableWidths'.
+										// Re-populate m_elementAvailableWidths with the old & re-applied available widths.
+										MeasureItemRangeRegularPath(
+											oldElementAvailableWidths,
+											actualLineHeight,
+											clampedAdjustedFirstStillSizedItemIndex /*beginRealizedItemIndex*/,
+											m_firstFrozenItemIndex - 1 /*endRealizedItemIndex*/);
+									}
+
+									if (!postFrozenItemHasNewDesiredWidth && m_lastFrozenItemIndex + 1 <= clampedAdjustedLastStillSizedItemIndex)
+									{
+										// Measure post-frozen items based on previously computed available widths 'oldElementAvailableWidths'.
+										// Re-populate m_elementAvailableWidths with the old & re-applied available widths.
+										MeasureItemRangeRegularPath(
+											oldElementAvailableWidths,
+											actualLineHeight,
+											m_lastFrozenItemIndex + 1 /*beginRealizedItemIndex*/,
+											clampedAdjustedLastStillSizedItemIndex /*endRealizedItemIndex*/);
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						MeasureItemRange(
+							actualLineHeight,
+							firstRealizedItemIndex /*beginRealizedItemIndex*/,
+							lastRealizedItemIndex  /*endRealizedItemIndex*/);
+					}
+				}
+
+				if (forceRelayout)
+				{
+					// Layout all the sized lines.
+					InitializeForRelayout(
+						sizedLineCount,
+						out firstStillSizedLineIndex,
+						out lastStillSizedLineIndex,
+						out firstStillSizedItemIndex,
+						out lastStillSizedItemIndex);
+					oldLineItemCounts.Clear();
+
+					ComputeItemsLayoutRegularPath(
+						availableWidth,
+						scrollViewport,
+						lineSpacing,
+						actualLineHeight,
+						m_firstSizedLineIndex /*beginSizedLineIndex*/,
+						m_lastSizedLineIndex  /*endSizedLineIndex*/,
+						m_firstSizedItemIndex /*beginSizedItemIndex*/,
+						m_lastSizedItemIndex  /*endSizedItemIndex*/,
+						0 /*beginLineVectorIndex*/,
+						m_lastSizedLineIndex < lineCount - 1 /*isLastSizedLineStretchEnabled*/);
+
+					int adjustedFirstSizedItemIndex;
+					int adjustedLastSizedItemIndex;
+
+					ComputeFrozenItemsRange(
+						scrollViewport,
+						scrollOffset,
+						lineSpacing,
+						actualLineHeight,
+						lineCount,
+						m_firstSizedLineIndex /*beginSizedLineIndex*/,
+						m_lastSizedLineIndex  /*endSizedLineIndex*/,
+						m_firstSizedItemIndex /*beginSizedItemIndex*/,
+						m_lastSizedItemIndex  /*endSizedItemIndex*/,
+						out adjustedFirstSizedItemIndex,
+						out adjustedLastSizedItemIndex);
+				}
+				else
+				{
+					MUX_ASSERT(adjustedFirstStillSizedItemIndex != -1 || m_firstSizedLineIndex == firstStillSizedLineIndex);
+					MUX_ASSERT(adjustedLastStillSizedItemIndex != -1 || m_lastSizedLineIndex == lastStillSizedLineIndex);
+
+					if (m_firstSizedLineIndex < firstStillSizedLineIndex)
+					{
+						if (m_firstFrozenLineIndex > firstStillSizedLineIndex)
+						{
+							MUX_ASSERT(adjustedFirstStillSizedItemIndex - 1 >= firstStillSizedItemIndex);
+
+							EnsureAndMeasureItemRange(
+								context,
+								availableWidth,
+								actualLineHeight,
+								false /*forward*/,
+								Math.Clamp(adjustedFirstStillSizedItemIndex - 1, firstRealizedItemIndex, lastRealizedItemIndex) /*beginRealizedItemIndex*/,
+								Math.Clamp(firstStillSizedItemIndex, firstRealizedItemIndex, lastRealizedItemIndex) /*endRealizedItemIndex*/);
+						}
+
+						// Layout unfrozen & sized lines before the frozen ones.
+						MUX_ASSERT(firstStillSizedLineIndex < lineCount);
+						MUX_ASSERT(m_firstFrozenLineIndex > 0);
+						MUX_ASSERT(m_firstFrozenLineIndex - 1 >= m_firstSizedLineIndex);
+						MUX_ASSERT(adjustedFirstStillSizedItemIndex - 1 >= m_firstSizedItemIndex);
+
+						ComputeItemsLayoutRegularPath(
+							availableWidth,
+							scrollViewport,
+							lineSpacing,
+							actualLineHeight,
+							m_firstFrozenLineIndex - 1 /*beginSizedLineIndex*/,
+							m_firstSizedLineIndex /*endSizedLineIndex*/,
+							adjustedFirstStillSizedItemIndex - 1 /*beginSizedItemIndex*/,
+							m_firstSizedItemIndex /*endSizedItemIndex*/,
+							0 /*beginLineVectorIndex*/,
+							true /*isLastSizedLineStretchEnabled*/);
+					}
+					else if (preFrozenItemHasNewDesiredWidth)
+					{
+						MUX_ASSERT(m_firstFrozenLineIndex > 0);
+						MUX_ASSERT(m_firstFrozenItemIndex > 0);
+						MUX_ASSERT(m_firstSizedLineIndex <= m_firstFrozenLineIndex - 1);
+						MUX_ASSERT(m_firstSizedItemIndex <= m_firstFrozenItemIndex - 1);
+
+						// Re-layout the pre-frozen range since at least one of the items in there has a modified DesiredSize.
+						ComputeItemsLayoutRegularPath(
+							availableWidth,
+							scrollViewport,
+							lineSpacing,
+							actualLineHeight,
+							m_firstFrozenLineIndex - 1 /*beginSizedLineIndex*/,
+							m_firstSizedLineIndex /*endSizedLineIndex*/,
+							m_firstFrozenItemIndex - 1 /*beginSizedItemIndex*/,
+							m_firstSizedItemIndex /*endSizedItemIndex*/,
+							0 /*beginLineVectorIndex*/,
+							true /*isLastSizedLineStretchEnabled*/);
+					}
+
+					if (m_lastSizedLineIndex > lastStillSizedLineIndex)
+					{
+						if (m_lastFrozenLineIndex < lastStillSizedLineIndex)
+						{
+							MUX_ASSERT(adjustedLastStillSizedItemIndex + 1 <= lastStillSizedItemIndex);
+
+							EnsureAndMeasureItemRange(
+								context,
+								availableWidth,
+								actualLineHeight,
+								true /*forward*/,
+								Math.Clamp(adjustedLastStillSizedItemIndex + 1, firstRealizedItemIndex, lastRealizedItemIndex) /*beginRealizedItemIndex*/,
+								Math.Clamp(lastStillSizedItemIndex, firstRealizedItemIndex, lastRealizedItemIndex) /*endRealizedItemIndex*/);
+						}
+
+						// Layout unfrozen & sized lines after the frozen ones.
+						MUX_ASSERT(lastStillSizedLineIndex < lineCount);
+						MUX_ASSERT(m_lastFrozenLineIndex < lineCount - 1);
+						MUX_ASSERT(m_lastFrozenLineIndex + 1 <= m_lastSizedLineIndex);
+						MUX_ASSERT(adjustedLastStillSizedItemIndex + 1 <= m_lastSizedItemIndex);
+
+						ComputeItemsLayoutRegularPath(
+							availableWidth,
+							scrollViewport,
+							lineSpacing,
+							actualLineHeight,
+							m_lastFrozenLineIndex + 1 /*beginSizedLineIndex*/,
+							m_lastSizedLineIndex /*endSizedLineIndex*/,
+							adjustedLastStillSizedItemIndex + 1 /*beginSizedItemIndex*/,
+							m_lastSizedItemIndex /*endSizedItemIndex*/,
+							m_lineItemCounts.Count - m_lastSizedLineIndex + m_lastFrozenLineIndex /*beginLineVectorIndex*/,
+							m_lastSizedLineIndex < lineCount - 1 /*isLastSizedLineStretchEnabled*/);
+					}
+					else if (postFrozenItemHasNewDesiredWidth)
+					{
+						MUX_ASSERT(m_lastFrozenLineIndex + 1 <= m_lastSizedLineIndex);
+						MUX_ASSERT(m_lastFrozenItemIndex + 1 <= m_lastSizedItemIndex);
+
+						// Re-layout the post-frozen range since at least one of the items in there has a modified DesiredSize.
+						ComputeItemsLayoutRegularPath(
+							availableWidth,
+							scrollViewport,
+							lineSpacing,
+							actualLineHeight,
+							m_lastFrozenLineIndex + 1 /*beginSizedLineIndex*/,
+							m_lastSizedLineIndex /*endSizedLineIndex*/,
+							m_lastFrozenItemIndex + 1 /*beginSizedItemIndex*/,
+							m_lastSizedItemIndex /*endSizedItemIndex*/,
+							m_lineItemCounts.Count - m_lastSizedLineIndex + m_lastFrozenLineIndex /*beginLineVectorIndex*/,
+							m_lastSizedLineIndex < lineCount - 1 /*isLastSizedLineStretchEnabled*/);
+					}
+				}
+			}
+			else
+			{
+				// No recurring sized lines. Layout all the new sized lines.
+				ComputeItemsLayoutRegularPath(
+					availableWidth,
+					scrollViewport,
+					lineSpacing,
+					actualLineHeight,
+					m_firstSizedLineIndex /*beginSizedLineIndex*/,
+					m_lastSizedLineIndex  /*endSizedLineIndex*/,
+					unsizedNearItemCount  /*beginSizedItemIndex*/,
+					unsizedNearItemCount + sizedItemCount - 1 /*endSizedItemIndex*/,
+					0 /*beginLineVectorIndex*/,
+					m_lastSizedLineIndex < lineCount - 1 /*isLastSizedLineStretchEnabled*/);
+
+				int adjustedFirstSizedItemIndex;
+				int adjustedLastSizedItemIndex;
+
+				ComputeFrozenItemsRange(
+					scrollViewport,
+					scrollOffset,
+					lineSpacing,
+					actualLineHeight,
+					lineCount,
+					m_firstSizedLineIndex /*beginSizedLineIndex*/,
+					m_lastSizedLineIndex  /*endSizedLineIndex*/,
+					unsizedNearItemCount  /*beginSizedItemIndex*/,
+					unsizedNearItemCount + sizedItemCount - 1 /*endSizedItemIndex*/,
+					out adjustedFirstSizedItemIndex,
+					out adjustedLastSizedItemIndex);
+			}
+
+			return itemHasNewDesiredWidth;
+		}
+
+		#endregion
 	}
 }
