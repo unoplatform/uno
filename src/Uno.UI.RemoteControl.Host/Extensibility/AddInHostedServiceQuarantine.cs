@@ -103,7 +103,7 @@ internal sealed class QuarantinedHostedService(
 			}
 			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 			{
-				throw;
+				return;
 			}
 			catch (Exception error)
 			{
