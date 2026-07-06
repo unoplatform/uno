@@ -312,5 +312,172 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, SUT.SelectionStartForTesting);
 			Assert.AreEqual(5, SUT.SelectionLengthForTesting);
 		}
+
+		[TestMethod]
+		public async Task When_Expand_Word_Selects_Word_At_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(2, 2);
+			var added = range.Expand(TextRangeUnit.Word);
+
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(6, range.EndPosition);
+			Assert.AreEqual(6, added);
+		}
+
+		[TestMethod]
+		public async Task When_Expand_Word_Spans_Multiple_Words()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(2, 8);
+			range.Expand(TextRangeUnit.Word);
+
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(12, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_StartOf_Word_Moves_To_Word_Start()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(8, 8);
+			var moved = range.StartOf(TextRangeUnit.Word, false);
+
+			Assert.AreEqual(6, range.StartPosition);
+			Assert.AreEqual(6, range.EndPosition);
+			Assert.AreEqual(-2, moved);
+		}
+
+		[TestMethod]
+		public async Task When_EndOf_Word_Moves_To_Word_End()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(8, 8);
+			var moved = range.EndOf(TextRangeUnit.Word, false);
+
+			Assert.AreEqual(12, range.StartPosition);
+			Assert.AreEqual(12, range.EndPosition);
+			Assert.AreEqual(4, moved);
+		}
+
+		[TestMethod]
+		public async Task When_Move_Word_Forward_Steps_Word_Starts()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(0, 0);
+			var moved = range.Move(TextRangeUnit.Word, 2);
+
+			Assert.AreEqual(12, range.StartPosition);
+			Assert.AreEqual(12, range.EndPosition);
+			Assert.AreEqual(2, moved);
+		}
+
+		[TestMethod]
+		public async Task When_Move_Word_Backward_Steps_Word_Starts()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			var range = SUT.Document.GetRange(12, 12);
+			var moved = range.Move(TextRangeUnit.Word, -1);
+
+			Assert.AreEqual(6, range.StartPosition);
+			Assert.AreEqual(-1, moved);
+		}
+
+		[TestMethod]
+		public async Task When_GetIndex_Word_Returns_One_Based_Index()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+			Assert.AreEqual(1, SUT.Document.GetRange(2, 2).GetIndex(TextRangeUnit.Word));
+			Assert.AreEqual(2, SUT.Document.GetRange(8, 8).GetIndex(TextRangeUnit.Word));
+			Assert.AreEqual(3, SUT.Document.GetRange(13, 13).GetIndex(TextRangeUnit.Word));
+		}
+
+		[TestMethod]
+		public async Task When_Expand_Paragraph_Selects_Paragraph()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+
+			var range = SUT.Document.GetRange(4, 4);
+			range.Expand(TextRangeUnit.Paragraph);
+
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(6, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Move_Paragraph_Forward_Steps_Paragraphs()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+
+			var range = SUT.Document.GetRange(0, 0);
+			var moved = range.Move(TextRangeUnit.Paragraph, 1);
+
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(1, moved);
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Expand_Word_Updates_Caret_While_Focused()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(2, 2);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.Expand(TextRangeUnit.Word);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStartForTesting);
+			Assert.AreEqual(6, SUT.SelectionLengthForTesting);
+		}
 	}
 }

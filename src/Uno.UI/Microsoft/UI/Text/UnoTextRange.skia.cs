@@ -271,34 +271,122 @@ namespace Microsoft.UI.Text
 
 		public int Move(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			var length = _document.TextLength;
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
-				// TODO Uno: unit-based movement beyond Character needs the layout-aware engine.
+				// A non-degenerate range collapses toward the direction of travel before moving.
+				if (_start != _end)
+				{
+					if (count >= 0)
+					{
+						_start = _end;
+					}
+					else
+					{
+						_end = _start;
+					}
+				}
+
+				var position = count >= 0 ? _end : _start;
+				var target = Math.Clamp(position + count, 0, length);
+				var moved = target - position;
+				_start = _end = target;
+				OnRangeChanged();
+				return moved;
+			}
+
+			if (count == 0)
+			{
+				// WinUI: Move with count 0 collapses the range to its start and reports no movement.
+				if (_start != _end)
+				{
+					_end = _start;
+					OnRangeChanged();
+				}
+
 				return 0;
 			}
 
-			var length = _document.TextLength;
-
-			// A non-degenerate range collapses toward the direction of travel before moving.
-			if (_start != _end)
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
 			{
-				if (count >= 0)
-				{
-					_start = _end;
-				}
-				else
-				{
-					_end = _start;
-				}
+				var ip = count > 0 ? length : 0;
+				_start = _end = ip;
+				OnRangeChanged();
+				return count > 0 ? 1 : -1;
 			}
 
-			var position = count >= 0 ? _end : _start;
-			var target = Math.Clamp(position + count, 0, length);
-			var moved = target - position;
-			_start = _end = target;
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+			if (chunks is null || chunks.Count == 0)
+			{
+				// TODO Uno: Line/Sentence/Screen units require the layout-aware editing engine.
+				return 0;
+			}
+
+			// Unit boundaries are the chunk starts plus the end-of-story position.
+			var boundaries = new int[chunks.Count + 1];
+			for (var i = 0; i < chunks.Count; i++)
+			{
+				boundaries[i] = chunks[i].start;
+			}
+
+			boundaries[chunks.Count] = length;
+
+			// Collapse a non-degenerate range toward the direction of travel first.
+			var insertion = count > 0 ? _end : _start;
+
+			int movedUnits;
+			int destination;
+			if (count > 0)
+			{
+				var index = -1;
+				for (var i = 0; i < boundaries.Length; i++)
+				{
+					if (boundaries[i] > insertion)
+					{
+						index = i;
+						break;
+					}
+				}
+
+				if (index < 0)
+				{
+					return 0;
+				}
+
+				var targetIndex = Math.Min(index + (count - 1), boundaries.Length - 1);
+				destination = boundaries[targetIndex];
+				movedUnits = targetIndex - index + 1;
+			}
+			else
+			{
+				var index = -1;
+				for (var i = boundaries.Length - 1; i >= 0; i--)
+				{
+					if (boundaries[i] < insertion)
+					{
+						index = i;
+						break;
+					}
+				}
+
+				if (index < 0)
+				{
+					return 0;
+				}
+
+				var targetIndex = Math.Max(index - (-count - 1), 0);
+				destination = boundaries[targetIndex];
+				movedUnits = -(index - targetIndex + 1);
+			}
+
+			_start = _end = destination;
 			OnRangeChanged();
-			return moved;
+			return movedUnits;
 		}
+
+		// The full story text; the basis for text-based (non-geometry) unit navigation.
+		private protected string GetStoryText() => _document.GetTextInRange(0, _document.TextLength);
 
 		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
@@ -362,7 +450,7 @@ namespace Microsoft.UI.Text
 		internal void ApplyCharacterFormat(UnoTextCharacterFormat format)
 			=> _document.SetFormatOverRange(_start, _end, format);
 
-		// --- Deferred surface (paragraph formatting, clipboard, geometry, streams, non-Character units) ---
+		// --- Deferred surface (paragraph formatting, clipboard, geometry, streams, embedded images) ---
 
 		public global::Microsoft.UI.Text.ITextParagraphFormat ParagraphFormat
 		{
@@ -396,15 +484,195 @@ namespace Microsoft.UI.Text
 
 		public void Paste(int format) => throw NotImplemented("Paste");
 
-		public int EndOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend) => throw NotImplemented("EndOf");
+		// --- Text-based unit navigation (Word/Paragraph/Story) — functional over the plain-text buffer ---
 
-		public int StartOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend) => throw NotImplemented("StartOf");
+		public int EndOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
+		{
+			int target;
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			{
+				target = _document.TextLength;
+			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// The end of a single character is one position forward from a degenerate range.
+				target = Math.Min(_end + (_start == _end ? 1 : 0), _document.TextLength);
+			}
+			else
+			{
+				var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+				if (chunks is null || chunks.Count == 0)
+				{
+					return 0;
+				}
 
-		public int Expand(global::Microsoft.UI.Text.TextRangeUnit unit) => throw NotImplemented("Expand");
+				// Probe the unit the range end sits within (end-1 for a non-degenerate range so a
+				// selection ending on a boundary is not pulled into the following unit).
+				var probe = _end > _start ? _end - 1 : _end;
+				var chunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, probe)];
+				target = chunk.start + chunk.length;
+			}
 
-		public int GetIndex(global::Microsoft.UI.Text.TextRangeUnit unit) => throw NotImplemented("GetIndex");
+			var old = _end;
+			_end = target;
+			if (!extend)
+			{
+				_start = target;
+			}
+			else if (_start > _end)
+			{
+				_start = _end;
+			}
 
-		public void SetIndex(global::Microsoft.UI.Text.TextRangeUnit unit, int index, bool extend) => throw NotImplemented("SetIndex");
+			OnRangeChanged();
+			return _end - old;
+		}
+
+		public int StartOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
+		{
+			int target;
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			{
+				target = 0;
+			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// The start of a character is the range's own start; nothing to move.
+				target = _start;
+			}
+			else
+			{
+				var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+				if (chunks is null || chunks.Count == 0)
+				{
+					return 0;
+				}
+
+				target = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start)].start;
+			}
+
+			var old = _start;
+			_start = target;
+			if (!extend)
+			{
+				_end = target;
+			}
+			else if (_end < _start)
+			{
+				_end = _start;
+			}
+
+			OnRangeChanged();
+			return _start - old;
+		}
+
+		public int Expand(global::Microsoft.UI.Text.TextRangeUnit unit)
+		{
+			var originalLength = _end - _start;
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			{
+				_start = 0;
+				_end = _document.TextLength;
+				OnRangeChanged();
+				return (_end - _start) - originalLength;
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// Expanding a caret by one character selects the following character.
+				if (_start == _end && _start < _document.TextLength)
+				{
+					_end = _start + 1;
+					OnRangeChanged();
+					return 1;
+				}
+
+				return 0;
+			}
+
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+			if (chunks is null || chunks.Count == 0)
+			{
+				return 0;
+			}
+
+			var startChunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start)];
+			var probeEnd = _end > _start ? _end - 1 : _end;
+			var endChunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, probeEnd)];
+			_start = startChunk.start;
+			_end = endChunk.start + endChunk.length;
+			OnRangeChanged();
+			return (_end - _start) - originalLength;
+		}
+
+		public int GetIndex(global::Microsoft.UI.Text.TextRangeUnit unit)
+		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			{
+				return 1;
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// 1-based character index of the range start; 0 when past the end of the story.
+				return _start >= _document.TextLength && _document.TextLength > 0 ? 0 : _start + 1;
+			}
+
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+			if (chunks is null || chunks.Count == 0)
+			{
+				return 0;
+			}
+
+			// TODO Uno: WinUI returns 0 when the range start is past the last unit; the exact
+			// end-of-story boundary behaviour still needs runtime verification against WinUI.
+			return global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start) + 1;
+		}
+
+		public void SetIndex(global::Microsoft.UI.Text.TextRangeUnit unit, int index, bool extend)
+		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				var length = _document.TextLength;
+				var target = index >= 0 ? index - 1 : length + index;
+				target = Math.Clamp(target, 0, length);
+				_start = target;
+				if (!extend)
+				{
+					_end = target;
+				}
+				else if (_end < _start)
+				{
+					_end = _start;
+				}
+
+				OnRangeChanged();
+				return;
+			}
+
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+			if (chunks is null || chunks.Count == 0)
+			{
+				return;
+			}
+
+			// A 1-based index; a negative index counts back from the last unit.
+			var chunkIndex = index >= 0 ? index - 1 : chunks.Count + index;
+			chunkIndex = Math.Clamp(chunkIndex, 0, chunks.Count - 1);
+			var chunk = chunks[chunkIndex];
+			_start = chunk.start;
+			if (!extend)
+			{
+				_end = chunk.start + chunk.length;
+			}
+			else if (_end < _start)
+			{
+				_end = _start;
+			}
+
+			OnRangeChanged();
+		}
 
 		public void GetCharacterUtf32(out uint value, int offset) => throw NotImplemented("GetCharacterUtf32");
 
