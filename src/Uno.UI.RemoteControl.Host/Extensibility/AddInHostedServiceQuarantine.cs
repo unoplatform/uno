@@ -85,7 +85,9 @@ internal sealed class QuarantinedHostedService(
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{
-			return;
+			// A cancelled startup is host shutdown, not an add-in failure: propagate it
+			// so the host's shutdown semantics stay intact instead of quarantining it.
+			throw;
 		}
 		catch (Exception error)
 		{
