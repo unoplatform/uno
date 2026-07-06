@@ -71,6 +71,18 @@ namespace Microsoft.UI.Text
 			}
 		}
 
+		/// <summary>
+		/// Sets this range's positions directly, bypassing the WinUI "drag the other end" semantics of
+		/// the public <see cref="StartPosition"/>/<see cref="EndPosition"/> setters. Used to mirror the
+		/// interactive caret/selection into the Text Object Model without side effects.
+		/// </summary>
+		internal void SetRangeInternal(int start, int end)
+		{
+			_start = start;
+			_end = end;
+			Normalize();
+		}
+
 		public int Length => _end - _start;
 
 		public int StoryLength => _document.TextLength + 1;

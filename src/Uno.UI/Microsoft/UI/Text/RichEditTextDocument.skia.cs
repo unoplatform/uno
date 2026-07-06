@@ -126,6 +126,13 @@ namespace Microsoft.UI.Text
 		public global::Microsoft.UI.Text.ITextSelection Selection => _selection ??= new UnoTextSelection(this);
 
 		/// <summary>
+		/// Mirrors the owning control's interactive caret/selection into <see cref="Selection"/> without
+		/// triggering the drag semantics of the public position setters. Used by the interactive editor.
+		/// </summary>
+		internal void SetSelectionRangeInternal(int start, int end)
+			=> ((UnoTextRange)Selection).SetRangeInternal(start, end);
+
+		/// <summary>
 		/// Sets the text in this document to the specified plain text.
 		/// </summary>
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
