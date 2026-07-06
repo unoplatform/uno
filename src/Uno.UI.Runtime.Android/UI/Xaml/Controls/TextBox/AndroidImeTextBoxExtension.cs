@@ -39,6 +39,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
+	// TODO #13827: the foreground-activity fallback is ambiguous once multiple windows exist.
 	private TextInputPlugin? Plugin
 		=> (AndroidSkiaXamlRootHost.GetActivity(_xamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
 

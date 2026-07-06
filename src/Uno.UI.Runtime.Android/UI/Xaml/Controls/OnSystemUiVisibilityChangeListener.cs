@@ -5,12 +5,12 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI;
 
-public class OnSystemUiVisibilityChangeListener
+internal class OnSystemUiVisibilityChangeListener
 	: Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
 {
-	private readonly Microsoft.UI.Xaml.ApplicationActivity _activity;
+	private readonly Uno.UI.Runtime.Android.ApplicationActivity _activity;
 
-	public OnSystemUiVisibilityChangeListener(Microsoft.UI.Xaml.ApplicationActivity activity)
+	public OnSystemUiVisibilityChangeListener(Uno.UI.Runtime.Android.ApplicationActivity activity)
 	{
 		_activity = activity;
 	}
