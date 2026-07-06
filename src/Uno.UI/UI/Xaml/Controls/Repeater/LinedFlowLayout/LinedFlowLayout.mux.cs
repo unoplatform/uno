@@ -260,14 +260,94 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		// Stops the timer used to trigger an asynchronous measure pass when no items info was provided
-		// by the ItemsInfoRequested event. The full timer subsystem lands in WS-D3f; this null-safe
-		// stop is required by UninitializeForContextCore.
+		// Enqueues an asynchronous measure pass on the dispatcher. Used to check whether the ItemsRepeater's children
+		// have a new desired size (see InvalidateMeasureTimerStart for the rationale).
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void InvalidateMeasureAsync()
+		{
+			// WinUI captures a weak reference to avoid an extra Release during dispatch, and skips the callback
+			// once the Xaml core has shut down. Here the weak reference guards against a collected layout; Uno has
+			// no direct WindowsXamlManager shutdown probe, so that early-exit is omitted.
+			var weakThis = new WeakReference<LinedFlowLayout>(this);
+
+			DispatcherQueue.TryEnqueue(() =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.InvalidateLayout(false /*forceRelayout*/, false /*resetItemsInfo*/, true /*invalidateMeasure*/);
+				}
+			});
+		}
+
+		// Starts the timer used to trigger an asynchronous measure pass when no items info was provided by the ItemsInfoRequested
+		// event. Invoked after an item was realized or when the timer expires and the tickCount is still smaller than 7.
+		// The timer interval begins at 100ms and is then increased by 50% each time it is re-started, until tickCount reaches 7.
+		// By then the interval is 1.7s and the total time elapsed is about 5s when the timer is no longer re-started.
+		// Asynchronous measure passes are triggered to check if the ItemsRepeater's children have a new desired size.
+		// This is done because when a child is re-measured because its content changed, the Xaml layout engine uses its previous
+		// available size, preventing the ItemsRepeater from being re-measured. The use of LinedFlowLayout.ItemRangesHaveNewDesiredWidths
+		// in the asynchronous measure pass will ensure that new desired widths for the frozen items will trigger a full re-layout.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void InvalidateMeasureTimerStart(int tickCount)
+		{
+			MUX_ASSERT(!UsesArrangeWidthInfo());
+
+			if (m_invalidateMeasureTimer is not null)
+			{
+				if (m_invalidateMeasureTimer.IsEnabled)
+				{
+					m_invalidateMeasureTimer.Stop();
+				}
+			}
+			else
+			{
+				m_invalidateMeasureTimer = new DispatcherTimer();
+
+				m_invalidateMeasureTimer.Tick += InvalidateMeasureTimerTick;
+			}
+
+			m_invalidateMeasureTimerTickCount = tickCount;
+
+			const double timerFactor = 1.5;
+			double timerMultiplier = Math.Pow(timerFactor, tickCount);
+
+			const long timerBase = 1000000; // 100ms
+			long timerInterval = (long)(timerBase * timerMultiplier);
+
+			m_invalidateMeasureTimer.Interval = TimeSpan.FromTicks(timerInterval);
+			m_invalidateMeasureTimer.Start();
+		}
+
+		// Stops the timer used to trigger an asynchronous measure pass when no items info was provided by the ItemsInfoRequested event.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
 		private void InvalidateMeasureTimerStop(bool isForDestructor)
 		{
 			if (m_invalidateMeasureTimer is not null && m_invalidateMeasureTimer.IsEnabled)
 			{
 				m_invalidateMeasureTimer.Stop();
+			}
+		}
+
+		// Invoked when the timer used to trigger asynchronous measure passes expires.
+		// Re-starts it with a longer interval until m_invalidateMeasureTimerTickCount
+		// reaches the value 7, for a total of 8 invalidations.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void InvalidateMeasureTimerTick(object? sender, object args)
+		{
+			InvalidateMeasureAsync();
+
+			// The asynchronous measure pass is triggered 8 times to check if the ItemsRepeater's children
+			// have a new desired size. This is done because when a child is re-measured because its content changed,
+			// the Xaml layout engine uses its previous available size, preventing the ItemsRepeater from being re-measured.
+			const int maxInvalidateMeasureTimerTickCount = 7;
+
+			if (!UsesArrangeWidthInfo() && m_invalidateMeasureTimerTickCount < maxInvalidateMeasureTimerTickCount)
+			{
+				InvalidateMeasureTimerStart(m_invalidateMeasureTimerTickCount + 1);
+			}
+			else
+			{
+				InvalidateMeasureTimerStop(false /*isForDestructor*/);
 			}
 		}
 
@@ -3172,6 +3252,132 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureItemAspectRatios()
+		{
+			if (m_aspectRatios == null)
+			{
+				m_aspectRatios = new LinedFlowLayoutItemAspectRatios();
+			}
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureElementRealized(
+			bool forward,
+			int itemIndex)
+		{
+			MUX_ASSERT(m_isVirtualizingContext);
+			MUX_ASSERT(!m_elementManager.IsDataIndexRealized(itemIndex));
+
+			m_elementManager.EnsureElementRealized(forward, itemIndex, LayoutId);
+		}
+
+		// Ensures the items in the provided range are realized.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureItemRange(
+			bool forward,
+			int beginRealizedItemIndex,
+			int endRealizedItemIndex)
+		{
+			bool realizedNewElement = false;
+
+			for (int realizedItemIndex = beginRealizedItemIndex; ; realizedItemIndex = forward ? realizedItemIndex + 1 : realizedItemIndex - 1)
+			{
+				if (!m_elementManager.IsDataIndexRealized(realizedItemIndex))
+				{
+					EnsureElementRealized(forward, realizedItemIndex);
+
+					realizedNewElement = true;
+				}
+
+				if (realizedItemIndex == endRealizedItemIndex)
+				{
+					break;
+				}
+			}
+
+			if (realizedNewElement && !UsesArrangeWidthInfo())
+			{
+				InvalidateMeasureTimerStart(0 /*tickCount*/);
+			}
+		}
+
+		// Returns a 3-tuple indicating whether any pre-frozen, frozen or post-frozen realized item has a new desired
+		// width compared to the provided oldElementDesiredWidths snapshot. Used by the asynchronous measure pass to
+		// decide whether a re-measure must trigger a full re-layout.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal (bool preFrozenItemHasNewDesiredWidth, bool frozenItemHasNewDesiredWidth, bool postFrozenItemHasNewDesiredWidth) ItemRangesHaveNewDesiredWidths(
+			Dictionary<UIElement, float> oldElementDesiredWidths,
+			int beginRealizedItemIndex,
+			int endRealizedItemIndex)
+		{
+			MUX_ASSERT(m_itemsInfoFirstIndex == -1);
+			MUX_ASSERT(m_elementDesiredWidths != null);
+			MUX_ASSERT(beginRealizedItemIndex <= endRealizedItemIndex);
+			MUX_ASSERT(beginRealizedItemIndex <= m_firstFrozenItemIndex);
+			MUX_ASSERT(endRealizedItemIndex >= m_lastFrozenItemIndex);
+
+			bool preFrozenItemHasNewDesiredWidth = false;
+			bool frozenItemHasNewDesiredWidth = false;
+
+			for (int itemIndex = beginRealizedItemIndex; itemIndex <= endRealizedItemIndex; itemIndex++)
+			{
+				if (m_elementManager.IsDataIndexRealized(itemIndex))
+				{
+					if (m_elementManager.GetRealizedElement(itemIndex /*dataIndex*/) is { } element)
+					{
+						bool hasNewDesiredWidth = m_elementDesiredWidths!.ContainsKey(element);
+
+						if (hasNewDesiredWidth)
+						{
+							bool hasOldDesiredWidth = oldElementDesiredWidths.ContainsKey(element);
+							float newDesiredWidth = m_elementDesiredWidths![element];
+							bool desiredWidthChanged = false;
+
+							MUX_ASSERT(element.DesiredSize.Width == newDesiredWidth);
+
+							if (hasOldDesiredWidth)
+							{
+								float oldDesiredWidth = oldElementDesiredWidths[element];
+
+								desiredWidthChanged = oldDesiredWidth != newDesiredWidth;
+							}
+
+							if (desiredWidthChanged || !hasOldDesiredWidth)
+							{
+								// TODO (WS-D5): NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.ItemDesiredWidthChange).
+
+								if (itemIndex < m_firstFrozenItemIndex)
+								{
+									MUX_ASSERT(!preFrozenItemHasNewDesiredWidth);
+
+									preFrozenItemHasNewDesiredWidth = true;
+
+									// Now that preFrozenItemHasNewDesiredWidth was set for the initial unfrozen items range, skip the remaining initial unfrozen items after itemIndex.
+									itemIndex = m_firstFrozenItemIndex - 1;
+								}
+								else if (itemIndex <= m_lastFrozenItemIndex)
+								{
+									MUX_ASSERT(!frozenItemHasNewDesiredWidth);
+
+									frozenItemHasNewDesiredWidth = true;
+
+									// Now that frozenItemHasNewDesiredWidth was set for the frozen items range, skip the remaining frozen items after itemIndex.
+									itemIndex = m_lastFrozenItemIndex;
+								}
+								else
+								{
+									return (preFrozenItemHasNewDesiredWidth, frozenItemHasNewDesiredWidth, true /*postFrozenItemHasNewDesiredWidth*/);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return (preFrozenItemHasNewDesiredWidth, frozenItemHasNewDesiredWidth, false /*postFrozenItemHasNewDesiredWidth*/);
 		}
 
 		#endregion
