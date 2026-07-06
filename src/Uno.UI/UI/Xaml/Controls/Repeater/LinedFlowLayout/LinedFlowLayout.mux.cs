@@ -468,7 +468,7 @@ namespace Microsoft.UI.Xaml.Controls
 			int sizedItemIndex,
 			double actualLineHeight,
 			double averageAspectRatio,
-			double scaleFactor)
+			double scaleFactor = 1.0)
 		{
 			double desiredAspectRatio = GetDesiredAspectRatioFromItemsInfo(sizedItemIndex, UsesFastPathLayout());
 
@@ -1093,6 +1093,206 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(scaleFactor < 1.0);
 
 			return smallerScaleFactorNeeded ? 0.0 : scaleFactor;
+		}
+
+		#endregion
+
+		#region Measure engine: drawback + layout-worthiness + items-info setters (WS-D3c)
+
+		// Grades an ItemsLayout: lines that exceed the available width are penalized more (cubic) than lines
+		// with room to spare (quadratic). A lower drawback is a better layout.
+		internal void ComputeItemsLayoutDrawback(
+			double availableWidth,
+			bool isLastSizedLineStretchEnabled,
+			ItemsLayout itemsLayout)
+		{
+			int sizedLineCount = itemsLayout.m_lineItemWidths.Count;
+			int lineVectorCount = isLastSizedLineStretchEnabled ? sizedLineCount : sizedLineCount - 1;
+
+			if (lineVectorCount == 0)
+			{
+				itemsLayout.m_drawback = 0;
+				return;
+			}
+
+			const double c_lineTooSmallExponent = 2.0;
+			// Be careful when using Math.Pow(..., 3) as a negative input results in a negative output.
+			// For the moment, c_lineTooLargeExponent is only applied to positive numbers, so its use is safe.
+			const double c_lineTooLargeExponent = 3.0;
+			double drawback = 0.0;
+
+			for (int lineVectorIndex = 0; lineVectorIndex < lineVectorCount; lineVectorIndex++)
+			{
+				double lineWidthDelta = itemsLayout.m_lineItemWidths[lineVectorIndex] - availableWidth;
+
+				if (lineWidthDelta != 0.0)
+				{
+					// To minimize the occurrences of lines that exceed the available width, they are graded worse than lines that have room to spare.
+					drawback += Math.Pow(lineWidthDelta, lineWidthDelta > 0.0 ? c_lineTooLargeExponent : c_lineTooSmallExponent);
+				}
+			}
+
+			// The last line does not participate in the grading if it's smaller than the available width, whether ItemsStretch is Fill or not.
+			if (!isLastSizedLineStretchEnabled)
+			{
+				double lineWidthDelta = itemsLayout.m_lineItemWidths[sizedLineCount - 1] - availableWidth;
+
+				if (lineWidthDelta > 0.0)
+				{
+					// The last line exceeds the available width, grade it as such.
+					drawback += Math.Pow(lineWidthDelta, c_lineTooLargeExponent);
+				}
+			}
+
+			itemsLayout.m_drawback = drawback;
+		}
+
+		internal bool IsItemsLayoutContractionWorthy(ItemsLayout itemsLayout)
+		{
+			if (itemsLayout.m_smallestTailItemWidth == double.MaxValue || itemsLayout.m_smallestTailItemWidth == 0.0)
+			{
+				return false;
+			}
+
+			int sizedLineCount = itemsLayout.m_lineItemWidths.Count;
+
+			if (sizedLineCount > 1)
+			{
+				for (int lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+				{
+					if (itemsLayout.m_lineItemCounts[lineVectorIndex] > 1)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		internal bool IsItemsLayoutEqualizationWorthy(
+			ItemsLayout itemsLayout,
+			bool withHeadItem)
+		{
+			if ((withHeadItem && itemsLayout.m_bestEqualizingHeadItemIndex == int.MaxValue) ||
+				(!withHeadItem && itemsLayout.m_bestEqualizingTailItemIndex == int.MaxValue))
+			{
+				return false;
+			}
+
+			int sizedLineCount = itemsLayout.m_lineItemWidths.Count;
+
+			if (sizedLineCount > 1)
+			{
+				for (int lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+				{
+					if (itemsLayout.m_lineItemCounts[lineVectorIndex] > 1)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		// Determines whether using a larger adjustedAvailableWidth may lead to an ItemsLayout with a smaller drawback.
+		internal bool IsItemsLayoutExpansionWorthy(ItemsLayout itemsLayout)
+		{
+			if (itemsLayout.m_smallestHeadItemWidth == double.MaxValue || itemsLayout.m_smallestHeadItemWidth == 0.0)
+			{
+				return false;
+			}
+
+			int sizedLineCount = itemsLayout.m_lineItemWidths.Count;
+			bool isExpansionWorthy = false;
+
+			if (sizedLineCount > 1)
+			{
+				for (int lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+				{
+					if (itemsLayout.m_lineItemCounts[lineVectorIndex] > 1)
+					{
+						isExpansionWorthy = true;
+						break;
+					}
+				}
+			}
+
+			if (isExpansionWorthy)
+			{
+				int lineVectorIndex;
+
+				for (lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+				{
+					if (itemsLayout.m_lineItemWidths[lineVectorIndex] > itemsLayout.m_availableLineItemsWidth)
+					{
+						break;
+					}
+				}
+
+				isExpansionWorthy = lineVectorIndex < sizedLineCount;
+			}
+
+			MUX_ASSERT(!isExpansionWorthy || itemsLayout.m_smallestHeadItemWidth > 0);
+
+			return isExpansionWorthy;
+		}
+
+		// Returns True when 'itemIndex' is locked in a line within the [beginLineIndex, endLineIndex] range.
+		internal bool IsLockedItem(
+			bool forward,
+			int beginLineIndex,
+			int endLineIndex,
+			int itemIndex)
+		{
+			if (m_lockedItemIndexes.TryGetValue(itemIndex, out int lineIndex))
+			{
+				if (forward)
+				{
+					if (lineIndex >= beginLineIndex && lineIndex <= endLineIndex)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					if (lineIndex <= beginLineIndex && lineIndex >= endLineIndex)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		internal void SetArrangeWidthFromItemsInfo(
+			int itemIndex,
+			float arrangeWidth)
+		{
+			MUX_ASSERT(m_itemsInfoFirstIndex >= -1);
+
+			// m_itemsInfoFirstIndex >=  0: Regular path layout case, with items info available.
+			// m_itemsInfoFirstIndex == -1: Fast path layout case, without items info available.
+			int itemsInfoArrangeWidthsIndex = itemIndex - (m_itemsInfoFirstIndex == -1 ? 0 : m_itemsInfoFirstIndex);
+
+			MUX_ASSERT(itemsInfoArrangeWidthsIndex >= 0);
+			MUX_ASSERT(itemsInfoArrangeWidthsIndex < m_itemsInfoArrangeWidths.Count);
+
+			m_itemsInfoArrangeWidths[itemsInfoArrangeWidthsIndex] = arrangeWidth;
+		}
+
+		internal void SetDesiredAspectRatioFromItemsInfo(
+			int itemIndex,
+			double desiredAspectRatio)
+		{
+			MUX_ASSERT(itemIndex < m_itemCount);
+			MUX_ASSERT(m_itemsInfoFirstIndex >= 0);
+			MUX_ASSERT(itemIndex - m_itemsInfoFirstIndex >= 0);
+			MUX_ASSERT(itemIndex - m_itemsInfoFirstIndex < m_itemsInfoDesiredAspectRatiosForRegularPath.Count);
+
+			m_itemsInfoDesiredAspectRatiosForRegularPath[itemIndex - m_itemsInfoFirstIndex] = desiredAspectRatio;
 		}
 
 		#endregion
