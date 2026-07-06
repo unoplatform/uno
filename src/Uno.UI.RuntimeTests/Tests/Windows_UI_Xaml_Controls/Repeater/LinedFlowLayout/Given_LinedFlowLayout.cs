@@ -515,4 +515,57 @@ public class Given_LinedFlowLayout
 		itemsLayout.m_lineItemWidths.Should().Equal(new[] { 300.0, 300.0 });
 		itemsLayout.m_availableLineItemsWidth.Should().Be(300.0);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_LockItemToLineInternal_Then_RecordsValidLock()
+	{
+		var sut = new LinedFlowLayout();
+
+		// 6 items, 2 items/line => GetLineCount = (int)(5/2.0)+1 = 3 lines.
+		sut.m_itemCount = 6;
+		sut.m_averageItemsPerLine = (2.0, 2.0);
+
+		var internalLocked = new SortedDictionary<int, int>();
+
+		// Lock item 2 to line 1 within a forward-consistent sized range; no neighboring locks => valid.
+		var locked = sut.LockItemToLineInternal(
+			internalLocked,
+			beginSizedLineIndex: 0,
+			endSizedLineIndex: 2,
+			beginSizedItemIndex: 0,
+			endSizedItemIndex: 5,
+			lineIndex: 1,
+			itemIndex: 2);
+
+		locked.Should().BeTrue();
+		internalLocked.Should().ContainKey(2).WhoseValue.Should().Be(1);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_LockItemToLineInternal_And_LineIndexExceedsItemIndex_Then_ReturnsFalse()
+	{
+		var sut = new LinedFlowLayout();
+
+		sut.m_itemCount = 6;
+		sut.m_averageItemsPerLine = (2.0, 2.0);
+
+		var internalLocked = new SortedDictionary<int, int>();
+
+		// lineIndex (3) > itemIndex (1) is impossible to lay out => early false, nothing recorded.
+		var locked = sut.LockItemToLineInternal(
+			internalLocked,
+			beginSizedLineIndex: 0,
+			endSizedLineIndex: 2,
+			beginSizedItemIndex: 0,
+			endSizedItemIndex: 5,
+			lineIndex: 3,
+			itemIndex: 1);
+
+		locked.Should().BeFalse();
+		internalLocked.Should().BeEmpty();
+	}
 }
