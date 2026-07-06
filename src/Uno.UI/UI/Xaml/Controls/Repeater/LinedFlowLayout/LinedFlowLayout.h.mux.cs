@@ -36,6 +36,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Scroll offsets within this epsilon of 0 are snapped to 0 to avoid sub-pixel line-index jitter.
 		private const double c_offsetEqualityEpsilon = 0.01;
 
+		// Number of layout passes m_anchorIndex is retained after RecommendedAnchorIndex momentarily
+		// switches to -1 during a bring-into-view operation (purely experimental value).
+		private const int c_maxAnchorIndexRetentionCount = 10;
+
 		// Sizing info returned by the ItemsInfoRequested event handler for a range of items.
 		// WinUI declares ItemsInfo private; it is internal here so RaiseItemsInfoRequested's return
 		// value can be validated by tests before the measure path that consumes it (WS-D3c) is ported.
