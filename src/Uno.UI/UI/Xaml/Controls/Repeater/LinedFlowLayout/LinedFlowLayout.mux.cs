@@ -1949,5 +1949,421 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: line-breaking (GetItemsLayout) (WS-D3c)
+
+		// Computes an ItemsLayout for the provided available width.
+		// availableWidth: available width as provided by MeasureOverride.
+		// adjustedAvailableWidth: variation of availableWidth to equalize the items' layout on the lines.
+		// Walks the sized item range forward or backward, assigning each item to a line by cumulating widths
+		// (honoring locked items and the line-equalization heuristics), records per-line head/tail move
+		// candidates used later to shuffle items between lines, then grades the layout via ComputeItemsLayoutDrawback.
+		// The single ItemsLayout is built locally and returned; callers that snapshot it must deep-copy via Clone().
+		internal ItemsLayout GetItemsLayout(
+			SortedDictionary<int, int> internalLockedItemIndexes,
+			double scrollViewport,
+			double availableWidth,
+			double adjustedAvailableWidth,
+			double averageLineItemsWidth,
+			double averageAspectRatio,
+			double lineSpacing,
+			double actualLineHeight,
+			int beginSizedLineIndex,
+			int endSizedLineIndex,
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			int beginLineVectorIndex,
+			bool isLastSizedLineStretchEnabled)
+		{
+			MUX_ASSERT(!(beginSizedLineIndex < endSizedLineIndex && beginSizedItemIndex >= endSizedItemIndex));
+			MUX_ASSERT(!(beginSizedLineIndex > endSizedLineIndex && beginSizedItemIndex <= endSizedItemIndex));
+			MUX_ASSERT(Math.Abs(beginSizedLineIndex - endSizedLineIndex) <= Math.Abs(beginSizedItemIndex - endSizedItemIndex));
+
+			bool forward = beginSizedItemIndex <= endSizedItemIndex;
+			int sizedLineCount = forward ? endSizedLineIndex - beginSizedLineIndex + 1 : beginSizedLineIndex - endSizedLineIndex + 1;
+			double minItemSpacing = MinItemSpacing;
+			int lineVectorIndex;
+			int lineItemsCount = 0;
+			int lastItemIndex = int.MaxValue;
+			double cumulatedLinesWidth = 0.0;
+			double cumulatedWidth = 0.0;
+			double lastItemWidth = double.MaxValue;
+			double[] headItemWidths = new double[sizedLineCount];
+			double[] tailItemWidths = new double[sizedLineCount];
+			double[] headItemDrawbackImprovements = new double[sizedLineCount];
+			double[] tailItemDrawbackImprovements = new double[sizedLineCount];
+			int[] headItemIndexes = new int[sizedLineCount];
+			int[] tailItemIndexes = new int[sizedLineCount];
+
+			Array.Fill(headItemIndexes, int.MaxValue);
+			Array.Fill(tailItemIndexes, int.MaxValue);
+
+			ItemsLayout itemsLayout = new();
+
+			itemsLayout.m_availableLineItemsWidth = adjustedAvailableWidth;
+			ClearAndFill(itemsLayout.m_lineItemCounts, sizedLineCount, 0);
+			ClearAndFill(itemsLayout.m_lineItemWidths, sizedLineCount, 0.0);
+
+			lineVectorIndex = forward ? 0 : sizedLineCount - 1;
+
+			for (int sizedItemIndex = beginSizedItemIndex; ; sizedItemIndex = forward ? sizedItemIndex + 1 : sizedItemIndex - 1)
+			{
+				double itemWidth = 0.0;
+
+				if (m_itemsInfoFirstIndex == -1)
+				{
+					MUX_ASSERT(m_elementManager.IsDataIndexRealized(sizedItemIndex));
+
+					if (m_elementManager.GetRealizedElement(sizedItemIndex) is { } element)
+					{
+						itemWidth = element.DesiredSize.Width;
+					}
+				}
+				else
+				{
+					MUX_ASSERT(sizedItemIndex - m_itemsInfoFirstIndex < m_itemsInfoDesiredAspectRatiosForRegularPath.Count);
+
+					double desiredMinWidth = GetMinWidthFromItemsInfo(sizedItemIndex);
+					double desiredMaxWidth = GetMaxWidthFromItemsInfo(sizedItemIndex);
+					double desiredAspectRatio = m_itemsInfoDesiredAspectRatiosForRegularPath[sizedItemIndex - m_itemsInfoFirstIndex];
+
+					if (desiredAspectRatio <= 0.0)
+					{
+						// The average aspect ratio is used as a fallback value for items that were given a negative ratio
+						// by the ItemsInfoRequested handler.
+						desiredAspectRatio = averageAspectRatio;
+					}
+
+					itemWidth = desiredAspectRatio * actualLineHeight;
+
+					if (desiredMinWidth >= 0.0)
+					{
+						itemWidth = Math.Max(desiredMinWidth, itemWidth);
+					}
+
+					if (desiredMaxWidth >= 0.0)
+					{
+						itemWidth = Math.Min(desiredMaxWidth, itemWidth);
+					}
+				}
+
+				bool isInternalLockedItem = internalLockedItemIndexes.TryGetValue(sizedItemIndex, out int internalLockedLineIndexValue);
+				int internalLockedLineIndex = isInternalLockedItem ? internalLockedLineIndexValue : -1;
+
+				bool isLockedItem = IsLockedItem(
+					forward,
+					beginSizedLineIndex,
+					endSizedLineIndex,
+					sizedItemIndex);
+
+				int lockedLineIndex = isLockedItem ? m_lockedItemIndexes[sizedItemIndex] : -1;
+
+				GetNextLockedItem(
+					internalLockedItemIndexes,
+					forward,
+					beginSizedLineIndex,
+					endSizedLineIndex,
+					sizedItemIndex,
+					out int nextLockedItemIndex,
+					out int nextLockedLineIndex);
+
+				MUX_ASSERT(!(nextLockedItemIndex == -1 && nextLockedLineIndex != -1));
+				MUX_ASSERT(!(nextLockedItemIndex != -1 && nextLockedLineIndex == -1));
+
+				// mustCumulate is set to True when 'element' must be appended to the current line.
+				bool mustCumulate =
+					lineItemsCount == 0 ||                                                                                                                       // No item is present on the current line - it must at least contain one item
+					(forward && LineHasLockedItem(beginSizedLineIndex + lineVectorIndex, false /*before*/, sizedItemIndex)) ||                                     // A publicly locked item is ahead going forward, and must be on the current line
+					(!forward && LineHasLockedItem(endSizedLineIndex + lineVectorIndex, true /*before*/, sizedItemIndex)) ||                                       // A publicly locked item is ahead going backward, and must be on the current line
+					(forward && LineHasInternalLockedItem(internalLockedItemIndexes, beginSizedLineIndex + lineVectorIndex, false /*before*/, sizedItemIndex)) || // An internally locked item is ahead going forward, and must be on the current line
+					(!forward && LineHasInternalLockedItem(internalLockedItemIndexes, endSizedLineIndex + lineVectorIndex, true /*before*/, sizedItemIndex)) ||   // An internally locked item is ahead going backward, and must be on the current line
+					(forward && lineVectorIndex == sizedLineCount - 1) ||                                                                                         // The current line is the last one processed, going forward
+					(!forward && lineVectorIndex == 0);                                                                                                           // The current line is the last one processed, going backward
+
+				// canCumulate is set to True when 'element' has enough room to fit in the current line.
+				bool canCumulate = cumulatedWidth + (lineItemsCount == 0 ? 0.0 : minItemSpacing) + itemWidth <= adjustedAvailableWidth;
+				// mustNotCumulate is set to True when 'element' must wrap to the next line.
+				bool mustNotCumulate = false;
+				// shouldNotCumulate is set to True when there is still room for 'element' on the current line but, to equalize lines, wrapping is preferred.
+				bool shouldNotCumulate = false;
+				// shouldCumulate is set to True when there is no room for 'element' on the current line but, to equalize lines, wrapping is skipped.
+				bool shouldCumulate = false;
+
+				if (!mustCumulate)
+				{
+					mustNotCumulate =
+						(forward && endSizedItemIndex - sizedItemIndex < sizedLineCount - 1 - lineVectorIndex) ||                                                         // There are as many items left as there are lines, going forward
+						(!forward && sizedItemIndex - endSizedItemIndex < lineVectorIndex) ||                                                                             // There are as many items left as there are lines, going backward
+						(forward && isLockedItem && lockedLineIndex != beginSizedLineIndex + lineVectorIndex) ||                                                          // 'element' is a publicly locked item for the next line, going forward
+						(!forward && isLockedItem && lockedLineIndex != endSizedLineIndex + lineVectorIndex) ||                                                           // 'element' is a publicly locked item for the next line, going backward
+						(forward && isInternalLockedItem && internalLockedLineIndex != beginSizedLineIndex + lineVectorIndex) ||                                          // 'element' is an internally locked item for the next line, going forward
+						(!forward && isInternalLockedItem && internalLockedLineIndex != endSizedLineIndex + lineVectorIndex) ||                                           // 'element' is an internally locked item for the next line, going backward
+						(forward && nextLockedItemIndex != -1 && nextLockedItemIndex - sizedItemIndex < nextLockedLineIndex - (beginSizedLineIndex + lineVectorIndex)) || // A locked item is ahead, going forward, just far enough to impose the minimum of one item per line
+						(!forward && nextLockedItemIndex != -1 && sizedItemIndex - nextLockedItemIndex < endSizedLineIndex + lineVectorIndex - nextLockedLineIndex);      // A locked item is ahead, going backward, just far enough to impose the minimum of one item per line
+
+					if (!mustNotCumulate)
+					{
+						if (canCumulate)
+						{
+							if (nextLockedItemIndex != -1)
+							{
+								// Avoiding under-filled lines around publicly locked items.
+								GetNextLockedItem(
+									null,
+									forward,
+									beginSizedLineIndex,
+									endSizedLineIndex,
+									sizedItemIndex,
+									out int nextPublicLockedItemIndex,
+									out int nextPublicLockedLineIndex);
+
+								if (nextPublicLockedItemIndex != -1)
+								{
+									MUX_ASSERT(nextPublicLockedLineIndex != -1);
+
+									int linesToFill = forward ? nextPublicLockedLineIndex - beginSizedLineIndex - lineVectorIndex : endSizedLineIndex + lineVectorIndex - nextPublicLockedLineIndex;
+									int linesPerScrollViewport = (int)(scrollViewport / (actualLineHeight + lineSpacing));
+
+									if (linesToFill <= linesPerScrollViewport)
+									{
+										MUX_ASSERT(lineItemsCount > 0);
+
+										int itemsAvailable = forward ? nextPublicLockedItemIndex - sizedItemIndex + lineItemsCount : sizedItemIndex - nextPublicLockedItemIndex + lineItemsCount;
+										int averageItemsToFill = (int)(m_averageItemsPerLine.second * linesToFill);
+
+										// shouldNotCumulate is set to true to wrap earlier than necessary to avoid under-filled lines around the publicly locked item.
+										shouldNotCumulate = itemsAvailable < averageItemsToFill;
+									}
+								}
+							}
+						}
+
+						if (averageLineItemsWidth > 0.0 && ((canCumulate && !shouldNotCumulate) || !canCumulate))
+						{
+							MUX_ASSERT(!mustCumulate);
+							MUX_ASSERT(!mustNotCumulate);
+
+							// Check if cumulated total line widths is much larger or smaller than expected total based on average line width.
+							int lineCount = forward ? (lineVectorIndex + 1) : (sizedLineCount - lineVectorIndex);
+							MUX_ASSERT(lineCount > 0);
+							double itemWidthMultiplierThreshold = GetItemWidthMultiplierThreshold();
+							double expectedCumulatedLinesWidth = averageLineItemsWidth * lineCount;
+							double actualCumulatedLinesWidth = cumulatedLinesWidth + cumulatedWidth + itemWidth;
+
+							if (canCumulate && !shouldNotCumulate)
+							{
+								if (actualCumulatedLinesWidth - expectedCumulatedLinesWidth > itemWidthMultiplierThreshold * itemWidth)
+								{
+									// In order to equalize lines, wrapping is preferred over not wrapping because the cumulated item widths significantly exceeds the expected one given the line index.
+									shouldNotCumulate = true;
+								}
+							}
+							else
+							{
+								MUX_ASSERT(!canCumulate);
+								MUX_ASSERT(!shouldNotCumulate);
+
+								if (expectedCumulatedLinesWidth - actualCumulatedLinesWidth > itemWidthMultiplierThreshold * itemWidth)
+								{
+									// In order to equalize lines, not wrapping is preferred over wrapping because the cumulated item widths is significantly lower than the expected one given the line index.
+									shouldCumulate = true;
+								}
+							}
+						}
+					}
+				}
+
+				MUX_ASSERT(!shouldNotCumulate || !shouldCumulate);
+
+				if (mustCumulate || ((canCumulate || shouldCumulate) && !mustNotCumulate && !shouldNotCumulate))
+				{
+					// The current item sizedItemIndex is appended on the current line.
+					if (isLockedItem ||
+						isInternalLockedItem ||
+						sizedItemIndex == beginSizedItemIndex ||
+						sizedItemIndex == endSizedItemIndex)
+					{
+						lastItemWidth = double.MaxValue;
+						lastItemIndex = int.MaxValue;
+					}
+					else
+					{
+						lastItemWidth = itemWidth;
+						lastItemIndex = sizedItemIndex;
+					}
+
+					if (lineItemsCount != 0)
+					{
+						cumulatedWidth += minItemSpacing;
+					}
+
+					cumulatedWidth += itemWidth;
+					lineItemsCount++;
+				}
+				else
+				{
+					// The current item sizedItemIndex creates a brand new line.
+					MUX_ASSERT(lineItemsCount > 0);
+
+					if (lastItemWidth != double.MaxValue)
+					{
+						tailItemWidths[lineVectorIndex] = lastItemWidth;
+						tailItemIndexes[lineVectorIndex] = lastItemIndex;
+
+						lastItemWidth = double.MaxValue;
+						lastItemIndex = int.MaxValue;
+					}
+
+					cumulatedLinesWidth += cumulatedWidth;
+					cumulatedWidth = itemWidth;
+					lineItemsCount = 1;
+
+					if (isLockedItem)
+					{
+						lineVectorIndex = lockedLineIndex - (forward ? beginSizedLineIndex : endSizedLineIndex);
+						MUX_ASSERT(lineVectorIndex >= 0);
+						MUX_ASSERT(lineVectorIndex <= sizedLineCount - 1);
+					}
+					else if (isInternalLockedItem)
+					{
+						lineVectorIndex = internalLockedLineIndex - (forward ? beginSizedLineIndex : endSizedLineIndex);
+						MUX_ASSERT(lineVectorIndex >= 0);
+						MUX_ASSERT(lineVectorIndex <= sizedLineCount - 1);
+					}
+					else if (sizedItemIndex == endSizedItemIndex)
+					{
+						lineVectorIndex = forward ? sizedLineCount - 1 : 0;
+					}
+					else
+					{
+						MUX_ASSERT(itemsLayout.m_lineItemCounts[lineVectorIndex] > 0);
+						lineVectorIndex = forward ? lineVectorIndex + 1 : lineVectorIndex - 1;
+						MUX_ASSERT(lineVectorIndex >= 0);
+						MUX_ASSERT(lineVectorIndex <= sizedLineCount - 1);
+					}
+
+					if (!isLockedItem &&
+						!isInternalLockedItem &&
+						sizedItemIndex != beginSizedItemIndex &&
+						sizedItemIndex != endSizedItemIndex &&
+						((forward && endSizedItemIndex - sizedItemIndex >= sizedLineCount - lineVectorIndex) ||
+							(!forward && sizedItemIndex - endSizedItemIndex > lineVectorIndex)))
+					{
+						headItemWidths[lineVectorIndex] = itemWidth;
+						headItemIndexes[lineVectorIndex] = sizedItemIndex;
+					}
+				}
+
+				itemsLayout.m_lineItemCounts[lineVectorIndex] = lineItemsCount;
+				itemsLayout.m_lineItemWidths[lineVectorIndex] = cumulatedWidth;
+
+				if (sizedItemIndex == endSizedItemIndex)
+				{
+					break;
+				}
+			}
+
+			for (lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+			{
+				if (headItemWidths[lineVectorIndex] != 0.0 && itemsLayout.m_lineItemCounts[lineVectorIndex] > 1)
+				{
+					MUX_ASSERT(!forward || lineVectorIndex - 1 >= 0);
+					MUX_ASSERT(forward || lineVectorIndex + 1 < sizedLineCount);
+
+					headItemDrawbackImprovements[lineVectorIndex] = GetItemDrawbackImprovement(
+						headItemWidths[lineVectorIndex] + minItemSpacing,
+						adjustedAvailableWidth,
+						itemsLayout.m_lineItemWidths[lineVectorIndex],
+						itemsLayout.m_lineItemWidths[forward ? lineVectorIndex - 1 : lineVectorIndex + 1],
+						beginLineVectorIndex + lineVectorIndex,
+						beginLineVectorIndex + (forward ? lineVectorIndex - 1 : lineVectorIndex + 1));
+				}
+
+				if (tailItemWidths[lineVectorIndex] != 0.0 && itemsLayout.m_lineItemCounts[lineVectorIndex] > 1)
+				{
+					MUX_ASSERT(!forward || lineVectorIndex + 1 < sizedLineCount);
+					MUX_ASSERT(forward || lineVectorIndex - 1 >= 0);
+
+					tailItemDrawbackImprovements[lineVectorIndex] = GetItemDrawbackImprovement(
+						tailItemWidths[lineVectorIndex] + minItemSpacing,
+						adjustedAvailableWidth,
+						itemsLayout.m_lineItemWidths[lineVectorIndex],
+						itemsLayout.m_lineItemWidths[forward ? lineVectorIndex + 1 : lineVectorIndex - 1],
+						beginLineVectorIndex + lineVectorIndex,
+						beginLineVectorIndex + (forward ? lineVectorIndex + 1 : lineVectorIndex - 1));
+				}
+			}
+
+			double smallestHeadItemWidth = double.MaxValue;
+			double smallestTailItemWidth = double.MaxValue;
+			double bestEqualizingHeadItemDrawbackImprovement = 0.0;
+			double bestEqualizingTailItemDrawbackImprovement = 0.0;
+			int smallestHeadItemIndex = int.MaxValue;
+			int smallestTailItemIndex = int.MaxValue;
+			int smallestHeadLineIndex = int.MaxValue;
+			int smallestTailLineIndex = int.MaxValue;
+			int bestEqualizingHeadItemIndex = int.MaxValue;
+			int bestEqualizingTailItemIndex = int.MaxValue;
+			int bestEqualizingHeadLineIndex = int.MaxValue;
+			int bestEqualizingTailLineIndex = int.MaxValue;
+
+			for (lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+			{
+				if (smallestHeadItemWidth > headItemWidths[lineVectorIndex] &&
+					headItemWidths[lineVectorIndex] > 0.0)
+				{
+					smallestHeadItemWidth = headItemWidths[lineVectorIndex];
+					smallestHeadItemIndex = headItemIndexes[lineVectorIndex];
+					smallestHeadLineIndex = forward ? beginSizedLineIndex + lineVectorIndex : endSizedLineIndex + lineVectorIndex;
+				}
+
+				if (bestEqualizingHeadItemDrawbackImprovement < headItemDrawbackImprovements[lineVectorIndex])
+				{
+					bestEqualizingHeadItemDrawbackImprovement = headItemDrawbackImprovements[lineVectorIndex];
+					bestEqualizingHeadItemIndex = headItemIndexes[lineVectorIndex];
+					bestEqualizingHeadLineIndex = forward ? beginSizedLineIndex + lineVectorIndex : endSizedLineIndex + lineVectorIndex;
+				}
+
+				if (itemsLayout.m_lineItemWidths[lineVectorIndex] <= adjustedAvailableWidth &&
+					tailItemWidths[lineVectorIndex] > 0.0 &&
+					smallestTailItemWidth > tailItemWidths[lineVectorIndex] + adjustedAvailableWidth - itemsLayout.m_lineItemWidths[lineVectorIndex])
+				{
+					smallestTailItemWidth = tailItemWidths[lineVectorIndex] + adjustedAvailableWidth - itemsLayout.m_lineItemWidths[lineVectorIndex];
+					smallestTailItemIndex = tailItemIndexes[lineVectorIndex];
+					smallestTailLineIndex = forward ? beginSizedLineIndex + lineVectorIndex : endSizedLineIndex + lineVectorIndex;
+				}
+
+				if (bestEqualizingTailItemDrawbackImprovement < tailItemDrawbackImprovements[lineVectorIndex])
+				{
+					bestEqualizingTailItemDrawbackImprovement = tailItemDrawbackImprovements[lineVectorIndex];
+					bestEqualizingTailItemIndex = tailItemIndexes[lineVectorIndex];
+					bestEqualizingTailLineIndex = forward ? beginSizedLineIndex + lineVectorIndex : endSizedLineIndex + lineVectorIndex;
+				}
+			}
+
+			itemsLayout.m_smallestHeadItemWidth = smallestHeadItemWidth;
+			itemsLayout.m_smallestTailItemWidth = smallestTailItemWidth;
+			itemsLayout.m_smallestHeadItemIndex = smallestHeadItemIndex;
+			itemsLayout.m_smallestTailItemIndex = smallestTailItemIndex;
+			itemsLayout.m_smallestHeadLineIndex = smallestHeadLineIndex;
+			itemsLayout.m_smallestTailLineIndex = smallestTailLineIndex;
+
+			itemsLayout.m_bestEqualizingHeadItemDrawbackImprovement = bestEqualizingHeadItemDrawbackImprovement;
+			itemsLayout.m_bestEqualizingTailItemDrawbackImprovement = bestEqualizingTailItemDrawbackImprovement;
+			itemsLayout.m_bestEqualizingHeadItemIndex = bestEqualizingHeadItemIndex;
+			itemsLayout.m_bestEqualizingTailItemIndex = bestEqualizingTailItemIndex;
+			itemsLayout.m_bestEqualizingHeadLineIndex = bestEqualizingHeadLineIndex;
+			itemsLayout.m_bestEqualizingTailLineIndex = bestEqualizingTailLineIndex;
+
+			// When itemsLayout.m_smallestTailItemWidth == double.MaxValue, i.e. when all itemsLayout.m_lineItemWidths[lineVectorIndex] are greater
+			// than adjustedAvailableWidth, it's not worth collapsing the adjustedAvailableWidth.
+			// When all itemsLayout.m_lineItemWidths[lineVectorIndex] are smaller than adjustedAvailableWidth, it's not worth expanding the adjustedAvailableWidth.
+
+			ComputeItemsLayoutDrawback(availableWidth, isLastSizedLineStretchEnabled, itemsLayout);
+
+			return itemsLayout;
+		}
+
+		#endregion
 	}
 }
