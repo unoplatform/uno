@@ -189,4 +189,30 @@ public class Given_LinedFlowLayout
 		sut.RequestedRangeStartIndex.Should().Be(-1);
 		sut.RequestedRangeLength.Should().Be(0);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetArrangeWidth_Then_ClampsAndScales()
+	{
+		var sut = new LinedFlowLayout();
+
+		// No min/max (min < 0 -> treated as 0; max < 0 -> no upper clamp), scale 1: width = ratio * height.
+		sut.GetArrangeWidth(2.0, -1.0, -1.0, 50.0, 1.0).Should().Be(100.0);
+
+		// Min clamp: 1.0 * 50 = 50 is floored up to minWidth 80.
+		sut.GetArrangeWidth(1.0, 80.0, -1.0, 50.0, 1.0).Should().Be(80.0);
+
+		// Max clamp: 3.0 * 50 = 150 is capped to maxWidth 100.
+		sut.GetArrangeWidth(3.0, -1.0, 100.0, 50.0, 1.0).Should().Be(100.0);
+
+		// Scale down (< 1): 2.0 * 50 = 100, * 0.5 = 50, re-floored to minWidth (0) -> 50.
+		sut.GetArrangeWidth(2.0, -1.0, -1.0, 50.0, 0.5).Should().Be(50.0);
+
+		// Scale down but re-floored to minWidth: 100 * 0.5 = 50, floored up to minWidth 80.
+		sut.GetArrangeWidth(2.0, 80.0, -1.0, 50.0, 0.5).Should().Be(80.0);
+
+		// Scale up (> 1) but re-capped to maxWidth: 1.0 * 50 = 50 (<= max 60), * 2 = 100, capped to 60.
+		sut.GetArrangeWidth(1.0, -1.0, 60.0, 50.0, 2.0).Should().Be(60.0);
+	}
 }
