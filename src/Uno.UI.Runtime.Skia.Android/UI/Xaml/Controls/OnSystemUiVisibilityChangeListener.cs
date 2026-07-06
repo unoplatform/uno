@@ -1,18 +1,23 @@
-﻿using Android.App;
+using Android.App;
 using Android.Runtime;
 using Android.Views;
 using Uno.UI.Xaml.Controls;
-using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI;
 
 public class OnSystemUiVisibilityChangeListener
 	: Java.Lang.Object, View.IOnSystemUiVisibilityChangeListener
 {
+	private readonly Microsoft.UI.Xaml.ApplicationActivity _activity;
+
+	public OnSystemUiVisibilityChangeListener(Microsoft.UI.Xaml.ApplicationActivity activity)
+	{
+		_activity = activity;
+	}
+
 	public void OnSystemUiVisibilityChange([GeneratedEnum] StatusBarVisibility visibility)
 	{
-		var activity = ContextHelper.Current as Activity;
-		var decorView = activity!.Window!.DecorView;
+		var decorView = _activity.Window!.DecorView;
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
 		var newUiOptions = (int)decorView.SystemUiVisibility;
@@ -34,8 +39,8 @@ public class OnSystemUiVisibilityChangeListener
 		// - LayoutHideNavigation : User can show the navigation bar by sliding up from the bottom of the screen and have the option to dock it / undock it
 		// In the case we set the navigation bar to LayoutHideNavigation, when the user hide the bar, HideNavigation will be triggered.
 		// But we don't want to inject it in the decorView.SystemUiVisibility to let the navigation bar dockable again
-		NativeWindowWrapper.Instance.SystemUiVisibility = newUiOptions;
+		_activity.Wrapper.SystemUiVisibility = newUiOptions;
 
-		activity.OnConfigurationChanged(activity!.Resources!.Configuration!);
+		_activity.OnConfigurationChanged(_activity.Resources!.Configuration!);
 	}
 }
