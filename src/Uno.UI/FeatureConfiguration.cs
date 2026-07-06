@@ -706,15 +706,6 @@ namespace Uno.UI
 			public static bool FailOnUnknownProperties { get; set; }
 		}
 
-		public static class Timeline
-		{
-			/// <summary>
-			/// Determines if the default animation starting value
-			/// will be from the animated value or local value, when the From property is omitted.
-			/// </summary>
-			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
-		}
-
 		public static class Rendering
 		{
 			/// <summary>
