@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RichEditBoxTextChangingEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
 		internal RichEditBoxTextChangingEventArgs()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public bool IsContentChanging
 		{
 			get
