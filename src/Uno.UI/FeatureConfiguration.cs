@@ -626,16 +626,6 @@ namespace Uno.UI
 			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
-		public static class VisualState
-		{
-			/// <summary>
-			/// When this is set, the <see cref="Microsoft.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
-			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
-			/// </summary>
-			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
-			public static bool ApplySettersBeforeTransition { get; set; }
-		}
-
 		public static class WebView2
 		{
 			/// <summary>
