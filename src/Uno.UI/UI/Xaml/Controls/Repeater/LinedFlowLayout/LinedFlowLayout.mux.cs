@@ -3549,6 +3549,275 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Rounds the provided value to the nearest physical pixel based on m_roundingScaleFactor.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private float GetRoundedFloat(
+			float value)
+		{
+			return (float)(Math.Round(value * m_roundingScaleFactor, MidpointRounding.AwayFromZero) / m_roundingScaleFactor);
+		}
+
+		// Ensures items are realized exactly for the context's realization window - for the fast path layout.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureItemRangeFastPath(
+			VirtualizingLayoutContext context,
+			double actualLineHeight)
+		{
+			int newRecommendedAnchorIndex = context.RecommendedAnchorIndex;
+
+			MUX_ASSERT(actualLineHeight > 0.0);
+			MUX_ASSERT(m_itemCount > 0);
+
+			int newFirstRealizedItemIndex = 0;
+			int newLastRealizedItemIndex = 0;
+
+			MUX_ASSERT(m_isVirtualizingContext == (context.VisibleRect.Height != double.PositiveInfinity));
+
+			if (m_isVirtualizingContext)
+			{
+				float realizationRectHeight = (float)context.RealizationRect.Height;
+
+				if (realizationRectHeight == 0.0)
+				{
+					return;
+				}
+
+				int lineCount = m_lineItemCounts.Count;
+
+				MUX_ASSERT(lineCount >= 0);
+
+				double lineSpacing = LineSpacing;
+				float nearRealizationRect = GetRoundedFloat((float)context.RealizationRect.Y);
+				int firstRealizedLineIndex = -1;
+				int lastRealizedLineIndex = -1;
+
+				GetFirstAndLastDisplayedLineIndexes(
+					realizationRectHeight /*scrollViewport*/,
+					nearRealizationRect,
+					0 /*padding*/,
+					lineSpacing,
+					actualLineHeight,
+					lineCount,
+					false /*forFullyDisplayedLines*/,
+					out firstRealizedLineIndex,
+					out lastRealizedLineIndex);
+
+				MUX_ASSERT(firstRealizedLineIndex >= 0);
+				MUX_ASSERT(lastRealizedLineIndex >= 0);
+				MUX_ASSERT(firstRealizedLineIndex < lineCount);
+				MUX_ASSERT(lastRealizedLineIndex < lineCount);
+
+				newFirstRealizedItemIndex = GetFirstItemIndexInLineIndex(firstRealizedLineIndex);
+				newLastRealizedItemIndex = GetLastItemIndexInLineIndex(lastRealizedLineIndex);
+
+				MUX_ASSERT(newFirstRealizedItemIndex >= 0);
+				MUX_ASSERT(newLastRealizedItemIndex >= 0);
+				MUX_ASSERT(newFirstRealizedItemIndex < m_itemCount);
+				MUX_ASSERT(newLastRealizedItemIndex < m_itemCount);
+
+				bool realizationRectCenteredAroundAnchor = false;
+
+				if (m_anchorIndex != -1 || newRecommendedAnchorIndex != -1)
+				{
+					int anchorLineIndex = GetLineIndex(newRecommendedAnchorIndex == -1 ? m_anchorIndex : newRecommendedAnchorIndex, true /*usesFastPathLayout*/);
+
+					MUX_ASSERT(anchorLineIndex >= 0);
+					MUX_ASSERT(anchorLineIndex < lineCount);
+
+					if (anchorLineIndex < firstRealizedLineIndex || anchorLineIndex > lastRealizedLineIndex)
+					{
+						// The anchor line is disconnected. Centering the realization window around its center.
+						float anchorLineNearEdge = (float)(anchorLineIndex * (actualLineHeight + lineSpacing));
+						float anchorLineMiddle = (float)(anchorLineNearEdge + actualLineHeight / 2.0);
+
+						nearRealizationRect = GetRoundedFloat(anchorLineMiddle - realizationRectHeight / 2.0f);
+						realizationRectCenteredAroundAnchor = true;
+
+						// Same comments and treatment as in MeasureConstrainedLinesRegularPath. Sometimes during a bring-into-view
+						// operation the RecommendedAnchorIndex momentarily switches from the target index N to -1 and then back to N.
+						// To avoid momentarily setting m_anchorIndex to -1, its value is preserved c_maxAnchorIndexRetentionCount
+						// times, based purely on experimentations.
+						if (newRecommendedAnchorIndex == -1)
+						{
+							MUX_ASSERT(m_anchorIndexRetentionCountdown >= 1 && m_anchorIndexRetentionCountdown <= c_maxAnchorIndexRetentionCount);
+
+							m_anchorIndexRetentionCountdown--;
+
+							if (m_anchorIndexRetentionCountdown == 0)
+							{
+								m_anchorIndex = -1;
+							}
+						}
+						else
+						{
+							m_anchorIndexRetentionCountdown = c_maxAnchorIndexRetentionCount;
+							m_anchorIndex = newRecommendedAnchorIndex;
+						}
+
+						// Layout is invalidated to ensure that m_anchorIndexRetentionCountdown is decremented from
+						// c_maxAnchorIndexRetentionCount all the way to 0 (a few lines above). Otherwise m_anchorIndex could be
+						// stuck to a value that prevents the realization window from moving to the actual scroller's offset.
+						InvalidateMeasureAsync();
+					}
+				}
+
+				if (realizationRectCenteredAroundAnchor)
+				{
+					// Re-evaluate realization range after centering around the anchor line.
+					GetFirstAndLastDisplayedLineIndexes(
+						realizationRectHeight /*scrollViewport*/,
+						nearRealizationRect,
+						0 /*padding*/,
+						lineSpacing,
+						actualLineHeight,
+						lineCount,
+						false /*forFullyDisplayedLines*/,
+						out firstRealizedLineIndex,
+						out lastRealizedLineIndex);
+
+					MUX_ASSERT(firstRealizedLineIndex >= 0);
+					MUX_ASSERT(lastRealizedLineIndex >= 0);
+					MUX_ASSERT(firstRealizedLineIndex < lineCount);
+					MUX_ASSERT(lastRealizedLineIndex < lineCount);
+
+					newFirstRealizedItemIndex = GetFirstItemIndexInLineIndex(firstRealizedLineIndex);
+					newLastRealizedItemIndex = GetLastItemIndexInLineIndex(lastRealizedLineIndex);
+
+					MUX_ASSERT(newFirstRealizedItemIndex >= 0);
+					MUX_ASSERT(newLastRealizedItemIndex >= 0);
+					MUX_ASSERT(newFirstRealizedItemIndex < m_itemCount);
+					MUX_ASSERT(newLastRealizedItemIndex < m_itemCount);
+				}
+				else if (m_anchorIndex != -1)
+				{
+					m_anchorIndex = -1;
+				}
+			}
+			else
+			{
+				// All items are realized in non-virtualizing mode.
+				MUX_ASSERT(context.VisibleRect.Y == 0.0);
+
+				newLastRealizedItemIndex = m_itemCount - 1;
+			}
+
+			int newRealizedItemCount = newLastRealizedItemIndex - newFirstRealizedItemIndex + 1;
+
+			int oldFirstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex(); // -1 and unused in non-virtualizing mode.
+			int oldLastRealizedItemIndex = oldFirstRealizedItemIndex == -1 ? -1 : oldFirstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
+
+			// Discard the first realized items fallen off the realization window.
+			if (oldFirstRealizedItemIndex != -1 && oldFirstRealizedItemIndex < newFirstRealizedItemIndex)
+			{
+				MUX_ASSERT(m_isVirtualizingContext);
+
+				m_elementManager.DiscardElementsOutsideWindow(
+					false /*forward*/,
+					Math.Min(newFirstRealizedItemIndex, oldFirstRealizedItemIndex + m_elementManager.GetRealizedElementCount) - 1 /*startIndex*/);
+			}
+
+			MUX_ASSERT(newFirstRealizedItemIndex <= m_elementManager.GetFirstRealizedDataIndex() || -1 == m_elementManager.GetFirstRealizedDataIndex());
+
+			int firstStillRealizedItemIndex = -1;
+			int lastStillRealizedItemIndex = -1;
+
+			if (oldFirstRealizedItemIndex != -1 && oldLastRealizedItemIndex != -1)
+			{
+				if (newFirstRealizedItemIndex >= oldFirstRealizedItemIndex && newFirstRealizedItemIndex <= oldLastRealizedItemIndex)
+				{
+					firstStillRealizedItemIndex = newFirstRealizedItemIndex;
+					lastStillRealizedItemIndex = Math.Min(oldLastRealizedItemIndex, newLastRealizedItemIndex);
+				}
+				else if (newLastRealizedItemIndex >= oldFirstRealizedItemIndex && newLastRealizedItemIndex <= oldLastRealizedItemIndex)
+				{
+					lastStillRealizedItemIndex = newLastRealizedItemIndex;
+					firstStillRealizedItemIndex = Math.Max(oldFirstRealizedItemIndex, newFirstRealizedItemIndex);
+				}
+			}
+
+			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && newFirstRealizedItemIndex < m_elementManager.GetFirstRealizedDataIndex())
+			{
+				MUX_ASSERT(oldFirstRealizedItemIndex > 0);
+
+				// Ensure and measure the realized items before the old first realized item.
+				EnsureItemRange(
+					false /*forward*/,
+					Math.Min(oldFirstRealizedItemIndex - 1, newFirstRealizedItemIndex + newRealizedItemCount - 1) /*beginRealizedItemIndex*/,
+					newFirstRealizedItemIndex /*endRealizedItemIndex*/);
+
+				// Ensure and measure the realized items after the old first realized item.
+				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex());
+
+				if (firstStillRealizedItemIndex != -1)
+				{
+					if (firstStillRealizedItemIndex > 0 && oldFirstRealizedItemIndex <= firstStillRealizedItemIndex - 1)
+					{
+						EnsureItemRange(
+							true /*forward*/,
+							oldFirstRealizedItemIndex /*beginRealizedItemIndex*/,
+							firstStillRealizedItemIndex - 1 /*endRealizedItemIndex*/);
+					}
+
+					if (lastStillRealizedItemIndex + 1 <= newFirstRealizedItemIndex + newRealizedItemCount - 1)
+					{
+						EnsureItemRange(
+							true /*forward*/,
+							lastStillRealizedItemIndex + 1 /*beginRealizedItemIndex*/,
+							newFirstRealizedItemIndex + newRealizedItemCount - 1 /*endRealizedItemIndex*/);
+					}
+				}
+				else if (newFirstRealizedItemIndex + newRealizedItemCount - 1 >= oldFirstRealizedItemIndex)
+				{
+					EnsureItemRange(
+						true /*forward*/,
+						oldFirstRealizedItemIndex /*beginRealizedItemIndex*/,
+						newFirstRealizedItemIndex + newRealizedItemCount - 1 /*endRealizedItemIndex*/);
+				}
+			}
+			else
+			{
+				// Ensure and measure the realized items.
+				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex() || m_elementManager.GetFirstRealizedDataIndex() == -1);
+
+				if (firstStillRealizedItemIndex != -1)
+				{
+					if (firstStillRealizedItemIndex > 0 && newFirstRealizedItemIndex <= firstStillRealizedItemIndex - 1)
+					{
+						EnsureItemRange(
+							true /*forward*/,
+							newFirstRealizedItemIndex /*beginRealizedItemIndex*/,
+							firstStillRealizedItemIndex - 1 /*endRealizedItemIndex*/);
+					}
+
+					if (lastStillRealizedItemIndex + 1 <= newFirstRealizedItemIndex + newRealizedItemCount - 1)
+					{
+						EnsureItemRange(
+							true /*forward*/,
+							lastStillRealizedItemIndex + 1 /*beginRealizedItemIndex*/,
+							newFirstRealizedItemIndex + newRealizedItemCount - 1 /*endRealizedItemIndex*/);
+					}
+				}
+				else
+				{
+					EnsureItemRange(
+						true /*forward*/,
+						newFirstRealizedItemIndex /*beginRealizedItemIndex*/,
+						newFirstRealizedItemIndex + newRealizedItemCount - 1 /*endRealizedItemIndex*/);
+				}
+			}
+
+			// Discard the last realized items fallen off the realization window.
+			if (oldLastRealizedItemIndex != -1 && oldLastRealizedItemIndex > newLastRealizedItemIndex)
+			{
+				MUX_ASSERT(m_isVirtualizingContext);
+				MUX_ASSERT(m_elementManager.GetRealizedElementCount > newRealizedItemCount);
+
+				m_elementManager.DiscardElementsOutsideWindow(
+					true /*forward*/,
+					newLastRealizedItemIndex + 1 /*startIndex*/);
+			}
+		}
+
 		#endregion
 	}
 }
