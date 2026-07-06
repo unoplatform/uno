@@ -233,5 +233,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.GetText(TextGetOptions.None, out var text);
 			Assert.AreEqual("Hello world", text);
 		}
+
+		[TestMethod]
+		public async Task When_Programmatic_SetRange_Updates_Caret_While_Focused()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(2, 7);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStartForTesting);
+			Assert.AreEqual(5, SUT.SelectionLengthForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Positions_Update_Caret_While_Focused()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.StartPosition = 3;
+			SUT.Document.Selection.EndPosition = 8;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, SUT.SelectionStartForTesting);
+			Assert.AreEqual(5, SUT.SelectionLengthForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Collapse_Updates_Caret_While_Focused()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(2, 7);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.Collapse(true);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStartForTesting);
+			Assert.AreEqual(0, SUT.SelectionLengthForTesting);
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Selection_While_Unfocused_Applies_On_Focus()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			// Setting the selection while unfocused must not throw; it is picked up on focus.
+			SUT.Document.Selection.SetRange(4, 9);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, SUT.SelectionStartForTesting);
+			Assert.AreEqual(5, SUT.SelectionLengthForTesting);
+		}
 	}
 }
