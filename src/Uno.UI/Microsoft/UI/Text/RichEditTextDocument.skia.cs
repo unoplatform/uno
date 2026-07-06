@@ -160,6 +160,19 @@ namespace Microsoft.UI.Text
 			=> new UnoTextRange(this, startPosition, endPosition);
 
 		/// <summary>
+		/// Gets a degenerate text range at the character position nearest the specified point.
+		/// </summary>
+		public global::Microsoft.UI.Text.ITextRange GetRangeFromPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options)
+		{
+			if (_owner.TryGetIndexFromPoint(point, options, out var index))
+			{
+				return GetRange(index, index);
+			}
+
+			return GetRange(0, 0);
+		}
+
+		/// <summary>
 		/// Gets the current text selection as an <see cref="ITextSelection"/>.
 		/// </summary>
 		public global::Microsoft.UI.Text.ITextSelection Selection => _selection ??= new UnoTextSelection(this);
@@ -187,6 +200,20 @@ namespace Microsoft.UI.Text
 
 		internal bool TryGetVerticalTarget(int position, bool up, int count, out int target)
 			=> _owner.TryGetVerticalTarget(position, up, count, out target);
+
+		// --- Geometry-backed coordinate mapping (delegates to the owning control's DisplayBlock layout) ---
+
+		internal bool TryGetIndexRect(int index, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect)
+			=> _owner.TryGetIndexRect(index, options, out rect);
+
+		internal bool TryGetRangeRect(int start, int end, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect)
+			=> _owner.TryGetRangeRect(start, end, options, out rect);
+
+		internal bool TryGetIndexFromPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, out int index)
+			=> _owner.TryGetIndexFromPoint(point, options, out index);
+
+		internal bool TryScrollRangeIntoView(int start, int end)
+			=> _owner.TryScrollRangeIntoView(start, end);
 
 		/// <summary>
 		/// Sets the text in this document to the specified plain text.
