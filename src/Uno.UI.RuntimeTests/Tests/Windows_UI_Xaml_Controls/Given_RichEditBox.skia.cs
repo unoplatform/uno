@@ -1197,5 +1197,121 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(1, 1).ParagraphFormat.Alignment);
 			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment);
 		}
+
+		[TestMethod]
+		public async Task When_TextChanged_Raised_On_SetText()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var count = 0;
+			object sender = null;
+			RoutedEventArgs args = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				count++;
+				sender = s;
+				args = e;
+			};
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, count);
+			Assert.AreSame(SUT, sender);
+			Assert.IsNotNull(args);
+		}
+
+		[TestMethod]
+		public async Task When_TextChanged_Not_Raised_On_Same_Text()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.TextChanged += (s, e) => count++;
+
+			// Re-setting the identical text must not raise (choke-point de-dupes against last value).
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public async Task When_TextChanged_Not_Raised_On_Format_Only_Change()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.TextChanged += (s, e) => count++;
+
+			// A character-format change mutates the run model and re-renders, but the plain text is
+			// unchanged, so TextChanged must not fire.
+			SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanged_Raised_On_Programmatic_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			object sender = null;
+			SUT.SelectionChanged += (s, e) =>
+			{
+				count++;
+				sender = s;
+			};
+
+			SUT.Document.Selection.SetRange(2, 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(count >= 1, $"SelectionChanged should raise on a programmatic selection change, count was {count}.");
+			Assert.AreSame(SUT, sender);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanged_Not_Raised_On_Same_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(2, 5);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.SelectionChanged += (s, e) => count++;
+
+			// Re-applying the identical range must not raise.
+			SUT.Document.Selection.SetRange(2, 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, count);
+		}
 	}
 }
