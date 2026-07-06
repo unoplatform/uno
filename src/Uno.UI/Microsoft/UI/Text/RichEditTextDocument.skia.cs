@@ -12,12 +12,13 @@ namespace Microsoft.UI.Text
 	// Object Model surface (GetRange/Selection returning UnoTextRange/UnoTextSelection) that navigates
 	// and edits the buffer and drives the owning RichEditBox's shared rendering, a functional
 	// character-formatting run model (see RichEditTextDocument.Formatting.skia.cs and
-	// UnoTextRange.CharacterFormat), and a snapshot-based undo/redo stack over both text and formatting
-	// (CanUndo/CanRedo/Undo/Redo/UndoLimit).
+	// UnoTextRange.CharacterFormat), a snapshot-based undo/redo stack over both text and formatting
+	// (CanUndo/CanRedo/Undo/Redo/UndoLimit) with grouping (BeginUndoGroup/EndUndoGroup), and display
+	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
 	//
 	// TODO Uno: The following are subsequent increments and remain [NotImplemented] in the generated
-	// stub for now: character/paragraph default formats, paragraph formatting, undo grouping/batching
-	// (Batch/ApplyDisplayUpdates), RTF and stream load/save, embedded images and MathML.
+	// stub for now: character/paragraph default formats, paragraph formatting, RTF and stream
+	// load/save, embedded images and MathML.
 	public partial class RichEditTextDocument
 	{
 		private readonly RichEditBox _owner;
@@ -26,6 +27,17 @@ namespace Microsoft.UI.Text
 		private string _plainText = string.Empty;
 		private UnoTextSelection? _selection;
 		private int _undoLimit = 100;
+
+		// Undo grouping: while a group is open, individual edits do not each push an undo entry.
+		// Instead, a single snapshot captured when the outermost group opened is committed on close,
+		// so BeginUndoGroup/EndUndoGroup collapse a run of edits into one undoable action.
+		private int _undoGroupDepth;
+		private Snapshot? _undoGroupSnapshot;
+
+		// Display batching: while batched, render requests are coalesced and applied once the
+		// outermost ApplyDisplayUpdates balances the matching BatchDisplayUpdates.
+		private int _batchDepth;
+		private bool _pendingRender;
 
 		internal RichEditTextDocument(RichEditBox owner)
 		{
@@ -88,9 +100,30 @@ namespace Microsoft.UI.Text
 
 			if (_undoLimit != 0)
 			{
-				_undoStack.Add(before);
-				TrimUndoStack();
-				_redoStack.Clear();
+				if (_undoGroupDepth > 0)
+				{
+					// Inside an open undo group: the group's single snapshot (captured at
+					// BeginUndoGroup) is committed on close; each edit still invalidates redo.
+					_redoStack.Clear();
+				}
+				else
+				{
+					_undoStack.Add(before);
+					TrimUndoStack();
+					_redoStack.Clear();
+				}
+			}
+
+			RequestRender();
+		}
+
+		// Trigger a re-render of the shared DisplayBlock, deferring while display updates are batched.
+		private void RequestRender()
+		{
+			if (_batchDepth > 0)
+			{
+				_pendingRender = true;
+				return;
 			}
 
 			_owner.OnDocumentTextChanged();
@@ -217,7 +250,7 @@ namespace Microsoft.UI.Text
 			_redoStack.RemoveAt(index);
 			_undoStack.Add(CaptureSnapshot());
 			RestoreSnapshot(next);
-			_owner.OnDocumentTextChanged();
+			RequestRender();
 		}
 
 		/// <summary>
@@ -235,7 +268,83 @@ namespace Microsoft.UI.Text
 			_undoStack.RemoveAt(index);
 			_redoStack.Add(CaptureSnapshot());
 			RestoreSnapshot(previous);
-			_owner.OnDocumentTextChanged();
+			RequestRender();
+		}
+
+		/// <summary>
+		/// Opens an undo group. Edits made until the matching <see cref="EndUndoGroup"/> are
+		/// coalesced into a single undoable action. Groups may be nested.
+		/// </summary>
+		public void BeginUndoGroup()
+		{
+			if (_undoGroupDepth == 0)
+			{
+				_undoGroupSnapshot = CaptureSnapshot();
+			}
+
+			_undoGroupDepth++;
+		}
+
+		/// <summary>
+		/// Closes the undo group opened by <see cref="BeginUndoGroup"/>. When the outermost group
+		/// closes, the changes made since it opened are committed as a single undo entry.
+		/// </summary>
+		public void EndUndoGroup()
+		{
+			if (_undoGroupDepth == 0)
+			{
+				// Unbalanced EndUndoGroup: ignore, matching WinUI's tolerance of extra calls.
+				return;
+			}
+
+			_undoGroupDepth--;
+			if (_undoGroupDepth > 0)
+			{
+				return;
+			}
+
+			var groupStart = _undoGroupSnapshot;
+			_undoGroupSnapshot = null;
+			if (groupStart is null || _undoLimit == 0)
+			{
+				return;
+			}
+
+			if (string.Equals(_plainText, groupStart.Text, StringComparison.Ordinal) && RunsEqual(_runs, groupStart.Runs))
+			{
+				// The group made no net change; nothing to record.
+				return;
+			}
+
+			_undoStack.Add(groupStart);
+			TrimUndoStack();
+			_redoStack.Clear();
+		}
+
+		/// <summary>
+		/// Pauses rendering of the document until the matching <see cref="ApplyDisplayUpdates"/> is
+		/// called. Calls may be nested. Returns the current nesting count.
+		/// </summary>
+		public int BatchDisplayUpdates() => ++_batchDepth;
+
+		/// <summary>
+		/// Resumes rendering paused by <see cref="BatchDisplayUpdates"/>, applying any pending update
+		/// once the outermost batch closes. Returns the remaining nesting count.
+		/// </summary>
+		public int ApplyDisplayUpdates()
+		{
+			if (_batchDepth > 0)
+			{
+				_batchDepth--;
+			}
+
+			if (_batchDepth == 0 && _pendingRender)
+			{
+				_pendingRender = false;
+				_owner.OnDocumentTextChanged();
+			}
+
+			return _batchDepth;
 		}
 	}
 }
