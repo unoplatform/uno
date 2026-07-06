@@ -389,4 +389,94 @@ public class Given_LinedFlowLayout
 		first150.Should().Be(1);
 		last150.Should().Be(3);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetItemDrawbackImprovement_Then_RewardsMovingFromOverfullLine()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Move a 20px item off an overfull line (130 vs 100 available) onto an underfull neighbor (80).
+		// currentDrawback = (130-100)^2 + (80-100)^2 = 900 + 400 = 1300.
+		// newDrawback     = (130-20-100)^2 + (80+20-100)^2 = 100 + 0 = 100.
+		// improvement     = 1300 - 100 = 1200 (positive => the move is beneficial). Lines 5/6 are not the
+		// last line (item count 0 => last line index -1), so no last-line exemption applies.
+		double improvement = sut.GetItemDrawbackImprovement(
+			movingWidth: 20.0,
+			availableWidth: 100.0,
+			currentLineItemsWidth: 130.0,
+			neighborLineItemsWidth: 80.0,
+			currentLineIndex: 5,
+			neighborLineIndex: 6);
+
+		improvement.Should().Be(1200.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetItemWidthMultiplierThreshold_Then_DefaultsToTwo()
+	{
+		var sut = new LinedFlowLayout();
+
+		sut.GetItemWidthMultiplierThreshold().Should().Be(2.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetNextLockedItem_Then_FindsNearestAheadInInternalMap()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Items 2->line 0 and 8->line 3 are locked (in the in-progress "internal" map).
+		var internalLocked = new SortedDictionary<int, int> { { 2, 0 }, { 8, 3 } };
+
+		// Forward from item 4 within lines [0,5]: item 2 is behind, so the nearest ahead is item 8 (line 3).
+		sut.GetNextLockedItem(
+			internalLocked,
+			forward: true,
+			beginLineIndex: 0,
+			endLineIndex: 5,
+			itemIndex: 4,
+			out int lockedItemIndex,
+			out int lockedLineIndex);
+
+		lockedItemIndex.Should().Be(8);
+		lockedLineIndex.Should().Be(3);
+
+		// Nothing ahead of item 8 going forward => -1/-1.
+		sut.GetNextLockedItem(
+			internalLocked,
+			forward: true,
+			beginLineIndex: 0,
+			endLineIndex: 5,
+			itemIndex: 8,
+			out int noneItem,
+			out int noneLine);
+
+		noneItem.Should().Be(-1);
+		noneLine.Should().Be(-1);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_LineHasInternalLockedItem_Then_HonorsBeforeFlag()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Item 5 is locked to line 1.
+		var internalLocked = new SortedDictionary<int, int> { { 2, 0 }, { 5, 1 } };
+
+		// before:false at item 4 => line 1 has item 5 (>= 4) ahead => true.
+		sut.LineHasInternalLockedItem(internalLocked, lineIndex: 1, before: false, itemIndex: 4).Should().BeTrue();
+
+		// before:true at item 4 => line 1's item 5 is not <= 4 => false.
+		sut.LineHasInternalLockedItem(internalLocked, lineIndex: 1, before: true, itemIndex: 4).Should().BeFalse();
+
+		// Line 2 has no locked item => false regardless of before.
+		sut.LineHasInternalLockedItem(internalLocked, lineIndex: 2, before: false, itemIndex: 0).Should().BeFalse();
+	}
 }
