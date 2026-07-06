@@ -552,18 +552,6 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// Call the .MeasureOverride only on element explicitly invalidating
-			/// their measure and when the available size is changing.
-			/// </summary>
-			public static bool UseInvalidateMeasurePath { get; set; } = true;
-
-			/// <summary>
-			/// Call the .ArrangeOverride only on elements explicitly invalidating
-			/// their arrange and when the final rect is changing.
-			/// </summary>
-			public static bool UseInvalidateArrangePath { get; set; } = true;
-
-			/// <summary>
 			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
