@@ -8,12 +8,13 @@ namespace Microsoft.UI.Text
 	//
 	// The plain-text navigation and editing surface (positions, Text, SetRange, Collapse, GetText/
 	// SetText, FindText, Delete, ChangeCase, Move/MoveStart/MoveEnd, GetClone, InRange/InStory/IsEqual)
-	// is functional and drives the shared rendering surface through the owning document.
+	// is functional and drives the shared rendering surface through the owning document. Character
+	// formatting (CharacterFormat) is functional over the document's run model.
 	//
-	// TODO Uno: Character/paragraph formatting (CharacterFormat/ParagraphFormat/FormattedText/Gravity/
-	// Link), clipboard (Copy/Cut/Paste/CanPaste), geometry (GetPoint/GetRect/ScrollIntoView/SetPoint),
-	// unit-based navigation beyond Character (Expand/StartOf/EndOf/GetIndex/SetIndex), streams and
-	// embedded images arrive with the rich-content model and the shared editing engine.
+	// TODO Uno: Paragraph formatting (ParagraphFormat/FormattedText/Gravity/Link), clipboard (Copy/Cut/
+	// Paste/CanPaste), geometry (GetPoint/GetRect/ScrollIntoView/SetPoint), unit-based navigation beyond
+	// Character (Expand/StartOf/EndOf/GetIndex/SetIndex), streams and embedded images arrive with the
+	// rich-content model and the shared editing engine.
 	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
 	{
 		private protected readonly RichEditTextDocument _document;
@@ -300,13 +301,31 @@ namespace Microsoft.UI.Text
 			return _end - old;
 		}
 
-		// --- Deferred surface (rich formatting, clipboard, geometry, streams, non-Character units) ---
+		// --- Character formatting (functional over the document run model) ---
 
 		public global::Microsoft.UI.Text.ITextCharacterFormat CharacterFormat
 		{
-			get => throw NotImplemented("CharacterFormat.get");
-			set => throw NotImplemented("CharacterFormat.set");
+			get
+			{
+				var format = _document.GetFormatOverRange(_start, _end);
+				format.Bind(this);
+				return format;
+			}
+			set
+			{
+				if (value is UnoTextCharacterFormat format)
+				{
+					_document.SetFormatOverRange(_start, _end, format);
+				}
+			}
 		}
+
+		// Applies a bound character format to this range's current extent. Called by
+		// UnoTextCharacterFormat's property setters so `range.CharacterFormat.Bold = On` takes effect.
+		internal void ApplyCharacterFormat(UnoTextCharacterFormat format)
+			=> _document.SetFormatOverRange(_start, _end, format);
+
+		// --- Deferred surface (paragraph formatting, clipboard, geometry, streams, non-Character units) ---
 
 		public global::Microsoft.UI.Text.ITextParagraphFormat ParagraphFormat
 		{
