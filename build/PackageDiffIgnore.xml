@@ -3035,6 +3035,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
+		  <!-- Property types aligned to the WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding::ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string to match WinUI metadata (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation::EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase to match WinUI metadata (#2086, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3080,6 +3083,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <!-- Binding.ElementName (object->string) and DoubleAnimation.EasingFunction (IEasingFunction->EasingFunctionBase) accessors, aligned to WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding.get_ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.Binding.set_ElementName(System.Object value)" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.get_EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.set_EasingFunction(Microsoft.UI.Xaml.Media.Animation.IEasingFunction value)" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
