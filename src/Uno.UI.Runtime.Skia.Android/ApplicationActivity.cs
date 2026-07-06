@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 				return base.DispatchKeyEvent(e);
 			}
 
-			var handled = AndroidKeyboardInputSource.Instance.OnNativeKeyEvent(e);
+			var handled = Wrapper.KeyboardSource.OnNativeKeyEvent(e);
 
 			if (!handled)
 			{
@@ -183,7 +183,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
