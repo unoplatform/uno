@@ -167,7 +167,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private Dictionary<UIElement, float>? m_elementAvailableWidths;
 		private Dictionary<UIElement, float>? m_elementDesiredWidths;
 
-		private readonly List<int> m_lineItemCounts = new();
+		// Instance line-item-counts written by the measure paths (fast/regular). Internal for white-box testability.
+		internal readonly List<int> m_lineItemCounts = new();
 
 		// Clamps the average aspect ratio during initial loading; also progressively expands the
 		// effective CacheLength to a minimum of 4.
