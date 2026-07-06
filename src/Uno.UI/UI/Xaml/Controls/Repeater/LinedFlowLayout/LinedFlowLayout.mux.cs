@@ -1776,5 +1776,178 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: locked-item lookups + drawback improvement (WS-D3c)
+
+		// Returns how much the total drawback improves (positive is better) when an item of movingWidth is
+		// moved from currentLine to the adjacent neighborLine. The last line is exempt from the underfull
+		// penalty (it is allowed to be short) unless it actually overflows availableWidth.
+		internal double GetItemDrawbackImprovement(
+			double movingWidth,
+			double availableWidth,
+			double currentLineItemsWidth,
+			double neighborLineItemsWidth,
+			int currentLineIndex,
+			int neighborLineIndex)
+		{
+			MUX_ASSERT(movingWidth - MinItemSpacing <= currentLineItemsWidth);
+			MUX_ASSERT(Math.Abs(currentLineIndex - neighborLineIndex) == 1);
+
+			int lastLineIndex = GetLineCount(m_averageItemsPerLine.second) - 1;
+			double currentDrawback = 0.0;
+
+			if (currentLineIndex != lastLineIndex || currentLineItemsWidth > availableWidth)
+			{
+				currentDrawback = Math.Pow(currentLineItemsWidth - availableWidth, 2.0);
+			}
+
+			if (neighborLineIndex != lastLineIndex || neighborLineItemsWidth > availableWidth)
+			{
+				currentDrawback += Math.Pow(neighborLineItemsWidth - availableWidth, 2.0);
+			}
+
+			double newDrawback = 0.0;
+
+			if (currentLineIndex != lastLineIndex || currentLineItemsWidth - movingWidth > availableWidth)
+			{
+				newDrawback = Math.Pow(currentLineItemsWidth - movingWidth - availableWidth, 2.0);
+			}
+
+			if (neighborLineIndex != lastLineIndex || neighborLineItemsWidth + movingWidth > availableWidth)
+			{
+				newDrawback += Math.Pow(neighborLineItemsWidth + movingWidth - availableWidth, 2.0);
+			}
+
+			return currentDrawback - newDrawback;
+		}
+
+		// The item-width multiplier GetItemsLayout uses to decide wrap-vs-append: when the discrepancy between
+		// the actual and expected cumulated line widths exceeds this multiple of the processed item width, the
+		// default wrapping behavior is reversed. m_forcedWrapMultiplierDbg (a test hook, default 0) overrides it.
+		internal double GetItemWidthMultiplierThreshold()
+		{
+			const double c_itemWidthMultiplierThreshold = 2.0;
+
+			double forcedWrapMultiplierDbg = m_forcedWrapMultiplierDbg;
+
+			return forcedWrapMultiplierDbg != 0.0 ? forcedWrapMultiplierDbg : c_itemWidthMultiplierThreshold;
+		}
+
+		// Finds the nearest locked item strictly ahead of itemIndex (in the forward/backward direction) whose
+		// locked line falls within [beginLineIndex, endLineIndex], searching both the internal (in-progress) and
+		// public locked-item maps. Returns -1/-1 when none is found.
+		internal void GetNextLockedItem(
+			SortedDictionary<int, int>? internalLockedItemIndexes,
+			bool forward,
+			int beginLineIndex,
+			int endLineIndex,
+			int itemIndex,
+			out int lockedItemIndex,
+			out int lockedLineIndex)
+		{
+			lockedItemIndex = lockedLineIndex = -1;
+
+			int distance = int.MaxValue;
+
+			if (internalLockedItemIndexes != null)
+			{
+				foreach (var lockedItemIterator in internalLockedItemIndexes)
+				{
+					if (forward &&
+						lockedItemIterator.Key > itemIndex &&
+						lockedItemIterator.Key - itemIndex < distance &&
+						lockedItemIterator.Value >= beginLineIndex &&
+						lockedItemIterator.Value <= endLineIndex)
+					{
+						distance = lockedItemIterator.Key - itemIndex;
+						lockedItemIndex = lockedItemIterator.Key;
+						lockedLineIndex = lockedItemIterator.Value;
+					}
+					else if (!forward &&
+						lockedItemIterator.Key < itemIndex &&
+						itemIndex - lockedItemIterator.Key < distance &&
+						lockedItemIterator.Value <= beginLineIndex &&
+						lockedItemIterator.Value >= endLineIndex)
+					{
+						distance = itemIndex - lockedItemIterator.Key;
+						lockedItemIndex = lockedItemIterator.Key;
+						lockedLineIndex = lockedItemIterator.Value;
+					}
+				}
+			}
+
+			foreach (var lockedItemIterator in m_lockedItemIndexes)
+			{
+				if (forward &&
+					lockedItemIterator.Key > itemIndex &&
+					lockedItemIterator.Key - itemIndex < distance &&
+					lockedItemIterator.Value >= beginLineIndex &&
+					lockedItemIterator.Value <= endLineIndex)
+				{
+					distance = lockedItemIterator.Key - itemIndex;
+					lockedItemIndex = lockedItemIterator.Key;
+					lockedLineIndex = lockedItemIterator.Value;
+				}
+				else if (!forward &&
+					lockedItemIterator.Key < itemIndex &&
+					itemIndex - lockedItemIterator.Key < distance &&
+					lockedItemIterator.Value <= beginLineIndex &&
+					lockedItemIterator.Value >= endLineIndex)
+				{
+					distance = itemIndex - lockedItemIterator.Key;
+					lockedItemIndex = lockedItemIterator.Key;
+					lockedLineIndex = lockedItemIterator.Value;
+				}
+			}
+		}
+
+		// Returns true when the given internal (in-progress) locked-item map has an item locked to lineIndex
+		// that is at or before itemIndex (before) / at or after itemIndex (!before).
+		internal bool LineHasInternalLockedItem(
+			SortedDictionary<int, int> internalLockedItemIndexes,
+			int lineIndex,
+			bool before,
+			int itemIndex)
+		{
+			foreach (var lockedItemIterator in internalLockedItemIndexes)
+			{
+				if (lockedItemIterator.Value == lineIndex)
+				{
+					int lockedItemIndex = lockedItemIterator.Key;
+
+					if ((before && lockedItemIndex <= itemIndex) || (!before && lockedItemIndex >= itemIndex))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		// Returns true when the public locked-item map has an item locked to lineIndex that is at or before
+		// itemIndex (before) / at or after itemIndex (!before).
+		internal bool LineHasLockedItem(
+			int lineIndex,
+			bool before,
+			int itemIndex)
+		{
+			foreach (var lockedItemIterator in m_lockedItemIndexes)
+			{
+				if (lockedItemIterator.Value == lineIndex)
+				{
+					int lockedItemIndex = lockedItemIterator.Key;
+
+					if ((before && lockedItemIndex <= itemIndex) || (!before && lockedItemIndex >= itemIndex))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		#endregion
 	}
 }
