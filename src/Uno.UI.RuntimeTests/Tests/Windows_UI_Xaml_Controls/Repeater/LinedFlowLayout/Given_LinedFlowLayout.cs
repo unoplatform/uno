@@ -244,4 +244,56 @@ public class Given_LinedFlowLayout
 		sut.GetMinWidthFromItemsInfo(0).Should().Be(-1.0);
 		sut.GetMaxWidthFromItemsInfo(0).Should().Be(-1.0);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetAverageAspectRatio_AndNoStorage_Then_ReturnsDefault()
+	{
+		var sut = new LinedFlowLayout();
+
+		// No aspect-ratio storage and average-items-per-line still 0 -> default aspect ratio 1.0.
+		sut.GetAverageAspectRatio(800f, 50.0).Should().Be(1.0);
+
+		// A zero line height also short-circuits to the default aspect ratio 1.0.
+		sut.GetAverageAspectRatio(800f, 0.0).Should().Be(1.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_AverageItemsPerLineSet_Then_GetAverageAspectRatioUsesIt()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Seed the snapped average-items-per-line; with no storage GetAverageAspectRatio derives the
+		// average ratio from availableWidth / averageItemsPerLine.second / actualLineHeight.
+		sut.SetAverageItemsPerLine((first: 4.0, second: 4.0), unlockItems: false);
+
+		// 800 / 4.0 / 50 = 4.0
+		sut.GetAverageAspectRatio(800f, 50.0).Should().Be(4.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetLinesDesiredWidth_AndNoFrozenLines_Then_ReturnsZero()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Fresh instance: no frozen lines computed yet (m_firstFrozenLineIndex == -1).
+		sut.GetLinesDesiredWidth().Should().Be(0.0f);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetLineIndex_ForFirstItem_Then_ReturnsZero()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Item 0 short-circuits to line 0 (may occur while the average items per line is still 0).
+		sut.GetLineIndex(0, usesFastPathLayout: false).Should().Be(0);
+		sut.GetLineIndex(0, usesFastPathLayout: true).Should().Be(0);
+	}
 }

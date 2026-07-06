@@ -24,6 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_cannotShareLinedFlowLayout = "LinedFlowLayout cannot be shared.";
 		private const int s_measureCountdownStart = 5;
 
+		// The desired aspect ratio associated with an item has a weight between 1 and 16. Each time an item's
+		// aspect ratio is evaluated, its weight is incremented up to 16. The average aspect ratio is computed
+		// using those weights to stabilize m_averageItemsPerLine and reduce total re-layouts (LinedFlowLayout.cpp).
+		private const int c_maxAspectRatioWeight = 16;
+
 		// Sizing info returned by the ItemsInfoRequested event handler for a range of items.
 		// WinUI declares ItemsInfo private; it is internal here so RaiseItemsInfoRequested's return
 		// value can be validated by tests before the measure path that consumes it (WS-D3c) is ported.
