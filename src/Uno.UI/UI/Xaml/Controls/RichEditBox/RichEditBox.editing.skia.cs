@@ -409,6 +409,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateDisplaySelection()
 		{
+			// Raise SelectionChanged from this universal selection choke point, before the layout
+			// guard, so caret/selection changes notify even if the view is not laid out yet. The
+			// de-dupe against the last-raised span keeps focus-only re-renders from firing spuriously.
+			RaiseSelectionChangedIfNeeded();
+
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
 				return;
