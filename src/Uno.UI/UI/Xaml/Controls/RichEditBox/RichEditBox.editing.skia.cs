@@ -161,6 +161,24 @@ namespace Microsoft.UI.Xaml.Controls
 					args.Handled = true;
 					PasteFromClipboard();
 					return;
+				case VirtualKey.B when ctrl:
+					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Bold))
+					{
+						args.Handled = true;
+					}
+					return;
+				case VirtualKey.I when ctrl:
+					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Italic))
+					{
+						args.Handled = true;
+					}
+					return;
+				case VirtualKey.U when ctrl:
+					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Underline))
+					{
+						args.Handled = true;
+					}
+					return;
 				case VirtualKey.Escape:
 					return;
 				case VirtualKey.LeftShift:
