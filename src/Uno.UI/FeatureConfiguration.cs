@@ -142,20 +142,6 @@ namespace Uno.UI
 			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
 			/// </summary>
 			public static bool UseLegacyContentAlignment { get; set; }
-
-			/// <summary>
-			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
-			/// </summary>
-			/// <remarks>
-			/// Will never be deferred when .ApplyTemplate() is called explicitly.
-			/// More information there: https://github.com/unoplatform/uno/issues/3519
-			/// </remarks>
-			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __APPLE_UIKIT__
-			// opt-in for iOS/Android/macOS
-#else
-				= true;
-#endif
 		}
 
 		public static class DependencyObject

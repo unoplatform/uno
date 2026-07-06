@@ -2960,6 +2960,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateMeasurePath()" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag; measure dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag; arrange dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2993,6 +2994,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateMeasurePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateArrangePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseDeferredOnApplyTemplate(System.Boolean value)" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
