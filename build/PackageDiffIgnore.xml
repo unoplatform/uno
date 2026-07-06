@@ -2957,6 +2957,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2984,6 +2985,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.set_IsAbsolutePositionEnabled(System.Boolean value)" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_DisablePointersSpecificEventPrevention(System.Boolean value)" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
