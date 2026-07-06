@@ -4505,5 +4505,269 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: items-info request/update (WS-D3c sub-slice 5)
+
+		// Based on info provided by a potential ItemsInfoRequested event handler, returns True when the info covers the entire data source and the fast path must be engaged, and False to stay in the regular path.
+		// Before returning False, this method updates the m_itemsInfoDesiredAspectRatiosForRegularPath, m_itemsInfoMinWidthsForRegularPath, m_itemsInfoMaxWidthsForRegularPath, m_itemsInfoArrangeWidths and
+		// m_itemsInfoFirstIndex fields. The m_itemsInfoMinWidth and m_itemsInfoMaxWidth fields are updated irrespective of the return value.
+		private bool RequestItemsInfo(
+			ItemsInfo itemsInfo,
+			int beginSizedItemIndex,
+			int endSizedItemIndex)
+		{
+			MUX_ASSERT(beginSizedItemIndex <= endSizedItemIndex);
+			MUX_ASSERT(beginSizedItemIndex >= m_firstSizedItemIndex);
+			MUX_ASSERT(endSizedItemIndex <= m_lastSizedItemIndex);
+
+			ItemsInfo newItemsInfo = new();
+			int desiredAspectRatiosCount = 0;
+
+			if (itemsInfo.m_itemsRangeStartIndex != -1 &&
+				beginSizedItemIndex >= itemsInfo.m_itemsRangeStartIndex &&
+				endSizedItemIndex <= itemsInfo.m_itemsRangeStartIndex + itemsInfo.m_itemsRangeLength - 1)
+			{
+				// The items info gathered during the fast path attempt covers the current request.
+				// Use it instead of launching a new request.
+				newItemsInfo = itemsInfo;
+
+				desiredAspectRatiosCount = newItemsInfo.m_itemsRangeLength;
+
+				MUX_ASSERT(desiredAspectRatiosCount == m_itemsInfoDesiredAspectRatiosForFastPath.Length);
+				MUX_ASSERT(desiredAspectRatiosCount >= endSizedItemIndex - beginSizedItemIndex + 1);
+			}
+			else
+			{
+				int itemsRangeStartIndex = beginSizedItemIndex;
+				int itemsRangeRequestedLength = endSizedItemIndex - beginSizedItemIndex + 1;
+
+				MUX_ASSERT(itemsRangeStartIndex + itemsRangeRequestedLength - 1 < m_itemCount);
+
+				newItemsInfo = RaiseItemsInfoRequested(itemsRangeStartIndex, itemsRangeRequestedLength);
+
+				desiredAspectRatiosCount = newItemsInfo.m_itemsRangeLength;
+
+				if (desiredAspectRatiosCount <= 0)
+				{
+					// No aspect ratios were provided. Discard all info and use the fallback pass with larger realization rect.
+					ResetItemsInfo();
+					return false;
+				}
+
+				MUX_ASSERT(newItemsInfo.m_itemsRangeStartIndex >= 0);
+				MUX_ASSERT(newItemsInfo.m_itemsRangeStartIndex <= beginSizedItemIndex);
+				MUX_ASSERT(newItemsInfo.m_itemsRangeStartIndex + desiredAspectRatiosCount - 1 >= endSizedItemIndex);
+			}
+
+			m_itemsInfoMinWidth = newItemsInfo.m_minWidth < 0.0 ? -1.0 : newItemsInfo.m_minWidth;
+			m_itemsInfoMaxWidth = newItemsInfo.m_maxWidth < 0.0 ? -1.0 : newItemsInfo.m_maxWidth;
+
+			int minWidthsCount = m_itemsInfoMinWidthsForFastPath.Length;
+			int maxWidthsCount = m_itemsInfoMaxWidthsForFastPath.Length;
+			int itemsRangeLength = Math.Min(desiredAspectRatiosCount, m_itemCount - newItemsInfo.m_itemsRangeStartIndex);
+
+			MUX_ASSERT(itemsRangeLength > 0);
+
+			if (itemsRangeLength == m_itemCount)
+			{
+				// The ItemsInfoRequested event handler provided ratios for the entire data source. This situation can occur when a measure path
+				// is performed and (m_forceRelayout || m_previousAvailableWidth != availableWidth) evaluated to False in the initial fast path attempt,
+				// in LinedFlowLayout::MeasureConstrainedLinesFastPath. The ItemsInfoRequested event was thus skipped. Here a transition from regular path
+				// to fast path is enabled. One of two unfortunate behaviors needs to be picked:
+				// a. Remain in the regular path until a future measure path with m_forceRelayout==True or a different availableWidth is triggered.
+				//    The m_itemsInfoDesiredAspectRatiosForRegularPath, m_itemsInfoMinWidthsForRegularPath, m_itemsInfoMaxWidthsForRegularPath
+				//    vectors could grow very large hindering performance.
+				// b. Stop the regular path and backtrack to the fast path since aspect ratios were provided for the entire collection.
+				//    This can result in a re-arrangement of the visible items.
+				// Option b. is picked for its perf benefits.
+				return true;
+			}
+
+			if (m_itemsInfoFirstIndex == -1)
+			{
+				m_itemsInfoFirstIndex = newItemsInfo.m_itemsRangeStartIndex;
+			}
+			else
+			{
+				m_itemsInfoFirstIndex = Math.Min(newItemsInfo.m_itemsRangeStartIndex, m_itemsInfoFirstIndex);
+			}
+
+			int minItemsInfoRequiredSize = Math.Min(newItemsInfo.m_itemsRangeStartIndex + itemsRangeLength - m_itemsInfoFirstIndex, m_itemCount);
+
+			if (m_itemsInfoDesiredAspectRatiosForRegularPath.Count < minItemsInfoRequiredSize)
+			{
+				ResizeList(m_itemsInfoDesiredAspectRatiosForRegularPath, minItemsInfoRequiredSize, -1.0);
+			}
+
+			if (minWidthsCount > 0 && m_itemsInfoMinWidthsForRegularPath.Count < minItemsInfoRequiredSize)
+			{
+				ResizeList(m_itemsInfoMinWidthsForRegularPath, minItemsInfoRequiredSize, -1.0);
+			}
+
+			if (maxWidthsCount > 0 && m_itemsInfoMaxWidthsForRegularPath.Count < minItemsInfoRequiredSize)
+			{
+				ResizeList(m_itemsInfoMaxWidthsForRegularPath, minItemsInfoRequiredSize, -1.0);
+			}
+
+			if (m_itemsInfoArrangeWidths.Count < minItemsInfoRequiredSize)
+			{
+				ResizeList(m_itemsInfoArrangeWidths, minItemsInfoRequiredSize, -1.0f);
+			}
+
+			int itemsInfoIndexStart = newItemsInfo.m_itemsRangeStartIndex - m_itemsInfoFirstIndex;
+
+			for (int index = 0; index < itemsRangeLength; index++)
+			{
+				double desiredAspectRatio = m_itemsInfoDesiredAspectRatiosForFastPath[index];
+
+				SetDesiredAspectRatioFromItemsInfo(
+					m_itemsInfoFirstIndex + itemsInfoIndexStart + index,
+					desiredAspectRatio);
+
+				MUX_ASSERT(m_itemsInfoDesiredAspectRatiosForRegularPath[itemsInfoIndexStart + index] == desiredAspectRatio);
+
+				if (minWidthsCount > 0 && index < minWidthsCount)
+				{
+					m_itemsInfoMinWidthsForRegularPath[itemsInfoIndexStart + index] = m_itemsInfoMinWidthsForFastPath[index];
+				}
+
+				if (maxWidthsCount > 0 && index < maxWidthsCount)
+				{
+					m_itemsInfoMaxWidthsForRegularPath[itemsInfoIndexStart + index] = m_itemsInfoMaxWidthsForFastPath[index];
+				}
+			}
+
+			return false;
+		}
+
+		private bool UpdateItemsInfo(
+			ItemsInfo itemsInfo,
+			int oldFirstItemsInfoIndex,
+			int oldLastItemsInfoIndex)
+		{
+			// Raise ItemsInfoRequested events.
+			if (oldFirstItemsInfoIndex == -1 || m_lastSizedItemIndex < oldFirstItemsInfoIndex || m_firstSizedItemIndex > oldLastItemsInfoIndex)
+			{
+				// No overlapping of old items info and new sized items. Build the items info from scratch.
+				ResetItemsInfo();
+
+				// Raise event for [m_firstSizedItemIndex, m_lastSizedItemIndex] range.
+				if (RequestItemsInfo(itemsInfo, m_firstSizedItemIndex /*beginSizedItemIndex*/, m_lastSizedItemIndex /*endSizedItemIndex*/))
+				{
+					return true;
+				}
+
+				UpdateAspectRatiosWithItemsInfo();
+			}
+			else if (m_firstSizedItemIndex < oldFirstItemsInfoIndex || m_lastSizedItemIndex > oldLastItemsInfoIndex)
+			{
+				// Partial overlapping.
+				MUX_ASSERT(oldLastItemsInfoIndex != -1);
+
+				// TODO as part of perf Task 42298247 - see if these copies can be avoided by copying vector elements 'in place'.
+				List<double> oldItemsInfoDesiredAspectRatios = new List<double>(m_itemsInfoDesiredAspectRatiosForRegularPath);
+				List<double> oldItemsInfoMinWidths = new List<double>(m_itemsInfoMinWidthsForRegularPath);
+				List<double> oldItemsInfoMaxWidths = new List<double>(m_itemsInfoMaxWidthsForRegularPath);
+				List<float> oldItemsInfoArrangeWidths = new List<float>(m_itemsInfoArrangeWidths);
+
+				int newItemsInfoCount = m_lastSizedItemIndex - m_firstSizedItemIndex + 1;
+
+				EnsureItemsInfoDesiredAspectRatios(newItemsInfoCount /*itemCount*/);
+
+				if (m_itemsInfoMinWidthsForRegularPath.Count > 0)
+				{
+					EnsureItemsInfoMinWidths(newItemsInfoCount /*itemCount*/);
+				}
+
+				if (m_itemsInfoMaxWidthsForRegularPath.Count > 0)
+				{
+					EnsureItemsInfoMaxWidths(newItemsInfoCount /*itemCount*/);
+				}
+
+				EnsureItemsInfoArrangeWidths(newItemsInfoCount /*itemCount*/);
+
+				m_itemsInfoFirstIndex = m_firstSizedItemIndex;
+
+				bool oldFirstOverlaps = oldFirstItemsInfoIndex >= m_firstSizedItemIndex && oldFirstItemsInfoIndex <= m_lastSizedItemIndex;
+				bool oldLastOverlaps = oldLastItemsInfoIndex >= m_firstSizedItemIndex && oldLastItemsInfoIndex <= m_lastSizedItemIndex;
+				bool newFirstOverlaps = m_firstSizedItemIndex >= oldFirstItemsInfoIndex && m_firstSizedItemIndex <= oldLastItemsInfoIndex;
+				bool newLastOverlaps = m_lastSizedItemIndex >= oldFirstItemsInfoIndex && m_lastSizedItemIndex <= oldLastItemsInfoIndex;
+
+				if (oldFirstOverlaps || oldLastOverlaps || newFirstOverlaps || newLastOverlaps)
+				{
+					MUX_ASSERT(!newFirstOverlaps || !newLastOverlaps);
+
+					// Fill m_itemsInfoDesiredAspectRatiosForRegularPath, m_itemsInfoMinWidthsForRegularPath, m_itemsInfoMaxWidthsForRegularPath, m_itemsInfoArrangeWidths vectors with overlapping
+					// oldItemsInfoDesiredAspectRatios, oldItemsInfoMinWidths, oldItemsInfoMaxWidths, oldItemsInfoArrangeWidths ones.
+					if (oldFirstOverlaps && oldLastOverlaps)
+					{
+						CopyItemsInfo(
+							oldItemsInfoDesiredAspectRatios,
+							oldItemsInfoMinWidths,
+							oldItemsInfoMaxWidths,
+							oldItemsInfoArrangeWidths,
+							0 /*oldStart*/,
+							oldFirstItemsInfoIndex - m_firstSizedItemIndex /*newStart*/,
+							oldLastItemsInfoIndex - oldFirstItemsInfoIndex + 1 /*copyCount*/);
+					}
+					else if (newFirstOverlaps && oldLastOverlaps)
+					{
+						CopyItemsInfo(
+							oldItemsInfoDesiredAspectRatios,
+							oldItemsInfoMinWidths,
+							oldItemsInfoMaxWidths,
+							oldItemsInfoArrangeWidths,
+							m_firstSizedItemIndex - oldFirstItemsInfoIndex /*oldStart*/,
+							0 /*newStart*/,
+							oldLastItemsInfoIndex - m_firstSizedItemIndex + 1 /*copyCount*/);
+					}
+					else if (oldFirstOverlaps && newLastOverlaps)
+					{
+						CopyItemsInfo(
+							oldItemsInfoDesiredAspectRatios,
+							oldItemsInfoMinWidths,
+							oldItemsInfoMaxWidths,
+							oldItemsInfoArrangeWidths,
+							0 /*oldStart*/,
+							oldFirstItemsInfoIndex - m_firstSizedItemIndex /*newStart*/,
+							m_lastSizedItemIndex - oldFirstItemsInfoIndex + 1 /*copyCount*/);
+					}
+				}
+
+				if (m_firstSizedItemIndex < oldFirstItemsInfoIndex)
+				{
+					// Raise event for [m_firstSizedItemIndex, oldFirstItemsInfoIndex - 1] range.
+					if (RequestItemsInfo(itemsInfo, m_firstSizedItemIndex /*beginSizedItemIndex*/, oldFirstItemsInfoIndex - 1 /*endSizedItemIndex*/))
+					{
+						return true;
+					}
+				}
+
+				if (m_lastSizedItemIndex > oldLastItemsInfoIndex)
+				{
+					// Raise event for [oldLastItemsInfoIndex + 1, m_lastSizedItemIndex] range.
+					if (RequestItemsInfo(itemsInfo, oldLastItemsInfoIndex + 1 /*beginSizedItemIndex*/, m_lastSizedItemIndex /*endSizedItemIndex*/))
+					{
+						return true;
+					}
+				}
+
+				UpdateAspectRatiosWithItemsInfo();
+			}
+			else
+			{
+				// Full overlapping. [m_firstSizedItemIndex, m_lastSizedItemIndex] is a subset of [oldFirstItemsInfoIndex, oldLastItemsInfoIndex].
+				// m_itemsInfoDesiredAspectRatiosForRegularPath left unchanged.
+				MUX_ASSERT(m_itemsInfoFirstIndex != -1);
+				MUX_ASSERT(m_firstSizedItemIndex >= oldFirstItemsInfoIndex);
+				MUX_ASSERT(m_firstSizedItemIndex <= oldLastItemsInfoIndex);
+				MUX_ASSERT(m_lastSizedItemIndex >= oldFirstItemsInfoIndex);
+				MUX_ASSERT(m_lastSizedItemIndex <= oldLastItemsInfoIndex);
+			}
+
+			return false;
+		}
+
+		#endregion
 	}
 }
