@@ -352,6 +352,32 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateDisplaySelection();
 		}
 
+		/// <summary>
+		/// Syncs the interactive caret/selection from the Text Object Model when the programmatic
+		/// <see cref="RichEditTextDocument.Selection"/> is changed through its public API while focused
+		/// (the reverse of the control pushing into the TOM). No-op when unfocused — the next focus reads
+		/// the TOM selection in <see cref="StartCaret"/>. Does not push back into the TOM.
+		/// </summary>
+		internal void OnTomSelectionChanged()
+		{
+			if (_textBoxView is not { } view || FocusState == FocusState.Unfocused)
+			{
+				return;
+			}
+
+			var length = GetPlainTextContent().Length;
+			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
+			var end = Math.Clamp(Document.Selection.EndPosition, 0, length);
+			_selection = (start, end - start, false);
+			_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(end).Left;
+
+			_caretBlinkVisible = true;
+			EnsureCaretTimerHooked();
+			_caretTimer.Start();
+
+			UpdateDisplaySelection();
+		}
+
 		private void DocumentUndoInteractive()
 		{
 			if (Document.CanUndo())
