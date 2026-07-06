@@ -1067,7 +1067,7 @@ namespace TestRepro
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
 																			Path = @"EditDurationCommand",
-																			ElementName = _ActivitiesListSubject,
+																			ElementNameSubject = _ActivitiesListSubject,
 																		}
 																	);
 																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);

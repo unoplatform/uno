@@ -1197,7 +1197,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case nameof(Binding.ElementName):
 						var subject = new ElementNameSubject();
-						binding.ElementName = subject;
+						binding.ElementNameSubject = subject;
 
 						if (bindingProperty.Value?.ToString() is { } value)
 						{
