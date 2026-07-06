@@ -47,8 +47,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		string ITextViewEditorHost.Text => GetPlainTextContent();
 
-		// Pointer capture (and therefore drag-selection suppression) is not yet driven by RichEditBox.
-		bool ITextViewEditorHost.HasPointerCapture => false;
+		// Reflects an active pointer drag so the shared keyboard handlers correctly bail out mid-drag.
+		bool ITextViewEditorHost.HasPointerCapture => _hasPointerCapture;
 
 		float ITextViewEditorHost.CaretXOffset => _caretXOffset;
 
