@@ -59,6 +59,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		set => _activity = value;
 	}
 
+	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
+	// and fed by the driving activity's native event dispatch.
+	internal AndroidCorePointerInputSource PointerSource { get; } = new();
+
+	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
+
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
