@@ -569,5 +569,238 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Line geometry & averages (WS-D3c)
+
+		internal int GetFirstItemIndexInLineIndex(int lineVectorIndex)
+		{
+			MUX_ASSERT(lineVectorIndex >= 0);
+			MUX_ASSERT(lineVectorIndex < m_lineItemCounts.Count);
+
+			int itemIndex = 0;
+
+			for (int lineVectorIndexTmp = 0; lineVectorIndexTmp < lineVectorIndex; lineVectorIndexTmp++)
+			{
+				itemIndex += m_lineItemCounts[lineVectorIndexTmp];
+			}
+
+			return itemIndex;
+		}
+
+		internal int GetLastItemIndexInLineIndex(int lineVectorIndex)
+		{
+			MUX_ASSERT(lineVectorIndex >= 0);
+			MUX_ASSERT(lineVectorIndex < m_lineItemCounts.Count);
+
+			int firstItemIndexInLineIndex = GetFirstItemIndexInLineIndex(lineVectorIndex);
+
+			return firstItemIndexInLineIndex + m_lineItemCounts[lineVectorIndex] - 1;
+		}
+
+		// Returns the line index for the provided item index.
+		internal int GetLineIndex(int itemIndex, bool usesFastPathLayout)
+		{
+			MUX_ASSERT(m_isVirtualizingContext);
+			MUX_ASSERT(itemIndex >= 0);
+			MUX_ASSERT(itemIndex < m_itemCount);
+
+			if (itemIndex == 0)
+			{
+				// May occur while m_averageItemsPerLine.second is still 0.
+				return 0;
+			}
+
+			int lineIndex = 0;
+
+			if (usesFastPathLayout)
+			{
+				int lineItemCounts = 0;
+
+				while (lineItemCounts + m_lineItemCounts[lineIndex] <= itemIndex)
+				{
+					lineItemCounts += m_lineItemCounts[lineIndex];
+					lineIndex++;
+				}
+			}
+			else
+			{
+				MUX_ASSERT(m_averageItemsPerLine.second >= 1.0);
+
+				// Determine the element's line index depending on its locked status.
+				if (m_lockedItemIndexes.TryGetValue(itemIndex, out int lockedLineIndex))
+				{
+					// Since the item is locked, use the line index it's locked on.
+					lineIndex = lockedLineIndex;
+				}
+				else
+				{
+					int sizedItemIndex = m_firstSizedItemIndex;
+					int sizedItemCount = m_lastSizedItemIndex - m_firstSizedItemIndex + 1;
+					int sizedLineVectorCount = m_lineItemCounts.Count;
+
+					// If the item is sized, use its sized line index.
+					if (sizedItemIndex != -1 &&
+						itemIndex >= sizedItemIndex &&
+						itemIndex < sizedItemIndex + sizedItemCount &&
+						m_lastSizedLineIndex - m_firstSizedLineIndex + 1 == sizedLineVectorCount)
+					{
+						MUX_ASSERT(m_firstSizedLineIndex >= 0);
+
+						int sizedLineVectorIndex = 0;
+
+						while (sizedItemIndex + m_lineItemCounts[sizedLineVectorIndex] - 1 < itemIndex)
+						{
+							sizedItemIndex += m_lineItemCounts[sizedLineVectorIndex];
+							sizedLineVectorIndex++;
+
+							MUX_ASSERT(sizedLineVectorIndex < sizedLineVectorCount);
+						}
+
+						lineIndex = m_firstSizedLineIndex + sizedLineVectorIndex;
+					}
+					else
+					{
+						// As a last resort, use the estimated line index based on the average items per line.
+						lineIndex = GetLineIndexFromAverageItemsPerLine(itemIndex, m_averageItemsPerLine.second);
+					}
+				}
+			}
+
+			return lineIndex;
+		}
+
+		// Returns the largest line width for a range of lines.
+		// When item sizing info is used, that range is the sized lines.
+		// Otherwise it's the frozen lines only.
+		internal float GetLinesDesiredWidth()
+		{
+			if (m_firstFrozenLineIndex == -1)
+			{
+				// This occurs when GetFirstAndLastDisplayedLineIndexes returns firstDisplayedLineIndex==-1
+				// because the scrollViewport is still 0.0 for example.
+				return 0.0f;
+			}
+
+			MUX_ASSERT(m_firstSizedLineIndex >= 0);
+			MUX_ASSERT(m_lastSizedLineIndex >= m_firstSizedLineIndex);
+			MUX_ASSERT(m_firstSizedItemIndex >= 0);
+			MUX_ASSERT(m_lastSizedItemIndex >= m_firstSizedItemIndex);
+			MUX_ASSERT(m_firstFrozenLineIndex >= 0);
+			MUX_ASSERT(m_lastFrozenLineIndex >= m_firstFrozenLineIndex);
+			MUX_ASSERT(m_firstFrozenItemIndex >= 0);
+			MUX_ASSERT(m_lastFrozenItemIndex >= m_firstFrozenItemIndex);
+
+			bool usesArrangeWidthInfo = UsesArrangeWidthInfo();
+			float minItemSpacing = (float)MinItemSpacing;
+			int firstLineIndex = usesArrangeWidthInfo ? m_firstSizedLineIndex : m_firstFrozenLineIndex;
+			int lastLineIndex = usesArrangeWidthInfo ? m_lastSizedLineIndex : m_lastFrozenLineIndex;
+			int itemIndex = usesArrangeWidthInfo ? m_firstSizedItemIndex : m_firstFrozenItemIndex;
+			float maxLineWidth = 0.0f;
+
+			MUX_ASSERT(!usesArrangeWidthInfo || m_itemsInfoFirstIndex >= 0);
+
+			for (int lineIndex = firstLineIndex; lineIndex <= lastLineIndex; lineIndex++)
+			{
+				int lineItemsCount = m_lineItemCounts[lineIndex - m_firstSizedLineIndex];
+				float lineWidth = 0.0f;
+
+				for (int lineItemIndex = 0; lineItemIndex < lineItemsCount; lineItemIndex++)
+				{
+					float itemWidth = 0.0f;
+
+					if (usesArrangeWidthInfo)
+					{
+						itemWidth = m_itemsInfoArrangeWidths[itemIndex - m_itemsInfoFirstIndex];
+					}
+					else
+					{
+						MUX_ASSERT(m_elementManager.IsDataIndexRealized(itemIndex));
+
+						if (m_elementManager.GetRealizedElement(itemIndex) is { } element)
+						{
+							itemWidth = (float)element.DesiredSize.Width;
+						}
+					}
+
+					if (lineItemIndex > 0)
+					{
+						lineWidth += minItemSpacing;
+					}
+
+					lineWidth += itemWidth;
+
+					itemIndex++;
+				}
+
+				maxLineWidth = Math.Max(lineWidth, maxLineWidth);
+			}
+
+			return maxLineWidth;
+		}
+
+		// Returns the current average aspect ratio, either based on the m_aspectRatios storage when it's
+		// populated, or m_averageItemsPerLine when set, or finally the default defaultAspectRatio == 1.0.
+		internal double GetAverageAspectRatio(float availableWidth, double actualLineHeight)
+		{
+			if (m_aspectRatios == null || m_aspectRatios.IsEmpty())
+			{
+				if (m_averageItemsPerLine.second == 0.0 || actualLineHeight == 0.0)
+				{
+					const double defaultAspectRatio = 1.0;
+
+					return defaultAspectRatio;
+				}
+				else
+				{
+					return availableWidth / m_averageItemsPerLine.second / actualLineHeight;
+				}
+			}
+
+			return GetAverageAspectRatioFromStorage();
+		}
+
+		// Returns the average aspect ratio from m_aspectRatios or 1.0 when it is empty.
+		internal double GetAverageAspectRatioFromStorage()
+		{
+			const double defaultAspectRatio = 1.0;
+
+			if (m_aspectRatios == null || m_aspectRatios.IsEmpty())
+			{
+				return defaultAspectRatio;
+			}
+
+			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetDataIndexFromRealizedRangeIndex(0) : 0;
+			int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
+			// Items outside the current realized range must have a weight equal to c_maxAspectRatioWeight to be taken into account.
+			// Smaller weights may not reflect the real aspect ratio and negatively influence the average.
+			float averageItemAspectRatio = m_aspectRatios.GetAverageAspectRatio(firstRealizedItemIndex, lastRealizedItemIndex, c_maxAspectRatioWeight);
+
+			return averageItemAspectRatio == 0.0f ? defaultAspectRatio : averageItemAspectRatio;
+		}
+
+		internal void SetAverageItemsPerLine(
+			(double first, double second) averageItemsPerLine,
+			bool unlockItems)
+		{
+			if (averageItemsPerLine.second == m_averageItemsPerLine.second)
+			{
+				// When the old and new snapped average-items-per-line are identical,
+				// just retain the raw value change.
+				m_averageItemsPerLine.first = averageItemsPerLine.first;
+			}
+			else
+			{
+				m_averageItemsPerLine = averageItemsPerLine;
+
+				if (unlockItems)
+				{
+					UnlockItems();
+				}
+
+				// TODO (WS-D5): globalTestHooks.NotifyLinedFlowLayoutSnappedAverageItemsPerLineChanged(this).
+			}
+		}
+
+		#endregion
 	}
 }
