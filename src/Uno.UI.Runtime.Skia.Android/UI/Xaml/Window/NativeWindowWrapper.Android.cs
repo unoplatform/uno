@@ -17,6 +17,7 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Skia.Android;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -51,6 +52,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		get => _activity;
 		set => _activity = value;
 	}
+
+	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
+	// and fed by the driving activity's native event dispatch.
+	internal AndroidCorePointerInputSource PointerSource { get; } = new();
+
+	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;

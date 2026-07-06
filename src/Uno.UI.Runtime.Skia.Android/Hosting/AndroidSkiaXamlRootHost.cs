@@ -20,6 +20,10 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 	// driving the window across activity re-creation.
 	internal ApplicationActivity Activity => _wrapper.CurrentActivity;
 
+	internal AndroidCorePointerInputSource PointerSource => _wrapper.PointerSource;
+
+	internal AndroidKeyboardInputSource KeyboardSource => _wrapper.KeyboardSource;
+
 	void IXamlRootHost.InvalidateRender() => Activity.InvalidateRender();
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
