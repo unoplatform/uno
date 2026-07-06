@@ -33,11 +33,14 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		}
 	}
 
+	private ApplicationActivity.ClippedRelativeLayout? NativeLayerHost
+		=> AndroidSkiaXamlRootHost.GetActivity(_owner.XamlRoot)?.NativeLayerHost;
+
 	public void AttachNativeElement(object content)
 	{
 		if (content is View view)
 		{
-			if (ApplicationActivity.NativeLayerHost is { } host)
+			if (NativeLayerHost is { } host)
 			{
 				host.AddView(view);
 			}
@@ -45,7 +48,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
+					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.NativeLayerHost)} is null.");
 				}
 			}
 		}
@@ -55,7 +58,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			if (ApplicationActivity.NativeLayerHost is { } host)
+			if (NativeLayerHost is { } host)
 			{
 				host.RemoveView(view);
 			}
@@ -63,7 +66,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"Cannot detach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
+					this.Log().Error($"Cannot detach native element because {nameof(ApplicationActivity.NativeLayerHost)} is null.");
 				}
 			}
 		}
@@ -79,7 +82,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	public object? CreateSampleComponent(string text)
 	{
-		if (ApplicationActivity.NativeLayerHost is not { } host)
+		if (NativeLayerHost is not { } host)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
