@@ -591,14 +591,6 @@ namespace Uno.UI
 			public static bool UseInvalidateArrangePath { get; set; } = true;
 
 			/// <summary>
-			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
-			/// </summary>
-			/// <remarks>
-			/// This feature is only supported on iOS, for now.
-			/// </remarks>
-			public static bool ShowClippingBounds { get; set; }
-
-			/// <summary>
 			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.

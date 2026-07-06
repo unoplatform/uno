@@ -2947,6 +2947,7 @@
 		  <!-- Legacy cross-target FeatureConfiguration flags removed (#2053, breaking changes for 7.0). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Binding::IgnoreINPCSameReferences()" reason="Removed Binding.IgnoreINPCSameReferences legacy flag; binding engine always uses the correct INPC path (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement::UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag; hit-testing locked to the WinUI-aligned default behavior (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (no consumers) (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2963,6 +2964,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Binding.set_IgnoreINPCSameReferences(System.Boolean value)" reason="Removed Binding.IgnoreINPCSameReferences legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement.get_UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/FrameworkElement.set_UseLegacyHitTest(System.Boolean value)" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_ShowClippingBounds(System.Boolean value)" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
