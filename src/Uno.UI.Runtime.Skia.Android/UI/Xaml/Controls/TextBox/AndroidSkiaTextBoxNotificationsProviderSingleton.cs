@@ -19,9 +19,18 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
+	// Resolves the text input plugin of the render view owning the given XamlRoot's window,
+	// falling back to the foreground activity when no specific window is known.
+	private static TextInputPlugin? GetTextInputPlugin(XamlRoot? xamlRoot = null)
+	{
+		var activity = AndroidSkiaXamlRootHost.GetActivity(xamlRoot)
+			?? BaseActivity.Current as ApplicationActivity;
+		return activity?.RenderView?.TextInputPlugin;
+	}
+
 	public void OnFocused(TextBoxCore core)
 	{
-		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
+		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
 		{
 			if (CouldRequireKeyboard(core))
 			{
@@ -33,7 +42,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void OnUnfocused(TextBoxCore core)
 	{
-		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
+		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
 		{
 			// Hide the keyboard only when the next element to be focused is not an Element that
 			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
@@ -73,7 +82,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void FinishAutofillContext(bool shouldSave)
 	{
-		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
+		if (GetTextInputPlugin() is { } textInputPlugin)
 		{
 			textInputPlugin.FinishAutofillContext(shouldSave);
 		}
@@ -81,7 +90,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void NotifyValueChanged(TextBoxCore core)
 	{
-		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
+		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
 		{
 			textInputPlugin.NotifyValueChanged(core.GetHashCode(), core.Text);
 		}
