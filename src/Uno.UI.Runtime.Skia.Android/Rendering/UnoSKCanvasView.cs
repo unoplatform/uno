@@ -27,13 +27,15 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
+	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
 
-	public UnoSKCanvasView(Context context) : base(context)
+	public UnoSKCanvasView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer());
+		SetRenderer(_renderer = new InternalRenderer(activity));
 		// The scene is still presented through GL, but when not hardware-accelerated it is
 		// rasterized on the CPU first, which is what IsSoftwareRenderer reflects.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = !_renderer.HardwareAccelerated;
@@ -139,8 +141,10 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
 	// and modified to also add rendering without OpenGL
-	private class InternalRenderer() : Java.Lang.Object, IRenderer
+	private class InternalRenderer(ApplicationActivity activity) : Java.Lang.Object, IRenderer
 	{
+		private readonly ApplicationActivity _activity = activity;
+
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
@@ -169,7 +173,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			}
 
 			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
+			var nativeClipPath = ((CompositionTarget)_activity.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer
@@ -208,7 +212,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				return _softwareSurface.Canvas;
 			});
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			_activity.NativeLayerHost!.Path = nativeClipPath;
 
 			if (_hardwareAccelerated)
 			{
