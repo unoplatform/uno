@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
-		internal TextBox? OwningTextBox { get; init; }
+		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
@@ -171,10 +171,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-			.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences
-				.DefaultValue
-				? null
+			OwningTextBox is { } owner
+				? (owner.IsTextAlignmentSetToDefault ? null : TextAlignment)
 				: TextAlignment;
 
 		// the entire body of the text block is considered hit-testable
