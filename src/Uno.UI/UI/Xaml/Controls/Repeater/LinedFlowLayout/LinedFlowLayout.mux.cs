@@ -3050,5 +3050,130 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Element realization: measurement leaves (WS-D3c sub-slice 4)
+
+		// Sums the per-line item counts. When expectedTotal is non-zero, asserts the sum matches it (debug only).
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal int LineItemsCountTotal(int expectedTotal)
+		{
+			int sizedItemCount = 0;
+
+			foreach (int lineItemsCount in m_lineItemCounts)
+			{
+				sizedItemCount += lineItemsCount;
+			}
+
+			MUX_ASSERT(expectedTotal == 0 || sizedItemCount == expectedTotal);
+
+			return sizedItemCount;
+		}
+
+		// Resets the per-line item counts to sizedLineCount zeros and clears the four still-sized range markers,
+		// readying the layout for a full re-layout of the sized lines. MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal void InitializeForRelayout(
+			int sizedLineCount,
+			out int firstStillSizedLineIndex,
+			out int lastStillSizedLineIndex,
+			out int firstStillSizedItemIndex,
+			out int lastStillSizedItemIndex)
+		{
+			EnsureLineItemCounts(sizedLineCount);
+
+			firstStillSizedLineIndex = -1;
+			lastStillSizedLineIndex = -1;
+			firstStillSizedItemIndex = -1;
+			lastStillSizedItemIndex = -1;
+		}
+
+		// Measures the realized items in [beginRealizedItemIndex, endRealizedItemIndex] with their computed
+		// items-info arrange width (fast path or items-info regular path). MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal void MeasureItemRange(
+			double actualLineHeight,
+			int beginRealizedItemIndex,
+			int endRealizedItemIndex)
+		{
+			MUX_ASSERT(beginRealizedItemIndex >= 0);
+			MUX_ASSERT(beginRealizedItemIndex <= endRealizedItemIndex);
+			MUX_ASSERT(m_itemsInfoArrangeWidths.Count > 0);
+
+			int itemsInfoArrangeWidthsOffset = m_itemsInfoFirstIndex == -1 ? 0 : m_itemsInfoFirstIndex;
+
+			for (int realizedItemIndex = beginRealizedItemIndex; realizedItemIndex <= endRealizedItemIndex; realizedItemIndex++)
+			{
+				MUX_ASSERT(m_elementManager.IsDataIndexRealized(realizedItemIndex));
+
+				var element = m_elementManager.GetRealizedElement(realizedItemIndex /*dataIndex*/);
+
+				// Making sure the element is not null for safety.
+				if (element != null)
+				{
+					MUX_ASSERT(realizedItemIndex - itemsInfoArrangeWidthsOffset < m_itemsInfoArrangeWidths.Count);
+
+					float arrangeWidth = m_itemsInfoArrangeWidths[realizedItemIndex - itemsInfoArrangeWidthsOffset];
+
+					if (arrangeWidth >= 0.0f)
+					{
+						element.Measure(new Size(arrangeWidth, (float)actualLineHeight));
+					}
+				}
+			}
+		}
+
+		// Measures a range of realized items based on previously computed available widths 'elementAvailableWidths'.
+		// Re-populates m_elementAvailableWidths with the old & re-applied available widths.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal void MeasureItemRangeRegularPath(
+			Dictionary<UIElement, float> elementAvailableWidths,
+			double actualLineHeight,
+			int beginRealizedItemIndex,
+			int endRealizedItemIndex)
+		{
+			MUX_ASSERT(m_itemsInfoFirstIndex == -1);
+			MUX_ASSERT(beginRealizedItemIndex <= endRealizedItemIndex);
+
+			for (int realizedItemIndex = beginRealizedItemIndex; realizedItemIndex <= endRealizedItemIndex; realizedItemIndex++)
+			{
+				MUX_ASSERT(m_elementManager.IsDataIndexRealized(realizedItemIndex));
+
+				var element = m_elementManager.GetRealizedElement(realizedItemIndex /*dataIndex*/);
+
+				// Making sure the element is not null for safety.
+				if (element != null)
+				{
+					float elementAvailableWidth = -1.0f;
+
+					if (elementAvailableWidths.TryGetValue(element, out float recordedAvailableWidth))
+					{
+						// The element has an existing recorded available width because it needs to be scaled up or down, to fill or fit the available line width respectively.
+						elementAvailableWidth = recordedAvailableWidth;
+
+						MUX_ASSERT(m_elementAvailableWidths != null);
+						MUX_ASSERT(!m_elementAvailableWidths!.ContainsKey(element));
+
+						// Maintain that recording and measure the element again with it.
+						m_elementAvailableWidths!.TryAdd(element, elementAvailableWidth);
+					}
+					else if (element is FrameworkElement frameworkElement)
+					{
+						// The element has no recorded available width because it is not scaled down or up, so only its desired width is recorded.
+						float minWidth = (float)frameworkElement.MinWidth;
+
+						if (element.DesiredSize.Width == minWidth)
+						{
+							// Making sure the item is measured and stretched according to the MinWidth value (otherwise background-colored bands appear on the items' left/right edges).
+							elementAvailableWidth = minWidth;
+						}
+					}
+
+					if (elementAvailableWidth != -1.0f)
+					{
+						element.Measure(new Size(elementAvailableWidth, (float)actualLineHeight));
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }
