@@ -2052,6 +2052,195 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_CtrlB_Toggles_Bold_On_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+			SUT.Document.Selection.SetRange(1, 4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(1, 4).CharacterFormat.Bold);
+
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(1, 4).CharacterFormat.Bold);
+			// The unselected characters stay unformatted.
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 1).CharacterFormat.Bold);
+
+			// A second toggle over the same (fully bold) selection turns it back off.
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(1, 4).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CtrlI_Toggles_Italic_On_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+			SUT.Document.Selection.SetRange(0, 3);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.I, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Italic);
+
+			RaiseKey(SUT, VirtualKey.I, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 3).CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_CtrlU_Toggles_Underline_On_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+			SUT.Document.Selection.SetRange(0, 5);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.U, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(UnderlineType.Single, SUT.Document.GetRange(0, 5).CharacterFormat.Underline);
+
+			RaiseKey(SUT, VirtualKey.U, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(UnderlineType.None, SUT.Document.GetRange(0, 5).CharacterFormat.Underline);
+		}
+
+		[TestMethod]
+		public async Task When_CtrlB_On_Mixed_Selection_Makes_All_Bold()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+
+			// Make only the first two characters bold, leaving the rest unformatted (a mixed range).
+			SUT.Document.GetRange(0, 2).CharacterFormat.Bold = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FormatEffect.Undefined, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+
+			SUT.Document.Selection.SetRange(0, 5);
+			await WindowHelper.WaitForIdle();
+
+			// A mixed selection toggles to fully-on (matching "make it all bold").
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_DisabledFormattingAccelerators_Suppresses_Bold_Only()
+		{
+			var SUT = new RichEditBox { DisabledFormattingAccelerators = DisabledFormattingAccelerators.Bold };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+			SUT.Document.Selection.SetRange(0, 5);
+			await WindowHelper.WaitForIdle();
+
+			// Bold is disabled, so Ctrl+B does nothing.
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+
+			// Italic is still enabled and applies normally.
+			RaiseKey(SUT, VirtualKey.I, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 5).CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_CtrlB_Is_Single_Undo_Entry()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcde");
+			SUT.Document.Selection.SetRange(0, 5);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+
+			// A single undo reverts the whole formatting toggle while keeping the text.
+			RaiseKey(SUT, VirtualKey.Z, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abcde", text);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Suppresses_Formatting_Accelerator()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "abcde");
+			SUT.Document.Selection.SetRange(0, 5);
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsReadOnly = true;
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
 		private static TextBlock FindDisplayBlock(DependencyObject root)
 		{
 			var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);
