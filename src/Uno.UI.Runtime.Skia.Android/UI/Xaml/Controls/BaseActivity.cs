@@ -332,8 +332,10 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			// Don't leave a destroyed activity as the ambient foreground context: repoint to
-			// another live activity, or clear it so ContextHelper falls back to the application context.
+			// Don't leave a destroyed activity as the ambient foreground context when another
+			// live activity can take over. If this is the last one, keep it so callers that
+			// hard-cast Current to Activity keep working as before (rather than falling back to
+			// the non-Activity application context).
 			if (ContextHelper.TryGetCurrent(out var current) && ReferenceEquals(current, this))
 			{
 				BaseActivity? next;
@@ -342,7 +344,10 @@ namespace Uno.UI
 					next = _instances.Values.FirstOrDefault(activity => !ReferenceEquals(activity, this));
 				}
 
-				ContextHelper.SetForeground(next);
+				if (next is not null)
+				{
+					ContextHelper.SetForeground(next);
+				}
 			}
 		}
 
