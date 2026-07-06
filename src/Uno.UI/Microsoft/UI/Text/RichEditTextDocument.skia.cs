@@ -12,13 +12,16 @@ namespace Microsoft.UI.Text
 	// Object Model surface (GetRange/Selection returning UnoTextRange/UnoTextSelection) that navigates
 	// and edits the buffer and drives the owning RichEditBox's shared rendering, a functional
 	// character-formatting run model (see RichEditTextDocument.Formatting.skia.cs and
-	// UnoTextRange.CharacterFormat), a snapshot-based undo/redo stack over both text and formatting
+	// UnoTextRange.CharacterFormat), a functional paragraph-formatting run model (see
+	// RichEditTextDocument.ParagraphFormatting.skia.cs and UnoTextRange.ParagraphFormat), a
+	// snapshot-based undo/redo stack over text and both formatting models
 	// (CanUndo/CanRedo/Undo/Redo/UndoLimit) with grouping (BeginUndoGroup/EndUndoGroup), and display
 	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
 	//
 	// TODO Uno: The following are subsequent increments and remain [NotImplemented] in the generated
-	// stub for now: character/paragraph default formats, paragraph formatting, RTF and stream
-	// load/save, embedded images and MathML.
+	// stub for now: character/paragraph default formats, RTF and stream load/save, embedded images
+	// and MathML. Paragraph formatting round-trips through the model but is not rendered (the shared
+	// DisplayBlock is a single TextBlock) — see RichEditTextDocument.ParagraphFormatting.skia.cs.
 	public partial class RichEditTextDocument
 	{
 		private readonly RichEditBox _owner;
@@ -44,9 +47,9 @@ namespace Microsoft.UI.Text
 			_owner = owner;
 		}
 
-		// A point-in-time copy of the document used for undo/redo: the plain text plus a deep clone of
-		// the formatting runs.
-		private sealed record Snapshot(string Text, List<FormatRun> Runs);
+		// A point-in-time copy of the document used for undo/redo: the plain text plus deep clones of
+		// the character-formatting runs and paragraph-formatting runs.
+		private sealed record Snapshot(string Text, List<FormatRun> Runs, List<ParagraphRun> ParagraphRuns);
 
 		/// <summary>The current plain-text content of the document.</summary>
 		internal string PlainText => _plainText;
@@ -79,7 +82,9 @@ namespace Microsoft.UI.Text
 				// Keep the run model aligned with the pre-edit text, then splice it in lock-step with the
 				// text edit so inserted characters inherit the neighbouring formatting.
 				SyncRunsToLength(text.Length);
+				SyncParagraphRunsToLength(text.Length);
 				SpliceRuns(start, end - start, insert.Length);
+				SpliceParagraphRuns(start, end - start, insert.Length);
 				_plainText = text.Substring(0, start) + insert + text.Substring(end);
 			});
 		}
@@ -93,7 +98,9 @@ namespace Microsoft.UI.Text
 			var before = CaptureSnapshot();
 			mutate();
 
-			if (string.Equals(_plainText, before.Text, StringComparison.Ordinal) && RunsEqual(_runs, before.Runs))
+			if (string.Equals(_plainText, before.Text, StringComparison.Ordinal)
+				&& RunsEqual(_runs, before.Runs)
+				&& ParagraphRunsEqual(_paragraphRuns, before.ParagraphRuns))
 			{
 				return;
 			}
@@ -129,12 +136,13 @@ namespace Microsoft.UI.Text
 			_owner.OnDocumentTextChanged();
 		}
 
-		private Snapshot CaptureSnapshot() => new(_plainText, CloneRuns(_runs));
+		private Snapshot CaptureSnapshot() => new(_plainText, CloneRuns(_runs), CloneParagraphRuns(_paragraphRuns));
 
 		private void RestoreSnapshot(Snapshot snapshot)
 		{
 			_plainText = snapshot.Text;
 			_runs = CloneRuns(snapshot.Runs);
+			_paragraphRuns = CloneParagraphRuns(snapshot.ParagraphRuns);
 		}
 
 		private void TrimUndoStack()
@@ -191,6 +199,7 @@ namespace Microsoft.UI.Text
 			{
 				_plainText = text;
 				ResetRuns(text.Length);
+				ResetParagraphRuns(text.Length);
 			});
 		}
 
@@ -310,7 +319,9 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
-			if (string.Equals(_plainText, groupStart.Text, StringComparison.Ordinal) && RunsEqual(_runs, groupStart.Runs))
+			if (string.Equals(_plainText, groupStart.Text, StringComparison.Ordinal)
+				&& RunsEqual(_runs, groupStart.Runs)
+				&& ParagraphRunsEqual(_paragraphRuns, groupStart.ParagraphRuns))
 			{
 				// The group made no net change; nothing to record.
 				return;
