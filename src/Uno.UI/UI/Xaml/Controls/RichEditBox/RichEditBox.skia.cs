@@ -10,14 +10,15 @@ namespace Microsoft.UI.Xaml.Controls
 	// Uno-specific functional implementation of RichEditBox for Skia targets.
 	//
 	// This wires the control onto the shared managed text rendering surface (TextBoxView /
-	// DisplayBlock, the same one TextBox uses through ITextBoxViewHost) and a functional
-	// plain-text Text Object Model (RichEditTextDocument).
+	// DisplayBlock, the same one TextBox uses through ITextBoxViewHost) and a functional Text Object
+	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
+	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
 	//
 	// TODO Uno: Interactive editing (keyboard/IME/pointer input, caret and selection rendering)
 	// arrives when the shared Skia editing engine currently living inside TextBox is extracted into
-	// TextBoxView and consumed here. Rich content (Inlines runs, character/paragraph formatting),
-	// the ITextRange/ITextSelection breadth, RTF/streams, embedded images and MathML are subsequent
-	// increments. See plan for the sequencing.
+	// TextBoxView and consumed here. Paragraph formatting, the remaining ITextRange/ITextSelection
+	// breadth, RTF/streams, embedded images and MathML are subsequent increments. See plan for the
+	// sequencing.
 	public partial class RichEditBox : ITextBoxViewHost
 	{
 		private TextBoxView? _textBoxView;
@@ -77,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 					_contentElement.Content = displayBlock;
 				}
 
-				_textBoxView.SetTextNative(GetPlainTextContent());
+				RenderDocument();
 			}
 		}
 
@@ -122,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void OnDocumentTextChanged()
 		{
-			_textBoxView?.SetTextNative(GetPlainTextContent());
+			RenderDocument();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
 
 			// TODO Uno: Raise TextChanged/TextChanging once the shared editing engine is wired in.
