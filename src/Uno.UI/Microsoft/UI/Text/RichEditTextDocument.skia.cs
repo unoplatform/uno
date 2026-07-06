@@ -8,20 +8,21 @@ namespace Microsoft.UI.Text
 {
 	// Uno-specific functional implementation of the RichEditBox Text Object Model document for Skia.
 	//
-	// This increment provides a working plain-text core: SetText/GetText round-trip, a functional
-	// Text Object Model surface (GetRange/Selection returning UnoTextRange/UnoTextSelection) that
-	// navigates and edits the plain-text buffer and drives the owning RichEditBox's shared rendering,
-	// and a functional snapshot-based undo/redo stack (CanUndo/CanRedo/Undo/Redo/UndoLimit).
+	// This increment provides a working text core: SetText/GetText round-trip, a functional Text
+	// Object Model surface (GetRange/Selection returning UnoTextRange/UnoTextSelection) that navigates
+	// and edits the buffer and drives the owning RichEditBox's shared rendering, a functional
+	// character-formatting run model (see RichEditTextDocument.Formatting.skia.cs and
+	// UnoTextRange.CharacterFormat), and a snapshot-based undo/redo stack over both text and formatting
+	// (CanUndo/CanRedo/Undo/Redo/UndoLimit).
 	//
 	// TODO Uno: The following are subsequent increments and remain [NotImplemented] in the generated
-	// stub for now: character/paragraph default formats, undo grouping/batching (Batch/
-	// ApplyDisplayUpdates), RTF and stream load/save, embedded images and MathML. Rich runs and
-	// character/paragraph formatting on ranges also arrive with the rich-content model.
+	// stub for now: character/paragraph default formats, paragraph formatting, undo grouping/batching
+	// (Batch/ApplyDisplayUpdates), RTF and stream load/save, embedded images and MathML.
 	public partial class RichEditTextDocument
 	{
 		private readonly RichEditBox _owner;
-		private readonly List<string> _undoStack = new();
-		private readonly List<string> _redoStack = new();
+		private readonly List<Snapshot> _undoStack = new();
+		private readonly List<Snapshot> _redoStack = new();
 		private string _plainText = string.Empty;
 		private UnoTextSelection? _selection;
 		private int _undoLimit = 100;
@@ -30,6 +31,10 @@ namespace Microsoft.UI.Text
 		{
 			_owner = owner;
 		}
+
+		// A point-in-time copy of the document used for undo/redo: the plain text plus a deep clone of
+		// the formatting runs.
+		private sealed record Snapshot(string Text, List<FormatRun> Runs);
 
 		/// <summary>The current plain-text content of the document.</summary>
 		internal string PlainText => _plainText;
@@ -47,37 +52,56 @@ namespace Microsoft.UI.Text
 
 		/// <summary>
 		/// Replaces the plain-text between <paramref name="start"/> and <paramref name="end"/> with
-		/// <paramref name="replacement"/> and re-renders. Used by <see cref="UnoTextRange"/> editing.
+		/// <paramref name="replacement"/>, splices the formatting runs accordingly and re-renders. Used
+		/// by <see cref="UnoTextRange"/> editing.
 		/// </summary>
 		internal void ReplaceRange(int start, int end, string replacement)
 		{
-			var text = _plainText;
-			start = Math.Clamp(start, 0, text.Length);
-			end = Math.Clamp(end, start, text.Length);
-			var newText = text.Substring(0, start) + (replacement ?? string.Empty) + text.Substring(end);
-			RecordAndApply(newText);
+			MutateWithUndo(() =>
+			{
+				var text = _plainText;
+				start = Math.Clamp(start, 0, text.Length);
+				end = Math.Clamp(end, start, text.Length);
+				var insert = replacement ?? string.Empty;
+
+				// Keep the run model aligned with the pre-edit text, then splice it in lock-step with the
+				// text edit so inserted characters inherit the neighbouring formatting.
+				SyncRunsToLength(text.Length);
+				SpliceRuns(start, end - start, insert.Length);
+				_plainText = text.Substring(0, start) + insert + text.Substring(end);
+			});
 		}
 
 		/// <summary>
-		/// Applies <paramref name="newText"/> as the buffer content, recording an undo entry (unless the
-		/// content is unchanged or undo is disabled) and re-rendering the owning control.
+		/// Runs a buffer/formatting mutation, capturing a before-snapshot for undo (unless nothing
+		/// changed or undo is disabled), clearing the redo stack and re-rendering the owning control.
 		/// </summary>
-		private void RecordAndApply(string newText)
+		private void MutateWithUndo(Action mutate)
 		{
-			if (string.Equals(newText, _plainText, StringComparison.Ordinal))
+			var before = CaptureSnapshot();
+			mutate();
+
+			if (string.Equals(_plainText, before.Text, StringComparison.Ordinal) && RunsEqual(_runs, before.Runs))
 			{
 				return;
 			}
 
 			if (_undoLimit != 0)
 			{
-				_undoStack.Add(_plainText);
+				_undoStack.Add(before);
 				TrimUndoStack();
 				_redoStack.Clear();
 			}
 
-			_plainText = newText;
 			_owner.OnDocumentTextChanged();
+		}
+
+		private Snapshot CaptureSnapshot() => new(_plainText, CloneRuns(_runs));
+
+		private void RestoreSnapshot(Snapshot snapshot)
+		{
+			_plainText = snapshot.Text;
+			_runs = CloneRuns(snapshot.Runs);
 		}
 
 		private void TrimUndoStack()
@@ -107,7 +131,12 @@ namespace Microsoft.UI.Text
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
 			// TODO Uno: Honor FormatRtf and the remaining TextSetOptions once rich content is supported.
-			RecordAndApply(value ?? string.Empty);
+			var text = value ?? string.Empty;
+			MutateWithUndo(() =>
+			{
+				_plainText = text;
+				ResetRuns(text.Length);
+			});
 		}
 
 		/// <summary>
@@ -164,8 +193,8 @@ namespace Microsoft.UI.Text
 			var index = _redoStack.Count - 1;
 			var next = _redoStack[index];
 			_redoStack.RemoveAt(index);
-			_undoStack.Add(_plainText);
-			_plainText = next;
+			_undoStack.Add(CaptureSnapshot());
+			RestoreSnapshot(next);
 			_owner.OnDocumentTextChanged();
 		}
 
@@ -182,8 +211,8 @@ namespace Microsoft.UI.Text
 			var index = _undoStack.Count - 1;
 			var previous = _undoStack[index];
 			_undoStack.RemoveAt(index);
-			_redoStack.Add(_plainText);
-			_plainText = previous;
+			_redoStack.Add(CaptureSnapshot());
+			RestoreSnapshot(previous);
 			_owner.OnDocumentTextChanged();
 		}
 	}
