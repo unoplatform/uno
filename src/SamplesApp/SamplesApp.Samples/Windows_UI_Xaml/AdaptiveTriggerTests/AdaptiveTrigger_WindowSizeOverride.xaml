@@ -1,0 +1,94 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.AdaptiveTriggerTests.AdaptiveTrigger_WindowSizeOverride"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Style="{ThemeResource BodyTextBlockStyle}"
+            Text="This page hosts an AdaptiveTrigger (MinWindowWidth=720). With the override off, the trigger follows the window size — resize the window to flip it. Turn the override on to make every AdaptiveTrigger evaluate against the resizable item's size instead: use the slider to resize the item across the 720px breakpoint without touching the window. The override is global, so while it is on it also affects AdaptiveTriggers elsewhere in the app (e.g. the samples browser layout); it is cleared automatically when leaving this sample."
+            TextWrapping="Wrap" />
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="24">
+            <ToggleSwitch
+                x:Name="OverrideToggle"
+                Header="Use item size as window-size override"
+                Toggled="OnOverrideToggled" />
+            <Slider
+                x:Name="ItemWidthSlider"
+                Width="280"
+                Header="Item width"
+                Maximum="1000"
+                Minimum="300"
+                StepFrequency="10"
+                Value="500" />
+        </StackPanel>
+
+        <TextBlock
+            x:Name="StatusText"
+            Grid.Row="2"
+            Style="{ThemeResource BodyTextBlockStyle}" />
+
+        <Border
+            x:Name="ResizableItem"
+            Grid.Row="3"
+            Width="{Binding Value, ElementName=ItemWidthSlider}"
+            MinHeight="160"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            BorderThickness="1"
+            SizeChanged="OnResizableItemSizeChanged">
+            <StackPanel
+                x:Name="ItemPanel"
+                Padding="12"
+                Orientation="Vertical"
+                Spacing="8">
+                <TextBlock
+                    x:Name="TriggerStateText"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Text="(no adaptive state active)" />
+                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="Text block 1 — stacks vertically when narrow." />
+                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="Text block 2 — flows horizontally when wide." />
+            </StackPanel>
+        </Border>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TriggerStateText.Text" Value="Narrow (width &lt; 720)" />
+                        <Setter Target="ItemPanel.Orientation" Value="Vertical" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TriggerStateText.Text" Value="Wide (width &gt;= 720)" />
+                        <Setter Target="ItemPanel.Orientation" Value="Horizontal" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>
