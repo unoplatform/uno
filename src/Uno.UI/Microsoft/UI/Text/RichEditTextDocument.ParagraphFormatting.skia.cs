@@ -12,8 +12,10 @@ namespace Microsoft.UI.Text
 	// \r / \n / \r\n, each paragraph including its trailing break), so every character inside a
 	// paragraph shares the same ParagraphFormatState.
 	//
-	// TODO Uno: The shared DisplayBlock is a single TextBlock and cannot render per-paragraph
-	// alignment/indents/spacing/lists, so this layer is model-only (faithful get/set/clone/undo).
+	// TODO Uno: A uniform paragraph alignment (Center/Right/Justify shared by all paragraphs) is projected
+	// onto the shared DisplayBlock via RichEditBox.ApplyParagraphAlignment (GetUniformParagraphAlignment).
+	// Per-paragraph divergence, indents, spacing, and lists still cannot be rendered by a single TextBlock,
+	// so those remain model-only (faithful get/set/clone/undo).
 	public partial class RichEditTextDocument
 	{
 		private List<ParagraphRun> _paragraphRuns = new();
@@ -372,6 +374,34 @@ namespace Microsoft.UI.Text
 		// does not retroactively re-format existing paragraphs; it only changes the basis for future text.
 		internal void ApplyDefaultParagraphFormat(UnoTextParagraphFormat format)
 				=> format.ApplyTo(_defaultParagraphFormat);
+
+		/// <summary>
+		/// Resolves the single paragraph alignment shared by every paragraph in the document, or
+		/// <c>null</c> when the document has no paragraphs or the paragraphs disagree. Because paragraph
+		/// runs are maximal spans of equal <see cref="ParagraphFormatState"/> (and each paragraph holds a
+		/// uniform state), the set of distinct alignments across runs equals the set across paragraphs, so
+		/// checking that all runs agree answers "do all paragraphs share one alignment". Used by the
+		/// RichEditBox render path to project a <em>uniform</em> alignment onto the shared single-TextBlock
+		/// DisplayBlock, which cannot express per-paragraph alignment.
+		/// </summary>
+		internal global::Microsoft.UI.Text.ParagraphAlignment? GetUniformParagraphAlignment()
+		{
+			if (_paragraphRuns.Count == 0)
+			{
+				return null;
+			}
+
+			var alignment = _paragraphRuns[0].Format.Alignment;
+			for (var i = 1; i < _paragraphRuns.Count; i++)
+			{
+				if (_paragraphRuns[i].Format.Alignment != alignment)
+				{
+					return null;
+				}
+			}
+
+			return alignment;
+		}
 
 		internal static List<ParagraphRun> CloneParagraphRuns(List<ParagraphRun> runs)
 		{

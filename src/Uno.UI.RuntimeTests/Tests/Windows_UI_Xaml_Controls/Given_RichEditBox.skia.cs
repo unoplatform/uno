@@ -1668,5 +1668,145 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.GetText(TextGetOptions.None, out var text);
 			Assert.AreEqual("abc", text);
 		}
+
+		[TestMethod]
+		public async Task When_ParagraphAlignment_Center_Sets_Override()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+			await WindowHelper.WaitForIdle();
+
+			// A fresh (Left) document does not override the control-level TextAlignment.
+			Assert.IsNull(SUT.ParagraphAlignmentOverride);
+
+			SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextAlignment.Center, SUT.ParagraphAlignmentOverride);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphAlignment_Right_Sets_Override()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+			SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextAlignment.Right, SUT.ParagraphAlignmentOverride);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphAlignment_Mixed_Leaves_Override_Null()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+
+			// Two paragraphs with different alignments cannot be rendered on a single TextBlock, so no
+			// uniform override is projected.
+			SUT.Document.GetRange(0, 0).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+			SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(SUT.ParagraphAlignmentOverride);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphAlignment_Cleared_Restores_Null()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+			SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextAlignment.Center, SUT.ParagraphAlignmentOverride);
+
+			// Returning to the (default) Left alignment relinquishes the override back to the control DP.
+			SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment = ParagraphAlignment.Left;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(SUT.ParagraphAlignmentOverride);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphAlignment_Projects_To_DisplayBlock()
+		{
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "hi");
+			await WindowHelper.WaitForIdle();
+
+			var block = FindDisplayBlock(SUT);
+			Assert.IsNotNull(block, "The DisplayBlock hosting the text should be in the visual tree.");
+
+			// Baseline: no paragraph-alignment override is active, so IsTextAlignmentSetToDefault is true.
+			// While it is true, the shared TextBlock renders with its own default alignment regardless of
+			// the block's TextAlignment property value (see GetAdjustedTextAlignment), which mirrors the
+			// control-level TextAlignment DP. Capture that default rather than hard-coding it: the DP's
+			// metadata default is default(TextAlignment) == Center, which is a framework-wide constant, not
+			// something this feature controls.
+			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+			var controlDefaultAlignment = ((ITextBoxViewHost)SUT).TextAlignment;
+			Assert.AreEqual(controlDefaultAlignment, block.TextAlignment);
+
+			// Applying a uniform Right paragraph alignment projects Right onto the DisplayBlock (the exact
+			// value the shared TextBlock renders with) and disables the deferral to the default so it takes
+			// effect. Right is deliberately distinct from the control DP default so the projection is
+			// unambiguous. This is the identical render mechanism TextBox uses for its own TextAlignment.
+			SUT.Document.GetRange(0, 2).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextAlignment.Right, SUT.ParagraphAlignmentOverride);
+			Assert.AreEqual(TextAlignment.Right, block.TextAlignment);
+			Assert.IsFalse(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+
+			// Relinquishing the paragraph alignment (the model default is Left) clears the override and
+			// hands the block back to the control-level DP default.
+			SUT.Document.GetRange(0, 2).ParagraphFormat.Alignment = ParagraphAlignment.Left;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(SUT.ParagraphAlignmentOverride);
+			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+			Assert.AreEqual(controlDefaultAlignment, block.TextAlignment);
+		}
+
+		private static TextBlock FindDisplayBlock(DependencyObject root)
+		{
+			var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);
+			for (var i = 0; i < count; i++)
+			{
+				var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(root, i);
+				if (child is TextBlock { Text: "hi" } tb)
+				{
+					return tb;
+				}
+
+				var found = FindDisplayBlock(child);
+				if (found is not null)
+				{
+					return found;
+				}
+			}
+
+			return null;
+		}
 	}
 }

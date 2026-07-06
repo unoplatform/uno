@@ -17,6 +17,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private bool _lastRenderWasRich;
 
+		// Uno-specific: a *uniform* paragraph alignment resolved from the TOM paragraph model and
+		// projected onto this RichEditBox's own DisplayBlock. Null when no uniform, non-default alignment
+		// applies, in which case the control-level TextAlignment DP drives the block. Read by
+		// ITextBoxViewHost.IsTextAlignmentSetToDefault so the shared TextBlock honors this override.
+		private global::Microsoft.UI.Xaml.TextAlignment? _paragraphAlignmentOverride;
+
+		internal global::Microsoft.UI.Xaml.TextAlignment? ParagraphAlignmentOverride => _paragraphAlignmentOverride;
+
 		private void RenderDocument()
 		{
 			if (_textBoxView is null)
@@ -40,11 +48,69 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				_textBoxView.SetTextNative(text);
+			}
+			else
+			{
+				RenderRuns(block, text, runs);
+				_lastRenderWasRich = true;
+			}
+
+			ApplyParagraphAlignment();
+		}
+
+		// Projects a *uniform* paragraph alignment (Center/Right/Justify) from the Text Object Model onto
+		// the shared single-TextBlock DisplayBlock. A single TextBlock cannot express per-paragraph
+		// alignment, so only a uniform, non-default value is renderable; Left/Undefined/mixed alignments
+		// leave the control-level TextAlignment DP in charge. Setting _paragraphAlignmentOverride makes
+		// ITextBoxViewHost.IsTextAlignmentSetToDefault report false so the block's alignment takes effect.
+		//
+		// TODO Uno: per-paragraph alignment divergence, indents, spacing, and lists still require a
+		// multi-paragraph layout (RichTextBlock-style) and remain unrendered — the model round-trips them
+		// faithfully but only uniform alignment is shown.
+		private void ApplyParagraphAlignment()
+		{
+			if (_textBoxView is null)
+			{
 				return;
 			}
 
-			RenderRuns(block, text, runs);
-			_lastRenderWasRich = true;
+			var uniform = Document.GetUniformParagraphAlignment();
+			if (uniform is { } alignment
+				&& alignment != global::Microsoft.UI.Text.ParagraphAlignment.Undefined
+				&& alignment != global::Microsoft.UI.Text.ParagraphAlignment.Left
+				&& TryMapParagraphAlignment(alignment, out var mapped))
+			{
+				_paragraphAlignmentOverride = mapped;
+				_textBoxView.DisplayBlock.TextAlignment = mapped;
+			}
+			else if (_paragraphAlignmentOverride is not null)
+			{
+				// Transition back to the control-level TextAlignment DP.
+				_paragraphAlignmentOverride = null;
+				_textBoxView.SetTextAlignment();
+			}
+		}
+
+		private static bool TryMapParagraphAlignment(global::Microsoft.UI.Text.ParagraphAlignment alignment, out global::Microsoft.UI.Xaml.TextAlignment mapped)
+		{
+			switch (alignment)
+			{
+				case global::Microsoft.UI.Text.ParagraphAlignment.Left:
+					mapped = global::Microsoft.UI.Xaml.TextAlignment.Left;
+					return true;
+				case global::Microsoft.UI.Text.ParagraphAlignment.Center:
+					mapped = global::Microsoft.UI.Xaml.TextAlignment.Center;
+					return true;
+				case global::Microsoft.UI.Text.ParagraphAlignment.Right:
+					mapped = global::Microsoft.UI.Xaml.TextAlignment.Right;
+					return true;
+				case global::Microsoft.UI.Text.ParagraphAlignment.Justify:
+					mapped = global::Microsoft.UI.Xaml.TextAlignment.Justify;
+					return true;
+				default:
+					mapped = global::Microsoft.UI.Xaml.TextAlignment.Left;
+					return false;
+			}
 		}
 
 		private static void RenderRuns(TextBlock block, string text, IReadOnlyList<FormatRun> runs)
