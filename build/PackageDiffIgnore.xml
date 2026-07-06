@@ -2962,6 +2962,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag; arrange dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2999,6 +3000,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseDeferredOnApplyTemplate(System.Boolean value)" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup.get_EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Popup.set_EnableLightDismissByDefault(System.Boolean value)" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox.get_UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBox.set_UseOverlayOnSkia(System.Boolean value)" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

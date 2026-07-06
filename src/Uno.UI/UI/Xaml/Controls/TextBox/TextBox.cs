@@ -178,15 +178,12 @@ namespace Microsoft.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-#if __SKIA__
-				if (!_isSkiaTextBox)
+#if !__SKIA__
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
-				{
-					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
-				}
 
 #if __WASM__
 				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
@@ -338,11 +335,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText
-#if __SKIA__
-				|| _isSkiaTextBox
+#if !__SKIA__
+			if (!_isInputModifyingText)
 #endif
-				)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
@@ -469,7 +464,7 @@ namespace Microsoft.UI.Xaml.Controls
 				baseString = GetFirstLine(baseString);
 			}
 #if __SKIA__
-			else if (_isSkiaTextBox)
+			else
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
@@ -492,19 +487,16 @@ namespace Microsoft.UI.Xaml.Controls
 			if (args.Cancel)
 			{
 #if __SKIA__
-				if (_isSkiaTextBox)
-				{
-					// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
-					// SelectionChanging events followed by a bunch of matching SelectionChanged.
-					// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
-					// events will give incorrect transient values and the SelectionChanged events will end up
-					// with the selection where it started (before the text change). Also, the direction of
-					// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
-					// so anymore.
-					// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
-					// we don't invoke any selection change events (since selection was in fact not changed).
-					_pendingSelection = (SelectionStart, SelectionLength);
-				}
+				// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
+				// SelectionChanging events followed by a bunch of matching SelectionChanged.
+				// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
+				// events will give incorrect transient values and the SelectionChanged events will end up
+				// with the selection where it started (before the text change). Also, the direction of
+				// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
+				// so anymore.
+				// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
+				// we don't invoke any selection change events (since selection was in fact not changed).
+				_pendingSelection = (SelectionStart, SelectionLength);
 #endif
 				return DependencyProperty.UnsetValue;
 			}
@@ -1210,15 +1202,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
 		{
 #if __SKIA__
-			if (_isSkiaTextBox)
-			{
-				OnKeyDownSkia(args);
-			}
-			else
+			OnKeyDownSkia(args);
+#else
+			OnKeyDownNonSkia(args);
 #endif
-			{
-				OnKeyDownNonSkia(args);
-			}
 
 			var modifiers = CoreImports.Input_GetKeyboardModifiers();
 			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
@@ -1231,15 +1218,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if !__SKIA__
 		private void OnKeyDownNonSkia(KeyRoutedEventArgs args)
 		{
-			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
-			// we need to get selectionStart from another source on Skia.
-#if __SKIA__
-			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
-#else
 			var selectionStart = SelectionStart;
-#endif
 
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
@@ -1289,6 +1271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 		}
+#endif
 
 		protected virtual void UpdateButtonStates()
 		{

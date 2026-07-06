@@ -23,7 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly ManagedWeakReference _textBox;
 		private bool _isPasswordRevealed;
-		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
 		public TextBoxView(TextBox textBox)
@@ -47,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 			SetFlowDirection();
 			SetTextAlignment();
 
-			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
+			if (_useInvisibleNativeTextView && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -116,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
-			if (_isSkiaTextBox && _useInvisibleNativeTextView)
+			if (_useInvisibleNativeTextView)
 			{
 				// We don't care about actual entry here, just making
 				// the password manager autocompletion button appear.
@@ -127,28 +126,6 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					_overlayTextBoxViewExtension?.EndEntry();
-				}
-			}
-			else if (!_isSkiaTextBox)
-			{
-				if (focusState != FocusState.Unfocused)
-				{
-					DisplayBlock.Opacity = 0;
-					_overlayTextBoxViewExtension?.StartEntry();
-
-					var selectionStart = this.GetSelectionStart();
-
-					if (selectionStart == 0)
-					{
-						int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
-
-						_overlayTextBoxViewExtension?.Select(cursorPosition, 0);
-					}
-				}
-				else
-				{
-					_overlayTextBoxViewExtension?.EndEntry();
-					DisplayBlock.Opacity = 1;
 				}
 			}
 		}
@@ -222,11 +199,8 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			if (_isSkiaTextBox)
-			{
-				TextBox?.ContentElement?.InvalidateMeasure();
-				TextBox?.UpdateLayout();
-			}
+			TextBox?.ContentElement?.InvalidateMeasure();
+			TextBox?.UpdateLayout();
 		}
 
 		internal char GetPasswordChar()
