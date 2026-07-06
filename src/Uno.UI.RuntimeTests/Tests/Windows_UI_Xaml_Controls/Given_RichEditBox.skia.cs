@@ -1512,5 +1512,161 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, SUT.Document.Selection.StartPosition, "The cancelled selection change must not move the caret.");
 			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
 		}
+
+		[TestMethod]
+		public async Task When_CopyingToClipboard_Raised()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.CopyingToClipboard += (s, e) => count++;
+
+			RaiseKey(SUT, VirtualKey.C, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public async Task When_CopyingToClipboard_Handled_Suppresses_Copy()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			// Seed the clipboard with a sentinel; a suppressed copy must leave it untouched.
+			var seed = new DataPackage();
+			seed.SetText("SENTINEL");
+			Clipboard.SetContent(seed);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopyingToClipboard += (s, e) => e.Handled = true;
+
+			RaiseKey(SUT, VirtualKey.C, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			var content = Clipboard.GetContent();
+			var text = await content.GetTextAsync();
+			Assert.AreEqual("SENTINEL", text);
+		}
+
+		[TestMethod]
+		public async Task When_CuttingToClipboard_Raised_And_Cuts()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.CuttingToClipboard += (s, e) => count++;
+
+			RaiseKey(SUT, VirtualKey.X, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, count);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(string.Empty, text);
+		}
+
+		[TestMethod]
+		public async Task When_CuttingToClipboard_Handled_Suppresses_Cut()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			SUT.CuttingToClipboard += (s, e) => e.Handled = true;
+
+			RaiseKey(SUT, VirtualKey.X, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			// A suppressed cut must leave the document content intact.
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abc", text);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_Raised()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.Paste += (s, e) => count++;
+
+			RaiseKey(SUT, VirtualKey.V, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_Handled_Suppresses_Paste()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("XYZ");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Paste += (s, e) => e.Handled = true;
+
+			RaiseKey(SUT, VirtualKey.V, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			// A suppressed paste must not replace the selected text.
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abc", text);
+		}
 	}
 }
