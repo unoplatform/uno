@@ -373,6 +373,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, selection.StartPosition);
 			Assert.AreEqual(0, selection.EndPosition);
 		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.Document.CanUndo());
+			Assert.IsFalse(SUT.Document.CanRedo());
+
+			SUT.Document.SetText(TextSetOptions.None, "A");
+			SUT.Document.SetText(TextSetOptions.None, "AB");
+			Assert.IsTrue(SUT.Document.CanUndo());
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterFirstUndo);
+			Assert.AreEqual("A", afterFirstUndo);
+			Assert.IsTrue(SUT.Document.CanRedo());
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterSecondUndo);
+			Assert.AreEqual("", afterSecondUndo);
+			Assert.IsFalse(SUT.Document.CanUndo());
+
+			SUT.Document.Redo();
+			SUT.Document.Redo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterRedo);
+			Assert.AreEqual("AB", afterRedo);
+			Assert.IsFalse(SUT.Document.CanRedo());
+		}
+
+		[TestMethod]
+		public async Task When_Edit_After_Undo_Clears_Redo()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "A");
+			SUT.Document.SetText(TextSetOptions.None, "AB");
+			SUT.Document.Undo();
+			Assert.IsTrue(SUT.Document.CanRedo());
+
+			SUT.Document.SetText(TextSetOptions.None, "AC");
+			Assert.IsFalse(SUT.Document.CanRedo());
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("AC", text);
+		}
+
+		[TestMethod]
+		public async Task When_UndoLimit_Zero_Disables_History()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.UndoLimit = 0;
+			SUT.Document.SetText(TextSetOptions.None, "A");
+			SUT.Document.SetText(TextSetOptions.None, "B");
+
+			Assert.IsFalse(SUT.Document.CanUndo());
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("B", text);
+		}
+
+		[TestMethod]
+		public async Task When_UndoLimit_Caps_History()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.UndoLimit = 1;
+			SUT.Document.SetText(TextSetOptions.None, "A");
+			SUT.Document.SetText(TextSetOptions.None, "B");
+			SUT.Document.SetText(TextSetOptions.None, "C");
+
+			// Only the most recent action is retained.
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("B", afterUndo);
+			Assert.IsFalse(SUT.Document.CanUndo());
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Rerenders_DisplayBlock()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+			SUT.Document.SetText(TextSetOptions.None, "World");
+			SUT.Document.Undo();
+			await WindowHelper.WaitForIdle();
+
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.AreEqual("Hello", displayBlock.Text);
+		}
 #endif
 	}
 }
