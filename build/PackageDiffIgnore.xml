@@ -3179,6 +3179,8 @@
 		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 
 	  <Events>
@@ -3546,6 +3548,8 @@
 		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
