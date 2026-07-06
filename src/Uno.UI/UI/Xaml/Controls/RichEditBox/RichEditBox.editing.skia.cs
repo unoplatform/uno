@@ -22,9 +22,8 @@ namespace Microsoft.UI.Xaml.Controls
 	// (which preserves the character-format run model and records undo), and the caret/selection are
 	// rendered through the shared DisplayBlock exactly like TextBox does through ITextBoxViewHost.
 	//
-	// TODO Uno: pointer-driven caret placement/drag-selection, IME composition and rich clipboard
-	// (Copy/Cut/Paste) are subsequent increments. Undo grouping (typing runs) is handled coarsely for
-	// now: each edit records one snapshot on the document's history.
+	// TODO Uno: IME composition is a subsequent increment. Undo grouping (typing runs) is handled
+	// coarsely for now: each edit records one snapshot on the document's history.
 	partial class RichEditBox : ITextViewEditorHost
 	{
 		private static readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
@@ -147,6 +146,20 @@ namespace Microsoft.UI.Xaml.Controls
 				case VirtualKey.Y when ctrl:
 					args.Handled = true;
 					DocumentRedoInteractive();
+					return;
+				case VirtualKey.X when ctrl:
+					args.Handled = true;
+					CutSelectionToClipboard();
+					return;
+				case VirtualKey.C when ctrl:
+				case VirtualKey.Insert when ctrl:
+					args.Handled = true;
+					CopySelectionToClipboard();
+					return;
+				case VirtualKey.V when ctrl:
+				case VirtualKey.Insert when shift:
+					args.Handled = true;
+					PasteFromClipboard();
 					return;
 				case VirtualKey.Escape:
 					return;
