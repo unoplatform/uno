@@ -50,6 +50,11 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_autoRecycleCandidate = value;
 		}
 
+		// We need to clear the DataContext on recycle only if we were the ones that set it
+		// (i.e. no x:Bind data-template-component on the root). Tracked here so ClearElement
+		// can null it out and avoid the stale-DataContext crash described in #2384.
+		public bool MustClearDataContext { get; set; }
+
 		public ElementOwner Owner => m_owner;
 
 		public int Index => m_index;
