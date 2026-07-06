@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
@@ -295,5 +296,57 @@ public class Given_LinedFlowLayout
 		// Item 0 short-circuits to line 0 (may occur while the average items per line is still 0).
 		sut.GetLineIndex(0, usesFastPathLayout: false).Should().Be(0);
 		sut.GetLineIndex(0, usesFastPathLayout: true).Should().Be(0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_ComputeItemsLayoutDrawback_Then_OverfullLinesGradedWorse()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Two sized lines: the first has room to spare (100 vs 110 -> quadratic penalty),
+		// the last overflows (120 vs 110 -> cubic penalty). With stretch disabled the last
+		// line is excluded from the main loop but still penalized for its overflow.
+		var layout = new LinedFlowLayout.ItemsLayout
+		{
+			m_lineItemWidths = new List<double> { 100.0, 120.0 },
+		};
+
+		sut.ComputeItemsLayoutDrawback(110.0, isLastSizedLineStretchEnabled: false, layout);
+
+		// (100-110)^2 [first line] + (120-110)^3 [last-line overflow] = 100 + 1000 = 1100.
+		layout.m_drawback.Should().Be(1100.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_IsItemsLayoutExpansionWorthy_Then_HonorsHeadWidthAndOverflow()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Degenerate: a smallest-head-item-width of 0 short-circuits expansion as not worthy.
+		var degenerate = new LinedFlowLayout.ItemsLayout
+		{
+			m_smallestHeadItemWidth = 0.0,
+			m_lineItemCounts = new List<int> { 2, 2 },
+			m_lineItemWidths = new List<double> { 100.0, 120.0 },
+			m_availableLineItemsWidth = 110.0,
+		};
+
+		sut.IsItemsLayoutExpansionWorthy(degenerate).Should().BeFalse();
+
+		// Worthy: a real head width, >1 line, a multi-item line, and a line wider than the
+		// available items width (120 > 110) all hold, so expanding may reduce the drawback.
+		var worthy = new LinedFlowLayout.ItemsLayout
+		{
+			m_smallestHeadItemWidth = 50.0,
+			m_lineItemCounts = new List<int> { 2, 2 },
+			m_lineItemWidths = new List<double> { 100.0, 120.0 },
+			m_availableLineItemsWidth = 110.0,
+		};
+
+		sut.IsItemsLayoutExpansionWorthy(worthy).Should().BeTrue();
 	}
 }
