@@ -481,6 +481,173 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Hello", displayBlock.Text);
 		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Bold_RoundTrips_And_Mixed_Is_Undefined()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello World");
+
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.Off, doc.GetRange(6, 11).CharacterFormat.Bold);
+			// A range that spans both bold and non-bold text reports Undefined.
+			Assert.AreEqual(FormatEffect.Undefined, doc.GetRange(0, 11).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Italic_Underline_Strikethrough_RoundTrip()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			var cf = doc.GetRange(0, 5).CharacterFormat;
+			cf.Italic = FormatEffect.On;
+			cf.Underline = UnderlineType.Single;
+			cf.Strikethrough = FormatEffect.On;
+
+			var read = doc.GetRange(0, 5).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, read.Italic);
+			Assert.AreEqual(UnderlineType.Single, read.Underline);
+			Assert.AreEqual(FormatEffect.On, read.Strikethrough);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Foreground_Size_Name_RoundTrip()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			var red = global::Windows.UI.Color.FromArgb(255, 255, 0, 0);
+			var cf = doc.GetRange(0, 5).CharacterFormat;
+			cf.ForegroundColor = red;
+			cf.Size = 24f;
+			cf.Name = "Comic Sans MS";
+
+			var read = doc.GetRange(0, 5).CharacterFormat;
+			Assert.AreEqual(red, read.ForegroundColor);
+			Assert.AreEqual(24f, read.Size);
+			Assert.AreEqual("Comic Sans MS", read.Name);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Inserted_Text_Inherits_Left_Format()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+
+			var selection = doc.Selection;
+			selection.SetRange(5, 5);
+			selection.TypeText(" World");
+
+			doc.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Hello World", text);
+
+			// Original characters keep their bold, and text typed after a bold character inherits it.
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(5, 11).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Undo_Redo_Reverts_Formatting()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+			Assert.IsTrue(doc.CanUndo());
+
+			doc.Undo();
+			Assert.AreEqual(FormatEffect.Off, doc.GetRange(0, 5).CharacterFormat.Bold);
+
+			doc.Redo();
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_GetClone_Is_Unbound_And_IsEqual_Works()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+
+			var read = doc.GetRange(0, 5).CharacterFormat;
+			var clone = read.GetClone();
+			Assert.IsTrue(read.IsEqual(clone));
+
+			// The clone is a detached value object: mutating it must not touch the document.
+			clone.Bold = FormatEffect.Off;
+			Assert.IsFalse(read.IsEqual(clone));
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Whole_Assignment_Applies_Defined_Properties()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			var fmt = doc.GetRange(0, 0).CharacterFormat.GetClone();
+			fmt.Italic = FormatEffect.On;
+			doc.GetRange(0, 5).CharacterFormat = fmt;
+
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Degenerate_Range_Reports_Basis()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+
+			// A caret (degenerate range) reports the formatting newly typed text would take.
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(3, 3).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 0).CharacterFormat.Bold);
+		}
 #endif
 	}
 }
