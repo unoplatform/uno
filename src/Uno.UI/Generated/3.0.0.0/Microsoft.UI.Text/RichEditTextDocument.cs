@@ -79,7 +79,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public uint UndoLimit
 		{
