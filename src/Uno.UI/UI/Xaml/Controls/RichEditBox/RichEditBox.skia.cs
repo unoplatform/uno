@@ -188,8 +188,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		int ITextBoxViewHost.CompositionUnderlineLength => 0;
 
+		// When the paragraph model projects a uniform alignment onto the DisplayBlock
+		// (see ApplyParagraphAlignment), report the alignment as explicitly set so the shared TextBlock
+		// uses DisplayBlock.TextAlignment instead of deferring to the default. Otherwise fall back to the
+		// control-level TextAlignment DP precedence.
 		bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
-			(this as IDependencyObjectStoreProvider)?.Store
+			_paragraphAlignmentOverride is null
+			&& (this as IDependencyObjectStoreProvider)?.Store
 				.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
 
 		#endregion
