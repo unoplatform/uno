@@ -15,34 +15,28 @@ namespace Uno.UI
 		/// </summary>
 		/// <remarks>
 		/// The setter is driven by the activity lifecycle: the foreground activity registers
-		/// itself here, and clears/repoints on teardown so a destroyed activity is never left
-		/// as "current". When no activity is in the foreground, the getter falls back to
-		/// <see cref="ApplicationContext"/> so app-scoped callers always get a usable context.
-		/// Callers that need a specific window's activity must resolve it from that window's
-		/// <see cref="XamlRoot"/> rather than relying on this ambient value.
+		/// itself here, and repoints on teardown (when another activity is alive) so a destroyed
+		/// activity is not left as "current". This value is activity-scoped and may be
+		/// <c>null</c> before any activity is created — app-scoped callers that only need a
+		/// process context should use <see cref="ApplicationContext"/>, and callers that need a
+		/// specific window's activity should resolve it from that window's <see cref="XamlRoot"/>
+		/// rather than relying on this ambient value.
 		/// </remarks>
 		public static Android.Content.Context Current
 		{
 			get
 			{
-				if (_current is { } current)
+				if (_current is null)
 				{
-					return current;
+					typeof(ContextHelper)
+						.Log()
+						.Warn(
+							"ContextHelper.Current not defined. " +
+							"For compatibility with Uno, you should ensure your `MainActivity` " +
+							"is deriving from Microsoft.UI.Xaml.ApplicationActivity.");
 				}
 
-				if (ApplicationContext is { } applicationContext)
-				{
-					return applicationContext;
-				}
-
-				typeof(ContextHelper)
-					.Log()
-					.Warn(
-						"ContextHelper.Current not defined. " +
-						"For compatibility with Uno, you should ensure your `MainActivity` " +
-						"is deriving from Microsoft.UI.Xaml.ApplicationActivity.");
-
-				return null!;
+				return _current!;
 			}
 			set => _current = value;
 		}
@@ -51,7 +45,7 @@ namespace Uno.UI
 		/// Gets the process-wide application context. Safe for app-scoped usage that does not
 		/// depend on a specific window or foreground activity (system services, resources, package info).
 		/// </summary>
-		public static Android.Content.Context? ApplicationContext => Android.App.Application.Context;
+		public static Android.Content.Context ApplicationContext => Android.App.Application.Context;
 
 		/// <summary>
 		/// Tries getting the current foreground activity context.
@@ -66,8 +60,8 @@ namespace Uno.UI
 
 		/// <summary>
 		/// Repoints the foreground context, used by the activity lifecycle when the current
-		/// activity is torn down. Passing <c>null</c> lets <see cref="Current"/> fall back to
-		/// <see cref="ApplicationContext"/>.
+		/// activity is torn down. Passing <c>null</c> leaves <see cref="Current"/> without a
+		/// foreground activity; app-scoped callers should use <see cref="ApplicationContext"/>.
 		/// </summary>
 		internal static void SetForeground(Android.Content.Context? context) => _current = context;
 	}

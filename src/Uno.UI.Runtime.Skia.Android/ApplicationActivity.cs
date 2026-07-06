@@ -257,8 +257,7 @@ namespace Microsoft.UI.Xaml
 
 			Wrapper.OnActivityCreated();
 
-			// Track and observe this activity's window system UI visibility. Moved here from
-			// NativePage so it can reach this activity's per-window wrapper.
+			// Track and observe this activity's window system UI visibility on its per-window wrapper.
 			var decorView = this.Window!.DecorView;
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
@@ -416,7 +415,13 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			Wrapper.OnNativeClosed();
+			// Only signal the managed window as closing when this activity is genuinely finishing.
+			// On configuration-change re-creation the window survives and is taken over by the new
+			// activity, so raising Closing here would be spurious.
+			if (IsFinishing)
+			{
+				Wrapper.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)

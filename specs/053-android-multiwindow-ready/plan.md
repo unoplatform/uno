@@ -1,6 +1,7 @@
 # Android multi-window-ready architecture
 
-Tracking: Android multi-window support (public issue **#13827**).
+Tracking: multi-window support (public issue **#8341**); the Android-specific issue
+**#13827** was folded into it as a duplicate.
 
 ## Goal & scope
 
@@ -27,7 +28,11 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
   mirrors how iOS staged its own multi-window behind scene adoption (#8341).
 - Threading an explicit owning-window `Context` through every `Uno.UWP`/AddIn
   `ContextHelper.Current` consumer. While only one window is live this is a no-op;
-  those callers stay on the (now-correct) foreground fallback until live multi-window lands.
+  those callers stay on the (now-correct) foreground activity until live multi-window lands.
+- `XamlRootMap.Unregister` on window close. There is no window-close path while
+  `SupportsMultipleWindows` is false (the app keeps one window for its lifetime), and the
+  other single-window Skia hosts (macOS, Linux.FrameBuffer, WASM, AppleUIKit) likewise don't
+  unregister. Needed only once a close/reopen cycle exists.
 
 `SupportsMultipleWindows` stays **`false`**. Definition of done for this work is:
 **per-window instances everywhere, and zero single-window regressions.**
@@ -39,9 +44,9 @@ ContentRoot/VisualTree → XamlRoot`, plus `XamlRootMap` and `NativeWindowWrappe
 **already per-window**. Single-window-ness lives entirely in:
 
 1. **`NativeWindowWrapper.Instance`** — `Lazy<>` singleton in
-   `src/Uno.UI/UI/Xaml/Window/Native/NativeWindowWrapper.Android.cs` (linked into the
-   Skia.Android assembly), returned by `AndroidSkiaWindowFactory.CreateWindow` for
-   *every* window; its `NativeWindow`/`Title`/`ShowCore` defer to `ApplicationActivity.Instance`.
+   `src/Uno.UI.Runtime.Skia.Android/UI/Xaml/Window/NativeWindowWrapper.Android.cs`,
+   returned by `AndroidSkiaWindowFactory.CreateWindow` for *every* window; its
+   `NativeWindow`/`Title`/`ShowCore` defer to `ApplicationActivity.Instance`.
 2. **`ApplicationActivity.Instance`** + `static _renderView` / `_renderViewAsView` /
    `_nativeLayerHost` / `RelativeLayout` / `_started`
    (`src/Uno.UI.Runtime.Skia.Android/ApplicationActivity.cs`).
@@ -90,7 +95,13 @@ consolidation; the `Uno.UWP`/`Uno.Foundation` Android assemblies must keep compi
 
 - **Compile:** `dotnet build …Skia.Android.csproj -p:UnoTargetFrameworkOverride=net10.0-android`
   after each phase (the only assembly that compiles `__ANDROID__` Skia code).
-- **Unit:** logic tests for the activity registry foreground fallback and `XamlRoot→host`
-  resolution where they can run without a device.
-- **Runtime:** single-window smoke on an emulator/device where available; report honestly
-  when device runtime validation isn't executed here. Two live windows is a follow-up.
+- **Unit:** the foreground-repoint and context-split logic lives on Android types
+  (`BaseActivity : AppCompatActivity`, `Android.Content.Context`) that the net-based
+  `Uno.UI.UnitTests` cannot instantiate, so it is not unit-testable off-device. The
+  `XamlRoot→host` resolution is exercisable only under the Android runtime.
+- **Runtime:** single-window smoke on an emulator/device — **not executed in the dev
+  environment used for this change** (no reachable emulator/adb). Run with:
+  `cd src/SamplesApp/SamplesApp.Skia.netcoremobile/Android && dotnet run -f net10.0-android`.
+  Exercise: launch/render, touch + text input (soft keyboard, IME composition), rotation,
+  background→foreground, and a config-change re-creation (system font-size/locale change).
+  Two live windows is a follow-up.
