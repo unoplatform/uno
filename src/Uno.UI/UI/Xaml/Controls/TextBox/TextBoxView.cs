@@ -21,21 +21,22 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
-		private readonly ManagedWeakReference _core;
+		private readonly ManagedWeakReference _host;
 		private bool _isPasswordRevealed;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
-		public TextBoxView(TextBoxCore core)
+		public TextBoxView(ITextBoxViewHost host)
 		{
-			_core = WeakReferencePool.RentWeakReference(this, core);
-			IsPasswordBox = core.IsPassword;
+			_host = WeakReferencePool.RentWeakReference(this, host);
+			IsPasswordBox = host is TextBoxCore { IsPassword: true };
 
 			DisplayBlock = new TextBlock
 			{
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
-				OwningTextBox = core,
-				IsSpellCheckEnabled = core.IsSpellCheckEnabled
+				// TODO Uno: OwningTextBox is still typed as TextBoxCore; RichEditBox hosting is generalized in a later phase.
+				OwningTextBox = host as TextBoxCore,
+				IsSpellCheckEnabled = host.IsSpellCheckEnabled
 			};
 
 			// The DisplayBlock is an internal rendering detail; its text content
@@ -64,7 +65,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
-		internal TextBoxCore? Core => _core.TryGetTarget<TextBoxCore>(out var core) ? core : null;
+		internal ITextBoxViewHost? Host => _host.TryGetTarget<ITextBoxViewHost>(out var host) ? host : null;
+
+		internal TextBoxCore? Core => Host as TextBoxCore;
 
 		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 
@@ -86,18 +89,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirection()
 		{
-			if (Core is not { } core)
+			if (Host is not { } host)
 			{
 				return;
 			}
-			DisplayBlock.FlowDirection = core.FlowDirection;
+			DisplayBlock.FlowDirection = host.FlowDirection;
 		}
 
 		internal void SetWrapping()
 		{
-			if (Core is { } core)
+			if (Host is { } host)
 			{
-				DisplayBlock.TextWrapping = core.TextWrapping;
+				DisplayBlock.TextWrapping = host.TextWrapping;
 			}
 		}
 
@@ -134,13 +137,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			if (Core?.Owner is { } owner)
+			if (Host is { } host)
 			{
-				DisplayBlock.FontFamily = owner.FontFamily;
-				DisplayBlock.FontSize = owner.FontSize;
-				DisplayBlock.FontStyle = owner.FontStyle;
-				DisplayBlock.FontStretch = owner.FontStretch;
-				DisplayBlock.FontWeight = owner.FontWeight;
+				DisplayBlock.FontFamily = host.FontFamily;
+				DisplayBlock.FontSize = host.FontSize;
+				DisplayBlock.FontStyle = host.FontStyle;
+				DisplayBlock.FontStretch = host.FontStretch;
+				DisplayBlock.FontWeight = host.FontWeight;
 			}
 			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
 		}
@@ -149,19 +152,19 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_overlayTextBoxViewExtension?.SetPasswordRevealState(revealState);
-			if (Core is { } core)
+			if (Host is { } host)
 			{
-				UpdateDisplayBlockText(core.Text);
+				UpdateDisplayBlockText(host.Text);
 			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			if (Core is { } core)
+			if (Host is { } host)
 			{
-				var oldText = core.Text; // preexisting text
+				var oldText = host.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
-				var modifiedText = core.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var modifiedText = host.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{
@@ -197,8 +200,8 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			Core?.ContentElement?.InvalidateMeasure();
-			Core?.Owner.UpdateLayout();
+			Host?.ContentElement?.InvalidateMeasure();
+			Host?.UpdateLayout();
 		}
 
 		internal char GetPasswordChar()
@@ -209,17 +212,17 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void UpdatePasswordMasking()
 		{
 			// For Skia, we can update the display block text directly
-			if (Core is { } core)
+			if (Host is { } host)
 			{
-				UpdateDisplayBlockText(core.Text);
+				UpdateDisplayBlockText(host.Text);
 			}
 		}
 
 		internal void SetTextAlignment()
 		{
-			if (Core is { } core)
+			if (Host is { } host)
 			{
-				DisplayBlock.TextAlignment = core.TextAlignment;
+				DisplayBlock.TextAlignment = host.TextAlignment;
 			}
 		}
 	}

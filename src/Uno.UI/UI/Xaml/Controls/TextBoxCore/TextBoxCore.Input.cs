@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-internal sealed partial class TextBoxCore : ITextSelectionGripperHost
+internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxViewHost
 {
 	private TextSelectionGripperPresenter _gripperPresenter;
 
@@ -83,6 +83,32 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	string ITextBoxViewHost.Text => Text;
+
+	bool ITextBoxViewHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+	FontFamily ITextBoxViewHost.FontFamily => Owner.FontFamily;
+
+	double ITextBoxViewHost.FontSize => Owner.FontSize;
+
+	global::Windows.UI.Text.FontStyle ITextBoxViewHost.FontStyle => Owner.FontStyle;
+
+	global::Windows.UI.Text.FontStretch ITextBoxViewHost.FontStretch => Owner.FontStretch;
+
+	global::Windows.UI.Text.FontWeight ITextBoxViewHost.FontWeight => Owner.FontWeight;
+
+	FlowDirection ITextBoxViewHost.FlowDirection => FlowDirection;
+
+	TextWrapping ITextBoxViewHost.TextWrapping => TextWrapping;
+
+	TextAlignment ITextBoxViewHost.TextAlignment => TextAlignment;
+
+	void ITextBoxViewHost.UpdateLayout() => Owner.UpdateLayout();
+
+	ContentControl ITextBoxViewHost.ContentElement => _contentElement;
+
+	string ITextBoxViewHost.ProcessTextInput(string newText) => ProcessTextInput(newText);
 
 	static TextBoxCore()
 	{
