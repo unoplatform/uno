@@ -450,13 +450,31 @@ namespace Microsoft.UI.Text
 		internal void ApplyCharacterFormat(UnoTextCharacterFormat format)
 			=> _document.SetFormatOverRange(_start, _end, format);
 
-		// --- Deferred surface (paragraph formatting, clipboard, geometry, streams, embedded images) ---
+		// --- Paragraph formatting (functional over the document paragraph run model) ---
 
 		public global::Microsoft.UI.Text.ITextParagraphFormat ParagraphFormat
 		{
-			get => throw NotImplemented("ParagraphFormat.get");
-			set => throw NotImplemented("ParagraphFormat.set");
+			get
+			{
+				var format = _document.GetParagraphFormatOverRange(_start, _end);
+				format.Bind(this);
+				return format;
+			}
+			set
+			{
+				if (value is UnoTextParagraphFormat format)
+				{
+					_document.SetParagraphFormatOverRange(_start, _end, format);
+				}
+			}
 		}
+
+		// Applies a bound paragraph format to the paragraphs touched by this range. Called by
+		// UnoTextParagraphFormat's setters so `range.ParagraphFormat.Alignment = Center` takes effect.
+		internal void ApplyParagraphFormat(UnoTextParagraphFormat format)
+			=> _document.SetParagraphFormatOverRange(_start, _end, format);
+
+		// --- Deferred surface (clipboard, geometry, streams, embedded images) ---
 
 		public global::Microsoft.UI.Text.ITextRange FormattedText
 		{

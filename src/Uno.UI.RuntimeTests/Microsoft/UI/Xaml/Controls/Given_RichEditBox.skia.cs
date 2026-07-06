@@ -787,5 +787,169 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.GetText(TextGetOptions.None, out var text);
 			Assert.AreEqual("base!", text);
 		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_Alignment_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+
+			// A fresh paragraph resolves to Left.
+			Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment);
+
+			var format = SUT.Document.GetRange(0, 5).ParagraphFormat;
+			format.Alignment = ParagraphAlignment.Center;
+
+			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_Applies_To_Whole_Paragraph()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+
+			// Setting alignment through a caret inside the second paragraph applies to the whole
+			// paragraph, and leaves the first paragraph untouched.
+			var second = SUT.Document.GetRange(5, 5).ParagraphFormat;
+			second.Alignment = ParagraphAlignment.Right;
+
+			Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(0, 0).ParagraphFormat.Alignment);
+			Assert.AreEqual(ParagraphAlignment.Right, SUT.Document.GetRange(4, 7).ParagraphFormat.Alignment);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_Mixed_Reports_Undefined()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+
+			var first = SUT.Document.GetRange(0, 3).ParagraphFormat;
+			first.Alignment = ParagraphAlignment.Center;
+			var second = SUT.Document.GetRange(4, 7).ParagraphFormat;
+			second.Alignment = ParagraphAlignment.Right;
+
+			// A range spanning both paragraphs disagrees, so the shared value is Undefined.
+			Assert.AreEqual(ParagraphAlignment.Undefined, SUT.Document.GetRange(0, 7).ParagraphFormat.Alignment);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_SetIndents_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+
+			SUT.Document.GetRange(0, 5).ParagraphFormat.SetIndents(10f, 20f, 30f);
+
+			var format = SUT.Document.GetRange(0, 5).ParagraphFormat;
+			Assert.AreEqual(10f, format.FirstLineIndent);
+			Assert.AreEqual(20f, format.LeftIndent);
+			Assert.AreEqual(30f, format.RightIndent);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_SetLineSpacing_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+
+			SUT.Document.GetRange(0, 5).ParagraphFormat.SetLineSpacing(LineSpacingRule.Exactly, 24f);
+
+			var format = SUT.Document.GetRange(0, 5).ParagraphFormat;
+			Assert.AreEqual(LineSpacingRule.Exactly, format.LineSpacingRule);
+			Assert.AreEqual(24f, format.LineSpacing);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_ListType_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "one\rtwo");
+
+			var first = SUT.Document.GetRange(0, 0).ParagraphFormat;
+			first.ListType = MarkerType.Bullet;
+
+			Assert.AreEqual(MarkerType.Bullet, SUT.Document.GetRange(0, 3).ParagraphFormat.ListType);
+			// The other paragraph keeps its (undefined) list type.
+			Assert.AreEqual(MarkerType.Undefined, SUT.Document.GetRange(4, 7).ParagraphFormat.ListType);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_GetClone_IsEqual()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+
+			var format = SUT.Document.GetRange(0, 5).ParagraphFormat;
+			format.Alignment = ParagraphAlignment.Center;
+
+			var clone = format.GetClone();
+			Assert.IsTrue(format.IsEqual(clone));
+
+			clone.Alignment = ParagraphAlignment.Right;
+			Assert.IsFalse(format.IsEqual(clone));
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_Undo_Reverts_Alignment()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+
+			SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment);
+
+			Assert.IsTrue(SUT.Document.CanUndo());
+			SUT.Document.Undo();
+
+			Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(0, 5).ParagraphFormat.Alignment);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("hello", text);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_Survives_Text_Edit()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+
+			SUT.Document.GetRange(4, 7).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+
+			// Typing into the formatted paragraph splices the paragraph run in lock-step, so the
+			// alignment is preserved.
+			SUT.Document.Selection.SetRange(7, 7);
+			SUT.Document.Selection.TypeText("X");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("aaa\rbbbX", text);
+			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment);
+		}
 	}
 }
