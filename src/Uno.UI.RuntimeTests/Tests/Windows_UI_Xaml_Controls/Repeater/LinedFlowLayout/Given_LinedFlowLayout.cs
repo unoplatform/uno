@@ -588,4 +588,44 @@ public class Given_LinedFlowLayout
 		maxLineWidth.Should().Be(300.0f);
 		sut.m_lineItemCounts.Should().Equal(new[] { 3, 3 });
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_LineItemsCountTotal_Then_SumsPerLineCounts()
+	{
+		var sut = new LinedFlowLayout();
+
+		sut.m_lineItemCounts.Clear();
+		sut.m_lineItemCounts.AddRange(new[] { 3, 3, 2 });
+
+		// expectedTotal 0 disables the (debug-only) consistency assert; sum is 3+3+2 = 8.
+		sut.LineItemsCountTotal(0).Should().Be(8);
+		sut.LineItemsCountTotal(8).Should().Be(8);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_InitializeForRelayout_Then_ResetsLineCountsAndMarkers()
+	{
+		var sut = new LinedFlowLayout();
+
+		sut.m_lineItemCounts.Clear();
+		sut.m_lineItemCounts.AddRange(new[] { 5, 4 });
+
+		sut.InitializeForRelayout(
+			sizedLineCount: 3,
+			out int firstStillSizedLineIndex,
+			out int lastStillSizedLineIndex,
+			out int firstStillSizedItemIndex,
+			out int lastStillSizedItemIndex);
+
+		// m_lineItemCounts is reset to sizedLineCount (3) zeros and all four markers cleared to -1.
+		sut.m_lineItemCounts.Should().Equal(new[] { 0, 0, 0 });
+		firstStillSizedLineIndex.Should().Be(-1);
+		lastStillSizedLineIndex.Should().Be(-1);
+		firstStillSizedItemIndex.Should().Be(-1);
+		lastStillSizedItemIndex.Should().Be(-1);
+	}
 }
