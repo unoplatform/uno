@@ -20,9 +20,20 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class RichEditBox
 	{
 		/// <summary>
-		/// Copies the current selection to the OS clipboard as plain text.
+		/// Copies the current selection to the OS clipboard as plain text. Raises
+		/// <see cref="CopyingToClipboard"/> first; a handler may suppress the default copy.
 		/// </summary>
 		internal void CopySelectionToClipboard()
+		{
+			if (RaiseCopyingToClipboardIsHandled())
+			{
+				return;
+			}
+
+			CopySelectionToClipboardCore();
+		}
+
+		private void CopySelectionToClipboardCore()
 		{
 			var text = GetPlainTextContent();
 			var start = Math.Clamp(_selection.start, 0, text.Length);
@@ -38,7 +49,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Moves the current selection to the OS clipboard and removes it from the document.
+		/// Moves the current selection to the OS clipboard and removes it from the document. Raises
+		/// <see cref="CuttingToClipboard"/> first; a handler may suppress the default cut.
 		/// </summary>
 		internal void CutSelectionToClipboard()
 		{
@@ -55,17 +67,29 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			CopySelectionToClipboard();
+			if (RaiseCuttingToClipboardIsHandled())
+			{
+				return;
+			}
+
+			// Raw copy (does not re-raise CopyingToClipboard — WinUI raises CuttingToClipboard for a cut).
+			CopySelectionToClipboardCore();
 			Document.ReplaceRange(start, start + length, string.Empty);
 			SetInteractiveSelection(start, 0);
 		}
 
 		/// <summary>
-		/// Pastes plain text from the OS clipboard, replacing the current selection.
+		/// Pastes plain text from the OS clipboard, replacing the current selection. Raises
+		/// <see cref="Paste"/> first; a handler may suppress the default paste.
 		/// </summary>
 		internal void PasteFromClipboard()
 		{
 			if (IsReadOnly)
+			{
+				return;
+			}
+
+			if (RaisePasteIsHandled())
 			{
 				return;
 			}

@@ -25,6 +25,11 @@ namespace Microsoft.UI.Xaml.Controls
 	// the control observes them, so honoring Cancel there would require reverting the TOM). Both
 	// SelectionChanged and SelectionChanging are only raised while the control is focused, because the
 	// reverse TOM->caret sync that drives them is focused-only by design (see OnTomSelectionChanged).
+	//
+	// The clipboard events (CopyingToClipboard, CuttingToClipboard, Paste) are raised from the
+	// RichEditBox clipboard methods (see RichEditBox.clipboard.skia.cs) before the corresponding
+	// clipboard operation; a handler setting Handled = true suppresses the default behavior. Cut raises
+	// CuttingToClipboard (not CopyingToClipboard), matching WinUI.
 	public partial class RichEditBox
 	{
 		/// <summary>
@@ -48,6 +53,24 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <see cref="RichEditBoxSelectionChangingEventArgs.Cancel"/> to <c>true</c>.
 		/// </summary>
 		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxSelectionChangingEventArgs>? SelectionChanging;
+
+		/// <summary>
+		/// Occurs when text is copied to the clipboard. A handler may set
+		/// <see cref="TextControlCopyingToClipboardEventArgs.Handled"/> to suppress the default copy.
+		/// </summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCopyingToClipboardEventArgs>? CopyingToClipboard;
+
+		/// <summary>
+		/// Occurs when text is cut to the clipboard. A handler may set
+		/// <see cref="TextControlCuttingToClipboardEventArgs.Handled"/> to suppress the default cut.
+		/// </summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCuttingToClipboardEventArgs>? CuttingToClipboard;
+
+		/// <summary>
+		/// Occurs when text is pasted from the clipboard. A handler may set
+		/// <see cref="TextControlPasteEventArgs.Handled"/> to suppress the default paste.
+		/// </summary>
+		public event TextControlPasteEventHandler? Paste;
 
 		// Last plain-text value for which TextChanged was raised. Initial document content is empty
 		// (RichEditTextDocument starts with an empty buffer), so the baseline starts empty too.
@@ -97,6 +120,45 @@ namespace Microsoft.UI.Xaml.Controls
 			var args = new RichEditBoxSelectionChangingEventArgs(selectionStart, selectionLength);
 			handler.Invoke(this, args);
 			return args.Cancel;
+		}
+
+		/// <summary>Raises <see cref="CopyingToClipboard"/> and returns whether a handler suppressed it.</summary>
+		private bool RaiseCopyingToClipboardIsHandled()
+		{
+			if (CopyingToClipboard is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlCopyingToClipboardEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>Raises <see cref="CuttingToClipboard"/> and returns whether a handler suppressed it.</summary>
+		private bool RaiseCuttingToClipboardIsHandled()
+		{
+			if (CuttingToClipboard is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlCuttingToClipboardEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>Raises <see cref="Paste"/> and returns whether a handler suppressed it.</summary>
+		private bool RaisePasteIsHandled()
+		{
+			if (Paste is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlPasteEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
 		}
 	}
 }
