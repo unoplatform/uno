@@ -1495,5 +1495,286 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: displayed & frozen lines (WS-D3c)
+
+		// Computes the first and last line indexes at least partially (or, for forFullyDisplayedLines, fully)
+		// displayed within the scroll viewport. Returns -1/-1 when nothing is displayable.
+		internal void GetFirstAndLastDisplayedLineIndexes(
+			double scrollViewport,
+			double scrollOffset,
+			double padding,
+			double lineSpacing,
+			double actualLineHeight,
+			int lineCount,
+			bool forFullyDisplayedLines,
+			out int firstDisplayedLineIndex,
+			out int lastDisplayedLineIndex)
+		{
+			MUX_ASSERT(m_isVirtualizingContext);
+			MUX_ASSERT(scrollViewport != double.PositiveInfinity);
+			MUX_ASSERT(lineCount > 0);
+
+			firstDisplayedLineIndex = lastDisplayedLineIndex = -1;
+
+			double lineHeight = actualLineHeight + lineSpacing;
+
+			if (lineHeight == 0.0 || scrollViewport == 0.0)
+			{
+				return;
+			}
+
+			double linesSpacing = lineCount == 0 ? 0.0 : (lineCount - 1) * lineSpacing;
+			double scrollExtent = lineCount * actualLineHeight + linesSpacing;
+			double maxScrollOffset = Math.Max(0.0, scrollExtent - scrollViewport);
+			double lineSpacingPortion = lineSpacing / lineHeight;
+
+			scrollOffset = Math.Min(maxScrollOffset, scrollOffset);
+
+			if (Math.Abs(scrollOffset) < c_offsetEqualityEpsilon)
+			{
+				scrollOffset = 0.0;
+			}
+
+			padding = Math.Min(padding, scrollViewport / 2.0);
+
+			double nearPadding = Math.Min(scrollOffset, padding);
+			double farPadding = Math.Min(maxScrollOffset - scrollOffset, padding);
+
+			if (!(forFullyDisplayedLines && actualLineHeight + nearPadding + farPadding > scrollViewport))
+			{
+				double nearDisplayed = scrollOffset + nearPadding;
+				double farDisplayed = scrollOffset + scrollViewport - farPadding;
+
+				if (farDisplayed > 0.0 && nearDisplayed < scrollExtent)
+				{
+					nearDisplayed = Math.Max(0.0, nearDisplayed);
+					farDisplayed = Math.Min(scrollExtent, farDisplayed);
+
+					double fractionalFirstDisplayedLineIndex = nearDisplayed / lineHeight;
+					int roundedFirstDisplayedLineIndex = (int)fractionalFirstDisplayedLineIndex;
+
+					if ((double)roundedFirstDisplayedLineIndex + 1 - fractionalFirstDisplayedLineIndex <= lineSpacingPortion &&
+						roundedFirstDisplayedLineIndex + 1 < lineCount)
+					{
+						// The portion displayed before the first displayed item is smaller than the line spacing - it can be ignored.
+						firstDisplayedLineIndex = roundedFirstDisplayedLineIndex + 1;
+					}
+					else
+					{
+						firstDisplayedLineIndex = roundedFirstDisplayedLineIndex;
+					}
+
+					if (forFullyDisplayedLines &&
+						fractionalFirstDisplayedLineIndex > roundedFirstDisplayedLineIndex &&
+						roundedFirstDisplayedLineIndex + 1 < lineCount)
+					{
+						firstDisplayedLineIndex = roundedFirstDisplayedLineIndex + 1;
+					}
+
+					MUX_ASSERT(firstDisplayedLineIndex >= 0);
+					MUX_ASSERT(firstDisplayedLineIndex < lineCount);
+
+					double fractionalLastDisplayedLineIndex = (farDisplayed + lineSpacing) / lineHeight;
+					int roundedLastDisplayedLineIndex = (int)fractionalLastDisplayedLineIndex;
+
+					lastDisplayedLineIndex = roundedLastDisplayedLineIndex;
+
+					if (forFullyDisplayedLines)
+					{
+						if (fractionalLastDisplayedLineIndex >= 1.0)
+						{
+							lastDisplayedLineIndex = Math.Min(roundedLastDisplayedLineIndex, lineCount) - 1;
+						}
+					}
+					else
+					{
+						if (fractionalLastDisplayedLineIndex - roundedLastDisplayedLineIndex <= lineSpacingPortion)
+						{
+							lastDisplayedLineIndex = Math.Max(roundedLastDisplayedLineIndex - 1, 0);
+						}
+					}
+
+					MUX_ASSERT(lastDisplayedLineIndex >= 0);
+					MUX_ASSERT(lastDisplayedLineIndex < lineCount);
+
+					if (firstDisplayedLineIndex > lastDisplayedLineIndex)
+					{
+						firstDisplayedLineIndex = lastDisplayedLineIndex = -1;
+					}
+				}
+			}
+			// else actualLineHeight is large enough that no line can be fully displayed in the scroll viewport.
+		}
+
+		// Computes the range of frozen lines/items around the displayed lines. Returns True when the scroll
+		// offset jumped far enough that a full re-layout is required.
+		internal bool ComputeFrozenItemsRange(
+			double scrollViewport,
+			double scrollOffset,
+			double lineSpacing,
+			double actualLineHeight,
+			int lineCount,
+			int beginSizedLineIndex,
+			int endSizedLineIndex,
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			out int adjustedBeginSizedItemIndex,
+			out int adjustedEndSizedItemIndex)
+		{
+			MUX_ASSERT(!UsesFastPathLayout());
+			MUX_ASSERT(m_isVirtualizingContext == (scrollViewport != double.PositiveInfinity));
+			MUX_ASSERT(!(beginSizedLineIndex < endSizedLineIndex && beginSizedItemIndex >= endSizedItemIndex));
+			MUX_ASSERT(!(beginSizedLineIndex > endSizedLineIndex && beginSizedItemIndex <= endSizedItemIndex));
+			MUX_ASSERT(Math.Abs(beginSizedLineIndex - endSizedLineIndex) <= Math.Abs(beginSizedItemIndex - endSizedItemIndex));
+
+			adjustedBeginSizedItemIndex = -1;
+			adjustedEndSizedItemIndex = -1;
+
+			if (!m_isVirtualizingContext)
+			{
+				// Layout operating in non-virtualizing mode. All lines and items are frozen.
+				MUX_ASSERT(m_firstSizedLineIndex == 0);
+				MUX_ASSERT(m_itemCount > 0);
+
+				m_firstFrozenLineIndex = 0;
+				m_lastFrozenLineIndex = m_lastSizedLineIndex;
+				m_firstFrozenItemIndex = 0;
+				m_lastFrozenItemIndex = m_itemCount - 1;
+				return false;
+			}
+
+			GetFirstAndLastDisplayedLineIndexes(
+				scrollViewport,
+				scrollOffset,
+				0 /*padding*/,
+				lineSpacing,
+				actualLineHeight,
+				lineCount,
+				false /*forFullyDisplayedLines*/,
+				out int firstDisplayedLineIndex,
+				out int lastDisplayedLineIndex);
+
+			if (firstDisplayedLineIndex == -1)
+			{
+				// This situation occurs when actualLineHeight + lineSpacing or context.VisibleRect().Height is 0.
+				m_firstFrozenLineIndex = -1;
+				m_lastFrozenLineIndex = -1;
+				m_firstFrozenItemIndex = -1;
+				m_lastFrozenItemIndex = -1;
+				return false;
+			}
+
+			MUX_ASSERT(lastDisplayedLineIndex != -1);
+			MUX_ASSERT(firstDisplayedLineIndex >= m_firstSizedLineIndex);
+			MUX_ASSERT(lastDisplayedLineIndex <= m_lastSizedLineIndex);
+
+			int linesPerScrollViewport = (int)(scrollViewport / (actualLineHeight + lineSpacing));
+
+			// Frozen lines before the first displayed line use 80% of a scroll viewport or 40% of the sized area whichever is largest.
+			int nearFrozenLinesCount = Math.Min((int)(c_frozenLinesRatio * linesPerScrollViewport) + 1, firstDisplayedLineIndex - m_firstSizedLineIndex);
+			nearFrozenLinesCount = Math.Max(nearFrozenLinesCount, (int)(c_frozenLinesRatio / 2.0 * ((double)firstDisplayedLineIndex - m_firstSizedLineIndex)));
+
+			// Frozen lines after the last displayed line use 80% of a scroll viewport or 40% of the sized area whichever is largest.
+			int farFrozenLinesCount = Math.Min((int)(c_frozenLinesRatio * linesPerScrollViewport) + 1, m_lastSizedLineIndex - lastDisplayedLineIndex);
+			farFrozenLinesCount = Math.Max(farFrozenLinesCount, (int)(c_frozenLinesRatio / 2.0 * ((double)m_lastSizedLineIndex - lastDisplayedLineIndex)));
+
+			m_firstFrozenLineIndex = firstDisplayedLineIndex - nearFrozenLinesCount;
+			m_lastFrozenLineIndex = lastDisplayedLineIndex + farFrozenLinesCount;
+
+			MUX_ASSERT(m_firstFrozenLineIndex >= m_firstSizedLineIndex);
+			MUX_ASSERT(m_lastFrozenLineIndex <= m_lastSizedLineIndex);
+
+			int nearUnfrozenLinesCount = m_firstFrozenLineIndex - beginSizedLineIndex;
+			int farUnfrozenLinesCount = endSizedLineIndex - m_lastFrozenLineIndex;
+
+			if (nearUnfrozenLinesCount < 0 || farUnfrozenLinesCount < 0)
+			{
+				// nearUnfrozenLinesCount < 0 occurs when the scrolling offset has decreased too fast and the first frozen line has caught up and crossed the previous first sized line.
+				// farUnfrozenLinesCount < 0 occurs when the scrolling offset has increased too fast and the last frozen line has caught up and crossed the previous last sized line.
+				// These conditions can also occur when performing a large programmatic offset jump via ScrollView.ScrollTo/ScrollBy. Trigger a full re-layout.
+				return true;
+			}
+
+			int firstFrozenItemIndex = beginSizedItemIndex;
+			int lastFrozenItemIndex = endSizedItemIndex;
+
+			adjustedBeginSizedItemIndex = beginSizedItemIndex;
+			adjustedEndSizedItemIndex = endSizedItemIndex;
+
+			if (m_firstSizedLineIndex < beginSizedLineIndex)
+			{
+				MUX_ASSERT(beginSizedItemIndex > 0);
+				MUX_ASSERT(m_firstSizedItemIndex <= beginSizedItemIndex);
+
+				if (nearUnfrozenLinesCount > 0)
+				{
+					MUX_ASSERT(beginSizedLineIndex - m_firstSizedLineIndex + nearUnfrozenLinesCount <= m_lineItemCounts.Count);
+
+					for (int frozenLineVectorIndex = beginSizedLineIndex - m_firstSizedLineIndex;
+						frozenLineVectorIndex < beginSizedLineIndex - m_firstSizedLineIndex + nearUnfrozenLinesCount;
+						frozenLineVectorIndex++)
+					{
+						MUX_ASSERT(m_lineItemCounts[frozenLineVectorIndex] > 0);
+
+						adjustedBeginSizedItemIndex += m_lineItemCounts[frozenLineVectorIndex];
+						m_lineItemCounts[frozenLineVectorIndex] = 0;
+					}
+
+					firstFrozenItemIndex = adjustedBeginSizedItemIndex;
+				}
+			}
+			else if (nearUnfrozenLinesCount > 0)
+			{
+				MUX_ASSERT(m_firstSizedLineIndex == beginSizedLineIndex);
+				MUX_ASSERT(nearUnfrozenLinesCount <= m_lineItemCounts.Count);
+
+				for (int frozenLineVectorIndex = 0; frozenLineVectorIndex < nearUnfrozenLinesCount; frozenLineVectorIndex++)
+				{
+					MUX_ASSERT(m_lineItemCounts[frozenLineVectorIndex] > 0);
+
+					firstFrozenItemIndex += m_lineItemCounts[frozenLineVectorIndex];
+				}
+			}
+
+			if (endSizedLineIndex < m_lastSizedLineIndex)
+			{
+				if (farUnfrozenLinesCount > 0)
+				{
+					for (int frozenLineVectorIndex = m_lineItemCounts.Count - farUnfrozenLinesCount - m_lastSizedLineIndex + endSizedLineIndex;
+						frozenLineVectorIndex < m_lineItemCounts.Count - m_lastSizedLineIndex + endSizedLineIndex;
+						frozenLineVectorIndex++)
+					{
+						MUX_ASSERT(m_lineItemCounts[frozenLineVectorIndex] > 0);
+
+						adjustedEndSizedItemIndex -= m_lineItemCounts[frozenLineVectorIndex];
+						m_lineItemCounts[frozenLineVectorIndex] = 0;
+					}
+
+					lastFrozenItemIndex = adjustedEndSizedItemIndex;
+				}
+			}
+			else if (farUnfrozenLinesCount > 0)
+			{
+				MUX_ASSERT(endSizedLineIndex == m_lastSizedLineIndex);
+				MUX_ASSERT(farUnfrozenLinesCount <= m_lineItemCounts.Count);
+
+				for (int frozenLineVectorIndex = m_lineItemCounts.Count - farUnfrozenLinesCount;
+					frozenLineVectorIndex < m_lineItemCounts.Count;
+					frozenLineVectorIndex++)
+				{
+					MUX_ASSERT(m_lineItemCounts[frozenLineVectorIndex] > 0);
+
+					lastFrozenItemIndex -= m_lineItemCounts[frozenLineVectorIndex];
+				}
+			}
+
+			m_firstFrozenItemIndex = firstFrozenItemIndex;
+			m_lastFrozenItemIndex = lastFrozenItemIndex;
+
+			return false;
+		}
+
+		#endregion
 	}
 }

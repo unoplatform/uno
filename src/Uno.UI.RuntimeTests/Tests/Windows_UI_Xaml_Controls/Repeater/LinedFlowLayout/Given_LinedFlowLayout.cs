@@ -349,4 +349,44 @@ public class Given_LinedFlowLayout
 
 		sut.IsItemsLayoutExpansionWorthy(worthy).Should().BeTrue();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetFirstAndLastDisplayedLineIndexes_Then_MapsViewportToLines()
+	{
+		var sut = new LinedFlowLayout();
+
+		// 10 lines of 100px, no spacing, 250px viewport at offset 0: lines 0..2 are at least
+		// partially visible (line 2 spans 200-300, clipped by the 250px viewport).
+		sut.GetFirstAndLastDisplayedLineIndexes(
+			scrollViewport: 250.0,
+			scrollOffset: 0.0,
+			padding: 0.0,
+			lineSpacing: 0.0,
+			actualLineHeight: 100.0,
+			lineCount: 10,
+			forFullyDisplayedLines: false,
+			out int first0,
+			out int last0);
+
+		first0.Should().Be(0);
+		last0.Should().Be(2);
+
+		// Scrolled down 150px: the 150-400 window shows lines 1..3 (line 4 starts exactly at 400
+		// and is excluded).
+		sut.GetFirstAndLastDisplayedLineIndexes(
+			scrollViewport: 250.0,
+			scrollOffset: 150.0,
+			padding: 0.0,
+			lineSpacing: 0.0,
+			actualLineHeight: 100.0,
+			lineCount: 10,
+			forFullyDisplayedLines: false,
+			out int first150,
+			out int last150);
+
+		first150.Should().Be(1);
+		last150.Should().Be(3);
+	}
 }
