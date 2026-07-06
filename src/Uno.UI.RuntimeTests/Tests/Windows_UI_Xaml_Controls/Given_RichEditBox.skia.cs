@@ -1406,5 +1406,111 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(SUT.Document.CanUndo());
 			Assert.IsFalse(SUT.Document.CanRedo());
 		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Raised_Before_TextChanged()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var order = new System.Collections.Generic.List<string>();
+			var contentChanging = false;
+			SUT.TextChanging += (s, e) =>
+			{
+				order.Add("changing");
+				contentChanging = e.IsContentChanging;
+			};
+			SUT.TextChanged += (s, e) => order.Add("changed");
+
+			SUT.Document.SetText(TextSetOptions.None, "hello");
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing", "changed" }, order);
+			Assert.IsTrue(contentChanging);
+		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Not_Raised_On_Format_Only_Change()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.TextChanging += (s, e) => count++;
+
+			// A format-only change re-renders but leaves the plain text unchanged, so TextChanging
+			// (paired with TextChanged) must not fire.
+			SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Raised_On_Interactive_Move()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			var count = 0;
+			var proposedStart = -1;
+			var proposedLength = -1;
+			SUT.SelectionChanging += (s, e) =>
+			{
+				count++;
+				proposedStart = e.SelectionStart;
+				proposedLength = e.SelectionLength;
+			};
+
+			// Caret is at 3; moving left proposes a collapsed selection at 2.
+			RaiseKey(SUT, VirtualKey.Left);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(count >= 1, $"SelectionChanging should raise on an interactive move, count was {count}.");
+			Assert.AreEqual(2, proposedStart);
+			Assert.AreEqual(0, proposedLength);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Cancel_Prevents_Change()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+
+			var raised = false;
+			SUT.SelectionChanging += (s, e) =>
+			{
+				raised = true;
+				e.Cancel = true;
+			};
+
+			// Home would move the caret to 0, but the cancelling handler must prevent it.
+			RaiseKey(SUT, VirtualKey.Home);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(raised, "SelectionChanging should have been raised for the Home key.");
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition, "The cancelled selection change must not move the caret.");
+			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+		}
 	}
 }
