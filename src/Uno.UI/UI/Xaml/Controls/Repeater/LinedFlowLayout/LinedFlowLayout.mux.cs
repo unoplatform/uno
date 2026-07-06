@@ -802,5 +802,299 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: realization leaf + scale factors (WS-D3c)
+
+		// Measures 'element' with 'availableSize' and returns its resulting DesiredSize, then re-measures it
+		// with the width that must be restored (its recorded arrange/available/desired width) so the temporary
+		// measure has no lasting effect. Returns (-1, -1) when no width is available to undo the measure.
+		internal Size GetDesiredSizeForAvailableSize(
+			int itemIndex,
+			UIElement element,
+			Size availableSize,
+			double actualLineHeightToRestore)
+		{
+			// WinUI asserts element != null here; the non-nullable UIElement parameter already enforces that
+			// in C# (and MUX_ASSERT, being [Conditional("DEBUG")], would otherwise demote element to maybe-null).
+			MUX_ASSERT(itemIndex >= 0);
+
+			// When m_itemsInfoArrangeWidths is populated,
+			// - m_itemsInfoFirstIndex != -1: Regular path layout case, with items info available.
+			// - m_itemsInfoFirstIndex == -1: Fast path layout case, without items info available.
+			int itemsInfoArrangeWidthsIndex = itemIndex - (m_itemsInfoFirstIndex == -1 ? 0 : m_itemsInfoFirstIndex);
+			float measureWidthToRestore = 0.0f;
+
+			if (itemsInfoArrangeWidthsIndex < m_itemsInfoArrangeWidths.Count)
+			{
+				float arrangeWidth = m_itemsInfoArrangeWidths[itemsInfoArrangeWidthsIndex];
+
+				if (arrangeWidth < 0.0f)
+				{
+					// The m_itemsInfoArrangeWidths vector has not been set for the provided 'itemIndex' yet.
+					// The effects of measuring 'element' with 'availableSize' below could not be undone.
+					// Returning -1, -1 to indicate no desired size could be measured.
+					return new Size(-1.0f, -1.0f);
+				}
+				else
+				{
+					measureWidthToRestore = arrangeWidth;
+				}
+			}
+			else if (m_elementAvailableWidths != null && m_elementDesiredWidths != null)
+			{
+				// Check if the element has a recorded desired or available width
+				// to restore after measurement with the provided 'availableSize'.
+				if (m_elementAvailableWidths.TryGetValue(element, out float recordedAvailableWidth))
+				{
+					// Use the previous available width to undo the effects of the measure with 'availableSize'.
+					measureWidthToRestore = recordedAvailableWidth;
+				}
+				else if (m_elementDesiredWidths.TryGetValue(element, out float recordedDesiredWidth))
+				{
+					// Use the previous desired width to undo the effects of the measure with 'availableSize'.
+					measureWidthToRestore = recordedDesiredWidth;
+				}
+				else
+				{
+					// No recorded width to use to undo effects of a measure with 'availableSize'.
+					return new Size(-1.0f, -1.0f);
+				}
+			}
+
+			element.Measure(availableSize);
+
+			Size desiredSize = element.DesiredSize;
+
+			element.Measure(new Size(measureWidthToRestore, (float)actualLineHeightToRestore));
+
+			return desiredSize;
+		}
+
+		// Computes the expansion factor for a line with a desired width smaller than the available width.
+		internal double ComputeLineExpandFactor(
+			bool forward,
+			int sizedItemIndex,
+			int lineItemsCount,
+			double lineItemsWidth,
+			double availableWidth,
+			double minItemSpacings,
+			double actualLineHeight,
+			double averageAspectRatio)
+		{
+			bool usesFastPathLayout = UsesFastPathLayout();
+			double scaleFactor;
+			bool largerScaleFactorNeeded;
+			HashSet<int> ignoredItemIndexes = new();
+
+			MUX_ASSERT(lineItemsWidth < availableWidth);
+
+			availableWidth -= minItemSpacings;
+			lineItemsWidth -= minItemSpacings;
+
+			MUX_ASSERT(availableWidth > 0.0);
+			MUX_ASSERT(lineItemsWidth > 0.0);
+
+			do
+			{
+				int sizedItemIndexTmp = sizedItemIndex;
+
+				largerScaleFactorNeeded = false;
+				scaleFactor = availableWidth / lineItemsWidth;
+
+				for (int itemIndex = 0; itemIndex < lineItemsCount; itemIndex++)
+				{
+					if (!ignoredItemIndexes.Contains(itemIndex))
+					{
+						double minWidth = 0.0, maxWidth = double.PositiveInfinity, desiredWidth = 0.0;
+						UIElement? element = null;
+
+						if (!usesFastPathLayout && m_itemsInfoFirstIndex == -1)
+						{
+							MUX_ASSERT(m_elementManager.IsDataIndexRealized(sizedItemIndexTmp));
+
+							if ((element = m_elementManager.GetRealizedElement(sizedItemIndexTmp /*dataIndex*/)) != null)
+							{
+								if (element is FrameworkElement frameworkElement)
+								{
+									minWidth = frameworkElement.MinWidth;
+									maxWidth = frameworkElement.MaxWidth;
+									desiredWidth = element.DesiredSize.Width;
+								}
+							}
+						}
+						else
+						{
+							double desiredAspectRatio = GetDesiredAspectRatioFromItemsInfo(sizedItemIndexTmp, usesFastPathLayout);
+
+							if (desiredAspectRatio <= 0)
+							{
+								// The average aspect ratio is used as a fallback value for items that were given a negative ratio
+								// by the ItemsInfoRequested handler.
+								desiredAspectRatio = averageAspectRatio;
+							}
+
+							desiredWidth = desiredAspectRatio * actualLineHeight;
+
+							double desiredMinWidth = GetMinWidthFromItemsInfo(sizedItemIndexTmp);
+
+							if (desiredMinWidth >= 0.0)
+							{
+								minWidth = desiredMinWidth;
+								desiredWidth = Math.Max(minWidth, desiredWidth);
+							}
+
+							double desiredMaxWidth = GetMaxWidthFromItemsInfo(sizedItemIndexTmp);
+
+							if (desiredMaxWidth >= 0.0)
+							{
+								maxWidth = desiredMaxWidth;
+								desiredWidth = Math.Min(maxWidth, desiredWidth);
+							}
+						}
+
+						if (maxWidth < desiredWidth * scaleFactor)
+						{
+							availableWidth = Math.Max(0.0, availableWidth - maxWidth);
+							lineItemsWidth = Math.Max(0.0, lineItemsWidth - desiredWidth);
+
+							ignoredItemIndexes.Add(itemIndex);
+							largerScaleFactorNeeded = true;
+							break;
+						}
+
+						if (element != null &&                                                  // ItemsInfoRequested event did not provide sizing information.
+							(scaleFactor - 1.0) * minWidth > 1.0 / m_roundingScaleFactor &&     // scaleFactor is large enough that the rounded scaled desired width is expected to be larger than the rounded min width.
+							Math.Abs(minWidth - desiredWidth) <= 1.0 / m_roundingScaleFactor)    // element's DesiredSize.Width and element.MinWidth have the same rounded value.
+						{
+							Size scaledAvailableSize = new Size((float)(desiredWidth * scaleFactor), (float)actualLineHeight);
+							Size scaledDesiredSize = GetDesiredSizeForAvailableSize(sizedItemIndexTmp, element, scaledAvailableSize, actualLineHeight);
+
+							if (scaledDesiredSize.Width != -1.0f && Math.Abs(minWidth - scaledDesiredSize.Width) <= 1.0 / m_roundingScaleFactor)
+							{
+								// These are cases where the desired width matches the minimum width even though the element is given a larger available width.
+								availableWidth = Math.Max(0.0, availableWidth - minWidth);
+								lineItemsWidth = Math.Max(0.0, lineItemsWidth - minWidth);
+
+								ignoredItemIndexes.Add(itemIndex);
+								largerScaleFactorNeeded = true;
+								break;
+							}
+						}
+					}
+
+					sizedItemIndexTmp = forward ? sizedItemIndexTmp + 1 : sizedItemIndexTmp - 1;
+				}
+			}
+			while (availableWidth > 0.0 && lineItemsWidth > 0.0 && largerScaleFactorNeeded);
+
+			MUX_ASSERT(scaleFactor > 1.0);
+
+			return scaleFactor;
+		}
+
+		// Computes the shrinking factor for a line with a desired width larger than the available width.
+		// Returns 0 when the items' minimum width prevent enough shrinking to accommodate the available width.
+		internal double ComputeLineShrinkFactor(
+			bool forward,
+			int sizedItemIndex,
+			int lineItemsCount,
+			double lineItemsWidth,
+			double availableWidth,
+			double minItemSpacings,
+			double actualLineHeight,
+			double averageAspectRatio)
+		{
+			bool usesFastPathLayout = UsesFastPathLayout();
+			double scaleFactor;
+			bool smallerScaleFactorNeeded;
+			HashSet<int> ignoredItemIndexes = new();
+
+			MUX_ASSERT(lineItemsWidth > availableWidth);
+
+			availableWidth -= minItemSpacings;
+			lineItemsWidth -= minItemSpacings;
+
+			MUX_ASSERT(availableWidth > 0.0);
+			MUX_ASSERT(lineItemsWidth > 0.0);
+
+			do
+			{
+				int sizedItemIndexTmp = sizedItemIndex;
+
+				smallerScaleFactorNeeded = false;
+				scaleFactor = availableWidth / lineItemsWidth;
+
+				for (int itemIndex = 0; itemIndex < lineItemsCount; itemIndex++)
+				{
+					if (!ignoredItemIndexes.Contains(itemIndex))
+					{
+						double minWidth = 0.0, desiredWidth = 0.0;
+
+						if (!usesFastPathLayout && m_itemsInfoFirstIndex == -1)
+						{
+							MUX_ASSERT(m_elementManager.IsDataIndexRealized(sizedItemIndexTmp));
+
+							if (m_elementManager.GetRealizedElement(sizedItemIndexTmp /*dataIndex*/) is { } element)
+							{
+								if (element is FrameworkElement frameworkElement)
+								{
+									minWidth = frameworkElement.MinWidth;
+								}
+
+								desiredWidth = element.DesiredSize.Width;
+							}
+						}
+						else
+						{
+							double desiredAspectRatio = GetDesiredAspectRatioFromItemsInfo(sizedItemIndexTmp, usesFastPathLayout);
+
+							if (desiredAspectRatio <= 0)
+							{
+								// The average aspect ratio is used as a fallback value for items that were given a negative ratio
+								// by the ItemsInfoRequested handler.
+								desiredAspectRatio = averageAspectRatio;
+							}
+
+							desiredWidth = desiredAspectRatio * actualLineHeight;
+
+							double desiredMaxWidth = GetMaxWidthFromItemsInfo(sizedItemIndexTmp);
+
+							if (desiredMaxWidth >= 0.0)
+							{
+								desiredWidth = Math.Min(desiredMaxWidth, desiredWidth);
+							}
+
+							double desiredMinWidth = GetMinWidthFromItemsInfo(sizedItemIndexTmp);
+
+							if (desiredMinWidth >= 0.0)
+							{
+								minWidth = desiredMinWidth;
+								desiredWidth = Math.Max(minWidth, desiredWidth);
+							}
+						}
+
+						if (minWidth > desiredWidth * scaleFactor)
+						{
+							availableWidth = Math.Max(0.0, availableWidth - minWidth);
+							lineItemsWidth = Math.Max(0.0, lineItemsWidth - desiredWidth);
+
+							ignoredItemIndexes.Add(itemIndex);
+							smallerScaleFactorNeeded = true;
+							break;
+						}
+					}
+
+					sizedItemIndexTmp = forward ? sizedItemIndexTmp + 1 : sizedItemIndexTmp - 1;
+				}
+			}
+			while (availableWidth > 0.0 && lineItemsWidth > 0.0 && smallerScaleFactorNeeded);
+
+			MUX_ASSERT(scaleFactor > 0.0);
+			MUX_ASSERT(scaleFactor < 1.0);
+
+			return smallerScaleFactorNeeded ? 0.0 : scaleFactor;
+		}
+
+		#endregion
 	}
 }

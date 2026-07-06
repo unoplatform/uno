@@ -52,6 +52,56 @@ namespace Microsoft.UI.Xaml.Controls
 			m_maxWidth = -1.0,
 		};
 
+		// WinUI declares ItemsLayout as a private value struct that is always either mutated through an
+		// ItemsLayout& reference or copied by value (stored in a std::vector<ItemsLayout>, reassigned as
+		// bestItemsLayout = itemsLayout, etc.). Those value copies deep-copy the inner std::vector members.
+		// It is modelled here as a reference type (avoids C# ref-parameter churn on the many mutating helpers)
+		// with an explicit Clone() that deep-copies the two lists; GetItemsLayout inserts Clone() at exactly
+		// the points where WinUI relies on value-copy semantics. It is internal so GetItemsLayout can be
+		// white-box tested via hand-built aspect-ratio arrays.
+		internal sealed class ItemsLayout
+		{
+			public List<int> m_lineItemCounts = new();
+			public List<double> m_lineItemWidths = new();
+			public double m_availableLineItemsWidth;
+			public double m_drawback;
+			public double m_smallestHeadItemWidth;
+			public double m_smallestTailItemWidth;
+			public double m_bestEqualizingHeadItemDrawbackImprovement;
+			public double m_bestEqualizingTailItemDrawbackImprovement;
+			public int m_smallestHeadItemIndex;
+			public int m_smallestTailItemIndex;
+			public int m_smallestHeadLineIndex;
+			public int m_smallestTailLineIndex;
+			public int m_bestEqualizingHeadItemIndex;
+			public int m_bestEqualizingTailItemIndex;
+			public int m_bestEqualizingHeadLineIndex;
+			public int m_bestEqualizingTailLineIndex;
+
+			public ItemsLayout Clone()
+			{
+				return new ItemsLayout
+				{
+					m_lineItemCounts = new List<int>(m_lineItemCounts),
+					m_lineItemWidths = new List<double>(m_lineItemWidths),
+					m_availableLineItemsWidth = m_availableLineItemsWidth,
+					m_drawback = m_drawback,
+					m_smallestHeadItemWidth = m_smallestHeadItemWidth,
+					m_smallestTailItemWidth = m_smallestTailItemWidth,
+					m_bestEqualizingHeadItemDrawbackImprovement = m_bestEqualizingHeadItemDrawbackImprovement,
+					m_bestEqualizingTailItemDrawbackImprovement = m_bestEqualizingTailItemDrawbackImprovement,
+					m_smallestHeadItemIndex = m_smallestHeadItemIndex,
+					m_smallestTailItemIndex = m_smallestTailItemIndex,
+					m_smallestHeadLineIndex = m_smallestHeadLineIndex,
+					m_smallestTailLineIndex = m_smallestTailLineIndex,
+					m_bestEqualizingHeadItemIndex = m_bestEqualizingHeadItemIndex,
+					m_bestEqualizingTailItemIndex = m_bestEqualizingTailItemIndex,
+					m_bestEqualizingHeadLineIndex = m_bestEqualizingHeadLineIndex,
+					m_bestEqualizingTailLineIndex = m_bestEqualizingTailLineIndex,
+				};
+			}
+		}
+
 		// Items info collected through the ItemsInfoRequested event for the regular (non-fast) path.
 		private readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
 		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
