@@ -404,6 +404,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsVirtualizingContext ? rangeIndex + m_firstRealizedDataIndex : rangeIndex;
 		}
 
+		public int GetFirstRealizedDataIndex()
+		{
+			return m_firstRealizedDataIndex;
+		}
+
 		int GetRealizedRangeIndexFromDataIndex(int dataIndex)
 		{
 			MUX_ASSERT(IsDataIndexRealized(dataIndex));
