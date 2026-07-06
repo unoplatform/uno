@@ -37,5 +37,12 @@
 				Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" 
 				Value="true" 
 				Exclude="@(RuntimeHostConfigurationOption)" />
+		<!--
+			The managed SkiaSharp package auto-references its Win32/macOS native assets but not the Linux one,
+			which only arrives as a transitive floor from the X11 / FrameBuffer runtime packs above. Inject it
+			so overriding SkiaSharpVersion retargets the Linux native asset too; otherwise a managed SkiaSharp
+			bumped past Uno's floor keeps the old libSkiaSharp on Linux and crashes Skia Desktop at startup.
+		-->
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" />
 	</ItemGroup>
 </Project>
