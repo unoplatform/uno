@@ -359,5 +359,50 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Arrange width (pure)
+
+		// Clamps desiredAspectRatio * actualLineHeight to [minWidth, maxWidth] and then applies scaleFactor,
+		// re-clamping to the relevant bound. WinUI declares this private; it is internal here so it can be
+		// unit-tested before the measure path that consumes it is fully ported (WS-D3c).
+		internal double GetArrangeWidth(
+			double desiredAspectRatio,
+			double minWidth,
+			double maxWidth,
+			double actualLineHeight,
+			double scaleFactor)
+		{
+			MUX_ASSERT(desiredAspectRatio > 0.0);
+
+			double arrangeWidth = desiredAspectRatio * actualLineHeight;
+
+			minWidth = Math.Max(0.0, minWidth);
+
+			arrangeWidth = Math.Max(minWidth, arrangeWidth);
+
+			if (maxWidth >= 0.0)
+			{
+				arrangeWidth = Math.Min(maxWidth, arrangeWidth);
+			}
+
+			if (scaleFactor != 1.0)
+			{
+				arrangeWidth *= scaleFactor;
+
+				if (scaleFactor < 1.0)
+				{
+					arrangeWidth = Math.Max(minWidth, arrangeWidth);
+				}
+
+				if (maxWidth >= 0.0 && scaleFactor > 1.0)
+				{
+					arrangeWidth = Math.Min(maxWidth, arrangeWidth);
+				}
+			}
+
+			return arrangeWidth;
+		}
+
+		#endregion
 	}
 }
