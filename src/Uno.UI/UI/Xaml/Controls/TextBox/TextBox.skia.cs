@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-public partial class TextBox : ITextSelectionGripperHost
+public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
 {
 	private TextSelectionGripperPresenter _gripperPresenter;
 	private TextBoxView _textBoxView;
@@ -79,6 +79,10 @@ public partial class TextBox : ITextSelectionGripperHost
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	ContentControl ITextBoxViewHost.ContentElement => _contentElement;
+
+	string ITextBoxViewHost.ProcessTextInput(string newText) => ProcessTextInput(newText);
 
 	static TextBox()
 	{
