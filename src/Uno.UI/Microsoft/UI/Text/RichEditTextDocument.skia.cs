@@ -137,6 +137,16 @@ namespace Microsoft.UI.Text
 		/// </summary>
 		internal void NotifySelectionChanged() => _owner.OnTomSelectionChanged();
 
+		// --- Geometry-backed line navigation (delegates to the owning control's DisplayBlock layout) ---
+
+		internal bool TryGetLineBounds(int position, out int lineStart, out int lineEnd, out int lineIndex, out bool isLast)
+			=> _owner.TryGetLineBounds(position, out lineStart, out lineEnd, out lineIndex, out isLast);
+
+		internal int GetLineCount() => _owner.GetLineCountForTom();
+
+		internal bool TryGetVerticalTarget(int position, bool up, int count, out int target)
+			=> _owner.TryGetVerticalTarget(position, up, count, out target);
+
 		/// <summary>
 		/// Sets the text in this document to the specified plain text.
 		/// </summary>
