@@ -170,7 +170,7 @@ namespace Microsoft.UI.Text
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "GetRange(int startPosition, int endPosition)");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Text.ITextRange GetRangeFromPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options)
 		{
