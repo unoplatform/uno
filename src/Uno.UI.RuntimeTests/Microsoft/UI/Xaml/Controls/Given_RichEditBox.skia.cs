@@ -951,5 +951,164 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("aaa\rbbbX", text);
 			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment);
 		}
+
+		[TestMethod]
+		public async Task When_GetRect_Returns_Caret_Geometry()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetRange(3, 3).GetRect(PointOptions.None, out var rect, out var hit);
+
+			Assert.AreEqual(0, hit, "hit is reported as 0 (documented approximation).");
+			Assert.IsTrue(rect.Height > 0, $"Caret rect should have a positive height, was {rect.Height}.");
+			Assert.IsTrue(rect.Width <= 1, $"A degenerate (caret) range should have a ~zero width, was {rect.Width}.");
+			Assert.IsTrue(rect.X > 0, $"The caret at index 3 should be offset from the left edge, was {rect.X}.");
+		}
+
+		[TestMethod]
+		public async Task When_GetRect_Range_Has_Positive_Width()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetRange(0, 5).GetRect(PointOptions.None, out var rangeRect, out _);
+			SUT.Document.GetRange(0, 0).GetRect(PointOptions.None, out var caretRect, out _);
+
+			Assert.IsTrue(rangeRect.Width > caretRect.Width, $"A non-degenerate range should be wider than a caret, was {rangeRect.Width} vs {caretRect.Width}.");
+			Assert.IsTrue(rangeRect.Height > 0, $"Range rect should have a positive height, was {rangeRect.Height}.");
+		}
+
+		[TestMethod]
+		public async Task When_GetRect_ClientCoordinates_Preserves_Size()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(2, 5);
+			range.GetRect(PointOptions.None, out var rootRect, out _);
+			range.GetRect(PointOptions.ClientCoordinates, out var clientRect, out _);
+
+			// Both transforms are translation-only, so the size is invariant across coordinate spaces.
+			Assert.AreEqual(rootRect.Width, clientRect.Width, 0.5, "Width should be coordinate-space invariant.");
+			Assert.AreEqual(rootRect.Height, clientRect.Height, 0.5, "Height should be coordinate-space invariant.");
+		}
+
+		[TestMethod]
+		public async Task When_GetPoint_Vertical_Alignment_Orders_Points()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(4, 4);
+			range.GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.None, out var topPoint);
+			range.GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Bottom, PointOptions.None, out var bottomPoint);
+
+			Assert.AreEqual(topPoint.X, bottomPoint.X, 0.5, "Left alignment should give the same X for both vertical anchors.");
+			Assert.IsTrue(bottomPoint.Y > topPoint.Y, $"Bottom anchor should be below the top anchor, was {bottomPoint.Y} vs {topPoint.Y}.");
+		}
+
+		[TestMethod]
+		public async Task When_GetPoint_GetRangeFromPoint_RoundTrips()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetRange(6, 6).GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.None, out var point);
+			var recovered = SUT.Document.GetRangeFromPoint(point, PointOptions.None);
+
+			Assert.IsTrue(Math.Abs(recovered.StartPosition - 6) <= 1, $"GetRangeFromPoint should recover the origin index, was {recovered.StartPosition}.");
+		}
+
+		[TestMethod]
+		public async Task When_SetPoint_Moves_Caret()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetRange(7, 7).GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.None, out var point);
+
+			var range = SUT.Document.GetRange(0, 0);
+			range.SetPoint(point, PointOptions.None, extend: false);
+
+			Assert.IsTrue(Math.Abs(range.StartPosition - 7) <= 1, $"SetPoint should place the caret at the hit index, was {range.StartPosition}.");
+			Assert.AreEqual(range.StartPosition, range.EndPosition, "A non-extending SetPoint should collapse the range.");
+		}
+
+		[TestMethod]
+		public async Task When_ScrollIntoView_Does_Not_Throw()
+		{
+			var SUT = new RichEditBox { Width = 200, Height = 60 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Line one\rLine two\rLine three\rLine four\rLine five");
+			await WindowHelper.WaitForIdle();
+
+			// Should not throw regardless of whether the range is on-screen.
+			SUT.Document.GetRange(40, 44).ScrollIntoView(PointOptions.None);
+			await WindowHelper.WaitForIdle();
+		}
 	}
 }
