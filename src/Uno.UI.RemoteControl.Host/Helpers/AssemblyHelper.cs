@@ -36,8 +36,9 @@ public class AssemblyHelper
 	/// Cross-major-version <c>AssemblyRef</c>s (e.g. an add-in compiled against
 	/// <c>System.Text.Encodings.Web v8.0.0.0</c> while the host carries v10 in its TPA)
 	/// are handled by the <c>Default.Resolving</c> handler installed in
-	/// <see cref="HostAssemblyResolution.Install"/>, which bridges by simple name and
-	/// returns the host's already-loaded instance.
+	/// <see cref="HostAssemblyResolution.Install"/>, which bridges by simple name to
+	/// the host's already-loaded instance, or loads the assembly on demand from the
+	/// runtime or a registered add-in directory.
 	/// </para>
 	/// <para>
 	/// Each successful load also triggers a proactive scan of the assembly's
@@ -63,6 +64,16 @@ public class AssemblyHelper
 			}
 
 			telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
+
+			// Register every add-in directory before the first load so dependencies of
+			// the first add-in can already be probed on demand from the others' folders.
+			foreach (var dll in distinctDlls)
+			{
+				if (Path.GetDirectoryName(dll) is { Length: > 0 } dir)
+				{
+					HostAssemblyResolution.RegisterProbingDirectory(dir);
+				}
+			}
 
 			foreach (var dll in distinctDlls)
 			{
@@ -229,9 +240,9 @@ public class AssemblyHelper
 				refName,
 				refVersion?.ToString() ?? "<none>",
 				FormatPkt(refPkt),
+				refName,
 				loadedVersion?.ToString() ?? "<none>",
 				FormatPkt(loadedPkt),
-				refName,
 				refName,
 				refName,
 				addInName,
