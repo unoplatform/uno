@@ -125,9 +125,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			RenderDocument();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
+
+			// Raise TextChanged before the interactive selection sync (which may raise SelectionChanged),
+			// matching WinUI's TextChanged -> SelectionChanged ordering for a single edit.
+			RaiseTextChangedIfNeeded();
+
 			OnDocumentTextChangedInteractive();
 
-			// TODO Uno: Raise TextChanged/TextChanging once the shared editing engine is wired in.
+			// TODO Uno: TextChanging (cancellable TypedEventHandler) is a follow-up.
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)
