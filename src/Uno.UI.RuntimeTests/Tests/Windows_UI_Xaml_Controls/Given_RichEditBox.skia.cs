@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Xaml.Controls.Extensions;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
@@ -1786,6 +1787,269 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNull(SUT.ParagraphAlignmentOverride);
 			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
 			Assert.AreEqual(controlDefaultAlignment, block.TextAlignment);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Inserts_And_Commits()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			SUT.Document.GetText(TextGetOptions.None, out var composing);
+			Assert.AreEqual("ni", composing);
+
+			fake.SimulateCompositionComplete("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			SUT.Document.GetText(TextGetOptions.None, out var committed);
+			Assert.AreEqual("nihao", committed);
+		}
+
+		[TestMethod]
+		public async Task When_IME_ReadOnly_Ignores_Composition()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox { IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, "Original");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Original", text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Is_Single_Undo_Entry()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("n");
+			fake.SimulateCompositionUpdate("ni");
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionComplete("nihao");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var afterCommit);
+			Assert.AreEqual("nihao", afterCommit);
+
+			// The whole composition collapses into ONE undo entry (matching WinUI).
+			Assert.IsTrue(SUT.Document.CanUndo());
+			SUT.Document.Undo();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("", afterUndo);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Cancel_Keeps_Text()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsComposing);
+
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("ni", text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Events_Raised()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var started = 0;
+			var changed = 0;
+			var ended = 0;
+			SUT.TextCompositionStarted += (s, e) => started++;
+			SUT.TextCompositionChanged += (s, e) => changed++;
+			SUT.TextCompositionEnded += (s, e) => ended++;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			fake.SimulateCompositionComplete("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, started);
+			Assert.IsTrue(changed >= 1);
+			Assert.AreEqual(1, ended);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composing_Swallows_Char_Key_Guard()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.ShouldSwallowKeyDuringComposition);
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.ShouldSwallowKeyDuringComposition);
+
+			fake.SimulateCompositionComplete("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.ShouldSwallowKeyDuringComposition);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Preserves_Existing_Formatting()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "AB");
+			SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+			SUT.Document.Selection.SetRange(2, 2);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("xy");
+			fake.SimulateCompositionComplete("xy");
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("ABxy", text);
+
+			// The pre-existing bold run on "A" survives the composition edit.
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 1).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Change_Cancels_Composition()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsComposing);
+
+			fake.EndImeSessionCalled = false;
+			SUT.Document.SetText(TextSetOptions.None, "Replaced");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Replaced", text);
+			Assert.IsTrue(fake.EndImeSessionCalled, "EndImeSession should be called when composition is cancelled by external text change");
+		}
+
+		private class FakeImeTextBoxExtension : IImeTextBoxExtension
+		{
+			public bool IsComposing { get; private set; }
+			public bool EndImeSessionCalled { get; set; }
+
+			public event EventHandler CompositionStarted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler CompositionEnded;
+
+			public void StartImeSession(IImeSessionHost host) { }
+
+			public void EndImeSession()
+			{
+				EndImeSessionCalled = true;
+				if (IsComposing)
+				{
+					IsComposing = false;
+					CompositionEnded?.Invoke(this, EventArgs.Empty);
+				}
+			}
+
+			public void SimulateCompositionStart()
+			{
+				IsComposing = true;
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+			}
+
+			public void SimulateCompositionComplete(string text)
+			{
+				IsComposing = false;
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionCancel()
+			{
+				IsComposing = false;
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		private static TextBlock FindDisplayBlock(DependencyObject root)

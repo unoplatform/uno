@@ -1,18 +1,12 @@
 #nullable enable
 using System;
 using Windows.Foundation;
-using Uno.Disposables;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class TextBox
+public partial class TextBox : IImeSessionHost
 {
-	private static IImeTextBoxExtension? _imeExtension;
-
-	private static TextBox? _activeImeTextBox;
 	private bool _isComposing;
 	private bool _platformTextApplyInProgress;
 	// True when the current composition session has the platform applying text directly
@@ -40,46 +34,44 @@ public partial class TextBox
 	internal int CompositionUnderlineStart => _compositionStartIndex + _compositionResolvedLength;
 	internal int CompositionUnderlineLength => Math.Max(0, _compositionLength - _compositionResolvedLength);
 
-	private static void InitializeIme()
-	{
-		if (!ApiExtensibility.CreateInstance<IImeTextBoxExtension>(typeof(TextBox), out var imeExtension))
-		{
-			typeof(TextBox).LogDebug()?.Debug("No IME extension registered or registration returned null, IME composition will not be supported.");
-			return;
-		}
-		imeExtension.CompositionStarted += static (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
-		imeExtension.CompositionUpdated += static (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
-		imeExtension.CompositionCompleted += static (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
-		imeExtension.CompositionEnded += static (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
-		_imeExtension = imeExtension;
-	}
+	// --- IImeSessionHost positioning surface (read by the platform IME extensions) ---
+
+	XamlRoot? IImeSessionHost.XamlRoot => XamlRoot;
+
+	TextBoxView? IImeSessionHost.TextBoxView => TextBoxView;
+
+	int IImeSessionHost.SelectionStart => SelectionStart;
+
+	int IImeSessionHost.SelectionLength => SelectionLength;
+
+	bool IImeSessionHost.IsBackwardSelection => IsBackwardSelection;
+
+	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 
 	private void StartImeSession()
 	{
 		// Don't route IME composition events to PasswordBox — password text
 		// must not be processed as composition text, even if the extension
 		// no-ops for PasswordBox (any later global composition event would
-		// otherwise be forwarded to this PasswordBox via _activeImeTextBox).
+		// otherwise be forwarded to this PasswordBox via the coordinator's active host).
 		if (this is PasswordBox)
 		{
 			return;
 		}
 
-		_activeImeTextBox = this;
-		_imeExtension?.StartImeSession(this);
+		ImeSessionCoordinator.StartSession(this);
 	}
 
 	private void EndImeSession()
 	{
 		// Symmetric with StartImeSession — PasswordBoxes never activate the
-		// IME session, so don't tear it down (which would clobber _activeImeTextBox).
+		// IME session, so don't tear it down (which would clobber the active host).
 		if (this is PasswordBox)
 		{
 			return;
 		}
 
-		_imeExtension?.EndImeSession();
-		_activeImeTextBox = null;
+		ImeSessionCoordinator.EndSession(this);
 
 		// Defensively reset composition state in case the extension's CompositionEnded
 		// event didn't fire (e.g., extension's _isComposing already false but TextBox's
@@ -100,7 +92,7 @@ public partial class TextBox
 		}
 	}
 
-	private void OnImeCompositionStarted()
+	void IImeSessionHost.OnImeCompositionStarted()
 	{
 		if (IsReadOnly)
 		{
@@ -117,7 +109,7 @@ public partial class TextBox
 		TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
-	private void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
+	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
 	{
 		if (IsReadOnly)
 		{
@@ -146,7 +138,7 @@ public partial class TextBox
 		InvalidateTextBoxRender();
 	}
 
-	private void OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
+	void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
 	{
 		if (IsReadOnly)
 		{
@@ -171,7 +163,7 @@ public partial class TextBox
 		InvalidateTextBoxRender();
 	}
 
-	private void OnImeCompositionEnded()
+	void IImeSessionHost.OnImeCompositionEnded()
 	{
 		if (!_isComposing)
 		{
@@ -253,15 +245,15 @@ public partial class TextBox
 		_compositionResolvedLength = 0;
 
 		// End and restart the session so that further IME input still works
-		// while the active TextBox reference stays in sync.
-		_imeExtension?.EndImeSession();
+		// while the active host reference stays in sync.
+		ImeSessionCoordinator.Extension?.EndImeSession();
 		TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
 		InvalidateTextBoxRender();
 
 		// Restart the IME session so the user can continue typing with IME.
-		if (_activeImeTextBox == this)
+		if (ReferenceEquals(ImeSessionCoordinator.ActiveHost, this))
 		{
-			_imeExtension?.StartImeSession(this);
+			ImeSessionCoordinator.Extension?.StartImeSession(this);
 		}
 	}
 
@@ -269,30 +261,8 @@ public partial class TextBox
 
 	/// <summary>
 	/// Installs a fake IME extension for testing. The extension's events are
-	/// forwarded to the active TextBox. Returns a disposable that restores the original.
+	/// forwarded to the active host. Returns a disposable that restores the original.
 	/// </summary>
 	internal static IDisposable SetImeExtensionForTesting(IImeTextBoxExtension extension)
-	{
-		var original = _imeExtension;
-		_imeExtension = extension;
-
-		EventHandler onStarted = (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
-		EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
-		EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
-		EventHandler onEnded = (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
-
-		extension.CompositionStarted += onStarted;
-		extension.CompositionUpdated += onUpdated;
-		extension.CompositionCompleted += onCompleted;
-		extension.CompositionEnded += onEnded;
-
-		return Disposable.Create(() =>
-		{
-			extension.CompositionStarted -= onStarted;
-			extension.CompositionUpdated -= onUpdated;
-			extension.CompositionCompleted -= onCompleted;
-			extension.CompositionEnded -= onEnded;
-			_imeExtension = original;
-		});
-	}
+		=> ImeSessionCoordinator.SetExtensionForTesting(extension);
 }

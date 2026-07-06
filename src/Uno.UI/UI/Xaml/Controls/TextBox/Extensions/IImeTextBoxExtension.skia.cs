@@ -8,10 +8,10 @@ namespace Uno.UI.Xaml.Controls.Extensions;
 internal interface IImeTextBoxExtension
 {
 	/// <summary>
-	/// Called when the TextBox gains focus. The platform should prepare
-	/// IME context for the given TextBox.
+	/// Called when the host control gains focus. The platform should prepare
+	/// IME context for the given host (a <see cref="TextBox"/> or RichEditBox).
 	/// </summary>
-	void StartImeSession(TextBox textBox);
+	void StartImeSession(IImeSessionHost host);
 
 	/// <summary>
 	/// Called when the TextBox loses focus. The platform should clean up
