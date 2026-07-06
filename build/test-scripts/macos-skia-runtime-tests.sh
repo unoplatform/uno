@@ -3,6 +3,13 @@ set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
 
+if [ `uname` = "Darwin" ]; then
+	echo "uname -a:"
+	uname -a
+	echo "arch:"
+	arch
+fi
+
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
