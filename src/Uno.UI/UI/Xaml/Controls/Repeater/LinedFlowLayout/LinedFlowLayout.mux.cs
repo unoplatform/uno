@@ -4841,5 +4841,180 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: constrained-lines leaves (WS-D3c sub-slice 5)
+
+		// Returns the additional realization rect height needed so that the realization window spans at least
+		// 3 viewports and 12 lines. Used to inflate the realization rect in the regular path.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private float GetRealizationRectHeightDeficit(
+			VirtualizingLayoutContext context,
+			double actualLineHeight,
+			double lineSpacing)
+		{
+			// This layout performs poorly when there are less than 20 lines to operate with in 5 scroll viewports.
+			// The target realization height is at least 3 viewports and 12 lines, assuming that 2 more viewports worth
+			// of unrealized sized items are used via the ItemsInfoRequested event. Otherwise the realization rect falls back to 5 viewports.
+			const float minimumCacheLength = 2.0f;
+			const float minimumCacheLineCount = 4.0f; // At least 4 x (minimumCacheLength + 1) = 12 lines worth of items.
+			float realizationRectHeight = (float)context.RealizationRect.Height;
+			float nearRealizationRect = GetRoundedFloat((float)context.RealizationRect.Y);
+			float lineHeight = (float)(actualLineHeight + lineSpacing);
+			float scrollViewport = (float)context.VisibleRect.Height;
+
+			// Ensure there is a viewport buffer before and after the visible viewport.
+			float realizationRectHeightDeficit = Math.Max(0.0f, (minimumCacheLength + 1.0f) * scrollViewport - realizationRectHeight);
+
+			// Ensure there are 12 lines in the resulting 3 viewports.
+			realizationRectHeightDeficit = Math.Max(realizationRectHeightDeficit, (minimumCacheLength + 1.0f) * minimumCacheLineCount * lineHeight - realizationRectHeight);
+
+			MUX_ASSERT(realizationRectHeightDeficit >= 0.0);
+
+			return realizationRectHeightDeficit;
+		}
+
+		// Returns the range of realized items given a larger range of sized items.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void GetRealizedItemsFromSizedItems(
+			int realizedLineCount,
+			int lineCount,
+			out int unrealizedNearItemCount,
+			out int realizedItemCount)
+		{
+			int unrealizedNearItemCountTmp = (int)Math.Round(m_unrealizedNearLineCount * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero);
+
+			unrealizedNearItemCountTmp = Math.Min(m_itemCount - 1, unrealizedNearItemCountTmp);
+			unrealizedNearItemCountTmp = Math.Max(m_unrealizedNearLineCount, unrealizedNearItemCountTmp);
+			unrealizedNearItemCountTmp = Math.Max(m_firstSizedItemIndex, unrealizedNearItemCountTmp);
+
+			int realizedItemCountTmp;
+
+			if (m_unrealizedNearLineCount + realizedLineCount == lineCount)
+			{
+				realizedItemCountTmp = m_itemCount - unrealizedNearItemCountTmp;
+			}
+			else
+			{
+				realizedItemCountTmp = (int)Math.Round(realizedLineCount * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero);
+			}
+
+			realizedItemCountTmp = Math.Max(1, realizedItemCountTmp);
+			realizedItemCountTmp = Math.Max(realizedLineCount, realizedItemCountTmp);
+			realizedItemCountTmp = Math.Min(m_lastSizedItemIndex - unrealizedNearItemCountTmp + 1, realizedItemCountTmp);
+
+			MUX_ASSERT(unrealizedNearItemCountTmp < m_itemCount);
+			MUX_ASSERT(unrealizedNearItemCountTmp >= m_unrealizedNearLineCount);
+			MUX_ASSERT((m_unrealizedNearLineCount == 0 && unrealizedNearItemCountTmp == 0) || (m_unrealizedNearLineCount > 0 && unrealizedNearItemCountTmp > 0));
+			MUX_ASSERT(realizedItemCountTmp > 0);
+			MUX_ASSERT(realizedItemCountTmp >= realizedLineCount);
+			MUX_ASSERT(unrealizedNearItemCountTmp + realizedItemCountTmp <= m_itemCount);
+
+			unrealizedNearItemCount = unrealizedNearItemCountTmp;
+			realizedItemCount = realizedItemCountTmp;
+		}
+
+		// Rounds 'value' to the current rasterization scale factor.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private double GetRoundedDouble(
+			double value)
+		{
+			return Math.Round(value * m_roundingScaleFactor, MidpointRounding.AwayFromZero) / m_roundingScaleFactor;
+		}
+
+		// Computes the raw and snapped average items per line based on the average item aspect ratio and available width.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private (double first, double second) GetAverageItemsPerLine(
+			float availableWidth)
+		{
+			double averageWidth;
+			double minItemSpacing = MinItemSpacing;
+			double actualLineHeight = ActualLineHeight;
+
+			// During initial loading, in cases no sizing information is provided by an ItemsInfoRequested event handler,
+			// the average item aspect ratio is set no lower than 1.5, 1.25 & 1.0 in the first 3 measure passes.
+			// This is to avoid the unpopulated items' small MinWidth to artificially result in a small average aspect ratio
+			// causing a momentary item realization that gets thrown away as soon as the real average aspect ratio is set.
+			double minAverageItemAspectRatio = m_measureCountdown * 0.25 + 0.5;
+
+			if (m_aspectRatios != null && !m_aspectRatios.IsEmpty())
+			{
+				double averageItemAspectRatio = GetAverageAspectRatioFromStorage();
+
+				// During initial load, avoid small aspect ratios while the first items are still loading
+				// to avoid unnecessary item realizations. This is only done when the ItemsInfoRequested event handler did not provide sizing information.
+				if (m_itemsInfoFirstIndex == -1 && m_measureCountdown > 1 && averageItemAspectRatio < minAverageItemAspectRatio)
+				{
+					averageItemAspectRatio = minAverageItemAspectRatio;
+
+					// Making sure there is another layout coming with a decreased m_measureCountdown value to stop using an adjusted averageItemAspectRatio.
+					// Layout invalidation is done asynchronously to have an effect since this method, GetAverageItemsPerLine, is called during measure passes.
+					InvalidateMeasureAsync();
+				}
+
+				m_averageItemAspectRatioDbg = averageItemAspectRatio;
+
+				averageWidth = averageItemAspectRatio * actualLineHeight;
+			}
+			else
+			{
+				m_averageItemAspectRatioDbg = minAverageItemAspectRatio;
+
+				// When no item is realized, minAverageItemAspectRatio which starts at 1.5 is used.
+				averageWidth = minAverageItemAspectRatio * actualLineHeight;
+			}
+
+			if (m_forcedAverageItemAspectRatioDbg != 0.0)
+			{
+				averageWidth = m_forcedAverageItemAspectRatioDbg * actualLineHeight;
+			}
+
+			// Account for the minimum spacing between items by adding minItemSpacing
+			// minItemSpacing is over-counted once for the last item.
+			averageWidth = Math.Max(1.0, averageWidth + minItemSpacing);
+
+			// minItemSpacing is added to the availableWidth to account for the over-counting above.
+			double averageItemsPerLineRaw = (availableWidth + minItemSpacing) / averageWidth;
+
+			averageItemsPerLineRaw = Math.Max(1.0, averageItemsPerLineRaw);
+
+			(double first, double second) averageItemsPerLine = SnapAverageItemsPerLine(
+				m_averageItemsPerLine.first /*oldAverageItemsPerLineRaw*/,
+				averageItemsPerLineRaw /*newAverageItemsPerLineRaw*/);
+
+			MUX_ASSERT(averageItemsPerLine.second >= 1.0);
+
+			return averageItemsPerLine;
+		}
+
+		// Clears the fast-path items-info buffers gathered from the ItemsInfoRequested event handler.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void ResetItemsInfoForFastPath()
+		{
+			m_itemsInfoDesiredAspectRatiosForFastPath = Array.Empty<double>();
+			m_itemsInfoMinWidthsForFastPath = Array.Empty<double>();
+			m_itemsInfoMaxWidthsForFastPath = Array.Empty<double>();
+		}
+
+		// Updates m_roundingScaleFactor from the XamlRoot's rasterization scale, falling back to 1.0.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void UpdateRoundingScaleFactor(
+			UIElement xamlRootReference)
+		{
+			// WinUI calls xamlRootReference.XamlRoot().RasterizationScale() inside a try/catch because
+			// GetForCurrentView on threads without a CoreWindow throws. In Uno, XamlRoot is a nullable
+			// property returning null instead of throwing, so a null check provides the equivalent fallback.
+			if (xamlRootReference.XamlRoot is { } xamlRoot)
+			{
+				m_roundingScaleFactor = xamlRoot.RasterizationScale;
+			}
+			else
+			{
+				// Calling GetForCurrentView on threads without a CoreWindow throws in WinUI.
+				// In this circumstance, we'll just always round to the closest integer.
+				m_roundingScaleFactor = 1.0;
+			}
+		}
+
+		#endregion
 	}
 }
