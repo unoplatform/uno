@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -647,6 +649,100 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// A caret (degenerate range) reports the formatting newly typed text would take.
 			Assert.AreEqual(FormatEffect.On, doc.GetRange(3, 3).CharacterFormat.Bold);
 			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 0).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Renders_As_Inline_Runs()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello World");
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.AreEqual("Hello World", displayBlock.Text);
+
+			// The bold prefix and the plain remainder become two distinct inline runs.
+			Assert.AreEqual(2, displayBlock.Inlines.Count);
+			var first = displayBlock.Inlines[0] as Run;
+			var second = displayBlock.Inlines[1] as Run;
+			Assert.IsNotNull(first);
+			Assert.IsNotNull(second);
+			Assert.AreEqual("Hello", first.Text);
+			Assert.AreEqual(700, first.FontWeight.Weight);
+			Assert.AreEqual(" World", second.Text);
+			Assert.AreEqual(400, second.FontWeight.Weight);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Removed_Falls_Back_To_Plain_Text()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+			var range = doc.GetRange(0, 5);
+			range.CharacterFormat.Bold = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			range.CharacterFormat.Bold = FormatEffect.Off;
+			await WindowHelper.WaitForIdle();
+
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.AreEqual("Hello", displayBlock.Text);
+
+			// No inline should carry bold once the formatting is removed.
+			foreach (var inline in displayBlock.Inlines)
+			{
+				if (inline is Run run)
+				{
+					Assert.AreEqual(400, run.FontWeight.Weight);
+				}
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Underline_Foreground_Size_Render()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			var red = global::Windows.UI.Color.FromArgb(255, 255, 0, 0);
+			var cf = doc.GetRange(0, 5).CharacterFormat;
+			cf.Underline = UnderlineType.Single;
+			cf.ForegroundColor = red;
+			cf.Size = 30f;
+			await WindowHelper.WaitForIdle();
+
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+
+			var run = displayBlock.Inlines[0] as Run;
+			Assert.IsNotNull(run);
+			Assert.AreEqual("Hello", run.Text);
+			Assert.IsTrue(run.TextDecorations.HasFlag(global::Windows.UI.Text.TextDecorations.Underline));
+			Assert.AreEqual(30d, run.FontSize);
+			var brush = run.Foreground as SolidColorBrush;
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(red, brush.Color);
 		}
 #endif
 	}
