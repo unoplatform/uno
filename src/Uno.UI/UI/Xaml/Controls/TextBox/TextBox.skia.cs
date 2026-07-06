@@ -84,6 +84,16 @@ public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
 
 	string ITextBoxViewHost.ProcessTextInput(string newText) => ProcessTextInput(newText);
 
+	bool ITextBoxViewHost.IsComposing => IsComposing;
+
+	int ITextBoxViewHost.CompositionUnderlineStart => CompositionUnderlineStart;
+
+	int ITextBoxViewHost.CompositionUnderlineLength => CompositionUnderlineLength;
+
+	bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
+		(this as IDependencyObjectStoreProvider)?.Store
+			.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
+
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;

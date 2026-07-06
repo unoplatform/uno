@@ -43,10 +43,10 @@ partial class UIElement
 		ContextRequestedEventArgs args)
 	{
 #if __SKIA__
-		if (sender is TextBlock { OwningTextBox: { } ownerTextBox })
+		if (sender is TextBlock { OwningTextBox: { } ownerHost } && ownerHost is DependencyObject ownerObject)
 		{
-			sender = ownerTextBox;
-			contextFlyoutObject = ownerTextBox;
+			sender = ownerObject;
+			contextFlyoutObject = ownerObject;
 		}
 #endif
 		if (sender is not UIElement uiElement)
