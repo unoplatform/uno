@@ -5016,5 +5016,147 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: constrained-lines fast path (WS-D3c sub-slice 5)
+
+		// Items measurement fast path, used when an ItemsInfoRequested handler provided sizing information for the entire data source.
+		// Returns (lineCount, maxLineWidth, itemsInfo). A lineCount of -1 signals that the regular path must be engaged instead.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private (int lineCount, float maxLineWidth, ItemsInfo itemsInfo) MeasureConstrainedLinesFastPath(
+			VirtualizingLayoutContext context,
+			float availableWidth,
+			double actualLineHeight,
+			bool forceLayoutWithoutItemsInfoRequest)
+		{
+			MUX_ASSERT(m_itemCount > 0);
+
+			float maxLineWidth = 0.0f;
+			bool unlockItems = false;
+
+			do
+			{
+				if (m_forceRelayout || m_previousAvailableWidth != availableWidth || forceLayoutWithoutItemsInfoRequest)
+				{
+					if (forceLayoutWithoutItemsInfoRequest)
+					{
+						// MeasureConstrainedLinesFastPath is invoked with forceLayoutWithoutItemsInfoRequest==True when
+						// a transition from the regular path to the fast path was enabled in MeasureConstrainedLinesRegularPath
+						// because (m_forceRelayout || m_previousAvailableWidth != availableWidth) == False.
+						// In that case, the ItemsInfoRequested handler already provided the info for the entire data source.
+						// Reset forceLayoutWithoutItemsInfoRequest so that RaiseItemsInfoRequested is called in the case
+						// m_forceRelayout is set to True by EnsureItemRangeFastPath below.
+						forceLayoutWithoutItemsInfoRequest = false;
+					}
+					else
+					{
+						// Based on the average items per line, the realization rect size and offset, compute the item range for the ItemsInfoRequested event.
+						GetItemsInfoRequestedRange(
+							context,
+							availableWidth,
+							actualLineHeight,
+							out int itemsRangeStartIndex,
+							out int itemsRangeRequestedLength);
+
+						MUX_ASSERT(itemsRangeStartIndex >= 0);
+						MUX_ASSERT(itemsRangeRequestedLength > 0);
+						MUX_ASSERT(itemsRangeStartIndex + itemsRangeRequestedLength - 1 < m_itemCount);
+
+						ItemsInfo itemsInfo = RaiseItemsInfoRequested(itemsRangeStartIndex, itemsRangeRequestedLength);
+
+						// Fall back to regular layout path when ItemsInfo::m_itemsRangeStartIndex is not 0.
+						if (itemsInfo.m_itemsRangeStartIndex != 0)
+						{
+							if (m_itemsInfoFirstIndex == -1)
+							{
+								ResetItemsInfo();
+							}
+
+							return (-1 /*lineCount*/, 0.0f /*maxLineWidth*/, itemsInfo);
+						}
+
+						// Fall back to regular layout path when ItemsInfo::m_itemsRangeLength is smaller than the collection item count.
+						if (itemsInfo.m_itemsRangeLength < m_itemCount)
+						{
+							if (m_itemsInfoFirstIndex == -1)
+							{
+								ResetItemsInfo();
+							}
+
+							return (-1 /*lineCount*/, 0.0f /*maxLineWidth*/, itemsInfo);
+						}
+
+						// Carry on with the fast path and reset items info from the potential prior regular path.
+						ResetItemsInfo();
+
+						m_itemsInfoMinWidth = itemsInfo.m_minWidth < 0.0 ? -1.0 : itemsInfo.m_minWidth;
+						m_itemsInfoMaxWidth = itemsInfo.m_maxWidth < 0.0 ? -1.0 : itemsInfo.m_maxWidth;
+					}
+
+					maxLineWidth = ComputeItemsLayoutFastPath(
+						availableWidth,
+						actualLineHeight);
+
+					// Immediately clear the arrays collected from the ItemsInfoRequested event handler.
+					// ComputeItemsLayoutFastPath called above is the only method making use of them.
+					ResetItemsInfoForFastPath();
+
+					m_forceRelayout = false;
+					unlockItems = true;
+				}
+				else if (!UsesFastPathLayout())
+				{
+					return (-1 /*lineCount*/, 0.0f /*maxLineWidth*/, s_emptyItemsInfo);
+				}
+
+				MUX_ASSERT(!m_forceRelayout);
+
+				EnsureItemRangeFastPath(
+					context,
+					actualLineHeight);
+			}
+			while (m_forceRelayout);
+
+			if (m_isVirtualizingContext)
+			{
+				if (m_elementManager.GetRealizedElementCount > 0)
+				{
+					MeasureItemRange(
+						actualLineHeight,
+						m_elementManager.GetFirstRealizedDataIndex() /*beginRealizedItemIndex*/,
+						m_elementManager.GetFirstRealizedDataIndex() + m_elementManager.GetRealizedElementCount - 1 /*endRealizedItemIndex*/);
+				}
+
+				if (maxLineWidth == 0.0f)
+				{
+					maxLineWidth = m_maxLineWidth;
+				}
+			}
+			else
+			{
+				MeasureItemRange(
+					actualLineHeight,
+					0 /*beginRealizedItemIndex*/,
+					m_itemCount - 1 /*endRealizedItemIndex*/);
+			}
+
+			// Set m_averageItemsPerLine for the next re-layout. It is used above to estimate the requested item range for the ItemsInfoRequested event.
+			int lineCount = m_lineItemCounts.Count;
+
+			MUX_ASSERT(lineCount >= 1);
+
+			// In the multi-line cases, the last line does not contribute to the average evaluation because it is likely incomplete.
+			double averageItemsPerLine = (lineCount == 1) ? m_itemCount : ((double)m_itemCount - m_lineItemCounts[lineCount - 1]) / ((double)lineCount - 1);
+
+			SetAverageItemsPerLine((averageItemsPerLine /*averageItemsPerLineRaw*/, averageItemsPerLine /*averageItemsPerLineSnapped*/), false /*unlockItems*/);
+
+			if (unlockItems)
+			{
+				UnlockItems();
+			}
+
+			return (lineCount, maxLineWidth, s_emptyItemsInfo);
+		}
+
+		#endregion
 	}
 }
