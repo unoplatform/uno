@@ -43,9 +43,12 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
 	private readonly VulkanContext _vulkanContext = new();
 	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
+	private readonly ApplicationActivity _activity;
 
-	public UnoVulkanView(Context context) : base(context)
+	public UnoVulkanView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
+
 		// Create the window-independent Vulkan resources (instance, device) right away: this throws when the
 		// driver is unusable, letting the caller fall back to the OpenGL ES view. The window-scoped part
 		// (swapchain) is completed on the render thread once a surface exists.
@@ -169,7 +172,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
 			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
 			this.Log().Error("UnoVulkanView: Vulkan initialization failed, falling back to the canvas view", ex);
-			ApplicationActivity.FallbackToCanvasView();
+			_activity.FallbackToCanvasView();
 			return;
 		}
 
@@ -246,7 +249,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
-		var compositionTarget = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.Visual.CompositionTarget as CompositionTarget;
+		var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (compositionTarget is null)
 		{
 			return;
@@ -259,13 +262,13 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			_activity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
+			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
-				ApplicationActivity.RelativeLayout?.Post(() =>
-					ApplicationActivity.RelativeLayout?.Invalidate());
+				_activity.RelativeLayout?.Post(() =>
+					_activity.RelativeLayout?.Invalidate());
 			}
 		}
 		catch (Exception ex)

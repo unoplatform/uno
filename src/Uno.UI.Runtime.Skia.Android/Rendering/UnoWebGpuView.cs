@@ -38,9 +38,12 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the wgpu surface references it
+	private readonly ApplicationActivity _activity;
 
-	public UnoWebGpuView(Context context) : base(context)
+	public UnoWebGpuView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
+
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -136,7 +139,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
 			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
 			this.Log().Error("UnoWebGpuView: WebGPU initialization failed, falling back to the canvas view", ex);
-			ApplicationActivity.FallbackToCanvasView();
+			_activity.FallbackToCanvasView();
 			return;
 		}
 
@@ -206,7 +209,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
-		var compositionTarget = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.Visual.CompositionTarget as CompositionTarget;
+		var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (compositionTarget is null)
 		{
 			return;
@@ -219,13 +222,13 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			_activity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
+			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
-				ApplicationActivity.RelativeLayout?.Post(() =>
-					ApplicationActivity.RelativeLayout?.Invalidate());
+				_activity.RelativeLayout?.Post(() =>
+					_activity.RelativeLayout?.Invalidate());
 			}
 		}
 		catch (Exception ex)

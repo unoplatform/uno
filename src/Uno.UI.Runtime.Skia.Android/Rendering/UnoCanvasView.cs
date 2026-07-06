@@ -29,13 +29,15 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
+	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
 
-	public UnoCanvasView(Context context) : base(context)
+	public UnoCanvasView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer());
+		SetRenderer(_renderer = new InternalRenderer(activity));
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -138,8 +140,10 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
 	// and modified to also add rendering without OpenGL
-	private class InternalRenderer() : Java.Lang.Object, IRenderer
+	private class InternalRenderer(ApplicationActivity activity) : Java.Lang.Object, IRenderer
 	{
+		private readonly ApplicationActivity _activity = activity;
+
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
 
@@ -157,17 +161,17 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
-			var ct = (CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!;
+			var ct = (CompositionTarget)_activity.RootElement!.Visual.CompositionTarget!;
 			ct.Renderer = _renderer!;
 			var nativeClipPath = ct.OnNativePlatformFrameRequested(_context);
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			_activity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
+			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
-				ApplicationActivity.RelativeLayout?.Post(() =>
-					ApplicationActivity.RelativeLayout?.Invalidate());
+				_activity.RelativeLayout?.Post(() =>
+					_activity.RelativeLayout?.Invalidate());
 			}
 		}
 
