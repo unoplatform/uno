@@ -11,10 +11,8 @@ namespace Microsoft.UI.Text
 	// is functional and drives the shared rendering surface through the owning document. Character
 	// formatting (CharacterFormat) is functional over the document's run model.
 	//
-	// TODO Uno: Paragraph formatting (ParagraphFormat/FormattedText/Gravity/Link), clipboard (Copy/Cut/
-	// Paste/CanPaste), geometry (GetPoint/GetRect/ScrollIntoView/SetPoint), unit-based navigation beyond
-	// Character (Expand/StartOf/EndOf/GetIndex/SetIndex), streams and embedded images arrive with the
-	// rich-content model and the shared editing engine.
+	// TODO Uno: FormattedText/Gravity/Link, clipboard (Copy/Cut/Paste/CanPaste), streams and embedded
+	// images arrive with the rich-content model and the shared editing engine.
 	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
 	{
 		private protected readonly RichEditTextDocument _document;
@@ -734,13 +732,61 @@ namespace Microsoft.UI.Text
 
 		public void GetCharacterUtf32(out uint value, int offset) => throw NotImplemented("GetCharacterUtf32");
 
-		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point) => throw NotImplemented("GetPoint");
+		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point)
+		{
+			// The point is taken at the range's start when PointOptions.Start is set, otherwise at its
+			// (active) end, mirroring WinUI's tomStart/tomEnd anchoring.
+			point = default;
+			var anchor = options.HasFlag(global::Microsoft.UI.Text.PointOptions.Start) ? _start : _end;
+			if (!_document.TryGetIndexRect(anchor, options, out var rect))
+			{
+				return;
+			}
 
-		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit) => throw NotImplemented("GetRect");
+			var x = horizontalAlign switch
+			{
+				global::Microsoft.UI.Text.HorizontalCharacterAlignment.Right => rect.X + rect.Width,
+				global::Microsoft.UI.Text.HorizontalCharacterAlignment.Center => rect.X + (rect.Width / 2),
+				_ => rect.X,
+			};
+			var y = verticalAlign switch
+			{
+				global::Microsoft.UI.Text.VerticalCharacterAlignment.Top => rect.Y,
+				// TODO Uno: Baseline is approximated as the line bottom (no per-line baseline metric here).
+				_ => rect.Y + rect.Height,
+			};
+			point = new global::Windows.Foundation.Point(x, y);
+		}
 
-		public void ScrollIntoView(global::Microsoft.UI.Text.PointOptions value) => throw NotImplemented("ScrollIntoView");
+		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit)
+		{
+			// TODO Uno: 'hit' (WinUI reports a RichEdit hit-test/clip indicator) is reported as 0. The
+			// rect is exact for degenerate and single-line ranges and the endpoint bounding box for
+			// multi-line ranges.
+			hit = 0;
+			_document.TryGetRangeRect(_start, _end, options, out rect);
+		}
 
-		public void SetPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, bool extend) => throw NotImplemented("SetPoint");
+		public void ScrollIntoView(global::Microsoft.UI.Text.PointOptions value)
+			=> _document.TryScrollRangeIntoView(_start, _end);
+
+		public void SetPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, bool extend)
+		{
+			if (!_document.TryGetIndexFromPoint(point, options, out var index))
+			{
+				return;
+			}
+
+			if (extend)
+			{
+				// Extend the range to the hit position, keeping the current anchor.
+				SetRange(_start, index);
+			}
+			else
+			{
+				SetRange(index, index);
+			}
+		}
 
 		public void MatchSelection() => throw NotImplemented("MatchSelection");
 
