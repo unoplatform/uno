@@ -3381,5 +3381,174 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Element realization: measure + resize orchestrators (WS-D3c sub-slice 4)
+
+		// Ensures items are realized and measured to determine their desired width. WinUI's original comment describes a
+		// bool return (used to request an extra UI-thread tick while a stored aspect ratio still has a weight below
+		// c_maxAspectRatioWeight), but the shipped signature is void; the async re-tick is driven via InvalidateMeasureTimerStart.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureAndMeasureItemRange(
+			VirtualizingLayoutContext context,
+			float availableWidth,
+			double actualLineHeight,
+			bool forward,
+			int beginRealizedItemIndex,
+			int endRealizedItemIndex)
+		{
+			bool realizedNewElement = false;
+
+			for (int realizedItemIndex = beginRealizedItemIndex; ; realizedItemIndex = forward ? realizedItemIndex + 1 : realizedItemIndex - 1)
+			{
+				bool isElementNewlyRealized = false;
+
+				if (!m_elementManager.IsDataIndexRealized(realizedItemIndex))
+				{
+					EnsureElementRealized(forward, realizedItemIndex);
+
+					realizedNewElement = isElementNewlyRealized = true;
+				}
+
+				if (m_itemsInfoFirstIndex == -1)
+				{
+					if (m_elementManager.GetRealizedElement(realizedItemIndex /*dataIndex*/) is { } element)
+					{
+						if (!m_elementDesiredWidths!.ContainsKey(element))
+						{
+							var elementAvailableSize = new Size(float.PositiveInfinity, actualLineHeight);
+
+							element.Measure(elementAvailableSize);
+
+							var desiredSize = element.DesiredSize;
+
+							bool desiredWidthGreaterThanMinWidth = false;
+
+							if (element is FrameworkElement frameworkElement)
+							{
+								float minWidth = (float)frameworkElement.MinWidth;
+
+								if (desiredSize.Width > minWidth)
+								{
+									// Items for which the desired width is greater than the min width are immediately
+									// assigned the c_maxAspectRatioWeight weight. For the other items, the weight is
+									// incremented from 1 to c_maxAspectRatioWeight as the min width may be due to the
+									// item content not being loaded yet.
+									desiredWidthGreaterThanMinWidth = true;
+								}
+							}
+
+							m_elementDesiredWidths![element] = (float)desiredSize.Width;
+
+							if (desiredSize.Height != 0.0 && m_aspectRatios != null)
+							{
+								var itemAspectRatio = m_aspectRatios.GetAt(realizedItemIndex);
+								float aspectRatio = (float)(desiredSize.Width / desiredSize.Height);
+
+								// The Uno LinedFlowLayoutItemAspectRatios.ItemAspectRatio is a readonly struct, so WinUI's
+								// in-place mutation of the copied value is reproduced by tracking the new aspect ratio/weight
+								// in locals and writing back a fresh struct via SetAt.
+								float newAspectRatio = itemAspectRatio.AspectRatio;
+								int newWeight = itemAspectRatio.Weight;
+
+								if (itemAspectRatio.Weight == 0)
+								{
+									newAspectRatio = aspectRatio;
+									newWeight = desiredWidthGreaterThanMinWidth ? c_maxAspectRatioWeight : 1;
+								}
+								else
+								{
+									if (isElementNewlyRealized)
+									{
+										newWeight = desiredWidthGreaterThanMinWidth ? c_maxAspectRatioWeight : 1;
+									}
+									else
+									{
+										int aspectRatioWeight = itemAspectRatio.Weight;
+
+										MUX_ASSERT(itemAspectRatio.AspectRatio >= 0.0f);
+										MUX_ASSERT(aspectRatioWeight >= 1);
+										MUX_ASSERT(aspectRatioWeight <= c_maxAspectRatioWeight);
+
+										if (aspectRatioWeight < c_maxAspectRatioWeight)
+										{
+											if (desiredWidthGreaterThanMinWidth)
+											{
+												newWeight = c_maxAspectRatioWeight;
+											}
+											else
+											{
+												newWeight++;
+											}
+										}
+									}
+
+									if (itemAspectRatio.AspectRatio != aspectRatio)
+									{
+										newAspectRatio = aspectRatio;
+									}
+								}
+
+								m_aspectRatios.SetAt(realizedItemIndex, new LinedFlowLayoutItemAspectRatios.ItemAspectRatio(newAspectRatio, newWeight));
+							}
+						}
+					}
+				}
+
+				if (realizedItemIndex == endRealizedItemIndex)
+				{
+					break;
+				}
+			}
+
+			if (realizedNewElement && !UsesArrangeWidthInfo())
+			{
+				InvalidateMeasureTimerStart(0 /*tickCount*/);
+			}
+		}
+
+		// Allocates the storage for tracking weighted aspect ratios. Sizes that storage to track about 10 viewports worth of items at the most.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureAndResizeItemAspectRatios(
+			double scrollViewport,
+			double actualLineHeight,
+			double lineSpacing)
+		{
+			MUX_ASSERT(m_averageItemsPerLine.second > 0.0);
+			MUX_ASSERT(m_firstSizedItemIndex >= 0);
+			MUX_ASSERT(m_firstSizedItemIndex <= m_lastSizedItemIndex);
+
+			EnsureItemAspectRatios();
+
+			const int c_scrollViewportCount = 10; // m_aspectRatios is sized large enough to hold aspect ratio information for 10 viewport worth of items.
+			int referenceItemIndex = (m_lastSizedItemIndex - m_firstSizedItemIndex) / 2;
+			const double c_minItemsPerScrollViewport = 20.0; // Avoid small aspect ratio sampling that is not statistically significant by forcing at least 20 items per viewport.
+			double linesPerScrollViewport = scrollViewport / (actualLineHeight + lineSpacing);
+			double averageItemsPerScrollViewport = Math.Max(c_minItemsPerScrollViewport, linesPerScrollViewport * m_averageItemsPerLine.second);
+			int itemAspectRatiosStorageSize = Math.Max((int)(averageItemsPerScrollViewport * c_scrollViewportCount), m_lastSizedItemIndex - m_firstSizedItemIndex + 1);
+
+			itemAspectRatiosStorageSize = Math.Min(itemAspectRatiosStorageSize, m_itemCount);
+
+			m_aspectRatios!.Resize(itemAspectRatiosStorageSize, referenceItemIndex);
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureElementAvailableWidths()
+		{
+			if (m_elementAvailableWidths == null)
+			{
+				m_elementAvailableWidths = new Dictionary<UIElement, float>();
+			}
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void EnsureElementDesiredWidths()
+		{
+			if (m_elementDesiredWidths == null)
+			{
+				m_elementDesiredWidths = new Dictionary<UIElement, float>();
+			}
+		}
+
+		#endregion
 	}
 }
