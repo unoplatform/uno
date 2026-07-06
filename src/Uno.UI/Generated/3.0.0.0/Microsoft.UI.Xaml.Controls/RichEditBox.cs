@@ -738,7 +738,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Microsoft.UI.Xaml.RoutedEventHandler SelectionChanged
 		{
@@ -770,7 +770,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Microsoft.UI.Xaml.RoutedEventHandler TextChanged
 		{
