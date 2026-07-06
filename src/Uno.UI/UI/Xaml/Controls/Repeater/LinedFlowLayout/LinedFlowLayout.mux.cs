@@ -1296,5 +1296,204 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: apply per-line item widths (WS-D3c)
+
+		// Computes the final item widths based on the best ItemsLayout, available width and stretching mode.
+		// Items are potentially shrunk to accommodate a smaller available line width, or stretched to accommodate a larger available line width.
+		internal void ComputeItemsLayoutWithLockedItems(
+			ItemsLayout itemsLayout,
+			double availableWidth,
+			double minItemSpacing,
+			double actualLineHeight,
+			double averageAspectRatio,
+			int beginSizedLineIndex,
+			int endSizedLineIndex,
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			int beginLineVectorIndex,
+			bool isLastSizedLineStretchEnabled)
+		{
+			MUX_ASSERT(!UsesFastPathLayout());
+			MUX_ASSERT(!(beginSizedLineIndex < endSizedLineIndex && beginSizedItemIndex >= endSizedItemIndex));
+			MUX_ASSERT(!(beginSizedLineIndex > endSizedLineIndex && beginSizedItemIndex <= endSizedItemIndex));
+			MUX_ASSERT(Math.Abs(beginSizedLineIndex - endSizedLineIndex) <= Math.Abs(beginSizedItemIndex - endSizedItemIndex));
+
+			bool forward = beginSizedItemIndex <= endSizedItemIndex;
+			int sizedLineCount = itemsLayout.m_lineItemCounts.Count;
+
+			int lineVectorIndex;
+
+			for (lineVectorIndex = 0; lineVectorIndex < sizedLineCount; lineVectorIndex++)
+			{
+				MUX_ASSERT(itemsLayout.m_lineItemCounts[lineVectorIndex] > 0);
+
+				m_lineItemCounts[beginLineVectorIndex + lineVectorIndex] = itemsLayout.m_lineItemCounts[lineVectorIndex];
+			}
+
+			bool itemsAreStretched = ItemsStretch == LinedFlowLayoutItemsStretch.Fill;
+			int sizedItemIndex = beginSizedItemIndex;
+
+			for (lineVectorIndex = forward ? 0 : sizedLineCount - 1; ; lineVectorIndex = forward ? lineVectorIndex + 1 : lineVectorIndex - 1)
+			{
+				int lineItemsCount = itemsLayout.m_lineItemCounts[lineVectorIndex];
+				double lineItemsWidth = itemsLayout.m_lineItemWidths[lineVectorIndex];
+				double minItemSpacings = lineItemsCount > 1 ? (lineItemsCount - 1) * minItemSpacing : 0.0;
+				double scaleFactor = 1.0;
+
+				if (lineItemsWidth - minItemSpacings > 0.0)
+				{
+					if (lineItemsWidth > availableWidth)
+					{
+						scaleFactor = ComputeLineShrinkFactor(
+							forward,
+							sizedItemIndex,
+							lineItemsCount,
+							lineItemsWidth,
+							availableWidth,
+							minItemSpacings,
+							actualLineHeight,
+							averageAspectRatio);
+						MUX_ASSERT(scaleFactor >= 0.0);
+						MUX_ASSERT(scaleFactor < 1.0);
+					}
+					else if ((!forward || lineVectorIndex < (isLastSizedLineStretchEnabled ? sizedLineCount : sizedLineCount - 1)) &&
+						lineItemsWidth < availableWidth &&
+						itemsAreStretched)
+					{
+						scaleFactor = ComputeLineExpandFactor(
+							forward,
+							sizedItemIndex,
+							lineItemsCount,
+							lineItemsWidth,
+							availableWidth,
+							minItemSpacings,
+							actualLineHeight,
+							averageAspectRatio);
+						MUX_ASSERT(scaleFactor > 1.0);
+					}
+				}
+
+				if (scaleFactor != 1.0)
+				{
+					for (int itemIndex = 0; itemIndex < lineItemsCount; itemIndex++)
+					{
+						MUX_ASSERT((forward && sizedItemIndex <= endSizedItemIndex) || (!forward && sizedItemIndex >= endSizedItemIndex));
+
+						double minWidth = 0.0;
+
+						if (m_itemsInfoFirstIndex == -1)
+						{
+							MUX_ASSERT(m_elementManager.IsDataIndexRealized(sizedItemIndex));
+
+							if (m_elementManager.GetRealizedElement(sizedItemIndex) is { } element)
+							{
+								if (scaleFactor < 1.0)
+								{
+									if (element is FrameworkElement frameworkElement)
+									{
+										minWidth = frameworkElement.MinWidth;
+									}
+								}
+
+								var elementAvailableSize = new Size(
+									Math.Max((float)minWidth, (float)(element.DesiredSize.Width * scaleFactor)),
+									(float)actualLineHeight);
+
+								element.Measure(elementAvailableSize);
+
+								float itemWidth = (float)element.DesiredSize.Width;
+
+								elementAvailableSize.Width = itemWidth;
+
+								MUX_ASSERT(m_elementAvailableWidths != null);
+
+								// WinUI's find-then-insert/emplace keeps the value already stored for an existing
+								// key (std::map::emplace does not overwrite), i.e. TryAdd semantics.
+								m_elementAvailableWidths!.TryAdd(element, itemWidth);
+							}
+						}
+						else
+						{
+							MUX_ASSERT(sizedItemIndex - m_itemsInfoFirstIndex < m_itemsInfoArrangeWidths.Count);
+
+							float arrangeWidth = GetArrangeWidthFromItemsInfo(sizedItemIndex, actualLineHeight, averageAspectRatio, scaleFactor);
+
+							SetArrangeWidthFromItemsInfo(sizedItemIndex, arrangeWidth);
+
+							if (m_elementManager.IsDataIndexRealized(sizedItemIndex))
+							{
+								if (m_elementManager.GetRealizedElement(sizedItemIndex) is { } element)
+								{
+									var elementAvailableSize = new Size(
+										arrangeWidth,
+										(float)actualLineHeight);
+
+									element.Measure(elementAvailableSize);
+								}
+							}
+						}
+
+						sizedItemIndex = forward ? sizedItemIndex + 1 : sizedItemIndex - 1;
+					}
+				}
+				else
+				{
+					// Measuring items even when no scale factor is applied so that they fill their available width (otherwise background-colored bands appear on the items' left/right edges).
+					for (int itemIndex = 0; itemIndex < lineItemsCount; itemIndex++)
+					{
+						MUX_ASSERT((forward && sizedItemIndex <= endSizedItemIndex) || (!forward && sizedItemIndex >= endSizedItemIndex));
+						MUX_ASSERT(m_itemsInfoFirstIndex == -1 || sizedItemIndex - m_itemsInfoFirstIndex < m_itemsInfoArrangeWidths.Count);
+
+						float arrangeWidth = 0.0f;
+
+						if (m_itemsInfoFirstIndex != -1)
+						{
+							// Case where LinedFlowLayout.ItemsInfoRequested returned partial sizing information.
+							// Retrieve the item's arrange width computed from the regular-path items-info fields.
+							arrangeWidth = GetArrangeWidthFromItemsInfo(sizedItemIndex, actualLineHeight, averageAspectRatio);
+
+							// Store that arrange width in the m_itemsInfoArrangeWidths vector.
+							SetArrangeWidthFromItemsInfo(sizedItemIndex, arrangeWidth);
+						}
+
+						if (m_elementManager.IsDataIndexRealized(sizedItemIndex))
+						{
+							if (m_elementManager.GetRealizedElement(sizedItemIndex) is { } element)
+							{
+								if (m_itemsInfoFirstIndex == -1)
+								{
+									// Case where LinedFlowLayout.ItemsInfoRequested returned no sizing information.
+									// Retrieve the item's arrange width as its desired width.
+									arrangeWidth = (float)element.DesiredSize.Width;
+								}
+
+								var elementAvailableSize = new Size(
+									arrangeWidth,
+									(float)actualLineHeight);
+
+								element.Measure(elementAvailableSize);
+							}
+						}
+
+						sizedItemIndex = forward ? sizedItemIndex + 1 : sizedItemIndex - 1;
+					}
+
+					// Making sure the items fill the line when ItemsStretch is Fill.
+					MUX_ASSERT(!(itemsAreStretched && availableWidth - lineItemsWidth > lineItemsCount && lineItemsWidth > minItemSpacings && lineVectorIndex != sizedLineCount - 1));
+				}
+
+				if (forward && lineVectorIndex == sizedLineCount - 1)
+				{
+					break;
+				}
+				if (!forward && lineVectorIndex == 0)
+				{
+					break;
+				}
+			}
+		}
+
+		#endregion
 	}
 }
