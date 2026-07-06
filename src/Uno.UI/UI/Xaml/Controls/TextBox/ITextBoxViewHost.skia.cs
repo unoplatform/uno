@@ -37,6 +37,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		TextAlignment TextAlignment { get; }
 
+		/// <summary>Whether an IME composition is currently in progress on the host.</summary>
+		bool IsComposing { get; }
+
+		/// <summary>Start index (in plain-text offsets) of the unresolved IME composition underline.</summary>
+		int CompositionUnderlineStart { get; }
+
+		/// <summary>Length of the unresolved IME composition underline (0 when not composing).</summary>
+		int CompositionUnderlineLength { get; }
+
+		/// <summary>
+		/// Whether the host's <see cref="TextAlignment"/> is still at its default-value precedence
+		/// (i.e. not explicitly set). Used by the shared <see cref="TextBoxView.DisplayBlock"/> to
+		/// decide whether to defer to its own alignment.
+		/// </summary>
+		bool IsTextAlignmentSetToDefault { get; }
+
 		/// <summary>
 		/// Runs the host's text-input pipeline (BeforeTextChanging, TextChanging, DP coercion, etc.)
 		/// on <paramref name="newText"/> and returns the resulting (possibly modified) text.

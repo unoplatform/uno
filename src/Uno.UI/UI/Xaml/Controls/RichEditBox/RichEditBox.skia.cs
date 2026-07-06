@@ -173,6 +173,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// shared editing engine is available. For now the text is passed through unchanged.
 		string ITextBoxViewHost.ProcessTextInput(string newText) => newText;
 
+		// RichEditBox does not yet drive interactive IME composition; the shared DisplayBlock reads
+		// these to decide whether to render a composition underline (none for now).
+		bool ITextBoxViewHost.IsComposing => false;
+
+		int ITextBoxViewHost.CompositionUnderlineStart => 0;
+
+		int ITextBoxViewHost.CompositionUnderlineLength => 0;
+
+		bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
+			(this as IDependencyObjectStoreProvider)?.Store
+				.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
+
 		#endregion
 	}
 }

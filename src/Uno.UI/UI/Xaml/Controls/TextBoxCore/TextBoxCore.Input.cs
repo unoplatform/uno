@@ -110,6 +110,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	string ITextBoxViewHost.ProcessTextInput(string newText) => ProcessTextInput(newText);
 
+	bool ITextBoxViewHost.IsComposing => IsComposing;
+
+	int ITextBoxViewHost.CompositionUnderlineStart => CompositionUnderlineStart;
+
+	int ITextBoxViewHost.CompositionUnderlineLength => CompositionUnderlineLength;
+
+	bool ITextBoxViewHost.IsTextAlignmentSetToDefault => !IsTextAlignmentExplicitlySet;
+
 	static TextBoxCore()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;

@@ -34,8 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
-				// TODO Uno: OwningTextBox is still typed as TextBoxCore; RichEditBox hosting is generalized in a later phase.
-				OwningTextBox = host as TextBoxCore,
+				OwningTextBox = host,
 				IsSpellCheckEnabled = host.IsSpellCheckEnabled
 			};
 

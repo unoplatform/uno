@@ -1449,7 +1449,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// standalone <see cref="TextBlock"/>. Typed as the engine, not the control, so it is set for a
 		/// <see cref="PasswordBox"/> as well — the engine drives selection and caret for both.
 		/// </summary>
-		internal TextBoxCore? OwningTextBox { get; init; }
+		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
@@ -1527,7 +1527,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			OwningTextBox is { IsTextAlignmentExplicitlySet: false }
+			OwningTextBox is { IsTextAlignmentSetToDefault: true }
 				? null
 				: TextAlignment;
 
