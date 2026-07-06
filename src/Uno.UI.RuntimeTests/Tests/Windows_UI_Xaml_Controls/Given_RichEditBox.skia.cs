@@ -1313,5 +1313,98 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, count);
 		}
+
+		[TestMethod]
+		public async Task When_DefaultTabStop_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(36f, SUT.Document.DefaultTabStop);
+
+			SUT.Document.DefaultTabStop = 48f;
+			Assert.AreEqual(48f, SUT.Document.DefaultTabStop);
+		}
+
+		[TestMethod]
+		public async Task When_CaretType_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(CaretType.Normal, SUT.Document.CaretType);
+
+			SUT.Document.CaretType = CaretType.Null;
+			Assert.AreEqual(CaretType.Null, SUT.Document.CaretType);
+		}
+
+		[TestMethod]
+		public async Task When_Trailing_Whitespace_And_Spacing_Knobs_RoundTrip()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsFalse(SUT.Document.AlignmentIncludesTrailingWhitespace);
+			Assert.IsFalse(SUT.Document.IgnoreTrailingCharacterSpacing);
+
+			SUT.Document.AlignmentIncludesTrailingWhitespace = true;
+			SUT.Document.IgnoreTrailingCharacterSpacing = true;
+
+			Assert.IsTrue(SUT.Document.AlignmentIncludesTrailingWhitespace);
+			Assert.IsTrue(SUT.Document.IgnoreTrailingCharacterSpacing);
+		}
+
+		[TestMethod]
+		public async Task When_CanCopy_Reflects_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+
+			SUT.Document.Selection.SetRange(0, 0);
+			Assert.IsFalse(SUT.Document.CanCopy());
+
+			SUT.Document.Selection.SetRange(0, 5);
+			Assert.IsTrue(SUT.Document.CanCopy());
+		}
+
+		[TestMethod]
+		public async Task When_CanPaste_True_With_Text_On_Clipboard()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var dp = new DataPackage();
+			dp.SetText("clip");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.Document.CanPaste());
+		}
+
+		[TestMethod]
+		public async Task When_ClearUndoRedoHistory_Clears_Stacks()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "one");
+			SUT.Document.SetText(TextSetOptions.None, "two");
+			Assert.IsTrue(SUT.Document.CanUndo());
+
+			SUT.Document.Undo();
+			Assert.IsTrue(SUT.Document.CanRedo());
+
+			SUT.Document.ClearUndoRedoHistory();
+			Assert.IsFalse(SUT.Document.CanUndo());
+			Assert.IsFalse(SUT.Document.CanRedo());
+		}
 	}
 }
