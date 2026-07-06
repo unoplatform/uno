@@ -217,13 +217,7 @@ internal static class SymbolMatchingHelpers
 
 		// Property type of ContentTemplateRoot is diverging from UWP.
 		// In Uno we use the native view for each platform Android.Views.View, UIKit.UIView, AppKit.NSView
-		if (!AreMatching(uapProperty.Type, unoProperty.Type) && uapProperty.Name != "ContentTemplateRoot" &&
-			// object vs UIElement
-			uapProperty.Name != "Content" &&
-			// IEasingFunction vs EasingFunctionBase
-			uapProperty.Name != "EasingFunction" &&
-			// string vs object
-			uapProperty.Name != "ElementName")
+		if (!AreMatching(uapProperty.Type, unoProperty.Type) && uapProperty.Name != "ContentTemplateRoot")
 		{
 			return false;
 		}
