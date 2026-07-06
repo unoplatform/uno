@@ -12,6 +12,8 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
+		// TODO #13827: with multiple windows this must resolve the activity that owns the window
+		// being created rather than the current foreground one.
 		var activity = BaseActivity.Current as ApplicationActivity
 			?? throw new InvalidOperationException("No foreground ApplicationActivity is available to host the window.");
 
