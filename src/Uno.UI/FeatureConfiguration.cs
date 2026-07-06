@@ -158,16 +158,6 @@ namespace Uno.UI
 #endif
 		}
 
-		public static class DataTemplateSelector
-		{
-			/// <summary>
-			/// When set the false (default value), a call to `SelectTemplateCore(object, DependencyObject)`
-			/// will be made as fallback when the `SelectTemplateCore(object)` returns null.
-			/// When set to true, only `SelectTemplateCore(object)` is called (Uno's legacy mode).
-			/// </summary>
-			public static bool UseLegacyTemplateSelectorOverload { get; set; }
-		}
-
 		public static class DependencyObject
 		{
 			/// <summary>
