@@ -51,20 +51,24 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
 		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
 		private readonly List<double> m_itemsInfoMaxWidthsForRegularPath = new();
-		private readonly List<double> m_itemsInfoArrangeWidths = new();
+		// WinUI: std::vector<float>. Holds the per-item arrange widths (fast or regular path).
+		private readonly List<float> m_itemsInfoArrangeWidths = new();
 
 		// First index of the regular-path items info (-1 when the fast path is used or no info is available).
 		// Read by UsesFastPathLayout()/RequestedRangeStartIndex (WS-D3b); written by ResetItemsInfo (WS-D3c: ExitRegularPath).
 		private int m_itemsInfoFirstIndex = -1;
 
-#pragma warning disable 414 // Assigned but not yet read: consumed by later WS-D3c measure slices, kept to mirror WinUI.
 		// Items info collected through the ItemsInfoRequested event for the fast path.
+		// WinUI: winrt::com_array<double>. Written by the Set*Widths seams; read by Get*FromItemsInfo (WS-D3c).
 		private double[] m_itemsInfoDesiredAspectRatiosForFastPath = Array.Empty<double>();
 		private double[] m_itemsInfoMinWidthsForFastPath = Array.Empty<double>();
 		private double[] m_itemsInfoMaxWidthsForFastPath = Array.Empty<double>();
 
+		// Global min/max widths provided by the ItemsInfoRequested handler; read by Get{Min,Max}WidthFromItemsInfo (WS-D3c).
 		private double m_itemsInfoMinWidth = -1.0;
 		private double m_itemsInfoMaxWidth = -1.0;
+
+#pragma warning disable 414 // Assigned but not yet read: consumed by later WS-D3c measure slices, kept to mirror WinUI.
 		private bool m_forceRelayout;
 #pragma warning restore 414
 
