@@ -215,4 +215,33 @@ public class Given_LinedFlowLayout
 		// Scale up (> 1) but re-capped to maxWidth: 1.0 * 50 = 50 (<= max 60), * 2 = 100, capped to 60.
 		sut.GetArrangeWidth(1.0, -1.0, 60.0, 50.0, 2.0).Should().Be(60.0);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetDesiredAspectRatioFromItemsInfo_FastPath_Then_ReadsSeededBuffer()
+	{
+		var sut = new LinedFlowLayout();
+
+		// The ItemsInfoRequested handler's SetDesiredAspectRatios seam populates the fast-path buffer.
+		sut.SetDesiredAspectRatios(new[] { 1.5, 2.0, 0.5 });
+
+		sut.GetDesiredAspectRatioFromItemsInfo(0, usesFastPathLayout: true).Should().Be(1.5);
+		sut.GetDesiredAspectRatioFromItemsInfo(1, usesFastPathLayout: true).Should().Be(2.0);
+		sut.GetDesiredAspectRatioFromItemsInfo(2, usesFastPathLayout: true).Should().Be(0.5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_GetMinMaxWidthFromItemsInfo_AndNoInfo_Then_ReturnsGlobalDefault()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Fresh instance: no per-item widths and no global min/max -> the -1.0 sentinel is returned
+		// without indexing the empty regular-path buffers (m_itemsInfoFirstIndex == -1, so the
+		// itemIndex - m_itemsInfoFirstIndex bounds check must guard against the empty list).
+		sut.GetMinWidthFromItemsInfo(0).Should().Be(-1.0);
+		sut.GetMaxWidthFromItemsInfo(0).Should().Be(-1.0);
+	}
 }

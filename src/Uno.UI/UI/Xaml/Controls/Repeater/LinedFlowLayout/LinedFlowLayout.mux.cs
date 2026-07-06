@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -401,6 +402,170 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return arrangeWidth;
+		}
+
+		#endregion
+
+		#region Items info accessors & buffers (WS-D3c)
+
+		// std::vector::resize(count, value) equivalent for a List<T> (clear + fill).
+		private static void ClearAndFill<T>(List<T> list, int count, T value)
+		{
+			list.Clear();
+
+			for (int i = 0; i < count; i++)
+			{
+				list.Add(value);
+			}
+		}
+
+		private void EnsureItemsInfoDesiredAspectRatios(int itemCount) => ClearAndFill(m_itemsInfoDesiredAspectRatiosForRegularPath, itemCount, -1.0);
+
+		private void EnsureItemsInfoMinWidths(int itemCount) => ClearAndFill(m_itemsInfoMinWidthsForRegularPath, itemCount, -1.0);
+
+		private void EnsureItemsInfoMaxWidths(int itemCount) => ClearAndFill(m_itemsInfoMaxWidthsForRegularPath, itemCount, -1.0);
+
+		private void EnsureItemsInfoArrangeWidths(int itemCount) => ClearAndFill(m_itemsInfoArrangeWidths, itemCount, -1.0f);
+
+		private void EnsureLineItemCounts(int lineCount) => ClearAndFill(m_lineItemCounts, lineCount, 0);
+
+		private void ResetLinesInfo()
+		{
+			m_lineItemCounts.Clear();
+		}
+
+		private void ResetSizedLines()
+		{
+			m_firstSizedLineIndex = -1;
+			m_lastSizedLineIndex = -1;
+			m_firstSizedItemIndex = -1;
+			m_lastSizedItemIndex = -1;
+			m_firstFrozenLineIndex = -1;
+			m_lastFrozenLineIndex = -1;
+			m_firstFrozenItemIndex = -1;
+			m_lastFrozenItemIndex = -1;
+		}
+
+		private void ExitRegularPath()
+		{
+			m_itemsInfoFirstIndex = -1;
+			m_unsizedNearLineCount = -1;
+			m_unrealizedNearLineCount = -1;
+			m_elementAvailableWidths = null;
+			m_elementDesiredWidths = null;
+			ResetSizedLines();
+		}
+
+		// Fast path layout:
+		//   Returns the arrange width computed from the m_itemsInfoDesiredAspectRatiosForFastPath, m_itemsInfoMinWidthsForFastPath, m_itemsInfoMaxWidthsForFastPath,
+		//   m_itemsInfoMinWidth, m_itemsInfoMaxWidth fields.
+		// Regular path layout:
+		//   Returns the arrange width computed from the m_itemsInfoDesiredAspectRatiosForRegularPath, m_itemsInfoMinWidthsForRegularPath, m_itemsInfoMaxWidthsForRegularPath,
+		//   m_itemsInfoMinWidth, m_itemsInfoMaxWidth fields.
+		// The desired aspect ratio is combined with the provided scaleFactor.
+		// internal (rather than WinUI's private) so it can be white-box tested before the measure path that consumes it lands.
+		internal float GetArrangeWidthFromItemsInfo(
+			int sizedItemIndex,
+			double actualLineHeight,
+			double averageAspectRatio,
+			double scaleFactor)
+		{
+			double desiredAspectRatio = GetDesiredAspectRatioFromItemsInfo(sizedItemIndex, UsesFastPathLayout());
+
+			if (desiredAspectRatio <= 0)
+			{
+				// The average aspect ratio is used as a fallback value for items that were given a negative ratio
+				// by the ItemsInfoRequested handler.
+				desiredAspectRatio = averageAspectRatio;
+			}
+
+			return (float)GetArrangeWidth(
+				desiredAspectRatio,
+				GetMinWidthFromItemsInfo(sizedItemIndex),
+				GetMaxWidthFromItemsInfo(sizedItemIndex),
+				actualLineHeight,
+				scaleFactor);
+		}
+
+		internal double GetDesiredAspectRatioFromItemsInfo(
+			int itemIndex,
+			bool usesFastPathLayout)
+		{
+			MUX_ASSERT(itemIndex >= 0);
+			MUX_ASSERT(itemIndex < m_itemCount);
+
+			double desiredAspectRatio;
+
+			if (usesFastPathLayout)
+			{
+				MUX_ASSERT(m_itemsInfoFirstIndex == -1);
+				MUX_ASSERT(itemIndex < m_itemsInfoDesiredAspectRatiosForFastPath.Length);
+
+				desiredAspectRatio = m_itemsInfoDesiredAspectRatiosForFastPath[itemIndex];
+			}
+			else
+			{
+				MUX_ASSERT(m_itemsInfoFirstIndex >= 0);
+				MUX_ASSERT(itemIndex - m_itemsInfoFirstIndex < m_itemsInfoDesiredAspectRatiosForRegularPath.Count);
+
+				desiredAspectRatio = m_itemsInfoDesiredAspectRatiosForRegularPath[itemIndex - m_itemsInfoFirstIndex];
+			}
+
+			return desiredAspectRatio;
+		}
+
+		internal double GetMaxWidthFromItemsInfo(int itemIndex)
+		{
+			MUX_ASSERT(itemIndex >= 0);
+			MUX_ASSERT(itemIndex < m_itemCount);
+			MUX_ASSERT(m_itemsInfoMaxWidth >= 0.0 || m_itemsInfoMaxWidth == -1.0);
+
+			if (UsesFastPathLayout())
+			{
+				// Fast path layout
+				if (itemIndex < m_itemsInfoMaxWidthsForFastPath.Length)
+				{
+					return Math.Min(m_itemsInfoMaxWidth, m_itemsInfoMaxWidthsForFastPath[itemIndex]);
+				}
+			}
+			else
+			{
+				// Regular path layout
+				if (itemIndex - m_itemsInfoFirstIndex >= 0 &&
+					itemIndex - m_itemsInfoFirstIndex < m_itemsInfoMaxWidthsForRegularPath.Count)
+				{
+					return Math.Min(m_itemsInfoMaxWidth, m_itemsInfoMaxWidthsForRegularPath[itemIndex - m_itemsInfoFirstIndex]);
+				}
+			}
+
+			return m_itemsInfoMaxWidth;
+		}
+
+		internal double GetMinWidthFromItemsInfo(int itemIndex)
+		{
+			MUX_ASSERT(itemIndex >= 0);
+			MUX_ASSERT(itemIndex < m_itemCount);
+			MUX_ASSERT(m_itemsInfoMinWidth >= 0.0 || m_itemsInfoMinWidth == -1.0);
+
+			if (UsesFastPathLayout())
+			{
+				// Fast path layout
+				if (itemIndex < m_itemsInfoMinWidthsForFastPath.Length)
+				{
+					return Math.Max(m_itemsInfoMinWidth, m_itemsInfoMinWidthsForFastPath[itemIndex]);
+				}
+			}
+			else
+			{
+				// Regular path layout
+				if (itemIndex - m_itemsInfoFirstIndex >= 0 &&
+					itemIndex - m_itemsInfoFirstIndex < m_itemsInfoMinWidthsForRegularPath.Count)
+				{
+					return Math.Max(m_itemsInfoMinWidth, m_itemsInfoMinWidthsForRegularPath[itemIndex - m_itemsInfoFirstIndex]);
+				}
+			}
+
+			return m_itemsInfoMinWidth;
 		}
 
 		#endregion
