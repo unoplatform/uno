@@ -159,13 +159,21 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 				EnsureContext();
 			}
 
+			if (_activity.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+			{
+				// The window isn't ready (e.g. mid teardown during activity re-creation); skip the frame.
+				return;
+			}
+
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
-			var ct = (CompositionTarget)_activity.RootElement!.Visual.CompositionTarget!;
-			ct.Renderer = _renderer!;
-			var nativeClipPath = ct.OnNativePlatformFrameRequested(_context);
+			compositionTarget.Renderer = _renderer!;
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 
-			_activity.NativeLayerHost!.Path = nativeClipPath;
+			if (_activity.NativeLayerHost is { } nativeLayerHost)
+			{
+				nativeLayerHost.Path = nativeClipPath;
+			}
 
 			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
