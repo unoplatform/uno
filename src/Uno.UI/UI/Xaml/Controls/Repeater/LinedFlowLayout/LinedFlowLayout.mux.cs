@@ -2438,5 +2438,343 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: regular-path layout search (ComputeItemsLayoutRegularPath) (WS-D3c)
+
+		// Computes the regular-path items layout: evaluates several candidate layouts (via GetItemsLayout) at
+		// different adjusted available widths, picks the lowest-drawback candidate, then fine-tunes it by moving
+		// equalizing head/tail items into neighboring lines via internal locks. The winning layout's per-item
+		// widths are applied by ComputeItemsLayoutWithLockedItems, writing the per-line state onto the instance.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		//
+		// ItemsLayout is a reference type here (WinUI uses a value struct), so every WinUI value-copy of an
+		// ItemsLayout is reproduced with an explicit .Clone() to preserve value semantics: the candidate list and
+		// every 'best'/'to-improve' snapshot must stay independent from the reused fresh GetItemsLayout local.
+		internal void ComputeItemsLayoutRegularPath(
+			float availableWidth,
+			double scrollViewport,
+			double lineSpacing,
+			double actualLineHeight,
+			int beginSizedLineIndex,
+			int endSizedLineIndex,
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			int beginLineVectorIndex,
+			bool isLastSizedLineStretchEnabled)
+		{
+			double minItemSpacing = MinItemSpacing;
+			double averageAspectRatio = GetAverageAspectRatio(availableWidth, actualLineHeight);
+			double averageLineItemsWidth = double.MaxValue;
+			List<ItemsLayout> itemsLayouts = new();
+
+			// Internal locks are used to force an item to belong to a particular line.
+			SortedDictionary<int, int> internalLockedItemIndexes = new();
+
+			// Phase 1: evaluate layout for an available width equal to the MeasureOverride's available width.
+			ItemsLayout itemsLayout = GetItemsLayout(
+				internalLockedItemIndexes,
+				scrollViewport,
+				availableWidth,
+				availableWidth /*adjustedAvailableWidth*/,
+				-1.0 /*averageLineItemsWidth*/,
+				averageAspectRatio,
+				lineSpacing,
+				actualLineHeight,
+				beginSizedLineIndex,
+				endSizedLineIndex,
+				beginSizedItemIndex,
+				endSizedItemIndex,
+				beginLineVectorIndex,
+				isLastSizedLineStretchEnabled);
+
+			MUX_ASSERT(itemsLayout.m_availableLineItemsWidth > 0.0);
+			MUX_ASSERT(itemsLayout.m_lineItemCounts.Count > 0);
+			MUX_ASSERT(itemsLayout.m_lineItemWidths.Count > 0);
+
+			itemsLayouts.Add(itemsLayout.Clone());
+
+			SortedSet<double> availableWidthsProcessed = new();
+
+			if (beginSizedLineIndex != endSizedLineIndex)
+			{
+				availableWidthsProcessed.Add(availableWidth);
+
+				// Phase 2: evaluate layout for an available width equal to the resulting average desired line items width of Phase 1.
+				SortedSet<double> availableWidthsToProcess = new();
+
+				double totalLineItemWidths = 0.0;
+
+				foreach (double lineItemWidthsIterator in itemsLayout.m_lineItemWidths)
+				{
+					totalLineItemWidths += lineItemWidthsIterator;
+				}
+
+				averageLineItemsWidth = totalLineItemWidths / itemsLayout.m_lineItemWidths.Count;
+
+				availableWidthsToProcess.Add(averageLineItemsWidth);
+
+				double availableWidthLowerbound = averageLineItemsWidth;
+				double availableWidthUpperbound = averageLineItemsWidth;
+
+				while (availableWidthsToProcess.Count > 0)
+				{
+					// std::set is ordered ascending; *begin() is the smallest element.
+					double adjustedAvailableWidth = availableWidthsToProcess.Min;
+
+					MUX_ASSERT(adjustedAvailableWidth >= 0.0);
+
+					itemsLayout = GetItemsLayout(
+						internalLockedItemIndexes,
+						scrollViewport,
+						availableWidth,
+						adjustedAvailableWidth,
+						averageLineItemsWidth,
+						averageAspectRatio,
+						lineSpacing,
+						actualLineHeight,
+						beginSizedLineIndex,
+						endSizedLineIndex,
+						beginSizedItemIndex,
+						endSizedItemIndex,
+						beginLineVectorIndex,
+						isLastSizedLineStretchEnabled);
+
+					itemsLayouts.Add(itemsLayout.Clone());
+					availableWidthsProcessed.Add(adjustedAvailableWidth);
+
+					// Phase 3: evaluate layouts with an available width within 30% of the average desired line items width using the smallest head and smallest tail items of prior layouts.
+					// Any layouts with an available width further away is not likely to produce the best layout. Pick the layout with the lowest drawback.
+					const double availableWidthClampingPercent = 0.3;
+					bool isExpansionWorthy = IsItemsLayoutExpansionWorthy(itemsLayout);
+					bool isContractionWorthy = IsItemsLayoutContractionWorthy(itemsLayout);
+
+					if (isExpansionWorthy)
+					{
+						MUX_ASSERT(itemsLayout.m_smallestHeadItemWidth > 0);
+
+						double availableWidthToProcess = adjustedAvailableWidth + minItemSpacing + itemsLayout.m_smallestHeadItemWidth;
+
+						if (Math.Abs(availableWidthToProcess - averageLineItemsWidth) < availableWidthClampingPercent * averageLineItemsWidth &&
+							availableWidthToProcess > availableWidthUpperbound &&
+							availableWidthToProcess != availableWidth &&
+							!availableWidthsProcessed.Contains(availableWidthToProcess) &&
+							!availableWidthsToProcess.Contains(availableWidthToProcess))
+						{
+							availableWidthUpperbound = availableWidthToProcess;
+							availableWidthsToProcess.Add(availableWidthToProcess);
+						}
+					}
+
+					if (isContractionWorthy)
+					{
+						MUX_ASSERT(itemsLayout.m_smallestTailItemWidth > 0);
+
+						double availableWidthToProcess = adjustedAvailableWidth - minItemSpacing - itemsLayout.m_smallestTailItemWidth;
+
+						if (availableWidthToProcess > 0.0 &&
+							Math.Abs(availableWidthToProcess - averageLineItemsWidth) < availableWidthClampingPercent * averageLineItemsWidth &&
+							availableWidthToProcess < availableWidthLowerbound &&
+							availableWidthToProcess != availableWidth &&
+							!availableWidthsProcessed.Contains(availableWidthToProcess) &&
+							!availableWidthsToProcess.Contains(availableWidthToProcess))
+						{
+							availableWidthLowerbound = availableWidthToProcess;
+							availableWidthsToProcess.Add(availableWidthToProcess);
+						}
+					}
+
+					availableWidthsToProcess.Remove(adjustedAvailableWidth);
+				}
+			}
+
+			ItemsLayout bestItemsLayout = itemsLayouts[0].Clone();
+
+			if (itemsLayouts.Count > 1)
+			{
+				// Figure out the layout with the lowest drawback so far.
+				double bestDrawback = double.MaxValue;
+
+				// Find the layout with the smallest drawback so far.
+				foreach (ItemsLayout itemsLayoutIterator in itemsLayouts)
+				{
+					ItemsLayout itemsLayoutTmp = itemsLayoutIterator;
+
+					if (itemsLayoutTmp.m_drawback < bestDrawback)
+					{
+						bestDrawback = itemsLayoutTmp.m_drawback;
+						bestItemsLayout = itemsLayoutTmp.Clone();
+					}
+				}
+
+				// Phase 4: try a layout with adjustedAvailableWidth = (bestItemsLayout.m_availableLineItemsWidth + averageLineItemsWidth) / 2.0,
+				// i.e. the average of the best available width so far and the average line width, as it sometimes results in a lower drawback.
+				// A layout for averageLineItemsWidth was performed in Phase 2, a layout for bestItemsLayout.m_availableLineItemsWidth was performed
+				// in Phase 3 - the optimum available width is likely to be in the neighborhood of those two numbers and trying a layout with their
+				// average has proven worthy through experimentations.
+				double adjustedAvailableWidth = (bestItemsLayout.m_availableLineItemsWidth + averageLineItemsWidth) / 2.0;
+
+				// Make sure adjustedAvailableWidth has not been processed already in Phase 3.
+				if (!availableWidthsProcessed.Contains(adjustedAvailableWidth))
+				{
+					itemsLayout = GetItemsLayout(
+						internalLockedItemIndexes,
+						scrollViewport,
+						availableWidth,
+						adjustedAvailableWidth,
+						averageLineItemsWidth,
+						averageAspectRatio,
+						lineSpacing,
+						actualLineHeight,
+						beginSizedLineIndex,
+						endSizedLineIndex,
+						beginSizedItemIndex,
+						endSizedItemIndex,
+						beginLineVectorIndex,
+						isLastSizedLineStretchEnabled);
+
+					if (itemsLayout.m_drawback < bestItemsLayout.m_drawback)
+					{
+						bestItemsLayout = itemsLayout.Clone();
+					}
+				}
+
+				ItemsLayout itemsLayoutToImprove = bestItemsLayout.Clone();
+				// noDrawbackDecreaseCount indicates how many successive attempts at decreasing the drawback have failed.
+				int noDrawbackDecreaseCount = 0;
+				bool forward = beginSizedLineIndex < endSizedLineIndex;
+
+				// Phase 5: keeping the available width from Phase 4, fine tune that layout by moving best equalizing head and best equalizing tail items into their neighboring lines using internal locks.
+				// Whichever item among the best equalizing head and best equalizing tail is present and provides the largest drawback improvement is moved.
+				// The move with the best anticipated outcome is performed until several attempts produce no drawback improvements.
+				do
+				{
+					if (itemsLayoutToImprove.m_bestEqualizingHeadItemDrawbackImprovement != 0.0 &&
+						(itemsLayoutToImprove.m_bestEqualizingTailItemDrawbackImprovement == 0.0 ||
+						 itemsLayoutToImprove.m_bestEqualizingHeadItemDrawbackImprovement > itemsLayoutToImprove.m_bestEqualizingTailItemDrawbackImprovement))
+					{
+						if (IsItemsLayoutEqualizationWorthy(itemsLayoutToImprove, true /*withHeadItem*/))
+						{
+							if (LockItemToLineInternal(
+									internalLockedItemIndexes,
+									beginSizedLineIndex,
+									endSizedLineIndex,
+									beginSizedItemIndex,
+									endSizedItemIndex,
+									forward ? itemsLayoutToImprove.m_bestEqualizingHeadLineIndex - 1 : itemsLayoutToImprove.m_bestEqualizingHeadLineIndex + 1,
+									itemsLayoutToImprove.m_bestEqualizingHeadItemIndex))
+							{
+								itemsLayout = GetItemsLayout(
+									internalLockedItemIndexes,
+									scrollViewport,
+									availableWidth,
+									itemsLayoutToImprove.m_availableLineItemsWidth,
+									averageLineItemsWidth,
+									averageAspectRatio,
+									lineSpacing,
+									actualLineHeight,
+									beginSizedLineIndex,
+									endSizedLineIndex,
+									beginSizedItemIndex,
+									endSizedItemIndex,
+									beginLineVectorIndex,
+									isLastSizedLineStretchEnabled);
+
+								if (itemsLayout.m_drawback < bestItemsLayout.m_drawback)
+								{
+									bestItemsLayout = itemsLayout.Clone();
+									noDrawbackDecreaseCount = 0;
+								}
+								else
+								{
+									noDrawbackDecreaseCount++;
+								}
+
+								itemsLayoutToImprove = itemsLayout.Clone();
+
+								continue;
+							}
+						}
+					}
+
+					if (itemsLayoutToImprove.m_bestEqualizingTailItemDrawbackImprovement != 0.0 &&
+						(itemsLayoutToImprove.m_bestEqualizingHeadItemDrawbackImprovement == 0.0 ||
+						 itemsLayoutToImprove.m_bestEqualizingTailItemDrawbackImprovement > itemsLayoutToImprove.m_bestEqualizingHeadItemDrawbackImprovement))
+					{
+						if (IsItemsLayoutEqualizationWorthy(itemsLayoutToImprove, false /*withHeadItem*/))
+						{
+							if (LockItemToLineInternal(
+									internalLockedItemIndexes,
+									beginSizedLineIndex,
+									endSizedLineIndex,
+									beginSizedItemIndex,
+									endSizedItemIndex,
+									forward ? itemsLayoutToImprove.m_bestEqualizingTailLineIndex + 1 : itemsLayoutToImprove.m_bestEqualizingTailLineIndex - 1,
+									itemsLayoutToImprove.m_bestEqualizingTailItemIndex))
+							{
+								itemsLayout = GetItemsLayout(
+									internalLockedItemIndexes,
+									scrollViewport,
+									availableWidth,
+									itemsLayoutToImprove.m_availableLineItemsWidth,
+									averageLineItemsWidth,
+									averageAspectRatio,
+									lineSpacing,
+									actualLineHeight,
+									beginSizedLineIndex,
+									endSizedLineIndex,
+									beginSizedItemIndex,
+									endSizedItemIndex,
+									beginLineVectorIndex,
+									isLastSizedLineStretchEnabled);
+
+								if (itemsLayout.m_drawback < bestItemsLayout.m_drawback)
+								{
+									bestItemsLayout = itemsLayout.Clone();
+									noDrawbackDecreaseCount = 0;
+								}
+								else
+								{
+									noDrawbackDecreaseCount++;
+								}
+
+								itemsLayoutToImprove = itemsLayout.Clone();
+							}
+							else
+							{
+								break;
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				while (noDrawbackDecreaseCount < bestItemsLayout.m_lineItemCounts.Count / 2);
+				// TODO: Task 38031375 - Performance optimizations.
+				// Given a line count, investigate what the typical number of iterations without drawback improvement
+				// leads to no improvements no matter the number of subsequent tries.
+			}
+
+			// Phase 6: Final item measurements.
+			ComputeItemsLayoutWithLockedItems(
+				bestItemsLayout,
+				availableWidth,
+				minItemSpacing,
+				actualLineHeight,
+				averageAspectRatio,
+				beginSizedLineIndex,
+				endSizedLineIndex,
+				beginSizedItemIndex,
+				endSizedItemIndex,
+				beginLineVectorIndex,
+				isLastSizedLineStretchEnabled);
+		}
+
+		#endregion
 	}
 }
