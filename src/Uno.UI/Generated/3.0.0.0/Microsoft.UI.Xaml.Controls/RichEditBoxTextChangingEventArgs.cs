@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RichEditBoxTextChangingEventArgs
 	{
-#if __SKIA__
+#if false
 		internal RichEditBoxTextChangingEventArgs()
 		{
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsContentChanging
 		{

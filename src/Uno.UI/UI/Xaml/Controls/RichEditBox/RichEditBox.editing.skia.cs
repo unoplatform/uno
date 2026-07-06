@@ -312,6 +312,17 @@ namespace Microsoft.UI.Xaml.Controls
 			var caret = selectionStart + selectionLength;
 			var start = Math.Min(selectionStart, caret);
 			var length = Math.Abs(selectionLength);
+
+			// Raise the cancellable SelectionChanging before committing the interactive change. De-dupe
+			// against the currently committed span so that caret re-renders / blink resets that don't
+			// actually move the selection don't fire it; if a handler cancels, abort without touching
+			// the caret, the TOM, or the render.
+			if ((start != _selection.start || length != _selection.length) &&
+				RaiseSelectionChangingIsCancelled(start, length))
+			{
+				return;
+			}
+
 			_selection = (start, length, selectionLength < 0);
 
 			if (_textBoxView is { } view)
