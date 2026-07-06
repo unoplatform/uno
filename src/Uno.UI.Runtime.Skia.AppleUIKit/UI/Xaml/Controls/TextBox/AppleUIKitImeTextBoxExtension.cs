@@ -20,7 +20,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 
 	private bool _isComposing;
 	private string _lastComposingText = string.Empty;
-	private TextBox? _activeTextBox;
+	private IImeSessionHost? _activeTextBox;
 
 	public bool IsComposing => _isComposing;
 
@@ -29,14 +29,14 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(IImeSessionHost host)
 	{
-		if (textBox is PasswordBox)
+		if (host is PasswordBox)
 		{
 			return;
 		}
 
-		_activeTextBox = textBox;
+		_activeTextBox = host;
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{

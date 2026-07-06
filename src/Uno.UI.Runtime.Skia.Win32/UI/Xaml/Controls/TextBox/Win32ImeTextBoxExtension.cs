@@ -34,9 +34,9 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(IImeSessionHost host)
 	{
-		var wrapper = (Win32WindowWrapper)XamlRootMap.GetHostForRoot(textBox.XamlRoot!)!;
+		var wrapper = (Win32WindowWrapper)XamlRootMap.GetHostForRoot(host.XamlRoot!)!;
 		_hwnd = (HWND)((Win32NativeWindow)wrapper.NativeWindow!).Hwnd;
 	}
 

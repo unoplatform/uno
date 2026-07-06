@@ -40,9 +40,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 	private static TextInputPlugin? Plugin => ApplicationActivity.RenderView?.TextInputPlugin;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(IImeSessionHost host)
 	{
-		if (textBox is PasswordBox)
+		if (host is PasswordBox)
 		{
 			return;
 		}

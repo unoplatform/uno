@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -123,6 +124,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void OnDocumentTextChanged()
 		{
+			// If the text changed by something other than the active IME composition, cancel it first
+			// (guarded so composition-internal edits don't self-cancel).
+			CancelCompositionOnExternalChange();
+
 			RenderDocument();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
 
@@ -139,12 +144,14 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnGotFocus(e);
 			UpdateVisualState();
 			StartCaret();
+			StartImeSession();
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
 			UpdateVisualState();
+			EndImeSession();
 			StopCaret();
 		}
 
@@ -180,13 +187,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// shared editing engine is available. For now the text is passed through unchanged.
 		string ITextBoxViewHost.ProcessTextInput(string newText) => newText;
 
-		// RichEditBox does not yet drive interactive IME composition; the shared DisplayBlock reads
-		// these to decide whether to render a composition underline (none for now).
-		bool ITextBoxViewHost.IsComposing => false;
+		// Interactive IME composition state lives in RichEditBox.IME.skia.cs; the shared DisplayBlock
+		// reads these to render the composition underline over the active (unresolved) preedit region.
+		bool ITextBoxViewHost.IsComposing => IsComposing;
 
-		int ITextBoxViewHost.CompositionUnderlineStart => 0;
+		int ITextBoxViewHost.CompositionUnderlineStart => _compositionStartIndex + _compositionResolvedLength;
 
-		int ITextBoxViewHost.CompositionUnderlineLength => 0;
+		int ITextBoxViewHost.CompositionUnderlineLength => Math.Max(0, _compositionLength - _compositionResolvedLength);
 
 		// When the paragraph model projects a uniform alignment onto the DisplayBlock
 		// (see ApplyParagraphAlignment), report the alignment as explicitly set so the shared TextBlock
