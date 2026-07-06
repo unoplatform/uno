@@ -18,7 +18,12 @@ namespace Microsoft.UI.Text
 	{
 		private List<ParagraphRun> _paragraphRuns = new();
 
-		private static ParagraphFormatState DefaultParagraphState() => new();
+		// The document's default paragraph formatting: the basis for newly inserted text and empty
+		// documents (see DefaultParagraphState). Exposed via Get/SetDefaultParagraphFormat. Like the
+		// default character format, this is document-level configuration and is not part of the undo snapshot.
+		private readonly ParagraphFormatState _defaultParagraphFormat = new();
+
+		private ParagraphFormatState DefaultParagraphState() => _defaultParagraphFormat.Clone();
 
 		/// <summary>Expands the paragraph runs into one (shared) state reference per character.</summary>
 		private List<ParagraphFormatState> ExpandParagraphRunsRaw()
@@ -344,6 +349,29 @@ namespace Microsoft.UI.Text
 				ApplyParagraphFormatOverChars(paraStart, paraEnd, format.ApplyTo);
 			});
 		}
+
+		/// <summary>Gets the document's default paragraph format as a live (bound) format object.</summary>
+		public global::Microsoft.UI.Text.ITextParagraphFormat GetDefaultParagraphFormat()
+		{
+				var format = new UnoTextParagraphFormat();
+				format.LoadFrom(_defaultParagraphFormat);
+				format.BindApply(ApplyDefaultParagraphFormat);
+				return format;
+		}
+
+		/// <summary>Sets the document's default paragraph format from the defined properties of <paramref name="value"/>.</summary>
+		public void SetDefaultParagraphFormat(global::Microsoft.UI.Text.ITextParagraphFormat value)
+		{
+				if (value is UnoTextParagraphFormat format)
+				{
+					ApplyDefaultParagraphFormat(format);
+				}
+		}
+
+		// Writes the defined properties of the (default-bound) format into the document default. This
+		// does not retroactively re-format existing paragraphs; it only changes the basis for future text.
+		internal void ApplyDefaultParagraphFormat(UnoTextParagraphFormat format)
+				=> format.ApplyTo(_defaultParagraphFormat);
 
 		internal static List<ParagraphRun> CloneParagraphRuns(List<ParagraphRun> runs)
 		{
