@@ -45,9 +45,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	private TextInputPlugin? Plugin
 		=> (AndroidSkiaXamlRootHost.GetActivity(_xamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
 
-	public void StartImeSession(TextBoxCore core)
+	public void StartImeSession(IImeSessionHost host)
 	{
-		if (core.IsPassword)
+		if (host is PasswordBox)
 		{
 			return;
 		}
