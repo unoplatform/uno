@@ -109,4 +109,84 @@ public class Given_LinedFlowLayout
 		first.Should().Be(5.0);
 		second.Should().BeApproximately(sut.SnapToPower(5.0, 1.1), 0.0005);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RaiseItemsInfoRequested_AndHandlerProvidesInfo_Then_ReturnsHandlerValues()
+	{
+		var sut = new LinedFlowLayout();
+		LinedFlowLayoutItemsInfoRequestedEventArgs capturedArgs = null;
+
+		sut.ItemsInfoRequested += (s, e) =>
+		{
+			capturedArgs = e;
+			e.SetDesiredAspectRatios(new[] { 1.0, 2.0, 0.5 });
+			e.MinWidth = 10;
+			e.MaxWidth = 100;
+		};
+
+		var info = sut.RaiseItemsInfoRequested(0, 3);
+
+		// The handler must be invoked with the requested range.
+		capturedArgs.Should().NotBeNull("the ItemsInfoRequested handler must be invoked");
+		capturedArgs.ItemsRangeStartIndex.Should().Be(0);
+		capturedArgs.ItemsRangeRequestedLength.Should().Be(3);
+
+		// The returned ItemsInfo must reflect the sizing info the handler provided.
+		info.m_itemsRangeStartIndex.Should().Be(0);
+		info.m_itemsRangeLength.Should().Be(3);
+		info.m_minWidth.Should().Be(10.0);
+		info.m_maxWidth.Should().Be(100.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RaiseItemsInfoRequested_AndNoHandler_Then_ReturnsEmpty()
+	{
+		var sut = new LinedFlowLayout();
+
+		// No ItemsInfoRequested subscriber -> the empty items info (all -1) is returned.
+		var info = sut.RaiseItemsInfoRequested(0, 3);
+
+		info.m_itemsRangeStartIndex.Should().Be(-1);
+		info.m_itemsRangeLength.Should().Be(-1);
+		info.m_minWidth.Should().Be(-1.0);
+		info.m_maxWidth.Should().Be(-1.0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RaiseItemsInfoRequested_AndHandlerLowersStartIndex_Then_ReturnsExpandedRange()
+	{
+		var sut = new LinedFlowLayout();
+
+		sut.ItemsInfoRequested += (s, e) =>
+		{
+			// A handler may provide MORE info than requested by lowering the start index (never raising it),
+			// then supplying an array that covers the enlarged range.
+			e.ItemsRangeStartIndex = 0;
+			e.SetDesiredAspectRatios(new[] { 1.0, 1.0, 1.0, 1.0, 1.0 });
+		};
+
+		var info = sut.RaiseItemsInfoRequested(2, 3);
+
+		info.m_itemsRangeStartIndex.Should().Be(0);
+		info.m_itemsRangeLength.Should().Be(5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RequestedRange_AndNoItemsInfo_Then_RegularPathEmpty()
+	{
+		var sut = new LinedFlowLayout();
+
+		// Fresh instance: no arrange-width info was provided -> the regular path is used,
+		// with first index -1 and length 0.
+		sut.RequestedRangeStartIndex.Should().Be(-1);
+		sut.RequestedRangeLength.Should().Be(0);
+	}
 }

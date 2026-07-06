@@ -24,19 +24,45 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_cannotShareLinedFlowLayout = "LinedFlowLayout cannot be shared.";
 		private const int s_measureCountdownStart = 5;
 
+		// Sizing info returned by the ItemsInfoRequested event handler for a range of items.
+		// WinUI declares ItemsInfo private; it is internal here so RaiseItemsInfoRequested's return
+		// value can be validated by tests before the measure path that consumes it (WS-D3c) is ported.
+		internal struct ItemsInfo
+		{
+			public int m_itemsRangeStartIndex = -1;
+			public int m_itemsRangeLength = -1;
+			public double m_minWidth = -1.0;
+			public double m_maxWidth = -1.0;
+
+			public ItemsInfo()
+			{
+			}
+		}
+
+		private static readonly ItemsInfo s_emptyItemsInfo = new()
+		{
+			m_itemsRangeStartIndex = -1,
+			m_itemsRangeLength = -1,
+			m_minWidth = -1.0,
+			m_maxWidth = -1.0,
+		};
+
 		// Items info collected through the ItemsInfoRequested event for the regular (non-fast) path.
 		private readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
 		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
 		private readonly List<double> m_itemsInfoMaxWidthsForRegularPath = new();
 		private readonly List<double> m_itemsInfoArrangeWidths = new();
 
-#pragma warning disable 414 // Assigned but not used field: consumed by later WS-D2/D3 slices (measure/arrange), kept to mirror WinUI.
+		// First index of the regular-path items info (-1 when the fast path is used or no info is available).
+		// Read by UsesFastPathLayout()/RequestedRangeStartIndex (WS-D3b); written by ResetItemsInfo (WS-D3c: ExitRegularPath).
+		private int m_itemsInfoFirstIndex = -1;
+
+#pragma warning disable 414 // Assigned but not yet read: consumed by later WS-D3c measure slices, kept to mirror WinUI.
 		// Items info collected through the ItemsInfoRequested event for the fast path.
 		private double[] m_itemsInfoDesiredAspectRatiosForFastPath = Array.Empty<double>();
 		private double[] m_itemsInfoMinWidthsForFastPath = Array.Empty<double>();
 		private double[] m_itemsInfoMaxWidthsForFastPath = Array.Empty<double>();
 
-		private int m_itemsInfoFirstIndex = -1;
 		private double m_itemsInfoMinWidth = -1.0;
 		private double m_itemsInfoMaxWidth = -1.0;
 		private bool m_forceRelayout;
