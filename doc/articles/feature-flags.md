@@ -50,6 +50,10 @@ The rendering backend for the Skia renderer can be configured per platform. On d
 
 For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+## Skipping visual tree painting (Skia)
+
+Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to skip painting of the visual tree entirely, producing frames with no visual output. Frame scheduling, rendering events, composition animations and `RenderTargetBitmap` keep working as usual. This is intended for scenarios where the visual output is of no interest (e.g. automated tests) to save CPU/GPU. Default: `false`.
+
 ## ComboBox
 
 ### Default preferred placement
