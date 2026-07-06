@@ -12,6 +12,11 @@ namespace Microsoft.UI.Text
 	{
 		private List<FormatRun> _runs = new();
 
+		// The document's default character formatting: the basis for newly inserted text and empty
+		// documents (see DefaultFormatState). Exposed via Get/SetDefaultCharacterFormat. This is
+		// document-level configuration and is intentionally not part of the undo snapshot.
+		private readonly CharacterFormatState _defaultCharacterFormat = new();
+
 		/// <summary>The current formatting runs, reconciled to the plain-text length (for rendering).</summary>
 		internal IReadOnlyList<FormatRun> FormatRuns
 		{
@@ -22,7 +27,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		private static CharacterFormatState DefaultFormatState() => new();
+		private CharacterFormatState DefaultFormatState() => _defaultCharacterFormat.Clone();
 
 		/// <summary>Expands the runs into one (shared) state reference per character.</summary>
 		private List<CharacterFormatState> ExpandRunsRaw()
@@ -230,45 +235,69 @@ namespace Microsoft.UI.Text
 
 		/// <summary>Applies the defined properties of <paramref name="format"/> over [start, end).</summary>
 		internal void SetFormatOverRange(int start, int end, UnoTextCharacterFormat format)
+			=> MutateWithUndo(() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)));
+
+		/// <summary>Writes the defined properties of <paramref name="format"/> into <paramref name="state"/>.</summary>
+		private static void ApplyCharacterFormatToState(CharacterFormatState state, UnoTextCharacterFormat format)
 		{
-			MutateWithUndo(() => ApplyFormatOverRange(start, end, state =>
+			if (format.BoldEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				if (format.BoldEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
-				{
-					state.Bold = format.BoldEffect == global::Microsoft.UI.Text.FormatEffect.On;
-				}
+				state.Bold = format.BoldEffect == global::Microsoft.UI.Text.FormatEffect.On;
+			}
 
-				if (format.ItalicEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
-				{
-					state.Italic = format.ItalicEffect == global::Microsoft.UI.Text.FormatEffect.On;
-				}
+			if (format.ItalicEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Italic = format.ItalicEffect == global::Microsoft.UI.Text.FormatEffect.On;
+			}
 
-				if (format.StrikethroughEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
-				{
-					state.Strikethrough = format.StrikethroughEffect == global::Microsoft.UI.Text.FormatEffect.On;
-				}
+			if (format.StrikethroughEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Strikethrough = format.StrikethroughEffect == global::Microsoft.UI.Text.FormatEffect.On;
+			}
 
-				if (format.UnderlineValue != global::Microsoft.UI.Text.UnderlineType.Undefined)
-				{
-					state.Underline = format.UnderlineValue;
-				}
+			if (format.UnderlineValue != global::Microsoft.UI.Text.UnderlineType.Undefined)
+			{
+				state.Underline = format.UnderlineValue;
+			}
 
-				if (format.ForegroundDefined)
-				{
-					state.Foreground = format.ForegroundValue;
-				}
+			if (format.ForegroundDefined)
+			{
+				state.Foreground = format.ForegroundValue;
+			}
 
-				if (format.SizeDefined)
-				{
-					state.Size = format.SizeValue;
-				}
+			if (format.SizeDefined)
+			{
+				state.Size = format.SizeValue;
+			}
 
-				if (format.NameDefined)
-				{
-					state.Name = format.NameValue;
-				}
-			}));
+			if (format.NameDefined)
+			{
+				state.Name = format.NameValue;
+			}
 		}
+
+		/// <summary>Gets the document's default character format as a live (bound) format object.</summary>
+		public global::Microsoft.UI.Text.ITextCharacterFormat GetDefaultCharacterFormat()
+		{
+			var format = new UnoTextCharacterFormat();
+			format.LoadFrom(_defaultCharacterFormat);
+			format.BindApply(ApplyDefaultCharacterFormat);
+			return format;
+		}
+
+		/// <summary>Sets the document's default character format from the defined properties of <paramref name="value"/>.</summary>
+		public void SetDefaultCharacterFormat(global::Microsoft.UI.Text.ITextCharacterFormat value)
+		{
+			if (value is UnoTextCharacterFormat format)
+			{
+				ApplyDefaultCharacterFormat(format);
+			}
+		}
+
+		// Writes the defined properties of the (default-bound) format into the document default. This
+		// does not retroactively re-format existing runs; it only changes the basis for future text.
+		internal void ApplyDefaultCharacterFormat(UnoTextCharacterFormat format)
+			=> ApplyCharacterFormatToState(_defaultCharacterFormat, format);
 
 		private static global::Microsoft.UI.Text.FormatEffect Effect(bool value)
 			=> value ? global::Microsoft.UI.Text.FormatEffect.On : global::Microsoft.UI.Text.FormatEffect.Off;
