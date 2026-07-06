@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
+public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost, ITextViewEditorHost
 {
 	private TextSelectionGripperPresenter _gripperPresenter;
 	private TextBoxView _textBoxView;
@@ -93,6 +93,25 @@ public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
 	bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
 		(this as IDependencyObjectStoreProvider)?.Store
 			.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
+
+	private TextViewEditor _editorField;
+
+	// The shared keyboard navigation/edit engine, also used by RichEditBox.
+	private TextViewEditor _editor => _editorField ??= new TextViewEditor(this);
+
+	TextBoxView ITextViewEditorHost.TextBoxView => _textBoxView;
+
+	string ITextViewEditorHost.Text => Text;
+
+	bool ITextViewEditorHost.HasPointerCapture => HasPointerCapture;
+
+	float ITextViewEditorHost.CaretXOffset => _caretXOffset;
+
+	void ITextViewEditorHost.TrySetCurrentlyTyping(bool value) => TrySetCurrentlyTyping(value);
+
+	void ITextViewEditorHost.CommitReplace(string oldText, string newText, int caret) => CommitAction(new ReplaceAction(oldText, newText, caret));
+
+	void ITextViewEditorHost.CommitDelete(string oldText, string newText, int selectionStart, int selectionLength) => CommitAction(new DeleteAction(oldText, newText, selectionStart, selectionLength));
 
 	static TextBox()
 	{
@@ -1117,336 +1136,28 @@ public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
 		=> _pendingSelection = (selectionStart, selectionLength);
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (selectionLength != 0)
-		{
-			TrySetCurrentlyTyping(false);
-			TrySetCurrentlyTyping(true);
-
-			var start = Math.Min(selectionStart, selectionStart + selectionLength);
-			var end = Math.Max(selectionStart, selectionStart + selectionLength);
-			text = text[..start] + text[end..];
-			selectionLength = 0;
-			selectionStart = start;
-		}
-		else if (selectionStart != 0)
-		{
-			if (ctrl)
-			{
-				// ctrl always ends the previous typing run
-				TrySetCurrentlyTyping(false);
-			}
-			else
-			{
-				// idempotent call to make sure we're starting a new typing run if we're not in one already
-				TrySetCurrentlyTyping(true);
-			}
-
-			var oldText = text;
-			var index = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
-			text = text[..index] + text[selectionStart..];
-			selectionStart = index;
-
-			if (ctrl)
-			{
-				// typing after ctrl starts a new run, and not a part of the ctrl-backspace run
-				CommitAction(new ReplaceAction(oldText, text, selectionStart));
-			}
-		}
-	}
+		=> _editor.KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// TODO ctrl+up
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
-		if (shift)
-		{
-			selectionLength = newEnd - selectionStart;
-		}
-		else
-		{
-			selectionStart = newEnd;
-			selectionLength = 0;
-		}
-
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// TODO ctrl+down
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
-		if (shift)
-		{
-			selectionLength = newEnd - selectionStart;
-		}
-		else
-		{
-			selectionStart = newEnd;
-			selectionLength = 0;
-		}
-
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
-	{
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
-		{
-			return;
-		}
-
-		args.Handled = true;
-
-		if (shift)
-		{
-			var end = selectionStart + selectionLength;
-			if (ctrl)
-			{
-				end = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, false).start;
-			}
-			else
-			{
-				end--;
-			}
-
-			selectionLength = end - selectionStart;
-		}
-		else
-		{
-			if (selectionLength == 0)
-			{
-				selectionStart = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
-			}
-			else
-			{
-				selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
-			}
-			selectionLength = 0;
-		}
-	}
+		=> _editor.KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is:
-		// * `option` + `right` that moves to the next word
-		// * `shift` + `option` + `right` that select the next word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
-		if (!moveOutRight)
-		{
-			args.Handled = true;
-
-			if (shift)
-			{
-				var end = selectionStart + selectionLength;
-				if (ctrl)
-				{
-					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, true);
-					end = chunk.start + chunk.length;
-				}
-				else
-				{
-					end++;
-				}
-
-				selectionLength = end - selectionStart;
-			}
-			else
-			{
-				if (selectionLength == 0)
-				{
-					if (ctrl)
-					{
-						var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
-						selectionStart = chunk.start + chunk.length;
-					}
-					else
-					{
-						selectionStart += 1;
-					}
-				}
-				else
-				{
-					selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
-				}
-				selectionLength = 0;
-			}
-		}
-	}
+		=> _editor.KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		if (shift)
-		{
-			selectionLength = ctrl ? -selectionStart : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start - selectionStart;
-		}
-		else
-		{
-			selectionStart = ctrl ? 0 : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start;
-			selectionLength = 0;
-		}
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		if (shift)
-		{
-			if (ctrl)
-			{
-				selectionLength = text.Length - selectionStart;
-			}
-			else
-			{
-				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-				selectionLength = line.start + line.length - selectionStart;
-			}
-		}
-		else
-		{
-			if (ctrl)
-			{
-				selectionStart = text.Length;
-			}
-			else
-			{
-				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-				selectionStart = line.start + line.length;
-				if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
-				{
-					// a newline is part of the line just before it, but End shouldn't go past the newline
-					selectionStart--;
-				}
-			}
-			selectionLength = 0;
-		}
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is `option` + `delete>` that removes the next word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		TrySetCurrentlyTyping(false);
-		args.Handled = true;
-		var oldText = text;
-		if (selectionLength != 0)
-		{
-			var start = Math.Min(selectionStart, selectionStart + selectionLength);
-			var end = Math.Max(selectionStart, selectionStart + selectionLength);
-			text = text[..start] + text[end..];
-			CommitAction(new DeleteAction(oldText, text, selectionStart, selectionLength));
-			selectionLength = 0;
-			selectionStart = start;
-		}
-		else if (selectionStart != text.Length)
-		{
-			if (shift)
-			{
-				// On WinUI, shift-delete doesn't do anything if nothing is selected for some reason
-				// We still end the previous typing run
-				return;
-			}
-			int index;
-			if (ctrl)
-			{
-				var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
-				index = chunk.start + chunk.length;
-			}
-			else
-			{
-				index = selectionStart + 1;
-			}
-			text = text[..selectionStart] + text[index..];
-			// On WinUI, when ctrl-delete is Undone, the deleted text actually gets selected even though initially, nothing was selected
-			CommitAction(new DeleteAction(oldText, text, selectionStart, ctrl ? index - selectionStart : 0));
-		}
-	}
+		=> _editor.KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	/// <summary>
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
@@ -1479,76 +1190,6 @@ public partial class TextBox : ITextSelectionGripperHost, ITextBoxViewHost
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
 		}
-	}
-
-	/// <summary>
-	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
-	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// This method cares about the second kind of lines.
-	/// </summary>
-	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-
-		var (startLineStart, startLineLength, startLineFirst, startLineLast, startLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart);
-		var (endLineStart, endLineLength, endLineFirst, endLineLast, endLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-
-		if (up && shift && endLineFirst)
-		{
-			return 0; // first line, goes to the beginning
-		}
-		else if (!up && shift && endLineLast)
-		{
-			return text.Length; // last line, goes to the end
-		}
-		else if (!up && !shift && (startLineLast || endLineLast))
-		{
-			return text.Length; // last line, goes to the end
-		}
-
-		int newLineIndex;
-		if (up)
-		{
-			if (selectionLength < 0 || shift)
-			{
-				newLineIndex = !endLineFirst ? endLineIndex - 1 : endLineIndex;
-			}
-			else
-			{
-				newLineIndex = !startLineFirst ? startLineIndex - 1 : startLineIndex;
-			}
-		}
-		else
-		{
-			if (selectionLength > 0 || shift)
-			{
-				newLineIndex = !endLineLast ? endLineIndex + 1 : endLineIndex;
-			}
-			else
-			{
-				newLineIndex = !startLineLast ? startLineIndex + 1 : startLineIndex;
-			}
-		}
-
-		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength);
-		var x = _caretXOffset;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
-		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(index);
-		if (text.Length > index - 1
-			&& newLineLength > 1 // this check is for cases where the line has nothing but \r (i.e. is empty)
-			&& index - 1 >= 0
-			&& index == newLineStart + newLineLength
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
-		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
-		}
-
-		return index;
 	}
 
 	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
