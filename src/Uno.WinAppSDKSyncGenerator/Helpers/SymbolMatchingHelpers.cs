@@ -321,7 +321,7 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreParametersMatching(IParameterSymbol uapParameters, IParameterSymbol unoParameters) =>
 		uapParameters.IsOptional == unoParameters.IsOptional &&
-		(uapParameters.Name == unoParameters.Name || IgnoreParameterName(uapParameters)) &&
+		uapParameters.Name == unoParameters.Name &&
 		uapParameters.IsParams == unoParameters.IsParams &&
 		(uapParameters.RefKind == unoParameters.RefKind || IgnoreRefKind(uapParameters)) &&
 		AreMatching(uapParameters.Type, unoParameters.Type);
@@ -332,47 +332,6 @@ internal static class SymbolMatchingHelpers
 		{
 			// GuidHelpers.Equals uses "in" RefKind in WinUI, while it uses "ref" RefKind in UWP.
 			// In Uno, we use "ref" in both flavors.
-			return true;
-		}
-
-		return false;
-	}
-
-	private static bool IgnoreParameterName(IParameterSymbol uapParameter)
-	{
-		var name = uapParameter.Name;
-		if (name.StartsWith('_'))
-		{
-			// The '_' check is to ignore parameter name differences for badly named WinUI parameters.
-			// For example, FontWeight constructor parameter in WinUI is called "_Weight", while we name it "weight"
-			// Our naming makes more sense, and we want to avoid this breaking change for now.
-			// We can revisit in the future if we want to match WinUI naming.
-			return true;
-		}
-		else if (name == "windowsruntimeStream")
-		{
-			// In Uno, we name it windowsRuntimeStream.
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (uapParameter.ContainingSymbol.Name == "Equals")
-		{
-			// Some object.Equals overrides in WinUI use parameter name as "o" while uno uses "obj".
-			// There is also CornerRadius.Equals where we name the parameter as "other" while WinUI name it "cornerRadius"
-			// Also, Duration.Equals(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (uapParameter.ContainingSymbol.Name == "Compare" && uapParameter.ContainingType.Name == "Duration")
-		{
-			// Duration.Compare(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
-			// Skip for now to avoid breaking changes.
-			return true;
-		}
-		else if (name == "location" && uapParameter.ContainingType.Name == "Rect")
-		{
-			// Rect(Point,Size) constructor names the Point parameter as location in WinUI while we name it point in Uno.
-			// Skip for now to avoid breaking changes.
 			return true;
 		}
 

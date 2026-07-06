@@ -7,10 +7,11 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct SizeInt32
 {
-	internal SizeInt32(int width, int height)
+	// Parameter names mirror the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
+	internal SizeInt32(int _Width, int _Height)
 	{
-		Width = width;
-		Height = height;
+		Width = _Width;
+		Height = _Height;
 	}
 
 	/// <summary>

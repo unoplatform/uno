@@ -236,39 +236,39 @@ namespace Microsoft.UI.Xaml
 			return Compare(this, other);
 		}
 
-		public static int Compare(Duration first, Duration second)
+		public static int Compare(Duration t1, Duration t2)
 		{
-			if (first.Type == second.Type)
+			if (t1.Type == t2.Type)
 			{
 				// Both are TimeSpan
-				if (first.Type == DurationType.TimeSpan)
+				if (t1.Type == DurationType.TimeSpan)
 				{
-					return first.TimeSpan.CompareTo(second.TimeSpan);
+					return t1.TimeSpan.CompareTo(t2.TimeSpan);
 				}
 
 				// Both are Automatic or Forever
 				return 0;
 			}
 
-			// First is Forever and second is not
-			if (first.Type == DurationType.Forever)
+			// t1 is Forever and t2 is not
+			if (t1.Type == DurationType.Forever)
 			{
 				return 1;
 			}
 
-			// First is Automatic and second is not
-			if (first.Type == DurationType.Automatic)
+			// t1 is Automatic and t2 is not
+			if (t1.Type == DurationType.Automatic)
 			{
 				return -1;
 			}
 
-			// First is Timespan and second is Automatic
-			if (second.Type == DurationType.Automatic)
+			// t1 is Timespan and t2 is Automatic
+			if (t2.Type == DurationType.Automatic)
 			{
 				return 1;
 			}
 
-			// First is Timespan and second is Forever
+			// t1 is Timespan and t2 is Forever
 			return -1;
 		}
 
