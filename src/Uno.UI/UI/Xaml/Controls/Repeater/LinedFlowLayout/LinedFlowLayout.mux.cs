@@ -62,21 +62,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Index of the first item for which sizing info is requested through the
 		/// <see cref="ItemsInfoRequested"/> event.
 		/// </summary>
-		public int RequestedRangeStartIndex
-		{
-			// TODO (WS-D3): return UsesFastPathLayout() ? 0 : m_itemsInfoFirstIndex.
-			get => throw new NotImplementedException("LinedFlowLayout.RequestedRangeStartIndex is not yet ported (WS-D3).");
-		}
+		public int RequestedRangeStartIndex => UsesFastPathLayout() ? 0 : m_itemsInfoFirstIndex;
 
 		/// <summary>
 		/// Number of items for which sizing info is requested through the
 		/// <see cref="ItemsInfoRequested"/> event.
 		/// </summary>
-		public int RequestedRangeLength
-		{
-			// TODO (WS-D3): return UsesFastPathLayout() ? m_itemCount : regular-path aspect-ratio count.
-			get => throw new NotImplementedException("LinedFlowLayout.RequestedRangeLength is not yet ported (WS-D3).");
-		}
+		public int RequestedRangeLength => UsesFastPathLayout() ? m_itemCount : m_itemsInfoDesiredAspectRatiosForRegularPath.Count;
 
 		#endregion
 
@@ -138,6 +130,55 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsInfoMinWidth = -1.0;
 			m_itemsInfoMaxWidth = -1.0;
 		}
+
+		#region Items info (ItemsInfoRequested plumbing)
+
+		// Returns True when an ItemsInfoRequested handler provided arrange widths (fast or regular path).
+		private bool UsesArrangeWidthInfo() => m_itemsInfoArrangeWidths.Count > 0;
+
+		// Returns True when an ItemsInfoRequested handler provided sizing information for the entire source
+		// collection. In that case the fast path can be performed; it is characterized by a populated
+		// m_itemsInfoArrangeWidths and m_itemsInfoFirstIndex remaining at -1.
+		private bool UsesFastPathLayout() => UsesArrangeWidthInfo() && m_itemsInfoFirstIndex == -1;
+
+		// Raises the ItemsInfoRequested event for the [itemsRangeStartIndex, +itemsRangeRequestedLength) range
+		// and returns the sizing info the handler provided (or s_emptyItemsInfo when there is no handler).
+		// WinUI declares this private; it is internal here so the public ItemsInfoRequested round-trip is
+		// testable before the measure path that calls it (WS-D3c) is ported.
+		internal ItemsInfo RaiseItemsInfoRequested(
+			int itemsRangeStartIndex,
+			int itemsRangeRequestedLength)
+		{
+			MUX_ASSERT(itemsRangeStartIndex >= 0);
+			MUX_ASSERT(itemsRangeRequestedLength > 0);
+			MUX_ASSERT(itemsRangeStartIndex + itemsRangeRequestedLength - 1 < m_itemCount);
+
+			if (ItemsInfoRequested is { } itemsInfoRequested)
+			{
+				var itemsInfoRequestedEventArgs = new LinedFlowLayoutItemsInfoRequestedEventArgs(this, itemsRangeStartIndex, itemsRangeRequestedLength);
+
+				itemsInfoRequested(this, itemsInfoRequestedEventArgs);
+
+				// Disconnect the LinedFlowLayout from the LinedFlowLayoutItemsInfoRequestedEventArgs so that any
+				// subsequent calls to SetDesiredAspectRatios/SetMinWidths/SetMaxWidths have no effect.
+				itemsInfoRequestedEventArgs.ResetLinedFlowLayout();
+
+				// The original ItemsRangeStartIndex value may have been overwritten by the handler to a smaller
+				// value. This allows a handler to provide more information than requested, because it's available
+				// and performant to do so. It reduces subsequent needs to raise the event again.
+				return new ItemsInfo
+				{
+					m_itemsRangeStartIndex = itemsInfoRequestedEventArgs.ItemsRangeStartIndex,
+					m_itemsRangeLength = itemsInfoRequestedEventArgs.ItemsRangeLength,
+					m_minWidth = (float)itemsInfoRequestedEventArgs.MinWidth,
+					m_maxWidth = (float)itemsInfoRequestedEventArgs.MaxWidth,
+				};
+			}
+
+			return s_emptyItemsInfo;
+		}
+
+		#endregion
 
 		#region ILayoutOverrides
 
