@@ -5,10 +5,11 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct PointInt32
 {
-	public PointInt32(int x, int y)
+	// Parameter names mirror the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
+	public PointInt32(int _X, int _Y)
 	{
-		X = x;
-		Y = y;
+		X = _X;
+		Y = _Y;
 	}
 
 	/// <summary>
