@@ -13,7 +13,7 @@ namespace Microsoft.UI.Text
 		{
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AlignmentIncludesTrailingWhitespace
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Text.CaretType CaretType
 		{
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public float DefaultTabStop
 		{
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IgnoreTrailingCharacterSpacing
 		{
@@ -93,14 +93,14 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool CanCopy()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanCopy()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool CanPaste()
 		{
@@ -233,7 +233,7 @@ namespace Microsoft.UI.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "Undo()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public void ClearUndoRedoHistory()
 		{
