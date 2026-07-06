@@ -24,8 +24,7 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
+	private ApplicationActivity _activity;
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
@@ -37,8 +36,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Rect _previousTrueVisibleBounds;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(ApplicationActivity activity)
 	{
+		_activity = activity;
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
@@ -47,17 +47,25 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => ApplicationActivity.Instance?.Window;
+	public override object NativeWindow => _activity.Window;
 
-	internal static NativeWindowWrapper Instance => _instance.Value;
+	/// <summary>
+	/// The activity currently driving this window. Updated on activity re-creation, since the
+	/// managed Window (and this wrapper) outlive individual activities on Android.
+	/// </summary>
+	internal ApplicationActivity CurrentActivity
+	{
+		get => _activity;
+		set => _activity = value;
+	}
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	public override string Title
 	{
-		get => ApplicationActivity.Instance.Title;
-		set => ApplicationActivity.Instance.Title = value;
+		get => _activity.Title;
+		set => _activity.Title = value;
 	}
 
 	internal int SystemUiVisibility { get; set; }
@@ -109,8 +117,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 		};
 
-		ApplicationActivity.Instance.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
-		ApplicationActivity.Instance.EnsureContentView();
+		_activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+		_activity.EnsureContentView();
 		ApplySystemOverlaysTheming();
 	}
 
@@ -119,7 +127,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
-		if (ContextHelper.Current is not Activity activity)
+		var activity = _activity;
+		if (activity.Window is null)
 		{
 			return default;
 		}
@@ -196,13 +205,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
 			if (Microsoft.UI.Xaml.Application.Current is { } application &&
-				(ContextHelper.TryGetCurrent(out var context)) &&
-				context is Activity activity &&
-				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+				_activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
 			{
 				var requestedTheme = application.RequestedTheme;
 
-				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+				var insetsController = WindowCompat.GetInsetsController(_activity.Window, decorView);
 
 				// "appearance light" refers to status bar set to light theme == dark foreground
 				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
@@ -212,7 +219,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Size GetWindowSize()
 	{
-		if (ContextHelper.Current is not Activity activity)
+		var activity = _activity;
+		if (activity.Window is null)
 		{
 			return default;
 		}
@@ -221,7 +229,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
-			var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+			var windowMetrics = activity.WindowManager?.CurrentWindowMetrics;
 			displaySize = new Size(windowMetrics.Bounds.Width(), windowMetrics.Bounds.Height());
 		}
 		else
@@ -249,7 +257,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private void UpdateFullScreenMode(bool isFullscreen)
 	{
 #pragma warning disable 618
-		var activity = ContextHelper.Current as Activity;
+		var activity = _activity;
 #pragma warning disable CA1422 // Validate platform compatibility
 		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
 #pragma warning restore CA1422 // Validate platform compatibility
@@ -286,8 +294,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void AddPreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
 		}
@@ -295,8 +302,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void RemovePreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
 		}
