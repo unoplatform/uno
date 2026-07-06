@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
@@ -112,6 +113,125 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(
 				SUT.Document.Selection.EndPosition > caret,
 				$"Shift+click should extend selection past the caret {caret}, was {SUT.Document.Selection.EndPosition}.");
+		}
+
+		[TestMethod]
+		public async Task When_Copy_Puts_Selection_On_Clipboard()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Document.Selection.SetRange(0, 5);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+
+			var content = Clipboard.GetContent();
+			var clipboardText = await content.GetTextAsync();
+			Assert.AreEqual("Hello", clipboardText);
+		}
+
+		[TestMethod]
+		public async Task When_Cut_Removes_Selection_And_Copies()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Document.Selection.SetRange(0, 6);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.CutSelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("world", text);
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
+
+			var clipboardText = await Clipboard.GetContent().GetTextAsync();
+			Assert.AreEqual("Hello ", clipboardText);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_Inserts_At_Caret()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "AB");
+			SUT.Document.Selection.SetRange(1, 1);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("XY");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+
+			await WindowHelper.WaitFor(() =>
+			{
+				SUT.Document.GetText(TextGetOptions.None, out var t);
+				return t == "AXYB";
+			});
+
+			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_C_Ctrl_V_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+			SUT.Document.Selection.SetRange(0, 5);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.C, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.End);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.V, VirtualKeyModifiers.Control);
+
+			await WindowHelper.WaitFor(() =>
+			{
+				SUT.Document.GetText(TextGetOptions.None, out var t);
+				return t == "HelloHello";
+			});
+		}
+
+		[TestMethod]
+		public async Task When_Cut_Is_NoOp_When_ReadOnly()
+		{
+			var SUT = new RichEditBox { IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Document.Selection.SetRange(0, 5);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.CutSelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Hello world", text);
 		}
 	}
 }
