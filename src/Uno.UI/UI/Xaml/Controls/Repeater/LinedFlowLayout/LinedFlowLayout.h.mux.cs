@@ -143,7 +143,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ElementManager m_elementManager = new();
 
 		// Item count as reported by the context; refreshed on each Initialize/OnItemsChanged.
-		private int m_itemCount;
+		// internal for white-box testability of the line-breaking helpers.
+		internal int m_itemCount;
 
 		// Map keeping track of the locked items. Key: locked item index; Value: line index holding it.
 		private readonly SortedDictionary<int, int> m_lockedItemIndexes = new();
@@ -188,7 +189,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private double m_roundingScaleFactor = 1.0;
 
 		// First value is the 'raw' average-items-per-line; second is that value snapped to a power of 1.1.
-		private (double first, double second) m_averageItemsPerLine;
+		// internal for white-box testability of the line-breaking helpers.
+		internal (double first, double second) m_averageItemsPerLine;
 
 		// Timer used to trigger an asynchronous measure pass when no items info was provided by the
 		// ItemsInfoRequested event (started from the measure path in WS-D3f).

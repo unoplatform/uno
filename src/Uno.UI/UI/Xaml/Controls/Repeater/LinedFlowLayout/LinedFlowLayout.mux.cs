@@ -1948,6 +1948,79 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
+		// Attempts to record a lock of itemIndex to lineIndex in the in-progress internal locked-item map,
+		// honoring the sized line/item ranges and neighboring already-locked items. Returns true when the
+		// lock is valid and was recorded. MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		internal bool LockItemToLineInternal(
+			SortedDictionary<int, int> internalLockedItemIndexes,
+			int beginSizedLineIndex,
+			int endSizedLineIndex,
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			int lineIndex,
+			int itemIndex)
+		{
+			MUX_ASSERT(!(beginSizedLineIndex < endSizedLineIndex && beginSizedItemIndex >= endSizedItemIndex));
+			MUX_ASSERT(!(beginSizedLineIndex > endSizedLineIndex && beginSizedItemIndex <= endSizedItemIndex));
+			MUX_ASSERT(Math.Abs(beginSizedLineIndex - endSizedLineIndex) <= Math.Abs(beginSizedItemIndex - endSizedItemIndex));
+
+			if (lineIndex > itemIndex)
+			{
+				return false;
+			}
+
+			MUX_ASSERT(lineIndex <= itemIndex);
+
+			int lineCount = GetLineCount(m_averageItemsPerLine.second);
+
+			MUX_ASSERT(lineCount > 0);
+			MUX_ASSERT(lineIndex < lineCount);
+
+			if (lineCount - lineIndex > m_itemCount - itemIndex)
+			{
+				return false;
+			}
+
+			if (Math.Abs(beginSizedLineIndex - lineIndex) > Math.Abs(beginSizedItemIndex - itemIndex))
+			{
+				return false;
+			}
+
+			if (Math.Abs(endSizedLineIndex - lineIndex) > Math.Abs(endSizedItemIndex - itemIndex))
+			{
+				return false;
+			}
+
+			GetNextLockedItem(
+				internalLockedItemIndexes,
+				false /*forward*/,
+				lineCount - 1 /*beginLineIndex*/,
+				0 /*endLineIndex*/,
+				itemIndex,
+				out int beforeLockedItemIndex,
+				out int beforeLockedLineIndex);
+
+			GetNextLockedItem(
+				internalLockedItemIndexes,
+				true /*forward*/,
+				0 /*beginLineIndex*/,
+				lineCount - 1 /*endLineIndex*/,
+				itemIndex,
+				out int afterLockedItemIndex,
+				out int afterLockedLineIndex);
+
+			if ((beforeLockedItemIndex == -1 || (itemIndex - beforeLockedItemIndex >= lineIndex - beforeLockedLineIndex)) &&
+				(afterLockedItemIndex == -1 || (afterLockedItemIndex - itemIndex >= afterLockedLineIndex - lineIndex)))
+			{
+				// std::map::insert does not overwrite an existing key; TryAdd matches that (result ignored).
+				internalLockedItemIndexes.TryAdd(itemIndex, lineIndex);
+
+				return true;
+			}
+
+			return false;
+		}
+
 		#endregion
 
 		#region Measure engine: line-breaking (GetItemsLayout) (WS-D3c)
