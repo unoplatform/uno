@@ -1,0 +1,371 @@
+#nullable enable
+
+using System;
+
+namespace Microsoft.UI.Text
+{
+	// Uno-specific functional Text Object Model range over the RichEditBox plain-text buffer.
+	//
+	// The plain-text navigation and editing surface (positions, Text, SetRange, Collapse, GetText/
+	// SetText, FindText, Delete, ChangeCase, Move/MoveStart/MoveEnd, GetClone, InRange/InStory/IsEqual)
+	// is functional and drives the shared rendering surface through the owning document.
+	//
+	// TODO Uno: Character/paragraph formatting (CharacterFormat/ParagraphFormat/FormattedText/Gravity/
+	// Link), clipboard (Copy/Cut/Paste/CanPaste), geometry (GetPoint/GetRect/ScrollIntoView/SetPoint),
+	// unit-based navigation beyond Character (Expand/StartOf/EndOf/GetIndex/SetIndex), streams and
+	// embedded images arrive with the rich-content model and the shared editing engine.
+	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
+	{
+		private protected readonly RichEditTextDocument _document;
+		private protected int _start;
+		private protected int _end;
+
+		internal UnoTextRange(RichEditTextDocument document, int startPosition, int endPosition)
+		{
+			_document = document;
+			_start = startPosition;
+			_end = endPosition;
+			Normalize();
+		}
+
+		private protected void Normalize()
+		{
+			var length = _document.TextLength;
+			_start = Math.Clamp(_start, 0, length);
+			_end = Math.Clamp(_end, 0, length);
+			if (_start > _end)
+			{
+				(_start, _end) = (_end, _start);
+			}
+		}
+
+		private static Exception NotImplemented(string member)
+			=> new NotImplementedException($"Microsoft.UI.Text range member '{member}' is not yet implemented on Uno. TODO Uno: arrives with the rich-content model / shared editing engine.");
+
+		public int StartPosition
+		{
+			get => _start;
+			set
+			{
+				_start = Math.Clamp(value, 0, _document.TextLength);
+				// WinUI: moving StartPosition past EndPosition drags EndPosition with it.
+				if (_start > _end)
+				{
+					_end = _start;
+				}
+			}
+		}
+
+		public int EndPosition
+		{
+			get => _end;
+			set
+			{
+				_end = Math.Clamp(value, 0, _document.TextLength);
+				// WinUI: moving EndPosition before StartPosition drags StartPosition with it.
+				if (_end < _start)
+				{
+					_start = _end;
+				}
+			}
+		}
+
+		public int Length => _end - _start;
+
+		public int StoryLength => _document.TextLength + 1;
+
+		public string Text
+		{
+			get => _document.GetTextInRange(_start, _end);
+			set
+			{
+				var replacement = value ?? string.Empty;
+				_document.ReplaceRange(_start, _end, replacement);
+				_end = _start + replacement.Length;
+			}
+		}
+
+		public char Character
+		{
+			get
+			{
+				var length = _document.TextLength;
+				if (_start < length)
+				{
+					return _document.GetTextInRange(_start, _start + 1)[0];
+				}
+
+				// The end-of-story is conventionally represented by a carriage return in the TOM.
+				return '\r';
+			}
+			// TODO Uno: Character setter mutates a single code point in place; needs the rich model.
+			set => throw NotImplemented("Character.set");
+		}
+
+		public void SetRange(int startPosition, int endPosition)
+		{
+			_start = startPosition;
+			_end = endPosition;
+			Normalize();
+		}
+
+		public void Collapse(bool value)
+		{
+			// value == true collapses to the start position, false to the end position.
+			if (value)
+			{
+				_end = _start;
+			}
+			else
+			{
+				_start = _end;
+			}
+		}
+
+		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
+		{
+			// TODO Uno: Honor the rich TextGetOptions once formatted content is supported.
+			value = _document.GetTextInRange(_start, _end);
+		}
+
+		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
+		{
+			// TODO Uno: Honor the rich TextSetOptions once formatted content is supported.
+			var replacement = value ?? string.Empty;
+			_document.ReplaceRange(_start, _end, replacement);
+			_end = _start + replacement.Length;
+		}
+
+		public global::Microsoft.UI.Text.ITextRange GetClone()
+			=> new UnoTextRange(_document, _start, _end);
+
+		public bool InRange(global::Microsoft.UI.Text.ITextRange range)
+			=> range is not null && _start >= range.StartPosition && _end <= range.EndPosition;
+
+		public bool InStory(global::Microsoft.UI.Text.ITextRange range)
+			=> range is UnoTextRange other && ReferenceEquals(other._document, _document);
+
+		public bool IsEqual(global::Microsoft.UI.Text.ITextRange range)
+			=> range is UnoTextRange other
+				&& ReferenceEquals(other._document, _document)
+				&& other._start == _start
+				&& other._end == _end;
+
+		public int FindText(string value, int scanLength, global::Microsoft.UI.Text.FindOptions options)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return 0;
+			}
+
+			var text = _document.GetTextInRange(0, _document.TextLength);
+			var comparison = options.HasFlag(global::Microsoft.UI.Text.FindOptions.Case)
+				? StringComparison.Ordinal
+				: StringComparison.OrdinalIgnoreCase;
+
+			var startIndex = Math.Clamp(_start, 0, text.Length);
+			var available = text.Length - startIndex;
+			var span = scanLength <= 0 ? available : Math.Min(scanLength, available);
+			if (span <= 0)
+			{
+				return 0;
+			}
+
+			// TODO Uno: FindOptions.Word (whole-word matching) is treated as a substring search for now.
+			var index = text.IndexOf(value, startIndex, span, comparison);
+			if (index < 0)
+			{
+				return 0;
+			}
+
+			_start = index;
+			_end = index + value.Length;
+			return value.Length;
+		}
+
+		public int Delete(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
+		{
+			var length = _document.TextLength;
+
+			if (_start != _end)
+			{
+				// A non-degenerate range deletes its own content regardless of unit/count.
+				var removed = _end - _start;
+				_document.ReplaceRange(_start, _end, string.Empty);
+				_end = _start;
+				return removed;
+			}
+
+			if (count == 0 || unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// TODO Uno: units other than Character are not yet supported for degenerate ranges.
+				return 0;
+			}
+
+			int deleteStart, deleteEnd;
+			if (count > 0)
+			{
+				deleteStart = _start;
+				deleteEnd = Math.Clamp(_start + count, 0, length);
+			}
+			else
+			{
+				deleteEnd = _start;
+				deleteStart = Math.Clamp(_start + count, 0, length);
+			}
+
+			var deleted = deleteEnd - deleteStart;
+			_document.ReplaceRange(deleteStart, deleteEnd, string.Empty);
+			_start = _end = deleteStart;
+			return deleted;
+		}
+
+		public void ChangeCase(global::Microsoft.UI.Text.LetterCase value)
+		{
+			var text = _document.GetTextInRange(_start, _end);
+			if (text.Length == 0)
+			{
+				return;
+			}
+
+			var changed = value == global::Microsoft.UI.Text.LetterCase.Upper
+				? text.ToUpperInvariant()
+				: text.ToLowerInvariant();
+			_document.ReplaceRange(_start, _end, changed);
+		}
+
+		public int Move(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
+		{
+			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				// TODO Uno: unit-based movement beyond Character needs the layout-aware engine.
+				return 0;
+			}
+
+			var length = _document.TextLength;
+
+			// A non-degenerate range collapses toward the direction of travel before moving.
+			if (_start != _end)
+			{
+				if (count >= 0)
+				{
+					_start = _end;
+				}
+				else
+				{
+					_end = _start;
+				}
+			}
+
+			var position = count >= 0 ? _end : _start;
+			var target = Math.Clamp(position + count, 0, length);
+			var moved = target - position;
+			_start = _end = target;
+			return moved;
+		}
+
+		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
+		{
+			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				return 0;
+			}
+
+			var length = _document.TextLength;
+			var old = _start;
+			_start = Math.Clamp(_start + count, 0, length);
+			if (_start > _end)
+			{
+				_end = _start;
+			}
+
+			return _start - old;
+		}
+
+		public int MoveEnd(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
+		{
+			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				return 0;
+			}
+
+			var length = _document.TextLength;
+			var old = _end;
+			_end = Math.Clamp(_end + count, 0, length);
+			if (_end < _start)
+			{
+				_start = _end;
+			}
+
+			return _end - old;
+		}
+
+		// --- Deferred surface (rich formatting, clipboard, geometry, streams, non-Character units) ---
+
+		public global::Microsoft.UI.Text.ITextCharacterFormat CharacterFormat
+		{
+			get => throw NotImplemented("CharacterFormat.get");
+			set => throw NotImplemented("CharacterFormat.set");
+		}
+
+		public global::Microsoft.UI.Text.ITextParagraphFormat ParagraphFormat
+		{
+			get => throw NotImplemented("ParagraphFormat.get");
+			set => throw NotImplemented("ParagraphFormat.set");
+		}
+
+		public global::Microsoft.UI.Text.ITextRange FormattedText
+		{
+			get => throw NotImplemented("FormattedText.get");
+			set => throw NotImplemented("FormattedText.set");
+		}
+
+		public global::Microsoft.UI.Text.RangeGravity Gravity
+		{
+			get => throw NotImplemented("Gravity.get");
+			set => throw NotImplemented("Gravity.set");
+		}
+
+		public string Link
+		{
+			get => throw NotImplemented("Link.get");
+			set => throw NotImplemented("Link.set");
+		}
+
+		public bool CanPaste(int format) => false;
+
+		public void Copy() => throw NotImplemented("Copy");
+
+		public void Cut() => throw NotImplemented("Cut");
+
+		public void Paste(int format) => throw NotImplemented("Paste");
+
+		public int EndOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend) => throw NotImplemented("EndOf");
+
+		public int StartOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend) => throw NotImplemented("StartOf");
+
+		public int Expand(global::Microsoft.UI.Text.TextRangeUnit unit) => throw NotImplemented("Expand");
+
+		public int GetIndex(global::Microsoft.UI.Text.TextRangeUnit unit) => throw NotImplemented("GetIndex");
+
+		public void SetIndex(global::Microsoft.UI.Text.TextRangeUnit unit, int index, bool extend) => throw NotImplemented("SetIndex");
+
+		public void GetCharacterUtf32(out uint value, int offset) => throw NotImplemented("GetCharacterUtf32");
+
+		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point) => throw NotImplemented("GetPoint");
+
+		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit) => throw NotImplemented("GetRect");
+
+		public void ScrollIntoView(global::Microsoft.UI.Text.PointOptions value) => throw NotImplemented("ScrollIntoView");
+
+		public void SetPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, bool extend) => throw NotImplemented("SetPoint");
+
+		public void MatchSelection() => throw NotImplemented("MatchSelection");
+
+		public void GetTextViaStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("GetTextViaStream");
+
+		public void SetTextViaStream(global::Microsoft.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("SetTextViaStream");
+
+		public void InsertImage(int width, int height, int ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, string alternateText, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("InsertImage");
+	}
+}
