@@ -34,32 +34,32 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBoxCore core)
+	public void StartImeSession(IImeSessionHost host)
 	{
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
 
-		if (core.Owner.XamlRoot is not { } xamlRoot)
+		if (host.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
 
-		if (XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost host)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost host2)
 		{
 			return;
 		}
 
-		var rootWindow = host.RootX11Window;
+		var rootWindow = host2.RootX11Window;
 		_currentDisplay = rootWindow.Display;
 		_currentWindow = rootWindow.Window;
 
-		_dbusIme = host.GetKeyboardSource()?.GetDBusIme();
+		_dbusIme = host2.GetKeyboardSource()?.GetDBusIme();
 
 		if (_dbusIme?.IsEnabled == true)
 		{
 			_dbusIme.SetFocus(true);
-			UpdateSpotLocationFromTextBox(core);
+			UpdateSpotLocationFromTextBox(host);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -137,24 +137,24 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	/// Computes and sends the caret location to the active D-Bus IME so its candidate
 	/// window tracks the caret.
 	/// </summary>
-	internal void UpdateSpotLocationFromTextBox(TextBoxCore core)
+	internal void UpdateSpotLocationFromTextBox(IImeSessionHost host)
 	{
 		if (_dbusIme?.IsEnabled != true)
 		{
 			return;
 		}
 
-		var textBoxView = core.TextBoxView;
-		if (textBoxView?.DisplayBlock?.ParsedText is null || core.Owner.XamlRoot is null)
+		var textBoxView = host.TextBoxView;
+		if (textBoxView?.DisplayBlock?.ParsedText is null || host.XamlRoot is null)
 		{
 			return;
 		}
 
-		var index = core.IsBackwardSelection ? core.SelectionStart : core.SelectionStart + core.SelectionLength;
+		var index = host.IsBackwardSelection ? host.SelectionStart : host.SelectionStart + host.SelectionLength;
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
 		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
 		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top));
-		var scale = core.Owner.XamlRoot.RasterizationScale;
+		var scale = host.XamlRoot.RasterizationScale;
 
 		var x = (int)(topLeft.X * scale);
 		var y = (int)(topLeft.Y * scale);

@@ -225,6 +225,13 @@ namespace Microsoft.UI.Xaml.Controls
 					selectionLength = text.Length;
 					break;
 				default:
+					// During an active IME composition, the platform drives text through the composition
+					// callbacks; swallow the redundant char-insertion key so it isn't typed twice.
+					if (ShouldSwallowKeyDuringComposition)
+					{
+						return;
+					}
+
 					var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 					var altHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 					var ctrlHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
