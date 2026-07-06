@@ -4168,5 +4168,342 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure engine: items-info + line-height leaves (WS-D3c sub-slice 5)
+
+		private float GetSizedItemsRectHeight(
+			VirtualizingLayoutContext context,
+			double actualLineHeight,
+			double lineSpacing)
+		{
+			// This layout performs poorly when there are less than 20 lines to operate with in 5 scroll viewports.
+			// The target rect height for the realized + unrealized sized items is at least 5 viewports and 20 lines.
+			const float minimumCacheLength = 4.0f;
+			const float minimumCacheLineCount = 4.0f;
+
+			// Ensure there are 4 buffer viewports before and after the visible viewport.
+			float sizedItemsRectHeight = (minimumCacheLength + 1.0f) * (float)context.VisibleRect.Height;
+
+			// Ensure there are 20 lines in the resulting 5 viewports.
+			return Math.Max(sizedItemsRectHeight, (minimumCacheLength + 1.0f) * minimumCacheLineCount * (float)(actualLineHeight + lineSpacing));
+		}
+
+		private bool UpdateActualLineHeight(
+			VirtualizingLayoutContext context,
+			Size availableSize)
+		{
+			double lineHeight = LineHeight;
+			double oldActualLineHeight = ActualLineHeight;
+			double newActualLineHeight = 0.0;
+
+			if (double.IsNaN(lineHeight))
+			{
+				if (context.ItemCount > 0)
+				{
+					UIElement? element = null;
+					Size desiredSize = new Size(-1.0, -1.0);
+
+					// Element for first data item determines ActualLineHeight value.
+					if (oldActualLineHeight != 0.0 &&
+						m_elementManager.IsDataIndexRealized(0) &&
+						(element = m_elementManager.GetRealizedElement(0)) != null)
+					{
+						// Check if the realized element at index 0 has a recorded desired or available size
+						// to restore after measurement with the provided 'availableSize'.
+						desiredSize = GetDesiredSizeForAvailableSize(0, element, availableSize, oldActualLineHeight);
+
+						if (desiredSize.Height != -1.0)
+						{
+							newActualLineHeight = desiredSize.Height;
+						}
+						// Else use context.GetOrCreateElementAt instead.
+					}
+
+					if (desiredSize.Height == -1.0)
+					{
+						// The element for the first item is not realized or has no recorded measurement size, so generate a new element and let it be recycled.
+						// Since LineHeight is NaN, this element is not meant to have a height based on content asynchronously loaded.
+						// That would lead to a temporary incorrect ActualLineHeight and potentially numerous item realizations.
+						if ((element = context.GetOrCreateElementAt(0 /*dataIndex*/, ElementRealizationOptions.ForceCreate)) != null)
+						{
+							element.Measure(availableSize);
+							newActualLineHeight = element.DesiredSize.Height;
+							//TODO: Bug 41896454.
+							//      Why is this RecycleElement call triggering endless measure passes?
+							//      This element needs to be discarded or else bring-into-view operations to index 0 will be animated (because index 0 is considered realized).
+							//context.RecycleElement(element);
+						}
+					}
+				}
+			}
+			else
+			{
+				newActualLineHeight = lineHeight;
+			}
+
+			if (oldActualLineHeight != newActualLineHeight)
+			{
+				ActualLineHeight = newActualLineHeight;
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Updates the m_aspectRatios storage based on the items info collected from the ItemsInfoRequested event handler.
+		// The aspect ratios put in the storage immediately get the maximum weight c_maxAspectRatioWeight as the application-provided
+		// information is fully trusted.
+		// The application may not provide accurate aspect ratios though. It may temporarily provide placeholder ratios until the
+		// accurate values are evaluated, at which point it calls LinedFlowLayout.InvalidateItemsInfo. m_aspectRatios then gets updated
+		// with new aspect ratios with the maximum weight c_maxAspectRatioWeight again.
+		// The application may also provide aspect ratios <= 0 instead of valid placeholder values. Those temporary values, unlike
+		// the positive placeholder values, are not stored in m_aspectRatios. The average aspect ratio is a replacement for negative values.
+		private void UpdateAspectRatiosWithItemsInfo()
+		{
+			LinedFlowLayoutItemAspectRatios aspectRatios = m_aspectRatios!;
+
+			int itemsInfoCount = m_itemsInfoDesiredAspectRatiosForRegularPath.Count;
+			double actualLineHeight = ActualLineHeight;
+
+			for (int index = 0; index < itemsInfoCount; index++)
+			{
+				double desiredAspectRatio = m_itemsInfoDesiredAspectRatiosForRegularPath[index];
+
+				if (desiredAspectRatio <= 0.0)
+				{
+					continue;
+				}
+
+				double minWidth = GetMinWidthFromItemsInfo(m_itemsInfoFirstIndex + index);
+				double maxWidth = GetMaxWidthFromItemsInfo(m_itemsInfoFirstIndex + index);
+
+				if (minWidth > 0.0 || maxWidth >= 0.0)
+				{
+					double desiredWidth = desiredAspectRatio * actualLineHeight;
+
+					if (minWidth > 0.0 && minWidth > desiredWidth)
+					{
+						desiredWidth = minWidth;
+					}
+
+					if (maxWidth >= 0.0 && maxWidth < desiredWidth)
+					{
+						desiredWidth = maxWidth;
+					}
+
+					desiredAspectRatio = desiredWidth / actualLineHeight;
+				}
+
+				LinedFlowLayoutItemAspectRatios.ItemAspectRatio itemAspectRatio = aspectRatios.GetAt(m_itemsInfoFirstIndex + index);
+				float aspectRatio = (float)desiredAspectRatio;
+				float newAspectRatio = itemAspectRatio.AspectRatio;
+				int newWeight = itemAspectRatio.Weight;
+				bool updateItemAspectRatio = false;
+
+				if (newWeight == 0)
+				{
+					newAspectRatio = aspectRatio;
+					newWeight = c_maxAspectRatioWeight;
+					updateItemAspectRatio = true;
+				}
+				else
+				{
+					MUX_ASSERT(itemAspectRatio.AspectRatio >= 0.0f);
+					MUX_ASSERT(itemAspectRatio.Weight >= 1);
+					MUX_ASSERT(itemAspectRatio.Weight <= c_maxAspectRatioWeight);
+
+					if (newWeight != c_maxAspectRatioWeight)
+					{
+						newWeight = c_maxAspectRatioWeight;
+						updateItemAspectRatio = true;
+					}
+
+					// Ignore aspect ratio deltas coming from pixel snapping rounding. The aspect ratios coming from UIElement.Measure are preserved.
+					if (Math.Abs(itemAspectRatio.AspectRatio - aspectRatio) > 0.5 / (m_roundingScaleFactor * actualLineHeight))
+					{
+						newAspectRatio = aspectRatio;
+						updateItemAspectRatio = true;
+					}
+				}
+
+				if (updateItemAspectRatio)
+				{
+					aspectRatios.SetAt(m_itemsInfoFirstIndex + index, new LinedFlowLayoutItemAspectRatios.ItemAspectRatio(newAspectRatio, newWeight));
+				}
+			}
+		}
+
+		private void CopyItemsInfo(
+			List<double> oldItemsInfoDesiredAspectRatios,
+			List<double> oldItemsInfoMinWidths,
+			List<double> oldItemsInfoMaxWidths,
+			List<float> oldItemsInfoArrangeWidths,
+			int oldStart,
+			int newStart,
+			int copyCount)
+		{
+			MUX_ASSERT(oldStart >= 0);
+			MUX_ASSERT(newStart >= 0);
+			MUX_ASSERT(copyCount > 0);
+			MUX_ASSERT(oldStart + copyCount <= oldItemsInfoDesiredAspectRatios.Count);
+			MUX_ASSERT(newStart + copyCount <= m_itemsInfoDesiredAspectRatiosForRegularPath.Count);
+
+			for (int index = 0; index < copyCount; index++)
+			{
+				SetDesiredAspectRatioFromItemsInfo(m_itemsInfoFirstIndex + newStart + index, oldItemsInfoDesiredAspectRatios[oldStart + index]);
+
+				MUX_ASSERT(m_itemsInfoDesiredAspectRatiosForRegularPath[newStart + index] == oldItemsInfoDesiredAspectRatios[oldStart + index]);
+
+				if (oldItemsInfoMinWidths.Count > 0)
+				{
+					m_itemsInfoMinWidthsForRegularPath[newStart + index] = oldItemsInfoMinWidths[oldStart + index];
+				}
+
+				if (oldItemsInfoMaxWidths.Count > 0)
+				{
+					m_itemsInfoMaxWidthsForRegularPath[newStart + index] = oldItemsInfoMaxWidths[oldStart + index];
+				}
+
+				SetArrangeWidthFromItemsInfo(m_itemsInfoFirstIndex + newStart + index, oldItemsInfoArrangeWidths[oldStart + index]);
+
+				MUX_ASSERT(m_itemsInfoArrangeWidths[newStart + index] == oldItemsInfoArrangeWidths[oldStart + index]);
+			}
+		}
+
+		private void GetItemsInfoRequestedRange(
+			VirtualizingLayoutContext context,
+			float availableWidth,
+			double actualLineHeight,
+			out int itemsRangeStartIndex,
+			out int itemsRangeRequestedLength)
+		{
+			if (m_isVirtualizingContext)
+			{
+				float nearRealizationRect = GetRoundedFloat((float)context.RealizationRect.Y);
+				float farRealizationRect = nearRealizationRect + (float)context.RealizationRect.Height;
+
+				double lineSpacing = LineSpacing;
+				float sizedItemsRectHeight = GetSizedItemsRectHeight(context, actualLineHeight, lineSpacing);
+
+				float realizationRectHeightDeficit = Math.Max(0.0f, sizedItemsRectHeight - farRealizationRect + nearRealizationRect);
+				float nearSizedItemsRect = nearRealizationRect - realizationRectHeightDeficit / 2.0f;
+				float farSizedItemsRect = farRealizationRect + realizationRectHeightDeficit / 2.0f;
+
+				double minItemSpacing = MinItemSpacing;
+				// Either an average was recorded in a prior measure pass, or the items are considered square for an initial rough estimation.
+				double averageItemsPerLine = m_averageItemsPerLine.second == 0.0 ? ((availableWidth + minItemSpacing) / (actualLineHeight + minItemSpacing)) : m_averageItemsPerLine.second;
+
+				MUX_ASSERT(averageItemsPerLine > 0.0);
+
+				int lineCount = GetLineCount(averageItemsPerLine);
+
+				MUX_ASSERT(lineCount >= 0);
+
+				int newRecommendedAnchorIndex = context.RecommendedAnchorIndex;
+
+				sizedItemsRectHeight = farSizedItemsRect - nearSizedItemsRect;
+
+				if (m_anchorIndex != -1 || newRecommendedAnchorIndex != -1)
+				{
+					int anchorLineIndex = (int)((newRecommendedAnchorIndex == -1 ? m_anchorIndex : newRecommendedAnchorIndex) / averageItemsPerLine);
+
+					MUX_ASSERT(anchorLineIndex >= 0);
+					MUX_ASSERT(anchorLineIndex < lineCount);
+
+					float anchorLineNearEdge = (float)(anchorLineIndex * (actualLineHeight + lineSpacing));
+
+					// Check if the sized items rect overlaps the anticipated anchor line, with 1 line of margin of error in the line index approximation.
+					if (anchorLineNearEdge - 2 * actualLineHeight - lineSpacing <= nearSizedItemsRect || anchorLineNearEdge + actualLineHeight + lineSpacing >= farSizedItemsRect)
+					{
+						// Ensure the anchor index is sized by using a non-inflated sizing rect centered around the middle of the anticipated anchor line.
+						float anchorLineMiddle = (float)(anchorLineNearEdge + actualLineHeight / 2.0);
+
+						sizedItemsRectHeight = farRealizationRect - nearRealizationRect;
+						nearSizedItemsRect = GetRoundedFloat(anchorLineMiddle - sizedItemsRectHeight / 2.0f);
+						farSizedItemsRect = nearSizedItemsRect + sizedItemsRectHeight;
+					}
+				}
+
+				double linesSpacing = lineCount == 0 ? 0.0 : ((double)lineCount - 1) * lineSpacing;
+				double linesHeight = lineCount * actualLineHeight + linesSpacing;
+				double scrollViewport = context.VisibleRect.Height;
+				double scrollableSize = Math.Max(0.0, linesHeight - scrollViewport);
+
+				// nearSizedItemsRect must not be negative.
+				if (nearSizedItemsRect < 0.0)
+				{
+					sizedItemsRectHeight += nearSizedItemsRect;
+					nearSizedItemsRect = 0.0f;
+
+					MUX_ASSERT(sizedItemsRectHeight >= 0.0f);
+				}
+
+				// farSizedItemsRect must not exceed the extent value.
+				if (farSizedItemsRect > linesHeight)
+				{
+					sizedItemsRectHeight += (float)(linesHeight - farSizedItemsRect);
+					farSizedItemsRect = (float)linesHeight;
+
+					MUX_ASSERT(sizedItemsRectHeight >= 0.0f);
+				}
+
+				// clampedNearSizedItemsRect must not exceed the max offset value.
+				double clampedNearSizedItemsRect = Math.Min(scrollableSize, (double)nearSizedItemsRect);
+
+				// clampedFarSizedItemsRect must not exceed the extent value.
+				double clampedFarSizedItemsRect = Math.Max(clampedNearSizedItemsRect + sizedItemsRectHeight, (double)farSizedItemsRect);
+				clampedFarSizedItemsRect = Math.Min(linesHeight, clampedFarSizedItemsRect);
+
+				clampedNearSizedItemsRect = Math.Min(clampedFarSizedItemsRect - sizedItemsRectHeight, clampedNearSizedItemsRect);
+				clampedNearSizedItemsRect = Math.Max(0.0, clampedNearSizedItemsRect);
+
+				MUX_ASSERT(clampedFarSizedItemsRect - clampedNearSizedItemsRect <= sizedItemsRectHeight + 0.001);
+				MUX_ASSERT(clampedNearSizedItemsRect >= 0.0);
+				MUX_ASSERT(clampedNearSizedItemsRect <= scrollableSize);
+				MUX_ASSERT(clampedFarSizedItemsRect >= 0.0);
+				MUX_ASSERT(clampedFarSizedItemsRect <= linesHeight);
+
+				int firstSizedLineIndex = -1;
+				int lastSizedLineIndex = -1;
+
+				GetFirstAndLastDisplayedLineIndexes(
+					clampedFarSizedItemsRect - clampedNearSizedItemsRect /*scrollViewport*/,
+					clampedNearSizedItemsRect /*scrollOffset*/,
+					0 /*padding*/,
+					lineSpacing,
+					actualLineHeight,
+					lineCount,
+					false /*forFullyDisplayedLines*/,
+					out firstSizedLineIndex,
+					out lastSizedLineIndex);
+
+				MUX_ASSERT(firstSizedLineIndex >= 0);
+				MUX_ASSERT(lastSizedLineIndex >= 0);
+				MUX_ASSERT(firstSizedLineIndex < lineCount);
+				MUX_ASSERT(lastSizedLineIndex < lineCount);
+
+				int newFirstSizedItemIndex = Math.Max(0, (int)(firstSizedLineIndex * averageItemsPerLine) - 1);
+				int newLastSizedItemIndex = Math.Min(m_itemCount - 1, (int)((lastSizedLineIndex + 1) * averageItemsPerLine));
+
+				MUX_ASSERT(newFirstSizedItemIndex >= 0);
+				MUX_ASSERT(newLastSizedItemIndex >= 0);
+				MUX_ASSERT(newFirstSizedItemIndex < m_itemCount);
+				MUX_ASSERT(newLastSizedItemIndex < m_itemCount);
+
+				itemsRangeStartIndex = newFirstSizedItemIndex;
+				itemsRangeRequestedLength = newLastSizedItemIndex - newFirstSizedItemIndex + 1;
+			}
+			else
+			{
+				// All items are realized in non-virtualizing mode, and the fast path requests items info for the entire source collection.
+				MUX_ASSERT(context.VisibleRect.Y == 0.0f);
+
+				itemsRangeStartIndex = 0;
+				itemsRangeRequestedLength = m_itemCount;
+			}
+		}
+
+		#endregion
 	}
 }
