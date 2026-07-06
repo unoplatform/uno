@@ -646,5 +646,146 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
 			Assert.AreEqual(3, SUT.SelectionStartForTesting);
 		}
+
+		[TestMethod]
+		public async Task When_UndoGroup_Coalesces_Multiple_Edits_Into_One_Undo()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "start");
+
+			SUT.Document.BeginUndoGroup();
+			SUT.Document.Selection.SetRange(5, 5);
+			SUT.Document.Selection.TypeText("A");
+			SUT.Document.Selection.TypeText("B");
+			SUT.Document.EndUndoGroup();
+
+			SUT.Document.GetText(TextGetOptions.None, out var afterGroup);
+			Assert.AreEqual("startAB", afterGroup);
+
+			// A single undo reverts the whole group (both A and B), not just the last edit.
+			Assert.IsTrue(SUT.Document.CanUndo());
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("start", afterUndo);
+
+			// The pre-group SetText remains a separate undo entry.
+			Assert.IsTrue(SUT.Document.CanUndo());
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterSecondUndo);
+			Assert.AreEqual("", afterSecondUndo);
+		}
+
+		[TestMethod]
+		public async Task When_UndoGroup_Redo_Reapplies_Whole_Group()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "start");
+
+			SUT.Document.BeginUndoGroup();
+			SUT.Document.Selection.SetRange(5, 5);
+			SUT.Document.Selection.TypeText("A");
+			SUT.Document.Selection.TypeText("B");
+			SUT.Document.EndUndoGroup();
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("start", afterUndo);
+
+			Assert.IsTrue(SUT.Document.CanRedo());
+			SUT.Document.Redo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterRedo);
+			Assert.AreEqual("startAB", afterRedo);
+		}
+
+		[TestMethod]
+		public async Task When_Nested_UndoGroup_Coalesces_Into_One_Undo()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "x");
+
+			SUT.Document.BeginUndoGroup();
+			SUT.Document.Selection.SetRange(1, 1);
+			SUT.Document.Selection.TypeText("1");
+			SUT.Document.BeginUndoGroup();
+			SUT.Document.Selection.TypeText("2");
+			SUT.Document.EndUndoGroup();
+			SUT.Document.Selection.TypeText("3");
+			SUT.Document.EndUndoGroup();
+
+			SUT.Document.GetText(TextGetOptions.None, out var afterGroup);
+			Assert.AreEqual("x123", afterGroup);
+
+			// The outermost group is the only undo boundary; one undo reverts 1, 2 and 3.
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("x", afterUndo);
+		}
+
+		[TestMethod]
+		public async Task When_EndUndoGroup_Without_Begin_Is_NoOp()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "a");
+
+			// Unbalanced EndUndoGroup must not throw or corrupt the undo state.
+			SUT.Document.EndUndoGroup();
+
+			SUT.Document.Selection.SetRange(1, 1);
+			SUT.Document.Selection.TypeText("b");
+
+			SUT.Document.GetText(TextGetOptions.None, out var typed);
+			Assert.AreEqual("ab", typed);
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var afterUndo);
+			Assert.AreEqual("a", afterUndo);
+		}
+
+		[TestMethod]
+		public async Task When_BatchDisplayUpdates_Returns_Nesting_Count()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(1, SUT.Document.BatchDisplayUpdates());
+			Assert.AreEqual(2, SUT.Document.BatchDisplayUpdates());
+			Assert.AreEqual(1, SUT.Document.ApplyDisplayUpdates());
+			Assert.AreEqual(0, SUT.Document.ApplyDisplayUpdates());
+
+			// An extra unbalanced ApplyDisplayUpdates stays clamped at zero.
+			Assert.AreEqual(0, SUT.Document.ApplyDisplayUpdates());
+		}
+
+		[TestMethod]
+		public async Task When_Edits_Batched_Are_Applied_After_ApplyDisplayUpdates()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "base");
+
+			SUT.Document.BatchDisplayUpdates();
+			SUT.Document.Selection.SetRange(4, 4);
+			SUT.Document.Selection.TypeText("!");
+			SUT.Document.ApplyDisplayUpdates();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("base!", text);
+		}
 	}
 }

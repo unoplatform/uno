@@ -121,28 +121,28 @@ namespace Microsoft.UI.Text
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "CanUndo()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public int ApplyDisplayUpdates()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "ApplyDisplayUpdates()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public int BatchDisplayUpdates()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextDocument", "BatchDisplayUpdates()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public void BeginUndoGroup()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Text.RichEditTextDocument", "BeginUndoGroup()");
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public void EndUndoGroup()
 		{
