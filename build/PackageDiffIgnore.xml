@@ -2279,6 +2279,25 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenuPresenter" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ISubMenuOwner" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureRecognizer" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureSettings" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationCompletedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationDelta" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationInertiaStartingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationStartedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationUpdatedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationVelocities" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.RightTappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.TappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Types>
 
 	  <Fields>
@@ -2542,6 +2561,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter::ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Properties>
 
 	  <Methods>
@@ -3181,6 +3201,14 @@
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Object Windows.UI.Input.Inking.InkManager.ProcessPointerUpdate(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkManager.ProcessPointerDown(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkStrokeBuilder.BeginStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.Foundation.Rect Windows.UI.Input.Inking.InkManager.ProcessPointerUp(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.Inking.InkStroke Windows.UI.Input.Inking.InkStrokeBuilder.EndStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs.get_CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Input.Inking.InkStrokeBuilder.AppendToStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 
 	  <Events>
@@ -3242,6 +3270,25 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenuPresenter" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ISubMenuOwner" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureRecognizer" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureSettings" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationCompletedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationDelta" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationInertiaStartingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationStartedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationUpdatedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationVelocities" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.RightTappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.TappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Types>
 	  <Fields>
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
@@ -3272,6 +3319,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter::ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3550,6 +3598,14 @@
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Object Windows.UI.Input.Inking.InkManager.ProcessPointerUpdate(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkManager.ProcessPointerDown(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkStrokeBuilder.BeginStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.Foundation.Rect Windows.UI.Input.Inking.InkManager.ProcessPointerUp(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.Inking.InkStroke Windows.UI.Input.Inking.InkStrokeBuilder.EndStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs.get_CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Input.Inking.InkStrokeBuilder.AppendToStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
