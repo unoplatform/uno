@@ -1,4 +1,31 @@
 #!/bin/bash
+# ===========================================================================
+# ios-uitest-run.sh — CI (Azure DevOps) entry point that runs the SamplesApp
+# UI test suites against an iOS Simulator on a macOS hosted agent.
+#
+# What it does:
+#   1. Picks the NUnit test filter from $UITEST_SNAPSHOTS_ONLY /
+#      $UITEST_AUTOMATED_GROUP (snapshot groups, automated groups 1-5,
+#      RuntimeTests, Benchmarks).
+#   2. Waits for the target simulator runtime/device to exist and boots it.
+#   3. Installs the pre-built SamplesApp bundle on the simulator with `idb`
+#      (Meta's iOS Development Bridge, https://github.com/facebook/idb):
+#      `xcrun simctl install` was historically unreliable for this
+#      (see microsoft/appcenter#2389), idb is the dependable path.
+#   4. Runs the tests through the NUnit console, transforms the results and
+#      maintains the failed-tests re-run list for retry stages.
+#
+# Tooling / supply-chain notes (idb):
+#   - `idb-companion` comes from Meta's Homebrew tap `facebook/fb`
+#     (github.com/facebook/homebrew-fb). The formula pins the binary artifact
+#     of facebook/idb release v1.1.8 together with its sha256, so what gets
+#     installed is reproducible byte-for-byte; the tap itself has been
+#     dormant since 2022.
+#   - Newer Homebrew refuses formulas from third-party taps unless explicitly
+#     trusted (`brew trust`) — see the install section below.
+#   - `fb-idb` (the Python client) is installed from PyPI via pipx, pinned to
+#     Python 3.12 (asyncio breakage under 3.14) but not version-pinned.
+# ===========================================================================
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -172,8 +199,21 @@ then
 	# formulae without an explicit trust, so trust facebook/fb and install the
 	# fully-qualified formula (a bare "idb-companion" now resolves to the wrong cask).
 	brew tap facebook/fb >/dev/null 2>&1 || true
+<<<<<<< HEAD
 	brew trust facebook/fb >/dev/null 2>&1 || true
 	brew list --versions idb-companion >/dev/null 2>&1 || brew install facebook/fb/idb-companion
+=======
+	# Newer Homebrew on the runner images gates third-party taps: installing
+	# idb-companion fails with "Refusing to load formula facebook/fb/idb-companion
+	# from untrusted tap facebook/fb" unless explicitly trusted. Trust only the
+	# formula we need (least privilege); fall back to tap-level trust for brew
+	# versions that only support that form. Older brews have no `trust` command
+	# at all — best effort, the install below still surfaces any real failure.
+	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 \
+		|| brew trust facebook/fb >/dev/null 2>&1 \
+		|| true
+	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
+>>>>>>> origin/master
 
 	# 3) Install fb-idb under Python 3.12
 	pipx uninstall fb-idb >/dev/null 2>&1 || true

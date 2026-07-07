@@ -387,3 +387,30 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 - In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
 - Assign it to the Uno Platform project
 - Debug your application using the configuration relevant to your current environment
+
+## Windows Specifics
+
+Starting with Uno 7, WebView2 has two separate backends on Windows:
+
+- Microsoft.Web.WebView2
+- WebView2Aot
+
+The WebView2Aot backend is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT) on Windows.
+
+The WebView2Aot backend is the default when `net10.0-desktop` or later is the target framework.
+
+If you encounter issues with the WebView2 control on Windows when targeting .NET 10 or later, please file an issue. The previous Microsoft.Web.WebView2 backend can be used by setting the `UNO_WEBVIEW2_BACKEND` environment variable to `microsoft.web.webview2`, for example within `Main()`:
+
+```csharp
+public partial class Program
+{
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2");
+        var host = UnoPlatformHostBuilder.Create()
+            // …
+            ;
+    }
+}
+```

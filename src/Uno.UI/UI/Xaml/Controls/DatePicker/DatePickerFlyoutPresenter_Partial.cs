@@ -349,19 +349,23 @@ namespace Microsoft.UI.Xaml.Controls
 				LoopingSelector spYearPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spYearPicker);
-				spYearPicker = new LoopingSelector() { ShouldLoop = PICKER_SHOULD_LOOP };
+				// The year picker does not loop (matching WinUI): the selectable range is finite, and
+				// looping a single-year range (MinYear == MaxYear) would repeat the value down the column.
+				spYearPicker = new LoopingSelector() { ShouldLoop = false };
 				_tpYearPicker = spYearPicker;
 				//spYearPicker.As(spLSAsUI);
 				//spYearPicker.As(spLSAsFE);
 				//spYearPicker.As(spLSAsControl);
 				spLSAsControl = spYearPicker;
-				/*  spYearPicker.ShouldLoop = false;  NOT SUPPORTED BY LISTVIEW */
 				//Don't set ItemWidth. We want the item to size to the width of its parent.
 				spYearPicker.ItemHeight = itemHeight;
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "YearLoopingSelector";
-				if (_tpSecondPickerHost != null)
+				// The MUX source guards this assignment with _tpSecondPickerHost, which is a typo
+				// (the year picker is hosted by the third host); checking _tpThirdPickerHost avoids
+				// an NRE / mis-attachment if a template provides the third host without the second.
+				if (_tpThirdPickerHost != null)
 				{
 					_tpThirdPickerHost.Child = spYearPicker;
 				}

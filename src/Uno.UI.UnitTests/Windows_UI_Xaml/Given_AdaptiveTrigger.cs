@@ -17,6 +17,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			UnitTestsApp.App.EnsureApplication();
 		}
 
+		[TestCleanup]
+		public void Cleanup()
+			=> AdaptiveTrigger.SetWindowSizeOverride(null);
+
 		[TestMethod]
 		public void When_SingleActiveState()
 		{
@@ -211,6 +215,139 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				return result;
 			}
+		}
+
+		[TestMethod]
+		public void When_SizeOverride_WinsOverWindow()
+		{
+			// Real window is large enough to satisfy the trigger.
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var border = new Border();
+			border.ForceLoaded();
+
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
+			group.CurrentState.Should().Be(state);
+
+			// A simulated (smaller) size overrides the real window, so the trigger goes inactive even
+			// though the window itself never changed — the "host resizes the content" scenario.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50));
+			group.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		public void When_SizeOverride_ReevaluatesOnChange()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var border = new Border();
+			border.ForceLoaded();
+
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
+			// Start below the threshold via the override -> inactive.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50));
+			group.CurrentState.Should().Be(null);
+
+			// Growing the override above the threshold re-evaluates without any window/XamlRoot change.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200));
+			group.CurrentState.Should().Be(state);
+		}
+
+		[TestMethod]
+		public void When_SizeOverride_SetBeforeAttach_AppliesOnAttach()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			// The override is set before the trigger ever attaches — the primary host scenario where a
+			// simulated form factor is active while new pages load.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50));
+
+			var border = new Border();
+			border.ForceLoaded();
+
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
+			// The freshly attached trigger must evaluate against the pre-existing override, not the window.
+			group.CurrentState.Should().Be(null);
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200));
+			group.CurrentState.Should().Be(state);
+		}
+
+		[TestMethod]
+		public void When_SizeOverride_FailsMinWindowHeightOnly()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var border = new Border();
+			border.ForceLoaded();
+
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
+			// The override width satisfies the trigger but its height does not — both constraints must be
+			// evaluated against the override, not just the width.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 50));
+			group.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		public void When_SizeOverride_Cleared_RevertsToWindow()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var border = new Border();
+			border.ForceLoaded();
+
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50));
+			group.CurrentState.Should().Be(null);
+
+			// Clearing the override reverts evaluation to the real window size (1000x1000) -> active.
+			AdaptiveTrigger.SetWindowSizeOverride(null);
+			group.CurrentState.Should().Be(state);
 		}
 	}
 }

@@ -125,3 +125,25 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet clean $release "$projectPath"
     }
 }
+
+# Regression guard for issue #23658: overriding SkiaSharpVersion on a desktop head must retarget
+# SkiaSharp.NativeAssets.Linux too. The base SkiaSharp package pulls its Win32/macOS native assets
+# but not the Linux one, so without the Uno.Sdk injecting it the Linux native stays at the runtime
+# packs' floor while managed SkiaSharp moves up — a silent mismatch that crashes Skia Desktop on Linux.
+if ($TestGroup -eq '1')
+{
+    $skiaAlignProject = "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj"
+    $skiaAlignVersion = "4.148.0"
+    $skiaAlignAssets = "5.6/uno56netcurrent/uno56netcurrent/obj/project.assets.json"
+
+    Write-Host "Validating SkiaSharp.NativeAssets.Linux aligns with an overridden SkiaSharpVersion ($skiaAlignVersion) - issue #23658"
+    dotnet restore $skiaAlignProject "-p:SkiaSharpVersion=$skiaAlignVersion" "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG" -p:EnableWindowsTargeting=true -bl:binlogs/skiasharp-linux-alignment/restore.binlog
+    Assert-ExitCodeIsZero
+
+    $assets = Get-Content $skiaAlignAssets -Raw
+    if ($assets -notmatch [regex]::Escape("SkiaSharp.NativeAssets.Linux/$skiaAlignVersion"))
+    {
+        throw "SkiaSharp.NativeAssets.Linux did not resolve to $skiaAlignVersion to match the overridden managed SkiaSharp. The Uno.Sdk must inject the Linux native asset for desktop heads (issue #23658)."
+    }
+    Write-Host "SkiaSharp.NativeAssets.Linux correctly aligned to $skiaAlignVersion"
+}
