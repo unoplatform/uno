@@ -5,7 +5,7 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct PointInt32
 {
-	internal PointInt32(int x, int y)
+	public PointInt32(int x, int y)
 	{
 		X = x;
 		Y = y;
