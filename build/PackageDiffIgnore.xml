@@ -2272,6 +2272,12 @@
 
 		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
 		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
+
+		  <!-- Legacy WASM IJSObject DOM-interop mechanism (Uno-only, no WinUI counterpart); hard-removed. -->
+		  <Member fullName="Uno.Foundation.Interop.IJSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.IJSObjectMetadata" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 	  </Types>
 
 	  <Fields>
@@ -2941,6 +2947,9 @@
 
 		  <!-- op_Explicit binary-compat shim on PointerPoint; hand-emitted only to keep old binaries linking after the explicit-to-implicit conversion change. The implicit operators remain. -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Input.PointerPoint.op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)" reason="Removed op_Explicit binary-compat shim on Microsoft.UI.Input.PointerPoint (BC43, breaking changes for 7.0)" />
+
+		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
+		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
