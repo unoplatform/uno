@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;

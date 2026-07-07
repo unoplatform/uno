@@ -20,9 +20,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
-				((DependencyObject)parent).InvalidateArrange();
+				parent.InvalidateArrange();
 			}
 		}
 
@@ -35,9 +35,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
-				((DependencyObject)parent).InvalidateArrange();
+				parent.InvalidateArrange();
 			}
 		}
 
