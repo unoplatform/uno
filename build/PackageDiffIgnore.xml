@@ -2515,6 +2515,10 @@
 		       FrameworkElement keeps them, so its members are never reported as removed and are unaffected by these patterns. -->
 		  <Member fullName="System\.Object .+(::|\.)DataContext\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)DataContextProperty\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+
+		  <!-- Uno-only native-bubbling knob (no WinUI counterpart); meaningless once native bubbling is gone on Skia. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 	  </Properties>
 
 	  <Methods>
@@ -2887,6 +2891,11 @@
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)get_DataContextProperty\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)add_DataContextChanged\(.+\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)remove_DataContextChanged\(.+\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+
+		  <!-- EventsBubblingInManagedCode accessors: paired with the removed DP (see <Properties> above). Uno-only native-bubbling knob with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
