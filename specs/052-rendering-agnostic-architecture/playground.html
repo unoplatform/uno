@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Uno Platform — Rendering-Agnostic Architecture Explorer</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg2: #0e141d;
+    --panel: #121a26;
+    --panel2: #16202e;
+    --border: #21304380;
+    --border-solid: #223045;
+    --text: #e6edf3;
+    --muted: #8296ad;
+    --muted2: #5f7387;
+    --neutral: #33d6c4;   /* backend-neutral / good */
+    --partial: #f5b342;   /* mostly clean */
+    --locked: #ff6b6b;    /* skia-locked / rasterizer-deep */
+    --seam: #a78bfa;       /* seam highlight */
+    --flow: #5aa2ff;       /* gpu / data flow */
+    --shadow: 0 8px 30px rgba(0,0,0,.45);
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(1200px 700px at 80% -10%, #12203010, transparent),
+                radial-gradient(900px 600px at -10% 110%, #1a123010, transparent),
+                var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .app { display: grid; grid-template-columns: 340px 1fr; grid-template-rows: 1fr auto; height: 100vh; }
+  /* ---- sidebar ---- */
+  .sidebar {
+    grid-row: 1 / 3;
+    background: linear-gradient(180deg, var(--bg2), var(--bg));
+    border-right: 1px solid var(--border-solid);
+    overflow-y: auto;
+    padding: 18px 16px 28px;
+  }
+  .brand { display:flex; align-items:center; gap:10px; margin-bottom: 4px; }
+  .brand .dot { width: 26px; height: 26px; border-radius: 7px;
+    background: conic-gradient(from 210deg, var(--neutral), var(--seam), var(--flow), var(--neutral));
+    box-shadow: 0 0 18px #33d6c455; flex: none; }
+  .brand h1 { font-size: 15px; margin: 0; letter-spacing: .2px; }
+  .brand .sub { color: var(--muted); font-size: 11.5px; margin: 2px 0 0; }
+  .group { margin-top: 20px; }
+  .group > label.h { display:block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.4px;
+    color: var(--muted); margin-bottom: 9px; font-weight: 600; }
+  .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .presets button {
+    background: var(--panel); border: 1px solid var(--border-solid); color: var(--text);
+    border-radius: 9px; padding: 9px 8px; font-size: 11.5px; cursor: pointer; text-align: left;
+    transition: .15s; line-height: 1.25; font-family: var(--sans);
+  }
+  .presets button:hover { border-color: var(--seam); background: var(--panel2); }
+  .presets button .pt { display:block; font-weight: 600; }
+  .presets button .pd { display:block; color: var(--muted); font-size: 10px; margin-top: 2px; }
+  .opt { display:flex; flex-direction: column; gap: 6px; }
+  .opt .row {
+    display:flex; align-items:center; gap: 10px; padding: 8px 10px; cursor: pointer;
+    border: 1px solid var(--border-solid); border-radius: 9px; background: var(--panel); transition: .14s;
+  }
+  .opt .row:hover { background: var(--panel2); }
+  .opt .row.sel { border-color: var(--accent, var(--seam)); background: #17223260; box-shadow: inset 0 0 0 1px var(--accent, var(--seam)); }
+  .opt .row input { accent-color: var(--accent, var(--seam)); }
+  .opt .row .lbl { flex: 1; }
+  .opt .row .lbl b { font-weight: 600; }
+  .opt .row .lbl small { display:block; color: var(--muted); font-size: 10.5px; }
+  .badge { font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 999px; letter-spacing: .4px;
+    text-transform: uppercase; white-space: nowrap; }
+  .b-shipping { background:#0d3a33; color: var(--neutral); border:1px solid #17564b; }
+  .b-inflight { background:#3a2f0d; color: var(--partial); border:1px solid #574717; }
+  .b-spec     { background:#241a3d; color: #c4b5fd; border:1px solid #3c2f66; }
+  .b-out      { background:#3a1414; color: var(--locked); border:1px solid #572020; }
+  .seg { display:flex; background: var(--panel); border:1px solid var(--border-solid); border-radius: 9px; padding: 3px; gap:3px; }
+  .seg button { flex:1; background: transparent; border: none; color: var(--muted); border-radius: 7px; padding: 7px 6px;
+    cursor: pointer; font-size: 11.5px; font-family: var(--sans); transition:.14s; }
+  .seg button.sel { background: var(--panel2); color: var(--text); box-shadow: inset 0 0 0 1px var(--border-solid); }
+  .toggle-note { font-size: 10.5px; color: var(--muted); margin-top: 7px; }
+  /* ---- main ---- */
+  .main { padding: 20px 24px; overflow: auto; }
+  .tabs { display:flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tabs button { background: var(--panel); border: 1px solid var(--border-solid); color: var(--muted);
+    border-radius: 999px; padding: 7px 15px; font-size: 12px; cursor: pointer; transition:.14s; font-family:var(--sans); }
+  .tabs button.sel { color: var(--text); border-color: var(--seam); background: #17223280; }
+  .view { animation: fade .25s ease; }
+  @keyframes fade { from { opacity:0; transform: translateY(4px);} to {opacity:1; transform:none;} }
+  /* layer stack */
+  .stack { max-width: 720px; margin: 0 auto; }
+  .layer { border: 1px solid var(--border-solid); border-radius: 12px; padding: 13px 16px; margin: 0; background: var(--panel);
+    position: relative; transition: .2s; }
+  .layer .lname { font-weight: 650; font-size: 13.5px; display:flex; align-items:center; gap:8px; }
+  .layer .lmeta { color: var(--muted); font-size: 11.5px; margin-top: 3px; font-family: var(--mono); }
+  .layer .tag { margin-left:auto; font-size: 10px; font-weight:700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing:.4px; }
+  .layer.neutral { border-color: #1c4a44; } .layer.neutral .tag { background:#0d3a33; color:var(--neutral); }
+  .layer.partial { border-color: #57471788; } .layer.partial .tag { background:#3a2f0d; color:var(--partial); }
+  .layer.locked  { border-color: #5720207a; box-shadow: 0 0 0 1px #ff6b6b22; } .layer.locked .tag { background:#3a1414; color:var(--locked); }
+  .connector { height: 20px; margin-left: 34px; border-left: 2px dashed #2a3a4f; }
+  .seam { margin: 4px 0; border-radius: 10px; padding: 10px 14px; border: 1px dashed var(--seam);
+    background: linear-gradient(90deg, #a78bfa14, transparent); position: relative; transition:.2s; }
+  .seam.hot { border-style: solid; box-shadow: 0 0 22px #a78bfa33; background: linear-gradient(90deg, #a78bfa26, #5aa2ff10); }
+  .seam.dormant { opacity: .5; }
+  .seam .st { font-weight: 700; font-size: 11px; letter-spacing:.6px; text-transform: uppercase; color: #c4b5fd; display:flex; align-items:center; gap:8px;}
+  .seam .sd { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+  .seam.l1 { border-color: var(--flow); background: linear-gradient(90deg, #5aa2ff14, transparent); }
+  .seam.l1 .st { color: #9cc4ff; }
+  .seam.l1.hot { box-shadow: 0 0 22px #5aa2ff33; }
+  .chip { display:inline-flex; align-items:center; gap:7px; padding: 4px 11px; border-radius: 999px; font-family: var(--mono);
+    font-size: 11.5px; font-weight: 600; }
+  .backend-box { border-radius: 12px; padding: 14px 16px; border: 1px solid var(--border-solid); background: var(--panel);
+    display:flex; align-items:center; gap: 12px; transition:.2s; }
+  .backend-box .bt { font-weight: 700; font-size: 14px; }
+  .backend-box .bd { color: var(--muted); font-size: 11.5px; margin-top:2px; }
+  .surface-rail { display:flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+  .surface-rail .sf { font-family: var(--mono); font-size: 11px; padding: 5px 10px; border-radius: 8px;
+    border: 1px solid var(--border-solid); color: var(--muted); background: var(--bg2); transition:.15s; }
+  .surface-rail .sf.on { color: var(--flow); border-color: var(--flow); background: #5aa2ff12; box-shadow: 0 0 12px #5aa2ff22; }
+  .callout { max-width: 720px; margin: 16px auto 0; border-radius: 12px; padding: 13px 16px; font-size: 12.5px;
+    border: 1px solid var(--border-solid); background: var(--panel2); line-height:1.55; }
+  .callout b { color: var(--seam); }
+  .callout.warn { border-color: #57332088; background: #3a230d40; }
+  .callout.warn b { color: var(--partial); }
+  .callout.good { border-color: #17564b88; background: #0d3a3340; }
+  .callout.good b { color: var(--neutral); }
+  /* heatmap */
+  .heat { max-width: 760px; margin: 0 auto; display:flex; flex-direction: column; gap: 9px; }
+  .hrow { display:flex; align-items:center; gap: 14px; }
+  .hrow .hlib { width: 210px; font-family: var(--mono); font-size: 12px; flex:none; }
+  .hbar { flex:1; height: 30px; border-radius: 8px; position: relative; overflow: hidden; background: var(--bg2); border:1px solid var(--border-solid); }
+  .hbar .fill { height:100%; border-radius: 7px; display:flex; align-items:center; padding: 0 11px; font-size: 11px; font-family:var(--mono); color: #06121066; font-weight:700; white-space:nowrap; transition: width .4s; }
+  .f-locked { background: linear-gradient(90deg,#ff6b6b,#ff8f8f); }
+  .f-partial{ background: linear-gradient(90deg,#f5b342,#ffcd77); }
+  .f-data   { background: linear-gradient(90deg,#e0a63c,#f2c98a); }
+  .f-none   { background: linear-gradient(90deg,#33d6c4,#6ef0e2); }
+  .hsev { width: 120px; font-size: 11px; color: var(--muted); flex:none; text-align:right; }
+  /* comparison */
+  .cmp { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 100%; }
+  .col { border:1px solid var(--border-solid); border-radius: 12px; overflow:hidden; background: var(--panel); }
+  .col h3 { margin:0; padding: 12px 14px; font-size: 13px; border-bottom:1px solid var(--border-solid);
+    display:flex; align-items:center; gap:8px; }
+  .col.uno h3 { background: #17223250; } .col.unop h3 { background:#0d3a3340; } .col.av h3 { background:#5aa2ff12; } .col.fl h3 { background:#a78bfa14; }
+  .col .cell { padding: 10px 14px; border-bottom: 1px dashed #223045; }
+  .col .cell:last-child { border-bottom:none; }
+  .col .ck { font-size: 9.5px; text-transform: uppercase; letter-spacing:.8px; color: var(--muted); margin-bottom:3px; }
+  .col .cv { font-size: 11.5px; }
+  .col .cv code { font-family:var(--mono); background:#0c1520; padding:1px 5px; border-radius:5px; font-size:10.5px; }
+  /* packaging */
+  .pack { max-width: 760px; margin: 0 auto; }
+  .pkg-flow { display:flex; align-items:stretch; gap: 0; margin: 8px 0 4px; }
+  .pkg-node { flex:1; border:1px solid var(--border-solid); border-radius: 11px; padding: 13px; background: var(--panel); position:relative; }
+  .pkg-node .pk { font-size:10px; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); }
+  .pkg-node .pn { font-weight:650; margin-top:3px; font-size:13px; }
+  .pkg-node .pf { font-family:var(--mono); font-size:10.5px; color: var(--muted); margin-top:5px; }
+  .pkg-arrow { flex:none; width: 54px; display:flex; flex-direction:column; align-items:center; justify-content:center; color: var(--muted); }
+  .pkg-arrow .al { font-size:9.5px; text-align:center; }
+  .pkg-node.neutral { border-color:#1c4a44; } .pkg-node.leak { border-color:#5720207a; box-shadow:0 0 0 1px #ff6b6b22;}
+  /* prompt bar */
+  .prompt { grid-column: 2; border-top: 1px solid var(--border-solid); background: var(--bg2); padding: 12px 16px;
+    display:flex; gap: 12px; align-items: flex-start; }
+  .prompt .ptext { flex:1; font-size: 12.5px; color: #cdd9e6; line-height:1.55; font-family: var(--mono); }
+  .prompt .ptext .k { color: var(--neutral); } .prompt .ptext .k2 { color: var(--seam); } .prompt .ptext .k3 { color: var(--partial); }
+  .prompt button { flex:none; background: var(--neutral); color: #04110f; border:none; border-radius: 9px; padding: 9px 16px;
+    font-weight: 700; cursor: pointer; font-size: 12px; font-family:var(--sans); transition:.15s; align-self:center; }
+  .prompt button:hover { filter: brightness(1.08); }
+  .prompt button.copied { background: var(--seam); color:#100a20; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; margin: 14px auto 0; max-width:720px; font-size:11px; color:var(--muted); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  a { color: var(--flow); }
+  .foot { max-width: 760px; margin: 18px auto 0; font-size: 10.5px; color: #5f7387; text-align:center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <h1>Rendering-Agnostic Uno</h1>
+        <p class="sub">Skia today → WebGPU / Impeller tomorrow. Explore the seams.</p>
+      </div>
+    </div>
+
+    <div class="group">
+      <label class="h">Scenario presets</label>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="group">
+      <label class="h">Rasterizer backend <span style="color:var(--seam)">(Level 2)</span></label>
+      <div class="opt" id="backends"></div>
+    </div>
+
+    <div class="group">
+      <label class="h">GPU surface <span style="color:var(--flow)">(Level 1)</span></label>
+      <div class="opt" id="surfaces"></div>
+    </div>
+
+    <div class="group">
+      <label class="h">Composition seam</label>
+      <div class="seg" id="seamSeg">
+        <button data-v="hardcoded" class="sel">Skia-hardcoded (today)</button>
+        <button data-v="abstracted">IDrawingBackend (proposed)</button>
+      </div>
+      <div class="toggle-note" id="seamNote"></div>
+    </div>
+
+    <div class="group">
+      <label class="h">Reference build (packaging)</label>
+      <div class="seg" id="refSeg">
+        <button data-v="keep" class="sel">Keep</button>
+        <button data-v="drop">Drop for UI</button>
+      </div>
+      <div class="toggle-note" id="refNote"></div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="tabs" id="tabs">
+      <button data-v="stack" class="sel">Layer stack</button>
+      <button data-v="heat">Skia-coupling heatmap</button>
+      <button data-v="cmp">Uno vs Avalonia vs Flutter</button>
+      <button data-v="pack">Packaging &amp; bait-and-switch</button>
+    </div>
+    <div id="viewport"></div>
+  </main>
+
+  <!-- ================= PROMPT ================= -->
+  <div class="prompt">
+    <div class="ptext" id="promptText"></div>
+    <button id="copyBtn">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+/* ============================ DATA (verified against dev/mazi/rendereragnostic) ============================ */
+const BACKENDS = {
+  skia:    { name:'Skia (Ganesh)', badge:['b-shipping','Shipping'], level:0, neutralReq:false,
+             surfaces:['opengl','vulkan','metal','webgl','software'],
+             note:'What Uno ships today. The 2D rasterizer the whole framework is built on.' },
+  graphite:{ name:'Skia Graphite', badge:['b-inflight','In flight'], level:1, neutralReq:false,
+             surfaces:['dawn','metal','vulkan','d3d12','software'],
+             note:"Skia's next-gen GPU backend over Dawn/WebGPU. Uno is contributing it to SkiaSharp (#3962). Still Skia's 2D API → a Level-1 change, no architecture rewrite." },
+  vello:   { name:'WebGPU / Vello (native)', badge:['b-spec','Watch item'], level:2, neutralReq:true,
+             surfaces:['dawn','vulkan','metal','d3d12'],
+             note:'A native wgpu compute rasterizer that REPLACES Skia. Needs the Level-2 seam. The VelloSharp .NET binding was the best Uno fit (browser-wasm + VelloSharp.Uno adapter + CPU fallback) — but it was ARCHIVED Jan 2026 pending a restart. Vello itself is alpha.' },
+  impeller:{ name:'Impeller (via NImpeller)', badge:['b-spec','Watch item'], level:2, neutralReq:true,
+             surfaces:['metal','vulkan'],
+             note:'NOT a dead end anymore: Flutter ships a standalone Impeller Toolkit C ABI, and AvaloniaUI/NImpeller is an active .NET binding (Avalonia+Flutter collaboration, Metal+Vulkan). BUT experimental — no NuGet/license, no WASM, no software fallback, no rendering-backend layer yet. A watch item, not adoptable for Uno now.' },
+};
+const SURFACES = {
+  opengl:{name:'OpenGL / WGL / GLX'}, vulkan:{name:'Vulkan'}, metal:{name:'Metal'},
+  webgl:{name:'WebGL2'}, dawn:{name:'Dawn / WebGPU'}, d3d12:{name:'Direct3D 12'}, software:{name:'Software (CPU)'},
+};
+const LIBS = [
+  { lib:'Uno.UI.Composition', sev:'rasterizer-deep', cls:'f-locked', pct:100, meta:'54 .skia.cs · 31 draw · SKCanvas seam · ~8.4K LOC' },
+  { lib:'Uno.UI',             sev:'mostly clean',    cls:'f-partial',pct:34,  meta:'131 .skia.cs · 4 shared #if __SKIA__ · ~25K LOC' },
+  { lib:'Uno.UWP',            sev:'data-only',       cls:'f-data',   pct:14,  meta:'4 files: codec / bitmap / Color↔SKColor' },
+  { lib:'Uno.Foundation',     sev:'none',            cls:'f-none',   pct:6,   meta:'0 SkiaSharp / 0 HarfBuzz' },
+  { lib:'Uno.UI.Dispatching', sev:'none',            cls:'f-none',   pct:6,   meta:'0 SkiaSharp / 0 HarfBuzz' },
+  { lib:'Uno.UI.Toolkit',     sev:'none',            cls:'f-none',   pct:6,   meta:'0 SkiaSharp / 0 HarfBuzz' },
+  { lib:'Uno.UI.FluentTheme*',sev:'none',            cls:'f-none',   pct:6,   meta:'0 SkiaSharp / 0 HarfBuzz' },
+  { lib:'Uno.UI.XamlHost',    sev:'none',            cls:'f-none',   pct:6,   meta:'0 SkiaSharp / 0 HarfBuzz' },
+];
+const CMP = [
+  { key:'uno',  cls:'uno',  name:'Uno — today',    dot:'--locked',
+    rows:[['Level-2 seam','<b style="color:var(--locked)">None — Skia-hardcoded</b>'],
+          ['Mechanism','<code>Visual.Paint(in PaintingSession)</code> → raw <code>SKCanvas</code>'],
+          ['Packaging','reference build + <code>RuntimeAssetsSelectorTask</code> (compile-time swap)'],
+          ['Neutral core?','Partial — Uno.UI mostly, Composition no'],
+          ['Backends','Skia only'] ] },
+  { key:'unop', cls:'unop', name:'Uno — proposed', dot:'--neutral',
+    rows:[['Level-2 seam','<b style="color:var(--neutral)">IDrawingBackend / ISceneRecorder</b>'],
+          ['Mechanism','Visual records a neutral display list → backend rasterizes'],
+          ['Packaging','<code>Uno.Graphics.Skia</code> additive backend + startup registry'],
+          ['Neutral core?','Yes — Skia only in the backend package'],
+          ['Backends','Skia · Graphite · WebGPU/Vello'] ] },
+  { key:'av',   cls:'av',   name:'Avalonia',       dot:'--flow',
+    rows:[['Level-2 seam','<code>IPlatformRenderInterface</code> / <code>IDrawingContextImpl</code> <small>[Unstable]</small>'],
+          ['Mechanism','<code>DrawingContext</code> *Core → <code>IGeometryImpl</code>; ServerCompositor replays draw list'],
+          ['Packaging','neutral <code>net8/net10</code> core; <code>Avalonia.Skia</code> separate; runtime DI <code>.UseSkia()</code>'],
+          ['Neutral core?','Yes'],
+          ['Backends','Skia (Direct2D until v12)'] ] },
+  { key:'fl',   cls:'fl',   name:'Flutter',        dot:'--seam',
+    rows:[['Level-2 seam','<code>DlCanvas</code> → <code>DisplayList</code> → <code>DlOpReceiver</code>'],
+          ['Mechanism','engine records neutral DisplayList; dispatch to Skia or Impeller'],
+          ['Packaging','engine-internal; embedder provisions the GPU surface'],
+          ['Neutral core?','Yes — <code>dart:ui</code> handles are opaque'],
+          ['Backends','Skia + Impeller (zero framework change)'] ] },
+];
+const PRESETS = [
+  { id:'today',    pt:'Today',            pd:'Skia-locked, ref kept', s:{backend:'skia', surface:'metal', seam:'hardcoded', ref:'keep', tab:'stack'} },
+  { id:'graphite', pt:'Graphite (L1)',    pd:'WebGPU via Skia, cheap', s:{backend:'graphite', surface:'dawn', seam:'hardcoded', ref:'keep', tab:'stack'} },
+  { id:'vello',    pt:'WebGPU/Vello (L2)',pd:'Swap the rasterizer',    s:{backend:'vello', surface:'dawn', seam:'abstracted', ref:'keep', tab:'stack'} },
+  { id:'refactor', pt:'Refactor target',  pd:'Neutral core + drop ref', s:{backend:'vello', surface:'vulkan', seam:'abstracted', ref:'drop', tab:'pack'} },
+  { id:'heat',     pt:'Coupling map',     pd:'How much Skia, where',   s:{backend:'skia', surface:'metal', seam:'hardcoded', ref:'keep', tab:'heat'} },
+  { id:'trap',     pt:'The ref trap',     pd:'Drop ref before refactor', s:{backend:'skia', surface:'metal', seam:'hardcoded', ref:'drop', tab:'pack'} },
+];
+
+/* ============================ STATE ============================ */
+const DEFAULTS = { backend:'skia', surface:'metal', seam:'hardcoded', ref:'keep', tab:'stack' };
+const state = { ...DEFAULTS };
+
+/* ============================ BUILD CONTROLS ============================ */
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+
+function buildPresets(){
+  const w = document.getElementById('presets'); w.innerHTML='';
+  PRESETS.forEach(p=>{
+    const b = el('button',null,`<span class="pt">${p.pt}</span><span class="pd">${p.pd}</span>`);
+    b.onclick = ()=>{ Object.assign(state, p.s); syncControls(); updateAll(); };
+    w.appendChild(b);
+  });
+}
+function buildBackends(){
+  const w = document.getElementById('backends'); w.innerHTML='';
+  Object.entries(BACKENDS).forEach(([id,b])=>{
+    const lvl = b.level===0?'baseline':('Level '+b.level);
+    const row = el('div','row');
+    row.dataset.id=id;
+    row.innerHTML = `<input type="radio" name="backend" ${state.backend===id?'checked':''}/>
+      <span class="lbl"><b>${b.name}</b><small>${lvl}${b.level>=2?' · needs the seam':''}</small></span>
+      <span class="badge ${b.badge[0]}">${b.badge[1]}</span>`;
+    row.onclick=()=>{ state.backend=id; if(!b.surfaces.includes(state.surface)) state.surface=b.surfaces[0];
+      if(b.neutralReq) state.seam='abstracted'; syncControls(); updateAll(); };
+    w.appendChild(row);
+  });
+}
+function buildSurfaces(){
+  const w = document.getElementById('surfaces'); w.innerHTML='';
+  const allowed = BACKENDS[state.backend].surfaces;
+  allowed.forEach(id=>{
+    const row = el('div','row');
+    row.style.setProperty('--accent','var(--flow)');
+    row.innerHTML = `<input type="radio" name="surface" ${state.surface===id?'checked':''}/>
+      <span class="lbl"><b>${SURFACES[id].name}</b></span>`;
+    row.onclick=()=>{ state.surface=id; syncControls(); updateAll(); };
+    w.appendChild(row);
+  });
+}
+function seg(containerId, key){
+  document.querySelectorAll(`#${containerId} button`).forEach(btn=>{
+    btn.onclick=()=>{ state[key]=btn.dataset.v;
+      if(key==='seam' && btn.dataset.v==='hardcoded' && BACKENDS[state.backend].neutralReq){
+        // can't hardcode a non-Skia backend; bounce back
+      }
+      syncControls(); updateAll(); };
+  });
+}
+function buildTabs(){
+  document.querySelectorAll('#tabs button').forEach(btn=>{
+    btn.onclick=()=>{ state.tab=btn.dataset.v; syncControls(); updateAll(); };
+  });
+}
+function syncControls(){
+  document.querySelectorAll('#backends .row').forEach(r=>{
+    const on = r.dataset.id===state.backend; r.classList.toggle('sel',on);
+    r.querySelector('input').checked=on;
+  });
+  buildSurfaces();
+  ['seamSeg|seam','refSeg|ref'].forEach(p=>{
+    const [cid,key]=p.split('|');
+    document.querySelectorAll(`#${cid} button`).forEach(b=>b.classList.toggle('sel', b.dataset.v===state[key]));
+  });
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('sel', b.dataset.v===state.tab));
+  // notes
+  document.getElementById('seamNote').innerHTML = state.seam==='hardcoded'
+    ? 'Composition draws straight into <code style="font-family:var(--mono)">SKCanvas</code>. Only Skia/Graphite work.'
+    : 'A backend-neutral draw-op seam lets any rasterizer plug in (Avalonia/Flutter model).';
+  document.getElementById('refNote').innerHTML = state.ref==='keep'
+    ? 'Consumers compile against a Skia-free reference surface. Pure <code style="font-family:var(--mono)">net10.0</code> libs stay clean.'
+    : 'Skia build becomes the compile surface — safe <b style="color:var(--partial)">only after</b> the seam refactor.';
+}
+
+/* ============================ VIEWS ============================ */
+function layerClass(name){
+  if(name==='Uno.UI.Composition') return state.seam==='abstracted' ? 'neutral' : 'locked';
+  if(name==='Uno.UI') return 'partial';
+  return 'neutral';
+}
+function renderStack(){
+  const b = BACKENDS[state.backend];
+  const compAbstract = state.seam==='abstracted';
+  const l2hot = b.level>=2 || compAbstract;
+  const surfRail = b.surfaces.map(s=>`<span class="sf ${s===state.surface?'on':''}">${SURFACES[s].name}</span>`).join('');
+
+  const compTag = compAbstract ? 'NEUTRAL' : 'SKIA-LOCKED';
+  const compMeta = compAbstract
+    ? 'records retained display list · Skia moved to Uno.Graphics.Skia backend'
+    : 'Visual.Paint(in PaintingSession) → SKCanvas · 54 .skia.cs · 31 draw';
+
+  let html = `<div class="view"><div class="stack">
+    <div class="layer neutral"><div class="lname">App XAML / C# <span class="tag">NEUTRAL</span></div>
+      <div class="lmeta">your code — never sees a rasterizer type</div></div>
+    <div class="connector"></div>
+    <div class="layer partial"><div class="lname">Uno.UI <span class="tag">MOSTLY CLEAN</span></div>
+      <div class="lmeta">visual tree · layout · input — 131 .skia.cs, 4 shared #if __SKIA__ leaks</div></div>
+    <div class="connector"></div>
+    <div class="layer ${compAbstract?'neutral':'locked'}"><div class="lname">Uno.UI.Composition <span class="tag">${compTag}</span></div>
+      <div class="lmeta">${compMeta}</div></div>
+    <div class="connector"></div>
+    <div class="seam ${l2hot?'hot':'dormant'}">
+      <div class="st">⟚ Level 2 — rasterizer seam ${compAbstract?'· ACTIVE':'· missing today'}</div>
+      <div class="sd">${compAbstract
+        ? 'IDrawingBackend / ISceneRecorder — the backend-neutral draw-op boundary. Any rasterizer plugs in here.'
+        : 'Today there is no seam: SKCanvas is threaded through the whole paint path. A swap must introduce one.'}</div>
+    </div>
+    <div class="connector"></div>
+    <div class="backend-box ${b.neutralReq && !compAbstract ? 'locked':'neutral'}" style="${b.neutralReq&&!compAbstract?'border-color:#5720207a':''}">
+      <span class="chip" style="background:${b.level>=2?'#241a3d':'#0d3a33'};color:${b.level>=2?'#c4b5fd':'var(--neutral)'}">${b.name}</span>
+      <div><div class="bt">${b.name}</div><div class="bd">${b.note}</div></div>
+    </div>
+    <div class="surface-rail">${surfRail}</div>
+    <div class="connector" style="margin-top:8px"></div>
+    <div class="seam l1 ${b.level<=1?'hot':''}">
+      <div class="st">⟚ Level 1 — GPU surface seam · MATURE today</div>
+      <div class="sd">Hosts hand the rasterizer a surface via <code style="font-family:var(--mono)">CompositionTarget.OnNativePlatformFrameRequested</code>. 9 hosts · 6 surface families · Vulkan = Skia Ganesh backend.</div>
+    </div>
+    <div class="connector"></div>
+    <div class="layer neutral"><div class="lname">GPU surface — ${SURFACES[state.surface].name} <span class="tag">HOST</span></div>
+      <div class="lmeta">Uno.UI.Runtime.Skia.* · software fallback always preserved</div></div>
+  </div>`;
+
+  // contextual callout
+  if(b.level===2 && !compAbstract){
+    html += `<div class="callout warn" style="max-width:720px">⚠ <b>${b.name} can't run without the Level-2 seam.</b> Flip “Composition seam” to <i>IDrawingBackend</i> — the scene graph must stop drawing into SKCanvas first.</div>`;
+  } else if(state.backend==='impeller'){
+    html += `<div class="callout" style="max-width:720px">◆ <b>Impeller — a watch item, no longer a dead end.</b> Flutter ships a standalone Impeller Toolkit C ABI and <b>AvaloniaUI/NImpeller</b> binds it in .NET (Avalonia+Flutter collaboration, Metal+Vulkan). But it's experimental — no NuGet/license, <b>no WASM</b>, no software fallback, no backend layer yet. Avalonia building it behind their own render abstraction <b>validates Uno's Level-2 seam</b>.</div>`;
+  } else if(state.backend==='vello'){
+    html += `<div class="callout" style="max-width:720px">◆ <b>Vello — a watch item.</b> The <code>VelloSharp</code> binding had the best Uno fit (browser-wasm + Uno adapter + CPU fallback) but was <b>archived Jan 2026</b> pending a restart; Vello itself is alpha. Port the ~31 drawing partials, text (HarfBuzz-via-SKTypeface) and effects behind the seam — cost driver is pixel-parity, not LOC.</div>`;
+  } else if(b.level===1){
+    html += `<div class="callout good" style="max-width:720px">✔ <b>Level 1 — cheapest "WebGPU" win.</b> Graphite keeps Skia's 2D API, so Uno.UI.Composition is untouched. It's a SkiaSharp version bump (3.119 → 4.15x) — work Uno itself is landing (#3962).</div>`;
+  } else {
+    html += `<div class="callout good" style="max-width:720px">Uno today: one mature rasterizer (Skia) over 6 GPU surfaces. Solid — but everything above the Level-1 seam is Skia-shaped.</div>`;
+  }
+
+  html += `<div class="legend">
+     <span><i style="background:var(--neutral)"></i>backend-neutral</span>
+     <span><i style="background:var(--partial)"></i>mostly clean</span>
+     <span><i style="background:var(--locked)"></i>Skia-locked</span>
+     <span><i style="background:var(--seam)"></i>Level-2 seam</span>
+     <span><i style="background:var(--flow)"></i>Level-1 seam / GPU</span>
+   </div></div>`;
+  return html;
+}
+function renderHeat(){
+  let rows = LIBS.map(l=>`<div class="hrow">
+     <div class="hlib">${l.lib}</div>
+     <div class="hbar"><div class="fill ${l.cls}" style="width:${Math.max(l.pct,14)}%">${l.meta}</div></div>
+     <div class="hsev">${l.sev}</div>
+   </div>`).join('');
+  return `<div class="view"><div class="heat">${rows}</div>
+    <div class="callout good">✔ <b>Coupling is concentrated, not diffuse.</b> Only <b>2</b> shipping general libs reference SkiaSharp directly (Uno.UI.Composition + 4 codec files in Uno.UWP). Five whole libraries are 100% Skia-free. The Level-2 job centers on <b>one core library</b> (Uno.UI.Composition) plus the Uno.UI render-loop/host-handoff surface + text + effects — deep and concentrated, but not a framework sweep.</div>
+    <div class="callout warn">⚠ <b>Consumer breakage is bounded to 4 public leaks:</b> <code>SkiaExtensions</code> (14 methods), <code>Color↔SKColor</code> operators, <code>VulkanImageInfo.PixelSize</code>, <code>SKCanvasElement.RenderOverride(SKCanvas)</code>. Plus text (HarfBuzz sources font tables through <code>SKTypeface</code>) and the Svg/Lottie AddIns.</div>
+    <div class="foot">Counts verified against dev/mazi/rendereragnostic — the post-native-removal tree. LOC via <code>wc -l</code>.</div></div>`;
+}
+function renderCmp(){
+  const cols = CMP.map(c=>{
+    const cells = c.rows.map(r=>`<div class="cell"><div class="ck">${r[0]}</div><div class="cv">${r[1]}</div></div>`).join('');
+    return `<div class="col ${c.cls}"><h3><span style="width:9px;height:9px;border-radius:50%;background:var(${c.dot})"></span>${c.name}</h3>${cells}</div>`;
+  }).join('');
+  return `<div class="view"><div class="cmp">${cols}</div>
+   <div class="callout">◆ <b>Two proven models to borrow from.</b> Avalonia = the interface abstraction (control draws against <code>IDrawingContextImpl</code>; Skia is one runtime-registered backend; Direct2D proved it's real). Flutter = the neutral recorded op-list (<code>DisplayList</code>) that let Impeller replace Skia with zero framework change. Uno's <code>Visual.Paint→SKCanvas</code> is exactly Flutter's <i>pre-2021</i> coupling.</div></div>`;
+}
+function renderPack(){
+  const dropped = state.ref==='drop';
+  const abstract = state.seam==='abstracted';
+  // compile-surface node changes with ref + seam
+  let compileNode, verdict, verdictCls;
+  if(!dropped){
+    compileNode = {k:'Compile surface', n:'Reference build', f:'lib/net10.0 · Skia-free stubs', cls:'neutral'};
+    verdict = '✔ <b>Neutral.</b> A plain <code>net10.0</code> consumer library compiles against a Skia-free surface. The pure-.NET-library promise holds. This is the safe status quo.';
+    verdictCls='good';
+  } else if(dropped && !abstract){
+    compileNode = {k:'Compile surface', n:'Skia Uno.UI.dll', f:'lib/net10.0 · SkiaSharp in compile closure + SK-typed public API', cls:'leak'};
+    verdict = '⚠ <b>The trap.</b> Dropping the reference build before the seam refactor makes <b>Skia</b> the compile surface — pulling <code>SkiaSharp</code>/<code>HarfBuzzSharp</code> into every consumer\'s compile closure and exposing the Skia build\'s SK-typed public API as the surface they compile against. It <b>cements Skia into the public contract</b>. One-way door. <span style="color:var(--muted)">(The <code>__SKIA__</code> symbol itself is Uno-internal and never reaches consumer compilation.)</span>';
+    verdictCls='warn';
+  } else {
+    compileNode = {k:'Compile surface', n:'Neutral Uno.UI.dll', f:'lib/net10.0 · Skia in separate backend pkg', cls:'neutral'};
+    verdict = '✔✔ <b>The convergence.</b> Once Uno.UI.Composition is backend-neutral, the neutral UI assembly IS its own compile+runtime surface — so the reference twin disappears <i>because the coupling did</i>. Same destination, opposite causality.';
+    verdictCls='good';
+  }
+  return `<div class="view"><div class="pack">
+    <div class="pkg-flow">
+      <div class="pkg-node"><div class="pk">Your library</div><div class="pn">MyControls.dll</div><div class="pf">TargetFramework: net10.0<br/>(no -android / -ios / -browser)</div></div>
+      <div class="pkg-arrow">→<div class="al">compiles<br/>against</div></div>
+      <div class="pkg-node ${compileNode.cls}"><div class="pk">${compileNode.k}</div><div class="pn">${compileNode.n}</div><div class="pf">${compileNode.f}</div></div>
+      <div class="pkg-arrow">→<div class="al">RuntimeAssets<br/>SelectorTask</div></div>
+      <div class="pkg-node neutral"><div class="pk">Runtime (per target)</div><div class="pn">uno-runtime/&lt;tfm&gt;/${abstract?'&lt;backend&gt;':'skia'}</div><div class="pf">${abstract?'skia · webgpu · … selected at startup':'the real Skia implementation, swapped in'}</div></div>
+    </div>
+    <div class="callout ${verdictCls}">${verdict}</div>
+    <div class="callout"><b>Why the swap exists at all:</b> standard NuGet has <b>no</b> way to vary the compile assembly by RID (“same API surface for all RIDs”). Uno needs a platform-neutral compile surface + a per-target runtime binary — so it mechanizes the classic “bait-and-switch”. The <b>two-layer WinRT</b> case (Uno.UWP / Uno.Foundation / Uno.UI.Dispatching keep per-platform impls) still needs it — so <code>RuntimeAssetsSelectorTask</code> is <i>simplified, never deleted</i>.</div>
+    <div class="foot">Reference build = 26 .reference.cs stubs (<code>throw new NotSupportedException("Reference assembly")</code>). Nuspecs are hand-maintained static files.</div>
+   </div></div>`;
+}
+
+/* ============================ PROMPT ============================ */
+function buildPrompt(){
+  const b = BACKENDS[state.backend];
+  const lvl = b.level===0 ? 'the current Skia baseline'
+    : b.level===1 ? 'a <span class="k">Level-1</span> change (a better GPU backend under the same Skia 2D API — no scene-graph rewrite)'
+    : 'a <span class="k2">Level-2</span> change (swapping the 2D rasterizer itself, which needs a backend-neutral seam above Skia)';
+  const seamTxt = state.seam==='abstracted'
+    ? 'with an <span class="k2">IDrawingBackend / ISceneRecorder</span> seam introduced in Uno.UI.Composition (Skia moved into a separate Uno.UI.Composition.Skia backend, Avalonia/Flutter-style)'
+    : 'with Composition still <span class="k3">Skia-hardcoded</span> (Visual.Paint draws straight into SKCanvas)';
+  const refTxt = state.ref==='keep'
+    ? 'The reference build is <span class="k">kept</span>, so consumer libraries stay pure <span class="k">net10.0</span>.'
+    : (state.seam==='abstracted'
+        ? 'The reference build is <span class="k">dropped for the UI layer</span> — safe, because the neutral UI assembly is now its own compile+runtime surface.'
+        : 'The reference build is <span class="k3">dropped for the UI layer before the seam exists</span> — the trap: Skia leaks into the consumer compile surface and cements the contract.');
+  let plain = '';
+  if(state.backend==='impeller') plain = ` Note: Impeller is reachable from .NET via the experimental AvaloniaUI/NImpeller binding (Avalonia+Flutter) — no longer a dead end, but a watch item (no NuGet/WASM/software-fallback, no backend layer), not adoptable for Uno now.`;
+  else if(state.backend==='vello') plain = ` Note: the VelloSharp .NET binding was archived Jan 2026 pending a restart — a watch item, not a bet.`;
+  const html = `Walk me through Uno Platform's rendering-agnostic path using the <span class="k2">${b.name}</span> rasterizer on a <span class="k">${SURFACES[state.surface].name}</span> GPU surface. This is ${lvl}, ${seamTxt}. ${refTxt}${plain} Ground it in the verified coupling (Uno.UI.Composition = 54 .skia.cs; only 4 public Skia API leaks) and the spec at specs/052-rendering-agnostic-architecture/.`;
+  return html;
+}
+
+/* ============================ RENDER ============================ */
+function updateAll(){
+  const vp = document.getElementById('viewport');
+  vp.innerHTML = state.tab==='stack'?renderStack()
+    : state.tab==='heat'?renderHeat()
+    : state.tab==='cmp'?renderCmp() : renderPack();
+  document.getElementById('promptText').innerHTML = buildPrompt();
+}
+document.getElementById('copyBtn').onclick = ()=>{
+  const txt = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById('copyBtn'); btn.textContent='Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy prompt'; btn.classList.remove('copied');},1400);
+  });
+};
+
+/* init */
+buildPresets(); buildBackends(); buildSurfaces(); seg('seamSeg','seam'); seg('refSeg','ref'); buildTabs();
+syncControls(); updateAll();
+</script>
+</body>
+</html>
