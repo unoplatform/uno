@@ -83,7 +83,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
   - Hard-delete.
   - Files: `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObject.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObjectMetadata.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/JSObjectHandle.wasm.cs`
-- [ ] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
+- [x] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI.Composition/Composition/DelegatedInkTrailVisual.cs`, `build/PackageDiffIgnore.xml`
 - [ ] **BC46** — Remove `ShowClippingBounds` flag  `d2·S`
