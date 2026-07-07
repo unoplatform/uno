@@ -94,7 +94,7 @@ partial class Application
 			return;
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		// Close all windows belonging to secondary ALCs.
 		// ALC app loading only happens on Skia and WASM; on native platforms
 		// (iOS, Android, macCatalyst) Window maps to the native window type
@@ -212,7 +212,7 @@ partial class Application
 		var previousTheme = RequestedTheme;
 		_alcRequestedTheme = explicitTheme;
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		// ALC app hosting only exists on Skia and WASM (see ExitAlcApplication); on native platforms
 		// Window maps to the native window type which doesn't have the ALC partial.
 		Window.ApplyAlcRequestedTheme(this, AlcElementTheme);

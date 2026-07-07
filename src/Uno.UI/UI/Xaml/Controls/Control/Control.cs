@@ -267,11 +267,6 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-#if __ANDROID__ || __APPLE_UIKIT__
-						// Native Android/Apple applies the template immediately.
-						_applyTemplateShouldBeInvoked = false;
-						OnApplyTemplate();
-#else
 						if (!IsLoaded)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
@@ -294,7 +289,6 @@ namespace Microsoft.UI.Xaml.Controls
 							_applyTemplateShouldBeInvoked = false;
 							OnApplyTemplate();
 						}
-#endif
 					}
 				}
 #endif
@@ -1012,9 +1006,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnPointerMoved(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs e) { }
-#if !__WASM__
 		[global::Uno.NotImplemented]
-#endif
 		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
@@ -1328,9 +1320,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
-#if !__APPLE_UIKIT__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
-#endif
 
 		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
 
