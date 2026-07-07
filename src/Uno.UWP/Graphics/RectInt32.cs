@@ -7,12 +7,13 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct RectInt32
 {
-	internal RectInt32(int x, int y, int width, int height)
+	// Parameter names mirror the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
+	internal RectInt32(int _X, int _Y, int _Width, int _Height)
 	{
-		X = x;
-		Y = y;
-		Width = width;
-		Height = height;
+		X = _X;
+		Y = _Y;
+		Width = _Width;
+		Height = _Height;
 	}
 
 	/// <summary>
