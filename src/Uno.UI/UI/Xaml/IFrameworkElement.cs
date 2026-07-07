@@ -76,8 +76,6 @@ namespace Microsoft.UI.Xaml
 
 		Uri BaseUri { get; }
 
-		_Size AdjustArrange(_Size finalSize);
-
 		int? RenderPhase { get; set; }
 
 		void ApplyBindingPhase(int phase);

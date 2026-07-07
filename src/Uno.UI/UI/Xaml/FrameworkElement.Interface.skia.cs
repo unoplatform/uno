@@ -57,11 +57,6 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		public Size AdjustArrange(Size finalSize)
-		{
-			return finalSize;
-		}
-
 		[NotImplemented]
 		public int? RenderPhase
 		{
