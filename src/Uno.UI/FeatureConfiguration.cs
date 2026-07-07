@@ -1102,6 +1102,24 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// When true, painting of the visual tree is skipped entirely, producing frames with no
+			/// visual output. Frame scheduling, rendering events, composition animations and
+			/// <see cref="Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"/> keep working as usual.
+			/// Intended for scenarios where the visual output is of no interest (e.g. automated tests)
+			/// to save CPU/GPU. This flag is only effective on skia targets.
+			/// </summary>
+			public static bool SkipVisualTreePainting
+			{
+#if __SKIA__
+				get => Compositor.SkipVisualTreePainting;
+				set => Compositor.SkipVisualTreePainting = value;
+#else
+				get => false;
+				set { }
+#endif
+			}
 		}
 
 		public static class ElementRefHandle
