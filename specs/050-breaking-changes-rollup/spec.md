@@ -101,7 +101,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [x] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/FrameworkElementUIKitMixinGenerator.cs`
-- [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
+- [x] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.reference.cs`
 - [x] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
