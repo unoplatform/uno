@@ -969,14 +969,11 @@ namespace Microsoft.UI.Xaml
 				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels.
 
 				var target = new RenderTargetBitmap();
-#if __SKIA__
-				// RenderAsync completes during a later render pass; the drag visual must instead be
-				// captured without yielding so DragStarted/DragEnter below still fire synchronously
-				// within the DragStarting sequence (matching WinUI).
-				target.RenderSync(this, (int)ActualSize.X, (int)ActualSize.Y);
-#else
-				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
-#endif
+				// Deliberately not awaited: on Skia the render completes during a later render pass,
+				// and yielding here would break the synchronous DragStarting → DragStarted →
+				// DragEnter/DragOver sequence (matching WinUI). The drag view redraws itself when
+				// the bitmap's pixels arrive (InvalidateSource).
+				_ = target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
 
 				routedArgs.DragUI.Content = target;
 				routedArgs.DragUI.Anchor = -ptPosition;
