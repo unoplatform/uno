@@ -110,6 +110,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			});
 
 #if !__WASM__
+			// SkiaWasm can't call .Wait() on .NET 11: it throws PlatformNotSupportedException.
 			if (!OperatingSystem.IsBrowser())
 			{
 				if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
@@ -488,6 +489,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					//}
 
 #if !__WASM__
+					// SkiaWasm can't call .Wait() on .NET 11: it throws PlatformNotSupportedException.
 					if (!OperatingSystem.IsBrowser())
 					{
 						if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))

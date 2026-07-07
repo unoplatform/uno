@@ -10,7 +10,14 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 public class SolutionHelper : IDisposable
 {
-	// Should be `null` when targeting stable .NET versions, "netX.0" for prerelease .NET versions.
+	// When `null`, build the default `$(TargetFrameworks)` from `dotnet new unoapp`.
+	// This is the expected behavior when the .NET SDK used to build is stable and
+	// uno.templates targets that same .NET SDK.
+	//
+	// When not `null`, updates `global.json` so that `sdk.prerelease`=true and
+	// alters the generated `.csproj` so that `$(TargetFrameworks)` uses
+	// `OverridePrereleaseTargetFrameworkVersion`, replacing whatever `dotnet new unoapp` generated.
+	// This is needed when using a preview .NET SDK.
 	internal static readonly string? OverridePrereleaseTargetFrameworkVersion = "net11.0";
 
 	private readonly TestContext _testContext;

@@ -6,6 +6,8 @@
 		<RollForward>Major</RollForward>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
+		<!-- NU1903: SQLitePCLRaw.lib.e_sqlite3 (GHSA-2m69-gcr7-jv3q), transitive via Microsoft.AppCenter;
+		     no unaffected replacement version is available yet. -->
 		<NoWarn>SYSLIB0014;MSB3277;NU1903</NoWarn>
 	</PropertyGroup>
 
