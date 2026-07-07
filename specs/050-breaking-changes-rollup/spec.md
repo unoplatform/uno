@@ -80,7 +80,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC04** — Remove `EventsBubblingInManagedCode` DP  `d2·S`
   - Hard-remove the public DP — native bubbling is gone.
   - Files: `src/Uno.UI/UI/Xaml/UIElement.RoutedEvents.cs`, `src/Uno.UI/UI/Xaml/RoutedEventArgs.cs`, `src/Uno.UI/UI/Xaml/Input/PointerRoutedEventArgs.cs`
-- [ ] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
+- [x] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
   - Hard-delete.
   - Files: `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObject.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObjectMetadata.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/JSObjectHandle.wasm.cs`
 - [x] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
