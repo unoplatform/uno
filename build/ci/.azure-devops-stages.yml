@@ -116,7 +116,8 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -140,7 +141,8 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
