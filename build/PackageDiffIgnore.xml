@@ -2938,6 +2938,9 @@
 		  <Member fullName="System\.Void .+(::|\.)RestoreBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)ResumeBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)SuspendBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+
+		  <!-- op_Explicit binary-compat shim on PointerPoint; hand-emitted only to keep old binaries linking after the explicit-to-implicit conversion change. The implicit operators remain. -->
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Input.PointerPoint.op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)" reason="Removed op_Explicit binary-compat shim on Microsoft.UI.Input.PointerPoint (BC43, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>

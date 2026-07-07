@@ -110,7 +110,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
   - **Verify** not already removed, then hard-delete the meta-packages.
   - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
-- [ ] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
+- [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
