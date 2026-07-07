@@ -155,13 +155,9 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
-		/// but just for a specific element (and its descendants) in the visual tree.
+		/// Disables the measure dirty-path optimization for a specific element (and its descendants)
+		/// in the visual tree, forcing full measure propagation through it.
 		/// </summary>
-		/// <remarks>
-		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
-		/// is set to false.
-		/// </remarks>
 		public static void SetUseMeasurePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
 		{
 			element.IsMeasureDirtyPathDisabled = state;
@@ -187,13 +183,9 @@ namespace Uno.UI
 			=> element.IsMeasureDirtyPathDisabled;
 
 		/// <summary>
-		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
-		/// but just for a specific element (and its descendants) in the visual tree.
+		/// Disables the arrange dirty-path optimization for a specific element (and its descendants)
+		/// in the visual tree, forcing full arrange propagation through it.
 		/// </summary>
-		/// <remarks>
-		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
-		/// is set to false.
-		/// </remarks>
 		public static void SetUseArrangePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
 		{
 			element.IsArrangeDirtyPathDisabled = state;

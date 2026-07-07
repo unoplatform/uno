@@ -37,7 +37,6 @@ internal static class LayouterElementExtensions
 			isFirstMeasure // first time here since attached to parent
 			|| (availableSize != element.LastAvailableSize) // size changed
 			|| element.IsMeasureDirty // .InvalidateMeasure() called
-			|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
 			|| element.IsMeasureDirtyPathDisabled; // dirty_path disabled locally
 
 		var frameworkElement = element as FrameworkElement;

@@ -14,20 +14,6 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			this.InitializeComponent();
 		}
 
-		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
-		{
-#if !WINAPPSDK
-			if (sender is ToggleButton { IsChecked: true })
-			{
-				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;
-			}
-			else
-			{
-				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = false;
-			}
-#endif
-		}
-
 		internal void changeOptimizeElements(object sender, RoutedEventArgs e)
 		{
 #if !WINAPPSDK

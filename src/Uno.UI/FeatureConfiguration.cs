@@ -142,37 +142,6 @@ namespace Uno.UI
 			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
 			/// </summary>
 			public static bool UseLegacyContentAlignment { get; set; }
-
-			/// <summary>
-			/// Enables the lazy materialization of <see cref="Microsoft.UI.Xaml.Controls.Control"/> template. This behavior
-			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
-			/// in the constructor of a control.
-			/// </summary>
-			public static bool UseLegacyLazyApplyTemplate { get; set; }
-
-			/// <summary>
-			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
-			/// </summary>
-			/// <remarks>
-			/// Will never be deferred when .ApplyTemplate() is called explicitly.
-			/// More information there: https://github.com/unoplatform/uno/issues/3519
-			/// </remarks>
-			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __APPLE_UIKIT__
-			// opt-in for iOS/Android/macOS
-#else
-				= true;
-#endif
-		}
-
-		public static class DataTemplateSelector
-		{
-			/// <summary>
-			/// When set the false (default value), a call to `SelectTemplateCore(object, DependencyObject)`
-			/// will be made as fallback when the `SelectTemplateCore(object)` returns null.
-			/// When set to true, only `SelectTemplateCore(object)` is called (Uno's legacy mode).
-			/// </summary>
-			public static bool UseLegacyTemplateSelectorOverload { get; set; }
 		}
 
 		public static class DependencyObject
@@ -264,13 +233,6 @@ namespace Uno.UI
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>
 			public static bool HandleLoadUnloadExceptions { get; set; } = true;
-
-			/// <summary>
-			/// When true, any FrameworkElement with Background non-null will intercept pointer events. When set to false, the default, only
-			/// certain views (Panels, Borders, and ContentPresenters) will intercept pointers if their background is non-null, while others (Control)
-			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
-			/// </summary>
-			public static bool UseLegacyHitTest { get; set; }
 		}
 
 		public static class FrameworkTemplate
@@ -322,14 +284,6 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; }
 		}
 
-		public static class Binding
-		{
-			/// <summary>
-			/// Determines if the binding engine should ignore identical references in binding paths.
-			/// </summary>
-			public static bool IgnoreINPCSameReferences { get; set; }
-		}
-
 		public static class BindingExpression
 		{
 			/// <summary>
@@ -341,15 +295,6 @@ namespace Uno.UI
 
 		public static class Popup
 		{
-			/// <summary>
-			/// By default, light dismiss is disabled in UWP/WinUI unless
-			/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
-			/// In earlier versions of Uno Platform, this property defaulted
-			/// to true, which was an incorrect behavior. If your code depends on this
-			/// legacy behavior, use this property to override it.
-			/// </summary>
-			public static bool EnableLightDismissByDefault { get; set; }
-
 			/// <summary>
 			/// When set to true, light dismiss UI popups will not be dismissed when the window is deactivated.
 			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
@@ -400,16 +345,6 @@ namespace Uno.UI
 #if __SKIA__
 				= true;
 #endif
-		}
-
-		public static class ManipulationRoutedEventArgs
-		{
-			/// <summary>
-			/// In previous versions of uno, the Position property of the Manipulation&gt;Started|Delta|Complete&lt;**Routed**EventArgs
-			/// was in absolute coordinate space instead of being relative to the Container.
-			/// Enabling this flag does restore the previous behavior.
-			/// </summary>
-			public static bool IsAbsolutePositionEnabled { get; set; }
 		}
 
 		public static class SelectorItem
@@ -517,12 +452,6 @@ namespace Uno.UI
 			public static bool HideCaret { get; set; }
 
 			/// <summary>
-			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
-			/// Uno skia-based TextBox implementation.
-			/// </summary>
-			public static bool UseOverlayOnSkia { get; set; }
-
-			/// <summary>
 			/// Hunspell dictionaries to be used for spell checking in TextBox and RichEditBox controls.
 			/// By default, an english dictionary is provided.
 			/// This is currently a skia-only feature.
@@ -594,26 +523,6 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// Call the .MeasureOverride only on element explicitly invalidating
-			/// their measure and when the available size is changing.
-			/// </summary>
-			public static bool UseInvalidateMeasurePath { get; set; } = true;
-
-			/// <summary>
-			/// Call the .ArrangeOverride only on elements explicitly invalidating
-			/// their arrange and when the final rect is changing.
-			/// </summary>
-			public static bool UseInvalidateArrangePath { get; set; } = true;
-
-			/// <summary>
-			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
-			/// </summary>
-			/// <remarks>
-			/// This feature is only supported on iOS, for now.
-			/// </remarks>
-			public static bool ShowClippingBounds { get; set; }
-
-			/// <summary>
 			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
@@ -638,25 +547,9 @@ namespace Uno.UI
 			public static bool AssignDOMXamlProperties { get; set; }
 
 			/// <summary>
-			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
-			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
-			/// </summary>
-			public static bool DisablePointersSpecificEventPrevention { get; set; }
-
-			/// <summary>
 			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
 			/// </summary>
 			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
-		}
-
-		public static class VisualState
-		{
-			/// <summary>
-			/// When this is set, the <see cref="Microsoft.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
-			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
-			/// </summary>
-			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
-			public static bool ApplySettersBeforeTransition { get; set; }
 		}
 
 		public static class WebView2
@@ -727,15 +620,6 @@ namespace Uno.UI
 			/// the XAML that do not map to a property on the target object.
 			/// </summary>
 			public static bool FailOnUnknownProperties { get; set; }
-		}
-
-		public static class Timeline
-		{
-			/// <summary>
-			/// Determines if the default animation starting value
-			/// will be from the animated value or local value, when the From property is omitted.
-			/// </summary>
-			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
 		}
 
 		public static class Rendering

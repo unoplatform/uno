@@ -74,7 +74,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private void ClearValue() => _owner?.ClearValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
 			private object GetValue() => _owner?.GetValue();
-			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
 			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 
 			public void Begin()
@@ -402,9 +401,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 				else
 				{
-					var value = FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue
-						? GetValueCore()
-						: GetNonAnimatedValue();
+					var value = GetValueCore();
 					if (value != null)
 					{
 						return AnimationOwner.Convert(value);

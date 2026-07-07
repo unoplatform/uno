@@ -267,8 +267,12 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (
-							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+#if __ANDROID__ || __APPLE_UIKIT__
+						// Native Android/Apple applies the template immediately.
+						_applyTemplateShouldBeInvoked = false;
+						OnApplyTemplate();
+#else
+						if (!IsLoaded)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
 
@@ -290,6 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 							_applyTemplateShouldBeInvoked = false;
 							OnApplyTemplate();
 						}
+#endif
 					}
 				}
 #endif

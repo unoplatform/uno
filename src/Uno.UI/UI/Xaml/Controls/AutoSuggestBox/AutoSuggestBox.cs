@@ -65,13 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
-			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
-			if (FeatureConfiguration.Popup.EnableLightDismissByDefault)
-			{
-				_popup.IsLightDismissEnabled = false;
-			}
-
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
