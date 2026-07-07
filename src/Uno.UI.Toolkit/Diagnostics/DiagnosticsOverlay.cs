@@ -445,6 +445,23 @@ public sealed partial class DiagnosticsOverlay : Control
 
 			if (isHidden || Visibility is not Visibility.Visible)
 			{
+				// Even while hidden we must reconcile REMOVALS: a view unregistered while the overlay is hidden
+				// (e.g. a collectible-ALC view dropped by ClearNonDefaultAlcRegistrations on ALC teardown) would
+				// otherwise stay materialized in _elements — pinning the collectible ALC — until the overlay is
+				// next shown. The add/reorder work below is correctly skipped while hidden.
+				lock (_updateGate)
+				{
+					var hiddenLive = new HashSet<IDiagnosticView>(DiagnosticViewRegistry
+						.Registrations
+						.Where(ShouldMaterialize)
+						.Select(reg => reg.View)
+						.Concat(_localRegistrations));
+					if (ReconcileMaterializedRemovals(hiddenLive))
+					{
+						HideNotification();
+					}
+				}
+
 				if (_overlayHost is { } h)
 				{
 					ShowHost(h, false);
@@ -476,7 +493,8 @@ public sealed partial class DiagnosticsOverlay : Control
 					.Select(reg => reg.View)
 					.Concat(_localRegistrations)
 					.OrderBy(r => (int)r.Position)
-					.Distinct();
+					.Distinct()
+					.ToList();
 
 				foreach (var view in viewsThatShouldBeMaterialized)
 				{
@@ -486,6 +504,15 @@ public sealed partial class DiagnosticsOverlay : Control
 						element = new DiagnosticElement(this, view, _context!);
 						_elementsPanel.Children.Add(element.Value);
 					}
+				}
+
+				// Reconcile REMOVALS (add-only loop above): drop elements whose view is no longer live. A view
+				// just removed may have raised a currently-displayed notification holding its collectible-ALC
+				// DataTemplate/content, so hide it too (HideNotification clears Content/ContentTemplate) or a
+				// persistent no-duration notification keeps pinning the ALC after its view is gone (#23614).
+				if (ReconcileMaterializedRemovals(new HashSet<IDiagnosticView>(viewsThatShouldBeMaterialized)))
+				{
+					HideNotification();
 				}
 
 				foreach (var element in _elements.Values)
@@ -515,6 +542,30 @@ public sealed partial class DiagnosticsOverlay : Control
 			ShowHost(host, isVisible: visibleViews is not 0);
 			UpdatePlacement();
 		});
+	}
+
+	// Drops any materialized element whose view is no longer live — e.g. a view registered from a collectible
+	// AssemblyLoadContext that was unregistered by DiagnosticViewRegistry.ClearNonDefaultAlcRegistrations on ALC
+	// teardown. The materialization loop in EnqueueUpdate is add-only; without this the overlay keeps the view
+	// (and its DataTemplate -> the ALC's generated resources -> LoaderAllocator), pinning the collectible ALC
+	// forever (uno #23614). Caller holds _updateGate; tolerates a not-yet-applied _elementsPanel so it is safe to
+	// call from the hidden path. Returns true if anything was removed (the caller may then hide a stale notification).
+	private bool ReconcileMaterializedRemovals(HashSet<IDiagnosticView> live)
+	{
+		var removedAny = false;
+		foreach (var view in _elements.Keys.Where(v => !live.Contains(v)).ToList())
+		{
+			if (_elements.Remove(view, out var stale))
+			{
+				_elementsPanel?.Children.Remove(stale.Value);
+				stale.Dispose();
+				removedAny = true;
+			}
+
+			_localRegistrations.Remove(view);
+		}
+
+		return removedAny;
 	}
 
 	private static Popup CreateHost(XamlRoot root, DiagnosticsOverlay overlay)

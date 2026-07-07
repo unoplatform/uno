@@ -948,10 +948,17 @@ namespace Microsoft.UI.Xaml
 			if (RenderTargetBitmap.IsImplemented && routedArgs.DragUI.Content is null)
 			{
 				// Note: Bitmap rendered by the RenderTargetBitmap is in physical pixels,
-				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels. 
+				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels.
 
 				var target = new RenderTargetBitmap();
+#if __SKIA__
+				// RenderAsync completes during a later render pass; the drag visual must instead be
+				// captured without yielding so DragStarted/DragEnter below still fire synchronously
+				// within the DragStarting sequence (matching WinUI).
+				target.RenderSync(this, (int)ActualSize.X, (int)ActualSize.Y);
+#else
 				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
+#endif
 
 				routedArgs.DragUI.Content = target;
 				routedArgs.DragUI.Anchor = -ptPosition;

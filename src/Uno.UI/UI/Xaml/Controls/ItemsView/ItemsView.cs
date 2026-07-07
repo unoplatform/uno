@@ -1158,21 +1158,10 @@ partial class ItemsView : Control
 		}
 	}
 
-#if DEBUG
-	void OnLayoutMeasureInvalidatedDbg(
-		Layout sender,
-		object args)
-	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-	}
-
-	void OnLayoutArrangeInvalidatedDbg(
-		Layout sender,
-		object args)
-	{
-		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
-	}
-#endif
+	// NOTE: the DEBUG-only OnLayoutMeasureInvalidatedDbg / OnLayoutArrangeInvalidatedDbg handlers were
+	// removed together with their leaking subscription (see OnLayoutChangedDbg below). They were empty
+	// no-ops (trace calls commented out); if the diagnostics are ever restored, re-add them and
+	// subscribe via a WEAK handler so the shared default-Style Layout cannot pin every ItemsView.
 
 	void OnCompositionTargetRendering(
 		object sender,
@@ -1253,14 +1242,15 @@ partial class ItemsView : Control
 		m_layoutMeasureInvalidatedDbg.Disposable = null;
 		m_layoutArrangeInvalidatedDbg.Disposable = null;
 
-		if (Layout is { } layout)
-		{
-			layout.MeasureInvalidated += OnLayoutMeasureInvalidatedDbg;
-			m_layoutMeasureInvalidatedDbg.Disposable = new DisposableAction(() => layout.MeasureInvalidated -= OnLayoutMeasureInvalidatedDbg);
-
-			layout.ArrangeInvalidated += OnLayoutArrangeInvalidatedDbg;
-			m_layoutArrangeInvalidatedDbg.Disposable = new DisposableAction(() => layout.ArrangeInvalidated -= OnLayoutArrangeInvalidatedDbg);
-		}
+		// NOTE: These diagnostics used to subscribe to the Layout's MeasureInvalidated /
+		// ArrangeInvalidated events. Because Layout is frequently a single instance shared by the
+		// control's default Style (a Setter value lives for the whole process), and the handlers are
+		// instance methods (target = this ItemsView), the shared Layout retained every ItemsView ever
+		// created for the life of the app — a real leak in Debug builds, and under collectible
+		// AssemblyLoadContexts it pinned the entire app ALC. The handlers below are empty no-ops (their
+		// trace calls are commented out), so the subscription provided no value. It is intentionally
+		// not created. If the traces are ever restored, re-subscribe via a weak handler so a shared
+		// Layout cannot keep this ItemsView alive.
 	}
 #endif
 

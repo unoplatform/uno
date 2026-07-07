@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
@@ -16,18 +17,7 @@ public static class AddInsExtensions
 	{
 		// TODO: Move this to new pattern with a .AddAddIns() method.
 
-		var discovery = AddIns.Discover(solutionFile, telemetry);
-		var loadResults = AssemblyHelper.Load(discovery.AddIns, telemetry, throwIfLoadFailed: false);
-
-		var assemblies = loadResults
-			.Where(result => result.Assembly is not null)
-			.Select(result => result.Assembly)
-			.ToImmutableArray();
-
-		builder.Services.AddFromAttributes(assemblies);
-		builder.Services.AddSingleton(new AddInsStatus(discovery, loadResults));
-
-		return builder;
+		return builder.RegisterAddIns(AddIns.Discover(solutionFile, telemetry), telemetry);
 	}
 
 	public static WebApplicationBuilder ConfigureAddInsFromPaths(this WebApplicationBuilder builder, string addinsValue, ITelemetry? telemetry = null)
@@ -41,6 +31,11 @@ public static class AddInsExtensions
 			? AddInsDiscoveryResult.Success(dllPaths)
 			: AddInsDiscoveryResult.Empty();
 
+		return builder.RegisterAddIns(discovery, telemetry);
+	}
+
+	private static WebApplicationBuilder RegisterAddIns(this WebApplicationBuilder builder, AddInsDiscoveryResult discovery, ITelemetry? telemetry)
+	{
 		var loadResults = AssemblyHelper.Load(discovery.AddIns, telemetry, throwIfLoadFailed: false);
 
 		var assemblies = loadResults
@@ -48,7 +43,24 @@ public static class AddInsExtensions
 			.Select(result => result.Assembly)
 			.ToImmutableArray();
 
+		var addInServicesStart = builder.Services.Count;
 		builder.Services.AddFromAttributes(assemblies);
+
+		// A broken add-in hosted service must degrade that add-in only — never
+		// prevent the host from becoming ready (see uno-private#1968).
+		AddInHostedServiceQuarantine.Apply(
+			builder.Services,
+			addInServicesStart,
+			(service, error) => telemetry?.TrackEvent(
+				"addin-hosted-service-quarantined",
+				new Dictionary<string, string>
+				{
+					["QuarantinedService"] = service,
+					["QuarantineErrorType"] = error.GetType().Name,
+					["QuarantineErrorMessage"] = error.Message,
+				},
+				null));
+
 		builder.Services.AddSingleton(new AddInsStatus(discovery, loadResults));
 
 		return builder;

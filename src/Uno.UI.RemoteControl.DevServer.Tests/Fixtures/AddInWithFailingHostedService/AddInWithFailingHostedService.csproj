@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Reproduces the uno-private#1968 crash shape: an add-in registers an
+		IHostedService whose constructor throws (mimicking a missing-dependency
+		FileNotFoundException from a licensing/Kiota chain). Without quarantine,
+		ASP.NET Core's eager IEnumerable&lt;IHostedService&gt; materialization
+		propagates the exception out of Host.StartAsync and the DevServer process
+		dies before becoming ready.
+
+		A second, healthy hosted service registered AFTER the failing one writes a
+		sentinel file, proving the host quarantined the failure and kept starting
+		the remaining services.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+</Project>
