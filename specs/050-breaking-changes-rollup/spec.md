@@ -122,13 +122,13 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC55** — Replace deprecated Android `PreferenceManager` ⚠️  `d2·S` · #1833
   - Use `Context.GetSharedPreferences` with the legacy default name (or `AndroidX.Preference`) — MUST read the **same backing file** so existing user settings survive upgrade.
   - Files: `src/Uno.UWP/Storage/ApplicationDataContainer.Android.cs`
-- [ ] **BC37** — Remove non-DP (CLR) `Setter` codegen fallback  `d2·S` · PR #16134
+- [x] **BC37** — Remove non-DP (CLR) `Setter` codegen fallback  `d2·S` · PR #16134
   - Hard-delete.
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/ComboBox/ComboBox_FullScreen_Popup.xaml`
-- [ ] **BC44** — Remove `Setter<T>`  `d2·S`
+- [x] **BC44** — Remove `Setter<T>`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/Uno.UI/UI/Xaml/SetterBase.cs`, `src/Uno.UI/UI/Xaml/Style/Style.cs`
-- [ ] **BC63** — Remove `SetterBase.set_Property` shim  `d2·S` · #13050
+- [x] **BC63** — Remove `SetterBase.set_Property` shim  `d2·S` · #13050
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/SetterBase.cs`, `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`
 
