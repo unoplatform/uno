@@ -2266,6 +2266,9 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+
+		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
+		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
 	  </Types>
 
 	  <Fields>
@@ -2896,6 +2899,8 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>

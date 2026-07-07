@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.System;
@@ -466,7 +467,14 @@ public partial class ComboBox : Selector
 	/// This is required by some apps trying to emulate the native iPhone look for ComboBox.
 	/// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 	/// </remarks>
-	public bool IsPopupFullscreen { get; set; }
+	public bool IsPopupFullscreen
+	{
+		get => GetIsPopupFullscreenValue();
+		set => SetIsPopupFullscreenValue(value);
+	}
+
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty IsPopupFullscreenProperty { get; } = CreateIsPopupFullscreenProperty();
 
 	/// <summary>
 	/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
