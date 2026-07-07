@@ -291,12 +291,6 @@ namespace Microsoft.UI.Xaml
 
 			_current = targetValues;
 
-			// For backward compatibility, we may apply the setters before the end of the transition.
-			if (FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
-			{
-				ApplyTargetStateSetters();
-			}
-
 			// Finally effectively apply the target state!
 			if (useTransitions && target.transition is { } transitionAnimation)
 			{
@@ -345,11 +339,8 @@ namespace Microsoft.UI.Xaml
 
 			void ApplyTargetState()
 			{
-				// Apply target state setters (the right time to do it!) 
-				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
-				{
-					ApplyTargetStateSetters();
-				}
+				// Apply target state setters (the right time to do it!)
+				ApplyTargetStateSetters();
 
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)

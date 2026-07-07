@@ -2933,6 +2933,14 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="6.6">
+	  <Types>
+		  <!-- Legacy cross-target FeatureConfiguration holder class removed with its sole flag (#2053, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Binding" reason="Removed empty FeatureConfiguration.Binding holder after deleting IgnoreINPCSameReferences (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/Timeline" reason="Removed empty FeatureConfiguration.Timeline holder after deleting DefaultsStartingValueFromAnimatedValue (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/VisualState" reason="Removed empty FeatureConfiguration.VisualState holder after deleting ApplySettersBeforeTransition (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/DataTemplateSelector" reason="Removed empty FeatureConfiguration.DataTemplateSelector holder after deleting UseLegacyTemplateSelectorOverload (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs" reason="Removed empty FeatureConfiguration.ManipulationRoutedEventArgs holder after deleting IsAbsolutePositionEnabled (#2053, breaking changes for 7.0)" />
+	  </Types>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
@@ -2940,6 +2948,21 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors::UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2::IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings::IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- Legacy cross-target FeatureConfiguration flags removed (#2053, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Binding::IgnoreINPCSameReferences()" reason="Removed Binding.IgnoreINPCSameReferences legacy flag; binding engine always uses the correct INPC path (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement::UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag; hit-testing locked to the WinUI-aligned default behavior (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (no consumers) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline::DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag; animations always default the starting value from the animated value (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateMeasurePath()" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag; measure dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag; arrange dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -2951,6 +2974,34 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/WebView2.set_IsInspectable(System.Boolean value)" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings.get_IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/AndroidSettings.set_IsEdgeToEdgeEnabled(System.Boolean value)" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- Binding.IgnoreINPCSameReferences accessors: paired with the removed property and holder class (#2053). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Binding.get_IgnoreINPCSameReferences()" reason="Removed Binding.IgnoreINPCSameReferences legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Binding.set_IgnoreINPCSameReferences(System.Boolean value)" reason="Removed Binding.IgnoreINPCSameReferences legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement.get_UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/FrameworkElement.set_UseLegacyHitTest(System.Boolean value)" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_ShowClippingBounds(System.Boolean value)" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline.get_DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag (get-only) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState.get_ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/VisualState.set_ApplySettersBeforeTransition(System.Boolean value)" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector.get_UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.set_IsAbsolutePositionEnabled(System.Boolean value)" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_DisablePointersSpecificEventPrevention(System.Boolean value)" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_UseInvalidateMeasurePath()" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateMeasurePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateArrangePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseDeferredOnApplyTemplate(System.Boolean value)" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup.get_EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Popup.set_EnableLightDismissByDefault(System.Boolean value)" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox.get_UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBox.set_UseOverlayOnSkia(System.Boolean value)" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

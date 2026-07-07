@@ -30,7 +30,7 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (!_isSkiaTextBox || !HasPointerCapture)
+		if (!HasPointerCapture)
 		{
 			return;
 		}
@@ -108,11 +108,6 @@ public partial class TextBox
 	{
 		_isPressed = true;
 		TrySetCurrentlyTyping(false);
-
-		if (!_isSkiaTextBox)
-		{
-			return;
-		}
 
 		var currentPoint = args.GetCurrentPoint(null);
 		if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
