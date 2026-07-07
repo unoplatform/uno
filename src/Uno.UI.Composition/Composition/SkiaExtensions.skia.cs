@@ -26,7 +26,7 @@ namespace Microsoft.UI.Composition
 		public static SKColor ToSKColor(this Color color)
 			=> new SKColor(red: color.R, green: color.G, blue: color.B, alpha: color.A);
 
-		public static SKColor ToSKColor(this System.Drawing.Color color)
+		public static SKColor ToSKColor(this global::System.Drawing.Color color)
 			=> new SKColor(red: color.R, green: color.G, blue: color.B, alpha: color.A);
 
 		public static SKColor ToSKColor(this Color color, double alphaMultiplier)

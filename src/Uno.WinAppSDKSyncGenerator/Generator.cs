@@ -411,6 +411,12 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
+			// Microsoft.UI.Input: the WinAppSDK assembly is Microsoft.InteractiveExperiences.Projection
+			// (would route to Uno.UWP), but the hand-written impls (PointerPoint, GestureRecognizer,
+			// InputCursor, InputNonClientPointerSource, ...) depend on Uno.UI.Composition and
+			// Microsoft.UI.Windowing types, so the projection is intentionally hosted in Uno.UI.
+			// Microsoft.UI.Xaml.Automation: assembly is Microsoft.WinUI, which already routes to Uno.UI
+			// via the switch below; this branch is redundant but kept for explicitness.
 			else if (@namespace.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal) ||
 				@namespace.StartsWith("Microsoft.UI.Xaml.Automation", StringComparison.Ordinal))
 			{
@@ -426,54 +432,29 @@ namespace Uno.WinAppSDKSyncGenerator
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 
-			// BACKWARDS COMPATIBILITY REDIRECTS:
-			// The following namespaces are being generated in their legacy locations to avoid breaking changes.
-			// Ideally, these should be generated based on their containing assembly (see switch statement below),
-			// but that would be a breaking change for users who reference these types from Uno.UI.
+			// INTENTIONALLY RETAINED REDIRECTS:
+			// These namespaces' WinUI-correct assembly cannot host their hand-written implementations
+			// without a dedicated seam, so their generated stubs stay in the legacy location for now.
+			// Tracked by https://github.com/unoplatform/uno/issues/22927
 
-			// Microsoft.UI.Content: Correct location would be Uno.UWP (from Microsoft.WinUI assembly),
-			// but was previously generated in Uno.UI.
+			// Microsoft.UI.Content: WinAppSDK sources these from Microsoft.InteractiveExperiences.Projection
+			// (would route to Uno.UWP), but ContentIsland/ContentSite and their stubs depend on
+			// Uno.UI.Composition types (Compositor, Visual, ICompositionSupportsSystemBackdrop, IClosableNotifier),
+			// which Uno.UWP cannot reference. The WinUI-correct Uno home is Uno.UI.Composition.
 			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
-			// Microsoft.UI.System: Correct location would be Uno.UWP, but keeping in Uno.UI for consistency
-			// with other Microsoft.UI.* namespaces.
-			else if (@namespace.StartsWith("Microsoft.UI.System", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
-			// Microsoft.Graphics.DirectX/Display: Correct location would be Uno.UWP (from Microsoft.Windows.SDK.NET),
-			// but was previously generated in Uno.UI.Composition.
-			else if (@namespace.StartsWith("Microsoft.Graphics.DirectX", StringComparison.Ordinal) ||
-				@namespace.StartsWith("Microsoft.Graphics.Display", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-			// Microsoft.Windows.ApplicationModel.Resources: Correct location would be Uno.UWP,
-			// but was previously generated in Uno.UI.
-			else if (@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
-			// Microsoft.Web.WebView2.Core: Correct location would be Uno.UWP,
-			// but was previously generated in Uno.UI.
+			// Microsoft.Web.WebView2.Core: sourced from Microsoft.Web.WebView2.Core.Projection (no assembly-switch
+			// case). The hand-written CoreWebView2 implementation is coupled to the Uno.UI visual tree
+			// (VisualTreeHelper/ContentPresenter/IWebView), so the projection is hosted in Uno.UI.
 			else if (@namespace.StartsWith("Microsoft.Web.WebView2", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
-			// Microsoft.UI.IClosableNotifier / ClosableNotifierHandler: Correct location would be Uno.UWP,
-			// but was previously introduced in Uno.UI.Composition.
-			// Tracked by https://github.com/unoplatform/uno/issues/22927
-			else if (@namespace == "Microsoft.UI"
-				&& type.Name is "IClosableNotifier" or "ClosableNotifierHandler")
-			{
-				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-			// WinRT.Interop.WindowNative / InitializeWithWindow: Hand-written implementations
-			// exist in Uno.UI (they depend on Microsoft.UI.Xaml.Window).
-			// Route generated stubs there to avoid cross-assembly conflicts.
-			// Tracked by https://github.com/unoplatform/uno/issues/22927
+			// WinRT.Interop.WindowNative / InitializeWithWindow: the generated home per the WinRT.Runtime
+			// assembly is Uno.Foundation, but the hand-written implementations depend on
+			// Microsoft.UI.Xaml.Window (Uno.UI). Relocating requires an ApiExtensibility seam.
 			else if (@namespace == "WinRT.Interop"
 				&& type.Name is "WindowNative" or "InitializeWithWindow")
 			{
