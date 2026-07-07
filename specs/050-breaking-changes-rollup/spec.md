@@ -54,7 +54,7 @@ _Danger 1. The safe vanguard: deletions scoped to native targets being dropped, 
 - [ ] **BC35** — Remove `IgnoreINPCSameReferences` flag  `d1·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/DataBinding/BindingPath.BindingItem.cs`
-- [ ] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
+- [x] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
   - Delete the entire `new`-shadow back-compat block to match `DoubleKeyFrameCollection`/`ObjectKeyFrameCollection`.
   - Files: `src/Uno.UI/UI/Xaml/Media/Animation/ColorKeyFrameCollection.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectCollection.cs`, `src/Uno.UI/UI/Xaml/Media/Animation/DoubleKeyFrameCollection.cs`
 
