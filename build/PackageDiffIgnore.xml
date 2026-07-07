@@ -2244,6 +2244,9 @@
 		       *EasingFunction, IVisualElement2) and are preserved on the branch. -->
 		  <Member fullName="Windows\.UI\.Composition\.((Back|Bounce|Circle|Elastic|Exponential|Power|Sine)EasingFunction|CompositionEasingFunctionMode|DelegatedInkTrailVisual|ICompositionSupportsSystemBackdrop|ICompositionSurfaceFacade|IVisualElement2|InkTrailPoint|RectangleClip)" reason="WinUI sync: legacy Windows.UI.Composition projections removed (Microsoft.UI.Composition equivalents preserved)" isRegex="true" />
 
+		  <!-- Uno-native dead stub (Visual subclass, private ctor only, no factory, zero consumers) removed. -->
+		  <Member fullName="Microsoft.UI.Composition.DelegatedInkTrailVisual" reason="Removed dead DelegatedInkTrailVisual stub (BC32, breaking changes for 7.0)" />
+
 		  <!-- Group 11b: Windows.UI.Core preview independent-input controllers -->
 		  <Member fullName="Windows\.UI\.Core\.CoreIndependentInput(Filters|SourceController)" reason="WinUI sync: preview independent-input controller types removed by WinAppSDK 1.8" isRegex="true" />
 
