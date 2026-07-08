@@ -1802,6 +1802,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_CopyingToClipboard_Empty_Selection_Does_Not_Raise()
+		{
+			// A copy with a collapsed (empty) selection is a no-op and raises no CopyingToClipboard event,
+			// consistent with CuttingToClipboard and TextBox.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+			// Collapse the selection to a caret (End leaves a zero-length selection).
+			RaiseKey(SUT, VirtualKey.End);
+			await WindowHelper.WaitForIdle();
+
+			var count = 0;
+			SUT.CopyingToClipboard += (s, e) => count++;
+
+			RaiseKey(SUT, VirtualKey.C, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, count, "Empty-selection copy should not raise CopyingToClipboard.");
+		}
+
+		[TestMethod]
 		public async Task When_CopyingToClipboard_Handled_Suppresses_Copy()
 		{
 			var SUT = new RichEditBox();
