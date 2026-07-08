@@ -19,11 +19,12 @@ namespace Microsoft.UI.Xaml.Controls
 	/// according to its aspect ratio (WinUI 1.8 LinedFlowLayout).
 	/// </summary>
 	/// <remarks>
-	/// Ported incrementally (workstream D). This slice provides the public API surface
-	/// (dependency properties, events, <see cref="LinedFlowLayoutItemsInfoRequestedEventArgs"/>,
-	/// and the items-info invalidation seam). The measure/arrange line-breaking algorithm
-	/// (LinedFlowLayout.cpp) is ported in a later slice; members that depend on it throw
-	/// <see cref="NotImplementedException"/> until then.
+	/// Ported incrementally (workstream D) from LinedFlowLayout.cpp. The measure/arrange
+	/// line-breaking orchestration (<see cref="MeasureOverride"/>/<see cref="ArrangeOverride"/>/
+	/// <see cref="OnItemsChangedCore"/>), the <see cref="LockItemToLine"/> API and their helpers
+	/// are ported. Default item transitions (<see cref="CreateDefaultItemTransitionProvider"/>)
+	/// are deferred to WS-D4 (see that method), and the ETW/test-hook notifications are stubbed
+	/// as WS-D5 TODOs.
 	/// </remarks>
 	public partial class LinedFlowLayout : VirtualizingLayout
 	{
