@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
-		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
 		{
 			for (int i = 0; i < _entries.Length; i++)
 			{

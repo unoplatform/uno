@@ -13,7 +13,11 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 	{
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal new void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
+#else
 	internal void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
+#endif
 	{
 		//base.Enter(pNamescopeOwner, enterParams);
 
@@ -46,7 +50,11 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		}
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal new void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
+#else
 	internal void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
+#endif
 	{
 		//base.Leave(pNamescopeOwner, leaveParams);
 

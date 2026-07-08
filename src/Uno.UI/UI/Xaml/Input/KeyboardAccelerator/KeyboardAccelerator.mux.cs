@@ -14,7 +14,11 @@ partial class KeyboardAccelerator
 {
 	//  Add our events to the global event request list.
 	//  Need to do this ourselves since we don't derive from CUIElement.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal new void EnterImpl(
+#else
 	internal void EnterImpl(
+#endif
 		DependencyObject pNamescopeOwner,
 		EnterParams enterParams)
 	{

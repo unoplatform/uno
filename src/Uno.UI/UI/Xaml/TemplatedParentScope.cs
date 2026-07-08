@@ -16,7 +16,7 @@ internal static class TemplatedParentScope
 	/// <param name="do"></param>
 	/// <param name="reapplyTemplateBindings">Should be true, if not called from ctor.</param>
 	/// <param name="store"></param>
-	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false, DependencyObjectStore? store = null)
+	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false, DependencyObject? store = null)
 	{
 		// note: `store` instance is used within DOStore.ctor to avoid stack overflow.
 
@@ -27,7 +27,7 @@ internal static class TemplatedParentScope
 		}
 	}
 
-	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true, DependencyObjectStore? store = null)
+	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true, DependencyObject? store = null)
 	{
 		if (@do is IDependencyObjectStoreProvider provider)
 		{

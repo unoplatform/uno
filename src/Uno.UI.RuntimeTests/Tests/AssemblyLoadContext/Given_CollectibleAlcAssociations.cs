@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 
 /// <summary>
 /// A shared (host-lifetime) resource consumed by a secondary-ALC element records that element as
-/// its InheritanceContext parent (<c>DependencyObjectStore._associatedParent</c>). Nothing
+/// its InheritanceContext parent (<c>DependencyObject._associatedParent</c>). Nothing
 /// un-associates it when the element's AssemblyLoadContext unloads, so the host resource pins the
 /// collectible ALC forever. These tests stage that association with an element whose type lives in
 /// a collectible (RunAndCollect) assembly and assert that

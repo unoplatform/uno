@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Data
 				if (!_disposed &&
 					!ParentBinding.IsTemplateBinding &&
 					ExplicitSource == null &&
-					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+					DependencyObject.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 

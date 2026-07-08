@@ -4,11 +4,11 @@
 //
 // CDependencyObject::Enter/EnterImpl/Leave/LeaveImpl. In WinUI these are methods on
 // CDependencyObject; in Uno, DependencyObject is an interface on every target, so the
-// CDependencyObject layer lives on the DependencyObjectStore that every DependencyObject owns
+// CDependencyObject layer lives on the DependencyObject that every DependencyObject owns
 // (operating on ActualInstance). UIElement's visual Enter walk (UIElement.mux.cs, ported from
 // uielement.cpp) calls into this layer exactly where CUIElement::EnterImpl calls
 // CDependencyObject::EnterImpl. The enter-property walks live in
-// DependencyObjectStore.PropertySystem.mux.cs (ported from PropertySystem.cpp).
+// DependencyObject.PropertySystem.mux.cs (ported from PropertySystem.cpp).
 //
 // Only the lifecycle subset of depends.cpp is ported here; the rest of the file (property
 // system, namescope, inheritance context) is NOT PORTED and tracked by the preserved comments
@@ -23,7 +23,7 @@ using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class DependencyObjectStore
+public partial class DependencyObject
 {
 	// MUX Reference: CDependencyObject.h:302 — m_bitFields.fIsProcessingEnterLeave.
 	private bool _isProcessingEnterLeave;
@@ -185,7 +185,7 @@ public partial class DependencyObjectStore
 
 		// Enumerate all the field-backed properties and enter/invoke as needed.
 		// (depends.cpp:1013-1032 — in Uno the store's property enumeration covers WinUI's field-backed
-		// CEnterDependencyProperty table; see EnterProperties in DependencyObjectStore.PropertySystem.mux.cs.)
+		// CEnterDependencyProperty table; see EnterProperties in DependencyObject.PropertySystem.mux.cs.)
 		// TODO Uno: WinUI also runs this walk for dead (non-live) enters — name registration and
 		// NeedsInvoke side effects. Uno's walk currently serves theme establishment and live activation
 		// only, so it is skipped for dead enters to avoid materializing every DP value on the
@@ -377,7 +377,7 @@ public partial class DependencyObjectStore
 		}
 
 		// Enumerate all the field-backed properties and leave as needed.
-		// (depends.cpp:1292-1309; see LeaveProperties in DependencyObjectStore.PropertySystem.mux.cs.
+		// (depends.cpp:1292-1309; see LeaveProperties in DependencyObject.PropertySystem.mux.cs.
 		// Skipped for dead leaves for the same reason the enter walk is — see EnterImpl.)
 		if (@params.IsLive)
 		{

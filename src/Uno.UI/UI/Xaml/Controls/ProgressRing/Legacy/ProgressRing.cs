@@ -16,7 +16,11 @@ public partial class ProgressRing : Control
 	/// <summary>
 	/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
 	/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	public new bool IsActive
+#else
 	public bool IsActive
+#endif
 	{
 		get => (bool)GetValue(IsActiveProperty);
 		set => SetValue(IsActiveProperty, value);

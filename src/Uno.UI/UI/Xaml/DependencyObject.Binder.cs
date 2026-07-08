@@ -8,6 +8,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -30,7 +31,7 @@ using Uno.UI.Controls;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class DependencyObjectStore
+	public partial class DependencyObject
 	{
 		private readonly object _gate = new object();
 
@@ -62,7 +63,7 @@ namespace Microsoft.UI.Xaml
 #endif
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public void SetTemplatedParent(FrameworkElement? templatedParent)
+		internal void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
 			// do nothing, this only exist to keep public api the same.
 		}
@@ -177,10 +178,10 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
-		public void ApplyCompiledBindings()
+		internal void ApplyCompiledBindings()
 			=> _properties.ApplyCompiledBindings();
 
-		public void SuspendCompiledBindings()
+		internal void SuspendCompiledBindings()
 			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
 			=> _properties.SuspendCompiledBindings();
 
@@ -201,7 +202,7 @@ namespace Microsoft.UI.Xaml
 			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
-		internal DependencyProperty? DataContextProperty => _dataContextProperty;
+		internal DependencyProperty? DataContextPropertyInternal => _dataContextProperty;
 
 		/// <summary>
 		/// Suspends the processing the <see cref="DataContext"/> until <see cref="ResumeBindings"/> is called.
@@ -332,7 +333,7 @@ namespace Microsoft.UI.Xaml
 			// a VisualState) never resolve. FrameworkElement stores reach these children through SetValue/Inheritance.
 			if (_dataContextProperty is null && _childrenStores.Count != 0)
 			{
-				var instanceRef = _originalObjectRef;
+				var instanceRef = SelfWeakReference;
 				var localChildrenStores = _childrenStores;
 				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 				{
@@ -347,7 +348,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_trace.IsEnabled)
 			{
-				traceActivity = _trace.WriteEventActivity(TraceProvider.DataContextChangedStart, TraceProvider.DataContextChangedStop, GetTraceProperties());
+				traceActivity = _trace.WriteEventActivity(DependencyObjectTraceProvider.DataContextChangedStart, DependencyObjectTraceProvider.DataContextChangedStop, GetTraceProperties());
 			}
 
 			return traceActivity;
@@ -392,7 +393,7 @@ namespace Microsoft.UI.Xaml
 
 			if (binding is Binding fullBinding)
 			{
-				_properties.SetBinding(dependencyProperty, fullBinding, _originalObjectRef);
+				_properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
@@ -439,7 +440,7 @@ namespace Microsoft.UI.Xaml
 
 				if (boundProperty != null)
 				{
-					_properties.SetBinding(boundProperty, fullBinding, _originalObjectRef);
+					_properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
 				}
 			}
 			else
@@ -520,7 +521,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
 		/// </summary>
-		public void SetBindingValue(object value, DependencyProperty property)
+		internal void SetBindingValue(object value, DependencyProperty property)
 		{
 			_properties.SetSourceValue(property, value);
 		}
@@ -683,7 +684,7 @@ namespace Microsoft.UI.Xaml
 				// as a presenter's ItemsSource — parent is the flyout, not the presenter) is skipped by the matching
 				// clear path, so pushing onto it here would cache a DataContext that is never released.
 				if (newValue is IDependencyObjectStoreProvider addedProvider
-					&& addedProvider.Store.DataContextProperty is null
+					&& addedProvider.Store.DataContextPropertyInternal is null
 					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
 					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
 				{
@@ -931,7 +932,7 @@ namespace Microsoft.UI.Xaml
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
-		public Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
+		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)

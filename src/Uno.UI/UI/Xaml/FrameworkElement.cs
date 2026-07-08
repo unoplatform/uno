@@ -271,8 +271,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
-		public
-		DependencyObject Parent =>
+		public new DependencyObject Parent =>
 			LogicalParentOverride ??
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
