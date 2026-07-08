@@ -116,6 +116,10 @@ public partial class ScrollPresenter : FrameworkElement
 	private double m_unzoomedExtentHeight = 0.0;
 	private double m_viewportWidth = 0.0;
 	private double m_viewportHeight = 0.0;
+	// Anticipated view recorded for the ScrollStarting/ZoomStarting events. NaN means no anticipated value, in which case the current value is used.
+	private float m_anticipatedZoomFactor = float.NaN;
+	private double m_anticipatedZoomedHorizontalOffset = double.NaN;
+	private double m_anticipatedZoomedVerticalOffset = double.NaN;
 	private bool m_horizontalSnapPointsNeedViewportUpdates = false; // True when at least one horizontal snap point is not near aligned.
 	private bool m_verticalSnapPointsNeedViewportUpdates = false; // True when at least one vertical snap point is not near aligned.
 	private bool m_isAnchorElementDirty = true; // False when m_anchorElement is up-to-date, True otherwise.

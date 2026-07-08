@@ -510,6 +510,76 @@ public class ScrollViewTests : MUXApiTestBase
 		}
 	}
 
+	[TestMethod]
+	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ScrollStarting args.")]
+	public async Task VerifyScrollStartingForwarding()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+		uint scrollStartingCount = 0u;
+		int scrollStartingCorrelationId = -1;
+		int scrollCompletedCorrelationId = -1;
+		int operationCorrelationId = -1;
+		double scrollStartingHorizontalOffset = 0.0;
+		double scrollStartingVerticalOffset = 0.0;
+		float scrollStartingZoomFactor = 0.0f;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ScrollStarting += (sender, args) =>
+			{
+				Log.Comment($"ScrollStarting scrollStartingCount={++scrollStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollView, sender);
+				scrollStartingCorrelationId = args.CorrelationId;
+				scrollStartingHorizontalOffset = args.HorizontalOffset;
+				scrollStartingVerticalOffset = args.VerticalOffset;
+				scrollStartingZoomFactor = args.ZoomFactor;
+			};
+
+			scrollView.ScrollCompleted += (sender, args) =>
+			{
+				Log.Comment($"ScrollCompleted CorrelationId={args.CorrelationId}");
+				Verify.AreSame(scrollView, sender);
+				scrollCompletedCorrelationId = args.CorrelationId;
+				scrollViewScrollCompletedEvent.Set();
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			operationCorrelationId = scrollView.ScrollTo(
+				60.0,
+				70.0,
+				new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
+
+			if (operationCorrelationId == -1)
+			{
+				scrollViewScrollCompletedEvent.Set();
+			}
+		});
+
+		await WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(1u, scrollStartingCount);
+			Verify.AreEqual(operationCorrelationId, scrollStartingCorrelationId);
+			Verify.AreEqual(operationCorrelationId, scrollCompletedCorrelationId);
+			Verify.AreEqual(60.0, scrollStartingHorizontalOffset);
+			Verify.AreEqual(70.0, scrollStartingVerticalOffset);
+			Verify.AreEqual(1.0f, scrollStartingZoomFactor);
+		});
+	}
+
 	private void SetupDefaultUI(
 		ScrollView scrollView,
 		Rectangle rectangleScrollViewContent = null,

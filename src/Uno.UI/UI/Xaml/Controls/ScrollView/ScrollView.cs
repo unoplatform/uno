@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollView.cpp, commit b8cfb8490
 
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ public partial class ScrollView : Control, IScrollView
 		UnhookCompositionTargetRendering();
 		UnhookScrollPresenterEvents(true /*isForDestructor*/);
 		UnhookScrollViewEvents();
-		ResetHideIndicatorsTimer(true /*isForDestructor*/);
+		ResetHideIndicatorsTimer();
 	}
 
 	#region IScrollView
@@ -713,14 +714,9 @@ public partial class ScrollView : Control, IScrollView
 	}
 
 	// Invoked by ScrollViewTestHooks
-	internal void ScrollControllersAutoHidingChanged()
+	internal void ScrollControllersAutoHidingChangedDbg()
 	{
 		UpdateScrollControllersAutoHiding(true /*forceUpdate*/);
-	}
-
-	internal ScrollPresenter GetScrollPresenterPart()
-	{
-		return m_scrollPresenter as ScrollPresenter;
 	}
 
 	internal void ValidateAnchorRatio(double value)
@@ -854,7 +850,9 @@ public partial class ScrollView : Control, IScrollView
 
 		if (AreScrollControllersAutoHiding())
 		{
-			HideIndicators();
+			// As this control may be in the process of being discarded,
+			// use tracker_ref's safe_get() instead of get() to avoid crashes.
+			HideIndicators(true /*useTransitions*/, true /*useSafeGet*/);
 		}
 	}
 
@@ -925,6 +923,30 @@ public partial class ScrollView : Control, IScrollView
 			//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
 			ZoomAnimationStarting.Invoke(this, args);
+		}
+	}
+
+	private void OnScrollPresenterScrollStarting(
+		object sender,
+		ScrollingScrollStartingEventArgs args)
+	{
+		if (ScrollStarting is not null)
+		{
+			//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+			ScrollStarting.Invoke(this, args);
+		}
+	}
+
+	private void OnScrollPresenterZoomStarting(
+		object sender,
+		ScrollingZoomStartingEventArgs args)
+	{
+		if (ZoomStarting is not null)
+		{
+			//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+			ZoomStarting.Invoke(this, args);
 		}
 	}
 
@@ -1085,17 +1107,14 @@ public partial class ScrollView : Control, IScrollView
 		}
 	}
 
-	private void ResetHideIndicatorsTimer(bool isForDestructor = false, bool restart = false)
+	private void ResetHideIndicatorsTimer(bool restart = false)
 	{
-		// UNO TODO
-		var hideIndicatorsTimer = m_hideIndicatorsTimer; //.safe_get(isForDestructor /*useSafeGet*/);
-
-		if (hideIndicatorsTimer is not null && hideIndicatorsTimer.IsEnabled)
+		if (m_hideIndicatorsTimer is not null && m_hideIndicatorsTimer.IsEnabled)
 		{
-			hideIndicatorsTimer.Stop();
+			m_hideIndicatorsTimer.Stop();
 			if (restart)
 			{
-				hideIndicatorsTimer.Start();
+				m_hideIndicatorsTimer.Start();
 			}
 		}
 	}
@@ -1273,6 +1292,8 @@ public partial class ScrollView : Control, IScrollView
 			scrollPresenter.ZoomCompleted += OnScrollPresenterZoomCompleted;
 			scrollPresenter.BringingIntoView += OnScrollPresenterBringingIntoView;
 			scrollPresenter.AnchorRequested += OnScrollPresenterAnchorRequested;
+			scrollPresenter.ScrollStarting += OnScrollPresenterScrollStarting;
+			scrollPresenter.ZoomStarting += OnScrollPresenterZoomStarting;
 
 			DependencyObject scrollPresenterAsDO = scrollPresenter as DependencyObject;
 
@@ -1362,6 +1383,8 @@ public partial class ScrollView : Control, IScrollView
 			scrollPresenter.ZoomCompleted -= OnScrollPresenterZoomCompleted;
 			scrollPresenter.BringingIntoView -= OnScrollPresenterBringingIntoView;
 			scrollPresenter.AnchorRequested -= OnScrollPresenterAnchorRequested;
+			scrollPresenter.ScrollStarting -= OnScrollPresenterScrollStarting;
+			scrollPresenter.ZoomStarting -= OnScrollPresenterZoomStarting;
 
 			DependencyObject scrollPresenterAsDO = scrollPresenter as DependencyObject;
 
@@ -1673,10 +1696,14 @@ public partial class ScrollView : Control, IScrollView
 		return (IgnoredInputKinds & inputKind) == inputKind;
 	}
 
-	private bool AreAllScrollControllersCollapsed()
+	private bool AreAllScrollControllersCollapsed(bool useSafeGet = false)
 	{
-		return !SharedHelpers.IsAncestor(m_horizontalScrollControllerElement as DependencyObject /*child*/, this /*parent*/, true /*checkVisibility*/) &&
-			!SharedHelpers.IsAncestor(m_verticalScrollControllerElement as DependencyObject /*child*/, this /*parent*/, true /*checkVisibility*/);
+		// UNO TODO: m_*ScrollControllerElement are plain fields, so safe_get(useSafeGet) is not needed.
+		return
+			(m_horizontalScrollControllerElement is null ||
+			 !SharedHelpers.IsAncestor(m_horizontalScrollControllerElement as DependencyObject /*child*/, this /*parent*/, true /*checkVisibility*/)) &&
+			(m_verticalScrollControllerElement is null ||
+			 !SharedHelpers.IsAncestor(m_verticalScrollControllerElement as DependencyObject /*child*/, this /*parent*/, true /*checkVisibility*/));
 	}
 
 	private bool AreBothScrollControllersVisible()
@@ -1727,13 +1754,14 @@ public partial class ScrollView : Control, IScrollView
 	}
 
 	private void HideIndicators(
-		bool useTransitions = true)
+		bool useTransitions = true,
+		bool useSafeGet = false)
 	{
 		//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH_INT_INT, METH_NAME, this, useTransitions, m_keepIndicatorsShowing);
 
 		MUX_ASSERT(AreScrollControllersAutoHiding());
 
-		if (!AreAllScrollControllersCollapsed() && !m_keepIndicatorsShowing)
+		if (!AreAllScrollControllersCollapsed(useSafeGet) && !m_keepIndicatorsShowing)
 		{
 			GoToState(s_noIndicatorStateName, useTransitions);
 
@@ -1766,6 +1794,10 @@ public partial class ScrollView : Control, IScrollView
 			{
 				hideIndicatorsTimer = new DispatcherTimer();
 				hideIndicatorsTimer.Interval = new TimeSpan(ticks: s_noIndicatorCountdown);
+				// TODO Uno: WinUI captures a weak reference to `this` here (make_weak) and resolves it
+				// on tick to avoid a use-after-free if a tick is dispatched after the ScrollView is
+				// destroyed (e.g. window closed before Stop() takes effect). In Uno the managed GC
+				// prevents dereferencing freed memory, so the direct handler hookup is kept.
 				hideIndicatorsTimer.Tick += OnHideIndicatorsTimerTick;
 				m_hideIndicatorsTimer = hideIndicatorsTimer;
 			}
@@ -1842,7 +1874,7 @@ public partial class ScrollView : Control, IScrollView
 				return;
 			}
 
-			ResetHideIndicatorsTimer(false /*isForDestructor*/, true /*restart*/);
+			ResetHideIndicatorsTimer(true /*restart*/);
 
 			// Mouse indicators dominate if they are already showing or if we have set the flag to prefer them.
 			if (m_preferMouseIndicators || m_showingMouseIndicators || !areScrollControllersAutoHiding)

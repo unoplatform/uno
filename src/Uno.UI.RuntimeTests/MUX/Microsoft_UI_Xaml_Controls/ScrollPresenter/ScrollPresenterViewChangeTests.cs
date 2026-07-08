@@ -1390,6 +1390,12 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		UnoAutoResetEvent scrollPresenterViewChangeOperationEvent = new UnoAutoResetEvent(false);
 		ScrollPresenterOperation operation = null;
+		uint scrollStartingCount = 0u;
+		uint zoomStartingCount = 0u;
+		int scrollStartingCorrelationId = -1;
+		double scrollStartingHorizontalOffset = 0.0;
+		double scrollStartingVerticalOffset = 0.0;
+		float scrollStartingZoomFactor = 0.0f;
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1397,6 +1403,21 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter = new ScrollPresenter();
 
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent, false /*setAsContentRoot*/);
+
+			scrollPresenter.ScrollStarting += (sender, args) =>
+			{
+				Log.Comment($"ScrollStarting scrollStartingCount={++scrollStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollPresenter, sender);
+				scrollStartingCorrelationId = args.CorrelationId;
+				scrollStartingHorizontalOffset = args.HorizontalOffset;
+				scrollStartingVerticalOffset = args.VerticalOffset;
+				scrollStartingZoomFactor = args.ZoomFactor;
+			};
+
+			scrollPresenter.ZoomStarting += (sender, args) =>
+			{
+				Log.Comment($"ZoomStarting zoomStartingCount={++zoomStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+			};
 
 			scrollPresenter.ViewChanged += (sender, args) =>
 			{
@@ -1428,6 +1449,16 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Verify.AreEqual(400.0, scrollPresenter.VerticalOffset);
 			Verify.AreEqual(1.0f, scrollPresenter.ZoomFactor);
 			Verify.AreEqual(ScrollPresenterViewChangeResult.Completed, operation.Result);
+			Verify.AreEqual(animate ? 0u : 1u, scrollStartingCount);
+			Verify.AreEqual(0u, zoomStartingCount);
+
+			if (!animate)
+			{
+				Verify.AreEqual(operation.CorrelationId, scrollStartingCorrelationId);
+				Verify.AreEqual(600.0, scrollStartingHorizontalOffset);
+				Verify.AreEqual(400.0, scrollStartingVerticalOffset);
+				Verify.AreEqual(1.0f, scrollStartingZoomFactor);
+			}
 		});
 	}
 

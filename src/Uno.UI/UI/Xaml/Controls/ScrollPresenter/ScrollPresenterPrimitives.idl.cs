@@ -186,6 +186,8 @@ public partial class ScrollPresenter :
 	public event TypedEventHandler<ScrollPresenter, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 	public event TypedEventHandler<ScrollPresenter, ScrollingBringingIntoViewEventArgs> BringingIntoView;
 	public event TypedEventHandler<ScrollPresenter, ScrollingAnchorRequestedEventArgs> AnchorRequested;
+	public event TypedEventHandler<ScrollPresenter, ScrollingScrollStartingEventArgs> ScrollStarting;
+	public event TypedEventHandler<ScrollPresenter, ScrollingZoomStartingEventArgs> ZoomStarting;
 
 	public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 		nameof(Background),
