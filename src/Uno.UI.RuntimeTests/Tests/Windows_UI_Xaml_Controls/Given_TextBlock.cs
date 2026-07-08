@@ -2360,5 +2360,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		public async Task When_BaselineOffset_Reflects_First_Line()
+		{
+			var SUT = new TextBlock { Text = "Baseline", FontSize = 24 };
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var baseline = SUT.BaselineOffset;
+
+				// The first line's baseline sits below the top of the control and within its
+				// measured height (CTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > 0, $"BaselineOffset should be positive (was {baseline})");
+				Assert.IsTrue(baseline <= SUT.ActualHeight, $"BaselineOffset {baseline} should be within the control height {SUT.ActualHeight}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

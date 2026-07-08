@@ -104,6 +104,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly FontDetails _defaultFontDetails;
 	private readonly List<Line> _lines;
 	private readonly float? _endingNewLineLineHeight;
+	private readonly float _firstLineBaseline;
 	private readonly bool _rtl;
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	private readonly List<int> _wordBoundaries;
@@ -209,8 +210,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? (flowDirection is FlowDirection.RightToLeft ? TextAlignment.Right : TextAlignment.Left);
 			_wordBoundaries = [];
-			var emptyHeight = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight;
+			var (emptyHeight, emptyBaseline) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 			calculatedSize = new Size(0, emptyHeight);
+			_firstLineBaseline = emptyBaseline;
 			_availableSize = availableSize;
 			_xyTable = [];
 			_indexToCluster = [];
@@ -718,6 +720,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
+		_firstLineBaseline = lines.Count > 0 ? lines[0].baselineOffset : 0;
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
@@ -1302,6 +1305,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
+
+	public float FirstLineBaseline => _firstLineBaseline;
 
 	private static List<int> GetWords(string text)
 	{

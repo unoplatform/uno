@@ -747,6 +747,8 @@ internal readonly struct ParsedText : IParsedText
 	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
 	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
 
+	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
+
 	internal Size AvailableSize => _availableSize;
 
 	internal TextAlignment TextAlignment => _textAlignment;
