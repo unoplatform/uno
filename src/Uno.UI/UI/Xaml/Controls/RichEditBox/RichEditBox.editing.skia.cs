@@ -270,8 +270,18 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 
 						args.Handled = true;
-						text = text[..start] + key + text[end..];
-						selectionStart = start + 1;
+
+						// Route the typed character through CharacterCasing, then clamp against MaxLength
+						// (accounting for the selection being replaced). Replacing a non-empty selection
+						// frees room, so only a caret already at MaxLength is blocked.
+						var insert = ClampInsertToMaxLength(CoerceCasing(key.ToString()), text.Length, start, end);
+						if (insert.Length == 0 && start == end)
+						{
+							break;
+						}
+
+						text = text[..start] + insert + text[end..];
+						selectionStart = start + insert.Length;
 						selectionLength = 0;
 						break;
 					}
@@ -303,6 +313,47 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Edit application & selection
+
+		/// <summary>
+		/// Applies the control's <see cref="CharacterCasing"/> to newly entered text (typed or pasted).
+		/// Only the incoming text is coerced — existing content is never re-cased — matching WinUI.
+		/// </summary>
+		private string CoerceCasing(string value)
+		{
+			if (value.Length == 0)
+			{
+				return value;
+			}
+
+			return CharacterCasing switch
+			{
+				CharacterCasing.Upper => value.ToUpper(global::System.Globalization.CultureInfo.CurrentCulture),
+				CharacterCasing.Lower => value.ToLower(global::System.Globalization.CultureInfo.CurrentCulture),
+				_ => value,
+			};
+		}
+
+		/// <summary>
+		/// Clamps <paramref name="insert"/> so replacing the [<paramref name="start"/>,<paramref name="end"/>)
+		/// span in a document of <paramref name="currentLength"/> characters keeps the total within
+		/// <see cref="MaxLength"/>. A non-positive MaxLength means unlimited.
+		/// </summary>
+		private string ClampInsertToMaxLength(string insert, int currentLength, int start, int end)
+		{
+			var maxLength = MaxLength;
+			if (maxLength <= 0)
+			{
+				return insert;
+			}
+
+			var room = maxLength - (currentLength - (end - start));
+			if (room <= 0)
+			{
+				return string.Empty;
+			}
+
+			return insert.Length <= room ? insert : insert.Substring(0, room);
+		}
 
 		/// <summary>
 		/// Applies the single contiguous change between <paramref name="oldText"/> and
