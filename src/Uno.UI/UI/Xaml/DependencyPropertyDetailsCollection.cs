@@ -13,8 +13,10 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private readonly ManagedWeakReference _ownerReference;
-		private object? _hardOwnerReference;
+		// The owning DependencyObject is held strongly: the collection is private to that DO, so the
+		// DO <-> collection cycle is collected together by the tracing GC. Holding it strongly avoids
+		// renting a pooled weak self-handle (ManagedGCHandle) per DependencyObject.
+		private readonly object _owner;
 		// Null when the owner is not a FrameworkElement (DataContext is FrameworkElement-only).
 		private readonly DependencyProperty? _dataContextProperty;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
@@ -29,14 +31,14 @@ namespace Microsoft.UI.Xaml
 
 		private const int BucketSize = 16;
 
-		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
+		private object? Owner => _owner;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty? dataContextProperty)
+		public DependencyPropertyDetailsCollection(object owner, DependencyProperty? dataContextProperty)
 		{
-			_ownerReference = ownerReference;
+			_owner = owner;
 
 			_dataContextProperty = dataContextProperty;
 
@@ -231,14 +233,13 @@ namespace Microsoft.UI.Xaml
 			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
 			=> _entries ?? _empty;
 
+		// The owner is always held strongly now, so there is nothing to toggle.
 		internal void TryEnableHardReferences()
 		{
-			_hardOwnerReference = _ownerReference.Target;
 		}
 
 		internal void DisableHardReferences()
 		{
-			_hardOwnerReference = null;
 		}
 	}
 }
