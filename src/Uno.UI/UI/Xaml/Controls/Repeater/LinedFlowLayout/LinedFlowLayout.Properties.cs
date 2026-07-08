@@ -72,9 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MinItemSpacingProperty, value);
 		}
 
-#pragma warning disable 67 // Events raised from the measure fast/regular path in WS-D3.
 		public event TypedEventHandler<LinedFlowLayout, LinedFlowLayoutItemsInfoRequestedEventArgs>? ItemsInfoRequested;
 		public event TypedEventHandler<LinedFlowLayout, object>? ItemsUnlocked;
-#pragma warning restore 67
 	}
 }
