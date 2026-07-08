@@ -273,39 +273,44 @@ namespace Microsoft.UI.Text
 		{
 			var length = _document.TextLength;
 
+			// TOM ITextRange::Move: "If Count is zero, the range is unchanged." This holds for every unit,
+			// including a non-degenerate range (which must NOT collapse).
+			if (count == 0)
+			{
+				return 0;
+			}
+
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
-				// A non-degenerate range collapses toward the direction of travel before moving.
 				if (_start != _end)
 				{
-					if (count >= 0)
+					// Collapsing a non-degenerate range toward the direction of travel counts as the first
+					// unit moved (TOM), so only Count-1 further characters are traversed from the far edge.
+					if (count > 0)
 					{
-						_start = _end;
+						var edge = _end;
+						var target = Math.Clamp(edge + (count - 1), 0, length);
+						_start = _end = target;
+						OnRangeChanged();
+						return (target - edge) + 1;
 					}
 					else
 					{
-						_end = _start;
+						var edge = _start;
+						var target = Math.Clamp(edge + (count + 1), 0, length);
+						_start = _end = target;
+						OnRangeChanged();
+						return (target - edge) - 1;
 					}
 				}
 
-				var position = count >= 0 ? _end : _start;
-				var target = Math.Clamp(position + count, 0, length);
-				var moved = target - position;
-				_start = _end = target;
+				// Degenerate caret: move the full Count.
+				var position = _start;
+				var caretTarget = Math.Clamp(position + count, 0, length);
+				var moved = caretTarget - position;
+				_start = _end = caretTarget;
 				OnRangeChanged();
 				return moved;
-			}
-
-			if (count == 0)
-			{
-				// WinUI: Move with count 0 collapses the range to its start and reports no movement.
-				if (_start != _end)
-				{
-					_end = _start;
-					OnRangeChanged();
-				}
-
-				return 0;
 			}
 
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
