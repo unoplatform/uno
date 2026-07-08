@@ -177,7 +177,7 @@ internal static class DependencyPropertyHelper
 			return (valueFromImplicitStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
 		}
 
-		if (obj is IDependencyObjectStoreProvider { Store: { } store })
+		if (obj is DependencyObject store)
 		{
 			var details = store.GetPropertyDetails(dependencyProperty);
 

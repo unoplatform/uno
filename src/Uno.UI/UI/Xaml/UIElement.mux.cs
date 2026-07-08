@@ -1090,7 +1090,7 @@ namespace Microsoft.UI.Xaml
 			// uielement.cpp:14486) — HighContrastAdjustment rendering is not implemented.
 
 			// Notify element's properties that theme has changed
-			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChangedCoreImpl(theme, forceRefresh);
+			((DependencyObject)this).NotifyThemeChangedCoreImpl(theme, forceRefresh);
 
 			// Recursively notify element subtree that theme has changed
 			// (indexed with Count re-read each iteration so the walk stays resilient if a child's
@@ -1208,7 +1208,7 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
 			// here. The CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
-			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
+			((DependencyObject)this).EnterImpl(null, @params);
 
 			// Extends EnterImpl to the ContextFlyout.
 			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
@@ -1792,7 +1792,7 @@ namespace Microsoft.UI.Xaml
 
 			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
 			// CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
-			((IDependencyObjectStoreProvider)this).Store.LeaveImpl(null, @params);
+			((DependencyObject)this).LeaveImpl(null, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.
 			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,

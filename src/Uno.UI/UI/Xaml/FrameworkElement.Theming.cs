@@ -79,9 +79,9 @@ public partial class FrameworkElement
 				break;
 			case ElementTheme.Default:
 				// Use parent's theme if cleared
-				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
+				if (this.GetParent() is DependencyObject parentProvider)
 				{
-					theme = parentProvider.Store.GetTheme();
+					theme = parentProvider.GetTheme();
 				}
 				if (theme == Theme.None)
 				{
@@ -637,7 +637,7 @@ public partial class FrameworkElement
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		var store = ((IDependencyObjectStoreProvider)this).Store;
+		var store = ((DependencyObject)this);
 
 		if (store.IsProcessingThemeWalk)
 		{
@@ -664,7 +664,7 @@ public partial class FrameworkElement
 		// in NotifyThemeChangedCore when the theme actually changes
 #else
 		TryGetResources()?.UpdateThemeBindings(updateReason);
-		((IDependencyObjectStoreProvider)this).Store.UpdateResourceBindings(updateReason);
+		((DependencyObject)this).UpdateResourceBindings(updateReason);
 		if (updateReason == ResourceUpdateReason.ThemeResource)
 		{
 			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)

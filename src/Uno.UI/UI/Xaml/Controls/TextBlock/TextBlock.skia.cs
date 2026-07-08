@@ -171,7 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			(OwningTextBox as IDependencyObjectStoreProvider)?.Store
+			(OwningTextBox as DependencyObject)?
 			.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences
 				.DefaultValue
 				? null

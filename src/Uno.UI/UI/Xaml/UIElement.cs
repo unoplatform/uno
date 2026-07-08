@@ -590,7 +590,7 @@ namespace Microsoft.UI.Xaml
 
 		private protected void UpdateLastUsedTheme()
 		{
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 #nullable enable

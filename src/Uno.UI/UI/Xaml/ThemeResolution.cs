@@ -80,6 +80,6 @@ internal static class ThemeResolution
 	/// <see cref="Theme.None"/> if the object does not expose a store.
 	/// </summary>
 	private static Theme GetStoreTheme(DependencyObject owner)
-		=> owner is IDependencyObjectStoreProvider provider ? provider.Store.GetTheme() : Theme.None;
+		=> owner is DependencyObject provider ? provider.GetTheme() : Theme.None;
 
 }

@@ -277,7 +277,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public new DependencyObject Parent =>
 			LogicalParentOverride ??
-			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+			((DependencyObject)this).Parent as DependencyObject;
 
 #if !__NETSTD_REFERENCE__
 		internal bool HasParent() => Parent != null;
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml
 		/// scenarios, for example in case of SelectorItem, where actual parent is null, but visual parent
 		/// is the list.
 		/// </summary>
-		internal virtual UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
+		internal virtual UIElement VisualParent => ((DependencyObject)this).Parent as UIElement;
 
 		private bool _isParsing;
 		/// <summary>
@@ -412,7 +412,7 @@ namespace Microsoft.UI.Xaml
 			// Updates theme references to account for new ancestor theme dictionaries.
 			// Use UpdateThemeBindings (virtual) instead of the BindingHelper extension so that
 			// subclasses like TextBlock can also propagate to non-DP children (e.g., Inlines).
-			((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
+			((DependencyObject)this).ApplyElementNameBindings();
 			UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
 			// MUX Reference: CUIElement::Enter / EnsureTextFormatting
@@ -677,7 +677,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 
 			var style = Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey());
 
@@ -909,11 +909,11 @@ namespace Microsoft.UI.Xaml
 
 		internal DependencyObject GetTemplatedParent()
 		{
-			return (this as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+			return (this as DependencyObject)?.GetTemplatedParent2();
 		}
 		internal void SetTemplatedParent(DependencyObject tp)
 		{
-			(this as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+			(this as DependencyObject)?.SetTemplatedParent2(tp);
 		}
 	}
 }

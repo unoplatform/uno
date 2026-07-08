@@ -415,9 +415,9 @@ namespace Microsoft.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
-				if (instance is IDependencyObjectStoreProvider provider)
+				if (instance is DependencyObject provider)
 				{
-					provider.Store.Parent = null;
+					provider.Parent = null;
 				}
 				if (shouldCleanUpTemplateRoot)
 				{
