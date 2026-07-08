@@ -10,30 +10,14 @@ using Uno.HotReload.Utils;
 namespace Uno.HotReload.Diffing;
 
 /// <summary>
-/// Discovers added files by creating a temporary <see cref="Workspace"/> and looking up the new files in its solution.
+/// Discovers added files by loading a temporary <see cref="Solution"/> and looking up the new
+/// files in it. The <paramref name="createSolution"/> delegate is typically the same solution
+/// provider used to initialize the hot-reload manager, so the temporary lookup honors the same
+/// target-framework restriction; the snapshot's originating <see cref="Solution.Workspace"/> is
+/// disposed once the lookup completes.
 /// </summary>
-public class TemporaryWorkspaceAddDetector : IAddDetector
+public class TemporarySolutionAddDetector(Func<CancellationToken, ValueTask<Solution>> createSolution, IReporter reporter) : IAddDetector
 {
-	private readonly Func<CancellationToken, ValueTask<Solution>> _createSolution;
-	private readonly IReporter _reporter;
-
-	public TemporaryWorkspaceAddDetector(Func<CancellationToken, ValueTask<Workspace>> createWorkspace, IReporter reporter)
-		: this(async ct => (await createWorkspace(ct).ConfigureAwait(false)).CurrentSolution, reporter)
-	{
-	}
-
-	/// <summary>
-	/// Creates a detector from a solution provider — the provider returns the solution snapshot
-	/// to search (typically the same provider used to initialize the hot-reload manager, so the
-	/// temporary lookup honors the same target-framework restriction); the snapshot's
-	/// originating <see cref="Solution.Workspace"/> is disposed once the lookup completes.
-	/// </summary>
-	public TemporaryWorkspaceAddDetector(Func<CancellationToken, ValueTask<Solution>> createSolution, IReporter reporter)
-	{
-		_createSolution = createSolution;
-		_reporter = reporter;
-	}
-
 	/// <inheritdoc />
 	public async ValueTask<AddDetectionResult> DiscoverAddsAsync(ImmutableHashSet<string> newFiles, CancellationToken ct)
 	{
@@ -45,10 +29,10 @@ public class TemporaryWorkspaceAddDetector : IAddDetector
 		Solution? tempSolution = null;
 		try
 		{
-			_reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
+			reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
 
 			// Create a temporary workspace to discover the new files
-			tempSolution = await _createSolution(ct).ConfigureAwait(false);
+			tempSolution = await createSolution(ct).ConfigureAwait(false);
 
 			var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 			var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
@@ -83,7 +67,7 @@ public class TemporaryWorkspaceAddDetector : IAddDetector
 		}
 		catch (Exception ex)
 		{
-			_reporter.Warn($"Error while discovering new files: {ex.Message}");
+			reporter.Warn($"Error while discovering new files: {ex.Message}");
 			return new([], [], newFiles);
 		}
 		finally

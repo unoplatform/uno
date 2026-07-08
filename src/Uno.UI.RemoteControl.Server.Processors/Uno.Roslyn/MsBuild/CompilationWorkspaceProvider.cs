@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
 using Uno.HotReload.Tracking;
-using Uno.HotReload.Utils;
 
 namespace Uno.Roslyn.MSBuild;
 
@@ -25,11 +23,11 @@ public static class CompilationWorkspaceProvider
 	/// references $(SolutionDir)-style anchors (the workspace opens a project, not a solution).</item>
 	/// </list>
 	/// The target framework is intentionally NOT part of this list: the workspace loads every
-	/// flavor of a multi-targeted head and is then restricted to the flavor matching the target
-	/// framework the running application reported (see
-	/// <see cref="RoslynExtensions.FilterHeadProjectTargetFramework"/>). The runtime identifier
-	/// is not forwarded either — an application built with RID-suffixed output paths falls back
-	/// to baseline re-emission at init (known limitation, relies on deterministic builds).
+	/// flavor of a multi-targeted head, and the caller then restricts the resulting solution to
+	/// the flavor matching the target framework the running application reported (the provider
+	/// has no knowledge of the runtime target framework). The runtime identifier is not forwarded
+	/// either — an application built with RID-suffixed output paths falls back to baseline
+	/// re-emission at init (known limitation, relies on deterministic builds).
 	/// </summary>
 	private static readonly string[] _globalPropertiesAllowList =
 	[
@@ -43,36 +41,21 @@ public static class CompilationWorkspaceProvider
 	];
 
 	/// <summary>
-	/// Legacy entry point kept for compatibility: opens the workspace without any knowledge of
-	/// the application's target framework (no flavor restriction can be applied) and returns
-	/// the workspace itself.
-	/// </summary>
-	public static async Task<Workspace> CreateWorkspaceAsync(
-		string projectPath,
-		IReporter reporter,
-		Dictionary<string, string> properties,
-		CancellationToken ct)
-		=> (await CreateWorkspaceAsync(projectPath, reporter, properties, runtimeTargetFramework: null, ct)).Workspace;
-
-	/// <summary>
-	/// Opens the hot-reload workspace for <paramref name="projectPath"/> and returns the
-	/// solution snapshot to operate on: the projects are evaluated with the whitelisted global
-	/// properties only (see <see cref="_globalPropertiesAllowList"/>), and when the head project
-	/// was loaded for several target frameworks the snapshot is restricted to the flavor
-	/// matching <paramref name="runtimeTargetFramework"/>. The snapshot's originating
-	/// <see cref="Solution.Workspace"/> owns the MSBuild services and is disposed by the
-	/// caller's pipeline.
+	/// Opens the hot-reload <see cref="MSBuildWorkspace"/> for <paramref name="projectPath"/>: the
+	/// projects are evaluated with the whitelisted global properties only (see
+	/// <see cref="_globalPropertiesAllowList"/>). The workspace owns the MSBuild services and is
+	/// disposed by the caller's pipeline. Restricting a multi-targeted head to the running
+	/// application's flavor is left to the caller — this provider deliberately exposes the raw,
+	/// unfiltered <see cref="MSBuildWorkspace"/>.
 	/// </summary>
 	/// <param name="projectPath">Full path of the head project the application runs.</param>
 	/// <param name="reporter">Reporter used to surface workspace diagnostics.</param>
 	/// <param name="properties">The MSBuild properties captured by the application build (only whitelisted entries are re-applied globally).</param>
-	/// <param name="runtimeTargetFramework">The target framework reported by the running application, when known.</param>
 	/// <param name="ct">Cancellation token.</param>
-	public static async Task<Solution> CreateWorkspaceAsync(
+	public static async Task<MSBuildWorkspace> CreateWorkspaceAsync(
 		string projectPath,
 		IReporter reporter,
 		Dictionary<string, string> properties,
-		string? runtimeTargetFramework,
 		CancellationToken ct)
 	{
 		if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
@@ -124,6 +107,6 @@ public static class CompilationWorkspaceProvider
 			}
 		}
 
-		return workspace.CurrentSolution.FilterHeadProjectTargetFramework(projectPath, runtimeTargetFramework, reporter);
+		return workspace;
 	}
 }

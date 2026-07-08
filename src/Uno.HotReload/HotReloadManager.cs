@@ -18,21 +18,6 @@ namespace Uno.HotReload;
 
 public sealed class HotReloadManager : IDisposable
 {
-	public static ValueTask<HotReloadManager> CreateAsync(
-		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
-		string[] metadataUpdateCapabilities,
-		IHotReloadHandler handler,
-		IHotReloadTracker tracker,
-		CancellationToken ct,
-		bool forceEmitCompilationOutput = false)
-		=> CreateAsync(
-			async ct2 => (await workspaceProvider(ct2).ConfigureAwait(false)).CurrentSolution,
-			metadataUpdateCapabilities,
-			handler,
-			tracker,
-			ct,
-			forceEmitCompilationOutput);
-
 	/// <summary>
 	/// Creates a manager from a solution provider — the provider returns the solution snapshot
 	/// to operate on (typically a freshly-loaded workspace solution, possibly restricted to the
@@ -50,48 +35,7 @@ public sealed class HotReloadManager : IDisposable
 			await solutionProvider(ct).ConfigureAwait(false),
 			metadataUpdateCapabilities,
 			handler,
-			new ChangesDetector(new TemporaryWorkspaceAddDetector(solutionProvider, tracker), tracker),
-			tracker,
-			ct,
-			forceEmitCompilationOutput);
-
-	/// <summary>
-	/// Creates a manager with the default <see cref="SolutionUpdater"/>. Use the
-	/// other overload to plug in a custom <see cref="ISolutionUpdater"/>.
-	/// </summary>
-	public static ValueTask<HotReloadManager> CreateAsync(
-		Workspace workspace,
-		string[] metadataUpdateCapabilities,
-		IHotReloadHandler handler,
-		IChangesDetector changesDetector,
-		IHotReloadTracker tracker,
-		CancellationToken ct,
-		bool forceEmitCompilationOutput = false)
-		=> CreateAsync(
-			workspace,
-			metadataUpdateCapabilities,
-			handler,
-			changesDetector,
-			new SolutionUpdater(),
-			tracker,
-			ct,
-			forceEmitCompilationOutput);
-
-	public static ValueTask<HotReloadManager> CreateAsync(
-		Workspace workspace,
-		string[] metadataUpdateCapabilities,
-		IHotReloadHandler handler,
-		IChangesDetector changesDetector,
-		ISolutionUpdater solutionUpdater,
-		IHotReloadTracker tracker,
-		CancellationToken ct,
-		bool forceEmitCompilationOutput = false)
-		=> CreateAsync(
-			workspace.CurrentSolution,
-			metadataUpdateCapabilities,
-			handler,
-			changesDetector,
-			solutionUpdater,
+			new ChangesDetector(new TemporarySolutionAddDetector(solutionProvider, tracker), tracker),
 			tracker,
 			ct,
 			forceEmitCompilationOutput);
