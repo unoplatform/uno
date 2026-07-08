@@ -4,7 +4,7 @@
 // MUX Reference: src/dxaml/xcp/components/DependencyObject/Theming.cpp
 //
 // In WinUI, all theming functions are methods on CDependencyObject.
-// In Uno, CDependencyObject is represented by DependencyObjectStore.
+// In Uno, CDependencyObject is represented by DependencyObject.
 // This partial contains every theme-related method in one place.
 
 using System;
@@ -23,7 +23,7 @@ using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class DependencyObjectStore
+public partial class DependencyObject
 {
 	#region Per-object theme — WinUI: CDependencyObject::m_theme (CDependencyObject.h:1761)
 
@@ -73,7 +73,7 @@ public partial class DependencyObjectStore
 	#endregion
 
 	// The CDependencyObject::EnterImpl theme block (depends.cpp:1044-1069) and the enter-property
-	// walks are ported in DependencyObjectStore.mux.cs and DependencyObjectStore.PropertySystem.mux.cs.
+	// walks are ported in DependencyObject.mux.cs and DependencyObject.PropertySystem.mux.cs.
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	#region Theme walk — WinUI: CDependencyObject::NotifyThemeChanged / NotifyThemeChangedCore (Theming.cpp lines 110-255)

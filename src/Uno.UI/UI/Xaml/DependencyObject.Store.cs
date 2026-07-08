@@ -42,9 +42,9 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a Dependency Object
 	/// </summary>
-	public partial class DependencyObjectStore : IDisposable
+	public partial class DependencyObject
 	{
-		public static class TraceProvider
+		internal static class DependencyObjectTraceProvider
 		{
 			public static readonly Guid Id = new Guid(0x430FC851, 0xE917, 0x4587, 0xAF, 0x7B, 0x5A, 0x1C, 0xE5, 0xA1, 0x94, 0x1D);
 			public const int GetValue = 1;
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml
 			public const int DataContextChangedStop = 6;
 		}
 
-		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private static readonly IEventProvider _trace = Tracing.Get(DependencyObjectTraceProvider.Id);
 
 		private bool _isDisposed;
 
@@ -66,24 +66,14 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty _parentDataContextProperty = FrameworkElement.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
-		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
+		private ImmutableList<DependencyObject> _childrenStores = ImmutableList<DependencyObject>.Empty;
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
-
-		private readonly ManagedWeakReference _originalObjectRef;
-		private DependencyObject? _hardOriginalObjectRef;
 
 		/// <summary>
 		/// Cached VisualTree pointer, matching WinUI's CDependencyObject::m_pVisualTree.
 		/// Set during Enter when the element enters the live tree.
 		/// </summary>
 		private ManagedWeakReference? _visualTreeCacheWeakReference;
-
-		/// <summary>
-		/// This field is used to pass a reference to itself in the case
-		/// of DependencyProperty changed registrations. This avoids creating many
-		/// weak references to the same object.
-		/// </summary>
-		private ManagedWeakReference? _thisWeakRef;
 
 		private readonly Type _originalObjectType;
 		private InheritedPropertiesDisposable? _inheritedProperties;
@@ -129,7 +119,7 @@ namespace Microsoft.UI.Xaml
 		/// This property is an <see cref="object"/> as the parent of a <see cref="DependencyObject"/> may
 		/// not always be another <see cref="DependencyObject"/>, particularly in the case of the root element.
 		/// </remarks>
-		public object? Parent
+		internal object? Parent
 		{
 			get => _hardParentRef ?? _parentRef?.Target;
 			set
@@ -196,7 +186,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static DependencyObjectStore()
+		static DependencyObject()
 		{
 			InitializeStaticBinder();
 		}
@@ -204,72 +194,55 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// This is used by HotReload so that type replacement doesn't cause property values to be lost.
 		/// </summary>
-		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObjectStore otherStore)
+		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObject otherStore)
 		{
 			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
 		}
 
-		/// <summary>
-		/// Creates a store for the specified <paramref name="originalObject"/>, resolving its DataContext
-		/// property automatically: <see cref="FrameworkElement.DataContextProperty"/> when the object is a
-		/// <see cref="FrameworkElement"/>, otherwise none (DataContext is a FrameworkElement-only property).
-		/// </summary>
-		public DependencyObjectStore(object originalObject)
-			: this(originalObject, ResolveDataContextProperty(originalObject))
+		public DependencyObject()
+			: this(originalObject: null)
 		{
 		}
 
+		/// <summary>
+		/// Initializes the dependency-property store for this object, resolving its DataContext property
+		/// automatically: <see cref="FrameworkElement.DataContextProperty"/> for a <see cref="FrameworkElement"/>,
+		/// otherwise none (DataContext is a FrameworkElement-only property).
+		/// </summary>
+		/// <param name="originalObject">
+		/// Non-null only for <see cref="AttachedDependencyObject"/>, which fronts a foreign (non-DO) owner whose
+		/// type and DataContext drive the store. It is passed here so initialization sees it during base
+		/// construction (the attached object's own Owner field isn't assigned until this base ctor returns).
+		/// </param>
 		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
-		public DependencyObjectStore(object originalObject, DependencyProperty? dataContextProperty)
+		private protected DependencyObject(object? originalObject)
 		{
-			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
-			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
+			var effectiveOwner = originalObject ?? this;
+			_originalObjectType = effectiveOwner.GetType();
+			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectRef, dataContextProperty);
-
-			_dataContextProperty = dataContextProperty;
+			_properties = new DependencyPropertyDetailsCollection(SelfWeakReference, _dataContextProperty);
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(originalObject as DependencyObject, store: this);
+			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this, store: this);
 #endif
+
+			__InitializeBinder();
 
 			if (_trace.IsEnabled)
 			{
 				_trace.WriteEvent(
-					DependencyObjectStore.TraceProvider.CreationTask,
+					DependencyObjectTraceProvider.CreationTask,
 					new object[] { GetHashCode(), _originalObjectType.Name }
 				);
 			}
 		}
 
-		public DependencyObjectStore(object originalObject, DependencyProperty? dataContextProperty, DependencyProperty templatedParentProperty)
-			: this(originalObject, dataContextProperty)
+		// Every DependencyObject is finalizable so pooled weak references and property details are
+		// returned when it is collected without an explicit teardown. BinderDispose is idempotent and
+		// guards against the finalizer/dispatcher race.
+		~DependencyObject()
 		{
-		}
-
-		private static DependencyProperty? ResolveDataContextProperty(object originalObject)
-		{
-			var owner = originalObject is AttachedDependencyObject a ? a.Owner : originalObject;
-			return owner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
-		}
-
-		~DependencyObjectStore()
-		{
-			Dispose(false);
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-		}
-
-		private void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				GC.SuppressFinalize(this);
-			}
-
 			BinderDispose();
 		}
 
@@ -281,7 +254,7 @@ namespace Microsoft.UI.Xaml
 		/// This is used to avoid propagating the DataContext property
 		/// for types that commonly do not expose inherited properties, such as visual states.
 		/// </remarks>
-		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
+		internal bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
 		/// <summary>
 		/// Set when this object is stored as a value in a <see cref="ResourceDictionary"/>. Such resources must not
@@ -305,7 +278,7 @@ namespace Microsoft.UI.Xaml
 				: _storeFlags & ~StoreFlags.IsResourceDictionaryItem;
 		}
 
-		// Single-byte bitfield for boolean per-store flags. A DependencyObjectStore is allocated once per
+		// Single-byte bitfield for boolean per-store flags. A DependencyObject is allocated once per
 		// DependencyObject, so per-instance size matters; folding flags here keeps that footprint flat as
 		// more are added. Prefer extending StoreFlags over introducing new standalone bool fields.
 		[Flags]
@@ -322,9 +295,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
 		/// <returns>Returns the current effective value.</returns>
-		public object? GetValue(DependencyProperty property)
+		internal object? GetValueInternal(DependencyProperty property)
 		{
-			WritePropertyEventTrace(TraceProvider.GetValue, property, null);
+			WritePropertyEventTrace(DependencyObjectTraceProvider.GetValue, property, null);
 
 			ValidatePropertyOwner(property);
 
@@ -384,7 +357,7 @@ namespace Microsoft.UI.Xaml
 			return DependencyProperty.UnsetValue;
 		}
 
-		public object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
+		internal object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
 		{
 			var details = _properties.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
@@ -567,7 +540,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="property">The identifier of the <see cref="DependencyProperty"/> to set.</param>
 		/// <param name="value">The new <see cref="DependencyPropertyValuePrecedences.Local"/> value.</param>
-		public void SetValue(DependencyProperty property, object value)
+		internal void SetValueInternal(DependencyProperty property, object value)
 		{
 			SetValue(property, value, DependencyPropertyValuePrecedences.Local);
 		}
@@ -603,7 +576,7 @@ namespace Microsoft.UI.Xaml
 				/// </remarks>
 				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 				{
-					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+					using (WritePropertyEventTrace(DependencyObjectTraceProvider.SetValueStart, DependencyObjectTraceProvider.SetValueStop, property, precedence))
 					{
 						InnerSetValue(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 					}
@@ -683,8 +656,8 @@ namespace Microsoft.UI.Xaml
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
-						var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
-						var hashCode = _originalObjectRef.Target?.GetHashCode();
+						var name = (SelfWeakReference.Target as IFrameworkElement)?.Name ?? SelfWeakReference.Target?.GetType().Name;
+						var hashCode = SelfWeakReference.Target?.GetHashCode();
 
 						this.Log().Debug(
 							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
@@ -852,7 +825,7 @@ namespace Microsoft.UI.Xaml
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
 				// store is late added.
-				_inheritedForwardedProperties[property] = _originalObjectRef;
+				_inheritedForwardedProperties[property] = SelfWeakReference;
 			}
 		}
 
@@ -978,7 +951,7 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
 				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+				var isMixinFrameworkElement = SelfWeakReference.Target is IFrameworkElement && !isFrameworkElement;
 
 				if (
 					!_originalObjectType.Is(property.OwnerType)
@@ -1035,7 +1008,7 @@ namespace Microsoft.UI.Xaml
 					callback,
 					weakDelegateRelease,
 					cookie,
-					ThisWeakReference
+					SelfWeakReference
 				);
 			}
 		}
@@ -1072,7 +1045,7 @@ namespace Microsoft.UI.Xaml
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
 				// does not link the callee to the caller.
-				if (_doStoreRef.Target is DependencyObjectStore that)
+				if (_doStoreRef.Target is DependencyObject that)
 				{
 					_callbackManagedCookie.Dispose();
 					_releaseWeakDelegate.Dispose();
@@ -1102,7 +1075,7 @@ namespace Microsoft.UI.Xaml
 				return new RegisterPropertyChangedCallbackConditionalDisposable(
 					weakHandler,
 					weakHandlerRelease,
-					ThisWeakReference,
+					SelfWeakReference,
 					handler
 				);
 			}
@@ -1139,7 +1112,7 @@ namespace Microsoft.UI.Xaml
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
 				// does not link the callee to the caller.
-				if (_instanceRef.Target is DependencyObjectStore that)
+				if (_instanceRef.Target is DependencyObject that)
 				{
 					// Delegates integrate a null check when removing new delegates.
 					that._genericCallbacks = that._genericCallbacks.Remove(_weakCallback);
@@ -1167,13 +1140,13 @@ namespace Microsoft.UI.Xaml
 
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
 		{
-			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
+			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObject childStore)
 			{
 				ChildStore = childStore;
 				ObjectStoreWeak = objectStoreWeak;
 			}
 
-			private readonly DependencyObjectStore ChildStore;
+			private readonly DependencyObject ChildStore;
 			private readonly ManagedWeakReference ObjectStoreWeak;
 
 			public void Dispose()
@@ -1186,7 +1159,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="instance">The instance for which to observe properties changes</param>
 		/// <param name="callback">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObjectStore childStore)
+		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObject childStore)
 		{
 			_childrenStores = _childrenStores.Add(childStore);
 
@@ -1202,14 +1175,14 @@ namespace Microsoft.UI.Xaml
 			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var objectStoreWeak = ThisWeakReference;
+			var objectStoreWeak = SelfWeakReference;
 
 			return new InheritedPropertyChangedCallbackDisposable(objectStoreWeak, childStore);
 		}
 
-		private static void CleanupInheritedPropertyChangedCallback(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
+		private static void CleanupInheritedPropertyChangedCallback(ManagedWeakReference objectStoreWeak, DependencyObject childStore)
 		{
-			if (objectStoreWeak.Target is DependencyObjectStore that)
+			if (objectStoreWeak.Target is DependencyObject that)
 			{
 				// Delegates integrate a null check when removing new delegates.
 				that._childrenStores = that._childrenStores.Remove(childStore);
@@ -1251,7 +1224,7 @@ namespace Microsoft.UI.Xaml
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
 				// does not link the callee to the caller.
-				var instanceRef = ThisWeakReference;
+				var instanceRef = SelfWeakReference;
 
 				return new RegisterParentChangedCallbackConditionalDisposable(
 					instanceRef.CloneWeakReference(),
@@ -1291,7 +1264,7 @@ namespace Microsoft.UI.Xaml
 
 			protected override void DispatchedTargetFinalized()
 			{
-				var that = _doStoreRef.Target as DependencyObjectStore;
+				var that = _doStoreRef.Target as DependencyObject;
 
 				if (that != null)
 				{
@@ -1491,9 +1464,9 @@ namespace Microsoft.UI.Xaml
 		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
 			private readonly IDisposable _inheritedPropertiesCallback;
-			private readonly DependencyObjectStore _owner;
+			private readonly DependencyObject _owner;
 
-			public InheritedPropertiesDisposable(DependencyObjectStore owner, IDisposable inheritedPropertiesCallback)
+			public InheritedPropertiesDisposable(DependencyObject owner, IDisposable inheritedPropertiesCallback)
 			{
 				_owner = owner;
 				_inheritedPropertiesCallback = inheritedPropertiesCallback;
@@ -1510,7 +1483,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// A non-FE parent exposes no DataContext property; keep the FrameworkElement.DataContextProperty
 			// default so the UniqueId match below stays valid (it simply never matches such a parent).
-			if (parentProvider.Store.DataContextProperty is { } parentDataContextProperty)
+			if (parentProvider.Store.DataContextPropertyInternal is { } parentDataContextProperty)
 			{
 				_parentDataContextProperty = parentDataContextProperty;
 			}
@@ -1670,7 +1643,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Propagate the current inheritable properties to the registered children.
 		/// </summary>
-		private void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
+		private void PropagateInheritedProperties(DependencyObject? childStore = null)
 		{
 			if (childStore is null && _childrenStores.Count == 0)
 			{
@@ -1682,9 +1655,9 @@ namespace Microsoft.UI.Xaml
 			var props = DependencyProperty.GetInheritedPropertiesForType(_originalObjectType);
 
 			// Not using the ActualInstance property here because we need to get a WeakReference instead.
-			var instanceRef = _originalObjectRef != null ? _originalObjectRef : ThisWeakReference;
+			var instanceRef = SelfWeakReference;
 
-			void Propagate(DependencyObjectStore store)
+			void Propagate(DependencyObject store)
 			{
 				for (var propertyIndex = 0; propertyIndex < props.Length; propertyIndex++)
 				{
@@ -1720,7 +1693,7 @@ namespace Microsoft.UI.Xaml
 			PropagateInheritedNonLocalProperties(childStore);
 		}
 
-		private void PropagateInheritedNonLocalProperties(DependencyObjectStore? childStore)
+		private void PropagateInheritedNonLocalProperties(DependencyObject? childStore)
 		{
 			if (_inheritedForwardedProperties.Count == 0)
 			{
@@ -1751,7 +1724,7 @@ namespace Microsoft.UI.Xaml
 					)
 				)
 				{
-					void Propagate(DependencyObjectStore store)
+					void Propagate(DependencyObject store)
 					{
 						store.OnParentPropertyChangedCallback(
 							sourceInstanceProperties.Value,
@@ -1849,8 +1822,7 @@ namespace Microsoft.UI.Xaml
 			return isAncestor;
 		}
 
-		public DependencyObject? ActualInstance
-			=> _hardOriginalObjectRef ?? _originalObjectRef.Target as DependencyObject;
+		internal DependencyObject? ActualInstance => this;
 
 		/// <summary>
 		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
@@ -1979,7 +1951,7 @@ namespace Microsoft.UI.Xaml
 			var propertyMetadata = property.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = _originalObjectRef ?? ThisWeakReference;
+			var instanceRef = SelfWeakReference;
 
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{
@@ -2082,7 +2054,7 @@ namespace Microsoft.UI.Xaml
 			_dpChangedEventArgsPool.Return(eventArgs);
 		}
 
-		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
+		private void CallChildCallback(DependencyObject childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
 			try
@@ -2244,7 +2216,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="newValue">The new value</param>
 		/// <returns>True if different, otherwise false</returns>
 		/// <remarks>This comparison uses value for value types, references for reference types.</remarks>
-		public static bool AreDifferent(object? previousValue, object? newValue)
+		internal static bool AreDifferent(object? previousValue, object? newValue)
 		{
 			if (newValue is ValueType || newValue is string)
 			{
@@ -2321,9 +2293,6 @@ namespace Microsoft.UI.Xaml
 		/// <param name="resourceKey">Key for the theme used</param>
 		internal void SetLastUsedTheme(SpecializedResourceDictionary.ResourceKey? resourceKey) => _themeLastUsed = resourceKey;
 
-		private ManagedWeakReference ThisWeakReference
-			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
-
 		internal IEnumerable<ResourceBinding> GetResourceBindingsForProperty(DependencyProperty dependencyProperty)
 			=> _resourceBindings?.GetBindingsForProperty(dependencyProperty)
 				?? Enumerable.Empty<ResourceBinding>();
@@ -2341,7 +2310,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = Parent;
-				_hardOriginalObjectRef = ActualInstance;
 
 				_properties.TryEnableHardReferences();
 			}
@@ -2355,7 +2323,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = null;
-				_hardOriginalObjectRef = null;
 
 				_properties.DisableHardReferences();
 			}
@@ -2403,24 +2370,6 @@ namespace Microsoft.UI.Xaml
 
 				public int GetHashCode(DependencyPropertyPath? obj)
 					=> obj?.GetHashCode() ?? 0;
-			}
-		}
-
-		/// <summary>
-		/// A comparer that compares references of the target values.|
-		/// </summary>
-		private class WeakReferenceValueComparer : IEqualityComparer<WeakReference>
-		{
-			public static readonly WeakReferenceValueComparer Default = new WeakReferenceValueComparer();
-
-			public bool Equals(WeakReference? x, WeakReference? y)
-			{
-				return ReferenceEquals(x?.Target, y?.Target);
-			}
-
-			public int GetHashCode(WeakReference obj)
-			{
-				return obj?.GetHashCode() ?? 0;
 			}
 		}
 	}

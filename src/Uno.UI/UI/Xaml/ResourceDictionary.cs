@@ -510,7 +510,7 @@ namespace Microsoft.UI.Xaml
 				}
 				else if (value is IDependencyObjectStoreProvider provider)
 				{
-					// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+					// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
 					provider.Store.IsResourceDictionaryItem = true;
 				}
 			}
@@ -590,7 +590,7 @@ namespace Microsoft.UI.Xaml
 					}
 					else if (newValue is IDependencyObjectStoreProvider storeProvider)
 					{
-						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+						// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
 						storeProvider.Store.IsResourceDictionaryItem = true;
 					}
 
@@ -1200,7 +1200,7 @@ namespace Microsoft.UI.Xaml
 		/// only persisted after its walk completes (persist-after-Core, Theming.cpp:155), so it is stale
 		/// while the dictionary is being processed.
 		/// </remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh)
+		internal new void NotifyThemeChanged(Theme theme, bool forceRefresh)
 		{
 			// MUX: DOCollection.cpp:1302-1312 — snapshot the values first; notifying an item can
 			// re-enter the dictionary (e.g. a refresh materializing a lazy sibling resource mutates

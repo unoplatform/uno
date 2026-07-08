@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml
 		private static ConditionalWeakTable<object, AttachedDependencyObject> _objectData
 			= new ConditionalWeakTable<object, AttachedDependencyObject>();
 
-		private static DependencyObjectStore GetStore(object instance)
+		private static DependencyObject GetStore(object instance)
 		{
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 		/// Gets the attached dependency object for the specified instance.
 		/// </summary>
 		/// <returns>A new DependencyObject if none exists, otherwise the existing one.</returns>
-		internal static DependencyObjectStore GetAttachedStore(object instance)
+		internal static DependencyObject GetAttachedStore(object instance)
 		{
 			return ((IDependencyObjectStoreProvider)GetAttachedDependencyObject(instance)).Store;
 		}
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml
 		/// Set the parent of the specified dependency object
 		/// </summary>
 		/// <remarks>
-		/// This method will create a weak attached DependencyObjectStore if the object is
+		/// This method will create a weak attached DependencyObject if the object is
 		/// not an <see cref="IDependencyObjectStoreProvider"/>
 		/// </remarks>
 		internal static void SetParent(this object dependencyObject, object parent)
@@ -439,7 +439,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
+		/// See <see cref="DependencyObject.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
 		/// </summary>
 		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
 			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);

@@ -40,7 +40,7 @@ public partial class FrameworkElement
 	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
 	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
 	/// the theme walk's early-return at elements with explicit RequestedTheme.
-	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// This property lets DependencyObject block that cascade at theme boundaries.
 	/// </remarks>
 	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
 
@@ -616,7 +616,7 @@ public partial class FrameworkElement
 	/// <remarks>
 	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
 	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
-	/// (depends.cpp:1044-1069), ported to DependencyObjectStore.EnterImpl (DependencyObjectStore.mux.cs). So
+	/// (depends.cpp:1044-1069), ported to DependencyObject.EnterImpl (DependencyObject.mux.cs). So
 	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
 	/// </remarks>
 	private void ClearThemeStateOnUnloaded()

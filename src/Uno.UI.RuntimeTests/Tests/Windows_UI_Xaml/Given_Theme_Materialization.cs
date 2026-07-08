@@ -1072,13 +1072,13 @@ public class Given_Theme_Materialization
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_On_Live_Button_NonUIElement_DOs_Inherit_Island_Theme()
 	{
-		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObjectStore.mux.cs,
+		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObject.mux.cs,
 		// depends.cpp:1013-1069): when a Button enters a Light island, its Flyout (a non-UIElement
 		// DO reached through the enter-property walk) and the flyout's items (detached UIElements,
 		// theme-established without activation) must carry the island's per-object theme — both for
 		// a XAML-declared flyout (themed at the button's Enter) and for one assigned to the live
 		// button afterwards (themed at set-time via the EnterEffectiveValue analog in
-		// DependencyObjectStore.UpdateAutoParent).
+		// DependencyObject.UpdateAutoParent).
 		//
 		// Uno-only: asserts the internal per-object theme (Store.GetTheme()), and Uno themes
 		// MenuFlyout items at opener-Enter where WinUI's item Enter is a dead enter (fIsLive=FALSE)

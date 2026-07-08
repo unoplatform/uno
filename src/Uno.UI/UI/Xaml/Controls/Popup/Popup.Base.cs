@@ -164,7 +164,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 		}
 
 		if (oldChild is IDependencyObjectStoreProvider provider &&
-			provider.Store.DataContextProperty is { } providerDataContextProperty &&
+			provider.Store.DataContextPropertyInternal is { } providerDataContextProperty &&
 			provider.Store.ReadLocalValue(providerDataContextProperty) != DependencyProperty.UnsetValue)
 		{
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
@@ -187,7 +187,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 		if (PropagatesDataContextToChild)
 		{
 			var popupPanelStore = ((IDependencyObjectStoreProvider)PopupPanel).Store;
-			if (popupPanelStore.DataContextProperty is { } dataContextProperty)
+			if (popupPanelStore.DataContextPropertyInternal is { } dataContextProperty)
 			{
 				popupPanelStore.SetValue(dataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
 			}

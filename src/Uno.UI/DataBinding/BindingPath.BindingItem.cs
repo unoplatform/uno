@@ -502,7 +502,7 @@ namespace Uno.UI.DataBinding
 			{
 				return that != null
 					&& this.PropertyType == that.PropertyType
-					&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext)
+					&& !DependencyObject.AreDifferent(this.DataContext, that.DataContext)
 					&& ComparePropertyName(this.PropertyName, that.PropertyName);
 
 				// This is a naive comparison that most definitely doesn't match WinUI, but it should be good enough

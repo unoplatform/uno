@@ -13,7 +13,7 @@ public class Given_ThemeResolution
 	public void Init() => UnitTestsApp.App.EnsureApplication();
 
 	// Sets the per-object theme on the store (the field moved off UIElement onto
-	// DependencyObjectStore in Phase 1 / D1).
+	// DependencyObject in Phase 1 / D1).
 	private static void SetStoreTheme(DependencyObject o, Theme theme)
 		=> ((IDependencyObjectStoreProvider)o).Store.SetTheme(theme);
 

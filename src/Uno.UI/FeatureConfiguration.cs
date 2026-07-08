@@ -147,7 +147,7 @@ namespace Uno.UI
 		public static class DependencyObject
 		{
 			/// <summary>
-			/// When set to true, the <see cref="DependencyObjectStore"/> will create hard references
+			/// When set to true, the <see cref="DependencyObject"/> will create hard references
 			/// instead of weak references for some highly used fields, in common cases to improve the
 			/// overall performance.
 			/// </summary>
@@ -755,8 +755,8 @@ namespace Uno.UI
 			public static int DependencyPropertyChangedEventArgsPoolSize { get; set; } = 32;
 
 			/// <summary>
-			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
-			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
+			/// Enables checks that make sure that <see cref="DependencyObject.GetValue" /> and
+			/// <see cref="DependencyObject.SetValue" /> are only called on the owner of the property being
 			/// set/got.
 			/// </summary>
 			public static bool ValidatePropertyOwnerOnReadWrite { get; set; } =

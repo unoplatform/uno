@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class DependencyObjectStore
+	public partial class DependencyObject
 	{
 		private class DependencyPropertyChangedEventArgsPool
 		{
