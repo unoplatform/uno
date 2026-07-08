@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Text
@@ -230,29 +231,59 @@ namespace Microsoft.UI.Text
 				return removed;
 			}
 
-			if (count == 0 || unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			if (count == 0)
 			{
-				// TODO Uno: units other than Character are not yet supported for degenerate ranges.
+				// TOM ITextRange::Delete: with Count == 0 a degenerate range deletes nothing.
 				return 0;
 			}
 
-			int deleteStart, deleteEnd;
-			if (count > 0)
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
-				deleteStart = _start;
-				deleteEnd = Math.Clamp(_start + count, 0, length);
-			}
-			else
-			{
-				deleteEnd = _start;
-				deleteStart = Math.Clamp(_start + count, 0, length);
+				int deleteStart, deleteEnd;
+				if (count > 0)
+				{
+					deleteStart = _start;
+					deleteEnd = Math.Clamp(_start + count, 0, length);
+				}
+				else
+				{
+					deleteEnd = _start;
+					deleteStart = Math.Clamp(_start + count, 0, length);
+				}
+
+				var deleted = deleteEnd - deleteStart;
+				_document.ReplaceRange(deleteStart, deleteEnd, string.Empty);
+				_start = _end = deleteStart;
+				OnRangeChanged();
+				return deleted;
 			}
 
-			var deleted = deleteEnd - deleteStart;
-			_document.ReplaceRange(deleteStart, deleteEnd, string.Empty);
-			_start = _end = deleteStart;
+			// Word / Paragraph / Line: delete |count| units in the logical direction (like CTRL+DELETE /
+			// CTRL+BACKSPACE), returning the number of units removed (TOM ITextRange::Delete pDelta).
+			var boundaries = GetUnitBoundaries(unit);
+			if (boundaries is null)
+			{
+				// Story and unsupported units, or a Line delete before the view is laid out.
+				return 0;
+			}
+
+			var target = MoveByBoundaries(boundaries, _start, count, out var unitsMoved);
+			if (unitsMoved == 0)
+			{
+				return 0;
+			}
+
+			var rangeStart = Math.Min(_start, target);
+			var rangeEnd = Math.Max(_start, target);
+			if (rangeEnd <= rangeStart)
+			{
+				return 0;
+			}
+
+			_document.ReplaceRange(rangeStart, rangeEnd, string.Empty);
+			_start = _end = rangeStart;
 			OnRangeChanged();
-			return deleted;
+			return Math.Abs(unitsMoved);
 		}
 
 		public void ChangeCase(global::Microsoft.UI.Text.LetterCase value)
@@ -393,42 +424,221 @@ namespace Microsoft.UI.Text
 		// The full story text; the basis for text-based (non-geometry) unit navigation.
 		private protected string GetStoryText() => _document.GetTextInRange(0, _document.TextLength);
 
+		// The ascending unit-boundary positions for <paramref name="unit"/> — every unit start plus the
+		// end of the story — used by Delete/MoveStart/MoveEnd. Word/Paragraph are text-based; Line is
+		// geometry-based (wrap-aware) and requires a laid-out view. Returns null when the unit is not
+		// boundary-navigable here (Character/Story are handled directly) or the layout is unavailable.
+		private int[]? GetUnitBoundaries(global::Microsoft.UI.Text.TextRangeUnit unit)
+		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				return GetLineBoundaries();
+			}
+
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
+			if (chunks is null || chunks.Count == 0)
+			{
+				return null;
+			}
+
+			var boundaries = new int[chunks.Count + 1];
+			for (var i = 0; i < chunks.Count; i++)
+			{
+				boundaries[i] = chunks[i].start;
+			}
+
+			boundaries[chunks.Count] = _document.TextLength;
+			return boundaries;
+		}
+
+		// The ascending start positions of every visual line plus the end of the story, or null when the
+		// view is not yet laid out. Lines are contiguous, so the next line starts where the current line's
+		// content ends (stepping over a hard carriage return when present).
+		private int[]? GetLineBoundaries()
+		{
+			var text = GetStoryText();
+			var length = text.Length;
+			var boundaries = new List<int>();
+			var probe = 0;
+			var guard = 0;
+			while (guard++ <= length + 1)
+			{
+				if (!_document.TryGetLineBounds(probe, out var lineStart, out var lineEnd, out _, out var isLast))
+				{
+					return null;
+				}
+
+				if (boundaries.Count == 0 || boundaries[boundaries.Count - 1] != lineStart)
+				{
+					boundaries.Add(lineStart);
+				}
+
+				if (isLast)
+				{
+					break;
+				}
+
+				// lineEnd stops before a trailing '\r'; the next visual line starts just past it.
+				var next = lineEnd + (lineEnd < length && text[lineEnd] == '\r' ? 1 : 0);
+				if (next <= probe)
+				{
+					break;
+				}
+
+				probe = next;
+			}
+
+			if (boundaries.Count == 0)
+			{
+				return null;
+			}
+
+			if (boundaries[boundaries.Count - 1] != length)
+			{
+				boundaries.Add(length);
+			}
+
+			return boundaries.ToArray();
+		}
+
+		// Moves <paramref name="position"/> by <paramref name="count"/> unit boundaries along
+		// <paramref name="boundaries"/> and reports the signed number of units actually crossed. Mirrors
+		// the boundary math used by Move so all unit navigation stays consistent.
+		private static int MoveByBoundaries(int[] boundaries, int position, int count, out int unitsMoved)
+		{
+			if (count > 0)
+			{
+				var index = -1;
+				for (var i = 0; i < boundaries.Length; i++)
+				{
+					if (boundaries[i] > position)
+					{
+						index = i;
+						break;
+					}
+				}
+
+				if (index < 0)
+				{
+					unitsMoved = 0;
+					return position;
+				}
+
+				var targetIndex = Math.Min(index + (count - 1), boundaries.Length - 1);
+				unitsMoved = targetIndex - index + 1;
+				return boundaries[targetIndex];
+			}
+			else
+			{
+				var index = -1;
+				for (var i = boundaries.Length - 1; i >= 0; i--)
+				{
+					if (boundaries[i] < position)
+					{
+						index = i;
+						break;
+					}
+				}
+
+				if (index < 0)
+				{
+					unitsMoved = 0;
+					return position;
+				}
+
+				var targetIndex = Math.Max(index - (-count - 1), 0);
+				unitsMoved = -(index - targetIndex + 1);
+				return boundaries[targetIndex];
+			}
+		}
+
+
 		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			var length = _document.TextLength;
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				var oldChar = _start;
+				_start = Math.Clamp(_start + count, 0, length);
+				if (_start > _end)
+				{
+					_end = _start;
+				}
+
+				OnRangeChanged();
+				return _start - oldChar;
+			}
+
+			if (count == 0)
 			{
 				return 0;
 			}
 
-			var length = _document.TextLength;
-			var old = _start;
-			_start = Math.Clamp(_start + count, 0, length);
+			var boundaries = GetUnitBoundaries(unit);
+			if (boundaries is null)
+			{
+				return 0;
+			}
+
+			var target = MoveByBoundaries(boundaries, _start, count, out var unitsMoved);
+			if (unitsMoved == 0)
+			{
+				return 0;
+			}
+
+			_start = Math.Clamp(target, 0, length);
 			if (_start > _end)
 			{
 				_end = _start;
 			}
 
 			OnRangeChanged();
-			return _start - old;
+			return unitsMoved;
 		}
 
 		public int MoveEnd(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
+			var length = _document.TextLength;
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				var oldChar = _end;
+				_end = Math.Clamp(_end + count, 0, length);
+				if (_end < _start)
+				{
+					_start = _end;
+				}
+
+				OnRangeChanged();
+				return _end - oldChar;
+			}
+
+			if (count == 0)
 			{
 				return 0;
 			}
 
-			var length = _document.TextLength;
-			var old = _end;
-			_end = Math.Clamp(_end + count, 0, length);
+			var boundaries = GetUnitBoundaries(unit);
+			if (boundaries is null)
+			{
+				return 0;
+			}
+
+			var target = MoveByBoundaries(boundaries, _end, count, out var unitsMoved);
+			if (unitsMoved == 0)
+			{
+				return 0;
+			}
+
+			_end = Math.Clamp(target, 0, length);
 			if (_end < _start)
 			{
 				_start = _end;
 			}
 
 			OnRangeChanged();
-			return _end - old;
+			return unitsMoved;
 		}
 
 		// --- Character formatting (functional over the document run model) ---

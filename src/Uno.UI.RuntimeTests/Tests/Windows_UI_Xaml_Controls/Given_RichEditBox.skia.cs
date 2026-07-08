@@ -812,6 +812,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Range_Delete_Line_Removes_Line()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			// Delete(Line, 1) from the start of the second line removes "bb\r" and returns one unit.
+			var caret = SUT.Document.GetRange(3, 3);
+			var removed = caret.Delete(TextRangeUnit.Line, 1);
+
+			Assert.AreEqual(1, removed);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("aa\rcc", text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_MoveEnd_Line_Extends_By_Line()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+			await WindowHelper.WaitForIdle();
+
+			// MoveEnd(Line, 1) extends the end edge to the start of the next visual line.
+			var range = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(1, range.MoveEnd(TextRangeUnit.Line, 1));
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(3, range.EndPosition);
+		}
+
+		[TestMethod]
 		public async Task When_Selection_HomeKey_Line_Moves_Caret_To_Line_Start()
 		{
 			var SUT = new RichEditBox();
