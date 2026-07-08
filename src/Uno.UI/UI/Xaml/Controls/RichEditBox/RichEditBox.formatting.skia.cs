@@ -60,13 +60,10 @@ namespace Microsoft.UI.Xaml.Controls
 			var start = _selection.start;
 			var end = _selection.start + _selection.length;
 
-			// A degenerate caret would toggle a "pending" format applied to subsequently typed text.
-			// That pending-format state isn't modeled yet. TODO Uno: caret formatting toggle.
-			if (start == end)
-			{
-				return false;
-			}
-
+			// A degenerate caret toggles a "pending" insertion-point format applied to subsequently typed
+			// text; a non-degenerate selection toggles the format over the selected characters. Both use
+			// the same read-toggle-write path — the TOM establishes the pending format for a caret and
+			// mutates the run model for a selection.
 			var format = Document.GetRange(start, end).CharacterFormat;
 			switch (accelerator)
 			{

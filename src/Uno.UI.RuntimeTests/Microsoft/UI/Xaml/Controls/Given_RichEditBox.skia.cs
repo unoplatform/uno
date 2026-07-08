@@ -349,6 +349,110 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Caret_PendingBold_Applies_To_Next_Typed_Text()
+		{
+			// Mirrors WinUI RichEditBoxTOMTests.cpp SelectionFormat (829): setting Bold=On at a collapsed
+			// caret in an empty doc, then typing "12", makes both typed characters bold.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(0, 0);
+			SUT.Document.Selection.CharacterFormat.Bold = FormatEffect.On;
+
+			await TypeAsync(SUT, "12");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("12", text);
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 1).CharacterFormat.Bold, "First char should be bold.");
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(1, 2).CharacterFormat.Bold, "Second char should inherit bold.");
+		}
+
+		[TestMethod]
+		public async Task When_Caret_PendingFormat_Accumulates_Onto_Inherited()
+		{
+			// Mirrors WinUI RichEditBoxTOMTests.cpp SelectionFormat (829-870): Bold=On, type "12" (bold,
+			// black); then set foreground Red at the caret and type "34" — "34" is bold+red while "12"
+			// stays bold+black, proving the new caret format accumulates onto the inherited bold.
+			var red = Windows.UI.Color.FromArgb(255, 255, 0, 0);
+
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.Selection.SetRange(0, 0);
+			SUT.Document.Selection.CharacterFormat.Bold = FormatEffect.On;
+			await TypeAsync(SUT, "12");
+
+			SUT.Document.Selection.CharacterFormat.ForegroundColor = red;
+			await TypeAsync(SUT, "34");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("1234", text);
+
+			var first = SUT.Document.GetRange(0, 2).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, first.Bold, "\"12\" should be bold.");
+			Assert.AreNotEqual(red, first.ForegroundColor, "\"12\" should stay the default foreground.");
+
+			var second = SUT.Document.GetRange(2, 4).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, second.Bold, "\"34\" should remain bold via accumulation.");
+			Assert.AreEqual(red, second.ForegroundColor, "\"34\" should be red.");
+		}
+
+		[TestMethod]
+		public async Task When_CtrlB_At_Caret_Bolds_Next_Typed_Text()
+		{
+			// Ctrl+B at a collapsed caret establishes a pending bold applied to subsequently typed text.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(SUT, VirtualKey.B, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "x");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("x", text);
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 1).CharacterFormat.Bold, "Ctrl+B should bold the next typed char.");
+		}
+
+		[TestMethod]
+		public async Task When_Caret_Move_Clears_Pending_Format()
+		{
+			// Moving the caret away from a pending insertion-point format discards it, so text typed after
+			// the move does not pick up the format.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "ab");
+
+			// Caret is at 2; establish a pending bold there, then move the caret left before typing.
+			SUT.Document.Selection.CharacterFormat.Bold = FormatEffect.On;
+			RaiseKey(SUT, VirtualKey.Left);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "x");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("axb", text);
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(1, 2).CharacterFormat.Bold, "Pending bold should clear once the caret moves.");
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_C_Ctrl_V_RoundTrips()
 		{
 			var SUT = new RichEditBox();

@@ -17,6 +17,13 @@ namespace Microsoft.UI.Text
 		// document-level configuration and is intentionally not part of the undo snapshot.
 		private readonly CharacterFormatState _defaultCharacterFormat = new();
 
+		// Pending caret ("insertion point") character format. When a character format is applied at a
+		// collapsed caret it is not written to any existing character but remembered here and applied to
+		// the next inserted text at this position (WinUI's insertion-point format). Cleared when the
+		// caret moves elsewhere or once consumed by an insert. Transient — not part of undo snapshots.
+		private CharacterFormatState? _pendingCaretFormat;
+		private int _pendingCaretPosition = -1;
+
 		/// <summary>The current formatting runs, reconciled to the plain-text length (for rendering).</summary>
 		internal IReadOnlyList<FormatRun> FormatRuns
 		{
@@ -116,11 +123,19 @@ namespace Microsoft.UI.Text
 			CharacterFormatState insertFormat;
 			if (insertLength > 0)
 			{
-				// Inserted text inherits the formatting of the character to its left, or (at the very
-				// start) the character to its right, falling back to the default when the doc is empty.
-				insertFormat = start > 0
-					? expanded[start - 1].Clone()
-					: (oldLength > 0 ? expanded[0].Clone() : DefaultFormatState());
+				if (_pendingCaretFormat is { } pending && _pendingCaretPosition == start)
+				{
+					// Text typed at a caret carrying a pending insertion-point format takes that format.
+					insertFormat = pending.Clone();
+				}
+				else
+				{
+					// Inserted text inherits the formatting of the character to its left, or (at the very
+					// start) the character to its right, falling back to the default when the doc is empty.
+					insertFormat = start > 0
+						? expanded[start - 1].Clone()
+						: (oldLength > 0 ? expanded[0].Clone() : DefaultFormatState());
+				}
 			}
 			else
 			{
@@ -179,6 +194,14 @@ namespace Microsoft.UI.Text
 			end = Math.Clamp(end, start, length);
 
 			var format = new UnoTextCharacterFormat();
+
+			// A collapsed caret carrying a pending insertion-point format reports that pending format.
+			if (start == end && _pendingCaretFormat is { } pendingRead && _pendingCaretPosition == start)
+			{
+				format.LoadFrom(pendingRead);
+				return format;
+			}
+
 			if (length == 0)
 			{
 				format.LoadFrom(DefaultFormatState());
@@ -235,7 +258,63 @@ namespace Microsoft.UI.Text
 
 		/// <summary>Applies the defined properties of <paramref name="format"/> over [start, end).</summary>
 		internal void SetFormatOverRange(int start, int end, UnoTextCharacterFormat format)
-			=> MutateWithUndo(() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)));
+		{
+			SyncRunsToLength(_plainText.Length);
+			var length = _plainText.Length;
+			start = Math.Clamp(start, 0, length);
+			end = Math.Clamp(end, start, length);
+
+			if (start == end)
+			{
+				// Applying a character format at a collapsed caret establishes the pending insertion-point
+				// format (applied to the next typed/inserted text) rather than mutating any existing text.
+				var basis = ResolveCaretBasisFormat(start);
+				ApplyCharacterFormatToState(basis, format);
+				_pendingCaretFormat = basis;
+				_pendingCaretPosition = start;
+				return;
+			}
+
+			MutateWithUndo(() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)));
+		}
+
+		/// <summary>
+		/// The basis a pending caret format accumulates onto: an existing pending format at the same
+		/// caret, else the character to the left (what newly typed text inherits), else the character to
+		/// the right, else the document default.
+		/// </summary>
+		private CharacterFormatState ResolveCaretBasisFormat(int position)
+		{
+			if (_pendingCaretFormat is { } pending && _pendingCaretPosition == position)
+			{
+				return pending.Clone();
+			}
+
+			var expanded = ExpandRunsRaw();
+			if (expanded.Count == 0)
+			{
+				return DefaultFormatState();
+			}
+
+			var index = Math.Clamp(position > 0 ? position - 1 : 0, 0, expanded.Count - 1);
+			return expanded[index].Clone();
+		}
+
+		/// <summary>Discards any pending caret insertion-point format.</summary>
+		internal void ClearPendingCaretFormat()
+		{
+			_pendingCaretFormat = null;
+			_pendingCaretPosition = -1;
+		}
+
+		/// <summary>Clears the pending caret format unless the selection is still the caret that owns it.</summary>
+		internal void ClearPendingCaretFormatIfMoved(int start, int end)
+		{
+			if (!(start == end && start == _pendingCaretPosition))
+			{
+				ClearPendingCaretFormat();
+			}
+		}
 
 		/// <summary>
 		/// Resolves a tri-state <see cref="global::Microsoft.UI.Text.FormatEffect"/> against the current
