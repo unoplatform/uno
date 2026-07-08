@@ -190,6 +190,165 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_MaxLength_Blocks_Typing_Beyond_Limit()
+		{
+			var SUT = new RichEditBox();
+			SUT.MaxLength = 3;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abcdef");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abc", text);
+		}
+
+		[TestMethod]
+		public async Task When_MaxLength_Typing_Over_Selection_Replaces()
+		{
+			var SUT = new RichEditBox();
+			SUT.MaxLength = 3;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			// Select "ab" via the keyboard so the interactive selection is what typing replaces.
+			RaiseKey(SUT, VirtualKey.Home);
+			RaiseKey(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift);
+			RaiseKey(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift);
+			await WindowHelper.WaitForIdle();
+
+			// Replacing a non-empty selection frees room, so the character is accepted even at the limit.
+			await TypeAsync(SUT, "X");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Xc", text);
+		}
+
+		[TestMethod]
+		public async Task When_MaxLength_Clamps_Paste()
+		{
+			var SUT = new RichEditBox();
+			SUT.MaxLength = 5;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			SUT.Document.Selection.SetRange(3, 3);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("XYZ12");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+
+			// Only two characters fit before MaxLength (5) is reached.
+			await WindowHelper.WaitFor(() =>
+			{
+				SUT.Document.GetText(TextGetOptions.None, out var t);
+				return t == "abcXY";
+			});
+		}
+
+		[TestMethod]
+		public async Task When_CharacterCasing_Upper_Uppercases_Typing()
+		{
+			var SUT = new RichEditBox();
+			SUT.CharacterCasing = CharacterCasing.Upper;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "abc");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("ABC", text);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterCasing_Lower_Lowercases_Typing()
+		{
+			var SUT = new RichEditBox();
+			SUT.CharacterCasing = CharacterCasing.Lower;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "ABC");
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("abc", text);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterCasing_Follows_Current_Value_Per_Character()
+		{
+			// Mirrors WinUI RichEditBoxTests.cs:236 RichEditBoxCharacterCasingTest: casing applies to the
+			// newly typed character using the value in effect at type time; existing text is not re-cased.
+			var SUT = new RichEditBox();
+			SUT.CharacterCasing = CharacterCasing.Upper;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "a");
+			SUT.Document.GetText(TextGetOptions.None, out var afterUpper);
+			Assert.AreEqual("A", afterUpper);
+
+			SUT.CharacterCasing = CharacterCasing.Lower;
+			await TypeAsync(SUT, "B");
+			SUT.Document.GetText(TextGetOptions.None, out var afterLower);
+			Assert.AreEqual("Ab", afterLower);
+
+			SUT.CharacterCasing = CharacterCasing.Normal;
+			await TypeAsync(SUT, "aB");
+			SUT.Document.GetText(TextGetOptions.None, out var afterNormal);
+			Assert.AreEqual("AbaB", afterNormal);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterCasing_Upper_Uppercases_Paste()
+		{
+			var SUT = new RichEditBox();
+			SUT.CharacterCasing = CharacterCasing.Upper;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.Selection.SetRange(0, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("Test String");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+
+			await WindowHelper.WaitFor(() =>
+			{
+				SUT.Document.GetText(TextGetOptions.None, out var t);
+				return t == "TEST STRING";
+			});
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_C_Ctrl_V_RoundTrips()
 		{
 			var SUT = new RichEditBox();
