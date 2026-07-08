@@ -125,9 +125,25 @@ public static class CsprojUserGenerator
 
 		if (Directory.Exists(path))
 		{
-			var solutions = Directory.EnumerateFiles(path, "*.sln")
-				.Concat(Directory.EnumerateFiles(path, "*.slnx"))
-				.ToList();
+			List<string> solutions;
+			List<string> projects;
+			try
+			{
+				solutions = Directory.EnumerateFiles(path, "*.sln")
+					.Concat(Directory.EnumerateFiles(path, "*.slnx"))
+					.ToList();
+
+				// Only look for projects when the directory has no solution to drive the sync.
+				projects = solutions.Count > 0
+					? new List<string>()
+					: Directory.EnumerateFiles(path, "*.csproj").ToList();
+			}
+			catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
+			{
+				// Best effort: a directory we cannot enumerate (access denied, IO error, or removed mid-scan) must
+				// not crash this public tooling API and abort the DevServer flow. Mirrors SolutionFileFinder.
+				return;
+			}
 
 			if (solutions.Count > 0)
 			{
@@ -139,7 +155,7 @@ public static class CsprojUserGenerator
 				return;
 			}
 
-			foreach (var project in Directory.EnumerateFiles(path, "*.csproj"))
+			foreach (var project in projects)
 			{
 				SetCsprojUserPortForProject(project, port);
 			}
