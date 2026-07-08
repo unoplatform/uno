@@ -113,8 +113,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
+<<<<<<< HEAD
 					var workspace = await CreateCompilation(configureServer, ct);
 					ct.Register(() => workspace.Dispose());
+=======
+					var properties = configureServer.MSBuildProperties.ToDictionary();
+					var runtimeTargetFramework = GetRuntimeTargetFramework(configureServer);
+					async ValueTask<Solution> CreateMsBuildWorkspace(CancellationToken ct2)
+						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, runtimeTargetFramework, ct2);
+>>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 
 					var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
 					ct.Register(() => fileSystemWatch.Dispose());
@@ -136,6 +143,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
+<<<<<<< HEAD
 		private record HotReloadWorkspace(Workspace InnerWorkspace, WatchHotReloadService WatchService, string?[] OutputPaths) : IDisposable
 		{
 			public Solution CurrentSolution { get; set; } = InnerWorkspace.CurrentSolution;
@@ -149,36 +157,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
+=======
+		/// <summary>
+		/// Resolves the target framework the connected application runs on: the value the
+		/// client determined at runtime when available (see
+		/// <see cref="ConfigureServer.RuntimeTargetFramework"/>), otherwise — for older
+		/// clients — the <c>TargetFramework</c> MSBuild property captured at build time.
+		/// </summary>
+		private static string? GetRuntimeTargetFramework(ConfigureServer configureServer)
+>>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 		{
-			// Clone the properties from the ConfigureServer
-			var properties = configureServer.MSBuildProperties.ToDictionary();
-
-			// Flag the current build as created for hot reload, which allows for running targets or settings
-			// props/items in the context of the hot reload workspace.
-			properties["UnoIsHotReloadHost"] = "True";
-
-			// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
-			// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
-			// Note: This is required to get HR to work on Rider 2024.3 with Android
-			// Note 2: We remove both properties to make sure to use the default behavior
-			var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
-				&& bool.TryParse(appendStr, out var append)
-				&& append;
-			var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
-			properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
-
-			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+			if (configureServer.RuntimeTargetFramework is { Length: > 0 } runtimeTargetFramework)
 			{
-				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
-				{
-					// Set the RuntimeIdentifier as a temporary property so that we do not force the
-					// property as a read-only global property that would be transitively applied to
-					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
-					// which references a netstd2.0 library project)
-					properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
-				}
+				return runtimeTargetFramework;
 			}
 
+<<<<<<< HEAD
 			// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
 			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
 			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
@@ -222,6 +216,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				return null;
 			}
+=======
+			return configureServer.MSBuildProperties.TryGetValue("TargetFramework", out var captured) && captured is { Length: > 0 }
+				? captured
+				: null;
+>>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 		}
 
 		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
