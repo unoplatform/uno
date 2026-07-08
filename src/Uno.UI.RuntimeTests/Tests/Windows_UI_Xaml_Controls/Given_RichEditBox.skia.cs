@@ -2717,6 +2717,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, range.EndPosition);
 		}
 
+		[TestMethod]
+		public async Task When_Copy_Default_Preserves_Character_Formatting_On_Paste()
+		{
+			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~380-420): a default copy
+			// (ClipboardCopyFormat.AllFormats) preserves the italic run across copy -> Ctrl+V paste.
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+			await WindowHelper.WaitForIdle();
+
+			source.Document.SetText(TextSetOptions.None, "world hello");
+			source.Document.Selection.SetRange(0, 11);
+			source.Document.Selection.CharacterFormat.Italic = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			source.Document.Selection.Copy();
+			await WindowHelper.WaitForIdle();
+
+			target.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(target, VirtualKey.V, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitFor(() =>
+			{
+				target.Document.GetText(TextGetOptions.None, out var t);
+				return t == "world hello";
+			});
+
+			target.Document.Selection.SetRange(0, 11);
+			Assert.AreEqual(FormatEffect.On, target.Document.Selection.CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_Copy_PlainText_Drops_Character_Formatting_On_Paste()
+		{
+			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~437-447): ClipboardCopyFormat
+			// PlainText drops formatting, so the pasted text is not italic.
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+			await WindowHelper.WaitForIdle();
+
+			source.Document.SetText(TextSetOptions.None, "world hello");
+			source.Document.Selection.SetRange(0, 11);
+			source.Document.Selection.CharacterFormat.Italic = FormatEffect.On;
+			await WindowHelper.WaitForIdle();
+
+			source.ClipboardCopyFormat = RichEditClipboardFormat.PlainText;
+			source.Document.Selection.Copy();
+			await WindowHelper.WaitForIdle();
+
+			target.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			RaiseKey(target, VirtualKey.V, VirtualKeyModifiers.Control);
+			await WindowHelper.WaitFor(() =>
+			{
+				target.Document.GetText(TextGetOptions.None, out var t);
+				return t == "world hello";
+			});
+
+			target.Document.Selection.SetRange(0, 11);
+			Assert.AreEqual(FormatEffect.Off, target.Document.Selection.CharacterFormat.Italic);
+		}
+
 		private static TextBlock FindDisplayBlock(DependencyObject root)
 		{
 			var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);

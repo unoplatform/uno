@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace Microsoft.UI.Text
 {
@@ -420,6 +422,185 @@ namespace Microsoft.UI.Text
 				{
 					return false;
 				}
+			}
+
+			return true;
+		}
+
+		// --- Rich clipboard payload (in-process) --------------------------------------------------
+		//
+		// Copy/paste preserves per-character formatting via an app-private, in-process payload rather
+		// than the OS clipboard: the plain text always goes to the real clipboard, while the format
+		// runs for the copied span are serialized into a compact string and applied on the next paste
+		// whose inserted text matches exactly. This round-trips within the app (across RichEditBox
+		// instances) which is what ClipboardCopyFormat/TestClipboardCopyFormats exercise; a full
+		// RTF/CF_RTF payload that survives cross-process is a documented follow-up.
+		private const string RichClipboardHeader = "UNORICH1";
+
+		/// <summary>
+		/// Serializes the character-format runs spanning [start, end) into a compact, dependency-free
+		/// string (header + ';'-separated runs, each 'len|bold|italic|underline|strike|fgDefined|a|r|g|b|size|nameBase64').
+		/// </summary>
+		internal string SerializeFormatRuns(int start, int end)
+		{
+			SyncRunsToLength(_plainText.Length);
+			start = Math.Clamp(start, 0, _plainText.Length);
+			end = Math.Clamp(end, start, _plainText.Length);
+
+			var expanded = ExpandRunsRaw();
+			var sb = new StringBuilder();
+			sb.Append(RichClipboardHeader);
+
+			var i = start;
+			while (i < end)
+			{
+				var representative = expanded[i];
+				var runStart = i;
+				i++;
+				while (i < end && expanded[i].Equals(representative))
+				{
+					i++;
+				}
+
+				sb.Append(';');
+				AppendSerializedRun(sb, i - runStart, representative);
+			}
+
+			return sb.ToString();
+		}
+
+		private static void AppendSerializedRun(StringBuilder sb, int length, CharacterFormatState state)
+		{
+			sb.Append(length.ToString(CultureInfo.InvariantCulture)).Append('|');
+			sb.Append(state.Bold ? '1' : '0').Append('|');
+			sb.Append(state.Italic ? '1' : '0').Append('|');
+			sb.Append(((int)state.Underline).ToString(CultureInfo.InvariantCulture)).Append('|');
+			sb.Append(state.Strikethrough ? '1' : '0').Append('|');
+			if (state.Foreground is { } fg)
+			{
+				sb.Append('1').Append('|');
+				sb.Append(fg.A).Append('|').Append(fg.R).Append('|').Append(fg.G).Append('|').Append(fg.B).Append('|');
+			}
+			else
+			{
+				sb.Append("0|0|0|0|0|");
+			}
+
+			sb.Append(state.Size.ToString(CultureInfo.InvariantCulture)).Append('|');
+			var name = state.Name ?? string.Empty;
+			sb.Append(Convert.ToBase64String(Encoding.UTF8.GetBytes(name)));
+		}
+
+		/// <summary>
+		/// Applies a payload produced by <see cref="SerializeFormatRuns"/> to [start, start + textLength).
+		/// Returns false (and mutates nothing) when the payload is malformed or its total run length does
+		/// not match <paramref name="textLength"/>, so the caller can fall back to plain-text paste.
+		/// </summary>
+		internal bool ApplySerializedFormatRuns(int start, string payload, int textLength)
+		{
+			if (string.IsNullOrEmpty(payload) || textLength <= 0)
+			{
+				return false;
+			}
+
+			var parts = payload.Split(';');
+			if (parts.Length < 2 || !string.Equals(parts[0], RichClipboardHeader, StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			var states = new List<CharacterFormatState>(textLength);
+			for (var p = 1; p < parts.Length; p++)
+			{
+				if (!TryParseSerializedRun(parts[p], out var length, out var state))
+				{
+					return false;
+				}
+
+				for (var k = 0; k < length; k++)
+				{
+					states.Add(state.Clone());
+				}
+			}
+
+			if (states.Count != textLength)
+			{
+				return false;
+			}
+
+			SyncRunsToLength(_plainText.Length);
+			start = Math.Clamp(start, 0, _plainText.Length);
+			if (start + textLength > _plainText.Length)
+			{
+				return false;
+			}
+
+			MutateWithUndo(() =>
+			{
+				var expanded = ExpandRunsRaw();
+				for (var k = 0; k < textLength; k++)
+				{
+					expanded[start + k] = states[k];
+				}
+
+				_runs = BuildRunsFromStates(expanded);
+			});
+
+			return true;
+		}
+
+		private static bool TryParseSerializedRun(string text, out int length, out CharacterFormatState state)
+		{
+			length = 0;
+			state = new CharacterFormatState();
+
+			var f = text.Split('|');
+			if (f.Length != 12)
+			{
+				return false;
+			}
+
+			if (!int.TryParse(f[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out length) || length <= 0)
+			{
+				return false;
+			}
+
+			state.Bold = f[1] == "1";
+			state.Italic = f[2] == "1";
+			if (!int.TryParse(f[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out var underline))
+			{
+				return false;
+			}
+
+			state.Underline = (global::Microsoft.UI.Text.UnderlineType)underline;
+			state.Strikethrough = f[4] == "1";
+
+			var foregroundDefined = f[5] == "1";
+			if (!byte.TryParse(f[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out var a)
+				|| !byte.TryParse(f[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out var r)
+				|| !byte.TryParse(f[8], NumberStyles.Integer, CultureInfo.InvariantCulture, out var g)
+				|| !byte.TryParse(f[9], NumberStyles.Integer, CultureInfo.InvariantCulture, out var b))
+			{
+				return false;
+			}
+
+			state.Foreground = foregroundDefined ? global::Windows.UI.Color.FromArgb(a, r, g, b) : null;
+
+			if (!float.TryParse(f[10], NumberStyles.Float, CultureInfo.InvariantCulture, out var size))
+			{
+				return false;
+			}
+
+			state.Size = size;
+
+			try
+			{
+				var name = Encoding.UTF8.GetString(Convert.FromBase64String(f[11]));
+				state.Name = string.IsNullOrEmpty(name) ? null : name;
+			}
+			catch (FormatException)
+			{
+				return false;
 			}
 
 			return true;
