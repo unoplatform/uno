@@ -76,5 +76,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Overflow_BaselineOffset_Reflects_Content()
+		{
+			var master = new RichTextBlock { Width = 180, MaxLines = 2 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 180 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Master should overflow into the target");
+				Assert.IsTrue(overflow.BaselineOffset > 0, $"Overflow BaselineOffset should be positive once it renders a content slice (was {overflow.BaselineOffset})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
