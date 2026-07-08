@@ -35,6 +35,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
+
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IAccessibilityOwner
@@ -833,7 +834,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			surfaceCanvas.Translate(0, targetSize);
 			surfaceCanvas.Scale(1, -1);
 			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0);
+			surfaceCanvas.DrawImage(scaledImage, 0, 0, SKSamplingOptions.Default, null);
 			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
 		}
 

@@ -153,5 +153,17 @@ namespace Microsoft.UI.Composition
 			null :
 			_opacityToColorFilter[(byte)(0xFF * opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity)), SKBlendMode.Modulate);
 		}
+
+		/// <summary>
+		/// Builds a fresh (immutable) <see cref="SKPath"/> containing <paramref name="rect"/>. SkiaSharp 4 routes
+		/// path construction through <see cref="SKPathBuilder"/>; callers Transform/Op the result into a reusable
+		/// working path.
+		/// </summary>
+		internal static SKPath CreateRectPath(SKRect rect)
+		{
+			var builder = new SKPathBuilder();
+			builder.AddRect(rect);
+			return builder.Detach();
+		}
 	}
 }
