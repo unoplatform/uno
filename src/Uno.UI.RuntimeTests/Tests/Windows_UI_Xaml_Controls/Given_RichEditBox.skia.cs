@@ -1997,6 +1997,167 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Selection_Copy_Programmatic_Raises_CopyingToClipboard()
+		{
+			// Mirrors RichEditBoxTOMTests.cpp VerifyProgrammaticSelectionCopyRaisesRichEditBoxEvent (~1936):
+			// Document.Selection.Copy() raises CopyingToClipboard (and NOT CuttingToClipboard), unfocused.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "text to copy");
+			SUT.Document.Selection.SetRange(0, "text to copy".Length);
+			await WindowHelper.WaitForIdle();
+
+			var copyCount = 0;
+			var cutCount = 0;
+			SUT.CopyingToClipboard += (s, e) => copyCount++;
+			SUT.CuttingToClipboard += (s, e) => cutCount++;
+
+			SUT.Document.Selection.Copy();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, copyCount, "Selection.Copy must raise CopyingToClipboard.");
+			Assert.AreEqual(0, cutCount, "Selection.Copy must not raise CuttingToClipboard.");
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Cut_Programmatic_Raises_CuttingToClipboard()
+		{
+			// Mirrors VerifyProgrammaticSelectionCutRaisesRichEditBoxEvent (~1868): Selection.Cut() raises
+			// CuttingToClipboard (not CopyingToClipboard) and removes the text, unfocused.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "text to cut");
+			SUT.Document.Selection.SetRange(0, "text to cut".Length);
+			await WindowHelper.WaitForIdle();
+
+			var copyCount = 0;
+			var cutCount = 0;
+			SUT.CopyingToClipboard += (s, e) => copyCount++;
+			SUT.CuttingToClipboard += (s, e) => cutCount++;
+
+			SUT.Document.Selection.Cut();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, cutCount, "Selection.Cut must raise CuttingToClipboard.");
+			Assert.AreEqual(0, copyCount, "Selection.Cut must not raise CopyingToClipboard.");
+			SUT.Document.GetText(TextGetOptions.None, out var cutText);
+			Assert.AreEqual(string.Empty, cutText);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Paste_Programmatic_Raises_Paste()
+		{
+			// Mirrors VerifyProgrammaticSelectionPasteRaisesRichEditBoxEvent (~2004): Selection.Paste(0)
+			// raises the Paste event, unfocused.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("text to paste");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			SUT.Document.Selection.SetRange(0, 3);
+			await WindowHelper.WaitForIdle();
+
+			var pasteCount = 0;
+			SUT.Paste += (s, e) => pasteCount++;
+
+			SUT.Document.Selection.Paste(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, pasteCount, "Selection.Paste must raise the Paste event.");
+		}
+
+		[TestMethod]
+		public async Task When_Range_Cut_Programmatic_Does_Not_Raise_Control_Event()
+		{
+			// WinUI raises the clipboard events for the SELECTION, but not for a plain (non-selection)
+			// range — GetRange(...).Cut() removes the text silently (keeps the base UnoTextRange behavior).
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+
+			var cutCount = 0;
+			SUT.CuttingToClipboard += (s, e) => cutCount++;
+
+			SUT.Document.GetRange(0, 3).Cut();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, cutCount, "A plain range cut must not raise CuttingToClipboard.");
+			SUT.Document.GetText(TextGetOptions.None, out var rangeCutText);
+			Assert.AreEqual("def", rangeCutText);
+		}
+
+		[TestMethod]
+		public async Task When_Document_SetText_Clamps_To_MaxLength()
+		{
+			// Mirrors RichEditBoxTOMTests.cpp SetTextAdheresToMaxLength (~1239): a programmatic SetText is
+			// clamped to the control's MaxLength.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.MaxLength = 2;
+			SUT.Document.SetText(TextSetOptions.None, "hello world");
+
+			SUT.Document.GetText(TextGetOptions.None, out var clampedText);
+			Assert.AreEqual(2, clampedText.Length);
+			Assert.AreEqual("he", clampedText);
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Backward_With_Negative_ScanLength()
+		{
+			// A negative scanLength searches backward from the range start (per the ITextRange::FindText
+			// contract), returning the occurrence nearest the start.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "one two one");
+
+			var range = SUT.Document.GetRange(11, 11);
+			var found = range.FindText("one", -11, FindOptions.None);
+
+			Assert.AreEqual(3, found);
+			Assert.AreEqual(8, range.StartPosition);
+			Assert.AreEqual(11, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Character_Set_Replaces_Character()
+		{
+			// ITextRange.Character setter overwrites the single character at the range start.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "cat");
+			var range = SUT.Document.GetRange(1, 2);
+			range.Character = 'u';
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var charText);
+			Assert.AreEqual("cut", charText);
+		}
+
+		[TestMethod]
 		public async Task When_ParagraphAlignment_Center_Sets_Override()
 		{
 			var SUT = new RichEditBox();
@@ -2700,7 +2861,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Range_MatchSelection_Aligns_To_Selection()
+		public async Task When_Range_MatchSelection_Moves_Selection_To_Range()
 		{
 			var SUT = new RichEditBox();
 			WindowHelper.WindowContent = SUT;
@@ -2713,8 +2874,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var range = SUT.Document.GetRange(8, 10);
 			range.MatchSelection();
 
-			Assert.AreEqual(2, range.StartPosition);
-			Assert.AreEqual(4, range.EndPosition);
+			// WinUI: MatchSelection moves the ACTIVE SELECTION onto this range (verified against
+			// RichEditBoxTOMTests, which assert the selection takes the range's positions), so the
+			// selection becomes (8,10) while this range is left unchanged.
+			Assert.AreEqual(8, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(10, SUT.Document.Selection.EndPosition);
+			Assert.AreEqual(8, range.StartPosition);
+			Assert.AreEqual(10, range.EndPosition);
 		}
 
 		[TestMethod]
