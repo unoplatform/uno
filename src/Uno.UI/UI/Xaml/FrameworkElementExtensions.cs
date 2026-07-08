@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml
 
 			element.SetBinding(dependencyProperty, binding);
 #else
-			(element as IDependencyObjectStoreProvider).Store.SetBinding(property, binding);
+			(element as DependencyObject).SetBinding(property, binding);
 #endif
 
 			return element;

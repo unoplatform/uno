@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (ParentBinding.IsTemplateBinding)
 				{
-					return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+					return (_view?.Target as DependencyObject)?.GetTemplatedParent2();
 				}
 				if (_isElementNameSource || ExplicitSource != null)
 				{
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		private ManagedWeakReference GetWeakTemplatedParent()
 		{
-			return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
+			return (_view?.Target as DependencyObject)?.GetTemplatedParentWeakRef();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()

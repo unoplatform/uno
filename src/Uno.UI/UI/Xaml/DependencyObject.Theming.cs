@@ -532,10 +532,10 @@ public partial class DependencyObject
 	private void NotifyPropertyValueOfThemeChange(DependencyProperty dp, object? effectiveValue)
 	{
 		if (_theme != Theme.None &&
-			effectiveValue is IDependencyObjectStoreProvider provider &&
+			effectiveValue is DependencyObject provider &&
 			ShouldNotifyPropertyOfThemeChange(dp))
 		{
-			provider.Store.NotifyThemeChanged(_theme);
+			provider.NotifyThemeChanged(_theme);
 		}
 	}
 #endif
@@ -722,9 +722,9 @@ public partial class DependencyObject
 		if (IsProcessingThemeWalk)
 		{
 			if (dependencyObject is not UIElement { IsActiveInVisualTree: true }
-				&& dependencyObject is IDependencyObjectStoreProvider walkProvider)
+				&& dependencyObject is DependencyObject walkProvider)
 			{
-				walkProvider.Store.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+				walkProvider.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
 			}
 
 			return;
@@ -732,9 +732,9 @@ public partial class DependencyObject
 #endif
 
 		// propagate to non-FE DO
-		if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
+		if (dependencyObject is not IFrameworkElement && dependencyObject is DependencyObject storeProvider)
 		{
-			storeProvider.Store.UpdateResourceBindings(
+			storeProvider.UpdateResourceBindings(
 				updateReason,
 				// when propagating to non-FE, we need to inject a FE as the resource context
 				resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement

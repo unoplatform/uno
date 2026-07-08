@@ -71,7 +71,7 @@ internal sealed partial class EventManager
 		foreach (var item in _layoutUpdatedSubscribers)
 		{
 			// Sometimes, we are racing with GC and the DependencyObject is disposed (via finalizer)
-			if (((IDependencyObjectStoreProvider)item.Key).Store.IsDisposed)
+			if (((DependencyObject)item.Key).IsDisposed)
 			{
 				continue;
 			}

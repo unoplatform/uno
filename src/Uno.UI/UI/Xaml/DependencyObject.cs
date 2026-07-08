@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml
 	/// separate <c>DependencyObjectStore</c> now spans the <c>DependencyObject.*.cs</c> partials.
 	/// </remarks>
 	[global::Microsoft.UI.Xaml.Data.Bindable]
-	public partial class DependencyObject : IDependencyObjectStoreProvider, IDependencyObjectInternal, IWeakReferenceProvider
+	public partial class DependencyObject : IDependencyObjectInternal, IWeakReferenceProvider
 	{
 		private BinderReferenceHolder _refHolder;
 		private ManagedWeakReference _selfWeakReference;
@@ -30,8 +30,6 @@ namespace Microsoft.UI.Xaml
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
 		public bool IsStoreInitialized => true;
-
-		DependencyObject IDependencyObjectStoreProvider.Store => this;
 
 		// Public property-system API. These stay in this nullable-oblivious file so their signatures
 		// match the historical (interface-era) public surface exactly; the implementations live on the

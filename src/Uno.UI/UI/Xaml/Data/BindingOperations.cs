@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <param name="binding">The binding to assign to the target property. This <see cref="Binding"/> should be initialized: important <see cref="Binding"/> properties such as <see cref="PropertyPath"/> Path should already be set before passing it as the parameter.</param>
 		public static void SetBinding(DependencyObject target, DependencyProperty dp, BindingBase binding)
 		{
-			(target as IDependencyObjectStoreProvider)?.Store.SetBinding(dp, binding);
+			(target as DependencyObject)?.SetBinding(dp, binding);
 		}
 	}
 }

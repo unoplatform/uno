@@ -1111,7 +1111,7 @@ public class Given_Theme_Materialization
 			await UITestHelper.Load(root);
 
 			static Theme BaseThemeOf(DependencyObject dependencyObject)
-				=> Theming.GetBaseValue(((IDependencyObjectStoreProvider)dependencyObject).Store.GetTheme());
+				=> Theming.GetBaseValue(((DependencyObject)dependencyObject).GetTheme());
 
 			var declaredButton = (Button)root.FindName("DeclaredButton");
 			var declaredFlyout = (MenuFlyout)declaredButton.Flyout;

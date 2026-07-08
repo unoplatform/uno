@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
-			if (child is IDependencyObjectStoreProvider)
+			if (child is DependencyObject)
 			{
 				return true;
 			}
@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml
 
 				Debug.Assert(IsCandidateChild(child));
 
-				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
+				var childAsStoreProvider = child as DependencyObject;
 
 				// Get the parent if the child is a provider, otherwise an
 				// "attached store" may be created for no good reason.
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Xaml
 
 				if (childAsStoreProvider != null)
 				{
-					childAsStoreProvider.Store.SetInheritedDataContext(inheritedValue);
+					childAsStoreProvider.SetInheritedDataContext(inheritedValue);
 				}
 				else if (child is IList list)
 				{
@@ -130,9 +130,9 @@ namespace Microsoft.UI.Xaml
 
 					for (int childIndex = 0; childIndex < list.Count; childIndex++)
 					{
-						if (list[childIndex] is IDependencyObjectStoreProvider provider2)
+						if (list[childIndex] is DependencyObject provider2)
 						{
-							provider2.Store.SetInheritedDataContext(inheritedValue);
+							provider2.SetInheritedDataContext(inheritedValue);
 						}
 					}
 				}
@@ -140,9 +140,9 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var item in enumerable)
 					{
-						if (item is IDependencyObjectStoreProvider provider2)
+						if (item is DependencyObject provider2)
 						{
-							provider2.Store.SetInheritedDataContext(inheritedValue);
+							provider2.SetInheritedDataContext(inheritedValue);
 						}
 					}
 				}
@@ -362,9 +362,9 @@ namespace Microsoft.UI.Xaml
 		{
 			TryRegisterInheritedProperties(force: true);
 
-			if (target is IDependencyObjectStoreProvider provider)
+			if (target is DependencyObject provider)
 			{
-				provider.Store.SetBinding(dependencyProperty, binding);
+				provider.SetBinding(dependencyProperty, binding);
 			}
 			else
 			{
@@ -588,7 +588,7 @@ namespace Microsoft.UI.Xaml
 
 			if (!propertyDetails.HasValueDoesNotInherit)
 			{
-				var newValueAsProvider = newValue as IDependencyObjectStoreProvider;
+				var newValueAsProvider = newValue as DependencyObject;
 
 				if (propertyDetails.HasValueInherits)
 				{
@@ -598,7 +598,7 @@ namespace Microsoft.UI.Xaml
 							propertyDetails,
 
 							// Ensure DataContext propagation loops cannot happen
-							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : newValue);
+							ReferenceEquals(newValueAsProvider.Parent, ActualInstance) ? null : newValue);
 					}
 					else
 					{
@@ -626,7 +626,7 @@ namespace Microsoft.UI.Xaml
 				// its own (WinUI parity). The owner/placement-target DataContext is forwarded to the presenter and
 				// content/items only when the flyout is shown (FlyoutBase.ForwardTargetPropertiesToPresenter), not via
 				// the mentor before show.
-				if (newValue is IDependencyObjectStoreProvider newProvider
+				if (newValue is DependencyObject newProvider
 					&& newProvider is not UIElement
 					&& newProvider is not FrameworkTemplate
 					&& newProvider is not Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
@@ -661,13 +661,13 @@ namespace Microsoft.UI.Xaml
 				if (ReferenceEquals(oldValue, newValue)) return;
 
 				if (oldValue is IMultiParentShareableDependencyObject &&
-					oldValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } oldStore })
+					oldValue is DependencyObject { _inheritanceContextEnabled: true } oldStore)
 				{
 					oldStore.UnassociateParent(ActualInstance);
 				}
 				ChildrenBindable[index] = newValue;
 				if (newValue is IMultiParentShareableDependencyObject &&
-					newValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } newStore })
+					newValue is DependencyObject { _inheritanceContextEnabled: true } newStore)
 				{
 					newStore.AssociateParent(ActualInstance);
 				}
@@ -683,15 +683,15 @@ namespace Microsoft.UI.Xaml
 				// (parent null or == this). A value owned by another object (e.g. a MenuFlyout's Items collection set
 				// as a presenter's ItemsSource — parent is the flyout, not the presenter) is skipped by the matching
 				// clear path, so pushing onto it here would cache a DataContext that is never released.
-				if (newValue is IDependencyObjectStoreProvider addedProvider
-					&& addedProvider.Store.DataContextPropertyInternal is null
+				if (newValue is DependencyObject addedProvider
+					&& addedProvider.DataContextPropertyInternal is null
 					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
 					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
 				{
 					var currentDataContext = GetValue(dataContextDetails);
 					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
 					{
-						addedProvider.Store.SetInheritedDataContext(currentDataContext);
+						addedProvider.SetInheritedDataContext(currentDataContext);
 					}
 				}
 			}
@@ -804,9 +804,9 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Tracks a non-UIElement DependencyObject as a mentored child of this store.
 		/// Called on the PARENT's store when a property with ValueDoesNotInheritDataContext
-		/// is set to a non-UIElement IDependencyObjectStoreProvider value.
+		/// is set to a non-UIElement DependencyObject value.
 		/// </summary>
-		private void SetMentoredChild(DependencyPropertyDetails propertyDetails, IDependencyObjectStoreProvider? newValue)
+		private void SetMentoredChild(DependencyPropertyDetails propertyDetails, DependencyObject? newValue)
 		{
 			var property = propertyDetails.Property;
 
@@ -831,12 +831,12 @@ namespace Microsoft.UI.Xaml
 
 			// Clear mentor on old value
 			var oldRef = _mentoredChildren![index];
-			if (oldRef?.Target is IDependencyObjectStoreProvider oldProvider)
+			if (oldRef?.Target is DependencyObject oldProvider)
 			{
-				var oldMentor = oldProvider.Store.GetMentor();
+				var oldMentor = oldProvider.GetMentor();
 				if (oldMentor is not null && ReferenceEquals(oldMentor, ActualInstance))
 				{
-					oldProvider.Store.SetMentor(null);
+					oldProvider.SetMentor(null);
 				}
 			}
 			if (oldRef is not null)
@@ -848,11 +848,11 @@ namespace Microsoft.UI.Xaml
 			if (newValue is not null)
 			{
 				_mentoredChildren[index] = WeakReferencePool.RentWeakReference(this, newValue);
-				newValue.Store.SetMentor(ActualInstance);
+				newValue.SetMentor(ActualInstance);
 
 				// Immediately propagate current DataContext (null when this mentor is not a FrameworkElement).
 				var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
-				newValue.Store.SetInheritedDataContext(currentDC);
+				newValue.SetInheritedDataContext(currentDC);
 			}
 			else
 			{
@@ -874,12 +874,12 @@ namespace Microsoft.UI.Xaml
 			for (int i = 0; i < _mentoredChildren.Count; i++)
 			{
 				var childRef = _mentoredChildren[i];
-				if (childRef?.Target is IDependencyObjectStoreProvider childProvider)
+				if (childRef?.Target is DependencyObject childProvider)
 				{
-					var mentor = childProvider.Store.GetMentor();
+					var mentor = childProvider.GetMentor();
 					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
 					{
-						childProvider.Store.SetInheritedDataContext(dataContext);
+						childProvider.SetInheritedDataContext(dataContext);
 					}
 				}
 			}
@@ -900,12 +900,12 @@ namespace Microsoft.UI.Xaml
 			for (int i = 0; i < _mentoredChildren.Count; i++)
 			{
 				var childRef = _mentoredChildren[i];
-				if (childRef?.Target is IDependencyObjectStoreProvider childProvider)
+				if (childRef?.Target is DependencyObject childProvider)
 				{
-					var mentor = childProvider.Store.GetMentor();
+					var mentor = childProvider.GetMentor();
 					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
 					{
-						childProvider.Store.ClearInheritedDataContext();
+						childProvider.ClearInheritedDataContext();
 					}
 				}
 			}

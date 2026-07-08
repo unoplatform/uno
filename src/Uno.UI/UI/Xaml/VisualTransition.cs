@@ -64,11 +64,11 @@ namespace Microsoft.UI.Xaml
 #endif
 				}
 
-				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
+				if (Storyboard is DependencyObject storyboardProvider)
 				{
 					// Set the theme changed flag on so the update processes
 					// the children.
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
+					storyboardProvider.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 				}
 			}
 		}
