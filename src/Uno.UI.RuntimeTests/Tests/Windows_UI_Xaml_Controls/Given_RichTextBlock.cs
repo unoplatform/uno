@@ -49,6 +49,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		public async Task When_BaselineOffset_Reflects_First_Line()
+		{
+			var SUT = new RichTextBlock { FontSize = 24 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "Baseline" });
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var baseline = SUT.BaselineOffset;
+
+				// The first line's baseline sits below the top of the control and within its
+				// measured height (CRichTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > 0, $"BaselineOffset should be positive (was {baseline})");
+				Assert.IsTrue(baseline <= SUT.ActualHeight, $"BaselineOffset {baseline} should be within the control height {SUT.ActualHeight}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Multiple_Paragraphs()
 		{
 			var SUT = new RichTextBlock();

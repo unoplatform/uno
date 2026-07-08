@@ -13,8 +13,8 @@ namespace Microsoft.UI.Xaml.Controls
 // Skipping already declared MaxLinesProperty
 // Skipping already declared OverflowContentTargetProperty
 // Skipping already declared PaddingProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public double BaselineOffset
 		{
 			get
