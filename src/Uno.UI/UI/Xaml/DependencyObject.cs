@@ -38,6 +38,16 @@ namespace Microsoft.UI.Xaml
 
 		public void SetValue(DependencyProperty dp, object value) => SetValueInternal(dp, value);
 
+		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
+
+		public object ReadLocalValue(DependencyProperty dp) => ReadLocalValueInternal(dp);
+
+		public object GetAnimationBaseValue(DependencyProperty dp) => GetAnimationBaseValueInternal(dp);
+
+		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => RegisterPropertyChangedCallbackInternal(dp, callback);
+
+		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
+
 		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
 		ManagedWeakReference IWeakReferenceProvider.WeakReference => SelfWeakReference;
