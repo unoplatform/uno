@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Overflow_BaselineOffset_Reflects_Content()
 		{
-			var master = new RichTextBlock { Width = 180, MaxLines = 2 };
+			var master = new RichTextBlock { Width = 180, MaxLines = 2, FontSize = 24 };
 			var paragraph = new Paragraph();
 			paragraph.Inlines.Add(new Run { Text = LongText });
 			master.Blocks.Add(paragraph);
@@ -99,7 +99,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 
 				Assert.IsTrue(master.HasOverflowContent, "Master should overflow into the target");
-				Assert.IsTrue(overflow.BaselineOffset > 0, $"Overflow BaselineOffset should be positive once it renders a content slice (was {overflow.BaselineOffset})");
+				// The overflow's first-line baseline ≈ the font ascent of the flowed 24pt content.
+				Assert.IsTrue(overflow.BaselineOffset > master.FontSize * 0.5 && overflow.BaselineOffset < master.FontSize * 1.5,
+					$"Overflow BaselineOffset {overflow.BaselineOffset} should be a plausible first-line ascent for font size {master.FontSize}");
 			}
 			finally
 			{
