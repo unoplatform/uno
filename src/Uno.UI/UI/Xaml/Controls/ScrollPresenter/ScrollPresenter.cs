@@ -6366,6 +6366,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 
 		// Uno docs: ToArray call is to avoid modifying the collection while iterating.
+		// Uno: iterate a snapshot to allow Remove() inside the loop.
 		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 		{
 			bool isMatch = requestId == -1 || requestId == interactionTrackerAsyncOperation.GetRequestId();
@@ -7102,7 +7103,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		if (dimension == ScrollPresenterDimension.HorizontalScroll)
 		{
-			if (m_anticipatedZoomedHorizontalOffset != zoomedOffset)
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedHorizontalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedHorizontalOffset != zoomedOffset)
 			{
 				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedHorizontalOffset", m_anticipatedZoomedHorizontalOffset, zoomedOffset);
 
@@ -7112,7 +7114,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		else
 		{
 			MUX_ASSERT(dimension == ScrollPresenterDimension.VerticalScroll);
-			if (m_anticipatedZoomedVerticalOffset != zoomedOffset)
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedVerticalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedVerticalOffset != zoomedOffset)
 			{
 				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedVerticalOffset", m_anticipatedZoomedVerticalOffset, zoomedOffset);
 
@@ -7123,7 +7126,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 	void UpdateAnticipatedZoomFactor(float zoomFactor)
 	{
-		if (m_anticipatedZoomFactor != zoomFactor)
+		bool sameNaN = float.IsNaN(m_anticipatedZoomFactor) && float.IsNaN(zoomFactor);
+		if (!sameNaN && m_anticipatedZoomFactor != zoomFactor)
 		{
 			// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_FLT_FLT, METH_NAME, this, L"old/new anticipatedZoomFactor", m_anticipatedZoomFactor, zoomFactor);
 

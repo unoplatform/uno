@@ -511,6 +511,7 @@ public class ScrollViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ScrollStarting args.")]
 	public async Task VerifyScrollStartingForwarding()
 	{
@@ -581,6 +582,7 @@ public class ScrollViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 	[Ignore("UNO: Zoom via InteractionTracker.TryUpdateScale is [NotImplemented] on Skia (it throws), so ScrollPresenter never reaches RaiseZoomStarting and ScrollView.ZoomStarting cannot fire at runtime. The forwarding wiring itself matches WinUI (ScrollStarting is covered by VerifyScrollStartingForwarding). Re-enable once the Skia InteractionTracker implements scale.")]
 	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ZoomStarting args.")]
 	public async Task VerifyZoomStartingForwarding()
