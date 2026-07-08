@@ -238,13 +238,10 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// Every DependencyObject is finalizable so pooled weak references and property details are
-		// returned when it is collected without an explicit teardown. BinderDispose is idempotent and
-		// guards against the finalizer/dispatcher race.
-		~DependencyObject()
-		{
-			BinderDispose();
-		}
+		// EXPERIMENT (dev/mazi/dostore-nofinalizer): the finalizer is intentionally removed to take
+		// DependencyObject off the finalization queue. It is not load-bearing — pooled weak handles are
+		// freed by ManagedGCHandle's own finalizer; BinderDispose only recycled pooled weak refs/arrays.
+		// BinderDispose is kept (now unreferenced) so this is the ONLY behavioral diff vs the base.
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited
