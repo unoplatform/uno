@@ -331,7 +331,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object? ReadLocalValue(DependencyProperty property)
+		internal object? ReadLocalValueInternal(DependencyProperty property)
 		{
 			var details = _properties.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
@@ -379,7 +379,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object? GetAnimationBaseValue(DependencyProperty property)
+		internal object? GetAnimationBaseValueInternal(DependencyProperty property)
 		{
 			var (modifiedValue, details) = GetModifiedValue(property);
 			if (modifiedValue?.IsAnimated == true)
@@ -549,7 +549,7 @@ namespace Microsoft.UI.Xaml
 		/// Clears the value for the specified dependency property on the specified instance.
 		/// </summary>
 		/// <param name="property">The dependency property to get</param>
-		public void ClearValue(DependencyProperty property)
+		internal void ClearValueInternal(DependencyProperty property)
 		{
 			SetValue(property, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Local);
 		}
@@ -969,7 +969,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
+		internal long RegisterPropertyChangedCallbackInternal(DependencyProperty property, DependencyPropertyChangedCallback callback)
 		{
 			_propertyChangedToken = Interlocked.Increment(ref _propertyChangedToken);
 
@@ -980,7 +980,7 @@ namespace Microsoft.UI.Xaml
 			return _propertyChangedToken;
 		}
 
-		public void UnregisterPropertyChangedCallback(DependencyProperty property, long token)
+		internal void UnregisterPropertyChangedCallbackInternal(DependencyProperty property, long token)
 		{
 			if (_propertyChangedTokens.TryGetValue(token, out var registration))
 			{
