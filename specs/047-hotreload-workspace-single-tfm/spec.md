@@ -90,7 +90,8 @@ its consequence (see D6) — never worse than today's behavior.
 
 ### D2 — Global-properties whitelist
 
-`GetWorkspaceProperties` switches from deny-list (`IsValidProperty`) to a **whitelist**.
+Global-property handling switches from deny-list (`IsValidProperty`) to a **whitelist**,
+applied in `CompilationWorkspaceProvider` (`_globalPropertiesAllowList`).
 Properties passed to `MSBuildWorkspace.Create`:
 
 | Property | Why it stays |
@@ -152,8 +153,8 @@ After `OpenProjectAsync` succeeds:
    (`EmitCompilationOutputAsync(solution)`), `WatchHotReloadService` session start, and
    `HotReloadManager.CurrentSolution` (F3/F4). The `MSBuildWorkspace` object remains solely
    the service/dispose owner.
-5. `TemporaryWorkspaceAddDetector` (file-add detection re-opens a workspace through the same
-   provider) applies the **same filter** to its temporary solution before diffing.
+5. `TemporarySolutionAddDetector` (file-add detection re-runs the same solution provider) sees
+   the **same filtered snapshot**, because the provider delegate applies the filter on every call.
 
 **Matching rules** (normalized comparison):
 
@@ -233,10 +234,11 @@ Other compatibility notes:
 |---|---|
 | `Uno.UI.RemoteControl/HotReload/Messages/ConfigureServer.cs` | New runtime-descriptor field (positional record addition, STJ-compatible). |
 | `Uno.UI.RemoteControl/HotReload/ClientHotReloadProcessor.cs` (+ per-flavor partials) | Populate the descriptor at runtime (compile-time platform × runtime framework version). |
-| `Uno.UI.RemoteControl.Server.Processors/HotReload/ServerHotReloadProcessor.MetadataUpdate.cs` | `GetWorkspaceProperties` → whitelist (D2); stop emitting `UnoHotReloadTargetFramework` / `UnoHotReloadRuntimeIdentifier`; keep reading `OutputPath`/`IntermediateOutputPath` for `Trim`. |
-| `Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/CompilationWorkspaceProvider.cs` | Post-load filtering (D3): head-flavor detection, descriptor matching, reachability-based snapshot reduction, diagnostics (D6). |
-| `Uno.HotReload/HotReloadManager.cs`, `Microsoft/WatchHotReloadService.uno.cs`, `Utils/RoslynExtensions.Emit.cs` | Accept/propagate the filtered `Solution` (workspace kept for services/dispose only). |
-| `Uno.HotReload/Diffing/TemporaryWorkspaceAddDetector.cs` | Apply the same filter to temporary workspaces. |
+| `Uno.UI.RemoteControl.Server.Processors/HotReload/ServerHotReloadProcessor.MetadataUpdate.cs` | Resolve the runtime target framework (D1, with the build-time `TargetFramework` fallback for old clients); `LoadSolutionFromDisk` loads the workspace and applies the D3 filter before handing the snapshot to the manager. |
+| `Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/CompilationWorkspaceProvider.cs` | Global-property whitelist (D2); returns the raw `MSBuildWorkspace` with no target-framework knowledge (the caller filters). |
+| `Uno.HotReload/Utils/RoslynExtensions.TargetFrameworkFiltering.cs` | D3 filter logic: `FilterHeadProjectTargetFramework`, descriptor matching, reachability-based snapshot reduction, diagnostics (D6). |
+| `Uno.HotReload/HotReloadManager.cs`, `Microsoft/WatchHotReloadService.uno.cs`, `Utils/RoslynExtensions.Emit.cs` | Operate exclusively on the filtered `Solution` (workspace kept for services/dispose only); the `Workspace`-based `CreateAsync` overloads are removed. |
+| `Uno.HotReload/Diffing/TemporarySolutionAddDetector.cs` | Renamed from `TemporaryWorkspaceAddDetector`; operates on the (already-filtered) `Solution` returned by the shared provider. |
 | `Uno.HotReload/Utils/` (phase 2) | `RoslynExtensions.TryGetTargetFramework` promoted from tests (D5). |
 | `Uno.UI.RemoteControl/buildTransitive/Uno.WinUI.DevServer.props` | **Untouched** (old-server compatibility); cleanup deferred. |
 
