@@ -208,6 +208,28 @@ namespace Microsoft.UI.Text
 			_owner.OnTomSelectionChanged();
 		}
 
+		// Programmatic Selection.Copy/Cut/Paste (ITextSelection) route here so the owning control raises
+		// its CopyingToClipboard / CuttingToClipboard / Paste events. The interactive selection is first
+		// synced from the TOM selection (non-focus-gated) because these operate on Document.Selection even
+		// when the control isn't focused (the WinUI conformance tests never focus it).
+		internal void CopySelectionToClipboardViaControl()
+		{
+			_owner.SyncInteractiveSelectionFromTomSelection();
+			_owner.CopySelectionToClipboard();
+		}
+
+		internal void CutSelectionToClipboardViaControl()
+		{
+			_owner.SyncInteractiveSelectionFromTomSelection();
+			_owner.CutSelectionToClipboard();
+		}
+
+		internal void PasteFromClipboardViaControl()
+		{
+			_owner.SyncInteractiveSelectionFromTomSelection();
+			_owner.PasteFromClipboard();
+		}
+
 		// --- Geometry-backed line navigation (delegates to the owning control's DisplayBlock layout) ---
 
 		internal bool TryGetLineBounds(int position, out int lineStart, out int lineEnd, out int lineIndex, out bool isLast)
@@ -239,6 +261,14 @@ namespace Microsoft.UI.Text
 		{
 			// TODO Uno: Honor FormatRtf and the remaining TextSetOptions once rich content is supported.
 			var text = value ?? string.Empty;
+
+			// WinUI clamps a programmatic SetText to the control's MaxLength (SetTextAdheresToMaxLength).
+			var maxLength = _owner.MaxLength;
+			if (maxLength > 0 && text.Length > maxLength)
+			{
+				text = text.Substring(0, maxLength);
+			}
+
 			MutateWithUndo(() =>
 			{
 				_plainText = text;
