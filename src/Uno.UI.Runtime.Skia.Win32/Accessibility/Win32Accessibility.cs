@@ -467,6 +467,9 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	internal Win32RawElementProvider? TryGetExistingProviderForPeer(AutomationPeer peer)
 		=> FindExistingProviderForPeer(peer, resolveEventsSource: true);
 
+	internal Win32RawElementProvider? TryGetExistingProviderForExactPeer(AutomationPeer peer)
+		=> _peerProviders.TryGetValue(peer, out var provider) ? provider : null;
+
 	/// <summary>
 	/// Looks up an existing provider for the given peer without creating one.
 	/// Used by event notification methods to avoid eagerly creating providers

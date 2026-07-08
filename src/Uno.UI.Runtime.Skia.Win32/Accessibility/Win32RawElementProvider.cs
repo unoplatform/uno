@@ -103,7 +103,7 @@ internal class Win32RawElementProvider :
 		{
 			for (var i = 0; i < children.Count; i++)
 			{
-				var childProvider = _accessibility.TryGetExistingProviderForPeer(children[i]);
+				var childProvider = _accessibility.TryGetExistingProviderForExactPeer(children[i]);
 				if (childProvider is not null && !ReferenceEquals(childProvider, this))
 				{
 					childProvider.Invalidate(visited);
@@ -528,7 +528,7 @@ internal class Win32RawElementProvider :
 		}
 
 		var point = peer.GetClickablePoint();
-		if (point.X == 0 && point.Y == 0)
+		if ((point.X == 0 && point.Y == 0) || double.IsNaN(point.X) || double.IsNaN(point.Y))
 		{
 			return null;
 		}
@@ -793,7 +793,7 @@ internal class Win32RawElementProvider :
 
 		for (var i = 0; i < children.Count; i++)
 		{
-			var childProvider = _accessibility.TryGetExistingProviderForPeer(children[i]);
+			var childProvider = _accessibility.TryGetExistingProviderForExactPeer(children[i]);
 			if (childProvider is not null && !ReferenceEquals(childProvider, this))
 			{
 				childProvider.InvalidateChildrenCache(visited);
