@@ -195,12 +195,13 @@ public partial class CompositionTarget
 		_pendingDamage.Union(region);
 	}
 
+	private static readonly SKPaint _damageOverlayFill = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
+	private static readonly SKPaint _damageOverlayStroke = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+
 	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
 	{
-		using var fill = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
-		using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
-		canvas.DrawPath(damage, fill);
-		canvas.DrawPath(damage, stroke);
+		canvas.DrawPath(damage, _damageOverlayFill);
+		canvas.DrawPath(damage, _damageOverlayStroke);
 	}
 
 	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
