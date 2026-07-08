@@ -95,6 +95,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
+	private static readonly SKPaint _spareTextDecorationPaint = new() { Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -110,7 +111,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, FlowDirection direction)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
@@ -134,7 +135,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction)>();
+		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -191,7 +192,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, (inline as Run)?.FlowDirection ?? flowDirection));
+			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, (inline as Run)?.FlowDirection ?? flowDirection, inline.TextDecorations));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -762,7 +763,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, FlowDirection direction)> runBreaks,
+		List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
@@ -836,6 +837,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
+		List<(float x1, float x2, float y, float thickness, SKColor color)> textDecorationLines = new();
 
 		SKRect? caretRect = default;
 
@@ -955,6 +957,55 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
+			var runDecorations = _runBreaks[runBreakIndex].decorations;
+			if (runDecorations != global::Windows.UI.Text.TextDecorations.None)
+			{
+				// TextDecorations (Underline/Strikethrough): the line position and thickness come from the
+				// font metrics and the color follows the run's foreground, matching WinUI's DWrite text renderer
+				// (DWriteTextRenderer::DrawUnderline / DrawStrikethrough draw at baseline + offset with the
+				// foreground brush). Drawn per cluster so the line stays continuous across the run.
+
+				// WinUI/DWrite do not decorate collapsed line-trailing whitespace, so clamp the line to the
+				// visible content extent (widthWithoutTrailingSpaces, the same width the alignment uses).
+				// Trailing whitespace is on the right for LTR and on the left for RTL.
+				float contentLeftX, contentRightX;
+				if (_rtl)
+				{
+					contentRightX = alignmentOffset + line.width;
+					contentLeftX = contentRightX - line.widthWithoutTrailingSpaces;
+				}
+				else
+				{
+					contentLeftX = alignmentOffset;
+					contentRightX = contentLeftX + line.widthWithoutTrailingSpaces;
+				}
+
+				var decorationLeftX = Math.Max(unalignedX + alignmentOffset, contentLeftX);
+				var decorationRightX = Math.Min(unalignedX + alignmentOffset + cluster.Value.width, contentRightX);
+
+				if (decorationRightX > decorationLeftX)
+				{
+					var decorationBaseline = y + line.baselineOffset;
+					var decorationColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					var decorationMetrics = fontDetails.SKFontMetrics;
+
+					if ((runDecorations & global::Windows.UI.Text.TextDecorations.Underline) != 0)
+					{
+						var underlineThickness = decorationMetrics.UnderlineThickness ?? Math.Max(1f, fontDetails.SKFontSize / 20f);
+						var decorationUnderlineY = decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.SKFontSize / 10f);
+						textDecorationLines.Add((decorationLeftX, decorationRightX, decorationUnderlineY, underlineThickness, decorationColor));
+					}
+
+					if ((runDecorations & global::Windows.UI.Text.TextDecorations.Strikethrough) != 0)
+					{
+						var strikethroughThickness = decorationMetrics.StrikeoutThickness ?? Math.Max(1f, fontDetails.SKFontSize / 20f);
+						// Strikeout sits above the baseline; in this y-down space that is a negative offset.
+						var strikethroughY = decorationBaseline + (decorationMetrics.StrikeoutPosition ?? fontDetails.SKFontSize / -3f);
+						textDecorationLines.Add((decorationLeftX, decorationRightX, strikethroughY, strikethroughThickness, decorationColor));
+					}
+				}
+			}
+
 			if (caret is var (caretIndex, _, caretThickness))
 			{
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
@@ -994,6 +1045,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			_spareCompositionUnderlinePaint.Color = color;
 			session.Canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
+		}
+
+		foreach (var (x1, x2, decorationY, thickness, color) in textDecorationLines)
+		{
+			_spareTextDecorationPaint.Color = color;
+			_spareTextDecorationPaint.StrokeWidth = thickness;
+			session.Canvas.DrawLine(x1, decorationY, x2, decorationY, _spareTextDecorationPaint);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
