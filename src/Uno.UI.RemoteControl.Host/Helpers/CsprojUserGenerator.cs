@@ -108,6 +108,11 @@ public static class CsprojUserGenerator
 			return;
 		}
 
+		if (port is <= 0 or > ushort.MaxValue)
+		{
+			throw new ArgumentOutOfRangeException(nameof(port), port, "Port must be between 1 and 65535.");
+		}
+
 		if (Directory.Exists(path))
 		{
 			var solutions = Directory.EnumerateFiles(path, "*.sln")
