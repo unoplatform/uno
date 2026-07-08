@@ -11,9 +11,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public class Given_TextBlock_TextDecorations
 	{
-#if __SKIA__
 		// Regression guard: the Skia text renderer (UnicodeText) used to ignore TextDecorations entirely,
 		// so Underline/Strikethrough were never painted for a TextBlock. These render an underlined/struck
 		// TextBlock next to an identical plain one and assert the decoration actually changed the pixels.
@@ -129,6 +130,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreEqualAsync(withTrailingShot, withoutTrailingShot);
 		}
-#endif
 	}
 }
