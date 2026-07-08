@@ -104,7 +104,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.reference.cs`
-- [ ] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
+- [x] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UWP/Extensions/Vector2Extensions.cs`, `src/Uno.Foundation/Extensions/VectorExtensions.cs`, `build/PackageDiffIgnore.xml`
 - [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
