@@ -188,10 +188,18 @@ public static class CsprojUserGenerator
 				return false;
 			}
 
-			// The DevServer marks tooling-assigned ports with a trailing '#'; strip it before parsing.
-			value = value.TrimEnd('#').Trim();
+			// The DevServer marks tooling-assigned ports with a trailing '#'. Trim surrounding whitespace first so the
+			// marker is stripped even when the value is written as e.g. "62483 #", then trim again for a clean parse.
+			value = value.Trim().TrimEnd('#').Trim();
 
-			return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out port);
+			if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
+				&& parsed is > 0 and <= ushort.MaxValue)
+			{
+				port = parsed;
+				return true;
+			}
+
+			return false;
 		}
 		catch
 		{
