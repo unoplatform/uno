@@ -43,6 +43,17 @@ public class CsprojUserGeneratorTests
 		return csproj;
 	}
 
+	private static void WriteUserFileWithPort(string csproj, string rawPortValue)
+		=> File.WriteAllText(csproj + ".user",
+			$"""
+			<?xml version="1.0" encoding="utf-8"?>
+			<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+			  <PropertyGroup>
+			    <UnoRemoteControlPort>{rawPortValue}</UnoRemoteControlPort>
+			  </PropertyGroup>
+			</Project>
+			""");
+
 	[TestMethod]
 	public void SetCsprojUserPortForProject_WhenNoUserFile_CreatesItWithPort()
 	{
@@ -186,5 +197,33 @@ public class CsprojUserGeneratorTests
 
 		CsprojUserGenerator.TryGetConfiguredPort(csproj, out var port).Should().BeTrue();
 		port.Should().Be(51717);
+	}
+
+	[TestMethod]
+	[DataRow("0")]
+	[DataRow("-1")]
+	[DataRow("99999")]
+	[DataRow("not-a-number")]
+	public void TryGetConfiguredPort_WithInvalidOrOutOfRangeValue_ReturnsFalse(string rawPortValue)
+	{
+		var csproj = CreateProjectFile();
+		WriteUserFileWithPort(csproj, rawPortValue);
+
+		var found = CsprojUserGenerator.TryGetConfiguredPort(csproj, out var port);
+
+		found.Should().BeFalse();
+		port.Should().Be(0);
+	}
+
+	[TestMethod]
+	public void TryGetConfiguredPort_TrimsWhitespaceAroundMarker()
+	{
+		var csproj = CreateProjectFile();
+		WriteUserFileWithPort(csproj, "62483 #");
+
+		var found = CsprojUserGenerator.TryGetConfiguredPort(csproj, out var port);
+
+		found.Should().BeTrue();
+		port.Should().Be(62483);
 	}
 }
