@@ -53,7 +53,18 @@ namespace Microsoft.UI.Text
 				return Math.Abs(_start - old);
 			}
 
-			// Non-extending left move collapses to the start then moves the caret left.
+			// Non-extending left move collapses to the active (left) end. Per the TOM MoveLeft contract,
+			// collapsing a nondegenerate selection to its left edge already counts as the first unit, so
+			// only Count-1 further units are moved; a degenerate caret moves the full Count.
+			if (_start != _end && count > 0)
+			{
+				var edge = _start;
+				var target = Math.Clamp(edge - (count - 1), 0, _document.TextLength);
+				_start = _end = target;
+				OnRangeChanged();
+				return (edge - target) + 1;
+			}
+
 			_end = _start;
 			var previous = _start;
 			_start = _end = Math.Clamp(_start - count, 0, _document.TextLength);
@@ -76,7 +87,18 @@ namespace Microsoft.UI.Text
 				return Math.Abs(_end - old);
 			}
 
-			// Non-extending right move collapses to the end then moves the caret right.
+			// Non-extending right move collapses to the active (right) end. Per the TOM MoveRight contract,
+			// collapsing a nondegenerate selection to its right edge already counts as the first unit, so
+			// only Count-1 further units are moved; a degenerate caret moves the full Count.
+			if (_start != _end && count > 0)
+			{
+				var edge = _end;
+				var target = Math.Clamp(edge + (count - 1), 0, _document.TextLength);
+				_start = _end = target;
+				OnRangeChanged();
+				return (target - edge) + 1;
+			}
+
 			_start = _end;
 			var previous = _end;
 			_start = _end = Math.Clamp(_end + count, 0, _document.TextLength);
