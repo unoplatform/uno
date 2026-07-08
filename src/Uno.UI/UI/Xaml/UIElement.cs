@@ -61,41 +61,6 @@ namespace Microsoft.UI.Xaml
 		private SerialDisposable _disposedEventDisposable = new();
 
 
-		/// <summary>
-		/// Gets the current theme value for this element.
-		/// </summary>
-		/// <remarks>Thin forwarder to <see cref="DependencyObjectStore"/>, where the per-object theme
-		/// lives for every DependencyObject (WinUI: CDependencyObject::GetTheme, CDependencyObject.h:1648).</remarks>
-		internal Theme GetTheme() => ((IDependencyObjectStoreProvider)this).Store.GetTheme();
-
-		/// <summary>
-		/// Sets the theme value for this element.
-		/// </summary>
-		internal void SetTheme(Theme theme) => ((IDependencyObjectStoreProvider)this).Store.SetTheme(theme);
-
-		/// <summary>
-		/// Gets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal bool IsProcessingThemeWalk => ((IDependencyObjectStoreProvider)this).Store.IsProcessingThemeWalk;
-
-		/// <summary>
-		/// Sets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
-
-		/// <summary>
-		/// Notifies this element and its subtree that the theme has changed.
-		/// </summary>
-		/// <remarks>Thin forwarder — the walk is a CDependencyObject mechanism
-		/// (Theming.cpp:110-157) hosted on <see cref="DependencyObjectStore"/>. Element-level
-		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
-		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
-#endif
-		}
-
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()
@@ -848,7 +813,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// NOTE: DataContext propagation to ContextFlyout is handled automatically by the
-			// mentor mechanism in DependencyObjectStore.Binder.OnDependencyPropertyChanged.
+			// mentor mechanism in DependencyObject.Binder.OnDependencyPropertyChanged.
 			// ContextFlyoutProperty is marked with ValueDoesNotInheritDataContext, which triggers
 			// the mentor path: the flyout gets a weak reference to this UIElement as its mentor,
 			// and DataContext is propagated at Inheritance precedence. This matches WinUI's

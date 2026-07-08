@@ -2,7 +2,11 @@
 {
 	public partial class StateTrigger : StateTriggerBase
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		public new bool IsActive
+#else
 		public bool IsActive
+#endif
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);

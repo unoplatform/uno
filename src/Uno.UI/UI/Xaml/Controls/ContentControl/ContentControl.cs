@@ -415,7 +415,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
-						provider.Store.DataContextProperty is { } dataContextProperty &&
+						provider.Store.DataContextPropertyInternal is { } dataContextProperty &&
 						// The DataContext may be set directly on the template root
 						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(dataContextProperty))
 					)
@@ -435,7 +435,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_localContentDataContextOverride &&
 				ContentTemplateRoot is IDependencyObjectStoreProvider provider &&
-				provider.Store.DataContextProperty is { } dataContextProperty)
+				provider.Store.DataContextPropertyInternal is { } dataContextProperty)
 			{
 				_localContentDataContextOverride = false;
 				provider.Store.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);

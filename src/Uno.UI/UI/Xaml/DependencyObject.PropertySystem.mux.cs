@@ -25,7 +25,7 @@ using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class DependencyObjectStore
+public partial class DependencyObject
 {
 	/// <summary>
 	/// The field-backed enter-property loop of CDependencyObject::EnterImpl (depends.cpp:1013-1032):

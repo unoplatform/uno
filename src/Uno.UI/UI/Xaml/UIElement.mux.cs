@@ -883,8 +883,8 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
 		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
-		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
-		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
+		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObject, since WinUI
+		// carries them on every CDependencyObject — not just elements. See DependencyObject.Theming.cs.
 		[Flags]
 		private enum UIElementFlag : uint
 		{
@@ -1069,7 +1069,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// MUX Reference: CDependencyObject ActivateImpl/DeactivateImpl — the UIElement side of
-		// m_bitFields.fLive, dispatched from DependencyObjectStore (DependencyObjectStore.mux.cs).
+		// m_bitFields.fLive, dispatched from DependencyObject (DependencyObject.mux.cs).
 		// The Depth reset on deactivation is Uno-specific bookkeeping for the enhanced lifecycle.
 		internal void ActivateImpl()
 		{
@@ -1207,7 +1207,7 @@ namespace Microsoft.UI.Xaml
 
 			// Pass updated params to children.
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
-			// here. The CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			// here. The CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
 			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
 
 			// Extends EnterImpl to the ContextFlyout.
@@ -1791,7 +1791,7 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
-			// CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			// CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
 			((IDependencyObjectStoreProvider)this).Store.LeaveImpl(null, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.

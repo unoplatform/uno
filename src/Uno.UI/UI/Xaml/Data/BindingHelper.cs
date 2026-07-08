@@ -43,7 +43,7 @@ namespace Uno.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void SuspendXBind(this DependencyObject instance)
 		{
-			// DependencyObjectStore, DependencyPropertyDetailsCollection, and BindingExpression
+			// DependencyObject, DependencyPropertyDetailsCollection, and BindingExpression
 			// all keeps track of the binding suspension state. Since we only care about x:Bind here,
 			// it would be easier to skip straight to the BindingExpression, ignoring the first two.
 			(instance as IDependencyObjectStoreProvider)?.Store.SuspendCompiledBindings();

@@ -13,6 +13,6 @@ namespace Microsoft.UI.Xaml
 {
 	public interface IDependencyObjectStoreProvider
 	{
-		DependencyObjectStore Store { get; }
+		DependencyObject Store { get; }
 	}
 }

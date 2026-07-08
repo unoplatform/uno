@@ -414,7 +414,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// Regression for the reflection-free owner-theme walk: a non-UIElement DependencyObject
 		// (a Microsoft.Xaml.Behaviors-style behaviour) whose {ThemeResource}-bound property is
 		// resolved OUTSIDE any theme walk must pick up its host element's inherited theme, reached
-		// purely through DependencyObjectStore.Parent. The behaviour is attached the same way
+		// purely through DependencyObject.Parent. The behaviour is attached the same way
 		// Interaction.Behaviors does it — via a DependencyObjectCollection whose parent is the host —
 		// so ThemeResourceReference.GetThemeResolutionParent follows Store.Parent up to the
 		// Light-pinned Border without reflecting for an "AssociatedObject" property.
@@ -627,7 +627,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 	// Minimal stand-in for a Microsoft.Xaml.Behaviors-style behaviour: a non-UIElement
 	// DependencyObject carrying a {ThemeResource}-bindable property, with no "AssociatedObject"
-	// property — theme resolution must reach its host purely through DependencyObjectStore.Parent.
+	// property — theme resolution must reach its host purely through DependencyObject.Parent.
 	public partial class FakeThemeBehavior : DependencyObject
 	{
 		public static readonly DependencyProperty TestBrushProperty = DependencyProperty.Register(
