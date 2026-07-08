@@ -2365,18 +2365,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
 		public async Task When_BaselineOffset_Reflects_First_Line()
 		{
-			var SUT = new TextBlock { Text = "Baseline", FontSize = 24 };
+			var unpadded = new TextBlock { Text = "Baseline", FontSize = 24 };
+			var padded = new TextBlock { Text = "Baseline", FontSize = 24, Padding = new Thickness(20) };
+			var panel = new StackPanel();
+			panel.Children.Add(unpadded);
+			panel.Children.Add(padded);
 
 			try
 			{
-				await UITestHelper.Load(SUT);
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitForIdle();
 
-				var baseline = SUT.BaselineOffset;
+				var baseline = unpadded.BaselineOffset;
 
-				// The first line's baseline sits below the top of the control and within its
-				// measured height (CTextBlock::GetBaselineOffset).
-				Assert.IsTrue(baseline > 0, $"BaselineOffset should be positive (was {baseline})");
-				Assert.IsTrue(baseline <= SUT.ActualHeight, $"BaselineOffset {baseline} should be within the control height {SUT.ActualHeight}");
+				// The first line's baseline ≈ the font ascent; for FontSize=24 it lands well inside
+				// (0.5·FontSize, 1.5·FontSize) (CTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > unpadded.FontSize * 0.5, $"BaselineOffset {baseline} should exceed half the font size ({unpadded.FontSize})");
+				Assert.IsTrue(baseline < unpadded.FontSize * 1.5, $"BaselineOffset {baseline} should be within 1.5x the font size ({unpadded.FontSize})");
+
+				// WinUI measures the baseline from the content box, so Padding must not change it
+				// (CTextBlock::GetBaselineOffset DWrite branch adds no padding). This also runs on
+				// NativeWinUI, so it doubles as a parity check.
+				Assert.AreEqual(baseline, padded.BaselineOffset, 0.5, "BaselineOffset must be independent of Padding");
 			}
 			finally
 			{

@@ -25,9 +25,11 @@ partial class TextBlock
 	//
 	// Synopsis: Gets distance to baseline of first line from top of control.
 	//
-	// Uno renders TextBlock through the kept ParsedText engine rather than the ported PageNode,
-	// so the baseline is read from the first formatted line and offset by the top padding (which
-	// the WinUI block-layout branch folds into PageNode.GetBaselineAlignmentOffset).
+	// A plain TextBlock takes WinUI's default TextMode::DWriteLayout branch, which returns the first
+	// line's baseline straight from the layout metrics — measured from the content box, so padding is
+	// NOT included (WinUI adds padding separately, e.g. in GetActualHeight). Uno's kept ParsedText
+	// engine measures the same content box, so FirstLineBaseline matches directly (and returns 0
+	// before the first measure, matching WinUI's m_hasBeenMeasured guard).
 	internal void GetBaselineOffset(out float pBaselineOffset)
-		=> pBaselineOffset = ParsedText.FirstLineBaseline + (float)Padding.Top;
+		=> pBaselineOffset = ParsedText.FirstLineBaseline;
 }

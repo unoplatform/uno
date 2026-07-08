@@ -65,10 +65,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var baseline = SUT.BaselineOffset;
 
-				// The first line's baseline sits below the top of the control and within its
-				// measured height (CRichTextBlock::GetBaselineOffset).
-				Assert.IsTrue(baseline > 0, $"BaselineOffset should be positive (was {baseline})");
-				Assert.IsTrue(baseline <= SUT.ActualHeight, $"BaselineOffset {baseline} should be within the control height {SUT.ActualHeight}");
+				// The first line's baseline ≈ the font ascent; for FontSize=24 it lands well inside
+				// (0.5·FontSize, 1.5·FontSize). This pins the value, not just "non-zero"
+				// (CRichTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > SUT.FontSize * 0.5, $"BaselineOffset {baseline} should exceed half the font size ({SUT.FontSize})");
+				Assert.IsTrue(baseline < SUT.FontSize * 1.5, $"BaselineOffset {baseline} should be within 1.5x the font size ({SUT.FontSize})");
 			}
 			finally
 			{
