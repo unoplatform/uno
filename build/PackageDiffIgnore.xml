@@ -1630,8 +1630,6 @@
 			<!-- END Android PDFDocument -->
 
 			<!-- BEGIN Skia clipping -->
-			<Member fullName="Windows.Foundation.Point Uno.Extensions.Vector2Extensions.ToPoint(System.Numerics.Vector2 v)" reason="Does not exist in WinAppSDK" />
-			<Member fullName="System.Numerics.Vector2 Uno.Extensions.Vector2Extensions.ToVector(Windows.Foundation.Point p)" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Numerics.Matrix3x2 Microsoft.UI.Composition.CompositionClip.get_TransformMatrix()" reason="Converted to auto-property" />
 			<Member fullName="System.Numerics.Vector2 Microsoft.UI.Composition.CompositionClip.get_Scale()" reason="Converted to auto-property" />
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionClip.get_RotationAngle()" reason="Converted to auto-property" />
@@ -2278,6 +2276,9 @@
 		  <Member fullName="Uno.Foundation.Interop.IJSObjectMetadata" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+
+		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
+		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 	  </Types>
 
 	  <Fields>
