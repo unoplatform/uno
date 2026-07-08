@@ -733,7 +733,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
 			// - MergedDictionaries should be processed before this method call.
 			// - Member resources should be all processed prior the resolution can began.
-			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+			var delayedResolutionList = new List<DependencyObject>();
 
 			foreach (var child in unknownContent.Objects)
 			{
@@ -748,7 +748,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					rd.Add(key, childInstance);
 				}
 
-				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				if (HasAnyResourceMarkup(child) && childInstance is DependencyObject provider)
 				{
 					delayedResolutionList.Add(provider);
 				}
@@ -757,7 +757,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// Delay resolve static resources
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
 			}
 		}
 
@@ -1130,13 +1130,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		{
 			var binding = BuildBindingExpression(instance, rootInstance, member);
 
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
 				if (dependencyProperty != null)
 				{
-					provider.Store.SetBinding(dependencyProperty, binding);
+					provider.SetBinding(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{

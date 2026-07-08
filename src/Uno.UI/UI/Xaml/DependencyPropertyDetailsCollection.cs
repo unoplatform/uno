@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml
 						{
 							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
 							var newSource = binding.Source;
-							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							if (newSource is DependencyObject oldStore && oldStore == store)
 							{
 								newSource = otherStore.ActualInstance;
 							}

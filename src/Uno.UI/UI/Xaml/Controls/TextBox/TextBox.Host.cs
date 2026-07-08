@@ -49,7 +49,7 @@ partial class TextBox : ITextBoxHost
 	TextAlignment ITextBoxHost.TextAlignment => TextAlignment;
 
 	bool ITextBoxHost.IsTextAlignmentExplicitlySet
-		=> ((IDependencyObjectStoreProvider)this).Store
+		=> ((DependencyObject)this)
 			.GetCurrentHighestValuePrecedence(TextAlignmentProperty) != DependencyPropertyValuePrecedences.DefaultValue;
 
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing;

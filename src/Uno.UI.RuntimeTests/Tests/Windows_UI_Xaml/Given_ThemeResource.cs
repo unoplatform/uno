@@ -328,7 +328,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// Manually set a resource binding with ONLY ThemeResource flag (no HotReload)
 			// This simulates a library-compiled {ThemeResource TestHRBrush} binding
 			var resourceKey = new SpecializedResourceDictionary.ResourceKey("TestHRBrush");
-			(border as IDependencyObjectStoreProvider).Store.SetResourceBinding(
+			(border as DependencyObject).SetResourceBinding(
 				Border.BackgroundProperty,
 				resourceKey,
 				ResourceUpdateReason.ThemeResource, // Only ThemeResource, no HotReload - simulates library
@@ -464,7 +464,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// Register a {ThemeResource}-style binding on the behaviour's property (mirrors how a
 			// library-compiled {ThemeResource} binding is set up) and resolve it out of any theme walk.
 			var resourceKey = new SpecializedResourceDictionary.ResourceKey("OwnerThemePushTestBrush");
-			var store = ((IDependencyObjectStoreProvider)behavior).Store;
+			var store = ((DependencyObject)behavior);
 			store.SetResourceBinding(
 				FakeThemeBehavior.TestBrushProperty,
 				resourceKey,

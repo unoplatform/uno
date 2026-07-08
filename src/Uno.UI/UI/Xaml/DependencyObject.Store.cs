@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml
 
 					InheritedProperties = null;
 
-					if (value is IDependencyObjectStoreProvider parentProvider)
+					if (value is DependencyObject parentProvider)
 					{
 						TryRegisterInheritedProperties(parentProvider);
 					}
@@ -735,34 +735,34 @@ namespace Microsoft.UI.Xaml
 				// If a value is set with a higher precedence, the lower precedence DataContext must be cleared
 				if (newPrecedence < previousPrecedence)
 				{
-					if (previousValue is IDependencyObjectStoreProvider childProviderClear)
+					if (previousValue is DependencyObject childProviderClear)
 					{
 						// Clears the DataContext of the previous precedence value
-						childProviderClear.Store.ClearInheritedDataContext();
+						childProviderClear.ClearInheritedDataContext();
 					}
 
-					if (newValue is IDependencyObjectStoreProvider childProviderClearNewValue
-						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
+					if (newValue is DependencyObject childProviderClearNewValue
+						&& !ReferenceEquals(childProviderClearNewValue.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderClearNewValue.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
 					}
 				}
 
 				// If a value is set with a lower precedence, the higher precedence DataContext must be set to the current DataContext
 				if (newPrecedence > previousPrecedence)
 				{
-					if (newValue is IDependencyObjectStoreProvider childProviderSet
-						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
+					if (newValue is DependencyObject childProviderSet
+						&& !ReferenceEquals(childProviderSet.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderSet.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
 					}
 
-					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
+					if (previousValue is DependencyObject childProviderSetNewValue)
 					{
 						// Clears the DataContext of the previous precedence value
-						childProviderSetNewValue.Store.ClearInheritedDataContext();
+						childProviderSetNewValue.ClearInheritedDataContext();
 					}
 				}
 			}
@@ -1420,7 +1420,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void TryRegisterInheritedProperties(IDependencyObjectStoreProvider? parentProvider = null, bool force = false)
+		private void TryRegisterInheritedProperties(DependencyObject? parentProvider = null, bool force = false)
 		{
 			if (
 				!_registeringInheritedProperties
@@ -1438,7 +1438,7 @@ namespace Microsoft.UI.Xaml
 				)
 			)
 			{
-				if (parentProvider == null && Parent is IDependencyObjectStoreProvider p)
+				if (parentProvider == null && Parent is DependencyObject p)
 				{
 					parentProvider = p;
 				}
@@ -1477,11 +1477,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private InheritedPropertiesDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
+		private InheritedPropertiesDisposable RegisterInheritedProperties(DependencyObject parentProvider)
 		{
 			// A non-FE parent exposes no DataContext property; keep the FrameworkElement.DataContextProperty
 			// default so the UniqueId match below stays valid (it simply never matches such a parent).
-			if (parentProvider.Store.DataContextPropertyInternal is { } parentDataContextProperty)
+			if (parentProvider.DataContextPropertyInternal is { } parentDataContextProperty)
 			{
 				_parentDataContextProperty = parentDataContextProperty;
 			}
@@ -1495,7 +1495,7 @@ namespace Microsoft.UI.Xaml
 
 			// Subscribe to the parent's notifications
 			var inheritedPropertiesCallback = parentProvider
-				.Store
+				
 				.RegisterInheritedPropertyChangedCallback(this);
 
 			// Force propagation for inherited properties defined on the current instance.

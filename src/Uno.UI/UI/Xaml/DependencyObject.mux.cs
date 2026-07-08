@@ -248,7 +248,7 @@ public partial class DependencyObject
 			parent = Parent as DependencyObject;
 		}
 
-		var parentTheme = (parent as IDependencyObjectStoreProvider)?.Store.GetTheme() ?? Theme.None;
+		var parentTheme = (parent as DependencyObject)?.GetTheme() ?? Theme.None;
 
 		// Uno-specific fallback: when the walk reaches a DO whose Store.Parent / LogicalParentOverride
 		// isn't set yet (e.g. ContentControl.Content carries no LogicalChild flag, so a

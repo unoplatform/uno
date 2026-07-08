@@ -78,9 +78,9 @@ public partial class FrameworkElement
 				break;
 			case ElementTheme.Default:
 				// Use parent's theme if cleared
-				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
+				if (this.GetParent() is DependencyObject parentProvider)
 				{
-					theme = parentProvider.Store.GetTheme();
+					theme = parentProvider.GetTheme();
 				}
 				if (theme == Theme.None)
 				{
@@ -593,7 +593,7 @@ public partial class FrameworkElement
 	/// </summary>
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
-		var store = ((IDependencyObjectStoreProvider)this).Store;
+		var store = ((DependencyObject)this);
 
 		if (store.IsProcessingThemeWalk)
 		{

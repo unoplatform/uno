@@ -102,15 +102,15 @@ namespace Uno.UI.Tests
 			var SUT = new Grid();
 			root.Children.Add(SUT);
 
-			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsFalse((SUT as DependencyObject).AreHardReferencesEnabled);
 			Assert.IsNotNull(SUT.GetParent());
 
 			root.ForceLoaded();
-			Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsTrue((SUT as DependencyObject).AreHardReferencesEnabled);
 			Assert.IsNotNull(SUT.GetParent());
 
 			root.Children.Clear();
-			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+			Assert.IsFalse((SUT as DependencyObject).AreHardReferencesEnabled);
 			Assert.IsNull(SUT.GetParent());
 		}
 

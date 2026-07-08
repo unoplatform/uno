@@ -19,9 +19,9 @@ namespace Microsoft.UI.Xaml
 
 		private static DependencyObject GetStore(object instance)
 		{
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
-				return provider.Store;
+				return provider;
 			}
 
 			return GetAttachedStore(instance);
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A new DependencyObject if none exists, otherwise the existing one.</returns>
 		internal static DependencyObject GetAttachedStore(object instance)
 		{
-			return ((IDependencyObjectStoreProvider)GetAttachedDependencyObject(instance)).Store;
+			return ((DependencyObject)GetAttachedDependencyObject(instance));
 		}
 
 		/// <summary>
@@ -69,29 +69,29 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyObject"></param>
 		/// <returns></returns>
-		internal static object GetParent(this IDependencyObjectStoreProvider provider)
-			=> provider.Store.Parent;
+		internal static object GetParent(this DependencyObject provider)
+			=> provider.Parent;
 
 		/// <summary>
 		/// Enables the use of hard references for internal variables to improve the performance
 		/// </summary>
 		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal static void StoreTryEnableHardReferences(this IDependencyObjectStoreProvider provider)
-			=> provider.Store.TryEnableHardReferences();
+		internal static void StoreTryEnableHardReferences(this DependencyObject provider)
+			=> provider.TryEnableHardReferences();
 
 		/// <summary>
 		/// Disables the use of hard references for internal variables to improve the performance
 		/// </summary>
 		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal static void StoreDisableHardReferences(this IDependencyObjectStoreProvider provider)
-			=> provider.Store.DisableHardReferences();
+		internal static void StoreDisableHardReferences(this DependencyObject provider)
+			=> provider.DisableHardReferences();
 
 		/// <summary>
 		/// Gets the implicit style for the current object
 		/// </summary>
 		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider, in SpecializedResourceDictionary.ResourceKey styleKey)
-			=> provider.Store.GetImplicitStyle(styleKey);
+		internal static Style StoreGetImplicitStyle(this DependencyObject provider, in SpecializedResourceDictionary.ResourceKey styleKey)
+			=> provider.GetImplicitStyle(styleKey);
 
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <remarks>
 		/// This method will create a weak attached DependencyObject if the object is
-		/// not an <see cref="IDependencyObjectStoreProvider"/>
+		/// not an <see cref="DependencyObject"/>
 		/// </remarks>
 		internal static void SetParent(this object dependencyObject, object parent)
 			=> GetStore(dependencyObject).Parent = parent;
@@ -132,8 +132,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Set the parent of the specified dependency object
 		/// </summary>
-		internal static void SetParent(this IDependencyObjectStoreProvider storeProvider, object parent)
-			=> storeProvider.Store.Parent = parent;
+		internal static void SetParent(this DependencyObject storeProvider, object parent)
+			=> storeProvider.Parent = parent;
 
 		/// <summary>
 		/// Tries to set the parent of the specified dependency object
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>true if the parent could be set, otherwise false</returns>
 		internal static bool TrySetParent(this object dependencyObject, object parent)
 		{
-			if (dependencyObject is IDependencyObjectStoreProvider provider)
+			if (dependencyObject is DependencyObject provider)
 			{
 				SetParent(provider, parent);
 				return true;
@@ -281,9 +281,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		internal static void CoerceValue(this IDependencyObjectStoreProvider storeProvider, DependencyProperty property)
+		internal static void CoerceValue(this DependencyObject storeProvider, DependencyProperty property)
 		{
-			storeProvider.Store.CoerceValue(property);
+			storeProvider.CoerceValue(property);
 		}
 
 		/// <summary>
@@ -441,8 +441,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// See <see cref="DependencyObject.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
 		/// </summary>
-		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
-			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);
+		internal static void RegisterPropertyChangedCallbackStrong(this DependencyObject storeProvider, ExplicitPropertyChangedCallback handler)
+			=> storeProvider.RegisterPropertyChangedCallbackStrong(handler);
 
 		// TODO Uno: MUX uses a IsRightToLeft virtual method on DependencyObject. This
 		// allows for some customization - e.g. glyphs should not respect this.
@@ -451,17 +451,17 @@ namespace Microsoft.UI.Xaml
 
 		internal static DependencyObject GetTemplatedParent(this DependencyObject @do)
 		{
-			return (@do as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+			return (@do as DependencyObject)?.GetTemplatedParent2();
 		}
 
 		internal static void SetTemplatedParent(this DependencyObject @do, DependencyObject tp)
 		{
-			(@do as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+			(@do as DependencyObject)?.SetTemplatedParent2(tp);
 		}
 
 		internal static bool HasLocalOrModifierValue(this DependencyObject @do, DependencyProperty dp)
 		{
-			return (@do as IDependencyObjectStoreProvider).Store.HasLocalOrModifierValue(dp);
+			return (@do as DependencyObject).HasLocalOrModifierValue(dp);
 		}
 	}
 }

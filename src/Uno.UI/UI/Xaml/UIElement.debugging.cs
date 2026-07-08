@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 			{
 				return "[No such property]";
 			}
-			var bindings = (this as IDependencyObjectStoreProvider).Store.GetResourceBindingsForProperty(dp);
+			var bindings = (this as DependencyObject).GetResourceBindingsForProperty(dp);
 			if (bindings.Any())
 			{
 				var output = "";

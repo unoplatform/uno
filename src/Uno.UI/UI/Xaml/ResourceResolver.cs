@@ -360,15 +360,15 @@ namespace Uno.UI
 						updateReason, effectivePrecedence);
 				}
 
-				if (owner is IDependencyObjectStoreProvider themeOwnerProvider)
+				if (owner is DependencyObject themeOwnerProvider)
 				{
-					themeOwnerProvider.Store.SetThemeResourceBinding(property, themeRef, precedence);
+					themeOwnerProvider.SetThemeResourceBinding(property, themeRef, precedence);
 
 					// Also register a ResourceBinding for the initial tree-walk resolution
 					// at load time, which will also pin the providing dictionary. The _resourceBindings
 					// path handles the load-time tree-walk resolution, and the _themeResources path
 					// handles efficient theme-change re-resolution.
-					themeOwnerProvider.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+					themeOwnerProvider.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 				}
 				else if (themeRef.IsResolved)
 				{
@@ -397,7 +397,7 @@ namespace Uno.UI
 
 			// Register in the ResourceBinding path to ensure deferred resolution on loading
 			// still works (and HotReload re-resolution for parse-time-resolved values).
-			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+			(owner as DependencyObject)?.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
@@ -427,7 +427,7 @@ namespace Uno.UI
 			// onto the store's full SetThemeResourceBinding sequence yet because the value must resolve
 			// under the setter target's scoped theme before the clone exists.
 			var targetRef = themeRef.CloneForTarget(effectivePrecedence);
-			(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResource(property, targetRef);
+			(owner as DependencyObject)?.SetThemeResource(property, targetRef);
 		}
 
 		/// <summary>
@@ -453,7 +453,7 @@ namespace Uno.UI
 				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
-				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
+				if (property != null && bindingPath.DataContext is DependencyObject provider)
 				{
 					// Set current resource value
 					bindingPath.Value = value;
@@ -467,12 +467,12 @@ namespace Uno.UI
 						var themeRef = new ThemeResourceReference(
 							resourceKey, providingDictionary, value, isResolved: true, context,
 							updateReason, precedence, bindingPath);
-						provider.Store.SetThemeResource(property, themeRef);
+						provider.SetThemeResource(property, themeRef);
 					}
 
 					// Always register ResourceBinding for re-pin at load time and
 					// HotReload support, matching the dual-registration in ApplyResource.
-					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
+					provider.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
 
 					return true;
 				}
@@ -491,7 +491,7 @@ namespace Uno.UI
 
 			if (scope != null)
 			{
-				var dictionaries = (scope.Target as IDependencyObjectStoreProvider)?.Store.GetResourceDictionaries(true);
+				var dictionaries = (scope.Target as DependencyObject)?.GetResourceDictionaries(true);
 
 				if (dictionaries != null)
 				{

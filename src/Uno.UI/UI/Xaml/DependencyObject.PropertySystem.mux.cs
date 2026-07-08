@@ -270,7 +270,7 @@ public partial class DependencyObject
 			return;
 		}
 
-		if (pDO is not IDependencyObjectStoreProvider provider)
+		if (pDO is not DependencyObject provider)
 		{
 			return;
 		}
@@ -285,11 +285,11 @@ public partial class DependencyObject
 			// must not be live-entered here (it is not in the visual tree — activating it would lie
 			// to IsActiveInVisualTree and fire visual lifecycle). It is theme-established only; it
 			// live-enters through the visual walk when (if) it joins the tree.
-			provider.Store.EstablishThemeOnEnter(@params);
+			provider.EstablishThemeOnEnter(@params);
 		}
 		else
 		{
-			provider.Store.Enter(pAdjustedNamescopeOwner, @params);
+			provider.Enter(pAdjustedNamescopeOwner, @params);
 		}
 	}
 
@@ -307,9 +307,9 @@ public partial class DependencyObject
 			return;
 		}
 
-		if (pDO is IDependencyObjectStoreProvider provider)
+		if (pDO is DependencyObject provider)
 		{
-			provider.Store.Leave(pAdjustedNamescopeOwner, @params);
+			provider.Leave(pAdjustedNamescopeOwner, @params);
 		}
 	}
 
