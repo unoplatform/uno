@@ -3,28 +3,52 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LinedFlowLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
+		// Skipping already declared property ActualLineHeightProperty
+		// Skipping already declared property ItemsJustificationProperty
+		// Skipping already declared property ItemsStretchProperty
+		// Skipping already declared property LineHeightProperty
+		// Skipping already declared property LineSpacingProperty
+		// Skipping already declared property MinItemSpacingProperty
+		// Skipping already declared property ActualLineHeight
+		// Skipping already declared property ItemsJustification
+		// Skipping already declared property ItemsStretch
+		// Skipping already declared property LineHeight
+		// Skipping already declared property LineSpacing
+		// Skipping already declared property MinItemSpacing
+		// Skipping already declared property RequestedRangeLength
+		// Skipping already declared property RequestedRangeStartIndex
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeightProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustificationProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretchProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeightProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacingProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacingProperty
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeight
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustification
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretch
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeight
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacing
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacing
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeLength
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeStartIndex
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustificationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacingProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.InvalidateItemsInfo()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LockItemToLine(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsUnlocked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsUnlocked.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustification.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustification.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeStartIndex.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsUnlocked
 	}
