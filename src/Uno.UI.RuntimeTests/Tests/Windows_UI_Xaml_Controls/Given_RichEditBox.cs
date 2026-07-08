@@ -253,6 +253,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Range_Delete_Word_Forward_Removes_Word()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			// TOM Delete(Word, 1) from a caret deletes one word forward (incl. trailing space) and
+			// returns the count of units deleted.
+			var caret = SUT.Document.GetRange(0, 0);
+			var removed = caret.Delete(TextRangeUnit.Word, 1);
+
+			Assert.AreEqual(1, removed);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("World", text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Delete_Word_Backward_Removes_Previous_Word()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			// A negative count deletes toward the start of the story (like CTRL+BACKSPACE).
+			var caret = SUT.Document.GetRange(11, 11);
+			var removed = caret.Delete(TextRangeUnit.Word, -1);
+
+			Assert.AreEqual(1, removed);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Hello ", text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Delete_Paragraph_Removes_Paragraph()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+
+			// A paragraph includes its trailing break, so deleting one paragraph forward removes "aa\r".
+			var caret = SUT.Document.GetRange(0, 0);
+			var removed = caret.Delete(TextRangeUnit.Paragraph, 1);
+
+			Assert.AreEqual(1, removed);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("bb\rcc", text);
+		}
+
+		[TestMethod]
+		public async Task When_Range_MoveEnd_MoveStart_Word_Steps_By_Word()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello World");
+
+			// MoveEnd(Word, 1) extends the end edge to the next word boundary (after "Hello ").
+			var range = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(1, range.MoveEnd(TextRangeUnit.Word, 1));
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(6, range.EndPosition);
+
+			// MoveStart(Word, 1) advances the start edge to the same boundary, collapsing the range.
+			Assert.AreEqual(1, range.MoveStart(TextRangeUnit.Word, 1));
+			Assert.AreEqual(6, range.StartPosition);
+			Assert.AreEqual(6, range.EndPosition);
+		}
+
+		[TestMethod]
 		public async Task When_Range_Move_Collapses_And_Clamps()
 		{
 			var SUT = new RichEditBox();
