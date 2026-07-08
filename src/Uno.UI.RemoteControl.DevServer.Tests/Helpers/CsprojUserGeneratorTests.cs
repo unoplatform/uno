@@ -132,6 +132,27 @@ public class CsprojUserGeneratorTests
 	}
 
 	[TestMethod]
+	public void SetCsprojUserPortForProject_WithNonProjectUserPath_IsIgnored()
+	{
+		// The contract is .csproj/.csproj.user only; unrelated MSBuild user files must never be touched.
+		// Not created when absent...
+		var missing = Path.Combine(_tempRoot, "App.sln.user");
+
+		CsprojUserGenerator.SetCsprojUserPortForProject(missing, 62483);
+
+		File.Exists(missing).Should().BeFalse();
+
+		// ...and not modified when it already exists.
+		var existing = Path.Combine(_tempRoot, "Other.sln.user");
+		const string original = "<Project />";
+		File.WriteAllText(existing, original);
+
+		CsprojUserGenerator.SetCsprojUserPortForProject(existing, 62483);
+
+		File.ReadAllText(existing).Should().Be(original);
+	}
+
+	[TestMethod]
 	public void TryGetConfiguredPort_WhenNoUserFile_ReturnsFalse()
 	{
 		var csproj = CreateProjectFile();
