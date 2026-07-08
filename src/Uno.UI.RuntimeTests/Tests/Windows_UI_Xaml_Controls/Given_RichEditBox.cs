@@ -282,6 +282,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Range_Move_Count0_Leaves_Range_Unchanged()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			// TOM ITextRange::Move: count 0 must leave even a non-degenerate range untouched.
+			var range = SUT.Document.GetRange(1, 4);
+			Assert.AreEqual(0, range.Move(TextRangeUnit.Character, 0));
+			Assert.AreEqual(1, range.StartPosition);
+			Assert.AreEqual(4, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Move_NonDegenerate_Collapse_Counts_As_Unit()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+
+			// [1,4].Move(+1): collapsing to the right edge (4) is the single unit moved.
+			var right = SUT.Document.GetRange(1, 4);
+			Assert.AreEqual(1, right.Move(TextRangeUnit.Character, 1));
+			Assert.AreEqual(4, right.StartPosition);
+			Assert.AreEqual(4, right.EndPosition);
+
+			// [1,4].Move(-1): collapsing to the left edge (1) is the single unit moved.
+			var left = SUT.Document.GetRange(1, 4);
+			Assert.AreEqual(-1, left.Move(TextRangeUnit.Character, -1));
+			Assert.AreEqual(1, left.StartPosition);
+			Assert.AreEqual(1, left.EndPosition);
+
+			// [1,4].Move(+2): collapse to 4 (unit 1) then one further character to 5.
+			var right2 = SUT.Document.GetRange(1, 4);
+			Assert.AreEqual(2, right2.Move(TextRangeUnit.Character, 2));
+			Assert.AreEqual(5, right2.StartPosition);
+			Assert.AreEqual(5, right2.EndPosition);
+		}
+
+		[TestMethod]
 		public async Task When_Range_GetClone_And_Comparisons()
 		{
 			var SUT = new RichEditBox();
@@ -354,6 +400,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Xlo", text);
 			Assert.AreEqual(1, selection.StartPosition);
 			Assert.AreEqual(1, selection.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_MoveRight_NonExtend_Collapses_To_Edge()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+			var selection = SUT.Document.Selection;
+
+			// Non-degenerate [2,5]: collapsing to the right edge already counts as the single unit moved.
+			selection.SetRange(2, 5);
+			Assert.AreEqual(1, selection.MoveRight(TextRangeUnit.Character, 1, false));
+			Assert.AreEqual(5, selection.StartPosition);
+			Assert.AreEqual(5, selection.EndPosition);
+
+			// Non-degenerate [1,3] moving left collapses to the left edge (1) and counts as one unit.
+			selection.SetRange(1, 3);
+			Assert.AreEqual(1, selection.MoveLeft(TextRangeUnit.Character, 1, false));
+			Assert.AreEqual(1, selection.StartPosition);
+			Assert.AreEqual(1, selection.EndPosition);
+
+			// A degenerate caret still moves the full count.
+			selection.SetRange(1, 1);
+			Assert.AreEqual(2, selection.MoveRight(TextRangeUnit.Character, 2, false));
+			Assert.AreEqual(3, selection.StartPosition);
+			Assert.AreEqual(3, selection.EndPosition);
 		}
 
 		[TestMethod]
@@ -503,6 +579,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(FormatEffect.Off, doc.GetRange(6, 11).CharacterFormat.Bold);
 			// A range that spans both bold and non-bold text reports Undefined.
 			Assert.AreEqual(FormatEffect.Undefined, doc.GetRange(0, 11).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Bold_Toggle_Flips_State()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			// Toggle on unformatted text turns Bold on...
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.Toggle;
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).CharacterFormat.Bold);
+
+			// ...and Toggle again flips it back off.
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.Toggle;
+			Assert.AreEqual(FormatEffect.Off, doc.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Toggle_Flips_Each_Character_Independently()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			// Seed the first two characters bold, leave the rest not bold.
+			doc.GetRange(0, 2).CharacterFormat.Bold = FormatEffect.On;
+
+			// Toggle across the whole range flips each character from its own current state.
+			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.Toggle;
+
+			Assert.AreEqual(FormatEffect.Off, doc.GetRange(0, 2).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(2, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_ParagraphFormat_KeepTogether_Toggle_Flips_State()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var doc = SUT.Document;
+			doc.SetText(TextSetOptions.None, "Hello");
+
+			doc.GetRange(0, 5).ParagraphFormat.KeepTogether = FormatEffect.Toggle;
+			Assert.AreEqual(FormatEffect.On, doc.GetRange(0, 5).ParagraphFormat.KeepTogether);
+
+			doc.GetRange(0, 5).ParagraphFormat.KeepTogether = FormatEffect.Toggle;
+			Assert.AreEqual(FormatEffect.Off, doc.GetRange(0, 5).ParagraphFormat.KeepTogether);
 		}
 
 		[TestMethod]

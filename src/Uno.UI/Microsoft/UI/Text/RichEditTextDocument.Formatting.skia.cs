@@ -237,22 +237,37 @@ namespace Microsoft.UI.Text
 		internal void SetFormatOverRange(int start, int end, UnoTextCharacterFormat format)
 			=> MutateWithUndo(() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)));
 
+		/// <summary>
+		/// Resolves a tri-state <see cref="global::Microsoft.UI.Text.FormatEffect"/> against the current
+		/// per-character/paragraph boolean state: On/Off set the value directly, while Toggle flips the
+		/// current state (WinUI's tomToggle). Undefined leaves it unchanged — callers guard Undefined
+		/// before calling, so a Toggle applied per character/paragraph flips each one independently.
+		/// </summary>
+		internal static bool ResolveEffect(global::Microsoft.UI.Text.FormatEffect effect, bool current)
+			=> effect switch
+			{
+				global::Microsoft.UI.Text.FormatEffect.On => true,
+				global::Microsoft.UI.Text.FormatEffect.Off => false,
+				global::Microsoft.UI.Text.FormatEffect.Toggle => !current,
+				_ => current,
+			};
+
 		/// <summary>Writes the defined properties of <paramref name="format"/> into <paramref name="state"/>.</summary>
 		private static void ApplyCharacterFormatToState(CharacterFormatState state, UnoTextCharacterFormat format)
 		{
 			if (format.BoldEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.Bold = format.BoldEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.Bold = ResolveEffect(format.BoldEffect, state.Bold);
 			}
 
 			if (format.ItalicEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.Italic = format.ItalicEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.Italic = ResolveEffect(format.ItalicEffect, state.Italic);
 			}
 
 			if (format.StrikethroughEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.Strikethrough = format.StrikethroughEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.Strikethrough = ResolveEffect(format.StrikethroughEffect, state.Strikethrough);
 			}
 
 			if (format.UnderlineValue != global::Microsoft.UI.Text.UnderlineType.Undefined)
