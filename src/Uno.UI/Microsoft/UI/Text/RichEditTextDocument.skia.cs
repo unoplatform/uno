@@ -87,6 +87,10 @@ namespace Microsoft.UI.Text
 				SpliceParagraphRuns(start, end - start, insert.Length);
 				_plainText = text.Substring(0, start) + insert + text.Substring(end);
 			});
+
+			// The pending caret format (if any) has now been consumed by the splice above, or the caret
+			// context has changed by an edit that didn't consume it; either way it no longer applies.
+			ClearPendingCaretFormat();
 		}
 
 		/// <summary>
@@ -182,14 +186,27 @@ namespace Microsoft.UI.Text
 		/// triggering the drag semantics of the public position setters. Used by the interactive editor.
 		/// </summary>
 		internal void SetSelectionRangeInternal(int start, int end)
-			=> ((UnoTextRange)Selection).SetRangeInternal(start, end);
+		{
+			// Moving the caret away from a pending insertion-point format discards it.
+			ClearPendingCaretFormatIfMoved(start, end);
+			((UnoTextRange)Selection).SetRangeInternal(start, end);
+		}
 
 		/// <summary>
 		/// Raised by <see cref="UnoTextSelection"/> when the programmatic selection changes through the
 		/// public API, so the owning control can sync its interactive caret/selection and re-render.
 		/// This is the reverse of <see cref="SetSelectionRangeInternal"/> and is not called by it.
 		/// </summary>
-		internal void NotifySelectionChanged() => _owner.OnTomSelectionChanged();
+		internal void NotifySelectionChanged()
+		{
+			// A programmatic selection move away from a pending insertion-point format discards it.
+			if (_selection is { } selection)
+			{
+				ClearPendingCaretFormatIfMoved(selection.StartPosition, selection.EndPosition);
+			}
+
+			_owner.OnTomSelectionChanged();
+		}
 
 		// --- Geometry-backed line navigation (delegates to the owning control's DisplayBlock layout) ---
 
