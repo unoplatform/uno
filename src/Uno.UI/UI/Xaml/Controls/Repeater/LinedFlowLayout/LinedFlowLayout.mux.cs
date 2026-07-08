@@ -46,8 +46,131 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public int LockItemToLine(int itemIndex)
 		{
-			// TODO (WS-D3): port the item-locking algorithm from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.LockItemToLine is not yet ported (WS-D3).");
+			if (itemIndex < 0 || itemIndex >= m_itemCount)
+			{
+				// WinUI throws winrt::hresult_out_of_bounds(); ArgumentOutOfRangeException is the
+				// repo-standard mapping for out-of-range item indexes in the Repeater code.
+				throw new ArgumentOutOfRangeException(nameof(itemIndex));
+			}
+
+			if (m_averageItemsPerLine.second == 0.0)
+			{
+				// LockItemToLine is called before the first measure pass or when ActualLineHeight <= 0.
+				// Returning -1 as an indication that LockItemToLine must be called later, after the measure pass has established an average items per line.
+				return -1;
+			}
+
+			bool usesFastPathLayout = UsesFastPathLayout();
+			int lockedLineIndex = -1;
+
+			if (itemIndex == 0)
+			{
+				// First item is implicitly locked on the first line - no need to update the m_lockedItemIndexes map.
+				// Setting the m_isFirstOrLastItemLocked flag though so that ItemsUnlocked is raised when only the first and/or last item was locked.
+				m_isFirstOrLastItemLocked = true;
+				lockedLineIndex = 0;
+			}
+			else if (itemIndex == m_itemCount - 1)
+			{
+				// Last item is implicitly locked on the last line - no need to update the m_lockedItemIndexes map.
+				// Setting the m_isFirstOrLastItemLocked flag though so that ItemsUnlocked is raised when only the first and/or last item was locked.
+				m_isFirstOrLastItemLocked = true;
+				lockedLineIndex = usesFastPathLayout ? GetLineIndex(itemIndex, true /*usesFastPathLayout*/) : GetLineIndexFromAverageItemsPerLine(itemIndex, m_averageItemsPerLine.second);
+			}
+
+			if (m_lockedItemIndexes.TryGetValue(itemIndex, out int existingLockedLineIndex))
+			{
+				// Item is already locked - return its current lock line index.
+				return existingLockedLineIndex;
+			}
+
+			if (lockedLineIndex == -1)
+			{
+				if (usesFastPathLayout)
+				{
+					lockedLineIndex = GetLineIndex(itemIndex, true /*usesFastPathLayout*/);
+				}
+				else
+				{
+					if (m_firstFrozenItemIndex != -1 &&
+						m_lastFrozenItemIndex != -1 &&
+						itemIndex >= m_firstFrozenItemIndex &&
+						itemIndex <= m_lastFrozenItemIndex)
+					{
+						// Item is among the frozen items - Return the current frozen line index for the item.
+						lockedLineIndex = GetFrozenLineIndexFromFrozenItemIndex(itemIndex);
+					}
+					else
+					{
+						// Else return the line index based on the average items per line.
+						lockedLineIndex = GetLineIndexFromAverageItemsPerLine(itemIndex, m_averageItemsPerLine.second);
+					}
+				}
+			}
+
+			MUX_ASSERT(lockedLineIndex >= 0);
+
+			if (m_lockedItemIndexes.Count > 0)
+			{
+				// Check if that line already has locked items. Any unlocked item squeezed between two locked items is declared locked.
+				// Iterate over a snapshot because the loop inserts into m_lockedItemIndexes; WinUI relies on std::map
+				// iterator stability plus the immediate break below, which the snapshot reproduces exactly.
+				foreach (var lockedItemIterator in new List<KeyValuePair<int, int>>(m_lockedItemIndexes))
+				{
+					if (lockedItemIterator.Value == lockedLineIndex)
+					{
+						// Found a locked item on the same line
+						int lockedItemIndex = lockedItemIterator.Key;
+
+						if (lockedItemIndex < itemIndex)
+						{
+							// It is before the newly locked one. Ensure all items in between them are locked.
+							for (int lockedItemIndexTmp = lockedItemIndex + 1; lockedItemIndexTmp < itemIndex; lockedItemIndexTmp++)
+							{
+								if (!m_lockedItemIndexes.ContainsKey(lockedItemIndexTmp))
+								{
+									m_lockedItemIndexes.Add(lockedItemIndexTmp, lockedLineIndex);
+
+									// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
+								}
+							}
+
+							// No other item can possibly be locked on the same line.
+							break;
+						}
+						else
+						{
+							// It is after the newly locked one. Ensure all items in between them are locked.
+							MUX_ASSERT(lockedItemIndex > itemIndex);
+
+							for (int lockedItemIndexTmp = lockedItemIndex - 1; lockedItemIndexTmp > itemIndex; lockedItemIndexTmp--)
+							{
+								if (!m_lockedItemIndexes.ContainsKey(lockedItemIndexTmp))
+								{
+									m_lockedItemIndexes.Add(lockedItemIndexTmp, lockedLineIndex);
+
+									// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
+								}
+							}
+
+							// No other item can possibly be locked on the same line.
+							break;
+						}
+					}
+				}
+			}
+
+			// Finally lock the provided item itself, unless it's the first or last item.
+			MUX_ASSERT(!m_lockedItemIndexes.ContainsKey(itemIndex));
+
+			if (itemIndex != 0 && itemIndex != m_itemCount - 1)
+			{
+				m_lockedItemIndexes.Add(itemIndex, lockedLineIndex);
+			}
+
+			// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(itemIndex, lockedLineIndex);
+
+			return lockedLineIndex;
 		}
 
 		/// <summary>
@@ -185,8 +308,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected internal override ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
 		{
-			// TODO (WS-D4): return new LinedFlowLayoutItemCollectionTransitionProvider().
-			throw new NotImplementedException("LinedFlowLayout.CreateDefaultItemTransitionProvider is not yet ported (WS-D4).");
+			// WinUI returns make<LinedFlowLayoutItemCollectionTransitionProvider>() here. That provider drives
+			// its animations through CompositionAnimationGroup / Visual.StartAnimationGroup(/StopAnimationGroup)
+			// and KeyFrameAnimation DelayTime|DelayBehavior, all of which are still [Uno.NotImplemented] on Uno's
+			// Composition targets - so porting the provider now (tracked as WS-D4) would either not animate or
+			// throw at runtime. Until then, return null, which the base Layout contract explicitly allows
+			// ("... or null"): ItemsRepeater simply runs without LinedFlowLayout's default item transitions
+			// instead of instantiating the throwing stub.
+			return null!;
 		}
 
 		#endregion
@@ -229,20 +358,251 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
 		{
-			// TODO (WS-D3): port the line-breaking measure algorithm from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.MeasureOverride is not yet ported (WS-D3).");
+			float availableWidth = (float)availableSize.Width;
+
+			if (!m_isVirtualizingContext)
+			{
+				// LinedFlowLayout is expected to be hosted by a panel like LayoutPanel. Always perform a complete re-layout in non-virtualizing scenarios.
+				// No measure passes occur on simple scrolling, and realization window is infinite.
+				m_forceRelayout = true;
+
+				int newItemCount = context.ItemCount;
+
+				if (!UsesArrangeWidthInfo())
+				{
+					if (m_itemCount < newItemCount)
+					{
+						// In the non-virtualizing case, the asynchronous measure passes are started only when the item count increased.
+						// Ideally InvalidateMeasureTimerStart should be called instead whenever an item is added or replaced, or when
+						// the collection is reset, but LinedFlowLayout::OnItemsChangedCore is not invoked in the non-virtualizing case.
+						InvalidateMeasureTimerStart(0 /*tickCount*/);
+					}
+					else if (m_itemCount > 0 && newItemCount == 0)
+					{
+						// Stop the potential timer as the collection is empty now.
+						InvalidateMeasureTimerStop(false /*isForDestructor*/);
+					}
+				}
+
+				// LayoutPanel.Children.Count may have changed. LinedFlowLayout::OnItemsChangedCore is not invoked in non-virtualizing scenarios.
+				m_itemCount = newItemCount;
+
+				// Item locks are systematically invalidated since the measure pass must be the result of a child or Children collection change.
+				UnlockItems();
+			}
+
+			MUX_ASSERT(m_itemCount == context.ItemCount);
+
+			if (m_measureCountdown > 1)
+			{
+				m_measureCountdown--;
+			}
+
+			bool actualLineHeightChanged = UpdateActualLineHeight(context, availableSize);
+			double actualLineHeight = ActualLineHeight;
+			float desiredWidth = 0.0f;
+			double linesSpacing = 0.0;
+			int lineCount = 0;
+
+			if (m_itemCount > 0 && actualLineHeight > 0.0)
+			{
+				context.LayoutOrigin = new Point();
+
+				if (float.IsInfinity(availableWidth))
+				{
+					// Clearing the items info that may have been gathered during a previous pass while availableSize.Width != infinity.
+					ResetItemsInfo();
+
+					// Set desiredWidth to total desired width of items, plus the MinItemSpacing between them.
+					desiredWidth = MeasureUnconstrainedLine(context);
+					lineCount = 1;
+				}
+				else
+				{
+					// Desired width beyond the available width.
+					float desiredExtraWidth = 0.0f;
+
+					// Do not even attempt to perform the fast path when there is no listener for the ItemsInfoRequested event.
+					// Instead, fall back to the regular path right away.
+					if (m_isFastPathSupportedDbg && ItemsInfoRequested is not null)
+					{
+						if (actualLineHeightChanged && !m_forceRelayout)
+						{
+							// Because ActualLineHeight changed above, MeasureConstrainedLinesFastPath below needs to call
+							// ComputeItemsLayoutFastPath to perform a re-layout of all items when the fast path is enabled.
+							// The ItemsInfoRequest event needs to be raised though because of a prior ResetItemsInfoForFastPath call,
+							// so forceLayoutWithoutItemsInfoRequest cannot simply be used as True.
+							m_forceRelayout = true;
+						}
+
+						var fastPathLayoutResults = MeasureConstrainedLinesFastPath(
+							context,
+							availableWidth,
+							actualLineHeight,
+							false /*forceLayoutWithoutItemsInfoRequest*/);
+
+						lineCount = fastPathLayoutResults.lineCount;
+
+						if (lineCount == -1)
+						{
+							// The items info gathered during the fast path attempt above is handed off
+							// to the regular path since in many cases it is enough to not require a
+							// new ItemsInfoRequested event to be raised.
+							lineCount = MeasureConstrainedLinesRegularPath(
+								context,
+								fastPathLayoutResults.itemsInfo,
+								availableWidth,
+								actualLineHeight);
+
+							if (lineCount == -1)
+							{
+								// The fast path was enabled by the ItemsInfoRequested handler. This case can occur when
+								// (m_forceRelayout || m_previousAvailableWidth != availableWidth) evaluated to False in the
+								// MeasureConstrainedLinesFastPath call above, and a transition out of the regular path is
+								// enabled in MeasureConstrainedLinesRegularPath.
+								fastPathLayoutResults = MeasureConstrainedLinesFastPath(
+									context,
+									availableWidth,
+									actualLineHeight,
+									true /*forceLayoutWithoutItemsInfoRequest*/);
+
+								lineCount = fastPathLayoutResults.lineCount;
+
+								MUX_ASSERT(lineCount > 0);
+
+								m_maxLineWidth = fastPathLayoutResults.maxLineWidth;
+							}
+							else
+							{
+								m_maxLineWidth = GetLinesDesiredWidth();
+							}
+						}
+						else
+						{
+							m_maxLineWidth = fastPathLayoutResults.maxLineWidth;
+
+							// Reset the fields specific to the regular path.
+							ExitRegularPath();
+						}
+					}
+					else
+					{
+						if (UsesArrangeWidthInfo())
+						{
+							// Necessary for cases where a prior fast path is turned off because the ItemsInfoRequested handler was removed.
+							m_itemsInfoArrangeWidths.Clear();
+						}
+
+						lineCount = MeasureConstrainedLinesRegularPath(
+							context,
+							s_emptyItemsInfo,
+							availableWidth,
+							actualLineHeight);
+
+						m_maxLineWidth = GetLinesDesiredWidth();
+					}
+
+					desiredWidth = availableWidth;
+					desiredExtraWidth = m_maxLineWidth - availableWidth;
+
+					// Only account for the extra desired width if it goes beyond pixel snapping rounding.
+					if (desiredExtraWidth > 0.5f / (float)m_roundingScaleFactor * m_averageItemsPerLine.second)
+					{
+						desiredWidth += desiredExtraWidth;
+					}
+				}
+
+				linesSpacing = ((double)lineCount - 1) * LineSpacing;
+
+				if (m_isVirtualizingContext && m_itemsInfoFirstIndex == -1 && m_aspectRatios != null)
+				{
+					int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex();
+					int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
+
+					MUX_ASSERT(firstRealizedItemIndex >= 0);
+					MUX_ASSERT(lastRealizedItemIndex >= 0);
+
+					if (m_aspectRatios.HasLowerWeight(firstRealizedItemIndex, lastRealizedItemIndex, c_maxAspectRatioWeight))
+					{
+						// No items info was provided in the ItemsInfoRequest handler and there is at least an aspect ratio with a growing weight.
+						// Making sure there is another layout coming so that weights below c_maxAspectRatioWeight can be increased and ultimately
+						// reach c_maxAspectRatioWeight. Otherwise scrolling could trigger weight increases, an average-items-per-line change and re-layout.
+						InvalidateMeasureAsync();
+					}
+				}
+			}
+			else
+			{
+				if (m_isVirtualizingContext)
+				{
+					m_elementManager.ClearRealizedRange();
+				}
+				m_elementAvailableWidths = null;
+				m_elementDesiredWidths = null;
+				SetAverageItemsPerLine((0.0 /*averageItemsPerLineRaw*/, 0.0 /*averageItemsPerLineSnapped*/), true /*unlockItems*/);
+				ClearItemAspectRatios();
+				m_averageItemAspectRatioDbg = 0.0;
+				m_unsizedNearLineCount = -1;
+				m_unrealizedNearLineCount = -1;
+				m_maxLineWidth = 0.0f;
+				ResetItemsInfo();
+				ResetLinesInfo();
+				ResetSizedLines();
+			}
+
+			m_previousAvailableWidth = (float)availableSize.Width;
+
+			Size desiredSize = new Size(desiredWidth, (float)(lineCount * actualLineHeight + linesSpacing));
+
+			return desiredSize;
 		}
 
 		protected internal override Size ArrangeOverride(VirtualizingLayoutContext context, Size finalSize)
 		{
-			// TODO (WS-D3): port the arrange algorithm from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.ArrangeOverride is not yet ported (WS-D3).");
+			if (float.IsInfinity(m_previousAvailableWidth))
+			{
+				ArrangeUnconstrainedLine(context);
+			}
+			else
+			{
+				ArrangeConstrainedLines(context);
+			}
+
+			return finalSize;
 		}
 
 		protected internal override void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 		{
-			// TODO (WS-D3f): port collection-change handling from LinedFlowLayout.cpp.
-			throw new NotImplementedException("LinedFlowLayout.OnItemsChangedCore is not yet ported (WS-D3f).");
+			m_elementManager.DataSourceChanged(source, args);
+
+			m_itemCount = context.ItemCount;
+
+			if (m_itemCount == 0 && !UsesArrangeWidthInfo())
+			{
+				// Stop the potential timer as the collection is empty now.
+				InvalidateMeasureTimerStop(false /*isForDestructor*/);
+			}
+
+			// Discard any potential item sizing info previously collected through the ItemsInfoRequested event.
+			// Perform a complete re-layout after the data source change.
+			InvalidateLayout(true /*forceRelayout*/, true /*resetItemsInfo*/, false /*invalidateMeasure*/);
+
+			if (args.Action == NotifyCollectionChangedAction.Reset)
+			{
+				// Discard any aspect ratio previously recorded since the data source has significantly changed.
+				ClearItemAspectRatios();
+
+				// Reset the measure pass countdown to avoid extreme aspect ratio again.
+				m_measureCountdown = s_measureCountdownStart;
+
+				m_averageItemAspectRatioDbg = 0.0;
+			}
+
+			// Calls InvalidateMeasure() to ensure the layout reflects the data source change.
+			base.OnItemsChangedCore(context, source, args);
+
+			// Item locks are invalidated by the data source change.
+			UnlockItems();
 		}
 
 		#endregion
