@@ -170,7 +170,7 @@ public static class CsprojUserGenerator
 			await SetCsprojUserPort(path, port);
 		}
 		else if (string.Equals(extension, ".csproj", StringComparison.OrdinalIgnoreCase)
-			|| string.Equals(extension, ".user", StringComparison.OrdinalIgnoreCase))
+			|| path.EndsWith(".csproj.user", StringComparison.OrdinalIgnoreCase))
 		{
 			SetCsprojUserPortForProject(path, port);
 		}
@@ -239,7 +239,9 @@ public static class CsprojUserGenerator
 	/// </summary>
 	private static string? ResolveCsprojUserPath(string projectPath)
 	{
-		if (projectPath.EndsWith(".user", StringComparison.OrdinalIgnoreCase))
+		// Only the .csproj/.csproj.user contract is supported. Accepting any ".user" path would let unrelated
+		// MSBuild user files (e.g. *.sln.user) receive an <UnoRemoteControlPort>, so restrict to .csproj.user.
+		if (projectPath.EndsWith(".csproj.user", StringComparison.OrdinalIgnoreCase))
 		{
 			return projectPath;
 		}
