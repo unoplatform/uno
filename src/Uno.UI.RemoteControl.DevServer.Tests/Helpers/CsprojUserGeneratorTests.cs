@@ -122,6 +122,16 @@ public class CsprojUserGeneratorTests
 	}
 
 	[TestMethod]
+	public void SetCsprojUserPortForProject_WithNonExistentCsproj_DoesNotCreateUserFile()
+	{
+		var csproj = Path.Combine(_tempRoot, "Ghost", "Ghost.csproj");
+
+		CsprojUserGenerator.SetCsprojUserPortForProject(csproj, 62483);
+
+		File.Exists(csproj + ".user").Should().BeFalse();
+	}
+
+	[TestMethod]
 	public void TryGetConfiguredPort_WhenNoUserFile_ReturnsFalse()
 	{
 		var csproj = CreateProjectFile();

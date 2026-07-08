@@ -85,6 +85,14 @@ public static class CsprojUserGenerator
 			return; // Not a project file we know how to handle (e.g. a solution was passed by mistake).
 		}
 
+		// Mirror SetCsprojUserPort's existence check: do not materialize a .csproj.user for a .csproj that does not
+		// exist (typo / stale path), which would otherwise leave stray user files behind. A directly supplied .user
+		// path is still honored, since creating it on demand is the whole point for a freshly launched project.
+		if (projectPath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase) && !File.Exists(projectPath))
+		{
+			return;
+		}
+
 		GenerateCsprojUserOrRetrievePortWhenAvailable(new[] { csprojUserPath }, port);
 	}
 
