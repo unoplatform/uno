@@ -107,9 +107,9 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [x] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UWP/Extensions/Vector2Extensions.cs`, `src/Uno.Foundation/Extensions/VectorExtensions.cs`, `build/PackageDiffIgnore.xml`
-- [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
-  - **Verify** not already removed, then hard-delete the meta-packages.
-  - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
+- [x] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
+  - Hard-deleted the three meta nuspecs and their pack-pipeline wiring; repointed the two internal `*.Skia.Linux.FrameBuffer` validation heads to the `Uno.WinUI.Runtime.Skia.Linux.FrameBuffer` runtime head.
+  - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`, `build/nuget/Uno.WinUI.Skia.Linux.FrameBuffer.nuspec`, `src/SolutionTemplate/UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj`, `src/SolutionTemplate/UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj`, `doc/articles/migrating-to-uno-7.md`
 - [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
@@ -299,7 +299,7 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - **DataContext / DependencyObject (Phase 7):** do `BC58` (generator-wide DataContext->FE-only) **first**; it gates `BC54` (FlyoutBase symptom) and de-risks `BC26` (DependencyObject->class). All touch the same generated DO mixin.
 - **Background / UserControl (Phase 7):** `BC38` (Background -> Control) precedes `BC14` (UserControl -> Control) so the property relocation is not redone.
 - **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — each changes runtime behaviour even for default users.
-- **Verify-first / open-decision items:** `BC07` (maybe already removed), `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
+- **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
 
 ---
 
