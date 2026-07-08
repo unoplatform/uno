@@ -440,6 +440,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Forces the interactive caret/selection to match the programmatic
+		/// <see cref="RichEditTextDocument.Selection"/> regardless of focus. Used by the TOM-level clipboard
+		/// operations (<c>Document.Selection.Copy/Cut/Paste</c>), which act on the selection even when the
+		/// control is not focused — unlike <see cref="OnTomSelectionChanged"/>, which is focus-gated.
+		/// </summary>
+		internal void SyncInteractiveSelectionFromTomSelection()
+		{
+			var length = GetPlainTextContent().Length;
+			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
+			var end = Math.Clamp(Document.Selection.EndPosition, 0, length);
+			_selection = (start, end - start, false);
+		}
+
+		/// <summary>
 		/// Syncs the interactive caret/selection from the Text Object Model when the programmatic
 		/// <see cref="RichEditTextDocument.Selection"/> is changed through its public API while focused
 		/// (the reverse of the control pushing into the TOM). No-op when unfocused — the next focus reads

@@ -127,8 +127,22 @@ namespace Microsoft.UI.Text
 				// The end-of-story is conventionally represented by a carriage return in the TOM.
 				return '\r';
 			}
-			// TODO Uno: Character setter mutates a single code point in place; needs the rich model.
-			set => throw NotImplemented("Character.set");
+				set
+				{
+					// ITextRange::SetChar sets the character at the range's starting position, leaving the range
+					// length unchanged. At end-of-story there is no character to overwrite, so the value is inserted.
+					var length = _document.TextLength;
+					if (_start < length)
+					{
+						_document.ReplaceRange(_start, _start + 1, value.ToString());
+					}
+					else
+					{
+						_document.ReplaceRange(_start, _start, value.ToString());
+					}
+
+					OnRangeChanged();
+				}
 		}
 
 		public void SetRange(int startPosition, int endPosition)
@@ -197,14 +211,38 @@ namespace Microsoft.UI.Text
 				: StringComparison.OrdinalIgnoreCase;
 
 			var startIndex = Math.Clamp(_start, 0, text.Length);
+
+			// TODO Uno: FindOptions.Word (whole-word matching) is treated as a substring search for now.
+			if (scanLength < 0)
+			{
+				// A negative scanLength searches backward: match the occurrence closest to the range start
+				// within the |scanLength| characters preceding it (per the ITextRange::FindText contract).
+				var windowStart = Math.Max(0, startIndex + scanLength);
+				var windowLength = startIndex - windowStart;
+				if (windowLength < value.Length)
+				{
+					return 0;
+				}
+
+				var relative = text.Substring(windowStart, windowLength).LastIndexOf(value, comparison);
+				if (relative < 0)
+				{
+					return 0;
+				}
+
+				_start = windowStart + relative;
+				_end = _start + value.Length;
+				OnRangeChanged();
+				return value.Length;
+			}
+
 			var available = text.Length - startIndex;
-			var span = scanLength <= 0 ? available : Math.Min(scanLength, available);
+			var span = scanLength == 0 ? available : Math.Min(scanLength, available);
 			if (span <= 0)
 			{
 				return 0;
 			}
 
-			// TODO Uno: FindOptions.Word (whole-word matching) is treated as a substring search for now.
 			var index = text.IndexOf(value, startIndex, span, comparison);
 			if (index < 0)
 			{
@@ -711,7 +749,7 @@ namespace Microsoft.UI.Text
 
 		public bool CanPaste(int format) => _document.CanPaste();
 
-		public void Copy()
+		public virtual void Copy()
 		{
 			// Plain text is written to the OS clipboard; when ClipboardCopyFormat is AllFormats the
 			// span's character formatting is preserved for a matching paste via an in-process payload.
@@ -721,7 +759,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		public void Cut()
+		public virtual void Cut()
 		{
 			if (_start == _end)
 			{
@@ -734,7 +772,7 @@ namespace Microsoft.UI.Text
 			OnRangeChanged();
 		}
 
-		public void Paste(int format)
+		public virtual void Paste(int format)
 		{
 			// The OS clipboard read is async on Uno, so unlike WinUI's synchronous paste this replaces the
 			// range on a later dispatcher turn. A matching in-process rich payload restores formatting; the
@@ -1053,11 +1091,11 @@ namespace Microsoft.UI.Text
 
 		public void MatchSelection()
 		{
-			var selection = _document.Selection;
-			_start = selection.StartPosition;
-			_end = selection.EndPosition;
-			Normalize();
-			OnRangeChanged();
+			// WinUI sets the ACTIVE SELECTION to match this range's positions (and raises SelectionChanged),
+			// despite the API docs' inverted wording. Verified against the shipping product's own tests:
+			// RichEditBoxTOMTests moves the selection onto this range, and TextEditingTests requires a single
+			// SelectionChanged. This is the reverse of copying the selection into this range.
+			_document.Selection.SetRange(_start, _end);
 		}
 
 		public void GetTextViaStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("GetTextViaStream");
