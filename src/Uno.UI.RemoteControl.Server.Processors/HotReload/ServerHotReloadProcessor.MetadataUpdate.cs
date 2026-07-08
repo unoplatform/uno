@@ -119,12 +119,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 =======
 					var properties = configureServer.MSBuildProperties.ToDictionary();
 					var runtimeTargetFramework = GetRuntimeTargetFramework(configureServer);
+<<<<<<< HEAD
 					async ValueTask<Solution> CreateMsBuildWorkspace(CancellationToken ct2)
 						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, runtimeTargetFramework, ct2);
 >>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 
 					var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
 					ct.Register(() => fileSystemWatch.Dispose());
+=======
+					async ValueTask<Solution> LoadSolutionFromDisk(CancellationToken ct2)
+					{
+						var workspace = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
+
+						// Restrict a multi-targeted head to the flavor the running application reported: the
+						// workspace loaded one project per TargetFrameworks entry (the evaluated TargetFramework
+						// is empty), and the non-running flavors would otherwise block hot reload with their
+						// compilation errors or fail the initial emit (they were never built).
+						return workspace.CurrentSolution.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter);
+					}
+
+					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
+					ct.Register(() => manager.Dispose());
+>>>>>>> a02db37b5b (refactor(hr): expose MSBuildWorkspace from the provider, drop workspace-based APIs (spec 047))
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);

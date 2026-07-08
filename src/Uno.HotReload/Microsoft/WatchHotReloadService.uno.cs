@@ -8,9 +8,6 @@ namespace Uno.HotReload.Microsoft;
 
 partial class WatchHotReloadService : IWatchHotReloadService
 {
-	public static ValueTask<WatchHotReloadService> CreateAsync(Workspace workspace, string[] metadataUpdateCapabilities, CancellationToken ct)
-		=> CreateAsync(workspace.CurrentSolution, metadataUpdateCapabilities, ct);
-
 	public static async ValueTask<WatchHotReloadService> CreateAsync(Solution currentSolution, string[] metadataUpdateCapabilities, CancellationToken ct)
 	{
 		var hotReloadService = new WatchHotReloadService(currentSolution.Workspace.Services, metadataUpdateCapabilities);
