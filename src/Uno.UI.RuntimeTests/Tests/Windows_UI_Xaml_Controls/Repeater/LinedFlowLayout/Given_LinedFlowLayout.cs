@@ -1,14 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater;
 
 [TestClass]
 public class Given_LinedFlowLayout
 {
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_HostedInItemsRepeater_Then_MeasuresAndArrangesWithoutThrowing()
+	{
+		// Regression guard for the WS-D3 orchestration port: MeasureOverride/ArrangeOverride/
+		// OnItemsChangedCore previously threw NotImplementedException. This drives a real
+		// ItemsRepeater layout pass to prove they now execute and realize/arrange items.
+		using var template = new DynamicDataTemplate(() => new Border
+		{
+			Width = 100,
+			Height = 50,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.SkyBlue),
+		});
+		var sut = new ItemsRepeater
+		{
+			Width = 400,
+			ItemsSource = Enumerable.Range(0, 20).ToArray(),
+			ItemTemplate = template.Value,
+			Layout = new LinedFlowLayout
+			{
+				LineHeight = 50,
+				LineSpacing = 4,
+				MinItemSpacing = 4,
+			},
+		};
+
+		await UITestHelper.Load(sut);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.ActualSize.Y.Should().BeGreaterThan(0, "the layout should produce a non-zero vertical extent");
+
+		var realizedChildren = 0;
+		for (var i = 0; i < VisualTreeHelper.GetChildrenCount(sut); i++)
+		{
+			if (VisualTreeHelper.GetChild(sut, i) is UIElement)
+			{
+				realizedChildren++;
+			}
+		}
+
+		realizedChildren.Should().BeGreaterThan(0, "the layout should realize at least one item");
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
