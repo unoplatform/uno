@@ -18,18 +18,39 @@ namespace Uno.HotReload;
 
 public sealed class HotReloadManager : IDisposable
 {
-	public static async ValueTask<HotReloadManager> CreateAsync(
+	public static ValueTask<HotReloadManager> CreateAsync(
 		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
 		string[] metadataUpdateCapabilities,
 		IHotReloadHandler handler,
 		IHotReloadTracker tracker,
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
-		=> await CreateAsync(
-			await workspaceProvider(ct).ConfigureAwait(false),
+		=> CreateAsync(
+			async ct2 => (await workspaceProvider(ct2).ConfigureAwait(false)).CurrentSolution,
 			metadataUpdateCapabilities,
 			handler,
-			new ChangesDetector(new TemporaryWorkspaceAddDetector(workspaceProvider, tracker), tracker),
+			tracker,
+			ct,
+			forceEmitCompilationOutput);
+
+	/// <summary>
+	/// Creates a manager from a solution provider — the provider returns the solution snapshot
+	/// to operate on (typically a freshly-loaded workspace solution, possibly restricted to the
+	/// application's target framework), while the snapshot's originating
+	/// <see cref="Solution.Workspace"/> remains the services and dispose owner.
+	/// </summary>
+	public static async ValueTask<HotReloadManager> CreateAsync(
+		Func<CancellationToken, ValueTask<Solution>> solutionProvider,
+		string[] metadataUpdateCapabilities,
+		IHotReloadHandler handler,
+		IHotReloadTracker tracker,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
+		=> await CreateAsync(
+			await solutionProvider(ct).ConfigureAwait(false),
+			metadataUpdateCapabilities,
+			handler,
+			new ChangesDetector(new TemporaryWorkspaceAddDetector(solutionProvider, tracker), tracker),
 			tracker,
 			ct,
 			forceEmitCompilationOutput);
@@ -56,8 +77,56 @@ public sealed class HotReloadManager : IDisposable
 			ct,
 			forceEmitCompilationOutput);
 
-	public static async ValueTask<HotReloadManager> CreateAsync(
+	public static ValueTask<HotReloadManager> CreateAsync(
 		Workspace workspace,
+		string[] metadataUpdateCapabilities,
+		IHotReloadHandler handler,
+		IChangesDetector changesDetector,
+		ISolutionUpdater solutionUpdater,
+		IHotReloadTracker tracker,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
+		=> CreateAsync(
+			workspace.CurrentSolution,
+			metadataUpdateCapabilities,
+			handler,
+			changesDetector,
+			solutionUpdater,
+			tracker,
+			ct,
+			forceEmitCompilationOutput);
+
+	/// <summary>
+	/// Creates a manager operating on the given solution snapshot with the default
+	/// <see cref="SolutionUpdater"/>. Use the other overload to plug in a custom
+	/// <see cref="ISolutionUpdater"/>.
+	/// </summary>
+	public static ValueTask<HotReloadManager> CreateAsync(
+		Solution solution,
+		string[] metadataUpdateCapabilities,
+		IHotReloadHandler handler,
+		IChangesDetector changesDetector,
+		IHotReloadTracker tracker,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
+		=> CreateAsync(
+			solution,
+			metadataUpdateCapabilities,
+			handler,
+			changesDetector,
+			new SolutionUpdater(),
+			tracker,
+			ct,
+			forceEmitCompilationOutput);
+
+	/// <summary>
+	/// Creates a manager operating on the given solution snapshot. The snapshot may differ from
+	/// its workspace's <see cref="Workspace.CurrentSolution"/> (e.g. restricted to the running
+	/// application's target framework); the originating <see cref="Solution.Workspace"/> is only
+	/// used for services and ownership (disposed with the manager).
+	/// </summary>
+	public static async ValueTask<HotReloadManager> CreateAsync(
+		Solution solution,
 		string[] metadataUpdateCapabilities,
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
@@ -67,15 +136,15 @@ public sealed class HotReloadManager : IDisposable
 		bool forceEmitCompilationOutput = false)
 	{
 		if (forceEmitCompilationOutput
-			|| workspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
+			|| solution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
 		{
-			var result = await workspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			var result = await solution.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
 			result.EnsureSuccess();
 		}
 
-		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
+		var watch = await WatchHotReloadService.CreateAsync(solution, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(workspace, watch, handler, changesDetector, solutionUpdater, tracker);
+		return new HotReloadManager(solution.Workspace, watch, handler, changesDetector, solutionUpdater, tracker, solution);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -94,7 +163,8 @@ public sealed class HotReloadManager : IDisposable
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		ISolutionUpdater solutionUpdater,
-		IHotReloadTracker tracker)
+		IHotReloadTracker tracker,
+		Solution? initialSolution = null)
 	{
 		_innerWorkspace = innerWorkspace;
 		_watchService = watchService;
@@ -103,7 +173,7 @@ public sealed class HotReloadManager : IDisposable
 		_changesDetector = changesDetector;
 		_solutionUpdater = solutionUpdater;
 
-		CurrentSolution = innerWorkspace.CurrentSolution;
+		CurrentSolution = initialSolution ?? innerWorkspace.CurrentSolution;
 	}
 
 	public Solution CurrentSolution { get; private set; }
