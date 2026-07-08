@@ -3,17 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LinedFlowLayoutItemsInfoRequestedEventArgs
 	{
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth
-		// Skipping already declared property Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth
+		// Skipping already declared property ItemsRangeRequestedLength
+		// Skipping already declared property ItemsRangeStartIndex
+		// Skipping already declared property MaxWidth
+		// Skipping already declared property MinWidth
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetDesiredAspectRatios(double[])
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetMinWidths(double[])
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetMaxWidths(double[])
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.set
 	}
 }
