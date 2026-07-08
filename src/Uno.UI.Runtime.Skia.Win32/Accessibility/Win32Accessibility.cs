@@ -389,6 +389,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		QueueStructureChange(childRuntimeId is not null
 			? new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Removed, childRuntimeId)
+			// TODO Uno: mirror CollectEnteringProviders for peer-less removals so shallow peer-bearing descendants
+			// can emit ChildRemoved instead of falling back to ChildrenInvalidated.
 			: new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
 	}
 
@@ -532,6 +534,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}))
 		{
 			_structureChangeFlushQueued = false;
+			_pendingStructureChanges.Clear();
 		}
 	}
 
@@ -582,7 +585,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				continue;
 			}
 
-			if (group.Added.Count >= BulkChildrenLimit)
+			if (group.Added.Count >= BulkChildrenLimit) // deliberate >=: exactly BulkChildrenLimit → BulkAdded (total > limit → Invalidated above)
 			{
 				RaiseStructureChangedCore(container, StructureChangeType.ChildrenBulkAdded, null);
 			}
@@ -595,7 +598,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				}
 			}
 
-			if (group.Removed.Count >= BulkChildrenLimit)
+			if (group.Removed.Count >= BulkChildrenLimit) // deliberate >=: exactly BulkChildrenLimit → BulkRemoved (total > limit → Invalidated above)
 			{
 				RaiseStructureChangedCore(container, StructureChangeType.ChildrenBulkRemoved, null);
 			}
