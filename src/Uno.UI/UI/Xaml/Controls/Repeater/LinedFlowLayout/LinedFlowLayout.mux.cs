@@ -5158,5 +5158,1104 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		#region Measure/Arrange orchestration (WS-D3)
+
+		// Returns the final line count when the regular path is kept to the end,
+		// or -1 when the ItemsInfoRequested provided ratios for the entire data source,
+		// indicating that the fast path must be engaged.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private int MeasureConstrainedLinesRegularPath(
+			VirtualizingLayoutContext context,
+			ItemsInfo itemsInfo,
+			float availableWidth,
+			double actualLineHeight)
+		{
+			double lineSpacing = LineSpacing;
+
+			MUX_ASSERT(actualLineHeight > 0.0);
+
+			int newRecommendedAnchorIndex = context.RecommendedAnchorIndex;
+			double scrollViewport = context.VisibleRect.Height;
+
+			MUX_ASSERT(m_isVirtualizingContext == (scrollViewport != double.PositiveInfinity));
+
+			int lineCount = 0;
+			int lineIndexApproximationCache = 0;
+			bool isDisconnectedAnchorVirtualized = false;
+
+			do
+			{
+				float nearRealizationRect = GetRoundedFloat((float)context.RealizationRect.Y);
+				float farRealizationRect = nearRealizationRect + (float)context.RealizationRect.Height;
+				float realizationRectHeight = 0.0f;
+				double clampedNearRealizationRect = 0;
+				double scrollOffset = 0;
+
+				if (m_isVirtualizingContext)
+				{
+					// It is assumed that the ItemsInfoRequested event will produce sizing information for lines around the realized ones when ItemsRepeater.VerticalCacheSize is smaller than 4. Only 3 viewports are forcefully realized.
+					// In the case ItemsInfoRequested can not provide the requested info, it is advised to bump up the ItemsRepeater.VerticalCacheSize to 4 from the default 2.
+					float realizationRectHeightDeficit = GetRealizationRectHeightDeficit(context, actualLineHeight, lineSpacing) / 2.0f / m_measureCountdown + (float)(lineIndexApproximationCache * (actualLineHeight + lineSpacing));
+					float inflatedNearRealizationRect = nearRealizationRect - realizationRectHeightDeficit;
+					float inflatedFarRealizationRect = farRealizationRect + realizationRectHeightDeficit;
+					bool realizationRectCenteredAroundAnchor = false;
+
+					if (m_anchorIndex != -1 || newRecommendedAnchorIndex != -1)
+					{
+						int anchorLineIndex = GetLineIndex(newRecommendedAnchorIndex == -1 ? m_anchorIndex : newRecommendedAnchorIndex, false /*usesFastPathLayout*/);
+						float anchorLineNearEdge = (float)(anchorLineIndex * (actualLineHeight + lineSpacing));
+
+						// Check if the normal inflated realization rect overlaps the anticipated anchor line, with 1 line of margin of error in the line index approximation.
+						if (anchorLineNearEdge - 2 * actualLineHeight - lineSpacing <= inflatedNearRealizationRect || anchorLineNearEdge + actualLineHeight + lineSpacing >= inflatedFarRealizationRect)
+						{
+							// The anchor index would not be realized if the normal path (realizationRectCenteredAroundAnchor == false) were followed.
+							// A non-inflated realization rect is centered around the middle of the anticipated anchor line.
+							float anchorLineMiddle = (float)(anchorLineNearEdge + actualLineHeight / 2.0);
+
+							realizationRectHeight = farRealizationRect - nearRealizationRect;
+							nearRealizationRect = GetRoundedFloat(anchorLineMiddle - realizationRectHeight / 2.0f);
+							farRealizationRect = nearRealizationRect + realizationRectHeight;
+							scrollOffset = Math.Max(0.0, anchorLineMiddle - scrollViewport / 2.0);
+							realizationRectCenteredAroundAnchor = true;
+
+							// Same comments and treatment as in EnsureItemRangeFastPath.
+							// Sometimes during a bring-into-view operation the RecommendedAnchorIndex momentarily switches from the target index N to -1 and then back to the target index N.
+							// To avoid momentarily setting m_anchorIndex to -1, its value is preserved c_maxAnchorIndexRetentionCount times, based purely on experimentations.
+							if (newRecommendedAnchorIndex == -1)
+							{
+								MUX_ASSERT(m_anchorIndexRetentionCountdown >= 1 && m_anchorIndexRetentionCountdown <= c_maxAnchorIndexRetentionCount);
+
+								m_anchorIndexRetentionCountdown--;
+
+								if (m_anchorIndexRetentionCountdown == 0)
+								{
+									m_anchorIndex = -1;
+								}
+							}
+							else
+							{
+								m_anchorIndexRetentionCountdown = c_maxAnchorIndexRetentionCount;
+								m_anchorIndex = newRecommendedAnchorIndex;
+							}
+
+							// Layout is invalidated to ensure that m_anchorIndexRetentionCountdown is decremented from c_maxAnchorIndexRetentionCount all the way to 0 (a few lines above).
+							// Otherwise m_anchorIndex could be stuck to a value that prevents the realization window from moving to the actual scroller's offset.
+							InvalidateMeasureAsync();
+						}
+					}
+
+					if (!realizationRectCenteredAroundAnchor)
+					{
+						if (m_anchorIndex != -1)
+						{
+							m_anchorIndex = -1;
+						}
+
+						nearRealizationRect = inflatedNearRealizationRect;
+						farRealizationRect = inflatedFarRealizationRect;
+						realizationRectHeight = farRealizationRect - nearRealizationRect;
+						scrollOffset = context.VisibleRect.Y;
+					}
+
+					clampedNearRealizationRect = Math.Max(0.0, (double)nearRealizationRect);
+					m_unrealizedNearLineCount = (int)(clampedNearRealizationRect / (actualLineHeight + lineSpacing));
+				}
+				else
+				{
+					// All lines are realized in non-virtualizing mode.
+					m_unrealizedNearLineCount = 0;
+
+					MUX_ASSERT(context.VisibleRect.Y == 0.0f);
+				}
+
+				if (m_averageItemsPerLine.second == 0.0)
+				{
+					MUX_ASSERT(m_averageItemsPerLine.first == 0.0);
+
+					SetAverageItemsPerLine(GetAverageItemsPerLine(availableWidth), true /*unlockItems*/);
+				}
+
+				HashSet<double> averageItemsPerLineProcessed = new();
+				bool forceRelayout = false;
+
+				if (m_forceRelayout)
+				{
+					forceRelayout = true;
+					m_forceRelayout = false;
+				}
+				else if (m_previousAvailableWidth != availableWidth)
+				{
+					// Perform a re-layout for example when the width of the owning control changed.
+					forceRelayout = true;
+				}
+
+				do
+				{
+					averageItemsPerLineProcessed.Add(m_averageItemsPerLine.second);
+
+					(double first, double second) newAverageItemsPerLine = (m_averageItemsPerLine.first, 0.0);
+
+					lineCount = MeasureConstrainedLines(
+						context,
+						averageItemsPerLineProcessed,
+						itemsInfo,
+						forceRelayout,
+						availableWidth,
+						nearRealizationRect,
+						farRealizationRect,
+						scrollViewport,
+						scrollOffset,
+						actualLineHeight,
+						ref newAverageItemsPerLine);
+
+					if (lineCount == -1)
+					{
+						// This indicates the fast path can be engaged as the ItemsInfoRequested event handler provided ratios for the entire collection.
+						return -1;
+					}
+
+					if (newAverageItemsPerLine.second == m_averageItemsPerLine.second)
+					{
+						// This branch is guaranteed to be hit and end the loop because averageItemsPerLineProcessed is never populated twice with the same value.
+						forceRelayout = false;
+					}
+					else
+					{
+						// The method MeasureConstrainedLines is not expected to request a new average items per line that was already processed in this layout pass.
+						MUX_ASSERT(!averageItemsPerLineProcessed.Contains(newAverageItemsPerLine.second));
+
+						(double first, double second) oldAverageItemsPerLine = m_averageItemsPerLine;
+
+						SetAverageItemsPerLine(newAverageItemsPerLine, true /*unlockItems*/);
+
+						// TODO (WS-D5): NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.SnappedAverageItemsPerLineChange).
+
+						if (m_isVirtualizingContext)
+						{
+							// Adjust the realization window, scroll offset and number of unrealized lines before the realized ones according to the new
+							// average items per line. The new scroll offset is an approximate value based on the old offset & old and new average items
+							// per line. Scroll anchoring through VerticalAnchorRatio will potentially correct that approximation.
+
+							lineCount = GetLineCount(m_averageItemsPerLine.second);
+							MUX_ASSERT(lineCount != 0);
+
+							double linesSpacing = ((double)lineCount - 1) * lineSpacing;
+							double scrollExtent = lineCount * actualLineHeight + linesSpacing;
+							double maxScrollOffset = Math.Max(0.0, scrollExtent - scrollViewport);
+							double newScrollOffset = Math.Min(maxScrollOffset, GetRoundedDouble(scrollOffset * oldAverageItemsPerLine.second / newAverageItemsPerLine.second));
+
+							nearRealizationRect = (float)GetRoundedDouble(nearRealizationRect + newScrollOffset - scrollOffset);
+							farRealizationRect = nearRealizationRect + realizationRectHeight;
+							clampedNearRealizationRect = Math.Max(0.0, (double)nearRealizationRect);
+							m_unrealizedNearLineCount = (int)(clampedNearRealizationRect / (actualLineHeight + lineSpacing));
+							scrollOffset = newScrollOffset;
+						}
+
+						forceRelayout = true;
+					}
+				}
+				while (forceRelayout);
+
+				isDisconnectedAnchorVirtualized = newRecommendedAnchorIndex != -1 && !m_elementManager.IsDataIndexRealized(newRecommendedAnchorIndex);
+
+				if (isDisconnectedAnchorVirtualized)
+				{
+					// This rare case occurs when GetLineIndex for the anchor index returned an approximation off enough that the anchor element was actually not realized in the iteration above.
+					// Increasing the cache by one line so that the next iteration has a much greater probability of realizing that anchor.
+					lineIndexApproximationCache++;
+				}
+			}
+			while (isDisconnectedAnchorVirtualized);
+
+			// Clear the arrays collected from the ItemsInfoRequested event handler.
+			ResetItemsInfoForFastPath();
+
+			return lineCount;
+		}
+
+		// Returns the final line count when the regular path is kept to the end,
+		// or -1 when the ItemsInfoRequested provided ratios for the entire data source,
+		// indicating that the fast path must be engaged.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private int MeasureConstrainedLines(
+			VirtualizingLayoutContext context,
+			HashSet<double> averageItemsPerLineProcessed,
+			ItemsInfo itemsInfo,
+			bool forceRelayout,
+			float availableWidth,
+			float nearRealizationRect,
+			float farRealizationRect,
+			double scrollViewport,
+			double scrollOffset,
+			double actualLineHeight,
+			ref (double first, double second) newAverageItemsPerLine)
+		{
+			MUX_ASSERT(!UsesFastPathLayout());
+			MUX_ASSERT(actualLineHeight > 0.0);
+
+			newAverageItemsPerLine = m_averageItemsPerLine;
+
+			int lineCount = GetLineCount(m_averageItemsPerLine.second);
+
+			if (m_unrealizedNearLineCount >= lineCount)
+			{
+				ResetLinesInfo();
+				ResetSizedLines();
+				return lineCount;
+			}
+
+			MUX_ASSERT(m_unrealizedNearLineCount < lineCount);
+			MUX_ASSERT(m_isVirtualizingContext == IsVirtualizingContext(context));
+
+			double lineSpacing = LineSpacing;
+			double linesSpacing = lineCount == 0 ? 0.0 : ((double)lineCount - 1) * lineSpacing;
+			double linesHeight = lineCount * actualLineHeight + linesSpacing;
+			double clampedFarRealizationRect = Math.Max(0.0, Math.Min(linesHeight, (double)farRealizationRect));
+			int unrealizedFarLineCount = (int)((linesHeight - clampedFarRealizationRect) / (actualLineHeight + lineSpacing));
+			int realizedLineCount = lineCount - m_unrealizedNearLineCount - unrealizedFarLineCount;
+
+			MUX_ASSERT(realizedLineCount <= lineCount);
+
+			if (realizedLineCount == 0)
+			{
+				ResetLinesInfo();
+				ResetSizedLines();
+				return lineCount;
+			}
+
+			MUX_ASSERT(realizedLineCount > 0);
+
+			// Determine the rect size which includes the unrealized sized and realized items.
+			float sizedItemsRectHeight = GetSizedItemsRectHeight(context, actualLineHeight, lineSpacing);
+			float realizationRectHeightDeficit = Math.Max(0.0f, sizedItemsRectHeight - farRealizationRect + nearRealizationRect);
+			float nearSizedItemsRect = nearRealizationRect - realizationRectHeightDeficit / 2.0f;
+			float farSizedItemsRect = farRealizationRect + realizationRectHeightDeficit / 2.0f;
+			double clampedNearSizedItemsRect = Math.Max(0.0, (double)nearSizedItemsRect);
+
+			m_unsizedNearLineCount = (int)(clampedNearSizedItemsRect / (actualLineHeight + lineSpacing));
+
+			MUX_ASSERT(m_unsizedNearLineCount <= m_unrealizedNearLineCount);
+
+			double clampedFarSizedItemsRect = Math.Max(0.0, Math.Min(linesHeight, (double)farSizedItemsRect));
+			int unsizedFarLineCount = (int)((linesHeight - clampedFarSizedItemsRect) / (actualLineHeight + lineSpacing));
+			int sizedLineCount = lineCount - m_unsizedNearLineCount - unsizedFarLineCount;
+
+			MUX_ASSERT(sizedLineCount <= lineCount);
+			MUX_ASSERT(sizedLineCount >= realizedLineCount);
+
+			int oldFirstRealizedDataIndex = m_elementManager.GetFirstRealizedDataIndex(); // -1 and unused in non-virtualizing mode.
+			int oldLastRealizedDataIndex = oldFirstRealizedDataIndex == -1 ? -1 : oldFirstRealizedDataIndex + m_elementManager.GetRealizedElementCount - 1;
+			int oldFirstSizedItemIndex = m_firstSizedItemIndex;
+			int oldLastSizedItemIndex = m_lastSizedItemIndex;
+			int oldFirstSizedLineIndex = m_firstSizedLineIndex;
+			int oldLastSizedLineIndex = m_lastSizedLineIndex;
+
+			m_firstSizedLineIndex = m_unsizedNearLineCount;
+			m_lastSizedLineIndex = m_unsizedNearLineCount + sizedLineCount - 1;
+
+			List<int> oldLineItemCounts = new();
+			int oldFirstItemsInfoIndex = m_itemsInfoFirstIndex;
+			int oldLastItemsInfoIndex = m_itemsInfoFirstIndex == -1 ? -1 : m_itemsInfoFirstIndex + m_itemsInfoDesiredAspectRatiosForRegularPath.Count - 1;
+
+			if (!forceRelayout)
+			{
+				oldLineItemCounts = new List<int>(m_lineItemCounts);
+			}
+
+			Dictionary<UIElement, float>? oldElementAvailableWidths = null;
+			Dictionary<UIElement, float>? oldElementDesiredWidths = null;
+
+			if (m_elementAvailableWidths != null)
+			{
+				oldElementAvailableWidths = m_elementAvailableWidths;
+				m_elementAvailableWidths = null;
+			}
+			EnsureElementAvailableWidths();
+
+			if (m_elementDesiredWidths != null)
+			{
+				oldElementDesiredWidths = m_elementDesiredWidths;
+				m_elementDesiredWidths = null;
+			}
+			EnsureElementDesiredWidths();
+
+			int firstStillRealizedItemIndex = -1;
+			int lastStillRealizedItemIndex = -1;
+
+			InitializeForRelayout(
+				sizedLineCount,
+				out int firstStillSizedLineIndex,
+				out int lastStillSizedLineIndex,
+				out int firstStillSizedItemIndex,
+				out int lastStillSizedItemIndex);
+
+			if (!forceRelayout && oldLineItemCounts.Count != 0)
+			{
+				if (m_firstSizedLineIndex >= oldFirstSizedLineIndex && m_firstSizedLineIndex <= oldLastSizedLineIndex)
+				{
+					firstStillSizedLineIndex = m_firstSizedLineIndex;
+					lastStillSizedLineIndex = Math.Min(oldLastSizedLineIndex, m_lastSizedLineIndex);
+				}
+				if (m_lastSizedLineIndex >= oldFirstSizedLineIndex && m_lastSizedLineIndex <= oldLastSizedLineIndex)
+				{
+					lastStillSizedLineIndex = m_lastSizedLineIndex;
+					firstStillSizedLineIndex = Math.Max(oldFirstSizedLineIndex, m_firstSizedLineIndex);
+				}
+				if (m_firstSizedLineIndex <= oldFirstSizedLineIndex && m_lastSizedLineIndex >= oldLastSizedLineIndex)
+				{
+					firstStillSizedLineIndex = oldFirstSizedLineIndex;
+					lastStillSizedLineIndex = oldLastSizedLineIndex;
+				}
+
+				MUX_ASSERT(!(firstStillSizedLineIndex == -1 && lastStillSizedLineIndex != -1));
+				MUX_ASSERT(!(firstStillSizedLineIndex != -1 && lastStillSizedLineIndex == -1));
+
+				if (firstStillSizedLineIndex != -1)
+				{
+					MUX_ASSERT(lastStillSizedLineIndex != -1);
+
+					// When firstStillSizedLineIndex != -1 (and necessarily lastStillSizedLineIndex != -1),
+					// lines oldLineItemCounts[Max(oldFirstSizedLineIndex, m_firstSizedLineIndex) - oldFirstSizedLineIndex]
+					// to oldLineItemCounts[Min(oldLastSizedLineIndex, m_lastSizedLineIndex) - oldFirstSizedLineIndex] would become frozen without adjustment.
+					int oldFirstLineVectorIndex = Math.Max(oldFirstSizedLineIndex, m_firstSizedLineIndex) - oldFirstSizedLineIndex;
+					int oldLastLineVectorIndex = Math.Min(oldLastSizedLineIndex, m_lastSizedLineIndex) - oldFirstSizedLineIndex;
+
+					MUX_ASSERT(oldFirstLineVectorIndex >= 0);
+					MUX_ASSERT(oldFirstLineVectorIndex < oldLineItemCounts.Count);
+					MUX_ASSERT(oldLastLineVectorIndex >= 0);
+					MUX_ASSERT(oldLastLineVectorIndex < oldLineItemCounts.Count);
+
+					firstStillSizedItemIndex = oldFirstSizedItemIndex;
+
+					for (int lineVectorIndex = 0; lineVectorIndex < oldFirstLineVectorIndex; lineVectorIndex++)
+					{
+						firstStillSizedItemIndex += oldLineItemCounts[lineVectorIndex];
+					}
+
+					lastStillSizedItemIndex = firstStillSizedItemIndex;
+
+					for (int lineVectorIndex = oldFirstLineVectorIndex; lineVectorIndex <= oldLastLineVectorIndex; lineVectorIndex++)
+					{
+						m_lineItemCounts[firstStillSizedLineIndex - m_firstSizedLineIndex + lineVectorIndex - oldFirstLineVectorIndex] =
+							oldLineItemCounts[lineVectorIndex];
+
+						lastStillSizedItemIndex += oldLineItemCounts[lineVectorIndex];
+					}
+
+					lastStillSizedItemIndex--;
+
+					MUX_ASSERT(firstStillSizedItemIndex <= lastStillSizedItemIndex);
+				}
+			}
+
+			int sizedItemCount = 0;
+
+			if (m_isVirtualizingContext)
+			{
+				// Figure out how many items fill the sized rect.
+
+				MUX_ASSERT(m_unsizedNearLineCount + sizedLineCount <= lineCount);
+
+				if (firstStillSizedLineIndex != -1 && firstStillSizedLineIndex == m_firstSizedLineIndex && lastStillSizedLineIndex == m_lastSizedLineIndex)
+				{
+					sizedItemCount = LineItemsCountTotal(0);
+				}
+				else if (firstStillSizedLineIndex != -1 && 0 == m_firstSizedLineIndex && lastStillSizedLineIndex == m_lastSizedLineIndex)
+				{
+					sizedItemCount = LineItemsCountTotal(0) + firstStillSizedItemIndex;
+				}
+				else if (m_unsizedNearLineCount + sizedLineCount < lineCount)
+				{
+					sizedItemCount = (int)Math.Round(sizedLineCount * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero);
+
+					if (firstStillSizedLineIndex != -1 && 0 == m_firstSizedLineIndex)
+					{
+						MUX_ASSERT(oldFirstSizedItemIndex != -1);
+						MUX_ASSERT(oldLastSizedItemIndex != -1);
+
+						int oldSizedItemCount = oldLastSizedItemIndex - oldFirstSizedItemIndex + 1;
+
+						if (sizedItemCount < oldSizedItemCount)
+						{
+							sizedItemCount = oldSizedItemCount;
+						}
+					}
+
+					sizedItemCount = Math.Min(sizedItemCount, m_itemCount);
+				}
+			}
+
+			int unsizedNearItemCount = 0;
+
+			if (firstStillSizedLineIndex != -1)
+			{
+				MUX_ASSERT(m_isVirtualizingContext);
+
+				if (m_firstSizedLineIndex == 0)
+				{
+					MUX_ASSERT(m_unsizedNearLineCount == 0);
+
+					unsizedNearItemCount = 0;
+				}
+				else
+				{
+					unsizedNearItemCount = firstStillSizedItemIndex;
+
+					if (oldFirstSizedLineIndex > m_firstSizedLineIndex)
+					{
+						if (sizedItemCount == 0)
+						{
+							MUX_ASSERT(m_unsizedNearLineCount + sizedLineCount == lineCount);
+
+							unsizedNearItemCount -=
+								Math.Min(unsizedNearItemCount, (int)Math.Round(((double)oldFirstSizedLineIndex - m_firstSizedLineIndex) * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero));
+						}
+						else
+						{
+							int lineItemsCountTotal = LineItemsCountTotal(0);
+							int newSizedItemCount = sizedItemCount - lineItemsCountTotal;
+							int newNearSizedLineCount = oldFirstSizedLineIndex - m_firstSizedLineIndex;
+							int newFarSizedLineCount = Math.Max(0, m_lastSizedLineIndex - oldLastSizedLineIndex);
+
+							// newSizedItemCount < newNearSizedLineCount + newFarSizedLineCount occurs when the average items per line of the still sized lines is
+							// greater than m_averageItemsPerLine & there are not enough items left to distribute at least one item per new sized line. Do a re-layout in those cases too.
+							if (unsizedNearItemCount < m_unsizedNearLineCount + newSizedItemCount ||
+								newSizedItemCount < newNearSizedLineCount + newFarSizedLineCount)
+							{
+								// Performing complete re-layout.
+								InitializeForRelayout(
+									sizedLineCount,
+									out firstStillSizedLineIndex,
+									out lastStillSizedLineIndex,
+									out firstStillSizedItemIndex,
+									out lastStillSizedItemIndex);
+								firstStillRealizedItemIndex = -1;
+								lastStillRealizedItemIndex = -1;
+								oldLineItemCounts.Clear();
+								unsizedNearItemCount = (int)Math.Round(m_unsizedNearLineCount * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero);
+							}
+							else
+							{
+								// There are at least as many new sized items as there are new sized lines.
+								MUX_ASSERT(newSizedItemCount >= newNearSizedLineCount + newFarSizedLineCount);
+
+								// New near and far sized items allocations are proportional to the new line counts.
+								int newNearSizedItemCount = Math.Max(newNearSizedLineCount, newNearSizedLineCount * newSizedItemCount / (newNearSizedLineCount + newFarSizedLineCount));
+
+								unsizedNearItemCount -= newNearSizedItemCount;
+							}
+						}
+					}
+					else if (unsizedNearItemCount + sizedItemCount + unsizedFarLineCount > m_itemCount)
+					{
+						sizedItemCount = m_itemCount - unsizedNearItemCount - unsizedFarLineCount;
+					}
+				}
+			}
+			else if (m_isVirtualizingContext)
+			{
+				unsizedNearItemCount = (int)Math.Round(m_unsizedNearLineCount * m_averageItemsPerLine.second, MidpointRounding.AwayFromZero);
+			}
+
+			MUX_ASSERT(unsizedNearItemCount < m_itemCount);
+			MUX_ASSERT(unsizedNearItemCount >= m_unsizedNearLineCount);
+			MUX_ASSERT((m_unsizedNearLineCount == 0 && unsizedNearItemCount == 0) || (m_unsizedNearLineCount > 0 && unsizedNearItemCount > 0));
+
+			if (m_unsizedNearLineCount + sizedLineCount == lineCount)
+			{
+				sizedItemCount = m_itemCount - unsizedNearItemCount;
+			}
+
+			MUX_ASSERT(sizedItemCount > 0);
+			MUX_ASSERT(sizedItemCount >= sizedLineCount);
+			MUX_ASSERT(unsizedNearItemCount + sizedItemCount <= m_itemCount);
+
+			m_firstSizedItemIndex = unsizedNearItemCount;
+			m_lastSizedItemIndex = m_firstSizedItemIndex + sizedItemCount - 1;
+
+			MUX_ASSERT((firstStillSizedItemIndex == -1) == (lastStillSizedItemIndex == -1));
+			MUX_ASSERT(m_firstSizedItemIndex <= firstStillSizedItemIndex || firstStillSizedItemIndex == -1);
+			MUX_ASSERT(m_lastSizedItemIndex >= lastStillSizedItemIndex || lastStillSizedItemIndex == -1);
+
+			EnsureAndResizeItemAspectRatios(
+				scrollViewport,
+				actualLineHeight,
+				lineSpacing);
+
+			if (m_isVirtualizingContext && UpdateItemsInfo(itemsInfo, oldFirstItemsInfoIndex, oldLastItemsInfoIndex))
+			{
+				// The fast path was enabled. Reset the fields specific to the regular path, and return -1 to indicate that
+				// the fast path must be engaged as ratios were provided for the entire data source.
+				ExitRegularPath();
+				return -1;
+			}
+
+			int unrealizedNearItemCount;
+			int realizedItemCount;
+
+			if (!m_isVirtualizingContext || m_itemsInfoDesiredAspectRatiosForRegularPath.Count < sizedItemCount)
+			{
+				// The ItemsInfoRequested handler did not provide sizing information for all sized items, or the context is not virtualizing.
+				// Fall back to realizing all sized items instead.
+				unrealizedNearItemCount = unsizedNearItemCount;
+				realizedItemCount = sizedItemCount;
+			}
+			else
+			{
+				MUX_ASSERT(m_itemsInfoFirstIndex != -1);
+
+				GetRealizedItemsFromSizedItems(
+					realizedLineCount,
+					lineCount,
+					out unrealizedNearItemCount,
+					out realizedItemCount);
+			}
+
+			MUX_ASSERT(sizedItemCount >= realizedItemCount);
+			MUX_ASSERT(firstStillRealizedItemIndex == -1);
+			MUX_ASSERT(lastStillRealizedItemIndex == -1);
+
+			if (firstStillSizedLineIndex != -1)
+			{
+				MUX_ASSERT(lastStillSizedLineIndex != -1);
+
+				int newFirstRealizedDataIndex = unrealizedNearItemCount;
+				int newLastRealizedDataIndex = newFirstRealizedDataIndex + realizedItemCount - 1;
+
+				MUX_ASSERT(m_firstSizedItemIndex <= newFirstRealizedDataIndex);
+				MUX_ASSERT(m_lastSizedItemIndex >= newLastRealizedDataIndex);
+
+				if (newFirstRealizedDataIndex >= oldFirstRealizedDataIndex && newFirstRealizedDataIndex <= oldLastRealizedDataIndex)
+				{
+					firstStillRealizedItemIndex = newFirstRealizedDataIndex;
+					lastStillRealizedItemIndex = Math.Min(oldLastRealizedDataIndex, newLastRealizedDataIndex);
+				}
+				else if (newLastRealizedDataIndex >= oldFirstRealizedDataIndex && newLastRealizedDataIndex <= oldLastRealizedDataIndex)
+				{
+					lastStillRealizedItemIndex = newLastRealizedDataIndex;
+					firstStillRealizedItemIndex = Math.Max(oldFirstRealizedDataIndex, newFirstRealizedDataIndex);
+				}
+			}
+
+			// Discard the first realized items fallen off the realization window.
+			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && unrealizedNearItemCount > m_elementManager.GetFirstRealizedDataIndex())
+			{
+				MUX_ASSERT(m_isVirtualizingContext);
+
+				m_elementManager.DiscardElementsOutsideWindow(
+					false /*forward*/,
+					Math.Min(unrealizedNearItemCount, m_elementManager.GetFirstRealizedDataIndex() + m_elementManager.GetRealizedElementCount) - 1 /*startIndex*/);
+			}
+
+			MUX_ASSERT(unrealizedNearItemCount <= m_elementManager.GetFirstRealizedDataIndex() || -1 == m_elementManager.GetFirstRealizedDataIndex());
+
+			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && unrealizedNearItemCount < m_elementManager.GetFirstRealizedDataIndex())
+			{
+				MUX_ASSERT(oldFirstRealizedDataIndex > 0);
+
+				// Ensure and measure the realized items before the old first realized item.
+				EnsureAndMeasureItemRange(
+					context,
+					availableWidth,
+					actualLineHeight,
+					false /*forward*/,
+					Math.Min(oldFirstRealizedDataIndex - 1, unrealizedNearItemCount + realizedItemCount - 1) /*beginRealizedItemIndex*/,
+					unrealizedNearItemCount /*endRealizedItemIndex*/);
+
+				// Ensure and measure the realized & unfrozen items after the old first realized item.
+				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex());
+
+				if (firstStillRealizedItemIndex != -1)
+				{
+					if (firstStillRealizedItemIndex > 0 && oldFirstRealizedDataIndex <= firstStillRealizedItemIndex - 1)
+					{
+						EnsureAndMeasureItemRange(
+							context,
+							availableWidth,
+							actualLineHeight,
+							true /*forward*/,
+							oldFirstRealizedDataIndex /*beginRealizedItemIndex*/,
+							firstStillRealizedItemIndex - 1 /*endRealizedItemIndex*/);
+					}
+
+					if (lastStillRealizedItemIndex + 1 <= unrealizedNearItemCount + realizedItemCount - 1)
+					{
+						EnsureAndMeasureItemRange(
+							context,
+							availableWidth,
+							actualLineHeight,
+							true /*forward*/,
+							lastStillRealizedItemIndex + 1 /*beginRealizedItemIndex*/,
+							unrealizedNearItemCount + realizedItemCount - 1 /*endRealizedItemIndex*/);
+					}
+				}
+				else if (unrealizedNearItemCount + realizedItemCount - 1 >= oldFirstRealizedDataIndex)
+				{
+					EnsureAndMeasureItemRange(
+						context,
+						availableWidth,
+						actualLineHeight,
+						true /*forward*/,
+						oldFirstRealizedDataIndex /*beginRealizedItemIndex*/,
+						unrealizedNearItemCount + realizedItemCount - 1 /*endRealizedItemIndex*/);
+				}
+			}
+			else
+			{
+				// Ensure and measure the realized & unfrozen items.
+				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex() || m_elementManager.GetFirstRealizedDataIndex() == -1);
+
+				if (firstStillRealizedItemIndex != -1)
+				{
+					if (firstStillRealizedItemIndex > 0 && unrealizedNearItemCount <= firstStillRealizedItemIndex - 1)
+					{
+						EnsureAndMeasureItemRange(
+							context,
+							availableWidth,
+							actualLineHeight,
+							true /*forward*/,
+							unrealizedNearItemCount /*beginRealizedItemIndex*/,
+							firstStillRealizedItemIndex - 1 /*endRealizedItemIndex*/);
+					}
+
+					if (lastStillRealizedItemIndex + 1 <= unrealizedNearItemCount + realizedItemCount - 1)
+					{
+						EnsureAndMeasureItemRange(
+							context,
+							availableWidth,
+							actualLineHeight,
+							true /*forward*/,
+							lastStillRealizedItemIndex + 1 /*beginRealizedItemIndex*/,
+							unrealizedNearItemCount + realizedItemCount - 1 /*endRealizedItemIndex*/);
+					}
+				}
+				else
+				{
+					EnsureAndMeasureItemRange(
+						context,
+						availableWidth,
+						actualLineHeight,
+						true /*forward*/,
+						unrealizedNearItemCount /*beginRealizedItemIndex*/,
+						unrealizedNearItemCount + realizedItemCount - 1 /*endRealizedItemIndex*/);
+				}
+			}
+
+			// Discard the last realized items fallen off the realization window.
+			if (m_isVirtualizingContext && unrealizedFarLineCount > 0 && m_elementManager.GetRealizedElementCount > realizedItemCount)
+			{
+				m_elementManager.DiscardElementsOutsideWindow(
+					true /*forward*/,
+					unrealizedNearItemCount + realizedItemCount /*startIndex*/);
+			}
+
+			MUX_ASSERT(unrealizedNearItemCount >= 0);
+			MUX_ASSERT(m_isVirtualizingContext || unrealizedNearItemCount == 0);
+			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex() == unrealizedNearItemCount);
+			MUX_ASSERT(m_elementManager.GetRealizedElementCount == realizedItemCount);
+
+			if (m_elementManager.GetRealizedElement(unrealizedNearItemCount) is { } firstElement)
+			{
+				UpdateRoundingScaleFactor(firstElement);
+			}
+
+			(double first, double second) averageItemsPerLine = GetAverageItemsPerLine(availableWidth);
+
+			// Only request a new average items per line value when it has never been attempted in this layout pass.
+			// Otherwise carry on with the current m_averageItemsPerLine value.
+			if (averageItemsPerLine.second == m_averageItemsPerLine.second)
+			{
+				// When the snapped average-items-per-line value is unchanged, just save the raw value if it changed.
+				if (averageItemsPerLine.first != m_averageItemsPerLine.first)
+				{
+					// The new raw value becomes the source of the snapped value and the reference point for detecting
+					// deltas across the median point (1.1^(N+1) - 1.1^N) / 2 greater than 0.1.
+					SetAverageItemsPerLine(averageItemsPerLine, true /*unlockItems*/);
+				}
+			}
+			else if (!averageItemsPerLineProcessed.Contains(averageItemsPerLine.second))
+			{
+				newAverageItemsPerLine = averageItemsPerLine;
+
+				m_firstSizedLineIndex = -1;
+				m_lastSizedLineIndex = -1;
+				return lineCount;
+			}
+
+			MUX_ASSERT(!(firstStillSizedLineIndex != -1 && forceRelayout));
+			MUX_ASSERT(unrealizedNearItemCount >= 0);
+			MUX_ASSERT(m_isVirtualizingContext || unrealizedNearItemCount == 0);
+			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex() == unrealizedNearItemCount);
+			MUX_ASSERT(unsizedNearItemCount <= unrealizedNearItemCount);
+
+			bool itemHasNewDesiredWidth = ComputeFrozenItemsAndLayout(
+				context,
+				oldLineItemCounts,
+				oldElementAvailableWidths,
+				oldElementDesiredWidths,
+				scrollViewport,
+				scrollOffset,
+				lineSpacing,
+				actualLineHeight,
+				availableWidth,
+				nearSizedItemsRect,
+				farSizedItemsRect,
+				nearRealizationRect,
+				farRealizationRect,
+				lineCount,
+				sizedLineCount,
+				unsizedNearItemCount,
+				sizedItemCount,
+				firstStillSizedLineIndex,
+				lastStillSizedLineIndex,
+				firstStillSizedItemIndex,
+				lastStillSizedItemIndex);
+
+			if (itemHasNewDesiredWidth)
+			{
+				// When at least one item has a new desired width, the average items-per-line evaluation may change.
+				averageItemsPerLine = GetAverageItemsPerLine(availableWidth);
+
+				if (averageItemsPerLine.second != m_averageItemsPerLine.second &&
+					!averageItemsPerLineProcessed.Contains(averageItemsPerLine.second))
+				{
+					// Computed average items-per-line is different and has not been processed yet.
+					m_firstSizedLineIndex = -1;
+					m_lastSizedLineIndex = -1;
+
+					// Return the new average which will trigger a new layout.
+					newAverageItemsPerLine = averageItemsPerLine;
+				}
+			}
+
+			return lineCount;
+		}
+
+		// Items arrangement when the non-scrolling dimension is constrained.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void ArrangeConstrainedLines(
+			VirtualizingLayoutContext context)
+		{
+			double actualLineHeight = ActualLineHeight;
+
+			if (m_lineItemCounts.Count == 0 || actualLineHeight <= 0.0)
+			{
+				return;
+			}
+
+			MUX_ASSERT(m_isVirtualizingContext == IsVirtualizingContext(context));
+
+			bool usesArrangeWidthInfo = UsesArrangeWidthInfo();
+			float minItemSpacing = (float)MinItemSpacing;
+			double lineSpacing = LineSpacing;
+			int firstSizedLineIndex = m_firstSizedLineIndex == -1 ? 0 : m_firstSizedLineIndex;
+			int lineCount = m_firstSizedLineIndex == -1 ? m_lineItemCounts.Count : GetLineCount(m_averageItemsPerLine.second);
+			var itemsStretch = ItemsStretch;
+			var itemsJustification = ItemsJustification;
+
+			GetFirstFullyRealizedLineIndex(
+				out int firstFullyRealizedLineIndex,
+				out int firstItemInFullyRealizedLine);
+
+			if (firstFullyRealizedLineIndex == -1)
+			{
+				// This situation can occur when context.VisibleRect().Height is 0.
+				MUX_ASSERT(firstItemInFullyRealizedLine == -1);
+
+				return;
+			}
+
+			int itemsInfoArrangeWidthsOffset = m_itemsInfoFirstIndex == -1 ? 0 : m_itemsInfoFirstIndex;
+			int lastSizedLineVectorIndex = m_lineItemCounts.Count - 1;
+			int sizedItemIndex = firstItemInFullyRealizedLine;
+
+			for (int sizedLineVectorIndex = firstFullyRealizedLineIndex - firstSizedLineIndex; sizedLineVectorIndex <= lastSizedLineVectorIndex; sizedLineVectorIndex++)
+			{
+				float cumulatedOffset = 0.0f;
+				float itemSpacing = minItemSpacing;
+				int lineItemsCount = m_lineItemCounts[sizedLineVectorIndex];
+				float lineArrangeWidth = GetItemsRangeArrangeWidth(sizedItemIndex /*beginSizedItemIndex*/, sizedItemIndex + lineItemsCount - 1 /*endSizedItemIndex*/, usesArrangeWidthInfo);
+				double lineExtraAvailableWidth = (double)m_previousAvailableWidth - lineArrangeWidth - itemSpacing * ((double)lineItemsCount - 1);
+
+				if (itemsStretch == LinedFlowLayoutItemsStretch.None)
+				{
+					if (lineExtraAvailableWidth > 0.0)
+					{
+						switch (itemsJustification)
+						{
+							case LinedFlowLayoutItemsJustification.Start:
+								break;
+							case LinedFlowLayoutItemsJustification.Center:
+								cumulatedOffset = (float)(lineExtraAvailableWidth / 2.0);
+								break;
+							case LinedFlowLayoutItemsJustification.End:
+								cumulatedOffset = (float)lineExtraAvailableWidth;
+								break;
+							case LinedFlowLayoutItemsJustification.SpaceEvenly:
+								cumulatedOffset = (float)(lineExtraAvailableWidth / ((double)lineItemsCount + 1));
+								itemSpacing += cumulatedOffset;
+								break;
+							case LinedFlowLayoutItemsJustification.SpaceAround:
+								cumulatedOffset = (float)(lineExtraAvailableWidth / lineItemsCount / 2.0);
+								itemSpacing += cumulatedOffset * 2.0f;
+								break;
+							case LinedFlowLayoutItemsJustification.SpaceBetween:
+								if (lineItemsCount > 1)
+								{
+									itemSpacing += (float)(lineExtraAvailableWidth / ((double)lineItemsCount - 1));
+								}
+								break;
+						}
+					}
+					else if (lineExtraAvailableWidth < 0.0)
+					{
+						if (lineExtraAvailableWidth >= -0.5 / m_roundingScaleFactor * lineItemsCount)
+						{
+							// Because of pixel snapping based on m_roundingScaleFactor, lineExtraAvailableWidth can be slightly different from 0.0.
+							// In that case we adjust the minItemSpacing by distributing the small delta equally.
+							itemSpacing += (float)(lineExtraAvailableWidth / ((double)lineItemsCount - 1));
+						}
+					}
+				}
+				else if (lineExtraAvailableWidth != 0.0)
+				{
+					// Condition #1. Because of pixel snapping based on m_roundingScaleFactor, lineExtraAvailableWidth can be slightly different from 0.0.
+					// Condition #2. Because of MaxWidth constraining the expansion of line items, lineExtraAvailableWidth can be much larger than 0.0.
+					// Condition #2. Because Image elements do not expand beyond MinWidth when their natural width is smaller than MinWidth, lineExtraAvailableWidth can be much larger than 0.0.
+					// In those cases we adjust the minItemSpacing by distributing the small delta equally.
+					bool itemSpacingAdjustedForRounding = Math.Abs(lineExtraAvailableWidth) <= 0.5 / m_roundingScaleFactor * lineItemsCount;
+					bool itemSpacingAdjustedForMinMaxWidth = !itemSpacingAdjustedForRounding && lineExtraAvailableWidth > 0.0 && lineCount != firstSizedLineIndex + sizedLineVectorIndex + 1;
+
+					if (itemSpacingAdjustedForRounding || itemSpacingAdjustedForMinMaxWidth)
+					{
+						itemSpacing += (float)(lineExtraAvailableWidth / ((double)lineItemsCount - 1));
+					}
+				}
+
+				int lineIndex = sizedLineVectorIndex + (m_unsizedNearLineCount == -1 ? 0 : m_unsizedNearLineCount);
+
+				MUX_ASSERT(lineIndex < lineCount);
+
+				for (int sizedLineItemIndex = 0; sizedLineItemIndex < lineItemsCount; sizedLineItemIndex++)
+				{
+					if (m_elementManager.IsDataIndexRealized(sizedItemIndex))
+					{
+						if (m_elementManager.GetRealizedElement(sizedItemIndex /*dataIndex*/) is { } element)
+						{
+							float arrangeWidth;
+
+							if (usesArrangeWidthInfo)
+							{
+								// Use the item info provided by the ItemsInfoRequested handler since the DesiredSize
+								// may be different from the computed arrange width when the item content failed to load properly.
+								arrangeWidth = m_itemsInfoArrangeWidths[sizedItemIndex - itemsInfoArrangeWidthsOffset];
+							}
+							else
+							{
+								arrangeWidth = (float)element.DesiredSize.Width;
+							}
+
+							Rect elementRect = new(cumulatedOffset, (float)(lineIndex * (actualLineHeight + lineSpacing)), arrangeWidth, (float)actualLineHeight);
+
+							element.Arrange(elementRect);
+
+							cumulatedOffset += (float)elementRect.Width + itemSpacing;
+						}
+					}
+					else
+					{
+						// The unrealized area was reached.
+						return;
+					}
+
+					sizedItemIndex++;
+				}
+			}
+		}
+
+		// Items arrangement when the non-scrolling dimension is unconstrained.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void ArrangeUnconstrainedLine(
+			VirtualizingLayoutContext context)
+		{
+			if (ActualLineHeight <= 0.0)
+			{
+				return;
+			}
+
+			float minItemSpacing = (float)MinItemSpacing;
+			float cumulatedOffset = 0.0f;
+
+			if (ItemsStretch == LinedFlowLayoutItemsStretch.None)
+			{
+				switch (ItemsJustification)
+				{
+					case LinedFlowLayoutItemsJustification.SpaceEvenly:
+						cumulatedOffset = minItemSpacing;
+						break;
+					case LinedFlowLayoutItemsJustification.SpaceAround:
+						cumulatedOffset = minItemSpacing / 2.0f;
+						break;
+				}
+			}
+
+			for (int itemIndex = 0; itemIndex < context.ItemCount; itemIndex++)
+			{
+				var element = m_elementManager.GetAt(itemIndex);
+
+				if (element != null)
+				{
+					var desiredSize = element.DesiredSize;
+					float itemWidth = (float)desiredSize.Width;
+					Rect arrangeRect = new(cumulatedOffset, 0.0f, itemWidth, (float)desiredSize.Height);
+
+					element.Arrange(arrangeRect);
+					cumulatedOffset += itemWidth + minItemSpacing;
+				}
+			}
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void ClearItemAspectRatios()
+		{
+			if (m_aspectRatios != null)
+			{
+				m_aspectRatios.Clear();
+			}
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private void GetFirstFullyRealizedLineIndex(
+			out int firstFullyRealizedLineIndex,
+			out int firstItemInFullyRealizedLine)
+		{
+			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetFirstRealizedDataIndex() : 0;
+
+			if (firstRealizedItemIndex == -1)
+			{
+				firstFullyRealizedLineIndex = -1;
+				firstItemInFullyRealizedLine = -1;
+				return;
+			}
+
+			int sizedItemIndex = m_firstSizedItemIndex == -1 ? 0 : m_firstSizedItemIndex;
+			int sizedLineIndex = m_firstSizedLineIndex == -1 ? 0 : m_firstSizedLineIndex;
+			int sizedLineVectorIndex = 0;
+
+			MUX_ASSERT(firstRealizedItemIndex >= 0);
+			MUX_ASSERT(sizedItemIndex >= 0);
+			MUX_ASSERT(sizedLineIndex >= 0);
+
+			while (sizedItemIndex < firstRealizedItemIndex)
+			{
+				sizedItemIndex += m_lineItemCounts[sizedLineVectorIndex];
+				sizedLineIndex++;
+				sizedLineVectorIndex++;
+			}
+
+			MUX_ASSERT(m_lastSizedLineIndex == -1 || sizedLineIndex <= m_lastSizedLineIndex);
+			MUX_ASSERT(m_lastSizedItemIndex == -1 || sizedItemIndex <= m_lastSizedItemIndex);
+
+			firstFullyRealizedLineIndex = sizedLineIndex;
+			firstItemInFullyRealizedLine = sizedItemIndex;
+		}
+
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private int GetFrozenLineIndexFromFrozenItemIndex(
+			int frozenItemIndex)
+		{
+			MUX_ASSERT(m_firstSizedLineIndex != -1);
+			MUX_ASSERT(m_lastSizedLineIndex != -1);
+			MUX_ASSERT(frozenItemIndex >= m_firstFrozenItemIndex);
+			MUX_ASSERT(frozenItemIndex <= m_lastFrozenItemIndex);
+			MUX_ASSERT(m_firstFrozenLineIndex != -1);
+			MUX_ASSERT(m_lastFrozenLineIndex != -1);
+
+			int frozenItemVectorIndex = frozenItemIndex - m_firstFrozenItemIndex;
+
+			for (int frozenLineVectorIndex = m_firstFrozenLineIndex - m_firstSizedLineIndex;
+				frozenLineVectorIndex <= m_lastFrozenLineIndex - m_firstSizedLineIndex;
+				frozenLineVectorIndex++)
+			{
+				MUX_ASSERT(frozenLineVectorIndex >= 0);
+				MUX_ASSERT(frozenLineVectorIndex < m_lineItemCounts.Count);
+
+				if (frozenItemVectorIndex < m_lineItemCounts[frozenLineVectorIndex])
+				{
+					return frozenLineVectorIndex + m_firstSizedLineIndex;
+				}
+				frozenItemVectorIndex -= m_lineItemCounts[frozenLineVectorIndex];
+			}
+
+			MUX_ASSERT(false);
+			return -1;
+		}
+
+		// Returns the line index the provided element belongs to, or -1 if not found.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private int GetItemLineIndex(
+			UIElement element)
+		{
+			int sizedLineVectorCount = m_lineItemCounts.Count;
+			int sizedItemIndex = m_firstSizedItemIndex;
+
+			for (int sizedLineVectorIndex = 0; sizedLineVectorIndex < sizedLineVectorCount; sizedLineVectorIndex++)
+			{
+				int lineItemsCount = m_lineItemCounts[sizedLineVectorIndex];
+
+				for (int itemVectorIndex = 0; itemVectorIndex < lineItemsCount; itemVectorIndex++)
+				{
+					if (m_elementManager.IsDataIndexRealized(sizedItemIndex) &&
+						m_elementManager.GetRealizedElement(sizedItemIndex /*dataIndex*/) == element)
+					{
+						return sizedLineVectorIndex + m_firstSizedLineIndex;
+					}
+
+					sizedItemIndex++;
+				}
+			}
+
+			return -1;
+		}
+
+		// Returns the total arrange width of the items within the provided range.
+		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
+		private float GetItemsRangeArrangeWidth(
+			int beginSizedItemIndex,
+			int endSizedItemIndex,
+			bool usesArrangeWidthInfo)
+		{
+			MUX_ASSERT(beginSizedItemIndex >= 0);
+			MUX_ASSERT(endSizedItemIndex < m_itemCount);
+			MUX_ASSERT(beginSizedItemIndex <= endSizedItemIndex);
+			MUX_ASSERT(!UsesFastPathLayout() || usesArrangeWidthInfo);
+			MUX_ASSERT(!UsesFastPathLayout() || m_itemsInfoArrangeWidths.Count > endSizedItemIndex);
+
+			int itemsInfoArrangeWidthsOffset = m_itemsInfoFirstIndex == -1 ? 0 : m_itemsInfoFirstIndex;
+			float cumulatedArrangeWidth = 0.0f;
+
+			for (int sizedItemIndex = beginSizedItemIndex; sizedItemIndex <= endSizedItemIndex; sizedItemIndex++)
+			{
+				if (usesArrangeWidthInfo)
+				{
+					// Use the item info provided by the ItemsInfoRequested handler since the DesiredSize.Width
+					// may still be the MinWidth because the content is loading.
+					// The use of m_itemsInfoArrangeWidths must be consistent with the one in ArrangeConstrainedLines.
+					cumulatedArrangeWidth += m_itemsInfoArrangeWidths[sizedItemIndex - itemsInfoArrangeWidthsOffset];
+				}
+				else if (m_elementManager.IsDataIndexRealized(sizedItemIndex))
+				{
+					if (m_elementManager.GetRealizedElement(sizedItemIndex /*dataIndex*/) is { } element)
+					{
+						cumulatedArrangeWidth += (float)element.DesiredSize.Width;
+					}
+				}
+			}
+
+			return cumulatedArrangeWidth;
+		}
+
+		#endregion
 	}
 }
