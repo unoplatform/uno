@@ -51,11 +51,16 @@ public partial class ShapeVisual
 		return BuildOwnContentPath();
 	}
 
-	internal override bool RequiresRepaintOnEveryFrame =>
-		_shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+	internal override bool RequiresRepaintOnEveryFrame => _shapes
+		?.OfType<CompositionSpriteShape>()
+		.Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false)
+		?? false;
 
-	internal override float DamageRegionSamplingMargin =>
-		_shapes?.OfType<CompositionSpriteShape>().Select(s => s.FillBrush?.DamageRegionSamplingMargin ?? 0).DefaultIfEmpty(0f).Max() ?? 0;
+	internal override float DamageRegionSamplingMargin => _shapes
+		?.OfType<CompositionSpriteShape>()
+		.Select(s => s.FillBrush?.DamageRegionSamplingMargin ?? 0)
+		.DefaultIfEmpty(0f)
+		.Max() ?? 0;
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
