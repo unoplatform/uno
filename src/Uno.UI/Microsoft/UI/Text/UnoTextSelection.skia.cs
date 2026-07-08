@@ -38,6 +38,16 @@ namespace Microsoft.UI.Text
 			OnRangeChanged();
 		}
 
+		// Programmatic Selection.Copy/Cut/Paste route through the owning control so the RichEditBox
+		// CopyingToClipboard / CuttingToClipboard / Paste events are raised — matching WinUI, where these
+		// fire for the selection but NOT for a plain (non-selection) range, which keeps the silent base
+		// behavior inherited from UnoTextRange.
+		public override void Copy() => _document.CopySelectionToClipboardViaControl();
+
+		public override void Cut() => _document.CutSelectionToClipboardViaControl();
+
+		public override void Paste(int format) => _document.PasteFromClipboardViaControl();
+
 		public int MoveLeft(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
 		{
 			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
