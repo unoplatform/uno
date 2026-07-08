@@ -25,4 +25,8 @@ internal interface IParsedText
 	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index);
 
 	bool IsBaseDirectionRightToLeft { get; }
+
+	// Distance from the top of the first line to its baseline. Used to surface RichTextBlock/
+	// TextBlock BaselineOffset for embedded-element alignment (CTextBlock::GetBaselineOffset).
+	float FirstLineBaseline { get; }
 }
