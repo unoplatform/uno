@@ -32,7 +32,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
-	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
+	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new(ReferenceEqualityComparer.Instance);
 	// Strong references to just-invalidated providers. Keeps their COM-callable
 	// wrappers alive across the window between UiaDisconnectProvider and UIA
 	// delivering the structure-changed notification, so an out-of-proc client
