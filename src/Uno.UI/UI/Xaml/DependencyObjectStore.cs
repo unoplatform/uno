@@ -2219,21 +2219,19 @@ namespace Microsoft.UI.Xaml
 		private void ReevaluateBaseValue(DependencyPropertyDetails propertyDetails)
 		{
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
-			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
+			// The new base value will either be an applied style (explicit or implicit) or the built-in style.
 			var actualInstance = ActualInstance;
 			if (actualInstance is FrameworkElement fe &&
 				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
 				valueFromStyle != DependencyProperty.UnsetValue)
 			{
-				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle, propertyDetails);
+				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.Style, propertyDetails);
 			}
 			else if (actualInstance is Control control &&
 				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
 				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
-				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle, propertyDetails);
+				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
 			}
 		}
 
@@ -2263,9 +2261,8 @@ namespace Microsoft.UI.Xaml
 			// TODO Uno Specific: The check is a bit different in WinUI, but should have the same effect.
 			bool hasLocalValue = !(
 				precedence == DependencyPropertyValuePrecedences.DefaultValue ||
-				precedence == DependencyPropertyValuePrecedences.DefaultStyle ||
-				precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
-				precedence == DependencyPropertyValuePrecedences.ImplicitStyle);
+				precedence == DependencyPropertyValuePrecedences.BuiltInStyle ||
+				precedence == DependencyPropertyValuePrecedences.Style);
 
 			return hasLocalValue;
 		}

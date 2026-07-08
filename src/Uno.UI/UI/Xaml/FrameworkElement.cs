@@ -512,7 +512,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var oldActiveStyle = _activeStyle;
 			UpdateActiveStyle();
-			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.Style);
 		}
 
 		/// <summary>
@@ -667,7 +667,7 @@ namespace Microsoft.UI.Xaml
 		/// Apply the default style for this element, if one is defined.
 		/// </summary>
 		/// <remarks>
-		/// The default app-wide style is always applied (using the lower priority ImplicitStyle) so that setters that are not
+		/// The default app-wide style is always applied (using the lower priority BuiltInStyle) so that setters that are not
 		/// set by a tree-provided style are still applied. (e.g. a tree-provided implicit style may only change the Foreground of a Button,
 		/// and the Template property still needs to be applied for the template to work).
 		/// </remarks>
@@ -682,9 +682,9 @@ namespace Microsoft.UI.Xaml
 
 			var style = Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey());
 
-			// Although this is the default style, we use the ImplicitStyle enum value (which is otherwise unused) to ensure that it takes precedence
-			//over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
-			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.ImplicitStyle);
+			// The default style is applied at BuiltInStyle precedence so that it takes precedence over inherited
+			// property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
+			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.BuiltInStyle);
 #if DEBUG
 			AppliedDefaultStyle = style;
 #endif
