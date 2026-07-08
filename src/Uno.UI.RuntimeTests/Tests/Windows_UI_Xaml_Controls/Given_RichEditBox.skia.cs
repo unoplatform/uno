@@ -2241,6 +2241,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
 		}
 
+		[TestMethod]
+		public async Task When_Range_Copy_Puts_Text_On_Clipboard()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetRange(0, 5).Copy();
+			await WindowHelper.WaitForIdle();
+
+			var content = Clipboard.GetContent();
+			var clipboardText = await content.GetTextAsync();
+			Assert.AreEqual("Hello", clipboardText);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Copy_Empty_Is_NoOp()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var seed = new DataPackage();
+			seed.SetText("SEED");
+			Clipboard.SetContent(seed);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// A degenerate (caret) range has nothing to copy, so the clipboard is untouched.
+			SUT.Document.GetRange(3, 3).Copy();
+			await WindowHelper.WaitForIdle();
+
+			var clipboardText = await Clipboard.GetContent().GetTextAsync();
+			Assert.AreEqual("SEED", clipboardText);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Cut_Removes_And_Copies()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(0, 6);
+			range.Cut();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("world", text);
+			Assert.AreEqual(0, range.StartPosition);
+			Assert.AreEqual(0, range.EndPosition, "Cut should collapse the range to its start.");
+
+			var clipboardText = await Clipboard.GetContent().GetTextAsync();
+			Assert.AreEqual("Hello ", clipboardText);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Paste_Replaces_Range()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "AB");
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("XY");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(1, 1);
+			range.Paste(0);
+
+			await WindowHelper.WaitFor(() =>
+			{
+				SUT.Document.GetText(TextGetOptions.None, out var t);
+				return t == "AXYB";
+			});
+
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(3, range.EndPosition, "Paste should collapse the range past the inserted text.");
+		}
+
+		[TestMethod]
+		public async Task When_Range_CanPaste_Reflects_Clipboard()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			dp.SetText("paste me");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.Document.GetRange(0, 0).CanPaste(0));
+		}
+
+		[TestMethod]
+		public async Task When_Range_GetCharacterUtf32_Returns_CodePoint()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello");
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(1, 1);
+			range.GetCharacterUtf32(out var codePoint, 0);
+			Assert.AreEqual((uint)'e', codePoint);
+
+			// Reading past the end of the story yields 0.
+			range.GetCharacterUtf32(out var oob, 100);
+			Assert.AreEqual(0u, oob);
+		}
+
+		[TestMethod]
+		public async Task When_Range_MatchSelection_Aligns_To_Selection()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.Document.Selection.SetRange(2, 4);
+			await WindowHelper.WaitForIdle();
+
+			var range = SUT.Document.GetRange(8, 10);
+			range.MatchSelection();
+
+			Assert.AreEqual(2, range.StartPosition);
+			Assert.AreEqual(4, range.EndPosition);
+		}
+
 		private static TextBlock FindDisplayBlock(DependencyObject root)
 		{
 			var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);

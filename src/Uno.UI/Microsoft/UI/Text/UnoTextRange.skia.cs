@@ -1,18 +1,20 @@
 #nullable enable
 
 using System;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Text
 {
 	// Uno-specific functional Text Object Model range over the RichEditBox plain-text buffer.
 	//
 	// The plain-text navigation and editing surface (positions, Text, SetRange, Collapse, GetText/
-	// SetText, FindText, Delete, ChangeCase, Move/MoveStart/MoveEnd, GetClone, InRange/InStory/IsEqual)
-	// is functional and drives the shared rendering surface through the owning document. Character
-	// formatting (CharacterFormat) is functional over the document's run model.
+	// SetText, FindText, Delete, ChangeCase, Move/MoveStart/MoveEnd, GetClone, InRange/InStory/IsEqual,
+	// GetCharacterUtf32, MatchSelection) is functional and drives the shared rendering surface through
+	// the owning document. Character formatting (CharacterFormat) is functional over the document's run
+	// model. Plain-text clipboard (Copy/Cut/Paste/CanPaste) is functional.
 	//
-	// TODO Uno: FormattedText/Gravity/Link, clipboard (Copy/Cut/Paste/CanPaste), streams and embedded
-	// images arrive with the rich-content model and the shared editing engine.
+	// TODO Uno: FormattedText/Gravity/Link, rich/RTF clipboard payloads, streams and embedded images
+	// arrive with the rich-content model and the shared editing engine.
 	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
 	{
 		private protected readonly RichEditTextDocument _document;
@@ -492,13 +494,42 @@ namespace Microsoft.UI.Text
 			set => throw NotImplemented("Link.set");
 		}
 
-		public bool CanPaste(int format) => false;
+		public bool CanPaste(int format) => _document.CanPaste();
 
-		public void Copy() => throw NotImplemented("Copy");
+		public void Copy()
+		{
+			// TODO Uno: only the plain-text clipboard payload is written; rich/RTF is a follow-up.
+			if (_start != _end)
+			{
+				_document.CopyPlainTextToClipboard(_start, _end);
+			}
+		}
 
-		public void Cut() => throw NotImplemented("Cut");
+		public void Cut()
+		{
+			if (_start == _end)
+			{
+				return;
+			}
 
-		public void Paste(int format) => throw NotImplemented("Paste");
+			_document.CopyPlainTextToClipboard(_start, _end);
+			_document.ReplaceRange(_start, _end, string.Empty);
+			_end = _start;
+			OnRangeChanged();
+		}
+
+		public void Paste(int format)
+		{
+			// TODO Uno: 'format' is ignored (plain text only). The OS clipboard read is async on Uno, so
+			// unlike WinUI's synchronous paste this replaces the range on a later dispatcher turn.
+			var start = _start;
+			var end = _end;
+			_document.BeginPastePlainText(start, end, caret =>
+			{
+				_start = _end = caret;
+				OnRangeChanged();
+			});
+		}
 
 		// --- Text-based unit navigation (Word/Paragraph/Story) — functional over the plain-text buffer ---
 
@@ -730,7 +761,22 @@ namespace Microsoft.UI.Text
 			OnRangeChanged();
 		}
 
-		public void GetCharacterUtf32(out uint value, int offset) => throw NotImplemented("GetCharacterUtf32");
+		public void GetCharacterUtf32(out uint value, int offset)
+		{
+			var text = _document.GetTextInRange(0, _document.TextLength);
+			var position = _start + offset;
+			if (position < 0 || position >= text.Length)
+			{
+				// Out of range yields 0 (WinUI reports the null character past the story end).
+				value = 0;
+				return;
+			}
+
+			// Combine a surrogate pair into a single UTF-32 code point; otherwise the char is the value.
+			value = char.IsHighSurrogate(text[position]) && position + 1 < text.Length && char.IsLowSurrogate(text[position + 1])
+				? (uint)char.ConvertToUtf32(text[position], text[position + 1])
+				: text[position];
+		}
 
 		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point)
 		{
@@ -788,7 +834,14 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		public void MatchSelection() => throw NotImplemented("MatchSelection");
+		public void MatchSelection()
+		{
+			var selection = _document.Selection;
+			_start = selection.StartPosition;
+			_end = selection.EndPosition;
+			Normalize();
+			OnRangeChanged();
+		}
 
 		public void GetTextViaStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("GetTextViaStream");
 
