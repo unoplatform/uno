@@ -353,7 +353,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_elementManager.ClearRealizedRange();
 			}
 
-			InvalidateMeasureTimerStop(false /*isForDestructor*/);
+			InvalidateMeasureTimerStop();
 			UnlockItems();
 		}
 
@@ -381,7 +381,7 @@ namespace Microsoft.UI.Xaml.Controls
 					else if (m_itemCount > 0 && newItemCount == 0)
 					{
 						// Stop the potential timer as the collection is empty now.
-						InvalidateMeasureTimerStop(false /*isForDestructor*/);
+						InvalidateMeasureTimerStop();
 					}
 				}
 
@@ -581,7 +581,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_itemCount == 0 && !UsesArrangeWidthInfo())
 			{
 				// Stop the potential timer as the collection is empty now.
-				InvalidateMeasureTimerStop(false /*isForDestructor*/);
+				InvalidateMeasureTimerStop();
 			}
 
 			// Discard any potential item sizing info previously collected through the ItemsInfoRequested event.
@@ -681,7 +681,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Stops the timer used to trigger an asynchronous measure pass when no items info was provided by the ItemsInfoRequested event.
 		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
-		private void InvalidateMeasureTimerStop(bool isForDestructor)
+		private void InvalidateMeasureTimerStop()
 		{
 			if (m_invalidateMeasureTimer is not null && m_invalidateMeasureTimer.IsEnabled)
 			{
@@ -708,7 +708,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				InvalidateMeasureTimerStop(false /*isForDestructor*/);
+				InvalidateMeasureTimerStop();
 			}
 		}
 
