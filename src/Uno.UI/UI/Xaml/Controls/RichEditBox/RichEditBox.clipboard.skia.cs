@@ -128,6 +128,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var start = Math.Clamp(_selection.start, 0, text.Length);
 			var length = Math.Clamp(_selection.length, 0, text.Length - start);
 
+			// Route pasted text through CharacterCasing, then clamp to MaxLength (accounting for the
+			// selection being replaced) so a paste can't push the content past the limit.
+			normalized = ClampInsertToMaxLength(CoerceCasing(normalized), text.Length, start, start + length);
+			if (normalized.Length == 0 && length == 0)
+			{
+				return;
+			}
+
 			Document.ReplaceRange(start, start + length, normalized);
 			SetInteractiveSelection(start + normalized.Length, 0);
 		}
