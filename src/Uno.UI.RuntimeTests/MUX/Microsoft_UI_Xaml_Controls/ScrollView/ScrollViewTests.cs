@@ -580,6 +580,71 @@ public class ScrollViewTests : MUXApiTestBase
 		});
 	}
 
+	[TestMethod]
+	[Ignore("UNO: Zoom via InteractionTracker.TryUpdateScale is [NotImplemented] on Skia (it throws), so ScrollPresenter never reaches RaiseZoomStarting and ScrollView.ZoomStarting cannot fire at runtime. The forwarding wiring itself matches WinUI (ScrollStarting is covered by VerifyScrollStartingForwarding). Re-enable once the Skia InteractionTracker implements scale.")]
+	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ZoomStarting args.")]
+	public async Task VerifyZoomStartingForwarding()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewZoomCompletedEvent = new UnoAutoResetEvent(false);
+		uint zoomStartingCount = 0u;
+		int zoomStartingCorrelationId = -1;
+		int zoomCompletedCorrelationId = -1;
+		int operationCorrelationId = -1;
+		float zoomStartingZoomFactor = 0.0f;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ZoomStarting += (sender, args) =>
+			{
+				Log.Comment($"ZoomStarting zoomStartingCount={++zoomStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollView, sender);
+				zoomStartingCorrelationId = args.CorrelationId;
+				zoomStartingZoomFactor = args.ZoomFactor;
+			};
+
+			scrollView.ZoomCompleted += (sender, args) =>
+			{
+				Log.Comment($"ZoomCompleted CorrelationId={args.CorrelationId}");
+				Verify.AreSame(scrollView, sender);
+				zoomCompletedCorrelationId = args.CorrelationId;
+				scrollViewZoomCompletedEvent.Set();
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			operationCorrelationId = scrollView.ZoomTo(
+				2.0f,
+				global::System.Numerics.Vector2.Zero,
+				new ScrollingZoomOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
+
+			if (operationCorrelationId == -1)
+			{
+				scrollViewZoomCompletedEvent.Set();
+			}
+		});
+
+		await WaitForEvent("Waiting for ZoomCompleted event", scrollViewZoomCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(1u, zoomStartingCount);
+			Verify.AreEqual(operationCorrelationId, zoomStartingCorrelationId);
+			Verify.AreEqual(operationCorrelationId, zoomCompletedCorrelationId);
+			Verify.AreEqual(2.0f, zoomStartingZoomFactor);
+		});
+	}
+
 	private void SetupDefaultUI(
 		ScrollView scrollView,
 		Rectangle rectangleScrollViewContent = null,
