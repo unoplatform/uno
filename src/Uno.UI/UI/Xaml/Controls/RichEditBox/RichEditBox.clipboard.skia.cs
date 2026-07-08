@@ -20,11 +20,21 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class RichEditBox
 	{
 		/// <summary>
-		/// Copies the current selection to the OS clipboard as plain text. Raises
-		/// <see cref="CopyingToClipboard"/> first; a handler may suppress the default copy.
+		/// Copies the current selection to the OS clipboard as plain text. When there is a non-empty
+		/// selection, raises <see cref="CopyingToClipboard"/> first (a handler may suppress the default
+		/// copy). An empty selection is a no-op and raises no event — matching CutSelectionToClipboard
+		/// and TextBox.CopySelectionToClipboard.
 		/// </summary>
 		internal void CopySelectionToClipboard()
 		{
+			var text = GetPlainTextContent();
+			var start = Math.Clamp(_selection.start, 0, text.Length);
+			var length = Math.Clamp(_selection.length, 0, text.Length - start);
+			if (length <= 0)
+			{
+				return;
+			}
+
 			if (RaiseCopyingToClipboardIsHandled())
 			{
 				return;
