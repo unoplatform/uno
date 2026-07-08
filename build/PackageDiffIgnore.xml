@@ -2269,9 +2269,35 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
-
 		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
 		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerDeviceType" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenuPresenter" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ISubMenuOwner" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureRecognizer" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureSettings" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationCompletedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationDelta" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationInertiaStartingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationStartedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationUpdatedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationVelocities" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.RightTappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.TappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Types>
 
 	  <Fields>
@@ -2330,6 +2356,7 @@
 		  <Member fullName="Windows\.UI\.ViewManagement\.Core\.CoreInputViewKind Windows\.UI\.ViewManagement\.Core\.CoreInputViewKind::(Clipboard|Dictation)" reason="WinUI sync: preview CoreInputViewKind members removed by WinAppSDK 1.8" isRegex="true" />
 
 		  <!-- END WinUI sync (Category D): enum constant removals -->
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Fields>
 
 	  <Properties>
@@ -2521,17 +2548,20 @@
 		       FrameworkElement keeps them, so its members are never reported as removed and are unaffected by these patterns. -->
 		  <Member fullName="System\.Object .+(::|\.)DataContext\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)DataContextProperty\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
-
 		  <!-- Uno-only native-bubbling knob (no WinUI counterpart); meaningless once native bubbling is gone on Skia. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
-
 		  <!-- DependencyObject as class (BC26): property-backed store/TemplatedParent members now inherited from the base. -->
 		  <Member fullName="Windows\.UI\.Core\.CoreDispatcher .+(::|\.)Dispatcher\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="Microsoft\.UI\.Dispatching\.DispatcherQueue .+(::|\.)DispatcherQueue\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="System\.Boolean .+(::|\.)IsStoreInitialized\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObject .+(::|\.)TemplatedParent\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter::ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Properties>
 
 	  <Methods>
@@ -2938,6 +2968,247 @@
 		  <Member fullName="System\.Void .+(::|\.)RestoreBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)ResumeBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <Member fullName="System\.Void .+(::|\.)SuspendBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionSpriteShape.set_StrokeDashArray(Microsoft.UI.Composition.CompositionStrokeDashArray value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.AttachedDependencyObject.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.AttachedDependencyObject.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationAnnotation.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationAnnotation.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColumnDefinition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColumnDefinition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnVerticalContentAlignmentChanged(Microsoft.UI.Xaml.VerticalAlignment oldVerticalContentAlignment, Microsoft.UI.Xaml.VerticalAlignment newVerticalContentAlignment)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Microsoft.UI.Xaml.UIElement value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IconSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IconSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.LayoutContext.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.LayoutContext.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapLayer.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapLayer.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Maps.MapInputEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Maps.MapInputEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PagerControlTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PagerControlTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs..ctor(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RatingItemInfo.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RatingItemInfo.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RowDefinition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RowDefinition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItem.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItem.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewNode.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewNode.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.CollectionViewSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.CollectionViewSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectCollectionBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectCollectionBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextHighlighterBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextHighlighterBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkTemplate.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkTemplate.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScope.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScope.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScopeName.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScopeName.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.KeyboardAccelerator.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.KeyboardAccelerator.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.XamlUICommand.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.XamlUICommand.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Timeline.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Timeline.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Transition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Transition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Brush.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Brush.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.CacheMode.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.CacheMode.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GeneralTransform.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GeneralTransform.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Geometry.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Geometry.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GradientStop.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GradientStop.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Media3D.Transform3D.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Media3D.Transform3D.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathFigure.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathFigure.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathSegment.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathSegment.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Projection.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Projection.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Shadow.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Shadow.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.SystemBackdrop.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.SystemBackdrop.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs..ctor(Microsoft.UI.Xaml.Navigation.NavigationMode navigationMode, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo navigationTransitionInfo, System.Object parameter, System.Type sourcePageType)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.set_SourcePageType(System.Type value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Printing.PrintDocument.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Printing.PrintDocument.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PropertyPath.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PropertyPath.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ResourceDictionary.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ResourceDictionary.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.StateTriggerBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.StateTriggerBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Style.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Style.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerAction.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerAction.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualState.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualState.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateGroup.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateGroup.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateManager.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateManager.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualTransition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualTransition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Object Windows.UI.Input.Inking.InkManager.ProcessPointerUpdate(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkManager.ProcessPointerDown(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkStrokeBuilder.BeginStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.Foundation.Rect Windows.UI.Input.Inking.InkManager.ProcessPointerUp(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.Inking.InkStroke Windows.UI.Input.Inking.InkStrokeBuilder.EndStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs.get_CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Input.Inking.InkStrokeBuilder.AppendToStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 
 	  <Events>
@@ -2991,7 +3262,37 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/VisualState" reason="Removed empty FeatureConfiguration.VisualState holder after deleting ApplySettersBeforeTransition (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/DataTemplateSelector" reason="Removed empty FeatureConfiguration.DataTemplateSelector holder after deleting UseLegacyTemplateSelectorOverload (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs" reason="Removed empty FeatureConfiguration.ManipulationRoutedEventArgs holder after deleting IsAbsolutePositionEnabled (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerDeviceType" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenuPresenter" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ISubMenuOwner" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.DraggingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureRecognizer" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.GestureSettings" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.HoldingState" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.IPointerPointTransform" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationCompletedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationDelta" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationInertiaStartingEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationStartedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationUpdatedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.ManipulationVelocities" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPointProperties" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerUpdateKind" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.RightTappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.TappedEventArgs" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Types>
+	  <Fields>
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+	  </Fields>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
@@ -3014,6 +3315,11 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter::ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3059,6 +3365,247 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionSpriteShape.set_StrokeDashArray(Microsoft.UI.Composition.CompositionStrokeDashArray value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.AttachedDependencyObject.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.AttachedDependencyObject.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationAnnotation.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationAnnotation.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColumnDefinition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColumnDefinition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnVerticalContentAlignmentChanged(Microsoft.UI.Xaml.VerticalAlignment oldVerticalContentAlignment, Microsoft.UI.Xaml.VerticalAlignment newVerticalContentAlignment)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Microsoft.UI.Xaml.UIElement value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IconSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IconSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.LayoutContext.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.LayoutContext.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapLayer.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapLayer.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Maps.MapInputEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Maps.MapInputEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PagerControlTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PagerControlTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs..ctor(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RatingItemInfo.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RatingItemInfo.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RowDefinition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RowDefinition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItem.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItem.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToggleSwitch.OnTemplateRecycled()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewNode.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewNode.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.CollectionViewSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.CollectionViewSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectCollectionBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectCollectionBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextHighlighterBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextHighlighterBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkTemplate.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkTemplate.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScope.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScope.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScopeName.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.InputScopeName.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.KeyboardAccelerator.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.KeyboardAccelerator.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.XamlUICommand.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.XamlUICommand.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Timeline.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Timeline.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Transition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Transition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Brush.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Brush.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.CacheMode.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.CacheMode.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GeneralTransform.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GeneralTransform.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Geometry.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Geometry.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GradientStop.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.GradientStop.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Media3D.Transform3D.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Media3D.Transform3D.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathFigure.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathFigure.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathSegment.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathSegment.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Projection.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Projection.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Shadow.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Shadow.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.SystemBackdrop.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.SystemBackdrop.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs..ctor(Microsoft.UI.Xaml.Navigation.NavigationMode navigationMode, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo navigationTransitionInfo, System.Object parameter, System.Type sourcePageType)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.set_SourcePageType(System.Type value)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Printing.PrintDocument.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Printing.PrintDocument.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PropertyPath.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PropertyPath.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ResourceDictionary.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ResourceDictionary.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.StateTriggerBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.StateTriggerBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Style.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Style.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerAction.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerAction.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualState.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualState.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateGroup.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateGroup.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateManager.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualStateManager.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualTransition.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.VisualTransition.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.ClearBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.RestoreBindings()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Object Windows.UI.Input.Inking.InkManager.ProcessPointerUpdate(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkManager.ProcessPointerDown(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkStrokeBuilder.BeginStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.Foundation.Rect Windows.UI.Input.Inking.InkManager.ProcessPointerUp(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.Inking.InkStroke Windows.UI.Input.Inking.InkStrokeBuilder.EndStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs.get_CurrentPoint()" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Input.Inking.InkStrokeBuilder.AppendToStroke(Windows.UI.Input.PointerPoint pointerPoint)" reason="Uno 7.0 breaking-changes rollup (Phase 4 public API alignment)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[

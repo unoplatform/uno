@@ -24,7 +24,6 @@ using PullToRefreshHelperTestApi = Microsoft.UI.Private.Controls.PullToRefreshHe
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
-using Windows.UI.Input;
 #endif
 
 namespace MUXControlsTestApp

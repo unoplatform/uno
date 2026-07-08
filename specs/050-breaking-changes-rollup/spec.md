@@ -98,7 +98,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC33** — Remove `UseInvalidate(Measure/Arrange)Path` flags  `d2·M`
   - Hard-delete both flags; inline the always-true dirty-path branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/UIElement.Layout.crossruntime.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
-- [ ] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
+- [x] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/FrameworkElementUIKitMixinGenerator.cs`
 - [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
@@ -110,7 +110,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
   - **Verify** not already removed, then hard-delete the meta-packages.
   - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
-- [ ] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
+- [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
@@ -138,52 +138,56 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 
 _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/sealed/explicit-interface/hide) plus tiny signature & typo fixes. Each is narrow and independent; effort S. Ideal single sweep._
 
-- [ ] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
+- [x] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/BrushConverter.cs`, `src/Uno.UI/UI/Xaml/Media/Brush.cs`, `src/Uno.UI/LinkerDefinition.Wasm.xml`
-- [ ] **BC15** — Seal `PropertyPath`  `d2·S`
+- [x] **BC15** — Seal `PropertyPath`  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Data/PropertyPath.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/PropertyPath.cs`
-- [ ] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
+- [x] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenu.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenuPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/ISubMenuOwner.cs`
-- [ ] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
+- [x] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkTemplatePoolAware.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ToggleSwitch/ToggleSwitch.cs`
-- [ ] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
+- [x] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UWP/Collections/MaterializableList.cs`, `src/Uno.UI/UI/Xaml/Media/VisualTreeHelper.cs`, `src/Uno.UI/UI/Xaml/UIElement.crossruntime.cs`
-- [ ] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
+- [x] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/NavigatingCancelEventArgs.cs`, `src/Uno.UI/UI/Xaml/Navigation/NavigationHelpers.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
+- [x] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.Properties.cs`, `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
+- [x] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.Properties.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.partial.mux.cs`
-- [ ] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
+- [x] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
   - Make `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.custom.cs`, `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.partial.mux.cs`
-- [ ] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
+- [x] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
   - Make `DefaultUpdateSourceTrigger` internal/remove. Optional stretch: make the whole `FrameworkPropertyMetadata` internal (verify no custom-control author relies on it).
   - Files: `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadata.cs`, `src/Uno.UI/DataBinding/BindingExpression.cs`, `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadataOptions.cs`
-- [ ] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
+- [x] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
   - Make the DP `internal` (keep the DP, hide the field) to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`, `src/Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.cs`
-- [ ] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414
+- [x] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414 — **DROPPED**
   - **VERIFY design first.** The post-revert pooled `DependencyPropertyChangedEventArgs` may already capture the allocation win, and the struct drops precedence/bypass fields. Decide whether re-applying is still desired before doing it.
+  - **Decision: drop.** `DependencyObjectStore.DependencyPropertyChangedEventArgsPool` (Rent/Return) already pools the args and captures the allocation win the struct targeted. `PropertyChangedParams` is also `internal` (no public-surface impact, so out of scope for this phase) and re-introducing it would drop the precedence/bypass fields. **Deleted the dead `#if false` struct (`PropertyChangedParams.cs`) and its stale commented reference** rather than leaving misleading "bring back in Uno 6" dead code.
   - Files: `src/Uno.UI/UI/Xaml/PropertyChangedParams.cs`, `src/Uno.UI/UI/Xaml/IDependencyObjectInternal.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`
-- [ ] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
+- [x] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Application.cs`, `src/Uno.UI/UI/Xaml/Application.skia.cs`, `src/Uno.UI/UI/Xaml/Application.wasm.cs`
-- [ ] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S`
+- [x] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·M` (was `S`)
   - Adjust signature to match WinUI.
-  - Files: `src/Uno.UI.Composition/Composition/VisualInteractionSource.cs`, `src/Uno.UI.Composition/Composition/ICompositionTarget.cs`, `src/Uno.UI/UI/Xaml/Media/CompositionTarget.cs`
-- [ ] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
+  - **Done via a type relocation (coupled with BC76).** The block was real: `VisualInteractionSource.TryRedirectForManipulation` lives in `Uno.UI.Composition`, but `Microsoft.UI.Input.PointerPoint` only existed in `Uno.UI`, which `Uno.UI.Composition` does not reference. Resolved by **relocating `Microsoft.UI.Input.PointerPoint`, `PointerPointProperties`, `PointerUpdateKind`, `PointerDeviceType` and `IPointerPointTransform` down to `Uno.UWP`** (a lower assembly Composition references) and updating the WinAppSDK sync generator's `GetNamespaceBasePath` so the stubs regenerate there. `GestureRecognizer`/`Manipulation*` stay in `Uno.UI` (they depend on `Uno.UI.Composition`, so they cannot move down).
+  - **Coupled BC76 (legacy drop):** the legacy `Windows.UI.Input.*` pointer/gesture/manipulation family was dropped — the `WinRT\*.cs` link removed from the 4 `Uno.UWP` csprojs, the corresponding generated `Windows.UI.Input.*` stubs deleted, and a generator skip added so they are not regenerated. All consumers (`CoreWindow`, `InputManager`, input injection, the Skia input hosts, tests, samples) were migrated to `Microsoft.UI.Input.*`.
+  - **Validation:** compiles clean for all Windows-buildable projects (Uno.UWP/Uno.UI.Composition/Uno.UI Skia + Reference, the sync generator, Win32 + X11 hosts, UnitTests, RuntimeTests, SamplesApp.Skia). The native/WASM Skia hosts (Android, AppleUIKit, MacOS, Tizen, Linux.FrameBuffer, WebAssembly.Browser) were migrated by code review and remain CI/device-gated. Interactive pointer runtime validation is CI/device-only.
+  - Files: `src/Uno.UI.Composition/Composition/VisualInteractionSource.cs`, `src/Uno.UI.Composition/Composition/ICompositionTarget.cs`, `src/Uno.UI/UI/Xaml/Media/CompositionTarget.cs`, `src/Uno.UWP/UI/Input/*`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs` (+ consumers across `Uno.UWP`, `Uno.UI`, the Skia input hosts, tests and samples)
+- [x] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI.Composition/Composition/CompositionSpriteShape.cs`, `src/Uno.UI.Composition/Composition/CompositionSpriteShape.skia.cs`, `src/Uno.UI.Composition/Composition/CompositionStrokeDashArray.cs`
-- [ ] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
+- [x] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
   - Make `TimeSpan` a read-only property (WinUI). Confirm treatment of the WinUI-divergent public `Type` field (issue notes UWP may differ).
   - Files: `src/Uno.UI/UI/Xaml/Duration.cs`, `src/Uno.UI/UI/Xaml/DurationType.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/Duration.cs`
 
@@ -193,13 +197,13 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
 
 _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type base-class realignments, enum/type-shape changes, and behaviour-changing defaults. Several silently change runtime behaviour even on defaults — gate each on a migration note + runtime/visual validation, not compile-only._
 
-- [ ] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
+- [x] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.cs`, `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.skia.cs`, `src/Uno.UI/UI/Xaml/Media/AcrylicBrush/AcrylicBrush.skia.cs`
-- [ ] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
+- [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/Flyout.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/Button.cs`
-- [ ] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
+- [x] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/DoubleCollection.cs`, `src/Uno.UI/UI/Xaml/Media/PointCollection.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml.Media/DoubleCollection.cs`
 - [ ] **BC73** — `TimePickerFlyoutPresenter` -> `Control` base  `d3·S`
@@ -208,13 +212,14 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M`
   - See notes.
   - Files: `src/Uno.UI/UI/Xaml/Window/WindowActivatedEventArgs.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/WindowActivationState.cs`, `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`
-- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
+- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S` — **DEFERRED (mis-sized; needs decision)**
   - See notes.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.wasm.cs`
-- [ ] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
+  - **Tried & reverted.** The `IEnumerable` (+ `GetEnumerator`) is load-bearing: it enables C# **collection-initializer syntax** (`new StackPanel { child1, child2 }`), a popular Uno convenience WinUI lacks. Removing it breaks that pattern across tests, samples, and **user app code** (200+ candidate sites repo-wide; 14 compile errors in `Given_ListViewBase` alone). This is a disruptive feature removal, not the effort-`S` interface tidy the assessment assumed. Needs an explicit decision + a dedicated migration sweep of every `new <Panel/Control> { ... }` initializer before it can land.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.reference.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`
+- [x] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
   - Delete the `TextBox` override; make base `OnVerticalContentAlignmentChanged` `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
-- [ ] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
+- [x] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
 - [ ] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`

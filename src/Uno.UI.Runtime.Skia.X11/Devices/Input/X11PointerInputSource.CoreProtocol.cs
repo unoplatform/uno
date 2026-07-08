@@ -2,7 +2,9 @@
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Hosting;
 

@@ -2,11 +2,7 @@ using System.Text;
 using Windows.Foundation;
 using Uno;
 
-#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
-#else
-namespace Windows.UI.Input
-#endif
 {
 	public partial class PointerPointProperties
 	{
@@ -47,7 +43,7 @@ namespace Windows.UI.Input
 		{
 		}
 
-		internal PointerPointProperties(global::Windows.UI.Input.PointerPointProperties properties)
+		internal PointerPointProperties(PointerPointProperties properties)
 		{
 			if (properties is null)
 			{
@@ -55,60 +51,15 @@ namespace Windows.UI.Input
 			}
 
 			_flags = properties._flags;
-			// Set by _flags: IsPrimary = properties.IsPrimary;
-			// Set by _flags: IsInRange = properties.IsInRange;
-			// Set by _flags: IsLeftButtonPressed = properties.IsLeftButtonPressed;
-			// Set by _flags: IsMiddleButtonPressed = properties.IsMiddleButtonPressed;
-			// Set by _flags: IsRightButtonPressed = properties.IsRightButtonPressed;
-			// Set by _flags: IsHorizontalMouseWheel = properties.IsHorizontalMouseWheel;
-			// Set by _flags: IsXButton1Pressed = properties.IsXButton1Pressed;
-			// Set by _flags: IsXButton2Pressed = properties.IsXButton2Pressed;
-			// Set by _flags: IsBarrelButtonPressed = properties.IsBarrelButtonPressed;
-			// Set by _flags: IsEraser = properties.IsEraser;
-			// Set by _flags: IsTouchPad = properties.IsTouchPad;
 			Pressure = properties.Pressure;
 			Orientation = properties.Orientation;
 			ContactRect = properties.ContactRect;
-			// Set by _flags: TouchConfidence = properties.TouchConfidence;
-			// Set by _flags: IsCanceled = properties.IsCanceled;
-			PointerUpdateKind = (PointerUpdateKind)properties.PointerUpdateKind;
+			PointerUpdateKind = properties.PointerUpdateKind;
 			XTilt = properties.XTilt;
 			YTilt = properties.YTilt;
 			Twist = properties.Twist;
 			MouseWheelDelta = properties.MouseWheelDelta;
 		}
-
-#if IS_UNO_UI_PROJECT
-		public static explicit operator global::Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
-		{
-			var props = new global::Windows.UI.Input.PointerPointProperties();
-
-			props._flags = muxProps._flags;
-			// Set by _flags : props.IsPrimary = muxProps.IsPrimary;
-			// Set by _flags : props.IsInRange = muxProps.IsInRange;
-			// Set by _flags : props.IsLeftButtonPressed = muxProps.IsLeftButtonPressed;
-			// Set by _flags : props.IsMiddleButtonPressed = muxProps.IsMiddleButtonPressed;
-			// Set by _flags : props.IsRightButtonPressed = muxProps.IsRightButtonPressed;
-			// Set by _flags : props.IsHorizontalMouseWheel = muxProps.IsHorizontalMouseWheel;
-			// Set by _flags : props.IsXButton1Pressed = muxProps.IsXButton1Pressed;
-			// Set by _flags : props.IsXButton2Pressed = muxProps.IsXButton2Pressed;
-			// Set by _flags : props.IsBarrelButtonPressed = muxProps.IsBarrelButtonPressed;
-			// Set by _flags : props.IsEraser = muxProps.IsEraser;
-			// Set by _flags : props.IsTouchPad = muxProps.IsTouchPad;
-			props.Pressure = muxProps.Pressure;
-			props.Orientation = muxProps.Orientation;
-			props.ContactRect = muxProps.ContactRect;
-			// Set by _flags: props.TouchConfidence = muxProps.TouchConfidence;
-			// Set by _flags: props.IsCanceled = muxProps.IsCanceled;
-			props.PointerUpdateKind = (global::Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
-			props.XTilt = muxProps.XTilt;
-			props.YTilt = muxProps.YTilt;
-			props.Twist = muxProps.Twist;
-			props.MouseWheelDelta = muxProps.MouseWheelDelta;
-
-			return props;
-		}
-#endif
 
 		/// <summary>
 		/// This is actually equivalent to pointer.IsInContact

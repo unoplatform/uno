@@ -78,20 +78,6 @@ namespace Microsoft.UI.Xaml
 		// the __Store getter via __InitializeBinder().
 		private protected void InitializeBinder() { }
 
-		/// <summary>
-		/// Obsolete method kept for binary compatibility
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void ClearBindings() => __Store.ClearBindings();
-
-		/// <summary>
-		/// Obsolete method kept for binary compatibility
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void RestoreBindings() => __Store.RestoreBindings();
-
 		ManagedWeakReference IWeakReferenceProvider.WeakReference
 			=> _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 

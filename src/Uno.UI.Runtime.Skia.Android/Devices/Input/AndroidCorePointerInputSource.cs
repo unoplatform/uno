@@ -1,6 +1,7 @@
 using System;
 using Android.Views;
-using Microsoft.UI.Input;
+using PointerPoint = Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = Microsoft.UI.Input.PointerPointProperties;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
@@ -8,10 +9,6 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -124,8 +121,8 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 		switch (action)
 		{
-			case MotionEventActions.HoverEnter when args.CurrentPoint.PointerDeviceType is Windows.Devices.Input.PointerDeviceType.Touch:
-			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is Windows.Devices.Input.PointerDeviceType.Touch:
+			case MotionEventActions.HoverEnter when args.CurrentPoint.PointerDeviceType is global::Microsoft.UI.Input.PointerDeviceType.Touch:
+			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is global::Microsoft.UI.Input.PointerDeviceType.Touch:
 				// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
 				// We ignore these events.
 				break;
@@ -142,7 +139,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 				PointerExited?.Invoke(this, args);
 				break;
 
-			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is PointerDeviceType.Pen:
+			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is global::Microsoft.UI.Input.PointerDeviceType.Pen:
 				// Unfortunately, on some android devices (Surface Duo) "Distance" will always be 0, even when the pen is not in contact.
 				// This prevents us to properly filter out the hover exit event on pointer ... the only solution is to defer this to the next loop of the dispatcher.
 				// If a press is raised before the next dispatcher loop, we can safely ignore the hover exit.

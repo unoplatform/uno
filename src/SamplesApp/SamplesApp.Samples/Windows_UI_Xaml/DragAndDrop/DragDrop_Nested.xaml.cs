@@ -9,7 +9,6 @@ using Uno.UI.Samples.Controls;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
-using Windows.UI.Input;
 #endif
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop

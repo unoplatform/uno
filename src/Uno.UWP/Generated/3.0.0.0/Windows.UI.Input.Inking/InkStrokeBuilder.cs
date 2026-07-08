@@ -16,27 +16,9 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.InkStrokeBuilder()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void BeginStroke(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeBuilder", "BeginStroke(PointerPoint pointerPoint)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.PointerPoint AppendToStroke(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeBuilder", "AppendToStroke(PointerPoint pointerPoint)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Inking.InkStroke EndStroke(global::Windows.UI.Input.PointerPoint pointerPoint)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeBuilder", "EndStroke(PointerPoint pointerPoint)");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.BeginStroke(Windows.UI.Input.PointerPoint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.AppendToStroke(Windows.UI.Input.PointerPoint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeBuilder.EndStroke(Windows.UI.Input.PointerPoint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkStroke CreateStroke(global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point> points)

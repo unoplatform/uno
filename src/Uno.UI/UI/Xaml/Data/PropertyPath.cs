@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.UI.Xaml
 {
-	public partial class PropertyPath
+	public sealed partial class PropertyPath
 	{
 		/// <summary>
 		/// Initializes a new instance of the PropertyPath class based on a path string.

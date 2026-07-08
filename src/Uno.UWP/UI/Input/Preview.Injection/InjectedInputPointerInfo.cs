@@ -1,10 +1,12 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 namespace Windows.UI.Input.Preview.Injection;
 
