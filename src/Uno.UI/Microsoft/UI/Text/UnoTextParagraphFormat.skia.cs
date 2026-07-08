@@ -510,32 +510,32 @@ namespace Microsoft.UI.Text
 
 			if (KeepTogetherEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.KeepTogether = KeepTogetherEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.KeepTogether = ResolveEffect(KeepTogetherEffect, state.KeepTogether);
 			}
 
 			if (KeepWithNextEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.KeepWithNext = KeepWithNextEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.KeepWithNext = ResolveEffect(KeepWithNextEffect, state.KeepWithNext);
 			}
 
 			if (NoLineNumberEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.NoLineNumber = NoLineNumberEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.NoLineNumber = ResolveEffect(NoLineNumberEffect, state.NoLineNumber);
 			}
 
 			if (PageBreakBeforeEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.PageBreakBefore = PageBreakBeforeEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.PageBreakBefore = ResolveEffect(PageBreakBeforeEffect, state.PageBreakBefore);
 			}
 
 			if (RightToLeftEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.RightToLeft = RightToLeftEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.RightToLeft = ResolveEffect(RightToLeftEffect, state.RightToLeft);
 			}
 
 			if (WidowControlEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.WidowControl = WidowControlEffect == global::Microsoft.UI.Text.FormatEffect.On;
+				state.WidowControl = ResolveEffect(WidowControlEffect, state.WidowControl);
 			}
 
 			if (StyleValue != global::Microsoft.UI.Text.ParagraphStyle.Undefined)
@@ -551,5 +551,17 @@ namespace Microsoft.UI.Text
 
 		private static global::Microsoft.UI.Text.FormatEffect Effect(bool value)
 			=> value ? global::Microsoft.UI.Text.FormatEffect.On : global::Microsoft.UI.Text.FormatEffect.Off;
+
+		// Resolves a tri-state FormatEffect against the current paragraph boolean: On/Off set the value
+		// directly, Toggle flips it (WinUI's tomToggle), Undefined leaves it unchanged. Applied per
+		// paragraph (via ApplyParagraphFormatOverChars), so a Toggle flips each paragraph independently.
+		private static bool ResolveEffect(global::Microsoft.UI.Text.FormatEffect effect, bool current)
+			=> effect switch
+			{
+				global::Microsoft.UI.Text.FormatEffect.On => true,
+				global::Microsoft.UI.Text.FormatEffect.Off => false,
+				global::Microsoft.UI.Text.FormatEffect.Toggle => !current,
+				_ => current,
+			};
 	}
 }
