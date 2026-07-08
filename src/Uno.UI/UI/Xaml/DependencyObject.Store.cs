@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
-			_properties = new DependencyPropertyDetailsCollection(SelfWeakReference, _dataContextProperty);
+			_properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this, store: this);
@@ -1947,9 +1947,6 @@ namespace Microsoft.UI.Xaml
 			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = property.Metadata;
 
-			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = SelfWeakReference;
-
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{
 				if (frameworkPropertyMetadata.Options.HasLogicalChild())
@@ -1983,7 +1980,9 @@ namespace Microsoft.UI.Xaml
 					var localChildrenStores = _childrenStores;
 					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
+						// SelfWeakReference is minted lazily here: a leaf object with no inheriting
+						// children never reaches this and so never rents a weak self-handle.
+						CallChildCallback(localChildrenStores[storeIndex], SelfWeakReference, property, newValue);
 					}
 				}
 			}
@@ -2041,7 +2040,7 @@ namespace Microsoft.UI.Xaml
 			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
 				var callback = currentCallbacks[callbackIndex];
-				callback.Invoke(instanceRef, property, eventArgs);
+				callback.Invoke(SelfWeakReference, property, eventArgs);
 			}
 
 			// Cleanup to avoid leaks
