@@ -6,19 +6,31 @@ using Windows.UI.Core;
 
 namespace Microsoft.UI.Text
 {
-	// Plain-text clipboard primitives for the functional Text Object Model, used by the range-level
+	// Clipboard primitives for the functional Text Object Model, used by the range-level
 	// ITextRange.Copy/Cut/Paste. These live on the document (next to the CanCopy/CanPaste availability
 	// queries) so all clipboard access stays in one place, while UnoTextRange owns the range-position
 	// mutation.
 	//
-	// TODO Uno: rich/RTF clipboard payloads are a follow-up — only the plain-text format is honored.
+	// Plain text always goes to the OS clipboard. Character formatting is preserved via an app-private,
+	// in-process payload (see SerializeFormatRuns): a default copy (ClipboardCopyFormat.AllFormats)
+	// stashes the copied span's format runs and the next matching paste re-applies them, while
+	// ClipboardCopyFormat.PlainText clears the stash so formatting is dropped. This round-trips within
+	// the app (across RichEditBox instances); a cross-process RTF payload is a documented follow-up.
 	public partial class RichEditTextDocument
 	{
+		// In-process rich payload shared across all RichEditBox instances: the exact plain text that was
+		// copied and the serialized format runs for it. A paste re-applies the runs only when the inserted
+		// text matches _richClipboardText exactly, so it never applies stale formatting to unrelated text.
+		private static string? _richClipboardText;
+		private static string? _richClipboardRuns;
+
 		/// <summary>
 		/// Copies the plain text spanning <paramref name="start"/>..<paramref name="end"/> to the OS
-		/// clipboard. A degenerate (empty) span copies nothing.
+		/// clipboard. A degenerate (empty) span copies nothing. When the owner's ClipboardCopyFormat is
+		/// AllFormats (the default) the span's character formatting is stashed for a later paste to
+		/// re-apply; PlainText drops (clears) it.
 		/// </summary>
-		internal void CopyPlainTextToClipboard(int start, int end)
+		internal void CopyToClipboard(int start, int end)
 		{
 			var text = GetTextInRange(start, end);
 			if (text.Length == 0)
@@ -29,6 +41,38 @@ namespace Microsoft.UI.Text
 			var dataPackage = new DataPackage();
 			dataPackage.SetText(text);
 			Clipboard.SetContent(dataPackage);
+
+			if (_owner.ClipboardCopyFormat == global::Microsoft.UI.Xaml.Controls.RichEditClipboardFormat.PlainText)
+			{
+				_richClipboardText = null;
+				_richClipboardRuns = null;
+			}
+			else
+			{
+				_richClipboardText = text;
+				_richClipboardRuns = SerializeFormatRuns(start, end);
+			}
+		}
+
+		/// <summary>
+		/// After a plain-text paste has inserted <paramref name="insertedText"/> at <paramref name="start"/>,
+		/// re-applies the stashed character formatting when the inserted text matches the copied text
+		/// exactly. Returns whether formatting was applied. Callers wrap this and the preceding
+		/// ReplaceRange in a single undo group so a rich paste is one undoable action.
+		/// </summary>
+		internal bool TryApplyRichClipboard(int start, string insertedText)
+		{
+			if (_richClipboardRuns is null || _richClipboardText is null)
+			{
+				return false;
+			}
+
+			if (!string.Equals(_richClipboardText, insertedText, StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			return ApplySerializedFormatRuns(start, _richClipboardRuns, insertedText.Length);
 		}
 
 		/// <summary>
@@ -36,7 +80,8 @@ namespace Microsoft.UI.Text
 		/// <paramref name="end"/> span with it, invoking <paramref name="onPasted"/> with the caret
 		/// position after the inserted text. Unlike WinUI's synchronous RichEdit paste, the OS clipboard
 		/// read is asynchronous on Uno, so this completes on a later dispatcher turn (matching the
-		/// control-level Ctrl+V paste).
+		/// control-level Ctrl+V paste). When a matching rich payload is present the character formatting
+		/// is preserved, as one undoable action.
 		/// </summary>
 		internal void BeginPastePlainText(int start, int end, Action<int> onPasted)
 		{
@@ -58,7 +103,18 @@ namespace Microsoft.UI.Text
 
 					// RichEditBox is multiline and normalizes newlines to \r like WinUI.
 					var normalized = clipboardText.Replace("\r\n", "\r").Replace('\n', '\r');
-					ReplaceRange(start, end, normalized);
+
+					BeginUndoGroup();
+					try
+					{
+						ReplaceRange(start, end, normalized);
+						TryApplyRichClipboard(start, normalized);
+					}
+					finally
+					{
+						EndUndoGroup();
+					}
+
 					onPasted(start + normalized.Length);
 				}
 				catch (InvalidOperationException)
