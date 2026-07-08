@@ -53,9 +53,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var dataPackage = new DataPackage();
-			dataPackage.SetText(text.Substring(start, length));
-			Clipboard.SetContent(dataPackage);
+			// Routes through the document so plain text goes to the OS clipboard and, when
+			// ClipboardCopyFormat is AllFormats, the selection's character formatting is stashed
+			// for a matching paste to restore.
+			Document.CopyToClipboard(start, start + length);
 		}
 
 		/// <summary>
@@ -146,7 +147,20 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			Document.ReplaceRange(start, start + length, normalized);
+			// Insert plus restore-formatting are one undoable action. Rich formatting is only re-applied
+			// when the inserted text matches the copied text exactly, so casing/MaxLength changes above
+			// (which alter the text) naturally fall back to a plain paste.
+			Document.BeginUndoGroup();
+			try
+			{
+				Document.ReplaceRange(start, start + length, normalized);
+				Document.TryApplyRichClipboard(start, normalized);
+			}
+			finally
+			{
+				Document.EndUndoGroup();
+			}
+
 			SetInteractiveSelection(start + normalized.Length, 0);
 		}
 	}
