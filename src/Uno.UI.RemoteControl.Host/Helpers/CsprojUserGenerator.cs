@@ -103,9 +103,11 @@ public static class CsprojUserGenerator
 	/// </summary>
 	/// <remarks>
 	/// This is the resilient entry point for tooling (e.g. the MCP <c>uno_app_start</c> flow) that only knows the
-	/// project being launched, not necessarily its solution. It guarantees the launched project's embedded
-	/// <c>UnoRemoteControlPort</c> can be made to match the running DevServer even across renames or multi-solution
-	/// workspaces, where solution-based synchronization alone silently misses the project.
+	/// project being launched, not necessarily its solution. For the strongest guarantee across renames or
+	/// multi-solution workspaces — where solution-based synchronization alone silently misses the project — pass the
+	/// launched project's <c>.csproj</c> path directly, which syncs exactly that project. When a directory is supplied
+	/// and it contains one or more solutions, only the projects referenced by those solutions are updated; a launched
+	/// project that none of them reference would still be missed, so prefer passing its project path in that case.
 	/// </remarks>
 	/// <param name="path">A solution file, a project file, or a directory containing either.</param>
 	/// <param name="port">The port number to assign. Must be between 1 and 65535.</param>
