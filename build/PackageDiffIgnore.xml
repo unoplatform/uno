@@ -2522,6 +2522,13 @@
 		  <!-- Uno-only native-bubbling knob (no WinUI counterpart); meaningless once native bubbling is gone on Skia. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): property-backed store/TemplatedParent members now inherited from the base. -->
+		  <Member fullName="Windows\.UI\.Core\.CoreDispatcher .+(::|\.)Dispatcher\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Dispatching\.DispatcherQueue .+(::|\.)DispatcherQueue\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Boolean .+(::|\.)IsStoreInitialized\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObject .+(::|\.)TemplatedParent\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 	  </Properties>
 
 	  <Methods>
@@ -2901,6 +2908,33 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
+		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
+		       inherited from the DependencyObject base, so the diff reports them "removed" on each previously-declaring
+		       type. They remain available (inherited), so these accessor/method removals are ignored across all types. -->
+		  <Member fullName="Windows\.UI\.Core\.CoreDispatcher .+(::|\.)get_Dispatcher\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Dispatching\.DispatcherQueue .+(::|\.)get_DispatcherQueue\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Boolean .+(::|\.)get_IsStoreInitialized\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)GetValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp, System\.Object value\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ClearValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)ReadLocalValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)GetAnimationBaseValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Int64 .+(::|\.)RegisterPropertyChangedCallback\(Microsoft\.UI\.Xaml\.DependencyProperty dp, Microsoft\.UI\.Xaml\.DependencyPropertyChangedCallback callback\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)UnregisterPropertyChangedCallback\(Microsoft\.UI\.Xaml\.DependencyProperty dp, System\.Int64 token\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObject .+(::|\.)get_TemplatedParent\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)set_TemplatedParent\(Microsoft\.UI\.Xaml\.DependencyObject value\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)get_TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(System\.Object target, System\.String dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(System\.String dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(Microsoft\.UI\.Xaml\.DependencyProperty dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBindingValue\(System\.Object value, System\.String propertyName\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.Data\.BindingExpression .+(::|\.)GetBindingExpression\(Microsoft\.UI\.Xaml\.DependencyProperty dependencyProperty\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ClearBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)RestoreBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ResumeBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SuspendBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 	  </Methods>
 
 	  <Events>

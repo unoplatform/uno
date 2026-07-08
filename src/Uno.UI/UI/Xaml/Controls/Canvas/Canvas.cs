@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateArrange();
 			}
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateArrange();
 			}
@@ -50,7 +50,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+			if (dependencyObject is IFrameworkElement)
+			{
+				dependencyObject.InvalidateArrange();
+			}
 			if (dependencyObject is UIElement element)
 			{
 				var zindex = args.NewValue is int d ? (int?)d : null;

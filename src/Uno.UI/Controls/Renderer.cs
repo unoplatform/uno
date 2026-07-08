@@ -126,11 +126,7 @@ namespace Uno.UI.Controls
 		}
 
 		public static bool TryGetNative<TElement, TRenderer, TNative>(this TElement element, out TNative native)
-			where TElement :
-#if HAS_UNO
-			class,
-#endif
-			DependencyObject
+			where TElement : DependencyObject
 			where TRenderer : Renderer<TElement, TNative>
 			where TNative : class
 		{

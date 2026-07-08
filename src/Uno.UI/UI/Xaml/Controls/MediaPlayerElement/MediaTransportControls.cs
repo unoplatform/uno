@@ -1244,7 +1244,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool InitializeTemplateChild<T>(
 			string childName,
 			string? uiaKey,
-			[NotNullWhen(true)] out T? child) where T : class, DependencyObject
+			[NotNullWhen(true)] out T? child) where T : DependencyObject
 		{
 			child = GetTemplateChild<T>(childName);
 			if (child is { } && uiaKey is { })
