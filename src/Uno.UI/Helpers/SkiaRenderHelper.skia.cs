@@ -10,6 +10,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
 
@@ -32,13 +33,13 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath, SKPath? damage = null)
 	{
 		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 
-		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
+		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, damage);
 
 		var (path, nativeVisualsInZOrder) = !ContentPresenter.HasNativeElements() ?
 			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
@@ -329,6 +330,36 @@ internal static class SkiaRenderHelper
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
+		private (float panelWidth, float panelHeight, float col1Width, float col2Width) MeasurePanel()
+		{
+			var culture = CultureInfo.InvariantCulture;
+			var fpsText = _fps.ToString("F1", culture);
+			var droppedText = _droppedFrames.ToString(culture);
+			var unpresentedText = _unpresentedFrames.ToString(culture);
+			var frameTimeText = FormattableString.Invariant($"{_frameTime:F1} ms");
+			var delayText = _isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
+
+			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
+			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
+
+			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
+			var panelHeight = Padding + 3 * RowHeight + Padding;
+			return (panelWidth, panelHeight, col1Width, col2Width);
+		}
+
+		public bool TryGetDamageBounds(out SKRect bounds)
+		{
+			if (!IsEnabled)
+			{
+				bounds = default;
+				return false;
+			}
+
+			var (panelWidth, panelHeight, _, _) = MeasurePanel();
+			bounds = new SKRect(0, 0, panelWidth, panelHeight);
+			return true;
+		}
+
 		public void DrawFps(SKCanvas canvas)
 		{
 			if (!IsEnabled)
@@ -344,11 +375,7 @@ internal static class SkiaRenderHelper
 			var isIdle = _isIdle;
 			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
 
-			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
-			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
-
-			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
-			var panelHeight = Padding + 3 * RowHeight + Padding;
+			var (panelWidth, panelHeight, col1Width, col2Width) = MeasurePanel();
 
 			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, isIdle ? _idleBackgroundPaint : _backgroundPaint);
 

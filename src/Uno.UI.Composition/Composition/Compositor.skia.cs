@@ -190,7 +190,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, SKPath? damage = null)
 	{
 		if (rootVisual is null)
 		{
@@ -222,7 +222,7 @@ public partial class Compositor
 		// re-requests below still run, so the scene stays live without producing pixels.
 		if (!SkipVisualTreePainting)
 		{
-			rootVisual.RenderRootVisual(canvas, null);
+			rootVisual.RenderRootVisual(canvas, null, damage);
 		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
