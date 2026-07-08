@@ -713,10 +713,11 @@ namespace Microsoft.UI.Text
 
 		public void Copy()
 		{
-			// TODO Uno: only the plain-text clipboard payload is written; rich/RTF is a follow-up.
+			// Plain text is written to the OS clipboard; when ClipboardCopyFormat is AllFormats the
+			// span's character formatting is preserved for a matching paste via an in-process payload.
 			if (_start != _end)
 			{
-				_document.CopyPlainTextToClipboard(_start, _end);
+				_document.CopyToClipboard(_start, _end);
 			}
 		}
 
@@ -727,7 +728,7 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
-			_document.CopyPlainTextToClipboard(_start, _end);
+			_document.CopyToClipboard(_start, _end);
 			_document.ReplaceRange(_start, _end, string.Empty);
 			_end = _start;
 			OnRangeChanged();
@@ -735,8 +736,9 @@ namespace Microsoft.UI.Text
 
 		public void Paste(int format)
 		{
-			// TODO Uno: 'format' is ignored (plain text only). The OS clipboard read is async on Uno, so
-			// unlike WinUI's synchronous paste this replaces the range on a later dispatcher turn.
+			// The OS clipboard read is async on Uno, so unlike WinUI's synchronous paste this replaces the
+			// range on a later dispatcher turn. A matching in-process rich payload restores formatting; the
+			// 'format' argument (a RichEdit clipboard-format id) is not used to select an OS payload.
 			var start = _start;
 			var end = _end;
 			_document.BeginPastePlainText(start, end, caret =>
