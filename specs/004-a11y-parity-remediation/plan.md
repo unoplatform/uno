@@ -159,6 +159,16 @@ switch, then add the missing branches **once** in the base with abstract `Update
 backend. Add the corresponding UIA property IDs to the Win32 map (most already exist in
 `Win32UIAutomationInterop`).
 
+**Producer-side parity note.** WinUI auto-diffs only IsEnabled/IsOffscreen/Name/ItemStatus
+(`AutomationPeer.cpp:1777-1850`); other `AutomationProperties` changes reach UIA only when
+app/control code calls `RaisePropertyChangedEvent` explicitly. The consumer branches above must
+therefore handle app-raised events — Uno's DP callbacks for Name/HeadingLevel/IsDataValidForForm
+already exceed WinUI here. Also missing from the Win32 map today: ScrollPercent (WASM handles
+it, Win32 drops it), Selection, FullDescription, IsDialog, PositionInSet/SizeOfSet/Level,
+LocalizedControlType. When extending the map from WinUI's `ConvertEnumToId` table, do **not**
+copy its `APIsContentElement`↔`APIsControlElement` swap (`UIAWindow.cpp:2125-2128`) — an
+upstream WinUI bug.
+
 ### XP-03 — Disabled-action exception parity  `MEDIUM`
 
 WinUI action providers throw `UIA_E_ELEMENTNOTENABLED` (HRESULT `0x80040200`) when a pattern
@@ -265,6 +275,64 @@ accessibility is on, so controls raise/compute events without a matching UIA sub
   parity, track the **raw Win32 UIA `Notification_Event` advise counter** internally (WinUI's
   `m_cAdviseNotificationEvent`) and expose a notification-specific listener check. Note that (a)
   is a *safe fallback*, not WinUI-equivalent — WinUI does gate on its notification advise count.
+- **Implementation prerequisite:** the `AdviseEventAdded/Removed` methods on the provider are
+  currently **unreachable dead code** — `IRawElementProviderAdviseEvents` is never declared as a
+  COM interface on `Win32RawElementProvider` (`Win32RawElementProvider.cs:1466-1474`), so UIA
+  cannot QI it. Declaring and implementing the interface comes before any advise counting.
+
+### W32-05 — StructureChanged shape: coarse `ChildrenInvalidated` only  `HIGH`
+Master coalesces every tree mutation into `StructureChangeType.ChildrenInvalidated` on the
+nearest ancestor (`Win32Accessibility.cs:415-431`). WinUI raises per-child `ChildAdded` **on the
+added child** (null runtime id) and `ChildRemoved` **on the parent** carrying the removed child's
+runtime id, switching to `ChildrenBulkAdded`/`ChildrenBulkRemoved` past
+`AP_BULK_CHILDREN_LIMIT = 20`, and to `ChildrenInvalidated` only when added+removed together
+exceed the limit (`AutomationEventsHelper.cpp:95-173`).
+- A WinUI-faithful implementation already exists on branch `dev/doti/win32-uia-childadded-events`
+  (commits `3f6a6171a1`, `99b4addb0a`) — fold it into this remediation.
+- Two WinUI details to verify when merging: Added-then-Removed (and Removed-then-Added) pairs for
+  the same `(child, parent)` key **cancel out** within a batch
+  (`AutomationEventsHelper.cpp:283-297`), and `Reordered` is never fired (`:195-198`).
+
+### W32-06 — Remaining `GetPropertyValue` holes  `MEDIUM`
+Beyond W32-03, `Win32RawElementProvider.GetPropertyValue` (`Win32RawElementProvider.cs:203-294`)
+omits or nulls properties WinUI serves (`UIAWrapper.cpp:485-795`):
+
+| Property | WinUI behavior / Uno fix |
+|----------|--------------------------|
+| `ClickablePoint` | peer `GetClickablePoint()`, client→screen, `VT_EMPTY` when `(0,0)` (`UIAWrapper.cpp:551-574`). FlaUI/Appium `GetClickablePoint` relies on it — currently absent entirely. |
+| `FlowsTo` / `FlowsFrom` | peer-array variants (`UIAWrapper.cpp:682-687`); FEAP implements both and WASM already consumes them — pure wiring. |
+| `Culture` | served from peer (`:756`); also fix shared `GetCultureHelper` hardcoded `return 0` (`AutomationPeer.h.mux.cs:60-69`) to read the Culture DP. |
+| `AnnotationTypes` / `AnnotationObjects` | one `GetAnnotations` call serves both ids (`:707-712`); wire FEAP's orphaned `GetAnnotationsCoreImpl` to `GetAnnotationsCore` and raise the **dual** property-changed WinUI emits on annotation change (`UIAWindow.cpp:1753-1783`). |
+| `IsPeripheral` | served (`:736`); Uno stubs null. |
+
+### W32-07 — TextRange granularity + reserved values  `MEDIUM`
+`TextRangeAdapter` treats `TextUnit.Line`/`Paragraph` as the whole document, returns a single
+whole-element rect from `GetBoundingRectangles`, and returns `null` from
+`GetAttributeValue`/`FindAttribute` (`TextRangeAdapter.cs:56-153`). WinUI returns
+`UiaGetReservedNotSupportedValue` for unsupported text attributes
+(`UIAPatternProviderWrapper.h:1790-1791`) — null is a protocol deviation. Degrades
+Narrator/NVDA per-line/word navigation and caret rects in multiline `TextBox`.
+- **Fix:** translate null → UIA reserved not-supported value in the Win32 wrapper; longer-term,
+  back Line/Word/Character units and per-range rects with the Skia text layout.
+
+### W32-08 — `WindowOpened`/`WindowClosed` dropped  `MEDIUM`
+`TeachingTipAutomationPeer` raises both (`TeachingTipAutomationPeer.cs:82-104`), but
+`Win32Accessibility.NotifyAutomationEvent` has no case for them (`Win32Accessibility.cs:556-637`),
+so they never reach `UiaRaiseAutomationEvent`. WinUI maps both event ids (`UIAWindow.cpp:1934+`).
+Two-line fix; audit other dialog-like surfaces (ContentDialog) for the same raise while there.
+
+### W32-09 — Bridge polish  `LOW`
+- **WM_GETOBJECT** answers only `UiaRootObjectId` (`Win32WindowWrapper.cs:241-246`); WinUI passes
+  wParam/lParam through `UiaReturnRawElementProvider` unconditionally
+  (`JupiterControl.cpp:612-639`), letting the UIA↔MSAA bridge serve legacy `OBJID_CLIENT` clients.
+- **No hwnd map flush on destroy:** WinUI calls `UiaReturnRawElementProvider(hwnd, 0, 0, nullptr)`
+  in `FlushUiaBridgeEventTable` (`UIAWindow.cpp:2794-2800`); Uno disconnects providers
+  individually but never clears the hwnd association.
+- **Focus raise gating:** WinUI `SetFocusHelper` raises only when listening + keyboard-focusable +
+  not already focused (`AutomationPeer.cpp:1461-1491`); Uno proceeds unconditionally
+  (`AutomationPeer.mux.cs:442-444` TODO) — duplicate focus announcements possible.
+- **FrameworkId:** Uno returns `"Uno"`, WinUI `"XAML"` (`UIAWrapper.cpp:672-676`). NVDA/JAWS key
+  framework-specific quirk handling off this string — keep `"Uno"` only as a conscious decision.
 
 ---
 
@@ -321,6 +389,25 @@ no active item at creation (`SemanticElements.ts:1502-1547`).
 `SemanticElementFactory.cs:1300-1328`, `SemanticElements.ts:419-430`).
 - **Fix:** remove the unused stale imports (or update signatures).
 
+### WA-08 — IsOffscreen/clipping never reflected  `MEDIUM`
+`OnSizeOrOffsetChanged` deliberately avoids `peer.IsOffscreen()` because
+`UIElement.GetGlobalBoundsWithOptions` is a stub returning an empty rect
+(`WebAssemblyAccessibility.cs:718-723`); overlay visibility relies on `Visual.IsVisible` alone,
+so ancestor-clipped content can stay exposed to AT.
+- **Fix:** implement the global-bounds helper (shared win — it also feeds `IsOffscreenImpl` on
+  all Skia backends, `AutomationPeer.mux.cs:295-349`), then honor offscreen state in the overlay.
+
+### WA-09 — Minor ARIA + dead code  `LOW`
+- `aria-current` and `aria-colspan`/`aria-rowspan` never emitted; `aria-valuetext` only for
+  Slider, not generic RangeValue providers.
+- RichTextBlock standalone text unsupported (documented FR-015 limitation,
+  `WebAssemblyAccessibility.cs:1481-1482`).
+- Unused C# debounce infra `QueueUpdate`/`FlushPendingUpdates`
+  (`WebAssemblyAccessibility.cs:196-306`) is not driven by the live property path — wire it up
+  or remove it.
+- `OnScroll` carries a TODO to route via automation peers instead of per-scroller type checks
+  (`WebAssemblyAccessibility.cs:958-959`).
+
 ---
 
 ## 6. macOS (NSAccessibility) — platform-specific findings
@@ -362,6 +449,32 @@ mutate fields without posting (`UNOAccessibility.m:1136-1140,1159-1178,1188-1231
 VoiceOver may serve cached values.
 - **Fix:** post value/title/layout notifications where AppKit may cache.
 
+### MAC-06 — AutomationId not exposed as `accessibilityIdentifier`  `MEDIUM`
+No `accessibilityIdentifier` is set on `UNOAccessibilityElement`;
+`AutomationProperties.AutomationId` never crosses the P/Invoke boundary. Blocks XCUITest/Appium
+element lookup (the WASM overlay exposes `xamlautomationid` for exactly this purpose).
+- **Fix:** add a native `unoIdentifier` property + `accessibilityIdentifier` override, push it
+  from `ApplyAttributes` and on AutomationId change.
+
+### MAC-07 — Computed attributes never reach AppKit  `MEDIUM`
+`AutomationProperties.RoleOverride` affects only focusability (`SkiaAccessibilityBase.cs:489-506`),
+not native role resolution. `AriaMapper.GetAriaAttributes` computes HasPopup, Invalid,
+KeyShortcuts, AccessKey, MultiSelectable, ValueText, Controls, DescribedBy, LabelledBy
+(`AriaMapper.cs:656-735`) — none have a native property or P/Invoke on macOS.
+- **Fix:** wire RoleOverride into `ResolveRole`; extend `UNOAccessibilityElement` +
+  `ApplyAttributes` for the attributes with NSAccessibility equivalents (invalid, valuetext →
+  value description, haspopup → subrole/actions, multiselectable). Folds into the XP-02 base-map
+  consolidation.
+
+### MAC-08 — Interaction/text polish  `LOW`
+- No `showMenu` action (peer `ShowContextMenu` support exists) and no NSAccessibility scroll
+  actions (`UNOAccessibility.m:578-601`).
+- `accessibilityDisclosureLevel` hardcoded to 0 (`UNOAccessibility.m:520-522`).
+- Multiline text line rects estimated by even height division (`UNOAccessibility.m:785-794`) —
+  approximate caret/range geometry.
+- Text selection pushed only for `TextBox`, not PasswordBox/RichEditBox
+  (`MacOSAccessibility.cs:794-802`).
+
 ---
 
 ## 7. Shared core (peers) — findings
@@ -380,6 +493,27 @@ The shared Skia path resolves owners via `TryGetPeerOwner`, not
 TreeItem event targeting can therefore diverge from WinUI on non-Win32 backends.
 - **Fix:** resolve EventsSource before property/event provider routing on the shared path.
 
+### SH-03 — `RaiseStructureChangedEvent` never reaches the listener  `MEDIUM`
+The public API validates args, then stops ("TODO Uno", `AutomationPeer.partial.mux.cs:649-665`);
+backend visual-tree hooks cover framework-driven mutations only. WinUI's managed
+`RaiseStructureChangedEventImpl` raises for real (`AutomationPeer_Partial.cpp:791-857`) —
+custom peers overriding `GetChildrenCore` (the documented WinUI pattern for composite and
+virtualized controls) have no way to signal structure changes on Uno.
+- **Fix:** route through `IAutomationPeerListener` into the same per-backend structure paths
+  used by tree mutations. Pairs with W32-05; WASM can keep its no-op (DOM mutation is the
+  structure signal there).
+
+### SH-04 — Landmark elements not force-promoted into the tree  `MEDIUM`
+WinUI forces any element setting `LandmarkType`/`LocalizedLandmarkType` into the UIA tree by
+assigning `LandmarkTargetAutomationPeer` (`framework.cpp:374-391`) — the same mechanism as
+Name/LabeledBy → `NamedContainerAutomationPeer`, which Uno already has
+(`FrameworkElement.cs:954-976`). Uno lacks the landmark half and the peer type, so
+`<Grid AutomationProperties.LandmarkType="Navigation">` is invisible on Win32/macOS (the WASM
+overlay independently keeps landmark elements in `IsSemanticElement`).
+- **Fix:** add `LandmarkTargetAutomationPeer` and extend the promotion check. Timing caveat:
+  WinUI promotes at DP-set time, Uno checks at peer-creation — verify an element whose peer was
+  already requested (and null-cached) before the DP was set still promotes afterwards.
+
 ---
 
 ## 8. Phased remediation roadmap
@@ -391,6 +525,8 @@ Ordered for maximum parity-per-change and to land shared fixes before platform c
 - XP-04 `RaiseNotificationEvent` stable-method wiring (keep experimental enum out).
 - XP-03 disabled-action guard + exception type.
 - SH-02 EventsSource-aware routing.
+- SH-03 `RaiseStructureChangedEvent` listener wiring.
+- SH-04 landmark promotion (`LandmarkTargetAutomationPeer`).
 
 **Phase 2 — Live property-change consolidation (XP-02).**
 - Migrate WASM (then macOS) to route through the generalized base map (spec 003 FR-010).
@@ -399,19 +535,24 @@ Ordered for maximum parity-per-change and to land shared fixes before platform c
 - Extend the Win32 property map with the corresponding UIA IDs.
 
 **Phase 3 — Win32 correctness.**
+- W32-05 merge the `dev/doti/win32-uia-childadded-events` StructureChanged work first (verify
+  WinUI cancellation semantics).
 - W32-01 TextRange child providers, W32-02 TextEdit/LayoutInvalidated events,
-  W32-03 ControllerFor/DescribedBy, XP-01 TitleBar control type, XP-04 per-peer notification
-  refinement. (W32-04 advise-count gating optional/last.)
+  W32-03 ControllerFor/DescribedBy, W32-06 remaining property holes (ClickablePoint first —
+  unblocks FlaUI/Appium), W32-07 TextRange reserved values, W32-08 WindowOpened/Closed,
+  XP-01 TitleBar control type, XP-04 per-peer notification refinement.
+  (W32-04 advise-count gating + W32-09 bridge polish optional/last.)
 
 **Phase 4 — WASM correctness.**
 - WA-01 name-prohibited generic, WA-02 dangling IDREFs, WA-03 PasswordBox/placeholder,
   WA-04 LabeledBy flattening, WA-05 unnamed landmarks, WA-06 generic/virtualized parity,
-  WA-07 stale interop cleanup.
+  WA-08 global-bounds/offscreen, WA-07 stale interop cleanup, WA-09 minor ARIA + dead code.
 
 **Phase 5 — macOS correctness.**
 - MAC-01 radio AXValue, MAC-02 scroll re-emission, MAC-03 tree-change notifications,
-  MAC-04 scrollbar actions, MAC-05 state notifications, plus the macOS control-type→native-role
-  path from XP-01.
+  MAC-04 scrollbar actions, MAC-06 accessibilityIdentifier, MAC-07 RoleOverride + computed
+  attributes, MAC-05 state notifications, MAC-08 interaction/text polish, plus the macOS
+  control-type→native-role path from XP-01.
 
 **Phase 6 — Peer surface + polish.**
 - SH-01 missing peers (as needed), remaining LOW items.
@@ -456,6 +597,16 @@ Ordered for maximum parity-per-change and to land shared fixes before platform c
   standard notifications; Raw pruning in initial + dynamic traversal (macOS).
 - Landmark initial mapping + roledescription-from-authored-localized-type; virtualized item
   container resolution with parent fallback (shared).
+- `RaiseAutomationEvent` ListenerExists gating mirrors `CAutomationPeer::RaiseAutomationEvent`;
+  EventsSource generation restricted to ListItem/TabItem/TreeItem with the same re-entrancy
+  guard as WinUI (`AutomationPeer.mux.cs:21-90`).
+- Structure bulk threshold 20 equals WinUI `AP_BULK_CHILDREN_LIMIT`; `GetEmbeddedFragmentRoots`
+  returning null matches WinUI (also null); `RaiseAutomaticPropertyChanges` diffs exactly WinUI's
+  four tracked properties.
+- No `LegacyIAccessible` pattern = parity — WinUI providers don't expose it either (UIA core
+  bridges MSAA); Win32 wires 33 pattern wrappers, matching WinUI's full wrapper set.
+- Name/LabeledBy → `NamedContainerAutomationPeer` promotion present
+  (`FrameworkElement.cs:954-976`), matching `framework.cpp:400-418`.
 
 ---
 
