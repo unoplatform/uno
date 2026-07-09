@@ -45,7 +45,7 @@ Phase 5 (macOS — code-review + compile validated; runtime steps in `macos-veri
 - ✅ **MAC-01** — `uno_accessibility_update_selected` keeps `_unoValue` (AXValue) in sync for
   RadioButton/Tab/TabItem on selection change (+ value-changed notification).
 
-Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM assertions, `Given_WasmAria`):
+Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM assertions, `Given_WasmAria` + `Given_WasmAriaRelations`):
 - ✅ **WA-01** — `role=generic` (Custom) is ARIA name-prohibited; a named generic container is now
   promoted to `role=group` (permits a name), matching WinUI's named-container → UIA Group.
 - ✅ **WA-04** — the factory no longer emits a flattened `aria-label` when a valid `aria-labelledby`
