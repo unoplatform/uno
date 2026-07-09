@@ -54,18 +54,9 @@
 				const isOnButton = active instanceof HTMLElement && active.id === "uno-enable-accessibility";
 
 				if (evt.type === "keydown") {
-					// No element focused yet — let browser Tab to the prepended button
 					const isUnfocused = !active || active === document.body || active === document.documentElement;
-					if (isUnfocused) {
-						return;
-					}
-
-					// Button focused + Shift+Tab BEFORE the user has entered the XAML
-					// app — let browser move focus back to the previous browser-level
-					// focusable (e.g. the address bar). Once focus has entered the app,
-					// Shift+Tab must reach the managed FocusManager so the user can
-					// navigate backward in XAML.
-					if (isOnButton && evt.shiftKey && !BrowserKeyboardInputSource._hasUserEnteredApp) {
+					if (BrowserKeyboardInputSource.shouldLetBrowserHandleTabKeydown(
+						evt.shiftKey, isOnButton, isUnfocused, BrowserKeyboardInputSource._hasUserEnteredApp)) {
 						return;
 					}
 
@@ -97,6 +88,34 @@
 			if (result == HtmlEventDispatchResult.PreventDefault) {
 				evt.preventDefault();
 			}
+		}
+
+		// Pure, side-effect-free routing decision for a Tab/Shift+Tab keydown raised
+		// while the "Enable Accessibility" button is present. Extracted so the
+		// focus-navigation contract is covered by a deterministic runtime test
+		// (Given_BrowserKeyboardInputSource) instead of a flaky browser
+		// focus-escape assertion. Returns true when the browser's native Tab
+		// navigation should handle the event — i.e. it must NOT be routed to the
+		// managed FocusManager.
+		public static shouldLetBrowserHandleTabKeydown(
+			shiftKey: boolean,
+			activeIsButton: boolean,
+			activeIsUnfocused: boolean,
+			hasUserEnteredApp: boolean): boolean {
+			// No element focused yet — let the browser Tab to the prepended button.
+			if (activeIsUnfocused) {
+				return true;
+			}
+
+			// Button focused + Shift+Tab BEFORE focus has entered the XAML app — let
+			// the browser move focus back to the previous browser-level focusable
+			// (e.g. the address bar). Once focus has entered the app, Shift+Tab must
+			// reach the managed FocusManager so the user can navigate backward in XAML.
+			if (activeIsButton && shiftKey && !hasUserEnteredApp) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -84,6 +85,41 @@ public class Given_BrowserKeyboardInputSource
 		Assert.AreEqual(0xBB, (int)captured!.VirtualKey);
 		Assert.IsTrue((captured.KeyboardModifiers & VirtualKeyModifiers.Shift) == VirtualKeyModifiers.Shift,
 			"Shift modifier should be set on KeyEventArgs.");
+	}
+
+	// Regression guard for Shift+Tab focus routing while the "Enable Accessibility"
+	// button is present. Exercises the pure decision the TS host applies (extracted
+	// as BrowserKeyboardInputSource.shouldLetBrowserHandleTabKeydown) rather than a
+	// flaky browser focus-escape assertion. The key case: once focus has entered the
+	// app, Shift+Tab on the button must route to the managed FocusManager (return
+	// false) instead of exiting to the browser.
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_ShiftTab_On_AccessibilityButton_Routing_Respects_App_Entry()
+	{
+		static string B(bool value) => value ? "true" : "false";
+		static bool LetBrowserHandle(bool shift, bool onButton, bool unfocused, bool entered)
+		{
+			var result = WasmSemanticDomHelper.InvokeBrowserJs(
+				$"String(Uno.UI.Runtime.Skia.BrowserKeyboardInputSource.shouldLetBrowserHandleTabKeydown({B(shift)}, {B(onButton)}, {B(unfocused)}, {B(entered)}))");
+			Assert.IsTrue(result is "true" or "false",
+				$"shouldLetBrowserHandleTabKeydown was not reachable/returned unexpected value: '{result}'.");
+			return result == "true";
+		}
+
+		// Nothing focused yet — always let the browser Tab onto the prepended button.
+		Assert.IsTrue(LetBrowserHandle(shift: false, onButton: false, unfocused: true, entered: false));
+		Assert.IsTrue(LetBrowserHandle(shift: true, onButton: false, unfocused: true, entered: false));
+
+		// Button focused + Shift+Tab BEFORE entering the app — exit to the browser.
+		Assert.IsTrue(LetBrowserHandle(shift: true, onButton: true, unfocused: false, entered: false));
+
+		// Button focused + Shift+Tab AFTER entering the app — route to managed (regression).
+		Assert.IsFalse(LetBrowserHandle(shift: true, onButton: true, unfocused: false, entered: true));
+
+		// Button focused + Tab (no shift) — always route to managed.
+		Assert.IsFalse(LetBrowserHandle(shift: false, onButton: true, unfocused: false, entered: false));
+		Assert.IsFalse(LetBrowserHandle(shift: false, onButton: true, unfocused: false, entered: true));
 	}
 }
 #endif
