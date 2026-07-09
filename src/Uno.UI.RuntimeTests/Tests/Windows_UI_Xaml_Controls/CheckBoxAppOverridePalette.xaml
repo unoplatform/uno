@@ -1778,46 +1778,46 @@
     <!--  Sample Red Brushes  -->
     <SolidColorBrush x:Key="SampleRedBrush" Color="{StaticResource SampleRed}" />
     <SolidColorBrush x:Key="SampleRed80Brush"
-                     Opacity="80"
+                     Opacity="0.8"
                      Color="{StaticResource SampleRed}" />
     <SolidColorBrush x:Key="SampleRed60Brush"
-                     Opacity="60"
+                     Opacity="0.6"
                      Color="{StaticResource SampleRed}" />
     <SolidColorBrush x:Key="SampleRed40Brush"
-                     Opacity="40"
+                     Opacity="0.4"
                      Color="{StaticResource SampleRed}" />
     <SolidColorBrush x:Key="SampleRed20Brush"
-                     Opacity="20"
+                     Opacity="0.2"
                      Color="{StaticResource SampleRed}" />
 
     <!--  Sample Gold Brushes  -->
     <SolidColorBrush x:Key="SampleGoldBrush" Color="{StaticResource SampleGold}" />
     <SolidColorBrush x:Key="SampleGold80Brush"
-                     Opacity="80"
+                     Opacity="0.8"
                      Color="{StaticResource SampleGold}" />
     <SolidColorBrush x:Key="SampleGold60Brush"
-                     Opacity="60"
+                     Opacity="0.6"
                      Color="{StaticResource SampleGold}" />
     <SolidColorBrush x:Key="SampleGold40Brush"
-                     Opacity="40"
+                     Opacity="0.4"
                      Color="{StaticResource SampleGold}" />
     <SolidColorBrush x:Key="SampleGold20Brush"
-                     Opacity="20"
+                     Opacity="0.2"
                      Color="{StaticResource SampleGold}" />
 
     <!--  Navy Brushes  -->
     <SolidColorBrush x:Key="NavyBrush" Color="{StaticResource Navy}" />
     <SolidColorBrush x:Key="Navy80Brush"
-                     Opacity="80"
+                     Opacity="0.8"
                      Color="{StaticResource Navy}" />
     <SolidColorBrush x:Key="Navy60Brush"
-                     Opacity="60"
+                     Opacity="0.6"
                      Color="{StaticResource Navy}" />
     <SolidColorBrush x:Key="Navy40Brush"
-                     Opacity="40"
+                     Opacity="0.4"
                      Color="{StaticResource Navy}" />
     <SolidColorBrush x:Key="Navy20Brush"
-                     Opacity="20"
+                     Opacity="0.2"
                      Color="{StaticResource Navy}" />
 
     <!--  Navy 10% Brushes  -->
@@ -1827,37 +1827,37 @@
     <!--  Blue Brushes  -->
     <SolidColorBrush x:Key="BlueBrush" Color="{StaticResource Blue}" />
     <SolidColorBrush x:Key="Blue80Brush"
-                     Opacity="80"
+                     Opacity="0.8"
                      Color="{StaticResource Blue}" />
     <SolidColorBrush x:Key="Blue60Brush"
-                     Opacity="60"
+                     Opacity="0.6"
                      Color="{StaticResource Blue}" />
     <SolidColorBrush x:Key="Blue40Brush"
-                     Opacity="40"
+                     Opacity="0.4"
                      Color="{StaticResource Blue}" />
     <SolidColorBrush x:Key="Blue20Brush"
-                     Opacity="20"
+                     Opacity="0.2"
                      Color="{StaticResource Blue}" />
 
     <!--  Green Brushes  -->
     <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource Green}" />
     <SolidColorBrush x:Key="Green80Brush"
-                     Opacity="80"
+                     Opacity="0.8"
                      Color="{StaticResource Green}" />
     <SolidColorBrush x:Key="Green60Brush"
-                     Opacity="60"
+                     Opacity="0.6"
                      Color="{StaticResource Green}" />
     <SolidColorBrush x:Key="Green40Brush"
-                     Opacity="40"
+                     Opacity="0.4"
                      Color="{StaticResource Green}" />
     <SolidColorBrush x:Key="Green20Brush"
-                     Opacity="20"
+                     Opacity="0.2"
                      Color="{StaticResource Green}" />
 
     <!--  Gray Brushes  -->
     <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="Gray10Brush"
-                     Opacity="10"
+                     Opacity="0.1"
                      Color="{StaticResource Gray}" />
 
     <!--  Common Brushes  -->
