@@ -5,9 +5,9 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Uno.HotReload.Utils;
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
-public static partial class RoslynExtensions
+public static partial class RoslynTargetFrameworkExtensions
 {
 	/// <summary>
 	/// Resolves the short MSBuild TFM (e.g. <c>net10.0-browserwasm</c>, <c>net10.0-ios26.0</c>,

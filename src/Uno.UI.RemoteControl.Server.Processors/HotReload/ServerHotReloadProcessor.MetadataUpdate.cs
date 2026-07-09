@@ -113,34 +113,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
-<<<<<<< HEAD
 					var workspace = await CreateCompilation(configureServer, ct);
 					ct.Register(() => workspace.Dispose());
-=======
-					var properties = configureServer.MSBuildProperties.ToDictionary();
-					var runtimeTargetFramework = GetRuntimeTargetFramework(configureServer);
-<<<<<<< HEAD
-					async ValueTask<Solution> CreateMsBuildWorkspace(CancellationToken ct2)
-						=> await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, runtimeTargetFramework, ct2);
->>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 
 					var fileSystemWatch = ObserveSolutionPaths(workspace.CurrentSolution, workspace.OutputPaths);
 					ct.Register(() => fileSystemWatch.Dispose());
-=======
-					async ValueTask<Solution> LoadSolutionFromDisk(CancellationToken ct2)
-					{
-						var workspace = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
-
-						// Restrict a multi-targeted head to the flavor the running application reported: the
-						// workspace loaded one project per TargetFrameworks entry (the evaluated TargetFramework
-						// is empty), and the non-running flavors would otherwise block hot reload with their
-						// compilation errors or fail the initial emit (they were never built).
-						return workspace.CurrentSolution.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter);
-					}
-
-					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
-					ct.Register(() => manager.Dispose());
->>>>>>> a02db37b5b (refactor(hr): expose MSBuildWorkspace from the provider, drop workspace-based APIs (spec 047))
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
@@ -159,10 +136,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-<<<<<<< HEAD
-		private record HotReloadWorkspace(Workspace InnerWorkspace, WatchHotReloadService WatchService, string?[] OutputPaths) : IDisposable
+		private record HotReloadWorkspace(Workspace InnerWorkspace, WatchHotReloadService WatchService, Solution InitialSolution, string?[] OutputPaths) : IDisposable
 		{
-			public Solution CurrentSolution { get; set; } = InnerWorkspace.CurrentSolution;
+			public Solution CurrentSolution { get; set; } = InitialSolution;
 
 			/// <inheritdoc />
 			public void Dispose()
@@ -173,22 +149,36 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		private async Task<HotReloadWorkspace> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
-=======
-		/// <summary>
-		/// Resolves the target framework the connected application runs on: the value the
-		/// client determined at runtime when available (see
-		/// <see cref="ConfigureServer.RuntimeTargetFramework"/>), otherwise — for older
-		/// clients — the <c>TargetFramework</c> MSBuild property captured at build time.
-		/// </summary>
-		private static string? GetRuntimeTargetFramework(ConfigureServer configureServer)
->>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 		{
-			if (configureServer.RuntimeTargetFramework is { Length: > 0 } runtimeTargetFramework)
+			// Clone the properties from the ConfigureServer
+			var properties = configureServer.MSBuildProperties.ToDictionary();
+
+			// Flag the current build as created for hot reload, which allows for running targets or settings
+			// props/items in the context of the hot reload workspace.
+			properties["UnoIsHotReloadHost"] = "True";
+
+			// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
+			// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
+			// Note: This is required to get HR to work on Rider 2024.3 with Android
+			// Note 2: We remove both properties to make sure to use the default behavior
+			var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
+				&& bool.TryParse(appendStr, out var append)
+				&& append;
+			var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
+			properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
+
+			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
 			{
-				return runtimeTargetFramework;
+				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+				{
+					// Set the RuntimeIdentifier as a temporary property so that we do not force the
+					// property as a read-only global property that would be transitively applied to
+					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+					// which references a netstd2.0 library project)
+					properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+				}
 			}
 
-<<<<<<< HEAD
 			// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
 			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
 			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
@@ -198,14 +188,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				properties["UnoHotReloadTargetFramework"] = targetFramework;
 			}
 
-			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
+			// Restrict the workspace to the flavor the running app reported (falls back to the
+			// build-captured TargetFramework for older clients that don't report it), so the
+			// non-running head flavors don't block hot reload with their compilation errors.
+			var runtimeTargetFramework = configureServer.RuntimeTargetFramework is { Length: > 0 } reportedTfm
+				? reportedTfm
+				: (string.IsNullOrEmpty(targetFramework) ? null : targetFramework);
+
+			var (workspace, watch, solution) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 				configureServer.ProjectPath,
 				_reporter,
 				configureServer.MetadataUpdateCapabilities,
 				properties,
+				runtimeTargetFramework,
 				ct);
 
-			return new HotReloadWorkspace(workspace, watch, [Trim(outputPath), Trim(intermediateOutputPath)]);
+			return new HotReloadWorkspace(workspace, watch, solution, [Trim(outputPath), Trim(intermediateOutputPath)]);
 
 			// We make sure to trim the output path from any TFM / RID / Configuration suffixes
 			// This is to make sure that if we have multiple active HR workspace (like an old Android emulator reconnecting while a desktop app is running),
@@ -232,11 +230,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				return null;
 			}
-=======
-			return configureServer.MSBuildProperties.TryGetValue("TargetFramework", out var captured) && captured is { Length: > 0 }
-				? captured
-				: null;
->>>>>>> 879f29acfa (feat(hr): restrict workspace to the app's runtime-reported target framework (spec 047))
 		}
 
 		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)

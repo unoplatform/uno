@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Uno.HotReload.Tracking;
 
-namespace Uno.HotReload.Utils;
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 
-public static partial class RoslynExtensions
+public static partial class RoslynTargetFrameworkExtensions
 {
 	/// <summary>
 	/// Platform identifiers that all designate the skia-desktop family: an application
@@ -14,6 +13,13 @@ public static partial class RoslynExtensions
 	/// <c>netX.0-desktop</c> or plain <c>netX.0</c> — a head defines only one of the two.
 	/// </summary>
 	private static readonly string[] _skiaDesktopPlatforms = ["", "desktop", "skia"];
+
+	/// <summary>
+	/// Path comparison matching the rest of the hot-reload processor (case-insensitive on
+	/// Windows, case-sensitive elsewhere). 6.6 has no shared <c>PathComparer</c> helper, so the
+	/// head-project path match uses this directly.
+	/// </summary>
+	private static readonly StringComparison _pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
 	/// <summary>
 	/// Splits a short TFM (or a runtime-reported descriptor using the same shape) into its
@@ -113,7 +119,7 @@ public static partial class RoslynExtensions
 		IReporter reporter)
 	{
 		var headFlavors = solution.Projects
-			.Where(p => PathComparer.PathEquals(p.FilePath, headProjectPath))
+			.Where(p => string.Equals(p.FilePath, headProjectPath, _pathComparison))
 			.ToList();
 
 		if (headFlavors.Count == 0)

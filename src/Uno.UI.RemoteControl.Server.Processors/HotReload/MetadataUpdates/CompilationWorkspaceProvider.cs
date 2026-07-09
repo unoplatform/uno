@@ -21,11 +21,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
+		public static async Task<(Workspace, WatchHotReloadService, Solution)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
+			string? runtimeTargetFramework,
 			CancellationToken ct)
 		{
 			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
@@ -99,7 +100,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					await Task.Delay(5_000, ct);
 				}
 			}
-			var currentSolution = workspace.CurrentSolution;
+			// Restrict a multi-targeted head to the flavor the running application reported: the
+			// workspace loads one project per TargetFrameworks entry when the evaluated TargetFramework
+			// is empty, and the non-running flavors would otherwise block hot reload with their
+			// compilation errors or fail the initial emit (they were never built).
+			var currentSolution = workspace.CurrentSolution.FilterHeadProjectTargetFramework(projectPath, runtimeTargetFramework, reporter);
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, ct);
 
@@ -112,7 +117,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				await project.GetCompilationAsync(ct);
 			}
 
-			return (workspace, hotReloadService);
+			return (workspace, hotReloadService, currentSolution);
 		}
 
 		public static void InitializeRoslyn(string? workDir)
