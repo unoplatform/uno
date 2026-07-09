@@ -91,10 +91,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		/// <summary>
 		/// Releases this collectible context's per-context hot-reload state: disposes the processor instance
-		/// (which disposes its <c>_agent</c> and detaches that agent's AssemblyLoad subscription), disposes
-		/// the shared element-update agent (detaching its AssemblyLoad subscription and clearing its
-		/// Type-keyed handler map), and clears the static references. No-op for the default (host) context or
-		/// a non-collectible owner, so a live processor is never torn down.
+		/// (which disposes its <c>_agent</c>, detaches that agent's AssemblyLoad subscription, and — for a
+		/// collectible owner — releases the per-context statics), then calls
+		/// <see cref="ReleasePerContextStatics"/> to cover a context that never initialized a processor
+		/// instance. No-op for the default (host) context or a non-collectible owner, so a live processor is
+		/// never torn down.
 		/// </summary>
 		private static void TearDownForAlcUnload()
 		{
@@ -108,17 +109,38 @@ namespace Uno.UI.RemoteControl.HotReload
 				_log.Trace("Tearing down hot-reload state for the collectible processor load context unload.");
 			}
 
+			// Detach the instance BEFORE disposing it: for a collectible owner Dispose() re-enters the
+			// static teardown through ReleasePerContextStatics() (never through this method, keeping the
+			// flow non-recursive), and clearing the reference first keeps the whole path idempotent.
+			var instance = _instance;
+			_instance = null;
+
 			try
 			{
-				_instance?.Dispose();
+				instance?.Dispose();
 			}
 			catch (Exception e)
 			{
 				_log.Error("Failed to dispose the hot-reload processor during collectible context teardown.", e);
 			}
 
-			_instance = null;
+			// Dispose() above already released the statics when an instance existed; this covers a context
+			// whose statics were populated without a processor instance ever being initialized.
+			ReleasePerContextStatics();
+		}
 
+		/// <summary>
+		/// Releases the per-context static hot-reload state that would otherwise pin a collectible owning
+		/// context: disposes the shared element-update agent (detaching its process-wide
+		/// <see cref="AppDomain.AssemblyLoad"/> subscription and clearing its Type-keyed handler map) and
+		/// clears the static references. Idempotent and never calls back into
+		/// <see cref="TearDownForAlcUnload"/>, so it is safe to invoke from both the
+		/// <see cref="AssemblyLoadContext.Unloading"/> teardown and an explicit host-driven
+		/// <see cref="Dispose"/> (the load-bearing release path on browser-wasm, where Unloading is not
+		/// raised — dotnet/runtime#34072).
+		/// </summary>
+		private static void ReleasePerContextStatics()
+		{
 			try
 			{
 				_elementAgent?.Dispose();

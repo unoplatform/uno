@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -31,6 +32,23 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 	{
 		_agent?.Dispose();
 		_agent = null;
+
+		// On runtimes where AssemblyLoadContext.Unloading is not raised for collectible contexts
+		// (browser-wasm, dotnet/runtime#34072) an explicit host-driven Dispose is the load-bearing
+		// release path, so when this processor copy is owned by a collectible context also release
+		// the per-context statics — most importantly the shared ElementUpdateAgent, whose
+		// process-wide AppDomain.AssemblyLoad subscription would otherwise pin the context after
+		// unload. The default/non-collectible case is deliberately left untouched: disposing a
+		// host-context processor must never tear down the shared element agent.
+		if (_processorAlc != AssemblyLoadContext.Default && _processorAlc.IsCollectible)
+		{
+			if (ReferenceEquals(_instance, this))
+			{
+				_instance = null;
+			}
+
+			ReleasePerContextStatics();
+		}
 	}
 
 	string IClientProcessor.Scope => WellKnownScopes.HotReload;
