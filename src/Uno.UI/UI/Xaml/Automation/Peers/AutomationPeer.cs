@@ -338,21 +338,35 @@ public partial class AutomationPeer : DependencyObject
 	// TODO (DOTI) Not in WinUI?
 	internal bool InvokeAutomationPeer()
 	{
+		// Native (non-UIA) accessibility activation paths call this helper (Android ViewClicked,
+		// iOS AccessibilityActivate, Skia-Android virtual nodes). WinUI pattern providers throw
+		// ElementNotEnabledException when the element is disabled (see ButtonAutomationPeer.Invoke,
+		// ToggleButtonAutomationPeer.Toggle, RadioButtonAutomationPeer.Select, ...). On these
+		// activation paths a disabled element should simply not activate, so swallow that exception
+		// and report "not invoked". The Win32 UIA COM wrappers call the providers directly (not via
+		// this helper), so they still surface UIA_E_ELEMENTNOTENABLED to the UIA client.
 		// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
-		if (this is IInvokeProvider invokeProvider)
+		try
 		{
-			invokeProvider.Invoke();
-			return true;
+			if (this is IInvokeProvider invokeProvider)
+			{
+				invokeProvider.Invoke();
+				return true;
+			}
+			else if (this is IToggleProvider toggleProvider)
+			{
+				toggleProvider.Toggle();
+				return true;
+			}
+			else if (this is ISelectionItemProvider selectionItemProvider)
+			{
+				selectionItemProvider.Select();
+				return true;
+			}
 		}
-		else if (this is IToggleProvider toggleProvider)
+		catch (ElementNotEnabledException)
 		{
-			toggleProvider.Toggle();
-			return true;
-		}
-		else if (this is ISelectionItemProvider selectionItemProvider)
-		{
-			selectionItemProvider.Select();
-			return true;
+			// Disabled element — treat as not invoked rather than surfacing the exception.
 		}
 
 		return false;
