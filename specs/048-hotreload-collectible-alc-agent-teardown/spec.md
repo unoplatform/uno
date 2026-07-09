@@ -49,17 +49,30 @@ host teardown should have released.
    (Uno.UI.RemoteControl/HotReload/ClientHotReloadProcessor.Common.cs / .Agent.cs):** the
    processor arms an `AssemblyLoadContext.Unloading` hook on its owning context, but only when
    that context is collectible and not the default. On unload it disposes the processor (which
-   disposes its `HotReloadAgent`), disposes the shared `ElementUpdateAgent`, and clears the
-   per-context statics. A live (default-context) processor is never touched.
+   disposes its `HotReloadAgent`), then releases the per-context statics via the shared
+   `ReleasePerContextStatics()` helper (disposing the shared `ElementUpdateAgent` and clearing
+   the static references). A live (default-context) processor is never touched.
+
+4. **Host-driven `ClientHotReloadProcessor.Dispose()` releases the per-context statics
+   (Uno.UI.RemoteControl/HotReload/ClientHotReloadProcessor.cs):** when the processor copy is
+   owned by a collectible non-default context, `Dispose()` — in addition to disposing its
+   `_agent` — clears the static `_instance` (when it references the disposing instance) and
+   calls `ReleasePerContextStatics()`. This makes an explicit host dispose sufficient on
+   runtimes where `Unloading` never fires (browser-wasm), instead of leaving the shared
+   `ElementUpdateAgent` subscribed to `AppDomain.AssemblyLoad` and pinning the context. The
+   flow is deliberately non-recursive (`Dispose()` never calls `TearDownForAlcUnload()`, and
+   the unload hook detaches `_instance` before disposing it) and idempotent (double-dispose
+   and dispose-then-unload are both safe). Default-context `Dispose()` behavior is unchanged —
+   a live host processor never tears down the shared element agent.
 
 ## Caveat: `Unloading` is not raised on browser-wasm
 
 `AssemblyLoadContext.Unloading` was observed **not** to be raised on the browser-wasm runtime
 — collectible-context unload is unimplemented there (dotnet/runtime#34072). The `Unloading`
 hook is therefore best-effort and only helps on runtimes that raise the event. The
-**load-bearing** path for wasm hosts is the `Dispose()`-side cache clearing: a host that
-disposes the processor/agents during its own teardown genuinely releases the context, without
-relying on `Unloading`.
+**load-bearing** path for wasm hosts is the `Dispose()`-side release (fixes 1, 2 and 4): a
+host that disposes the processor during its own teardown genuinely releases the context,
+without relying on `Unloading`.
 
 ## Validation
 
@@ -77,6 +90,22 @@ Red/fix/green (both tests fail on the pre-fix `Dispose`, which only detached the
     random module id that matches no loaded module, so nothing is applied to the runtime) and
     `_appliedAssemblies` (seeded via reflection, as it has no public writer) are both empty.
     Red before fix 2; green after.
+  - `When_ElementUpdateAgentDisposed_Then_AssemblyLoadSubscriptionDetached` — guards the
+    process-wide `AppDomain.AssemblyLoad` unsubscription (observed through the runtime's
+    `AssemblyLoadContext.AssemblyLoad` backing field, which the `AppDomain` event forwards to).
+  - `When_CollectibleContextProcessorDisposed_Then_PerContextStaticsReleased` — loads a real
+    copy of `Uno.UI.RemoteControl` into a collectible `AssemblyLoadContext` (the copy's
+    `_processorAlc` then resolves to that context, so the production gate is exercised, not
+    simulated), seeds the copy's static `_elementAgent`, and proves that a host-driven
+    `Dispose()` releases the static agent and detaches its `AssemblyLoad` subscription, and
+    that double-dispose is safe. Red before fix 4; green after.
+  - `When_DefaultContextProcessorDisposed_Then_SharedElementAgentUntouched` — proves the
+    default-context `Dispose()` behavior is unchanged: the shared element agent stays alive
+    and subscribed.
+  - `When_TearDownForAlcUnload_WithLiveInstance_Then_TearsDownWithoutRecursion` — drives the
+    `Unloading`-path teardown against a collectible copy with a live `_instance` whose
+    `Dispose()` now re-enters the static release, proving the flow neither recurses nor throws
+    on repeat.
 
 The agents' internals are exercised via `InternalsVisibleTo("Uno.UI.RemoteControl.DevServer.Tests")`,
 which already exists; the private `_appliedAssemblies`/`_deltas` counts are read reflectively
