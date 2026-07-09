@@ -113,6 +113,11 @@ namespace Microsoft.UI.Xaml
 				{
 					this.Log().Warn("PagePool scavenger iteration failed", ex);
 				}
+
+				// A transient failure interrupted the loop; clear the guard so the next EnqueuePage
+				// can restart the scavenger via EnsureScavengerStarted. Leaving it set would
+				// permanently disable eviction and let the pool grow unbounded.
+				_scavengerStarted = false;
 			}
 		}
 
