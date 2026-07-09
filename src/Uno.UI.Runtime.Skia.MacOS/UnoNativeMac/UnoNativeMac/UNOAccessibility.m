@@ -591,7 +591,9 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 		[actions addObject:NSAccessibilityPressAction];
 	}
 
-	if (_unoHasRangeValue && role == NSAccessibilitySliderRole) {
+	// Increment/decrement actions apply to any range widget VoiceOver drives with the
+	// increment/decrement gestures — Slider and ScrollBar both expose RangeValue.
+	if (_unoHasRangeValue && (role == NSAccessibilitySliderRole || role == NSAccessibilityScrollBarRole)) {
 		[actions addObject:NSAccessibilityIncrementAction];
 		[actions addObject:NSAccessibilityDecrementAction];
 	}

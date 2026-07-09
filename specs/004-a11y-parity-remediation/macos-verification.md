@@ -108,3 +108,20 @@ stale checked state after selection changed. Native-only fix (build on macOS to 
 
 **Pass criteria:** after any selection change, the radio/tab `AXValue` reflects the current selection
 (no stale value); a value-changed notification fires so VoiceOver re-reads it.
+
+---
+
+## MAC-04 — Increment/decrement actions for ScrollBar
+
+**What changed.** `UNOAccessibility.m` `accessibilityActionNames` now advertises
+`NSAccessibilityIncrementAction`/`DecrementAction` for `NSAccessibilityScrollBarRole` as well as
+`NSAccessibilitySliderRole` (both are range widgets exposing RangeValue, and the native
+`accessibilityPerformIncrement`/`Decrement` handlers already work for both). Native-only fix.
+
+**How to verify on macOS.**
+1. Build native + SamplesApp; enable VoiceOver.
+2. Focus a standalone ScrollBar (or a ScrollViewer's scrollbar) sample.
+3. In Accessibility Inspector's Actions list, confirm **Increment** and **Decrement** appear.
+4. With VoiceOver, use the increment/decrement gestures (VO + up/down) and confirm the scrollbar value changes.
+
+**Pass criteria:** ScrollBar advertises and performs increment/decrement like Slider.
