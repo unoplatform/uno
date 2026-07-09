@@ -102,3 +102,16 @@ The default paths above can be overridden using the following feature flags:
 These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `UnoPlatformHostBuilder` instance is created.
 
 If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
+
+## Settings storage on iOS, tvOS, and Mac Catalyst
+
+On Apple platforms, `LocalSettings` and `RoamingSettings` are backed by a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as `Library/Preferences/UnoApplicationData.plist` inside the application sandbox. Both settings containers share this single backing store.
+
+If you need to access the stored values from native or interop code, open the suite explicitly:
+
+```csharp
+var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
+```
+
+> [!NOTE]
+> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Existing values are migrated to the `UnoApplicationData` container automatically the first time settings are accessed. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
