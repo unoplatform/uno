@@ -42,12 +42,20 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 		// host-context processor must never tear down the shared element agent.
 		if (_processorAlc != AssemblyLoadContext.Default && _processorAlc.IsCollectible)
 		{
+			// Only the active processor (or a context whose metadata updater never initialized an
+			// instance, so _instance is null and nothing live depends on the statics) may release
+			// the shared per-context statics. Disposing a non-active processor — e.g. a second
+			// RemoteControlClient in the same collectible context — must not tear down the shared
+			// _elementAgent out from under the still-live active processor.
 			if (ReferenceEquals(_instance, this))
 			{
 				_instance = null;
+				ReleasePerContextStatics();
 			}
-
-			ReleasePerContextStatics();
+			else if (_instance is null)
+			{
+				ReleasePerContextStatics();
+			}
 		}
 	}
 
