@@ -21,13 +21,15 @@ namespace Microsoft.UI.Xaml.Media;
 /// </remarks>
 internal sealed class CompositionTargetFrameDispatcher
 {
-	private EventHandler<object>[] _snapshot = Array.Empty<EventHandler<object>>();
+	// Element type is nullable: cleared slots hold null between frames (see Dispatch), so the
+	// buffer must not claim to always contain a non-null handler.
+	private EventHandler<object>?[] _snapshot = Array.Empty<EventHandler<object>?>();
 
 	/// <summary>
 	/// Test seam: the reused snapshot buffer. Slots MUST be null between frames so no handler is
 	/// rooted past its dispatch.
 	/// </summary>
-	internal IReadOnlyList<EventHandler<object>> Snapshot => _snapshot;
+	internal IReadOnlyList<EventHandler<object>?> Snapshot => _snapshot;
 
 	/// <summary>
 	/// Copies <paramref name="handlers"/> into the reused buffer, invokes each with
@@ -38,7 +40,7 @@ internal sealed class CompositionTargetFrameDispatcher
 		var count = handlers.Count;
 		if (_snapshot.Length < count)
 		{
-			_snapshot = new EventHandler<object>[count];
+			_snapshot = new EventHandler<object>?[count];
 		}
 
 		for (var i = 0; i < count; i++)
@@ -50,7 +52,9 @@ internal sealed class CompositionTargetFrameDispatcher
 		{
 			for (var i = 0; i < count; i++)
 			{
-				_snapshot[i](null!, null!);
+				// Non-null here: slots [0, count) were just populated from the (non-null) handler
+				// list above and are only cleared in the finally, after this loop.
+				_snapshot[i]!(null!, null!);
 			}
 		}
 		finally
