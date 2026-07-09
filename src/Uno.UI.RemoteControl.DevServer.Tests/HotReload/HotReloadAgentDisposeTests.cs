@@ -69,6 +69,28 @@ public class HotReloadAgentDisposeTests
 		Count(agent, "_appliedAssemblies").Should().Be(0, "Dispose must clear _appliedAssemblies");
 	}
 
+	[TestMethod]
+	public void When_HotReloadAgentDisposed_Then_HandlerActionsCacheCleared()
+	{
+		// Arrange
+		var agent = new HotReloadAgent(_ => { });
+
+		// Populate the metadata-update-handler cache. Each action in UpdateHandlerActions is a delegate
+		// built from a MethodInfo on a handler Type discovered by scanning this context's assemblies, so a
+		// non-null cache captures delegates/Types owned by the owning collectible context and pins it.
+		var handlerField = GetField(agent, "_handlerActions");
+		handlerField.SetValue(agent, new HotReloadAgent.UpdateHandlerActions());
+		handlerField.GetValue(agent).Should().NotBeNull("the handler-action cache was seeded");
+
+		// Act
+		agent.Dispose();
+
+		// Assert — the cache is released so the collectible context's handler delegates/Types are no longer
+		// retained by this agent. Fails against the pre-fix Dispose, which left _handlerActions populated.
+		handlerField.GetValue(agent).Should().BeNull(
+			"Dispose must null _handlerActions so the owning collectible context is not pinned");
+	}
+
 	private static FieldInfo GetField(object target, string name) =>
 		target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)
 		?? throw new InvalidOperationException($"Field '{name}' not found on {target.GetType()}.");
