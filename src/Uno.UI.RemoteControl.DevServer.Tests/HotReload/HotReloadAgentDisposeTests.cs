@@ -120,30 +120,39 @@ public class HotReloadAgentDisposeTests
 	public void When_CollectibleContextProcessorDisposed_Then_PerContextStaticsReleased()
 	{
 		// Arrange — real collectible-context copy of the processor assembly (see class remarks).
-		var (copy, processorType) = LoadCollectibleProcessorCopy(
+		var (alc, copy, processorType) = LoadCollectibleProcessorCopy(
 			nameof(When_CollectibleContextProcessorDisposed_Then_PerContextStaticsReleased));
+		try
+		{
+			var elementAgentField = GetStaticField(processorType, "_elementAgent");
+			var elementAgent = CreateElementAgentIn(copy);
+			elementAgentField.SetValue(null, elementAgent);
+			IsSubscribedToAssemblyLoad(elementAgent).Should().BeTrue(
+				"the seeded element agent subscribes to AppDomain.AssemblyLoad at construction");
 
-		var elementAgentField = GetStaticField(processorType, "_elementAgent");
-		var elementAgent = CreateElementAgentIn(copy);
-		elementAgentField.SetValue(null, elementAgent);
-		IsSubscribedToAssemblyLoad(elementAgent).Should().BeTrue(
-			"the seeded element agent subscribes to AppDomain.AssemblyLoad at construction");
+			var processor = (IDisposable)Activator.CreateInstance(processorType, new object?[] { null })!;
 
-		var processor = (IDisposable)Activator.CreateInstance(processorType, new object?[] { null })!;
+			// Act — host-driven dispose, the load-bearing release path on runtimes where
+			// AssemblyLoadContext.Unloading is not raised (browser-wasm, dotnet/runtime#34072).
+			processor.Dispose();
 
-		// Act — host-driven dispose, the load-bearing release path on runtimes where
-		// AssemblyLoadContext.Unloading is not raised (browser-wasm, dotnet/runtime#34072).
-		processor.Dispose();
+			// Assert — the per-context statics are released so nothing pins the collectible context.
+			elementAgentField.GetValue(null).Should().BeNull(
+				"Dispose on a collectible-context processor must release the static element agent");
+			IsSubscribedToAssemblyLoad(elementAgent).Should().BeFalse(
+				"the released agent's process-wide AppDomain.AssemblyLoad subscription must be detached");
 
-		// Assert — the per-context statics are released so nothing pins the collectible context.
-		elementAgentField.GetValue(null).Should().BeNull(
-			"Dispose on a collectible-context processor must release the static element agent");
-		IsSubscribedToAssemblyLoad(elementAgent).Should().BeFalse(
-			"the released agent's process-wide AppDomain.AssemblyLoad subscription must be detached");
-
-		// Double-dispose must be a safe no-op (idempotent teardown).
-		var secondDispose = () => processor.Dispose();
-		secondDispose.Should().NotThrow("the collectible teardown flow must be idempotent");
+			// Double-dispose must be a safe no-op (idempotent teardown).
+			var secondDispose = () => processor.Dispose();
+			secondDispose.Should().NotThrow("the collectible teardown flow must be idempotent");
+		}
+		finally
+		{
+			// The collectible context has to outlive the teardown assertions above (the test
+			// verifies the processor releases what pins it), so it is unloaded only here — mirroring
+			// the try/finally Unload() idiom used by the sibling cross-ALC tests.
+			alc.Unload();
+		}
 	}
 
 	[TestMethod]
@@ -182,34 +191,42 @@ public class HotReloadAgentDisposeTests
 	{
 		// Arrange — separate collectible copy, with both the static instance and the static element
 		// agent populated, mirroring a fully-initialized processor at context-unload time.
-		var (copy, processorType) = LoadCollectibleProcessorCopy(
+		var (alc, copy, processorType) = LoadCollectibleProcessorCopy(
 			nameof(When_TearDownForAlcUnload_WithLiveInstance_Then_TearsDownWithoutRecursion));
+		try
+		{
+			var elementAgentField = GetStaticField(processorType, "_elementAgent");
+			var instanceField = GetStaticField(processorType, "_instance");
+			var elementAgent = CreateElementAgentIn(copy);
+			elementAgentField.SetValue(null, elementAgent);
 
-		var elementAgentField = GetStaticField(processorType, "_elementAgent");
-		var instanceField = GetStaticField(processorType, "_instance");
-		var elementAgent = CreateElementAgentIn(copy);
-		elementAgentField.SetValue(null, elementAgent);
+			var processor = Activator.CreateInstance(processorType, new object?[] { null })!;
+			instanceField.SetValue(null, processor);
 
-		var processor = Activator.CreateInstance(processorType, new object?[] { null })!;
-		instanceField.SetValue(null, processor);
+			var tearDown = processorType.GetMethod("TearDownForAlcUnload", BindingFlags.NonPublic | BindingFlags.Static)
+				?? throw new InvalidOperationException($"Method 'TearDownForAlcUnload' not found on {processorType}.");
 
-		var tearDown = processorType.GetMethod("TearDownForAlcUnload", BindingFlags.NonPublic | BindingFlags.Static)
-			?? throw new InvalidOperationException($"Method 'TearDownForAlcUnload' not found on {processorType}.");
+			// Act — the Unloading-path teardown disposes the instance, whose Dispose in turn releases
+			// the per-context statics; this must not recurse back into TearDownForAlcUnload (a recursive
+			// flow would overflow the stack and crash the test host here).
+			tearDown.Invoke(null, null);
 
-		// Act — the Unloading-path teardown disposes the instance, whose Dispose in turn releases
-		// the per-context statics; this must not recurse back into TearDownForAlcUnload (a recursive
-		// flow would overflow the stack and crash the test host here).
-		tearDown.Invoke(null, null);
+			// Assert
+			instanceField.GetValue(null).Should().BeNull("teardown must clear the static processor instance");
+			elementAgentField.GetValue(null).Should().BeNull("teardown must release the static element agent");
+			IsSubscribedToAssemblyLoad(elementAgent).Should().BeFalse(
+				"the released agent's process-wide AppDomain.AssemblyLoad subscription must be detached");
 
-		// Assert
-		instanceField.GetValue(null).Should().BeNull("teardown must clear the static processor instance");
-		elementAgentField.GetValue(null).Should().BeNull("teardown must release the static element agent");
-		IsSubscribedToAssemblyLoad(elementAgent).Should().BeFalse(
-			"the released agent's process-wide AppDomain.AssemblyLoad subscription must be detached");
-
-		// Re-running the teardown (e.g. Unloading firing after an explicit host dispose) must be safe.
-		var secondTearDown = () => tearDown.Invoke(null, null);
-		secondTearDown.Should().NotThrow("the collectible teardown flow must be idempotent");
+			// Re-running the teardown (e.g. Unloading firing after an explicit host dispose) must be safe.
+			var secondTearDown = () => tearDown.Invoke(null, null);
+			secondTearDown.Should().NotThrow("the collectible teardown flow must be idempotent");
+		}
+		finally
+		{
+			// Unload the collectible context only after the teardown assertions — it must stay alive
+			// while the test verifies what pins it, mirroring the sibling cross-ALC tests' try/finally.
+			alc.Unload();
+		}
 	}
 
 	/// <summary>
@@ -217,14 +234,16 @@ public class HotReloadAgentDisposeTests
 	/// AssemblyLoadContext, the way a downstream host loads previewed apps into their own
 	/// collectible contexts. The copy has its own statics, and its <c>_processorAlc</c> resolves
 	/// to the collectible context, so the production collectible gates are exercised for real.
+	/// The context is returned so the caller can <see cref="AssemblyLoadContext.Unload"/> it in a
+	/// <c>finally</c> after the teardown assertions, matching the sibling cross-ALC tests' idiom.
 	/// </summary>
-	private static (Assembly Copy, Type ProcessorType) LoadCollectibleProcessorCopy(string name)
+	private static (AssemblyLoadContext Alc, Assembly Copy, Type ProcessorType) LoadCollectibleProcessorCopy(string name)
 	{
 		var alc = new AssemblyLoadContext(name, isCollectible: true);
 		var copy = alc.LoadFromAssemblyPath(typeof(ClientHotReloadProcessor).Assembly.Location);
 		var processorType = copy.GetType(typeof(ClientHotReloadProcessor).FullName!, throwOnError: true)!;
 
-		return (copy, processorType);
+		return (alc, copy, processorType);
 	}
 
 	/// <summary>
