@@ -369,6 +369,11 @@ internal sealed class HotReloadAgent : IDisposable
 		// Drop cached delta/assembly references so a collectible context's assemblies are not retained.
 		_deltas.Clear();
 		_appliedAssemblies.Clear();
+
+		// Drop the cached metadata-update-handler actions. Each action is a delegate created from a
+		// MethodInfo on a handler Type discovered by scanning this context's assemblies, so the cache
+		// captures delegates/Types owned by a collectible context and would otherwise pin it.
+		_handlerActions = null;
 	}
 
 	private static Guid? TryGetModuleId(Assembly loadedAssembly)

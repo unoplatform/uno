@@ -129,6 +129,20 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 
 			_elementAgent = null;
+
+#if HAS_UNO_WINUI
+			// Detach the first-activation diagnostics handler before dropping the window reference.
+			// The handler is a static method on this collectible-context copy of the processor; if the
+			// host Window outlives the context (it does — the window is owned by the host), its Activated
+			// event would keep that method — and through it this context — alive after unload. The handler
+			// self-detaches on first activation, but only once RootElement.XamlRoot is available, so a
+			// context torn down before that (or with the indicator disabled) would otherwise still be pinned.
+			if (CurrentWindow is not null)
+			{
+				CurrentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
+			}
+#endif
+
 			CurrentWindow = null;
 		}
 
