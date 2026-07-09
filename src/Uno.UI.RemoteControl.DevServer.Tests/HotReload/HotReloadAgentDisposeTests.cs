@@ -156,6 +156,47 @@ public class HotReloadAgentDisposeTests
 	}
 
 	[TestMethod]
+	public void When_NonActiveCollectibleProcessorDisposed_Then_SharedStaticsPreserved()
+	{
+		// Arrange — a collectible context can host more than one processor (e.g. multiple
+		// RemoteControlClients). Only the active one (static _instance) owns the shared per-context
+		// statics; disposing a *non-active* processor must not tear the shared _elementAgent down
+		// from under the still-live active processor.
+		var (alc, copy, processorType) = LoadCollectibleProcessorCopy(
+			nameof(When_NonActiveCollectibleProcessorDisposed_Then_SharedStaticsPreserved));
+		var instanceField = GetStaticField(processorType, "_instance");
+		try
+		{
+			var elementAgentField = GetStaticField(processorType, "_elementAgent");
+			var elementAgent = CreateElementAgentIn(copy);
+			elementAgentField.SetValue(null, elementAgent);
+
+			// The active processor owns the statics; a second, non-active processor is what we dispose.
+			var activeProcessor = Activator.CreateInstance(processorType, new object?[] { null })!;
+			instanceField.SetValue(null, activeProcessor);
+			var nonActiveProcessor = (IDisposable)Activator.CreateInstance(processorType, new object?[] { null })!;
+
+			// Act
+			nonActiveProcessor.Dispose();
+
+			// Assert — the shared statics survive because the disposed processor is not the active one.
+			elementAgentField.GetValue(null).Should().BeSameAs(elementAgent,
+				"disposing a non-active collectible processor must not release the shared element agent");
+			instanceField.GetValue(null).Should().BeSameAs(activeProcessor,
+				"disposing a non-active processor must not clear the active _instance");
+			IsSubscribedToAssemblyLoad(elementAgent).Should().BeTrue(
+				"the shared element agent must stay subscribed while the active processor is alive");
+		}
+		finally
+		{
+			// Tear the active processor down (clears _instance and disposes the shared element agent,
+			// detaching its global AssemblyLoad subscription) so nothing pins the context past Unload.
+			(instanceField.GetValue(null) as IDisposable)?.Dispose();
+			alc.Unload();
+		}
+	}
+
+	[TestMethod]
 	public void When_DefaultContextProcessorDisposed_Then_SharedElementAgentUntouched()
 	{
 		// Arrange — this test assembly loads Uno.UI.RemoteControl into the default ALC, so the
