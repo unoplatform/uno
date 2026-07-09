@@ -3,7 +3,33 @@
 **Feature:** `004-a11y-parity-remediation`
 **Branch:** `dev/doti/a11y-parity-remediation`
 **Scope:** Skia backends — Win32 (UIA), WebAssembly (ARIA/AOM), macOS (NSAccessibility) — plus the shared `AutomationPeer` / `AriaMapper` / `SkiaAccessibilityBase` core.
-**Status:** Plan only. No fixes implemented yet. This document is the actionable backlog.
+**Status:** Implementation in progress on branch `dev/doti/a11y-parity-remediation-impl`. The
+findings below remain the actionable backlog; the items marked ✅ under *Implementation status*
+are done, runtime-tested, and validated against the live UIA tree.
+
+### Implementation status (2026-07-09)
+
+Phase 1 (shared foundations) — landed with runtime tests (Skia Desktop) + live UIA-tree
+validation (managed UIA client + FlaUI) + rubber-duck review:
+
+- ✅ **XP-01** — MenuBar/Table/Separator added to `AriaMapper.ControlTypeToRoleMap`; SplitButton/
+  DropDownButton `aria-haspopup="menu"` (keyed on peer type so Expander is not misclassified);
+  Win32 `UIA_TitleBarControlTypeId = 50037` mapped. Tests: `Given_AriaMapper`.
+- ✅ **XP-04** — `RaiseNotificationEvent` wired on the Skia path to the accessibility listener
+  (experimental `AutomationEvents.Notification` kept out of contract). Test: `Given_NotificationEvent`.
+- ✅ **XP-03** — Disabled Invoke/Toggle/Select now throw `ElementNotEnabledException`
+  (HRESULT `0x80040200`, set centrally); native activation helper `InvokeAutomationPeer` swallows
+  it to stay crash-free. Test: `Given_DisabledActionException` (+ verified live: UIA client
+  invoking a disabled button surfaces `UIA_E_ELEMENTNOTENABLED`).
+- ✅ **SH-04** — `LandmarkTargetAutomationPeer` (internal) + `LandmarkType`/`LocalizedLandmarkType`
+  promotion in `FrameworkElement.OnCreateAutomationPeer`; Win32 serves localized-only landmarks as
+  Custom (UIAWrapper parity). Test: `Given_LandmarkPromotion`; sample: `AutomationProperties_Landmark`
+  (verified live with FlaUI: Main/Navigation/Custom landmark types).
+
+Remaining Phase-1 items **SH-02** (EventsSource-aware routing — effectively macOS-only, since Win32
+overrides `NotifyPropertyChangedEvent`) and **SH-03** (`RaiseStructureChangedEvent`, pairs with the
+Win32 W32-05 ChildAdded/Removed branch) are deferred: they need macOS runtime validation or a larger
+Win32 branch merge that couldn't be validated in a Windows-only session.
 
 ---
 
