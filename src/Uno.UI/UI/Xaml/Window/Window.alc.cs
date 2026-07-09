@@ -344,27 +344,18 @@ partial class Window
 		// implementation graph — including window-event subscribers from the secondary ALC
 		// (e.g. a designer client's Closed handler) — for the process lifetime, pinning
 		// the ALC: DisplayInformation → native wrapper → window implementation → Closed → client.
-		try
-		{
-			var closedWindowId = AppWindow.Id;
-
-			global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(closedWindowId);
-
-			// Sibling per-WindowId statics with the same "no removal path" leak: each retains the
-			// closed window's instance (and its event subscribers — VisibleBoundsChanged,
-			// TargetRequested, AppWindow.Changed/Closing) for the process lifetime, pinning the
-			// collectible ALC of a secondary-app subscriber.
-			global::Windows.UI.ViewManagement.ApplicationView.DestroyForWindowId(closedWindowId);
-			global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.DestroyForWindowId(closedWindowId);
-			global::Microsoft.UI.Windowing.AppWindow.DestroyForWindowId(closedWindowId);
-		}
-		catch (Exception ex)
-		{
-			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				typeof(Window).Log().Debug($"[ALC-CLEANUP] DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
-			}
-		}
+		//
+		// Each registry is destroyed independently (best-effort): if one DestroyForWindowId throws,
+		// the remaining sibling registries must still be cleared — otherwise a single failing call
+		// would leave the same ALC pin this sweep exists to prevent. Sibling per-WindowId statics
+		// share the "no removal path" leak: each retains the closed window's instance (and its
+		// event subscribers — VisibleBoundsChanged, TargetRequested, AppWindow.Changed/Closing) for
+		// the process lifetime, pinning the collectible ALC of a secondary-app subscriber.
+		var closedWindowId = AppWindow.Id;
+		DestroyForWindowIdSafe(nameof(global::Windows.Graphics.Display.DisplayInformation), () => global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(closedWindowId));
+		DestroyForWindowIdSafe(nameof(global::Windows.UI.ViewManagement.ApplicationView), () => global::Windows.UI.ViewManagement.ApplicationView.DestroyForWindowId(closedWindowId));
+		DestroyForWindowIdSafe(nameof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager), () => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.DestroyForWindowId(closedWindowId));
+		DestroyForWindowIdSafe(nameof(global::Microsoft.UI.Windowing.AppWindow), () => global::Microsoft.UI.Windowing.AppWindow.DestroyForWindowId(closedWindowId));
 
 		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
 		// This is the only path that removes a window-owned content root — the teardown sweep
@@ -416,6 +407,25 @@ partial class Window
 		}
 
 		return true;
+	}
+
+	/// <summary>
+	/// Runs a single per-WindowId registry teardown, isolating its failure so a throwing registry
+	/// cannot skip the remaining sibling registries (which would leave the ALC pinned).
+	/// </summary>
+	private static void DestroyForWindowIdSafe(string registryName, Action destroy)
+	{
+		try
+		{
+			destroy();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] {registryName}.DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
 	}
 
 	/// <summary>

@@ -29,9 +29,9 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Process-wide pool. Previously every <see cref="Frame"/> allocated its own <see cref="PagePool"/>
 		/// into a shared static field: the last Frame won, and every earlier pool was orphaned yet kept
-		/// alive forever by the 30s scavenger loop it had scheduled on the dispatcher. A single lazily
-		/// created instance removes that leak; the scavenger is scheduled at most once, and only when
-		/// pooling is enabled.
+		/// alive forever by the 30s scavenger loop it had scheduled on the dispatcher. A single shared
+		/// instance (eagerly created at type initialization) removes that leak; the scavenger itself
+		/// remains lazy — it is scheduled at most once, and only when pooling is enabled.
 		/// </summary>
 		internal static PagePool Instance { get; } = new PagePool();
 
@@ -92,6 +92,16 @@ namespace Microsoft.UI.Xaml
 				await Task.Delay(TimeSpan.FromSeconds(30));
 
 #if !IS_UNIT_TESTS
+				// Honor the "only runs while pooling is enabled" contract: if pooling was disabled
+				// after the loop started, stop rescheduling (an idle loop over a disabled pool is
+				// pure overhead) and allow EnsureScavengerStarted to spin it up again if pooling is
+				// later re-enabled and something is enqueued.
+				if (!FeatureConfiguration.Page.IsPoolingEnabled)
+				{
+					_scavengerStarted = false;
+					return;
+				}
+
 				_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 			}
