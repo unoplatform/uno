@@ -337,6 +337,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask<bool> RequestHotReloadToIde()
 		{
+			// Only Visual Studio handles the explicit force-hot-reload request. Other IDEs (VS Code,
+			// Rider) register no callback for ForceHotReloadIdeMessage, so sending it there only logs a
+			// "no callback" error on the IDE side and blocks here until the IDE-result timeout — and they
+			// drive hot reload through the dev-server's own pipeline anyway. Outside VS this is a no-op:
+			// no request is sent and no ProcessingFiles is reported, and we return false so the
+			// no-changes auto-retry (HotReloadOperation) completes the operation instead of deferring
+			// while waiting for an IDE acknowledgement that will never come.
+			if (!_isRunningInsideVisualStudio)
+			{
+				return false;
+			}
+
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
 			if (result.IsSuccess)
