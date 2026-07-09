@@ -259,10 +259,10 @@ internal class Win32RawElementProvider :
 
 				// Relation properties
 				Win32UIAutomationInterop.UIA_LabeledByPropertyId => GetLabeledByProvider(peer),
-				Win32UIAutomationInterop.UIA_DescribedByPropertyId => null,
-				Win32UIAutomationInterop.UIA_ControllerForPropertyId => null,
-				Win32UIAutomationInterop.UIA_FlowsToPropertyId => null,
-				Win32UIAutomationInterop.UIA_FlowsFromPropertyId => null,
+				Win32UIAutomationInterop.UIA_DescribedByPropertyId => GetRelationProviders(peer?.GetDescribedBy()),
+				Win32UIAutomationInterop.UIA_ControllerForPropertyId => GetRelationProviders(peer?.GetControlledPeers()),
+				Win32UIAutomationInterop.UIA_FlowsToPropertyId => GetRelationProviders(peer?.GetFlowsTo()),
+				Win32UIAutomationInterop.UIA_FlowsFromPropertyId => GetRelationProviders(peer?.GetFlowsFrom()),
 
 				// ARIA properties - not applicable for non-web frameworks
 				Win32UIAutomationInterop.UIA_AriaRolePropertyId => null,
@@ -1153,6 +1153,28 @@ internal class Win32RawElementProvider :
 		}
 
 		return null;
+	}
+
+	// Converts a peer relation list (DescribedBy / ControllerFor / FlowsTo / FlowsFrom) to the UIA
+	// provider array the relation property expects. Returns null when empty so the property reads as
+	// not-supported rather than an empty array, matching WinUI (UIAWrapper.cpp relation handling).
+	private IRawElementProviderSimple[]? GetRelationProviders(IEnumerable<AutomationPeer>? peers)
+	{
+		if (peers is null)
+		{
+			return null;
+		}
+
+		List<IRawElementProviderSimple>? providers = null;
+		foreach (var relatedPeer in peers)
+		{
+			if (relatedPeer is not null && _accessibility.GetProviderForPeer(relatedPeer) is { } provider)
+			{
+				(providers ??= new List<IRawElementProviderSimple>()).Add(provider);
+			}
+		}
+
+		return providers?.ToArray();
 	}
 
 	private string? GetName(AutomationPeer? peer)
