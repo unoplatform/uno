@@ -346,13 +346,23 @@ partial class Window
 		// the ALC: DisplayInformation → native wrapper → window implementation → Closed → client.
 		try
 		{
-			global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(AppWindow.Id);
+			var closedWindowId = AppWindow.Id;
+
+			global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(closedWindowId);
+
+			// Sibling per-WindowId statics with the same "no removal path" leak: each retains the
+			// closed window's instance (and its event subscribers — VisibleBoundsChanged,
+			// TargetRequested, AppWindow.Changed/Closing) for the process lifetime, pinning the
+			// collectible ALC of a secondary-app subscriber.
+			global::Windows.UI.ViewManagement.ApplicationView.DestroyForWindowId(closedWindowId);
+			global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.DestroyForWindowId(closedWindowId);
+			global::Microsoft.UI.Windowing.AppWindow.DestroyForWindowId(closedWindowId);
 		}
 		catch (Exception ex)
 		{
 			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				typeof(Window).Log().Debug($"[ALC-CLEANUP] DisplayInformation.DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
 			}
 		}
 

@@ -34,6 +34,45 @@ internal static class HtmlElementHelper
 			?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
 	}
 
+	/// <summary>
+	/// Removes cache entries whose key <see cref="Type"/> belongs to a non-default (collectible)
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/>. A downstream host that loads
+	/// previewed apps into their own collectible AssemblyLoadContexts creates elements of the app's
+	/// (external) control types; each is cached here, keeping the app's <see cref="Type"/> — and
+	/// thus its context — alive for the process lifetime. Entries are re-cached on demand. Called
+	/// from the ALC cleanup hook.
+	/// </summary>
+	internal static void ClearNonDefaultAlcEntries()
+	{
+		var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+		List<Type>? keysToRemove = null;
+
+		foreach (var key in _cache.Keys)
+		{
+			if (key.IsCollectible)
+			{
+				(keysToRemove ??= new List<Type>()).Add(key);
+				continue;
+			}
+
+			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+			if (alc is not null && alc != defaultAlc)
+			{
+				(keysToRemove ??= new List<Type>()).Add(key);
+			}
+		}
+
+		if (keysToRemove is null)
+		{
+			return;
+		}
+
+		foreach (var key in keysToRemove)
+		{
+			_cache.Remove(key);
+		}
+	}
+
 	internal static HtmlTag GetHtmlTag(Type type, string defaultHtmlTag)
 	{
 		if (type.Assembly == _unoUIAssembly)

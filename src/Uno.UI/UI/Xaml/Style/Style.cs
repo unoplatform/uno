@@ -34,18 +34,37 @@ namespace Microsoft.UI.Xaml
 			RemoveNonDefaultAlcEntries(_defaultStyleCache);
 			RemoveNonDefaultAlcEntries(_nativeLookup);
 			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+
+			// User-configured per-control native-style overrides are keyed by control Type; a
+			// previewed app configuring its own control types (e.g. SetUWPDefaultStylesOverride)
+			// would otherwise pin those types for the process lifetime.
+			RemoveNonDefaultAlcEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride);
 		}
 
-		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
+		private static void RemoveNonDefaultAlcEntries<TValue>(IDictionary<Type, TValue> dictionary)
 		{
-			var keysToRemove = new List<Type>();
+			List<Type>? keysToRemove = null;
 			foreach (var key in dictionary.Keys)
 			{
+				// Type.IsCollectible is the fast path — it also catches generic instantiations
+				// over collectible type arguments whose declaring assembly is a shared
+				// (default-ALC) one. Only fall back to the load-context lookup otherwise.
+				if (key.IsCollectible)
+				{
+					(keysToRemove ??= new List<Type>()).Add(key);
+					continue;
+				}
+
 				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
 				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
 				{
-					keysToRemove.Add(key);
+					(keysToRemove ??= new List<Type>()).Add(key);
 				}
+			}
+
+			if (keysToRemove is null)
+			{
+				return;
 			}
 
 			foreach (var key in keysToRemove)

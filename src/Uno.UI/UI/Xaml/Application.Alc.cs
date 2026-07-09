@@ -383,6 +383,25 @@ partial class Application
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
+		// ResourceLoader — drop previewed-app lookup assemblies (and their parsed-resource
+		// markers). The process-lifetime _lookupAssemblies list keeps a strong reference to
+		// every app assembly registered via AddLookupAssembly, pinning the collectible ALC.
+		global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
+
+#if __WASM__
+		// UIElementNativeRegistrar (WASM) — the Type→registration-id map keys on every element
+		// type ever created, including the previewed app's control types. Desktop ClrMD guards
+		// never see this cache; drop its collectible-ALC keys here.
+		UIElement.ClearNonDefaultAlcElementRegistrations();
+
+		// CompositionTarget.Rendering (WASM) — a secondary-ALC subscriber that did not detach
+		// before unload keeps its ALC pinned through the static handler list.
+		Media.CompositionTarget.ClearNonDefaultAlcHandlers();
+
+		// HtmlElementHelper (WASM) — Type→HtmlTag cache keyed by external (app) element types.
+		HtmlElementHelper.ClearNonDefaultAlcEntries();
+#endif
+
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
 		// it as their InheritanceContext parent (DependencyObjectStore._associatedParent); nothing
 		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
@@ -392,6 +411,10 @@ partial class Application
 		// ContentControl memoizes "does this DefaultStyleKey type have a default template" per
 		// Type; keys from the unloaded app's controls pin the ALC.
 		RunCleanupStep(nameof(Controls.ContentControl.ClearHasDefaultTemplateCache), Controls.ContentControl.ClearHasDefaultTemplateCache);
+
+		// PagePool pools Page instances keyed by their (previewed-app) page Type; a pooled page from
+		// an unloaded app pins its ALC.
+		RunCleanupStep(nameof(PagePool.ClearNonDefaultAlcEntries), static () => PagePool.Instance.ClearNonDefaultAlcEntries());
 
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
 		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never

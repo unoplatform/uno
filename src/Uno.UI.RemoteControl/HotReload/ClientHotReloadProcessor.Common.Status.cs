@@ -72,11 +72,28 @@ public partial class ClientHotReloadProcessor
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
+		/// <summary>
+		/// Upper bound on the retained local-operation history. Each retained operation used to hold
+		/// its raw <see cref="HotReloadClientOperation.Types"/> array of hot-reloaded types; in a
+		/// downstream host that loads previewed apps into their own collectible AssemblyLoadContexts
+		/// those are the app's (collectible) types, so an unbounded history pinned every context ever
+		/// reloaded. The history is capped to the most recent operations; terminal operations also
+		/// drop their raw type array (see <see cref="HotReloadClientOperation.ReleaseRetainedTypes"/>).
+		/// </summary>
+		private const int MaxRetainedLocalOperations = 100;
+
 		private HotReloadState? _serverState;
 		private bool _isFinalServerState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
+
+		// Trims the local-operation history to the ring-buffer bound, dropping the oldest entries.
+		// Runs after the list has been (re)sorted by sequence id, so the oldest are at the front.
+		private static ImmutableList<HotReloadClientOperation> TrimHistory(ImmutableList<HotReloadClientOperation> history)
+			=> history.Count > MaxRetainedLocalOperations
+				? history.RemoveRange(0, history.Count - MaxRetainedLocalOperations)
+				: history;
 
 		public Status Current { get; private set; } = null!;
 
@@ -160,7 +177,7 @@ public partial class ClientHotReloadProcessor
 		public HotReloadClientOperation StartLocal(HotReloadSource source, Type[] types)
 		{
 			var op = new HotReloadClientOperation(source, types, NotifyStatusChanged);
-			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(CompareBySequenceId), op);
+			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => TrimHistory(history.Add(op).Sort(CompareBySequenceId)), op);
 			NotifyStatusChanged();
 
 			return op;
@@ -192,9 +209,9 @@ public partial class ClientHotReloadProcessor
 					return history; // Re-use — no mutation needed.
 				}
 
-				return history
+				return TrimHistory(history
 					.Add(new HotReloadClientOperation(args.source, args.types, args.callback))
-					.Sort(CompareBySequenceId);
+					.Sort(CompareBySequenceId));
 			}
 		}
 
@@ -310,6 +327,27 @@ public partial class ClientHotReloadProcessor
 		public Type[] Types { get; private set; }
 
 		public string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
+
+		/// <summary>
+		/// Drops the raw <see cref="Types"/> array once the operation has reached a terminal state.
+		/// The array holds the hot-reloaded <see cref="Type"/> objects; in a downstream host that
+		/// loads previewed apps into their own collectible AssemblyLoadContexts these are the app's
+		/// collectible types, so a retained (historical) operation would pin the context after unload.
+		/// The user-facing <see cref="CuratedTypes"/> string list is materialized first so the display
+		/// history is preserved; only the strong <see cref="Type"/> references are released.
+		/// </summary>
+		private void ReleaseRetainedTypes()
+		{
+			if (Types.Length == 0)
+			{
+				return;
+			}
+
+			// Force the pretty string list to be computed and cached before dropping the raw types,
+			// so the operation's display history survives without the collectible Type references.
+			_ = CuratedTypes;
+			Types = Array.Empty<Type>();
+		}
 
 		private string[] GetCuratedTypes()
 		{
@@ -484,6 +522,11 @@ public partial class ClientHotReloadProcessor
 			while (Interlocked.CompareExchange(ref _result, (int)result, previous) != previous);
 
 			EndTime = DateTimeOffset.Now;
+
+			// Terminal state: the raw Type[] is no longer needed (only CuratedTypes strings are shown
+			// in history). Drop it so a retained operation never pins a collectible previewed-app ALC.
+			ReleaseRetainedTypes();
+
 			_onUpdated?.Invoke();
 			SendEvent();
 		}
