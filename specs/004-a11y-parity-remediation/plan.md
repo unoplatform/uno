@@ -25,11 +25,34 @@ validation (managed UIA client + FlaUI) + rubber-duck review:
   promotion in `FrameworkElement.OnCreateAutomationPeer`; Win32 serves localized-only landmarks as
   Custom (UIAWrapper parity). Test: `Given_LandmarkPromotion`; sample: `AutomationProperties_Landmark`
   (verified live with FlaUI: Main/Navigation/Custom landmark types).
+- ✅ **SH-02** — Shared `NotifyPropertyChangedEventCore` + macOS `NotifyAutomationEvent` resolve the
+  peer's EventsSource (`ResolveProviderPeer(resolveEventsSource:true)`) before routing, matching
+  Win32. macOS-only in effect → see `macos-verification.md`.
+- ✅ **SH-03** — `RaiseStructureChangedEvent` routes (Skia) into the existing per-backend structure
+  path (Win32 raises UIA StructureChanged; macOS posts children-changed), so custom peers overriding
+  GetChildrenCore can signal changes. Test: `Given_StructureChangedEvent`. (Fine-grained
+  ChildAdded/Removed = W32-05, follow-up.)
 
-Remaining Phase-1 items **SH-02** (EventsSource-aware routing — effectively macOS-only, since Win32
-overrides `NotifyPropertyChangedEvent`) and **SH-03** (`RaiseStructureChangedEvent`, pairs with the
-Win32 W32-05 ChildAdded/Removed branch) are deferred: they need macOS runtime validation or a larger
-Win32 branch merge that couldn't be validated in a Windows-only session.
+Phase 3 (Win32):
+- ✅ **W32-08** — Win32 now raises `WindowOpened`/`WindowClosed` UIA events (TeachingTip producer).
+- ✅ **W32-03** — Win32 serves `DescribedBy`/`ControllerFor`/`FlowsTo`/`FlowsFrom` relation provider
+  arrays (were hard-coded null). Tests: `Given_AutomationRelations`; sample:
+  `AutomationProperties_Relations` (verified live with FlaUI). Covers the relation half of W32-06.
+
+Phase 5 (macOS — code-review + compile validated; runtime steps in `macos-verification.md`):
+- ✅ **MAC-06** — `AutomationProperties.AutomationId` exposed as NSAccessibility
+  `accessibilityIdentifier` (unblocks XCUITest/Appium) across P/Invoke + `UNOAccessibility.h/.m` + `ApplyAttributes`.
+- ✅ **MAC-01** — `uno_accessibility_update_selected` keeps `_unoValue` (AXValue) in sync for
+  RadioButton/Tab/TabItem on selection change (+ value-changed notification).
+
+**Deferred / not-actionable (with rationale):**
+- **W32-06 ClickablePoint** — FlaUI/Appium already get a clickable point via UIA's bounding-rect
+  fallback (`TryGetClickablePoint` returns true); no Uno peer overrides `GetClickablePointCore`, so an
+  explicit ClickablePoint would be a no-op. Culture is empty (low value). The relation half landed with W32-03.
+- **W32-02 TextEditTextChanged / LayoutInvalidated** — no Uno control raises these events, so backend
+  handling would be dead code.
+- **W32-05** (fine-grained Child​Added/Removed) and **XP-02** (live property-change consolidation) and
+  the remaining **WA-\*** (WASM) / **MAC-\*** items remain open in the backlog below.
 
 ---
 
