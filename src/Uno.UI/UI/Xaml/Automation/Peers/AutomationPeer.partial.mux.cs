@@ -649,18 +649,20 @@ partial class AutomationPeer
 	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)
 	{
 #if HAS_UNO
-		// TODO Uno: Implement RaiseStructureChangedEvent when UIA infrastructure is available.
-		// For now this is a stub that maintains API compatibility.
-
-		if (structureChangeType == AutomationStructureChangeType.ChildRemoved)
+		if (structureChangeType == AutomationStructureChangeType.ChildRemoved && child is null)
 		{
-			if (child is null)
-			{
-				throw new ArgumentNullException(nameof(child));
-			}
-			// UIAutomationCore expects runtime id of the removed child to be returned.
-			_ = child.GetRuntimeId();
+			throw new ArgumentNullException(nameof(child));
 		}
+
+#if __SKIA__
+		// Route through the listener into the same per-backend structure paths that framework-driven
+		// tree mutations use, so custom peers that override GetChildrenCore (the documented WinUI
+		// pattern for composite/virtualized controls) can signal structure changes. Mirrors WinUI's
+		// RaiseStructureChangedEventImpl. Win32 coalesces + raises UIA StructureChanged; macOS posts a
+		// children-changed notification; WASM relies on the DOM mutation itself (no-op there).
+		// Fine-grained ChildAdded/ChildRemoved shaping is tracked separately (W32-05).
+		AutomationPeerListener?.NotifyAutomationEvent(this, AutomationEvents.StructureChanged);
+#endif
 #endif
 	}
 
