@@ -275,6 +275,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// </summary>
 	protected virtual void NotifyPropertyChangedEventCore(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
+		// Match WinUI/Win32: route property changes to the peer's EventsSource so that
+		// ListItem/TabItem/TreeItem changes are attributed to the data peer the client sees, not
+		// the raw container peer. ResolveProviderPeer returns `this` for every other peer, so this
+		// is a no-op outside those three control types. (Win32 does the equivalent via
+		// FindExistingProviderForPeer(peer, resolveEventsSource: true).)
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out var element))
 		{

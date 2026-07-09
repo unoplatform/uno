@@ -781,6 +781,10 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// Match WinUI: resolve the EventsSource so ListItem/TabItem/TreeItem events target the data
+		// peer the client sees. ResolveProviderPeer returns `this` for every other peer.
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		base.NotifyAutomationEvent(peer, eventId);
 
 		switch (eventId)
