@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -22,6 +24,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	public class Given_WasmAria
 	{
 #if HAS_UNO
+		[TestCleanup]
+		public void Cleanup()
+		{
+			// Reset the tree between tests so the accessibility/semantic DOM from one test does not
+			// leak into the next (the semantic tree is a single shared DOM per app instance).
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
@@ -68,6 +78,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var labelledBy = GetSemanticAttribute(field, "aria-labelledby");
 			Assert.AreEqual(GetSemanticElementId(label), labelledBy, "aria-labelledby should reference the labeller's semantic node.");
 			Assert.IsFalse(SemanticElementHasAttribute(field, "aria-label"), "aria-label must be suppressed when aria-labelledby is present (no double naming).");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_DescribedBy_Has_Nodeless_Target_Then_No_Dangling_IdRef()
+		{
+			var visible = new TextBlock { Text = "Visible help" };
+			AutomationProperties.SetName(visible, "Visible help");
+			var collapsed = new TextBlock { Text = "Hidden help", Visibility = Visibility.Collapsed };
+			AutomationProperties.SetName(collapsed, "Hidden help");
+			var field = new TextBox();
+			field.SetValue(AutomationProperties.DescribedByProperty, new List<DependencyObject> { visible, collapsed });
+			var panel = new StackPanel { Children = { visible, collapsed, field } };
+
+			await UITestHelper.Load(panel);
+			visible.GetOrCreateAutomationPeer();
+			field.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(field) && SemanticElementExists(visible), timeoutMS: 5000, message: "Timed out waiting for the semantic elements.");
+			await UITestHelper.WaitForIdle();
+
+			var describedBy = GetSemanticAttribute(field, "aria-describedby");
+			Assert.AreEqual(GetSemanticElementId(visible), describedBy, "aria-describedby must reference only the target that has a semantic node.");
+			Assert.IsFalse(describedBy.Contains(GetSemanticElementId(collapsed)), "A node-less (collapsed) target must not produce a dangling IDREF.");
 		}
 #endif
 	}

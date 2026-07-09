@@ -1285,7 +1285,11 @@ internal static partial class SemanticElementFactory
 			if (relatedPeer is FrameworkElementAutomationPeer { Owner: { } relatedOwner })
 			{
 				var relatedHandle = relatedOwner.Visual.Handle;
-				if (relatedHandle != IntPtr.Zero)
+				// WA-02 / FR-022: only reference a related element that actually has a semantic node.
+				// Otherwise aria-describedby/controls/flowto would emit a dangling IDREF pointing at a
+				// non-existent uno-semantics-{handle} id (matches the LabeledBy gate above).
+				if (relatedHandle != IntPtr.Zero &&
+					WebAssemblyAccessibility.Instance.HasSemanticElement(relatedHandle))
 				{
 					sb ??= new StringBuilder();
 					if (sb.Length > 0)
