@@ -172,7 +172,7 @@ public class XamlCodeBehindGeneratorTests
 		var existingCodeBehind = """
 			namespace MyApp
 			{
-				public sealed partial class MainPage : Microsoft.UI.Xaml.Controls.Page
+				public partial class MainPage : Microsoft.UI.Xaml.Controls.Page
 				{
 					public MainPage()
 					{
@@ -195,7 +195,7 @@ public class XamlCodeBehindGeneratorTests
 		var existingClass = """
 			namespace MyApp
 			{
-				public sealed partial class MainPage : Microsoft.UI.Xaml.Controls.Page
+				public partial class MainPage : Microsoft.UI.Xaml.Controls.Page
 				{
 					public MainPage()
 					{
@@ -346,7 +346,7 @@ public class XamlCodeBehindGeneratorTests
 		var existingCodeBehind = """
 			namespace MyApp
 			{
-				public sealed partial class MainPage : Microsoft.UI.Xaml.Controls.Page
+				public partial class MainPage : Microsoft.UI.Xaml.Controls.Page
 				{
 					public MainPage()
 					{

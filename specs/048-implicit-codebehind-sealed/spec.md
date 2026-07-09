@@ -95,22 +95,29 @@ scope; the common path is now rude-edit-free.
 
 ## Acceptance criteria
 
-- [ ] `XamlCodeBehindEmitter.Emit` produces `public sealed partial class …`.
-- [ ] `XamlCodeBehindGeneratorTests` updated to expect the sealed declaration (Uno + WinAppSDK paths).
-- [ ] Snapshot/baseline outputs under `Uno.UI.SourceGenerators.Tests/.../Out/*.codebehind.g.cs` regenerated.
-- [ ] EnC/hot-reload regression: no `ENC0004` when a `public sealed partial` code-behind replaces the
-      auto-generated one (red without the fix, green with it).
-- [ ] `001-auto-codebehind` FR updated to state the generated class is `public sealed partial`.
-- [ ] Solution builds clean for Uno targets **and** a WinUI (`net10.0-windows*`) target.
+- [x] `XamlCodeBehindEmitter.Emit` produces `public sealed partial class …`.
+- [x] `XamlCodeBehindGeneratorTests` expected output updated to the sealed declaration. These tests use
+      **inline** `SourceText.From("""…""")` expectations — there is no `Out/` snapshot dir for
+      `XamlCodeBehindGeneratorTests`.
+- [x] The one code-behind golden that *does* live on disk — the ResourceDictionary
+      `…/XamlCodeGeneratorTests/Out/…/XamlCodeGenerator_Test.RD.codebehind.g.cs` — regenerated to `sealed`.
+- [x] Suppression tests retain coverage for a **non-sealed** `public partial` user code-behind (valid C#),
+      so "existing code-behind suppresses generation" is not asserted sealed-only.
+- [x] Emitter unit test asserts the `public sealed partial` declaration (the guard expressible as a
+      source-generator unit test).
+- [ ] **Follow-up**: a real metadata-update / EnC `ENC0004` regression — it needs a live compiler session
+      and cannot be asserted by `CSharpSourceGeneratorVerifier`.
+- [x] `001-auto-codebehind` FR-013 updated to state the generated class is `public sealed partial`.
+- [x] Source generators build clean (the WinAppSDK generator links the same shared emitter).
 
 ## Files to change
 
 - `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindEmitter.cs` — add `sealed`.
-- `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs` — expected output.
-- Any regenerated `.codebehind.g.cs` snapshot under `Uno.UI.SourceGenerators.Tests/.../Out/`.
-- `specs/001-auto-codebehind/spec.md` — note the sealed modifier.
+- `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs` — inline expected output (keeps a non-sealed suppression fixture for coverage).
+- `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeGeneratorTests/Out/…/XamlCodeGenerator_Test.RD.codebehind.g.cs` — regenerated RD code-behind golden.
+- `specs/001-auto-codebehind/spec.md` — FR-013 → `public sealed partial`.
 
 ## Scope of this PR
 
-This PR is **not** documentation-only. It opens with this spec and will carry the implementation
-(emitter change + test updates + EnC regression) on the same branch. Draft until the implementation lands.
+This PR is **not** documentation-only — the implementation (the one-line emitter change + test and
+RD-golden updates) has landed on this branch alongside the spec.
