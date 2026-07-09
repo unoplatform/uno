@@ -616,6 +616,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_ToolTipClosedEventId);
 					break;
+				case AutomationEvents.WindowOpened:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_Window_WindowOpenedEventId);
+					break;
+				case AutomationEvents.WindowClosed:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_Window_WindowClosedEventId);
+					break;
 				case AutomationEvents.LiveRegionChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_LiveRegionChangedEventId);
