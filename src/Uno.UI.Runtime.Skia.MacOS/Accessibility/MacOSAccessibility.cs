@@ -535,6 +535,14 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
+		var automationId = peer.GetAutomationId();
+		if (!string.IsNullOrEmpty(automationId))
+		{
+			// AutomationProperties.AutomationId → NSAccessibility accessibilityIdentifier, so
+			// XCUITest / Appium can locate the element (parity with the WASM xamlautomationid).
+			NativeUno.uno_accessibility_update_identifier(handle, automationId);
+		}
+
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
 			NativeUno.uno_accessibility_update_help(handle, attributes.Description);

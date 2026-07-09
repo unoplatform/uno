@@ -63,3 +63,48 @@ VoiceOver could announce the change against the wrong element or miss it.
 
 **Pass criteria:** item selection/property/event announcements target the correct item element;
 non-item controls behave exactly as before; no crashes or perf regressions in virtualized lists.
+
+---
+
+## MAC-06 — AutomationId exposed as `accessibilityIdentifier`
+
+**What changed.** `AutomationProperties.AutomationId` now crosses the P/Invoke boundary and is set as
+the NSAccessibility `accessibilityIdentifier` on the native element (parity with the WASM
+`xamlautomationid`). Touches four layers:
+- `src/Uno.UI.Runtime.Skia.MacOS/Native/NativeUno.cs` — new `uno_accessibility_update_identifier` P/Invoke.
+- `UNOAccessibility.h` — new `unoIdentifier` property + C declaration.
+- `UNOAccessibility.m` — new `accessibilityIdentifier` override (returns `_unoIdentifier`) and the
+  `uno_accessibility_update_identifier` C function (mirrors `uno_accessibility_update_help`).
+- `MacOSAccessibility.ApplyAttributes` — pushes `peer.GetAutomationId()` when non-empty.
+
+Managed side compiles on Windows; the Obj-C `.h`/`.m` changes are mirrored verbatim from the
+existing `help` attribute and must be built on macOS.
+
+**How to verify on macOS.**
+1. Build the native `libUnoNativeMac.dylib` (the UnoNativeMac Xcode/clang build) and the SamplesApp.
+2. Open a sample with `AutomationProperties.AutomationId` set (e.g. `Automation/AutomationProperties_AutomationId`, or the new `Automation/AutomationProperties_Relations` whose elements set ids like `rel-controller`).
+3. In Accessibility Inspector, select the element and confirm its **Identifier** field equals the AutomationId.
+4. Or via XCUITest/Appium (Mac2 driver): `app.buttons["rel-controller"]` (or the relevant id) should resolve the element.
+
+**Pass criteria:** every element with an AutomationId exposes it as `accessibilityIdentifier`; elements without one expose no identifier; XCUITest/Appium can locate elements by AutomationId.
+
+---
+
+## MAC-01 — RadioButton (and Tab/TabItem) `AXValue` kept in sync on selection
+
+**What changed.** `UNOAccessibility.m` `uno_accessibility_update_selected` now, for elements whose
+computed role is `NSAccessibilityRadioButtonRole` (radio, tab, tabitem all map to it), also updates
+`_unoValue` to `@"1"`/`@"0"` and posts `NSAccessibilityValueChangedNotification`. Previously only
+`_unoIsSelected` was updated, but `accessibilityValue` reads `_unoValue`, so VoiceOver reported a
+stale checked state after selection changed. Native-only fix (build on macOS to validate).
+
+**How to verify on macOS.**
+1. Build native + SamplesApp; enable VoiceOver.
+2. Open a RadioButton group sample and a TabView/Pivot sample.
+3. Change the selected radio (arrow keys / click). *Expected:* VoiceOver announces the newly selected
+   radio as "selected/checked" and the previously selected one as "not selected"; Accessibility
+   Inspector shows the new radio's **Value = 1** and the old one **Value = 0**.
+4. Switch tabs: the newly selected tab's value updates to 1 (old tab → 0).
+
+**Pass criteria:** after any selection change, the radio/tab `AXValue` reflects the current selection
+(no stale value); a value-changed notification fires so VoiceOver re-reads it.
