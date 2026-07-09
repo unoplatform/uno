@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 /// The per-<see cref="MUXWindowId"/> registries on <see cref="AppWindow"/>,
 /// <see cref="ApplicationView"/> and <see cref="CoreDragDropManager"/> have no removal path: a
 /// closed window's entry — and every event subscriber reachable from it — is retained for the
-/// process lifetime. For a secondary-app window in a collectible AssemblyLoadContext that pins the
+/// process lifetime. For a secondary-app window in a collectible AssemblyLoadContext, this pins the
 /// whole ALC. Each map now exposes <c>DestroyForWindowId</c> (called from ALC window close) that
 /// removes the entry.
 /// </summary>

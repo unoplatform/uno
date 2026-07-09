@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Loader;
 
@@ -9,12 +8,8 @@ namespace Microsoft.UI.Xaml.Media;
 public partial class CompositionTarget
 {
 	private static readonly List<EventHandler<object>> _handlers = new List<EventHandler<object>>();
+	private static readonly CompositionTargetFrameDispatcher _frameDispatcher = new();
 	private static bool _requestedFrame;
-
-	// Reused snapshot buffer for the per-frame dispatch so a running frame is unaffected by
-	// add/remove during dispatch, without allocating a fresh list every frame (this runs on
-	// every animation frame while any handler is registered).
-	private static EventHandler<object>[] _dispatchSnapshot = Array.Empty<EventHandler<object>>();
 
 	public static event EventHandler<object> Rendering
 	{
@@ -69,21 +64,10 @@ public partial class CompositionTarget
 	[JSExport]
 	private static void FrameCallback()
 	{
-		var count = _handlers.Count;
-		if (_dispatchSnapshot.Length < count)
-		{
-			_dispatchSnapshot = new EventHandler<object>[count];
-		}
-
-		_handlers.CopyTo(_dispatchSnapshot);
-		for (var i = 0; i < count; i++)
-		{
-			_dispatchSnapshot[i](null, null);
-
-			// Release the reference so the reused buffer does not root a handler past its
-			// dispatch (a handler may be the only thing keeping a collectible-ALC object alive).
-			_dispatchSnapshot[i] = null;
-		}
+		// The dispatcher snapshots into a reused buffer and always clears it afterwards, so no
+		// handler (and thus no collectible-ALC object it may root) lingers in a static buffer past
+		// its dispatch — even if a handler throws or the handler list shrank since the last frame.
+		_frameDispatcher.Dispatch(_handlers);
 
 		if (_handlers.Count > 0)
 		{
