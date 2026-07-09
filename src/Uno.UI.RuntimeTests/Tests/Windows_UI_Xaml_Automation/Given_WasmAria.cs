@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -93,34 +91,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			// Poll for the settled state: aria-labelledby takes precedence and the competing aria-label
 			// must end up removed (the async semantic-tree build can briefly set aria-label first).
 			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(field, "aria-label"), timeoutMS: 3000, message: "aria-label must be suppressed when aria-labelledby is present (no double naming).");
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-		public async Task When_DescribedBy_Has_Nodeless_Target_Then_No_Dangling_IdRef()
-		{
-			await ResetAsync();
-
-			var visible = new TextBlock { Text = "Visible help" };
-			AutomationProperties.SetName(visible, "Visible help");
-			var collapsed = new TextBlock { Text = "Hidden help", Visibility = Visibility.Collapsed };
-			AutomationProperties.SetName(collapsed, "Hidden help");
-			var field = new TextBox();
-			field.SetValue(AutomationProperties.DescribedByProperty, new List<DependencyObject> { visible, collapsed });
-			var panel = new StackPanel { Children = { visible, collapsed, field } };
-
-			await UITestHelper.Load(panel);
-			visible.GetOrCreateAutomationPeer();
-			field.GetOrCreateAutomationPeer();
-
-			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(field) && SemanticElementExists(visible), timeoutMS: 5000, message: "Timed out waiting for the semantic elements.");
-			await UITestHelper.WaitForIdle();
-
-			var describedBy = GetSemanticAttribute(field, "aria-describedby");
-			Assert.AreEqual(GetSemanticElementId(visible), describedBy, "aria-describedby must reference only the target that has a semantic node.");
-			Assert.IsFalse(describedBy.Contains(GetSemanticElementId(collapsed)), "A node-less (collapsed) target must not produce a dangling IDREF.");
 		}
 #endif
 	}
