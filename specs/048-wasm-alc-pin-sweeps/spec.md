@@ -68,5 +68,17 @@ it — distinct from the benign runtime dependent-handle residual.
 ## Verification
 
 Each sweep has a red/green test asserting a collectible-ALC-keyed entry is dropped while
-default-ALC / framework entries are kept; red proven by neutering the sweep. WASM-only caches
-(2, 4, 7 partial) are covered by runtime tests gated to WASM; the rest by `Uno.UI.UnitTests`.
+default-ALC / framework entries are kept; red proven by neutering the sweep.
+
+- `Given_ResourceLoader_Alc`, `Given_WindowId_Maps_Alc`, `Given_ResidualTypeStatics_Alc`
+  (`Uno.UI.UnitTests`, reference target): built and **passing** locally; red proven for
+  finding 1 (neutered sweep → removal assertion fails) and the WindowId-map group.
+- `Given_HotReloadClientOperation_Alc` (`Uno.UI.RuntimeTests`, `HAS_UNO_WINUI`): production
+  side built clean on the reference target; the runtime test runs on CI (WinUI flavor).
+
+### Build-honesty note
+
+The local environment has neither the `browserwasm` nor the `desktop`/skia workload installed
+(`NETSDK1139`), so the WASM-only sweeps (finding 2, finding 4, `HtmlElementHelper`) and the
+Skia/WASM runtime test could not be built or run locally. They are validated by CI. Everything
+compilable on the reference target (findings 1, 3, 6, 7, 8-Style) was built and tested locally.
