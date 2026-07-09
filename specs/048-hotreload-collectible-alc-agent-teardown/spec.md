@@ -76,45 +76,56 @@ without relying on `Unloading`.
 
 ## Validation
 
-Red/fix/green (both tests fail on the pre-fix `Dispose`, which only detached the
-`AssemblyLoad` subscription):
+Seven `[TestMethod]`s in
+`Uno.UI.RemoteControl.DevServer.Tests/HotReload/HotReloadAgentDisposeTests.cs` cover the fix.
+Five of them (marked "Red before fix N") fail on the pre-fix agent `Dispose` bodies, which only
+detached the `AssemblyLoad` subscription and left the caches/statics populated; the other two
+(`AssemblyLoadSubscriptionDetached` and `SharedElementAgentUntouched`) are non-regression guards
+that stay green either way.
 
-- `Uno.UI.RemoteControl.DevServer.Tests/HotReload/HotReloadAgentDisposeTests.cs`
-  - `When_ElementUpdateAgentDisposed_Then_HandlerMapCleared` — after `ElementUpdateAgent.Dispose()`,
-    the `Type`-keyed `ElementHandlerActions` map is empty (the assembly-level
-    `[ElementMetadataUpdateHandlerAttribute]`s in the test assembly cause handlers to be
-    discovered at construction, so the map is non-empty before dispose). Red before fix 1;
-    green after.
-  - `When_HotReloadAgentDisposed_Then_DeltaAndAssemblyMapsCleared` — after
-    `HotReloadAgent.Dispose()`, `_deltas` (populated via the public `ApplyDeltas` path with a
-    random module id that matches no loaded module, so nothing is applied to the runtime) and
-    `_appliedAssemblies` (seeded via reflection, as it has no public writer) are both empty.
-    Red before fix 2; green after.
-  - `When_ElementUpdateAgentDisposed_Then_AssemblyLoadSubscriptionDetached` — guards the
-    process-wide `AppDomain.AssemblyLoad` unsubscription (observed through the runtime's
-    `AssemblyLoadContext.AssemblyLoad` backing field, which the `AppDomain` event forwards to).
-  - `When_CollectibleContextProcessorDisposed_Then_PerContextStaticsReleased` — loads a real
-    copy of `Uno.UI.RemoteControl` into a collectible `AssemblyLoadContext` (the copy's
-    `_processorAlc` then resolves to that context, so the production gate is exercised, not
-    simulated), seeds the copy's static `_elementAgent`, and proves that a host-driven
-    `Dispose()` releases the static agent and detaches its `AssemblyLoad` subscription, and
-    that double-dispose is safe. Red before fix 4; green after.
-  - `When_DefaultContextProcessorDisposed_Then_SharedElementAgentUntouched` — proves the
-    default-context `Dispose()` behavior is unchanged: the shared element agent stays alive
-    and subscribed.
-  - `When_TearDownForAlcUnload_WithLiveInstance_Then_TearsDownWithoutRecursion` — drives the
-    `Unloading`-path teardown against a collectible copy with a live `_instance` whose
-    `Dispose()` now re-enters the static release, proving the flow neither recurses nor throws
-    on repeat.
+- `When_ElementUpdateAgentDisposed_Then_HandlerMapCleared` — after `ElementUpdateAgent.Dispose()`,
+  the `Type`-keyed `ElementHandlerActions` map is empty (the assembly-level
+  `[ElementMetadataUpdateHandlerAttribute]`s in the test assembly cause handlers to be
+  discovered at construction, so the map is non-empty before dispose). Red before fix 1;
+  green after.
+- `When_HotReloadAgentDisposed_Then_DeltaAndAssemblyMapsCleared` — after
+  `HotReloadAgent.Dispose()`, `_deltas` (populated via the public `ApplyDeltas` path with a
+  random module id that matches no loaded module, so nothing is applied to the runtime) and
+  `_appliedAssemblies` (seeded via reflection, as it has no public writer) are both empty.
+  Red before fix 2; green after.
+- `When_HotReloadAgentDisposed_Then_HandlerActionsCacheCleared` — after `HotReloadAgent.Dispose()`,
+  the `_handlerActions` cache (which captures handler delegates and `Type`s discovered by
+  scanning the owning context's assemblies) is null. Red before fix 2; green after.
+- `When_ElementUpdateAgentDisposed_Then_AssemblyLoadSubscriptionDetached` — guards the
+  process-wide `AppDomain.AssemblyLoad` unsubscription (observed through the runtime's
+  `AssemblyLoadContext.AssemblyLoad` backing field, which the `AppDomain` event forwards to).
+- `When_CollectibleContextProcessorDisposed_Then_PerContextStaticsReleased` — loads a real
+  copy of `Uno.UI.RemoteControl` into a collectible `AssemblyLoadContext` (the copy's
+  `_processorAlc` then resolves to that context, so the production gate is exercised, not
+  simulated), seeds the copy's static `_elementAgent`, and proves that a host-driven
+  `Dispose()` releases the static agent and detaches its `AssemblyLoad` subscription, and
+  that double-dispose is safe. The collectible context is `Unload()`ed in a `finally` after the
+  assertions. Red before fix 4; green after.
+- `When_DefaultContextProcessorDisposed_Then_SharedElementAgentUntouched` — proves the
+  default-context `Dispose()` behavior is unchanged: the shared element agent stays alive
+  and subscribed.
+- `When_TearDownForAlcUnload_WithLiveInstance_Then_TearsDownWithoutRecursion` — drives the
+  `Unloading`-path teardown against a collectible copy with a live `_instance` whose
+  `Dispose()` now re-enters the static release, proving the flow neither recurses nor throws
+  on repeat. The collectible context is `Unload()`ed in a `finally` after the assertions.
 
 The agents' internals are exercised via `InternalsVisibleTo("Uno.UI.RemoteControl.DevServer.Tests")`,
 which already exists; the private `_appliedAssemblies`/`_deltas` counts are read reflectively
 to keep the test a true unit test with no UI scaffolding.
 
-Evidence: with the committed fix the two tests pass (2/2); reverting only the two `Dispose`
-bodies to the pre-fix expression form (`=> AppDomain.CurrentDomain.AssemblyLoad -= _assemblyLoad;`)
-makes both fail (2/2), one on the non-empty handler map and one on `_deltas` still holding a
-stashed delta.
+Evidence: with the committed fix all seven tests pass (7/7). Reverting only the two agent
+`Dispose` bodies to the pre-fix expression form (`=> AppDomain.CurrentDomain.AssemblyLoad -= _assemblyLoad;`)
+turns five assertions red — `HandlerMapCleared` on the non-empty handler map,
+`DeltaAndAssemblyMapsCleared` on `_deltas` still holding the stashed delta,
+`HandlerActionsCacheCleared` on the non-null cache, and the two collectible-context /
+teardown tests (`PerContextStaticsReleased`, `TearDownForAlcUnload_WithLiveInstance...`) on the
+released agent's `AssemblyLoad` subscription still being attached — while the two guards
+(`AssemblyLoadSubscriptionDetached`, `SharedElementAgentUntouched`) stay green.
 
 ## Notes / follow-ups
 
