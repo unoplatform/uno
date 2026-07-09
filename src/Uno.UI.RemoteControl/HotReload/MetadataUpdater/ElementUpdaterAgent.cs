@@ -416,6 +416,13 @@ internal sealed class ElementUpdateAgent : IDisposable
 	}
 
 	public void Dispose()
-		=> AppDomain.CurrentDomain.AssemblyLoad -= _assemblyLoad;
+	{
+		// Release the process-wide AssemblyLoad subscription that otherwise keeps this agent — and,
+		// through its captured load context, that context's assemblies — alive for the life of the host.
+		AppDomain.CurrentDomain.AssemblyLoad -= _assemblyLoad;
+
+		// Drop the Type-keyed handler map so a collectible context's element types are not retained.
+		_elementHandlerActions.Clear();
+	}
 
 }
