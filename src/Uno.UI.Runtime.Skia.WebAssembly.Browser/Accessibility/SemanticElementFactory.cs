@@ -49,6 +49,16 @@ internal static partial class SemanticElementFactory
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 		var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
+		// WA-04 / FR-019: when AutomationProperties.LabeledBy resolves to a labeller that has its own
+		// semantic node, aria-labelledby (an IDREF) provides the accessible name and takes ARIA
+		// precedence. ResolveLabel also flattens LabeledBy into a literal name, so suppress that
+		// aria-label here to avoid emitting both aria-labelledby and a redundant/competing aria-label.
+		var labelledById = ResolveLabelledByIdRef(peer);
+		if (labelledById is not null)
+		{
+			attributes.Label = null;
+		}
+
 		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
@@ -158,17 +168,13 @@ internal static partial class SemanticElementFactory
 		}
 
 		// Apply aria-labelledby when AutomationProperties.LabeledBy resolves to a labeller that has
-		// its own semantic node. The IDREF is computed here (not in AriaMapper) because only the
+		// its own semantic node. The IDREF is computed above (not in AriaMapper) because only the
 		// WASM layer can map the labeller UIElement → its uno-semantics-{handle} id and verify the
-		// node is actually present (no dangling IDREF — FR-019/FR-022). aria-labelledby is independent
-		// of aria-label: both can be present.
-		if (created)
+		// node is actually present (no dangling IDREF — FR-019/FR-022). When it is present the
+		// competing flattened aria-label has already been suppressed (see WA-04 above).
+		if (created && labelledById is not null)
 		{
-			var labelledById = ResolveLabelledByIdRef(peer);
-			if (labelledById is not null)
-			{
-				NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
-			}
+			NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
 		}
 
 		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)

@@ -1785,6 +1785,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				role = "group";
 			}
 		}
+		// WA-01: role=generic (control type Custom) is ARIA name-prohibited. When such an element has
+		// an accessible name it would otherwise emit aria-label on a prohibited role (dropped by ATs /
+		// flagged by axe "aria-label on prohibited role"). Promote it to role=group, which permits a
+		// name — matching WinUI3's named-container → UIA Group.
+		else if (string.Equals(role, "generic", StringComparison.Ordinal) && hasAccessibleName)
+		{
+			role = "group";
+		}
 
 		// Elements with a LandmarkType get the corresponding ARIA landmark role.
 		// This overrides any other role since landmarks are a higher-level semantic.
