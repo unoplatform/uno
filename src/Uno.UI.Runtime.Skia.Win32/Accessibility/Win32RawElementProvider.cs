@@ -241,7 +241,7 @@ internal class Win32RawElementProvider :
 
 				// Semantics
 				Win32UIAutomationInterop.UIA_HeadingLevelPropertyId => _isVirtualPeer ? null : MapHeadingLevel(AutomationProperties.GetHeadingLevel(_owner)),
-				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => _isVirtualPeer ? null : MapLandmarkType(AutomationProperties.GetLandmarkType(_owner)),
+				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => _isVirtualPeer ? null : GetLandmarkTypeProperty(),
 				Win32UIAutomationInterop.UIA_LocalizedLandmarkTypePropertyId => _isVirtualPeer ? null : GetNonEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)),
 				Win32UIAutomationInterop.UIA_LiveSettingPropertyId => _isVirtualPeer ? 0 : (int)AutomationProperties.GetLiveSetting(_owner),
 				Win32UIAutomationInterop.UIA_OrientationPropertyId => MapOrientation(peer),
@@ -1298,6 +1298,19 @@ internal class Win32RawElementProvider :
 		AutomationHeadingLevel.Level9 => Win32UIAutomationInterop.HeadingLevel9,
 		_ => Win32UIAutomationInterop.HeadingLevel_None,
 	};
+
+	private int? GetLandmarkTypeProperty()
+	{
+		var type = AutomationProperties.GetLandmarkType(_owner);
+		if (type == AutomationLandmarkType.None &&
+			!string.IsNullOrEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)))
+		{
+			// Match WinUI (UIAWrapper.cpp): a LocalizedLandmarkType with no LandmarkType is a Custom landmark.
+			return Win32UIAutomationInterop.UIA_CustomLandmarkTypeId;
+		}
+
+		return MapLandmarkType(type);
+	}
 
 	internal static int? MapLandmarkType(AutomationLandmarkType type) => type switch
 	{
