@@ -126,14 +126,14 @@ partial class ResourceLoader
 
 	/// <summary>
 	/// Removes every previewed-app assembly registered via <see cref="AddLookupAssembly"/> whose
-	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> is non-default (collectible), and
-	/// the matching parsed-resource bookkeeping. A downstream host that loads previewed apps into
-	/// their own collectible AssemblyLoadContexts calls each of those apps'
-	/// <c>AddLookupAssembly</c>; the process-lifetime <see cref="_lookupAssemblies"/> list then
-	/// holds a strong reference to every loaded app assembly for the process lifetime, pinning the
-	/// context after unload. The parsed resources themselves are keyed by string culture/key (no
-	/// ALC pin), but they are re-parsed on demand from the still-registered default-ALC assemblies,
-	/// so dropping them alongside the removed assemblies keeps the loader consistent.
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> is non-default (collectible), then
+	/// rebuilds the loader caches from the remaining (default-ALC) assemblies. A downstream host
+	/// that loads previewed apps into their own collectible AssemblyLoadContexts calls each of those
+	/// apps' <c>AddLookupAssembly</c>; the process-lifetime <see cref="_lookupAssemblies"/> list
+	/// then holds a strong reference to every loaded app assembly for the process lifetime, pinning
+	/// the context after unload. The parsed resources themselves are keyed by string culture/key (no
+	/// ALC pin), but the loaders' dictionaries are cleared and re-parsed from the still-registered
+	/// default-ALC assemblies so no value parsed from an unloaded assembly lingers.
 	/// </summary>
 	internal static void ClearNonDefaultAlcAssemblies()
 	{
@@ -143,14 +143,14 @@ partial class ResourceLoader
 			return;
 		}
 
-		// Drop parsed-resource markers whose owning assembly was removed, so a freshly loaded
-		// same-named app assembly re-parses its resources instead of being skipped as "already
-		// parsed" against the stale (unloaded) assembly identity.
-		_parsedResources.RemoveWhere(static entry => IsFromNonDefaultAlc(entry.Assembly));
-
 		// Rebuild the culture caches from the remaining (default-ALC) assemblies so no resource
-		// value parsed from an unloaded assembly lingers in a loader's dictionary.
+		// value parsed from an unloaded assembly lingers in a loader's dictionary. ClearResources()
+		// empties every loader's per-culture dictionaries, so the parsed-resource markers must be
+		// cleared wholesale too: ProcessResourceFile skips any (assembly, fileName) still present in
+		// _parsedResources, so leaving the remaining assemblies' markers in place would make the
+		// rebuild a no-op and leave the loaders empty until the next full reload.
 		ClearResources();
+		_parsedResources.Clear();
 		if (_loaderContext is not null)
 		{
 			foreach (var assembly in _lookupAssemblies)
