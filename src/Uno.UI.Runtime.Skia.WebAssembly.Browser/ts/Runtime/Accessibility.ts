@@ -823,6 +823,10 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				if (idList) {
 					element.setAttribute("aria-labelledby", idList);
+					// WA-04: aria-labelledby takes ARIA precedence over aria-label. Remove any competing
+					// aria-label so the element is not named twice — this also handles the two-phase
+					// build where aria-label was applied before the labeller's semantic node existed.
+					element.removeAttribute("aria-label");
 				} else {
 					element.removeAttribute("aria-labelledby");
 				}

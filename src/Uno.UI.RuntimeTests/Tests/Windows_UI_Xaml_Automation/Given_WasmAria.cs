@@ -77,7 +77,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			var labelledBy = GetSemanticAttribute(field, "aria-labelledby");
 			Assert.AreEqual(GetSemanticElementId(label), labelledBy, "aria-labelledby should reference the labeller's semantic node.");
-			Assert.IsFalse(SemanticElementHasAttribute(field, "aria-label"), "aria-label must be suppressed when aria-labelledby is present (no double naming).");
+			// Poll for the settled state: aria-labelledby takes precedence and the competing aria-label
+			// must end up removed (the async semantic-tree build can briefly set aria-label first).
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(field, "aria-label"), timeoutMS: 3000, message: "aria-label must be suppressed when aria-labelledby is present (no double naming).");
 		}
 
 		[TestMethod]
