@@ -187,6 +187,7 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_HeaderControlTypeId = 50034;
 	internal const int UIA_HeaderItemControlTypeId = 50035;
 	internal const int UIA_TableControlTypeId = 50036;
+	internal const int UIA_TitleBarControlTypeId = 50037;
 	internal const int UIA_SeparatorControlTypeId = 50038;
 	internal const int UIA_SemanticZoomControlTypeId = 50039;
 	internal const int UIA_AppBarControlTypeId = 50040;

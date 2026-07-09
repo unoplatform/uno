@@ -1349,6 +1349,7 @@ internal class Win32RawElementProvider :
 		AutomationControlType.Header => Win32UIAutomationInterop.UIA_HeaderControlTypeId,
 		AutomationControlType.HeaderItem => Win32UIAutomationInterop.UIA_HeaderItemControlTypeId,
 		AutomationControlType.Table => Win32UIAutomationInterop.UIA_TableControlTypeId,
+		AutomationControlType.TitleBar => Win32UIAutomationInterop.UIA_TitleBarControlTypeId,
 		AutomationControlType.Separator => Win32UIAutomationInterop.UIA_SeparatorControlTypeId,
 		AutomationControlType.SemanticZoom => Win32UIAutomationInterop.UIA_SemanticZoomControlTypeId,
 		AutomationControlType.AppBar => Win32UIAutomationInterop.UIA_AppBarControlTypeId,
