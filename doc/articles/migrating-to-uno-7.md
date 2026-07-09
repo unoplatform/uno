@@ -146,6 +146,47 @@ re-baseline visual tests:
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
 
+### Application settings on iOS, tvOS, and Mac Catalyst
+
+Values stored through `ApplicationData.Current.LocalSettings` / `.RoamingSettings` used to be
+written directly into the shared `NSUserDefaults.StandardUserDefaults` domain. In 7.0 they
+are stored in a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as
+`Library/Preferences/UnoApplicationData.plist` inside the app sandbox.
+
+This isolates Uno-managed settings from the keys the OS, Apple frameworks, and native
+libraries keep in the standard domain: enumerating (`Values.Keys`, `Values.Count`) or
+clearing (`Values.Clear()`) application settings no longer sees — or deletes — unrelated
+native keys.
+
+**Existing values migrate automatically.** On the first settings access after updating to
+7.0, values written by an earlier Uno Platform version (recognized by Uno's serialized
+`TypeName:value` format) are moved from the standard defaults into the new container. Apps
+that only access settings through the `ApplicationData` API need no changes.
+
+Update your code only if native/interop code reads these values directly from the standard
+defaults:
+
+```csharp
+// Before 7.0 the values were in NSUserDefaults.StandardUserDefaults
+var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
+```
+
+```swift
+// Swift companion code
+let unoDefaults = UserDefaults(suiteName: "UnoApplicationData")
+```
+
+Values your app writes to the standard defaults itself through native APIs are not
+affected — they stay where they are and remain invisible to `ApplicationData`, as before.
+
+> [!IMPORTANT]
+> The migration is one-way. Once a 7.0 build has run, the migrated values are removed from
+> `NSUserDefaults.StandardUserDefaults`, so downgrading to a pre-7.0 build of your app will
+> not find them there anymore.
+
+See [Application Data and Settings](xref:Uno.Features.ApplicationData) for details on where
+each platform stores its data.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
@@ -164,6 +205,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
 7. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
+8. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
+   container automatically on first access — update any native/interop code that read them
+   from `NSUserDefaults.StandardUserDefaults`.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.
