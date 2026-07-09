@@ -32,11 +32,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			TestServices.WindowHelper.WindowContent = null;
 		}
 
+		private static async Task ResetAsync()
+		{
+			// Start each test from a clean, settled semantic DOM. The tree is a single shared DOM per
+			// app instance, and a previous test's elements (esp. collapsed / relation targets) can
+			// otherwise still be draining when the next test loads, changing build ordering.
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Named_Generic_Then_Role_Group_Not_Generic()
 		{
+			await ResetAsync();
+
 			// A ContentControl's peer reports the Custom control type (the base default), which maps to
 			// role=generic. role=generic is ARIA name-prohibited, so a named one must be promoted to
 			// role=group (which permits a name).
@@ -61,6 +72,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_LabeledBy_Has_Node_Then_LabelledBy_Set_And_AriaLabel_Absent()
 		{
+			await ResetAsync();
+
 			var label = new TextBlock { Text = "Username" };
 			AutomationProperties.SetName(label, "Username");
 			var field = new TextBox();
@@ -87,6 +100,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_DescribedBy_Has_Nodeless_Target_Then_No_Dangling_IdRef()
 		{
+			await ResetAsync();
+
 			var visible = new TextBlock { Text = "Visible help" };
 			AutomationProperties.SetName(visible, "Visible help");
 			var collapsed = new TextBlock { Text = "Hidden help", Visibility = Visibility.Collapsed };

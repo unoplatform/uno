@@ -580,7 +580,11 @@ namespace Uno.UI.Runtime.Skia {
 				// Write the TRIMMED value so live-sync matches the creation-time path
 				// (setAriaStringAttribute) and never persists leading/trailing whitespace.
 				const trimmed = automationId ? automationId.trim() : "";
-				if (trimmed.length > 0) {
+				// WA-04: aria-labelledby takes ARIA precedence over aria-label. Never set a competing
+				// aria-label when the element is already named by aria-labelledby (order-independent
+				// with the aria-label removal in updateAriaLabelledBy) — this covers the case where a
+				// late live-update re-applies the name after the labelledby drain.
+				if (trimmed.length > 0 && !element.hasAttribute("aria-labelledby")) {
 					element.setAttribute("aria-label", trimmed);
 				} else {
 					element.removeAttribute("aria-label");
