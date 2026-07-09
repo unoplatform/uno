@@ -570,17 +570,22 @@ public partial class AutomationPeer : DependencyObject
 	/// <param name="notificationProcessing">The notification processing hint.</param>
 	/// <param name="displayString">The notification string.</param>
 	/// <param name="activityId">The activity ID.</param>
+#if __SKIA__
 	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-		// #if __SKIA__
-		// 		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
-		// 		if (ListenerExists(AutomationEvents.Notification))
-		// 		{
-		// 			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
-		// 		}
-		// #else
+		// RaiseNotificationEvent is stable public API (since UWP 16299) and maps to the UIA
+		// Notification event. Unlike RaiseAutomationEvent, Uno's public contract has no
+		// AutomationEvents.Notification value (it is [VelocityFeature]-gated in WinUI), so we
+		// route straight to the listener rather than through ListenerExistsHelper(eventId). The
+		// per-backend NotifyNotificationEvent handlers gate delivery on IsAccessibilityEnabled.
+		AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
+	}
+#else
+	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	{
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
 	}
+#endif
 
 #if !__SKIA__
 	/// <summary>
