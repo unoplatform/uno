@@ -262,18 +262,51 @@ public class HotReloadAgentDisposeTests
 
 	/// <summary>
 	/// True when a delegate targeting <paramref name="target"/> is subscribed to
-	/// AppDomain.CurrentDomain.AssemblyLoad. On .NET the AppDomain event forwards to the internal
-	/// static AssemblyLoadContext.AssemblyLoad field-like event, whose backing field is read here.
+	/// <c>AppDomain.CurrentDomain.AssemblyLoad</c>. On .NET the AppDomain event forwards to the
+	/// internal static <c>AssemblyLoadContext.AssemblyLoad</c> field-like event; the agent's
+	/// subscription (whose delegate target is the agent) is the primary pin on the owning
+	/// collectible context, so detachment on Dispose is what these tests assert.
 	/// </summary>
+	/// <remarks>
+	/// The backing static field is a CoreCLR implementation detail whose name/layout can change
+	/// across runtime updates. Rather than binding to a single hard-coded name — which would make
+	/// the test fail on a runtime change even when the product behaviour is correct — the lookup
+	/// probes the known candidate field names and, if none resolve, fails with a clear diagnostic
+	/// (never an NRE) pointing at the layout change so the seam can be updated deliberately.
+	/// </remarks>
 	private static bool IsSubscribedToAssemblyLoad(object target)
 	{
-		var field = typeof(AssemblyLoadContext).GetField("AssemblyLoad", BindingFlags.NonPublic | BindingFlags.Static)
-			?? throw new InvalidOperationException(
-				"AssemblyLoadContext.AssemblyLoad backing field not found — the runtime's AppDomain.AssemblyLoad forwarding layout changed.");
-
+		var field = ResolveAssemblyLoadBackingField();
 		var subscribers = ((Delegate?)field.GetValue(null))?.GetInvocationList() ?? Array.Empty<Delegate>();
 
 		return subscribers.Any(d => ReferenceEquals(d.Target, target));
+	}
+
+	// Field-like events emit a backing field named after the event on most runtimes; the extra
+	// candidates cover the compiler-generated backing-field conventions in case that changes.
+	private static readonly string[] _assemblyLoadFieldCandidates =
+	[
+		"AssemblyLoad",
+		"<AssemblyLoad>k__BackingField",
+		"m_AssemblyLoad",
+	];
+
+	private static FieldInfo ResolveAssemblyLoadBackingField()
+	{
+		foreach (var candidate in _assemblyLoadFieldCandidates)
+		{
+			var field = typeof(AssemblyLoadContext).GetField(candidate, BindingFlags.NonPublic | BindingFlags.Static);
+			if (field is not null && typeof(Delegate).IsAssignableFrom(field.FieldType))
+			{
+				return field;
+			}
+		}
+
+		throw new InvalidOperationException(
+			"Could not resolve the static AssemblyLoadContext backing field for AppDomain.AssemblyLoad " +
+			$"(tried: {string.Join(", ", _assemblyLoadFieldCandidates)}). The runtime's AppDomain.AssemblyLoad " +
+			"forwarding layout has changed — update the candidate field names or switch this seam to a " +
+			"behavioural observation of the agent's AssemblyLoad reaction.");
 	}
 
 	private static FieldInfo GetField(object target, string name) =>
