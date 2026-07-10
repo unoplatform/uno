@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 		public bool Wraps { get; }
 
-		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps)
+		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps, TextLineBounds textLineBounds)
 		{
 			_segmentSpans = new(spans);
 
@@ -61,9 +61,12 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 			{
 				var inline = _segmentSpans[i].Segment.Inline;
 
-				maxStackHeight = Math.Max(maxStackHeight, inline.LineHeight);
-				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, inline.AboveBaselineHeight);
-				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, inline.BelowBaselineHeight);
+				// Constrain the inline's font metrics by the owner's TextLineBounds before stacking.
+				var (baseline, lineSpacing) = inline.FontInfo.GetTextLineBoundsMetrics(textLineBounds);
+
+				maxStackHeight = Math.Max(maxStackHeight, lineSpacing);
+				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, baseline);
+				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, lineSpacing - baseline);
 			}
 
 			switch (lineStackingStrategy)

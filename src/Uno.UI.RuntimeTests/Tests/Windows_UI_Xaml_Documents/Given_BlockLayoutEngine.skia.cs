@@ -47,6 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 					maxLines: 0,
 					lineHeight: 0,
 					LineStackingStrategy.MaxHeight,
+					SUT.TextLineBounds,
 					SUT.TextAlignment,
 					SUT.TextWrapping,
 					SUT.FlowDirection,
