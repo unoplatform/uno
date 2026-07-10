@@ -366,6 +366,12 @@ internal static class Win32UIAutomationInterop
 		[MarshalAs(UnmanagedType.BStr)] string? activityId);
 
 	[DllImport("uiautomationcore.dll")]
+	internal static extern int UiaRaiseTextEditTextChangedEvent(
+		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
+		int textEditChangeType,
+		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_BSTR)] string[]? changedData);
+
+	[DllImport("uiautomationcore.dll")]
 	internal static extern int UiaDisconnectProvider(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider);
 

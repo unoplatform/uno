@@ -52,5 +52,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Automation
 			Asb.ItemsSource = new[] { $"Suggestion {_asbCounter}", $"Suggestion {_asbCounter}-b" };
 			Asb.IsSuggestionListOpen = true;
 		}
+
+		private void OnRaiseTextEdit(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			var peer = Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(TextEditTarget);
+			peer?.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType.AutoCorrect, new[] { "teh -> the" });
+		}
 	}
 }

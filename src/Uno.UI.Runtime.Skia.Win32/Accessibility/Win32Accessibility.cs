@@ -911,6 +911,44 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 	}
 
+	public override void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		// Materialize a provider if the client has not navigated to the element yet, mirroring the
+		// focus/live-region/LayoutInvalidated handling above (text services may raise this on an
+		// off-screen edit control).
+		var target = FindExistingProviderForPeer(peer, resolveEventsSource: true)
+			?? GetProviderForPeer(peer, resolveEventsSource: true)
+			?? (IRawElementProviderSimple?)_rootProvider;
+		if (target is null)
+		{
+			return;
+		}
+
+		var dataArray = new string[changedData.Count];
+		for (var i = 0; i < changedData.Count; i++)
+		{
+			dataArray[i] = changedData[i];
+		}
+
+		try
+		{
+			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
+			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"NotifyTextEditTextChangedEvent failed: {ex.Message}");
+			}
+		}
+	}
+
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract no-op overrides — Win32 dispatches at the UIA layer
 	//  via NotifyPropertyChangedEvent / NotifyAutomationEvent, not via

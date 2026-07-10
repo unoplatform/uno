@@ -184,6 +184,9 @@ internal static class AccessibilityRouter
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind kind, AutomationNotificationProcessing processing, string displayString, string activityId)
 			=> Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
 
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
+			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+
 		public bool ListenerExistsHelper(AutomationEvents eventId)
 		{
 			foreach (var pair in XamlRootMap.Enumerate())

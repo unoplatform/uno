@@ -425,6 +425,12 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	public virtual void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+		// TextEditTextChanged is a UIA-specific event (Win32 override raises UiaRaiseTextEditTextChangedEvent).
+		// Non-Win32 backends (macOS/WASM) have no direct NSAccessibility/ARIA equivalent, so the base is a no-op.
+	}
+
 	public virtual void NotifyInvalidatePeer(AutomationPeer peer)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled)

@@ -601,6 +601,27 @@ public partial class AutomationPeer : DependencyObject
 	}
 #endif
 
+	/// <summary>
+	/// Raises an event when a text control programmatically changes its text (e.g. AutoCorrect or IME composition).
+	/// </summary>
+	/// <param name="automationTextEditChangeType">The kind of text-edit change.</param>
+	/// <param name="changedData">The text that changed.</param>
+#if __SKIA__
+	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		// TextEditTextChanged is an app-facing UIA event: in WinUI no built-in control auto-raises it —
+		// it is called from AutoCorrect/Composition text services (AutomationPeer_Partial.cpp:916-940).
+		// Route straight to the listener (like RaiseNotificationEvent); the per-backend
+		// NotifyTextEditTextChangedEvent handlers gate delivery on IsAccessibilityEnabled.
+		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
+	}
+#else
+	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)", LogLevel.Warning);
+	}
+#endif
+
 #if !__SKIA__
 	/// <summary>
 	/// Raises an event to notify the automation client of a changed property value.

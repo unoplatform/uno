@@ -51,6 +51,16 @@
             Click="OnAsbUpdate"
             Content="Update suggestions" />
 
+        <TextBox
+            x:Name="TextEditTarget"
+            AutomationProperties.AutomationId="textedit-target"
+            PlaceholderText="TextEdit target" />
+        <Button
+            x:Name="TextEditButton"
+            AutomationProperties.AutomationId="textedit-raise"
+            Click="OnRaiseTextEdit"
+            Content="Raise TextEditTextChanged" />
+
         <Button
             x:Name="AddButton"
             AutomationProperties.AutomationId="struct-add"

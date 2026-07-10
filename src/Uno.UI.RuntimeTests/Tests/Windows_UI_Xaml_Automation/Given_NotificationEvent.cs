@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) { }
 			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
 			public void NotifyInvalidatePeer(AutomationPeer peer) { }
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData) { }
 			public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
 			public bool ListenerExistsHelper(AutomationEvents eventId) => true;
 		}

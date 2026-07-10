@@ -52,6 +52,7 @@ public class Given_ProgressBar
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Notified = true;
 		public void NotifyInvalidatePeer(AutomationPeer peer) => Notified = true;
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) => Notified = true;
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData) { }
 	}
 #endif
 }
