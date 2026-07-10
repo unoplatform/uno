@@ -44,7 +44,7 @@ internal static class HtmlElementHelper
 	/// </summary>
 	internal static void ClearNonDefaultAlcEntries()
 	{
-		var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+		var defaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.Default;
 		List<Type>? keysToRemove = null;
 
 		foreach (var key in _cache.Keys)
@@ -55,7 +55,7 @@ internal static class HtmlElementHelper
 				continue;
 			}
 
-			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+			var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
 			if (alc is not null && alc != defaultAlc)
 			{
 				(keysToRemove ??= new List<Type>()).Add(key);
