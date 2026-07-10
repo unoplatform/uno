@@ -3,7 +3,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RemoteControl.HotReload;
 using _Op = Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.HotReloadClientOperation;
@@ -13,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 /// <summary>
 /// A local hot-reload operation holds the array of hot-reloaded <see cref="Type"/> objects. In a
-/// downstream host that loads previewed apps into their own collectible <see cref="AssemblyLoadContext"/>s
+/// downstream host that loads previewed apps into their own collectible <see cref="System.Runtime.Loader.AssemblyLoadContext"/>s
 /// those are the app's collectible types, so a retained (historical) operation would pin the context
 /// after unload. Once an operation reaches a terminal state it must drop the raw type array while
 /// keeping its curated (string) display list.
@@ -24,7 +23,7 @@ public class Given_HotReloadClientOperation_Alc
 	[TestMethod]
 	public void When_Operation_Completed_Then_Raw_Types_Released_But_Curated_Kept()
 	{
-		var collectibleAlc = new AssemblyLoadContext("Given_HotReloadClientOperation_Alc.collectible", isCollectible: true);
+		var collectibleAlc = new global::System.Runtime.Loader.AssemblyLoadContext("Given_HotReloadClientOperation_Alc.collectible", isCollectible: true);
 		try
 		{
 			// A type loaded into a collectible ALC stands in for a previewed-app hot-reloaded type.
@@ -32,7 +31,7 @@ public class Given_HotReloadClientOperation_Alc
 				.LoadFromAssemblyPath(typeof(Given_HotReloadClientOperation_Alc).Assembly.Location)
 				.GetType(typeof(Given_HotReloadClientOperation_Alc).FullName!, throwOnError: true)!;
 
-			Assert.AreSame(collectibleAlc, AssemblyLoadContext.GetLoadContext(collectibleType.Assembly), "Pre-condition: the type must belong to the collectible ALC.");
+			Assert.AreSame(collectibleAlc, global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(collectibleType.Assembly), "Pre-condition: the type must belong to the collectible ALC.");
 
 			var op = new _Op(_Source.Manual, new[] { collectibleType }, static () => { });
 
