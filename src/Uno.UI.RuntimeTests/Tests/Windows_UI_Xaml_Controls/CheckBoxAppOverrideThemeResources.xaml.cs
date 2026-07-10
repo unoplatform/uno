@@ -1,9 +1,11 @@
 using Microsoft.UI.Xaml;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
+public sealed partial class CheckBoxAppOverrideThemeResources : ResourceDictionary
 {
-	public sealed partial class CheckBoxAppOverrideThemeResources : ResourceDictionary
+	public CheckBoxAppOverrideThemeResources()
 	{
-		public CheckBoxAppOverrideThemeResources() => this.InitializeComponent();
+		this.InitializeComponent();
 	}
 }
