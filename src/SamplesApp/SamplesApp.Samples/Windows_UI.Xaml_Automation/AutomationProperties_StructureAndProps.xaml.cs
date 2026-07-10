@@ -42,5 +42,15 @@ namespace UITests.Shared.Windows_UI_Xaml_Automation
 				DynamicContainer.Children.RemoveAt(DynamicContainer.Children.Count - 1);
 			}
 		}
+
+		private int _asbCounter;
+
+		private void OnAsbUpdate(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			_asbCounter++;
+			Asb.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
+			Asb.ItemsSource = new[] { $"Suggestion {_asbCounter}", $"Suggestion {_asbCounter}-b" };
+			Asb.IsSuggestionListOpen = true;
+		}
 	}
 }

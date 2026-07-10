@@ -753,7 +753,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
-			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged)
+			// Eagerly materialize a provider for events raised on an element the client has not yet
+			// navigated to: focus/live-region (Narrator tracking) and LayoutInvalidated (raised on the
+			// AutoSuggestBox suggestions list the moment it is populated, before UIA has walked into it).
+			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged or AutomationEvents.LayoutInvalidated)
 			{
 				provider = GetProviderForPeer(peer, resolveEventsSource: true);
 			}
@@ -836,6 +839,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				case AutomationEvents.WindowClosed:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_Window_WindowClosedEventId);
+					break;
+				case AutomationEvents.LayoutInvalidated:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_LayoutInvalidatedEventId);
 					break;
 				case AutomationEvents.LiveRegionChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(

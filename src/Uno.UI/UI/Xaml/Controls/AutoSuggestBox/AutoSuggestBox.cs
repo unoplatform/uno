@@ -11,6 +11,7 @@ using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -207,6 +208,15 @@ namespace Microsoft.UI.Xaml.Controls
 				// changed height and/or width when the popup is above or to the left of the
 				// ASB respectively.
 				LayoutPopup();
+
+				// WinUI raises LayoutInvalidated on the suggestions list part when its items change so a
+				// UIA client (Narrator) re-reads the re-laid-out suggestions — AutoSuggestBox::OnItemsChanged.
+				// Gated on an active listener to avoid materializing a peer during normal layout.
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.LayoutInvalidated))
+				{
+					FrameworkElementAutomationPeer.CreatePeerForElement(_suggestionsList)
+						?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+				}
 			}
 		}
 

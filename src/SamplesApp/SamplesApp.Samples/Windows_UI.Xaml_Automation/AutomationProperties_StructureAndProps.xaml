@@ -41,6 +41,16 @@
             AutomationProperties.AutomationId="anno-target"
             Text="Annotated element (Comment annotation -&gt; anno-comment)" />
 
+        <AutoSuggestBox
+            x:Name="Asb"
+            AutomationProperties.AutomationId="asb-layout"
+            PlaceholderText="AutoSuggestBox (LayoutInvalidated)" />
+        <Button
+            x:Name="AsbUpdateButton"
+            AutomationProperties.AutomationId="asb-update"
+            Click="OnAsbUpdate"
+            Content="Update suggestions" />
+
         <Button
             x:Name="AddButton"
             AutomationProperties.AutomationId="struct-add"
