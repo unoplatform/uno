@@ -3,7 +3,9 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
@@ -100,6 +102,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// The child is hosted by the RichTextBlock itself, which is what renders and hit-tests it.
 			Assert.AreEqual(SUT, VisualTreeHelper.GetParent(child));
+		}
+
+		[TestMethod]
+		public async Task When_Child_Is_Rendered()
+		{
+			var child = CreateChild(40, 20);
+			var SUT = CreateSUT(child);
+
+			var bounds = await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			var offset = child.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+			var center = new Point(offset.X + 20, offset.Y + 10);
+
+			ImageAssert.HasColorAt(bitmap, (float)center.X, (float)center.Y, Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
+		public async Task When_Sample_Shaped_Content_Is_Rendered()
+		{
+			// Mirrors RichTextBlock_Showcase 3.1: several containers in one wrapping paragraph,
+			// with templated / shape children that have no explicit size.
+			var button = new Button { Content = "Click", Padding = new Thickness(8, 2, 8, 2) };
+			var ellipse = new Ellipse { Width = 16, Height = 16, Fill = new SolidColorBrush(Colors.Red) };
+
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "A button " });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = button });
+			paragraph.Inlines.Add(new Run { Text = " then a shape " });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = ellipse });
+			paragraph.Inlines.Add(new Run { Text = " and more wrapping text that continues past the embedded elements to show flow." });
+
+			var SUT = new RichTextBlock { TextWrapping = TextWrapping.Wrap };
+			SUT.Blocks.Add(paragraph);
+			var frame = new Border { MaxWidth = 460, Child = SUT };
+
+			await UITestHelper.Load(frame);
+
+			Assert.IsTrue(button.ActualWidth > 20, $"Button should have measured, but ActualWidth was {button.ActualWidth}.");
+			Assert.AreEqual(16, ellipse.ActualWidth);
+
+			var bitmap = await UITestHelper.ScreenShot(frame);
+			var offset = ellipse.TransformToVisual(frame).TransformPoint(new Point(0, 0));
+			ImageAssert.HasColorAt(bitmap, (float)offset.X + 8, (float)offset.Y + 8, Colors.Red, tolerance: 12);
+		}
+
+		[TestMethod]
+		public async Task When_Declared_In_Xaml()
+		{
+			var SUT = (RichTextBlock)XamlReader.Load(
+				"""
+				<RichTextBlock xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Paragraph>
+						<Run Text="A button " />
+						<InlineUIContainer>
+							<Border x:Name="badge" Width="40" Height="20" Background="Red" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" />
+						</InlineUIContainer>
+						<Run Text=" and more text." />
+					</Paragraph>
+				</RichTextBlock>
+				""");
+
+			await UITestHelper.Load(SUT);
+
+			var badge = (Border)SUT.FindName("badge");
+			Assert.IsNotNull(badge, "The InlineUIContainer child was not created from XAML.");
+			Assert.AreEqual(40, badge.ActualWidth, "The XAML-declared child was never measured/arranged.");
+			Assert.AreEqual(SUT, VisualTreeHelper.GetParent(badge));
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			var offset = badge.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+			ImageAssert.HasColorAt(bitmap, (float)offset.X + 20, (float)offset.Y + 10, Colors.Red, tolerance: 5);
 		}
 
 		[TestMethod]
