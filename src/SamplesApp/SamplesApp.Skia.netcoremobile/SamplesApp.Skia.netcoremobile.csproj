@@ -292,6 +292,9 @@
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" Condition="'$(IsUIKit)'=='true'" />
+		<!-- GLCanvasElement: Android (GLES via EGL) and iOS/tvOS (GLES via EAGL) have an
+		     INativeOpenGLWrapper; Mac Catalyst does not (EAGL is unavailable there). -->
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'" />
 	</ItemGroup>
 
 	<ItemGroup>
