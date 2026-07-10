@@ -98,6 +98,14 @@
 		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
 
+	<!-- The Skia/WASM accessibility semantic-DOM tests use composition APIs (UIElement.Visual) that
+	     don't exist on native mobile, so they don't compile there and aren't applicable (native
+	     surfaces accessibility through native views). Exclude them from the native mobile head. -->
+	<ItemGroup>
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_Accessible*.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\WasmSemanticDomHelper.cs" />
+	</ItemGroup>
+
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
