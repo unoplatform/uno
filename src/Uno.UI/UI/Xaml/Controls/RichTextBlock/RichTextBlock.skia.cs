@@ -100,7 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			EnsureBlockLayout();
+			RebuildBlockLayout();
 
 			Size desiredSize = default;
 
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Mirrors CRichTextBlock::EnsureBlockLayout: create the layout engine + page node once.
 		// Calling GetDefaultFontDetails warms the font cache and hooks async font-load invalidation
 		// (the engine resolves fonts via BlockLayoutHelpers/FontDetailsCache).
-		private void EnsureBlockLayout()
+		private void RebuildBlockLayout()
 		{
 			_ = GetDefaultFontDetails();
 
@@ -186,6 +186,17 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_pLinkedView is null)
 			{
 				_pSelectionManager?.TextViewChanged(oldElementView, _pTextView);
+			}
+		}
+
+		// Ensures a block layout exists without discarding a measured one. The text-pointer and
+		// hit-testing APIs query the arranged page node, so recreating it here would leave them
+		// querying a node that is still measure/arrange dirty (the view then reports position 0).
+		private void EnsureBlockLayout()
+		{
+			if (_pageNode is null)
+			{
+				RebuildBlockLayout();
 			}
 		}
 
