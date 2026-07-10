@@ -117,7 +117,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			try
 			{
-				instance?.Dispose();
+				// Dispose() lives in the base partial file, which some consumers (e.g. Uno.UI.Toolkit)
+				// link WITHOUT: cast through IDisposable so this binds in the full assembly (where the
+				// type is IDisposable) and compiles-to-no-op in those partial embeds. Harmless there:
+				// the teardown only runs for a collectible context, which such embeds never have.
+				(instance as IDisposable)?.Dispose();
 			}
 			catch (Exception e)
 			{
