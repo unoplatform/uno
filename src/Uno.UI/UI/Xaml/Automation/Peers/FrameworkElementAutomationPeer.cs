@@ -375,6 +375,9 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	protected override bool IsPeripheralCore()
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
+	protected override int GetCultureCore()
+		=> AutomationProperties.GetCulture(Owner);
+
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
 

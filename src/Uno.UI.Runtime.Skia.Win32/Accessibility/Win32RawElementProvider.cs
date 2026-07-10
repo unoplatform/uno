@@ -269,8 +269,9 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_AriaPropertiesPropertyId => null,
 
 				// Culture / peripheral / other
-				Win32UIAutomationInterop.UIA_CulturePropertyId => null,
-				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => null,
+				// Culture is a locale LCID; WinUI serves VT_EMPTY (null) when unset (0).
+				Win32UIAutomationInterop.UIA_CulturePropertyId => GetPositiveOrNull(peer?.GetCulture() ?? 0),
+				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => peer?.IsPeripheral() ?? false,
 
 				_ => null,
 			};

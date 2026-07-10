@@ -1,0 +1,36 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.AutomationProperties_StructureAndProps"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="16" Spacing="12">
+        <TextBlock Text="IsPeripheral / Culture UIA properties + dynamic child add/remove (StructureChanged)." TextWrapping="Wrap" />
+
+        <TextBlock
+            x:Name="PeripheralText"
+            automation:AutomationProperties.Culture="1033"
+            automation:AutomationProperties.IsPeripheral="True"
+            AutomationProperties.AutomationId="prop-peripheral"
+            Text="Peripheral element (Culture=1033, IsPeripheral=True)" />
+
+        <Button
+            x:Name="AddButton"
+            AutomationProperties.AutomationId="struct-add"
+            Click="OnAdd"
+            Content="Add child" />
+        <Button
+            x:Name="RemoveButton"
+            AutomationProperties.AutomationId="struct-remove"
+            Click="OnRemove"
+            Content="Remove child" />
+
+        <StackPanel
+            x:Name="DynamicContainer"
+            AutomationProperties.AutomationId="struct-container"
+            Spacing="4" />
+    </StackPanel>
+</UserControl>
