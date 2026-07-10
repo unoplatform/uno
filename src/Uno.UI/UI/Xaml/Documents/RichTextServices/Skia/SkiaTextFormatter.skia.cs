@@ -25,12 +25,14 @@ internal sealed class SkiaTextFormatter : TextFormatter
 {
 	// The formatter is stateless apart from a one-entry parse cache. The layout
 	// engine formats one paragraph to completion before moving to the next, so a
-	// single cached entry (keyed by source identity and wrapping width) is enough
-	// to serve every FormatLine call of a paragraph from one ParseText pass.
+	// single cached entry (keyed by source identity, wrapping width and text line
+	// bounds) is enough to serve every FormatLine call of a paragraph from one
+	// ParseText pass.
 	public static SkiaTextFormatter Instance { get; } = new();
 
 	private TextSource? _cachedSource;
 	private double _cachedWrappingWidth;
+	private TextLineBounds _cachedTextLineBounds;
 	private ParsedText _cachedParsed;
 	private bool _hasCache;
 
@@ -45,7 +47,7 @@ internal sealed class SkiaTextFormatter : TextFormatter
 		var index = (previousLineBreak as SkiaTextLineBreak)?.NextLineIndex ?? 0;
 
 		ParsedText parsed;
-		if (_hasCache && ReferenceEquals(_cachedSource, textSource) && _cachedWrappingWidth == wrappingWidth)
+		if (_hasCache && ReferenceEquals(_cachedSource, textSource) && _cachedWrappingWidth == wrappingWidth && _cachedTextLineBounds == textParagraphProperties.TextLineBounds)
 		{
 			parsed = _cachedParsed;
 		}
@@ -59,6 +61,7 @@ internal sealed class SkiaTextFormatter : TextFormatter
 				maxLines: 0, // Format every line; paging / MaxLines is applied by the layout tree.
 				source.LineHeight,
 				source.LineStackingStrategy,
+				textParagraphProperties.TextLineBounds,
 				textParagraphProperties.TextAlignment,
 				textParagraphProperties.TextWrapping,
 				textParagraphProperties.FlowDirection,
@@ -66,6 +69,7 @@ internal sealed class SkiaTextFormatter : TextFormatter
 
 			_cachedSource = textSource;
 			_cachedWrappingWidth = wrappingWidth;
+			_cachedTextLineBounds = textParagraphProperties.TextLineBounds;
 			_cachedParsed = parsed;
 			_hasCache = true;
 		}

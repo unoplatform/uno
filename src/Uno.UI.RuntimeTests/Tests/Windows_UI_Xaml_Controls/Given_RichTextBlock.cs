@@ -78,6 +78,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		public async Task When_TextLineBounds_Trims_Line_Height()
+		{
+			static RichTextBlock Create(TextLineBounds bounds)
+			{
+				var rtb = new RichTextBlock { FontSize = 24, TextLineBounds = bounds };
+				var paragraph = new Paragraph();
+				paragraph.Inlines.Add(new Run { Text = "Bounds" });
+				rtb.Blocks.Add(paragraph);
+				return rtb;
+			}
+
+			var full = Create(TextLineBounds.Full);
+			var trimToBaseline = Create(TextLineBounds.TrimToBaseline);
+			var tight = Create(TextLineBounds.Tight);
+
+			var panel = new StackPanel();
+			panel.Children.Add(full);
+			panel.Children.Add(trimToBaseline);
+			panel.Children.Add(tight);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				// CCompositeFontFamily::GetTextLineBoundsMetrics — Full keeps ascent+descent,
+				// TrimToBaseline drops the descent, Tight trims to cap height at both ends.
+				Assert.IsTrue(tight.ActualHeight > 0, $"Tight height should be positive (was {tight.ActualHeight})");
+				Assert.IsTrue(trimToBaseline.ActualHeight < full.ActualHeight,
+					$"TrimToBaseline height {trimToBaseline.ActualHeight} should be less than Full height {full.ActualHeight}");
+				Assert.IsTrue(tight.ActualHeight < trimToBaseline.ActualHeight,
+					$"Tight height {tight.ActualHeight} should be less than TrimToBaseline height {trimToBaseline.ActualHeight}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Multiple_Paragraphs()
 		{
 			var SUT = new RichTextBlock();

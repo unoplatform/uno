@@ -62,6 +62,7 @@ internal readonly struct ParsedText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
@@ -323,7 +324,7 @@ internal readonly struct ParsedText : IParsedText
 
 		void MoveToNextLine(bool currentLineWrapped)
 		{
-			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped, textLineBounds);
 			renderLines.Add(renderLine);
 			lineSegmentSpans.Clear();
 
