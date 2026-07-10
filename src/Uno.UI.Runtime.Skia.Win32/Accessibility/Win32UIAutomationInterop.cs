@@ -236,10 +236,10 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_ToolTipClosedEventId = 20001;
 	internal const int UIA_StructureChangedEventId = 20002;
 	internal const int UIA_MenuOpenedEventId = 20003;
-	internal const int UIA_MenuClosedEventId = 20004;
+	internal const int UIA_MenuClosedEventId = 20007;
 	internal const int UIA_AutomationFocusChangedEventId = 20005;
 	internal const int UIA_LayoutInvalidatedEventId = 20008;
-	internal const int UIA_AutomationPropertyChangedEventId = 20006;
+	internal const int UIA_AutomationPropertyChangedEventId = 20004;
 	internal const int UIA_Invoke_InvokedEventId = 20009;
 	internal const int UIA_SelectionItem_ElementAddedToSelectionEventId = 20010;
 	internal const int UIA_SelectionItem_ElementRemovedFromSelectionEventId = 20011;
