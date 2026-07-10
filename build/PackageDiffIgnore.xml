@@ -2956,6 +2956,9 @@
 
 		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
