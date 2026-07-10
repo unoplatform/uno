@@ -37,6 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public float LineHeight => 0;
 			public LineStackingStrategy LineStackingStrategy => LineStackingStrategy.MaxHeight;
 
+			public IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? FormatInlineObjects(float paragraphWidth) => null;
+
 			public override TextRun GetTextRun(uint characterIndex) => throw new NotSupportedException();
 			public override IEmbeddedElementHost? GetEmbeddedElementHost() => null;
 		}
