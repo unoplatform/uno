@@ -1769,9 +1769,6 @@
     <Color x:Key="Yellow800">#706028</Color>
     <Color x:Key="Yellow900">#584B1F</Color>
 
-    <!--  TODO: FIX THIS  -->
-    <SolidColorBrush x:Key="ControlForeground" Color="Transparent" />
-
     <!--  DocType  -->
     <SolidColorBrush x:Key="SampleDocType" Color="#C53434" />
 
