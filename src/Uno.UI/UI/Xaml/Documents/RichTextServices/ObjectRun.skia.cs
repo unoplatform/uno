@@ -18,7 +18,7 @@ internal abstract class ObjectRun : TextRun
 
 	// Initializes a new instance of ObjectRun class.
 	protected ObjectRun(uint characterIndex, TextRunProperties pProperties)
-		: base(1, characterIndex, TextRunType.Object)
+		: base(2, characterIndex, TextRunType.Object)
 	{
 		m_pProperties = pProperties;
 	}
