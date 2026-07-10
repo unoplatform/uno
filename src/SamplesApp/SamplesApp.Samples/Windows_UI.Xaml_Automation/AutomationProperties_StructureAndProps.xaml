@@ -32,6 +32,15 @@
             Orientation="Horizontal"
             Value="50" />
 
+        <TextBlock
+            x:Name="AnnoComment"
+            AutomationProperties.AutomationId="anno-comment"
+            Text="Comment target for the annotation" />
+        <TextBlock
+            x:Name="AnnoTarget"
+            AutomationProperties.AutomationId="anno-target"
+            Text="Annotated element (Comment annotation -&gt; anno-comment)" />
+
         <Button
             x:Name="AddButton"
             AutomationProperties.AutomationId="struct-add"

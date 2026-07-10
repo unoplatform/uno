@@ -425,7 +425,10 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return peers;
 	}
 
-	internal IReadOnlyList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
+	protected override IList<AutomationPeerAnnotation> GetAnnotationsCore()
+		=> GetAnnotationsCoreImpl();
+
+	internal IList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
 	{
 		var annotations = new List<AutomationPeerAnnotation>();
 

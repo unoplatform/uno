@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -12,6 +13,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Automation
 		public AutomationProperties_StructureAndProps()
 		{
 			this.InitializeComponent();
+
+			AnnoTarget.SetValue(
+				AutomationProperties.AnnotationsProperty,
+				new List<AutomationAnnotation> { new AutomationAnnotation { Type = AnnotationType.Comment, Element = AnnoComment } });
 		}
 
 		private void OnAdd(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

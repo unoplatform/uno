@@ -140,6 +140,8 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_FlowsFromPropertyId = 30148;
 	internal const int UIA_OptimizeForVisualContentPropertyId = 30149;
 	internal const int UIA_IsPeripheralPropertyId = 30150;
+	internal const int UIA_AnnotationTypesPropertyId = 30155;
+	internal const int UIA_AnnotationObjectsPropertyId = 30156;
 	internal const int UIA_ProviderDescriptionPropertyId = 30107;
 	internal const int UIA_IsDialogPropertyId = 30174;
 	internal const int UIA_PositionInSetPropertyId = 30152;

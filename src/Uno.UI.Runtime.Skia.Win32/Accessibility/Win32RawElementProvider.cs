@@ -274,6 +274,11 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => peer?.IsPeripheral() ?? false,
 				Win32UIAutomationInterop.UIA_ClickablePointPropertyId => GetClickablePointValue(peer),
 
+				// Annotations — one GetAnnotations() serves both the type ids and the element providers
+				// (WinUI UIAWrapper.cpp:707-712).
+				Win32UIAutomationInterop.UIA_AnnotationTypesPropertyId => GetAnnotationTypes(peer),
+				Win32UIAutomationInterop.UIA_AnnotationObjectsPropertyId => GetAnnotationObjects(peer),
+
 				_ => null,
 			};
 
@@ -1214,6 +1219,49 @@ internal class Win32RawElementProvider :
 		return providers?.ToArray();
 	}
 
+	// Serves UIA_AnnotationTypesPropertyId: the AnnotationType id of each annotation on this element
+	// (WinUI ConvertToVariant for AnnotationTypes_Property). AutomationPeerAnnotation.Type mirrors the
+	// WinUI AnnotationType enum, so the raw int value is the UIA annotation type id.
+	private int[]? GetAnnotationTypes(AutomationPeer? peer)
+	{
+		var annotations = peer?.GetAnnotations();
+		if (annotations is null || annotations.Count == 0)
+		{
+			return null;
+		}
+
+		var types = new int[annotations.Count];
+		for (var i = 0; i < annotations.Count; i++)
+		{
+			types[i] = (int)annotations[i].Type;
+		}
+
+		return types;
+	}
+
+	// Serves UIA_AnnotationObjectsPropertyId: the provider for each annotation's target element
+	// (AutomationPeerAnnotation.Peer). Reuses the relation-provider resolution so annotations that
+	// carry no element (Type-only) are simply omitted.
+	private IRawElementProviderSimple[]? GetAnnotationObjects(AutomationPeer? peer)
+	{
+		var annotations = peer?.GetAnnotations();
+		if (annotations is null || annotations.Count == 0)
+		{
+			return null;
+		}
+
+		List<AutomationPeer>? peers = null;
+		foreach (var annotation in annotations)
+		{
+			if (annotation.Peer is { } annotationPeer)
+			{
+				(peers ??= new List<AutomationPeer>()).Add(annotationPeer);
+			}
+		}
+
+		return peers is null ? null : GetRelationProviders(peers);
+	}
+
 	private string? GetName(AutomationPeer? peer)
 	{
 		if (_isRoot && peer is null)
@@ -1221,6 +1269,7 @@ internal class Win32RawElementProvider :
 			// Root without a peer returns the window title
 			return GetWindowTitle();
 		}
+
 		// Return null instead of empty string so UIA knows the name is unset
 		// and can fall back to other name computation strategies.
 		return GetNonEmpty(peer?.GetName());
@@ -1481,6 +1530,8 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId => "BoundingRectangle",
 		Win32UIAutomationInterop.UIA_RuntimeIdPropertyId => "RuntimeId",
 		Win32UIAutomationInterop.UIA_ClickablePointPropertyId => "ClickablePoint",
+		Win32UIAutomationInterop.UIA_AnnotationTypesPropertyId => "AnnotationTypes",
+		Win32UIAutomationInterop.UIA_AnnotationObjectsPropertyId => "AnnotationObjects",
 		Win32UIAutomationInterop.UIA_CulturePropertyId => "Culture",
 		Win32UIAutomationInterop.UIA_LabeledByPropertyId => "LabeledBy",
 		Win32UIAutomationInterop.UIA_DescribedByPropertyId => "DescribedBy",
