@@ -64,7 +64,6 @@ internal class PageHostedObjectRun : ObjectRun
 		bool measureElement = true;
 		UIElement? pElement = null;
 
-		// TODO Uno (integrate): CInlineUIContainer::GetChild
 		pElement = m_pContainer.GetChild();
 		pHost = pTextSource.GetEmbeddedElementHost();
 
@@ -72,12 +71,10 @@ internal class PageHostedObjectRun : ObjectRun
 		// cached host and added to the current host. However, in certain cases the host
 		// may not support reparenting, e.g. if formatting already took place and the inline object is only
 		// being reformatted during arrange/rendering.
-		// TODO Uno (integrate): CInlineUIContainer::GetCachedHost / IEmbeddedElementHost::CanAddElement
 		if (pHost != m_pContainer.GetCachedHost() &&
 			pHost!.CanAddElement())
 		{
 			measureElement = true;
-			// TODO Uno (integrate): CInlineUIContainer::EnsureDetachedFromHost / EnsureAttachedToHost
 			m_pContainer.EnsureDetachedFromHost();
 			m_pContainer.EnsureAttachedToHost(pHost);
 		}
@@ -111,22 +108,18 @@ internal class PageHostedObjectRun : ObjectRun
 			if (measureElement)
 			{
 				float baseline;
-				// TODO Uno (integrate): CUIElement::Measure / IEmbeddedElementHost::GetAvailableMeasureSize
 				pElement.Measure(pHost.GetAvailableMeasureSize());
 
 				// If the child doesn't fit, it will be removed from the parent RichTextBlock after Measure completes.
 				// At that point, layout storage is cleared, so cache desired size to ensure a consistent
 				// desired size when called outside of measure (e.g., hit testing) when we cannot
 				// re-parent the child just to re-measure it.
-				// TODO Uno (integrate): BlockLayoutHelpers::GetElementBaseline
 				BlockLayoutHelpers.GetElementBaseline(pElement, out baseline);
-				// TODO Uno (integrate): CInlineUIContainer::SetChildLayoutCache(width, height, baseline)
-				m_pContainer.SetChildLayoutCache(pElement.DesiredSize.Width, pElement.DesiredSize.Height, baseline);
+				m_pContainer.SetChildLayoutCache((float)pElement.DesiredSize.Width, (float)pElement.DesiredSize.Height, baseline);
 			}
 
-			// TODO Uno (integrate): CInlineUIContainer::GetChildLayoutCache(out width, out height, out baseline)
 			m_pContainer.GetChildLayoutCache(out var width, out var height, out var cachedBaseline);
-			pMetrics = new ObjectRunMetrics((float)width, (float)height, (float)cachedBaseline);
+			pMetrics = new ObjectRunMetrics(width, height, cachedBaseline);
 		}
 		else
 		{
@@ -154,12 +147,10 @@ internal class PageHostedObjectRun : ObjectRun
 	public override Result Arrange(
 		Point position)
 	{
-		// TODO Uno (integrate): CInlineUIContainer::GetCachedHost
 		IEmbeddedElementHost? pHost = m_pContainer.GetCachedHost();
 
 		if (pHost is not null)
 		{
-			// TODO Uno (integrate): IEmbeddedElementHost::UpdateElementPosition(container, position)
 			pHost.UpdateElementPosition(m_pContainer, position);
 		}
 
@@ -177,12 +168,10 @@ internal class PageHostedObjectRun : ObjectRun
 		DependencyObject? ppParent = null;
 		UIElement? pElement = null;
 
-		// TODO Uno (integrate): CInlineUIContainer::GetChild
 		pElement = m_pContainer.GetChild();
 
 		if (pElement is not null)
 		{
-			// TODO Uno (integrate): do_pointer_cast<CRichTextBlock>(pElement->GetParentInternal())
 			var pRichTextBlock = pElement.GetParentInternal() as RichTextBlock;
 			if (pRichTextBlock is not null)
 			{
@@ -190,7 +179,6 @@ internal class PageHostedObjectRun : ObjectRun
 			}
 			else
 			{
-				// TODO Uno (integrate): do_pointer_cast<CRichTextBlockOverflow>(pElement->GetParentInternal())
 				var pRichTextBlockOverflow = pElement.GetParentInternal() as RichTextBlockOverflow;
 				if (pRichTextBlockOverflow is not null)
 				{
