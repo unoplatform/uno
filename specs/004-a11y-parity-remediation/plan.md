@@ -38,12 +38,28 @@ Phase 3 (Win32):
 - ✅ **W32-03** — Win32 serves `DescribedBy`/`ControllerFor`/`FlowsTo`/`FlowsFrom` relation provider
   arrays (were hard-coded null). Tests: `Given_AutomationRelations`; sample:
   `AutomationProperties_Relations` (verified live with FlaUI). Covers the relation half of W32-06.
+- ✅ **W32-05** — per-child StructureChanged: `ChildAdded` on the added element (null runtime id),
+  `ChildRemoved` on the container carrying the removed child's runtime id, WinUI bulk thresholding at
+  20, gated on `UiaClientsAreListening`. Folded in from `dev/doti/win32-uia-childadded-events`
+  (`3f6a6171a1`, `99b4addb0a`). Verified live with FlaUI (2 adds → 2 `ChildAdded` on the added
+  elements; 1 remove → `ChildRemoved` on the container) via `AutomationProperties_StructureAndProps`.
+- ✅ **W32-06 (IsPeripheral + Culture + ClickablePoint)** — `FrameworkElementAutomationPeer.GetCultureCore`
+  reads `AutomationProperties.Culture`; Win32 `GetPropertyValue` serves `IsPeripheral`, `Culture`
+  (VT_EMPTY when unset), and `ClickablePoint` instead of null. The peers already compute the point
+  (Slider/ScrollBar return NaN to *suppress* it, per WinUI `SliderAutomationPeer::GetClickablePointCore`);
+  the Win32 backend was simply dropping it. Verified live with FlaUI (`IsPeripheral=True`,
+  `Culture=en-US`; Slider ClickablePoint now served as an off-screen `(INT_MIN, INT_MIN)` from NaN so a
+  client can't click the track — matching WinUI's UIAWrapper). FlowsTo/FlowsFrom already covered by W32-03.
 
 Phase 5 (macOS — code-review + compile validated; runtime steps in `macos-verification.md`):
 - ✅ **MAC-06** — `AutomationProperties.AutomationId` exposed as NSAccessibility
   `accessibilityIdentifier` (unblocks XCUITest/Appium) across P/Invoke + `UNOAccessibility.h/.m` + `ApplyAttributes`.
 - ✅ **MAC-01** — `uno_accessibility_update_selected` keeps `_unoValue` (AXValue) in sync for
   RadioButton/Tab/TabItem on selection change (+ value-changed notification).
+- ✅ **MAC-03** — `OnChildAdded`/`OnChildRemoved` coalesce a single window-level
+  `uno_accessibility_post_children_changed` (NSAccessibilityCreatedNotification) per UI tick via
+  `NativeDispatcher`, so dynamically added/removed elements become VoiceOver-navigable. Managed-only
+  (reuses the existing native call); macOS-only effect → see `macos-verification.md`.
 
 Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM assertions, `Given_WasmAria` + `Given_WasmAriaRelations`):
 - ✅ **WA-01** — `role=generic` (Custom) is ARIA name-prohibited; a named generic container is now
@@ -55,13 +71,24 @@ Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM ass
 - **WA-05** — already handled: region/form gated on a name, main/nav/search kept unnamed (ARIA-valid).
 
 **Deferred / not-actionable (with rationale):**
-- **W32-06 ClickablePoint** — FlaUI/Appium already get a clickable point via UIA's bounding-rect
-  fallback (`TryGetClickablePoint` returns true); no Uno peer overrides `GetClickablePointCore`, so an
-  explicit ClickablePoint would be a no-op. Culture is empty (low value). The relation half landed with W32-03.
-- **W32-02 TextEditTextChanged / LayoutInvalidated** — no Uno control raises these events, so backend
-  handling would be dead code.
-- **W32-05** (fine-grained Child​Added/Removed) and **XP-02** (live property-change consolidation) and
-  the remaining **WA-\*** (WASM) / **MAC-\*** items remain open in the backlog below.
+- **W32-06 Annotations** — the *IsPeripheral*, *Culture*, *ClickablePoint*, and *FlowsTo/FlowsFrom*
+  holes are now closed (above). **AnnotationTypes/AnnotationObjects** remain deferred: WinUI *does*
+  serve them (`FrameworkElementAutomationPeer::GetAnnotationsCore`, app-driven via
+  `AutomationProperties.Annotations`), and Uno already has the orphaned `GetAnnotationsCoreImpl` —
+  wiring it up plus the Win32 dual-array serving + dual property-changed emission is a self-contained
+  follow-up, just larger than the other property holes. Not a no-op; a real (if lower-traffic) gap.
+- **W32-02 TextEditTextChanged / LayoutInvalidated** — WinUI *does* raise both (AutoSuggestBox raises
+  `LayoutInvalidated` when its suggestion list re-lays-out — `AutoSuggestBox_Partial.cpp:1536-1551`;
+  `RaiseTextEditTextChangedEvent` is raised on AutoCorrect/Composition — `AutomationPeer_Partial.cpp:931-940`).
+  The gap is **producer-side in Uno**: Uno's `RaiseTextEditTextChangedEvent` is a `[NotImplemented]`
+  stub and Uno's AutoSuggestBox doesn't raise `LayoutInvalidated` yet. Wiring the Win32 consumer alone
+  would be dead code until those producers are ported, so this needs the producer + consumer together
+  (a larger, control-touching change) rather than a backend-only fix.
+- **XP-02** (live property-change consolidation) is the FR-010 architectural item — it needs new
+  cross-backend abstract `Update*` hooks (ItemStatus/Orientation/Value-vs-text) with **macOS-native,
+  Windows-unverifiable** surface and real regression risk (esp. ComboBox value vs TextBox text), so it
+  stays a dedicated follow-up rather than a partial fix. The remaining **WA-\*** / **MAC-\*** items
+  remain open in the backlog below.
 
 ---
 

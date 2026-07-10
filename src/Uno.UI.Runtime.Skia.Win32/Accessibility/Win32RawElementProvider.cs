@@ -272,6 +272,7 @@ internal class Win32RawElementProvider :
 				// Culture is a locale LCID; WinUI serves VT_EMPTY (null) when unset (0).
 				Win32UIAutomationInterop.UIA_CulturePropertyId => GetPositiveOrNull(peer?.GetCulture() ?? 0),
 				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => peer?.IsPeripheral() ?? false,
+				Win32UIAutomationInterop.UIA_ClickablePointPropertyId => GetClickablePointValue(peer),
 
 				_ => null,
 			};
@@ -427,6 +428,41 @@ internal class Win32RawElementProvider :
 	}
 
 	public IRawElementProviderFragment[]? GetEmbeddedFragmentRoots() => null;
+
+	/// <summary>
+	/// Serves UIA_ClickablePointPropertyId from the peer's <see cref="AutomationPeer.GetClickablePoint"/>,
+	/// mirroring WinUI's UIAWrapper (client→screen, VT_EMPTY on (0,0)). A NaN coordinate is the WinUI
+	/// convention (Slider/ScrollBar) for "no usable clickable point": we return an unusable point so
+	/// UIA does not fall back to the bounding-rect centre (which would let a client "click" the track).
+	/// </summary>
+	private object? GetClickablePointValue(AutomationPeer? peer)
+	{
+		if (peer is null)
+		{
+			return null;
+		}
+
+		var point = peer.GetClickablePoint();
+
+		// Slider/ScrollBar return NaN to suppress the clickable point. Serve an (unusable) point so
+		// the property is still "provided" and UIA does not compute one from the bounding rectangle.
+		if (double.IsNaN(point.X) || double.IsNaN(point.Y))
+		{
+			return new double[] { double.NaN, double.NaN };
+		}
+
+		// (0,0): no specific point — let UIA derive one from the bounding rectangle (WinUI parity).
+		if (point.X == 0 && point.Y == 0)
+		{
+			return null;
+		}
+
+		// The peer returns a rasterized (physical) client-space point; add the window's client origin
+		// to reach screen coordinates, matching the BoundingRectangle transform above.
+		var clientOrigin = new System.Drawing.Point(0, 0);
+		Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin);
+		return new double[] { clientOrigin.X + point.X, clientOrigin.Y + point.Y };
+	}
 
 	public void SetFocus()
 	{

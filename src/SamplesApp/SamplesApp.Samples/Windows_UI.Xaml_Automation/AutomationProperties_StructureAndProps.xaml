@@ -17,6 +17,21 @@
             AutomationProperties.AutomationId="prop-peripheral"
             Text="Peripheral element (Culture=1033, IsPeripheral=True)" />
 
+        <Slider
+            x:Name="ClickSlider"
+            AutomationProperties.AutomationId="click-slider"
+            Maximum="100"
+            Minimum="0"
+            Value="50" />
+        <ScrollBar
+            x:Name="ClickScrollBar"
+            Width="200"
+            AutomationProperties.AutomationId="click-scrollbar"
+            Maximum="100"
+            Minimum="0"
+            Orientation="Horizontal"
+            Value="50" />
+
         <Button
             x:Name="AddButton"
             AutomationProperties.AutomationId="struct-add"
