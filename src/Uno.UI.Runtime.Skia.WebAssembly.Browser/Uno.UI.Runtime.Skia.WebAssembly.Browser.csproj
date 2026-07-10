@@ -54,6 +54,10 @@
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
 		</Content>
+		<Content Include="build/native/*.*">
+			<Pack>true</Pack>
+			<PackagePath>build/native</PackagePath>
+		</Content>
 	</ItemGroup>
 
 	<!-- Typescript setup -->
@@ -61,6 +65,9 @@
 	<ItemGroup>
 		<_UnoInjectedResource Include="WasmScripts\**\*.js" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
+		<!-- Force-preserve the GL shim's [UnmanagedCallersOnly] dispatchers in trimmed WASM heads
+		     so uno_gl_shim.c always has its managed exports to link against. -->
+		<EmbeddedResource Include="Graphics\WasmGLShim.ILLink.Descriptors.xml" LogicalName="ILLink.Descriptors.xml" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
 		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
