@@ -346,6 +346,14 @@ internal static class Win32UIAutomationInterop
 		StructureChangeType structureChangeType,
 		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_I4)] int[]? runtimeId);
 
+	// Returns true when one or more UIA clients are listening for events. WinUI gates the
+	// StructureChanged registration (CUIElement::EnterPCScene / LeavePCScene) on the equivalent
+	// UIAClientsAreListening check, so we only materialize child providers + raise ChildAdded/
+	// ChildRemoved when a client actually cares — avoiding COM-wrapper churn during normal layout.
+	[DllImport("uiautomationcore.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static extern bool UiaClientsAreListening();
+
 	[DllImport("uiautomationcore.dll")]
 	internal static extern int UiaRaiseNotificationEvent(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
