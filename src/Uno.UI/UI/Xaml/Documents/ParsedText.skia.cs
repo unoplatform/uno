@@ -561,11 +561,16 @@ internal readonly struct ParsedText : IParsedText
 
 	// Warning: this is only tested and currently used by TextBox
 	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	public Rect GetRectForIndex(int adjustedIndex)
+	public Rect GetRectForIndex(int adjustedIndex) => GetRectForUnadjustedIndex(_text[..adjustedIndex].EnumerateRunes().Count());
+
+	/// <remarks>
+	/// Takes an unadjusted (glyph-space) index — the same space as the RenderLine glyph counts, and
+	/// therefore as the RichTextServices TextLine character indices.
+	/// </remarks>
+	internal Rect GetRectForUnadjustedIndex(int index)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 		foreach (var line in _renderLines)
 		{
@@ -977,7 +982,7 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	// Warning: this is only tested and currently used by TextBox
-	private List<(int start, int length)> GetLineIntervals()
+	internal List<(int start, int length)> GetLineIntervals()
 	{
 		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
 
@@ -1094,7 +1099,7 @@ internal readonly struct ParsedText : IParsedText
 		return count;
 	}
 
-	private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	internal int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
 		var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
