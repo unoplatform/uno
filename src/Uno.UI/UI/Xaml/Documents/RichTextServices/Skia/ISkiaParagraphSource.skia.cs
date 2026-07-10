@@ -3,6 +3,8 @@
 
 #nullable enable
 
+using System.Collections.Generic;
+
 namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 
 /// <summary>
@@ -25,4 +27,10 @@ internal interface ISkiaParagraphSource
 
 	// The resolved line stacking strategy for the paragraph.
 	LineStackingStrategy LineStackingStrategy { get; }
+
+	// Creates and formats an ObjectRun for every InlineUIContainer in the paragraph, measuring its
+	// child against the embedded element host. WinUI does this per line from GetTextRun; object runs
+	// have a fixed size, so ParsedText can measure them once per paragraph instead.
+	// Returns null when the paragraph has no InlineUIContainer.
+	IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? FormatInlineObjects(float paragraphWidth);
 }

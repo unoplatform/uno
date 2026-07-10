@@ -11,6 +11,11 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
 
+// Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
+// which would collide with the TextFormatting namespace imported above.
+using ObjectRun = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRun;
+using ObjectRunMetrics = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRunMetrics;
+
 namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly struct ParsedText : IParsedText
@@ -63,7 +68,8 @@ internal readonly struct ParsedText : IParsedText
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
-		out Size desiredSize)
+		out Size desiredSize,
+		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -86,6 +92,34 @@ internal readonly struct ParsedText : IParsedText
 				lineSegmentSpans.Add(breakSegmentSpan);
 
 				MoveToNextLine(currentLineWrapped: false);
+			}
+			else if (inline is InlineUIContainer container)
+			{
+				// Only containers the caller measured occupy space. Formatting outside a block-layout
+				// host (so with no embedded element host to measure against) leaves them zero-sized.
+				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
+				{
+					continue;
+				}
+
+				if (maxLines > 0 && renderLines.Count == maxLines)
+				{
+					goto MaxLinesHit;
+				}
+
+				var objectWidth = inlineObject.Metrics.Width;
+
+				if (x > 0 && objectWidth > availableWidth - x)
+				{
+					// The object doesn't fit in what's left of the line, and there is content before it,
+					// so wrap it whole onto the next line. An object never breaks internally.
+					MoveToNextLine(currentLineWrapped: true);
+				}
+
+				Segment objectSegment = new(container, flowDirection, inlineObject.Run, inlineObject.Metrics);
+				RenderSegmentSpan objectSegmentSpan = new(objectSegment, 0, 0, 0, 0, 0, objectWidth, objectWidth, 0);
+				lineSegmentSpans.Add(objectSegmentSpan);
+				x += objectWidth;
 			}
 			else if (inline is Run run)
 			{
@@ -392,6 +426,14 @@ internal readonly struct ParsedText : IParsedText
 				var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 				var segment = segmentSpan.Segment;
+
+				if (segment.IsInlineObject)
+				{
+					// Inline objects do not render content directly. They are rendering through UIElement tree render walk.
+					x += segmentSpan.Width;
+					continue;
+				}
+
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 

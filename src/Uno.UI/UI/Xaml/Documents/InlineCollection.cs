@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Documents
 					return traversedTree;
 				}
 				var preOrderTree = GetPreorderTree();
-				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak).ToArray())).Value;
+				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak or InlineUIContainer).ToArray())).Value;
 
 				Inline[] GetPreorderTree()
 				{
