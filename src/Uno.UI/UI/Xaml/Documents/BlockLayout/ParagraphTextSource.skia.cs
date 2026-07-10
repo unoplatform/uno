@@ -6,9 +6,12 @@
 #pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
+using Windows.UI.Text;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Documents.BlockLayout;
@@ -207,6 +210,46 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 
 	Inline[] ISkiaParagraphSource.GetLeafInlines()
 		=> m_pParagraph?.Inlines.TraversedTree.leafTree ?? Array.Empty<Inline>();
+
+	// Mirrors the InlineUIContainer branch of ParagraphTextSource::GetTextRun: an open-nesting
+	// InlineUIContainer yields a PageHostedObjectRun, whose Format measures the child against the
+	// embedded element host and caches its size and baseline on the container.
+	IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? ISkiaParagraphSource.FormatInlineObjects(float paragraphWidth)
+	{
+		Dictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null;
+		uint characterIndex = 0;
+
+		foreach (var inline in ((ISkiaParagraphSource)this).GetLeafInlines())
+		{
+			if (inline is InlineUIContainer pUIContainer)
+			{
+				TextRunProperties pTextProperties = new(
+					pUIContainer.FontInfo,
+					pUIContainer.FontSize,
+					(pUIContainer.TextDecorations & TextDecorations.Underline) != 0,
+					(pUIContainer.TextDecorations & TextDecorations.Strikethrough) != 0,
+					pUIContainer.CharacterSpacing,
+					new WeakReference<DependencyObject>(pUIContainer),
+					CultureInfo.CurrentCulture,
+					CultureInfo.CurrentCulture);
+
+				PageHostedObjectRun pTextRun = new(pUIContainer, characterIndex, pTextProperties);
+				pTextRun.Format(this, paragraphWidth, default, out var metrics);
+
+				inlineObjects ??= new();
+				inlineObjects[pUIContainer] = (pTextRun, metrics);
+
+				// InlineUIContainer only has 2 positions - Open/Close.
+				characterIndex += 2;
+			}
+			else
+			{
+				characterIndex += (uint)inline.GetText().Length;
+			}
+		}
+
+		return inlineObjects;
+	}
 
 	float ISkiaParagraphSource.DefaultLineHeight
 		=> (float)((m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.FontSize ?? 14.0);

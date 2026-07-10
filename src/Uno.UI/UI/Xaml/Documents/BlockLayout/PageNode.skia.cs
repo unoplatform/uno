@@ -860,16 +860,12 @@ internal sealed class PageNode : ContainerNode
 				arrangeRect.Y = m_renderSize.Height;
 			}
 
-			// TODO Uno (integrate): CUIElement::HasLayoutStorage / GetLayoutStorage()->m_desiredSize -
-			// use the element's measured desired size to size the arrange rect.
 			if (pElement.HasLayoutStorage)
 			{
-				var pLayoutStorage = pElement.GetLayoutStorage();
-				arrangeRect.Width = pLayoutStorage.m_desiredSize.Width;
-				arrangeRect.Height = pLayoutStorage.m_desiredSize.Height;
+				arrangeRect.Width = pElement.DesiredSize.Width;//pElement->GetLayoutStorage()->m_desiredSize.width;
+				arrangeRect.Height = pElement.DesiredSize.Height;//pElement->GetLayoutStorage()->m_desiredSize.height;
 			}
 
-			// TODO Uno (integrate): CUIElement::Arrange(XRECTF)
 			pElement.Arrange(arrangeRect);
 			pElement = null;
 		}
@@ -929,25 +925,22 @@ internal sealed class PageNode : ContainerNode
 	//------------------------------------------------------------------------
 	private void RemoveClippedEmbeddedUIElements()
 	{
-		bool found = false;
-		uint offset = 0;
-		BlockCollection pBlocks = (BlockCollection)m_pElement;
+		// TODO Uno: WinUI compares GetElementEdgeOffset(container) — a block-collection element
+		// position — against this page's end position. Uno's TextLine lengths are glyph counts, so
+		// GetContentLength() is not in that space and the two can't be compared. A container is on
+		// this page exactly when its object run landed on one of the formatted lines of its
+		// paragraph, so ask the paragraph instead.
+		//
+		// Original C++:
+		// pBlocks->GetElementEdgeOffset(info.pContainer, ElementEdge::ElementStart, &offset, &found);
+		// if (offset < GetStartPosition() + GetContentLength()) { break; }
 
 		while (m_embeddedElements.Count > 0)
 		{
 			EmbeddedElementInfo info = m_embeddedElements[m_embeddedElements.Count - 1];
 
-			// Get the offset for the element's InlineUIContainer in the block collection. This can be used to determine
-			// whether it lies on this page, since PageNode operates at block collection-level indices.
-			// TODO Uno (integrate): CBlockCollection::GetElementEdgeOffset(container, ElementStart, out offset, out found)
-			pBlocks.GetElementEdgeOffset(
-				info.pContainer,
-				ElementEdge.ElementStart,
-				out offset,
-				out found);
-
 			// If the element lies on this page, all previous elements will too, so stop removal loop.
-			if (offset < GetStartPosition() + GetContentLength())
+			if (info.pParagraphNode.ContainsInlineUIContainer(info.pContainer))
 			{
 				break;
 			}

@@ -59,10 +59,23 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 			for (var i = 0; i < _segmentSpans.Count; i++)
 			{
-				var inline = _segmentSpans[i].Segment.Inline;
+				var segment = _segmentSpans[i].Segment;
 
-				// Constrain the inline's font metrics by the owner's TextLineBounds before stacking.
-				var (baseline, lineSpacing) = inline.FontInfo.GetTextLineBoundsMetrics(textLineBounds);
+				float baseline, lineSpacing;
+				if (segment.IsInlineObject)
+				{
+					// An embedded object stacks by its own metrics rather than a font's: its ascent is the
+					// child's baseline and its descent the remainder of its height, so the child's baseline
+					// lands on the line's baseline.
+					var objectMetrics = segment.ObjectMetrics;
+					baseline = objectMetrics.Baseline;
+					lineSpacing = objectMetrics.Height;
+				}
+				else
+				{
+					// Constrain the inline's font metrics by the owner's TextLineBounds before stacking.
+					(baseline, lineSpacing) = segment.Inline.FontInfo.GetTextLineBoundsMetrics(textLineBounds);
+				}
 
 				maxStackHeight = Math.Max(maxStackHeight, lineSpacing);
 				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, baseline);

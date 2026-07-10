@@ -155,10 +155,38 @@ internal sealed class SkiaTextLine : TextLine
 			segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength;
 	}
 
+	// Adds the containers of every embedded object on this line to the given set.
+	internal void CollectInlineObjects(HashSet<InlineUIContainer> containers)
+	{
+		foreach (var segmentSpan in _renderLine.SegmentSpans)
+		{
+			if (segmentSpan.Segment.Inline is InlineUIContainer container && segmentSpan.Segment.IsInlineObject)
+			{
+				containers.Add(container);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------
+	//  Summary:
+	//      Positions the embedded inline objects of this line. Glyph layout is fixed once
+	//      ParsedText has run, so only object runs need arranging.
+	//------------------------------------------------------------------------
 	public override void Arrange(Rect bounds)
 	{
-		// TODO Uno (Stage 6): position embedded inline objects within the arranged
-		// line bounds. Glyph layout is fixed once ParsedText has run.
+		var x = (float)bounds.X;
+
+		foreach (var segmentSpan in _renderLine.RenderOrderedSegmentSpans)
+		{
+			if (segmentSpan.Segment.ObjectRun is { } objectRun)
+			{
+				// Align the object's ascent to the line's ascent, so its baseline sits on the line's baseline.
+				var objectTop = (float)bounds.Y + (m_baseline - segmentSpan.Segment.ObjectMetrics.Baseline);
+				objectRun.Arrange(new Point(x, objectTop));
+			}
+
+			x += segmentSpan.Width;
+		}
 	}
 
 	public override void Draw(TextDrawingContext drawingContext, Point origin, double viewportWidth)
