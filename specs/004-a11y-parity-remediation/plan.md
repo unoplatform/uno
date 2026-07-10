@@ -50,6 +50,24 @@ Phase 3 (Win32):
   the Win32 backend was simply dropping it. Verified live with FlaUI (`IsPeripheral=True`,
   `Culture=en-US`; Slider ClickablePoint now served as an off-screen `(INT_MIN, INT_MIN)` from NaN so a
   client can't click the track — matching WinUI's UIAWrapper). FlowsTo/FlowsFrom already covered by W32-03.
+- ✅ **W32-06 (Annotations)** — `FrameworkElementAutomationPeer.GetAnnotationsCore` now returns the
+  (previously orphaned) `GetAnnotationsCoreImpl`; Win32 serves `AnnotationTypes` (30155) and
+  `AnnotationObjects` (30156) from `peer.GetAnnotations()` (one call feeds both, per WinUI UIAWrapper).
+  Verified live with FlaUI: a Comment-annotated element reports `AnnotationTypes=[60003]`,
+  `AnnotationObjects=[anno-comment]`. (`AutomationAnnotation` remains a functional-but-`[NotImplemented]`
+  stub — its Type/Element DPs work; de-stubbing its convenience ctors is a small separate follow-up.)
+- ✅ **W32-02 (LayoutInvalidated)** — `AutoSuggestBox.UpdateSuggestionList` raises
+  `AutomationEvents.LayoutInvalidated` on the suggestions list part when its items change (WinUI
+  `AutoSuggestBox::OnItemsChanged` parity); Win32 maps it to `UiaRaiseAutomationEvent(20008)` and
+  eagerly materializes the provider (the list isn't navigated when first populated). Verified live with
+  FlaUI: LayoutInvalidated fires from `SuggestionsList` on suggestion updates.
+- ✅ **W32-02 (TextEditTextChanged)** — `AutomationPeer.RaiseTextEditTextChangedEvent` (was a
+  `[NotImplemented]` stub) now routes change-type + data through a new
+  `IAutomationPeerListener.NotifyTextEditTextChangedEvent`; Win32 raises `UiaRaiseTextEditTextChangedEvent`.
+  In WinUI no built-in control auto-raises it — it's the app-facing API for AutoCorrect/Composition.
+  Validated: `Given_TextEditTextChangedEvent` (routing) + live FlaUI trigger (P/Invoke → `hr=S_OK`).
+- ✅ **Bugfix** — corrected two miskeyed UIA event IDs (`MenuClosed` 20004→20007, `AutomationPropertyChanged`
+  20006→20004) found while adding the event IDs above; `MenuClosed` was firing the wrong UIA event.
 
 Phase 5 (macOS — code-review + compile validated; runtime steps in `macos-verification.md`):
 - ✅ **MAC-06** — `AutomationProperties.AutomationId` exposed as NSAccessibility
@@ -71,24 +89,15 @@ Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM ass
 - **WA-05** — already handled: region/form gated on a name, main/nav/search kept unnamed (ARIA-valid).
 
 **Deferred / not-actionable (with rationale):**
-- **W32-06 Annotations** — the *IsPeripheral*, *Culture*, *ClickablePoint*, and *FlowsTo/FlowsFrom*
-  holes are now closed (above). **AnnotationTypes/AnnotationObjects** remain deferred: WinUI *does*
-  serve them (`FrameworkElementAutomationPeer::GetAnnotationsCore`, app-driven via
-  `AutomationProperties.Annotations`), and Uno already has the orphaned `GetAnnotationsCoreImpl` —
-  wiring it up plus the Win32 dual-array serving + dual property-changed emission is a self-contained
-  follow-up, just larger than the other property holes. Not a no-op; a real (if lower-traffic) gap.
-- **W32-02 TextEditTextChanged / LayoutInvalidated** — WinUI *does* raise both (AutoSuggestBox raises
-  `LayoutInvalidated` when its suggestion list re-lays-out — `AutoSuggestBox_Partial.cpp:1536-1551`;
-  `RaiseTextEditTextChangedEvent` is raised on AutoCorrect/Composition — `AutomationPeer_Partial.cpp:931-940`).
-  The gap is **producer-side in Uno**: Uno's `RaiseTextEditTextChangedEvent` is a `[NotImplemented]`
-  stub and Uno's AutoSuggestBox doesn't raise `LayoutInvalidated` yet. Wiring the Win32 consumer alone
-  would be dead code until those producers are ported, so this needs the producer + consumer together
-  (a larger, control-touching change) rather than a backend-only fix.
 - **XP-02** (live property-change consolidation) is the FR-010 architectural item — it needs new
   cross-backend abstract `Update*` hooks (ItemStatus/Orientation/Value-vs-text) with **macOS-native,
   Windows-unverifiable** surface and real regression risk (esp. ComboBox value vs TextBox text), so it
   stays a dedicated follow-up rather than a partial fix. The remaining **WA-\*** / **MAC-\*** items
   remain open in the backlog below.
+- **`AutomationAnnotation` de-stub** (small) — the annotation *wiring* (W32-06) is done and validated;
+  `AutomationAnnotation` itself is still a generated `[NotImplemented]` stub whose Type/Element DPs work
+  but whose convenience constructors ignore their args. De-stubbing it (so `new AutomationAnnotation(type, element)`
+  populates the DPs) is a self-contained follow-up.
 
 ---
 
