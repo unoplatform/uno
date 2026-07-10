@@ -10,16 +10,16 @@ Enabling Native AOT enables faster app startup and improves performance, typical
 
 | **Sample**                                            | **Environment**   | **Runtime** |          **Publish Size** |     **Startup Times (s)** |
 | ----------------------------------------------------- | ----------------- | ----------- | ------------------------: | ------------------------: |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Android, .NET 10  | MonoVM      |   94M                     | 3.711s |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Android, .NET 10  | NativeAOT   |  112M <br> (119% MonoVM)  | 2.586s <br> (70% MonoVM)  |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | iOS, .NET 10      | MonoVM      |  138M                     | 2.333s |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | iOS, .NET 10      | NativeAOT   |  122M <br> (88% MonoVM)   | 1.107s <br> (47% MonoVM)  |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Linux, .NET 10    | CoreCLR     |  451M                     | 3.57s |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Linux, .NET 10    | NativeAOT   |  534M <br> (118% CoreCLR) | 0.78s <br> (22% CoreCLR)  |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | macOS, .NET 10    | CoreCLR     |  458M                     | 3.297s |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | macOS, .NET 10    | NativeAOT   |  645M <br> (141% CoreCLR) | 1.436s <br> (44% CoreCLR) |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Windows, .NET 10  | CoreCLR     |  625M                     | 3.169s |
-| [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Windows, .NET 10  | NativeAOT   |  871M <br> (139% CoreCLR) | 1.122s <br> (35% CoreCLR) |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | MonoVM      |   93M                     | 0.895s |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | NativeAOT   |  109M <br> (117% MonoVM)  | 0.348s <br> (39% MonoVM)  |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | MonoVM      |  138M                     | 0.940s |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | NativeAOT   |  122M <br> (88% MonoVM)   | 0.742s <br> (79% MonoVM)  |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | CoreCLR     |  541M                     | 0.87s |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | NativeAOT   |  625M <br> (118% CoreCLR) | 0.35s <br> (40% CoreCLR)  |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | CoreCLR     |  547M                     | 1.347s |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | NativeAOT   |  720M <br> (141% CoreCLR) | 0.555s <br> (41% CoreCLR) |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | CoreCLR     |  725M                     | 1.605s |
+| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | NativeAOT   |  970M <br> (139% CoreCLR) | 0.824s <br> (51% CoreCLR) |
 
 > [!NOTE]
 > App startup times are provided for comparison purposes.  Actual startup times will vary depending on hardware.
