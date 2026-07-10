@@ -65,7 +65,8 @@ internal sealed class SkiaTextFormatter : TextFormatter
 				textParagraphProperties.TextAlignment,
 				textParagraphProperties.TextWrapping,
 				textParagraphProperties.FlowDirection,
-				out _);
+				out _,
+				source.FormatInlineObjects((float)wrappingWidth));
 
 			_cachedSource = textSource;
 			_cachedWrappingWidth = wrappingWidth;
