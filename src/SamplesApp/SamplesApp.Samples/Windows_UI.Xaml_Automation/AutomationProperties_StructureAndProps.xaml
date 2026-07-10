@@ -23,6 +23,11 @@
             Click="OnAdd"
             Content="Add child" />
         <Button
+            x:Name="AddCollapsedButton"
+            AutomationProperties.AutomationId="struct-add-collapsed"
+            Click="OnAddCollapsed"
+            Content="Add collapsed child" />
+        <Button
             x:Name="RemoveButton"
             AutomationProperties.AutomationId="struct-remove"
             Click="OnRemove"

@@ -22,6 +22,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Automation
 			DynamicContainer.Children.Add(block);
 		}
 
+		private void OnAddCollapsed(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			var index = _counter++;
+			var block = new TextBlock { Text = $"Collapsed child {index}", Visibility = Microsoft.UI.Xaml.Visibility.Collapsed };
+			block.SetValue(AutomationProperties.AutomationIdProperty, $"struct-collapsed-{index}");
+			DynamicContainer.Children.Add(block);
+		}
+
 		private void OnRemove(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			if (DynamicContainer.Children.Count > 0)

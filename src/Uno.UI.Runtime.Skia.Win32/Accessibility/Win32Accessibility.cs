@@ -302,6 +302,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Drop the cached children along the path so the next navigation rebuilds from current state.
 		ancestorProvider.InvalidateChildrenCache();
 
+		// WinUI raises ChildAdded only when an element enters the PC (render) scene; a Collapsed
+		// element does not (CUIElement::EnterPCScene is never reached), so skip it here — matching
+		// the Collapsed skip in CollectEnteringProviders. Without this, adding a Collapsed element to
+		// an active tree would materialize a provider and surface hidden content to UIA clients.
+		if (child.Visibility != Visibility.Visible)
+		{
+			return;
+		}
+
 		if (!Win32UIAutomationInterop.UiaClientsAreListening())
 		{
 			return;
@@ -371,7 +380,16 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Capture the removed child's runtime id BEFORE cleanup — ChildRemoved carries it so a
 		// client can drop exactly that node. Only an already-existing provider is meaningful here.
 		var listening = Win32UIAutomationInterop.UiaClientsAreListening();
-		int[]? childRuntimeId = listening ? TryGetExistingProviderForElement(child)?.GetRuntimeId() : null;
+		var existingProvider = listening ? TryGetExistingProviderForElement(child) : null;
+		int[]? childRuntimeId = existingProvider?.GetRuntimeId();
+
+		// If this child's ChildAdded is still queued (add + remove within one coalescing window), the
+		// pair cancels out — WinUI's AutomationEventsHelper drops Added/Removed pairs for the same
+		// (child, container) key within a batch. CleanupProviders drops the pending Added below;
+		// suppress the matching Removed so a client never sees a remove for a node it was never told
+		// was added.
+		var cancelsPendingAdd = existingProvider is not null &&
+			_pendingStructureChanges.Exists(p => ReferenceEquals(p.Child, existingProvider) && p.Kind == StructureChangeKind.Added);
 
 		// Clean up cached providers for the removed subtree.
 		CleanupProviders(child);
@@ -382,7 +400,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var ancestorProvider = FindNearestAncestorProvider(parent);
 		ancestorProvider.InvalidateChildrenCache();
 
-		if (!listening)
+		if (!listening || cancelsPendingAdd)
 		{
 			return;
 		}
