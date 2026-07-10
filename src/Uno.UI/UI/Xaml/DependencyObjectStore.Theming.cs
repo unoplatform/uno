@@ -932,9 +932,26 @@ public partial class DependencyObjectStore
 
 			if (!wasSet)
 			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
+				// dictionary may provide it — e.g. an app-merged ThemeDictionaries override of a stock Fluent
+				// control brush (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND re-pin the providing
+				// dictionary onto the _themeResources entry: a ThemeResource bound on a non-FrameworkElement
+				// owner (a storyboard key-frame, a VisualState Setter) keeps its parse-time pin — the stock
+				// control dictionary that declared the template, which also defines the key — so the
+				// pinned-dictionary-only ThemeResourceReference.RefreshValue path (invoked by
+				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin)
+				// otherwise keeps resolving the stock value and shadows the app-level override, leaving a checked
+				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
 				{
 					SetResourceBindingValue(property, binding, value);
+
+					if (providingDict is not null && _themeResources is not null)
+					{
+						var themeRef = _themeResources.Get(property, binding.Precedence);
+						themeRef?.SetTargetDictionary(providingDict);
+						themeRef?.SetLastResolvedValue(value);
+					}
 				}
 			}
 		}
