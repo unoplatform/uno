@@ -73,6 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					maxLines: 0,
 					lineHeight: 0,
 					LineStackingStrategy.MaxHeight,
+					paragraphProperties.TextLineBounds,
 					TextAlignment.Left,
 					TextWrapping.Wrap,
 					FlowDirection.LeftToRight,
