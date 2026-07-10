@@ -545,9 +545,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			// GetPlainText joins paragraphs with \r\n
+#if HAS_UNO
+			// GetPlainText joins paragraphs with \r\n. GetAccessibilityInnerText is Uno-only.
 			var plainText = SUT.GetAccessibilityInnerText();
 			Assert.AreEqual("Hello\r\nWorld", plainText);
+#endif
 		}
 
 		#endregion
@@ -1277,9 +1279,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualHeight > 0);
-			// GetPlainText should join both paragraphs
+#if HAS_UNO
+			// GetPlainText should join both paragraphs. GetAccessibilityInnerText is Uno-only.
 			var text = SUT.GetAccessibilityInnerText();
 			Assert.AreEqual("Small text\r\nLarge text", text);
+#endif
 		}
 
 		[TestMethod]
@@ -1299,7 +1303,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(3, SUT.Blocks.Count);
+#if HAS_UNO
 			Assert.AreEqual("Paragraph 1\r\nParagraph 2\r\nParagraph 3", SUT.GetAccessibilityInnerText());
+#endif
 		}
 
 		[TestMethod]
@@ -1325,7 +1331,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.Blocks.Count);
+#if HAS_UNO
 			Assert.AreEqual("Keep", SUT.GetAccessibilityInnerText());
+#endif
 		}
 
 		#endregion
@@ -1393,7 +1401,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			paragraph.Inlines.Clear();
 			await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
 			Assert.AreEqual(string.Empty, SUT.GetAccessibilityInnerText());
+#endif
 		}
 
 		#endregion
@@ -1447,6 +1457,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		#region Accessibility
 
+		// GetAccessibilityInnerText has no WinAppSDK counterpart, so these tests only exist on Uno.
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_GetAccessibilityInnerText_Empty()
 		{
@@ -1475,6 +1487,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Accessibility text should be plain text without formatting
 			Assert.AreEqual("Normal bold italic", SUT.GetAccessibilityInnerText());
 		}
+#endif
 
 		#endregion
 
@@ -1492,7 +1505,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
 			Assert.AreEqual(string.Empty, SUT.GetAccessibilityInnerText());
+#endif
 		}
 
 		[TestMethod]
@@ -1539,7 +1554,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
 			Assert.AreEqual("   ", SUT.GetAccessibilityInnerText());
+#endif
 		}
 
 		#endregion
