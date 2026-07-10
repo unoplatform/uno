@@ -26,6 +26,9 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	private static bool IsInfiniteF(float v) => float.IsInfinity(v);
 
 	private readonly List<LineMetrics> m_lines = new();
+
+	// The InlineUIContainers whose object runs landed on the lines this paragraph kept.
+	private readonly HashSet<InlineUIContainer> m_embeddedContainers = new();
 	private readonly ParagraphTextSource m_textSource;
 	private TextRunCache? m_pTextRunCache;
 	private PageNode? m_pPageNode;
@@ -91,6 +94,20 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	internal bool GetHasTrimmedLine() => m_hasTrimmedLine;
 
 	public IEmbeddedElementHost GetEmbeddedElementHost() => this;
+
+	// Whether this paragraph placed the container's object run on one of the lines it kept during
+	// measure. Lines dropped for paging or MaxLines never reach m_lines, so their containers are
+	// reported as off-page. Used by PageNode to drop embedded elements whose content didn't fit.
+	internal bool ContainsInlineUIContainer(InlineUIContainer pContainer) => m_embeddedContainers.Contains(pContainer);
+
+	// Recorded as lines are accepted, because the TextLine objects are released once measure ends.
+	private void RecordEmbeddedContainers(TextLine? pTextLine)
+	{
+		if (pTextLine is SkiaTextLine line)
+		{
+			line.CollectInlineObjects(m_embeddedContainers);
+		}
+	}
 
 	//---------------------------------------------------------------------------
 	//
@@ -448,6 +465,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		m_untrimmedDesiredWidth = 0;
 		m_length = 0;
 		m_pBreak = null;
+		m_embeddedContainers.Clear();
 
 		// Get line stacking info.
 		BlockLayoutHelpers.GetLineStackingInfo(
@@ -553,6 +571,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 			if (addLineToMetrics)
 			{
 				m_lines.Add(lineMetrics);
+				RecordEmbeddedContainers(pTextLine);
 				m_untrimmedDesiredWidth = Math.Max(m_untrimmedDesiredWidth, (float)lineMetrics.Rect.Width);
 				m_desiredSize.Height += lineMetrics.VerticalAdvance;
 				m_length += lineMetrics.Length;
