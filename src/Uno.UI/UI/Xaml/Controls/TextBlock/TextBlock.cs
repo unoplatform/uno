@@ -735,6 +735,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextLineBounds Dependency Property
+
+		/// <summary>
+		/// Gets or sets a value that indicates how the line box height is determined for each line of
+		/// text displayed in the <see cref="TextBlock"/>.
+		/// </summary>
+		public TextLineBounds TextLineBounds
+		{
+			get => (TextLineBounds)GetValue(TextLineBoundsProperty);
+			set => SetValue(TextLineBoundsProperty, value);
+		}
+
+		public static DependencyProperty TextLineBoundsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextLineBounds),
+				typeof(TextLineBounds),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextLineBounds.Full,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).InvalidateTextBlock()
+				)
+			);
+
+		#endregion
+
 		#region LineStackingStrategy Dependency Property
 
 		public LineStackingStrategy LineStackingStrategy
@@ -1480,6 +1506,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
+				TextLineBounds,
 				FlowDirection,
 				adjustedTextAlignment,
 				TextWrapping,
