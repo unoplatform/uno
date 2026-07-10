@@ -1,40 +1,73 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference InlineUIContainer.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
 
-using System;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 
 namespace Microsoft.UI.Xaml.Documents;
 
 partial class InlineUIContainer
 {
-	// TODO Uno (Stage 4): InlineUIContainer.GetChild — the hosted UIElement child (CInlineUIContainer::GetChild).
-	internal UIElement? GetChild()
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.GetChild");
+	private IEmbeddedElementHost? m_pCachedHost;
+	private bool m_isChildAttached;
+	private float m_childDesiredWidth;  // Cached child desired width. Only used in RichTextBlock.
+	private float m_childDesiredHeight; // Cached child desired height. Only used in RichTextBlock.
+	private float m_childBaseline;      // Cached child baseline. Only used in RichTextBlock.
 
-	// TODO Uno (Stage 4): InlineUIContainer.GetCachedHost — the host this container is currently attached to.
-	internal IEmbeddedElementHost? GetCachedHost()
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.GetCachedHost");
+	//------------------------------------------------------------------------
+	//  Summary:
+	//      Returns the child of the InlineUIContainer. Can be NULL.
+	//------------------------------------------------------------------------
+	internal UIElement? GetChild() => m_pChild;
 
-	// TODO Uno (Stage 4): InlineUIContainer.ClearCachedHost — forgets the cached host on detach.
-	internal void ClearCachedHost()
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.ClearCachedHost");
+	internal void EnsureAttachedToHost(IEmbeddedElementHost? pHost)
+	{
+		if (pHost is not null && m_pChild is not null && !m_isChildAttached)
+		{
+			pHost.AddElement(this);
 
-	// TODO Uno (Stage 4): InlineUIContainer.EnsureAttachedToHost — attaches the child to the given host.
-	internal void EnsureAttachedToHost(IEmbeddedElementHost host)
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.EnsureAttachedToHost");
+			m_isChildAttached = true;
+			m_pCachedHost = pHost;
+		}
+	}
 
-	// TODO Uno (Stage 4): InlineUIContainer.EnsureDetachedFromHost — detaches the child from its cached host.
 	internal void EnsureDetachedFromHost()
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.EnsureDetachedFromHost");
+	{
+		if (m_pChild is not null && m_isChildAttached)
+		{
+			m_pCachedHost!.RemoveElement(this);
+			m_isChildAttached = false;
+		}
+	}
 
-	// TODO Uno (Stage 4): InlineUIContainer.SetChildLayoutCache — caches the child's measured size/baseline.
-	internal void SetChildLayoutCache(double width, double height, double baseline)
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.SetChildLayoutCache");
+	internal IEmbeddedElementHost? GetCachedHost() => m_pCachedHost;
 
-	// TODO Uno (Stage 4): InlineUIContainer.GetChildLayoutCache — returns the cached child size/baseline.
-	internal void GetChildLayoutCache(out double width, out double height, out double baseline)
-		=> throw new NotSupportedException("TODO Uno (Stage 4): InlineUIContainer.GetChildLayoutCache");
+	internal void ClearCachedHost()
+	{
+		m_isChildAttached = false;
+		m_pCachedHost = null;
+	}
+
+	// Stores measured width, height, and baseline.
+	internal void SetChildLayoutCache(float width, float height, float baseline)
+	{
+		m_childDesiredWidth = width;
+		m_childDesiredHeight = height;
+		m_childBaseline = baseline;
+	}
+
+	// Retrieves measured width, height, and baseline.
+	internal void GetChildLayoutCache(out float pWidth, out float pHeight, out float pBaseline)
+	{
+		pWidth = m_childDesiredWidth;
+		pHeight = m_childDesiredHeight;
+		pBaseline = m_childBaseline;
+	}
+
+	// The host lives in the Skia block-layout engine, so the Child setter reaches it through these.
+	partial void DetachChildFromHost() => EnsureDetachedFromHost();
+
+	partial void AttachChildToCachedHost() => EnsureAttachedToHost(m_pCachedHost);
 }
