@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -330,6 +331,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 
 				AddAccessibilityElement(parent.Visual.Handle, child, index);
 				TryRegisterModalDialog(child);
+				QueueChildrenChanged();
 				foreach (var childChild in child.GetChildren())
 				{
 					OnChildAdded(child, childChild, null);
@@ -360,7 +362,36 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			}
 
 			NativeUno.uno_accessibility_remove_element(_windowHandle, parent.Visual.Handle, child.Visual.Handle);
+			QueueChildrenChanged();
 		}
+	}
+
+	private bool _childrenChangedPostQueued;
+
+	/// <summary>
+	/// Coalesces a VoiceOver structural-refresh notification (NSAccessibilityCreatedNotification on
+	/// the window, via <c>uno_accessibility_post_children_changed</c>) after direct tree mutations.
+	/// <see cref="OnChildAdded"/>/<see cref="OnChildRemoved"/> recurse over subtrees, so many
+	/// mutations collapse into a single post per UI tick, mirroring Win32's coalesced StructureChanged
+	/// flush. Without this, VoiceOver never learns that a dynamically added/removed element entered or
+	/// left the tree (MAC-03).
+	/// </summary>
+	private void QueueChildrenChanged()
+	{
+		if (_childrenChangedPostQueued || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		_childrenChangedPostQueued = true;
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			_childrenChangedPostQueued = false;
+			if (IsAccessibilityEnabled)
+			{
+				NativeUno.uno_accessibility_post_children_changed(_windowHandle);
+			}
+		}, NativeDispatcherPriority.Normal);
 	}
 
 	protected override void OnSizeOrOffsetChanged(Visual visual)

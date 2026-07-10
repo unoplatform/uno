@@ -125,3 +125,42 @@ stale checked state after selection changed. Native-only fix (build on macOS to 
 4. With VoiceOver, use the increment/decrement gestures (VO + up/down) and confirm the scrollbar value changes.
 
 **Pass criteria:** ScrollBar advertises and performs increment/decrement like Slider.
+
+---
+
+## MAC-03 — Dynamic tree add/remove posts a VoiceOver structural refresh
+
+**What changed.** `MacOSAccessibility.OnChildAdded`/`OnChildRemoved`
+(`src/Uno.UI.Runtime.Skia.MacOS/Accessibility/MacOSAccessibility.cs`) now call a new coalesced
+`QueueChildrenChanged()` after a direct native tree mutation. It schedules a single
+`uno_accessibility_post_children_changed(_windowHandle)` (posts `NSAccessibilityCreatedNotification`
+on the window — the reliable way to make VoiceOver re-read structure) per UI tick via
+`NativeDispatcher.Main.Enqueue`, so a subtree insertion/removal that recurses into many
+`OnChildAdded`/`OnChildRemoved` calls collapses to one notification. **Managed-only** (reuses the
+existing native function, so it compiles on Windows), but the *effect* is only observable on macOS.
+
+**Why it matters.** Before this, adding or removing an element after the AOM was built mutated the
+native tree silently — VoiceOver kept serving the stale structure and never announced newly revealed
+content (or kept a ghost of removed content) until an unrelated notification forced a refresh.
+
+**How to verify on macOS.**
+1. Build native + SamplesApp; enable VoiceOver and open Accessibility Inspector with **notifications**
+   logging on.
+2. Open `Automation/AutomationProperties_StructureAndProps`.
+3. Click **Add child** a few times.
+   - *Expected:* each click (coalesced) triggers a structural refresh; VoiceOver/Inspector now sees
+     the new `struct-child-N` Text elements under the container. Navigate with VO to confirm the new
+     items are reachable.
+4. Click **Remove child**.
+   - *Expected:* a structural refresh fires and the removed child is no longer navigable.
+5. **Coalescing check:** click Add rapidly several times; confirm the app stays responsive and the
+   tree ends in the correct final state (no per-node notification storm).
+
+**Pass criteria:** dynamically added children become VoiceOver-navigable and removed children
+disappear from the tree without requiring an unrelated interaction to force a refresh; rapid
+mutations stay responsive.
+
+> Cross-reference: the equivalent Win32 behavior (W32-05, per-child `ChildAdded`/`ChildRemoved`) is
+> runtime-validated on Windows via FlaUI against the same `AutomationProperties_StructureAndProps`
+> sample. MAC-03 is the macOS analogue (coarser: a single window-level structural refresh, which is
+> the NSAccessibility idiom).
