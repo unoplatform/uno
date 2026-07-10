@@ -111,7 +111,11 @@ namespace Microsoft.UI.Xaml.Documents
 		private List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
 
 		/// <inheritdoc />
-		public void Add(Inline item) => _collection.Add(item);
+		public void Add(Inline item)
+		{
+			ValidateInline(item, nameof(item));
+			_collection.Add(item);
+		}
 
 		/// <inheritdoc />
 		public void Clear() => _collection.Clear();
@@ -135,7 +139,11 @@ namespace Microsoft.UI.Xaml.Documents
 		public int IndexOf(Inline item) => _collection.IndexOf(item);
 
 		/// <inheritdoc />
-		public void Insert(int index, Inline item) => _collection.Insert(index, item);
+		public void Insert(int index, Inline item)
+		{
+			ValidateInline(item, nameof(item));
+			_collection.Insert(index, item);
+		}
 
 		/// <inheritdoc />
 		public void RemoveAt(int index) => _collection.RemoveAt(index);
@@ -144,7 +152,71 @@ namespace Microsoft.UI.Xaml.Documents
 		public Inline this[int index]
 		{
 			get => (Inline)_collection[index];
-			set => _collection[index] = value;
+			set
+			{
+				ValidateInline(value, nameof(value));
+				_collection[index] = value;
+			}
+		}
+
+		/// <summary>
+		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a
+		/// <see cref="TextBlock"/> throws. We match that contract instead of silently dropping the element. See uno#23510.
+		/// </summary>
+		private void ValidateInline(Inline item, string paramName)
+		{
+			// Only an InlineUIContainer (or a Span that may nest one) can ever be invalid; a plain Run/LineBreak
+			// is always fine, so it skips both the owner walk and the Span recursion.
+			if (item is not (InlineUIContainer or Span))
+			{
+				return;
+			}
+
+			// Resolve ownership before recursing: a Paragraph/RichTextBlock-owned collection always allows the
+			// container, so there is no need to scan Span content in rich-text scenarios.
+			if (IsOwnedByTextBlock() && ContainsInlineUIContainer(item))
+			{
+				throw new ArgumentException(
+					"InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock.",
+					paramName);
+			}
+		}
+
+		private static bool ContainsInlineUIContainer(Inline item)
+		{
+			if (item is InlineUIContainer)
+			{
+				return true;
+			}
+
+			if (item is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					if (ContainsInlineUIContainer(child))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsOwnedByTextBlock()
+		{
+			var current =
+#if __WASM__
+				(object)_collection.Owner;
+#else
+				_collection.GetParent();
+#endif
+
+			// Walk up through Span/Hyperlink/etc. to find the owning control.
+			while (current is Inline inline)
+				current = inline.GetParent();
+
+			return current is TextBlock;
 		}
 	}
 }

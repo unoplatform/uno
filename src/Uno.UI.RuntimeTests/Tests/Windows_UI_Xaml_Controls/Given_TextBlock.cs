@@ -130,6 +130,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreNotEqualAsync(actual, different);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23510")]
+		public void When_InlineUIContainer_Added_To_TextBlock_Throws()
+		{
+			var SUT = new TextBlock();
+			SUT.Inlines.Add(new Run { Text = "Before " });
+
+			// WinUI throws ArgumentException; Uno used to silently drop the container.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(new InlineUIContainer { Child = new Border() }));
+
+			// Same when inserted or assigned through the indexer.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Insert(0, new InlineUIContainer()));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines[0] = new InlineUIContainer());
+
+			// Nested inside a Span that already lives in the TextBlock must also throw.
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			Assert.ThrowsExactly<ArgumentException>(() => span.Inlines.Add(new InlineUIContainer()));
+
+			// A Span already holding an InlineUIContainer must throw when added to the TextBlock.
+			var preBuilt = new Span();
+			preBuilt.Inlines.Add(new InlineUIContainer());
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(preBuilt));
+
+			// The valid inlines remain untouched after the rejected additions.
+			Assert.AreEqual(2, SUT.Inlines.Count);
+			Assert.IsInstanceOfType(SUT.Inlines[0], typeof(Run));
+			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(Span));
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
