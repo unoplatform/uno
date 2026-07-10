@@ -38,6 +38,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextLineBounds Dependency Property
+
+		/// <summary>
+		/// Gets or sets a value that indicates how the line box height is determined for each line of
+		/// text displayed in the <see cref="RichTextBlock"/>.
+		/// </summary>
+		public TextLineBounds TextLineBounds
+		{
+			get => (TextLineBounds)GetValue(TextLineBoundsProperty);
+			set => SetValue(TextLineBoundsProperty, value);
+		}
+
+		public static DependencyProperty TextLineBoundsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextLineBounds),
+				typeof(TextLineBounds),
+				typeof(RichTextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextLineBounds.Full,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()
+				)
+			);
+
+		#endregion
+
 		#region FontStretch Dependency Property
 
 		public FontStretch FontStretch
