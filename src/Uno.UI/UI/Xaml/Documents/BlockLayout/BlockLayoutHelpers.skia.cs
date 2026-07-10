@@ -534,11 +534,6 @@ internal static class BlockLayoutHelpers
 		}
 
 		// Formatting can always be read from the paragraph, and font context from the control.
-		// TODO Uno (integrate): font context -> FontDetailsCache + CFontFamily::GetTextLineBoundsMetrics. WinUI read
-		// GetFormatting(effectiveParagraph)->m_pFontFamily->GetTextLineBoundsMetrics(GetFontContext(owner),
-		// GetTextLineBounds(owner), &baseline, &lineAdvance) to derive the default baseline/line advance for the
-		// resolved font and TextLineBounds. On Uno resolve the FontDetails for the effective paragraph's inherited
-		// formatting and compute baseline/line-advance from its SKFontMetrics under the requested TextLineBounds.
 		{
 			var fontFamilySource = GetFontFamilySource(pEffectiveParagraph);
 			var fontSize = GetFontSize(pEffectiveParagraph);
@@ -548,10 +543,9 @@ internal static class BlockLayoutHelpers
 
 			var details = FontDetailsCache.GetFont(fontFamilySource, (float)fontSize, fontWeight, fontStretch, fontStyle).details;
 
-			// TODO Uno (integrate): GetTextLineBoundsMetrics — derive baseline + line advance honoring
-			// GetTextLineBounds(pLayoutOwner). Placeholder uses raw ascent/descent from the resolved font.
-			pDefaultFontBaseline = -details.SKFontMetrics.Ascent;
-			pDefaultFontLineAdvance = details.SKFontMetrics.Descent - details.SKFontMetrics.Ascent;
+			// CFontFamily::GetTextLineBoundsMetrics — default baseline / line advance for the resolved
+			// font, constrained by the owner's TextLineBounds.
+			(pDefaultFontBaseline, pDefaultFontLineAdvance) = details.GetTextLineBoundsMetrics(GetTextLineBounds(pLayoutOwner));
 		}
 
 		// LineHeight and LineStackingStrategy must be read from the paragraph if set locally, the control otherwise.
@@ -893,12 +887,13 @@ internal static class BlockLayoutHelpers
 
 		MUX_ASSERT(pLayoutOwner != null);
 
-		// TODO Uno (integrate): TextLineBounds — RichTextBlock/TextBlock expose TextLineBounds in WinUI but there is
-		// no Uno DP for it yet. All branches currently return the WinUI default (Full). Wire to the DP once
-		// TextLineBounds is ported.
-		if (pLayoutOwner is RichTextBlock || pLayoutOwner is TextBlock)
+		if (pLayoutOwner is RichTextBlock pRichTextBlock)
 		{
-			textLineBounds = TextLineBounds.Full;
+			textLineBounds = pRichTextBlock.TextLineBounds;
+		}
+		else if (pLayoutOwner is TextBlock pTextBlock)
+		{
+			textLineBounds = pTextBlock.TextLineBounds;
 		}
 		else
 		{

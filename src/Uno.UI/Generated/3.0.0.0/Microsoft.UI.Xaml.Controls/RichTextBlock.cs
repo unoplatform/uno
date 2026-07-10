@@ -47,14 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 // Skipping already declared TextAlignmentProperty
 // Skipping already declared TextDecorationsProperty
 // Skipping already declared TextIndentProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextLineBounds), typeof(global::Microsoft.UI.Xaml.TextLineBounds),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextLineBounds)));
-#endif
+// Skipping already declared TextLineBoundsProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
@@ -132,20 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 // Skipping already declared TextDecorations
 // Skipping already declared TextHighlighters
 // Skipping already declared TextIndent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextLineBounds TextLineBounds
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextLineBounds)this.GetValue(TextLineBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(TextLineBoundsProperty, value);
-			}
-		}
-#endif
+// Skipping already declared TextLineBounds
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
