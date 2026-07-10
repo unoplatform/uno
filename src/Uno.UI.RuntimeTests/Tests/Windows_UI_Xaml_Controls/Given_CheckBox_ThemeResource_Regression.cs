@@ -226,14 +226,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_App_Override_Checked_Resolves_On_Matching_App_Theme_Leaf()
 		{
-			var originalTheme = Application.Current.RequestedTheme;
-			var wasExplicit = Application.Current.IsThemeSetExplicitly;
-			// Two stub keys the palette references externally, then the palette + overrides, merged as app-level
-			// siblings (palette first so the StaticResource aliases resolve).
+			// SampleFont is aliased by the overrides dictionary (ContentControlThemeFontFamily); merge it plus the
+			// palette + overrides as app-level siblings (palette first so the StaticResource aliases resolve).
 			var stubs = new ResourceDictionary
 			{
 				["SampleFont"] = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI"),
-				["OnSurfaceLowBrush"] = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0x99, 0, 0, 0)),
 			};
 			var palette = new CheckBoxAppOverridePalette();
 			var overrides = new CheckBoxAppOverrideThemeResources();
@@ -242,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Application.Current.Resources.MergedDictionaries.Add(overrides);
 			try
 			{
-				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
+				using var _ = ThemeHelper.UseApplicationLightTheme();
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var lightRoot = new Border { RequestedTheme = ElementTheme.Light };
@@ -262,15 +259,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				if (wasExplicit)
-				{
-					Application.Current.SetExplicitRequestedTheme(originalTheme);
-				}
-				else
-				{
-					Application.Current.SetExplicitRequestedTheme(null);
-				}
-
 				Application.Current.Resources.MergedDictionaries.Remove(overrides);
 				Application.Current.Resources.MergedDictionaries.Remove(palette);
 				Application.Current.Resources.MergedDictionaries.Remove(stubs);
