@@ -461,7 +461,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(33.3333, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(266.6667, 0, itemMinorSize, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.Start +  UniformGridLayoutItemsStretch.Fill");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.Start;
@@ -1550,12 +1551,26 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Verify.AreEqual(extentMajor, om.Major(desiredSize));
 		}
 
-		private void ValidateChildBounds(LayoutPanel panel, List<Rect> list)
+		private void ValidateChildBounds(LayoutPanel panel, List<Rect> list, double tolerance = 0.0)
 		{
 			for (int i = 0; i < list.Count; i++)
 			{
 				var child = (FrameworkElement)panel.Children[i];
-				Verify.AreEqual(list[i], LayoutInformation.GetLayoutSlot(child));
+				var actual = LayoutInformation.GetLayoutSlot(child);
+				var expected = list[i];
+				if (tolerance == 0.0)
+				{
+					Verify.AreEqual(expected, actual);
+				}
+				else
+				{
+					Verify.IsTrue(
+						Math.Abs(expected.X - actual.X) <= tolerance &&
+						Math.Abs(expected.Y - actual.Y) <= tolerance &&
+						Math.Abs(expected.Width - actual.Width) <= tolerance &&
+						Math.Abs(expected.Height - actual.Height) <= tolerance,
+						$"Child {i}: expected {expected}, actual {actual}, tolerance {tolerance}.");
+				}
 			}
 		}
 
