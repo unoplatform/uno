@@ -114,22 +114,6 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-<<<<<<< HEAD
-=======
-- stage: wasm_tests
-  displayName: Tests - WebAssembly Native
-  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
-  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn:
-    - Setup
-
-  jobs:
-  
-  - template: tests/.azure-devops-tests-webassembly-native.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-
->>>>>>> origin/master
 - template: tests/.azure-devops-tests-skia-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
@@ -142,40 +126,6 @@ stages:
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
     XAML_FLAVOR_BUILD: WinUI
 
-<<<<<<< HEAD
-=======
-- stage: android_tests
-  displayName: Tests - Android Native
-  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
-  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: tests/.azure-devops-tests-android-native.yml
-    parameters:
-      vmWindowsImage: '$(windows2019HostedVMImage)'
-      vmLinuxImage: '$(linuxVMImage)'
-      vmMacOSImage: '$(macOSVMImage)'
-      vmLinuxPool: '$(linuxScaledPool)'
-      xCodeRoot: '$(xCodeRoot)'
-
-- stage: ios_tests
-  displayName: Tests - iOS Native
-  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
-  condition: false
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: tests/.azure-devops-tests-ios-native.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      vmImageTest: '$(macOSVMImage_UITests)'
-      xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-
->>>>>>> origin/master
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK
   dependsOn:

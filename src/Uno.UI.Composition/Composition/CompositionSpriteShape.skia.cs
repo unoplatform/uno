@@ -112,8 +112,8 @@ namespace Microsoft.UI.Composition
 		}
 
 		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
-		private static readonly SKPath _spareRenderPathStroke = new SKPath();
-		private static readonly SKPath _spareRenderPathShape = new SKPath();
+		private static readonly SKPathBuilder _spareRenderPathStrokeBuilder = new();
+		private static readonly SKPathBuilder _spareRenderPathShapeBuilder = new();
 
 		// The transform CompositionShape.Render applies to the canvas before painting the geometry: the shape's
 		// Offset followed by its CombinedTransformMatrix (Scale/Rotation/TransformMatrix around CenterPoint).
@@ -130,24 +130,25 @@ namespace Microsoft.UI.Composition
 		}
 
 		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
-		internal bool GetRenderPath(SKPath dst)
+		internal bool GetRenderPath(SKPathBuilder dst)
 		{
-			var shapePath = _spareRenderPathShape;
-			shapePath.Rewind();
+			var shapeBuilder = _spareRenderPathShapeBuilder;
+			shapeBuilder.Reset();
 			var any = false;
 
 			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
 			{
-				shapePath.AddPath(fillGeometry.Geometry);
+				shapeBuilder.AddPath(fillGeometry.Geometry, SKPathAddMode.Append);
 				any = true;
 			}
 
 			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
 			{
 				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
-				_spareRenderPathStroke.Rewind();
-				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStroke);
-				shapePath.AddPath(_spareRenderPathStroke);
+				_spareRenderPathStrokeBuilder.Reset();
+				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStrokeBuilder);
+				using var strokePath = _spareRenderPathStrokeBuilder.Detach();
+				shapeBuilder.AddPath(strokePath, SKPathAddMode.Append);
 				any = true;
 			}
 
@@ -157,12 +158,13 @@ namespace Microsoft.UI.Composition
 			}
 
 			var m = GetRenderTransform();
+			using var shapePath = shapeBuilder.Detach();
 			if (!m.IsIdentity)
 			{
 				shapePath.Transform(m);
 			}
 
-			dst.AddPath(shapePath);
+			dst.AddPath(shapePath, SKPathAddMode.Append);
 			return true;
 		}
 

@@ -363,10 +363,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 
-			var rootClip = _pathPool.Allocate();
-			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
-			rootClip.Rewind();
-			rootClip.AddRect(InfiniteClipRect);
+			using var rootClip = SkiaExtensions.CreateRectPath(InfiniteClipRect);
 			Render(session, rootClip);
 		}
 	}
@@ -418,15 +415,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			var toRoot = TotalMatrix.ToSKMatrix();
 
-<<<<<<< HEAD
-			preClip.Reset();
-=======
 			var preClip = _spareRenderPath;
-			preClip.Rewind();
->>>>>>> origin/master
+			preClip.Reset();
 
-			ownClip.Rewind();
-			ownClip.AddPath(clipInRoot);
+			clipInRoot.Transform(SKMatrix.Identity, ownClip);
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
@@ -434,13 +426,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
 			}
 
-			childClip.Rewind();
-			childClip.AddPath(ownClip);
+			ownClip.Transform(SKMatrix.Identity, childClip);
 			if (GetPostPaintingClipping() is { } postClip)
 			{
 				var postClipInRoot = _pathPool.Allocate();
-				postClipInRoot.Rewind();
-				postClipInRoot.AddPath(postClip);
+				postClip.Transform(SKMatrix.Identity, postClipInRoot);
 				postClipInRoot.Transform(toRoot);
 				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
 				_pathPool.Free(postClipInRoot);
@@ -679,28 +669,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
-<<<<<<< HEAD
-	/// Returns the bounds, in root visual coordinates, of the effective clip applied to this visual's
-	/// own content by its ancestors (e.g. a ScrollViewer's viewport clip) and its own <see cref="Clip"/>.
-	/// Intersecting an element's bounds with this rect yields what's actually visible, which automation
-	/// uses to detect elements clipped entirely out of view (e.g. scrolled outside a ScrollViewer).
-	/// </summary>
-	internal Rect GetTotalClipRectInRootCoordinates()
-	{
-		var clipPath = _pathPool.Allocate();
-		using var clipPathDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), clipPath);
-		clipPath.Reset();
-
-		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
-		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-		GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
-
-		return clipPath.Bounds.ToRect();
-	}
-
-	/// <summary>
-=======
->>>>>>> origin/master
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>

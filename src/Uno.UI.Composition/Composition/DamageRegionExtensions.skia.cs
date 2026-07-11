@@ -1,18 +1,11 @@
 #nullable enable
 
-using System;
 using SkiaSharp;
 
 namespace Uno.UI.Composition;
 
 internal static class DamageRegionExtensions
 {
-	[ThreadStatic]
-	private static SKPath? _unionRectScratch;
-
-	[ThreadStatic]
-	private static SKPath? _clampScratch;
-
 	public static void Union(this SKPath region, SKPath addition)
 	{
 		if (addition.IsEmpty)
@@ -22,7 +15,7 @@ internal static class DamageRegionExtensions
 
 		if (region.IsEmpty)
 		{
-			region.AddPath(addition);
+			addition.Transform(SKMatrix.Identity, region);
 		}
 		else
 		{
@@ -37,9 +30,7 @@ internal static class DamageRegionExtensions
 			return;
 		}
 
-		var scratch = _unionRectScratch ??= new SKPath();
-		scratch.Rewind();
-		scratch.AddRect(rect);
+		using var scratch = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 		region.Union(scratch);
 	}
 
@@ -50,9 +41,7 @@ internal static class DamageRegionExtensions
 			return;
 		}
 
-		var scratch = _clampScratch ??= new SKPath();
-		scratch.Rewind();
-		scratch.AddRect(frameRect);
+		using var scratch = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(frameRect);
 		region.Op(scratch, SKPathOp.Intersect, region);
 	}
 }
