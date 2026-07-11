@@ -1226,6 +1226,19 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
+		// on Apple platforms it is:
+		// * `command` + `left` that moves to the start of the line
+		// * `option` + `left` that moves to the previous word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
+		{
+			if (ctrl)
+			{
+				KeyDownHome(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
+				return;
+			}
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;
@@ -1273,10 +1286,16 @@ public partial class TextBox : ITextSelectionGripperHost
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// on Apple platforms it is:
+		// * `command` + `right` that moves to the end of the line
 		// * `option` + `right` that moves to the next word
 		// * `shift` + `option` + `right` that select the next word
 		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
+			if (ctrl)
+			{
+				KeyDownEnd(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
+				return;
+			}
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
 
