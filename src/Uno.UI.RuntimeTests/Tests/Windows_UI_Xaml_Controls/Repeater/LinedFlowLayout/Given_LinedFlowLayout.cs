@@ -165,6 +165,7 @@ public class Given_LinedFlowLayout
 	public void When_RaiseItemsInfoRequested_AndHandlerProvidesInfo_Then_ReturnsHandlerValues()
 	{
 		var sut = new LinedFlowLayout();
+		sut.m_itemCount = 3;
 		LinedFlowLayoutItemsInfoRequestedEventArgs capturedArgs = null;
 
 		sut.ItemsInfoRequested += (s, e) =>
@@ -195,6 +196,7 @@ public class Given_LinedFlowLayout
 	public void When_RaiseItemsInfoRequested_AndNoHandler_Then_ReturnsEmpty()
 	{
 		var sut = new LinedFlowLayout();
+		sut.m_itemCount = 3;
 
 		// No ItemsInfoRequested subscriber -> the empty items info (all -1) is returned.
 		var info = sut.RaiseItemsInfoRequested(0, 3);
@@ -211,6 +213,7 @@ public class Given_LinedFlowLayout
 	public void When_RaiseItemsInfoRequested_AndHandlerLowersStartIndex_Then_ReturnsExpandedRange()
 	{
 		var sut = new LinedFlowLayout();
+		sut.m_itemCount = 5;
 
 		sut.ItemsInfoRequested += (s, e) =>
 		{
