@@ -295,8 +295,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_itemsRangeStartIndex = itemsInfoRequestedEventArgs.ItemsRangeStartIndex,
 					m_itemsRangeLength = itemsInfoRequestedEventArgs.ItemsRangeLength,
-					m_minWidth = (float)itemsInfoRequestedEventArgs.MinWidth,
-					m_maxWidth = (float)itemsInfoRequestedEventArgs.MaxWidth,
+					m_minWidth = itemsInfoRequestedEventArgs.MinWidth,
+					m_maxWidth = itemsInfoRequestedEventArgs.MaxWidth,
 				};
 			}
 
@@ -6550,33 +6550,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			MUX_ASSERT(false);
-			return -1;
-		}
-
-		// Returns the line index the provided element belongs to, or -1 if not found.
-		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
-		private int GetItemLineIndex(
-			UIElement element)
-		{
-			int sizedLineVectorCount = m_lineItemCounts.Count;
-			int sizedItemIndex = m_firstSizedItemIndex;
-
-			for (int sizedLineVectorIndex = 0; sizedLineVectorIndex < sizedLineVectorCount; sizedLineVectorIndex++)
-			{
-				int lineItemsCount = m_lineItemCounts[sizedLineVectorIndex];
-
-				for (int itemVectorIndex = 0; itemVectorIndex < lineItemsCount; itemVectorIndex++)
-				{
-					if (m_elementManager.IsDataIndexRealized(sizedItemIndex) &&
-						m_elementManager.GetRealizedElement(sizedItemIndex /*dataIndex*/) == element)
-					{
-						return sizedLineVectorIndex + m_firstSizedLineIndex;
-					}
-
-					sizedItemIndex++;
-				}
-			}
-
 			return -1;
 		}
 
