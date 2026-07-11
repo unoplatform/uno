@@ -6366,7 +6366,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 
 		// Uno docs: ToArray call is to avoid modifying the collection while iterating.
-		// Uno: iterate a snapshot to allow Remove() inside the loop.
 		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 		{
 			bool isMatch = requestId == -1 || requestId == interactionTrackerAsyncOperation.GetRequestId();
@@ -6420,6 +6419,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
+		// Uno: iterate a snapshot to allow Remove() inside the loop.
 		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 		{
 			if (interactionTrackerAsyncOperation.IsDelayed())
