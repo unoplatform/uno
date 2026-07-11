@@ -747,6 +747,122 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Move_Word_Left_With_Keyboard()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "abc def ghi"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms moving to the previous word is `option` (alt/menu) + `left`
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// selecting the previous word is `shift` + the same modifier
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			mod |= VirtualKeyModifiers.Shift;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(3, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(7, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(11, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Move_To_Line_Start_End_With_Keyboard()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "abc def\rghi jkl"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// caret in the middle of the second line
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms moving to the end of the line is `command` + `right`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var endKey = isAppleKeyboard ? VirtualKey.Right : VirtualKey.End;
+			var homeKey = isAppleKeyboard ? VirtualKey.Left : VirtualKey.Home;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.None;
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, endKey, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(15, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, homeKey, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// selecting to the start/end of the line is `shift` + the same keys
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, homeKey, mod | VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(2, SUT.SelectionLength);
+
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, endKey, mod | VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+		}
+
+		[TestMethod]
 		public async Task When_Text_Bigger_Than_TextBox()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
