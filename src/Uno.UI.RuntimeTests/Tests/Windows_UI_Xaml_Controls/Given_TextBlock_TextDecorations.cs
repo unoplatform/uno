@@ -11,7 +11,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public class Given_TextBlock_TextDecorations
 	{
@@ -44,6 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
 		public async Task When_Run_Underline_And_Strikethrough_Then_Rendered()
 		{
 			var underlined = MakeContainer(MakeTextBlock(TextDecorations.Underline, onRun: true));
@@ -67,6 +67,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
 		public async Task When_Block_Level_Underline_Then_Rendered()
 		{
 			// TextDecorations is an inherited dependency property, so setting it on the TextBlock must
@@ -84,6 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
 		public async Task When_Underline_And_Strikethrough_Combined_Then_Both_Rendered()
 		{
 			// Underline | Strikethrough draws both lines, so the combined variant must differ from each
@@ -104,6 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
 		public async Task When_Underline_With_Trailing_Whitespace_Then_Not_Extended()
 		{
 			// WinUI/DWrite do not decorate collapsed line-trailing whitespace. A left-aligned underlined
