@@ -978,6 +978,7 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(itemIndex < m_itemCount);
 			MUX_ASSERT(m_itemsInfoMaxWidth >= 0.0 || m_itemsInfoMaxWidth == -1.0);
 
+			// Preserve WinUI's sentinel behavior: an unset global max (-1) disables per-item max caps.
 			if (UsesFastPathLayout())
 			{
 				// Fast path layout
