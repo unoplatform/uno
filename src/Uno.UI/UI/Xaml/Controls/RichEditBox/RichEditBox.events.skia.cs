@@ -1,6 +1,7 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,14 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 	// immediately before TextChanged with IsContentChanging == true (our architecture applies the
 	// edit before the choke point, so the content is already changed by the time we notify — the
 	// Changing -> Changed ordering and the IsContentChanging flag are still faithful). SelectionChanging
-	// is cancellable: it fires from the interactive selection choke point (SetInteractiveSelection)
-	// before the change is committed, and a handler setting Cancel = true aborts it.
-	//
-	// TODO Uno: SelectionChanging is currently only raised for interactive (keyboard/pointer/clipboard)
-	// selection changes, not for programmatic Document.Selection changes (which mutate the TOM before
-	// the control observes them, so honoring Cancel there would require reverting the TOM). Both
-	// SelectionChanged and SelectionChanging are only raised while the control is focused, because the
-	// reverse TOM->caret sync that drives them is focused-only by design (see OnTomSelectionChanged).
+	// is cancellable for both interactive and programmatic TOM selection changes. Interactive changes
+	// raise before committing; TOM changes follow WinUI's callback model and restore the last accepted
+	// selection if cancelled. A selection changed reentrantly by the handler takes precedence over Cancel.
 	//
 	// The clipboard events (CopyingToClipboard, CuttingToClipboard, Paste) are raised from the
 	// RichEditBox clipboard methods (see RichEditBox.clipboard.skia.cs) before the corresponding
@@ -72,26 +68,69 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public event TextControlPasteEventHandler? Paste;
 
-		// Last plain-text value for which TextChanged was raised. Initial document content is empty
-		// (RichEditTextDocument starts with an empty buffer), so the baseline starts empty too.
-		private string _lastRaisedText = string.Empty;
+		private string _lastObservedText = string.Empty;
+		private bool _isInvokingTextChanging;
 
 		// Last (start, length) selection span for which SelectionChanged was raised.
 		private (int start, int length) _lastRaisedSelection;
 
-		private void RaiseTextChangedIfNeeded()
+		private TextChangeNotification? PrepareTextChangedNotification()
 		{
 			var text = GetPlainTextContent();
-			if (text == _lastRaisedText)
+			if (text == _lastObservedText)
+			{
+				return null;
+			}
+
+			var oldText = _lastObservedText;
+			_lastObservedText = text;
+
+			// A TextChanging handler may synchronously edit the document again. The nested render still
+			// runs, but its notification is folded into the outer one so observers never receive stale
+			// old/new values or an unbounded event recursion.
+			if (_isInvokingTextChanging)
+			{
+				return null;
+			}
+
+			try
+			{
+				_isInvokingTextChanging = true;
+				TextChanging?.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging: true));
+			}
+			finally
+			{
+				_isInvokingTextChanging = false;
+			}
+
+			var finalText = GetPlainTextContent();
+			_lastObservedText = finalText;
+			return oldText == finalText ? null : new TextChangeNotification(oldText, finalText);
+		}
+
+		private void QueueTextChangedNotification(TextChangeNotification? change)
+		{
+			if (change is not { } textChange)
 			{
 				return;
 			}
 
-			_lastRaisedText = text;
+			var peer = GetOrCreateAutomationPeer() as RichEditBoxAutomationPeer;
+			if (peer is not null)
+			{
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+				{
+					peer.RaiseValuePropertyChangedEvent(textChange.OldText, textChange.NewText);
+				}
 
-			// WinUI raises TextChanging (content is changing) immediately before TextChanged.
-			TextChanging?.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging: true));
-			TextChanged?.Invoke(this, new RoutedEventArgs());
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged))
+				{
+					peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
+				}
+			}
+
+			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+				TextChanged?.Invoke(this, new RoutedEventArgs()));
 		}
 
 		private void RaiseSelectionChangedIfNeeded()
@@ -104,7 +143,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_lastRaisedSelection = current;
 			SelectionChanged?.Invoke(this, new RoutedEventArgs());
+
+			if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
+				&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
+			{
+				peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+			}
 		}
+
+		private readonly record struct TextChangeNotification(string OldText, string NewText);
 
 		/// <summary>
 		/// Raises the cancellable <see cref="SelectionChanging"/> event for a proposed interactive

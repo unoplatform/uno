@@ -76,14 +76,14 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>
-		/// Reads plain text from the OS clipboard and replaces the <paramref name="start"/>..
-		/// <paramref name="end"/> span with it, invoking <paramref name="onPasted"/> with the caret
+		/// Reads plain text from the OS clipboard and replaces the current span of
+		/// <paramref name="operationRange"/>, invoking <paramref name="onPasted"/> with the caret
 		/// position after the inserted text. Unlike WinUI's synchronous RichEdit paste, the OS clipboard
 		/// read is asynchronous on Uno, so this completes on a later dispatcher turn (matching the
 		/// control-level Ctrl+V paste). When a matching rich payload is present the character formatting
 		/// is preserved, as one undoable action.
 		/// </summary>
-		internal void BeginPastePlainText(int start, int end, Action<int> onPasted)
+		internal void BeginPastePlainText(UnoTextRange operationRange, Action<int> onPasted, bool requireEditable)
 		{
 			_ = _owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
@@ -93,33 +93,51 @@ namespace Microsoft.UI.Text
 					return;
 				}
 
+				string clipboardText;
 				try
 				{
-					var clipboardText = await content.GetTextAsync();
-					if (string.IsNullOrEmpty(clipboardText))
-					{
-						return;
-					}
-
-					// RichEditBox is multiline and normalizes newlines to \r like WinUI.
-					var normalized = clipboardText.Replace("\r\n", "\r").Replace('\n', '\r');
-
-					BeginUndoGroup();
-					try
-					{
-						ReplaceRange(start, end, normalized);
-						TryApplyRichClipboard(start, normalized);
-					}
-					finally
-					{
-						EndUndoGroup();
-					}
-
-					onPasted(start + normalized.Length);
+					clipboardText = await content.GetTextAsync();
 				}
 				catch (InvalidOperationException)
 				{
 					// The clipboard content may have changed or become unavailable; ignore like TextBox.
+					return;
+				}
+
+				if (string.IsNullOrEmpty(clipboardText))
+				{
+					return;
+				}
+
+				if (requireEditable && IsOwnerReadOnly)
+				{
+					return;
+				}
+
+				// RichEditBox is multiline and normalizes newlines to \r like WinUI.
+				var normalized = _owner.CoerceCasing(clipboardText.Replace("\r\n", "\r").Replace('\n', '\r'));
+				var start = operationRange.StartPosition;
+				var end = operationRange.EndPosition;
+
+				BeginUndoGroup();
+				BatchDisplayUpdates();
+				try
+				{
+					var insertedLength = ReplaceRange(start, end, normalized, operationRange);
+					var insertedText = normalized.Substring(0, insertedLength);
+					TryApplyRichClipboard(start, insertedText);
+					onPasted(start + insertedLength);
+				}
+				finally
+				{
+					try
+					{
+						EndUndoGroup();
+					}
+					finally
+					{
+						ApplyDisplayUpdates();
+					}
 				}
 			});
 		}

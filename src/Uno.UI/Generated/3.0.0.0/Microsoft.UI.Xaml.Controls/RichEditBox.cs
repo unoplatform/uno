@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RichEditBox : global::Microsoft.UI.Xaml.Controls.Control
 	{
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty AcceptsReturnProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CharacterCasingProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.CharacterCasing)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ClipboardCopyFormatProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.RichEditClipboardFormat)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.DataTemplate)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsSpellCheckEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextPredictionEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty MaxLengthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -160,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SolidColorBrush)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SolidColorBrush)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextAlignment)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextReadingOrder)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextWrappingProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -200,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextWrapping)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AcceptsReturn
 		{
@@ -214,7 +214,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.CharacterCasing CharacterCasing
 		{
@@ -228,7 +228,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.RichEditClipboardFormat ClipboardCopyFormat
 		{
@@ -242,7 +242,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public object Description
 		{
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public object Header
 		{
@@ -308,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.DataTemplate HeaderTemplate
 		{
@@ -322,7 +322,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
 		{
@@ -364,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsReadOnly
 		{
@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsSpellCheckEnabled
 		{
@@ -392,7 +392,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsTextPredictionEnabled
 		{
@@ -406,7 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public int MaxLength
 		{
@@ -420,7 +420,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public string PlaceholderText
 		{
@@ -472,7 +472,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
@@ -486,7 +486,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
 		{
@@ -500,7 +500,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextAlignment TextAlignment
 		{
@@ -524,7 +524,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
 		{
@@ -538,7 +538,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextWrapping TextWrapping
 		{

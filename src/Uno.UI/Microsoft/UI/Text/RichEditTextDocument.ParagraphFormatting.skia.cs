@@ -355,25 +355,25 @@ namespace Microsoft.UI.Text
 		/// <summary>Gets the document's default paragraph format as a live (bound) format object.</summary>
 		public global::Microsoft.UI.Text.ITextParagraphFormat GetDefaultParagraphFormat()
 		{
-				var format = new UnoTextParagraphFormat();
-				format.LoadFrom(_defaultParagraphFormat);
-				format.BindApply(ApplyDefaultParagraphFormat);
-				return format;
+			var format = new UnoTextParagraphFormat();
+			format.LoadFrom(_defaultParagraphFormat);
+			format.BindApply(ApplyDefaultParagraphFormat);
+			return format;
 		}
 
 		/// <summary>Sets the document's default paragraph format from the defined properties of <paramref name="value"/>.</summary>
 		public void SetDefaultParagraphFormat(global::Microsoft.UI.Text.ITextParagraphFormat value)
 		{
-				if (value is UnoTextParagraphFormat format)
-				{
-					ApplyDefaultParagraphFormat(format);
-				}
+			if (value is UnoTextParagraphFormat format)
+			{
+				ApplyDefaultParagraphFormat(format);
+			}
 		}
 
 		// Writes the defined properties of the (default-bound) format into the document default. This
 		// does not retroactively re-format existing paragraphs; it only changes the basis for future text.
 		internal void ApplyDefaultParagraphFormat(UnoTextParagraphFormat format)
-				=> format.ApplyTo(_defaultParagraphFormat);
+			=> format.ApplyTo(_defaultParagraphFormat);
 
 		/// <summary>
 		/// Resolves the single paragraph alignment shared by every paragraph in the document, or

@@ -20,6 +20,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _hasPointerCapture;
 		private int _pointerSelectionAnchor;
 
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+			_isPointerOver = true;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerExited(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
+
 		protected override void OnPointerPressed(PointerRoutedEventArgs e)
 		{
 			base.OnPointerPressed(e);

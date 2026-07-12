@@ -32,9 +32,15 @@ namespace Microsoft.UI.Text
 
 		public void TypeText(string value)
 		{
-			var text = value ?? string.Empty;
-			_document.ReplaceRange(_start, _end, text);
-			_start = _end = _start + text.Length;
+			var text = _document.CoerceTypedText(value ?? string.Empty);
+			var replaceEnd = _end;
+			if (_start == _end && _options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.Overtype))
+			{
+				replaceEnd = Math.Min(_document.TextLength, _start + text.Length);
+			}
+
+			var insertedLength = _document.ReplaceRange(_start, replaceEnd, text, this);
+			_start = _end = _start + insertedLength;
 			OnRangeChanged();
 		}
 
@@ -42,11 +48,25 @@ namespace Microsoft.UI.Text
 		// CopyingToClipboard / CuttingToClipboard / Paste events are raised — matching WinUI, where these
 		// fire for the selection but NOT for a plain (non-selection) range, which keeps the silent base
 		// behavior inherited from UnoTextRange.
-		public override void Copy() => _document.CopySelectionToClipboardViaControl();
+		public override void Copy() => _document.CopySelectionToClipboardViaControl(this);
 
-		public override void Cut() => _document.CutSelectionToClipboardViaControl();
+		public override void Cut() => _document.CutSelectionToClipboardViaControl(this);
 
-		public override void Paste(int format) => _document.PasteFromClipboardViaControl();
+		public override void Paste(int format)
+		{
+			if (_document.TryBeginSelectionPasteViaControl())
+			{
+				base.Paste(format);
+			}
+		}
+
+		internal void SetRangeAfterTextMutation(int start, int end)
+		{
+			_start = start;
+			_end = end;
+			Normalize();
+			OnRangeChanged();
+		}
 
 		public int MoveLeft(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
 		{

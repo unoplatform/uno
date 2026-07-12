@@ -18,15 +18,14 @@ namespace Microsoft.UI.Text
 	// (CanUndo/CanRedo/Undo/Redo/UndoLimit) with grouping (BeginUndoGroup/EndUndoGroup), and display
 	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
 	//
-	// TODO Uno: The following are subsequent increments and remain [NotImplemented] in the generated
-	// stub for now: character/paragraph default formats, RTF and stream load/save, embedded images
-	// and MathML. Paragraph formatting round-trips through the model but is not rendered (the shared
-	// DisplayBlock is a single TextBlock) — see RichEditTextDocument.ParagraphFormatting.skia.cs.
+	// TODO Uno: RTF and stream load/save, embedded images, and MathML remain deferred. Paragraph
+	// formatting round-trips, but only uniform alignment is projected onto the single TextBlock.
 	public partial class RichEditTextDocument
 	{
 		private readonly RichEditBox _owner;
-		private readonly List<Snapshot> _undoStack = new();
-		private readonly List<Snapshot> _redoStack = new();
+		private readonly List<HistoryEntry> _undoStack = new();
+		private readonly List<HistoryEntry> _redoStack = new();
+		private readonly List<WeakReference<UnoTextRange>> _ranges = new();
 		private string _plainText = string.Empty;
 		private UnoTextSelection? _selection;
 		private int _undoLimit = 100;
@@ -36,11 +35,14 @@ namespace Microsoft.UI.Text
 		// so BeginUndoGroup/EndUndoGroup collapse a run of edits into one undoable action.
 		private int _undoGroupDepth;
 		private Snapshot? _undoGroupSnapshot;
+		private List<TextEdit>? _undoGroupTextEdits;
 
 		// Display batching: while batched, render requests are coalesced and applied once the
 		// outermost ApplyDisplayUpdates balances the matching BatchDisplayUpdates.
 		private int _batchDepth;
 		private bool _pendingRender;
+		private int _selectionMutationDepth;
+		private long _selectionChangeVersion;
 
 		internal RichEditTextDocument(RichEditBox owner)
 		{
@@ -50,6 +52,14 @@ namespace Microsoft.UI.Text
 		// A point-in-time copy of the document used for undo/redo: the plain text plus deep clones of
 		// the character-formatting runs and paragraph-formatting runs.
 		private sealed record Snapshot(string Text, List<FormatRun> Runs, List<ParagraphRun> ParagraphRuns);
+
+		// Exact text-coordinate mutation: remove RemoveLength characters at Start, then insert
+		// InsertLength characters. History entries store the ordered edits that transform the current
+		// document into their target snapshot, so repeated text and noncontiguous undo groups rebase live
+		// ranges at the actual edit locations instead of inferring one ambiguous prefix/suffix diff.
+		private readonly record struct TextEdit(int Start, int RemoveLength, int InsertLength);
+
+		private sealed record HistoryEntry(Snapshot Target, List<TextEdit> RebaseEdits);
 
 		/// <summary>The current plain-text content of the document.</summary>
 		internal string PlainText => _plainText;
@@ -65,49 +75,112 @@ namespace Microsoft.UI.Text
 			return _plainText.Substring(start, end - start);
 		}
 
+		internal string GetTextInRange(int start, int end, global::Microsoft.UI.Text.TextGetOptions options)
+		{
+			start = Math.Clamp(start, 0, _plainText.Length);
+			end = Math.Clamp(end, start, _plainText.Length);
+			if (start < end && options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AdjustCrlf))
+			{
+				start = TextUnitNavigation.GetTextElementStart(_plainText, start);
+			}
+
+			return ConvertTextForGetOptions(_plainText.Substring(start, end - start), options);
+		}
+
 		/// <summary>
 		/// Replaces the plain-text between <paramref name="start"/> and <paramref name="end"/> with
 		/// <paramref name="replacement"/>, splices the formatting runs accordingly and re-renders. Used
 		/// by <see cref="UnoTextRange"/> editing.
 		/// </summary>
-		internal void ReplaceRange(int start, int end, string replacement)
+		internal int ReplaceRange(int start, int end, string replacement, UnoTextRange? sourceRange = null)
 		{
-			MutateWithUndo(() =>
-			{
-				var text = _plainText;
-				start = Math.Clamp(start, 0, text.Length);
-				end = Math.Clamp(end, start, text.Length);
-				var insert = replacement ?? string.Empty;
+			var originalLength = _plainText.Length;
+			start = Math.Clamp(start, 0, originalLength);
+			end = Math.Clamp(end, start, originalLength);
+			var insert = NormalizeLineEndings(replacement ?? string.Empty);
+			insert = _owner.ClampInsertToMaxLength(insert, originalLength, start, end);
 
-				// Keep the run model aligned with the pre-edit text, then splice it in lock-step with the
-				// text edit so inserted characters inherit the neighbouring formatting.
-				SyncRunsToLength(text.Length);
-				SyncParagraphRunsToLength(text.Length);
-				SpliceRuns(start, end - start, insert.Length);
-				SpliceParagraphRuns(start, end - start, insert.Length);
-				_plainText = text.Substring(0, start) + insert + text.Substring(end);
-			});
+			var selectionMutation = sourceRange is not null && ReferenceEquals(sourceRange, _selection);
+			if (selectionMutation)
+			{
+				_selectionMutationDepth++;
+			}
+
+			try
+			{
+				MutateWithUndo(() =>
+				{
+					var text = _plainText;
+
+					// Keep the run model aligned with the pre-edit text, then splice it in lock-step with the
+					// text edit so inserted characters inherit the neighbouring formatting.
+					SyncRunsToLength(text.Length);
+					SyncParagraphRunsToLength(text.Length);
+					SpliceRuns(start, end - start, insert.Length);
+					SpliceParagraphRuns(start, end - start, insert.Length);
+					_plainText = string.Concat(text.AsSpan(0, start), insert.AsSpan(), text.AsSpan(end));
+				}, () => RebaseRanges(start, end, insert.Length, sourceRange), new TextEdit(start, end - start, insert.Length));
+			}
+			finally
+			{
+				if (selectionMutation)
+				{
+					_selectionMutationDepth--;
+				}
+			}
 
 			// The pending caret format (if any) has now been consumed by the splice above, or the caret
 			// context has changed by an edit that didn't consume it; either way it no longer applies.
 			ClearPendingCaretFormat();
+			return insert.Length;
+		}
+
+		internal void TrackRange(UnoTextRange range) => _ranges.Add(new WeakReference<UnoTextRange>(range));
+
+		internal string CoerceTypedText(string value) => _owner.CoerceCasing(NormalizeLineEndings(value));
+
+		internal bool IsSelectionMutationInProgress => _selectionMutationDepth > 0;
+
+		internal long SelectionChangeVersion => _selectionChangeVersion;
+
+		internal bool IsOwnerReadOnly => _owner.IsReadOnly;
+
+		private void RebaseRanges(int editStart, int editEnd, int insertLength, UnoTextRange? sourceRange, int? documentLength = null)
+		{
+			var rebasedDocumentLength = documentLength ?? _plainText.Length;
+			for (var i = _ranges.Count - 1; i >= 0; i--)
+			{
+				if (!_ranges[i].TryGetTarget(out var range))
+				{
+					_ranges.RemoveAt(i);
+					continue;
+				}
+
+				if (!ReferenceEquals(range, sourceRange))
+				{
+					range.RebaseAfterEdit(editStart, editEnd, insertLength, rebasedDocumentLength);
+				}
+			}
 		}
 
 		/// <summary>
 		/// Runs a buffer/formatting mutation, capturing a before-snapshot for undo (unless nothing
 		/// changed or undo is disabled), clearing the redo stack and re-rendering the owning control.
 		/// </summary>
-		private void MutateWithUndo(Action mutate)
+		private bool MutateWithUndo(Action mutate, Action? onChanged = null, TextEdit? textEdit = null)
 		{
 			var before = CaptureSnapshot();
 			mutate();
+			var textChanged = !string.Equals(_plainText, before.Text, StringComparison.Ordinal);
 
-			if (string.Equals(_plainText, before.Text, StringComparison.Ordinal)
+			if (!textChanged
 				&& RunsEqual(_runs, before.Runs)
 				&& ParagraphRunsEqual(_paragraphRuns, before.ParagraphRuns))
 			{
-				return;
+				return false;
 			}
+
+			onChanged?.Invoke();
 
 			if (_undoLimit != 0)
 			{
@@ -115,17 +188,26 @@ namespace Microsoft.UI.Text
 				{
 					// Inside an open undo group: the group's single snapshot (captured at
 					// BeginUndoGroup) is committed on close; each edit still invalidates redo.
+					if (textChanged && textEdit is { } groupEdit)
+					{
+						_undoGroupTextEdits?.Add(groupEdit);
+					}
+
 					_redoStack.Clear();
 				}
 				else
 				{
-					_undoStack.Add(before);
+					var forwardEdits = textChanged && textEdit is { } edit
+						? new List<TextEdit> { edit }
+						: new List<TextEdit>();
+					_undoStack.Add(new HistoryEntry(before, InvertTextEdits(forwardEdits)));
 					TrimUndoStack();
 					_redoStack.Clear();
 				}
 			}
 
 			RequestRender();
+			return true;
 		}
 
 		// Trigger a re-render of the shared DisplayBlock, deferring while display updates are batched.
@@ -142,11 +224,33 @@ namespace Microsoft.UI.Text
 
 		private Snapshot CaptureSnapshot() => new(_plainText, CloneRuns(_runs), CloneParagraphRuns(_paragraphRuns));
 
-		private void RestoreSnapshot(Snapshot snapshot)
+		private HistoryEntry RestoreHistoryEntry(HistoryEntry entry)
 		{
-			_plainText = snapshot.Text;
-			_runs = CloneRuns(snapshot.Runs);
-			_paragraphRuns = CloneParagraphRuns(snapshot.ParagraphRuns);
+			var current = CaptureSnapshot();
+			var documentLength = current.Text.Length;
+			foreach (var edit in entry.RebaseEdits)
+			{
+				var editEnd = edit.Start + edit.RemoveLength;
+				documentLength += edit.InsertLength - edit.RemoveLength;
+				RebaseRanges(edit.Start, editEnd, edit.InsertLength, sourceRange: null, documentLength);
+			}
+
+			_plainText = entry.Target.Text;
+			_runs = CloneRuns(entry.Target.Runs);
+			_paragraphRuns = CloneParagraphRuns(entry.Target.ParagraphRuns);
+			return new HistoryEntry(current, InvertTextEdits(entry.RebaseEdits));
+		}
+
+		private static List<TextEdit> InvertTextEdits(IReadOnlyList<TextEdit> edits)
+		{
+			var inverse = new List<TextEdit>(edits.Count);
+			for (var i = edits.Count - 1; i >= 0; i--)
+			{
+				var edit = edits[i];
+				inverse.Add(new TextEdit(edit.Start, edit.InsertLength, edit.RemoveLength));
+			}
+
+			return inverse;
 		}
 
 		private void TrimUndoStack()
@@ -185,10 +289,13 @@ namespace Microsoft.UI.Text
 		/// Mirrors the owning control's interactive caret/selection into <see cref="Selection"/> without
 		/// triggering the drag semantics of the public position setters. Used by the interactive editor.
 		/// </summary>
-		internal void SetSelectionRangeInternal(int start, int end)
+		internal void SetSelectionRangeInternal(int start, int end, bool clearPendingCaretFormat = true)
 		{
-			// Moving the caret away from a pending insertion-point format discards it.
-			ClearPendingCaretFormatIfMoved(start, end);
+			if (clearPendingCaretFormat)
+			{
+				ClearPendingCaretFormatIfMoved(start, end);
+			}
+
 			((UnoTextRange)Selection).SetRangeInternal(start, end);
 		}
 
@@ -199,35 +306,34 @@ namespace Microsoft.UI.Text
 		/// </summary>
 		internal void NotifySelectionChanged()
 		{
-			// A programmatic selection move away from a pending insertion-point format discards it.
-			if (_selection is { } selection)
-			{
-				ClearPendingCaretFormatIfMoved(selection.StartPosition, selection.EndPosition);
-			}
-
+			// The owner resolves SelectionChanging cancellation/reentrancy before deciding whether the
+			// accepted selection moved away from a pending insertion-point format.
+			_selectionChangeVersion++;
 			_owner.OnTomSelectionChanged();
 		}
 
 		// Programmatic Selection.Copy/Cut/Paste (ITextSelection) route here so the owning control raises
-		// its CopyingToClipboard / CuttingToClipboard / Paste events. The interactive selection is first
-		// synced from the TOM selection (non-focus-gated) because these operate on Document.Selection even
-		// when the control isn't focused (the WinUI conformance tests never focus it).
-		internal void CopySelectionToClipboardViaControl()
+		// its CopyingToClipboard / CuttingToClipboard / Paste events. They operate directly on the TOM
+		// selection even when the control is unfocused, without changing its interactive direction.
+		internal void CopySelectionToClipboardViaControl(UnoTextSelection selection)
+			=> _owner.CopyTomSelectionToClipboard(selection);
+
+		internal void CutSelectionToClipboardViaControl(UnoTextSelection selection)
 		{
-			_owner.SyncInteractiveSelectionFromTomSelection();
-			_owner.CopySelectionToClipboard();
+			_owner.CutTomSelectionToClipboard(selection);
 		}
 
-		internal void CutSelectionToClipboardViaControl()
+		internal bool TryBeginSelectionPasteViaControl()
 		{
-			_owner.SyncInteractiveSelectionFromTomSelection();
-			_owner.CutSelectionToClipboard();
-		}
+			if (!_owner.TryBeginTomSelectionPaste())
+			{
+				return false;
+			}
 
-		internal void PasteFromClipboardViaControl()
-		{
-			_owner.SyncInteractiveSelectionFromTomSelection();
-			_owner.PasteFromClipboard();
+			// WinUI paste is synchronous. Uno's clipboard read is asynchronous, but scheduling a
+			// selection paste is still an explicit handler mutation and therefore overrides Cancel.
+			_selectionChangeVersion++;
+			return true;
 		}
 
 		// --- Geometry-backed line navigation (delegates to the owning control's DisplayBlock layout) ---
@@ -260,21 +366,33 @@ namespace Microsoft.UI.Text
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
 			// TODO Uno: Honor FormatRtf and the remaining TextSetOptions once rich content is supported.
-			var text = value ?? string.Empty;
+			var text = NormalizeLineEndings(value ?? string.Empty);
 
 			// WinUI clamps a programmatic SetText to the control's MaxLength (SetTextAdheresToMaxLength).
 			var maxLength = _owner.MaxLength;
 			if (maxLength > 0 && text.Length > maxLength)
 			{
-				text = text.Substring(0, maxLength);
+				text = TextUnitNavigation.TruncateToUtf16Boundary(text, maxLength);
 			}
 
-			MutateWithUndo(() =>
+			var oldLength = _plainText.Length;
+			var selection = (UnoTextRange)Selection;
+			var selectionWasNonzero = selection.StartPosition != 0 || selection.EndPosition != 0;
+			var documentChanged = MutateWithUndo(() =>
 			{
 				_plainText = text;
 				ResetRuns(text.Length);
 				ResetParagraphRuns(text.Length);
-			});
+				RebaseRanges(0, oldLength, text.Length, sourceRange: null);
+				selection.SetRangeInternal(0, 0);
+			}, textEdit: new TextEdit(0, oldLength, text.Length));
+
+			// A same-text/default-format SetText is a content no-op, but it still resets the selection.
+			// Since MutateWithUndo does not render that case, publish the selection proposal explicitly.
+			if (!documentChanged && selectionWasNonzero)
+			{
+				_owner.OnDocumentTextChangedInteractive();
+			}
 		}
 
 		/// <summary>
@@ -283,8 +401,27 @@ namespace Microsoft.UI.Text
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
 		{
 			// TODO Uno: Honor FormatRtf and the remaining TextGetOptions once rich content is supported.
-			value = _plainText;
+			value = ConvertTextForGetOptions(_plainText, options);
 		}
+
+		private static string ConvertTextForGetOptions(string text, global::Microsoft.UI.Text.TextGetOptions options)
+		{
+			var useLf = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseLf);
+			var useCrlf = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseCrlf);
+			if (useLf && useCrlf)
+			{
+				throw new ArgumentException("UseLf and UseCrlf cannot be combined.", nameof(options));
+			}
+
+			return useLf
+				? text.Replace('\r', '\n')
+				: useCrlf
+					? text.Replace("\r", "\r\n")
+					: text;
+		}
+
+		private static string NormalizeLineEndings(string value)
+			=> value.Replace("\r\n", "\r").Replace('\n', '\r');
 
 		/// <summary>
 		/// Gets or sets the maximum number of actions that can be undone. Setting the limit to 0
@@ -331,8 +468,7 @@ namespace Microsoft.UI.Text
 			var index = _redoStack.Count - 1;
 			var next = _redoStack[index];
 			_redoStack.RemoveAt(index);
-			_undoStack.Add(CaptureSnapshot());
-			RestoreSnapshot(next);
+			_undoStack.Add(RestoreHistoryEntry(next));
 			RequestRender();
 		}
 
@@ -349,8 +485,7 @@ namespace Microsoft.UI.Text
 			var index = _undoStack.Count - 1;
 			var previous = _undoStack[index];
 			_undoStack.RemoveAt(index);
-			_redoStack.Add(CaptureSnapshot());
-			RestoreSnapshot(previous);
+			_redoStack.Add(RestoreHistoryEntry(previous));
 			RequestRender();
 		}
 
@@ -363,6 +498,7 @@ namespace Microsoft.UI.Text
 			if (_undoGroupDepth == 0)
 			{
 				_undoGroupSnapshot = CaptureSnapshot();
+				_undoGroupTextEdits = new List<TextEdit>();
 			}
 
 			_undoGroupDepth++;
@@ -387,7 +523,9 @@ namespace Microsoft.UI.Text
 			}
 
 			var groupStart = _undoGroupSnapshot;
+			var groupTextEdits = _undoGroupTextEdits ?? new List<TextEdit>();
 			_undoGroupSnapshot = null;
+			_undoGroupTextEdits = null;
 			if (groupStart is null || _undoLimit == 0)
 			{
 				return;
@@ -401,7 +539,7 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
-			_undoStack.Add(groupStart);
+			_undoStack.Add(new HistoryEntry(groupStart, InvertTextEdits(groupTextEdits)));
 			TrimUndoStack();
 			_redoStack.Clear();
 		}
