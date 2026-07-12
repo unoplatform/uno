@@ -94,6 +94,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	[JSExport]
+	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
+	{
+		OnResize(instance, width, height, scale);
+
+		return Task.CompletedTask;
+	}
+
 	protected override void ShowCore()
 	{
 		if (Application.Current.FontPreloadTask is { } task)
