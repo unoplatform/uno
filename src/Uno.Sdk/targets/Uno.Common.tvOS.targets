@@ -1,0 +1,10 @@
+<Project>
+	<PropertyGroup>
+		<IsTvOS>true</IsTvOS>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">12.2</SupportedOSPlatformVersion>
+
+		<EnableDefaulttvOSItems Condition="$(EnableDefaulttvOSItems) == ''">false</EnableDefaulttvOSItems>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+</Project>
