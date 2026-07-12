@@ -85,6 +85,7 @@ namespace Microsoft.UI.Text
 			_redoStack.Clear();
 			_undoGroupDepth = 0;
 			_undoGroupSnapshot = null;
+			_undoGroupTextEdits = null;
 		}
 	}
 }

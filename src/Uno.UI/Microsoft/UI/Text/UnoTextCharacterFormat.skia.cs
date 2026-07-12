@@ -189,6 +189,7 @@ namespace Microsoft.UI.Text
 			if (value is UnoTextCharacterFormat other)
 			{
 				CopyFrom(other);
+				ApplyIfBound();
 			}
 		}
 

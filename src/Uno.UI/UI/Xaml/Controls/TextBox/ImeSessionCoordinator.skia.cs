@@ -83,6 +83,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal static void EndSession(IImeSessionHost host)
 		{
+			if (!ReferenceEquals(_activeHost, host))
+			{
+				return;
+			}
+
 			EnsureInitialized();
 			_extension?.EndImeSession();
 			if (ReferenceEquals(_activeHost, host))

@@ -4,6 +4,7 @@ using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Media;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -15,11 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
 	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
 	//
-	// TODO Uno: Pointer-driven caret placement/drag-selection, IME composition, and rich clipboard
-	// (Copy/Cut/Paste) arrive in subsequent increments. Paragraph formatting, the remaining
-	// ITextRange/ITextSelection breadth, RTF/streams, embedded images and MathML are also follow-ups.
-	// Interactive keyboard editing (caret, selection, typing/navigation/undo) lives in
-	// RichEditBox.editing.skia.cs. See plan for the sequencing.
+	// TODO Uno: Cross-process RTF/streams, embedded images and MathML, per-paragraph rendering, and
+	// advanced touch selection UI remain follow-ups.
 	public partial class RichEditBox : ITextBoxViewHost
 	{
 		private TextBoxView? _textBoxView;
@@ -29,6 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private global::Microsoft.UI.Text.RichEditTextDocument? _document;
 		private bool _isInitializing = true;
 		private bool _propertyChangedCallbacksRegistered;
+		private bool _isPointerOver;
 
 		/// <summary>
 		/// Gets an object that facilitates programmatic access to the text and formatting properties
@@ -58,10 +57,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateTextBoxView();
+			InitializeTextBoxViewProperties();
 			RegisterPropertyChangedCallbacks();
 
 			UpdateHeaderPresenterVisibility();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
+			UpdateDescriptionVisibility(initialization: true);
 
 			_isInitializing = false;
 
@@ -83,6 +84,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void InitializeTextBoxViewProperties()
+		{
+			if (_textBoxView is not { } view)
+			{
+				return;
+			}
+
+			view.SetWrapping();
+			view.SetTextAlignment();
+			view.UpdateFont();
+			view.DisplayBlock.IsSpellCheckEnabled = IsSpellCheckEnabled;
+			view.UpdateProperties();
+			UpdateSelectionHighlightColor();
+		}
+
 		private void RegisterPropertyChangedCallbacks()
 		{
 			if (_propertyChangedCallbacksRegistered)
@@ -97,6 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RegisterPropertyChangedCallback(HeaderProperty, (s, _) => ((RichEditBox)s).OnHeaderChanged());
 			RegisterPropertyChangedCallback(HeaderTemplateProperty, (s, _) => ((RichEditBox)s).OnHeaderChanged());
 			RegisterPropertyChangedCallback(PlaceholderTextProperty, (s, _) => ((RichEditBox)s).OnPlaceholderTextChanged());
+			RegisterPropertyChangedCallback(DescriptionProperty, (s, _) => ((RichEditBox)s).UpdateDescriptionVisibility(initialization: false));
 		}
 
 		private void OnHeaderChanged()
@@ -115,6 +132,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description is null)
+			{
+				return;
+			}
+
+			if (FindName("DescriptionPresenter") is ContentPresenter presenter)
+			{
+				presenter.Visibility = Description is null ? Visibility.Collapsed : Visibility.Visible;
+			}
+		}
+
 		/// <summary>Returns the current plain-text content held by the TOM document.</summary>
 		internal string GetPlainTextContent() => _document?.PlainText ?? string.Empty;
 
@@ -128,28 +158,37 @@ namespace Microsoft.UI.Xaml.Controls
 			// (guarded so composition-internal edits don't self-cancel).
 			CancelCompositionOnExternalChange();
 
+			var textChange = PrepareTextChangedNotification();
+
 			RenderDocument();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
 
-			// Raise TextChanging + TextChanged before the interactive selection sync (which may raise
-			// SelectionChanging/SelectionChanged), matching WinUI's text-before-selection ordering for a
-			// single edit.
-			RaiseTextChangedIfNeeded();
-
 			OnDocumentTextChangedInteractive();
+			QueueTextChangedNotification(textChange);
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
+			_textBoxView?.OnFocusStateChanged(FocusState);
+			UpdateSelectionHighlightColor();
 			UpdateVisualState();
-			StartCaret();
-			StartImeSession();
+			if (!IsReadOnly)
+			{
+				StartCaret();
+				StartImeSession();
+			}
+			else
+			{
+				UpdateDisplaySelection();
+			}
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
+			_textBoxView?.OnFocusStateChanged(FocusState);
+			UpdateSelectionHighlightColor();
 			UpdateVisualState();
 			EndImeSession();
 			StopCaret();
@@ -161,21 +200,80 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		private void UpdateVisualState()
+		internal override void UpdateVisualState(bool useTransitions = true)
 		{
 			if (!IsEnabled)
 			{
-				VisualStateManager.GoToState(this, "Disabled", true);
+				VisualStateManager.GoToState(this, "Disabled", useTransitions);
 			}
 			else if (FocusState != FocusState.Unfocused)
 			{
-				VisualStateManager.GoToState(this, "Focused", true);
+				VisualStateManager.GoToState(this, "Focused", useTransitions);
+			}
+			else if (_isPointerOver)
+			{
+				VisualStateManager.GoToState(this, "PointerOver", useTransitions);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, "Normal", true);
+				VisualStateManager.GoToState(this, "Normal", useTransitions);
 			}
 		}
+
+		protected override void OnFontSizeChanged(double oldValue, double newValue)
+		{
+			base.OnFontSizeChanged(oldValue, newValue);
+			_textBoxView?.UpdateFont();
+		}
+
+		protected override void OnFontFamilyChanged(FontFamily oldValue, FontFamily newValue)
+		{
+			base.OnFontFamilyChanged(oldValue, newValue);
+			_textBoxView?.UpdateFont();
+		}
+
+		protected override void OnFontStyleChanged(FontStyle oldValue, FontStyle newValue)
+		{
+			base.OnFontStyleChanged(oldValue, newValue);
+			_textBoxView?.UpdateFont();
+		}
+
+		private protected override void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			base.OnFontStretchChanged(oldValue, newValue);
+			_textBoxView?.UpdateFont();
+		}
+
+		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
+		{
+			base.OnFontWeightChanged(oldValue, newValue);
+			_textBoxView?.UpdateFont();
+		}
+
+		private void UpdateSelectionHighlightColor()
+		{
+			if (_textBoxView is not { } view)
+			{
+				return;
+			}
+
+			var brush = FocusState == FocusState.Unfocused
+				? SelectionHighlightColorWhenNotFocused ?? SelectionHighlightColor
+				: SelectionHighlightColor;
+			view.OnSelectionHighlightColorChanged(brush ?? DefaultBrushes.SelectionHighlightColor);
+			UpdateDisplaySelection();
+		}
+
+#if SUPPORTS_RTL
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FrameworkElement.FlowDirectionProperty)
+			{
+				_textBoxView?.SetFlowDirection();
+			}
+		}
+#endif
 
 		#region ITextBoxViewHost
 

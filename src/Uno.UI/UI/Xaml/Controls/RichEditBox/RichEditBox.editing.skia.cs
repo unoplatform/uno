@@ -21,9 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 	// Text mutations are applied to the functional Text Object Model via RichEditTextDocument.ReplaceRange
 	// (which preserves the character-format run model and records undo), and the caret/selection are
 	// rendered through the shared DisplayBlock exactly like TextBox does through ITextBoxViewHost.
-	//
-	// TODO Uno: IME composition is a subsequent increment. Undo grouping (typing runs) is handled
-	// coarsely for now: each edit records one snapshot on the document's history.
 	partial class RichEditBox : ITextViewEditorHost
 	{
 		private static readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
@@ -39,6 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly DispatcherTimer _caretTimer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 		private CompositionBrush? _cachedCaretBrush;
 		private Color _cachedCaretColor;
+		private char? _pendingHighSurrogate;
+		private bool _isProcessingSelectionChanging;
+		private int _selectionSyncDeferralDepth;
 
 		#region ITextViewEditorHost
 
@@ -75,6 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var selStart = Math.Clamp(Document.Selection.StartPosition, 0, length);
 			var selEnd = Math.Clamp(Document.Selection.EndPosition, 0, length);
 			_selection = (selStart, selEnd - selStart, false);
+			Document.SetSelectionRangeInternal(selStart, selEnd);
 			_caretXOffset = (float)_textBoxView.DisplayBlock.ParsedText.GetRectForIndex(selEnd).Left;
 
 			_caretBlinkVisible = true;
@@ -87,6 +88,29 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_caretTimer.Stop();
 			_caretBlinkVisible = false;
+			_pendingHighSurrogate = null;
+			UpdateDisplaySelection();
+		}
+
+		internal void ResumeCaret()
+		{
+			if (_textBoxView is not { } view)
+			{
+				return;
+			}
+
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(_selection.start, 0, textLength);
+			var end = Math.Clamp(_selection.start + _selection.length, start, textLength);
+			var isBackward = _selection.selectionEndsAtTheStart;
+			var caret = isBackward ? start : end;
+
+			_selection = (start, end - start, isBackward);
+			Document.SetSelectionRangeInternal(start, end);
+			_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
+			_caretBlinkVisible = true;
+			EnsureCaretTimerHooked();
+			_caretTimer.Start();
 			UpdateDisplaySelection();
 		}
 
@@ -123,6 +147,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_textBoxView is null || FocusState == FocusState.Unfocused)
 			{
 				return;
+			}
+
+			if (_pendingHighSurrogate is not null
+				&& (args.UnicodeKey is not { } nextUnicode || !char.IsLowSurrogate(nextUnicode)))
+			{
+				_pendingHighSurrogate = null;
 			}
 
 			// Move to the possibly-negative selection-length format used by the shared handlers.
@@ -220,10 +250,12 @@ namespace Microsoft.UI.Xaml.Controls
 				case VirtualKey.Left when !rtl:
 				case VirtualKey.Right when rtl:
 					Editor.KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
+					SnapActiveSelectionToTextElementStart(text, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Left when rtl:
 				case VirtualKey.Right when !rtl:
 					Editor.KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+					SnapActiveSelectionToTextElementEnd(text, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Home:
 					Editor.KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
@@ -232,9 +264,23 @@ namespace Microsoft.UI.Xaml.Controls
 					Editor.KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Back when !IsReadOnly:
+					if (!_hasPointerCapture && selectionLength == 0 && selectionStart > 0 && !IsWordDelete(args, ctrl))
+					{
+						var previous = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart - 1);
+						var current = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart);
+						selectionLength = current - previous;
+						selectionStart = previous;
+					}
 					Editor.KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Delete when !IsReadOnly:
+					if (!_hasPointerCapture && selectionLength == 0 && selectionStart < text.Length && !shift && !IsWordDelete(args, ctrl))
+					{
+						var current = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart);
+						var next = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart + 1);
+						selectionStart = current;
+						selectionLength = next - current;
+					}
 					Editor.KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.A when ctrl:
@@ -258,15 +304,37 @@ namespace Microsoft.UI.Xaml.Controls
 						ctrlHeld ||
 						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
 						(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
-					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key)
+					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 					{
 						var start = Math.Min(selectionStart, selectionStart + selectionLength);
 						var end = Math.Max(selectionStart, selectionStart + selectionLength);
+						string input;
 
-						if (key is '\n')
+						if (char.IsHighSurrogate(key))
+						{
+							_pendingHighSurrogate = key;
+							args.Handled = true;
+							return;
+						}
+						else if (char.IsLowSurrogate(key))
+						{
+							if (_pendingHighSurrogate is not { } highSurrogate)
+							{
+								args.Handled = true;
+								return;
+							}
+
+							input = string.Concat(highSurrogate, key);
+							_pendingHighSurrogate = null;
+						}
+						else if (key is '\n')
 						{
 							// RichEditBox is multiline and normalizes newlines to \r like WinUI.
-							key = '\r';
+							input = "\r";
+						}
+						else
+						{
+							input = key.ToString();
 						}
 
 						args.Handled = true;
@@ -274,7 +342,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// Route the typed character through CharacterCasing, then clamp against MaxLength
 						// (accounting for the selection being replaced). Replacing a non-empty selection
 						// frees room, so only a caret already at MaxLength is blocked.
-						var insert = ClampInsertToMaxLength(CoerceCasing(key.ToString()), text.Length, start, end);
+						var insert = ClampInsertToMaxLength(CoerceCasing(input), text.Length, start, end);
 						if (insert.Length == 0 && start == end)
 						{
 							break;
@@ -310,6 +378,39 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private static bool IsWordDelete(KeyRoutedEventArgs args, bool ctrl)
+			=> DeviceTargetHelper.UsesAppleKeyboardLayout
+				? args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu)
+				: ctrl;
+
+		private static void SnapActiveSelectionToTextElementStart(string text, bool extend, ref int selectionStart, ref int selectionLength)
+		{
+			var activeEnd = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart + selectionLength);
+			if (extend)
+			{
+				selectionLength = activeEnd - selectionStart;
+			}
+			else
+			{
+				selectionStart = activeEnd;
+				selectionLength = 0;
+			}
+		}
+
+		private static void SnapActiveSelectionToTextElementEnd(string text, bool extend, ref int selectionStart, ref int selectionLength)
+		{
+			var activeEnd = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart + selectionLength);
+			if (extend)
+			{
+				selectionLength = activeEnd - selectionStart;
+			}
+			else
+			{
+				selectionStart = activeEnd;
+				selectionLength = 0;
+			}
+		}
+
 		#endregion
 
 		#region Edit application & selection
@@ -318,7 +419,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Applies the control's <see cref="CharacterCasing"/> to newly entered text (typed or pasted).
 		/// Only the incoming text is coerced — existing content is never re-cased — matching WinUI.
 		/// </summary>
-		private string CoerceCasing(string value)
+		internal string CoerceCasing(string value)
 		{
 			if (value.Length == 0)
 			{
@@ -338,7 +439,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// span in a document of <paramref name="currentLength"/> characters keeps the total within
 		/// <see cref="MaxLength"/>. A non-positive MaxLength means unlimited.
 		/// </summary>
-		private string ClampInsertToMaxLength(string insert, int currentLength, int start, int end)
+		internal string ClampInsertToMaxLength(string insert, int currentLength, int start, int end)
 		{
 			var maxLength = MaxLength;
 			if (maxLength <= 0)
@@ -352,7 +453,9 @@ namespace Microsoft.UI.Xaml.Controls
 				return string.Empty;
 			}
 
-			return insert.Length <= room ? insert : insert.Substring(0, room);
+			return insert.Length <= room
+				? insert
+				: global::Microsoft.UI.Text.TextUnitNavigation.TruncateToUtf16Boundary(insert, room);
 		}
 
 		/// <summary>
@@ -380,7 +483,26 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldEnd = oldText.Length - suffix;
 			var insert = newText.Substring(prefix, newText.Length - suffix - prefix);
 
-			Document.ReplaceRange(start, oldEnd, insert);
+			RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, oldEnd, insert));
+		}
+
+		private void RunWithDeferredSelectionSync(Action action)
+		{
+			var originalSelection = _selection;
+			_selectionSyncDeferralDepth++;
+			try
+			{
+				action();
+			}
+			catch
+			{
+				RestoreSelectionSilently(originalSelection);
+				throw;
+			}
+			finally
+			{
+				_selectionSyncDeferralDepth--;
+			}
 		}
 
 		private void SetInteractiveSelection(int selectionStart, int selectionLength)
@@ -388,30 +510,130 @@ namespace Microsoft.UI.Xaml.Controls
 			var caret = selectionStart + selectionLength;
 			var start = Math.Min(selectionStart, caret);
 			var length = Math.Abs(selectionLength);
+			ProcessSelectionChange(start, start + length, selectionLength < 0, proposalAlreadyInTom: false, raiseForSameRange: false);
+		}
 
-			// Raise the cancellable SelectionChanging before committing the interactive change. De-dupe
-			// against the currently committed span so that caret re-renders / blink resets that don't
-			// actually move the selection don't fire it; if a handler cancels, abort without touching
-			// the caret, the TOM, or the render.
-			if ((start != _selection.start || length != _selection.length) &&
-				RaiseSelectionChangingIsCancelled(start, length))
+		/// <summary>
+		/// Clamps and re-renders the interactive selection after a document text change (e.g. a
+		/// programmatic SetText). Keeps the exposed TOM selection and the interactive state coherent
+		/// regardless of focus.
+		/// </summary>
+		internal void OnDocumentTextChangedInteractive()
+		{
+			if (_isProcessingSelectionChanging
+				|| _selectionSyncDeferralDepth > 0
+				|| Document.IsSelectionMutationInProgress)
 			{
 				return;
 			}
 
-			_selection = (start, length, selectionLength < 0);
+			var length = GetPlainTextContent().Length;
+			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
+			var end = Math.Clamp(Document.Selection.EndPosition, start, length);
+			ProcessSelectionChange(start, end, _selection.selectionEndsAtTheStart && start != end, proposalAlreadyInTom: true, raiseForSameRange: false);
+		}
 
+		/// <summary>
+		/// Syncs the interactive caret/selection from the Text Object Model when the programmatic
+		/// <see cref="RichEditTextDocument.Selection"/> is changed through its public API (the reverse of
+		/// the control pushing into the TOM). Does not push back into the TOM.
+		/// </summary>
+		internal void OnTomSelectionChanged()
+		{
+			if (_isProcessingSelectionChanging)
+			{
+				return;
+			}
+
+			var length = GetPlainTextContent().Length;
+			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
+			var end = Math.Clamp(Document.Selection.EndPosition, start, length);
+			ProcessSelectionChange(start, end, selectionEndsAtTheStart: false, proposalAlreadyInTom: true, raiseForSameRange: true);
+		}
+
+		private void ProcessSelectionChange(int proposedStart, int proposedEnd, bool selectionEndsAtTheStart, bool proposalAlreadyInTom, bool raiseForSameRange)
+		{
+			var originalSelection = _selection;
+			var textLength = GetPlainTextContent().Length;
+			proposedStart = Math.Clamp(proposedStart, 0, textLength);
+			proposedEnd = Math.Clamp(proposedEnd, proposedStart, textLength);
+			var selectionChanged = proposedStart != originalSelection.start
+				|| proposedEnd != originalSelection.start + originalSelection.length;
+
+			if (!proposalAlreadyInTom)
+			{
+				Document.SetSelectionRangeInternal(proposedStart, proposedEnd, clearPendingCaretFormat: false);
+			}
+
+			if (selectionChanged || raiseForSameRange)
+			{
+				bool cancelled;
+				var selectionChangeVersion = Document.SelectionChangeVersion;
+				try
+				{
+					try
+					{
+						_isProcessingSelectionChanging = true;
+						cancelled = RaiseSelectionChangingIsCancelled(proposedStart, proposedEnd - proposedStart);
+					}
+					finally
+					{
+						_isProcessingSelectionChanging = false;
+					}
+				}
+				catch
+				{
+					RestoreSelectionSilently(originalSelection);
+					throw;
+				}
+
+				textLength = GetPlainTextContent().Length;
+				var handlerStart = Math.Clamp(Document.Selection.StartPosition, 0, textLength);
+				var handlerEnd = Math.Clamp(Document.Selection.EndPosition, handlerStart, textLength);
+				var selectionChangedByHandler = Document.SelectionChangeVersion != selectionChangeVersion;
+				if (cancelled && !selectionChangedByHandler)
+				{
+					RestoreSelectionSilently(originalSelection);
+					return;
+				}
+
+				proposedStart = handlerStart;
+				proposedEnd = handlerEnd;
+				selectionEndsAtTheStart = selectionChangedByHandler
+					? false
+					: selectionEndsAtTheStart && proposedStart != proposedEnd;
+			}
+
+			Document.SetSelectionRangeInternal(proposedStart, proposedEnd, clearPendingCaretFormat: false);
+			Document.ClearPendingCaretFormatIfMoved(proposedStart, proposedEnd);
+			CommitInteractiveSelection(proposedStart, proposedEnd, selectionEndsAtTheStart);
+		}
+
+		private void RestoreSelectionSilently((int start, int length, bool selectionEndsAtTheStart) selection)
+		{
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(selection.start, 0, textLength);
+			var end = Math.Clamp(selection.start + selection.length, start, textLength);
+			Document.SetSelectionRangeInternal(start, end, clearPendingCaretFormat: false);
+			CommitInteractiveSelection(start, end, selection.selectionEndsAtTheStart && start != end, raiseSelectionChanged: false);
+		}
+
+		private void CommitInteractiveSelection(int start, int end, bool selectionEndsAtTheStart, bool raiseSelectionChanged = true)
+		{
+			_selection = (start, end - start, selectionEndsAtTheStart);
+			if (!raiseSelectionChanged)
+			{
+				_lastRaisedSelection = (start, end - start);
+			}
+
+			var caret = selectionEndsAtTheStart ? start : end;
 			if (_textBoxView is { } view)
 			{
 				_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
 			}
 
-			// Mirror the interactive caret/selection into the Text Object Model for programmatic reads.
-			Document.SetSelectionRangeInternal(start, start + length);
-
-			// Keep the caret solid and the blink phase reset while the user is actively editing/moving.
 			_caretBlinkVisible = true;
-			if (FocusState != FocusState.Unfocused)
+			if (FocusState != FocusState.Unfocused && !IsReadOnly)
 			{
 				EnsureCaretTimerHooked();
 				_caretTimer.Start();
@@ -420,88 +642,20 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateDisplaySelection();
 		}
 
-		/// <summary>
-		/// Clamps and re-renders the interactive selection after a document text change (e.g. a
-		/// programmatic SetText while focused). No-op when unfocused.
-		/// </summary>
-		internal void OnDocumentTextChangedInteractive()
-		{
-			if (_textBoxView is null || FocusState == FocusState.Unfocused)
-			{
-				return;
-			}
-
-			var length = GetPlainTextContent().Length;
-			var start = Math.Clamp(_selection.start, 0, length);
-			var selLength = Math.Clamp(_selection.length, 0, length - start);
-			_selection = (start, selLength, _selection.selectionEndsAtTheStart);
-			Document.SetSelectionRangeInternal(start, start + selLength);
-			UpdateDisplaySelection();
-		}
-
-		/// <summary>
-		/// Forces the interactive caret/selection to match the programmatic
-		/// <see cref="RichEditTextDocument.Selection"/> regardless of focus. Used by the TOM-level clipboard
-		/// operations (<c>Document.Selection.Copy/Cut/Paste</c>), which act on the selection even when the
-		/// control is not focused — unlike <see cref="OnTomSelectionChanged"/>, which is focus-gated.
-		/// </summary>
-		internal void SyncInteractiveSelectionFromTomSelection()
-		{
-			var length = GetPlainTextContent().Length;
-			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
-			var end = Math.Clamp(Document.Selection.EndPosition, 0, length);
-			_selection = (start, end - start, false);
-		}
-
-		/// <summary>
-		/// Syncs the interactive caret/selection from the Text Object Model when the programmatic
-		/// <see cref="RichEditTextDocument.Selection"/> is changed through its public API while focused
-		/// (the reverse of the control pushing into the TOM). No-op when unfocused — the next focus reads
-		/// the TOM selection in <see cref="StartCaret"/>. Does not push back into the TOM.
-		/// </summary>
-		internal void OnTomSelectionChanged()
-		{
-			if (_textBoxView is not { } view || FocusState == FocusState.Unfocused)
-			{
-				return;
-			}
-
-			var length = GetPlainTextContent().Length;
-			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
-			var end = Math.Clamp(Document.Selection.EndPosition, 0, length);
-			_selection = (start, end - start, false);
-			_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(end).Left;
-
-			_caretBlinkVisible = true;
-			EnsureCaretTimerHooked();
-			_caretTimer.Start();
-
-			UpdateDisplaySelection();
-		}
-
 		private void DocumentUndoInteractive()
 		{
-			if (Document.CanUndo())
+			if (!IsReadOnly && Document.CanUndo())
 			{
 				Document.Undo();
-				ClampSelectionToContent();
 			}
 		}
 
 		private void DocumentRedoInteractive()
 		{
-			if (Document.CanRedo())
+			if (!IsReadOnly && Document.CanRedo())
 			{
 				Document.Redo();
-				ClampSelectionToContent();
 			}
-		}
-
-		private void ClampSelectionToContent()
-		{
-			var length = GetPlainTextContent().Length;
-			var caret = Math.Clamp(_selection.selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length, 0, length);
-			SetInteractiveSelection(caret, 0);
 		}
 
 		#endregion
@@ -515,19 +669,27 @@ namespace Microsoft.UI.Xaml.Controls
 			// de-dupe against the last-raised span keeps focus-only re-renders from firing spuriously.
 			RaiseSelectionChangedIfNeeded();
 
+			IsCaretRenderedForTesting = false;
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
 				return;
 			}
 
-			displayBlock.Selection = new TextBlock.Range(_selection.start, _selection.start + _selection.length);
+			// During BatchDisplayUpdates the logical document/selection may advance while the DisplayBlock
+			// intentionally still contains the previous text. Clamp only the rendered range until the batch
+			// is applied; the TOM selection remains unchanged.
+			var displayedLength = displayBlock.Text?.Length ?? 0;
+			var renderedStart = Math.Clamp(_selection.start, 0, displayedLength);
+			var renderedEnd = Math.Clamp(_selection.start + _selection.length, renderedStart, displayedLength);
+			displayBlock.Selection = new TextBlock.Range(renderedStart, renderedEnd);
 
 			var focused = FocusState != FocusState.Unfocused;
-			displayBlock.RenderSelection = focused;
+			displayBlock.RenderSelection = focused || _selection.length > 0;
 
 			if (focused && _selection.length == 0 && !IsReadOnly && _caretBlinkVisible)
 			{
-				displayBlock.RenderCaret = (_selection.start, GetOpaqueCaretBrush());
+				displayBlock.RenderCaret = (renderedStart, GetOpaqueCaretBrush());
+				IsCaretRenderedForTesting = true;
 			}
 			else
 			{
@@ -579,6 +741,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal int SelectionLengthForTesting => _selection.length;
 
 		internal bool IsSelectionBackwardForTesting => _selection.selectionEndsAtTheStart;
+
+		internal bool IsCaretRenderedForTesting { get; private set; }
 
 		#endregion
 	}
