@@ -56,31 +56,23 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 
 	private static string TryGetRichEditPlainText(RichEditBox richEditBox)
 	{
-		// RichEditTextDocument.GetText is NotImplemented on some Uno platforms — fall
-		// back to GetPlainText (Header / PlaceholderText) so Narrator gets a usable
-		// announcement instead of silence.
 		string text = string.Empty;
 		try
 		{
 			richEditBox.Document?.GetText(Microsoft.UI.Text.TextGetOptions.None, out text);
+			return text ?? string.Empty;
 		}
 		catch
 		{
+			return string.Empty;
 		}
-
-		if (!string.IsNullOrEmpty(text))
-		{
-			return text;
-		}
-
-		return richEditBox.GetPlainText() ?? string.Empty;
 	}
 
 	public ITextRangeProvider DocumentRange
 		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveText(_owner).Length);
 
 	public SupportedTextSelection SupportedTextSelection
-		=> _owner is TextBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
+		=> _owner is TextBox or RichEditBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
 
 	public ITextRangeProvider[] GetSelection()
 	{
@@ -94,6 +86,15 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 			};
 		}
 
+		if (_owner is RichEditBox richEditBox)
+		{
+			var selection = richEditBox.Document.Selection;
+			return new ITextRangeProvider[]
+			{
+				new TextRangeAdapter(_ownerPeer, _owner, selection.StartPosition, selection.EndPosition),
+			};
+		}
+
 		return Array.Empty<ITextRangeProvider>();
 	}
 
@@ -104,7 +105,15 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		=> DocumentRange;
 
 	public ITextRangeProvider RangeFromPoint(Point screenLocation)
-		=> DocumentRange;
+	{
+		if (_owner is RichEditBox richEditBox)
+		{
+			var range = richEditBox.Document.GetRangeFromPoint(screenLocation, Microsoft.UI.Text.PointOptions.None);
+			return new TextRangeAdapter(_ownerPeer, _owner, range.StartPosition, range.EndPosition);
+		}
+
+		return DocumentRange;
+	}
 
 	// ITextProvider2 — minimal stubs so Inspect lists the pattern. Annotations and
 	// caret-range queries return a document-wide range; clients that need precise
@@ -116,11 +125,18 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 
 	public ITextRangeProvider GetCaretRange(out bool isActive)
 	{
-		isActive = _owner is Microsoft.UI.Xaml.Controls.TextBox;
+		isActive = _owner.FocusState != FocusState.Unfocused;
 
 		if (_owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
 		{
 			var caret = textBox.SelectionStart + textBox.SelectionLength;
+			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
+		}
+
+		if (_owner is RichEditBox richEditBox)
+		{
+			var selection = richEditBox.Document.Selection;
+			var caret = selection.EndPosition;
 			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
 		}
 

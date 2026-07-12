@@ -1,71 +1,160 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace Microsoft.UI.Text
 {
 	// Text-based (geometry-independent) unit boundary computation for the functional Text Object Model.
 	//
-	// The Word chunk model is copied VERBATIM from Uno.UI's ParsedText.GetWordAt so programmatic Word
-	// navigation (ITextRange.Move/Expand/StartOf/EndOf/GetIndex with TextRangeUnit.Word) matches the
-	// interactive Ctrl+Arrow navigation exactly — a "word" is a run of letters/digits (or a run of other
-	// non-space, non-break characters) plus its trailing spaces, while \r, \n, \t and \r\n are each their
-	// own chunk. Paragraph chunks split on \r, \n and \r\n, and each paragraph includes its trailing break.
+	// The Word chunk model follows Uno.UI's ParsedText.GetWordAt while treating Unicode text elements as
+	// indivisible. A "word" is a run of letters/digits (or a run of other non-space, non-break text
+	// elements) plus its trailing spaces, while \r, \n, \t and \r\n are each their own chunk. Paragraph
+	// chunks split on \r, \n and \r\n, and each paragraph includes its trailing break.
 	//
 	// TODO Uno: Line/Screen/Window units are geometry-based and are handled by the control against the
 	// shared DisplayBlock layout, not here. Sentence/Section units are not yet supported.
 	internal static class TextUnitNavigation
 	{
+		internal static int GetTextElementStart(string text, int position)
+		{
+			if (position <= 0 || position >= text.Length)
+			{
+				return position;
+			}
+
+			var starts = StringInfo.ParseCombiningCharacters(text);
+			var index = Array.BinarySearch(starts, position);
+			return index >= 0 ? position : starts[Math.Max(0, ~index - 1)];
+		}
+
+		internal static int GetTextElementEnd(string text, int position)
+		{
+			if (position <= 0 || position >= text.Length)
+			{
+				return position;
+			}
+
+			var starts = StringInfo.ParseCombiningCharacters(text);
+			var index = Array.BinarySearch(starts, position);
+			return index >= 0 ? position : (~index < starts.Length ? starts[~index] : text.Length);
+		}
+
+		internal static int[] GetTextElementBoundaries(string text)
+		{
+			var starts = StringInfo.ParseCombiningCharacters(text);
+			var boundaries = new int[starts.Length + 1];
+			starts.CopyTo(boundaries, 0);
+			boundaries[boundaries.Length - 1] = text.Length;
+
+			return boundaries;
+		}
+
+		internal static string TruncateToUtf16Boundary(string text, int maxLength)
+		{
+			if (maxLength <= 0)
+			{
+				return string.Empty;
+			}
+
+			if (text.Length <= maxLength)
+			{
+				return text;
+			}
+
+			if (char.IsHighSurrogate(text[maxLength - 1]) && char.IsLowSurrogate(text[maxLength]))
+			{
+				maxLength--;
+			}
+
+			return text.Substring(0, maxLength);
+		}
+
 		internal static List<(int start, int length)> GetWordChunks(string text)
 		{
 			var chunks = new List<(int start, int length)>();
-			var length = text.Length;
-			for (var i = 0; i < length;)
+			var boundaries = GetTextElementBoundaries(text);
+			var elementCount = boundaries.Length - 1;
+			var elementIndex = 0;
+			while (elementIndex < elementCount)
 			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r' && i < (length - 1) && text[i + 1] == '\n')
+				var start = boundaries[elementIndex];
+				if (text[start] == '\r' && start + 1 < text.Length && text[start + 1] == '\n')
 				{
-					i += 2;
-				}
-				else if (c is '\r' or '\t' or '\n')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
+					elementIndex++;
+					while (elementIndex < elementCount && boundaries[elementIndex] < start + 2)
 					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
+						elementIndex++;
 					}
 				}
 				else
 				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
+					var kind = GetWordTextElementKind(text, start);
+					elementIndex++;
+					if (kind is WordTextElementKind.Word or WordTextElementKind.Other)
 					{
-						i++;
+						while (elementIndex < elementCount
+							&& GetWordTextElementKind(text, boundaries[elementIndex]) == kind)
+						{
+							elementIndex++;
+						}
 					}
-					while (i < length && text[i] == ' ')
+
+					if (kind is WordTextElementKind.Word or WordTextElementKind.Other or WordTextElementKind.Space)
 					{
-						i++;
+						while (elementIndex < elementCount
+							&& GetWordTextElementKind(text, boundaries[elementIndex]) == WordTextElementKind.Space)
+						{
+							elementIndex++;
+						}
 					}
 				}
 
-				chunks.Add((start, i - start));
+				chunks.Add((start, boundaries[elementIndex] - start));
 			}
 
 			return chunks;
+		}
+
+		private static WordTextElementKind GetWordTextElementKind(string text, int start)
+		{
+			var first = text[start];
+			if (first is '\r' or '\n' or '\t')
+			{
+				return WordTextElementKind.Break;
+			}
+
+			if (first == ' ')
+			{
+				return WordTextElementKind.Space;
+			}
+
+			if (!Rune.TryGetRuneAt(text, start, out var value))
+			{
+				return WordTextElementKind.Other;
+			}
+
+			if (Rune.IsLetterOrDigit(value))
+			{
+				return WordTextElementKind.Word;
+			}
+
+			return Rune.GetUnicodeCategory(value) is UnicodeCategory.NonSpacingMark
+				or UnicodeCategory.SpacingCombiningMark
+				or UnicodeCategory.EnclosingMark
+				or UnicodeCategory.ConnectorPunctuation
+				? WordTextElementKind.Word
+				: WordTextElementKind.Other;
+		}
+
+		private enum WordTextElementKind
+		{
+			Word,
+			Space,
+			Break,
+			Other,
 		}
 
 		internal static List<(int start, int length)> GetParagraphChunks(string text)

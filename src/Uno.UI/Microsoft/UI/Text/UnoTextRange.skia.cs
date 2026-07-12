@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Text
@@ -28,6 +30,34 @@ namespace Microsoft.UI.Text
 			_start = startPosition;
 			_end = endPosition;
 			Normalize();
+			_document.TrackRange(this);
+		}
+
+		internal void RebaseAfterEdit(int editStart, int editEnd, int insertLength, int documentLength)
+		{
+			_start = RebasePosition(_start, editStart, editEnd, insertLength);
+			_end = RebasePosition(_end, editStart, editEnd, insertLength);
+			_start = Math.Clamp(_start, 0, documentLength);
+			_end = Math.Clamp(_end, 0, documentLength);
+			if (_start > _end)
+			{
+				(_start, _end) = (_end, _start);
+			}
+		}
+
+		private static int RebasePosition(int position, int editStart, int editEnd, int insertLength)
+		{
+			if (position < editStart)
+			{
+				return position;
+			}
+
+			if (position > editEnd || (editStart == editEnd && position == editEnd))
+			{
+				return position + insertLength - (editEnd - editStart);
+			}
+
+			return editStart + insertLength;
 		}
 
 		private protected void Normalize()
@@ -108,8 +138,8 @@ namespace Microsoft.UI.Text
 			set
 			{
 				var replacement = value ?? string.Empty;
-				_document.ReplaceRange(_start, _end, replacement);
-				_end = _start + replacement.Length;
+				var insertedLength = _document.ReplaceRange(_start, _end, replacement, this);
+				_end = _start + insertedLength;
 				OnRangeChanged();
 			}
 		}
@@ -127,22 +157,22 @@ namespace Microsoft.UI.Text
 				// The end-of-story is conventionally represented by a carriage return in the TOM.
 				return '\r';
 			}
-				set
+			set
+			{
+				// ITextRange::SetChar sets the character at the range's starting position, leaving the range
+				// length unchanged. At end-of-story there is no character to overwrite, so the value is inserted.
+				var length = _document.TextLength;
+				if (_start < length)
 				{
-					// ITextRange::SetChar sets the character at the range's starting position, leaving the range
-					// length unchanged. At end-of-story there is no character to overwrite, so the value is inserted.
-					var length = _document.TextLength;
-					if (_start < length)
-					{
-						_document.ReplaceRange(_start, _start + 1, value.ToString());
-					}
-					else
-					{
-						_document.ReplaceRange(_start, _start, value.ToString());
-					}
-
-					OnRangeChanged();
+					_document.ReplaceRange(_start, _start + 1, value.ToString(), this);
 				}
+				else
+				{
+					_document.ReplaceRange(_start, _start, value.ToString(), this);
+				}
+
+				OnRangeChanged();
+			}
 		}
 
 		public void SetRange(int startPosition, int endPosition)
@@ -171,15 +201,15 @@ namespace Microsoft.UI.Text
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
 		{
 			// TODO Uno: Honor the rich TextGetOptions once formatted content is supported.
-			value = _document.GetTextInRange(_start, _end);
+			value = _document.GetTextInRange(_start, _end, options);
 		}
 
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
 			// TODO Uno: Honor the rich TextSetOptions once formatted content is supported.
 			var replacement = value ?? string.Empty;
-			_document.ReplaceRange(_start, _end, replacement);
-			_end = _start + replacement.Length;
+			var insertedLength = _document.ReplaceRange(_start, _end, replacement, this);
+			_end = _start + insertedLength;
 			OnRangeChanged();
 		}
 
@@ -187,7 +217,10 @@ namespace Microsoft.UI.Text
 			=> new UnoTextRange(_document, _start, _end);
 
 		public bool InRange(global::Microsoft.UI.Text.ITextRange range)
-			=> range is not null && _start >= range.StartPosition && _end <= range.EndPosition;
+			=> range is UnoTextRange other
+				&& ReferenceEquals(other._document, _document)
+				&& _start >= other.StartPosition
+				&& _end <= other.EndPosition;
 
 		public bool InStory(global::Microsoft.UI.Text.ITextRange range)
 			=> range is UnoTextRange other && ReferenceEquals(other._document, _document);
@@ -209,65 +242,196 @@ namespace Microsoft.UI.Text
 			var comparison = options.HasFlag(global::Microsoft.UI.Text.FindOptions.Case)
 				? StringComparison.Ordinal
 				: StringComparison.OrdinalIgnoreCase;
+			var matchWholeWord = options.HasFlag(global::Microsoft.UI.Text.FindOptions.Word);
+			var textElementBoundaries = matchWholeWord ? TextUnitNavigation.GetTextElementBoundaries(text) : null;
+			var originalStart = Math.Clamp(_start, 0, text.Length);
+			var originalEnd = Math.Clamp(_end, originalStart, text.Length);
+			var currentRangeMatches = originalEnd - originalStart == value.Length
+				&& IsFindMatch(text, value, originalStart, comparison, textElementBoundaries);
 
-			var startIndex = Math.Clamp(_start, 0, text.Length);
-
-			// TODO Uno: FindOptions.Word (whole-word matching) is treated as a substring search for now.
-			if (scanLength < 0)
+			int searchStart;
+			int searchEnd;
+			if (scanLength > 0)
 			{
-				// A negative scanLength searches backward: match the occurrence closest to the range start
-				// within the |scanLength| characters preceding it (per the ITextRange::FindText contract).
-				var windowStart = Math.Max(0, startIndex + scanLength);
-				var windowLength = startIndex - windowStart;
-				if (windowLength < value.Length)
-				{
-					return 0;
-				}
-
-				var relative = text.Substring(windowStart, windowLength).LastIndexOf(value, comparison);
-				if (relative < 0)
-				{
-					return 0;
-				}
-
-				_start = windowStart + relative;
-				_end = _start + value.Length;
-				OnRangeChanged();
-				return value.Length;
+				searchStart = currentRangeMatches ? originalStart + 1 : originalStart;
+				searchEnd = (int)Math.Min(text.Length, (long)originalStart + scanLength);
+			}
+			else if (scanLength < 0)
+			{
+				searchStart = (int)Math.Max(0, (long)originalEnd + scanLength);
+				searchEnd = currentRangeMatches ? originalEnd - 1 : originalEnd;
+			}
+			else if (originalStart == originalEnd)
+			{
+				searchStart = originalEnd;
+				searchEnd = text.Length;
+			}
+			else
+			{
+				searchStart = originalStart;
+				searchEnd = originalEnd;
 			}
 
-			var available = text.Length - startIndex;
-			var span = scanLength == 0 ? available : Math.Min(scanLength, available);
-			if (span <= 0)
-			{
-				return 0;
-			}
-
-			var index = text.IndexOf(value, startIndex, span, comparison);
-			if (index < 0)
+			var match = scanLength < 0
+				? FindBackward(text, value, searchStart, searchEnd, comparison, textElementBoundaries)
+				: FindForward(text, value, searchStart, searchEnd, comparison, textElementBoundaries);
+			if (match < 0)
 			{
 				return 0;
 			}
 
-			_start = index;
-			_end = index + value.Length;
+			_start = match;
+			_end = match + value.Length;
 			OnRangeChanged();
 			return value.Length;
 		}
 
+		private static int FindForward(string text, string value, int searchStart, int searchEnd, StringComparison comparison, int[]? textElementBoundaries)
+		{
+			var lastCandidate = searchEnd - value.Length;
+			var candidate = searchStart;
+			while (candidate <= lastCandidate)
+			{
+				var match = text.IndexOf(value, candidate, searchEnd - candidate, comparison);
+				if (match < 0 || match > lastCandidate)
+				{
+					return -1;
+				}
+
+				if (IsFindMatch(text, value, match, comparison, textElementBoundaries))
+				{
+					return match;
+				}
+
+				candidate = match + 1;
+			}
+
+			return -1;
+		}
+
+		private static int FindBackward(string text, string value, int searchStart, int searchEnd, StringComparison comparison, int[]? textElementBoundaries)
+		{
+			var lastCandidate = searchEnd - value.Length;
+			var candidate = searchStart;
+			var lastMatch = -1;
+			while (candidate <= lastCandidate)
+			{
+				var match = text.IndexOf(value, candidate, searchEnd - candidate, comparison);
+				if (match < 0 || match > lastCandidate)
+				{
+					break;
+				}
+
+				if (IsFindMatch(text, value, match, comparison, textElementBoundaries))
+				{
+					lastMatch = match;
+				}
+
+				candidate = match + 1;
+			}
+
+			return lastMatch;
+		}
+
+		private static bool IsFindMatch(string text, string value, int start, StringComparison comparison, int[]? textElementBoundaries)
+		{
+			if (start < 0 || start > text.Length - value.Length
+				|| !text.AsSpan(start, value.Length).Equals(value.AsSpan(), comparison))
+			{
+				return false;
+			}
+
+			if (textElementBoundaries is null)
+			{
+				return true;
+			}
+
+			var end = start + value.Length;
+			return IsFindWordBoundary(text, start, textElementBoundaries)
+				&& IsFindWordBoundary(text, end, textElementBoundaries);
+		}
+
+		private static bool IsFindWordBoundary(string text, int position, int[] textElementBoundaries)
+		{
+			var boundaryIndex = Array.BinarySearch(textElementBoundaries, position);
+			if (boundaryIndex < 0)
+			{
+				return false;
+			}
+
+			if (position == 0 || position == text.Length)
+			{
+				return true;
+			}
+
+			return GetFindCharacterClass(text, textElementBoundaries[boundaryIndex - 1])
+				!= GetFindCharacterClass(text, textElementBoundaries[boundaryIndex]);
+		}
+
+		private static int GetFindCharacterClass(string text, int start)
+		{
+			if (!Rune.TryGetRuneAt(text, start, out var value))
+			{
+				return 2;
+			}
+
+			if (Rune.IsLetterOrDigit(value))
+			{
+				return 0;
+			}
+
+			var category = Rune.GetUnicodeCategory(value);
+			if (category is UnicodeCategory.NonSpacingMark
+				or UnicodeCategory.SpacingCombiningMark
+				or UnicodeCategory.EnclosingMark
+				or UnicodeCategory.ConnectorPunctuation)
+			{
+				return 0;
+			}
+
+			return Rune.IsWhiteSpace(value) ? 1 : 2;
+		}
+
 		public int Delete(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			var length = _document.TextLength;
-
 			if (_start != _end)
 			{
-				// A non-degenerate range deletes its own content regardless of unit/count.
-				var removed = _end - _start;
-				_document.ReplaceRange(_start, _end, string.Empty);
-				_end = _start;
-				OnRangeChanged();
-				return removed;
+				_document.BeginUndoGroup();
+				_document.BatchDisplayUpdates();
+				try
+				{
+					_document.ReplaceRange(_start, _end, string.Empty, this);
+					_end = _start;
+
+					var additionalRequested = Math.Abs((long)count) - 1;
+					var additionalCount = additionalRequested <= 0
+						? 0
+						: (int)Math.Min(additionalRequested, _document.TextLength);
+					var additionalDeleted = additionalCount == 0
+						? 0
+						: DeleteCollapsed(unit, count > 0 ? additionalCount : -additionalCount, notify: false);
+					OnRangeChanged();
+					return 1 + additionalDeleted;
+				}
+				finally
+				{
+					try
+					{
+						_document.EndUndoGroup();
+					}
+					finally
+					{
+						_document.ApplyDisplayUpdates();
+					}
+				}
 			}
+
+			return DeleteCollapsed(unit, count, notify: true);
+		}
+
+		private int DeleteCollapsed(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool notify)
+		{
+			var length = _document.TextLength;
 
 			if (count == 0)
 			{
@@ -281,18 +445,22 @@ namespace Microsoft.UI.Text
 				if (count > 0)
 				{
 					deleteStart = _start;
-					deleteEnd = Math.Clamp(_start + count, 0, length);
+					deleteEnd = (int)Math.Clamp((long)_start + count, 0, length);
 				}
 				else
 				{
 					deleteEnd = _start;
-					deleteStart = Math.Clamp(_start + count, 0, length);
+					deleteStart = (int)Math.Clamp((long)_start + count, 0, length);
 				}
 
 				var deleted = deleteEnd - deleteStart;
-				_document.ReplaceRange(deleteStart, deleteEnd, string.Empty);
+				_document.ReplaceRange(deleteStart, deleteEnd, string.Empty, this);
 				_start = _end = deleteStart;
-				OnRangeChanged();
+				if (notify)
+				{
+					OnRangeChanged();
+				}
+
 				return deleted;
 			}
 
@@ -318,9 +486,13 @@ namespace Microsoft.UI.Text
 				return 0;
 			}
 
-			_document.ReplaceRange(rangeStart, rangeEnd, string.Empty);
+			_document.ReplaceRange(rangeStart, rangeEnd, string.Empty, this);
 			_start = _end = rangeStart;
-			OnRangeChanged();
+			if (notify)
+			{
+				OnRangeChanged();
+			}
+
 			return Math.Abs(unitsMoved);
 		}
 
@@ -335,7 +507,7 @@ namespace Microsoft.UI.Text
 			var changed = value == global::Microsoft.UI.Text.LetterCase.Upper
 				? text.ToUpperInvariant()
 				: text.ToLowerInvariant();
-			_document.ReplaceRange(_start, _end, changed);
+			_document.ReplaceRange(_start, _end, changed, this);
 		}
 
 		public int Move(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
@@ -358,7 +530,7 @@ namespace Microsoft.UI.Text
 					if (count > 0)
 					{
 						var edge = _end;
-						var target = Math.Clamp(edge + (count - 1), 0, length);
+						var target = (int)Math.Clamp((long)edge + count - 1, 0, length);
 						_start = _end = target;
 						OnRangeChanged();
 						return (target - edge) + 1;
@@ -366,7 +538,7 @@ namespace Microsoft.UI.Text
 					else
 					{
 						var edge = _start;
-						var target = Math.Clamp(edge + (count + 1), 0, length);
+						var target = (int)Math.Clamp((long)edge + count + 1, 0, length);
 						_start = _end = target;
 						OnRangeChanged();
 						return (target - edge) - 1;
@@ -375,7 +547,7 @@ namespace Microsoft.UI.Text
 
 				// Degenerate caret: move the full Count.
 				var position = _start;
-				var caretTarget = Math.Clamp(position + count, 0, length);
+				var caretTarget = (int)Math.Clamp((long)position + count, 0, length);
 				var moved = caretTarget - position;
 				_start = _end = caretTarget;
 				OnRangeChanged();
@@ -428,7 +600,7 @@ namespace Microsoft.UI.Text
 					return 0;
 				}
 
-				var targetIndex = Math.Min(index + (count - 1), boundaries.Length - 1);
+				var targetIndex = (int)Math.Min((long)index + count - 1, boundaries.Length - 1);
 				destination = boundaries[targetIndex];
 				movedUnits = targetIndex - index + 1;
 			}
@@ -449,7 +621,7 @@ namespace Microsoft.UI.Text
 					return 0;
 				}
 
-				var targetIndex = Math.Max(index - (-count - 1), 0);
+				var targetIndex = (int)Math.Max((long)index - (-(long)count - 1), 0);
 				destination = boundaries[targetIndex];
 				movedUnits = -(index - targetIndex + 1);
 			}
@@ -562,7 +734,7 @@ namespace Microsoft.UI.Text
 					return position;
 				}
 
-				var targetIndex = Math.Min(index + (count - 1), boundaries.Length - 1);
+				var targetIndex = (int)Math.Min((long)index + count - 1, boundaries.Length - 1);
 				unitsMoved = targetIndex - index + 1;
 				return boundaries[targetIndex];
 			}
@@ -584,7 +756,7 @@ namespace Microsoft.UI.Text
 					return position;
 				}
 
-				var targetIndex = Math.Max(index - (-count - 1), 0);
+				var targetIndex = (int)Math.Max((long)index - (-(long)count - 1), 0);
 				unitsMoved = -(index - targetIndex + 1);
 				return boundaries[targetIndex];
 			}
@@ -598,7 +770,7 @@ namespace Microsoft.UI.Text
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
 				var oldChar = _start;
-				_start = Math.Clamp(_start + count, 0, length);
+				_start = (int)Math.Clamp((long)_start + count, 0, length);
 				if (_start > _end)
 				{
 					_end = _start;
@@ -642,7 +814,7 @@ namespace Microsoft.UI.Text
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
 				var oldChar = _end;
-				_end = Math.Clamp(_end + count, 0, length);
+				_end = (int)Math.Clamp((long)_end + count, 0, length);
 				if (_end < _start)
 				{
 					_start = _end;
@@ -767,7 +939,7 @@ namespace Microsoft.UI.Text
 			}
 
 			_document.CopyToClipboard(_start, _end);
-			_document.ReplaceRange(_start, _end, string.Empty);
+			_document.ReplaceRange(_start, _end, string.Empty, this);
 			_end = _start;
 			OnRangeChanged();
 		}
@@ -777,13 +949,12 @@ namespace Microsoft.UI.Text
 			// The OS clipboard read is async on Uno, so unlike WinUI's synchronous paste this replaces the
 			// range on a later dispatcher turn. A matching in-process rich payload restores formatting; the
 			// 'format' argument (a RichEdit clipboard-format id) is not used to select an OS payload.
-			var start = _start;
-			var end = _end;
-			_document.BeginPastePlainText(start, end, caret =>
+			var operationRange = new UnoTextRange(_document, _start, _end);
+			_document.BeginPastePlainText(operationRange, caret =>
 			{
 				_start = _end = caret;
 				OnRangeChanged();
-			});
+			}, requireEditable: this is UnoTextSelection);
 		}
 
 		// --- Text-based unit navigation (Word/Paragraph/Story) — functional over the plain-text buffer ---
@@ -952,74 +1123,181 @@ namespace Microsoft.UI.Text
 
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
-				// 1-based character index of the range start; 0 when past the end of the story.
-				return _start >= _document.TextLength && _document.TextLength > 0 ? 0 : _start + 1;
+				return _start + 1;
 			}
 
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
-			{
-				return _document.TryGetLineBounds(_start, out _, out _, out var lineIndex, out _) ? lineIndex + 1 : 0;
-			}
-
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-			if (chunks is null || chunks.Count == 0)
+			var units = GetIndexedUnitRanges(unit);
+			if (units is null || units.Count == 0)
 			{
 				return 0;
 			}
 
-			// TODO Uno: WinUI returns 0 when the range start is past the last unit; the exact
-			// end-of-story boundary behaviour still needs runtime verification against WinUI.
-			return global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start) + 1;
+			for (var i = 0; i < units.Count; i++)
+			{
+				var current = units[i];
+				if (_start < current.end || (current.start == current.end && _start == current.start))
+				{
+					return i + 1;
+				}
+			}
+
+			return units.Count;
 		}
 
 		public void SetIndex(global::Microsoft.UI.Text.TextRangeUnit unit, int index, bool extend)
 		{
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
-			{
-				var length = _document.TextLength;
-				var target = index >= 0 ? index - 1 : length + index;
-				target = Math.Clamp(target, 0, length);
-				_start = target;
-				if (!extend)
-				{
-					_end = target;
-				}
-				else if (_end < _start)
-				{
-					_end = _start;
-				}
-
-				OnRangeChanged();
-				return;
-			}
-
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-			if (chunks is null || chunks.Count == 0)
+			if (!TryGetIndexedUnit(unit, index, out var unitStart, out var unitEnd))
 			{
 				return;
 			}
 
-			// A 1-based index; a negative index counts back from the last unit.
-			var chunkIndex = index >= 0 ? index - 1 : chunks.Count + index;
-			chunkIndex = Math.Clamp(chunkIndex, 0, chunks.Count - 1);
-			var chunk = chunks[chunkIndex];
-			_start = chunk.start;
-			if (!extend)
+			if (extend)
 			{
-				_end = chunk.start + chunk.length;
+				_end = unitEnd;
+				if (_end < _start)
+				{
+					_start = _end;
+				}
 			}
-			else if (_end < _start)
+			else
 			{
-				_end = _start;
+				_start = _end = unitStart;
 			}
 
 			OnRangeChanged();
 		}
 
+		private bool TryGetIndexedUnit(global::Microsoft.UI.Text.TextRangeUnit unit, int index, out int unitStart, out int unitEnd)
+		{
+			unitStart = 0;
+			unitEnd = 0;
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			{
+				ValidateUnitIndex(index, 1);
+				unitEnd = _document.TextLength;
+				return true;
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			{
+				var length = _document.TextLength;
+				unitStart = GetUnitIndex(index, length + 1);
+				unitEnd = Math.Min(unitStart + 1, length);
+				return true;
+			}
+
+			var units = GetIndexedUnitRanges(unit);
+			if (units is null || units.Count == 0)
+			{
+				return false;
+			}
+
+			var indexedUnit = units[GetUnitIndex(index, units.Count)];
+			unitStart = indexedUnit.start;
+			unitEnd = indexedUnit.end;
+			return true;
+		}
+
+		private List<(int start, int end)>? GetIndexedUnitRanges(global::Microsoft.UI.Text.TextRangeUnit unit)
+		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			{
+				return GetLineRanges();
+			}
+
+			var text = GetStoryText();
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(text, unit);
+			if (chunks is null)
+			{
+				return null;
+			}
+
+			var units = new List<(int start, int end)>(chunks.Count + 1);
+			foreach (var chunk in chunks)
+			{
+				units.Add((chunk.start, chunk.start + chunk.length));
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Word
+				|| (unit == global::Microsoft.UI.Text.TextRangeUnit.Paragraph
+					&& (text.Length == 0 || text[text.Length - 1] is '\r' or '\n')))
+			{
+				units.Add((text.Length, text.Length));
+			}
+
+			return units;
+		}
+
+		private List<(int start, int end)>? GetLineRanges()
+		{
+			var text = GetStoryText();
+			var starts = new List<int>();
+			var probe = 0;
+			var guard = 0;
+			while (guard++ <= text.Length + 1)
+			{
+				if (!_document.TryGetLineBounds(probe, out var lineStart, out var lineEnd, out _, out var isLast))
+				{
+					return null;
+				}
+
+				if (starts.Count == 0 || starts[starts.Count - 1] != lineStart)
+				{
+					starts.Add(lineStart);
+				}
+
+				if (isLast)
+				{
+					break;
+				}
+
+				var next = lineEnd + (lineEnd < text.Length && text[lineEnd] == '\r' ? 1 : 0);
+				if (next <= probe)
+				{
+					break;
+				}
+
+				probe = next;
+			}
+
+			if (starts.Count == 0)
+			{
+				return null;
+			}
+
+			var lines = new List<(int start, int end)>(starts.Count);
+			for (var i = 0; i < starts.Count; i++)
+			{
+				lines.Add((starts[i], i + 1 < starts.Count ? starts[i + 1] : text.Length));
+			}
+
+			return lines;
+		}
+
+		private static int GetUnitIndex(int index, int unitCount)
+		{
+			ValidateUnitIndex(index, unitCount);
+			return index > 0 ? index - 1 : unitCount + index;
+		}
+
+		private static void ValidateUnitIndex(int index, int unitCount)
+		{
+			var zeroBasedIndex = index > 0
+				? (long)index - 1
+				: index < 0
+					? (long)unitCount + index
+					: -1;
+			if (zeroBasedIndex < 0 || zeroBasedIndex >= unitCount)
+			{
+				throw new ArgumentException("The index does not identify a unit in this story.", nameof(index));
+			}
+		}
+
 		public void GetCharacterUtf32(out uint value, int offset)
 		{
 			var text = _document.GetTextInRange(0, _document.TextLength);
-			var position = _start + offset;
+			var position = (long)_end + offset;
 			if (position < 0 || position >= text.Length)
 			{
 				// Out of range yields 0 (WinUI reports the null character past the story end).
@@ -1027,10 +1305,16 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
+			var index = (int)position;
+			if (char.IsLowSurrogate(text[index]) && index > 0 && char.IsHighSurrogate(text[index - 1]))
+			{
+				index--;
+			}
+
 			// Combine a surrogate pair into a single UTF-32 code point; otherwise the char is the value.
-			value = char.IsHighSurrogate(text[position]) && position + 1 < text.Length && char.IsLowSurrogate(text[position + 1])
-				? (uint)char.ConvertToUtf32(text[position], text[position + 1])
-				: text[position];
+			value = char.IsHighSurrogate(text[index]) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1])
+				? (uint)char.ConvertToUtf32(text[index], text[index + 1])
+				: text[index];
 		}
 
 		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point)

@@ -142,6 +142,22 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 
 	public void GetBoundingRectangles(out double[] returnValue)
 	{
+		if (_owner is RichEditBox richEditBox)
+		{
+			try
+			{
+				richEditBox.Document.GetRange(_start, _end).GetRect(Microsoft.UI.Text.PointOptions.None, out var rangeRect, out _);
+				if (rangeRect.Width > 0 || rangeRect.Height > 0)
+				{
+					returnValue = new[] { rangeRect.X, rangeRect.Y, rangeRect.Width, rangeRect.Height };
+					return;
+				}
+			}
+			catch
+			{
+			}
+		}
+
 		var rect = _ownerPeer.GetBoundingRectangle();
 		if (rect.Width <= 0 || rect.Height <= 0)
 		{
@@ -270,6 +286,10 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 		if (_owner is TextBox textBox)
 		{
 			textBox.Select(_start, Math.Max(0, _end - _start));
+		}
+		else if (_owner is RichEditBox richEditBox)
+		{
+			richEditBox.Document.Selection.SetRange(_start, _end);
 		}
 		// No-op for read-only text containers (TextBlock, etc.).
 	}

@@ -126,10 +126,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				ReplaceCompositionText(compositionText, cursorPosition);
+				_compositionLength = ReplaceCompositionText(compositionText, cursorPosition);
 			}
 
-			_compositionLength = compositionText.Length;
+			if (textAlreadyApplied)
+			{
+				_compositionLength = compositionText.Length;
+			}
 			_compositionResolvedLength = resolvedLength;
 
 			TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
@@ -143,13 +146,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			var committedLength = committedText.Length;
 			if (!textAlreadyApplied)
 			{
-				ReplaceCompositionText(committedText);
+				committedLength = ReplaceCompositionText(committedText);
 			}
 
 			var startIndex = _compositionStartIndex;
-			var committedLength = committedText.Length;
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
 			_compositionLength = 0;
@@ -188,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Replaces the active preedit region with <paramref name="newText"/> through the TOM (preserving
 		/// the surrounding character-format runs) and places the caret at the IME-reported position.
 		/// </summary>
-		private void ReplaceCompositionText(string newText, int cursorPosition = -1)
+		private int ReplaceCompositionText(string newText, int cursorPosition = -1)
 		{
 			var text = GetPlainTextContent();
 			// Clamp indices in case the text was modified out-of-band leaving the composition span stale.
@@ -202,14 +205,16 @@ namespace Microsoft.UI.Xaml.Controls
 			_suppressCompositionExternalCancel = true;
 			try
 			{
-				Document.ReplaceRange(startIndex, endIndex, newText);
+				var insertedLength = 0;
+				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(startIndex, endIndex, newText));
+				caretOffset = Math.Min(caretOffset, insertedLength);
+				SetInteractiveSelectionFromComposition(startIndex + caretOffset);
+				return insertedLength;
 			}
 			finally
 			{
 				_suppressCompositionExternalCancel = false;
 			}
-
-			SetInteractiveSelectionFromComposition(startIndex + caretOffset);
 		}
 
 		/// <summary>

@@ -14,9 +14,8 @@ namespace Microsoft.UI.Xaml.Controls
 	// async on Uno — this matches TextBox.PasteFromClipboard. All mutations flow through
 	// Document.ReplaceRange so the character-format run model is preserved and undo is recorded.
 	//
-	// TODO Uno: rich (RTF) clipboard payloads and the TOM-level ITextRange.Copy/Cut/Paste(format) are
-	// separate follow-ups; this slice provides the plain-text control-level clipboard users invoke via
-	// Ctrl+C/X/V.
+	// TODO Uno: Emit and consume a standard RTF clipboard payload so rich formatting survives outside
+	// the current process.
 	partial class RichEditBox
 	{
 		/// <summary>
@@ -27,10 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void CopySelectionToClipboard()
 		{
-			var text = GetPlainTextContent();
-			var start = Math.Clamp(_selection.start, 0, text.Length);
-			var length = Math.Clamp(_selection.length, 0, text.Length - start);
-			if (length <= 0)
+			if (!TryGetInteractiveSelectionSpan(out _, out _))
 			{
 				return;
 			}
@@ -40,23 +36,46 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			CopySelectionToClipboardCore();
+			if (TryGetInteractiveSelectionSpan(out var start, out var end))
+			{
+				CopySelectionToClipboardCore(start, end);
+			}
 		}
 
-		private void CopySelectionToClipboardCore()
+		private bool TryGetInteractiveSelectionSpan(out int start, out int end)
 		{
 			var text = GetPlainTextContent();
-			var start = Math.Clamp(_selection.start, 0, text.Length);
+			start = Math.Clamp(_selection.start, 0, text.Length);
 			var length = Math.Clamp(_selection.length, 0, text.Length - start);
-			if (length <= 0)
+			end = start + length;
+			return length > 0;
+		}
+
+		private void CopySelectionToClipboardCore(int start, int end)
+		{
+			// Routes through the document so plain text goes to the OS clipboard and, when
+			// ClipboardCopyFormat is AllFormats, the selection's character formatting is stashed
+			// for a matching paste to restore.
+			Document.CopyToClipboard(start, end);
+		}
+
+		internal void CopyTomSelectionToClipboard(global::Microsoft.UI.Text.UnoTextSelection selection)
+		{
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(selection.StartPosition, 0, textLength);
+			var end = Math.Clamp(selection.EndPosition, start, textLength);
+			if (start == end || RaiseCopyingToClipboardIsHandled())
 			{
 				return;
 			}
 
-			// Routes through the document so plain text goes to the OS clipboard and, when
-			// ClipboardCopyFormat is AllFormats, the selection's character formatting is stashed
-			// for a matching paste to restore.
-			Document.CopyToClipboard(start, start + length);
+			textLength = GetPlainTextContent().Length;
+			start = Math.Clamp(selection.StartPosition, 0, textLength);
+			end = Math.Clamp(selection.EndPosition, start, textLength);
+			if (start != end)
+			{
+				Document.CopyToClipboard(start, end);
+			}
 		}
 
 		/// <summary>
@@ -70,10 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var text = GetPlainTextContent();
-			var start = Math.Clamp(_selection.start, 0, text.Length);
-			var length = Math.Clamp(_selection.length, 0, text.Length - start);
-			if (length <= 0)
+			if (!TryGetInteractiveSelectionSpan(out _, out _))
 			{
 				return;
 			}
@@ -83,11 +99,46 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			if (!TryGetInteractiveSelectionSpan(out var start, out var end))
+			{
+				return;
+			}
+
 			// Raw copy (does not re-raise CopyingToClipboard — WinUI raises CuttingToClipboard for a cut).
-			CopySelectionToClipboardCore();
-			Document.ReplaceRange(start, start + length, string.Empty);
+			CopySelectionToClipboardCore(start, end);
+			RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, end, string.Empty));
 			SetInteractiveSelection(start, 0);
 		}
+
+		internal void CutTomSelectionToClipboard(global::Microsoft.UI.Text.UnoTextSelection selection)
+		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(selection.StartPosition, 0, textLength);
+			var end = Math.Clamp(selection.EndPosition, start, textLength);
+			if (start == end || RaiseCuttingToClipboardIsHandled())
+			{
+				return;
+			}
+
+			textLength = GetPlainTextContent().Length;
+			start = Math.Clamp(selection.StartPosition, 0, textLength);
+			end = Math.Clamp(selection.EndPosition, start, textLength);
+			if (start == end)
+			{
+				return;
+			}
+
+			Document.CopyToClipboard(start, end);
+			Document.ReplaceRange(start, end, string.Empty, selection);
+			selection.SetRangeAfterTextMutation(start, start);
+		}
+
+		internal bool TryBeginTomSelectionPaste() => !IsReadOnly && !RaisePasteIsHandled();
 
 		/// <summary>
 		/// Pastes plain text from the OS clipboard, replacing the current selection. Raises
@@ -113,15 +164,18 @@ namespace Microsoft.UI.Xaml.Controls
 					return;
 				}
 
+				string clipboardText;
 				try
 				{
-					var clipboardText = await content.GetTextAsync();
-					PasteTextInteractive(clipboardText);
+					clipboardText = await content.GetTextAsync();
 				}
 				catch (InvalidOperationException)
 				{
 					// The clipboard content may have changed or become unavailable; ignore like TextBox.
+					return;
 				}
+
+				PasteTextInteractive(clipboardText);
 			});
 		}
 
@@ -150,16 +204,27 @@ namespace Microsoft.UI.Xaml.Controls
 			// Insert plus restore-formatting are one undoable action. Rich formatting is only re-applied
 			// when the inserted text matches the copied text exactly, so casing/MaxLength changes above
 			// (which alter the text) naturally fall back to a plain paste.
-			Document.BeginUndoGroup();
-			try
+			RunWithDeferredSelectionSync(() =>
 			{
-				Document.ReplaceRange(start, start + length, normalized);
-				Document.TryApplyRichClipboard(start, normalized);
-			}
-			finally
-			{
-				Document.EndUndoGroup();
-			}
+				Document.BeginUndoGroup();
+				Document.BatchDisplayUpdates();
+				try
+				{
+					Document.ReplaceRange(start, start + length, normalized);
+					Document.TryApplyRichClipboard(start, normalized);
+				}
+				finally
+				{
+					try
+					{
+						Document.EndUndoGroup();
+					}
+					finally
+					{
+						Document.ApplyDisplayUpdates();
+					}
+				}
+			});
 
 			SetInteractiveSelection(start + normalized.Length, 0);
 		}
