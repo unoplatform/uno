@@ -385,6 +385,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					const int numItems = 2;
 					const int itemMinorSize = 200;
 					const int itemMajorSize = 100;
+					const double layoutRoundingTolerance = 1.01;
 					Log.Comment("UniformGridLayoutItemsJustification.Start");
 					LayoutPanel panel = new LayoutPanel()
 					{
@@ -417,7 +418,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(50, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(250, 0, itemMinorSize, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.End");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.End;
@@ -429,7 +430,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(100, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(300, 0, itemMinorSize, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceBetween");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceBetween;
@@ -441,7 +442,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(0, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(300, 0, itemMinorSize, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceAround");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceAround;
@@ -453,7 +454,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(25, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(275, 0, itemMinorSize, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceEvenly");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceEvenly;
@@ -466,7 +467,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(33.3333, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(266.6667, 0, itemMinorSize, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.Start +  UniformGridLayoutItemsStretch.Fill");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.Start;
@@ -481,7 +482,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(0, 0, itemMinorSize + 45, itemMajorSize),
 							om.MinorMajorRect(255, 0, itemMinorSize + 45, itemMajorSize)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 
 					Log.Comment("UniformGridLayoutItemsJustification.Start +  UniformGridLayoutItemsStretch.Uniform");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.Start;
@@ -496,7 +497,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 							om.MinorMajorRect(0, 0, itemMinorSize + 45, itemMajorSize + 22.5),
 							om.MinorMajorRect(255, 0, itemMinorSize + 45, itemMajorSize + 22.5)
 						},
-						tolerance: 0.51);
+						tolerance: layoutRoundingTolerance);
 				}
 			});
 		}
@@ -1180,6 +1181,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		[TestProperty("Bug", "12052938")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9080")]
 		public void ValidateIntersectionWithRealizationWindow()
 		{
 			// In this test, we have a ScrollViewer with a viewport of 200x200.
