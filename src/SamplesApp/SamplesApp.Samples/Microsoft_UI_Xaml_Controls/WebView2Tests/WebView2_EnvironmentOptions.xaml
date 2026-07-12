@@ -29,7 +29,7 @@
         <TextBlock
             Grid.Row="1"
             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-            Text="Builds a custom environment and controller options, then initializes the WebView2 with them. Windows-only flags (InPrivate, profile, SSO) are honored by the native WebView2 runtime; other platforms accept the options but may ignore Windows-specific ones."
+            Text="Builds a custom environment before creating the WebView2. Skia macOS supports InPrivate mode; unsupported platform-specific options fail explicitly instead of being silently ignored."
             TextWrapping="Wrap" />
 
         <Grid Grid.Row="2" ColumnSpacing="6">
@@ -40,8 +40,7 @@
             <TextBox
                 x:Name="LanguageInput"
                 Grid.Column="0"
-                PlaceholderText="Language (BCP47)"
-                Text="en-US" />
+                PlaceholderText="Language (BCP47)" />
             <TextBox
                 x:Name="UserDataInput"
                 Grid.Column="1"
@@ -82,6 +81,6 @@
                 FontFamily="Consolas, Courier New, monospace" />
         </StackPanel>
 
-        <controls:WebView2 x:Name="WebView" Grid.Row="6" />
+        <ContentControl x:Name="WebViewHost" Grid.Row="6" />
     </Grid>
 </Page>

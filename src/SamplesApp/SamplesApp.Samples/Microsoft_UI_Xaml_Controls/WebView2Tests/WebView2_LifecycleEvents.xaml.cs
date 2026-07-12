@@ -7,7 +7,7 @@ using Microsoft.Web.WebView2.Core;
 namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
 	[Uno.UI.Samples.Controls.Sample("WebView", IsManualTest = true, IgnoreInSnapshotTests = true,
-		Description = "Logs the full CoreWebView2 lifecycle event surface (Phase 7).")]
+		Description = "Logs the CoreWebView2 top-level document lifecycle events.")]
 	public sealed partial class WebView2_LifecycleEvents : Page
 	{
 		private readonly ObservableCollection<string> _entries = new();
@@ -28,11 +28,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				core.NavigationCompleted += (_, e) => Log($"NavigationCompleted success={e.IsSuccess} status={e.HttpStatusCode}");
 				core.ContentLoading += (_, e) => Log($"ContentLoading navId={e.NavigationId} isErrorPage={e.IsErrorPage}");
 				core.DOMContentLoaded += (_, e) => Log($"DOMContentLoaded navId={e.NavigationId}");
-				core.PermissionRequested += (_, e) => Log($"PermissionRequested kind={e.PermissionKind} uri={e.Uri}");
-				core.DownloadStarting += (_, e) => Log($"DownloadStarting uri={e.DownloadOperation?.Uri ?? "?"}");
-				core.ContextMenuRequested += (_, e) => Log($"ContextMenuRequested at ({e.Location.X},{e.Location.Y})");
-				core.ServerCertificateErrorDetected += (_, e) => Log($"ServerCertificateErrorDetected status={e.ErrorStatus} uri={e.RequestUri}");
-				core.FrameCreated += (_, e) => Log("FrameCreated");
 			};
 		}
 

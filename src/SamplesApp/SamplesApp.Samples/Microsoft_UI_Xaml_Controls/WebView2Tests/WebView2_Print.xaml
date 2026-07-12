@@ -22,7 +22,7 @@
             Grid.Row="0"
             FontSize="18"
             FontWeight="SemiBold"
-            Text="CoreWebView2.PrintToPdfStreamAsync / ShowPrintUIAsync" />
+            Text="CoreWebView2.PrintToPdfStreamAsync / ShowPrintUI" />
 
         <TextBlock
             Grid.Row="1"

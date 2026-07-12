@@ -30,11 +30,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			try
 			{
 				StatusText.Text = "Generating PDF...";
-				var settings = new CoreWebView2PrintSettings
-				{
-					Orientation = CoreWebView2PrintOrientation.Portrait,
-					ScaleFactor = 1.0,
-				};
+				var settings = WebView.CoreWebView2.Environment.CreatePrintSettings();
+				settings.Orientation = CoreWebView2PrintOrientation.Portrait;
+				settings.ScaleFactor = 1.0;
 				using var pdf = await WebView.CoreWebView2.PrintToPdfStreamAsync(settings);
 				using var input = pdf.AsStreamForRead();
 
@@ -53,7 +51,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			}
 		}
 
-		private async void OnShowPrintClick(object sender, RoutedEventArgs e)
+		private void OnShowPrintClick(object sender, RoutedEventArgs e)
 		{
 			if (WebView.CoreWebView2 is null)
 			{
@@ -62,8 +60,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 			try
 			{
-				var status = await WebView.CoreWebView2.ShowPrintUIAsync(CoreWebView2PrintDialogKind.System);
-				StatusText.Text = $"ShowPrintUI status: {status}";
+				WebView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.System);
+				StatusText.Text = "Print UI opened.";
 			}
 			catch (Exception ex)
 			{

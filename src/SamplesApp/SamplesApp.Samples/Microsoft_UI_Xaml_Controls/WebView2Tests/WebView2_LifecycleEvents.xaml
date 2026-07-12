@@ -27,7 +27,7 @@
         <TextBlock
             Grid.Row="1"
             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-            Text="Logs NavigationStarting, ContentLoading, DOMContentLoaded, NavigationCompleted, PermissionRequested, DownloadStarting, ContextMenuRequested, ServerCertificateErrorDetected, FrameCreated as they fire. Wiring is Win32-first; other platforms surface a subset."
+            Text="Logs NavigationStarting, ContentLoading, DOMContentLoaded, and NavigationCompleted in order."
             TextWrapping="Wrap" />
 
         <StackPanel
