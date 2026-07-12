@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
@@ -17,6 +19,149 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_RichEditBox
 	{
+		[TestMethod]
+		public void When_Default_Properties_Match_WinUI()
+		{
+			var SUT = new RichEditBox();
+
+			Assert.IsTrue(SUT.AcceptsReturn);
+			Assert.IsTrue(SUT.IsSpellCheckEnabled);
+			Assert.IsTrue(SUT.IsTextPredictionEnabled);
+			Assert.AreEqual(TextAlignment.Left, SUT.TextAlignment);
+			Assert.AreEqual(TextAlignment.Left, SUT.HorizontalTextAlignment);
+			Assert.AreEqual(TextReadingOrder.DetectFromContent, SUT.TextReadingOrder);
+			Assert.AreEqual(TextWrapping.Wrap, SUT.TextWrapping);
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.MaxLength = -1);
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.TextWrapping = TextWrapping.WrapWholeWords);
+		}
+
+		[TestMethod]
+		public async Task When_Text_View_Properties_Change_After_Load()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+				var displayBlock = contentElement?.Content as TextBlock;
+				Assert.IsNotNull(displayBlock);
+				Assert.AreEqual(TextWrapping.Wrap, displayBlock.TextWrapping);
+				Assert.AreEqual(TextAlignment.Left, displayBlock.TextAlignment);
+
+				SUT.TextWrapping = TextWrapping.NoWrap;
+				SUT.HorizontalTextAlignment = TextAlignment.Right;
+				var selectionBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+				SUT.SelectionHighlightColor = selectionBrush;
+
+				Assert.AreEqual(TextWrapping.NoWrap, displayBlock.TextWrapping);
+				Assert.AreEqual(TextAlignment.Right, SUT.TextAlignment);
+				Assert.AreEqual(TextAlignment.Right, displayBlock.TextAlignment);
+				Assert.AreSame(selectionBrush, displayBlock.SelectionHighlightColor);
+
+				SUT.TextAlignment = TextAlignment.Center;
+				Assert.AreEqual(TextAlignment.Center, SUT.HorizontalTextAlignment);
+				Assert.AreEqual(TextAlignment.Center, displayBlock.TextAlignment);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Description_Changes_After_Load()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Description = "Description";
+				await WindowHelper.WaitForIdle();
+
+				var presenter = SUT.FindFirstChild<ContentPresenter>(x => x.Name == "DescriptionPresenter");
+				Assert.IsNotNull(presenter);
+				Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+
+				SUT.Description = null;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AcceptsReturn_False_Ignores_Enter()
+		{
+			var SUT = new RichEditBox { AcceptsReturn = false };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				await TypeAsync(SUT, "ab");
+				RaiseKey(SUT, VirtualKey.Enter, unicodeKey: '\r');
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("ab", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Precedes_Render_And_TextChanged_Is_Async()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+				var displayBlock = contentElement?.Content as TextBlock;
+				Assert.IsNotNull(displayBlock);
+
+				var textChangingRaised = false;
+				var textChangedRaised = false;
+				var setTextReturned = false;
+				SUT.TextChanging += (_, _) =>
+				{
+					textChangingRaised = true;
+					Assert.AreEqual(string.Empty, displayBlock.Text);
+				};
+				SUT.TextChanged += (_, _) =>
+				{
+					textChangedRaised = true;
+					Assert.IsTrue(setTextReturned);
+					Assert.AreEqual("updated", displayBlock.Text);
+				};
+
+				SUT.Document.SetText(TextSetOptions.None, "updated");
+				setTextReturned = true;
+
+				Assert.IsTrue(textChangingRaised);
+				Assert.IsFalse(textChangedRaised);
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(textChangedRaised);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		public async Task When_Pointer_Click_Places_Caret()
 		{
@@ -204,6 +349,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Document.GetText(TextGetOptions.None, out var text);
 			Assert.AreEqual("abc", text);
+		}
+
+		[TestMethod]
+		public async Task When_MaxLength_Interactive_Typing_Does_Not_Split_Surrogate_Pair()
+		{
+			var SUT = new RichEditBox { MaxLength = 1 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "\U0001F600");
+			SUT.Document.GetText(TextGetOptions.None, out var rejected);
+			Assert.AreEqual(string.Empty, rejected);
+
+			SUT.MaxLength = 2;
+			await TypeAsync(SUT, "\U0001F600");
+			SUT.Document.GetText(TextGetOptions.None, out var accepted);
+			Assert.AreEqual("\U0001F600", accepted);
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Editing_Does_Not_Split_Text_Elements()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await TypeAsync(SUT, "\U0001F600");
+			RaiseKey(SUT, VirtualKey.Left);
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+			RaiseKey(SUT, VirtualKey.Right);
+			Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+			RaiseKey(SUT, VirtualKey.Back);
+			SUT.Document.GetText(TextGetOptions.None, out var afterBackspace);
+			Assert.AreEqual(string.Empty, afterBackspace);
+
+			await TypeAsync(SUT, "\U0001F600X");
+			RaiseKey(SUT, VirtualKey.Home);
+			RaiseKey(SUT, VirtualKey.Delete);
+			SUT.Document.GetText(TextGetOptions.None, out var afterDelete);
+			Assert.AreEqual("X", afterDelete);
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Delete_From_Inside_Surrogate_Removes_Whole_Pair()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Document.SetText(TextSetOptions.None, "\U0001F600X");
+			SUT.Document.Selection.SetRange(1, 1);
+			RaiseKey(SUT, VirtualKey.Back);
+			SUT.Document.GetText(TextGetOptions.None, out var afterBackspace);
+			Assert.AreEqual("X", afterBackspace);
+
+			SUT.Document.SetText(TextSetOptions.None, "\U0001F600X");
+			SUT.Document.Selection.SetRange(1, 1);
+			RaiseKey(SUT, VirtualKey.Delete);
+			SUT.Document.GetText(TextGetOptions.None, out var afterDelete);
+			Assert.AreEqual("X", afterDelete);
 		}
 
 		[TestMethod]
@@ -689,6 +900,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, SUT.Document.GetRange(2, 2).GetIndex(TextRangeUnit.Word));
 			Assert.AreEqual(2, SUT.Document.GetRange(8, 8).GetIndex(TextRangeUnit.Word));
 			Assert.AreEqual(3, SUT.Document.GetRange(13, 13).GetIndex(TextRangeUnit.Word));
+		}
+
+		[TestMethod]
+		public async Task When_SetIndex_Without_Extend_Collapses_At_Unit_Start()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+				var range = SUT.Document.GetRange(2, 9);
+				range.SetIndex(TextRangeUnit.Word, 2, false);
+
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetIndex_With_Extend_Moves_Only_End()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello World foo");
+
+				var range = SUT.Document.GetRange(2, 3);
+				range.SetIndex(TextRangeUnit.Word, 2, true);
+
+				Assert.AreEqual(2, range.StartPosition);
+				Assert.AreEqual(12, range.EndPosition);
+
+				// SetIndex moves EndPosition only. TOM's endpoint invariant collapses the range
+				// when that new end precedes the current start.
+				range.SetRange(13, 14);
+				range.SetIndex(TextRangeUnit.Word, 1, true);
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetIndex_Supports_Line_And_End_Character_Index()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+				await WindowHelper.WaitForIdle();
+
+				var range = SUT.Document.GetRange(0, 7);
+				range.SetIndex(TextRangeUnit.Line, 1, true);
+				Assert.AreEqual(0, range.StartPosition);
+				Assert.AreEqual(3, range.EndPosition, "The indexed line includes its hard paragraph break.");
+
+				range.SetIndex(TextRangeUnit.Line, 2, false);
+				Assert.AreEqual(3, range.StartPosition);
+				Assert.AreEqual(3, range.EndPosition);
+
+				range.SetIndex(TextRangeUnit.Line, -1, false);
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+
+				range.SetIndex(TextRangeUnit.Character, -1, false);
+				Assert.AreEqual(8, range.StartPosition);
+				Assert.AreEqual(9, range.GetIndex(TextRangeUnit.Character));
+
+				range.SetRange(8, 8);
+				Assert.AreEqual(9, range.GetIndex(TextRangeUnit.Character));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetIndex_Models_Final_Story_Units()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var empty = SUT.Document.GetRange(0, 0);
+				Assert.AreEqual(1, empty.GetIndex(TextRangeUnit.Character));
+				Assert.AreEqual(1, empty.GetIndex(TextRangeUnit.Word));
+				Assert.AreEqual(1, empty.GetIndex(TextRangeUnit.Paragraph));
+
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\r");
+				var range = SUT.Document.GetRange(0, 0);
+				range.SetIndex(TextRangeUnit.Word, -1, false);
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(5, range.GetIndex(TextRangeUnit.Word));
+
+				range.SetIndex(TextRangeUnit.Paragraph, -1, false);
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(3, range.GetIndex(TextRangeUnit.Paragraph));
+
+				range.SetRange(2, 2);
+				range.SetIndex(TextRangeUnit.Story, -1, true);
+				Assert.AreEqual(2, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetIndex_Rejects_Invalid_Indexes_Without_Moving()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "one two");
+
+				var range = SUT.Document.GetRange(1, 4);
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Word, 0, false));
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Word, 4, false));
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Word, -4, false));
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Character, int.MaxValue, false));
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Character, int.MinValue, false));
+				Assert.ThrowsExactly<ArgumentException>(() => range.SetIndex(TextRangeUnit.Story, 2, false));
+
+				Assert.AreEqual(1, range.StartPosition);
+				Assert.AreEqual(4, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -1615,6 +1976,881 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Programmatic_SelectionChanging_Cancel_Restores_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				var proposedStart = -1;
+				var proposedLength = -1;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					proposedStart = e.SelectionStart;
+					proposedLength = e.SelectionLength;
+					e.Cancel = true;
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 5);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(2, proposedStart);
+				Assert.AreEqual(3, proposedLength);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_SelectionChanging_Precedes_SelectionChanged()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+
+				var events = new System.Collections.Generic.List<string>();
+				SUT.SelectionChanging += (s, e) => events.Add("changing");
+				SUT.SelectionChanged += (s, e) => events.Add("changed");
+
+				SUT.Document.Selection.SetRange(2, 5);
+
+				CollectionAssert.AreEqual(new[] { "changing", "changed" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_SelectionChanging_Handler_Selection_Wins_Over_Cancel()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.Selection.SetRange(4, 6);
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 5);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(4, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(6, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(4, SUT.SelectionStartForTesting);
+				Assert.AreEqual(2, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Interactive_SelectionChanging_Handler_Selection_Wins_Over_Cancel()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.Selection.SetRange(0, 1);
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				RaiseKey(SUT, VirtualKey.Left);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(0, SUT.SelectionStartForTesting);
+				Assert.AreEqual(1, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Same_Selection_Raises_Only_SelectionChanging()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 2);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) => changingCount++;
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(1, 2);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Interactive_Text_Edit_SelectionChanging_Cancel_Restores_Caret_Once()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				RaiseKey(SUT, VirtualKey.A, unicodeKey: 'a');
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("a", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(0, SUT.SelectionStartForTesting);
+				Assert.AreEqual(0, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Text_Rebase_SelectionChanging_Cancel_Restores_Accepted_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					Assert.AreEqual(4, e.SelectionStart);
+					Assert.AreEqual(0, e.SelectionLength);
+					e.Cancel = true;
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.GetRange(0, 0).Text = "x";
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("xabc", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Handler_Grows_Text_Uses_Final_Document_Length()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.SetText(TextSetOptions.None, "abcdef");
+					SUT.Document.Selection.SetRange(5, 5);
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 2);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(5, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(5, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Handler_Text_Mutation_Does_Not_Override_Cancel()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 2);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(1, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Handler_Explicit_Same_Proposal_Wins_Over_Cancel()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.Selection.SetRange(e.SelectionStart, e.SelectionStart + e.SelectionLength);
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 2);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(2, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Same_Text_SetText_Selection_Reset_Is_Cancellable()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(2, 2);
+
+				var changingCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+				};
+
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(2, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Handler_Throws_Restores_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) => throw new InvalidOperationException("test");
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Document.Selection.SetRange(2, 2));
+
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(1, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Cancelled_SelectionChanging_Text_Shrink_Restores_Silently()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(5, 5);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.SetText(TextSetOptions.None, "ab");
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(4, 4);
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(2, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Text_Rebase_Preserves_Backward_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				RaiseKey(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift);
+
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) => changingCount++;
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.GetRange(0, 0).Text = "x";
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(4, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Formatting_Undo_Preserves_Backward_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				RaiseKey(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift);
+
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) => changingCount++;
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Undo();
+
+				Assert.AreEqual(0, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Undo_Rebases_Selection_Without_Forced_Collapse()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				SUT.Document.Selection.SetRange(3, 3);
+				RaiseKey(SUT, VirtualKey.X, unicodeKey: 'x');
+				Assert.AreEqual(4, SUT.Document.Selection.StartPosition);
+
+				var changingCount = 0;
+				SUT.SelectionChanging += (s, e) => changingCount++;
+				RaiseKey(SUT, VirtualKey.Z, VirtualKeyModifiers.Control);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(3, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Rebases_Repeated_Text_At_Exact_Edit()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "aaa");
+				var tracked = SUT.Document.GetRange(2, 2);
+
+				SUT.Document.GetRange(0, 0).Text = "a";
+				Assert.AreEqual(3, tracked.StartPosition);
+
+				SUT.Document.Undo();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aaa", text);
+				Assert.AreEqual(2, tracked.StartPosition);
+				Assert.AreEqual(2, tracked.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_UndoGroup_Rebases_Noncontiguous_Edits_In_Reverse_Order()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				var tracked = SUT.Document.GetRange(4, 4);
+
+				SUT.Document.BeginUndoGroup();
+				SUT.Document.GetRange(1, 1).Text = "X";
+				SUT.Document.GetRange(6, 6).Text = "Y";
+				SUT.Document.EndUndoGroup();
+				Assert.AreEqual(5, tracked.StartPosition);
+
+				SUT.Document.Undo();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(4, tracked.StartPosition);
+				Assert.AreEqual(4, tracked.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Delete_Multiple_Units_Raises_One_Cancellable_Proposal()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(1, 4);
+				await WindowHelper.WaitForIdle();
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				Assert.AreEqual(2, SUT.Document.Selection.Delete(TextRangeUnit.Character, 2));
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("af", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Delete_Multiple_Units_Raises_One_Text_Notification()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(1, 4);
+				await WindowHelper.WaitForIdle();
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.TextChanging += (s, e) => changingCount++;
+				SUT.TextChanged += (s, e) => changedCount++;
+
+				Assert.AreEqual(2, SUT.Document.Selection.Delete(TextRangeUnit.Character, 2));
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(0, changedCount);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, changedCount);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging_Handler_Cut_Overrides_Cancel_Without_Recursion()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(1, 3);
+
+				var changingCount = 0;
+				var changedCount = 0;
+				SUT.SelectionChanging += (s, e) =>
+				{
+					changingCount++;
+					e.Cancel = true;
+					SUT.Document.Selection.Cut();
+				};
+				SUT.SelectionChanged += (s, e) => changedCount++;
+
+				SUT.Document.Selection.SetRange(2, 4);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abef", text);
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Cut_Handler_Moves_Selection_Copies_And_Deletes_Same_Span()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(0, 2);
+				SUT.CuttingToClipboard += (s, e) => SUT.Document.Selection.SetRange(3, 5);
+
+				SUT.Document.Selection.Cut();
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcf", text);
+				Assert.AreEqual("de", await Clipboard.GetContent().GetTextAsync());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_Selection_Copy_Preserves_Backward_Direction()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				RaiseKey(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+
+				SUT.Document.Selection.Copy();
+
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Async_Range_Paste_Uses_Rebased_Operation_Range()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var dataPackage = new DataPackage();
+				dataPackage.SetText("X");
+				Clipboard.SetContent(dataPackage);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+
+				var range = SUT.Document.GetRange(2, 4);
+				range.Paste(0);
+				SUT.Document.GetRange(0, 0).Text = "!";
+
+				await WindowHelper.WaitFor(() =>
+				{
+					SUT.Document.GetText(TextGetOptions.None, out var text);
+					return text == "!abXef";
+				});
+				Assert.AreEqual(4, range.StartPosition);
+				Assert.AreEqual(4, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Async_Selection_Paste_Becomes_ReadOnly_Before_Continuation()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var dataPackage = new DataPackage();
+				dataPackage.SetText("X");
+				Clipboard.SetContent(dataPackage);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 2);
+
+				SUT.Document.Selection.Paste(0);
+				SUT.IsReadOnly = true;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Control_Rich_Paste_TextChanging_Sees_Final_Formatting()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ab");
+				SUT.Document.GetRange(0, 2).CharacterFormat.Bold = FormatEffect.On;
+				SUT.Document.Selection.SetRange(0, 2);
+				SUT.Document.Selection.Copy();
+				SUT.Document.SetText(TextSetOptions.None, "z");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				var changingCount = 0;
+				var observedBold = FormatEffect.Undefined;
+				SUT.TextChanging += (s, e) =>
+				{
+					changingCount++;
+					observedBold = SUT.Document.GetRange(1, 3).CharacterFormat.Bold;
+				};
+
+				SUT.PasteFromClipboard();
+				await WindowHelper.WaitFor(() =>
+				{
+					SUT.Document.GetText(TextGetOptions.None, out var text);
+					return text == "zab";
+				});
+
+				Assert.AreEqual(1, changingCount);
+				Assert.AreEqual(FormatEffect.On, observedBold);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Cancelled_Programmatic_Selection_Preserves_Pending_Caret_Format()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 1);
+				SUT.Document.Selection.CharacterFormat.Bold = FormatEffect.On;
+
+				SUT.SelectionChanging += (s, e) => e.Cancel = true;
+				SUT.Document.Selection.SetRange(0, 0);
+
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.Selection.CharacterFormat.Bold);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_DefaultTabStop_RoundTrips()
 		{
 			var SUT = new RichEditBox();
@@ -1731,6 +2967,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_TextChanging_Mutates_Document_Then_Changed_Uses_Final_Text()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var changingCount = 0;
+			var changedCount = 0;
+			SUT.TextChanging += (s, e) =>
+			{
+				changingCount++;
+				SUT.Document.SetText(TextSetOptions.None, "final");
+			};
+			SUT.TextChanged += (s, e) =>
+			{
+				changedCount++;
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("final", text);
+			};
+
+			SUT.Document.SetText(TextSetOptions.None, "intermediate");
+
+			Assert.AreEqual(1, changingCount);
+			Assert.AreEqual(0, changedCount);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, changedCount);
+		}
+
+		[TestMethod]
 		public async Task When_TextChanging_Not_Raised_On_Format_Only_Change()
 		{
 			var SUT = new RichEditBox();
@@ -1778,7 +3043,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			RaiseKey(SUT, VirtualKey.Left);
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(count >= 1, $"SelectionChanging should raise on an interactive move, count was {count}.");
+			Assert.AreEqual(1, count, $"SelectionChanging should raise exactly once on an interactive move, count was {count}.");
 			Assert.AreEqual(2, proposedStart);
 			Assert.AreEqual(0, proposedLength);
 		}
@@ -2311,19 +3576,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
 
 			var SUT = new RichEditBox { IsReadOnly = true };
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			SUT.Document.SetText(TextSetOptions.None, "Original");
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Original");
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
 
-			fake.SimulateCompositionStart();
-			fake.SimulateCompositionUpdate("ni");
-			await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, fake.StartImeSessionCallCount);
+				Assert.IsFalse(SUT.IsCaretRenderedForTesting);
 
-			Assert.IsFalse(SUT.IsComposing);
-			SUT.Document.GetText(TextGetOptions.None, out var text);
-			Assert.AreEqual("Original", text);
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ni");
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(SUT.IsComposing);
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("Original", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
 		}
 
 		[TestMethod]
@@ -2492,17 +3768,77 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(fake.EndImeSessionCalled, "EndImeSession should be called when composition is cancelled by external text change");
 		}
 
+		[TestMethod]
+		public async Task When_ReadOnly_Transition_Ends_Composition_And_Restarts_Ime()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, fake.StartImeSessionCallCount);
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ni");
+				Assert.IsTrue(SUT.IsComposing);
+
+				fake.EndImeSessionCalled = false;
+				SUT.IsReadOnly = true;
+				Assert.IsTrue(fake.EndImeSessionCalled);
+				Assert.IsFalse(SUT.IsComposing);
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("ni", text);
+
+				SUT.IsReadOnly = false;
+				Assert.AreEqual(2, fake.StartImeSessionCallCount);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+		public void When_Inactive_IME_Host_Ends_Session_Active_Host_Remains()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+			var activeHost = (IImeSessionHost)new RichEditBox();
+			var inactiveHost = (IImeSessionHost)new RichEditBox();
+
+			ImeSessionCoordinator.StartSession(activeHost);
+			try
+			{
+				fake.EndImeSessionCalled = false;
+				ImeSessionCoordinator.EndSession(inactiveHost);
+
+				Assert.IsFalse(fake.EndImeSessionCalled);
+				Assert.AreSame(activeHost, ImeSessionCoordinator.ActiveHost);
+			}
+			finally
+			{
+				ImeSessionCoordinator.EndSession(activeHost);
+			}
+		}
+
 		private class FakeImeTextBoxExtension : IImeTextBoxExtension
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
+			public int StartImeSessionCallCount { get; private set; }
 
 			public event EventHandler CompositionStarted;
 			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(IImeSessionHost host) { }
+			public void StartImeSession(IImeSessionHost host) => StartImeSessionCallCount++;
 
 			public void EndImeSession()
 			{
@@ -2726,6 +4062,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Blocks_Keyboard_Undo_Redo()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.SetText(TextSetOptions.None, "A");
+				SUT.Document.SetText(TextSetOptions.None, "AB");
+				RaiseKey(SUT, VirtualKey.Z, VirtualKeyModifiers.Control);
+				SUT.Document.GetText(TextGetOptions.None, out var textWithRedoEntry);
+				Assert.AreEqual("A", textWithRedoEntry);
+
+				SUT.IsReadOnly = true;
+				RaiseKey(SUT, VirtualKey.Y, VirtualKeyModifiers.Control);
+				SUT.Document.GetText(TextGetOptions.None, out var afterBlockedRedo);
+				Assert.AreEqual("A", afterBlockedRedo);
+
+				RaiseKey(SUT, VirtualKey.Z, VirtualKeyModifiers.Control);
+				SUT.Document.GetText(TextGetOptions.None, out var afterBlockedUndo);
+				Assert.AreEqual("A", afterBlockedUndo);
+
+				SUT.IsReadOnly = false;
+				RaiseKey(SUT, VirtualKey.Y, VirtualKeyModifiers.Control);
+				SUT.Document.GetText(TextGetOptions.None, out var editableText);
+				Assert.AreEqual("AB", editableText);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Toggle_Updates_Caret()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "hi");
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.Selection.SetRange(2, 2);
+				Assert.IsTrue(SUT.IsCaretRenderedForTesting);
+
+				SUT.IsReadOnly = true;
+				Assert.IsFalse(SUT.IsCaretRenderedForTesting);
+
+				SUT.IsReadOnly = false;
+				Assert.IsTrue(SUT.IsCaretRenderedForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Toggle_Preserves_Backward_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				RaiseKey(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				Assert.AreEqual(2, SUT.SelectionStartForTesting);
+				Assert.AreEqual(1, SUT.SelectionLengthForTesting);
+
+				SUT.IsReadOnly = true;
+				SUT.IsReadOnly = false;
+
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				Assert.AreEqual(2, SUT.SelectionStartForTesting);
+				Assert.AreEqual(1, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Changes_Automation_IsReadOnly_Property()
+		{
+			var SUT = new RichEditBox();
+			var listener = new ReadOnlyPropertyChangedListener();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+				Assert.IsNotNull(peer);
+
+				AutomationPeer.TestAutomationPeerListener = listener;
+				SUT.IsReadOnly = true;
+
+				Assert.AreEqual(1, listener.NotificationCount);
+				Assert.AreSame(peer, listener.Peer);
+				Assert.AreSame(ValuePatternIdentifiers.IsReadOnlyProperty, listener.Property);
+				Assert.AreEqual(false, listener.OldValue);
+				Assert.AreEqual(true, listener.NewValue);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = null;
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -2975,6 +4434,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			return null;
+		}
+
+		private sealed class ReadOnlyPropertyChangedListener : IAutomationPeerListener
+		{
+			public int NotificationCount { get; private set; }
+			public AutomationPeer Peer { get; private set; }
+			public AutomationProperty Property { get; private set; }
+			public object OldValue { get; private set; }
+			public object NewValue { get; private set; }
+
+			public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+
+			public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+
+			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+
+			public void NotifyInvalidatePeer(AutomationPeer peer) { }
+
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+			{
+				if (ReferenceEquals(automationProperty, ValuePatternIdentifiers.IsReadOnlyProperty))
+				{
+					NotificationCount++;
+					Peer = peer;
+					Property = automationProperty;
+					OldValue = oldValue;
+					NewValue = newValue;
+				}
+			}
+
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
 		}
 	}
 }
