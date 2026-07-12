@@ -210,6 +210,94 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Range_FindText_Zero_Scan_Uses_Range_Or_Remainder()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "one two one");
+
+			var limited = SUT.Document.GetRange(4, 7);
+			Assert.AreEqual(0, limited.FindText("one", 0, FindOptions.None));
+			Assert.AreEqual(4, limited.StartPosition);
+			Assert.AreEqual(7, limited.EndPosition);
+
+			var remainder = SUT.Document.GetRange(4, 4);
+			Assert.AreEqual(3, remainder.FindText("one", 0, FindOptions.None));
+			Assert.AreEqual(8, remainder.StartPosition);
+			Assert.AreEqual(11, remainder.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Repeated_Search_Advances()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "one one one");
+			var forward = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(3, forward.FindText("one", 11, FindOptions.None));
+			Assert.AreEqual(0, forward.StartPosition);
+			Assert.AreEqual(3, forward.FindText("one", 11, FindOptions.None));
+			Assert.AreEqual(4, forward.StartPosition);
+
+			var backward = SUT.Document.GetRange(11, 11);
+			Assert.AreEqual(3, backward.FindText("one", -11, FindOptions.None));
+			Assert.AreEqual(8, backward.StartPosition);
+			Assert.AreEqual(3, backward.FindText("one", -11, FindOptions.None));
+			Assert.AreEqual(4, backward.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Word_Requires_Whole_Word()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "concatenate cat cat2");
+			var range = SUT.Document.GetRange(0, 0);
+
+			Assert.AreEqual(3, range.FindText("cat", 20, FindOptions.Word));
+			Assert.AreEqual(12, range.StartPosition);
+			Assert.AreEqual(15, range.EndPosition);
+			Assert.AreEqual(0, range.FindText("cat", 20, FindOptions.Word));
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Word_Does_Not_Split_Combining_Sequence()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "cafe\u0301 cafe");
+			var range = SUT.Document.GetRange(0, 0);
+
+			Assert.AreEqual(4, range.FindText("cafe", 10, FindOptions.Word));
+			Assert.AreEqual(6, range.StartPosition);
+			Assert.AreEqual(10, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_FindText_Match_Must_Fit_Scan_Window()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcde");
+			var range = SUT.Document.GetRange(0, 0);
+
+			Assert.AreEqual(0, range.FindText("cde", 4, FindOptions.None));
+			Assert.AreEqual(3, range.FindText("cde", 5, FindOptions.None));
+			Assert.AreEqual(2, range.StartPosition);
+			Assert.AreEqual(5, range.EndPosition);
+		}
+
+		[TestMethod]
 		public async Task When_Range_ChangeCase_Rewrites_Content()
 		{
 			var SUT = new RichEditBox();
@@ -239,7 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// A non-degenerate range deletes its own content.
 			var range = SUT.Document.GetRange(5, 11);
 			var removed = range.Delete(TextRangeUnit.Character, 1);
-			Assert.AreEqual(6, removed);
+			Assert.AreEqual(1, removed);
 			SUT.Document.GetText(TextGetOptions.None, out var afterSelection);
 			Assert.AreEqual("Hello", afterSelection);
 			Assert.AreEqual(5, range.StartPosition);
@@ -250,6 +338,273 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, caret.Delete(TextRangeUnit.Character, 2));
 			SUT.Document.GetText(TextGetOptions.None, out var afterForward);
 			Assert.AreEqual("llo", afterForward);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Delete_NonDegenerate_Count_Deletes_Additional_Units()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var range = SUT.Document.GetRange(1, 4);
+
+			Assert.AreEqual(2, range.Delete(TextRangeUnit.Character, 2));
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("af", text);
+			Assert.AreEqual(1, range.StartPosition);
+			Assert.AreEqual(1, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Range_Delete_Extreme_Counts_Clamp_Without_Overflow()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var forward = SUT.Document.GetRange(2, 4);
+			Assert.AreEqual(3, forward.Delete(TextRangeUnit.Character, int.MaxValue));
+			SUT.Document.GetText(TextGetOptions.None, out var afterForward);
+			Assert.AreEqual("ab", afterForward);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var backward = SUT.Document.GetRange(2, 4);
+			Assert.AreEqual(3, backward.Delete(TextRangeUnit.Character, int.MinValue));
+			SUT.Document.GetText(TextGetOptions.None, out var afterBackward);
+			Assert.AreEqual("ef", afterBackward);
+		}
+
+		[TestMethod]
+		public async Task When_Live_Range_Rebases_After_Another_Range_Edits()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var trackedCaret = SUT.Document.GetRange(4, 4);
+			SUT.Document.GetRange(0, 0).Text = "X";
+
+			Assert.AreEqual(5, trackedCaret.StartPosition);
+			Assert.AreEqual(5, trackedCaret.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_NoOp_Replacement_Does_Not_Rebase_Live_Range()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var trackedRange = SUT.Document.GetRange(2, 4);
+			SUT.Document.GetRange(1, 5).Text = "bcde";
+
+			Assert.AreEqual(2, trackedRange.StartPosition);
+			Assert.AreEqual(4, trackedRange.EndPosition);
+			Assert.AreEqual("cd", trackedRange.Text);
+		}
+
+		[TestMethod]
+		public async Task When_InRange_Uses_Story_Identity()
+		{
+			var first = new RichEditBox();
+			var second = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(first);
+			panel.Children.Add(second);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			first.Document.SetText(TextSetOptions.None, "abc");
+			second.Document.SetText(TextSetOptions.None, "abc");
+
+			Assert.IsFalse(first.Document.GetRange(1, 2).InRange(second.Document.GetRange(0, 3)));
+		}
+
+		[TestMethod]
+		public async Task When_GetCharacterUtf32_Offset_Is_Relative_To_Range_End()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var range = SUT.Document.GetRange(1, 3);
+			range.GetCharacterUtf32(out var atEnd, 0);
+			range.GetCharacterUtf32(out var beforeEnd, -1);
+
+			Assert.AreEqual((uint)'d', atEnd);
+			Assert.AreEqual((uint)'c', beforeEnd);
+		}
+
+		[TestMethod]
+		public async Task When_GetCharacterUtf32_Offset_Inside_Surrogate_Returns_CodePoint()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "A\U0001F600B");
+			var backward = SUT.Document.GetRange(3, 3);
+			backward.GetCharacterUtf32(out var backwardCodePoint, -1);
+			var forward = SUT.Document.GetRange(1, 1);
+			forward.GetCharacterUtf32(out var forwardCodePoint, 1);
+
+			Assert.AreEqual(0x1F600u, backwardCodePoint);
+			Assert.AreEqual(0x1F600u, forwardCodePoint);
+		}
+
+		[TestMethod]
+		public async Task When_MaxLength_Does_Not_Split_Surrogate_Pair()
+		{
+			var SUT = new RichEditBox { MaxLength = 1 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "\U0001F600");
+			SUT.Document.GetText(TextGetOptions.None, out var setText);
+			Assert.AreEqual(string.Empty, setText);
+
+			SUT.MaxLength = 2;
+			SUT.Document.Selection.TypeText("\U0001F600X");
+			SUT.Document.GetText(TextGetOptions.None, out var typed);
+			Assert.AreEqual("\U0001F600", typed);
+		}
+
+		[TestMethod]
+		public async Task When_Word_Navigation_Does_Not_Split_Combining_Sequence()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "a\u0301b c");
+			var range = SUT.Document.GetRange(0, 0);
+
+			Assert.AreEqual(1, range.Move(TextRangeUnit.Word, 1));
+			Assert.AreEqual(4, range.StartPosition);
+			Assert.AreEqual(4, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Word_Navigation_Handles_Special_Text_Elements()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, " \uFE0F!\tA");
+			var range = SUT.Document.GetRange(0, 0);
+
+			Assert.AreEqual(1, range.Move(TextRangeUnit.Word, 1));
+			Assert.AreEqual(2, range.StartPosition);
+			Assert.AreEqual(1, range.Move(TextRangeUnit.Word, 1));
+			Assert.AreEqual(3, range.StartPosition);
+			Assert.AreEqual(1, range.Move(TextRangeUnit.Word, 1));
+			Assert.AreEqual(4, range.StartPosition);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_TypeText_Adheres_To_MaxLength_And_Overtype()
+		{
+			var SUT = new RichEditBox { MaxLength = 3 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.Selection.TypeText("abcd");
+			SUT.Document.GetText(TextGetOptions.None, out var limited);
+			Assert.AreEqual("abc", limited);
+
+			SUT.MaxLength = 0;
+			SUT.Document.Selection.SetRange(1, 1);
+			SUT.Document.Selection.Options = SelectionOptions.Overtype;
+			SUT.Document.Selection.TypeText("X");
+			SUT.Document.GetText(TextGetOptions.None, out var overtyped);
+			Assert.AreEqual("aXc", overtyped);
+		}
+
+		[TestMethod]
+		public async Task When_Document_Text_Normalizes_And_Converts_Line_Endings()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "a\r\nb\nc");
+			SUT.Document.GetText(TextGetOptions.None, out var normalized);
+			SUT.Document.GetText(TextGetOptions.UseLf, out var lf);
+			SUT.Document.GetText(TextGetOptions.UseCrlf, out var crlf);
+
+			Assert.AreEqual("a\rb\rc", normalized);
+			Assert.AreEqual("a\nb\nc", lf);
+			Assert.AreEqual("a\r\nb\r\nc", crlf);
+			Assert.ThrowsExactly<ArgumentException>(() =>
+				SUT.Document.GetText(TextGetOptions.UseLf | TextGetOptions.UseCrlf, out _));
+		}
+
+		[TestMethod]
+		public async Task When_Range_GetText_Converts_Line_Endings()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "a\rb\rc");
+			var range = SUT.Document.GetRange(0, 3);
+			range.GetText(TextGetOptions.None, out var raw);
+			range.GetText(TextGetOptions.AdjustCrlf, out var adjusted);
+			range.GetText(TextGetOptions.UseLf, out var lf);
+			range.GetText(TextGetOptions.UseCrlf, out var crlf);
+			range.GetText(TextGetOptions.AdjustCrlf | TextGetOptions.UseLf, out var adjustedLf);
+
+			Assert.AreEqual("a\rb", raw);
+			Assert.AreEqual("a\rb", adjusted);
+			Assert.AreEqual("a\nb", lf);
+			Assert.AreEqual("a\r\nb", crlf);
+			Assert.AreEqual("a\nb", adjustedLf);
+			Assert.ThrowsExactly<ArgumentException>(() =>
+				range.GetText(TextGetOptions.UseLf | TextGetOptions.UseCrlf, out _));
+		}
+
+		[TestMethod]
+		public async Task When_Range_GetText_AdjustCrlf_Moves_To_Text_Element_Start()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "A\U0001F600B");
+			var range = SUT.Document.GetRange(2, 3);
+			range.GetText(TextGetOptions.None, out var raw);
+			range.GetText(TextGetOptions.AdjustCrlf, out var adjusted);
+
+			Assert.AreEqual(1, raw.Length);
+			Assert.IsTrue(char.IsLowSurrogate(raw[0]));
+			Assert.AreEqual("\U0001F600", adjusted);
+		}
+
+		[TestMethod]
+		public async Task When_Bound_Format_SetClone_Applies_To_Document()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			var sourceCharacterFormat = SUT.Document.GetRange(0, 3).CharacterFormat.GetClone();
+			sourceCharacterFormat.Bold = FormatEffect.On;
+			SUT.Document.GetRange(0, 3).CharacterFormat.SetClone(sourceCharacterFormat);
+
+			var sourceParagraphFormat = SUT.Document.GetRange(0, 3).ParagraphFormat.GetClone();
+			sourceParagraphFormat.Alignment = ParagraphAlignment.Right;
+			SUT.Document.GetRange(0, 3).ParagraphFormat.SetClone(sourceParagraphFormat);
+
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Bold);
+			Assert.AreEqual(ParagraphAlignment.Right, SUT.Document.GetRange(0, 3).ParagraphFormat.Alignment);
 		}
 
 		[TestMethod]
@@ -965,6 +1320,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private static void RaiseKey(RichEditBox sut, VirtualKey key, VirtualKeyModifiers modifiers = VirtualKeyModifiers.None, char unicodeKey = '\0')
 		{
+			if (modifiers.HasFlag(VirtualKeyModifiers.Control)
+				&& (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS()))
+			{
+				modifiers = (modifiers & ~VirtualKeyModifiers.Control) | VirtualKeyModifiers.Windows;
+			}
+
 			var args = unicodeKey != '\0'
 				? new KeyRoutedEventArgs(sut, key, modifiers, unicodeKey: unicodeKey)
 				: new KeyRoutedEventArgs(sut, key, modifiers);
