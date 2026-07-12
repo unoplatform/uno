@@ -5,7 +5,7 @@ uid: Uno.Controls.GLCanvasElement
 # GLCanvasElement
 
 > [!IMPORTANT]
-> This functionality is only available on WinAppSDK and Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration. On Windows and Linux, OpenGL 3.0+ is used directly and on macOS, Metal is used through the [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) library.
+> This functionality is available on WinAppSDK, Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration, and Skia WebAssembly. On Windows and Linux, OpenGL 3.0+ is used directly; on macOS, Metal is used through the [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) library; on WebAssembly, an offscreen WebGL 2.0 context (with a WebGL 1.0 fallback) is used.
 
 `GLCanvasElement` is a control for drawing 3D graphics with OpenGL. It can be enabled by adding the [`GLCanvas` UnoFeature](xref:Uno.Features.Uno.Sdk). The OpenGL APIs provided are provided by [Silk.NET](https://dotnet.github.io/Silk.NET/).
 
