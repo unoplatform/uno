@@ -29,6 +29,7 @@ internal partial class MacOSNativeWebView :
 	{
 		NativeUno.uno_set_webview_pdf_callback(&PdfCallback);
 		NativeUno.uno_set_webview_cookies_callback(&CookiesCallback);
+		NativeUno.uno_set_webview_cookie_operation_callback(&CookieOperationCallback);
 	}
 
 	// --- ISupportsUserAgent ---
@@ -63,14 +64,7 @@ internal partial class MacOSNativeWebView :
 	bool ISupportsZoomControl.IsZoomControlEnabled
 	{
 		get => _requestedIsZoomControlEnabled;
-		set
-		{
-			_requestedIsZoomControlEnabled = value;
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info("CoreWebView2Settings.IsZoomControlEnabled is not honored on the Skia macOS target.");
-			}
-		}
+		set => _requestedIsZoomControlEnabled = value;
 	}
 
 	// --- ISupportsPostWebMessage ---
@@ -100,9 +94,9 @@ internal partial class MacOSNativeWebView :
 	private static unsafe void PdfCallback(nint handle, byte* bytes, nint length, sbyte* error)
 	{
 		var gch = GCHandle.FromIntPtr(handle);
-		var tcs = gch.Target as TaskCompletionSource<byte[]>;
 		try
 		{
+			var tcs = gch.Target as TaskCompletionSource<byte[]>;
 			if (tcs is null)
 			{
 				return;
@@ -123,12 +117,20 @@ internal partial class MacOSNativeWebView :
 		}
 		finally
 		{
-			gch.Free();
+			if (gch.IsAllocated)
+			{
+				gch.Free();
+			}
 		}
 	}
 
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
+		if (settings?.HasNonDefaultPdfSettings == true)
+		{
+			throw new System.NotSupportedException("WKWebView on macOS does not support custom CoreWebView2 PDF print settings.");
+		}
+
 		var tcs = new TaskCompletionSource<byte[]>();
 		var gch = GCHandle.Alloc(tcs);
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
@@ -150,14 +152,75 @@ internal partial class MacOSNativeWebView :
 	}
 
 	// --- ISupportsCookieManager ---
+	private readonly object _cookieMutationGate = new();
+	private Task _pendingCookieMutations = Task.CompletedTask;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void CookieOperationCallback(nint handle, sbyte* error)
+	{
+		var gch = GCHandle.FromIntPtr(handle);
+		try
+		{
+			var tcs = gch.Target as TaskCompletionSource<object?>;
+			if (tcs is null)
+			{
+				return;
+			}
+			if (error is not null)
+			{
+				tcs.TrySetException(new System.InvalidOperationException(new string(error)));
+			}
+			else
+			{
+				tcs.TrySetResult(null);
+			}
+		}
+		finally
+		{
+			if (gch.IsAllocated)
+			{
+				gch.Free();
+			}
+		}
+	}
+
+	private void QueueCookieMutation(Func<Task> mutation)
+	{
+		lock (_cookieMutationGate)
+		{
+			_pendingCookieMutations = RunQueuedCookieMutationAsync(_pendingCookieMutations, mutation);
+		}
+	}
+
+	private async Task RunQueuedCookieMutationAsync(Task previous, Func<Task> mutation)
+	{
+		try
+		{
+			await previous;
+		}
+		catch (System.Exception error)
+		{
+			this.Log().Error("A previous CoreWebView2 cookie mutation failed.", error);
+		}
+
+		await mutation();
+	}
+
+	private Task GetPendingCookieMutations()
+	{
+		lock (_cookieMutationGate)
+		{
+			return _pendingCookieMutations;
+		}
+	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static unsafe void CookiesCallback(nint handle, sbyte* json, sbyte* error)
 	{
 		var gch = GCHandle.FromIntPtr(handle);
-		var tcs = gch.Target as TaskCompletionSource<string?>;
 		try
 		{
+			var tcs = gch.Target as TaskCompletionSource<string?>;
 			if (tcs is null)
 			{
 				return;
@@ -171,11 +234,20 @@ internal partial class MacOSNativeWebView :
 		}
 		finally
 		{
-			gch.Free();
+			if (gch.IsAllocated)
+			{
+				gch.Free();
+			}
 		}
 	}
 
 	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+	{
+		await GetPendingCookieMutations();
+		return await GetCookiesCoreAsync(uri, ct);
+	}
+
+	private async Task<IReadOnlyList<CoreWebView2Cookie>> GetCookiesCoreAsync(string uri, CancellationToken ct)
 	{
 		var tcs = new TaskCompletionSource<string?>();
 		var gch = GCHandle.Alloc(tcs);
@@ -200,6 +272,7 @@ internal partial class MacOSNativeWebView :
 				IsSecure = e.GetProperty("isSecure").GetBoolean(),
 				IsHttpOnly = e.GetProperty("isHttpOnly").GetBoolean(),
 				Expires = e.GetProperty("expires").GetDouble(),
+				SameSite = (CoreWebView2CookieSameSiteKind)e.GetProperty("sameSite").GetInt32(),
 			};
 			list.Add(cookie);
 		}
@@ -216,26 +289,47 @@ internal partial class MacOSNativeWebView :
 			path = string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path,
 			isSecure = cookie.IsSecure,
 			isHttpOnly = cookie.IsHttpOnly,
+			sameSite = (int)cookie.SameSite,
 			expires = cookie.Expires,
 		});
-		NativeUno.uno_webview_set_cookie(_webview, json);
+		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_set_cookie(_webview, handle, json)));
 	}
 
 	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
-		=> NativeUno.uno_webview_delete_cookies(_webview, cookie.Name, cookie.Domain, cookie.Path);
+		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, cookie.Name, cookie.Domain, cookie.Path)));
 
 	void ISupportsCookieManager.DeleteCookies(string name, string? uri)
 	{
-		string? host = null;
-		if (!string.IsNullOrEmpty(uri))
+		QueueCookieMutation(async () =>
 		{
-			try { host = new System.Uri(uri).Host; } catch { }
-		}
-		NativeUno.uno_webview_delete_cookies(_webview, name, host, null);
+			if (string.IsNullOrEmpty(uri))
+			{
+				await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, name, null, null));
+				return;
+			}
+
+			var cookies = await GetCookiesCoreAsync(uri, CancellationToken.None);
+			foreach (var cookie in cookies)
+			{
+				if (string.Equals(cookie.Name, name, System.StringComparison.Ordinal))
+				{
+					await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, cookie.Name, cookie.Domain, cookie.Path));
+				}
+			}
+		});
 	}
 
 	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
-		=> NativeUno.uno_webview_delete_cookies(_webview, name, domain, path);
+		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, name, domain, path)));
 
-	void ISupportsCookieManager.DeleteAllCookies() => NativeUno.uno_webview_delete_all_cookies(_webview);
+	void ISupportsCookieManager.DeleteAllCookies() =>
+		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_all_cookies(_webview, handle)));
+
+	private static Task RunCookieMutation(Action<nint> start)
+	{
+		var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var gch = GCHandle.Alloc(tcs);
+		start(GCHandle.ToIntPtr(gch));
+		return tcs.Task;
+	}
 }

@@ -166,7 +166,7 @@ public
 		});
 	}
 
-	void ISupportsCookieManager.DeleteCookies(string name, string uri)
+	void ISupportsCookieManager.DeleteCookies(string name, string? uri)
 	{
 		string? host = null;
 		try { host = uri is null ? null : new Uri(uri).Host; } catch { }

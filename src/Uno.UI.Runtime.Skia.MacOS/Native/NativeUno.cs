@@ -462,6 +462,11 @@ internal static partial class NativeUno
 		);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_lifecycle_callbacks(
+		delegate* unmanaged[Cdecl]<nint, void> contentLoading,
+		delegate* unmanaged[Cdecl]<nint, void> domContentLoaded);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_new_window_requested_callback(
 		delegate* unmanaged[Cdecl]<nint, sbyte*, sbyte*, int> callback
 	);
@@ -475,10 +480,13 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_webview_resource_requested_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, sbyte*> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel, [MarshalAs(UnmanagedType.I1)] bool isPrivate);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_register_message_handler(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_unregister_message_handlers(nint webview);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_webview_get_title(nint webview);
@@ -553,17 +561,20 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_cookies_callback(delegate* unmanaged[Cdecl]<nint, sbyte*, sbyte*, void> callback);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_cookie_operation_callback(delegate* unmanaged[Cdecl]<nint, sbyte*, void> callback);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_webview_get_cookies(nint webview, nint handle, string? uri);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_webview_set_cookie(nint webview, string cookie_json);
+	internal static partial void uno_webview_set_cookie(nint webview, nint handle, string cookie_json);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_webview_delete_cookies(nint webview, string name, string? domain, string? path);
+	internal static partial void uno_webview_delete_cookies(nint webview, nint handle, string name, string? domain, string? path);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_webview_delete_all_cookies(nint webview);
+	internal static partial void uno_webview_delete_all_cookies(nint webview, nint handle);
 
 	[LibraryImport("libc")]
 	internal static partial void free(nint ptr);

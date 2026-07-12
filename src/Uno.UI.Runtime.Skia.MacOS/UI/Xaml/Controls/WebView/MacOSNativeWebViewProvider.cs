@@ -20,6 +20,9 @@ internal class MacOSNativeWebViewProvider : INativeWebViewProvider
 			&MacOSNativeWebView.DidChangeValue,
 			&MacOSNativeWebView.DidReceiveScriptMessage,
 			&MacOSNativeWebView.NavigationFailingCallback);
+		NativeUno.uno_set_webview_lifecycle_callbacks(
+			&MacOSNativeWebView.ContentLoadingCallback,
+			&MacOSNativeWebView.DOMContentLoadedCallback);
 
 		NativeUno.uno_set_webview_new_window_requested_callback(&MacOSNativeWebView.NewWindowRequestedCallback);
 

@@ -48,13 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.GoForward()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.GoBack()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.NavigateToString(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Close()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.WebView2", "void WebView2.Close()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.Close()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized.add
@@ -65,8 +59,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.NavigationStarting.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebMessageReceived.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebMessageReceived.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(CoreWebView2Environment)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(CoreWebView2Environment, CoreWebView2ControllerOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(Microsoft.Web.WebView2.Core.CoreWebView2Environment)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(Microsoft.Web.WebView2.Core.CoreWebView2Environment, Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBack.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBack.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoForward.get

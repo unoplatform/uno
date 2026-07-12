@@ -38,8 +38,17 @@ public partial class CoreWebView2Settings
 		{
 			if (!string.Equals(_userAgent, value, StringComparison.Ordinal))
 			{
+				var previous = _userAgent;
 				_userAgent = value;
-				UserAgentChanged?.Invoke(this, EventArgs.Empty);
+				try
+				{
+					UserAgentChanged?.Invoke(this, EventArgs.Empty);
+				}
+				catch
+				{
+					_userAgent = previous;
+					throw;
+				}
 			}
 		}
 	}
@@ -55,8 +64,17 @@ public partial class CoreWebView2Settings
 		{
 			if (_isScriptEnabled != value)
 			{
+				var previous = _isScriptEnabled;
 				_isScriptEnabled = value;
-				IsScriptEnabledChanged?.Invoke(this, EventArgs.Empty);
+				try
+				{
+					IsScriptEnabledChanged?.Invoke(this, EventArgs.Empty);
+				}
+				catch
+				{
+					_isScriptEnabled = previous;
+					throw;
+				}
 			}
 		}
 	}
@@ -72,8 +90,17 @@ public partial class CoreWebView2Settings
 		{
 			if (_isZoomControlEnabled != value)
 			{
+				var previous = _isZoomControlEnabled;
 				_isZoomControlEnabled = value;
-				IsZoomControlEnabledChanged?.Invoke(this, EventArgs.Empty);
+				try
+				{
+					IsZoomControlEnabledChanged?.Invoke(this, EventArgs.Empty);
+				}
+				catch
+				{
+					_isZoomControlEnabled = previous;
+					throw;
+				}
 			}
 		}
 	}
