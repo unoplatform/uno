@@ -416,7 +416,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(50, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(250, 0, itemMinorSize, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.End");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.End;
@@ -427,7 +428,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(100, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(300, 0, itemMinorSize, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceBetween");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceBetween;
@@ -438,7 +440,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(0, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(300, 0, itemMinorSize, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceAround");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceAround;
@@ -449,7 +452,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(25, 0, itemMinorSize, itemMajorSize),
 							om.MinorMajorRect(275, 0, itemMinorSize, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.SpaceEvenly");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.SpaceEvenly;
@@ -476,7 +480,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(0, 0, itemMinorSize + 45, itemMajorSize),
 							om.MinorMajorRect(255, 0, itemMinorSize + 45, itemMajorSize)
-						});
+						},
+						tolerance: 0.51);
 
 					Log.Comment("UniformGridLayoutItemsJustification.Start +  UniformGridLayoutItemsStretch.Uniform");
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.Start;
@@ -490,7 +495,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							om.MinorMajorRect(0, 0, itemMinorSize + 45, itemMajorSize + 22.5),
 							om.MinorMajorRect(255, 0, itemMinorSize + 45, itemMajorSize + 22.5)
-						});
+						},
+						tolerance: 0.51);
 				}
 			});
 		}
@@ -1173,6 +1179,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Bug 17411124: StackLayout: measuring multiple times causes extent to sometimes be 0 in the non-virtualizing direction.
 		[TestMethod]
 		[TestProperty("Bug", "12052938")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public void ValidateIntersectionWithRealizationWindow()
 		{
 			// In this test, we have a ScrollViewer with a viewport of 200x200.

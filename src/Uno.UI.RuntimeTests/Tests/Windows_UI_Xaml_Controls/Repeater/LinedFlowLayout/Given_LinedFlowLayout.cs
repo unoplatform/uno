@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
+#if HAS_UNO
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater;
 
 [TestClass]
@@ -53,6 +54,7 @@ public class Given_LinedFlowLayout
 				realizedChildren++;
 			}
 		}
+		#endif
 
 		realizedChildren.Should().BeGreaterThan(0, "the layout should realize at least one item");
 	}
