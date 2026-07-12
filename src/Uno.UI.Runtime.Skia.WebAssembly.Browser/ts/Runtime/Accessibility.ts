@@ -25,8 +25,6 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnBlur: any;
 		private static managedOnSentinelFocus: any;
 
-		private static managedIsAutoEnableAccessibility: () => boolean;
-
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
 			element.classList.add("uno-aria-live");
@@ -58,14 +56,13 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		public static setup() {
+		public static async setup() {
 			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
-			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
 			this.managedOnToggle = accessibilityExports.OnToggle;
@@ -85,7 +82,9 @@ namespace Uno.UI.Runtime.Skia {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			const autoEnable = this.managedIsAutoEnableAccessibility();
+			const autoEnable = WebAssemblyThreading.isThreadingEnabled() ?
+				await accessibilityExports.IsAutoEnableAccessibilityAsync() :
+				accessibilityExports.IsAutoEnableAccessibility();
 
 			if (!autoEnable) {
 				// Create enable accessibility button (for screen reader activation)
