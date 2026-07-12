@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -187,6 +188,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			// Assert
 			Assert.IsNotNull(valueProvider);
 			Assert.IsTrue(valueProvider.IsReadOnly, "Read-only TextBox should report IsReadOnly=true");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_RichEditBox_Is_Empty_Then_Name_Is_Not_Exposed_As_Value()
+		{
+			var richEditBox = new RichEditBox
+			{
+				Header = "Notes",
+				PlaceholderText = "Enter notes",
+			};
+
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(richEditBox);
+				var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
+
+				Assert.IsNotNull(peer);
+				Assert.IsNotNull(valueProvider);
+				Assert.AreEqual("Notes", peer.GetName());
+				Assert.AreEqual(string.Empty, valueProvider.Value);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_RichEditBox_TextPattern_Then_Selection_And_Caret_Are_Exposed()
+		{
+			var richEditBox = new RichEditBox();
+			try
+			{
+				await UITestHelper.Load(richEditBox);
+				richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "hello");
+				richEditBox.Document.Selection.SetRange(1, 4);
+				richEditBox.Focus(FocusState.Programmatic);
+				await UITestHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(richEditBox);
+				var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
+				var textProvider2 = peer?.GetPattern(PatternInterface.Text2) as ITextProvider2;
+
+				Assert.IsNotNull(textProvider);
+				Assert.IsNotNull(textProvider2);
+				Assert.AreEqual(SupportedTextSelection.Single, textProvider.SupportedTextSelection);
+				Assert.AreEqual("hello", textProvider.DocumentRange.GetText(-1));
+
+				var selection = textProvider.GetSelection();
+				Assert.AreEqual(1, selection.Length);
+				Assert.AreEqual("ell", selection[0].GetText(-1));
+
+				var caret = textProvider2.GetCaretRange(out var isActive);
+				Assert.IsTrue(isActive);
+				Assert.AreEqual(0, caret.CompareEndpoints(TextPatternRangeEndpoint.Start, selection[0], TextPatternRangeEndpoint.End));
+
+				var selectedByAutomation = textProvider.DocumentRange.Clone();
+				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 2);
+				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Character, -1);
+				selectedByAutomation.Select();
+
+				Assert.AreEqual(2, richEditBox.Document.Selection.StartPosition);
+				Assert.AreEqual(4, richEditBox.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 #if __SKIA__
