@@ -85,6 +85,14 @@ Uno.SDK single-project model.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
+- **Legacy WebAssembly JavaScript interop:** `Uno.Foundation.Interop.IJSObject`,
+  `IJSObjectMetadata`, `JSObjectHandle`, `JSObject`, and
+  `WebAssemblyRuntime.InvokeJSWithInterop(FormattableString)` — the Uno-only
+  managed-to-JavaScript object-marshalling mechanism (no WinUI counterpart). Migrate to the
+  standard .NET WebAssembly interop, [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop)
+  from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
+  (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
+  is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
 
 ### `FeatureConfiguration` flags removed
 

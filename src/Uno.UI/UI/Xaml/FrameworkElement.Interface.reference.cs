@@ -59,11 +59,6 @@ namespace Microsoft.UI.Xaml
 			throw new NotImplementedException();
 		}
 
-		public Size AdjustArrange(Size finalSize)
-		{
-			return finalSize;
-		}
-
 		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, this, name);
 

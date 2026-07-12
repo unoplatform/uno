@@ -34,7 +34,7 @@ using Uno.UI.Xaml.Input;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject, IThemeChangeAware
+	public partial class TextBlock : FrameworkElement, IThemeChangeAware
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines

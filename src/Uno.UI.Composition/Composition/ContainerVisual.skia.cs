@@ -9,6 +9,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
 
+
 namespace Microsoft.UI.Composition;
 
 public partial class ContainerVisual : Visual
@@ -117,17 +118,19 @@ public partial class ContainerVisual : Visual
 			return false;
 		}
 
-		var clipRect = rect.ToSKRect();
-		dst.AddRect(clipRect);
+		var matrix = SKMatrix.Identity;
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
 			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
-				dst.Transform(childToParentTransform.ToSKMatrix());
+				matrix = childToParentTransform.ToSKMatrix();
 			}
 		}
+
+		using var rectPath = SkiaExtensions.CreateRectPath(rect.ToSKRect());
+		rectPath.Transform(matrix, dst);
 
 		return true;
 	}
@@ -158,7 +161,7 @@ public partial class ContainerVisual : Visual
 	{
 		var prePaintingClipPath = _sparePrePaintingClippingPath;
 
-		prePaintingClipPath.Rewind();
+		prePaintingClipPath.Reset();
 
 		if (base.GetPrePaintingClipping(dst))
 		{
@@ -188,8 +191,7 @@ public partial class ContainerVisual : Visual
 
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				dst.Reset();
-				dst.AddPath(prePaintingClipPath);
+				prePaintingClipPath.Transform(SKMatrix.Identity, dst);
 
 				return true;
 			}

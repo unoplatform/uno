@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if (args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{

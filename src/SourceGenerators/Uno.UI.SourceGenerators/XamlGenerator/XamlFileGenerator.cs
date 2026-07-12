@@ -1982,7 +1982,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return false;
 				}
 
-				if (type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+				if (IsType(type, Generation.DependencyObjectSymbol.Value))
 				{
 					return true;
 				}
@@ -2905,7 +2905,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var symbol = GetType(styleTargetType);
 
-					if (symbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+					if (IsType(symbol, Generation.DependencyObjectSymbol.Value))
 					{
 						var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(symbol.GetFullMetadataName());
 						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
@@ -4211,8 +4211,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
-							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
-							ownerType.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value))
+							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && IsType(FindType(baseTypeSymbol), Generation.DependencyObjectSymbol.Value)) ||
+							IsType(ownerType, Generation.DependencyObjectSymbol.Value)
 						);
 
 					if (isDependencyProperty)

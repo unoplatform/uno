@@ -54,7 +54,7 @@ _Danger 1. The safe vanguard: deletions scoped to native targets being dropped, 
 - [ ] **BC35** — Remove `IgnoreINPCSameReferences` flag  `d1·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/DataBinding/BindingPath.BindingItem.cs`
-- [ ] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
+- [x] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
   - Delete the entire `new`-shadow back-compat block to match `DoubleKeyFrameCollection`/`ObjectKeyFrameCollection`.
   - Files: `src/Uno.UI/UI/Xaml/Media/Animation/ColorKeyFrameCollection.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectCollection.cs`, `src/Uno.UI/UI/Xaml/Media/Animation/DoubleKeyFrameCollection.cs`
 
@@ -80,10 +80,10 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC04** — Remove `EventsBubblingInManagedCode` DP  `d2·S`
   - Hard-remove the public DP — native bubbling is gone.
   - Files: `src/Uno.UI/UI/Xaml/UIElement.RoutedEvents.cs`, `src/Uno.UI/UI/Xaml/RoutedEventArgs.cs`, `src/Uno.UI/UI/Xaml/Input/PointerRoutedEventArgs.cs`
-- [ ] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
+- [x] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
   - Hard-delete.
   - Files: `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObject.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObjectMetadata.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/JSObjectHandle.wasm.cs`
-- [ ] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
+- [x] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI.Composition/Composition/DelegatedInkTrailVisual.cs`, `build/PackageDiffIgnore.xml`
 - [ ] **BC46** — Remove `ShowClippingBounds` flag  `d2·S`
@@ -98,19 +98,19 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC33** — Remove `UseInvalidate(Measure/Arrange)Path` flags  `d2·M`
   - Hard-delete both flags; inline the always-true dirty-path branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/UIElement.Layout.crossruntime.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
-- [ ] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
+- [x] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/FrameworkElementUIKitMixinGenerator.cs`
-- [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
+- [x] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.reference.cs`
-- [ ] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
+- [x] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UWP/Extensions/Vector2Extensions.cs`, `src/Uno.Foundation/Extensions/VectorExtensions.cs`, `build/PackageDiffIgnore.xml`
 - [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
   - **Verify** not already removed, then hard-delete the meta-packages.
   - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
-- [ ] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
+- [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
