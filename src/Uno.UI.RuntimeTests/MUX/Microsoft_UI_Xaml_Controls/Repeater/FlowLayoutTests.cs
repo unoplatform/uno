@@ -385,6 +385,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					const int numItems = 2;
 					const int itemMinorSize = 200;
 					const int itemMajorSize = 100;
+					// Non-integer display scales can shift rounded layout slots by one logical pixel.
 					const double layoutRoundingTolerance = 1.01;
 					Log.Comment("UniformGridLayoutItemsJustification.Start");
 					LayoutPanel panel = new LayoutPanel()
