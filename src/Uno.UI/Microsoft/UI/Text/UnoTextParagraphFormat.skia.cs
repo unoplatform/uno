@@ -305,6 +305,7 @@ namespace Microsoft.UI.Text
 			if (format is UnoTextParagraphFormat other)
 			{
 				CopyFrom(other);
+				ApplyIfBound();
 			}
 		}
 
