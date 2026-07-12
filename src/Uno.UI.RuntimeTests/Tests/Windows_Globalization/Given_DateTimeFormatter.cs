@@ -5,6 +5,7 @@ using System.Globalization;
 using Windows.Globalization;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 
@@ -135,5 +136,52 @@ public class Given_DateTimeFormatter
 
 			Assert.AreEqual(expected, formattedTime, $"Mismatch for template: {template}");
 		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_CreatingWithHourPattern_ShouldNotThrowFirstChanceException()
+	{
+		// The pattern "{hour.integer(1)}" is what TimePicker/TimePickerFlyout uses to resolve the
+		// default clock. Constructing the formatter must not raise a first-chance ArgumentException
+		// from the internal template parser, which was noise when debugging with all CLR exceptions on.
+		var firstChanceMessages = new List<string>();
+		void OnFirstChance(object sender, FirstChanceExceptionEventArgs e)
+		{
+			if (e.Exception is ArgumentException)
+			{
+				firstChanceMessages.Add(e.Exception.Message);
+			}
+		}
+
+		AppDomain.CurrentDomain.FirstChanceException += OnFirstChance;
+		try
+		{
+			var formatter = new DateTimeFormatter("{hour.integer(1)}");
+			Assert.IsNotNull(formatter);
+		}
+		finally
+		{
+			AppDomain.CurrentDomain.FirstChanceException -= OnFirstChance;
+		}
+
+		Assert.IsFalse(
+			firstChanceMessages.Any(m => m.Contains("Failed to parse date time template")),
+			$"Constructing a DateTimeFormatter from a pattern should not throw a first-chance exception. Captured: {string.Join("; ", firstChanceMessages)}");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_CreatingWithHourPattern_ShouldFormatCorrectly()
+	{
+		var formatter = new DateTimeFormatter("{hour.integer(1)}", ["en-US"], "US", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+
+		Assert.AreEqual("{hour.integer(1)}", formatter.Template);
+		CollectionAssert.Contains(formatter.Patterns.ToList(), "{hour.integer(1)}");
+
+		var formatted = formatter.Format(new DateTimeOffset(2024, 6, 17, 14, 30, 0, TimeSpan.Zero));
+		Assert.AreEqual("14", formatted);
 	}
 }
