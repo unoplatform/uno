@@ -24,6 +24,8 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Edit;
 
+	protected override IList<AutomationPeer> GetChildrenCore() => Array.Empty<AutomationPeer>();
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Value)
@@ -69,6 +71,17 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 		{
 		}
 	}
+
+	internal void RaiseValuePropertyChangedEvent(string oldValue, string newValue)
+	{
+		if (ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValue, newValue);
+		}
+	}
+
+	internal void RaiseIsReadOnlyPropertyChangedEvent(bool oldValue, bool newValue)
+		=> RaisePropertyChangedEvent(ValuePatternIdentifiers.IsReadOnlyProperty, oldValue, newValue);
 
 	protected override string GetNameCore()
 	{
