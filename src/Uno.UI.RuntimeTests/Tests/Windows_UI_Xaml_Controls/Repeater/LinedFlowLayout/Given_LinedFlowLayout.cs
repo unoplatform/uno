@@ -54,8 +54,6 @@ public class Given_LinedFlowLayout
 				realizedChildren++;
 			}
 		}
-		#endif
-
 		realizedChildren.Should().BeGreaterThan(0, "the layout should realize at least one item");
 	}
 
@@ -682,3 +680,4 @@ public class Given_LinedFlowLayout
 		lastStillSizedItemIndex.Should().Be(-1);
 	}
 }
+#endif
