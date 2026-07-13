@@ -763,7 +763,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		alcWindow.Activate();
@@ -785,7 +785,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		alcWindow.Activate();
@@ -807,7 +807,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		ApplyDeferredContentFromSecondaryApp();
@@ -832,7 +832,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		ApplyDeferredContentFromSecondaryApp();

@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false
 	public enum WindowActivationState
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		CodeActivated = 0,
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		Deactivated = 1,
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		PointerActivated = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.WindowActivationState.CodeActivated
+		// Skipping already declared field Microsoft.UI.Xaml.WindowActivationState.Deactivated
+		// Skipping already declared field Microsoft.UI.Xaml.WindowActivationState.PointerActivated
 	}
 #endif
 }
