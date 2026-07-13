@@ -1,5 +1,8 @@
 #nullable enable
 
+using System.Numerics;
+using Windows.UI;
+
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
@@ -16,4 +19,16 @@ internal interface IDrawingBackend
 {
 	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
 	IPathBuilder CreatePathBuilder();
+
+	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
+	IShader CreateLinearGradientShader(
+		Vector2 start,
+		Vector2 end,
+		Color[] colors,
+		float[] colorPositions,
+		GradientTileMode tileMode,
+		Matrix3x2 localMatrix);
+
+	/// <summary>Creates a color filter that multiplies alpha by <paramref name="opacity"/>, or null when it would be a no-op.</summary>
+	IColorFilter? CreateOpacityColorFilter(float opacity);
 }

@@ -43,3 +43,11 @@ internal enum ClipOperation
 	Intersect,
 	Difference,
 }
+
+/// <summary>How a gradient extends past its defined stops.</summary>
+internal enum GradientTileMode
+{
+	Clamp,
+	Repeat,
+	Mirror,
+}

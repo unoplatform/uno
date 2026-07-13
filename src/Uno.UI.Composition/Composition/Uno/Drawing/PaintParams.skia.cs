@@ -41,4 +41,10 @@ internal readonly struct PaintParams
 	public bool IsAntialias { get; init; }
 
 	public BlendMode BlendMode { get; init; }
+
+	/// <summary>Optional shader (e.g. a gradient) applied to the paint.</summary>
+	public IShader? Shader { get; init; }
+
+	/// <summary>Optional color filter (e.g. opacity modulation) applied to the paint.</summary>
+	public IColorFilter? ColorFilter { get; init; }
 }

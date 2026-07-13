@@ -86,6 +86,8 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 			paint.StrokeJoin = ToSK(p.StrokeJoin);
 			paint.StrokeMiter = p.StrokeMiter;
 		}
+		paint.Shader = (p.Shader as SkiaShader)?.Shader;
+		paint.ColorFilter = (p.ColorFilter as SkiaColorFilter)?.ColorFilter;
 		return paint;
 	}
 

@@ -106,6 +106,9 @@ namespace Microsoft.UI.Composition
 		public static Matrix3x2 ToMatrix3x2(this Matrix4x4 m)
 			=> new Matrix3x2(m.M11, m.M12, m.M21, m.M22, m.M41, m.M42);
 
+		public static Matrix3x2 ToMatrix3x2(this SKMatrix m)
+			=> new Matrix3x2(m.ScaleX, m.SkewY, m.SkewX, m.ScaleY, m.TransX, m.TransY);
+
 		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
 			=> new(
 				m.M11, m.M21, m.M41,

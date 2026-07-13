@@ -1,11 +1,38 @@
 ﻿#nullable enable
 
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionLinearGradientBrush
 	{
+		private protected override bool TryBuildShader(Rect bounds, out IShader? shader)
+		{
+			var start = StartPoint;
+			var end = EndPoint;
+
+			if (MappingMode == CompositionMappingMode.Relative)
+			{
+				start.X *= (float)bounds.Width;
+				start.Y *= (float)bounds.Height;
+				end.X *= (float)bounds.Width;
+				end.Y *= (float)bounds.Height;
+			}
+
+			start.X += (float)bounds.Left;
+			start.Y += (float)bounds.Top;
+			end.X += (float)bounds.Left;
+			end.Y += (float)bounds.Top;
+
+			var localMatrix = CreateTransformMatrix(bounds.ToSKRect()).ToMatrix3x2();
+
+			shader = DrawingBackend.Current.CreateLinearGradientShader(
+				start, end, GetNeutralColors(), ColorPositions!, NeutralTileMode, localMatrix);
+			return true;
+		}
+
 		private protected override (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds)
 		{
 			var startPoint = StartPoint.ToSKPoint();

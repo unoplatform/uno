@@ -2,6 +2,9 @@
 
 using System.Numerics;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
+using Windows.UI;
 
 namespace Microsoft.UI.Composition
 {
@@ -34,6 +37,54 @@ namespace Microsoft.UI.Composition
 			_tempPaint.ColorFilter = opacity.ToColorFilter();
 			canvas.DrawRect(bounds, _tempPaint);
 		}
+
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
+		{
+			if (!_isColorStopsValid)
+			{
+				UpdateColorStops(ColorStops);
+			}
+
+			if (!TryBuildShader(bounds, out var shader) || shader is null)
+			{
+				// This gradient kind hasn't been migrated to the neutral factory yet; fall back to SKCanvas.
+				return false;
+			}
+
+			session.DrawRect(bounds, new PaintParams(global::Windows.UI.Colors.Black)
+			{
+				IsAntialias = true,
+				Shader = shader,
+				ColorFilter = DrawingBackend.Current.CreateOpacityColorFilter(opacity),
+			});
+			return true;
+		}
+
+		/// <summary>Builds this gradient's shader through the backend factory. Default returns false (not migrated).</summary>
+		private protected virtual bool TryBuildShader(Rect bounds, out IShader? shader)
+		{
+			shader = null;
+			return false;
+		}
+
+		/// <summary>The gradient stop colors as backend-neutral colors, in stop order.</summary>
+		private protected Color[] GetNeutralColors()
+		{
+			var stops = ColorStops;
+			var colors = new Color[stops.Count];
+			for (var i = 0; i < stops.Count; i++)
+			{
+				colors[i] = stops[i].Color;
+			}
+			return colors;
+		}
+
+		private protected GradientTileMode NeutralTileMode => ExtendMode switch
+		{
+			CompositionGradientExtendMode.Mirror => GradientTileMode.Mirror,
+			CompositionGradientExtendMode.Wrap => GradientTileMode.Repeat,
+			_ => GradientTileMode.Clamp,
+		};
 
 		private protected virtual (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds) => (null, SKColors.Transparent);
 
