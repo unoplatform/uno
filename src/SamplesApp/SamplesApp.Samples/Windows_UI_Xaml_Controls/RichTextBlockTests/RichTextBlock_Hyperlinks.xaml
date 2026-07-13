@@ -1,0 +1,67 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Hyperlinks"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Hyperlink Scenarios" FontSize="20" FontWeight="Bold" />
+
+			<!-- Basic hyperlink -->
+			<RichTextBlock x:Name="BasicHyperlink">
+				<Paragraph>
+					<Run Text="Click " />
+					<Hyperlink NavigateUri="https://platform.uno">
+						<Run Text="here" />
+					</Hyperlink>
+					<Run Text=" to visit Uno Platform." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Multiple hyperlinks -->
+			<RichTextBlock x:Name="MultipleHyperlinks">
+				<Paragraph>
+					<Run Text="Visit " />
+					<Hyperlink NavigateUri="https://platform.uno">
+						<Run Text="Uno Platform" />
+					</Hyperlink>
+					<Run Text=" or " />
+					<Hyperlink NavigateUri="https://github.com/nicehash">
+						<Run Text="GitHub" />
+					</Hyperlink>
+					<Run Text=" for more information." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Hyperlink with formatted content -->
+			<RichTextBlock x:Name="FormattedHyperlink">
+				<Paragraph>
+					<Hyperlink NavigateUri="https://platform.uno">
+						<Bold>Bold link text</Bold>
+					</Hyperlink>
+					<Run Text=" and " />
+					<Hyperlink NavigateUri="https://platform.uno">
+						<Italic>Italic link text</Italic>
+					</Hyperlink>
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Hyperlink click handler -->
+			<RichTextBlock x:Name="ClickHandlerHyperlink">
+				<Paragraph>
+					<Run Text="Click " />
+					<Hyperlink x:Name="ClickableLink" Click="OnHyperlinkClick">
+						<Run Text="this link" />
+					</Hyperlink>
+					<Run Text=" to trigger a click event." />
+				</Paragraph>
+			</RichTextBlock>
+			<TextBlock x:Name="ClickResult" Text="(Click result will appear here)" Foreground="Gray" />
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
