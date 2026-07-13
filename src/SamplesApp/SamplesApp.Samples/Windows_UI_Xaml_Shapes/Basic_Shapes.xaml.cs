@@ -27,10 +27,6 @@ using Uno.UI;
 using Windows.Graphics.Display;
 using Private.Infrastructure;
 
-#if !WINAPPSDK
-using Uno.UI.Controls.Legacy;
-#endif
-
 #if __APPLE_UIKIT__
 using UIKit;
 #endif
@@ -603,9 +599,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if WINAPPSDK
-	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
-	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
+	// Local fluent Grid helpers used by this sample only.
 	internal static class GridExtensions
 	{
 		/// <summary>
@@ -675,5 +669,4 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			return view;
 		}
 	}
-#endif
 }
