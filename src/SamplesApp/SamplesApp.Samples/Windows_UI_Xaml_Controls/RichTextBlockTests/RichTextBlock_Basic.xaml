@@ -1,0 +1,88 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Basic"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Basic RichTextBlock Scenarios" FontSize="20" FontWeight="Bold" />
+
+			<!-- Simple text -->
+			<RichTextBlock x:Name="SimpleText">
+				<Paragraph>
+					<Run Text="Hello, this is a simple RichTextBlock with a single paragraph." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Multiple paragraphs -->
+			<RichTextBlock x:Name="MultipleParagraphs">
+				<Paragraph>
+					<Run Text="First paragraph. This demonstrates multiple paragraphs in a RichTextBlock." />
+				</Paragraph>
+				<Paragraph>
+					<Run Text="Second paragraph. Each paragraph starts on a new line." />
+				</Paragraph>
+				<Paragraph>
+					<Run Text="Third paragraph. This is the final paragraph in this block." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Inline formatting -->
+			<RichTextBlock x:Name="InlineFormatting">
+				<Paragraph>
+					<Run Text="Normal text, " />
+					<Bold>bold text</Bold>
+					<Run Text=", " />
+					<Italic>italic text</Italic>
+					<Run Text=", " />
+					<Underline>underlined text</Underline>
+					<Run Text=", and " />
+					<Bold><Italic>bold italic text</Italic></Bold>
+					<Run Text="." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Mixed font sizes -->
+			<RichTextBlock x:Name="MixedFontSizes">
+				<Paragraph>
+					<Run Text="Small " FontSize="10" />
+					<Run Text="Medium " FontSize="16" />
+					<Run Text="Large " FontSize="24" />
+					<Run Text="Extra Large" FontSize="32" />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Line break -->
+			<RichTextBlock x:Name="LineBreaks">
+				<Paragraph>
+					<Run Text="Line one" />
+					<LineBreak />
+					<Run Text="Line two (after LineBreak)" />
+					<LineBreak />
+					<Run Text="Line three (after another LineBreak)" />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Colored text -->
+			<RichTextBlock x:Name="ColoredText">
+				<Paragraph>
+					<Run Text="Red " Foreground="Red" />
+					<Run Text="Green " Foreground="Green" />
+					<Run Text="Blue " Foreground="Blue" />
+					<Run Text="Orange " Foreground="Orange" />
+					<Run Text="Purple" Foreground="Purple" />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Empty RichTextBlock -->
+			<Border BorderBrush="Gray" BorderThickness="1" MinHeight="20">
+				<RichTextBlock x:Name="EmptyBlock" />
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
