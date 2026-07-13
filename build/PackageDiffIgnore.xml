@@ -3041,6 +3041,12 @@
 
 		  <!-- MediaPlayerPresenter->FrameworkElement reparent accessors (paired with the <Properties> entry above): get_/set_ and DP-field get_ accessors for the removed Border-only members. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.MediaPlayerPresenter(::|\.)(get_Child|set_Child|get_ChildProperty|get_BorderBrush|set_BorderBrush|get_BorderBrushProperty|get_BorderThickness|set_BorderThickness|get_BorderThicknessProperty|get_CornerRadius|set_CornerRadius|get_CornerRadiusProperty|get_Padding|set_Padding|get_PaddingProperty|get_BackgroundSizing|set_BackgroundSizing|get_BackgroundSizingProperty|get_ChildTransitions|set_ChildTransitions|get_ChildTransitionsProperty|get_BackgroundTransition|set_BackgroundTransition|Add)\(.*\)" reason="Reparented MediaPlayerPresenter from Border to FrameworkElement for WinUI parity; Border-only member accessors removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+
+		  <!-- Uno-only IEnumerable.GetEnumerator on FrameworkElement (enumerated the visual children); WinUI's FrameworkElement is not IEnumerable. ContentControl inherited it and re-declared the interface only. -->
+		  <Member fullName="System.Collections.IEnumerator Microsoft.UI.Xaml.FrameworkElement.GetEnumerator()" reason="Removed Uno-only IEnumerable/GetEnumerator (BC65, breaking changes for 7.0)" />
+
+		  <!-- Uno-only collection-initializer Add(UIElement) on Border/Panel/ScrollViewer, paired with the removed FrameworkElement IEnumerable to enable 'new Panel { child }' markup; WinUI has neither. -->
+		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.Controls\.(Border|Panel|ScrollViewer)(::|\.)Add\(.+\)" reason="Removed Uno-only collection-initializer Add(UIElement) (BC65, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->

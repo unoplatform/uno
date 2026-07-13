@@ -4860,7 +4860,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 100,
 				Background = new SolidColorBrush(Colors.Pink),
 			};
-			var setup = new StackPanel { border, SUT };
+			var setup = new StackPanel { Children = { border, SUT } };
 
 			await UITestHelper.Load(setup, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
 			await WindowHelper.WaitForIdle();
@@ -5779,8 +5779,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
 							HeaderTemplate = new DataTemplate(() => new StackPanel
 							{
-								new TextBlock() { Text = "header" },
-								new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+								Children =
+								{
+									new TextBlock() { Text = "header" },
+									new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+								}
 							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
 						}.Apply(x => Grid.SetRow(x, 1)),
 					},
