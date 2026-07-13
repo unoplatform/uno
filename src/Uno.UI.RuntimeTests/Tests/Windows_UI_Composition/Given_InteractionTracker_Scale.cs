@@ -13,10 +13,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 [RunsOnUIThread]
-[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 public class Given_InteractionTracker_Scale
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 #if !HAS_COMPOSITION_API
 	[Ignore("Composition APIs are not supported on this platform.")]
 #endif
@@ -41,14 +41,14 @@ public class Given_InteractionTracker_Scale
 			tracker.MinScale = 0.5f;
 			tracker.MaxScale = 4.0f;
 
-			var requestId = tracker.TryUpdateScale(2.0f, Vector3.Zero);
+			var requestId = tracker.TryUpdateScale(5.0f, Vector3.Zero);
 			var args = await owner.ValuesChangedCompletion.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
 			Assert.AreEqual(requestId, args.RequestId);
 			Assert.AreEqual(Vector3.Zero, args.Position);
-			Assert.AreEqual(2.0f, args.Scale);
+			Assert.AreEqual(4.0f, args.Scale);
 			Assert.AreEqual(Vector3.Zero, tracker.Position);
-			Assert.AreEqual(2.0f, tracker.Scale);
+			Assert.AreEqual(4.0f, tracker.Scale);
 		}
 		finally
 		{
@@ -57,6 +57,7 @@ public class Given_InteractionTracker_Scale
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 #if !HAS_COMPOSITION_API
 	[Ignore("Composition APIs are not supported on this platform.")]
 #endif

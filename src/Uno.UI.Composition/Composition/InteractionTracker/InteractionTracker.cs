@@ -97,15 +97,14 @@ public partial class InteractionTracker : CompositionObject
 		}
 
 		_position = newPosition;
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, newScale, requestId));
 
-			if (positionChanged)
-			{
-				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
-			}
-		});
+		if (positionChanged)
+		{
+			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, newScale, requestId)));
 	}
 
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
