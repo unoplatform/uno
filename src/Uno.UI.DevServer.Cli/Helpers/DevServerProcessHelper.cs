@@ -342,7 +342,13 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: false);
+		// Forward the host's stdout/stderr to our own console so IDE launchers
+		// (e.g. the VS Code extension) that capture this CLI's output can surface
+		// the running DevServer host logs — not just the CLI launcher banner.
+		// Safe here: direct mode only runs for the `start` command, whose stdout is
+		// a plain output stream. The MCP stdio bridge never reaches this path (it
+		// spawns the host via DevServerMonitor), so the JSON-RPC channel is untouched.
+		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: true);
 
 		process.Start();
 		logger.LogDebug("Started host process: {Pid}", process.Id);
