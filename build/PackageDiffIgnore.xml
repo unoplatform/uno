@@ -2579,6 +2579,9 @@
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed property reads as removed (getter accessor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs::WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
+
+		  <!-- Uno-only public ContentPresenter.ContentTemplateRoot reduced to internal (WinUI's ContentPresenter has no such member; the real WinUI ContentTemplateRoot lives on ContentControl). Accessors paired in <Methods> below. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter::ContentTemplateRoot()" reason="Reduced ContentPresenter.ContentTemplateRoot to internal (BC36, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3035,6 +3038,10 @@
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
+
+		  <!-- ContentPresenter.ContentTemplateRoot accessors (paired with the <Properties> entry above); getter public->internal, setter protected->private. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Reduced ContentPresenter.ContentTemplateRoot to internal (BC36, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Microsoft.UI.Xaml.UIElement value)" reason="Reduced ContentPresenter.ContentTemplateRoot to internal (BC36, breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
