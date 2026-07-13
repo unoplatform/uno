@@ -26,7 +26,7 @@ public partial class XamlCompositionBrushBase : Brush
 	/// </summary>
 	internal Color FallbackColorWithOpacity => FallbackColor.WithOpacity(Opacity);
 
-	public CompositionBrush CompositionBrush
+	protected CompositionBrush CompositionBrush
 	{
 		get => (CompositionBrush)GetValue(CompositionBrushProperty);
 		set => SetValue(CompositionBrushProperty, value);
