@@ -1,29 +1,40 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Controls;
 using static Windows.UI.Input.PointerUpdateKind;
-using Uno.Foundation.Logging;
-using System.Runtime.InteropServices.JavaScript;
-
-using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
-using System.Runtime.InteropServices;
-using Windows.System;
-using Uno.UI.Dispatching;
-using Uno.UI.Xaml;
+using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime;
 
-internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSource
+internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 {
-	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
-	private static readonly Action<string>? _trace = _log.IsTraceEnabled() ? _log.Trace : null;
+	// Ref:
+	// https://www.w3.org/TR/pointerevents/
+	// https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
+	// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
 
+	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
+	private static readonly Logger? _logTrace = _log.IsTraceEnabled() ? _log : null;
+
+	// TODO: Verify the boot time unit (ms or ticks)
 	private ulong _bootTime;
+	private bool _isIOs;
+	private bool _isOver;
 	private PointerPoint? _lastPoint;
+	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);
 
 #pragma warning disable CS0067 // Some event are not raised on skia browser ... yet!
 	public event TypedEventHandler<object, Windows.UI.Core.PointerEventArgs>? PointerCaptureLost;
@@ -38,7 +49,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 	public BrowserPointerInputSource()
 	{
-		_trace?.Invoke("Initializing BrowserPointerInputSource");
+		_logTrace?.Trace("Initializing BrowserPointerInputSource");
 
 		Initialize(this);
 	}
@@ -47,11 +58,22 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	private static partial void Initialize([JSMarshalAs<JSType.Any>] object inputSource);
 
 	[JSExport]
-	private static void OnInitialized([JSMarshalAs<JSType.Any>] object inputSource, double bootTime)
+	private static void OnInitialized([JSMarshalAs<JSType.Any>] object inputSource, double bootTime, string userAgent)
 	{
-		((BrowserPointerInputSource)inputSource)._bootTime = (ulong)bootTime;
+		if (inputSource is BrowserPointerInputSource that)
+		{
+			that._bootTime = (ulong)bootTime;
 
-		_trace?.Invoke("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+			// Note: OperatingSystem.IsIOS() is false
+			that._isIOs = userAgent.Contains("iPhone", StringComparison.OrdinalIgnoreCase)
+				|| userAgent.Contains("iPad", StringComparison.OrdinalIgnoreCase);
+
+			_logTrace?.Trace("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+		}
+		else if (_log.IsEnabled(LogLevel.Error))
+		{
+			_log.Error("Requested init using an invalid source.");
+		}
 	}
 
 	[JSExport]
@@ -76,7 +98,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 		try
 		{
-			_trace?.Invoke($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
 
 			// Ensure that the async context is set properly, since we're raising
 			// events from outside the dispatcher.
@@ -104,12 +126,20 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 			switch (evt)
 			{
+				case HtmlPointerEvent.pointerover when that._isOver:
+					// If there isn't any html node that hit-tested, we might get a pointer-over event, but we are interested only in pointer entering over the window
+					_logTrace?.Trace("Ignoring pointer-over event since pointer is already over the window.");
+					break;
+
 				case HtmlPointerEvent.pointerover:
+					that._isOver = true;
 					that.PointerEntered?.Invoke(that, args);
 					break;
 
-				case HtmlPointerEvent.pointerout:
+				case HtmlPointerEvent.pointerleave:
+					that._isOver = false;
 					that.PointerExited?.Invoke(that, args);
+					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
 					break;
 
 				case HtmlPointerEvent.pointerdown:
@@ -119,6 +149,13 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				case HtmlPointerEvent.pointerup:
 					//case HtmlPointerEvent.lostpointercapture: // if pointer is captured, we don't get a up, just a capture lost (with skia for wasm)
 					that.PointerReleased?.Invoke(that, args);
+					if (that._isIOs && args is { CurrentPoint.PointerDeviceType: PointerDeviceType.Touch, DispatchResult: UIElement.PointerEventDispatchResult { VisualTreeAltered: true } })
+					{
+						// On iOS, when the element under the pointer is removed, the browser won't send any pointer leave event.
+
+						args.DispatchResult = null; // To be clean only, the value is not used in the leave case.
+						goto case HtmlPointerEvent.pointerleave;
+					}
 					break;
 
 				case HtmlPointerEvent.pointermove:
@@ -144,13 +181,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 				case HtmlPointerEvent.pointercancel:
 					that.PointerCancelled?.Invoke(that, args);
+					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
 					break;
 
 				default:
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
+			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
 		}
 		catch (Exception error)
 		{
@@ -159,13 +197,11 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to dispatch native pointer event: {error}");
 			}
 
-			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
 		}
 	}
 
 	[NotImplemented] public bool HasCapture => false;
-
-	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);
 
 	public CoreCursor PointerCursor
 	{
@@ -173,12 +209,9 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		set
 		{
 			_pointerCursor = value;
-			SetCursor(value.Type.ToCssCursor());
+			_NativeMethods.SetCursor(_pointerCursor.Type.ToCssCursor());
 		}
 	}
-
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.setCursor")]
-	private static partial void SetCursor(string cssCursor);
 
 	public Point PointerPosition => _lastPoint?.Position ?? default;
 
@@ -241,7 +274,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	private static bool GetIsInRange(byte @event, bool hasRelatedTarget, PointerDeviceType pointerType, bool isInContact)
 	{
 		const int cancel = (int)HtmlPointerEvent.pointercancel;
-		const int exitOrUp = (int)(HtmlPointerEvent.pointerout | HtmlPointerEvent.pointerup);
+		const int exitOrUp = (int)(HtmlPointerEvent.pointerleave | HtmlPointerEvent.pointerup);
 
 		var isInRange = true;
 		if (@event is cancel)
@@ -337,7 +370,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 		// Minimal default pointer required to maintain state
 		pointerover = 1,
-		pointerout = 1 << 1,
+		pointerleave = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
