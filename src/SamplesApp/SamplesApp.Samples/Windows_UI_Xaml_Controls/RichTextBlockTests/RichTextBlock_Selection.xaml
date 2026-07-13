@@ -1,0 +1,57 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Selection"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Text Selection Scenarios" FontSize="20" FontWeight="Bold" />
+
+			<!-- Selection enabled -->
+			<TextBlock Text="IsTextSelectionEnabled=True:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="SelectableText" IsTextSelectionEnabled="True">
+				<Paragraph>
+					<Run Text="This text is selectable. Try clicking and dragging to select text. You can also use Ctrl+A to select all and Ctrl+C to copy." />
+				</Paragraph>
+				<Paragraph>
+					<Run Text="Selection works across paragraphs too. Try selecting from the first paragraph to this one." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Selection disabled (default) -->
+			<TextBlock Text="IsTextSelectionEnabled=False (default):" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="NonSelectableText">
+				<Paragraph>
+					<Run Text="This text is NOT selectable. Clicking and dragging should have no effect." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- Selection with highlight color -->
+			<TextBlock Text="Custom SelectionHighlightColor:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="CustomSelectionColor" IsTextSelectionEnabled="True">
+				<RichTextBlock.SelectionHighlightColor>
+					<SolidColorBrush Color="LightGreen" />
+				</RichTextBlock.SelectionHighlightColor>
+				<Paragraph>
+					<Run Text="This text has a custom green selection highlight color. Select some text to see it." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- SelectAll button -->
+			<TextBlock Text="Programmatic selection:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="ProgrammaticSelection" IsTextSelectionEnabled="True">
+				<Paragraph>
+					<Run Text="Use the button below to select all text programmatically." />
+				</Paragraph>
+			</RichTextBlock>
+			<Button Content="Select All" Click="OnSelectAllClick" />
+			<Button Content="Copy Selection" Click="OnCopyClick" />
+			<TextBlock x:Name="SelectedTextDisplay" Text="(Selected text will appear here)" Foreground="Gray" TextWrapping="Wrap" />
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

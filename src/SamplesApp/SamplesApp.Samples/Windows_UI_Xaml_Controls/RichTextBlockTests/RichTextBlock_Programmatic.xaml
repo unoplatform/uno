@@ -1,0 +1,31 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Programmatic"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Programmatic Content" FontSize="20" FontWeight="Bold" />
+
+			<TextBlock Text="Dynamically built content:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="DynamicBlock" />
+
+			<TextBlock Text="Add/remove paragraphs:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="MutableBlock">
+				<Paragraph>
+					<Run Text="Initial paragraph." />
+				</Paragraph>
+			</RichTextBlock>
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Content="Add Paragraph" Click="OnAddParagraph" />
+				<Button Content="Clear All" Click="OnClearAll" />
+			</StackPanel>
+			<TextBlock x:Name="ParagraphCount" Text="Paragraphs: 1" />
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

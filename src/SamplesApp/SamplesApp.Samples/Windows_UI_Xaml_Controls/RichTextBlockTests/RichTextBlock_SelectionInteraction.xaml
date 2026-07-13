@@ -1,0 +1,98 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_SelectionInteraction"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock FontWeight="Bold" Text="RichTextBlock Selection Interaction" />
+            <TextBlock TextWrapping="Wrap">
+                Manual test - verify text selection on the RichTextBlock below:
+                1) Click-drag across the text to select a range.
+                2) Double-click a word to select that word.
+                3) Click once, then Shift+click elsewhere to extend the selection.
+                4) Ctrl+A selects all, Ctrl+C copies the selection.
+                5) Right-click the selection to open the context flyout (Copy).
+                6) Use the buttons below to drive selection programmatically and toggle settings.
+                Watch "Selected text" and the event log update as SelectionChanged fires.
+            </TextBlock>
+
+            <ToggleSwitch
+                x:Name="SelectionEnabledSwitch"
+                Header="IsTextSelectionEnabled"
+                IsOn="True"
+                Toggled="OnSelectionEnabledToggled" />
+
+            <TextBlock Text="SelectionHighlightColor:" />
+            <ComboBox
+                x:Name="HighlightColorCombo"
+                MinWidth="200"
+                SelectionChanged="OnHighlightColorChanged">
+                <ComboBoxItem
+                    Content="Default (Accent)"
+                    IsSelected="True"
+                    Tag="Accent" />
+                <ComboBoxItem Content="Orange" Tag="Orange" />
+                <ComboBoxItem Content="Green" Tag="Green" />
+                <ComboBoxItem Content="Magenta" Tag="Magenta" />
+            </ComboBox>
+
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+                <RichTextBlock
+                    x:Name="TestRichTextBlock"
+                    IsTextSelectionEnabled="True"
+                    SelectionChanged="OnRichTextBlockSelectionChanged">
+                    <Paragraph>
+                        <Run Text="Paragraph one: this is " />
+                        <Bold>
+                            <Run Text="bold" />
+                        </Bold>
+                        <Run Text=" text, followed by " />
+                        <Italic>
+                            <Run Text="italic" />
+                        </Italic>
+                        <Run Text=" text, and a " />
+                        <Underline>
+                            <Run Text="underlined word" />
+                        </Underline>
+                        <Run Text=" to make the selection interesting." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="Paragraph two contains a " />
+                        <Span Foreground="{ThemeResource SystemAccentColor}">
+                            <Run Text="colored span" />
+                        </Span>
+                        <Run Text=" and continues with plain text so you can drag a selection across the paragraph boundary." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="Paragraph three is the last one, useful for testing Ctrl+A select-all and Collapse-to-start behavior." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnSelectAllClick" Content="Select All" />
+                <Button Click="OnCollapseClick" Content="Collapse" />
+                <Button Click="OnCopyClick" Content="Copy Selection to Clipboard" />
+            </StackPanel>
+
+            <TextBlock FontWeight="SemiBold" Text="Selected text:" />
+            <TextBlock
+                x:Name="SelectedTextDisplay"
+                MinHeight="20"
+                Text="(none)"
+                TextWrapping="Wrap" />
+
+            <TextBlock FontWeight="SemiBold" Text="SelectionChanged log (offsets, newest first, capped at 20):" />
+            <ItemsControl x:Name="SelectionLog" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
