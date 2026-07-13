@@ -1,0 +1,127 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_OverflowChain"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock
+                FontWeight="SemiBold"
+                Text="RichTextBlock overflow chain"
+                TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="Master (left) links into Overflow 1, which links into Overflow 2. Drag the sliders below to resize the master and change its MaxLines, then watch content re-flow across the chain." />
+                <LineBreak />
+                <Run Text="Verify: the master never paints text beyond its own bordered slice (no overflow bleeding past its Width/Height), each overflow only shows the text that did not fit in the previous element, and the indicators below update to match what you see." />
+            </TextBlock>
+
+            <TextBlock
+                Margin="0,8,0,0"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Controls" />
+            <Slider
+                x:Name="WidthSlider"
+                Header="Master Width"
+                Maximum="480"
+                Minimum="140"
+                StepFrequency="10"
+                ValueChanged="OnWidthChanged"
+                Value="240" />
+            <Slider
+                x:Name="HeightSlider"
+                Header="Master Height"
+                Maximum="360"
+                Minimum="60"
+                StepFrequency="10"
+                ValueChanged="OnHeightChanged"
+                Value="140" />
+            <Slider
+                x:Name="MaxLinesSlider"
+                Header="Master MaxLines (0 = unlimited)"
+                Maximum="12"
+                Minimum="0"
+                StepFrequency="1"
+                ValueChanged="OnMaxLinesChanged"
+                Value="0" />
+
+            <TextBlock
+                Margin="0,8,0,0"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Live indicators" />
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <TextBlock x:Name="MasterOverflowIndicator" Text="Master.HasOverflowContent: False" />
+                <TextBlock x:Name="MasterTrimmedIndicator" Text="Master.IsTextTrimmed: False" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <TextBlock x:Name="Overflow1Indicator" Text="Overflow1.HasOverflowContent: False" />
+                <TextBlock x:Name="Overflow2Indicator" Text="Overflow2.HasOverflowContent: False" />
+            </StackPanel>
+
+            <TextBlock
+                Margin="0,8,0,0"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Chain: Master -&gt; Overflow 1 -&gt; Overflow 2" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Master" />
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                        <RichTextBlock
+                            x:Name="Master"
+                            Width="240"
+                            Height="140"
+                            TextWrapping="Wrap">
+                            <Paragraph>
+                                <Run Text="Section 1: Overflow chains let a single flow of rich text pour across several linked visual containers, much like columns in a printed newspaper." />
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="Section 2: Each RichTextBlockOverflow in the chain only lays out the portion of content that its predecessor could not fit, starting exactly where the previous element left off." />
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="Section 3: Resizing the master, changing its MaxLines, or resizing an overflow target all trigger a re-layout that recomputes where each page slice begins and ends." />
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="Section 4: If the whole chain runs out of room, the final overflow target reports HasOverflowContent even though it has nowhere further to send the remaining text." />
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="Section 5: Shrink every slider to see all three panes fill up and IsTextTrimmed flip to true on the master; grow them back to watch the chain drain until no overflow remains." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Overflow 1" />
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                        <RichTextBlockOverflow
+                            x:Name="Overflow1"
+                            Width="240"
+                            Height="240" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Overflow 2" />
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                        <RichTextBlockOverflow
+                            x:Name="Overflow2"
+                            Width="240"
+                            Height="240" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

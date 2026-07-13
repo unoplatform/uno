@@ -1,0 +1,103 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Typography"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="800"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Typography Properties" FontSize="20" FontWeight="Bold" />
+
+			<!-- FontFamily -->
+			<TextBlock Text="FontFamily:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="FontFamilySample" FontFamily="Consolas">
+				<Paragraph>
+					<Run Text="This text uses Consolas font family." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- FontSize -->
+			<TextBlock Text="FontSize (24):" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="FontSizeSample" FontSize="24">
+				<Paragraph>
+					<Run Text="This text has FontSize=24." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- FontWeight -->
+			<TextBlock Text="FontWeight variations:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="FontWeightLight" FontWeight="Light">
+				<Paragraph><Run Text="Light weight text" /></Paragraph>
+			</RichTextBlock>
+			<RichTextBlock x:Name="FontWeightBold" FontWeight="Bold">
+				<Paragraph><Run Text="Bold weight text" /></Paragraph>
+			</RichTextBlock>
+			<RichTextBlock x:Name="FontWeightBlack" FontWeight="Black">
+				<Paragraph><Run Text="Black weight text" /></Paragraph>
+			</RichTextBlock>
+
+			<!-- FontStyle -->
+			<TextBlock Text="FontStyle:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="FontStyleItalic" FontStyle="Italic">
+				<Paragraph><Run Text="This entire block is italic." /></Paragraph>
+			</RichTextBlock>
+
+			<!-- CharacterSpacing -->
+			<TextBlock Text="CharacterSpacing:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="CharSpacing0">
+				<Paragraph><Run Text="CharacterSpacing = 0 (default)" /></Paragraph>
+			</RichTextBlock>
+			<RichTextBlock x:Name="CharSpacing200" CharacterSpacing="200">
+				<Paragraph><Run Text="CharacterSpacing = 200" /></Paragraph>
+			</RichTextBlock>
+
+			<!-- TextDecorations -->
+			<TextBlock Text="TextDecorations:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="Underline" TextDecorations="Underline">
+				<Paragraph><Run Text="Underline decoration on entire block" /></Paragraph>
+			</RichTextBlock>
+			<RichTextBlock x:Name="Strikethrough" TextDecorations="Strikethrough">
+				<Paragraph><Run Text="Strikethrough decoration on entire block" /></Paragraph>
+			</RichTextBlock>
+
+			<!-- Foreground -->
+			<TextBlock Text="Foreground color:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="ForegroundSample" Foreground="DarkBlue">
+				<Paragraph>
+					<Run Text="Block-level DarkBlue foreground, with " />
+					<Run Text="red override" Foreground="Red" />
+					<Run Text=" on a single run." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- LineHeight -->
+			<TextBlock Text="LineHeight:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="LineHeightSample" LineHeight="40">
+				<Paragraph>
+					<Run Text="This block has LineHeight=40. The text should have extra vertical spacing between lines when it wraps. Try resizing the window to see wrapping behavior." />
+				</Paragraph>
+			</RichTextBlock>
+
+			<!-- LineStackingStrategy -->
+			<TextBlock Text="LineStackingStrategy:" FontWeight="SemiBold" />
+			<RichTextBlock x:Name="LSS_MaxHeight" LineHeight="40" LineStackingStrategy="MaxHeight">
+				<Paragraph>
+					<Run Text="MaxHeight strategy (default). " FontSize="14" />
+					<Run Text="Mixed sizes " FontSize="28" />
+					<Run Text="in one line." FontSize="14" />
+				</Paragraph>
+			</RichTextBlock>
+			<RichTextBlock x:Name="LSS_BlockLineHeight" LineHeight="40" LineStackingStrategy="BlockLineHeight">
+				<Paragraph>
+					<Run Text="BlockLineHeight strategy. " FontSize="14" />
+					<Run Text="Mixed sizes " FontSize="28" />
+					<Run Text="in one line." FontSize="14" />
+				</Paragraph>
+			</RichTextBlock>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

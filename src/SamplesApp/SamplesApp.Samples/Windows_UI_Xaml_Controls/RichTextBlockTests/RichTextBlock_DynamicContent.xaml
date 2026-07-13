@@ -1,0 +1,83 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_DynamicContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock TextWrapping="Wrap">
+                <Run FontWeight="SemiBold" Text="Manual test: mutate the RichTextBlock below at runtime and verify it re-flows correctly after every change." />
+                <LineBreak />
+                <Run Text="1) Click-drag inside the text to select some of it." />
+                <LineBreak />
+                <Run Text="2) Click any content button (Add/Remove/Clear/Append/Shrink/Toggle Color/Toggle Font Size) and verify the selection is CLEARED." />
+                <LineBreak />
+                <Run Text="3) Re-select some text, then drag the Control FontSize slider and verify the selection SURVIVES (only re-flows)." />
+                <LineBreak />
+                <Run Text="4) Confirm Blocks/Total text length below stay accurate after every mutation." />
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+                <RichTextBlock
+                    x:Name="ContentBlock"
+                    FontSize="16"
+                    IsTextSelectionEnabled="True"
+                    SelectionChanged="OnSelectionChanged">
+                    <Paragraph>
+                        <Run x:Name="FirstRun" Text="Paragraph 1: this is the first paragraph, with a " />
+                        <Span>
+                            <Run
+                                x:Name="ToggleRun"
+                                FontWeight="SemiBold"
+                                Text="nested run" />
+                        </Span>
+                        <Run Text=" inside it." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="Paragraph 2: static content used to verify paragraph add/remove and layout reflow." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <TextBlock x:Name="StatusText" FontWeight="SemiBold" />
+
+            <TextBlock Margin="0,8,0,0" Text="Paragraphs" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnAddParagraph" Content="Add Paragraph" />
+                <Button Click="OnRemoveLastParagraph" Content="Remove Last Paragraph" />
+                <Button Click="OnClearAll" Content="Clear All" />
+            </StackPanel>
+
+            <TextBlock Margin="0,8,0,0" Text="First Run" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnAppendToFirstRun" Content="Append Text" />
+                <Button Click="OnShrinkFirstRun" Content="Shrink Text" />
+            </StackPanel>
+
+            <TextBlock Margin="0,8,0,0" Text="Nested Run" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnToggleRunColor" Content="Toggle Foreground (Red/Default)" />
+                <Button Click="OnToggleRunFontSize" Content="Toggle FontSize (14/24)" />
+            </StackPanel>
+
+            <TextBlock Margin="0,8,0,0" Text="Control FontSize (font-size-only change; selection should survive)" />
+            <Slider
+                x:Name="FontSizeSlider"
+                Width="300"
+                HorizontalAlignment="Left"
+                Maximum="36"
+                Minimum="10"
+                StepFrequency="1"
+                ValueChanged="OnControlFontSizeChanged"
+                Value="16" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
