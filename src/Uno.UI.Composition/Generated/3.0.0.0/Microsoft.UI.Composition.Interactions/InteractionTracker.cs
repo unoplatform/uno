@@ -152,7 +152,7 @@ namespace Microsoft.UI.Composition.Interactions
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdatePositionWithAdditionalVelocity(System.Numerics.Vector3)
-		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdateScale(System.Single, System.Numerics.Vector3)
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdateScale(float, System.Numerics.Vector3)
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdateScaleWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation, global::System.Numerics.Vector3 centerPoint)
