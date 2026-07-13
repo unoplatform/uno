@@ -1,0 +1,119 @@
+#nullable enable
+
+using System;
+using System.Numerics;
+using Microsoft.UI.Composition;
+using SkiaSharp;
+using Windows.Foundation;
+using Windows.UI;
+
+namespace Uno.UI.Composition.Drawing;
+
+/// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>.</summary>
+internal sealed class SkiaDrawingSession : IDrawingSession
+{
+	// Reused per drawing thread to avoid allocating a native SKPaint per draw. Rendering configures it
+	// fully from PaintParams on every call, so no state leaks between draws.
+	[ThreadStatic]
+	private static SKPaint? _sparePaint;
+
+	private readonly SKCanvas _canvas;
+
+	public SkiaDrawingSession(SKCanvas canvas) => _canvas = canvas;
+
+	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
+
+	public void SetMatrix(in Matrix4x4 matrix) => _canvas.SetMatrix(matrix.ToSKMatrix());
+
+	public void Concat(in Matrix4x4 matrix) => _canvas.Concat(matrix.ToSKMatrix());
+
+	public void Translate(float dx, float dy) => _canvas.Translate(dx, dy);
+
+	public void Scale(float sx, float sy) => _canvas.Scale(sx, sy);
+
+	public int Save() => _canvas.Save();
+
+	public int SaveCount => _canvas.SaveCount;
+
+	public void Restore() => _canvas.Restore();
+
+	public void RestoreToCount(int count) => _canvas.RestoreToCount(count);
+
+	public void SaveLayer(Rect? bounds, PaintParams? paint)
+	{
+		if (paint is { } p)
+		{
+			_canvas.SaveLayer(BuildPaint(p));
+		}
+		else
+		{
+			_canvas.SaveLayer();
+		}
+	}
+
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), antialias);
+
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+		=> _canvas.ClipPath(((SkiaGeometrySource2D)geometry).Geometry, ToSK(operation), antialias);
+
+	public void Clear(Color color) => _canvas.Clear(color.ToSKColor());
+
+	public void DrawRect(in Rect rect, in PaintParams paint)
+		=> _canvas.DrawRect(rect.ToSKRect(), BuildPaint(paint));
+
+	public void DrawPath(IGeometry geometry, in PaintParams paint)
+		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, BuildPaint(paint));
+
+	public void DrawLine(Vector2 p0, Vector2 p1, in PaintParams paint)
+		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, BuildPaint(paint));
+
+	public void DrawCircle(Vector2 center, float radius, in PaintParams paint)
+		=> _canvas.DrawCircle(center.X, center.Y, radius, BuildPaint(paint));
+
+	private static SKPaint BuildPaint(in PaintParams p)
+	{
+		var paint = _sparePaint ??= new SKPaint();
+		paint.Reset();
+		paint.Color = p.Color.ToSKColor(p.Opacity);
+		paint.IsAntialias = p.IsAntialias;
+		paint.BlendMode = ToSK(p.BlendMode);
+		paint.Style = p.Style == PaintStyle.Stroke ? SKPaintStyle.Stroke : SKPaintStyle.Fill;
+		if (p.Style == PaintStyle.Stroke)
+		{
+			paint.StrokeWidth = p.StrokeWidth;
+			paint.StrokeCap = ToSK(p.StrokeCap);
+			paint.StrokeJoin = ToSK(p.StrokeJoin);
+			paint.StrokeMiter = p.StrokeMiter;
+		}
+		return paint;
+	}
+
+	private static SKClipOperation ToSK(ClipOperation op)
+		=> op == ClipOperation.Difference ? SKClipOperation.Difference : SKClipOperation.Intersect;
+
+	private static SKStrokeCap ToSK(StrokeCap cap) => cap switch
+	{
+		StrokeCap.Round => SKStrokeCap.Round,
+		StrokeCap.Square => SKStrokeCap.Square,
+		_ => SKStrokeCap.Butt,
+	};
+
+	private static SKStrokeJoin ToSK(StrokeJoin join) => join switch
+	{
+		StrokeJoin.Round => SKStrokeJoin.Round,
+		StrokeJoin.Bevel => SKStrokeJoin.Bevel,
+		_ => SKStrokeJoin.Miter,
+	};
+
+	private static SKBlendMode ToSK(BlendMode mode) => mode switch
+	{
+		BlendMode.Src => SKBlendMode.Src,
+		BlendMode.Plus => SKBlendMode.Plus,
+		BlendMode.Modulate => SKBlendMode.Modulate,
+		BlendMode.Multiply => SKBlendMode.Multiply,
+		BlendMode.DstIn => SKBlendMode.DstIn,
+		BlendMode.DstOut => SKBlendMode.DstOut,
+		_ => SKBlendMode.SrcOver,
+	};
+}

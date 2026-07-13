@@ -6,6 +6,7 @@ using SkiaSharp;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition
 {
@@ -14,9 +15,6 @@ namespace Microsoft.UI.Composition
 		private static readonly SKPaint _spareHitTestPaint = new();
 		private static readonly SKPathBuilder _spareHitTestPathBuilder = new();
 		private static readonly SKPoint[] _spareMiterPoints = new SKPoint[4];
-		// We don't call SKPaint.Reset() after usage, so make sure
-		// that only SKPaint.Color is being set
-		private static readonly SKPaint _spareColorPaint = new();
 
 		private CompositionGeometry? _fillGeometry;
 
@@ -106,8 +104,7 @@ namespace Microsoft.UI.Composition
 					session.Canvas.ClipPath(fillPath, antialias: true);
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						_spareColorPaint.Color = colorFromTransition.ToSKColor(session.Opacity);
-						session.Canvas.DrawRect(fillPath.Bounds, _spareColorPaint);
+						session.Session.DrawRect(fillPath.Bounds.ToRect(), new PaintParams(colorFromTransition) { Opacity = session.Opacity });
 					}
 					else
 					{
