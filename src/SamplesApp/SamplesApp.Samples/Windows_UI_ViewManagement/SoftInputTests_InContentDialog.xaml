@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.SoftInputTests_InContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <!--
+        Test: TextBox inside a ContentDialog.
+        Expected: ContentDialog should adjust position above keyboard.
+    -->
+    <StackPanel
+        Padding="12"
+        VerticalAlignment="Center"
+        Spacing="12">
+        <TextBlock
+            FontSize="18"
+            FontWeight="Bold"
+            Text="Soft Input: In ContentDialog" />
+        <TextBlock Text="Tap the button to open a ContentDialog with a TextBox. When you tap the TextBox, the dialog should move up so the TextBox remains visible above the keyboard." TextWrapping="Wrap" />
+        <TextBlock x:Name="StatusText" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+
+        <Button
+            HorizontalAlignment="Center"
+            Click="OnOpenDialog"
+            Content="Open ContentDialog with TextBox" />
+    </StackPanel>
+</Page>

@@ -24,6 +24,16 @@ internal partial class XamlIslandRoot : Panel
 
 	internal ContentManager ContentManager => _contentManager;
 
+#if __SKIA__
+	private RootScrollViewer? _rootScrollViewer;
+
+	private RootScrollViewer EnsureRootScrollViewer()
+	{
+		_rootScrollViewer ??= new RootScrollViewer();
+		return _rootScrollViewer;
+	}
+#endif
+
 	public UIElement? Content
 	{
 		get => _contentManager.Content;
@@ -31,7 +41,13 @@ internal partial class XamlIslandRoot : Panel
 		{
 			_contentManager.Content = value;
 
+#if __SKIA__
+			var rootScrollViewer = EnsureRootScrollViewer();
+			rootScrollViewer.Content = value;
+			SetPublicRootVisual(value, rootScrollViewer, null);
+#else
 			SetPublicRootVisual(value, null, null);
+#endif
 		}
 	}
 
