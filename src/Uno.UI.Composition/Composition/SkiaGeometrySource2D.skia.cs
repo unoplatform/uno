@@ -1,12 +1,15 @@
 ﻿#nullable enable
 
 using System;
+using System.Numerics;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
+	internal class SkiaGeometrySource2D : IGeometrySource2D, IGeometry, IDisposable
 	{
 		private readonly SKPath _geometry;
 
@@ -44,6 +47,28 @@ namespace Microsoft.UI.Composition
 		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
 		/// </remarks>
 		public SKPath Geometry => _geometry;
+
+		#region IGeometry (backend-neutral handle)
+
+		Rect IGeometry.Bounds => _geometry.Bounds.ToRect();
+
+		Rect IGeometry.TightBounds => _geometry.TightBounds.ToRect();
+
+		bool IGeometry.FillContains(Vector2 point) => _geometry.Contains(point.X, point.Y);
+
+		IGeometry IGeometry.Transform(Matrix3x2 matrix) => Transform(matrix.ToSKMatrix());
+
+		IGeometry IGeometry.Combine(IGeometry other, GeometryCombineMode mode)
+			=> Op((SkiaGeometrySource2D)other, mode switch
+			{
+				GeometryCombineMode.Union => SKPathOp.Union,
+				GeometryCombineMode.Intersect => SKPathOp.Intersect,
+				GeometryCombineMode.Difference => SKPathOp.Difference,
+				GeometryCombineMode.Xor => SKPathOp.Xor,
+				_ => SKPathOp.Union,
+			});
+
+		#endregion
 
 		public void Dispose() => _geometry.Dispose();
 	}
