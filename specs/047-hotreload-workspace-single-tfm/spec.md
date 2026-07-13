@@ -74,7 +74,11 @@ captured from MSBuild at build time.
 - The `Uno.UI.RemoteControl` client ships per-flavor (`netcoremobile`, `Skia`, `Wasm`,
   `Reference`), so the **platform identifier** is compile-time knowledge of the client
   assembly (`android` / `ios` / `tvos` / `maccatalyst` / `browserwasm` / skia-desktop), and
-  the **framework version** comes from the runtime (`Environment.Version`).
+  the **framework version** comes from the runtime (`Environment.Version`). One exception:
+  the skia flavor serves every skia-rendering head — desktop **and** browser
+  (`netX.0-browserwasm` with the skia renderer) — so it completes the compile-time knowledge
+  with a runtime check (`OperatingSystem.IsBrowser()` → `browserwasm`, otherwise the
+  skia-desktop pseudo-platform).
 - The value is a *normalized runtime descriptor*, not a raw TFM string reconstruction —
   the skia client cannot (and must not) guess whether the head TFM was spelled
   `net10.0-desktop` or `net10.0`; the matching rules below treat those as equivalent.
