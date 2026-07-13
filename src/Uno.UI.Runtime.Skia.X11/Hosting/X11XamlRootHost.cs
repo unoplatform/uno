@@ -665,7 +665,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Note that XSetWindowAttributes is a different struct from XWindowAttributes, and only
 		// the former is valid here.
 		var attributes = new XSetWindowAttributes { override_redirect = /* True */ 1 };
-		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, &attributes);
+		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)SetWindowValuemask.OverrideRedirect, &attributes);
 
 		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
 		_ = XLib.XFlush(RootX11Window.Display);

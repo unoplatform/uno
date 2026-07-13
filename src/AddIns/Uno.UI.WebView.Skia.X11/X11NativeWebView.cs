@@ -218,7 +218,7 @@ public class X11NativeWebView : INativeWebView
 				}
 				return false;
 			});
-			return tcs.Task.Result;
+			return tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 
@@ -245,7 +245,7 @@ public class X11NativeWebView : INativeWebView
 				}
 				return false;
 			});
-			tcs.Task.Wait();
+			tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 
