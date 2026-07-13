@@ -135,7 +135,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	/// <summary>
 	/// Composes the target framework the application is running on, from data available at
 	/// runtime only: the platform is compile-time knowledge of this (per-flavor) client
-	/// assembly, the framework version comes from the application assembly's
+	/// assembly (except for the skia flavor, which serves several runtimes and completes the
+	/// picture with a runtime check), the framework version comes from the application assembly's
 	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute"/> (falling back to the
 	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
 	/// stays correct regardless of how the IDE orchestrated the build.
@@ -159,7 +160,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 		frameworkVersion ??= Environment.Version;
 
-		const string platform =
+		var platform =
 #if __ANDROID__ || ANDROID
 			"android";
 #elif __TVOS__ || TVOS
@@ -169,12 +170,16 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 #elif __IOS__ || IOS
 			"ios";
 #elif __WASM__
+			// The (legacy) native-rendering wasm flavor of this assembly only serves browser heads.
 			"browserwasm";
 #else
-			// The skia flavor of this assembly serves both `netX.0-desktop` and plain `netX.0`
-			// heads and cannot tell them apart; the server treats this pseudo-platform as
-			// matching either spelling.
-			"skia";
+			// The skia flavor of this assembly is compiled for the plain `netX.0` TFM and serves
+			// every skia-rendering head that resolves the `skia` uno-runtime folder — desktop AND
+			// browser (`netX.0-browserwasm` with the skia renderer, the modern default). The
+			// browser case is only distinguishable at runtime. For desktop, the flavor still
+			// cannot tell `netX.0-desktop` from a plain `netX.0` head, so it reports the `skia`
+			// pseudo-platform which the server treats as matching either spelling.
+			OperatingSystem.IsBrowser() ? "browserwasm" : "skia";
 #endif
 
 		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
