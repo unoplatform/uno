@@ -35,6 +35,14 @@ internal enum BlendMode
 	Multiply,
 	DstIn,
 	DstOut,
+	SrcIn,
+}
+
+/// <summary>Image sampling quality for <see cref="IDrawingSession.DrawImage"/>.</summary>
+internal enum ImageSampling
+{
+	NearestNeighbor,
+	Linear,
 }
 
 /// <summary>How a clip combines with the current clip region.</summary>

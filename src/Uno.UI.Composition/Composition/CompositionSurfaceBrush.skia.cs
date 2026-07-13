@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
@@ -143,6 +144,53 @@ namespace Microsoft.UI.Composition
 				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), _tempPaint);
 				canvas.Restore();
 			}
+		}
+
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
+		{
+			// The recursive visual-surface path still renders directly to SKCanvas; fall back for it.
+			if (Surface is ISkiaSurface || !TryGetSkiaCompositionSurface(Surface, out var scs))
+			{
+				return false;
+			}
+
+			if (bounds.Width <= 0 || bounds.Height <= 0)
+			{
+				return true;
+			}
+
+			var skBounds = bounds.ToSKRect();
+			var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), skBounds);
+			if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
+			{
+				return true;
+			}
+
+			// See the Paint(SKCanvas) overload for the RelativeTransform/Transform ordering rationale.
+			var matrix = Matrix3x2.Identity;
+			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
+			matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+			matrix *= TransformMatrix;
+			matrix *= Matrix3x2.CreateScale(skBounds.Width, skBounds.Height).Inverse();
+			matrix *= RelativeTransform;
+			matrix *= Matrix3x2.CreateScale(skBounds.Width, skBounds.Height);
+
+			IColorFilter? colorFilter;
+			if (MonochromeColor is { } color)
+			{
+				var faded = global::Windows.UI.Color.FromArgb((byte)(color.Alpha * opacity), color.Red, color.Green, color.Blue);
+				colorFilter = DrawingBackend.Current.CreateBlendModeColorFilter(faded, BlendMode.SrcIn);
+			}
+			else
+			{
+				colorFilter = DrawingBackend.Current.CreateOpacityColorFilter(opacity);
+			}
+
+			session.Save();
+			session.Concat(new Matrix4x4(matrix));
+			session.DrawImage(new SkiaImage(scs.Image), 0, 0, ImageSampling.Linear, new PaintParams(default) { IsAntialias = true, ColorFilter = colorFilter });
+			session.Restore();
+			return true;
 		}
 	}
 }

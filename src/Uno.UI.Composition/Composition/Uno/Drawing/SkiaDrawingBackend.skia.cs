@@ -40,6 +40,9 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	public IColorFilter? CreateOpacityColorFilter(float opacity)
 		=> opacity.ToColorFilter() is { } filter ? new SkiaColorFilter(filter) : null;
 
+	public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode)
+		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SkiaDrawingSession.ToSKBlendMode(mode)));
+
 	private static SKShaderTileMode ToSK(GradientTileMode mode) => mode switch
 	{
 		GradientTileMode.Repeat => SKShaderTileMode.Repeat,

@@ -7,6 +7,7 @@ using System.Numerics;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
@@ -127,12 +128,12 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_backgroundShape is { } backgroundShape)
 		{
-			session.Canvas.Save();
+			session.Session.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.ApplyClip(this, session.Canvas);
+			_backgroundClip?.ApplyClip(this, session.Session);
 			backgroundShape.Render(in session);
-			session.Canvas.Restore();
+			session.Session.Restore();
 		}
 
 		base.Paint(in session);
@@ -183,7 +184,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		{
 			// At the time of writing, this branch is always taken
 			UpdatePathsAndCornerClip();
-			_childClipCausedByCornerRadius?.ApplyClip(this, canvas);
+			_childClipCausedByCornerRadius?.ApplyClip(this, new SkiaDrawingSession(canvas));
 		}
 		else if (GetPostPaintingClipping() is { } clip)
 		{

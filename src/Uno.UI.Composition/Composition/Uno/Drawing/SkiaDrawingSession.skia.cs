@@ -54,6 +54,9 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), antialias);
 
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+		=> _canvas.ClipRoundRect(ToSK(roundRect), ToSK(operation), antialias);
+
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 		=> _canvas.ClipPath(((SkiaGeometrySource2D)geometry).Geometry, ToSK(operation), antialias);
 
@@ -71,13 +74,16 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 	public void DrawCircle(Vector2 center, float radius, in PaintParams paint)
 		=> _canvas.DrawCircle(center.X, center.Y, radius, BuildPaint(paint));
 
+	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint)
+		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), BuildPaint(paint));
+
 	private static SKPaint BuildPaint(in PaintParams p)
 	{
 		var paint = _sparePaint ??= new SKPaint();
 		paint.Reset();
 		paint.Color = p.Color.ToSKColor(p.Opacity);
 		paint.IsAntialias = p.IsAntialias;
-		paint.BlendMode = ToSK(p.BlendMode);
+		paint.BlendMode = ToSKBlendMode(p.BlendMode);
 		paint.Style = p.Style == PaintStyle.Stroke ? SKPaintStyle.Stroke : SKPaintStyle.Fill;
 		if (p.Style == PaintStyle.Stroke)
 		{
@@ -94,6 +100,20 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 	private static SKClipOperation ToSK(ClipOperation op)
 		=> op == ClipOperation.Difference ? SKClipOperation.Difference : SKClipOperation.Intersect;
 
+	private static SKRoundRect ToSK(in RoundRectangle rr)
+	{
+		var skRoundRect = new SKRoundRect();
+		Span<SKPoint> radii = stackalloc SKPoint[]
+		{
+			new SKPoint(rr.TopLeft.X, rr.TopLeft.Y),
+			new SKPoint(rr.TopRight.X, rr.TopRight.Y),
+			new SKPoint(rr.BottomRight.X, rr.BottomRight.Y),
+			new SKPoint(rr.BottomLeft.X, rr.BottomLeft.Y),
+		};
+		skRoundRect.SetRectRadii(rr.Rect.ToSKRect(), radii);
+		return skRoundRect;
+	}
+
 	private static SKStrokeCap ToSK(StrokeCap cap) => cap switch
 	{
 		StrokeCap.Round => SKStrokeCap.Round,
@@ -108,7 +128,7 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 		_ => SKStrokeJoin.Miter,
 	};
 
-	private static SKBlendMode ToSK(BlendMode mode) => mode switch
+	internal static SKBlendMode ToSKBlendMode(BlendMode mode) => mode switch
 	{
 		BlendMode.Src => SKBlendMode.Src,
 		BlendMode.Plus => SKBlendMode.Plus,
@@ -116,6 +136,10 @@ internal sealed class SkiaDrawingSession : IDrawingSession
 		BlendMode.Multiply => SKBlendMode.Multiply,
 		BlendMode.DstIn => SKBlendMode.DstIn,
 		BlendMode.DstOut => SKBlendMode.DstOut,
+		BlendMode.SrcIn => SKBlendMode.SrcIn,
 		_ => SKBlendMode.SrcOver,
 	};
+
+	private static SKSamplingOptions ToSK(ImageSampling sampling)
+		=> new(sampling == ImageSampling.Linear ? SKFilterMode.Linear : SKFilterMode.Nearest);
 }

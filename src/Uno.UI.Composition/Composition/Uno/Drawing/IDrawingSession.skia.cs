@@ -42,6 +42,8 @@ internal interface IDrawingSession
 
 	void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
 
+	void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
+
 	void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
 
 	void Clear(Color color);
@@ -53,4 +55,7 @@ internal interface IDrawingSession
 	void DrawLine(Vector2 p0, Vector2 p1, in PaintParams paint);
 
 	void DrawCircle(Vector2 center, float radius, in PaintParams paint);
+
+	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>) in the current coordinate space.</summary>
+	void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint);
 }

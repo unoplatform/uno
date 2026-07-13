@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
@@ -40,19 +41,19 @@ partial class CompositionClip
 	/// </summary>
 	private protected virtual SKRect? GetClipRect(Visual visual) => null;
 
-	internal void ApplyClip(Visual visual, SKCanvas canvas)
+	internal void ApplyClip(Visual visual, IDrawingSession session)
 	{
 		if (GetClipRect(visual) is { } clipRect)
 		{
-			canvas.ClipRect(clipRect, antialias: true);
+			session.ClipRect(clipRect.ToRect(), antialias: true);
 		}
 		else if (GetClipRoundedRect(visual) is { } roundedRect)
 		{
-			canvas.ClipRoundRect(roundedRect, antialias: true);
+			session.ClipRoundRect(roundedRect.ToRoundRectangle(), antialias: true);
 		}
 		else if (GetClipPath(visual) is { } clipPath)
 		{
-			canvas.ClipPath(clipPath, antialias: true);
+			session.ClipPath(new SkiaGeometrySource2D(clipPath), antialias: true);
 		}
 	}
 }

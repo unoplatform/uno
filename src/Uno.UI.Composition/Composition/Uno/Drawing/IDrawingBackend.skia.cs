@@ -31,4 +31,7 @@ internal interface IDrawingBackend
 
 	/// <summary>Creates a color filter that multiplies alpha by <paramref name="opacity"/>, or null when it would be a no-op.</summary>
 	IColorFilter? CreateOpacityColorFilter(float opacity);
+
+	/// <summary>Creates a color filter that blends <paramref name="color"/> onto the source using <paramref name="mode"/>.</summary>
+	IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
 }

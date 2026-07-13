@@ -109,6 +109,19 @@ namespace Microsoft.UI.Composition
 		public static Matrix3x2 ToMatrix3x2(this SKMatrix m)
 			=> new Matrix3x2(m.ScaleX, m.SkewY, m.SkewX, m.ScaleY, m.TransX, m.TransY);
 
+		internal static Uno.UI.Composition.Drawing.RoundRectangle ToRoundRectangle(this SKRoundRect rr)
+		{
+			var radii = rr.Radii;
+			return new Uno.UI.Composition.Drawing.RoundRectangle
+			{
+				Rect = rr.Rect.ToRect(),
+				TopLeft = new Vector2(radii[0].X, radii[0].Y),
+				TopRight = new Vector2(radii[1].X, radii[1].Y),
+				BottomRight = new Vector2(radii[2].X, radii[2].Y),
+				BottomLeft = new Vector2(radii[3].X, radii[3].Y),
+			};
+		}
+
 		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
 			=> new(
 				m.M11, m.M21, m.M41,
