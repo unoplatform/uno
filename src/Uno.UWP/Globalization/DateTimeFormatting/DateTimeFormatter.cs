@@ -78,7 +78,7 @@ public sealed partial class DateTimeFormatter
 			IsShortDate = templateParser.Info.IsShortDate;
 			IsLongDate = templateParser.Info.IsLongDate;
 			IsShortTime = templateParser.Info.IsShortTime;
-			IsShortDate = templateParser.Info.IsShortDate;
+			IsLongTime = templateParser.Info.IsLongTime;
 
 			// NOTE: We intentionally don't set the user provided template.
 			// Instead, we parse and re-build the template string.
