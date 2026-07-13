@@ -3035,6 +3035,12 @@
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
+
+		  <!-- On[Vertical|Horizontal]ContentAlignmentChanged removed: the empty TextBox override and the ContentPresenter base virtuals. All no-ops (the ...Partial hooks were never implemented); layout is still driven by the AffectsArrange metadata option. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnVerticalContentAlignmentChanged(Microsoft.UI.Xaml.VerticalAlignment oldVerticalContentAlignment, Microsoft.UI.Xaml.VerticalAlignment newVerticalContentAlignment)" reason="Removed ContentPresenter.OnVerticalContentAlignmentChanged virtual (BC34, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnHorizontalContentAlignmentChanged(Microsoft.UI.Xaml.HorizontalAlignment oldHorizontalContentAlignment, Microsoft.UI.Xaml.HorizontalAlignment newHorizontalContentAlignment)" reason="Removed ContentPresenter.OnHorizontalContentAlignmentChanged virtual (BC34, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnVerticalContentAlignmentChanged(Microsoft.UI.Xaml.VerticalAlignment oldVerticalContentAlignment, Microsoft.UI.Xaml.VerticalAlignment newVerticalContentAlignment)" reason="Removed empty TextBox.OnVerticalContentAlignmentChanged override (BC34, breaking changes for 7.0)" />
+
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
