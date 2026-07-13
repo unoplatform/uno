@@ -40,7 +40,7 @@ public partial class FrameworkElement
 	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
 	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
 	/// the theme walk's early-return at elements with explicit RequestedTheme.
-	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// This property lets DependencyObject block that cascade at theme boundaries.
 	/// </remarks>
 	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
 
@@ -79,9 +79,9 @@ public partial class FrameworkElement
 				break;
 			case ElementTheme.Default:
 				// Use parent's theme if cleared
-				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
+				if (this.GetParent() is DependencyObject parentProvider)
 				{
-					theme = parentProvider.Store.GetTheme();
+					theme = parentProvider.GetTheme();
 				}
 				if (theme == Theme.None)
 				{
@@ -616,7 +616,7 @@ public partial class FrameworkElement
 	/// <remarks>
 	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
 	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
-	/// (depends.cpp:1044-1069), ported to DependencyObjectStore.EnterImpl (DependencyObjectStore.mux.cs). So
+	/// (depends.cpp:1044-1069), ported to DependencyObject.EnterImpl (DependencyObject.mux.cs). So
 	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
 	/// </remarks>
 	private void ClearThemeStateOnUnloaded()
@@ -637,7 +637,7 @@ public partial class FrameworkElement
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		var store = ((IDependencyObjectStoreProvider)this).Store;
+		var store = ((DependencyObject)this);
 
 		if (store.IsProcessingThemeWalk)
 		{
@@ -664,7 +664,7 @@ public partial class FrameworkElement
 		// in NotifyThemeChangedCore when the theme actually changes
 #else
 		TryGetResources()?.UpdateThemeBindings(updateReason);
-		((IDependencyObjectStoreProvider)this).Store.UpdateResourceBindings(updateReason);
+		((DependencyObject)this).UpdateResourceBindings(updateReason);
 		if (updateReason == ResourceUpdateReason.ThemeResource)
 		{
 			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)

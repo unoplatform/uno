@@ -41,7 +41,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
 			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		public new bool IsActive
+#else
 		public bool IsActive
+#endif
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);

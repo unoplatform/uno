@@ -508,10 +508,10 @@ namespace Microsoft.UI.Xaml
 					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
-				else if (value is IDependencyObjectStoreProvider provider)
+				else if (value is DependencyObject provider)
 				{
-					// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
-					provider.Store.IsResourceDictionaryItem = true;
+					// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
+					provider.IsResourceDictionaryItem = true;
 				}
 			}
 
@@ -588,10 +588,10 @@ namespace Microsoft.UI.Xaml
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
-					else if (newValue is IDependencyObjectStoreProvider storeProvider)
+					else if (newValue is DependencyObject storeProvider)
 					{
-						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
-						storeProvider.Store.IsResourceDictionaryItem = true;
+						// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
+						storeProvider.IsResourceDictionaryItem = true;
 					}
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
@@ -619,11 +619,11 @@ namespace Microsoft.UI.Xaml
 				// against the owning element's effective theme so the resource matches the theme of the element
 				// hosting this dictionary, matching WinUI's per-owner {ThemeResource} resolution. Only when the
 				// owner already has an established (non-None) theme — otherwise the global fallback stands.
-				if (value is IDependencyObjectStoreProvider materializedProvider
+				if (value is DependencyObject materializedProvider
 					&& GetResourceOwner() is { } resourceOwner
-					&& ((IDependencyObjectStoreProvider)resourceOwner).Store.GetTheme() != Theme.None)
+					&& ((DependencyObject)resourceOwner).GetTheme() != Theme.None)
 				{
-					materializedProvider.Store.UpdateResourceBindings(
+					materializedProvider.UpdateResourceBindings(
 						ResourceUpdateReason.ThemeResource,
 						resourceContextProvider: resourceOwner,
 						containingDictionary: this);
@@ -846,7 +846,7 @@ namespace Microsoft.UI.Xaml
 					{
 						// MUX: m_pActiveThemeDictionary->NotifyThemeChanged(m_activeTheme, highContrastChanged)
 						// (Resources.cpp:809-814); the theme walk lives on the store.
-						((IDependencyObjectStoreProvider)_activeThemeDictionary).Store.NotifyThemeChanged(_activeThemeValue, highContrastChanged);
+						((DependencyObject)_activeThemeDictionary).NotifyThemeChanged(_activeThemeValue, highContrastChanged);
 					}
 #endif
 				}
@@ -1200,15 +1200,15 @@ namespace Microsoft.UI.Xaml
 		/// only persisted after its walk completes (persist-after-Core, Theming.cpp:155), so it is stale
 		/// while the dictionary is being processed.
 		/// </remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh)
+		internal new void NotifyThemeChanged(Theme theme, bool forceRefresh)
 		{
 			// MUX: DOCollection.cpp:1302-1312 — snapshot the values first; notifying an item can
 			// re-enter the dictionary (e.g. a refresh materializing a lazy sibling resource mutates
 			// the backing map).
-			var snapshot = new List<IDependencyObjectStoreProvider>();
+			var snapshot = new List<DependencyObject>();
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider)
+				if (item is DependencyObject provider)
 				{
 					snapshot.Add(provider);
 				}
@@ -1216,7 +1216,7 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var provider in snapshot)
 			{
-				provider.Store.NotifyThemeChanged(theme, forceRefresh);
+				provider.NotifyThemeChanged(theme, forceRefresh);
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
@@ -1240,9 +1240,9 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider)
+				if (item is DependencyObject provider)
 				{
-					provider.Store.UpdateResourceBindings(updateReason, resourceContextProvider: owner, containingDictionary: this);
+					provider.UpdateResourceBindings(updateReason, resourceContextProvider: owner, containingDictionary: this);
 				}
 			}
 

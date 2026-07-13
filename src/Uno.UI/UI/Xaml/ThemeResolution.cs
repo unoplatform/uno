@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml;
 /// </summary>
 /// <remarks>
 /// This is the single source of truth for an owner's resolution theme: the resolution choke points
-/// (e.g. <see cref="DependencyObjectStore"/>.UpdateThemeReference) compute it once and scope it onto
+/// (e.g. <see cref="DependencyObject"/>.UpdateThemeReference) compute it once and scope it onto
 /// the core requested-theme-for-subtree slot, which the resolution leaf reads
 /// (EnsureActiveThemeDictionary, Resources.cpp:764-768), so {ThemeResource} resolution keys on the
 /// owner's own theme.
@@ -76,10 +76,10 @@ internal static class ThemeResolution
 		=> SystemThemeHelper.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
 
 	/// <summary>
-	/// Gets the per-object theme stored on the object's <see cref="DependencyObjectStore"/>, or
+	/// Gets the per-object theme stored on the object's <see cref="DependencyObject"/>, or
 	/// <see cref="Theme.None"/> if the object does not expose a store.
 	/// </summary>
 	private static Theme GetStoreTheme(DependencyObject owner)
-		=> owner is IDependencyObjectStoreProvider provider ? provider.Store.GetTheme() : Theme.None;
+		=> owner is DependencyObject provider ? provider.GetTheme() : Theme.None;
 
 }

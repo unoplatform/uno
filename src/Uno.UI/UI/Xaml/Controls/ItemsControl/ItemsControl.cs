@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _itemsPanelRoot; }
 			set
 			{
-				if (_itemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_itemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}

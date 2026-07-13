@@ -675,7 +675,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
 				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
 				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				var store = ((IDependencyObjectStoreProvider)this).Store;
+				var store = ((DependencyObject)this);
 				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 					!store.IsPropertyTemplateBound(pdpTarget))
 				{
@@ -1116,7 +1116,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
+			((DependencyObject)this).GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif

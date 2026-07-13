@@ -253,8 +253,8 @@ namespace Microsoft.UI.Xaml
 				// storyboard at Enter). Skipped during a theme walk — the core slot already carries the new
 				// theme while the owner's per-object theme is still stale, so a re-entrant GoToState (a
 				// StateTrigger flipping mid-walk) keeps the walk theme.
-				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
-					&& provider.Store.IsProcessingThemeWalk;
+				var ownerIsProcessingThemeWalk = (element as DependencyObject) is DependencyObject provider
+					&& provider.IsProcessingThemeWalk;
 				using var themeScope = ownerIsProcessingThemeWalk
 					? default
 					: Uno.UI.Xaml.Core.CoreServices.Instance

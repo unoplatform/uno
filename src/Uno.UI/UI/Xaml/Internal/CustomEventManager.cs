@@ -74,7 +74,7 @@ internal sealed class CustomKeepLastEventManager<
 
 		foreach (var item in _buffers)
 		{
-			if (((IDependencyObjectStoreProvider)item.Key).Store.IsDisposed)
+			if (((DependencyObject)(object)item.Key).IsDisposed)
 			{
 				continue;
 			}
