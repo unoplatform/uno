@@ -207,7 +207,15 @@ public class X11NativeWebView : INativeWebView
 			var tcs = new TaskCompletionSource<T>();
 			GLib.Idle.Add(() =>
 			{
-				tcs.SetResult(func());
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					tcs.SetResult(func());
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
 			return tcs.Task.Result;
@@ -225,8 +233,16 @@ public class X11NativeWebView : INativeWebView
 			var tcs = new TaskCompletionSource();
 			GLib.Idle.Add(() =>
 			{
-				func();
-				tcs.SetResult();
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					func();
+					tcs.SetResult();
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
 			tcs.Task.Wait();

@@ -671,12 +671,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_ = XLib.XFlush(RootX11Window.Display);
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
 
-		_ = XLib.XQueryTree(RootX11Window.Display, window, out _, out var parent, out var children, out _);
-		_ = XLib.XFree(children);
-		if (parent != RootX11Window.Window && this.Log().IsEnabled(LogLevel.Warning))
+		// Best-effort diagnostic only: a WM that already manages `window` as a toplevel can also
+		// steal it back asynchronously after this check (observed with Weston's XWM on WSLg).
+		if (XLib.XQueryTree(RootX11Window.Display, window, out _, out var parent, out var children, out _) != 0)
 		{
-			// e.g. a WM that already manages `window` as a toplevel can steal it back (observed with Weston's XWM on WSLg)
-			this.Log().Warn($"Failed to reparent window 0x{window.ToString("X")} into the application window. The native element will likely not be visible.");
+			_ = XLib.XFree(children);
+			if (parent != RootX11Window.Window && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Failed to reparent window 0x{window.ToString("X")} into the application window; it is parented by 0x{parent.ToString("X")} instead, likely a window manager managing it as a toplevel. The native element will likely not be visible.");
+			}
 		}
 	}
 
