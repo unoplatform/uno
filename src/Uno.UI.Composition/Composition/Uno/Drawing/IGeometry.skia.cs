@@ -32,4 +32,13 @@ internal interface IGeometry : IDisposable
 
 	/// <summary>Returns a new geometry combining this one and <paramref name="other"/> per <paramref name="mode"/>.</summary>
 	IGeometry Combine(IGeometry other, GeometryCombineMode mode);
+
+	/// <summary>Returns the fill region of this geometry, optionally trimmed to [<paramref name="trimStart"/>, <paramref name="trimEnd"/>].</summary>
+	IGeometry GetFilledGeometry(float trimStart, float trimEnd);
+
+	/// <summary>
+	/// Returns the fill region produced by stroking this geometry with <paramref name="style"/>, matching
+	/// WinUI stroke semantics (caps, miter-clip, dash caps). The caller-owned result must be disposed.
+	/// </summary>
+	IGeometry GetStrokeFillGeometry(in StrokeStyle style);
 }
