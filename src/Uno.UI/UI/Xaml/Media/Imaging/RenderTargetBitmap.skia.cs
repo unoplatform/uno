@@ -158,7 +158,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var canvas = recorder.BeginRecording(new SKRect(0, 0, width, height));
 				canvas.Clear(SKColors.Transparent);
 				canvas.Scale((float)dpi);
-				visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero);
+				visual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), offsetOverride: Vector2.Zero);
 				return recorder.EndRecording();
 			}
 			finally

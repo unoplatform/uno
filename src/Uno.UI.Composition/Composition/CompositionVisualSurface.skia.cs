@@ -18,7 +18,7 @@ namespace Microsoft.UI.Composition
 				// Note that this is applied before the SourceOffset translates the canvas' matrix, so
 				canvas.ClipRect(new SKRect(0, 0, (this as ISkiaSurface).Size.X, (this as ISkiaSurface).Size.X), antialias: true);
 
-				SourceVisual.RenderRootVisual(canvas, SourceOffset);
+				SourceVisual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), SourceOffset);
 				canvas.RestoreToCount(save);
 			}
 		}

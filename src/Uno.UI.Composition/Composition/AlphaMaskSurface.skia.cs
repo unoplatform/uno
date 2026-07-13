@@ -49,7 +49,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 		canvas.SaveLayer(_alphaMaskPaint);
 
 		// Render the visual at its natural position
-		visual.RenderRootVisual(canvas, Vector2.Zero);
+		visual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), Vector2.Zero);
 
 		canvas.Restore();
 	}

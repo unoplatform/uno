@@ -10,7 +10,7 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session);
+		void CreateInstance(Visual visual, IDrawingSession drawingSession, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session);
 	}
 
 	/// <summary>
@@ -21,31 +21,31 @@ public partial class Visual
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, IDrawingSession drawingSession, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session)
 			{
-				session = new PaintingSession(visual, canvas, ref rootTransform, opacity);
+				session = new PaintingSession(visual, drawingSession, ref rootTransform, opacity);
 			}
 		}
 
-		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity)
+		private PaintingSession(Visual visual, IDrawingSession drawingSession, ref Matrix4x4 rootTransform, float opacity)
 		{
-			Canvas = canvas;
-			Session = new SkiaDrawingSession(canvas);
+			Session = drawingSession;
+			Canvas = ((SkiaDrawingSession)drawingSession).Canvas;
 			RootTransform = ref rootTransform;
 			Opacity = opacity;
 
-			_saveCount = canvas.Save();
+			_saveCount = Session.Save();
 		}
 
-		public void Dispose() => Canvas.RestoreToCount(_saveCount);
-
-		public readonly SKCanvas Canvas;
+		public void Dispose() => Session.RestoreToCount(_saveCount);
 
 		/// <summary>
-		/// The backend-neutral drawing surface for this session. Currently wraps <see cref="Canvas"/>; new
-		/// painting code should target this instead of <see cref="Canvas"/> as the pipeline migrates off
-		/// direct SkiaSharp access.
+		/// The underlying SkiaSharp canvas. Transitional accessor for render code (clips, shadows) not yet
+		/// migrated off direct SkiaSharp; new painting code should use <see cref="Session"/>.
 		/// </summary>
+		public readonly SKCanvas Canvas;
+
+		/// <summary>The backend-neutral drawing surface for this session.</summary>
 		public readonly IDrawingSession Session;
 
 		/// <summary>The transform matrix to the root visual of this drawing session (which isn't necessarily the identity matrix due to scaling (DPI) and/or RenderTargetBitmap.</summary>

@@ -17,6 +17,7 @@ using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Composition;
@@ -44,14 +45,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _pictureCollapsingOptimizationFrameThreshold;
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
-	private static SKPictureRecorder _recorder = new();
-
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
-	private IntPtr _picture;
-	private IntPtr _childrenPicture;
+	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
+	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
+	private IRenderData? _content;
+	private IRenderData? _childrenContent;
 	private int _framesSinceSubtreeNotChanged;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
@@ -233,11 +234,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </remarks>
 	internal void InvalidatePaint()
 	{
-		if (_picture != IntPtr.Zero)
-		{
-			UnoSkiaApi.sk_refcnt_safe_unref(_picture);
-			_picture = IntPtr.Zero;
-		}
+		_content?.Dispose();
+		_content = null;
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 	}
@@ -247,11 +245,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
-			if (parent._childrenPicture != IntPtr.Zero)
-			{
-				UnoSkiaApi.sk_refcnt_safe_unref(parent._childrenPicture);
-				parent._childrenPicture = IntPtr.Zero;
-			}
+			parent._childrenContent?.Dispose();
+			parent._childrenContent = null;
 			parent._flags |= VisualFlags.ChildrenSKPictureInvalid;
 			parent = parent.Parent;
 		}
@@ -308,7 +303,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride)
+	internal void RenderRootVisual(IDrawingSession drawingSession, Vector2? offsetOverride)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -318,9 +313,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
 		// from this visual.
-		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
+		// It's important to set the default to the session's current transform, not identity, in case there's
 		// an initial global transformation set (e.g. if the renderer sets scaling for dpi or we're rendering from a VisualSurface)
-		var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
+		var initialTransform = drawingSession.TotalMatrix;
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
 			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
@@ -335,7 +330,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		_factory.CreateInstance(this,
-						  canvas,
+						  drawingSession,
 						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
 						  opacity: 1.0f,
 						  out var session);
@@ -344,7 +339,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
 			// omitted.
-			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
+			drawingSession.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 			Render(session);
 		}
 	}
@@ -404,7 +399,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				// The analytic-shadow fallback stays on the Skia fast path (it replays the subtree through an
+				// effect-based shadow paint); wrap the recording canvas in a session for the shared walk.
+				_factory.CreateInstance(this, new SkiaDrawingSession(recordingCanvas), ref rootTransform, session.Opacity, out var childSession);
 				using (childSession)
 				{
 					PaintStep(this, childSession);
@@ -442,27 +439,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
-					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
+					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
-					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
-
-					if (visual._picture != IntPtr.Zero)
-					{
-						UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
-					}
-
-					visual._picture = picture;
+					visual._content?.Dispose();
+					visual._content = recording.EndRecording();
 				}
 
-				if (visual._picture != IntPtr.Zero)
+				if (visual._content is { } content)
 				{
-					unsafe
-					{
-						UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
-					}
+					session.Session.Draw(content);
 				}
 			}
 #if DEBUG
@@ -490,12 +478,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{
-			if (visual._childrenPicture != IntPtr.Zero)
+			if (visual._childrenContent is { } childrenContent)
 			{
-				unsafe
-				{
-					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._childrenPicture, null, IntPtr.Zero);
-				}
+				session.Session.Draw(childrenContent);
 			}
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
@@ -509,11 +494,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
+				var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
 				using (childSession)
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
@@ -522,30 +506,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					}
 				}
 
-				var picture = IntPtr.Zero;
-
-				unsafe
-				{
-					picture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
-					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, picture, null, IntPtr.Zero);
-				}
+				var content = recording.EndRecording();
+				session.Session.Draw(content);
 
 				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
-				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
-				// where subtree rendering is skipped with the cached picture,
-				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
+				// In such case, we should not cache this content. Not only it is outdated, it will also lead to a corrupted state,
+				// where subtree rendering is skipped with the cached content,
+				// and its descendant can't invalidate the cached content since they are already on a ChildrenSKPictureInvalid path.
 				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 				{
-					if (visual._childrenPicture != IntPtr.Zero)
-					{
-						UnoSkiaApi.sk_refcnt_safe_unref(visual._childrenPicture);
-					}
-
-					visual._childrenPicture = picture;
+					visual._childrenContent?.Dispose();
+					visual._childrenContent = content;
 				}
 				else
 				{
-					UnoSkiaApi.sk_refcnt_safe_unref(picture);
+					content.Dispose();
 				}
 			}
 		}
@@ -962,15 +937,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
-	private unsafe void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
+	private void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
 	{
-		var canvas = parentSession.Canvas;
-
 		ref var rootTransform = ref parentSession.RootTransform;
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
-		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
+		_factory.CreateInstance(this, parentSession.Session, ref rootTransform, opacity, out session);
 
 		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
 		{
@@ -987,13 +960,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (!_totalMatrix.isLocalMatrixIdentity)
 			{
-				// this avoids the matrix copying in canvas.SetMatrix()
-				UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+				session.Session.SetMatrix(totalMatrix);
 			}
 		}
 #if DEBUG
 		else
 		{
+			var canvas = parentSession.Canvas;
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
 				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
 				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero

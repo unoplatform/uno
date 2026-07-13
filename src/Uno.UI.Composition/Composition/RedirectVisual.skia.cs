@@ -13,7 +13,7 @@ namespace Microsoft.UI.Composition
 
 			if (Source is not null && session.Canvas is { } canvas)
 			{
-				Source.RenderRootVisual(canvas, null);
+				Source.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), null);
 			}
 		}
 

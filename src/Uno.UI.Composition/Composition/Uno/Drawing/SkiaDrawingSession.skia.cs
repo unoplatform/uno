@@ -59,7 +59,16 @@ internal class SkiaDrawingSession : IDrawingSession
 
 	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
 
-	public void SetMatrix(in Matrix4x4 matrix) => _canvas.SetMatrix(matrix.ToSKMatrix());
+	public void SetMatrix(in Matrix4x4 matrix)
+	{
+		// Preserve the full 4x4 (visual transforms may include 3D rotation) by reinterpreting the
+		// Matrix4x4 as an SKMatrix44, matching the previous raw sk_canvas_set_matrix path.
+		var m = matrix;
+		unsafe
+		{
+			UnoSkiaApi.sk_canvas_set_matrix(_canvas.Handle, (SKMatrix44*)&m);
+		}
+	}
 
 	public void Concat(in Matrix4x4 matrix) => _canvas.Concat(matrix.ToSKMatrix());
 
