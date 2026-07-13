@@ -205,9 +205,9 @@ internal static class DevServerProcessHelper
 	/// <summary>
 	/// Relays the process's stdout/stderr to <paramref name="logger"/> line by line as they
 	/// arrive — stdout at <paramref name="stdLevel"/>, stderr at <paramref name="errLevel"/>.
-	/// When <paramref name="displayName"/> is set, lines are tagged <c>[name:stdout|stderr]</c>
-	/// to mark provenance; leave it <c>null</c> to relay verbatim (needed when the child's
-	/// stdout is itself a result the caller passes through, e.g. JSON). Where those lines
+	/// When <paramref name="displayName"/> is set, lines are tagged <c>[name]</c> to mark
+	/// provenance; leave it <c>null</c> to relay verbatim (needed when the child's stdout is
+	/// itself a result the caller passes through, e.g. JSON). Where those lines
 	/// surface (console, file, both) is the logger configuration's concern, not this method's:
 	/// attach a console sink to see them, and in MCP mode the logger already routes everything
 	/// to stderr so the JSON-RPC stdout stays clean. The stream events are multicast, so a
@@ -222,10 +222,11 @@ internal static class DevServerProcessHelper
 		LogLevel errLevel = _defaultErrLevel)
 	{
 		// e.Data is passed as a value, not folded into the template, so braces in the
-		// payload are safe; displayName (when set) is a known-safe constant tag.
-		void Relay(LogLevel level, string stream, string data)
+		// payload are safe; displayName (when set) is a known-safe constant tag. The
+		// stream is not tagged — the log level already distinguishes stdout from stderr.
+		void Relay(LogLevel level, string? data)
 		{
-			if (!logger.IsEnabled(level))
+			if (data is null || !logger.IsEnabled(level))
 			{
 				return;
 			}
@@ -236,30 +237,18 @@ internal static class DevServerProcessHelper
 			}
 			else
 			{
-				logger.Log(level, "[{Name}:{Stream}] {Data}", displayName, stream, data);
+				logger.Log(level, "[{Name}] {Data}", displayName, data);
 			}
 		}
 
 		if (startInfo.RedirectStandardOutput)
 		{
-			process.OutputDataReceived += (_, e) =>
-			{
-				if (e.Data is not null)
-				{
-					Relay(stdLevel, "stdout", e.Data);
-				}
-			};
+			process.OutputDataReceived += (_, e) => Relay(stdLevel, e.Data);
 		}
 
 		if (startInfo.RedirectStandardError)
 		{
-			process.ErrorDataReceived += (_, e) =>
-			{
-				if (e.Data is not null)
-				{
-					Relay(errLevel, "stderr", e.Data);
-				}
-			};
+			process.ErrorDataReceived += (_, e) => Relay(errLevel, e.Data);
 		}
 	}
 
