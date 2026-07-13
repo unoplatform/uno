@@ -18,7 +18,7 @@ public abstract partial class GLCanvasElement
 		{
 			_gl = gl;
 
-			Framebuffer = gl.GenBuffer();
+			Framebuffer = gl.GenFramebuffer();
 			gl.BindFramebuffer(GLEnum.Framebuffer, Framebuffer);
 			{
 				_textureColorBuffer = gl.GenTexture();
@@ -26,8 +26,12 @@ public abstract partial class GLCanvasElement
 				{
 					gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, (uint)renderSize.Width, (uint)renderSize.Height, 0, GLEnum.Rgb,
 						GLEnum.UnsignedByte, (void*)0);
-					gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-					gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+					// Use the scalar glTexParameteri (TexParameter with an int) rather than the
+					// integer-texture glTexParameterIuiv (TexParameterI). Min/mag filters are plain
+					// enum parameters, and glTexParameterIuiv is GLES 3.1+/desktop-only - it is absent
+					// from Apple's OpenGL ES 3.0, where resolving it throws and aborts framebuffer setup.
+					gl.TexParameter(GLEnum.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
+					gl.TexParameter(GLEnum.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
 					gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0,
 						GLEnum.Texture2D, _textureColorBuffer, 0);
 				}
@@ -36,7 +40,7 @@ public abstract partial class GLCanvasElement
 				_renderBuffer = gl.GenRenderbuffer();
 				gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
 				{
-					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Width);
+					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Height);
 					gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment,
 						GLEnum.Renderbuffer, _renderBuffer);
 				}
