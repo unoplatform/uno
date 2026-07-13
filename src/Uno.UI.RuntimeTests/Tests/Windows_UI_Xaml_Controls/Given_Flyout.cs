@@ -755,7 +755,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 #if HAS_UNO
-				SUT.contextFlyout.Close();
+				SUT.contextFlyout.Hide();
 #endif
 			}
 		}
