@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollPresenter.h, commit b8cfb8490
 
 using System.Collections.Generic;
 using System.Numerics;
@@ -108,18 +109,17 @@ public partial class ScrollPresenter : FrameworkElement
 	private float m_animationRestartZoomFactor = 1.0f;
 	private float m_endOfInertiaZoomFactor = 1.0f;
 	private float m_zoomFactor = 1.0f;
+	private float m_anticipatedZoomFactor = float.NaN;
 	private float m_contentLayoutOffsetX = 0.0f;
 	private float m_contentLayoutOffsetY = 0.0f;
 	private double m_zoomedHorizontalOffset = 0.0;
 	private double m_zoomedVerticalOffset = 0.0;
+	private double m_anticipatedZoomedHorizontalOffset = double.NaN;
+	private double m_anticipatedZoomedVerticalOffset = double.NaN;
 	private double m_unzoomedExtentWidth = 0.0;
 	private double m_unzoomedExtentHeight = 0.0;
 	private double m_viewportWidth = 0.0;
 	private double m_viewportHeight = 0.0;
-	// Anticipated view recorded for the ScrollStarting/ZoomStarting events. NaN means no anticipated value, in which case the current value is used.
-	private float m_anticipatedZoomFactor = float.NaN;
-	private double m_anticipatedZoomedHorizontalOffset = double.NaN;
-	private double m_anticipatedZoomedVerticalOffset = double.NaN;
 	private bool m_horizontalSnapPointsNeedViewportUpdates = false; // True when at least one horizontal snap point is not near aligned.
 	private bool m_verticalSnapPointsNeedViewportUpdates = false; // True when at least one vertical snap point is not near aligned.
 	private bool m_isAnchorElementDirty = true; // False when m_anchorElement is up-to-date, True otherwise.

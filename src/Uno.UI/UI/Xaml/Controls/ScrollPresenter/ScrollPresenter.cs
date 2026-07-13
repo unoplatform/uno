@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollPresenter.cpp, commit b8cfb8490
 
 using System;
 using System.Collections.Generic;
@@ -236,9 +237,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 	public double ScrollableHeight => Math.Max(0.0, GetZoomedExtentHeight() - ViewportHeight);
 
-	// AnticipatedZoomedHorizontalOffset, AnticipatedZoomedVerticalOffset, AnticipatedZoomFactor, AnticipatedScrollableWidth and
-	// AnticipatedScrollableHeight return the anticipated view once all queued view change requests are completed. They are used to
-	// accumulate successive relative-to-current-view requests and to populate the ScrollStarting/ZoomStarting event args.
+	// AnticipatedZoomedHorizontalOffset, AnticipatedZoomedVerticalOffset and AnticipatedZoomFactor are
+	// used to evaluate the view for the ScrollStarting/ZoomStarting events raised when a ScrollTo, ScrollBy,
+	// ZoomTo or ZoomBy request is handed off to the InteractionTracker.
 	private double AnticipatedZoomedHorizontalOffset() => double.IsNaN(m_anticipatedZoomedHorizontalOffset) ? m_zoomedHorizontalOffset : m_anticipatedZoomedHorizontalOffset;
 
 	private double AnticipatedZoomedVerticalOffset() => double.IsNaN(m_anticipatedZoomedVerticalOffset) ? m_zoomedVerticalOffset : m_anticipatedZoomedVerticalOffset;
@@ -5130,6 +5131,42 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 	}
 
+	void UpdateAnticipatedOffset(ScrollPresenterDimension dimension, double zoomedOffset)
+	{
+		if (dimension == ScrollPresenterDimension.HorizontalScroll)
+		{
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedHorizontalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedHorizontalOffset != zoomedOffset)
+			{
+				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedHorizontalOffset", m_anticipatedZoomedHorizontalOffset, zoomedOffset);
+
+				m_anticipatedZoomedHorizontalOffset = zoomedOffset;
+			}
+		}
+		else
+		{
+			MUX_ASSERT(dimension == ScrollPresenterDimension.VerticalScroll);
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedVerticalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedVerticalOffset != zoomedOffset)
+			{
+				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedVerticalOffset", m_anticipatedZoomedVerticalOffset, zoomedOffset);
+
+				m_anticipatedZoomedVerticalOffset = zoomedOffset;
+			}
+		}
+	}
+
+	void UpdateAnticipatedZoomFactor(float zoomFactor)
+	{
+		bool sameNaN = float.IsNaN(m_anticipatedZoomFactor) && float.IsNaN(zoomFactor);
+		if (!sameNaN && m_anticipatedZoomFactor != zoomFactor)
+		{
+			// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_FLT_FLT, METH_NAME, this, L"old/new anticipatedZoomFactor", m_anticipatedZoomFactor, zoomFactor);
+
+			m_anticipatedZoomFactor = zoomFactor;
+		}
+	}
+
 	void UpdateOffset(ScrollPresenterDimension dimension, double zoomedOffset)
 	{
 		if (dimension == ScrollPresenterDimension.HorizontalScroll)
@@ -6070,11 +6107,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 			m_interactionTracker.PositionInertiaDecayRate = new Vector3(horizontalInertiaDecayRate, verticalInertiaDecayRate, 0.0f);
 		}
-		else
-		{
-			// Restore the default 0.95 position inertia decay rate since it may have been overridden by a prior offset change with additional velocity.
-			m_interactionTracker.PositionInertiaDecayRate = null;
-		}
 
 #if DEBUG
 		// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_METH_STR, METH_NAME, this,
@@ -6239,11 +6271,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 			m_interactionTracker.ScaleInertiaDecayRate = scaleInertiaDecayRate;
 		}
-		else
-		{
-			// Restore the default 0.985 zoomFactor inertia decay rate since it may have been overridden by a prior zoomFactor change with additional velocity.
-			m_interactionTracker.ScaleInertiaDecayRate = null;
-		}
 
 		Vector2 centerPoint2D = !nullableCenterPoint.HasValue ?
 			new Vector2((float)(m_viewportWidth / 2.0), (float)(m_viewportHeight / 2.0)) : nullableCenterPoint.Value;
@@ -6283,6 +6310,17 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 
 		m_interactionTracker.ScaleInertiaDecayRate = null;
+	}
+
+	// Clears the last recorded anticipated view for the ScrollStarting/ZoomStarting events.
+	// Called in two classes of circumstances:
+	// - all queued view change requested were completed,
+	// - an animated view change request is handed off to the InteractionTracker.
+	void ResetAnticipatedView()
+	{
+		UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, double.NaN);
+		UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, double.NaN);
+		UpdateAnticipatedZoomFactor(float.NaN);
 	}
 
 	void CompleteViewChange(
@@ -7026,6 +7064,50 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		StateChanged?.Invoke(this, null);
 	}
 
+	void RaiseScrollStarting(
+		int offsetsChangeCorrelationId,
+		double anticipatedHorizontalOffset,
+		double anticipatedVerticalOffset,
+		float anticipatedZoomFactor)
+	{
+		if (ScrollStarting is not null)
+		{
+			var scrollStartingEventArgs = new ScrollingScrollStartingEventArgs();
+
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, offsetsChangeCorrelationId);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
+
+			scrollStartingEventArgs.SetCorrelationId(offsetsChangeCorrelationId);
+			scrollStartingEventArgs.SetHorizontalOffset(anticipatedHorizontalOffset);
+			scrollStartingEventArgs.SetVerticalOffset(anticipatedVerticalOffset);
+			scrollStartingEventArgs.SetZoomFactor(anticipatedZoomFactor);
+			ScrollStarting.Invoke(this, scrollStartingEventArgs);
+		}
+	}
+
+	void RaiseZoomStarting(
+		int zoomFactorChangeCorrelationId,
+		double anticipatedHorizontalOffset,
+		double anticipatedVerticalOffset,
+		float anticipatedZoomFactor)
+	{
+		if (ZoomStarting is not null)
+		{
+			var zoomStartingEventArgs = new ScrollingZoomStartingEventArgs();
+
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, zoomFactorChangeCorrelationId);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
+
+			zoomStartingEventArgs.SetCorrelationId(zoomFactorChangeCorrelationId);
+			zoomStartingEventArgs.SetHorizontalOffset(anticipatedHorizontalOffset);
+			zoomStartingEventArgs.SetVerticalOffset(anticipatedVerticalOffset);
+			zoomStartingEventArgs.SetZoomFactor(anticipatedZoomFactor);
+			ZoomStarting.Invoke(this, zoomStartingEventArgs);
+		}
+	}
+
 	void RaiseViewChanged()
 	{
 		ViewChanged?.Invoke(this, null);
@@ -7096,97 +7178,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		else
 		{
 			return zoomFactorAnimation;
-		}
-	}
-
-	void UpdateAnticipatedOffset(ScrollPresenterDimension dimension, double zoomedOffset)
-	{
-		if (dimension == ScrollPresenterDimension.HorizontalScroll)
-		{
-			bool sameNaN = double.IsNaN(m_anticipatedZoomedHorizontalOffset) && double.IsNaN(zoomedOffset);
-			if (!sameNaN && m_anticipatedZoomedHorizontalOffset != zoomedOffset)
-			{
-				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedHorizontalOffset", m_anticipatedZoomedHorizontalOffset, zoomedOffset);
-
-				m_anticipatedZoomedHorizontalOffset = zoomedOffset;
-			}
-		}
-		else
-		{
-			MUX_ASSERT(dimension == ScrollPresenterDimension.VerticalScroll);
-			bool sameNaN = double.IsNaN(m_anticipatedZoomedVerticalOffset) && double.IsNaN(zoomedOffset);
-			if (!sameNaN && m_anticipatedZoomedVerticalOffset != zoomedOffset)
-			{
-				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedVerticalOffset", m_anticipatedZoomedVerticalOffset, zoomedOffset);
-
-				m_anticipatedZoomedVerticalOffset = zoomedOffset;
-			}
-		}
-	}
-
-	void UpdateAnticipatedZoomFactor(float zoomFactor)
-	{
-		bool sameNaN = float.IsNaN(m_anticipatedZoomFactor) && float.IsNaN(zoomFactor);
-		if (!sameNaN && m_anticipatedZoomFactor != zoomFactor)
-		{
-			// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_FLT_FLT, METH_NAME, this, L"old/new anticipatedZoomFactor", m_anticipatedZoomFactor, zoomFactor);
-
-			m_anticipatedZoomFactor = zoomFactor;
-		}
-	}
-
-	// Clears the last recorded anticipated view for the ScrollStarting/ZoomStarting events.
-	// Called in two classes of circumstances:
-	// - all queued view change requested were completed,
-	// - an animated view change request is handed off to the InteractionTracker.
-	void ResetAnticipatedView()
-	{
-		UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, double.NaN);
-		UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, double.NaN);
-		UpdateAnticipatedZoomFactor(float.NaN);
-	}
-
-	void RaiseScrollStarting(
-		int offsetsChangeCorrelationId,
-		double anticipatedHorizontalOffset,
-		double anticipatedVerticalOffset,
-		float anticipatedZoomFactor)
-	{
-		if (ScrollStarting is not null)
-		{
-			var scrollStartingEventArgs = new ScrollingScrollStartingEventArgs();
-
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, offsetsChangeCorrelationId);
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
-
-			scrollStartingEventArgs.CorrelationId = offsetsChangeCorrelationId;
-			scrollStartingEventArgs.HorizontalOffset = anticipatedHorizontalOffset;
-			scrollStartingEventArgs.VerticalOffset = anticipatedVerticalOffset;
-			scrollStartingEventArgs.ZoomFactor = anticipatedZoomFactor;
-			ScrollStarting.Invoke(this, scrollStartingEventArgs);
-		}
-	}
-
-	void RaiseZoomStarting(
-		int zoomFactorChangeCorrelationId,
-		double anticipatedHorizontalOffset,
-		double anticipatedVerticalOffset,
-		float anticipatedZoomFactor)
-	{
-		if (ZoomStarting is not null)
-		{
-			var zoomStartingEventArgs = new ScrollingZoomStartingEventArgs();
-
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, zoomFactorChangeCorrelationId);
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
-			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
-
-			zoomStartingEventArgs.CorrelationId = zoomFactorChangeCorrelationId;
-			zoomStartingEventArgs.HorizontalOffset = anticipatedHorizontalOffset;
-			zoomStartingEventArgs.VerticalOffset = anticipatedVerticalOffset;
-			zoomStartingEventArgs.ZoomFactor = anticipatedZoomFactor;
-			ZoomStarting.Invoke(this, zoomStartingEventArgs);
 		}
 	}
 

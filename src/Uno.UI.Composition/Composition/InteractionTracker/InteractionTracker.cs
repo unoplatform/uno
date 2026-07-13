@@ -14,6 +14,7 @@ public partial class InteractionTracker : CompositionObject
 {
 	private InteractionTrackerState _state;
 	private Vector3 _position;
+	private float _scale = 1.0f;
 
 	private int _currentRequestId;
 
@@ -30,7 +31,7 @@ public partial class InteractionTracker : CompositionObject
 
 	public float MaxScale { get; set; } = 1.0f;
 
-	public float Scale { get; } = 1.0f;
+	public float Scale => _scale;
 
 	public Vector3 MinPosition { get; set; }
 
@@ -63,12 +64,48 @@ public partial class InteractionTracker : CompositionObject
 		if (_position != newPosition)
 		{
 			_position = newPosition;
+			var scale = _scale;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
-				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
+				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId));
 				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
 			});
 		}
+	}
+
+	internal void SetScale(float newScale, Vector3 centerPoint, int requestId)
+	{
+		var oldScale = _scale;
+		var scaleChanged = !oldScale.Equals(newScale);
+		var scaleRatio = oldScale == 0.0f ? 1.0f : newScale / oldScale;
+		var newPosition = scaleRatio * (_position + centerPoint) - centerPoint;
+
+		if (scaleChanged)
+		{
+			_scale = newScale;
+
+			// Scale-dependent expression animations update the position boundaries synchronously.
+			OnPropertyChanged(nameof(Scale), isSubPropertyChange: false);
+		}
+
+		newPosition = Vector3.Clamp(newPosition, MinPosition, MaxPosition);
+		var positionChanged = _position != newPosition;
+
+		if (!scaleChanged && !positionChanged)
+		{
+			return;
+		}
+
+		_position = newPosition;
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, newScale, requestId));
+
+			if (positionChanged)
+			{
+				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+			}
+		});
 	}
 
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
@@ -123,6 +160,22 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
 		=> TryUpdatePosition(Position + amount, option);
+
+	/// <summary>
+	/// Tries to update the scale to the specified value.
+	/// </summary>
+	/// <param name="value">The new value for scale.</param>
+	/// <param name="centerPoint">The new center point.</param>
+	/// <returns>
+	/// The request identifier. Request identifiers start at 1 and increase with each try call
+	/// during the lifetime of the application.
+	/// </returns>
+	public int TryUpdateScale(float value, Vector3 centerPoint)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdateScale(value, centerPoint, id);
+		return id;
+	}
 
 	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 	{

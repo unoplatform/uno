@@ -583,7 +583,6 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
-	[Ignore("UNO: Zoom via InteractionTracker.TryUpdateScale is [NotImplemented] on Skia (it throws), so ScrollPresenter never reaches RaiseZoomStarting and ScrollView.ZoomStarting cannot fire at runtime. The forwarding wiring itself matches WinUI (ScrollStarting is covered by VerifyScrollStartingForwarding). Re-enable once the Skia InteractionTracker implements scale.")]
 	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ZoomStarting args.")]
 	public async Task VerifyZoomStartingForwarding()
 	{
@@ -595,6 +594,8 @@ public class ScrollViewTests : MUXApiTestBase
 		int zoomStartingCorrelationId = -1;
 		int zoomCompletedCorrelationId = -1;
 		int operationCorrelationId = -1;
+		double zoomStartingHorizontalOffset = 0.0;
+		double zoomStartingVerticalOffset = 0.0;
 		float zoomStartingZoomFactor = 0.0f;
 
 		RunOnUIThread.Execute(() =>
@@ -609,6 +610,8 @@ public class ScrollViewTests : MUXApiTestBase
 				Log.Comment($"ZoomStarting zoomStartingCount={++zoomStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
 				Verify.AreSame(scrollView, sender);
 				zoomStartingCorrelationId = args.CorrelationId;
+				zoomStartingHorizontalOffset = args.HorizontalOffset;
+				zoomStartingVerticalOffset = args.VerticalOffset;
 				zoomStartingZoomFactor = args.ZoomFactor;
 			};
 
@@ -643,6 +646,8 @@ public class ScrollViewTests : MUXApiTestBase
 			Verify.AreEqual(1u, zoomStartingCount);
 			Verify.AreEqual(operationCorrelationId, zoomStartingCorrelationId);
 			Verify.AreEqual(operationCorrelationId, zoomCompletedCorrelationId);
+			Verify.AreEqual(0.0, zoomStartingHorizontalOffset);
+			Verify.AreEqual(0.0, zoomStartingVerticalOffset);
 			Verify.AreEqual(2.0f, zoomStartingZoomFactor);
 		});
 	}

@@ -1336,8 +1336,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 	[TestProperty("Description", "Requests a non-animated zoomFactor change before loading scrollPresenter.")]
-	[Ignore("Zoom is not yet supported in Uno.")]
 	public async Task SetZoomFactorBeforeLoading()
 	{
 		await ChangeZoomFactorBeforeLoading(false /*animate*/);
@@ -1345,7 +1345,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Requests an animated zoomFactor change before loading scrollPresenter.")]
-	[Ignore("Zoom is not yet supported in Uno.")]
+	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task AnimateZoomFactorBeforeLoading()
 	{
 		await ChangeZoomFactorBeforeLoading(true /*animate*/);
@@ -1469,6 +1469,12 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		UnoAutoResetEvent scrollPresenterViewChangeOperationEvent = new UnoAutoResetEvent(false);
 		ScrollPresenterOperation operation = null;
+		uint scrollStartingCount = 0u;
+		uint zoomStartingCount = 0u;
+		int zoomStartingCorrelationId = -1;
+		double zoomStartingHorizontalOffset = 0.0;
+		double zoomStartingVerticalOffset = 0.0;
+		float zoomStartingZoomFactor = 0.0f;
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1476,6 +1482,21 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter = new ScrollPresenter();
 
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent, false /*setAsContentRoot*/);
+
+			scrollPresenter.ScrollStarting += (sender, args) =>
+			{
+				Log.Comment($"ScrollStarting scrollStartingCount={++scrollStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+			};
+
+			scrollPresenter.ZoomStarting += (sender, args) =>
+			{
+				Log.Comment($"ZoomStarting zoomStartingCount={++zoomStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollPresenter, sender);
+				zoomStartingCorrelationId = args.CorrelationId;
+				zoomStartingHorizontalOffset = args.HorizontalOffset;
+				zoomStartingVerticalOffset = args.VerticalOffset;
+				zoomStartingZoomFactor = args.ZoomFactor;
+			};
 
 			scrollPresenter.ViewChanged += (sender, args) =>
 			{
@@ -1508,6 +1529,16 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Verify.IsLessThan(Math.Abs(scrollPresenter.VerticalOffset - 1050.0), 0.01);
 			Verify.AreEqual(8.0f, scrollPresenter.ZoomFactor);
 			Verify.AreEqual(ScrollPresenterViewChangeResult.Completed, operation.Result);
+			Verify.AreEqual(0u, scrollStartingCount);
+			Verify.AreEqual(animate ? 0u : 1u, zoomStartingCount);
+
+			if (!animate)
+			{
+				Verify.AreEqual(operation.CorrelationId, zoomStartingCorrelationId);
+				Verify.IsLessThan(Math.Abs(zoomStartingHorizontalOffset - 700.0), 0.01);
+				Verify.IsLessThan(Math.Abs(zoomStartingVerticalOffset - 1050.0), 0.01);
+				Verify.AreEqual(8.0f, zoomStartingZoomFactor);
+			}
 		});
 	}
 

@@ -65,4 +65,10 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 
 		_interactionTracker.SetPosition(value, requestId);
 	}
+
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		value = Math.Clamp(value, _interactionTracker.MinScale, _interactionTracker.MaxScale);
+		_interactionTracker.SetScale(value, centerPoint, requestId);
+	}
 }
