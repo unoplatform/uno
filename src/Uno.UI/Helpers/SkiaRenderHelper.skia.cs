@@ -10,6 +10,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
 
@@ -32,7 +33,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IRenderData frame, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrameAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
 		using var _ = new SKAutoCanvasRestore(canvas, true);
@@ -46,22 +47,16 @@ internal static class SkiaRenderHelper
 
 		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
-		return (picture, path, nativeVisualsInZOrder);
+		return (new SkiaRenderData(picture), path, nativeVisualsInZOrder);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, Action<SKCanvas>? postRenderAction)
+	internal static void RenderFrame(SKCanvas canvas, IRenderData frame, SKColor background, Action<SKCanvas>? postRenderAction)
 	{
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
-			if (picture != IntPtr.Zero)
-			{
-				// This might happen if we get render request before the first frame is painted
-				unsafe
-				{
-					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, picture, null, IntPtr.Zero);
-				}
-			}
+			// This might not draw anything if we get a render request before the first frame is recorded.
+			new SkiaDrawingSession(canvas).Draw(frame);
 
 			postRenderAction?.Invoke(canvas);
 		}

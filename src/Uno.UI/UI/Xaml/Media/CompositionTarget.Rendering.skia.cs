@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -21,6 +22,12 @@ namespace Microsoft.UI.Xaml.Media;
 public partial class CompositionTarget
 {
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
+
+	/// <summary>
+	/// The active rendering backend that owns the frame record/present lifecycle. Defaults to the Skia
+	/// two-phase backend; a host/experiment can replace it before the first frame.
+	/// </summary>
+	internal static IRenderBackend RenderBackend { get; set; } = new SkiaRenderBackend();
 
 	private static readonly long _start = Stopwatch.GetTimestamp();
 	// We're using this table as a set with weakref keys. values are always null
@@ -48,7 +55,7 @@ public partial class CompositionTarget
 	private static SKPath? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IRenderData frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -95,13 +102,13 @@ public partial class CompositionTarget
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
+		var (frame, path, nativeVisualsInZOrder) = RenderBackend.Record(
+			rootElement.Visual,
 			(float)bounds.Width,
 			(float)bounds.Height,
-			rootElement.Visual,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
-		var renderedFrame = (picture, path);
-		var previousFrame = default((IntPtr frame, SKPath path)?);
+			FrameRenderingOptions.invertNativeElementClipPath);
+		var renderedFrame = (frame, path);
+		var previousFrame = default((IRenderData frame, SKPath path)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
@@ -111,11 +118,8 @@ public partial class CompositionTarget
 
 		_fpsHelper.OnFrameRecorded();
 
-		// Delete previous SKPicture now since we are swapping it
-		if (previousFrame != null)
-		{
-			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
-		}
+		// Release the previous frame now since we are swapping it
+		previousFrame?.frame.Dispose();
 
 		if (_isRenderingActive)
 		{
@@ -161,7 +165,7 @@ public partial class CompositionTarget
 			RunRenderJobs(canvas.Context as GRContext);
 		}
 
-		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IRenderData frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -213,11 +217,7 @@ public partial class CompositionTarget
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			SkiaRenderHelper.RenderPicture(
-				canvas,
-				lastRenderedFrame.frame,
-				SKColors.Transparent,
-				_fpsHelper.DrawFps);
+			RenderBackend.Present(lastRenderedFrame.frame, canvas, _fpsHelper.DrawFps);
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);
@@ -324,9 +324,9 @@ public partial class CompositionTarget
 		public void Fail() => _tcs.TrySetResult(false);
 	}
 
-	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	private void ReturnFrame((IRenderData frame, SKPath path) frame)
 	{
-		var pictureToDelete = IntPtr.Zero;
+		IRenderData? frameToDelete = null;
 
 		lock (_frameGate)
 		{
@@ -337,15 +337,12 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				pictureToDelete = frame.picture;
+				frameToDelete = frame.frame;
 			}
 		}
 
-		// Delete it then
-		if (pictureToDelete != IntPtr.Zero)
-		{
-			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
-		}
+		// Release it then
+		frameToDelete?.Dispose();
 	}
 
 	internal static void InvokeRendering()
