@@ -565,120 +565,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-<<<<<<< HEAD
 		#region SendAndWaitForResult
-=======
-		#region UpdateFile
-		// LEGACY: As the Update file message might have been duplicated in other projects (e.g. runtime tests engine), we make sure to stay backward compatible.
-		private async Task ProcessUpdateFile(UpdateSingleFileRequest singleRequest)
-		{
-			var response = await _fileUpdater.UpdateAsync(singleRequest, _ct.Token);
-			var singleResult = response.Results.SingleOrDefault();
-			var singleResponse = new UpdateSingleFileResponse(
-				singleRequest.RequestId,
-				singleRequest.FilePath,
-				singleResult?.Result ?? FileUpdateResult.Failed,
-				response.GlobalError ?? singleResult?.Error,
-				response.HotReloadCorrelationId);
-
-			await _remoteControlServer.SendFrame(singleResponse);
-		}
-
-		private async Task ProcessUpdateFile(UpdateFileRequest request)
-		{
-			var response = await _fileUpdater.UpdateAsync(request, _ct.Token);
-			await _remoteControlServer.SendFrame(new UpdateFileResponse(
-				response.RequestId,
-				response.GlobalError,
-				response.Results,
-				response.HotReloadCorrelationId));
-		}
-
-		private async ValueTask<bool> RequestHotReloadToIde()
-		{
-			// Only Visual Studio handles the explicit force-hot-reload request. Other IDEs (VS Code,
-			// Rider) register no callback for ForceHotReloadIdeMessage, so sending it there only logs a
-			// "no callback" error on the IDE side and blocks here until the IDE-result timeout — and they
-			// drive hot reload through the dev-server's own pipeline anyway. Outside VS this is a no-op:
-			// no request is sent and no ProcessingFiles is reported, and we return false so the
-			// no-changes auto-retry (HotReloadOperation) completes the operation instead of deferring
-			// while waiting for an IDE acknowledgement that will never come.
-			if (!_isRunningInsideVisualStudio)
-			{
-				return false;
-			}
-
-			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
-
-			if (result.IsSuccess)
-			{
-				// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
-				await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
-			}
-
-			return result.IsSuccess;
-		}
-		#endregion
-
-		//private async Task ProcessPackWorkspaceAsync(PackWorkspaceRequest req, CancellationToken ct)
-		//{
-		//	try
-		//	{
-		//		if (await GetWorkspaceAsync() is { } workspace)
-		//		{
-		//			var packagePath = await WorkspacePackage.Create(workspace.CurrentSolution, req.TargetFile, true, ct);
-		//			await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, packagePath, null));
-		//		}
-		//		else
-		//		{
-		//			await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: "Hot-reload workspace not initialized"));
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		await _remoteControlServer.SendFrame(new PackWorkspaceResponse(req.RequestId, null, Error: $"Pack failed\r\n{ex}"));
-		//	}
-		//}
-
-		//private async Task ProcessLoadWorkspaceAsync(LoadWorkspaceRequest req, CancellationToken ct)
-		//{
-		//	try
-		//	{
-		//		if (_configureServer is null)
-		//		{
-		//			throw new InvalidOperationException("Server not configured yet");
-		//		}
-
-		//		// Abort current workspace
-		//		await (_workspace?.Ct.CancelAsync() ?? Task.CompletedTask);
-
-		//		var manifest = await WorkspacePackage.Extract(req.PackageFile, req.WorkingDir, true, ct);
-		//		var workspaceCt = new CancellationTokenSource();
-		//		var manager = await CreateAdHoc(_configureServer, manifest, ct);
-		//		workspaceCt.Token.Register(() => manager.Dispose());
-
-		//		var fileSystemWatch = new FileSystemObserver(manager, _reporter, _solutionWatchersGate);
-		//		ct.Register(() => fileSystemWatch.Dispose());
-
-		//		_originalWorkspace ??= await GetWorkspaceAsync();
-		//		_workspace = new(Task.FromResult(manager), workspaceCt);
-
-		//		await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: null));
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		await _remoteControlServer.SendFrame(new LoadWorkspaceResponse(req.RequestId, Error: $"Load failed\r\n{ex}"));
-		//	}
-		//}
-
-		public void Dispose()
-		{
-			_ct.Cancel();
-			_workspace?.Ct.Cancel();
-		}
-
-		#region Helpers - IDE Channel SendAndWaitForResult
->>>>>>> 7d5c35e6b8 (fix(hot-reload): only request an explicit IDE hot reload inside Visual Studio)
 		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
 
 		private long _lasIdeCorrelationId;
@@ -954,6 +841,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<bool> RequestHotReloadToIde()
 		{
+			// Only Visual Studio handles the explicit force-hot-reload request. Other IDEs (VS Code,
+			// Rider) register no callback for ForceHotReloadIdeMessage, so sending it there only logs a
+			// "no callback" error on the IDE side and blocks here until the IDE-result timeout — and they
+			// drive hot reload through the dev-server's own pipeline anyway. Outside VS this is a no-op:
+			// no request is sent and no ProcessingFiles is reported, and we return false so the
+			// no-changes auto-retry (HotReloadOperation) completes the operation instead of deferring
+			// while waiting for an IDE acknowledgement that will never come.
+			if (!_isRunningInsideVisualStudio)
+			{
+				return false;
+			}
+
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
 			if (result.IsSuccess)
