@@ -199,7 +199,8 @@ internal static class DevServerProcessHelper
 		string displayName,
 		ILogger logger,
 		Process process,
-		bool forwardOutputToConsole)
+		bool forwardOutputToConsole,
+		bool bufferStdout = true)
 	{
 		var outputSb = new StringBuilder();
 		var errorSb = new StringBuilder();
@@ -210,7 +211,13 @@ internal static class DevServerProcessHelper
 			{
 				if (e.Data != null)
 				{
-					outputSb.AppendLine(e.Data);
+					// Skip buffering when the caller discards stdout (e.g. direct mode, where
+					// the CLI can stay alive as ppid guardian for the whole session) — otherwise
+					// the StringBuilder grows unbounded. stderr is always buffered for diagnostics.
+					if (bufferStdout)
+					{
+						outputSb.AppendLine(e.Data);
+					}
 					if (forwardOutputToConsole)
 					{
 						Console.Out.WriteLine(e.Data);
@@ -342,13 +349,13 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		// Forward the host's stdout/stderr to our own console so IDE launchers
-		// (e.g. the VS Code extension) that capture this CLI's output can surface
-		// the running DevServer host logs — not just the CLI launcher banner.
-		// Safe here: direct mode only runs for the `start` command, whose stdout is
-		// a plain output stream. The MCP stdio bridge never reaches this path (it
-		// spawns the host via DevServerMonitor), so the JSON-RPC channel is untouched.
-		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: true);
+		// Forward host stdout/stderr to the CLI console so IDE launchers surface the
+		// running host logs (incl. hot reload), not just the startup banner. Safe:
+		// direct mode is only reachable from `start` (plain stdout); the MCP bridge
+		// spawns via DevServerMonitor, never this path. stdout isn't buffered — it's
+		// discarded here and the session can be long-lived; stderr stays buffered for
+		// the failure diagnostics below.
+		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: true, bufferStdout: false);
 
 		process.Start();
 		logger.LogDebug("Started host process: {Pid}", process.Id);
@@ -409,11 +416,10 @@ internal static class DevServerProcessHelper
 				catch { }
 			}
 
+			// stderr was already forwarded live to the console; don't re-dump the whole
+			// buffer here (it only duplicates the output). Still return it so the caller
+			// can decide on a safe-mode retry from the captured error text.
 			var stdErr = errorSb.ToString();
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				logger.LogError("Host stderr:\n{ErrorOutput}", stdErr);
-			}
 
 			return new DirectSpawnResult(
 				1,
