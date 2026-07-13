@@ -60,12 +60,12 @@ internal sealed class TemplateParser
 				if (TryParseSpecificDate(out var specificDate))
 				{
 					_ = SkipWhitespace();
-					return TryComplete(new TemplateRootNode(time, date), out root);
+					return TryComplete(new TemplateRootNode(time, specificDate), out root);
 				}
 				else if (TryParseRelativeDate(out var relativeDate))
 				{
 					_ = SkipWhitespace();
-					return TryComplete(new TemplateRootNode(time, date), out root);
+					return TryComplete(new TemplateRootNode(time, relativeDate), out root);
 				}
 			}
 
