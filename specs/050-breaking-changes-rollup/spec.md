@@ -217,7 +217,7 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
-- [ ] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
+- [x] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
   - Reparent to `MenuFlyoutItem`; re-implement the toggle behavior currently inherited from `ToggleMenuFlyoutItem`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cs`, `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.Properties.cs`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891

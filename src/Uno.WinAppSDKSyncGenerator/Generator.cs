@@ -108,9 +108,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
 			"Microsoft.UI.Xaml.Controls.WebView2",
-			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
-			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
-			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
 			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
 			// carries the DependencyObject base and the IList implementation; emitting the metadata
 			// DependencyObject base here would clash with that hand-written hierarchy.
