@@ -459,16 +459,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>
-	/// Resolves a peer to its already-created provider without creating one.
-	/// Used by <see cref="Win32RawElementProvider.InvalidateChildrenCache()"/> to
-	/// cascade cache invalidation through the UIA child links, including to
-	/// virtual peers that are not keyed by element.
+	/// Resolves a peer's events source and returns its peer-keyed provider without
+	/// creating one or falling back to an owner element's provider.
 	/// </summary>
-	internal Win32RawElementProvider? TryGetExistingProviderForPeer(AutomationPeer peer)
-		=> FindExistingProviderForPeer(peer, resolveEventsSource: true);
-
-	internal Win32RawElementProvider? TryGetExistingProviderForExactPeer(AutomationPeer peer)
-		=> _peerProviders.TryGetValue(peer, out var provider) ? provider : null;
+	internal Win32RawElementProvider? TryGetExistingProviderResolvingEventsSource(AutomationPeer peer)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		return _peerProviders.TryGetValue(resolvedPeer, out var provider) ? provider : null;
+	}
 
 	/// <summary>
 	/// Looks up an existing provider for the given peer without creating one.

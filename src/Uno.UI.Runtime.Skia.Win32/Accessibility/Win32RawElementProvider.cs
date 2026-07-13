@@ -103,7 +103,7 @@ internal class Win32RawElementProvider :
 		{
 			for (var i = 0; i < children.Count; i++)
 			{
-				var childProvider = _accessibility.TryGetExistingProviderForExactPeer(children[i]);
+				var childProvider = _accessibility.TryGetExistingProviderResolvingEventsSource(children[i]);
 				if (childProvider is not null && !ReferenceEquals(childProvider, this))
 				{
 					childProvider.Invalidate(visited);
@@ -793,7 +793,7 @@ internal class Win32RawElementProvider :
 
 		for (var i = 0; i < children.Count; i++)
 		{
-			var childProvider = _accessibility.TryGetExistingProviderForExactPeer(children[i]);
+			var childProvider = _accessibility.TryGetExistingProviderResolvingEventsSource(children[i]);
 			if (childProvider is not null && !ReferenceEquals(childProvider, this))
 			{
 				childProvider.InvalidateChildrenCache(visited);
