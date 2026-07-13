@@ -58,4 +58,13 @@ internal interface IDrawingSession
 
 	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>) in the current coordinate space.</summary>
 	void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint);
+
+	/// <summary>
+	/// Begins recording into a nested session whose draw calls are captured as an <see cref="IRenderData"/>
+	/// (via <see cref="IRecordingSession.EndRecording"/>) that can later be replayed with <see cref="Draw"/>.
+	/// </summary>
+	IRecordingSession CreateRecording(Rect cullBounds);
+
+	/// <summary>Replays previously recorded <paramref name="data"/> into this session.</summary>
+	void Draw(IRenderData data);
 }

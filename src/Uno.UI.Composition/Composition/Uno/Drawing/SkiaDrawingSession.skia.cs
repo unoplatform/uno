@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using SkiaSharp;
@@ -10,16 +11,51 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>.</summary>
-internal sealed class SkiaDrawingSession : IDrawingSession
+internal class SkiaDrawingSession : IDrawingSession
 {
 	// Reused per drawing thread to avoid allocating a native SKPaint per draw. Rendering configures it
 	// fully from PaintParams on every call, so no state leaks between draws.
 	[ThreadStatic]
 	private static SKPaint? _sparePaint;
 
+	// Recording happens on the render/UI thread and can nest (a subtree recording contains per-visual
+	// content recordings), so recorders are pooled per thread and rented/returned around each recording.
+	[ThreadStatic]
+	private static Stack<SKPictureRecorder>? _recorderPool;
+
 	private readonly SKCanvas _canvas;
 
 	public SkiaDrawingSession(SKCanvas canvas) => _canvas = canvas;
+
+	/// <summary>The underlying canvas. Transitional accessor for render code not yet migrated off SkiaSharp.</summary>
+	internal SKCanvas Canvas => _canvas;
+
+	private protected static SKPictureRecorder RentRecorder()
+	{
+		var pool = _recorderPool ??= new();
+		return pool.Count > 0 ? pool.Pop() : new SKPictureRecorder();
+	}
+
+	private protected static void ReturnRecorder(SKPictureRecorder recorder)
+		=> (_recorderPool ??= new()).Push(recorder);
+
+	public IRecordingSession CreateRecording(Rect cullBounds)
+	{
+		var recorder = RentRecorder();
+		var recordingCanvas = recorder.BeginRecording(cullBounds.ToSKRect());
+		return new SkiaRecordingSession(recorder, recordingCanvas);
+	}
+
+	public void Draw(IRenderData data)
+	{
+		if (data is SkiaRenderData { Picture: var picture } && picture != IntPtr.Zero)
+		{
+			unsafe
+			{
+				UnoSkiaApi.sk_canvas_draw_picture(_canvas.Handle, picture, null, IntPtr.Zero);
+			}
+		}
+	}
 
 	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
 
