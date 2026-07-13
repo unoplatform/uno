@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Extensibility;
+using Uno.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -29,6 +30,8 @@ public class AndroidHost : ISkiaApplicationHost
 	public AndroidHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
+
+		RuntimePlatformHelper.SkiaPlatform = RuntimePlatform.SkiaAndroid;
 	}
 
 	public Task Run()

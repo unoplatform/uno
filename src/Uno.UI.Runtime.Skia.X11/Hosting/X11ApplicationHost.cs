@@ -62,6 +62,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	static X11ApplicationHost()
 	{
+		RuntimePlatformHelper.SkiaPlatform = RuntimePlatform.SkiaX11;
+
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		_ = X11Helper.XInitThreads();

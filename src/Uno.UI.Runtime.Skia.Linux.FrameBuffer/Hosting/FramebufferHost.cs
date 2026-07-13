@@ -49,6 +49,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_eventLoop = new EventLoop();
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+
+			RuntimePlatformHelper.SkiaPlatform = RuntimePlatform.SkiaFrameBuffer;
 		}
 
 		/// <summary>
