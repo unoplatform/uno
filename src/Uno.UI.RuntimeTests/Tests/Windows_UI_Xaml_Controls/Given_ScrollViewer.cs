@@ -877,12 +877,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsLessThan(offsetAfterTwoNotches, sut.VerticalOffset,
 				"Opposite-direction wheel should reverse the scroll position.");
 
-			// Local helper: wait for wheel inertia to finish coasting.
-			static async Task WaitForInertiaToSettle()
+			// Local helper: wait for wheel inertia to finish coasting. Rather than sleeping for a
+			// fixed duration, poll the offset and return as soon as it has stopped moving for a
+			// few consecutive samples, with a hard ceiling so a stuck coast still reaches the asserts.
+			async Task WaitForInertiaToSettle()
 			{
+				const int SampleIntervalMs = 50;
+				const int StableSamplesRequired = 5;
+				const int TimeoutMs = 3000;
+
 				await WindowHelper.WaitForIdle();
-				await Task.Delay(1500);
-				await WindowHelper.WaitForIdle();
+
+				var lastOffset = double.NaN;
+				var stableSamples = 0;
+				for (var elapsed = 0; elapsed < TimeoutMs && stableSamples < StableSamplesRequired; elapsed += SampleIntervalMs)
+				{
+					await Task.Delay(SampleIntervalMs);
+					await WindowHelper.WaitForIdle();
+
+					var offset = sut.VerticalOffset;
+					stableSamples = offset == lastOffset ? stableSamples + 1 : 0;
+					lastOffset = offset;
+				}
 			}
 		}
 #endif

@@ -62,7 +62,7 @@ public partial class GestureRecognizer
 
 			/// <summary>
 			/// Velocity threshold (in units/ms) below which inertia is considered complete.
-			/// At 60fps this is ~0.6 units/frame — sub-pixel, so movement is imperceptible.
+			/// At 60fps this is ~0.17 units/frame — sub-pixel, so movement is imperceptible.
 			/// </summary>
 			internal const double VelocityThreshold = 0.01;
 

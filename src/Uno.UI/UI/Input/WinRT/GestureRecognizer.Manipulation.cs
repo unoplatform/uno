@@ -494,7 +494,7 @@ namespace Windows.UI.Input
 					// estimate by fitting a polynomial to all recent samples, rather than using
 					// just the boundary points. This significantly reduces fling velocity noise.
 					var lsEstimate = _velocityTracker.GetVelocityEstimate();
-					if (lsEstimate is var (vx, vy))
+					if (lsEstimate is (double vx, double vy))
 					{
 						// VelocityTracker returns units/ms (position delta / ms), which matches
 						// Uno's ManipulationVelocities.Linear convention (units per millisecond).
