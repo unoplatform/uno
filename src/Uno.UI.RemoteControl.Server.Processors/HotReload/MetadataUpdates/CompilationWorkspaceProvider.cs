@@ -21,11 +21,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
+		/// <summary>
+		/// The only application-provided MSBuild properties re-applied as global properties on the
+		/// hot-reload workspace. The target framework and runtime identifier are intentionally absent:
+		/// the workspace loads every flavor of a multi-targeted head and the running one is selected
+		/// afterwards (see <see cref="RoslynTargetFrameworkExtensions.FilterHeadProjectTargetFramework"/>),
+		/// instead of relying on the fragile build-time TargetFramework promotion.
+		/// </summary>
+		private static readonly string[] _globalPropertiesAllowList =
+		[
+			"Configuration",
+			"Platform",
+			"SolutionFileName",
+			"SolutionDir",
+			"SolutionExt",
+			"SolutionPath",
+			"SolutionName",
+		];
+
+		public static async Task<(Workspace, WatchHotReloadService, Solution)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
+			string? runtimeTargetFramework,
 			CancellationToken ct)
 		{
 			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
@@ -40,39 +59,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
 			}
 
-			static bool IsValidProperty(string property)
+			// Restrict the global properties to the allow-list: everything else captured at build
+			// time (target framework, runtime identifier, MSBuild internals, …) is deliberately
+			// dropped so the workspace evaluates the head for every TargetFrameworks entry. The
+			// running flavor is then selected by FilterHeadProjectTargetFramework below, rather than
+			// pinned by the build-time TargetFramework promotion.
+			var globalProperties = new Dictionary<string, string>
 			{
-				if (property.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
+				// Flag the current build as created for hot reload, which allows for running targets
+				// or setting props/items in the context of the hot reload workspace.
+				["UnoIsHotReloadHost"] = "True",
+			};
+
+			foreach (var name in _globalPropertiesAllowList)
+			{
+				// An empty value would surface to MSBuild as a defined-but-empty global property,
+				// which is not the same as an undefined one — skip those (typical for the Solution*
+				// group when the application was built from a project instead of a solution).
+				if (properties.TryGetValue(name, out var value) && value is { Length: > 0 })
 				{
-					// Don't set the runtime identifier since it propagates to libraries as well
-					// which do not build using the RuntimeIdentifier being set. For instance, a head
-					// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
-					// dependent projects, causing the HR engine to search for pdb/dlls in
-					// the bin/Debug/net9.0/iossimulator/*.dll path instead of its original path.
-
-					return false;
+					globalProperties[name] = value;
 				}
-
-				if (property.Equals("TargetFrameworks", StringComparison.OrdinalIgnoreCase))
-				{
-					// Don't set TargetFrameworks globally since it propagates to all referenced projects.
-					// Library projects may target different TFMs (e.g. net9.0) than the head project
-					// (e.g. net10.0-desktop). The head project's TFM is already passed via
-					// UnoHotReloadTargetFramework which is promoted back to TargetFramework only on
-					// the head project via the DevServer targets.
-					return false;
-				}
-
-				if (property.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase))
-				{
-					// Noticeably, don't set the "MSBuildVersion" (Forbidden, will fail workspace).
-					return false;
-				}
-
-				return true;
 			}
-
-			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			MSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
@@ -99,7 +107,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					await Task.Delay(5_000, ct);
 				}
 			}
-			var currentSolution = workspace.CurrentSolution;
+			// Restrict a multi-targeted head to the flavor the running application reported: the
+			// workspace loads one project per TargetFrameworks entry when the evaluated TargetFramework
+			// is empty, and the non-running flavors would otherwise block hot reload with their
+			// compilation errors or fail the initial emit (they were never built).
+			var currentSolution = workspace.CurrentSolution.FilterHeadProjectTargetFramework(projectPath, runtimeTargetFramework, reporter);
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, ct);
 
@@ -112,7 +124,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				await project.GetCompilationAsync(ct);
 			}
 
-			return (workspace, hotReloadService);
+			return (workspace, hotReloadService, currentSolution);
 		}
 
 		public static void InitializeRoslyn(string? workDir)

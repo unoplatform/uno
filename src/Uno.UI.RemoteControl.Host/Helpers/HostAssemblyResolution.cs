@@ -153,7 +153,10 @@ internal static class HostAssemblyResolution
 	/// Handler for <see cref="AssemblyLoadContext.Resolving"/> on the default ALC:
 	/// bridges to an already-loaded assembly first (preserves <see cref="System.Type"/>
 	/// identity), then falls back to loading on demand from the runtime or a
-	/// registered add-in directory. Emits a diagnostic only when everything failed.
+	/// registered add-in directory. Emits a debug diagnostic when both passes missed;
+	/// a miss here is not final — resolvers registered later in the chain (other
+	/// <c>Resolving</c> subscribers, <see cref="AppDomain.AssemblyResolve"/> handlers
+	/// such as the hot-reload processors' own probing) may still satisfy the request.
 	/// </summary>
 	internal static Assembly? Resolve(AssemblyLoadContext context, AssemblyName requested)
 	{
@@ -432,10 +435,18 @@ internal static class HostAssemblyResolution
 	}
 
 	/// <summary>
-	/// Emits the total-miss diagnostic: names the same-simple-name variants that ARE
+	/// Emits the miss diagnostic: names the same-simple-name variants that ARE
 	/// loaded (if any) so the operator does not have to spelunk
 	/// <see cref="AssemblyLoadContext.Assemblies"/> themselves.
 	/// </summary>
+	/// <remarks>
+	/// This is a debug-level trace on stdout, NOT an error on stderr: a miss from this
+	/// handler is routinely satisfied by a later resolver in the chain (the hot-reload
+	/// processors and add-ins register their own <see cref="AppDomain.AssemblyResolve"/>
+	/// and per-ALC <c>Resolving</c> probing for their private dependencies). When nothing
+	/// satisfies the request, the runtime surfaces a <see cref="System.IO.FileNotFoundException"/>
+	/// at the load site — that exception, not this trace, is the actual failure signal.
+	/// </remarks>
 	private static void ReportResolutionMiss(AssemblyLoadContext context, AssemblyName requested)
 	{
 		var simpleName = requested.Name;
@@ -454,22 +465,22 @@ internal static class HostAssemblyResolution
 				", ",
 				variants.Select(v => $"Version={v.Version}, PublicKeyToken={FormatPkt(v.GetPublicKeyToken())}"));
 
-			Console.Error.WriteLine(
-				$"Uno.UI.RemoteControl.Host: could not resolve '{simpleName}, Version={requestedVersion?.ToString() ?? "<none>"}, " +
-				$"PublicKeyToken={FormatPkt(requestedPkt)}'. Candidates with the same simple name are loaded but none is " +
-				$"compatible: [{variantsSummary}]. Either the requested version is higher than what the host carries, or the " +
-				"PublicKeyToken differs. Action for the add-in's maintainer: align the package version with what the host " +
-				"references, or load the conflicting dependency inside a private AssemblyLoadContext owned by the add-in.");
+			Console.Out.WriteLine(
+				$"Uno.UI.RemoteControl.Host: did not resolve '{simpleName}, Version={requestedVersion?.ToString() ?? "<none>"}, " +
+				$"PublicKeyToken={FormatPkt(requestedPkt)}' from the default load context. Candidates with the same simple name " +
+				$"are loaded but none is compatible: [{variantsSummary}] (requested version higher than what the host carries, " +
+				"or PublicKeyToken differs). Resolution continues with the other registered resolvers; if the requester ends up " +
+				"failing with FileNotFoundException, align the add-in's package version with the host's or isolate the dependency " +
+				"in a private AssemblyLoadContext on the add-in side.");
 		}
 		else
 		{
-			Console.Error.WriteLine(
-				$"Uno.UI.RemoteControl.Host: could not resolve '{simpleName}, Version={requestedVersion?.ToString() ?? "<none>"}, " +
-				$"PublicKeyToken={FormatPkt(requestedPkt)}'. No assembly with that simple name is loaded, available from the " +
-				$"runtime, or present in the {s_probingDirectories.Length} registered probing director{(s_probingDirectories.Length == 1 ? "y" : "ies")}. " +
-				"Action: ensure the assembly is shipped alongside an add-in's primary DLL (in the same directory) or referenced " +
-				"by the host's own deps.json. If the assembly belongs to a third-party add-in that isolates its own dependencies, " +
-				"load it in a private AssemblyLoadContext on the add-in side.");
+			Console.Out.WriteLine(
+				$"Uno.UI.RemoteControl.Host: did not resolve '{simpleName}, Version={requestedVersion?.ToString() ?? "<none>"}, " +
+				$"PublicKeyToken={FormatPkt(requestedPkt)}' from the default load context (not loaded, not available from the " +
+				$"runtime, not present in the {s_probingDirectories.Length} registered probing director{(s_probingDirectories.Length == 1 ? "y" : "ies")}). " +
+				"This is expected for dependencies private to an add-in or to the hot-reload processors, which are satisfied by " +
+				"their own resolvers next; it only indicates a problem if the requester ends up failing with FileNotFoundException.");
 		}
 	}
 
