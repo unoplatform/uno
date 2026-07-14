@@ -1292,7 +1292,14 @@ namespace Uno.UI
 			/// behavior). When <c>false</c> (default), the failure is only logged as a warning.
 			/// </summary>
 			/// <remarks>
-			/// Recommended for development and CI to catch typos in resource keys.
+			/// Useful during development to catch typos in <c>{StaticResource}</c> keys.
+			/// <para>
+			/// <b>Known limitation:</b> <c>{ThemeResource}</c> bindings can produce false positives.
+			/// The resource-binding fallback walk is not theme-aware, so it can report a resource as
+			/// unresolved even when it resolves correctly through the theme walk. Until theme-aware
+			/// resource resolution lands, prefer enabling this flag on apps that do not rely on
+			/// <c>{ThemeResource}</c>, or be ready to filter out those false positives.
+			/// </para>
 			/// </remarks>
 			public static bool ThrowOnUnresolvedResource { get; set; }
 		}

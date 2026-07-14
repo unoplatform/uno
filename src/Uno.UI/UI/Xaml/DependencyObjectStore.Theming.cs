@@ -863,16 +863,16 @@ public partial class DependencyObjectStore
 		UpdateChildResourceBindings(updateReason, resourceContextProvider);
 	}
 
-	/// <remarks>
-	/// This method contains or is called by a try/catch containing method and
-	/// can be significantly slower than other methods as a result on WebAssembly.
-	/// See https://github.com/dotnet/runtime/issues/56309
-	/// </remarks>
 	/// <summary>
 	/// Returns <c>true</c> if the resource was resolved, <c>false</c> if the binding update
 	/// completed without finding the resource, or <c>null</c> if the inner call threw (e.g.
 	/// the target was disposed mid-update) and the caller should ignore this binding.
 	/// </summary>
+	/// <remarks>
+	/// This method contains or is called by a try/catch containing method and
+	/// can be significantly slower than other methods as a result on WebAssembly.
+	/// See https://github.com/dotnet/runtime/issues/56309
+	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool? InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
@@ -890,16 +890,16 @@ public partial class DependencyObjectStore
 		}
 	}
 
-	/// <remarks>
-	/// This method contains or is called by a try/catch containing method and
-	/// can be significantly slower than other methods as a result on WebAssembly.
-	/// See https://github.com/dotnet/runtime/issues/56309
-	/// </remarks>
 	/// <summary>
 	/// Returns <c>true</c> when the resource was successfully resolved (either from the
 	/// in-scope dictionaries or from a top-level lookup), <c>false</c> when the lookup
 	/// missed across all sources.
 	/// </summary>
+	/// <remarks>
+	/// This method contains or is called by a try/catch containing method and
+	/// can be significantly slower than other methods as a result on WebAssembly.
+	/// See https://github.com/dotnet/runtime/issues/56309
+	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
