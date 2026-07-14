@@ -754,6 +754,16 @@ namespace Microsoft.UI.Xaml
 			return _activeThemeDictionary;
 		}
 
+		/// <summary>
+		/// Selects the theme sub-dictionary matching the currently active theme, when it changed.
+		/// </summary>
+		/// <remarks>
+		/// Not side-effect free despite the Ensure/Get naming: on an actual theme switch it runs a
+		/// NotifyThemeChanged walk over the newly-active theme dictionary (see below), so a plain
+		/// TryGetValue lookup can transitively trigger a theme walk. This is WinUI's behavior
+		/// (CResourceDictionary::EnsureActiveThemeDictionary, Resources.cpp:809-814) — flagged here
+		/// because it is a surprise when tracing unexpected NotifyThemeChanged call stacks.
+		/// </remarks>
 		// MUX Reference: CResourceDictionary::EnsureActiveThemeDictionary (Resources.cpp:687-819), commit fc2f82117.
 		private void EnsureActiveThemeDictionary()
 		{

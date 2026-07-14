@@ -58,8 +58,8 @@ internal sealed class SystemThemingInterop : IThemingInterop
 		//   anything else                                                    => Theme::HighContrastCustom
 		// (The test-override path additionally classifies 0xFFEEEEEE/0xFF111111 as HighContrastCustom and
 		// falls back to the generic Theme::HighContrast for unrecognized palettes.)
-		// TODO Uno: OS high-contrast variant detection on Skia is a documented follow-up; until then the
-		// app-global flag maps to the generic Theme.HighContrast.
+		// TODO Uno: OS high-contrast variant detection on Skia is a documented follow-up (#22965); until
+		// then the app-global flag maps to the generic Theme.HighContrast.
 		if (SystemThemeHelper.IsHighContrast)
 		{
 			highContrastTheme = Theme.HighContrast;
@@ -73,10 +73,11 @@ internal sealed class SystemThemingInterop : IThemingInterop
 		// WinUI (SystemThemingInterop.cpp:179-203) returns the live OS system-color palette —
 		// ConvertFromABGRToARGB(GetSysColor(colorId) | 0xFF000000) — with a test-override palette
 		// (s_sysColorPaletteOverride) taking precedence.
-		// TODO Uno: there is no OS system-color palette abstraction yet (part of the high-contrast
-		// follow-up above). Until then, default to the same easily findable color value WinUI uses
+		// TODO Uno: there is no OS system-color palette abstraction yet — tracked with the high-contrast
+		// follow-up above (#22965). Until then, default to the same easily findable color value WinUI uses
 		// for entries not in its override palette, so brushes referencing unmapped system colors can
-		// be spotted.
+		// be spotted. Not logged as a warning: this runs for every SystemColor* resource on every theme
+		// rebuild (app start included), high contrast on or off, so a per-call warning would be pure noise.
 		return 0xFFAABBCC;
 	}
 

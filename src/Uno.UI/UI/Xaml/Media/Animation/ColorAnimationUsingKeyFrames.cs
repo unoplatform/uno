@@ -426,8 +426,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// The keyframe {ThemeResource} values may have re-resolved with the new theme; recompute the
 			// final value and re-apply it while the animation is live so the rendered value tracks the
 			// theme — the ObjectAnimationUsingKeyFrames.OnThemeChanged / WinUI RequestTickForPendingThemeChange
-			// analog. Without the re-apply, an Active (mid-transition) color animation keeps the stale
-			// pre-switch color until it completes.
+			// analog. Without the re-apply, a Filling animation (holding its final value, no further ticks —
+			// the 0-duration/discrete keyframes VisualState templates use, and the case this fixes) keeps the
+			// stale pre-switch color indefinitely.
+			// Active is included on purpose: an already-running animator interpolates the from/to pair it
+			// snapshotted at InitializeAnimators, so its next tick re-applies a pre-switch interpolated color
+			// and the re-apply here is transient until the run ends (where the now-fresh _finalValue holds).
+			// Re-seeding running animators from the re-resolved keyframes is the fuller fix, tracked as follow-up.
 			_finalValue = FindFinalValue() ?? default;
 			if (State != TimelineState.Stopped)
 			{

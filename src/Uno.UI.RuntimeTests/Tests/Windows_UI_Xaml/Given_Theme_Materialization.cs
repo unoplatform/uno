@@ -1323,7 +1323,7 @@ public class Given_Theme_Materialization
 	}
 
 	// ---- T6b4 — a {ThemeResource} re-resolution must not defeat an active animation ----
-	// (kahua-private #491 / Uno #23472 — "checked CheckBoxes render empty until hover")
+	// (#23472 — "checked CheckBoxes render empty until hover")
 
 	[TestMethod]
 	[RequiresFullWindow]

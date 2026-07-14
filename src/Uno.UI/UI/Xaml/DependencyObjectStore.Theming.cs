@@ -827,7 +827,9 @@ public partial class DependencyObjectStore
 		// for a standalone resource DO with no inheritance parent — the injected resource-context element
 		// (the dictionary's owning element), matching WinUI's per-owner {ThemeResource} resolution. Resolve
 		// it lazily and at most once, reused across all three phases, instead of walking the inheritance
-		// chain separately in each. Not computed at all for elements that need none of the phases.
+		// chain separately in each. Not computed at all for elements that need none of the phases — which
+		// is why this stays a local function: it is never converted to a delegate, so its capture becomes a
+		// by-ref struct closure (no per-element heap allocation on the theme-walk choke point).
 		Theme? ownerThemeCache = null;
 		Theme GetOwnerTheme()
 			=> ownerThemeCache ??= ThemeResolution.ResolveOwnerTheme(
