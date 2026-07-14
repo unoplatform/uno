@@ -43,6 +43,9 @@ public sealed class Given_RuntimeTargetFrameworkMatching
 	[DataRow("net10.0-android", "net10.0-android36.0", true)]
 	[DataRow("net10.0-ios", "net10.0-ios26.0", true)]
 	[DataRow("net10.0-IOS", "net10.0-ios26.0", true)]
+	// A browser app reports browserwasm (runtime-detected in the skia client flavor) and must
+	// select the browserwasm head flavor — never the desktop one.
+	[DataRow("net10.0-browserwasm", "net10.0-browserwasm", true)]
 	// The skia pseudo-platform designates the desktop family — both spellings.
 	[DataRow("net10.0-skia", "net10.0-desktop", true)]
 	[DataRow("net10.0-skia", "net10.0", true)]
