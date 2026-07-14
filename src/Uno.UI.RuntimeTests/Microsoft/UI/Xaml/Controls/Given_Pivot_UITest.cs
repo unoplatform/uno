@@ -100,7 +100,8 @@ public class Given_Pivot_UITest
 		=> (DataTemplate)XamlReader.Load(
 			$"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{inner}</DataTemplate>");
 
-	public class MyCustomPivotItem
+	// Properties stay public so reflection-based {Binding} can resolve them.
+	private class MyCustomPivotItem
 	{
 		public string Title { get; set; }
 		public string Content { get; set; }
