@@ -20,6 +20,7 @@
 			<!-- Added manually (not part of UWP's SystemResources.xaml) -->
 			<Color x:Key="SystemColorHighlightColor">#FF3399FF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
+			<Color x:Key="SystemColorControlAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
 					 Color="{ThemeResource SystemAccentColor}" />
 
@@ -1331,6 +1332,7 @@
 			<!-- Added manually (not part of UWP's SystemResources.xaml) -->
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
+			<Color x:Key="SystemColorControlAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
 			                 Color="{ThemeResource SystemAccentColor}" />
 
@@ -2630,6 +2632,7 @@
 			<!-- Added manually (not part of UWP's SystemResources.xaml) -->
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemAccentColor">#FF0078D7</Color>
+			<Color x:Key="SystemColorControlAccentColor">#FF0078D7</Color>
 			<SolidColorBrush x:Key="SystemColorControlAccentBrush"
 					 Color="{ThemeResource SystemAccentColor}" />
 
