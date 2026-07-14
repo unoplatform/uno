@@ -89,4 +89,10 @@ internal interface IDrawingBackend
 		bool useBackdropBlurClamp,
 		bool isSoftwareRenderer,
 		out bool hasBackdropInput);
+
+	/// <summary>
+	/// Creates a drop-shadow filter (offset + blur + color) used to derive a shadow from arbitrary rendered
+	/// content via <see cref="IDrawingSession.SaveLayer(IEffectFilter)"/>.
+	/// </summary>
+	IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color);
 }

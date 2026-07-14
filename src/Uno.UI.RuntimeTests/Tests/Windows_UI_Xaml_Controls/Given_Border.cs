@@ -1115,6 +1115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 				HorizontalAlignment = HorizontalAlignment.Center,
 				VerticalAlignment = VerticalAlignment.Center,
+				Shadow = new ThemeShadow(),
 				Translation = new Vector3(0, 0, 48),
 			};
 			var host = new Grid
@@ -1129,6 +1130,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot = await UITestHelper.ScreenShot(host);
 
 			ImageAssert.HasColorAtChild(screenshot, element, 40, 40, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Elevation_Renders_NonAnalytic_Shadow_Fallback()
+		{
+			// A Border whose content isn't a solid color (here a gradient) can't be described analytically,
+			// so the ThemeShadow takes the non-analytic fallback: the subtree is recorded once and replayed
+			// through a drop-shadow-filtered SaveLayer (the shadow) then again directly (the content on top),
+			// all via the drawing session. Guards that the content still renders over its shadow.
+			var green = Microsoft.UI.Colors.Green;
+			var gradient = new LinearGradientBrush
+			{
+				StartPoint = new Point(0, 0),
+				EndPoint = new Point(0, 1),
+			};
+			gradient.GradientStops.Add(new GradientStop { Color = green, Offset = 0 });
+			gradient.GradientStops.Add(new GradientStop { Color = green, Offset = 1 });
+
+			var element = new Border
+			{
+				Width = 80,
+				Height = 80,
+				Background = gradient,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Shadow = new ThemeShadow(),
+				Translation = new Vector3(0, 0, 48),
+			};
+			var host = new Grid
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			};
+			host.Children.Add(element);
+
+			await UITestHelper.Load(host);
+			var screenshot = await UITestHelper.ScreenShot(host);
+
+			// Content (the gradient) must render on top of the shadow.
+			ImageAssert.HasColorAtChild(screenshot, element, 40, 40, green, tolerance: 12);
+
+			// A shadow must be cast: somewhere in the band just below the element, the white host is darkened.
+			var bottomCenter = element.TransformToVisual(screenshot.RenderedElement).TransformPoint(new Point(40, 80));
+			var cx = (int)bottomCenter.X;
+			var baseY = (int)bottomCenter.Y;
+			var shadowFound = false;
+			for (var dy = 1; dy <= 40 && !shadowFound; dy++)
+			{
+				for (var dx = -20; dx <= 20; dx++)
+				{
+					var px = screenshot.GetPixel(cx + dx, baseY + dy);
+					if (px.R < 245 || px.G < 245 || px.B < 245)
+					{
+						shadowFound = true;
+						break;
+					}
+				}
+			}
+			Assert.IsTrue(shadowFound, "Expected a drop shadow to be cast below the elevated element.");
 		}
 	}
 }

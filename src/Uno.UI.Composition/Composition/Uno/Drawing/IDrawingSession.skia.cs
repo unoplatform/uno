@@ -40,6 +40,12 @@ internal interface IDrawingSession
 	/// <summary>Begins an offscreen layer, optionally bounded and with a compositing paint applied on restore.</summary>
 	void SaveLayer(Rect? bounds = null, PaintParams? paint = null);
 
+	/// <summary>
+	/// Begins an offscreen layer whose content is transformed by <paramref name="filter"/> when the matching
+	/// <see cref="Restore"/> composites it back (e.g. a drop shadow derived from the drawn content).
+	/// </summary>
+	void SaveLayer(IEffectFilter filter);
+
 	void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
 
 	void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);

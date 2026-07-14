@@ -60,6 +60,12 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
+	public void SaveLayer(IEffectFilter filter)
+	{
+		using var paint = new SKPaint { ImageFilter = ((SkiaEffectFilter)filter).Filter };
+		_canvas.SaveLayer(paint);
+	}
+
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
 		var rec = new SKCanvasSaveLayerRec { Backdrop = ((SkiaEffectFilter)filter).Filter };

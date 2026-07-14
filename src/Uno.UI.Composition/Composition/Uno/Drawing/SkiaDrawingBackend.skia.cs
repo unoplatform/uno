@@ -111,6 +111,11 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		return filter is null ? null : new SkiaEffectFilter(filter);
 	}
 
+	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color)
+		=> new SkiaEffectFilter(SKImageFilter.CreateOffset(dx, dy, SKImageFilter.CreateCompose(
+			SKImageFilter.CreateBlur(sigmaX, sigmaY),
+			SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SKBlendMode.Modulate)))));
+
 	private static SKShaderTileMode ToSK(GradientTileMode mode) => mode switch
 	{
 		GradientTileMode.Repeat => SKShaderTileMode.Repeat,

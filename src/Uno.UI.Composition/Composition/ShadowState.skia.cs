@@ -1,8 +1,6 @@
-﻿#nullable enable
+#nullable enable
 
-using System;
-using Microsoft.UI.Composition;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Composition;
@@ -12,15 +10,13 @@ namespace Uno.UI.Composition.Composition;
 /// </summary>
 internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Color Color)
 {
-	private SKPaint? _shadowOnlyPaint;
+	private IEffectFilter? _shadowFilter;
 
-	public SKPaint ShadowOnlyPaint =>
-		_shadowOnlyPaint ??= new SKPaint()
-		{
-			// Equivalent (I think) to SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor()) but much much faster
-			// Writing our own shader that does the same (basically takes the alpha value of the given pixel
-			// adjust by (Dx, Dy) and multiplies it by ShadowState.Color and "modulates" it with the original
-			// pixel) did not improve the numbers one bit.
-			ImageFilter = SKImageFilter.CreateOffset(Dx, Dy, SKImageFilter.CreateCompose(SKImageFilter.CreateBlur(SigmaX, SigmaY), SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.ToSKColor(), SKBlendMode.Modulate))))
-		};
+	/// <summary>
+	/// A backend drop-shadow filter (offset + blur + color). Applied via
+	/// <see cref="IDrawingSession.SaveLayer(IEffectFilter)"/> to derive a shadow from arbitrary content on the
+	/// non-analytic fallback path.
+	/// </summary>
+	public IEffectFilter ShadowFilter =>
+		_shadowFilter ??= DrawingBackend.Current.CreateDropShadowFilter(Dx, Dy, SigmaX, SigmaY, Color);
 }

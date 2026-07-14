@@ -369,8 +369,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (session)
 		{
-			var canvas = session.Canvas;
-
 			ApplyPrePaintingClipping(session.Session);
 
 			if (ShadowState is null || TryRenderAnalyticShadow(session.Session, ShadowState))
@@ -381,29 +379,26 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
+				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
+				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
+				var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				// The analytic-shadow fallback stays on the Skia fast path (it replays the subtree through an
-				// effect-based shadow paint); wrap the recording canvas in a session for the shared walk.
-				_factory.CreateInstance(this, new SkiaDrawingSession(recordingCanvas), ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
+				IRenderData renderData;
 				using (childSession)
 				{
 					PaintStep(this, childSession);
 					PostPaintingClipStep(this, in childSession);
 					RenderChildrenStep(this, childSession, applyChildOptimization);
+					renderData = recording.EndRecording();
 				}
 
-				unsafe
-				{
-					var childrenPicture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
+				session.Session.SaveLayer(ShadowState.ShadowFilter);
+				session.Session.Draw(renderData);
+				session.Session.Restore();
 
-					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, ShadowState.ShadowOnlyPaint.Handle);
-					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, IntPtr.Zero);
-
-					UnoSkiaApi.sk_refcnt_safe_unref(childrenPicture);
-				}
+				session.Session.Draw(renderData);
 			}
 		}
 
