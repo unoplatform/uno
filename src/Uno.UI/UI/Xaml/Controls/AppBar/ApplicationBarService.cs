@@ -282,6 +282,8 @@ internal class ApplicationBarService
 	{
 		if (m_appBarsLoading > 0)
 		{
+			// While an AppBar is loading another appbar can close but we do not want the number
+			// to go negative.
 			m_appBarsLoading--;
 		}
 
