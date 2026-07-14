@@ -19,8 +19,13 @@ namespace Windows.Storage
 		private class NSUserDefaultsPropertySet : IPropertySet
 		{
 			private static readonly NSUserDefaults _userDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
-			private static bool _migrated;
+			private static readonly object _migrationGate = new object();
+
+			// Sentinel flagging that the migration from the standard user defaults already ran. It is stored
+			// in the same suite as the user data, so it must be filtered out of every public property set member.
 			private const string MigrationKey = "__uno_migrated";
+
+			private static volatile bool _migrated;
 
 			public NSUserDefaultsPropertySet()
 			{
@@ -34,21 +39,39 @@ namespace Windows.Storage
 					return;
 				}
 
-				_migrated = true;
-
-				if (_userDefaults.BoolForKey(MigrationKey))
+				// The lock ensures a concurrent caller waits for the migration to complete
+				// instead of observing a partially migrated container.
+				lock (_migrationGate)
 				{
-					return;
-				}
+					if (_migrated)
+					{
+						return;
+					}
 
+					if (!_userDefaults.BoolForKey(MigrationKey))
+					{
+						Migrate();
+					}
+
+					_migrated = true;
+				}
+			}
+
+			private static void Migrate()
+			{
 				var standardDefaults = NSUserDefaults.StandardUserDefaults;
 				foreach (var pair in standardDefaults.ToDictionary())
 				{
+					if (pair.Key is not NSString key)
+					{
+						continue;
+					}
+
 					var value = pair.Value?.ToString();
 					if (value != null && IsUnoSerializedValue(value))
 					{
-						_userDefaults.SetValueForKey(pair.Value, pair.Key);
-						standardDefaults.RemoveObject(pair.Key.ToString());
+						_userDefaults.SetValueForKey(pair.Value, key);
+						standardDefaults.RemoveObject(key.ToString());
 					}
 				}
 
@@ -69,10 +92,19 @@ namespace Windows.Storage
 				return DataTypeSerializer.SupportedTypes.Any(t => t.FullName == typeName);
 			}
 
+			private static bool IsInternalKey(string key) => key == MigrationKey;
+
+			private static bool IsInternalKey(NSObject key) => key?.ToString() == MigrationKey;
+
 			public object this[string key]
 			{
 				get
 				{
+					if (IsInternalKey(key))
+					{
+						return null;
+					}
+
 					var value = _userDefaults.ValueForKey((NSString)key)?.ToString();
 
 					return DataTypeSerializer.Deserialize(value);
@@ -92,17 +124,22 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> _userDefaults.ToDictionary().Keys.Select(k => k.ToString()).ToList();
+				=> _userDefaults
+				.ToDictionary()
+				.Keys
+				.Where(k => !IsInternalKey(k))
+				.Select(k => k.ToString())
+				.ToList();
 
 			public ICollection<object> Values
 				=> _userDefaults
 				.ToDictionary()
-				.Values
-				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()))
+				.Where(pair => !IsInternalKey(pair.Key))
+				.Select(pair => DataTypeSerializer.Deserialize(pair.Value?.ToString()))
 				.ToList();
 
 			public int Count
-				=> (int)_userDefaults.ToDictionary().Count;
+				=> _userDefaults.ToDictionary().Keys.Count(k => !IsInternalKey(k));
 
 			public bool IsReadOnly => false;
 
@@ -130,15 +167,22 @@ namespace Windows.Storage
 			{
 				foreach (var pair in _userDefaults.ToDictionary())
 				{
-					Remove(pair.Key.ToString());
+					if (IsInternalKey(pair.Key))
+					{
+						continue;
+					}
+
+					_userDefaults.RemoveObject(pair.Key.ToString());
 				}
+
+				_userDefaults.Synchronize();
 			}
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> _userDefaults.ToDictionary().ContainsKey((NSString)key);
+				=> !IsInternalKey(key) && _userDefaults.ToDictionary().ContainsKey((NSString)key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
@@ -147,6 +191,7 @@ namespace Windows.Storage
 			{
 				return _userDefaults
 					.ToDictionary()
+					.Where(k => !IsInternalKey(k.Key))
 					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Value?.ToString())))
 					.GetEnumerator();
 			}
@@ -168,7 +213,7 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (_userDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
+				if (!IsInternalKey(key) && _userDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
 				{
 					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
 					return true;
