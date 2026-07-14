@@ -85,15 +85,16 @@ public class Given_DoubleAnimationUsingKeyFrames
 
 		// Wait for the animations to apply
 		await WindowHelper.WaitForIdle();
-		await Task.Delay(500);
 
 		// Verify the DoubleAnimationUsingKeyFrames applied the StaticResource value (0.5)
-		Assert.AreEqual(0.5, border.Opacity, 0.01, "Opacity should be animated to 0.5 from StaticResource");
+		await WindowHelper.WaitFor(
+			() => Math.Abs(border.Opacity - 0.5) < 0.01,
+			message: "Opacity should be animated to 0.5 from StaticResource");
 
 		// Verify the ColorAnimationUsingKeyFrames applied the StaticResource value (Green)
-		var brush = border.Background as SolidColorBrush;
-		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
-		Assert.AreEqual(Colors.Green, brush.Color, "Background color should be animated to Green from StaticResource");
+		await WindowHelper.WaitFor(
+			() => (border.Background as SolidColorBrush)?.Color == Colors.Green,
+			message: "Background color should be animated to Green from StaticResource");
 	}
 
 	[TestMethod]

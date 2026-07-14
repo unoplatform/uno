@@ -207,9 +207,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// Read the final value directly from the last keyframe (not cached).
 			// This matches WinUI's tick-based value reading and supports the
 			// Begin(); SkipToFill(); pattern used by AppBar.UpdateTemplateSettings().
-			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
+			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault();
+			if (fillFrame is not null)
+			{
+				SetValue(fillFrame.Value);
+			}
 
-			SetValue(fillFrame.Value);
 			State = TimelineState.Stopped;
 		}
 
