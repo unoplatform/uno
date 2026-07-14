@@ -193,6 +193,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			const ulong OverrideDelayMicroseconds = 100 * MicrosecondsPerMillisecond;
 
+			// Register throws on a duplicate key, so clear any leftover registration from an interrupted run.
+			Uno.Foundation.Extensibility.ApiExtensibility.Unregister<IGestureRecognizerExtension>();
 			Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(IGestureRecognizerExtension),
 				_ => new StubGestureRecognizerExtension(OverrideDelayMicroseconds));
