@@ -5,7 +5,7 @@
 		The windows duplicate-internal collision is resolved by naming the WinUI assembly
 		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
 		-->
-		<TargetFrameworks>net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-ios;net10.0-tvos;net10.0-desktop</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-tvos;$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
