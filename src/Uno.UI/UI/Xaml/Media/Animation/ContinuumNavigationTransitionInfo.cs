@@ -443,20 +443,4 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
 		storyboard.Children.Add(opacityAnimation);
 	}
-
-	/// <summary>
-	/// Clears expired weak references from the element tracking lists.
-	/// </summary>
-	internal static void ClearTrackedElements()
-	{
-		lock (s_entranceElements)
-		{
-			s_entranceElements.RemoveAll(wr => !wr.TryGetTarget(out _));
-		}
-
-		lock (s_exitElements)
-		{
-			s_exitElements.RemoveAll(wr => !wr.TryGetTarget(out _));
-		}
-	}
 }
