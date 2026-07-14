@@ -307,6 +307,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// If UIA has not materialized any provider between the changed parent and the root, there
+		// is no specific accessible container to update. Keep the root-level signal coarse instead
+		// of eagerly creating peers for every element added anywhere in the app.
+		if (ReferenceEquals(ancestorProvider, _rootProvider))
+		{
+			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			return;
+		}
+
 		// ChildAdded is associated with the added element, so we must materialize its provider.
 		// Gated above on a listening client to avoid COM-wrapper churn during normal layout.
 		var childProvider = GetOrCreateProvider(child);
