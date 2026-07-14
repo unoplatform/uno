@@ -31,7 +31,7 @@ internal sealed class RichTextBlockView : ITextView
 	// Uno-specific: RichTextBlock's flat char-index space (Selection / GetPlainText /
 	// _paragraphLayouts.GlobalCharOffset) inserts a "\r\n" between paragraphs, unlike WinUI's
 	// char-index space. The container<->flat conversion adjusts charCount by this between paragraphs.
-	private const int InterParagraphSeparatorLength = 2;
+	internal const int InterParagraphSeparatorLength = 2;
 
 	// Uno adaptation: the view is constructed directly with the PageNode (and owning
 	// element). WinUI reaches the owner via m_pPageNode->GetPageOwner(); the Uno
