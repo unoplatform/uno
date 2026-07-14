@@ -160,6 +160,10 @@
 			// the window wrapper and canvas renderer pick up the new scale. The
 			// media query targets the current devicePixelRatio, so it must be
 			// re-registered after every change.
+			if (!window.matchMedia) {
+				return;
+			}
+
 			const register = () => {
 				const query = window.matchMedia(`(resolution: ${globalThis.devicePixelRatio}dppx)`);
 				query.addEventListener("change", () => {
