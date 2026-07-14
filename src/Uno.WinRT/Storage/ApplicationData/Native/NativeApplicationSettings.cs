@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Concurrent;
@@ -11,19 +11,24 @@ namespace Uno.Storage;
 /// <summary>
 /// Provides access to raw application settings.
 /// </summary>
-internal partial class NativeApplicationSettings : INativeApplicationSettings
+/// <remarks>
+/// The settings are read from the native store once and kept in memory, writing through on every change.
+/// Reading a single setting, or enumerating them, would otherwise walk the whole native store — a JNI map on
+/// Android, the user defaults dictionary on Apple platforms, local storage on WebAssembly — on every access.
+/// This means changes made to the store behind Uno Platform's back, by native code, are not observed.
+/// </remarks>
+internal partial class NativeApplicationSettings
 {
 	private static readonly ConcurrentDictionary<ApplicationDataLocality, NativeApplicationSettings> _instances = new();
 
 	private readonly ApplicationDataLocality _locality;
+	private readonly object _gate = new();
 
-	public IEnumerable<string> Keys => GetKeysPlatform();
+	private Dictionary<string, string>? _settings;
 
 	private NativeApplicationSettings(ApplicationDataLocality locality)
 	{
 		_locality = locality;
-
-		InitializePlatform();
 	}
 
 	internal static NativeApplicationSettings GetForLocality(ApplicationDataLocality locality)
@@ -36,81 +41,133 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		return _instances.GetOrAdd(locality, locality => new NativeApplicationSettings(locality));
 	}
 
-	private static partial bool SupportsLocalityPlatform();
+	private Dictionary<string, string> Settings
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return _settings ??= LoadPlatform();
+			}
+		}
+	}
 
-	partial void InitializePlatform();
+	public IEnumerable<string> Keys
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return Settings.Keys.ToArray();
+			}
+		}
+	}
 
 	public object? this[string key]
 	{
 		get
 		{
-			if (TryGetSettingPlatform(key, out var value))
+			lock (_gate)
 			{
-				return DeserializeValue(value);
+				return Settings.TryGetValue(key, out var value) ? DeserializeValue(value) : null;
 			}
-
-			return null;
 		}
 		set
 		{
-			if (value is not null)
+			if (value is null)
 			{
-				SetSettingPlatform(key, SerializeValue(value));
+				Remove(key);
+				return;
 			}
-			else
+
+			var serializedValue = SerializeValue(value);
+
+			lock (_gate)
 			{
-				RemoveSettingPlatform(key);
+				Settings[key] = serializedValue;
+				SetSettingPlatform(key, serializedValue);
 			}
 		}
 	}
 
-	public bool Remove(string key) => RemoveSettingPlatform(key);
+	public bool Remove(string key)
+	{
+		lock (_gate)
+		{
+			if (!Settings.Remove(key))
+			{
+				return false;
+			}
+
+			RemoveSettingsPlatform([key]);
+			return true;
+		}
+	}
 
 	public bool TryGetValue(string key, out object? value)
 	{
-		if (TryGetSettingPlatform(key, out var stringValue))
+		lock (_gate)
 		{
-			value = DeserializeValue(stringValue);
-			return true;
+			if (Settings.TryGetValue(key, out var stringValue))
+			{
+				value = DeserializeValue(stringValue);
+				return true;
+			}
 		}
+
 		value = null;
 		return false;
 	}
 
-	public bool ContainsKey(string key) => ContainsSettingPlatform(key);
-
-	public void RemoveKeys(Predicate<string> shouldRemove)
+	public bool ContainsKey(string key)
 	{
-		var keysToRemove = Keys.Where(k => shouldRemove(k)).ToList();
-		foreach (var key in keysToRemove)
+		lock (_gate)
 		{
-			RemoveSettingPlatform(key);
+			return Settings.ContainsKey(key);
 		}
 	}
 
-	private partial bool ContainsSettingPlatform(string key);
+	public void RemoveKeys(Predicate<string> shouldRemove)
+	{
+		lock (_gate)
+		{
+			var keysToRemove = Settings.Keys.Where(k => shouldRemove(k)).ToArray();
+			if (keysToRemove.Length == 0)
+			{
+				return;
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				Settings.Remove(key);
+			}
+
+			// Removed in one go: persisting key by key rewrites the whole store once per key on some platforms.
+			RemoveSettingsPlatform(keysToRemove);
+		}
+	}
+
+	internal void RemoveKeysWithPrefix(string prefix) =>
+		RemoveKeys(k => k.StartsWith(prefix, StringComparison.Ordinal));
+
+	internal IEnumerable<string> GetKeys(Predicate<string> shouldInclude) =>
+		Keys.Where(k => shouldInclude(k));
+
+	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
+		GetKeys(k => k.StartsWith(prefix, StringComparison.Ordinal));
+
+	private static object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
+
+	private static string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
+
+	private static partial bool SupportsLocalityPlatform();
+
+	/// <summary>
+	/// Reads every setting currently held by the native store.
+	/// </summary>
+	private partial Dictionary<string, string> LoadPlatform();
 
 	private partial void SetSettingPlatform(string key, string value);
 
-	private partial bool TryGetSettingPlatform(string key, out string? value);
-
-	private partial bool RemoveSettingPlatform(string key);
-
-	private partial IEnumerable<string> GetKeysPlatform();
-
-	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
-		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.Ordinal));
-
-	internal IEnumerable<string> GetKeys(Predicate<string> shouldInclude) =>
-		Keys.Where(kvp => shouldInclude(kvp));
-
-	internal IEnumerable<object?> GetValues(IEnumerable<string> keys) =>
-		keys.Select(k => this[k]);
-
-	private object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
-
-	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
-
-	internal void RemoveKeysWithPrefix(string internalSettingPrefix) =>
-		RemoveKeys(k => k.StartsWith(internalSettingPrefix, StringComparison.Ordinal));
+	private partial void RemoveSettingsPlatform(IReadOnlyCollection<string> keys);
 }

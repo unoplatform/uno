@@ -1,7 +1,6 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Collections.Generic;
-using System.Linq;
 using Android.Content;
 using Windows.Storage;
 
@@ -13,7 +12,8 @@ partial class NativeApplicationSettings
 
 	/// <summary>
 	/// Flags that the migration from the default shared preferences already ran. It lives in the same
-	/// preferences file as the user data, so it must be kept out of the settings surface.
+	/// preferences file as the user data, and carries the reserved internal prefix so that it stays out of
+	/// the settings surface.
 	/// </summary>
 	private const string MigrationKey = ApplicationDataContainer.InternalSettingPrefix + "Migrated";
 
@@ -22,8 +22,6 @@ partial class NativeApplicationSettings
 	private static ISharedPreferences? _preferences;
 
 	private static partial bool SupportsLocalityPlatform() => false;
-
-	partial void InitializePlatform() => _ = Preferences;
 
 	/// <summary>
 	/// Settings used to live in the default shared preferences, the file the AndroidX preference screens and
@@ -86,37 +84,40 @@ partial class NativeApplicationSettings
 		legacyEditor.Commit();
 	}
 
-	private static bool IsMigrationKey(string key) => key == MigrationKey;
-
-	private partial bool ContainsSettingPlatform(string key)
-		=> !IsMigrationKey(key) && (Preferences.All?.ContainsKey(key) ?? false);
-
-	private partial bool RemoveSettingPlatform(string key)
+	private partial Dictionary<string, string> LoadPlatform()
 	{
-		var exists = ContainsSettingPlatform(key);
-		if (exists)
+		var settings = new Dictionary<string, string>();
+
+		if (Preferences.All is { } entries)
 		{
-			Preferences.Edit()?.Remove(key)?.Commit();
+			foreach (var pair in entries)
+			{
+				if (pair.Key != MigrationKey && pair.Value?.ToString() is { } value)
+				{
+					settings[pair.Key] = value;
+				}
+			}
 		}
 
-		return exists;
-	}
-
-	private partial IEnumerable<string> GetKeysPlatform()
-		=> Preferences.All?.Keys.Where(k => !IsMigrationKey(k)).ToArray() ?? [];
-
-	private partial bool TryGetSettingPlatform(string key, out string? value)
-	{
-		if (!IsMigrationKey(key) && Preferences.All?.TryGetValue(key, out var serializedValue) == true)
-		{
-			value = serializedValue?.ToString();
-			return true;
-		}
-
-		value = null;
-		return false;
+		return settings;
 	}
 
 	private partial void SetSettingPlatform(string key, string value)
 		=> Preferences.Edit()?.PutString(key, value)?.Commit();
+
+	private partial void RemoveSettingsPlatform(IReadOnlyCollection<string> keys)
+	{
+		var editor = Preferences.Edit();
+		if (editor is null)
+		{
+			return;
+		}
+
+		foreach (var key in keys)
+		{
+			editor.Remove(key);
+		}
+
+		editor.Commit();
+	}
 }

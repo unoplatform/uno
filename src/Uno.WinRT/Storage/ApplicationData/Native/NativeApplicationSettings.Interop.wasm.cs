@@ -51,12 +51,6 @@ partial class NativeApplicationSettings
 		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getCount")]
 		private static partial int GetCount(string locality);
 
-		internal static void Clear(ApplicationDataLocality locality)
-			=> Clear(locality.ToStringInvariant());
-
-		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.clear")]
-		private static partial void Clear(string locality);
-
 		internal static bool Remove(ApplicationDataLocality locality, string key)
 			=> Remove(locality.ToStringInvariant(), key);
 

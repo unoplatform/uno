@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,45 +10,29 @@ namespace Uno.Storage;
 
 partial class NativeApplicationSettings
 {
-	private readonly Dictionary<string, string> _values = new();
 	private string _folderPath = null!;
 	private string _filePath = null!;
 
 	private static partial bool SupportsLocalityPlatform() => true;
 
-	partial void InitializePlatform()
+	private partial Dictionary<string, string> LoadPlatform()
 	{
 		var settingsFolderPath = ApplicationData.Current.GetSettingsFolderPath();
 
 		_folderPath = settingsFolderPath;
 		_filePath = Path.Combine(settingsFolderPath, $"{_locality}.dat");
 
-		ReadFromFile();
+		return ReadFromFile();
 	}
 
-	private partial bool ContainsSettingPlatform(string key) => _values.ContainsKey(key);
+	private partial void SetSettingPlatform(string key, string value) => WriteToFile();
 
-	private partial bool RemoveSettingPlatform(string key)
+	private partial void RemoveSettingsPlatform(IReadOnlyCollection<string> keys) => WriteToFile();
+
+	private Dictionary<string, string> ReadFromFile()
 	{
-		var ret = _values.Remove(key);
+		var settings = new Dictionary<string, string>();
 
-		WriteToFile();
-
-		return ret;
-	}
-
-	private partial IEnumerable<string> GetKeysPlatform() => _values.Keys;
-
-	private partial bool TryGetSettingPlatform(string key, out string? value) => _values.TryGetValue(key, out value);
-
-	private partial void SetSettingPlatform(string key, string value)
-	{
-		_values[key] = value;
-		WriteToFile();
-	}
-
-	private void ReadFromFile()
-	{
 		if (!File.Exists(_filePath))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -56,38 +40,29 @@ partial class NativeApplicationSettings
 				this.Log().Debug($"File {_filePath} does not exist, skipping reading settings");
 			}
 
-			return;
+			return settings;
 		}
 
 		try
 		{
-			// Read into a separate map: a failure part-way through must not leave the store holding a
-			// partial set of settings, which the next write would then persist over the intact file.
-			var values = new Dictionary<string, string>();
+			using var reader = new BinaryReader(File.OpenRead(_filePath));
 
-			using (var reader = new BinaryReader(File.OpenRead(_filePath)))
+			var count = reader.ReadInt32();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				var count = reader.ReadInt32();
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Reading {count} settings values");
-				}
-
-				for (int i = 0; i < count; i++)
-				{
-					var key = reader.ReadString();
-					var value = reader.ReadString();
-
-					values[key] = value;
-				}
+				this.Log().Debug($"Reading {count} settings values");
 			}
 
-			_values.Clear();
-			foreach (var pair in values)
+			for (int i = 0; i < count; i++)
 			{
-				_values[pair.Key] = pair.Value;
+				var key = reader.ReadString();
+				var value = reader.ReadString();
+
+				settings[key] = value;
 			}
+
+			return settings;
 		}
 		catch (Exception e)
 		{
@@ -97,6 +72,9 @@ partial class NativeApplicationSettings
 			}
 
 			QuarantineFile();
+
+			// A part-read must not be published: the next write would persist it over the intact file.
+			return new Dictionary<string, string>();
 		}
 	}
 
@@ -125,20 +103,22 @@ partial class NativeApplicationSettings
 		{
 			Directory.CreateDirectory(_folderPath);
 
+			var settings = Settings;
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Writing {_values.Count} settings to {_filePath}");
+				this.Log().Debug($"Writing {settings.Count} settings to {_filePath}");
 			}
 
-			// Write to a temporary file and swap it in, so that a crash or a full disk part-way through
+			// Written to a temporary file and swapped in, so that a crash or a full disk part-way through
 			// leaves the previous store intact instead of a truncated one.
 			var temporaryPath = _filePath + ".tmp";
 
 			using (var writer = new BinaryWriter(File.Create(temporaryPath)))
 			{
-				writer.Write(_values.Count);
+				writer.Write(settings.Count);
 
-				foreach (var pair in _values)
+				foreach (var pair in settings)
 				{
 					writer.Write(pair.Key);
 					writer.Write(pair.Value ?? "");

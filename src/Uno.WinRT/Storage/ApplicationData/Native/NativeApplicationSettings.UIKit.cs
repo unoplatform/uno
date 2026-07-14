@@ -1,7 +1,6 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Collections.Generic;
-using System.Linq;
 using Foundation;
 using Windows.Storage;
 
@@ -13,7 +12,7 @@ partial class NativeApplicationSettings
 
 	/// <summary>
 	/// Flags that the migration from the standard user defaults already ran. It lives in the same suite as the
-	/// user data, so it must be kept out of the settings surface.
+	/// user data, and carries the reserved internal prefix so that it stays out of the settings surface.
 	/// </summary>
 	private const string MigrationKey = ApplicationDataContainer.InternalSettingPrefix + "Migrated";
 
@@ -23,8 +22,6 @@ partial class NativeApplicationSettings
 	private static bool _migrated;
 
 	private static partial bool SupportsLocalityPlatform() => false;
-
-	partial void InitializePlatform() => MigrateIfNeeded();
 
 	/// <summary>
 	/// Settings used to live in the shared standard user defaults, next to the keys owned by the OS, Apple
@@ -77,42 +74,32 @@ partial class NativeApplicationSettings
 		_userDefaults.SetBool(true, MigrationKey);
 	}
 
-	private static bool IsMigrationKey(string key) => key == MigrationKey;
-
-	private partial bool ContainsSettingPlatform(string key)
-		=> !IsMigrationKey(key) && _userDefaults[key] is not null;
-
-	private partial bool RemoveSettingPlatform(string key)
+	private partial Dictionary<string, string> LoadPlatform()
 	{
-		var exists = ContainsSettingPlatform(key);
-		if (exists)
+		MigrateIfNeeded();
+
+		var settings = new Dictionary<string, string>();
+
+		foreach (var pair in _userDefaults.ToDictionary())
 		{
-			_userDefaults.RemoveObject(key);
+			var key = pair.Key?.ToString();
+			if (key is not null && key != MigrationKey && pair.Value?.ToString() is { } value)
+			{
+				settings[key] = value;
+			}
 		}
 
-		return exists;
-	}
-
-	private partial IEnumerable<string> GetKeysPlatform()
-		=> _userDefaults
-			.ToDictionary()
-			.Keys
-			.Select(k => k.ToString())
-			.Where(k => !IsMigrationKey(k))
-			.ToArray();
-
-	private partial bool TryGetSettingPlatform(string key, out string? value)
-	{
-		if (!IsMigrationKey(key) && _userDefaults[key] is { } nsValue)
-		{
-			value = nsValue.ToString();
-			return true;
-		}
-
-		value = null;
-		return false;
+		return settings;
 	}
 
 	private partial void SetSettingPlatform(string key, string value)
 		=> _userDefaults.SetString(value, key);
+
+	private partial void RemoveSettingsPlatform(IReadOnlyCollection<string> keys)
+	{
+		foreach (var key in keys)
+		{
+			_userDefaults.RemoveObject(key);
+		}
+	}
 }

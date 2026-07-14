@@ -19,62 +19,45 @@ partial class NativeApplicationSettings
 
 	private static partial bool SupportsLocalityPlatform() => true;
 
-	partial void InitializePlatform()
+	private partial Dictionary<string, string> LoadPlatform()
 	{
-		if (NativeMethods.ContainsKey(_locality, MigrationKey))
+		var settings = new Dictionary<string, string>();
+
+		var count = NativeMethods.GetCount(_locality);
+		for (var i = 0; i < count; i++)
 		{
-			return;
+			var key = NativeMethods.GetKeyByIndex(_locality, i);
+			if (key != MigrationKey)
+			{
+				settings[key] = NativeMethods.GetValueByIndex(_locality, i);
+			}
 		}
 
-		if (ReadFromLegacyFile())
+		if (!NativeMethods.ContainsKey(_locality, MigrationKey) && ImportLegacyFile(settings))
 		{
 			NativeMethods.SetValue(_locality, MigrationKey, "1");
 		}
-	}
 
-	private int Count => NativeMethods.GetCount(_locality);
-
-	private partial bool ContainsSettingPlatform(string key) => NativeMethods.ContainsKey(_locality, key);
-
-	private partial bool RemoveSettingPlatform(string key)
-	{
-		var ret = NativeMethods.Remove(_locality, key);
-		return ret;
-	}
-
-	private partial IEnumerable<string> GetKeysPlatform()
-	{
-		var keys = new List<string>();
-
-		for (int i = 0; i < Count; i++)
-		{
-			keys.Add(NativeMethods.GetKeyByIndex(_locality, i));
-		}
-
-		return keys.AsReadOnly();
-	}
-
-	private partial bool TryGetSettingPlatform(string key, out string? value)
-	{
-		if (NativeMethods.TryGetValue(_locality, key, out var innerValue))
-		{
-			value = innerValue;
-			return true;
-		}
-
-		value = null;
-		return false;
+		return settings;
 	}
 
 	private partial void SetSettingPlatform(string key, string value) =>
 		NativeMethods.SetValue(_locality, key, value);
+
+	private partial void RemoveSettingsPlatform(IReadOnlyCollection<string> keys)
+	{
+		foreach (var key in keys)
+		{
+			NativeMethods.Remove(_locality, key);
+		}
+	}
 
 	/// <summary>
 	/// Imports the settings file written by versions of Uno Platform that persisted to the virtual file
 	/// system rather than to local storage.
 	/// </summary>
 	/// <returns>Whether the import ran to completion, and does not need to be attempted again.</returns>
-	private bool ReadFromLegacyFile()
+	private bool ImportLegacyFile(Dictionary<string, string> settings)
 	{
 		const string UWPFileName = ".UWPAppSettings";
 
@@ -101,35 +84,36 @@ partial class NativeApplicationSettings
 
 		try
 		{
-			if (File.Exists(filePath))
-			{
-				using var reader = new BinaryReader(File.OpenRead(filePath));
-
-				var count = reader.ReadInt32();
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Reading {count} settings values");
-				}
-
-				for (var i = 0; i < count; i++)
-				{
-					var key = reader.ReadString();
-					var value = reader.ReadString();
-
-					// The file already holds serialized values, so they are stored as they are — going through
-					// the indexer would serialize them a second time. A value the app has since written wins.
-					if (!NativeMethods.ContainsKey(_locality, key))
-					{
-						SetSettingPlatform(key, value);
-					}
-				}
-			}
-			else
+			if (!File.Exists(filePath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"File {filePath} does not exist, skipping reading legacy settings");
+				}
+
+				return true;
+			}
+
+			using var reader = new BinaryReader(File.OpenRead(filePath));
+
+			var count = reader.ReadInt32();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Reading {count} settings values");
+			}
+
+			for (var i = 0; i < count; i++)
+			{
+				var key = reader.ReadString();
+				var value = reader.ReadString();
+
+				// The file already holds serialized values, so they are stored as they are — going through
+				// the public indexer would serialize them a second time. A value the app has since written wins.
+				if (!settings.ContainsKey(key))
+				{
+					settings[key] = value;
+					NativeMethods.SetValue(_locality, key, value);
 				}
 			}
 
