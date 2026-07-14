@@ -107,6 +107,11 @@ public partial class AutoSuggestBoxHelper
 			var popup = autoSuggestBox.GetTemplateChild(c_popupName) as Popup;
 			if (popup is not null)
 			{
+				// C++ assigns to winrt::auto_revoke revokers, which revoke the previous subscription
+				// on assignment. Plain IDisposable fields don't, so revoke explicitly before re-wiring.
+				revokers.PopupOpenedRevoker?.Dispose();
+				revokers.PopupClosedRevoker?.Dispose();
+
 				// Use weak reference to avoid preventing garbage collection
 				var autoSuggestBoxWeakRef = new WeakReference<AutoSuggestBox>(autoSuggestBox);
 

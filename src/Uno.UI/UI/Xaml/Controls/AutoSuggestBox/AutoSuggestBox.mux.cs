@@ -1904,7 +1904,7 @@ partial class AutoSuggestBox
 	/// <summary>
 	/// Gets the plain text representation of the control for accessibility.
 	/// </summary>
-	internal new string GetPlainText()
+	internal override string GetPlainText()
 	{
 		var header = Header;
 		if (header is not null)
@@ -1928,12 +1928,12 @@ partial class AutoSuggestBox
 			return;
 		}
 
-		// TODO UNO: Implement LightDismissOverlayHelper
-		// bool isOverlayVisible = LightDismissOverlayHelper.ResolveIsOverlayVisibleForControl(this);
-
-		bool isOverlayVisible = false;
-		isOverlayVisible &= IsSuggestionListOpen; // Overlay should only be visible when the suggestion list is.
-		isOverlayVisible &= !s_sipIsOpen;          // Except if the SIP is also visible.
+		// TODO UNO: Implement LightDismissOverlayHelper. Until it exists the overlay can never
+		// be shown, so the WinUI conditions below stay commented out rather than dead:
+		//   bool isOverlayVisible = LightDismissOverlayHelper.ResolveIsOverlayVisibleForControl(this);
+		//   isOverlayVisible &= IsSuggestionListOpen; // Overlay should only be visible when the suggestion list is.
+		//   isOverlayVisible &= !s_sipIsOpen;         // Except if the SIP is also visible.
+		const bool isOverlayVisible = false;
 
 		if (isOverlayVisible != m_isOverlayVisible)
 		{
