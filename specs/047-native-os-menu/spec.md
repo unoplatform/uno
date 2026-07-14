@@ -331,6 +331,9 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   Undo, Redo, …) MUST set placement and a standard label only; the **developer MUST supply
   the `Command` and enabled logic** on every platform — the system MUST NOT bridge to the
   native responder chain (Uno draws its own controls and is not a native first responder).
+  `Settings` is placement-only for the same reason: it reserves the macOS Preferences slot,
+  its standard label and Cmd+, , but AppKit ships no default `orderFrontPreferencesPanel:`
+  implementation, so the developer MUST supply the `Command`.
 - **FR-011**: On in-app targets (Windows, Linux fallback), role items MUST render as normal
   labeled items; OS-only roles MUST no-op unless a `Command` is supplied.
 

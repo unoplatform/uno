@@ -175,7 +175,7 @@ responder-chain bridging for edit roles).
 | `None` | ordinary item | ordinary item | ordinary item | ordinary item |
 | `ApplicationMenu` | bold app-name menu; children **merge** into the app menu | app section | n/a | label-only |
 | `About` | **auto-wired** `orderFrontStandardAboutPanel:` | system About | n/a | dev `Command` |
-| `Settings` | **auto-wired** Preferences slot (Cmd+,) | Settings slot | n/a | dev `Command` |
+| `Settings` | Preferences slot + standard label (Cmd+,) — **dev `Command`** | Settings slot | n/a | dev `Command` |
 | `Services` | **auto-wired** Services submenu | n/a | n/a | n/a |
 | `Hide` | **auto-wired** `hide:` (Cmd+H) | n/a | n/a | n/a |
 | `HideOthers` | **auto-wired** `hideOtherApplications:` | n/a | n/a | n/a |
@@ -194,11 +194,13 @@ responder-chain bridging for edit roles).
 | `Delete` | placement + label "Delete" — **dev `Command`** | placement + label | placement | label / dev `Command` |
 | `SelectAll` | placement + label "Select All" — **dev `Command`** | placement + label | placement | label / dev `Command` |
 
-**Auto-wired (macOS OS-owned):** `About`, `Settings`, `Services`, `Hide`, `HideOthers`, `ShowAll`,
+**Auto-wired (macOS OS-owned):** `About`, `Services`, `Hide`, `HideOthers`, `ShowAll`,
 `Quit`, `Minimize`, `Zoom`, `EnterFullScreen`. **Placement-only (dev supplies `Command`):** the
-edit roles `Undo`, `Redo`, `Cut`, `Copy`, `Paste`, `Delete`, `SelectAll`, plus `None`. **Slot
-containers:** `ApplicationMenu`, `Window`, `Help` (define a menu section/slot; children supply the
-actual items). On Windows/Linux in-app, OS-only roles **no-op unless a `Command` is supplied**;
+edit roles `Undo`, `Redo`, `Cut`, `Copy`, `Paste`, `Delete`, `SelectAll`, plus `Settings` and
+`None`. `Settings` is placement-only because AppKit ships no default implementation of
+`orderFrontPreferencesPanel:` — the role reserves the Preferences slot, its standard label and
+Cmd+, , but the app must supply the `Command`. **Slot containers:** `ApplicationMenu`, `Window`,
+`Help` (define a menu section/slot; children supply the actual items). On Windows/Linux in-app, OS-only roles **no-op unless a `Command` is supplied**;
 others render as normal labeled items. Apps probe support via `IsRoleSupported` (see seam).
 
 ```csharp
