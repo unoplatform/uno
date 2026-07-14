@@ -6,6 +6,7 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
