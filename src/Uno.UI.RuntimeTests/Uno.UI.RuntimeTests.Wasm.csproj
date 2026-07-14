@@ -85,6 +85,15 @@
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
+	<!-- The Skia/WASM accessibility semantic-DOM tests use composition APIs (UIElement.Visual) that
+	     don't exist on the native WASM head, so they don't compile there and aren't applicable (native
+	     WASM surfaces accessibility through the regular DOM elements). Exclude them, like the
+	     netcoremobile head does. -->
+	<ItemGroup>
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_Accessible*.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\WasmSemanticDomHelper.cs" />
+	</ItemGroup>
+
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 </Project>
