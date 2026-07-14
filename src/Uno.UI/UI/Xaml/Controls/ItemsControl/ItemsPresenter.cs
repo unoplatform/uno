@@ -451,7 +451,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// collapsed elements skip measure, we must ensure templates are applied first.
 			if (HeaderFooterEnabled && HeaderContentControl is { } headerCC)
 			{
-				headerCC.ApplyTemplate();
+				// Guarded: on the non-enhanced lifecycle, ApplyTemplate always invalidates measure.
+				if (headerCC.TemplatedRoot is null)
+				{
+					headerCC.ApplyTemplate();
+				}
+
 				headerCC.Visibility = (Header is null && HeaderTemplate is null)
 					? Visibility.Collapsed
 					: Visibility.Visible;
@@ -459,7 +464,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (HeaderFooterEnabled && FooterContentControl is { } footerCC)
 			{
-				footerCC.ApplyTemplate();
+				if (footerCC.TemplatedRoot is null)
+				{
+					footerCC.ApplyTemplate();
+				}
+
 				footerCC.Visibility = (Footer is null && FooterTemplate is null)
 					? Visibility.Collapsed
 					: Visibility.Visible;
