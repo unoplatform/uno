@@ -1653,7 +1653,7 @@ namespace Microsoft.UI.Xaml
 		/// Releases the explicit pointer capture and raises an <em>unhandled</em> PointerCaptureLost so the
 		/// pressing control clears its pressed state. Used when a context menu is shown on a touch press-and-hold:
 		/// WinUI clears the pressed state via the OS pointer-capture-changed raised when the menu's popup steals
-		/// capture, but Uno's popups don't, so we do it explicitly (issue #22229).
+		/// capture, but Uno's popups don't, so we do it explicitly.
 		/// </summary>
 		/// <remarks>
 		/// The capture tracks the args from the PointerPressed, which the pressing control marks as Handled.

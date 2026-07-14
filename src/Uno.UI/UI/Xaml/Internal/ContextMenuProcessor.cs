@@ -31,7 +31,8 @@ internal partial class ContextMenuProcessor
 
 	// Uno specific: the touch pointer that triggered the holding gesture, so its capture can be
 	// released once the context menu is shown (see ReleaseContextMenuHoldingPointerCapture).
-	private uint _contextMenuOnHoldingPointerId;
+	// Nullable as 0 is a valid pointer id (e.g. first finger on an Android device with deviceId 0).
+	private uint? _contextMenuOnHoldingPointerId;
 
 	public ContextMenuProcessor(ContentRoot contentRoot)
 	{
@@ -111,15 +112,21 @@ internal partial class ContextMenuProcessor
 	/// <summary>
 	/// Releases the explicit pointer capture held for the touch pointer that triggered the holding
 	/// gesture, raising PointerCaptureLost so the pressing element (e.g. a Button) clears its pressed
-	/// state and does not raise Click/Tapped on release (issue #22229).
+	/// state and does not raise Click/Tapped on release.
 	/// </summary>
 	private void ReleaseContextMenuHoldingPointerCapture()
 	{
+		// No holding pointer was recorded (e.g. ContextRequested raised without a holding gesture).
+		if (_contextMenuOnHoldingPointerId is not { } holdingPointerId)
+		{
+			return;
+		}
+
 		if (PointerCapture.Any(out var captures))
 		{
 			foreach (var capture in captures)
 			{
-				if (capture.Pointer.PointerId == _contextMenuOnHoldingPointerId
+				if (capture.Pointer.PointerId == holdingPointerId
 					&& capture.ExplicitTarget is { } captureTarget)
 				{
 					captureTarget.ReleasePointerCaptureForContextMenu(capture.Pointer);

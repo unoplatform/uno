@@ -420,7 +420,7 @@ public partial class Given_ContextRequested_Injection
 			finger.Release();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, clickCount, "Long press must NOT click the button - it should behave like a right-tap (issue #22229)");
+			Assert.AreEqual(0, clickCount, "Long press must NOT click the button - it should behave like a right-tap");
 		}
 		finally
 		{
@@ -446,7 +446,7 @@ public partial class Given_ContextRequested_Injection
 		// Simulate a context menu being shown on long-press by handling ContextRequested,
 		// without a flyout that steals focus. On a real touch device the context menu does
 		// not clear the button's pressed state via focus, so the pending Click must instead
-		// be cancelled by releasing the pointer capture (issue #22229).
+		// be cancelled by releasing the pointer capture.
 		button.ContextRequested += (s, e) =>
 		{
 			contextRequestedCount++;
@@ -476,7 +476,7 @@ public partial class Given_ContextRequested_Injection
 			finger.Release();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, clickCount, "Long press must NOT click the button once a context menu was shown (issue #22229)");
+			Assert.AreEqual(0, clickCount, "Long press must NOT click the button once a context menu was shown");
 		}
 		finally
 		{
