@@ -919,7 +919,9 @@ public partial class DependencyObject
 			foreach (var binding in bindings)
 			{
 				var resolved = InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
-				if (resolved == false && Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource)
+				if (resolved == false
+					&& Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource
+					&& IsUnresolvedResourceFatal(binding.Binding, resourceContextProvider))
 				{
 					unresolvedKeys ??= new List<string>();
 					unresolvedKeys.Add($"'{binding.Binding.ResourceKey.Key}' (property '{binding.Property.Name}')");
@@ -937,6 +939,26 @@ public partial class DependencyObject
 		// MUX Reference: NotifyThemeChangedCoreImpl property walk (Theming.cpp:176-248)
 		UpdateChildResourceBindings(updateReason, resourceContextProvider);
 	}
+
+	/// <summary>
+	/// Whether a failed lookup is a genuine resource-resolution failure, as opposed to a pass that
+	/// is simply too early to conclude anything. Backs <see cref="FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource"/>.
+	/// </summary>
+	/// <remarks>
+	/// Resolution here is deferred and multi-pass, so most misses are expected:
+	/// <list type="bullet">
+	/// <item>A <c>{StaticResource}</c> binding only exists because the key could not be resolved at
+	/// parse time and must be retried once the tree scope is available (see
+	/// <see cref="ResourceUpdateReason.StaticResourceLoading"/>). Until the owner is live in the tree
+	/// the retry has not had its chance, so a miss proves nothing.</item>
+	/// <item><c>{ThemeResource}</c> is excluded outright: it is resolved through the theme-reference
+	/// pipeline (Phase 1 / <c>_themeResources</c>), for which this binding walk is only a fallback.
+	/// A miss here does not mean the value was not set, so it cannot be treated as fatal.</item>
+	/// </list>
+	/// </remarks>
+	private bool IsUnresolvedResourceFatal(ResourceBinding binding, FrameworkElement? resourceContextProvider)
+		=> (binding.UpdateReason & ResourceUpdateReason.ThemeResource) == 0
+			&& (ActualInstance as FrameworkElement ?? resourceContextProvider)?.IsLoaded == true;
 
 	/// <summary>
 	/// Returns <c>true</c> if the resource was resolved, <c>false</c> if the binding update

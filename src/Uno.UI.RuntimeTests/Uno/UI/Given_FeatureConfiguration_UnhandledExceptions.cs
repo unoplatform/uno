@@ -161,46 +161,56 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_Resource_Missing_FlagOn_Throws_XamlParseException()
+	public async Task When_Resource_Missing_FlagOn_NotLoaded_DoesNotThrow()
 	{
 		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
 		try
 		{
 			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = true;
 
-			// ContentControl applies its default Style during construction (XamlReader.Load),
-			// which triggers UpdateResourceBindings on the new instance. With the flag on,
-			// the missing resource lookup throws XamlParseException, which the XAML reader
-			// then wraps in its own parse exception with our XamlParseException as inner.
-			var xaml = "<ContentControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Tag=\"{StaticResource NonExistentResource_ShouldThrow}\" />";
+			// A {StaticResource} binding exists precisely because the key could not be resolved at
+			// parse time; it is retried once the tree scope is available. Before the owner is loaded
+			// the retry has not had its chance, so a miss must not be reported as a failure.
+			var xaml = "<ContentControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Tag=\"{StaticResource NonExistentResource_NotLoaded}\" />";
+			var sut = (ContentControl)XamlReader.Load(xaml);
 
-			XamlParseException foundXamlParseException = null;
-			try
-			{
-				_ = XamlReader.Load(xaml);
-			}
-			catch (Exception ex)
-			{
-				for (var e = ex; e != null; e = e.InnerException)
-				{
-					if (e is XamlParseException xpe)
-					{
-						foundXamlParseException = xpe;
-						break;
-					}
-				}
-			}
+			BindingHelper.UpdateResourceBindings(sut);
 
-			Assert.IsNotNull(
-				foundXamlParseException,
-				"Expected a Microsoft.UI.Xaml.Markup.XamlParseException to be thrown (possibly wrapped).");
-			Assert.IsTrue(
-				foundXamlParseException.Message.Contains("NonExistentResource_ShouldThrow"),
-				$"Expected message to reference the missing key, got: {foundXamlParseException.Message}");
+			await WindowHelper.WaitForIdle();
 		}
 		finally
 		{
 			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Resource_Missing_FlagOn_Loaded_Throws_XamlParseException()
+	{
+		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+		try
+		{
+			var xaml = "<ContentControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Tag=\"{StaticResource NonExistentResource_ShouldThrow}\" />";
+			var sut = (ContentControl)XamlReader.Load(xaml);
+
+			// Load with the flag off, so only the explicit post-load update below is under test.
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = true;
+
+			// Now that the owner is live in the tree, the key is definitively missing.
+			var exception = Assert.ThrowsExactly<XamlParseException>(
+				() => BindingHelper.UpdateResourceBindings(sut));
+
+			Assert.IsTrue(
+				exception.Message.Contains("NonExistentResource_ShouldThrow"),
+				$"Expected message to reference the missing key, got: {exception.Message}");
+		}
+		finally
+		{
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+			WindowHelper.WindowContent = null;
 		}
 	}
 }

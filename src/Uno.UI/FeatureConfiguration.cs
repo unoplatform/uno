@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -9,9 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
-using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
-using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
@@ -679,19 +679,27 @@ namespace Uno.UI
 		public static class ResourceResolution
 		{
 			/// <summary>
-			/// When <c>true</c>, an unresolved <c>{StaticResource}</c> or <c>{ThemeResource}</c>
-			/// lookup throws <see cref="global::Microsoft.UI.Xaml.Markup.XamlParseException"/> at
-			/// the point of failure (matching WinUI's <c>AG_E_PARSER_FAILED_RESOURCE_FIND</c>
-			/// behavior). When <c>false</c> (default), the failure is only logged as a warning.
+			/// When <c>true</c>, a <c>{StaticResource}</c> that is still unresolved once its owner is
+			/// live in the visual tree throws <see cref="global::Microsoft.UI.Xaml.Markup.XamlParseException"/>
+			/// (the closest analogue to WinUI's <c>AG_E_PARSER_FAILED_RESOURCE_FIND</c>). When
+			/// <c>false</c> (default), the failure is only logged as a warning.
 			/// </summary>
 			/// <remarks>
 			/// Useful during development to catch typos in <c>{StaticResource}</c> keys.
 			/// <para>
-			/// <b>Known limitation:</b> <c>{ThemeResource}</c> bindings can produce false positives.
-			/// The resource-binding fallback walk is not theme-aware, so it can report a resource as
-			/// unresolved even when it resolves correctly through the theme walk. Until theme-aware
-			/// resource resolution lands, prefer enabling this flag on apps that do not rely on
-			/// <c>{ThemeResource}</c>, or be ready to filter out those false positives.
+			/// Two deliberate narrowings keep this free of false positives, because resource resolution
+			/// is deferred and multi-pass rather than resolved once at parse time as in WinUI:
+			/// </para>
+			/// <para>
+			/// A <c>{StaticResource}</c> binding only exists because the key could not be resolved at
+			/// parse time and is retried once the tree scope is available, so it is only judged after
+			/// its owner is loaded — an earlier miss proves nothing.
+			/// </para>
+			/// <para>
+			/// <c>{ThemeResource}</c> is not covered at all: it resolves through the theme-reference
+			/// pipeline, for which the resource-binding walk is only a fallback, so a miss there does
+			/// not mean the value went unset. Covering it would need the theme-reference path to report
+			/// definitive failure itself.
 			/// </para>
 			/// </remarks>
 			public static bool ThrowOnUnresolvedResource { get; set; }
