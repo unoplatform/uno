@@ -47,8 +47,15 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
+	private readonly SKPath _pendingDamage = new();
+
+	// Recycled per-frame damage snapshot paths. At most a couple of frames are ever in flight, so reusing
+	// their SKPaths avoids allocating (and finalizing) a native path every frame. Only touched under
+	// _frameGate, like the frame slot itself.
+	private readonly Stack<SKPath> _damageSnapshotPool = new();
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -99,22 +106,48 @@ public partial class CompositionTarget
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
-		var renderedFrame = (picture, path);
-		var previousFrame = default((IntPtr frame, SKPath path)?);
+			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
+			damage: _pendingDamage);
+
+		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
+		{
+			_pendingDamage.UnionRect(fpsBounds);
+		}
+
+		var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
+		var previousFrame = default((IntPtr frame, SKPath path, SKPath damage)?);
+		SKPath damageSnapshot;
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			_lastRenderedFrame = renderedFrame;
+			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
+			{
+				_pendingDamage.Union(carried);
+			}
+
+			_pendingDamage.ClampTo(frameRect);
+
+			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
+			damageSnapshot.Rewind();
+			damageSnapshot.AddPath(_pendingDamage);
+			_pendingDamage.Rewind();
+
+			_lastRenderedFrame = (picture, path, damageSnapshot);
+
+			// The previous frame is being superseded in place (it wasn't borrowed for present, since the
+			// slot was non-null); its snapshot is no longer referenced, so recycle it for the next frame.
+			if (previousFrame is { damage: var superseded })
+			{
+				_damageSnapshotPool.Push(superseded);
+			}
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
-		// Delete previous SKPicture now since we are swapping it
-		if (previousFrame != null)
+		if (previousFrame is { } prev)
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
+			UnoSkiaApi.sk_refcnt_safe_unref(prev.frame);
 		}
 
 		if (_isRenderingActive)
@@ -150,6 +183,27 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
+	void ICompositionTarget.AddDamage(SKRect bounds)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.UnionRect(bounds);
+	}
+
+	void ICompositionTarget.AddDamage(SKPath region)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.Union(region);
+	}
+
+	private static readonly SKPaint _damageOverlayFill = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
+	private static readonly SKPaint _damageOverlayStroke = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+
+	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
+	{
+		canvas.DrawPath(damage, _damageOverlayFill);
+		canvas.DrawPath(damage, _damageOverlayStroke);
+	}
+
 	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
@@ -161,7 +215,7 @@ public partial class CompositionTarget
 			RunRenderJobs(canvas.Context as GRContext);
 		}
 
-		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IntPtr frame, SKPath nativeElementClipPath, SKPath damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -193,7 +247,8 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			var canvasRecreated = canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			if (canvasRecreated)
 			{
 				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
@@ -207,19 +262,37 @@ public partial class CompositionTarget
 				}
 			}
 
-			canvas.Save();
+			canvas!.Save();
 			if (rasterizationScale != 1)
 			{
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
+
+			var damage = lastRenderedFrame.damage;
+			var useDamageRegion = !canvasRecreated;
+			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
+
+			if (useDamageRegion && !overlayEnabled)
+			{
+				canvas.ClipPath(damage, antialias: false);
+			}
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
 				canvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
 				_fpsHelper.DrawFps);
+
+			if (overlayEnabled && useDamageRegion && !damage.IsEmpty)
+			{
+				DrawDamageRegionOverlay(canvas, damage);
+			}
+
 			canvas.Restore();
 
+			// This frame's damage is now presented; clear it so Render's carry-forward doesn't re-damage it next frame.
+			lastRenderedFrame.damage.Rewind();
 			ReturnFrame(lastRenderedFrame);
 
 			InvokeRendering();
@@ -324,7 +397,7 @@ public partial class CompositionTarget
 		public void Fail() => _tcs.TrySetResult(false);
 	}
 
-	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	private void ReturnFrame((IntPtr picture, SKPath path, SKPath damage) frame)
 	{
 		var pictureToDelete = IntPtr.Zero;
 
@@ -338,6 +411,9 @@ public partial class CompositionTarget
 			else
 			{
 				pictureToDelete = frame.picture;
+				// This presented frame is superseded by a newer one; its snapshot (already rewound in Draw)
+				// is done — recycle it.
+				_damageSnapshotPool.Push(frame.damage);
 			}
 		}
 

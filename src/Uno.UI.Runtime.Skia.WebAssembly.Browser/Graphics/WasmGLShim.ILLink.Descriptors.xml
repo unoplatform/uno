@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	The native GL shim (build/native/uno_gl_shim.c) is always linked into WASM heads via
+	WasmShellNativeCompile, and it calls these [UnmanagedCallersOnly] managed dispatchers by their
+	EntryPoint names. In a trimmed WASM app that does not use GLCanvasElement nothing reaches them
+	from managed code, so without this descriptor the trimmer removes the methods (and their native
+	entry points), breaking the wasm-ld link with "undefined symbol: uno_gl*_managed". Preserve
+	them unconditionally so the exports always exist for the C shim to bind against.
+-->
+<linker>
+	<assembly fullname="Uno.UI.Runtime.Skia.WebAssembly.Browser">
+		<type fullname="Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics.WasmGLFunctions">
+			<method name="glTexImage2DPacked" />
+			<method name="glTexSubImage2DPacked" />
+			<method name="glTexImage3DPacked" />
+			<method name="glTexSubImage3DPacked" />
+			<method name="glCopyTexSubImage3DPacked" />
+			<method name="glCompressedTexImage3DPacked" />
+			<method name="glCompressedTexSubImage2DPacked" />
+			<method name="glCompressedTexSubImage3DPacked" />
+			<method name="glBlitFramebufferPacked" />
+		</type>
+	</assembly>
+</linker>

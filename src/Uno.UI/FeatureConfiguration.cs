@@ -1120,6 +1120,12 @@ namespace Uno.UI
 				set { }
 #endif
 			}
+
+			/// <summary>
+			/// When damage-region rendering is active, visually highlights the regions being
+			/// repainted each frame, for tuning and debugging. This is a diagnostic aid only.
+			/// </summary>
+			public static bool DamageRegionOverlay { get; set; }
 		}
 
 		public static class ElementRefHandle

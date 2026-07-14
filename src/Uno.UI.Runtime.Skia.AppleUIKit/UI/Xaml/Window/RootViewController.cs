@@ -111,9 +111,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	internal void OnRenderFrameRequested(SKCanvas canvas)
+	internal void OnRenderFrameRequested(SKCanvas? canvas, Func<global::Windows.Foundation.Size, SKCanvas> resizeFunc)
 	{
-		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, resizeFunc);
 
 		if (clipPath is not null)
 		{
