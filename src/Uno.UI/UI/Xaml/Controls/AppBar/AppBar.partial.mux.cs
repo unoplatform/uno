@@ -106,9 +106,13 @@ partial class AppBar
 			m_xamlRootChangedEventHandler.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 		}
 
+		// WinUI only asserts here, and simply skips the ApplicationBarService lookups when there is no
+		// XamlRoot. Throwing would take down hosts (islands, test harnesses) where it can legitimately be null.
+		MUX_ASSERT(xamlRoot is not null, "XamlRoot should be set in AppBar.OnLoaded.");
+
 		if (xamlRoot is null)
 		{
-			throw new InvalidOperationException("XamlRoot should be set in AppBar.OnLoaded.");
+			return;
 		}
 
 		// register the app bar if it is floating

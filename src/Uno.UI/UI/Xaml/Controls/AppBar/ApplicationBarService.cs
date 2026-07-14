@@ -85,8 +85,10 @@ internal class ApplicationBarService
 	private Storyboard? m_overlayOpeningStoryboard;
 	private Storyboard? m_overlayClosingStoryboard;
 
-	// Window activated handler
+	// Window activated handler. The window is captured at subscription time: the AppBar may already
+	// be detached when we unregister, in which case it can no longer resolve its associated window.
 	private bool m_hasWindowActivatedHandler;
+	private Window? m_windowActivatedSource;
 
 	internal ApplicationBarService()
 	{
@@ -183,6 +185,7 @@ internal class ApplicationBarService
 			if (window is not null)
 			{
 				window.Activated += OnWindowActivated;
+				m_windowActivatedSource = window;
 				m_hasWindowActivatedHandler = true;
 			}
 		}
@@ -216,12 +219,13 @@ internal class ApplicationBarService
 		// Stop listening for Window.Activated if no more bars
 		if (m_applicationBars.Count == 0 && m_hasWindowActivatedHandler)
 		{
-			var window = DXamlCore.Current.GetAssociatedWindow(appBar);
-			if (window is not null)
+			if (m_windowActivatedSource is not null)
 			{
-				window.Activated -= OnWindowActivated;
-				m_hasWindowActivatedHandler = false;
+				m_windowActivatedSource.Activated -= OnWindowActivated;
+				m_windowActivatedSource = null;
 			}
+
+			m_hasWindowActivatedHandler = false;
 		}
 	}
 
