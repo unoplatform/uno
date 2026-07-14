@@ -299,18 +299,33 @@ public class Given_BackgroundSizing
 			Width = 100,
 			Height = 100,
 			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
-			BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
+			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			CornerRadius = new CornerRadius(15),
 			BackgroundSizing = BackgroundSizing.InnerBorderEdge
 		};
 
-		await UITestHelper.Load(border);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { border }
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(border);
+		await UITestHelper.Load(root);
 
-		// Center should be green (inner content area)
-		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Lime, tolerance: 20);
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		// At mid-height the left border is straight (the 15px corner arcs do not reach y=50),
+		// so this samples the border area. With InnerBorderEdge the green background stops at the
+		// inner edge, leaving the semi-transparent red border blended with the blue parent:
+		// ~(255, 128, 0, 127). Under OuterBorderEdge it would blend with green instead
+		// (~(255, 128, 127, 0)), so this assertion discriminates between the two modes.
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
+
+		// Inner content area stays green (flat, unblended color).
+		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Lime, tolerance: 5);
 	}
 
 	[TestMethod]
