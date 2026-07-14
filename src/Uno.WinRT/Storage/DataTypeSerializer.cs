@@ -71,6 +71,30 @@ internal class DataTypeSerializer
 		return value.GetType().FullName + ":" + serializedValue;
 	}
 
+	/// <summary>
+	/// Determines whether a persisted string carries the "{TypeName}:{value}" shape produced by <see cref="Serialize"/>.
+	/// Used to tell settings written by Uno Platform apart from values owned by other code in a shared store.
+	/// </summary>
+	public static bool IsSerializedValue(string value)
+	{
+		var index = value.IndexOf(Separator);
+		if (index <= 0)
+		{
+			return false;
+		}
+
+		var typeName = value.Substring(0, index);
+		foreach (var supportedType in SupportedTypes)
+		{
+			if (supportedType.FullName == typeName)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 	public static object? Deserialize(string? value)
 	{
