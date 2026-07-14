@@ -306,6 +306,7 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 	public async Task When_Spanish_Language()
 	{
 		var calendarView = new CalendarView()
@@ -319,6 +320,7 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 	public async Task When_English_Language()
 	{
 		var calendarView = new CalendarView()

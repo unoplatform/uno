@@ -32,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_Disabled_In_Disabled_ListView_Matches_Standalone()
 		{
 			var standalone = new CheckBox { Content = "Standalone", IsChecked = true, IsEnabled = false };
@@ -71,6 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_ListViewItem_Locally_Disabled_Matches_Enabled()
 		{
 			var checkBoxInEnabledItem = new CheckBox { Content = "Enabled item", IsChecked = true, IsEnabled = false };

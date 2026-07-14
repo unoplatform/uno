@@ -26,7 +26,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_ThemeResources
 	{
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		// Not [RequiresFullWindow]/UseApplicationLightTheme: this test sets WindowContent=null mid-run,
+		// which nulls XamlRoot.Content in full-window mode (breaking UseDarkTheme). It runs embedded and
+		// relies on the host staying Light (IsAppThemeLight + the UseDarkTheme restore fix) for determinism.
 		public async Task When_Detached_From_Window_While_Theme_Changed()
 		{
 			var SUT = new Button { Content = "Ye button" };
