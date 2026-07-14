@@ -214,7 +214,7 @@ public class Given_DoubleAnimationUsingKeyFrames
 	{
 		// In a VisualState, both OAKF and DAUKF with time-0 keyframes should
 		// apply their values in the same frame (no flash).
-		var page = new TestPages.VisualStateDaukfOakfPage();
+		var page = new TestPages.VisualStateTime0KeyFramesPage();
 		WindowHelper.WindowContent = page;
 		await WindowHelper.WaitForLoaded(page);
 		await WindowHelper.WaitForIdle();
@@ -351,7 +351,7 @@ public class Given_DoubleAnimationUsingKeyFrames
 		// Verifies that when a VisualState uses DAUKF to set Opacity=0 at time-0,
 		// the element never renders with its initial Opacity=1.
 		// This matches WinUI where the first TimeManager tick applies values before render.
-		var page = new TestPages.VisualStateDaukfOakfPage();
+		var page = new TestPages.VisualStateTime0KeyFramesPage();
 		WindowHelper.WindowContent = page;
 		await WindowHelper.WaitForLoaded(page);
 		await WindowHelper.WaitForIdle();
@@ -418,7 +418,7 @@ public class Given_DoubleAnimationUsingKeyFrames
 	public async Task When_VisualState_OAKF_Applies_After_WaitForIdle()
 	{
 		// VisualState with OAKF should apply values and be settled after WaitForIdle.
-		var page = new TestPages.VisualStateDaukfOakfPage();
+		var page = new TestPages.VisualStateTime0KeyFramesPage();
 		WindowHelper.WindowContent = page;
 		await WindowHelper.WaitForLoaded(page);
 		await WindowHelper.WaitForIdle();
