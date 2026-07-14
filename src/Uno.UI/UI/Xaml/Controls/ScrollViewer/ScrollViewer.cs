@@ -1229,29 +1229,26 @@ namespace Microsoft.UI.Xaml.Controls
 				// we want to cancel any pending snapping, to prevent snapping to occur mid-scroll.
 				_snapPointsTimer?.Stop();
 			}
-			else if (!isIntermediate
-				)
-			{
-				if (HorizontalSnapPointsType != SnapPointsType.None
+			else if (
+				(HorizontalSnapPointsType != SnapPointsType.None
 					|| VerticalSnapPointsType != SnapPointsType.None
-					|| ShouldSnapToTouchTextBox())
+					|| ShouldSnapToTouchTextBox()))
+			{
+				_horizontalOffsetForSnapPoints = horizontalOffset;
+				_verticalOffsetForSnapPoints = verticalOffset;
+
+				if (_snapPointsTimer == null)
 				{
-					_horizontalOffsetForSnapPoints = horizontalOffset;
-					_verticalOffsetForSnapPoints = verticalOffset;
-
-					if (_snapPointsTimer == null)
+					_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
+					_snapPointsTimer.IsRepeating = false;
+					_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
+					_snapPointsTimer.Tick += (snd, evt) =>
 					{
-						_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
-						_snapPointsTimer.IsRepeating = false;
-						_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
-						_snapPointsTimer.Tick += (snd, evt) =>
-						{
-							DelayedMoveToSnapPoint();
-						};
-					}
-
-					_snapPointsTimer.Start();
+						DelayedMoveToSnapPoint();
+					};
 				}
+
+				_snapPointsTimer.Start();
 			}
 
 		}
