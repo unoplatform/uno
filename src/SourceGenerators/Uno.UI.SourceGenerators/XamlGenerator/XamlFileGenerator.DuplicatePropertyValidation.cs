@@ -11,7 +11,7 @@ internal partial class XamlFileGenerator
 	/// <summary>
 	/// Members that have been detected as duplicate property assignments. Skipped during code
 	/// generation to avoid emitting C# that would itself fail to compile (CS1912 duplicate
-	/// member initialization), so the user only sees the meaningful UXAML0001 error.
+	/// member initialization), so the user only sees the meaningful XLS0501 error.
 	/// </summary>
 	private readonly HashSet<XamlMemberDefinition> _duplicatePropertyMembers = new();
 
@@ -85,8 +85,10 @@ internal partial class XamlFileGenerator
 				continue;
 			}
 
-			// Attached properties target a different declaring type and cannot collide
-			// with a property on the owning object.
+			// TODO Uno: attached properties are not checked yet. WinUI's Logic_DuplicatePropertyCheck
+			// keys on the resolved XamlProperty (declaring type + name), so it also catches e.g.
+			// Grid.Row="0" combined with <Grid.Row>1</Grid.Row>. Keying on "{DeclaringType}.{Name}"
+			// here (and in XamlObjectBuilder) is a follow-up.
 			if (IsAttachedProperty(member))
 			{
 				continue;
