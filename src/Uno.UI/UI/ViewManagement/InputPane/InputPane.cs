@@ -3,9 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Uno.UI;
 using Uno;
-using Uno.UI.Controls;
 using Microsoft.UI.Xaml;
 
 namespace Windows.UI.ViewManagement;
