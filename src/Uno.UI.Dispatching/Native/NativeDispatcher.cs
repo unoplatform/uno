@@ -176,11 +176,17 @@ namespace Uno.UI.Dispatching
 				}
 			}
 
-			RunAction(@this, action);
-
-			// Restore the priority to the default for native events
-			// (i.e. not dispatched by this running loop)
-			@this._currentPriority = NativeDispatcherPriority.Normal;
+			try
+			{
+				RunAction(@this, action);
+			}
+			finally
+			{
+				// Restore the priority to the default for native events
+				// (i.e. not dispatched by this running loop), even when the action's
+				// exception propagates (PropagateUnhandledExceptions) and the pump keeps going.
+				@this._currentPriority = NativeDispatcherPriority.Normal;
+			}
 		}
 
 		/// <remarks>
