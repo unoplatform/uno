@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
+using Uno.Foundation.Logging;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers.Text;
@@ -506,9 +507,13 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 				var toRoot = _pTextOwner.TransformToVisual(null);
 				rect = toRoot.TransformBounds(rect);
 			}
-			catch
+			catch (Exception ex)
 			{
 				// TODO Uno (UIA): keep element-relative bounds if the transform is unavailable.
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"GetBoundingRectangles: TransformToVisual failed, falling back to element-relative bounds: {ex}");
+				}
 			}
 
 			flat[4 * current] = rect.X;
