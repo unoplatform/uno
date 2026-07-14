@@ -31,7 +31,7 @@
 						<Run Text="Uno Platform" />
 					</Hyperlink>
 					<Run Text=" or " />
-					<Hyperlink NavigateUri="https://github.com/nicehash">
+					<Hyperlink NavigateUri="https://github.com/unoplatform/uno">
 						<Run Text="GitHub" />
 					</Hyperlink>
 					<Run Text=" for more information." />
