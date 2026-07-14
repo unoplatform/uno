@@ -811,9 +811,9 @@ public class Given_InputManager
 		var secondScrollDelta = 100;
 		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -secondScrollDelta), steps: 1, stepOffsetInMilliseconds: 3000);
 
-		// The second (slow, no-inertia) scroll absorbs the ~10px start threshold (dead-zone) on
-		// recognition and does not recover it, so it applies secondScrollDelta - threshold px (see #20473).
-		const double startThreshold = 10;
+		// The second (slow, no-inertia) scroll absorbs the start threshold (dead-zone) on recognition
+		// and does not recover it, so it applies secondScrollDelta - threshold px (see #20473).
+		var startThreshold = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta - startThreshold, precision: 2, because: "second press should have stop inertia and then the slow scroll (minus the start threshold) have been applied");
 	}
 
