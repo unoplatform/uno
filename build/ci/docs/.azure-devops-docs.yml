@@ -3,6 +3,8 @@ parameters:
 
 jobs:
 - job: Documentation
+  # Provisioning the mobile workloads on a cold cache does not fit in the 60 minute default.
+  timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
   displayName: 'Build Documentation WebSite'
 
