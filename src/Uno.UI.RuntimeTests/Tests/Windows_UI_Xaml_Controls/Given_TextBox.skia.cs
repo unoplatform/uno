@@ -5718,6 +5718,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		#endregion
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22818")]
 		public async Task When_Tab_Pressed_Should_Not_Insert_Character()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -5742,7 +5743,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(string.Empty, SUT.Text, "Tab should not insert a character in TextBox");
-			Assert.IsFalse(SUT.Text.Contains('\t'), "TextBox.Text should not contain a tab character");
 
 			// Ensure that Tab key still moves focus to the next control
 			var focusedElement = FocusManager.GetFocusedElement(SUT.XamlRoot) as Control;
