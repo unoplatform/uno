@@ -53,6 +53,11 @@ partial class AutoSuggestBox
 		m_tpTextChangedEventTimer = new DispatcherTimer();
 		m_tpTextChangedEventTimer.Interval = TimeSpan.FromTicks(TextChangedEventTimerDuration);
 
+		// Attach Loaded event handler
+		void OnLoaded(object sender, RoutedEventArgs args) => OnLoaded_Internal(sender, args);
+		Loaded += OnLoaded;
+		m_loadedEventRevoker.Disposable = Disposable.Create(() => Loaded -= OnLoaded);
+
 		// Attach Unloaded event handler
 		void OnUnloaded(object sender, RoutedEventArgs args) => OnUnloaded_Internal(sender, args);
 		Unloaded += OnUnloaded;
@@ -63,46 +68,52 @@ partial class AutoSuggestBox
 		SizeChanged += OnSizeChanged;
 		m_sizeChangedEventRevoker.Disposable = Disposable.Create(() => SizeChanged -= OnSizeChanged);
 
-		// Set up InputPane events
-		SetupInputPaneEvents();
+		// Resolve the InputPane eagerly (OnGotFocus reads its OccludedRect), but wire the SIP
+		// handlers only while loaded: InputPane is a process-wide singleton, so handlers left
+		// attached would root this control for the lifetime of the process.
+		ResolveInputPane();
 
 		// Hook up Items.VectorChanged
 		Items.VectorChanged += OnItemsVectorChanged;
 	}
 
-	private void SetupInputPaneEvents()
+	private void ResolveInputPane()
 	{
 		try
 		{
 			m_tpInputPane = InputPane.GetForCurrentView();
-			if (m_tpInputPane is not null)
-			{
-				void OnSipShowing(InputPane sender, InputPaneVisibilityEventArgs args) => OnSipShowing_Internal(sender, args);
-				void OnSipHiding(InputPane sender, InputPaneVisibilityEventArgs args) => OnSipHiding_Internal(sender, args);
-
-				m_tpInputPane.Showing += OnSipShowing;
-				m_tpInputPane.Hiding += OnSipHiding;
-
-				m_sipShowingEventRevoker.Disposable = Disposable.Create(() =>
-				{
-					if (m_tpInputPane is not null)
-					{
-						m_tpInputPane.Showing -= OnSipShowing;
-					}
-				});
-				m_sipHidingEventRevoker.Disposable = Disposable.Create(() =>
-				{
-					if (m_tpInputPane is not null)
-					{
-						m_tpInputPane.Hiding -= OnSipHiding;
-					}
-				});
-			}
 		}
 		catch
 		{
 			// InputPane might not be available on all platforms
 		}
+	}
+
+	/// <summary>
+	/// Subscribes to the SIP events. Safe to call repeatedly: the SerialDisposable revokers
+	/// drop any previous subscription.
+	/// </summary>
+	private void SetupInputPaneEvents()
+	{
+		if (m_tpInputPane is not InputPane inputPane)
+		{
+			return;
+		}
+
+		void OnSipShowing(InputPane sender, InputPaneVisibilityEventArgs args) => OnSipShowing_Internal(sender, args);
+		void OnSipHiding(InputPane sender, InputPaneVisibilityEventArgs args) => OnSipHiding_Internal(sender, args);
+
+		inputPane.Showing += OnSipShowing;
+		inputPane.Hiding += OnSipHiding;
+
+		m_sipShowingEventRevoker.Disposable = Disposable.Create(() => inputPane.Showing -= OnSipShowing);
+		m_sipHidingEventRevoker.Disposable = Disposable.Create(() => inputPane.Hiding -= OnSipHiding);
+	}
+
+	private void TeardownInputPaneEvents()
+	{
+		m_sipShowingEventRevoker.Disposable = null;
+		m_sipHidingEventRevoker.Disposable = null;
 	}
 
 	/// <summary>
@@ -341,14 +352,31 @@ partial class AutoSuggestBox
 	#region Event Handlers
 
 	/// <summary>
+	/// Handler of the Loaded event.
+	/// </summary>
+	private void OnLoaded_Internal(object sender, RoutedEventArgs args)
+	{
+		// Re-establish the subscriptions dropped on Unloaded, so a control that is moved
+		// back into the tree keeps reacting to the SIP.
+		SetupInputPaneEvents();
+	}
+
+	/// <summary>
 	/// Handler of the Unloaded event.
 	/// </summary>
 	private void OnUnloaded_Internal(object sender, RoutedEventArgs args)
 	{
-		if (!IsLoaded && m_isOverlayVisible)
+		// Unloaded can be raised while the control ends up still attached (reparenting),
+		// hence the IsLoaded check before tearing anything down.
+		if (!IsLoaded)
 		{
-			m_isOverlayVisible = false;
-			TeardownOverlayState();
+			TeardownInputPaneEvents();
+
+			if (m_isOverlayVisible)
+			{
+				m_isOverlayVisible = false;
+				TeardownOverlayState();
+			}
 		}
 	}
 

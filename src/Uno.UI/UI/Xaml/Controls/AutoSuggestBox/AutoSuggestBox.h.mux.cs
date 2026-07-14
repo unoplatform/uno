@@ -89,6 +89,7 @@ partial class AutoSuggestBox
 	private uint m_textChangedCounter = 0;
 
 	// Event revokers
+	private readonly SerialDisposable m_loadedEventRevoker = new();
 	private readonly SerialDisposable m_unloadedEventRevoker = new();
 	private readonly SerialDisposable m_sizeChangedEventRevoker = new();
 	private readonly SerialDisposable m_textBoxTextChangedEventRevoker = new();
