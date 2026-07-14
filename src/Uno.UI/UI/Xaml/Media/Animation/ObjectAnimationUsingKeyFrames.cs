@@ -93,6 +93,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			Reset();
 
+			// Active is set before the play, which is deferred to the next tick on Skia. It has to be:
+			// the parent Storyboard must see this child as running, and Pause() ignores a non-Active
+			// timeline, so a Begin(); Pause(); pair would otherwise silently start the animation anyway.
+			// Pause/Resume/Seek all tolerate a null _frameScheduler for that window.
 			State = TimelineState.Active;
 
 			Play();
