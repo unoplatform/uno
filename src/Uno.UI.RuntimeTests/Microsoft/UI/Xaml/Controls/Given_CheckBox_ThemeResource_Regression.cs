@@ -265,7 +265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// kahua-private#491 (Uno #23472): a checked CheckBox in the AMBIENT application theme (no explicit
+		// #23472: a checked CheckBox in the AMBIENT application theme (no explicit
 		// RequestedTheme pin) must render its checked fill on FIRST display, with no pointer/state interaction.
 		// The stock template applies the checked fill through a CheckedNormal storyboard key-frame
 		// (NormalRectangle.Fill = {ThemeResource CheckBoxCheckBackgroundFillChecked} = accent). On the ambient
@@ -530,7 +530,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			System.Math.Abs(a.B - b.B) <= tolerance &&
 			System.Math.Abs(a.A - b.A) <= tolerance;
 
-		// kahua-private#491 (Uno #23472) ROOT CAUSE repro: a SECOND template realization (in Kahua, triggered by
+		// #23472 ROOT CAUSE repro: a SECOND template realization (in the reported app, triggered by
 		// late ambient-theme-driven Style re-resolution) detaches the first template root via
 		// Control.OnTemplateChanged -> RemoveChild WITHOUT stopping that root's Filling CheckedNormal storyboard
 		// or tearing down its template namescope (RemoveNameScope is commented out at Control.cs:255). The checked
