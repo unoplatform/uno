@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 #if !IS_UNIT_TESTS
 #pragma warning disable 108 // new keyword hiding
@@ -145,7 +145,7 @@ public sealed partial class ApplicationData
 		var request = new SetVersionRequest(Version, desiredVersion);
 		handler.Invoke(request);
 		request.DeferralManager.EventRaiseCompleted();
-		await request.DeferralManager.WhenAllCompletedAsync();
+		await request.DeferralManager.WhenAllCompletedAsync(ct);
 		Version = desiredVersion;
 	}
 

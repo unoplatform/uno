@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -15,7 +16,11 @@ internal class DeferralManager<T>
 {
 	private readonly Func<DeferralCompletedHandler, T> _deferralFactory;
 	private readonly bool _requiresUIThread;
-	private readonly TaskCompletionSource<object?> _allDeferralsCompletedCompletionSource = new();
+
+	// Continuations run asynchronously so that awaiting the completion does not resume on — and block —
+	// the thread that completed the last deferral.
+	private readonly TaskCompletionSource<object?> _allDeferralsCompletedCompletionSource =
+		new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 	/// <summary>
 	/// Start the count at 1, this ensures the deferral won't be completed until all subscribers to the corresponding event have had a
@@ -35,8 +40,8 @@ internal class DeferralManager<T>
 
 	public T GetDeferral()
 	{
-		_deferralsCount++;
-		var isCompleted = false;
+		Interlocked.Increment(ref _deferralsCount);
+		var isCompleted = 0;
 		return _deferralFactory(OnDeferralCompleted);
 
 		void OnDeferralCompleted()
@@ -46,12 +51,11 @@ internal class DeferralManager<T>
 				CoreDispatcher.CheckThreadAccess();
 			}
 
-			if (isCompleted)
+			if (Interlocked.Exchange(ref isCompleted, 1) == 1)
 			{
 				throw new InvalidOperationException("Deferral already completed.");
 			}
 
-			isCompleted = true;
 			DeferralCompleted(false);
 		}
 	}
@@ -69,12 +73,20 @@ internal class DeferralManager<T>
 		return CompletedSynchronously;
 	}
 
-	internal Task WhenAllCompletedAsync() => _allDeferralsCompletedCompletionSource.Task;
+	/// <summary>
+	/// Waits for every deferral that was taken to complete.
+	/// </summary>
+	/// <param name="cancellationToken">
+	/// Cancels the wait. A deferral that is never completed would otherwise wait forever.
+	/// </param>
+	internal Task WhenAllCompletedAsync(CancellationToken cancellationToken = default) =>
+		cancellationToken.CanBeCanceled
+			? _allDeferralsCompletedCompletionSource.Task.WaitAsync(cancellationToken)
+			: _allDeferralsCompletedCompletionSource.Task;
 
 	private void DeferralCompleted(bool eventRaiseCompletion)
 	{
-		_deferralsCount--;
-		if (_deferralsCount <= 0)
+		if (Interlocked.Decrement(ref _deferralsCount) <= 0)
 		{
 			if (eventRaiseCompletion)
 			{

@@ -143,4 +143,27 @@ public class Given_ApplicationData
 		Assert.AreEqual(currentVersion, reportedCurrentVersion);
 		Assert.AreEqual(currentVersion, reportedDesiredVersion);
 	}
+
+	[TestMethod]
+	public async Task When_SetVersion_Deferral_Never_Completed()
+	{
+		// A handler that takes a deferral and never completes it must not wait forever: the operation
+		// stays pending, and cancelling it has to end the wait.
+		var appData = ApplicationData.Current;
+		var currentVersion = appData.Version;
+
+		var operation = appData.SetVersionAsync(currentVersion + 1, request => _ = request.GetDeferral());
+		var task = operation.AsTask();
+
+		Assert.AreNotEqual(TaskStatus.RanToCompletion, task.Status, "The operation must not complete while a deferral is outstanding.");
+
+		operation.Cancel();
+
+		// A regression would hang here rather than fail, so the wait is bounded.
+		var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(10)));
+		Assert.AreSame(task, completed, "Cancelling the operation must end the wait on the outstanding deferral.");
+		await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await task);
+
+		appData.Version.Should().Be(currentVersion);
+	}
 }
