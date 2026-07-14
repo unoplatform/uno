@@ -396,6 +396,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23554")]
 		public void When_Property_RegisterTwice_With_Same_Type_Then_Returns_Existing()
 		{
 			// WinUI does not throw when the same (name, ownerType, propertyType) is registered
@@ -411,6 +412,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23554")]
 		public void When_Property_RegisterTwice_With_Different_Type_Then_Fail()
 		{
 			// A same-name registration with a different property type is still a genuine conflict.
@@ -419,6 +421,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23554")]
 		public void When_AttachedProperty_RegisterTwice_With_Same_Type_Then_Returns_Existing()
 		{
 			var testProperty = DependencyProperty.RegisterAttached(nameof(When_AttachedProperty_RegisterTwice_With_Same_Type_Then_Returns_Existing), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
@@ -431,6 +434,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23554")]
 		public void When_Property_Registered_Then_RegisterAttached_With_Same_Type_Then_Fail()
 		{
 			// Same name and property type, but a different attached-ness, is a genuine conflict:

@@ -170,13 +170,7 @@ namespace Microsoft.UI.Xaml
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata typeMetadata)
-		{
-			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
-
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
-
-			return RegisterProperty(ownerType, name, propertyType, newProperty);
-		}
+			=> RegisterProperty(ownerType, name, propertyType, typeMetadata, attached: false);
 
 		private static PropertyMetadata FixMetadataIfNeeded(
 			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -232,13 +226,7 @@ namespace Microsoft.UI.Xaml
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata defaultMetadata)
-		{
-			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
-
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
-
-			return RegisterProperty(ownerType, name, propertyType, newProperty);
-		}
+			=> RegisterProperty(ownerType, name, propertyType, defaultMetadata, attached: true);
 
 		/// <summary>
 		/// Registers a attachable dependency property on the specified <paramref name="ownerType"/>.
@@ -433,20 +421,24 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static DependencyProperty RegisterProperty(
-			Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			DependencyProperty newProperty)
+			PropertyMetadata typeMetadata,
+			bool attached)
 		{
 			// WinUI does not de-duplicate registrations (MetadataAPI::RegisterDependencyProperty creates a fresh
 			// DP each time) and apps rely on it, so an exact duplicate returns the already-registered property
 			// instead of throwing. A different propertyType or attached-ness is still a genuine conflict.
+			// Checked before the property is created, so a duplicate neither allocates nor burns a unique id.
 			if (_registry.TryGetValue(ownerType, name, out var existingProperty) &&
 				existingProperty!.Type == propertyType &&
-				existingProperty.IsAttached == newProperty.IsAttached)
+				existingProperty.IsAttached == attached)
 			{
 				return existingProperty;
 			}
+
+			var newProperty = new DependencyProperty(name, propertyType, ownerType, FixMetadataIfNeeded(propertyType, typeMetadata), attached);
 
 			ResetGetPropertyCache(ownerType, name);
 
