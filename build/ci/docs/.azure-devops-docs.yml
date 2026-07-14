@@ -28,18 +28,15 @@ jobs:
 
   - template: ../templates/docfx-intermediary-assets.yml
 
-  - task: MSBuild@1
+  # Built through the .NET SDK's MSBuild rather than the VS one: the SDK requires a newer MSBuild
+  # than the VS image carries, and the VS msbuild.exe therefore cannot resolve Microsoft.NET.Sdk.
+  - task: DotNetCoreCLI@2
+    displayName: Generate Documentation
     inputs:
-      solution: Build/Uno.UI.Build.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs.binlog
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+      command: custom
+      custom: msbuild
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /r /m /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs.binlog
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Docs Artifacts'
