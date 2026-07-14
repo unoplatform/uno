@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
@@ -11,9 +10,9 @@ namespace Microsoft.UI.Composition
 		{
 			base.Paint(in session);
 
-			if (Source is not null && session.Canvas is { } canvas)
+			if (Source is not null)
 			{
-				Source.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), null);
+				Source.RenderRootVisual(session.Session, null);
 			}
 		}
 

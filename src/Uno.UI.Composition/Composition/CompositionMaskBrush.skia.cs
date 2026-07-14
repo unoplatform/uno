@@ -1,7 +1,8 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
@@ -9,34 +10,27 @@ namespace Microsoft.UI.Composition
 	{
 		internal override bool RequiresRepaintOnEveryFrame => Source is not null && Mask is not null && (Source.RequiresRepaintOnEveryFrame || Mask.RequiresRepaintOnEveryFrame);
 
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
 			if (Source is null || Mask is null)
 			{
-				return;
+				return true;
 			}
-			_spareResultPaint.Reset();
-			_spareResultPaint.IsAntialias = true;
-			_spareResultPaint.BlendMode = SKBlendMode.SrcOver;
-			_spareResultPaint2.Reset();
-			_spareResultPaint2.IsAntialias = true;
-			_spareResultPaint2.BlendMode = SKBlendMode.DstIn;
-			// The first SaveLayer call along with DrawColor(Transparent) basically create a clean secondary drawing surface
-			// but without having to call SKSurface.Create and having to deal with all the details like HWA.
-			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint });
-			canvas.ClipRect(bounds, antialias: true);
-			canvas.DrawColor(SKColors.Transparent);
-			Source.Paint(canvas, opacity, bounds);
-			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect
-			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint2 });
-			Mask.Paint(canvas, opacity, bounds);
-			canvas.Restore();
-			canvas.Restore();
+
+			// The first SaveLayer + Clear creates a clean offscreen surface for the source, without having to
+			// manage an SKSurface ourselves. The second layer with DstIn keeps only the source pixels covered
+			// by the mask's alpha, producing the masking effect. Layer paints are opaque (alpha only modulates).
+			session.SaveLayer(paint: new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true });
+			session.ClipRect(bounds, antialias: true);
+			session.Clear(global::Windows.UI.Colors.Transparent);
+			Source.TryPaint(session, opacity, bounds);
+			session.SaveLayer(paint: new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true, BlendMode = BlendMode.DstIn });
+			Mask.TryPaint(session, opacity, bounds);
+			session.Restore();
+			session.Restore();
+			return true;
 		}
 
 		internal override bool CanPaint() => (Source?.CanPaint() ?? false) || (Mask?.CanPaint() ?? false);
-
-		private static readonly SKPaint _spareResultPaint = new SKPaint();
-		private static readonly SKPaint _spareResultPaint2 = new SKPaint();
 	}
 }

@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using Uno.UI.Composition;
 using Windows.Foundation;
 
@@ -17,8 +16,6 @@ public partial class ShapeVisual
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{
-		var canvas = session.Canvas;
-
 		if (Size.X == 0 || Size.Y == 0)
 		{
 			return;
@@ -29,15 +26,15 @@ public partial class ShapeVisual
 		// the WinUI implementation doesn't use ShapeVisuals for shapes, but a combination of ContainerVisuals and
 		// SpriteVisuals. When_StrokeThickness_Is_GreaterThan_Or_Equals_Width and
 		// When_Border_CornerRadius_HitTesting fail when you uncomment the following line.
-		// canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+		// session.Session.ClipRect(new Rect(0, 0, Size.X, Size.Y));
 
 		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
 		if (ViewBox is not null)
 		{
-			canvas.Scale(
+			session.Session.Scale(
 				ViewBox.Size.X > 0 ? Size.X / ViewBox.Size.X : 1,
 				ViewBox.Size.Y > 0 ? Size.Y / ViewBox.Size.Y : 1);
-			canvas.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
+			session.Session.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
 		}
 
 		if (_shapes is { Count: not 0 } shapes)

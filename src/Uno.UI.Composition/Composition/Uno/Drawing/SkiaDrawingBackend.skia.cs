@@ -94,6 +94,9 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode)
 		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SkiaDrawingSession.ToSKBlendMode(mode)));
 
+	public IColorFilter CreateColorMatrixColorFilter(float[] matrix)
+		=> new SkiaColorFilter(SKColorFilter.CreateColorMatrix(matrix));
+
 	public IMaskFilter CreateBlurMaskFilter(float sigma)
 		=> new SkiaMaskFilter(SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma));
 

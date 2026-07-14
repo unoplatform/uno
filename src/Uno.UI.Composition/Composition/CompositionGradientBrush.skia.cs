@@ -10,33 +10,13 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGradientBrush
 	{
-		private static readonly SKPaint _tempPaint = new();
 		private bool _isColorStopsValid;
 
-		private SKColor[]? _colors;
 		private float[]? _colorPositions;
-		private SKShaderTileMode _tileMode;
 
-		private protected SKColor[]? Colors => _colors;
 		private protected float[]? ColorPositions => _colorPositions;
-		private protected SKShaderTileMode TileMode => _tileMode;
 
 		internal override bool CanPaint() => true;
-
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
-		{
-			if (!_isColorStopsValid)
-			{
-				UpdateColorStops(ColorStops);
-			}
-			var (shader, color) = GetPaintingParameters(bounds);
-			_tempPaint.Reset();
-			_tempPaint.IsAntialias = true;
-			_tempPaint.Shader = shader;
-			_tempPaint.Color = color;
-			_tempPaint.ColorFilter = opacity.ToColorFilter();
-			canvas.DrawRect(bounds, _tempPaint);
-		}
 
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
@@ -85,8 +65,6 @@ namespace Microsoft.UI.Composition
 			CompositionGradientExtendMode.Wrap => GradientTileMode.Repeat,
 			_ => GradientTileMode.Clamp,
 		};
-
-		private protected virtual (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds) => (null, SKColors.Transparent);
 
 		private protected SKMatrix CreateTransformMatrix(SKRect bounds)
 		{
@@ -142,48 +120,22 @@ namespace Microsoft.UI.Composition
 		private void UpdateColorStops(CompositionColorGradientStopCollection colorStops)
 		{
 			var stopCount = colorStops.Count;
-			var colors = _colors;
 			var colorPositions = _colorPositions;
 
-			if (colors == null || colors.Length != stopCount)
+			if (colorPositions is null || colorPositions.Length != stopCount)
 			{
-				colors = new SKColor[stopCount];
 				colorPositions = new float[stopCount];
 			}
 
 			for (int i = 0; i < colorStops.Count; i++)
 			{
-				var gradientStop = colorStops[i];
-
-				colors[i] = gradientStop.Color.ToSKColor();
-				colorPositions![i] = gradientStop.Offset;
+				colorPositions[i] = colorStops[i].Offset;
 			}
 
-			_colors = colors;
 			_colorPositions = colorPositions;
 			_isColorStopsValid = true;
 		}
 
 		partial void OnColorStopsChanged(CompositionColorGradientStopCollection colorStops) => _isColorStopsValid = false;
-
-		partial void OnExtendModeChanged(CompositionGradientExtendMode extendMode)
-		{
-			SKShaderTileMode tileMode;
-			switch (extendMode)
-			{
-				default:
-				case CompositionGradientExtendMode.Clamp:
-					tileMode = SKShaderTileMode.Clamp;
-					break;
-				case CompositionGradientExtendMode.Mirror:
-					tileMode = SKShaderTileMode.Mirror;
-					break;
-				case CompositionGradientExtendMode.Wrap:
-					tileMode = SKShaderTileMode.Repeat;
-					break;
-			}
-
-			_tileMode = tileMode;
-		}
 	}
 }

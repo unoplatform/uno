@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -353,7 +354,7 @@ internal readonly struct ParsedText : IParsedText
 			if (caret is not null)
 			{
 				var caretRect = new SKRect(0, 0, caret.Value.thickness, _defaultLineHeight);
-				caret.Value.brush.Paint(session.Canvas, session.Opacity, caretRect);
+				caret.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.ToRect());
 			}
 
 			return;
@@ -800,7 +801,7 @@ internal readonly struct ParsedText : IParsedText
 			if (Math.Abs(left - right) > 0.01)
 			{
 				var rect = new SKRect(left, y - line.Height, right, y);
-				brush.Paint(canvas, opacity, rect);
+				brush.TryPaint(new SkiaDrawingSession(canvas), opacity, rect.ToRect());
 			}
 		}
 	}
@@ -956,7 +957,7 @@ internal readonly struct ParsedText : IParsedText
 			if (caretLocation != float.MinValue)
 			{
 				var caretRect = new SKRect(caretLocation, y - line.Height, caretLocation + caretThickness, y);
-				caretBrush.Paint(canvas, opacity, caretRect);
+				caretBrush.TryPaint(new SkiaDrawingSession(canvas), opacity, caretRect.ToRect());
 			}
 		}
 	}

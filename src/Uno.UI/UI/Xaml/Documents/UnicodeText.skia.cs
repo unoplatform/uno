@@ -909,7 +909,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				MathF.Floor(y),
 				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
 				MathF.Floor(y + line.lineHeight) + 1);
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
+			highlighter.Value.background?.TryPaint(session.Session, session.Opacity, backgroundRect.ToRect());
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
@@ -1008,7 +1008,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.Paint(session.Canvas, session.Opacity, caretRect.Value);
+			caret!.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.Value.ToRect());
 		}
 	}
 

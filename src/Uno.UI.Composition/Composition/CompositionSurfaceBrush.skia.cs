@@ -12,7 +12,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, ISizedBrush
 	{
-		private static readonly SKPaint _tempPaint = new();
 		private SKColor? _monochromeColor;
 
 		internal SKColor? MonochromeColor
@@ -82,81 +81,25 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || Surface is ISkiaSurface;
 
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
-			if (bounds.IsEmpty)
+			if (bounds.Width <= 0 || bounds.Height <= 0)
 			{
-				return;
+				return true;
 			}
 
 			if (Surface is ISkiaSurface skiaSurface)
 			{
-				canvas.Save();
-				canvas.ClipRect(bounds, antialias: true);
-				skiaSurface.Paint(canvas, opacity);
-				canvas.Restore();
+				session.Save();
+				session.ClipRect(bounds, antialias: true);
+				skiaSurface.Paint(session, opacity);
+				session.Restore();
+				return true;
 			}
-			else if (TryGetSkiaCompositionSurface(Surface, out var scs))
-			{
-				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
-				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
-				{
-					return;
-				}
-
-				// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
-				// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
-				//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
-				// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
-				// 	* Apply the brush’s RelativeTransform, if it has one.
-				// 	* Project the transformed output onto the area to paint.
-				// 	* Apply the brush’s Transform, if it has one.
-				var matrix = Matrix3x2.Identity;
-				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width),
-					(float)(backgroundArea.Height / scs.Image.Height));
-				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-				matrix *= TransformMatrix;
-				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
-				matrix *= RelativeTransform;
-				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
-
-				_tempPaint.Reset();
-				_tempPaint.IsAntialias = true;
-				if (MonochromeColor is { } color)
-				{
-					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color.WithAlpha((byte)(color.Alpha * opacity)), SKBlendMode.SrcIn);
-				}
-				else
-				{
-					_tempPaint.ColorFilter = opacity.ToColorFilter();
-				}
-
-				canvas.Save();
-				canvas.Concat(matrix.ToSKMatrix());
-				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
-				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
-				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
-				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
-				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
-				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
-				// the output that much.
-				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), _tempPaint);
-				canvas.Restore();
-			}
-		}
-
-		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
-		{
-			// The recursive visual-surface path still renders directly to SKCanvas; fall back for it.
-			if (Surface is ISkiaSurface || !TryGetSkiaCompositionSurface(Surface, out var scs))
+			if (!TryGetSkiaCompositionSurface(Surface, out var scs))
 			{
 				return false;
-			}
-
-			if (bounds.Width <= 0 || bounds.Height <= 0)
-			{
-				return true;
 			}
 
 			var skBounds = bounds.ToSKRect();
@@ -188,7 +131,9 @@ namespace Microsoft.UI.Composition
 
 			session.Save();
 			session.Concat(new Matrix4x4(matrix));
-			session.DrawImage(new SkiaImage(scs.Image), 0, 0, ImageSampling.Linear, new PaintParams(default) { IsAntialias = true, ColorFilter = colorFilter });
+			// Opaque paint colour: DrawImage modulates the image alpha by the paint colour's alpha, so a
+			// transparent (default) colour would erase the image. RGB is ignored for image draws.
+			session.DrawImage(new SkiaImage(scs.Image), 0, 0, ImageSampling.Linear, new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true, ColorFilter = colorFilter });
 			session.Restore();
 			return true;
 		}

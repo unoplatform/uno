@@ -1486,7 +1486,7 @@ $$"""
 
 						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
 						var recorder = new SKPictureRecorder();
-						brush.Paint(recorder.BeginRecording(srcBounds), 1, srcBounds);
+						brush.TryPaint(new SkiaDrawingSession(recorder.BeginRecording(srcBounds)), 1, srcBounds.ToRect());
 						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 

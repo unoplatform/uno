@@ -68,6 +68,9 @@ internal interface IDrawingBackend
 	/// <summary>Creates a color filter that blends <paramref name="color"/> onto the source using <paramref name="mode"/>.</summary>
 	IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
 
+	/// <summary>Creates a color filter from a 4x5 row-major color matrix (as used by grayscale/alpha-mask effects).</summary>
+	IColorFilter CreateColorMatrixColorFilter(float[] matrix);
+
 	/// <summary>Creates a normal (Gaussian) blur mask filter with the given standard deviation.</summary>
 	IMaskFilter CreateBlurMaskFilter(float sigma);
 

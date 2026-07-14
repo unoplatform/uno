@@ -1,6 +1,8 @@
 #nullable enable
 using System;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -65,16 +67,21 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 	internal override bool CanPaint() => true;
 
-	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+	// Legacy fully-Skia acrylic (its own SKImageFilter chain). Reaches the Skia canvas directly via a
+	// contained downcast; the modern acrylic path goes through CompositionEffectBrush instead.
+	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
+		var canvas = ((SkiaDrawingSession)session).Canvas;
+		var skBounds = bounds.ToSKRect();
 		if (_isOpaque)
 		{
-			PaintOpaque(canvas, opacity, bounds);
+			PaintOpaque(canvas, opacity, skBounds);
 		}
 		else
 		{
-			PaintTranslucent(canvas, opacity, bounds);
+			PaintTranslucent(canvas, opacity, skBounds);
 		}
+		return true;
 	}
 
 	private void PaintOpaque(SKCanvas canvas, float opacity, SKRect bounds)

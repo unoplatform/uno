@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
 
@@ -23,15 +22,6 @@ public partial class CompositionEffectBrush : CompositionBrush
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
 	internal bool UseBackdropBlurClamp { get; set; }
-
-	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
-	{
-		UpdateFilter(bounds.ToRect());
-		if (_filter is { } filter)
-		{
-			new SkiaDrawingSession(canvas).DrawEffectBackdrop(filter, opacity);
-		}
-	}
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{

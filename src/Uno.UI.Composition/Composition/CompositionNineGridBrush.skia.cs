@@ -3,6 +3,8 @@
 using System.Numerics;
 using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
@@ -15,11 +17,11 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
 			if (Source is null)
 			{
-				return;
+				return true;
 			}
 
 			SKRect sourceBounds;
@@ -29,7 +31,7 @@ namespace Microsoft.UI.Composition
 			}
 			else
 			{
-				sourceBounds = bounds;
+				sourceBounds = bounds.ToSKRect();
 			}
 
 			var newSize = new SKSizeI((int)sourceBounds.Width, (int)sourceBounds.Height);
@@ -46,7 +48,7 @@ namespace Microsoft.UI.Composition
 				_bitmapCanvas.Clear(SKColors.Transparent);
 			}
 
-			Source.Paint(_bitmapCanvas, opacity, sourceBounds);
+			Source.TryPaint(new SkiaDrawingSession(_bitmapCanvas), opacity, sourceBounds.ToRect());
 			_bitmapCanvas.Flush();
 			var image = SKImage.FromPixels(info, _bitmap.GetPixels());
 
@@ -55,6 +57,10 @@ namespace Microsoft.UI.Composition
 			_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
 			_insetRect.Left = (int)(LeftInset * LeftInsetScale);
 
+			// DrawImageNinePatch/DrawBitmapNinePatch have no backend-neutral verb; reach the Skia canvas
+			// directly (contained escape hatch, like the offscreen bitmap above).
+			var canvas = ((SkiaDrawingSession)session).Canvas;
+			var skBounds = bounds.ToSKRect();
 			_tempPaint.Reset();
 			_tempPaint.IsAntialias = true;
 			_tempPaint.IsDither = true;
@@ -62,13 +68,14 @@ namespace Microsoft.UI.Composition
 			{
 				canvas.Save();
 				canvas.ClipRect(_insetRect, SKClipOperation.Difference, antialias: true);
-				canvas.DrawImageNinePatch(image, _insetRect, bounds, _tempPaint);
+				canvas.DrawImageNinePatch(image, _insetRect, skBounds, _tempPaint);
 				canvas.Restore();
 			}
 			else
 			{
-				canvas.DrawBitmapNinePatch(_bitmap, _insetRect, bounds, _tempPaint);
+				canvas.DrawBitmapNinePatch(_bitmap, _insetRect, skBounds, _tempPaint);
 			}
+			return true;
 		}
 
 		internal override bool CanPaint() => Source?.CanPaint() ?? false;

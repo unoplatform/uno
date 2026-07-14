@@ -2,8 +2,8 @@
 
 using System;
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
@@ -27,8 +27,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 		0, 0, 0, 1, 0,    // A: output = input alpha
 	};
 
-	private static readonly SKColorFilter _alphaMaskColorFilter = SKColorFilter.CreateColorMatrix(AlphaMaskColorMatrix);
-	private static readonly SKPaint _alphaMaskPaint = new SKPaint { ColorFilter = _alphaMaskColorFilter, IsAntialias = true };
+	private static IColorFilter? _alphaMaskColorFilter;
 
 	internal AlphaMaskSurface(Compositor compositor, Visual visual) : base(compositor)
 	{
@@ -37,20 +36,21 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 
 	Vector2 ISkiaSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
 
-	void ISkiaSurface.Paint(SKCanvas canvas, float opacity)
+	void ISkiaSurface.Paint(IDrawingSession session, float opacity)
 	{
 		if (!_visual.TryGetTarget(out var visual))
 		{
 			return;
 		}
 
-		// Apply the alpha mask color filter to convert all colors to white
-		// while preserving the alpha channel.
-		canvas.SaveLayer(_alphaMaskPaint);
+		_alphaMaskColorFilter ??= DrawingBackend.Current.CreateColorMatrixColorFilter(AlphaMaskColorMatrix);
+
+		// Apply the alpha mask color filter to convert all colors to white while preserving the alpha channel.
+		session.SaveLayer(paint: new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true, ColorFilter = _alphaMaskColorFilter });
 
 		// Render the visual at its natural position
-		visual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), Vector2.Zero);
+		visual.RenderRootVisual(session, Vector2.Zero);
 
-		canvas.Restore();
+		session.Restore();
 	}
 }

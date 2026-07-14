@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using SkiaSharp;
-using Windows.ApplicationModel.VoiceCommands;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -20,6 +20,6 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 		WrappedBrush = wrappedBrush;
 	}
 
-	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds) => _wrappedBrush?.Paint(canvas, opacity, bounds);
+	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds) => _wrappedBrush?.TryPaint(session, opacity, bounds) ?? true;
 	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
 }

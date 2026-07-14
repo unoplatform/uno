@@ -2,7 +2,6 @@
 
 using System;
 using System.Numerics;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI.Composition;
 
@@ -10,16 +9,17 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
-		void ISkiaSurface.Paint(SKCanvas canvas, float opacity)
+		void ISkiaSurface.Paint(global::Uno.UI.Composition.Drawing.IDrawingSession session, float opacity)
 		{
 			if (SourceVisual is not null)
 			{
-				int save = canvas.Save();
+				int save = session.Save();
 				// Note that this is applied before the SourceOffset translates the canvas' matrix, so
-				canvas.ClipRect(new SKRect(0, 0, (this as ISkiaSurface).Size.X, (this as ISkiaSurface).Size.X), antialias: true);
+				var size = (this as ISkiaSurface).Size;
+				session.ClipRect(new global::Windows.Foundation.Rect(0, 0, size.X, size.X), antialias: true);
 
-				SourceVisual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), SourceOffset);
-				canvas.RestoreToCount(save);
+				SourceVisual.RenderRootVisual(session, SourceOffset);
+				session.RestoreToCount(save);
 			}
 		}
 

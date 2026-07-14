@@ -89,9 +89,9 @@ namespace Microsoft.UI.Composition
 					{
 						session.Session.DrawRect(fillGeometry.Bounds, new PaintParams(colorFromTransition) { Opacity = session.Opacity });
 					}
-					else if (!fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds.ToRect()))
+					else
 					{
-						fill.Paint(session.Canvas, session.Opacity, finalFillGeometryWithTransformations.Bounds);
+						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds.ToRect());
 					}
 					session.Session.Restore();
 				}
@@ -102,10 +102,7 @@ namespace Microsoft.UI.Composition
 					
 					session.Session.Save();
 					session.Session.ClipPath(strokeGeometry, antialias: true);
-					if (!stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds))
-					{
-						stroke.Paint(session.Canvas, session.Opacity, strokeGeometry.Bounds.ToSKRect());
-					}
+					stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
 					session.Session.Restore();
 				}
 			}
