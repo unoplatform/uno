@@ -9,11 +9,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
-/// <summary>
-/// Migrated from SamplesApp.UITests AutomationId_Tests: verifies that a bound
-/// AutomationProperties.AutomationId flows onto ListView item containers and that
-/// selecting an item updates the bound result text.
-/// </summary>
+// Migrated from SamplesApp.UITests AutomationId_Tests: bound AutomationId on ListView item containers.
 [TestClass]
 [RunsOnUIThread]
 public class Given_AutomationId_UITest : SampleControlUITestBase

@@ -11,9 +11,7 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-/// <summary>
-/// Migrated from SamplesApp.UITests Microsoft_UI_Xaml_Controls.NumberBoxTests.Given_NumberBox.Uno.
-/// </summary>
+// Migrated from SamplesApp.UITests Microsoft_UI_Xaml_Controls.NumberBoxTests.Given_NumberBox.Uno.
 [TestClass]
 [RunsOnUIThread]
 public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
@@ -28,10 +26,17 @@ public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 			Header = headerContent
 		};
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		Assert.AreSame(headerContent, numberBox.Header);
-		Assert.AreEqual("This is a NumberBox Header", headerContent.Text);
+			Assert.AreSame(headerContent, numberBox.Header);
+			Assert.AreEqual("This is a NumberBox Header", headerContent.Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -46,10 +51,17 @@ public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 		};
 		var numberBox = new NumberBox { Description = descriptionBorder };
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		var screenshot = await UITestHelper.ScreenShot(numberBox);
-		ImageAssert.HasColorAtChild(screenshot, descriptionBorder, descriptionBorder.ActualWidth / 2, descriptionBorder.ActualHeight / 2, Microsoft.UI.Colors.Red, tolerance: 5);
+			var screenshot = await UITestHelper.ScreenShot(numberBox);
+			ImageAssert.HasColorAtChild(screenshot, descriptionBorder, descriptionBorder.ActualWidth / 2, descriptionBorder.ActualHeight / 2, Microsoft.UI.Colors.Red, tolerance: 5);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]

@@ -33,17 +33,25 @@ public class Given_Enability_UITest
 		RegisterEvents(button, output);
 
 		var panel = new StackPanel { Children = { output, button } };
-		await UITestHelper.Load(panel);
 
-		var injector = InputInjector.TryCreate();
-		Assert.IsNotNull(injector);
-		using var mouse = injector.GetMouse();
+		try
+		{
+			await UITestHelper.Load(panel);
 
-		var center = GetCenter(button);
-		mouse.Tap(center);
-		await WaitForIdle();
+			var injector = InputInjector.TryCreate();
+			Assert.IsNotNull(injector);
+			using var mouse = injector.GetMouse();
 
-		Assert.IsTrue(string.IsNullOrWhiteSpace(output.Text));
+			var center = GetCenter(button);
+			mouse.Tap(center);
+			await WaitForIdle();
+
+			Assert.IsTrue(string.IsNullOrWhiteSpace(output.Text));
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -62,23 +70,31 @@ public class Given_Enability_UITest
 		button.Click += (snd, e) => button.IsEnabled = false;
 
 		var panel = new StackPanel { Children = { output, button } };
-		await UITestHelper.Load(panel);
 
-		var injector = InputInjector.TryCreate();
-		Assert.IsNotNull(injector);
-		using var mouse = injector.GetMouse();
+		try
+		{
+			await UITestHelper.Load(panel);
 
-		var center = GetCenter(button);
+			var injector = InputInjector.TryCreate();
+			Assert.IsNotNull(injector);
+			using var mouse = injector.GetMouse();
 
-		// Tap invokes Click, which disables the button.
-		mouse.Tap(center);
-		await WaitForIdle();
+			var center = GetCenter(button);
 
-		// Dragging off a now-disabled button must not resurrect Pressed/Moved/Entered.
-		mouse.Drag(center, new Point(center.X, center.Y + 20));
-		await WaitForIdle();
+			// Tap invokes Click, which disables the button.
+			mouse.Tap(center);
+			await WaitForIdle();
 
-		CollectionAssert.Contains(new[] { "Click", "Exited", "Released" }, output.Text);
+			// Dragging off a now-disabled button must not resurrect Pressed/Moved/Entered.
+			mouse.Drag(center, new Point(center.X, center.Y + 20));
+			await WaitForIdle();
+
+			CollectionAssert.Contains(new[] { "Click", "Exited", "Released" }, output.Text);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	private static void RegisterEvents(Button button, TextBlock output)
