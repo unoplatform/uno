@@ -1301,7 +1301,7 @@ namespace Microsoft.UI.Xaml
 		{
 			value = null;
 
-			if (ActualInstance is ITextFormattingOwner owner and DependencyObject dobj)
+			if (ActualInstance is DependencyObject dobj && dobj is ITextFormattingOwner owner)
 			{
 				// Only intercept for properties that are actually mapped as TextFormatting-managed
 				// on this element type. For example, FontIcon.FontSizeProperty (default 20) should
