@@ -707,7 +707,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, changes Layout property to various types.")]
-	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno. See #22909.")]
 	public async Task CanChangeLayoutProperty()
 	{
 		List<string> types = new List<string>
@@ -1255,7 +1255,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Alternatively hooks and unhooks the LinedFlowLayout.ItemsInfoRequested event to use the fast and regular paths.")]
-	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno. See #22909.")]
 	public async Task AlternateLayoutPathsByUnhookingItemsInfoRequested()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "LinedFlowLayout"))
