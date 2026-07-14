@@ -546,7 +546,10 @@ internal class Win32RawElementProvider :
 		}
 
 		var clientOrigin = new System.Drawing.Point(0, 0);
-		Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin);
+		if (!Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin))
+		{
+			return null;
+		}
 
 		// UIA_ClickablePointPropertyId is a VT_R8 | VT_ARRAY of [x, y].
 		return
