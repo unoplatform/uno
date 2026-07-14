@@ -25,7 +25,7 @@ jobs:
   # workloads must be provisioned here just as they are for the managed binaries build.
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--tfm net10.0-ios --tfm net10.0-maccatalyst --tfm net10.0-android --tfm net10.0-tvos'
+      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-maccatalyst --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/jdk-setup.yml
