@@ -5855,7 +5855,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Maps each data item to its realized container. Keyed by data item (not index) so identity can be
 		// compared across a reorder, where indices change. Asserts every item is realized at capture time.
-		// Typed on ItemsControl so it serves both ListView and GridView (containers derive from SelectorItem).
+		// Typed on ItemsControl (which defines ContainerFromItem); items comes in as IEnumerable<object>,
+		// which ObservableCollection<string> satisfies via IEnumerable<out T> covariance.
 		private static Dictionary<object, object> CaptureContainersByItem(ItemsControl list, IEnumerable<object> items)
 		{
 			var map = new Dictionary<object, object>();
