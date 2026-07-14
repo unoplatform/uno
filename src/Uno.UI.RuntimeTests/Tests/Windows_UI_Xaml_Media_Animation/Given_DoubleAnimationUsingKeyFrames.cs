@@ -433,4 +433,94 @@ public class Given_DoubleAnimationUsingKeyFrames
 		// OAKF (Visibility=Collapsed) should be applied after WaitForIdle
 		Assert.AreEqual(Visibility.Collapsed, border.Visibility, "OAKF should set Visibility=Collapsed after WaitForIdle");
 	}
+
+	[TestMethod]
+	public async Task When_Paused_Synchronously_After_Begin()
+	{
+		// Pause() lands inside the deferred-play window, before the animators exist.
+		var border = new Border { Width = 50, Height = 50, Opacity = 1.0 };
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		var animation = new DoubleAnimationUsingKeyFrames();
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Opacity");
+		animation.KeyFrames.Add(new LinearDoubleKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(200)),
+			Value = 0.0,
+		});
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		storyboard.Begin();
+		storyboard.Pause();
+
+		await Task.Delay(400);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1.0, border.Opacity, 0.01, "Opacity must not progress while the animation is paused");
+
+		storyboard.Resume();
+
+		await WindowHelper.WaitFor(() => Math.Abs(border.Opacity) < 0.01, message: "Opacity should reach 0 after Resume");
+	}
+
+	[TestMethod]
+	public async Task When_ObjectAnimation_Paused_Synchronously_After_Begin()
+	{
+		// Pause() lands inside the deferred-play window, before the frame scheduler exists.
+		var border = new Border { Width = 50, Height = 50, Tag = "Initial" };
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		var animation = new ObjectAnimationUsingKeyFrames();
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Tag");
+		animation.KeyFrames.Add(new DiscreteObjectKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(200)),
+			Value = "Updated",
+		});
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		storyboard.Begin();
+		storyboard.Pause();
+
+		await Task.Delay(400);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Initial", (string)border.Tag, "Tag must not change while the animation is paused");
+
+		storyboard.Resume();
+
+		await WindowHelper.WaitFor(() => (string)border.Tag == "Updated", message: "Tag should be updated after Resume");
+	}
+
+	[TestMethod]
+	public async Task When_No_KeyFrames_Then_Storyboard_Completes()
+	{
+		// A key-frame-less animation has a zero duration: it must report completion so the parent
+		// Storyboard's running-children counter reaches zero and Completed is raised.
+		var border = new Border { Width = 50, Height = 50 };
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		var animation = new DoubleAnimationUsingKeyFrames();
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Opacity");
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		var completed = false;
+		storyboard.Completed += (_, _) => completed = true;
+
+		storyboard.Begin();
+
+		await WindowHelper.WaitFor(() => completed, message: "Storyboard.Completed should be raised for a key-frame-less animation");
+	}
 }
