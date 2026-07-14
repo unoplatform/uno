@@ -145,6 +145,7 @@ public class Given_DateTimeFormatter
 	// on each language string and throws CultureNotFoundException. This is
 	// exercised cross-platform via the (language-list) constructor overload.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12423")]
 	public void When_Languages_Contains_Unsupported_Culture_Should_Not_Throw_12423()
 	{
 		var formatter = new DateTimeFormatter("longdate", new[] { "it-US", "en-US" });
