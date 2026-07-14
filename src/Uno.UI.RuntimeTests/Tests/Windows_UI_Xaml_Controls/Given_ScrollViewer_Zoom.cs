@@ -1,9 +1,6 @@
-using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.UI;
@@ -12,6 +9,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+[Ignore("Zoom is only implemented for the managed scroll presenter.")]
+#endif
 public class Given_ScrollViewer_Zoom
 {
 	[TestMethod]
@@ -255,6 +255,44 @@ public class Given_ScrollViewer_Zoom
 		Assert.AreEqual(100, sut.HorizontalOffset, 1, "HorizontalOffset should be 100");
 		Assert.AreEqual(150, sut.VerticalOffset, 1, "VerticalOffset should be 150");
 		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "ZoomFactor should be 2.0");
+	}
+
+	[TestMethod]
+	public async Task When_ChangeView_Offset_Only_Reachable_At_Target_Zoom()
+	{
+		// 1000x1000 content in a 200x200 viewport: scrollable is 800 at zoom 1.0 and 1800 at zoom 2.0.
+		// An offset of 1500 is only reachable at the target zoom, so it must be clamped against the
+		// target zoom factor rather than the current one.
+		var content = new Border
+		{
+			Width = 1000,
+			Height = 1000,
+			Background = new SolidColorBrush(Colors.Teal)
+		};
+
+		var sut = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			ZoomMode = ZoomMode.Enabled,
+			MinZoomFactor = 0.5f,
+			MaxZoomFactor = 4.0f,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+			VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+			Content = content
+		};
+
+		TestServices.WindowHelper.WindowContent = sut;
+		await TestServices.WindowHelper.WaitForLoaded(sut);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var result = sut.ChangeView(1500, 1500, 2.0f, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(result, "ChangeView should succeed, the offset is valid at the target zoom factor");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "ZoomFactor should be 2.0");
+		Assert.AreEqual(1500, sut.HorizontalOffset, 5, "HorizontalOffset should not be clamped against the previous zoom factor");
+		Assert.AreEqual(1500, sut.VerticalOffset, 5, "VerticalOffset should not be clamped against the previous zoom factor");
 	}
 
 	[TestMethod]
