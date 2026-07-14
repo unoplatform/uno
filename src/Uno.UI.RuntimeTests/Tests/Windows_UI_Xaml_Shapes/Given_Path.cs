@@ -470,7 +470,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 #endif
 
-		// Repro test for https://github.com/unoplatform/uno/issues/4563
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4563")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
