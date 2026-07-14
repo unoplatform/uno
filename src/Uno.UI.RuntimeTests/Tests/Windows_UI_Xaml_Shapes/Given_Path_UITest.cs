@@ -16,6 +16,8 @@ public class Given_Path_UITest
 	// Matches SamplesApp.UITests Path_Tests.Test_FillRule / PathTestsControl.Path_FillRule sample:
 	// a self-intersecting outline with an inner "hole" figure, rendered with EvenOdd vs. Nonzero
 	// fill rules, expressed via the three ways Path.Data can be authored.
+
+	// Must stay public: it is a parameter type of the public [DataRow] test method below (CS0051).
 	public enum DataStyle
 	{
 		PathDataString,
