@@ -53,6 +53,13 @@ namespace Windows.UI.Input
 				? ext.MultiTapMaxDelayMicroseconds ?? MultiTapMaxDelayMicroseconds
 				: MultiTapMaxDelayMicroseconds;
 
+		/// <summary>
+		/// Test-only reset of the resolved multi-tap window.
+		/// </summary>
+		/// <remarks>
+		/// Must be called from a single thread while no gesture is being recognized: the field write is
+		/// not synchronized against concurrent <see cref="ResolvedMultiTapMaxDelayMicroseconds"/> readers.
+		/// </remarks>
 		internal static void ResetCacheForTests() => s_resolvedMultiTapMaxDelayMicroseconds = CreateMultiTapMaxDelayResolver();
 
 		internal const long HoldMinDelayMicroseconds = 800000;
