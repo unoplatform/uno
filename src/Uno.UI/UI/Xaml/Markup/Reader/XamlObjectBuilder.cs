@@ -1837,8 +1837,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					continue;
 				}
 
-				// Attached properties target a different declaring type and cannot collide
-				// with a property on the owning object.
+				// TODO Uno: attached properties are not checked yet. WinUI's Logic_DuplicatePropertyCheck
+				// keys on the resolved XamlProperty (declaring type + name), so it also catches e.g.
+				// Grid.Row="0" combined with <Grid.Row>1</Grid.Row>. Keying on "{DeclaringType}.{Name}"
+				// here (and in XamlFileGenerator.DuplicatePropertyValidation) is a follow-up.
 				if (TypeResolver.IsAttachedProperty(member))
 				{
 					continue;
@@ -1852,6 +1854,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				if (seenMembers.ContainsKey(effectiveName))
 				{
+					// Message is verbatim WinUI's AG_E_PARSER2_OW_DUPLICATE_MEMBER ("The property '%0' is set
+					// more than once."), like the other runtime parse errors here. The source-generator
+					// diagnostic omits the trailing dot, as required by the XamlFileGenerator.Errors convention.
 					AddParseException(new XamlParseException($"The property '{effectiveName}' is set more than once.", null, member.LineNumber, member.LinePosition));
 				}
 				else

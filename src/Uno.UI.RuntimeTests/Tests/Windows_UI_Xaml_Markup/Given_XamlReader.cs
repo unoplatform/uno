@@ -179,6 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_AttributeAndImplicitContent()
 		{
 			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
@@ -191,6 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_AttributeAndPropertyElement()
 		{
 			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
@@ -205,6 +207,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_TwoPropertyElements()
 		{
 			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
@@ -222,6 +225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_TextBlock_TextAttribute_AndLiteralContent_NoDuplicate()
 		{
 			// WinUI maps the [ContentProperty] of TextBlock to Inlines: the Text="..." attribute and the
@@ -237,6 +241,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_TextBlock_TextAttribute_AndLiteralContent_FromSourceGenerator()
 		{
 			// Same as When_TextBlock_TextAttribute_AndLiteralContent_NoDuplicate, but exercises the
@@ -247,6 +252,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_TextBlock_TextAttribute_AndNestedRuns_NoDuplicate()
 		{
 			// Same as above with explicit Run children — Inlines collection vs Text property, no duplicate.
@@ -261,6 +267,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_DatePickerHeaderAttributeAndImplicitContent()
 		{
 			// DatePicker has [ContentProperty(Name = nameof(Header))], so Header attribute and implicit
@@ -275,6 +282,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DatePickerHeaderAttribute_AndOnlyWhitespaceContent_NoDuplicate()
 		{
 			// Whitespace-only content between an opening and closing tag is not a real property
@@ -290,6 +298,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_NonContentProperty_AttributeAndPropertyElement()
 		{
 			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<TextBlock>("""
@@ -302,6 +311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17563")]
 		public void When_DuplicateProperty_NonContentProperty_TwoPropertyElements()
 		{
 			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<TextBlock>("""
