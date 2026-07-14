@@ -41,6 +41,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				if (State != TimelineState.Active)
 				{
+					// Paused before the tick: nothing has played yet, so leave the animators
+					// uninitialized. Resume() re-schedules the play.
 					return;
 				}
 

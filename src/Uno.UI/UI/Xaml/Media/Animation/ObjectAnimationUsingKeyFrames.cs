@@ -95,6 +95,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			State = TimelineState.Active;
 
+			Play();
+		}
+
+		/// <summary>
+		/// Starts the animation. On Skia, defers scheduler creation to the first rendering tick so
+		/// keyframe binding values are read after layout (matching WinUI where keyframe values are
+		/// read at tick time, not at Begin time).
+		/// </summary>
+		private void Play()
+		{
 #if __SKIA__
 			PlayDeferred();
 #else
@@ -161,7 +171,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Active;
-			_frameScheduler!.Resume();
+
+			if (_frameScheduler is null)
+			{
+				// Paused before the deferred play created the scheduler: nothing has been played yet,
+				// so resuming means (re)starting the play. Play() is a no-op if one is already pending.
+				Play();
+				return;
+			}
+
+			_frameScheduler.Resume();
 		}
 
 		void ITimeline.Pause()
@@ -181,7 +200,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Paused;
-			_frameScheduler!.Pause();
+
+			// The scheduler does not exist yet while the play is deferred to the next tick.
+			// Resume() picks the play back up in that case.
+			_frameScheduler?.Pause();
 		}
 
 		void ITimeline.Seek(TimeSpan offset)

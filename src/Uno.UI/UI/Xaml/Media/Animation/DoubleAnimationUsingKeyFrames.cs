@@ -61,6 +61,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (KeyFrames.Count < 1)
 			{
+				// A key-frame-less animation has a zero duration, so it completes right away.
+				// Reporting completion is required for a parent Storyboard to decrement its
+				// running-children counter and raise Completed.
+				State = TimelineState.Stopped;
+				OnCompleted();
 				return;
 			}
 
@@ -72,12 +77,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Pause()
 		{
-			if (State == TimelineState.Paused)
+			if (State is TimelineState.Paused or TimelineState.Stopped)
 			{
 				return;
 			}
 
-			_currentAnimator.Pause();
+			// The animators do not exist yet while the play is deferred to the next tick, nor when the
+			// animation is dependent and was never started. Resume() picks the play back up in that case.
+			_currentAnimator?.Pause();
 
 			State = TimelineState.Paused;
 		}
@@ -89,13 +96,27 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			_currentAnimator.Resume();
-
 			State = TimelineState.Active;
+
+			if (_currentAnimator is null)
+			{
+				// Paused before the deferred play created the animators: nothing has been played yet,
+				// so resuming means (re)starting the play. Play() is a no-op if one is already pending.
+				Play();
+				return;
+			}
+
+			_currentAnimator.Resume();
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
+			if (_animators is null)
+			{
+				// Play is still deferred to the next tick: there is no animator to seek yet.
+				return;
+			}
+
 			var msOffset = (long)offset.TotalMilliseconds;
 			IValueAnimator targetAnimator = null;
 			foreach (var animator in _animators)
@@ -110,8 +131,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (targetAnimator != _currentAnimator)
 			{
-				_currentAnimator.Cancel();
+				_currentAnimator?.Cancel();
 				_currentAnimator = targetAnimator;
+			}
+
+			if (_currentAnimator is null)
+			{
+				return;
 			}
 
 			_currentAnimator.CurrentPlayTime = (long)offset.TotalMilliseconds; //Offset is CurrentPlayTime (starting point for animation)
