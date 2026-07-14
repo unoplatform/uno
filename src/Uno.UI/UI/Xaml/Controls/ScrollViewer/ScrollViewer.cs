@@ -1827,19 +1827,32 @@ namespace Microsoft.UI.Xaml.Controls
 				var isCtrlDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 				if (isCtrlDown)
 				{
-					// Check for zoom keys: Plus (=), Minus (-), Numpad Add, Numpad Subtract
-					var isZoomIn = key is VirtualKey.Add || key == (VirtualKey)187; // VirtualKey.Add = Numpad+, 187 = OemPlus (=/+)
-					var isZoomOut = key is VirtualKey.Subtract || key == (VirtualKey)189; // VirtualKey.Subtract = Numpad-, 189 = OemMinus (-/_)
+					// Windows.System.VirtualKey has no OEM members, so the Win32 virtual-key codes are used directly.
+					// Both are layout independent: VK_OEM_PLUS/VK_OEM_MINUS always map to the +/- key of any layout.
+					const VirtualKey oemPlus = (VirtualKey)187;
+					const VirtualKey oemMinus = (VirtualKey)189;
+
+					var isZoomIn = key is VirtualKey.Add or oemPlus;
+					var isZoomOut = key is VirtualKey.Subtract or oemMinus;
 
 					if (isZoomIn || isZoomOut)
 					{
+						var oldZoom = ZoomFactor;
 						var zoomDelta = isZoomIn ? 1.1f : 0.9f; // 10% zoom per key press
-						var newZoom = Math.Clamp(ZoomFactor * zoomDelta, MinZoomFactor, MaxZoomFactor);
+						var newZoom = Math.Clamp(oldZoom * zoomDelta, MinZoomFactor, MaxZoomFactor);
 
-						if (Math.Abs(newZoom - ZoomFactor) > 0.001f)
+						if (Math.Abs(newZoom - oldZoom) > 0.001f)
 						{
-							// Zoom toward center of viewport (no cursor position available for keyboard zoom)
-							ChangeView(null, null, newZoom, disableAnimation: false);
+							// Zoom toward the center of the viewport (no cursor position available for keyboard zoom).
+							// Offsets are in scaled pixels, so the content point under the center scales with the zoom ratio.
+							var zoomRatio = newZoom / oldZoom;
+							var viewportCenterX = ViewportWidth / 2;
+							var viewportCenterY = ViewportHeight / 2;
+
+							var newHorizontalOffset = (HorizontalOffset + viewportCenterX) * zoomRatio - viewportCenterX;
+							var newVerticalOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
+
+							ChangeView(newHorizontalOffset, newVerticalOffset, newZoom, disableAnimation: false);
 							args.Handled = true;
 						}
 						return;

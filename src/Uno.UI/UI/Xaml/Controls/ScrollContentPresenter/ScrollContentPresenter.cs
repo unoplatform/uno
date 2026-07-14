@@ -305,10 +305,10 @@ namespace Microsoft.UI.Xaml.Controls
 							var viewportCenterX = ViewportWidth / 2;
 							var viewportCenterY = ViewportHeight / 2;
 
-							// Formula: newOffset = center + (oldOffset - center) * zoomRatio
-							// This keeps the content point at viewport center in the same position
-							var newHOffset = viewportCenterX + (HorizontalOffset - viewportCenterX) * zoomRatio;
-							var newVOffset = viewportCenterY + (VerticalOffset - viewportCenterY) * zoomRatio;
+							// Offsets are expressed in scaled (screen) pixels, so the content point under the
+							// viewport center scales with the zoom ratio: newOffset = (oldOffset + center) * zoomRatio - center
+							var newHOffset = (HorizontalOffset + viewportCenterX) * zoomRatio - viewportCenterX;
+							var newVOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
 
 							success = Set(
 								horizontalOffset: newHOffset,

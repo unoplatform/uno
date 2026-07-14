@@ -220,6 +220,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnMinZoomFactorChanged(float newValue)
 		{
+			// While zoom is disabled the range must stay pinned to 1, otherwise a later MinZoomFactor
+			// change would silently re-open the zoom range.
+			if (Scroller?.ZoomMode == ZoomMode.Disabled)
+			{
+				newValue = 1f;
+			}
+
 			_minZoomFactor = Math.Max(0.1f, newValue);
 			// Clamp current zoom if it's now below the new minimum
 			if (_zoomFactor < _minZoomFactor)
@@ -230,6 +237,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnMaxZoomFactorChanged(float newValue)
 		{
+			if (Scroller?.ZoomMode == ZoomMode.Disabled)
+			{
+				newValue = 1f;
+			}
+
 			_maxZoomFactor = Math.Max(_minZoomFactor, newValue);
 			// Clamp current zoom if it's now above the new maximum
 			if (_zoomFactor > _maxZoomFactor)
@@ -258,9 +270,29 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			bool success = true, updated = false;
 
+			// The zoom factor is applied first: the scrollable range - and therefore the offset clamping
+			// below - depends on it. Applying it afterwards would clamp offsets against the previous zoom.
+			var zoomUpdated = false;
+			if (zoomFactor is float zoom)
+			{
+				var targetZoom = Math.Clamp(zoom, _minZoomFactor, _maxZoomFactor);
+				success &= Math.Abs(targetZoom - zoom) < 0.0001f;
+
+				if (Math.Abs(_zoomFactor - targetZoom) > 0.0001f)
+				{
+					_zoomFactor = targetZoom;
+					updated = true;
+					zoomUpdated = true;
+				}
+			}
+
 			if (horizontalOffset is double hOffset)
 			{
-				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
+				// Scroller.ScrollableWidth is only refreshed once the zoom change has been reported back to it,
+				// so while zooming the range has to be recomputed from the target zoom factor.
+				var maxOffset = zoomUpdated
+					? Math.Max(0, ExtentWidth * _zoomFactor - ViewportWidth)
+					: Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
 				var targetHorizontalOffset = ValidateInputOffset(hOffset, 0, maxOffset);
 
 				success &= targetHorizontalOffset == hOffset;
@@ -274,7 +306,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffset is double vOffset)
 			{
-				var maxOffset = Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
+				var maxOffset = zoomUpdated
+					? Math.Max(0, ExtentHeight * _zoomFactor - ViewportHeight)
+					: Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
 				var targetVerticalOffset = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= targetVerticalOffset == vOffset;
@@ -283,21 +317,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					VerticalOffset = targetVerticalOffset;
 					updated = true;
-				}
-			}
-
-			// Handle zoom factor
-			var zoomUpdated = false;
-			if (zoomFactor is float zoom)
-			{
-				var targetZoom = Math.Clamp(zoom, _minZoomFactor, _maxZoomFactor);
-				success &= Math.Abs(targetZoom - zoom) < 0.0001f;
-
-				if (Math.Abs(_zoomFactor - targetZoom) > 0.0001f)
-				{
-					_zoomFactor = targetZoom;
-					updated = true;
-					zoomUpdated = true;
 				}
 			}
 
@@ -434,14 +453,18 @@ namespace Microsoft.UI.Xaml.Controls
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
 				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
-				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
+				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
+				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
 				void OnStopped(object? _, EventArgs __)
 				{
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
-					Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), false);
+					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), false);
 				}
+
+				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
+				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
 
 				scrollAnimation.AnimationFrame += OnFrame;
 				scrollAnimation.Stopped += OnStopped;
