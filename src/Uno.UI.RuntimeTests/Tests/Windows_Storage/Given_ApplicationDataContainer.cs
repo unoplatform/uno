@@ -824,6 +824,23 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public void When_Clear_Values_Does_Not_Delete_Containers()
+		{
+			// Clear() removes the settings of this container only. Containers are a separate namespace,
+			// removed through DeleteContainer.
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+			var container = SUT.CreateContainer("survivor", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			SUT.Values.Clear();
+
+			Assert.HasCount(0, SUT.Values);
+			Assert.IsTrue(SUT.Containers.ContainsKey("survivor"));
+			Assert.AreEqual("nestedValue", SUT.Containers["survivor"].Values["nested"]);
+		}
+
+		[TestMethod]
 		public void When_Nested_Container_Keys_Are_Hidden_From_Parent()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;

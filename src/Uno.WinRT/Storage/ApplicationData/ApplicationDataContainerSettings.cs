@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,9 +131,15 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	public bool TryGetValue(string key, out object value) =>
 		_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out value);
 
+	/// <summary>
+	/// Removes all related application settings.
+	/// </summary>
+	/// <remarks>
+	/// Only the settings of this container are removed. Sub-containers are a separate namespace and are
+	/// removed through <see cref="ApplicationDataContainer.DeleteContainer(string)"/>.
+	/// </remarks>
 	public void Clear()
 	{
-		_container.DeleteAllSubcontainers();
 		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerPublicKey);
 		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.Reset, null));
 	}
