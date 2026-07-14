@@ -2,7 +2,6 @@
 
 using System;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
@@ -103,7 +102,8 @@ partial class InputPane
 
 	private void OnFocusManagerGotFocus(object? sender, FocusManagerGotFocusEventArgs e)
 	{
-		if (Visible && e.NewFocusedElement is UIElement newFocused)
+		// FocusManager.GotFocus is process-wide, so ignore focus changes belonging to another XamlRoot.
+		if (Visible && e.NewFocusedElement is UIElement newFocused && newFocused.XamlRoot == _xamlRoot)
 		{
 			// RSV height is already shrunk - just BringIntoView for the new element
 			_ = UI.Core.CoreDispatcher.Main.RunAsync(

@@ -2,7 +2,7 @@
 
 **Created**: 2026-04-02
 **Status**: Draft
-**Issues**: [#22264](https://github.com/unoplatform/uno/issues/22264), [#5407](https://github.com/unoplatform/uno/issues/5407), uno-private#1154
+**Issues**: [#22264](https://github.com/unoplatform/uno/issues/22264), [#5407](https://github.com/unoplatform/uno/issues/5407)
 
 ## Problem Statement
 
@@ -30,7 +30,7 @@ When a soft keyboard appears on mobile devices running Uno Platform Skia apps, f
 
 ## WinUI Reference
 
-The implementation follows WinUI's architecture as analyzed from the C++ sources at `D:\Work\microsoft-ui-xaml2\src\`:
+The implementation follows WinUI's architecture as analyzed from the public [microsoft-ui-xaml](https://github.com/microsoft/microsoft-ui-xaml) C++ sources (paths below are relative to `src/dxaml/xcp/`):
 
 - `RootScrollViewer_Partial.h/.cpp` - Custom ScrollViewer subclass with SIP state management
 - `ScrollViewer_Partial.cpp` - `IsRootScrollViewer()` virtual gating behavior suppression

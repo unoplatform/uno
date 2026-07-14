@@ -12,13 +12,29 @@ public sealed partial class SoftInputTests_InContentDialog : Page
 	public SoftInputTests_InContentDialog()
 	{
 		this.InitializeComponent();
-		this.Loaded += (_, _) =>
-		{
-			var inputPane = InputPane.GetForCurrentView();
-			inputPane.Showing += (s, e) => UpdateStatus(s.OccludedRect, "Showing");
-			inputPane.Hiding += (s, e) => UpdateStatus(s.OccludedRect, "Hiding");
-		};
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		var inputPane = InputPane.GetForCurrentView();
+		inputPane.Showing += OnInputPaneShowing;
+		inputPane.Hiding += OnInputPaneHiding;
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		var inputPane = InputPane.GetForCurrentView();
+		inputPane.Showing -= OnInputPaneShowing;
+		inputPane.Hiding -= OnInputPaneHiding;
+	}
+
+	private void OnInputPaneShowing(InputPane sender, InputPaneVisibilityEventArgs args) =>
+		UpdateStatus(sender.OccludedRect, "Showing");
+
+	private void OnInputPaneHiding(InputPane sender, InputPaneVisibilityEventArgs args) =>
+		UpdateStatus(sender.OccludedRect, "Hiding");
 
 	private async void OnOpenDialog(object sender, RoutedEventArgs e)
 	{

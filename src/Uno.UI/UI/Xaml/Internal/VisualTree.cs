@@ -22,6 +22,12 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using UIKit;
 #endif
 
+#if __SKIA__
+using _RootScrollViewer = Microsoft.UI.Xaml.Controls.RootScrollViewer;
+#else
+using _RootScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
+#endif
+
 namespace Uno.UI.Xaml.Core
 {
 	/// <summary>
@@ -117,13 +123,7 @@ namespace Uno.UI.Xaml.Core
 
 		public UIElement? PublicRootVisual { get; private set; }
 
-		public
-#if __SKIA__
-			RootScrollViewer?
-#else
-			ScrollViewer?
-#endif
-			RootScrollViewer { get; private set; }
+		public _RootScrollViewer? RootScrollViewer { get; private set; }
 
 		public ContentPresenter? RootContentPresenter { get; private set; }
 
@@ -180,13 +180,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal void SetPublicRootVisual(UIElement? publicRootVisual,
-#if __SKIA__
-			RootScrollViewer?
-#else
-			ScrollViewer?
-#endif
-			rootScrollViewer, ContentPresenter? rootContentPresenter)
+		internal void SetPublicRootVisual(UIElement? publicRootVisual, _RootScrollViewer? rootScrollViewer, ContentPresenter? rootContentPresenter)
 		{
 			// NOTE: This doesn't check for the root scroll viewer changing independently of the root visual.
 			if (publicRootVisual == PublicRootVisual)

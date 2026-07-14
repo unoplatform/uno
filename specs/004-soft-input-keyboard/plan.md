@@ -2,7 +2,7 @@
 
 ## Context
 
-**Issues**: [#22264](https://github.com/unoplatform/uno/issues/22264) (WASM Skia soft keyboard content cutoff), [#5407](https://github.com/unoplatform/uno/issues/5407) (RootScrollViewer feature request), uno-private#1154 (Make InputPane per-window)
+**Issues**: [#22264](https://github.com/unoplatform/uno/issues/22264) (WASM Skia soft keyboard content cutoff), [#5407](https://github.com/unoplatform/uno/issues/5407) (RootScrollViewer feature request). Making `InputPane` per-window is tracked separately as internal alignment work.
 
 **Problem**: When a soft keyboard appears on mobile devices running Uno Skia apps, focused elements (TextBox, PasswordBox, etc.) are not properly scrolled into view, and content behind the keyboard becomes inaccessible. Additionally, on WASM Skia, the keyboard triggers `window.resize` events that cause flyouts to reposition/dismiss, making text input in flyouts impossible.
 
@@ -183,7 +183,7 @@ Create a custom subclass of `ScrollViewer` matching WinUI's `RootScrollViewer_Pa
 internal class RootScrollViewer : ScrollViewer
 {
     // SIP state
-    private bool _isInputPaneShow;
+    private bool _isInputPaneShown;
     private double _preInputPaneOffsetX;
     private double _preInputPaneOffsetY;
 
@@ -208,7 +208,7 @@ internal class RootScrollViewer : ScrollViewer
     /// Whether the input pane (soft keyboard) is currently showing.
     /// When true, scrolling is enabled on this RSV.
     /// </summary>
-    internal bool IsInputPaneShow => _isInputPaneShow;
+    internal bool IsInputPaneShown => _isInputPaneShown;
 
     /// <summary>
     /// Called when the InputPane state changes (showing/hiding).
@@ -216,7 +216,7 @@ internal class RootScrollViewer : ScrollViewer
     /// </summary>
     internal void NotifyInputPaneStateChange(bool isShowing, Rect inputPaneBounds)
     {
-        if (isShowing && !_isInputPaneShow)
+        if (isShowing && !_isInputPaneShown)
         {
             // Save pre-SIP scroll offsets
             _preInputPaneOffsetX = HorizontalOffset;
@@ -226,7 +226,7 @@ internal class RootScrollViewer : ScrollViewer
             VerticalScrollMode = ScrollMode.Enabled;
             HorizontalScrollMode = ScrollMode.Enabled;
         }
-        else if (!isShowing && _isInputPaneShow)
+        else if (!isShowing && _isInputPaneShown)
         {
             // Disable scrolling
             VerticalScrollMode = ScrollMode.Disabled;
@@ -236,7 +236,7 @@ internal class RootScrollViewer : ScrollViewer
             ChangeView(_preInputPaneOffsetX, _preInputPaneOffsetY, null, disableAnimation: true);
         }
 
-        _isInputPaneShow = isShowing;
+        _isInputPaneShown = isShowing;
     }
 
     // Strip template (matching WinUI: CScrollContentControl::ApplyTemplate releases m_pTemplate)
@@ -253,7 +253,7 @@ internal class RootScrollViewer : ScrollViewer
     // - Caret position adjustment (75% CaretAlignmentThreshold when element > viewport)
     // - 20px logical padding (ExtraPixelsForBringIntoView) around focused element
     // - AppBar height adjustment via AdjustBringIntoViewRecHeight
-    // See: D:\Work\microsoft-ui-xaml2\src\dxaml\xcp\core\input\BringIntoViewHandler.cpp
+    // See: microsoft-ui-xaml, src/dxaml/xcp/core/input/BringIntoViewHandler.cpp
 }
 ```
 

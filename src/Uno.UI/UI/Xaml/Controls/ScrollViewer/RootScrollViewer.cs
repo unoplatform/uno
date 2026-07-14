@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 internal partial class RootScrollViewer : ScrollViewer
 {
-	private bool _isInputPaneShow;
+	private bool _isInputPaneShown;
 	private double _preInputPaneOffsetX;
 	private double _preInputPaneOffsetY;
 
@@ -39,7 +39,7 @@ internal partial class RootScrollViewer : ScrollViewer
 	/// Whether the input pane (soft keyboard) is currently showing.
 	/// When true, scrolling is enabled on this RootScrollViewer.
 	/// </summary>
-	internal bool IsInputPaneShow => _isInputPaneShow;
+	internal bool IsInputPaneShown => _isInputPaneShown;
 
 	/// <summary>
 	/// Called when the InputPane state changes (showing/hiding).
@@ -49,7 +49,7 @@ internal partial class RootScrollViewer : ScrollViewer
 	// FlyoutBase.NotifyInputPaneStateChange for open flyouts.
 	internal void NotifyInputPaneStateChange(bool isShowing, Rect inputPaneBounds)
 	{
-		if (isShowing && !_isInputPaneShow)
+		if (isShowing && !_isInputPaneShown)
 		{
 			// Save pre-SIP scroll offsets
 			_preInputPaneOffsetX = HorizontalOffset;
@@ -59,7 +59,7 @@ internal partial class RootScrollViewer : ScrollViewer
 			VerticalScrollMode = ScrollMode.Enabled;
 			HorizontalScrollMode = ScrollMode.Enabled;
 		}
-		else if (!isShowing && _isInputPaneShow)
+		else if (!isShowing && _isInputPaneShown)
 		{
 			// Disable scrolling
 			VerticalScrollMode = ScrollMode.Disabled;
@@ -69,14 +69,15 @@ internal partial class RootScrollViewer : ScrollViewer
 			ChangeView(_preInputPaneOffsetX, _preInputPaneOffsetY, null, disableAnimation: true);
 		}
 
-		_isInputPaneShow = isShowing;
+		_isInputPaneShown = isShowing;
 	}
 
-	// Strip template matching WinUI: CScrollContentControl::ApplyTemplate releases m_pTemplate.
-	// The RSV has no visual template. ScrollContentPresenter is created internally by the
-	// ScrollViewer's default template, but we strip all other template parts.
+	// Unlike WinUI (CScrollContentControl::ApplyTemplate releases the template), the RSV keeps the default
+	// ScrollViewer template: its ScrollContentPresenter is what hosts the content. The chrome is instead
+	// neutralized from the constructor (scroll bars hidden, scrolling and zoom disabled, not a tab stop).
 	// TODO: WinUI has ApplyInputPaneTransition() for smooth SIP show/hide animations.
 
-	// Suppress automation peer (invisible to automation, matching WinUI)
+	// Suppress the automation peer (invisible to automation, matching WinUI).
+	// The base ScrollViewer override is declared non-nullable, so `null!` is required here.
 	protected override AutomationPeer OnCreateAutomationPeer() => null!;
 }

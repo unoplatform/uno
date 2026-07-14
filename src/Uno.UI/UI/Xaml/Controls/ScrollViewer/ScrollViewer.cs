@@ -53,7 +53,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		/// <summary>
 		/// Returns true if this is the RootScrollViewer. Overridden by <see cref="RootScrollViewer"/>.
-		/// When true, suppresses pointer/keyboard/focus behaviors unless the SIP is showing.
+		/// When true, keyboard scrolling is always suppressed, and pointer processing is suppressed
+		/// while the SIP is not showing.
 		/// </summary>
 		// TODO: WinUI also suppresses ShowIndicators() and skips dynamic scrollbar setting changes for RSV
 		internal virtual bool IsRootScrollViewer => false;

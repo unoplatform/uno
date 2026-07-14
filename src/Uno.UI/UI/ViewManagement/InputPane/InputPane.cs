@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Uno.UI;
 using Uno;
@@ -12,7 +12,8 @@ namespace Windows.UI.ViewManagement;
 
 public partial class InputPane
 {
-	private static readonly Dictionary<XamlRoot, InputPane> _instances = new();
+	// Weak keys: an InputPane must not keep its XamlRoot (window/island) alive once it is closed.
+	private static readonly ConditionalWeakTable<XamlRoot, InputPane> _instances = new();
 	private static InputPane? _fallbackInstance;
 	private Rect _occludedRect = new Rect(0, 0, 0, 0);
 	private XamlRoot? _xamlRoot;
@@ -81,17 +82,13 @@ public partial class InputPane
 	/// <summary>
 	/// Returns the InputPane for a specific XamlRoot. Used internally for multi-window support.
 	/// </summary>
-	internal static InputPane GetForXamlRoot(XamlRoot xamlRoot)
-	{
-		if (!_instances.TryGetValue(xamlRoot, out var inputPane))
+	internal static InputPane GetForXamlRoot(XamlRoot xamlRoot) =>
+		_instances.GetValue(xamlRoot, static root =>
 		{
-			inputPane = new InputPane();
-			inputPane._xamlRoot = xamlRoot;
-			_instances[xamlRoot] = inputPane;
-		}
-
-		return inputPane;
-	}
+			var inputPane = new InputPane();
+			inputPane._xamlRoot = root;
+			return inputPane;
+		});
 
 #if __APPLE_UIKIT__
 	[NotImplemented]

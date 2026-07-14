@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// RootScrollViewer suppresses pointer processing when SIP is not showing
 			// (matching WinUI ScrollViewer_Partial.cpp OnPointerPressed)
-			if (IsRootScrollViewer && this is RootScrollViewer rsv && !rsv.IsInputPaneShow)
+			if (this is RootScrollViewer rsv && !rsv.IsInputPaneShown)
 			{
 				return;
 			}

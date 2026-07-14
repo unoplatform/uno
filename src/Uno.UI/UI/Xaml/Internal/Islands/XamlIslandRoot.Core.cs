@@ -13,6 +13,12 @@ using Windows.UI;
 using static Uno.UI.Xaml.Internal.Inlined;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
+#if __SKIA__
+using _RootScrollViewer = Microsoft.UI.Xaml.Controls.RootScrollViewer;
+#else
+using _RootScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
+#endif
+
 namespace Uno.UI.Xaml.Islands;
 
 internal partial class XamlIslandRoot
@@ -31,11 +37,7 @@ internal partial class XamlIslandRoot
 
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
-#if __SKIA__
-		RootScrollViewer? rootScrollViewer,
-#else
-		ScrollViewer? rootScrollViewer,
-#endif
+		_RootScrollViewer? rootScrollViewer,
 		ContentPresenter? contentPresenter) =>
 		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
 

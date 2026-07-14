@@ -143,7 +143,11 @@ namespace Uno.UI.Runtime.Skia {
 				if (!this._isKeyboardShowing) {
 					this._isKeyboardShowing = true;
 				}
-				// Report occluded rect: x=0, y=top of keyboard, width=viewport width, height=keyboard height
+				// Report occluded rect: x=0, y=top of keyboard, width=viewport width, height=keyboard height.
+				// This is deliberately reported on every visualViewport resize, not only on the show transition:
+				// browsers raise several resizes while the keyboard slides in, and only the last one carries the
+				// final keyboard height. Reporting them all keeps OccludedRect accurate; the managed side only
+				// raises Showing when the rect actually changes, so the events stop once the animation settles.
 				this.onInputPaneChanged(this.owner, 0, vv.height, vv.width, keyboardHeight);
 			} else if (this._isKeyboardShowing) {
 				// Keyboard is hiding
