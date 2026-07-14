@@ -2188,11 +2188,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // Validates the Skia-specific intermediate scrolling mode.
 		public async Task When_TouchScroll_Then_IntermediateEventsFollowedByFinal()
 		{
 			var content = new Border
@@ -2244,11 +2243,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // Validates the Skia-specific intermediate scrolling mode.
 		public async Task When_TouchPressReleaseWithoutScroll_Then_NoViewChangedEvents()
 		{
 			var content = new Border
