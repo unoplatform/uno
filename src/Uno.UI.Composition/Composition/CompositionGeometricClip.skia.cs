@@ -2,6 +2,7 @@
 
 using System;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;
 
@@ -28,9 +29,7 @@ partial class CompositionGeometricClip
 		return null;
 	}
 
-	private static readonly SKPath _spareTransformedPath = new();
-
-	internal override SKPath? GetClipPath(Visual visual)
+	internal override IGeometry? GetClipPath(Visual visual)
 	{
 		if (Geometry is not null)
 		{
@@ -38,13 +37,10 @@ partial class CompositionGeometricClip
 
 			if (geometry is SkiaGeometrySource2D geometrySource)
 			{
-				var path = geometrySource.Geometry;
+				IGeometry path = geometrySource;
 				if (!TransformMatrix.IsIdentity)
 				{
-					var transformedPath = _spareTransformedPath;
-					transformedPath.Reset();
-					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
-					path = transformedPath;
+					path = path.Transform(TransformMatrix);
 				}
 
 				return path;

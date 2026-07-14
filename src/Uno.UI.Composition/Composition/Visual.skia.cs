@@ -10,9 +10,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
-using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
@@ -24,15 +22,10 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
-	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
-	private static readonly SKPath _spareRenderPath = new SKPath();
-
-	private static readonly SKPath _spareShadowPath = new SKPath();
-
 	// Scratch list used only inside the analytic-shadow silhouette walker. Each visit calls
 	// TryAddShadowPaths into this list, drains it, and Clear()s before recursing into children, so a
 	// single static instance is safe.
-	private static readonly List<(SKPath path, float alpha)> _spareShadowContributions = new();
+	private static readonly List<(IGeometry path, float alpha)> _spareShadowContributions = new();
 
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
@@ -456,9 +449,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var canvas = session.Canvas;
 			canvas.Save();
-			if (visual.GetPostPaintingClipping() is { } postClip)
+			if (visual.GetPostPaintingClipping() is SkiaGeometrySource2D postClip)
 			{
-				canvas.ClipPath(postClip, antialias: true);
+				canvas.ClipPath(postClip.Geometry, antialias: true);
 			}
 
 			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
@@ -520,81 +513,62 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	internal void GetNativeViewPathAndZOrder(SKPath clipFromParent, SKPath clipPath, List<Visual> nativeVisualsInZOrder)
+	internal IGeometry GetNativeViewPathAndZOrder(IGeometry clipFromParent, IGeometry clipPath, List<Visual> nativeVisualsInZOrder)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
 		{
-			return;
+			return clipPath;
 		}
 
-		var localClipCombinedByClipFromParent = _pathPool.Allocate();
-		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
-		var localMatrix = TotalMatrix.ToSKMatrix();
-		if (GetPrePaintingClipping(_spareRenderPath))
-		{
-			_spareRenderPath.Transform(localMatrix, localClipCombinedByClipFromParent);
-		}
-		else
-		{
-			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, Size.X, Size.Y));
-			sizeRect.Transform(localMatrix, localClipCombinedByClipFromParent);
-		}
-		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+		var localMatrix = TotalMatrix.ToMatrix3x2();
+		var localClip = (GetPrePaintingClipping() ?? DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)))
+			.Transform(localMatrix)
+			.Combine(clipFromParent, GeometryCombineMode.Intersect);
 
 		if (IsNativeHostVisual || CanPaint())
 		{
-			clipPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
+			clipPath = clipPath.Combine(localClip, IsNativeHostVisual ? GeometryCombineMode.Union : GeometryCombineMode.Difference);
 		}
 
-		if (IsNativeHostVisual && !localClipCombinedByClipFromParent.IsEmpty)
+		if (IsNativeHostVisual && !localClip.IsEmpty)
 		{
 			nativeVisualsInZOrder.Add(this);
 		}
 
+		var childClip = localClip;
 		if (GetPostPaintingClipping() is { } postClip)
 		{
-			postClip.Transform(TotalMatrix.ToSKMatrix(), postClip);
-			localClipCombinedByClipFromParent.Op(postClip, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+			childClip = childClip.Combine(postClip.Transform(localMatrix), GeometryCombineMode.Intersect);
 		}
+
 		foreach (var child in GetChildrenInRenderOrder())
 		{
-			child.GetNativeViewPathAndZOrder(localClipCombinedByClipFromParent, clipPath, nativeVisualsInZOrder);
+			clipPath = child.GetNativeViewPathAndZOrder(childClip, clipPath, nativeVisualsInZOrder);
 		}
+
+		return clipPath;
 	}
 
-	internal void GetTotalClipPath(SKPath dst, bool skipPostPaintingClipping)
+	internal IGeometry GetTotalClipPath(bool skipPostPaintingClipping)
 	{
-		if (Parent is Visual parent)
-		{
-			parent.GetTotalClipPath(dst, false);
-		}
-		else
-		{
-			// Root: seed the caller's accumulator with the unclipped (infinite) region; ancestor clips
-			// get intersected into it below. dst is caller-owned and Op'd in place, hence the copy.
-			using var infiniteRect = SkiaExtensions.CreateRectPath(InfiniteClipRect);
-			infiniteRect.Transform(SKMatrix.Identity, dst);
-		}
+		// Root: seed with the unclipped (infinite) region; ancestor clips are intersected into it.
+		var dst = Parent is Visual parent
+			? parent.GetTotalClipPath(false)
+			: DrawingBackend.Current.CreateRectangleGeometry(InfiniteClipRect.ToRect());
 
-		var localPath = _pathPool.Allocate();
-		using var localPathDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localPath);
-
-		var totalMatrix = TotalMatrix.ToSKMatrix();
-		if (GetPrePaintingClipping(localPath))
+		var totalMatrix = TotalMatrix.ToMatrix3x2();
+		if (GetPrePaintingClipping() is { } pre)
 		{
 			// The local clip is in local coordinates. We need to transform it to root coordinates.
-			localPath.Transform(in totalMatrix);
-			dst.Op(localPath, SKPathOp.Intersect, dst);
+			dst = dst.Combine(pre.Transform(totalMatrix), GeometryCombineMode.Intersect);
 		}
 
-		if (!skipPostPaintingClipping)
+		if (!skipPostPaintingClipping && GetPostPaintingClipping() is { } postClip)
 		{
-			if (GetPostPaintingClipping() is { } postClip)
-			{
-				postClip.Transform(in totalMatrix);
-				dst.Op(postClip, SKPathOp.Intersect, dst);
-			}
+			dst = dst.Combine(postClip.Transform(totalMatrix), GeometryCombineMode.Intersect);
 		}
+
+		return dst;
 	}
 
 	/// <summary>
@@ -604,17 +578,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// uses to detect elements clipped entirely out of view (e.g. scrolled outside a ScrollViewer).
 	/// </summary>
 	internal Rect GetTotalClipRectInRootCoordinates()
-	{
-		var clipPath = _pathPool.Allocate();
-		using var clipPathDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), clipPath);
-		clipPath.Reset();
-
 		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
 		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-		GetTotalClipPath(clipPath, skipPostPaintingClipping: true);
-
-		return clipPath.Bounds.ToRect();
-	}
+		=> GetTotalClipPath(skipPostPaintingClipping: true).Bounds;
 
 	/// <summary>
 	/// Draws the content of this visual.
@@ -622,18 +588,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="session">The drawing session to use.</param>
 	internal virtual void Paint(in PaintingSession session) { }
 
-	private protected virtual bool TryAddShadowPaths(List<(SKPath path, float alpha)> output) => !CanPaint();
+	private protected virtual bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output) => !CanPaint();
 
 	private bool TryRenderAnalyticShadow(IDrawingSession session, ShadowState shadow)
 	{
-		var rootMatrix = TotalMatrix.ToSKMatrix();
-		if (!rootMatrix.TryInvert(out var inverseRoot))
+		var rootMatrix = TotalMatrix.ToMatrix3x2();
+		if (!Matrix3x2.Invert(rootMatrix, out var inverseRoot))
 		{
 			return false;
 		}
 
-		using var accumulator = new ShadowPathAccumulator();
-		if (!WalkShadowSilhouette(this, this, in inverseRoot, ancestorClipInRoot: null, 1f, accumulator))
+		var accumulator = new ShadowPathAccumulator();
+		if (!WalkShadowSilhouette(this, this, inverseRoot, ancestorClipInRoot: null, 1f, accumulator))
 		{
 			return false;
 		}
@@ -696,9 +662,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		session.Restore();
 		return true;
 
-		// The silhouette regions are SKPath (compositor-internal geometry math); they cross into the
-		// session as geometry handles for the actual rasterization.
-		static void DrawRegionShadow(IDrawingSession session, SKPath path, float alpha, global::Windows.UI.Color shadowColor, IMaskFilter maskFilter, bool useAdditive, float pathYScale)
+		static void DrawRegionShadow(IDrawingSession session, IGeometry path, float alpha, global::Windows.UI.Color shadowColor, IMaskFilter maskFilter, bool useAdditive, float pathYScale)
 		{
 			var color = global::Windows.UI.Color.FromArgb((byte)(shadowColor.A * alpha), shadowColor.R, shadowColor.G, shadowColor.B);
 			var paint = new PaintParams(color)
@@ -710,16 +674,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (pathYScale.Equals(1f))
 			{
-				session.DrawPath(new SkiaGeometrySource2D(path), paint);
+				session.DrawPath(path, paint);
 			}
 			else
 			{
 				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
 				// position; the canvas scale only affects the mask blur's per-axis sigma.
-				var scratch = _spareShadowPath;
-				scratch.Reset();
-				path.Transform(SKMatrix.CreateScale(1f, pathYScale), scratch);
-				session.DrawPath(new SkiaGeometrySource2D(scratch), paint);
+				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), paint);
 			}
 		}
 	}
@@ -727,8 +688,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static bool WalkShadowSilhouette(
 		Visual visual,
 		Visual shadowRoot,
-		in SKMatrix inverseRootMatrix,
-		SKPath? ancestorClipInRoot,
+		Matrix3x2 inverseRootMatrix,
+		IGeometry? ancestorClipInRoot,
 		float opacityChain,
 		ShadowPathAccumulator accumulator)
 	{
@@ -744,27 +705,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return true;
 		}
 
-		var visualMatrix = visual.TotalMatrix.ToSKMatrix();
-		var toRoot = SKMatrix.Concat(inverseRootMatrix, visualMatrix);
+		var toRoot = visual.TotalMatrix.ToMatrix3x2() * inverseRootMatrix;
 
-		var clipPath = _pathPool.Allocate();
-		using var clipPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), clipPath);
-		clipPath.Reset();
+		var effectiveClip = visual.GetPrePaintingClipping()?.Transform(toRoot);
 
-		var hasClip = TryPopulateEffectiveClipInRoot(visual, in toRoot, clipPath);
-
-		// Intersect with the accumulated ancestor clip. After this block hasClip is unconditionally true.
+		// Intersect with the accumulated ancestor clip.
 		if (ancestorClipInRoot is not null)
 		{
-			if (hasClip)
-			{
-				clipPath.Op(ancestorClipInRoot, SKPathOp.Intersect, clipPath);
-			}
-			else
-			{
-				ancestorClipInRoot.Transform(SKMatrix.Identity, clipPath);
-			}
-			hasClip = true;
+			effectiveClip = effectiveClip is not null
+				? effectiveClip.Combine(ancestorClipInRoot, GeometryCombineMode.Intersect)
+				: ancestorClipInRoot;
 		}
 
 		// Skip optimization (scoped to THIS visual, not the subtree): if the visual's own painting is
@@ -776,18 +726,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var canSkipOwnContribution = false;
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
-			var sizeCandidate = _spareShadowPath;
-			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, size.X, size.Y));
-			sizeRect.Transform(toRoot, sizeCandidate);
-			if (hasClip)
+			var sizeCandidate = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, size.X, size.Y)).Transform(toRoot);
+			if (effectiveClip is not null)
 			{
-				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
+				sizeCandidate = sizeCandidate.Combine(effectiveClip, GeometryCombineMode.Intersect);
 			}
 			canSkipOwnContribution = accumulator.IsFullyCovered(sizeCandidate);
 		}
-		else if (hasClip)
+		else if (effectiveClip is not null)
 		{
-			canSkipOwnContribution = accumulator.IsFullyCovered(clipPath);
+			canSkipOwnContribution = accumulator.IsFullyCovered(effectiveClip);
 		}
 
 		var combinedOpacity = opacityChain * visual.Opacity;
@@ -802,13 +750,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			foreach (var (path, alpha) in scratch)
 			{
-				var transformed = _spareShadowPath;
-				transformed.Reset();
-				path.Transform(toRoot, transformed);
+				var transformed = path.Transform(toRoot);
 
-				if (hasClip)
+				if (effectiveClip is not null)
 				{
-					if (transformed.Op(clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
+					transformed = transformed.Combine(effectiveClip, GeometryCombineMode.Intersect);
+					if (!transformed.IsEmpty)
 					{
 						accumulator.Add(transformed, alpha * combinedOpacity);
 					}
@@ -817,55 +764,30 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					accumulator.Add(transformed, alpha * combinedOpacity);
 				}
-
-				path.Dispose();
 			}
 			scratch.Clear();
 		}
 
-		// Apply the post-painting clip to derive the clip for children. We can mutate clipPath in place —
-		// its previous value (the visual's own clip) is no longer needed past this point.
+		// Apply the post-painting clip to derive the clip for children.
+		var childClipInRoot = effectiveClip;
 		var postClipLocal = visual.GetPostPaintingClipping();
 		if (postClipLocal is not null)
 		{
-			var postClipInRoot = _spareShadowPath;
-			postClipInRoot.Reset();
-			postClipLocal.Transform(toRoot, postClipInRoot);
-
-			if (hasClip)
-			{
-				clipPath.Op(postClipInRoot, SKPathOp.Intersect, clipPath);
-			}
-			else
-			{
-				postClipInRoot.Transform(SKMatrix.Identity, clipPath);
-			}
-			hasClip = true;
+			var postClipInRoot = postClipLocal.Transform(toRoot);
+			childClipInRoot = childClipInRoot is not null
+				? childClipInRoot.Combine(postClipInRoot, GeometryCombineMode.Intersect)
+				: postClipInRoot;
 		}
-
-		SKPath? childClipInRoot = hasClip ? clipPath : null;
 
 		foreach (var child in visual.GetChildrenInRenderOrder())
 		{
-			if (!WalkShadowSilhouette(child, shadowRoot, in inverseRootMatrix, childClipInRoot, combinedOpacity, accumulator))
+			if (!WalkShadowSilhouette(child, shadowRoot, inverseRootMatrix, childClipInRoot, combinedOpacity, accumulator))
 			{
 				return false;
 			}
 		}
 
 		return true;
-	}
-
-	private static bool TryPopulateEffectiveClipInRoot(Visual visual, in SKMatrix toRoot, SKPath dst)
-	{
-		var preClipLocal = _spareShadowPath;
-		preClipLocal.Reset();
-		if (visual.GetPrePaintingClipping(preClipLocal))
-		{
-			preClipLocal.Transform(toRoot, dst);
-			return true;
-		}
-		return false;
 	}
 
 	private Vector3 GetTotalOffset()
@@ -887,35 +809,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		return total;
 	}
 
-	internal virtual bool GetPrePaintingClipping(SKPath dst)
-	{
-		// Apply the clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ContainerVisual through the LayoutClip)
-		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		if (Clip is not null)
-		{
-			dst.Reset();
-			if (Clip.GetClipPath(this) is { } clipPath)
-			{
-				clipPath.Transform(SKMatrix.Identity, dst);
-			}
-			return true;
-		}
-		return false;
-	}
+	/// <summary>
+	/// The pre-painting clip (this visual's <see cref="Clip"/>) in local coordinates, or <c>null</c> when
+	/// this visual defines no such clip.
+	/// </summary>
+	// Note: The Clip is applied after the transformation matrix. A non-null Clip whose GetClipPath yields
+	// no path still clips everything out (empty geometry) — matching the previous SKPath behaviour.
+	internal virtual IGeometry? GetPrePaintingClipping()
+		=> Clip is null
+			? null
+			: Clip.GetClipPath(this) ?? DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
 	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
-	private protected virtual SKPath? GetPostPaintingClipping() => null;
+	private protected virtual IGeometry? GetPostPaintingClipping() => null;
 	/// <summary>Applies the post-painting (children) clipping to the drawing session. Overridable so simple
 	/// rect/round-rect clips can use the session's ClipRect/ClipRoundRect fast paths instead of a full path.</summary>
 	private protected virtual void ApplyPostPaintingClipping(IDrawingSession session)
 	{
 		if (GetPostPaintingClipping() is { } postClip)
 		{
-			session.ClipPath(new SkiaGeometrySource2D(postClip), antialias: true);
+			session.ClipPath(postClip, antialias: true);
 		}
 	}
 

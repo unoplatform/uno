@@ -111,31 +111,6 @@ public partial class ContainerVisual : Visual
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
-	/// <returns>true if a ViewBox exists</returns>
-	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
-	{
-		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
-		{
-			return false;
-		}
-
-		var matrix = SKMatrix.Identity;
-		if (isAncestorClip)
-		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
-			{
-				matrix = childToParentTransform.ToSKMatrix();
-			}
-		}
-
-		using var rectPath = SkiaExtensions.CreateRectPath(rect.ToSKRect());
-		rectPath.Transform(matrix, dst);
-
-		return true;
-	}
-
 	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
 	{
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
@@ -156,8 +131,6 @@ public partial class ContainerVisual : Visual
 		return rect;
 	}
 
-	private static SKPath _sparePrePaintingClippingPath = new SKPath();
-
 	internal override void ApplyPrePaintingClipping(IDrawingSession session)
 	{
 		base.ApplyPrePaintingClipping(session);
@@ -167,49 +140,18 @@ public partial class ContainerVisual : Visual
 		}
 	}
 
-	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
+	internal override IGeometry? GetPrePaintingClipping()
 	{
-		var prePaintingClipPath = _sparePrePaintingClippingPath;
-
-		prePaintingClipPath.Reset();
-
-		if (base.GetPrePaintingClipping(dst))
+		var baseClip = base.GetPrePaintingClipping();
+		if (GetArrangeClipPathInElementCoordinateSpace() is not { } rect)
 		{
-			// TODO: SKPath-less
-			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
-			//{
-			//	dst.AddRect(clipping.ToSKRect());
-			//}
-
-			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
-			{
-				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
-			}
-
-			return true;
+			return baseClip;
 		}
-		else
-		{
-			// TODO: SKPath-less
-			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
-			//{
-			//	dst.Reset();
-			//	dst.AddRect(clipping.ToSKRect());
 
-			//	return true;
-			//}
-
-			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
-			{
-				prePaintingClipPath.Transform(SKMatrix.Identity, dst);
-
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		var arrangeClip = DrawingBackend.Current.CreateRectangleGeometry(rect);
+		return baseClip is null
+			? arrangeClip
+			: baseClip.Combine(arrangeClip, GeometryCombineMode.Intersect);
 	}
 
 	internal override bool SetMatrixDirty()

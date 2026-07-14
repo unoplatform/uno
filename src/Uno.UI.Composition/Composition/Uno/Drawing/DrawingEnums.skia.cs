@@ -59,3 +59,10 @@ internal enum GradientTileMode
 	Repeat,
 	Mirror,
 }
+
+/// <summary>Winding rule used to fill a geometry.</summary>
+internal enum GeometryFillRule
+{
+	NonZero,
+	EvenOdd,
+}

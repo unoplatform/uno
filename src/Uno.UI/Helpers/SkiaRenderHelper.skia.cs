@@ -52,14 +52,16 @@ internal static class SkiaRenderHelper
 	/// </summary>
 	private static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var clipPath = new SKPath();
-
 		var rect = new SKRect(0f, 0f, width, height);
 
-		using var parentClipPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
+		var parentClip = DrawingBackend.Current.CreateRectangleGeometry(rect.ToRect());
+		var seedClip = DrawingBackend.Current.CreateRectangleGeometry(new global::Windows.Foundation.Rect(0, 0, 0, 0));
 
 		var nativeVisualsInZOrder = new List<Visual>();
-		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
+		var accumulated = rootVisual.GetNativeViewPathAndZOrder(parentClip, seedClip, nativeVisualsInZOrder);
+
+		// The native-clipping consumers below still operate on SKPath; unwrap the geometry handle here.
+		var clipPath = ((SkiaGeometrySource2D)accumulated).Geometry;
 
 		if (!invertPath)
 		{
@@ -69,8 +71,6 @@ internal static class SkiaRenderHelper
 		{
 			var invertedPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
 			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
-
-			clipPath.Dispose();
 
 			return (invertedPath, nativeVisualsInZOrder);
 		}

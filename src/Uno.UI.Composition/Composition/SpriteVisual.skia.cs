@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 using Color = global::Windows.UI.Color;
 
@@ -19,7 +21,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
 
-		private protected override bool TryAddShadowPaths(List<(SKPath path, float alpha)> output)
+		private protected override bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output)
 		{
 			// SpriteVisual fills its bounds with its Brush. Only solid-color brushes are describable
 			// analytically
@@ -36,9 +38,7 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			var builder = new SKPathBuilder();
-			builder.AddRect(new SKRect(0, 0, Size.X, Size.Y));
-			output.Add((builder.Detach(), color.Color.A / 255f));
+			output.Add((DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), color.Color.A / 255f));
 			return true;
 		}
 	}

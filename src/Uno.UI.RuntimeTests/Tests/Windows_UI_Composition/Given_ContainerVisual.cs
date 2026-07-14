@@ -143,14 +143,6 @@ public class Given_ContainerVisual
 		// via RenderRootVisual. This used to throw a NullReferenceException (issue #22416).
 		Assert.IsNull(visual.Parent);
 
-		// SKPath overload (the one used by GetPrePaintingClipping during rendering).
-		using var path = new SKPath();
-		Assert.IsTrue(visual.GetArrangeClipPathInElementCoordinateSpace(path));
-		Assert.AreEqual(0f, path.Bounds.Left, 0.01f);
-		Assert.AreEqual(0f, path.Bounds.Top, 0.01f);
-		Assert.AreEqual(50f, path.Bounds.Right, 0.01f);
-		Assert.AreEqual(40f, path.Bounds.Bottom, 0.01f);
-
 		// Rect? overload.
 		var rect = visual.GetArrangeClipPathInElementCoordinateSpace();
 		Assert.IsNotNull(rect);

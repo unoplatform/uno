@@ -3,6 +3,7 @@
 using System.Numerics;
 using Microsoft.UI.Composition;
 using SkiaSharp;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
@@ -11,6 +12,13 @@ namespace Uno.UI.Composition.Drawing;
 internal sealed class SkiaDrawingBackend : IDrawingBackend
 {
 	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
+
+	public IGeometry CreateRectangleGeometry(Rect rect)
+	{
+		var builder = new SKPathBuilder();
+		builder.AddRect(rect.ToSKRect());
+		return new SkiaGeometrySource2D(builder.Detach());
+	}
 
 	public IShader CreateLinearGradientShader(
 		Vector2 start,

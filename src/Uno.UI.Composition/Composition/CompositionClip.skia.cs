@@ -31,7 +31,7 @@ partial class CompositionClip
 	private protected virtual Rect? GetBoundsCore(Visual visual)
 		=> null;
 
-	internal virtual SKPath? GetClipPath(Visual visual) => null;
+	internal virtual IGeometry? GetClipPath(Visual visual) => null;
 	/// <summary>
 	/// Optionally overridable if the clip path can be provided as a rounded rect.
 	/// </summary>
@@ -53,7 +53,7 @@ partial class CompositionClip
 		}
 		else if (GetClipPath(visual) is { } clipPath)
 		{
-			session.ClipPath(new SkiaGeometrySource2D(clipPath), antialias: true);
+			session.ClipPath(clipPath, antialias: true);
 		}
 	}
 }

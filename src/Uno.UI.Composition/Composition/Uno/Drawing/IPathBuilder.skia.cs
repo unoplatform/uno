@@ -17,8 +17,13 @@ internal interface IPathBuilder
 	void QuadraticTo(Vector2 control, Vector2 end);
 	void AddRectangle(Rect rect);
 	void AddRoundedRectangle(Rect rect, float radiusX, float radiusY);
+	/// <summary>Adds a rounded rectangle with (possibly non-uniform) per-corner radii (x, y), ordered TL, TR, BR, BL.</summary>
+	void AddRoundedRectangle(Rect rect, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft);
 	void AddEllipse(Vector2 center, float radiusX, float radiusY);
 	void Close();
+
+	/// <summary>The winding rule used to fill the built geometry. Defaults to <see cref="GeometryFillRule.NonZero"/>.</summary>
+	GeometryFillRule FillRule { get; set; }
 
 	/// <summary>Produces the geometry and resets the builder for reuse.</summary>
 	IGeometry Build();

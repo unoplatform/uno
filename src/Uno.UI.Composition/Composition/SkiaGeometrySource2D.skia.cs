@@ -54,6 +54,8 @@ namespace Microsoft.UI.Composition
 
 		Rect IGeometry.TightBounds => _geometry.TightBounds.ToRect();
 
+		bool IGeometry.IsEmpty => _geometry.IsEmpty;
+
 		bool IGeometry.FillContains(Vector2 point) => _geometry.Contains(point.X, point.Y);
 
 		IGeometry IGeometry.Transform(Matrix3x2 matrix) => Transform(matrix.ToSKMatrix());

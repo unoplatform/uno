@@ -24,6 +24,9 @@ internal interface IGeometry : IDisposable
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
 	Rect TightBounds { get; }
 
+	/// <summary>Whether the geometry contains no drawable area.</summary>
+	bool IsEmpty { get; }
+
 	/// <summary>Whether the filled interior of the geometry contains <paramref name="point"/>.</summary>
 	bool FillContains(Vector2 point);
 

@@ -4,6 +4,7 @@ using System;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
@@ -11,7 +12,6 @@ namespace Microsoft.UI.Composition;
 partial class RectangleClip
 {
 	private SKRoundRect? _skRoundRect;
-	private static readonly SKPathBuilder _spareClipPathBuilder = new();
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -22,14 +22,16 @@ partial class RectangleClip
 			height: Bottom - Top);
 	}
 
-	// The path returned here is reused, do not cache
-	internal override SKPath GetClipPath(Visual visual)
+	internal override IGeometry? GetClipPath(Visual visual)
 	{
-		var builder = _spareClipPathBuilder;
-		builder.Reset();
-		builder.AddRoundRect(GetClipRoundedRect(visual), SKPathDirection.Clockwise);
+		if (GetBounds(visual) is not { } bounds)
+		{
+			return null;
+		}
 
-		return builder.Detach();
+		var builder = DrawingBackend.Current.CreatePathBuilder();
+		builder.AddRoundedRectangle(bounds, _topLeftRadius, _topRightRadius, _bottomRightRadius, _bottomLeftRadius);
+		return builder.Build();
 	}
 
 	private protected override SKRect? GetClipRect(Visual visual)

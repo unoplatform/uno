@@ -15,9 +15,6 @@ namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
-#if __SKIA__
-	private static readonly SkiaSharp.SKPath _spareRenderPath = new SkiaSharp.SKPath();
-#endif
 	private SerialDisposable _focusedElementSubscriptions = new SerialDisposable();
 
 	public SystemFocusVisual()
@@ -121,9 +118,7 @@ internal partial class SystemFocusVisual : Control
 
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
-		_spareRenderPath.Reset();
-		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
-		var totalClipRect = _spareRenderPath.Bounds.ToRect().IntersectWith(xamlRootBounds) ?? new Rect(0, 0, 0, 0);
+		var totalClipRect = FocusedElement.Visual.GetTotalClipRectInRootCoordinates().IntersectWith(xamlRootBounds) ?? new Rect(0, 0, 0, 0);
 		var inverseMatrix = transform.Inverse();
 		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
 		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));

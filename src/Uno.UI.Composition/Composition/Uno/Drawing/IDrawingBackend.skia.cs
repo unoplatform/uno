@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Numerics;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
@@ -19,6 +20,9 @@ internal interface IDrawingBackend
 {
 	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
 	IPathBuilder CreatePathBuilder();
+
+	/// <summary>Creates a rectangular geometry.</summary>
+	IGeometry CreateRectangleGeometry(Rect rect);
 
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(

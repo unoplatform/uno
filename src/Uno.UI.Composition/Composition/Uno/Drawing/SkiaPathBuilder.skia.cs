@@ -32,15 +32,41 @@ internal sealed class SkiaPathBuilder : IPathBuilder
 		_builder.AddRoundRect(roundRect);
 	}
 
+	public void AddRoundedRectangle(Rect rect, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft)
+	{
+		var roundRect = new SKRoundRect();
+		roundRect.SetRectRadii(rect.ToSKRect(), new[]
+		{
+			new SKPoint(topLeft.X, topLeft.Y),
+			new SKPoint(topRight.X, topRight.Y),
+			new SKPoint(bottomRight.X, bottomRight.Y),
+			new SKPoint(bottomLeft.X, bottomLeft.Y),
+		});
+		_builder.AddRoundRect(roundRect);
+	}
+
 	public void AddEllipse(Vector2 center, float radiusX, float radiusY)
 		=> _builder.AddOval(new SKRect(center.X - radiusX, center.Y - radiusY, center.X + radiusX, center.Y + radiusY));
 
 	public void Close() => _builder.Close();
 
+	private GeometryFillRule _fillRule;
+
+	public GeometryFillRule FillRule
+	{
+		get => _fillRule;
+		set
+		{
+			_fillRule = value;
+			_builder.FillType = value == GeometryFillRule.EvenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding;
+		}
+	}
+
 	public IGeometry Build()
 	{
 		var geometry = new SkiaGeometrySource2D(_builder.Detach());
 		_builder = new SKPathBuilder();
+		_fillRule = GeometryFillRule.NonZero;
 		return geometry;
 	}
 }
