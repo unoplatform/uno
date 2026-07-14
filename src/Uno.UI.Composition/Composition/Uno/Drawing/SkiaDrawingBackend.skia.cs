@@ -20,21 +20,64 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix)
 	{
-		var skColors = new SKColor[colors.Length];
-		for (var i = 0; i < colors.Length; i++)
-		{
-			skColors[i] = colors[i].ToSKColor();
-		}
-
 		var shader = SKShader.CreateLinearGradient(
 			new SKPoint(start.X, start.Y),
 			new SKPoint(end.X, end.Y),
-			skColors,
+			ToSKColors(colors),
 			colorPositions,
 			ToSK(tileMode),
 			localMatrix.ToSKMatrix());
 
 		return new SkiaShader(shader);
+	}
+
+	public IShader CreateRadialGradientShader(
+		Vector2 center,
+		float radius,
+		Color[] colors,
+		float[] colorPositions,
+		GradientTileMode tileMode,
+		Matrix3x2 localMatrix)
+		=> new SkiaShader(SKShader.CreateRadialGradient(
+			new SKPoint(center.X, center.Y),
+			radius,
+			ToSKColors(colors),
+			colorPositions,
+			ToSK(tileMode),
+			localMatrix.ToSKMatrix()));
+
+	public IShader CreateTwoPointConicalGradientShader(
+		Vector2 start,
+		float startRadius,
+		Vector2 end,
+		float endRadius,
+		Color[] colors,
+		float[] colorPositions,
+		GradientTileMode tileMode,
+		Matrix3x2 localMatrix)
+		=> new SkiaShader(SKShader.CreateTwoPointConicalGradient(
+			new SKPoint(start.X, start.Y),
+			startRadius,
+			new SKPoint(end.X, end.Y),
+			endRadius,
+			ToSKColors(colors),
+			colorPositions,
+			ToSK(tileMode),
+			localMatrix.ToSKMatrix()));
+
+	public IShader CreateColorShader(Color color) => new SkiaShader(SKShader.CreateColor(color.ToSKColor()));
+
+	public IShader ComposeShaders(IShader outer, IShader inner)
+		=> new SkiaShader(SKShader.CreateCompose(((SkiaShader)outer).Shader, ((SkiaShader)inner).Shader));
+
+	private static SKColor[] ToSKColors(Color[] colors)
+	{
+		var skColors = new SKColor[colors.Length];
+		for (var i = 0; i < colors.Length; i++)
+		{
+			skColors[i] = colors[i].ToSKColor();
+		}
+		return skColors;
 	}
 
 	public IColorFilter? CreateOpacityColorFilter(float opacity)

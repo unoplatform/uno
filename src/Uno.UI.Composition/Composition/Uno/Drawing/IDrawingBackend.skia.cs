@@ -29,6 +29,32 @@ internal interface IDrawingBackend
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix);
 
+	/// <summary>Creates a radial-gradient shader in the current coordinate space.</summary>
+	IShader CreateRadialGradientShader(
+		Vector2 center,
+		float radius,
+		Color[] colors,
+		float[] colorPositions,
+		GradientTileMode tileMode,
+		Matrix3x2 localMatrix);
+
+	/// <summary>Creates a two-point conical (radial) gradient shader between two circles.</summary>
+	IShader CreateTwoPointConicalGradientShader(
+		Vector2 start,
+		float startRadius,
+		Vector2 end,
+		float endRadius,
+		Color[] colors,
+		float[] colorPositions,
+		GradientTileMode tileMode,
+		Matrix3x2 localMatrix);
+
+	/// <summary>Creates a shader that paints a single solid color everywhere.</summary>
+	IShader CreateColorShader(Color color);
+
+	/// <summary>Composes two shaders, drawing <paramref name="inner"/> over <paramref name="outer"/>.</summary>
+	IShader ComposeShaders(IShader outer, IShader inner);
+
 	/// <summary>Creates a color filter that multiplies alpha by <paramref name="opacity"/>, or null when it would be a no-op.</summary>
 	IColorFilter? CreateOpacityColorFilter(float opacity);
 
