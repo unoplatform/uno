@@ -38,7 +38,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
 	private bool _initializationCompleted;
-	private string? _lastSvgClipPath;
+	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
+	private volatile string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
 	private MacOSAccessibility? _accessibility;
 	private bool _accessibilityBuildQueued;
@@ -115,29 +116,34 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// The texture differs every frame, so nothing here can be cached.
 		GRBackendRenderTarget? target = null;
 		SKSurface? surface = null;
-		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(null, size =>
+		try
 		{
-			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return surface.Canvas;
-		});
-
-		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
-		// main thread; this method runs on the render thread, so marshal the update there.
-		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
-		if (clip != Volatile.Read(ref _lastSvgClipPath))
-		{
-			NativeDispatcher.Main.Enqueue(() =>
+			var nativeElementClipPath = ct.OnNativePlatformFrameRequested(null, size =>
 			{
-				if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
-				{
-					Volatile.Write(ref _lastSvgClipPath, clip);
-				}
-			}, NativeDispatcherPriority.Normal);
-		}
+				target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
+				surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+				return surface.Canvas;
+			});
 
-		target?.Dispose();
-		surface?.Dispose();
+			// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
+			// main thread; this method runs on the render thread, so marshal the update there.
+			var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+			if (clip != _lastSvgClipPath)
+			{
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+					{
+						_lastSvgClipPath = clip;
+					}
+				}, NativeDispatcherPriority.Normal);
+			}
+		}
+		finally
+		{
+			surface?.Dispose();
+			target?.Dispose();
+		}
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -902,9 +908,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		internal void SignalNewFrame() => _frameSignal.Set();
 
 		/// <summary>
-		/// Blocks until the render thread finishes presenting the current frame, or the timeout elapses.
+		/// Blocks until the render thread finishes presenting the current frame, and returns
+		/// <see langword="false"/> if the timeout elapsed first.
 		/// </summary>
-		internal void WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
+		/// <remarks>
+		/// TODO: not wired up yet. It mirrors the Win32 render-thread contract, where the UI thread
+		/// waits for a present during a synchronous resize/show (Win32WindowWrapper.SynchronousRenderAndDraw),
+		/// which the macOS host still has to grow an equivalent of.
+		/// </remarks>
+		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
 
 		private void RenderLoop()
 		{
@@ -946,7 +958,22 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			_disposed = true;
 			_frameSignal.Set();
-			_thread.Join(TimeSpan.FromSeconds(2));
+
+			// A present blocked on an unavailable drawable (occluded/minimized window) can outlive the
+			// join. Disposing the primitives underneath the still-running thread would make its next
+			// _presentedEvent.Set() / _frameSignal.WaitOne() throw ObjectDisposedException, which is
+			// unhandled at the thread boundary and would take the process down. Leaking them is cheap:
+			// the thread is a background thread and dies with the process.
+			if (!_thread.Join(TimeSpan.FromSeconds(2)))
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("macOS render thread did not exit within 2 seconds; leaving its synchronization primitives undisposed.");
+				}
+
+				return;
+			}
+
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
 		}

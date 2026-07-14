@@ -34,6 +34,14 @@
 
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    // A paused view is driven by the managed render thread, which owns the GRContext. AppKit can
+    // still call this (occlusion changes, backing-store redraws), so bail out rather than touch the
+    // GRContext from the main thread concurrently with the render thread.
+    if (view.isPaused)
+    {
+        return;
+    }
+
 #if DEBUG
     NSLog (@"drawInMTKView: %f %f", view.drawableSize.width, view.drawableSize.height);
 #endif
