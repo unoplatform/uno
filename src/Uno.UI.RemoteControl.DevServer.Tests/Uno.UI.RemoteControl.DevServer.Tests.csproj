@@ -25,6 +25,15 @@
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MessagePack" Version="3.1.7" /> <!-- pin transient dependency -->
+		<!--
+			Pin the concrete DI package to the same major as the transitively-referenced
+			Microsoft.Extensions.DependencyInjection.Abstractions (v10, pulled by the .NET 10
+			Options/Hosting set). Without it, the compile also sees the old concrete DI
+			netstandard2.0 assembly (asm 5.0.0.0), which still defines a real ServiceCollection,
+			so the type collides with the one in Abstractions (CS0433). At v10 the concrete
+			assembly type-forwards ServiceCollection to Abstractions, leaving a single definition.
+		-->
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
