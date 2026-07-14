@@ -3,8 +3,6 @@ parameters:
 
 jobs:
 - job: Documentation
-  # Provisioning the mobile workloads on a cold cache does not fit in the 60 minute default.
-  timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
   displayName: 'Build Documentation WebSite'
 
@@ -23,26 +21,25 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  # GenerateDoc restores the sync-gen filter, which includes the netcoremobile heads, so the mobile
-  # workloads must be provisioned here just as they are for the managed binaries build.
   - template: ../templates/dotnet-mobile-install-windows.yml
-    parameters:
-      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-maccatalyst --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/jdk-setup.yml
 
   - template: ../templates/docfx-intermediary-assets.yml
 
-  # Built through the .NET SDK's MSBuild rather than the VS one: the SDK requires a newer MSBuild
-  # than the VS image carries, and the VS msbuild.exe therefore cannot resolve Microsoft.NET.Sdk.
-  - task: DotNetCoreCLI@2
-    displayName: Generate Documentation
+  - task: MSBuild@1
     inputs:
-      command: custom
-      custom: msbuild
-      workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs.binlog
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs.binlog
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Docs Artifacts'

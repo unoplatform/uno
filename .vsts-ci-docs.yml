@@ -30,11 +30,8 @@ variables:
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.35.0-dev.28'
-  DotNetSdkVersion: '11.0.100-preview.5.26302.115'
-
-  netCurrentTargetFramework: 'net11.0'
-  netPreviousTargetFramework: 'net10.0'
+  GlobalUnoCheckVersion: '1.33.0-dev.26'
+  DotNetSdkVersion: '10.0.105'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml
