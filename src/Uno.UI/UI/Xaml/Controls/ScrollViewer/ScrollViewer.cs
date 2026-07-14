@@ -1849,8 +1849,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					// WinUI routes keyboard scrolls through ChangeViewWithOptionalAnimation(disableAnimation=FALSE)
-					// so the view animates smoothly to the new offset instead of jumping.
+					// WinUI routes keyboard scrolls through ChangeViewWithOptionalAnimation(disableAnimation=FALSE).
 					ChangeView(newOffset, null, null, disableAnimation: false);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
