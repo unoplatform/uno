@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
@@ -77,7 +78,7 @@ public class Given_CornerRadiusFilterConverter
 		// there (see CornerRadius_converters.xaml) — a dropped or typo'd key would otherwise ship unguarded.
 		foreach (var key in _converterKeys)
 		{
-			var converter = global::Uno.UI.ResourceResolver.GetSystemResource<global::Microsoft.UI.Xaml.Data.IValueConverter>(key);
+			var converter = ResourceResolver.GetSystemResource<IValueConverter>(key);
 			Assert.IsNotNull(converter, $"{key} is not reachable as a system resource.");
 		}
 	}
