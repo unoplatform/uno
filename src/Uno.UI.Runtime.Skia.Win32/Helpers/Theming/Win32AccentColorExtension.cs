@@ -27,24 +27,33 @@ internal class Win32AccentColorExtension : IAccentColorExtension
 			{
 				using var hSubKeyString = new Win32Helper.NativeNulTerminatedUtf16String(AccentRegistryKey);
 				HKEY hSubKey;
-				// We're not closing this handle since this class lasts the whole lifetime of the app.
 				var errorCode = PInvoke.RegOpenKeyEx(HKEY.HKEY_CURRENT_USER, hSubKeyString, 0, REG_SAM_FLAGS.KEY_READ, &hSubKey);
 				if (errorCode != WIN32_ERROR.ERROR_SUCCESS)
 				{
 					this.LogError()?.Error($"{nameof(PInvoke.RegOpenKeyEx)} failed with error code: {Win32Helper.GetErrorMessage((uint)errorCode)}");
 					return;
 				}
-				while (true)
-				{
-					// RegNotifyChangeKeyValue will block until the accent color changes
-					var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
-					if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
-					{
-						this.LogError()?.Error($"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code: {Win32Helper.GetErrorMessage((uint)errorCode2)}");
-						return;
-					}
 
-					NativeDispatcher.Main.Enqueue(() => AccentColorChanged?.Invoke(this, EventArgs.Empty));
+				// The key stays open for as long as the notification loop runs (normally the whole lifetime of
+				// the app), so it is only closed when the loop is abandoned.
+				try
+				{
+					while (true)
+					{
+						// RegNotifyChangeKeyValue will block until the accent color changes
+						var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
+						if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
+						{
+							this.LogError()?.Error($"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code: {Win32Helper.GetErrorMessage((uint)errorCode2)}");
+							return;
+						}
+
+						NativeDispatcher.Main.Enqueue(() => AccentColorChanged?.Invoke(this, EventArgs.Empty));
+					}
+				}
+				finally
+				{
+					PInvoke.RegCloseKey(hSubKey);
 				}
 			}
 			catch (Exception e)
