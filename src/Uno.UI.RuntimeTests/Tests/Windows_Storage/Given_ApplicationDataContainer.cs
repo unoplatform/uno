@@ -823,6 +823,34 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Indexer_Null_Removes()
+		{
+			// Assigning null removes the setting, so the reported change must be the removal.
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["test"] = "42";
+
+			var changes = new List<(CollectionChange Change, string Key)>();
+			void OnMapChanged(IObservableMap<string, object> sender, IMapChangedEventArgs<string> args)
+				=> changes.Add((args.CollectionChange, args.Key));
+
+			((IObservableMap<string, object>)SUT.Values).MapChanged += OnMapChanged;
+			try
+			{
+				SUT.Values["test"] = null;
+			}
+			finally
+			{
+				((IObservableMap<string, object>)SUT.Values).MapChanged -= OnMapChanged;
+			}
+
+			Assert.IsFalse(SUT.Values.ContainsKey("test"));
+			Assert.HasCount(1, changes);
+			Assert.AreEqual(CollectionChange.ItemRemoved, changes[0].Change);
+			Assert.AreEqual("test", changes[0].Key);
+		}
+
+		[TestMethod]
 		public void When_Clear_Values_Does_Not_Delete_Containers()
 		{
 			// Clear() removes the settings of this container only. Containers are a separate namespace,

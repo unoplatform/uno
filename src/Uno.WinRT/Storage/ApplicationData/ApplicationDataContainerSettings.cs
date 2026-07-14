@@ -45,9 +45,18 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		{
 			var exists = ContainsKey(key);
 			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
-			MapChanged?.Invoke(this, new MapChangedEventArgs(
-				exists ? CollectionChange.ItemChanged : CollectionChange.ItemInserted,
-				key));
+
+			// Assigning null removes the setting, so the change reported has to be the removal that happened.
+			var change = value is null
+				? CollectionChange.ItemRemoved
+				: exists
+					? CollectionChange.ItemChanged
+					: CollectionChange.ItemInserted;
+
+			if (value is not null || exists)
+			{
+				MapChanged?.Invoke(this, new MapChangedEventArgs(change, key));
+			}
 		}
 	}
 
