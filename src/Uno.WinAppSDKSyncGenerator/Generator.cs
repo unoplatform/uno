@@ -440,7 +440,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Microsoft.UI.Content: WinAppSDK sources these from Microsoft.InteractiveExperiences.Projection
 			// (would route to Uno.UWP), but ContentIsland/ContentSite and their stubs depend on
 			// Uno.UI.Composition types (Compositor, Visual, ICompositionSupportsSystemBackdrop, IClosableNotifier),
-			// which Uno.UWP cannot reference. The WinUI-correct Uno home is Uno.UI.Composition.
+			// which Uno.UWP cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
+			// Uno home is Uno.UI.Composition, which requires a layering seam not yet in place.
 			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
