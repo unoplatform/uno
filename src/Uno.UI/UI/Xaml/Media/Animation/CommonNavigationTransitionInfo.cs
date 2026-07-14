@@ -132,35 +132,31 @@ public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 	private static Storyboard CreateMainPageAnimation(UIElement element, NavigationTrigger trigger)
 	{
 		var storyboard = new Storyboard();
-		var transformOrigin = new Point(0.5, 0.5);
-
-		// Use scale transform for 2D turnstile-like effect
-		var scaleTransform = new ScaleTransform { ScaleX = 1.0, ScaleY = 1.0 };
-		element.RenderTransform = scaleTransform;
-		element.RenderTransformOrigin = transformOrigin;
 
 		var inControlPoint1 = new Point(0.1, 0.9);
 		var inControlPoint2 = new Point(0.2, 1.0);
 		var outControlPoint1 = new Point(0.7, 0.0);
 		var outControlPoint2 = new Point(1.0, 0.5);
 
+		// The scale transform is created only for the triggers that animate it, so the fade-only
+		// BackNavigatingTo case leaves the element's RenderTransform untouched.
 		switch (trigger)
 		{
 			case NavigationTrigger.NavigatingAway:
 				// Exit: scale down and fade out
-				AddScaleAnimation(storyboard, scaleTransform, 1.0, ExitScaleFactor, OutDuration, outControlPoint1, outControlPoint2);
+				AddScaleAnimation(storyboard, EnsureScaleTransform(element), 1.0, ExitScaleFactor, OutDuration, outControlPoint1, outControlPoint2);
 				AddOpacityAnimation(storyboard, element, 1.0, 0.0, OutDuration, outControlPoint1, outControlPoint2);
 				break;
 
 			case NavigationTrigger.NavigatingTo:
 				// Enter: fade in and scale up
-				AddDelayedScaleAnimation(storyboard, scaleTransform, ExitScaleFactor, OutDuration, 1.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
+				AddDelayedScaleAnimation(storyboard, EnsureScaleTransform(element), ExitScaleFactor, OutDuration, 1.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
 				AddDelayedOpacityAnimation(storyboard, element, 0.0, OutDuration, 1.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
 				break;
 
 			case NavigationTrigger.BackNavigatingAway:
 				// Back exit: scale down and fade out
-				AddScaleAnimation(storyboard, scaleTransform, 1.0, ExitScaleFactor, OutDuration, outControlPoint1, outControlPoint2);
+				AddScaleAnimation(storyboard, EnsureScaleTransform(element), 1.0, ExitScaleFactor, OutDuration, outControlPoint1, outControlPoint2);
 				AddOpacityAnimation(storyboard, element, 1.0, 0.0, OutDuration, outControlPoint1, outControlPoint2);
 				break;
 
@@ -171,6 +167,15 @@ public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 		}
 
 		return storyboard;
+	}
+
+	// Uses a scale transform for the 2D turnstile-like effect (see the class remarks).
+	private static ScaleTransform EnsureScaleTransform(UIElement element)
+	{
+		var scaleTransform = new ScaleTransform { ScaleX = 1.0, ScaleY = 1.0 };
+		element.RenderTransform = scaleTransform;
+		element.RenderTransformOrigin = new Point(0.5, 0.5);
+		return scaleTransform;
 	}
 
 	private List<Storyboard> CreateStaggerAnimations(UIElement page, NavigationTrigger trigger)
@@ -192,27 +197,24 @@ public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 	private static Storyboard CreateStaggerElementAnimation(UIElement element, NavigationTrigger trigger, long delayMs)
 	{
 		var storyboard = new Storyboard();
-		var transformOrigin = new Point(0.5, 0.5);
 
-		var scaleTransform = new ScaleTransform { ScaleX = 1.0, ScaleY = 1.0 };
-		element.RenderTransform = scaleTransform;
-		element.RenderTransformOrigin = transformOrigin;
+		// Stagger elements only animate on entrance; on the away triggers the element is left as-is.
+		if (trigger is not (NavigationTrigger.NavigatingTo or NavigationTrigger.BackNavigatingTo))
+		{
+			return storyboard;
+		}
 
 		var inControlPoint1 = new Point(0.1, 0.9);
 		var inControlPoint2 = new Point(0.2, 1.0);
 
-		// Stagger elements only animate on entrance
-		if (trigger == NavigationTrigger.NavigatingTo || trigger == NavigationTrigger.BackNavigatingTo)
-		{
-			var startTime = OutDuration + delayMs;
-			var endTime = startTime + InDuration;
+		var startTime = OutDuration + delayMs;
+		var endTime = startTime + InDuration;
 
-			// Scale from smaller to normal
-			AddDelayedScaleAnimation(storyboard, scaleTransform, ExitScaleFactor, startTime, 1.0, endTime, inControlPoint1, inControlPoint2);
+		// Scale from smaller to normal
+		AddDelayedScaleAnimation(storyboard, EnsureScaleTransform(element), ExitScaleFactor, startTime, 1.0, endTime, inControlPoint1, inControlPoint2);
 
-			// Fade in
-			AddDelayedOpacityAnimation(storyboard, element, 0.0, startTime, 1.0, endTime, inControlPoint1, inControlPoint2);
-		}
+		// Fade in
+		AddDelayedOpacityAnimation(storyboard, element, 0.0, startTime, 1.0, endTime, inControlPoint1, inControlPoint2);
 
 		return storyboard;
 	}
