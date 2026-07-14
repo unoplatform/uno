@@ -371,6 +371,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// not at Begin() time. See CAnimation::UpdateAnimationUsingKeyFrames in animation.cpp.
 		private bool _deferredPlayPending;
 
+		// Invalidates callbacks already queued on the dispatcher: a Begin/Stop/Begin sequence within
+		// a single tick would otherwise let the stale callback run PlayImmediate() a second time.
+		private int _deferredPlayGeneration;
+
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
 			SetValue(currentAnimator.AnimatedValue);
@@ -391,8 +395,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_deferredPlayPending = true;
 			State = TimelineState.Active;
 
+			var generation = ++_deferredPlayGeneration;
+
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
+				if (_deferredPlayGeneration != generation)
+				{
+					// A Stop/Deactivate/SkipToFill cycle invalidated this callback
+					return;
+				}
+
 				_deferredPlayPending = false;
 
 				if (State != TimelineState.Active)
@@ -412,6 +424,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void CancelDeferredPlay()
 		{
 			_deferredPlayPending = false;
+			_deferredPlayGeneration++;
 		}
 	}
 }

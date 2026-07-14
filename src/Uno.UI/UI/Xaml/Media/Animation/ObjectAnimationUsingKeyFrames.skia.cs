@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// (after layout), not at Begin() time.
 		private bool _deferredPlayPending;
 
+		// Invalidates callbacks already queued on the dispatcher: a Begin/Stop/Begin sequence within
+		// a single tick would otherwise let the stale callback run PlayImmediate() a second time.
+		private int _deferredPlayGeneration;
+
 		/// <summary>
 		/// On Skia, defers scheduler creation to the next dispatcher tick.
 		/// This ensures keyframe binding values are read after layout has completed,
@@ -23,8 +27,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			_deferredPlayPending = true;
 
+			var generation = ++_deferredPlayGeneration;
+
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
+				if (_deferredPlayGeneration != generation)
+				{
+					// A Stop/Deactivate/SkipToFill cycle invalidated this callback
+					return;
+				}
+
 				_deferredPlayPending = false;
 
 				if (State != TimelineState.Active)
@@ -43,6 +55,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void CancelDeferredPlay()
 		{
 			_deferredPlayPending = false;
+			_deferredPlayGeneration++;
 		}
 	}
 }
