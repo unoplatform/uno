@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ContentDialog_Partial.h, tag winui3/release/1.6-stable
 
 using System;
@@ -59,9 +61,9 @@ partial class ContentDialog
 	private FrameworkElement m_tpSmokeLayer;
 	private VisualStateGroup m_tpDialogShowingStates;
 
-	/* Deferral managers */
-	private DeferralManager<ContentDialogClosingDeferral> m_spClosingDeferralManager;
-	private DeferralManager<ContentDialogButtonClickDeferral> m_spButtonClickDeferralManager;
+	// Uno specific: WinUI keeps the closing/button-click DeferralManagers here and hands them to the event
+	// args. In Uno each ContentDialogClosingEventArgs/ContentDialogButtonClickEventArgs owns its own manager,
+	// which already gives a fresh generation per raise, so no dialog-level managers are needed.
 
 	/* Revokers */
 	private readonly SerialDisposable m_epPrimaryButtonClickHandler = new SerialDisposable();
@@ -73,7 +75,6 @@ partial class ContentDialog
 	private readonly SerialDisposable m_epLayoutRootGotFocusHandler = new SerialDisposable();
 	private readonly SerialDisposable m_epLayoutRootProcessKeyboardAcceleratorsHandler = new SerialDisposable();
 	private readonly SerialDisposable m_xamlRootChangedEventHandler = new SerialDisposable();
-	private readonly SerialDisposable m_popupOpenedHandler = new SerialDisposable();
 	private readonly SerialDisposable m_popupChildUnloadedEventHandler = new SerialDisposable();
 	private readonly SerialDisposable m_dialogSizeChangedHandler = new SerialDisposable();
 	private readonly SerialDisposable m_dialogShowingStateChangedEventHandler = new SerialDisposable();
@@ -110,5 +111,9 @@ partial class ContentDialog
 
 	// Uno specific: TaskCompletionSource backing ShowAsync
 	private TaskCompletionSource<ContentDialogResult> m_tcs;
+
+	// Uno specific: stands in for the result stored on the WinUI async operation, carrying the result
+	// from HideAfterDeferralWorker over to OnFinishedClosing.
+	private ContentDialogResult m_lastHideResult;
 #endif
 }
