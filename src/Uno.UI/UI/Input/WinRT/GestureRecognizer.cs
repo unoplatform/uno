@@ -34,7 +34,7 @@ namespace Windows.UI.Input
 		/// </summary>
 		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
 
-		private static ulong? s_resolvedMultiTapMaxDelayMicroseconds;
+		private static Lazy<ulong> s_resolvedMultiTapMaxDelayMicroseconds = CreateMultiTapMaxDelayResolver();
 
 		/// <summary>
 		/// The effective multi-tap window (in microseconds), resolved once per process from
@@ -42,14 +42,18 @@ namespace Windows.UI.Input
 		/// <see cref="MultiTapMaxDelayMicroseconds"/>.
 		/// </summary>
 		internal static ulong ResolvedMultiTapMaxDelayMicroseconds
-			=> s_resolvedMultiTapMaxDelayMicroseconds ??= ResolveMultiTapMaxDelayMicroseconds();
+			=> s_resolvedMultiTapMaxDelayMicroseconds.Value;
 
+		private static Lazy<ulong> CreateMultiTapMaxDelayResolver()
+			=> new(ResolveMultiTapMaxDelayMicroseconds, System.Threading.LazyThreadSafetyMode.PublicationOnly);
+
+		// No owner is required by the extension, so null is passed to the builder.
 		private static ulong ResolveMultiTapMaxDelayMicroseconds()
 			=> ApiExtensibility.CreateInstance<IGestureRecognizerExtension>(null, out var ext)
 				? ext.MultiTapMaxDelayMicroseconds ?? MultiTapMaxDelayMicroseconds
 				: MultiTapMaxDelayMicroseconds;
 
-		internal static void ResetCacheForTests() => s_resolvedMultiTapMaxDelayMicroseconds = null;
+		internal static void ResetCacheForTests() => s_resolvedMultiTapMaxDelayMicroseconds = CreateMultiTapMaxDelayResolver();
 
 		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
