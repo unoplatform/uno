@@ -26,15 +26,6 @@ using Uno.UI.Foldable;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 
-[assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
-[assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
-[assembly: UsesPermission("android.permission.VIBRATE")]
-[assembly: UsesPermission("android.permission.ACTIVITY_RECOGNITION")]
-[assembly: UsesPermission("android.permission.ACCESS_NETWORK_STATE")]
-[assembly: UsesPermission("android.permission.SET_WALLPAPER")]
-[assembly: UsesPermission("android.permission.READ_CONTACTS")]
-[assembly: UsesPermission("android.permission.INTERNET")]
-
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
 
