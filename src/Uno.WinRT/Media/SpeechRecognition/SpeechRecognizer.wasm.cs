@@ -45,6 +45,19 @@ namespace Windows.Media.SpeechRecognition
 				// complete with a SpeechRecognitionResult carrying the mapped Status instead of throwing,
 				// so every outcome flows back to the caller exactly like a successful recognition.
 				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
+
+				var completionSource = speechRecognizer._currentCompletionSource;
+				if (completionSource is null)
+				{
+					// Late or duplicate callback (after Dispose, or after the operation already completed).
+					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						typeof(SpeechRecognizer).Log().LogDebug($"Speech recognition reported '{error}' while no operation is active, ignoring.");
+					}
+
+					return 0;
+				}
+
 				var recognitionResult = new SpeechRecognitionResult()
 				{
 					Text = string.Empty,
@@ -52,7 +65,7 @@ namespace Windows.Media.SpeechRecognition
 				};
 
 				// TrySetResult: ignore the report if the source was already completed or cancelled.
-				speechRecognizer._currentCompletionSource?.TrySetResult(recognitionResult);
+				completionSource.TrySetResult(recognitionResult);
 			}
 			return 0;
 		}
