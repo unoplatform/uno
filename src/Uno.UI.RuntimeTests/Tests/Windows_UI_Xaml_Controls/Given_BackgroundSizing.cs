@@ -361,6 +361,7 @@ public class Given_BackgroundSizing
 	#region Issue #7192 Repro
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7192")]
 	public async Task When_ToggleButton_With_CornerRadius_And_Border()
 	{
 		var grid = new Grid
