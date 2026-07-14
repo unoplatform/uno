@@ -44,6 +44,11 @@ using Uno.Foundation.Extensibility;
 using Windows.System;
 #endif
 
+#if __SKIA__
+using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
+using CorePhysicalKeyStatus = Windows.UI.Core.CorePhysicalKeyStatus;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -1252,13 +1257,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 #if __SKIA__
+		private static async Task TapKey(VirtualKey key)
+		{
+			var keyboard = TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard;
+
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), true);
+			await WindowHelper.WaitForIdle();
+
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), false);
+			await WindowHelper.WaitForIdle();
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13983")]
 		public async Task When_TextBox_Focused_And_Key_Pressed_Then_KeyDown_Fires()
 		{
 			var keyDownFired = false;
-			var keyDownKey = Windows.System.VirtualKey.None;
+			var keyDownKey = VirtualKey.None;
 
 			var tb = new TextBox();
 			tb.KeyDown += (s, e) =>
@@ -1271,16 +1287,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			tb.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var keyboard = TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard;
-			keyboard.OnKeyTestingOnly(
-				new Windows.UI.Core.KeyEventArgs("test", Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None, new Windows.UI.Core.CorePhysicalKeyStatus()), true);
-			await WindowHelper.WaitForIdle();
-			keyboard.OnKeyTestingOnly(
-				new Windows.UI.Core.KeyEventArgs("test", Windows.System.VirtualKey.A, Windows.System.VirtualKeyModifiers.None, new Windows.UI.Core.CorePhysicalKeyStatus()), false);
-			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot), "TextBox should be focused before injecting key events");
+
+			await TapKey(VirtualKey.A);
 
 			Assert.IsTrue(keyDownFired, "KeyDown event should have been fired on the focused TextBox");
-			Assert.AreEqual(Windows.System.VirtualKey.A, keyDownKey);
+			Assert.AreEqual(VirtualKey.A, keyDownKey);
 		}
 
 		[TestMethod]
@@ -1289,7 +1301,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_TextBox_Focused_And_Enter_Pressed_Then_KeyDown_Fires()
 		{
 			var keyDownFired = false;
-			var keyDownKey = Windows.System.VirtualKey.None;
+			var keyDownKey = VirtualKey.None;
 
 			var tb = new TextBox();
 			tb.KeyDown += (s, e) =>
@@ -1302,16 +1314,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			tb.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var keyboard = TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard;
-			keyboard.OnKeyTestingOnly(
-				new Windows.UI.Core.KeyEventArgs("test", Windows.System.VirtualKey.Enter, Windows.System.VirtualKeyModifiers.None, new Windows.UI.Core.CorePhysicalKeyStatus()), true);
-			await WindowHelper.WaitForIdle();
-			keyboard.OnKeyTestingOnly(
-				new Windows.UI.Core.KeyEventArgs("test", Windows.System.VirtualKey.Enter, Windows.System.VirtualKeyModifiers.None, new Windows.UI.Core.CorePhysicalKeyStatus()), false);
-			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot), "TextBox should be focused before injecting key events");
+
+			await TapKey(VirtualKey.Enter);
 
 			Assert.IsTrue(keyDownFired, "KeyDown event should have been fired when Enter is pressed on the focused TextBox");
-			Assert.AreEqual(Windows.System.VirtualKey.Enter, keyDownKey);
+			Assert.AreEqual(VirtualKey.Enter, keyDownKey);
 		}
 #endif
 
