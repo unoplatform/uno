@@ -7,11 +7,7 @@ namespace Uno.UI.RuntimeTests.Tests;
 [TestClass]
 public class Given_XBindOneWayItemsSource_13433
 {
-	// Reproduction for https://github.com/unoplatform/uno/issues/13433
-	// {x:Bind Items, Mode=OneWay} on ListView.ItemsSource was reported to
-	// reset/clear the source-side property if a setter is available, so the
-	// list ends up empty even though Items had data. Removing Mode=OneWay
-	// (the workaround) avoids the issue.
+	// Repro: Mode=OneWay x:Bind on ItemsSource was reported to clear the source property when it has a setter.
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13433")]
@@ -19,6 +15,7 @@ public class Given_XBindOneWayItemsSource_13433
 	{
 		var page = new XBindOneWayItemsSourcePage_13433();
 		await UITestHelper.Load(page);
+		await UITestHelper.WaitForIdle();
 
 		Assert.IsNotNull(page.Items, "Page.Items should not have been reset to null by the OneWay binding.");
 		Assert.AreEqual(3, page.Items.Count, "Page.Items should still hold the 3 initial entries.");
