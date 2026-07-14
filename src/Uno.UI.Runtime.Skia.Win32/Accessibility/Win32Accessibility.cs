@@ -331,7 +331,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// shallowest peer-bearing descendant — otherwise the revealed text (the cell value) would
 		// be announced by no event at all. Fall back to the coarse signal only if none is found.
 		var entering = new List<Win32RawElementProvider>();
-		CollectEnteringProviders(child, entering, 0);
+		CollectEnteringProviders(child, entering);
 		if (entering.Count > 0)
 		{
 			foreach (var provider in entering)
@@ -347,30 +347,65 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	/// <summary>
 	/// Collects the shallowest peer-bearing descendant providers of an element entering the scene,
-	/// recursing through peer-less (flattened) elements and skipping Collapsed branches. Mirrors the
+	/// traversing through peer-less (flattened) elements and skipping Collapsed branches. Mirrors the
 	/// flattening of <see cref="Win32RawElementProvider"/>'s child walk / WinUI EnterPCSceneRecursive.
 	/// </summary>
-	private void CollectEnteringProviders(UIElement element, List<Win32RawElementProvider> result, int depth)
+	private void CollectEnteringProviders(UIElement element, List<Win32RawElementProvider> result)
 	{
-		if (depth > 64)
-		{
-			return;
-		}
+		TraverseDescendants(
+			element,
+			static current => current.GetChildren(),
+			child =>
+			{
+				if (child.Visibility == Visibility.Collapsed)
+				{
+					return false;
+				}
 
-		foreach (var child in element.GetChildren())
+				if (GetOrCreateProvider(child) is { } provider)
+				{
+					result.Add(provider);
+					return false;
+				}
+
+				return true;
+			});
+	}
+
+	private static void TraverseDescendants(
+		UIElement root,
+		Func<UIElement, IEnumerable<UIElement>> getChildren,
+		Func<UIElement, bool> shouldDescend)
+	{
+		var pending = new Stack<UIElement>();
+		var visited = new HashSet<UIElement>(ReferenceEqualityComparer.Instance) { root };
+		var children = new List<UIElement>();
+
+		PushChildren(root);
+
+		while (pending.Count > 0)
 		{
-			if (child.Visibility == Visibility.Collapsed)
+			var child = pending.Pop();
+			if (!visited.Add(child))
 			{
 				continue;
 			}
 
-			if (GetOrCreateProvider(child) is { } provider)
+			if (shouldDescend(child))
 			{
-				result.Add(provider);
+				PushChildren(child);
 			}
-			else
+		}
+
+		void PushChildren(UIElement parent)
+		{
+			children.Clear();
+			children.AddRange(getChildren(parent));
+
+			// Reverse the push order so the LIFO traversal preserves visual-tree order.
+			for (var i = children.Count - 1; i >= 0; i--)
 			{
-				CollectEnteringProviders(child, result, depth + 1);
+				pending.Push(children[i]);
 			}
 		}
 	}
