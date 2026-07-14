@@ -142,6 +142,7 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 		paint.Shader = (p.Shader as SkiaShader)?.Shader;
 		paint.ColorFilter = (p.ColorFilter as SkiaColorFilter)?.ColorFilter;
+		paint.MaskFilter = (p.MaskFilter as SkiaMaskFilter)?.MaskFilter;
 		return paint;
 	}
 

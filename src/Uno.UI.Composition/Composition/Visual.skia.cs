@@ -380,7 +380,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			ApplyPrePaintingClipping(session.Session);
 
-			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
+			if (ShadowState is null || TryRenderAnalyticShadow(session.Session, ShadowState))
 			{
 				PaintStep(this, session);
 				PostPaintingClipStep(this, in session);
@@ -624,7 +624,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	private protected virtual bool TryAddShadowPaths(List<(SKPath path, float alpha)> output) => !CanPaint();
 
-	private bool TryRenderAnalyticShadow(SKCanvas canvas, ShadowState shadow)
+	private bool TryRenderAnalyticShadow(IDrawingSession session, ShadowState shadow)
 	{
 		var rootMatrix = TotalMatrix.ToSKMatrix();
 		if (!rootMatrix.TryInvert(out var inverseRoot))
@@ -644,24 +644,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return true; // nothing to cast a shadow from; analytic path succeeded vacuously
 		}
 
-		var sigma = shadow.SigmaX;
-		using var maskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma);
-		var shadowSKColor = shadow.Color.ToSKColor();
+		using var maskFilter = DrawingBackend.Current.CreateBlurMaskFilter(shadow.SigmaX);
+		var shadowColor = shadow.Color;
 
-		canvas.Save();
-		canvas.Translate(shadow.Dx, shadow.Dy);
+		session.Save();
+		session.Translate(shadow.Dx, shadow.Dy);
 
 		var pathYScale = 1f;
 		if (!shadow.SigmaX.Equals(shadow.SigmaY) && !shadow.SigmaX.Equals(0f))
 		{
-			// SKMaskFilter only supports a single sigma. To get anisotropic device-space blur (SigmaX, SigmaY)
+			// The blur mask supports a single sigma. To get anisotropic device-space blur (SigmaX, SigmaY)
 			// we exploit respectCTM=true: the user-space sigma is multiplied by |CTM scale| per axis. So we
-			// pick sigma = SigmaX, apply canvas.Scale(1, SigmaY/SigmaX), and pre-scale each region's path by
+			// pick sigma = SigmaX, apply session.Scale(1, SigmaY/SigmaX), and pre-scale each region's path by
 			// (1, SigmaX/SigmaY) to cancel the visual stretch — the geometry lands at original coordinates
 			// while the blur becomes (SigmaX, SigmaY) in device pixels. When sigmas are equal (the common
 			// SetElevation case) we skip the scaling entirely.
 			var sy_over_sx = shadow.SigmaY / shadow.SigmaX;
-			canvas.Scale(1f, sy_over_sx);
+			session.Scale(1f, sy_over_sx);
 			pathYScale = 1f / sy_over_sx;
 		}
 
@@ -669,47 +668,49 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			// Isolate accumulation so Plus blend sums region contributions without polluting the canvas
 			// behind the shadow.
-			canvas.SaveLayer();
+			session.SaveLayer();
 			if (accumulator.OpaqueSilhouette is { } opaque)
 			{
-				DrawRegionShadow(canvas, opaque, 1f, shadowSKColor, maskFilter, useAdditive: true, pathYScale);
+				DrawRegionShadow(session, opaque, 1f, shadowColor, maskFilter, useAdditive: true, pathYScale);
 			}
 			foreach (var (path, alpha) in accumulator.Regions)
 			{
-				DrawRegionShadow(canvas, path, alpha, shadowSKColor, maskFilter, useAdditive: true, pathYScale);
+				DrawRegionShadow(session, path, alpha, shadowColor, maskFilter, useAdditive: true, pathYScale);
 			}
-			canvas.Restore();
+			session.Restore();
 		}
 		else
 		{
 			// avoiding the SaveLayer was measured to be a significant perf win for the common case of a single region
 			if (accumulator.OpaqueSilhouette is { } opaque)
 			{
-				DrawRegionShadow(canvas, opaque, 1f, shadowSKColor, maskFilter, useAdditive: false, pathYScale);
+				DrawRegionShadow(session, opaque, 1f, shadowColor, maskFilter, useAdditive: false, pathYScale);
 			}
 			else
 			{
 				var (path, alpha) = accumulator.Regions[0];
-				DrawRegionShadow(canvas, path, alpha, shadowSKColor, maskFilter, useAdditive: false, pathYScale);
+				DrawRegionShadow(session, path, alpha, shadowColor, maskFilter, useAdditive: false, pathYScale);
 			}
 		}
 
-		canvas.Restore();
+		session.Restore();
 		return true;
 
-		static void DrawRegionShadow(SKCanvas canvas, SKPath path, float alpha, SKColor shadowColor, SKMaskFilter? maskFilter, bool useAdditive, float pathYScale)
+		// The silhouette regions are SKPath (compositor-internal geometry math); they cross into the
+		// session as geometry handles for the actual rasterization.
+		static void DrawRegionShadow(IDrawingSession session, SKPath path, float alpha, global::Windows.UI.Color shadowColor, IMaskFilter maskFilter, bool useAdditive, float pathYScale)
 		{
-			using var paint = new SKPaint
+			var color = global::Windows.UI.Color.FromArgb((byte)(shadowColor.A * alpha), shadowColor.R, shadowColor.G, shadowColor.B);
+			var paint = new PaintParams(color)
 			{
 				IsAntialias = true,
-				Color = shadowColor.WithAlpha((byte)(shadowColor.Alpha * alpha)),
 				MaskFilter = maskFilter,
-				BlendMode = useAdditive ? SKBlendMode.Plus : SKBlendMode.SrcOver,
+				BlendMode = useAdditive ? BlendMode.Plus : BlendMode.SrcOver,
 			};
 
 			if (pathYScale.Equals(1f))
 			{
-				canvas.DrawPath(path, paint);
+				session.DrawPath(new SkiaGeometrySource2D(path), paint);
 			}
 			else
 			{
@@ -718,7 +719,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var scratch = _spareShadowPath;
 				scratch.Reset();
 				path.Transform(SKMatrix.CreateScale(1f, pathYScale), scratch);
-				canvas.DrawPath(scratch, paint);
+				session.DrawPath(new SkiaGeometrySource2D(scratch), paint);
 			}
 		}
 	}

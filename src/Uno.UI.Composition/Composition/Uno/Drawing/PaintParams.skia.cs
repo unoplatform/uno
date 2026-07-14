@@ -47,4 +47,7 @@ internal readonly struct PaintParams
 
 	/// <summary>Optional color filter (e.g. opacity modulation) applied to the paint.</summary>
 	public IColorFilter? ColorFilter { get; init; }
+
+	/// <summary>Optional mask filter (e.g. a blur) applied to the paint's coverage.</summary>
+	public IMaskFilter? MaskFilter { get; init; }
 }

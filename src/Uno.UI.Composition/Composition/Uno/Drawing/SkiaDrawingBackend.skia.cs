@@ -86,6 +86,9 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode)
 		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SkiaDrawingSession.ToSKBlendMode(mode)));
 
+	public IMaskFilter CreateBlurMaskFilter(float sigma)
+		=> new SkiaMaskFilter(SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma));
+
 	private static SKShaderTileMode ToSK(GradientTileMode mode) => mode switch
 	{
 		GradientTileMode.Repeat => SKShaderTileMode.Repeat,

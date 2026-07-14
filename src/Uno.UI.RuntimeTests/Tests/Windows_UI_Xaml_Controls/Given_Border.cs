@@ -1099,5 +1099,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			return await UITestHelper.ScreenShot(SUT);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Elevation_Renders_Analytic_Shadow_Pipeline()
+		{
+			// A solid-color Border with a Z translation gets a ThemeShadow, rendered via the analytic
+			// drop-shadow path (Visual.TryRenderAnalyticShadow) — now driven through the drawing session
+			// and an IMaskFilter blur. This guards that path end to end: the elevated element must still
+			// render correctly on top of its shadow.
+			var element = new Border
+			{
+				Width = 80,
+				Height = 80,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Translation = new Vector3(0, 0, 48),
+			};
+			var host = new Grid
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			};
+			host.Children.Add(element);
+
+			await UITestHelper.Load(host);
+			var screenshot = await UITestHelper.ScreenShot(host);
+
+			ImageAssert.HasColorAtChild(screenshot, element, 40, 40, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
 	}
 }
