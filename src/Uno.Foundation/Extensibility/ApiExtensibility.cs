@@ -65,7 +65,10 @@ public static class ApiExtensibility
 	/// <returns>If registered or not.</returns>
 	public static bool IsRegistered<T>()
 	{
-		return _registrations.ContainsKey(typeof(T));
+		lock (_gate)
+		{
+			return _registrations.ContainsKey(typeof(T));
+		}
 	}
 
 	/// <summary>
