@@ -11,9 +11,26 @@ namespace Uno.Storage;
 
 partial class NativeApplicationSettings
 {
+	/// <summary>
+	/// Flags that the import of the legacy settings file already ran. It carries the reserved internal
+	/// prefix, so it stays out of the settings surface.
+	/// </summary>
+	private static readonly string MigrationKey = ApplicationDataContainer.InternalSettingPrefix + "Migrated";
+
 	private static partial bool SupportsLocalityPlatform() => true;
 
-	partial void InitializePlatform() => ReadFromLegacyFile();
+	partial void InitializePlatform()
+	{
+		if (NativeMethods.ContainsKey(_locality, MigrationKey))
+		{
+			return;
+		}
+
+		if (ReadFromLegacyFile())
+		{
+			NativeMethods.SetValue(_locality, MigrationKey, "1");
+		}
+	}
 
 	private int Count => NativeMethods.GetCount(_locality);
 
@@ -52,7 +69,12 @@ partial class NativeApplicationSettings
 	private partial void SetSettingPlatform(string key, string value) =>
 		NativeMethods.SetValue(_locality, key, value);
 
-	private void ReadFromLegacyFile()
+	/// <summary>
+	/// Imports the settings file written by versions of Uno Platform that persisted to the virtual file
+	/// system rather than to local storage.
+	/// </summary>
+	/// <returns>Whether the import ran to completion, and does not need to be attempted again.</returns>
+	private bool ReadFromLegacyFile()
 	{
 		const string UWPFileName = ".UWPAppSettings";
 
@@ -95,7 +117,12 @@ partial class NativeApplicationSettings
 					var key = reader.ReadString();
 					var value = reader.ReadString();
 
-					this[key] = value;
+					// The file already holds serialized values, so they are stored as they are — going through
+					// the indexer would serialize them a second time. A value the app has since written wins.
+					if (!NativeMethods.ContainsKey(_locality, key))
+					{
+						SetSettingPlatform(key, value);
+					}
 				}
 			}
 			else
@@ -105,6 +132,8 @@ partial class NativeApplicationSettings
 					this.Log().Debug($"File {filePath} does not exist, skipping reading legacy settings");
 				}
 			}
+
+			return true;
 		}
 		catch (Exception e)
 		{
@@ -112,6 +141,8 @@ partial class NativeApplicationSettings
 			{
 				this.Log().Error($"Failed to read settings from {filePath}", e);
 			}
+
+			return false;
 		}
 	}
 }
