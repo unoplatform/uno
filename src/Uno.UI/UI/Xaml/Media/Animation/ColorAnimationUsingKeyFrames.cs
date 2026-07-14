@@ -255,7 +255,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependent animation
+			{
+				// A dependent animation that was not opted in never runs, so it never reports completion
+				// either (pre-existing behavior on every platform). Do not add OnCompleted() here without
+				// checking the Storyboard running-children accounting in Storyboard.ChildCompleted.
 				return;
 			}
 
@@ -445,6 +448,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private bool ReportEachFrame() => true;
 
+		// Tracks whether animator initialization has been deferred to the next dispatcher tick.
+		// This matches WinUI behavior where keyframe values are read at tick time (after layout),
+		// not at Begin() time. See CAnimation::UpdateAnimationUsingKeyFrames in animation.cpp.
 		private bool _deferredPlayPending;
 
 		// Invalidates callbacks already queued on the dispatcher: a Begin/Stop/Begin sequence within
@@ -456,6 +462,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			SetValue(currentAnimator.AnimatedValue);
 		}
 
+		/// <summary>
+		/// On Skia, defers animator initialization to the next dispatcher tick.
+		/// This ensures keyframe binding values are read after layout has completed,
+		/// matching WinUI's tick-based value reading.
+		/// </summary>
 		private void PlayDeferred()
 		{
 			if (_deferredPlayPending)
@@ -464,6 +475,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			_deferredPlayPending = true;
+
+			// Active has to be set now, not in PlayImmediate(): the parent Storyboard must see this child
+			// as running, and Pause() ignores a Stopped timeline, so a Begin(); Pause(); pair would
+			// otherwise silently start the animation anyway on the tick. Pause/Resume/Seek all tolerate
+			// the null animators of that window.
 			State = TimelineState.Active;
 
 			var generation = ++_deferredPlayGeneration;
@@ -489,6 +505,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			});
 		}
 
+		/// <summary>
+		/// Cancels a pending deferred play if one is scheduled.
+		/// </summary>
 		private void CancelDeferredPlay()
 		{
 			_deferredPlayPending = false;

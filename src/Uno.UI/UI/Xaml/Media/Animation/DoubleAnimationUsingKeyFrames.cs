@@ -229,7 +229,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependent animation
+			{
+				// A dependent animation that was not opted in never runs, so it never reports completion
+				// either (pre-existing behavior on every platform). Do not add OnCompleted() here without
+				// checking the Storyboard running-children accounting in Storyboard.ChildCompleted.
 				return;
 			}
 
@@ -421,6 +424,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			_deferredPlayPending = true;
+
+			// Active has to be set now, not in PlayImmediate(): the parent Storyboard must see this child
+			// as running, and Pause() ignores a Stopped timeline, so a Begin(); Pause(); pair would
+			// otherwise silently start the animation anyway on the tick. Pause/Resume/Seek all tolerate
+			// the null animators of that window.
 			State = TimelineState.Active;
 
 			var generation = ++_deferredPlayGeneration;
