@@ -163,8 +163,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance. If a property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name but a different property type has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If a non-attached property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type, or an attached property, has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
@@ -225,8 +225,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance. If a property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name but a different property type has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If an attached property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type, or a non-attached property, has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
@@ -438,16 +438,12 @@ namespace Microsoft.UI.Xaml
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
 			DependencyProperty newProperty)
 		{
-			// WinUI does not validate or de-duplicate registrations: every call to
-			// MetadataAPI::RegisterDependencyProperty creates a fresh DP, so registering the
-			// same (name, ownerType, propertyType) twice is allowed there. The official WinUI
-			// Gallery relies on this (ControlExample and SampleCodePresenter both register
-			// "Substitutions" on typeof(ControlExample)). To stay faithful while keeping Uno's
-			// (ownerType, name) registry unique, return the already-registered property on an
-			// exact duplicate instead of throwing. A same-name registration with a different
-			// propertyType is still a genuine conflict and keeps throwing.
+			// WinUI does not de-duplicate registrations (MetadataAPI::RegisterDependencyProperty creates a fresh
+			// DP each time) and apps rely on it, so an exact duplicate returns the already-registered property
+			// instead of throwing. A different propertyType or attached-ness is still a genuine conflict.
 			if (_registry.TryGetValue(ownerType, name, out var existingProperty) &&
-				existingProperty!.Type == propertyType)
+				existingProperty!.Type == propertyType &&
+				existingProperty.IsAttached == newProperty.IsAttached)
 			{
 				return existingProperty;
 			}
