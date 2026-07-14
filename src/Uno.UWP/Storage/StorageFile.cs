@@ -217,13 +217,9 @@ namespace Windows.Storage
 			};
 
 		/// <summary>
-		/// Maps FileAccessMode to the appropriate FileMode for file operations.
+		/// Maps <see cref="FileAccessMode"/> to the <see cref="FileMode"/> used to open the stream:
+		/// a ReadWrite open creates the file when it is missing, a Read open requires it to exist.
 		/// </summary>
-		/// <param name="accessMode">The access mode requested for the file.</param>
-		/// <returns>
-		/// FileMode.Open for Read access (requires file to exist),
-		/// FileMode.OpenOrCreate for ReadWrite access (creates file if it doesn't exist).
-		/// </returns>
 		private static FileMode ToFileMode(FileAccessMode accessMode)
 			=> accessMode switch
 			{

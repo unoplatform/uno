@@ -14,6 +14,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
 
+		/// <summary>
+		/// True when the provider's <see cref="StorageFile.Path"/> is a real filesystem path, so a test may
+		/// manipulate the backing file directly through <see cref="File"/>. Virtual providers (browser OPFS,
+		/// Android SAF) expose a synthetic path and must opt out.
+		/// </summary>
+		protected virtual bool HasFileSystemBackedPath => false;
+
 		[TestMethod]
 		public async Task When_CreateFile_Name_Matches()
 		{
@@ -343,11 +350,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-#if WINAPPSDK
-		[Ignore("Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to this fix.")]
-#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21311")]
+		// Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OpenStreamForWriteAsync_FileDoesNotExist_Stream_CreatesFile()
 		{
+			if (!HasFileSystemBackedPath)
+			{
+				Assert.Inconclusive("Provider's StorageFile.Path is not a real filesystem path.");
+			}
+
 			StorageFile? createdFile = null;
 			try
 			{
@@ -381,11 +393,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-#if WINAPPSDK
-		[Ignore("Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to this fix.")]
-#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21311")]
+		// Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OpenStreamForReadAsync_FileDoesNotExist_Throws()
 		{
+			if (!HasFileSystemBackedPath)
+			{
+				Assert.Inconclusive("Provider's StorageFile.Path is not a real filesystem path.");
+			}
+
 			StorageFile? createdFile = null;
 			try
 			{
