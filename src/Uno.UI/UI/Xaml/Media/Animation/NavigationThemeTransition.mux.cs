@@ -98,8 +98,9 @@ public partial class NavigationThemeTransition
 			out var isBackNavigation,
 			out var isInitialPage);
 
-		// Get the NavigationTransitionInfo to use
-		var transitionInfo = GetEffectiveNavigationTransitionInfo(
+		// Resolve the NavigationTransitionInfo to use. This also mirrors a page/frame-declared
+		// transition back onto the frame as its override, matching NavigationThemeTransition::CreateStoryboard.
+		var transitionInfo = ResolveNavigationTransitionInfo(
 			definitionOverride,
 			page,
 			frame,
@@ -124,7 +125,7 @@ public partial class NavigationThemeTransition
 		}
 	}
 
-	private NavigationTransitionInfo GetEffectiveNavigationTransitionInfo(
+	private NavigationTransitionInfo ResolveNavigationTransitionInfo(
 		NavigationTransitionInfo definitionOverride,
 		Page page,
 		Frame frame,
@@ -162,7 +163,9 @@ public partial class NavigationThemeTransition
 		}
 
 		// Priority 3: use this transition's DefaultNavigationTransitionInfo, for the case where it
-		// was attached without being reachable through either transition collection.
+		// was attached without being reachable through either transition collection. This deliberately
+		// does not force shouldRun: WinUI finds no transition at all in that case, so the initial
+		// forward navigation stays unanimated and only the info being used differs.
 		if (DefaultNavigationTransitionInfo is not null)
 		{
 			return DefaultNavigationTransitionInfo;
