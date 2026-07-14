@@ -318,15 +318,4 @@ public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 		Storyboard.SetTargetProperty(opacityAnimation, nameof(UIElement.Opacity));
 		storyboard.Children.Add(opacityAnimation);
 	}
-
-	/// <summary>
-	/// Clears expired weak references from the stagger elements list.
-	/// </summary>
-	internal static void ClearStaggerElements()
-	{
-		lock (s_staggerElements)
-		{
-			s_staggerElements.RemoveAll(wr => !wr.TryGetTarget(out _));
-		}
-	}
 }
