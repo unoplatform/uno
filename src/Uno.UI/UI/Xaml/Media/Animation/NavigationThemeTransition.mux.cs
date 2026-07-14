@@ -99,15 +99,15 @@ public partial class NavigationThemeTransition
 			out var isInitialPage);
 
 		// Get the NavigationTransitionInfo to use
-		var transitionInfo = GetEffectiveNavigationTransitionInfo(definitionOverride, page, frame, out var shouldRun);
+		var transitionInfo = GetEffectiveNavigationTransitionInfo(
+			definitionOverride,
+			page,
+			frame,
+			isBackNavigation,
+			isInitialPage,
+			out var shouldRun);
 
-		// Skip animation for forward navigation to the first page (unless there's an explicit override)
-		if (!shouldRun && isInitialPage && !isBackNavigation && definitionOverride is null)
-		{
-			return;
-		}
-
-		if (transitionInfo is null)
+		if (!shouldRun || transitionInfo is null)
 		{
 			return;
 		}
@@ -128,39 +128,47 @@ public partial class NavigationThemeTransition
 		NavigationTransitionInfo definitionOverride,
 		Page page,
 		Frame frame,
+		bool isBackNavigation,
+		bool isInitialPage,
 		out bool shouldRun)
 	{
-		shouldRun = true;
-
-		// Priority 1: Use the override from Frame.Navigate()
+		// Priority 1: an override was passed in through Frame.Navigate(), use this definition.
 		if (definitionOverride is not null)
 		{
+			shouldRun = true;
 			return definitionOverride;
 		}
 
-		// Priority 2: Check Page.Transitions for NavigationThemeTransition
-		var pageTransition = GetNavigationThemeTransitionFromCollection(page.Transitions);
-		if (pageTransition?.DefaultNavigationTransitionInfo is not null)
+		// We will always run an animation unless it is the forward navigation to the first page.
+		shouldRun = !isInitialPage || isBackNavigation;
+
+		// Priority 2: check the page for its default, then the Frame's ContentTransitions.
+		var themeTransition =
+			GetNavigationThemeTransitionFromCollection(page.Transitions)
+			?? GetNavigationThemeTransitionFromCollection(frame.ContentTransitions);
+
+		if (themeTransition is not null)
 		{
-			// Set the override on Frame for consistency
-			frame.SetNavigationTransitionInfoOverride(pageTransition.DefaultNavigationTransitionInfo);
-			return pageTransition.DefaultNavigationTransitionInfo;
+			// We have a NavigationThemeTransition so we will run the animation.
+			shouldRun = true;
+
+			// See if there is a specific animation being requested.
+			if (themeTransition.DefaultNavigationTransitionInfo is { } transitionInfo)
+			{
+				// Set this override definition as the override on the Frame.
+				frame.SetNavigationTransitionInfoOverride(transitionInfo);
+				return transitionInfo;
+			}
 		}
 
-		// Priority 3: Check Frame.ContentTransitions for NavigationThemeTransition
-		var frameTransition = GetNavigationThemeTransitionFromCollection(frame.ContentTransitions);
-		if (frameTransition?.DefaultNavigationTransitionInfo is not null)
-		{
-			return frameTransition.DefaultNavigationTransitionInfo;
-		}
-
-		// Priority 4: Use this transition's DefaultNavigationTransitionInfo
+		// Priority 3: use this transition's DefaultNavigationTransitionInfo, for the case where it
+		// was attached without being reachable through either transition collection.
 		if (DefaultNavigationTransitionInfo is not null)
 		{
 			return DefaultNavigationTransitionInfo;
 		}
 
-		// Priority 5: Fallback to EntranceNavigationTransitionInfo
+		// Priority 4: fall back to EntranceNavigationTransitionInfo.
 		return new EntranceNavigationTransitionInfo();
 	}
 
