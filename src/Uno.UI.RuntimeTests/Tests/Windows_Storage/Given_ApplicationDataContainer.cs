@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation.Collections;
@@ -29,6 +29,10 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		public void When_Nothing()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsNotNull(SUT.Values);
+			Assert.HasCount(0, SUT.Values);
+			Assert.HasCount(0, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -799,6 +803,36 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			// Root settings should still be intact
 			Assert.AreEqual("rootValue", SUT.Values["rootSetting"]);
 			Assert.HasCount(0, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_CopyTo()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["one"] = "1";
+			SUT.Values["two"] = "2";
+
+			var exactFit = new KeyValuePair<string, object>[2];
+			SUT.Values.CopyTo(exactFit, 0);
+			CollectionAssert.AreEquivalent(new[] { "one", "two" }, exactFit.Select(p => p.Key).ToArray());
+
+			var offset = new KeyValuePair<string, object>[3];
+			SUT.Values.CopyTo(offset, 1);
+			Assert.AreEqual(default, offset[0]);
+			CollectionAssert.AreEquivalent(new[] { "one", "two" }, offset.Skip(1).Select(p => p.Key).ToArray());
+
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => SUT.Values.CopyTo(new KeyValuePair<string, object>[2], -1));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Values.CopyTo(new KeyValuePair<string, object>[2], 1));
+		}
+
+		[TestMethod]
+		public void When_CopyTo_Empty_At_End_Of_Array()
+		{
+			// An empty set fits at the very end of an array: arrayIndex == array.Length is not out of range.
+			var SUT = ApplicationData.Current.LocalSettings;
+			var array = new KeyValuePair<string, object>[2];
+
+			SUT.Values.CopyTo(array, array.Length);
 		}
 
 		[TestMethod]
