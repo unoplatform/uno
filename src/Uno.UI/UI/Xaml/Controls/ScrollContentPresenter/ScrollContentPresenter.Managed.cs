@@ -474,8 +474,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
 
 			// Where ongoing inertia (if any) would coast to, otherwise the current offset.
-			var prevProjH = _wheelInertia is { IsRunning: true } projH ? projH.ProjectedFinalH : HorizontalOffset;
-			var prevProjV = _wheelInertia is { IsRunning: true } projV ? projV.ProjectedFinalV : VerticalOffset;
+			// The projection is unbounded (offset + v/k), so it must be clamped to the scrollable
+			// range before being compared: an over-the-bound baseline would otherwise always differ
+			// from the clamped new projection and wrongly absorb wheel events at the bound.
+			var prevProjH = _wheelInertia is { IsRunning: true } projH ? Math.Clamp(projH.ProjectedFinalH, 0, maxH) : HorizontalOffset;
+			var prevProjV = _wheelInertia is { IsRunning: true } projV ? Math.Clamp(projV.ProjectedFinalV, 0, maxV) : VerticalOffset;
 			var newProjH = Math.Clamp(prevProjH + dxPx, 0, maxH);
 			var newProjV = Math.Clamp(prevProjV + dyPx, 0, maxV);
 
@@ -509,16 +512,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private void OnRenderingFlushTouchUpdate(object? sender, object e)
-		{
-			// Unsubscribe immediately — we re-subscribe on next touch move if needed.
-			CompositionTarget.Rendering -= _touchUpdateHandler;
-			FlushPendingTouchUpdate();
-		}
+			=> FlushPendingTouchUpdate();
 
 		private void FlushPendingTouchUpdate()
 		{
 			if (_hasPendingTouchUpdate)
 			{
+				// Unsubscribe here (and not only from the Rendering callback) so that flushing from
+				// OnUnloaded also detaches from the static event, instead of leaving the presenter
+				// rooted until a tick that may never come.
+				CompositionTarget.Rendering -= _touchUpdateHandler;
 				_hasPendingTouchUpdate = false;
 				Updated(_pendingTouchHOffset, _pendingTouchVOffset, _pendingTouchIsIntermediate);
 			}
@@ -547,8 +550,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// cannot fight with the new manipulation's direction.
 			_touchInertia = null;
 
-			// Stop any running composition-driven inertia animation (user touched during fling).
-
+			// Stop any running composition-driven inertia animation (user touched during fling),
+			// otherwise the wheel coast keeps issuing Set() calls that fight the new manipulation.
+			_wheelInertia?.Stop();
 
 			return ComputeAcceptedManipulationModes();
 		}
@@ -864,7 +868,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// this as an explicit, named multiplier so it can be tuned independently of the base decay.
 			private const double VelocityBoost = 1.15;
 
-			// Stop the loop when both axes have less than ~0.6 px/frame remaining velocity.
+			// Stop the loop when both axes have less than ~0.17 px/frame remaining velocity.
 			private const double VelocityThreshold = GestureRecognizer.Manipulation.InertiaProcessor.VelocityThreshold;
 
 			private readonly ScrollContentPresenter _owner;

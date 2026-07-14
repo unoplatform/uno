@@ -1280,9 +1280,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// This bypasses the WinUI-aligned deferred path so that test assertions
 				// can read VerticalOffset/HorizontalOffset right after input injection.
 				_hasPendingScrollUpdate = false;
+
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
 				HorizontalOffset = horizontalOffset;
 				VerticalOffset = verticalOffset;
-				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode);
+				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode, oldHorizontalOffset, oldVerticalOffset);
 			}
 			else
 			{
@@ -1386,6 +1390,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _pendingScrollIsIntermediate;
 		private bool _hasPendingScrollUpdate;
 
+		// Offsets as they were before the first batched change, so the automation peer still sees
+		// a real old → new transition when the batch is eventually flushed.
+		private double m_delayedViewChangedOldHorizontalOffset;
+		private double m_delayedViewChangedOldVerticalOffset;
+
 		/// <summary>
 		/// Increments the delay counter to prevent ViewChanged from being raised.
 		/// Must be paired with a call to <see cref="FlushViewChanged"/>.
@@ -1407,19 +1416,33 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_iViewChangedDelay == 0 && m_isViewChangedDelayed)
 			{
-				RaiseViewChanged(m_isDelayedViewChangedIntermediate);
+				RaiseViewChanged(m_isDelayedViewChangedIntermediate, m_delayedViewChangedOldHorizontalOffset, m_delayedViewChangedOldVerticalOffset);
 			}
 		}
+
+		/// <summary>
+		/// Raises the ViewChanged event for a change that did not alter the offsets.
+		/// </summary>
+		private void RaiseViewChanged(bool isIntermediate)
+			=> RaiseViewChanged(isIntermediate, HorizontalOffset, VerticalOffset);
 
 		/// <summary>
 		/// Raises the ViewChanged event, or stores it for later if the delay counter is active.
 		/// When delayed, only the latest isIntermediate value is retained.
 		/// </summary>
-		private void RaiseViewChanged(bool isIntermediate)
+		/// <param name="oldHorizontalOffset">The horizontal offset before the change, as expected by the automation peer.</param>
+		/// <param name="oldVerticalOffset">The vertical offset before the change, as expected by the automation peer.</param>
+		private void RaiseViewChanged(bool isIntermediate, double oldHorizontalOffset, double oldVerticalOffset)
 		{
 			if (m_iViewChangedDelay > 0)
 			{
 				// Batch: store the event for later, keeping the latest isIntermediate value.
+				if (!m_isViewChangedDelayed)
+				{
+					m_delayedViewChangedOldHorizontalOffset = oldHorizontalOffset;
+					m_delayedViewChangedOldVerticalOffset = oldVerticalOffset;
+				}
+
 				m_isViewChangedDelayed = true;
 				m_isDelayedViewChangedIntermediate = isIntermediate;
 				return;
@@ -1444,8 +1467,8 @@ namespace Microsoft.UI.Xaml.Controls
 					ViewportHeight,
 					MinHorizontalOffset,
 					MinVerticalOffset,
-					HorizontalOffset,
-					VerticalOffset);
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 
 			UpdatePartial(isIntermediate);
@@ -1506,10 +1529,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_hasPendingScrollUpdate = false;
 
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
 				HorizontalOffset = _pendingHorizontalOffset;
 				VerticalOffset = _pendingVerticalOffset;
 
-				RaiseViewChanged(_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode);
+				RaiseViewChanged(_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode, oldHorizontalOffset, oldVerticalOffset);
 			}
 		}
 #else
