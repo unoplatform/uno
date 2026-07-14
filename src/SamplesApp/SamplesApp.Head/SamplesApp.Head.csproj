@@ -4,8 +4,14 @@
 		Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working.
 		The windows duplicate-internal collision is resolved by naming the WinUI assembly
 		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
+
+		iOS/tvOS carry the explicit $(NetCurrentAppleOSVersion) platform version, matching
+		$(NetCurrentNetCoreMobile) and the heads this replaces, instead of letting the workload
+		pick the default. CI is unaffected: it always passes UnoTargetFrameworkOverride, and
+		targetframework-override.props keeps Exe projects on the unversioned moniker, so the
+		artifact paths stay bin/…/$(NetCurrent)-ios.
 		-->
-		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-tvos;$(NetCurrent)-desktop</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
