@@ -42,6 +42,8 @@ partial class NonVirtualizingLayout
 	/// <param name="availableSize">The available space that a container can allocate to a child object.</param>
 	/// <returns>The size that this object determines it needs during layout, based on its calculations
 	/// of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
+	// Not abstract: WinUI declares MeasureOverride/ArrangeOverride as plain virtuals that throw
+	// hresult_not_implemented, and NonVirtualizingLayout is an instantiable composable runtimeclass.
 	protected internal virtual Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
 		=> throw new NotImplementedException();
 
