@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ partial class NativeApplicationSettings
 	/// Flags that the migration from the default shared preferences already ran. It lives in the same
 	/// preferences file as the user data, so it must be kept out of the settings surface.
 	/// </summary>
-	private const string MigrationKey = "__uno_migrated";
+	private const string MigrationKey = ApplicationDataContainer.InternalSettingPrefix + "Migrated";
 
 	private static readonly object _migrationGate = new();
 

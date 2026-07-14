@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,17 +13,17 @@ namespace Windows.Storage;
 /// creating, deleting, enumerating, and traversing the container hierarchy.
 /// </summary>
 /// <remarks>
-/// Settings are stored in platform-specific preference stores. A few keys are used internally by Uno Platform
-/// and are not surfaced via the public API: the container list, the app data version, and the keys of nested
-/// containers (which carry a "__{name}{separator}" path prefix).
-/// Internal keys are matched exactly rather than by their "__" prefix: applications built against earlier
-/// versions of Uno Platform may already have stored keys starting with "__", and those must keep behaving
-/// as ordinary settings.
+/// Settings are stored in platform-specific preference stores. Keys carrying the reserved
+/// <see cref="InternalSettingPrefix"/> are used internally by Uno Platform — the container list, the app data
+/// version, and the keys of nested containers, which are stored under a "{prefix}{name}{separator}" path — and
+/// are never surfaced through the public API.
+/// The prefix and separator are private-use code points: they are reserved to Uno Platform, cannot collide with
+/// a key an application would realistically store, and survive a round-trip through every native settings store.
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
-	internal const string InternalSettingPrefix = "__";
-	private const string ContainerSeparator = "�";
+	internal const string InternalSettingPrefix = "\uE000";
+	private const string ContainerSeparator = "\uE001";
 	internal const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
 	internal const string VersionSettingKey = InternalSettingPrefix + "ApplicationDataVersion";
 
@@ -56,17 +56,19 @@ public partial class ApplicationDataContainer : IDisposable
 	/// </summary>
 	/// <param name="relativeKey">The key, with the owning container's path already removed.</param>
 	internal static bool IsInternalKey(string relativeKey) =>
-		relativeKey == ContainerListKey ||
-		relativeKey == VersionSettingKey ||
-		IsNestedContainerKey(relativeKey);
+		relativeKey.StartsWith(InternalSettingPrefix, StringComparison.Ordinal);
 
 	/// <summary>
-	/// Keys of a nested container are stored with a "__{name}{separator}" path prefix, so the separator
-	/// is what distinguishes them from an application key that merely starts with "__".
+	/// Container names take part in the key path, so they may not carry the code points reserved to it.
 	/// </summary>
-	private static bool IsNestedContainerKey(string relativeKey) =>
-		relativeKey.StartsWith(InternalSettingPrefix, StringComparison.Ordinal) &&
-		relativeKey.Contains(ContainerSeparator, StringComparison.Ordinal);
+	private static void ValidateContainerName(string name)
+	{
+		if (name.Contains(ContainerSeparator, StringComparison.Ordinal) ||
+			name.StartsWith(InternalSettingPrefix, StringComparison.Ordinal))
+		{
+			throw new InvalidOperationException("Container names may not contain the characters reserved by Uno Platform.");
+		}
+	}
 
 	public ApplicationDataLocality Locality { get; }
 
@@ -98,10 +100,7 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public ApplicationDataContainer CreateContainer(string name, ApplicationDataCreateDisposition disposition)
 	{
-		if (name.Contains(ContainerSeparator))
-		{
-			throw new InvalidOperationException($"Container names may not contain the '{ContainerSeparator}' character.");
-		}
+		ValidateContainerName(name);
 
 		var containers = _containers.Value;
 
@@ -127,10 +126,7 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public void DeleteContainer(string name)
 	{
-		if (name.Contains(ContainerSeparator))
-		{
-			throw new InvalidOperationException($"Container names may not contain the '{ContainerSeparator}' character.");
-		}
+		ValidateContainerName(name);
 
 		if (!_containers.Value.TryGetValue(name, out var container))
 		{

@@ -804,8 +804,8 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		[TestMethod]
 		public void When_Key_Starts_With_Underscores()
 		{
-			// Apps built against earlier versions of Uno Platform may already have stored keys starting
-			// with "__". Those are ordinary settings and must stay fully visible through the public API.
+			// Uno Platform reserves a private-use prefix for its internal keys, so an application key may
+			// start with any character it likes — including the "__" that used to be reserved.
 			var SUT = ApplicationData.Current.LocalSettings;
 
 			SUT.Values["__legacy"] = "value";
