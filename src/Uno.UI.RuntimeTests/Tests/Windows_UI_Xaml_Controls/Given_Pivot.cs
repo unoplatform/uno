@@ -153,21 +153,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The first item should be selected by default
 			SUT.SelectedIndex.Should().Be(0);
 
-			// The content of the first item should be visible immediately without needing to reselect
-			var container = SUT.ContainerFromIndex(0) as PivotItem;
-			container.Should().NotBeNull("PivotItem container at index 0 should exist");
-			container!.Content.Should().NotBeNull("First PivotItem content should not be null after initial load");
+			// Container generation and template application are asynchronous, they are not what #11914 is about.
+			var container = await WindowHelper.WaitForNonNull(
+				() => SUT.ContainerFromIndex(0) as PivotItem,
+				message: "PivotItem container at index 0 should exist");
+			container.Content.Should().NotBeNull("First PivotItem content should not be null after initial load");
 
-			// Find the ContentPresenter to verify it has content
-			var contentPresenter = container.FindFirstChild<ContentPresenter>();
-			contentPresenter.Should().NotBeNull("ContentPresenter inside PivotItem should exist");
-			contentPresenter!.Content.Should().NotBeNull("ContentPresenter content should not be null on initial load (issue #11914: Pivot content is not set at once on Android)");
+			var contentPresenter = await WindowHelper.WaitForNonNull(
+				() => container.FindFirstChild<ContentPresenter>(),
+				message: "ContentPresenter inside PivotItem should exist");
+
+			// Asserted without waiting: #11914 is precisely about the content not being set at once on initial load.
+			contentPresenter.Content.Should().NotBeNull("ContentPresenter content should not be null on initial load (issue #11914: Pivot content is not set at once on Android)");
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11914")]
-		public async Task When_Pivot_LoadedWithInlineItems_Then_FirstItemContentVisible()
+		public async Task When_Pivot_LoadedWithInlineItems_Then_FirstItemContentIsVisible()
 		{
 			var SUT = new Pivot();
 			SUT.Items.Add(new PivotItem { Header = "Tab 1", Content = new TextBlock { Text = "Hello World" } });
@@ -179,13 +182,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectedIndex.Should().Be(0);
 			SUT.SelectedItem.Should().NotBeNull("SelectedItem should not be null after initial load");
 
-			// The selected PivotItem should have visible content without requiring reselection
-			var selectedContainer = SUT.ContainerFromIndex(0) as PivotItem;
-			selectedContainer.Should().NotBeNull();
+			// Container generation and template application are asynchronous, they are not what #11914 is about.
+			var selectedContainer = await WindowHelper.WaitForNonNull(
+				() => SUT.ContainerFromIndex(0) as PivotItem,
+				message: "PivotItem container at index 0 should exist");
 
-			var contentPresenter = selectedContainer!.FindFirstChild<ContentPresenter>();
-			contentPresenter.Should().NotBeNull("ContentPresenter inside PivotItem should exist");
-			contentPresenter!.Content.Should().NotBeNull("Content of selected PivotItem should be set on initial load (issue #11914)");
+			var contentPresenter = await WindowHelper.WaitForNonNull(
+				() => selectedContainer.FindFirstChild<ContentPresenter>(),
+				message: "ContentPresenter inside PivotItem should exist");
+
+			// Asserted without waiting: the selected item's content must be set on initial load, without reselection.
+			contentPresenter.Content.Should().NotBeNull("Content of selected PivotItem should be set on initial load (issue #11914)");
 
 			var tb = contentPresenter.FindFirstChild<TextBlock>();
 			tb.Should().NotBeNull("TextBlock inside ContentPresenter should exist after initial load");
