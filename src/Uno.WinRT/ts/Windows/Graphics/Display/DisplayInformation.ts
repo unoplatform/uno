@@ -51,6 +51,7 @@
 			// the window between displays with different pixel densities). The
 			// query must be re-registered after every change because the new
 			// devicePixelRatio is a different breakpoint.
+			DisplayInformation.stopDpiChanged();
 			DisplayInformation.lastDpi = window.devicePixelRatio;
 			DisplayInformation.registerDpiQuery();
 		}
@@ -64,6 +65,10 @@
 		}
 
 		private static registerDpiQuery() {
+			if (!window.matchMedia) {
+				return;
+			}
+
 			DisplayInformation.dpiMediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
 			DisplayInformation.dpiMediaQueryListener = () => {
 				DisplayInformation.updateDpi();
