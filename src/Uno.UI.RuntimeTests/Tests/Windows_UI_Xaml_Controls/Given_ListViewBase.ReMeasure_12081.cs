@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 					<StackPanel>
 						<CheckBox x:Name="CheckBox" Content="IsExpanded" />
-						<Border Width="100" Height="100" Background="Red"
+						<Border x:Name="ExpandableContent" Width="100" Height="100" Background="Red"
 								Visibility="{Binding IsChecked, ElementName=CheckBox, FallbackValue=Collapsed}" />
 					</StackPanel>
 				</DataTemplate>
@@ -83,6 +83,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForIdle();
 
+			// TODO Uno: no lower bound on MeasureCount yet. A ListView that is only on the measure-dirty
+			// *path* legitimately skips its own MeasureOverride (UIElement.Layout.crossruntime.cs), so
+			// MeasureCount == 0 may be correct here. Needs a runtime measurement before asserting > 0.
 			Assert.IsTrue(
 				SUT.MeasureCount <= 5,
 				$"Expected ListView to be re-measured a small number of times after toggling a CheckBox inside an item, " +
