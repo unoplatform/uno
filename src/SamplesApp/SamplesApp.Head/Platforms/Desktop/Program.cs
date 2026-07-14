@@ -17,6 +17,9 @@ internal static class Program
 	[STAThread]
 	public static void Main(string[] args)
 	{
+		// args are not forwarded to the host: SamplesApp reads the command line through
+		// Environment.GetCommandLineArgs() (see App.xaml.cs), which the runtime-test harness relies on.
+
 		// Ensures that we're loading the Skia assemblies properly as the output is
 		// adjusted to avoid getting reference assemblies in the output folder.
 		AssemblyLoadContext.Default.Resolving += Default_Resolving;
