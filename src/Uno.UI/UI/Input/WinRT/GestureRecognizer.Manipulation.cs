@@ -377,30 +377,24 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: ManipulationStarted reports an empty delta (UWP behavior for touch / pen).
+						// Note: ManipulationStarted reports an empty cumulative (UWP behavior for touch / pen).
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
 
 						ApplyRailing(ref changeSet);
 
-						// Absorb ONLY the start-threshold ("dead-zone") portion of the translation into the
-						// commit history WITHOUT firing ManipulationUpdated — the threshold pixels are NOT
-						// recovered as a visible jump (see #20473). Any movement BEYOND the threshold that
-						// happened within this same pointer move is intentionally left uncommitted, so it
-						// flows naturally into the NEXT pointer move's reported Delta. This keeps the
-						// absorbed amount bounded by the threshold regardless of how coarsely the pointer
-						// moves are sampled or coalesced (so a single large/coalesced move never swallows
-						// more than the dead-zone), and preserves the original "no Updated between Started
-						// and the next move" semantics that downstream handlers rely on (e.g. nested
-						// ScrollViewers chaining inertia, RefreshContainer pull recognition).
-						// Cumulative keeps tracking from the press point; this matches WinUI / native iOS
-						// where scrolling/panning starts at the finger position at the moment of recognition.
+						// Absorb only the start-threshold dead-zone into the commit history, without firing
+						// ManipulationUpdated: pre-recognition pixels are not recovered as a visible jump (#20473).
+						// Movement beyond the threshold stays uncommitted and flows into the next move's Delta,
+						// which bounds the absorbed amount even when moves are coarsely sampled or coalesced.
 						var thresholdDelta = new ManipulationDelta
 						{
 							Translation = new(
 								ClampMagnitude(changeSet.Delta.Translation.X, _startThresholds.TranslateX),
 								ClampMagnitude(changeSet.Delta.Translation.Y, _startThresholds.TranslateY)),
+							// Single-pointer path (multi-pointer start is handled above): ComputeDelta always
+							// yields 0 / 1 / 0 here, so these pass through unclamped.
 							Rotation = changeSet.Delta.Rotation,
 							Scale = changeSet.Delta.Scale,
 							Expansion = changeSet.Delta.Expansion
