@@ -11,6 +11,7 @@
 		"dotnet": "11.0.100-preview.5.26302.115"
 	},
 	"msbuild-sdks": {
-		"Microsoft.Build.NoTargets": "3.7.56"
+		"Microsoft.Build.NoTargets": "3.7.56",
+		"Uno.Sdk.Private": "255.255.255-dev"
 	}
 }
