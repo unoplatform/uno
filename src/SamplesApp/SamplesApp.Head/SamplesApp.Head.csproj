@@ -248,10 +248,11 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 	</ItemGroup>
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(TargetFramework)' == 'net10.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
-		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+	<!-- AndroidX versions track $(NetCurrent)'s .NET for Android bindings -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.9.0.2" />
+		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.2" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.1" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">

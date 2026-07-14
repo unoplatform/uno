@@ -57,7 +57,7 @@ jobs:
       # UnoTargetFrameworkOverride is a windows TFM, so /t:Publish runs the inner build (avoids
       # NETSDK1129). Do NOT pass a global /p:TargetFramework here — it leaks onto dependencies
       # (e.g. the netstandard2.0 Uno.UI.Tasks pre-build) and breaks them with CS0234.
-      msbuildArguments: /r /t:Publish /m /v:m /p:UnoTargetFrameworkOverride=net10.0-windows10.0.19041.0 /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      msbuildArguments: /r /t:Publish /m /v:m /p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework)-windows10.0.19041.0 /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Head/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
