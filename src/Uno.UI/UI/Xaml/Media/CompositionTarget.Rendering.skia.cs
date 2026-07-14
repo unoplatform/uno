@@ -102,11 +102,16 @@ public partial class CompositionTarget
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		var (frame, path, nativeVisualsInZOrder) = RenderBackend.Record(
-			rootElement.Visual,
+		// Phase 1 (UI thread): the backend hands us a recording session, the agnostic cycle walks the
+		// visual tree into it, then we finish recording to get the opaque frame.
+		var recording = RenderBackend.BeginFrame();
+		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
+			recording,
 			(float)bounds.Width,
 			(float)bounds.Height,
+			rootElement.Visual,
 			FrameRenderingOptions.invertNativeElementClipPath);
+		var frame = recording.EndRecording();
 		var renderedFrame = (frame, path);
 		var previousFrame = default((IRenderData frame, SKPath path)?);
 		lock (_frameGate)

@@ -18,8 +18,6 @@ namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
-	private static readonly SKPictureRecorder _recorder = new();
-
 	private static readonly List<Visual> _emptyList = new();
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
@@ -33,36 +31,20 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IRenderData frame, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrameAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	/// <summary>
+	/// Phase 1 of the render cycle (UI thread): walks the visual tree into <paramref name="session"/> (the
+	/// recording session provided by the backend) and computes the native-element clip path. Backend-agnostic;
+	/// the caller obtains the frame via <see cref="IRecordingSession.EndRecording"/>.
+	/// </summary>
+	internal static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(IRecordingSession session, float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
-		using var _ = new SKAutoCanvasRestore(canvas, true);
-		canvas.Clear(SKColors.Transparent);
+		session.Clear(global::Windows.UI.Colors.Transparent);
 
-		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
+		rootVisual.Compositor.RenderRootVisual(session, rootVisual);
 
-		var (path, nativeVisualsInZOrder) = !ContentPresenter.HasNativeElements() ?
+		return !ContentPresenter.HasNativeElements() ?
 			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
 			CalculateClippingPath(width, height, rootVisual, invertPath);
-
-		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
-
-		return (new SkiaRenderData(picture), path, nativeVisualsInZOrder);
-	}
-
-	internal static void RenderFrame(SKCanvas canvas, IRenderData frame, SKColor background, Action<SKCanvas>? postRenderAction)
-	{
-		using (new SKAutoCanvasRestore(canvas, true))
-		{
-			canvas.Clear(background);
-			// This might not draw anything if we get a render request before the first frame is recorded.
-			new SkiaDrawingSession(canvas).Draw(frame);
-
-			postRenderAction?.Invoke(canvas);
-		}
-
-		// update the control
-		canvas.Flush();
 	}
 
 	/// <summary>

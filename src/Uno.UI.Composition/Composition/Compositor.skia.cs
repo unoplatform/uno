@@ -188,7 +188,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
+	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual)
 	{
 		if (rootVisual is null)
 		{
@@ -216,7 +216,7 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(new Uno.UI.Composition.Drawing.SkiaDrawingSession(canvas), null);
+		rootVisual.RenderRootVisual(drawingSession, null);
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");

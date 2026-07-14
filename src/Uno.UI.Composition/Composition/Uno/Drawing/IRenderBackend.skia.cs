@@ -1,32 +1,29 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
-using Microsoft.UI.Composition;
 using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Owns the frame lifecycle: records the visual tree into an opaque <see cref="IRenderData"/> frame and
-/// presents a recorded frame. The default implementation runs the established Skia two-phase
-/// (record on the UI thread, present on the render thread); a different backend structures this however
-/// it wants. This is the seam that will grow to own invalidation and vsync (replacing CompositionTarget).
+/// A rendering backend, as a passive participant in Uno's backend-agnostic two-phase render cycle
+/// (the cycle itself — scheduling, vsync, threading — stays in <c>CompositionTarget</c>):
+/// <list type="number">
+/// <item>Phase 1 (UI thread): <see cref="BeginFrame"/> returns the <see cref="IRecordingSession"/> that the
+/// cycle walks the visual tree into (the walk lives in <c>Visual.skia.cs</c>, not here); the cycle then
+/// calls <see cref="IRecordingSession.EndRecording"/> to obtain the opaque <see cref="IRenderData"/> frame.</item>
+/// <item>Phase 2 (on a vsync/present signal): <see cref="Present"/> draws a recorded frame onto the target.</item>
+/// </list>
 /// </summary>
 /// <remarks>
-/// The native-element clip path and the present canvas are still SkiaSharp types at this boundary — they
-/// are tied to native-view occlusion and the host's swapchain surface, whose neutralization (and the
-/// per-platform host contract) is the remaining milestone-2 work.
+/// The present target is still a SkiaSharp <see cref="SKCanvas"/> here — the host swapchain surface hasn't
+/// been neutralized yet; that (and the per-platform host contract) is follow-up work.
 /// </remarks>
 internal interface IRenderBackend
 {
-	/// <summary>Records <paramref name="rootVisual"/> into an opaque frame, returning the native-element clip path and z-order.</summary>
-	(IRenderData frame, SKPath nativeElementClipPath, List<Visual> nativeVisualsInZOrder) Record(
-		ContainerVisual rootVisual,
-		float width,
-		float height,
-		bool invertNativeElementClipPath);
+	/// <summary>Phase 1: begins a frame and returns the session the render cycle records the visual tree into.</summary>
+	IRecordingSession BeginFrame();
 
-	/// <summary>Presents a previously recorded <paramref name="frame"/> onto <paramref name="canvas"/>.</summary>
-	void Present(IRenderData frame, SKCanvas canvas, Action<SKCanvas>? postPresent);
+	/// <summary>Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.</summary>
+	void Present(IRenderData frame, SKCanvas target, Action<SKCanvas>? postPresent);
 }
