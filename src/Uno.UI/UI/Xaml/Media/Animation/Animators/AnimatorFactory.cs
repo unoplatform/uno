@@ -36,6 +36,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return new ImmediateAnimator<T>(targetValue);
 			}
 
+			// Not redundant with the check above: this handles an explicit Duration="0" on the
+			// animation itself while its keyframes still have non-zero keytimes (segmentDuration > 0).
+			// The animation-level duration wins, so the whole thing is instantaneous.
 			if (timeline.Duration.HasTimeSpan && timeline.Duration.TimeSpan == TimeSpan.Zero)
 			{
 				return new ImmediateAnimator<T>(targetValue);

@@ -229,7 +229,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependent animation
+			{
+				// A dependent animation that was not opted in never runs, so it never reports completion
+				// either (pre-existing behavior on every platform). Do not add OnCompleted() here without
+				// checking the Storyboard running-children accounting in Storyboard.ChildCompleted.
 				return;
 			}
 
