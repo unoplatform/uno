@@ -246,7 +246,8 @@ namespace Microsoft.UI.Xaml.Controls
 					globalCharOffset += GetParagraphTextLength(para);
 					if (blockIndex < blockCount - 1)
 					{
-						globalCharOffset += 2; // paragraph separator
+						// "\r\n" separator, same flat char-index space the text view maps against.
+						globalCharOffset += Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView.InterParagraphSeparatorLength;
 					}
 				}
 
@@ -304,7 +305,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private IEnumerable<TextHighlighter> GetParagraphHighlighters(ParagraphLayout layout, int paragraphIndex)
 		{
-			var result = Enumerable.Empty<TextHighlighter>();
+			// Called once per paragraph on every paint: collect into a list instead of chaining
+			// Enumerable.Append iterators, which allocates one wrapper per highlighter per frame.
+			var result = new List<TextHighlighter>();
 
 			// Apply TextHighlighters (translated to paragraph-local coordinates)
 			foreach (var highlighter in TextHighlighters)
@@ -320,7 +323,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						var localStart = Math.Max(0, globalStart - paraStart);
 						var localEnd = Math.Min(paraEnd - paraStart, globalEnd - paraStart);
-						result = result.Append(new TextHighlighter
+						result.Add(new TextHighlighter
 						{
 							Background = highlighter.Background,
 							Foreground = highlighter.Foreground,
@@ -345,7 +348,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var localStart = Math.Max(0, selStart - paraStart);
 					var localEnd = Math.Min(paraEnd - paraStart, selEnd - paraStart);
-					result = result.Append(new TextHighlighter
+					result.Add(new TextHighlighter
 					{
 						Background = SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor,
 						Foreground = DefaultBrushes.SelectedTextForegroundColor,
