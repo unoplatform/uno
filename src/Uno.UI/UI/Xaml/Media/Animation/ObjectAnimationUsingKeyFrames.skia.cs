@@ -41,7 +41,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				if (State != TimelineState.Active)
 				{
-					// Animation was stopped/deactivated before the tick
+					// Paused before the tick: nothing has played yet, so leave the scheduler
+					// uncreated. Resume() re-schedules the play.
 					return;
 				}
 
