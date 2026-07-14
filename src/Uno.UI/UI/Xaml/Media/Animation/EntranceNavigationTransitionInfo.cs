@@ -87,9 +87,6 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 		// Find the target element (either a marked element or the page itself)
 		var targetElement = GetLogicalTargetElement(element) ?? element;
 
-		// Ensure the element has a TranslateTransform for animation
-		var translateTransform = EnsureTranslateTransform(targetElement);
-
 		var inControlPoint1 = new Point(0.1, 0.9);
 		var inControlPoint2 = new Point(0.2, 1.0);
 		var outControlPoint1 = new Point(0.7, 0.0);
@@ -107,7 +104,7 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 				AddDiscreteOpacityAnimation(storyboard, targetElement, 0.0, 0, 1.0, OutDuration);
 
 				// TranslateY: start at offset, stay there until outDuration, then animate to 0
-				AddEntranceTranslateYAnimation(storyboard, translateTransform, TranslationOffset, OutDuration, 0.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
+				AddEntranceTranslateYAnimation(storyboard, EnsureTranslateTransform(targetElement), TranslationOffset, OutDuration, 0.0, OutDuration + InDuration, inControlPoint1, inControlPoint2);
 				break;
 
 			case NavigationTrigger.BackNavigatingAway:
@@ -115,7 +112,7 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 				AddDiscreteOpacityAnimation(storyboard, targetElement, 1.0, 0, 0.0, OutDuration);
 
 				// TranslateY: 0 -> offset with spline
-				AddSplineTranslateYAnimation(storyboard, translateTransform, 0.0, 0, TranslationOffset, OutDuration, outControlPoint1, outControlPoint2);
+				AddSplineTranslateYAnimation(storyboard, EnsureTranslateTransform(targetElement), 0.0, 0, TranslationOffset, OutDuration, outControlPoint1, outControlPoint2);
 				break;
 
 			case NavigationTrigger.BackNavigatingTo:

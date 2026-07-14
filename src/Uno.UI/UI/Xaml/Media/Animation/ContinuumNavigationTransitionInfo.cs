@@ -184,12 +184,16 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 	/// <summary>
 	/// Identifies the ExitElementContainer attached property.
 	/// </summary>
-	public static DependencyProperty ExitElementContainerProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"ExitElementContainer",
-			typeof(bool),
-			typeof(ContinuumNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(false));
+	public static DependencyProperty ExitElementContainerProperty
+	{
+		[DynamicDependency(nameof(GetExitElementContainer))]
+		[DynamicDependency(nameof(SetExitElementContainer))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+		"ExitElementContainer",
+		typeof(bool),
+		typeof(ContinuumNavigationTransitionInfo),
+		new FrameworkPropertyMetadata(false));
 
 	#endregion
 
@@ -206,13 +210,13 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		{
 			case NavigationTrigger.NavigatingTo:
 			case NavigationTrigger.BackNavigatingTo:
-				var entranceStoryboards = CreateEntranceElementAnimations(element, trigger);
+				var entranceStoryboards = CreateEntranceElementAnimations(element);
 				storyboards.AddRange(entranceStoryboards);
 				break;
 
 			case NavigationTrigger.NavigatingAway:
 			case NavigationTrigger.BackNavigatingAway:
-				var exitStoryboards = CreateExitElementAnimations(element, trigger);
+				var exitStoryboards = CreateExitElementAnimations(element);
 				storyboards.AddRange(exitStoryboards);
 				break;
 		}
@@ -247,7 +251,7 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		return storyboard;
 	}
 
-	private List<Storyboard> CreateEntranceElementAnimations(UIElement page, NavigationTrigger trigger)
+	private List<Storyboard> CreateEntranceElementAnimations(UIElement page)
 	{
 		var storyboards = new List<Storyboard>();
 		var entranceElements = GetEntranceElementsForPage(page);
@@ -261,7 +265,7 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		return storyboards;
 	}
 
-	private List<Storyboard> CreateExitElementAnimations(UIElement page, NavigationTrigger trigger)
+	private List<Storyboard> CreateExitElementAnimations(UIElement page)
 	{
 		var storyboards = new List<Storyboard>();
 
