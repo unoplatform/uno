@@ -219,16 +219,4 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 		Storyboard.SetTargetProperty(translateAnimation, nameof(TranslateTransform.Y));
 		storyboard.Children.Add(translateAnimation);
 	}
-
-	/// <summary>
-	/// Clears expired weak references from the target elements list.
-	/// Called internally during navigation.
-	/// </summary>
-	internal static void ClearTargetElements()
-	{
-		lock (s_targetElements)
-		{
-			s_targetElements.RemoveAll(wr => !wr.TryGetTarget(out _));
-		}
-	}
 }
