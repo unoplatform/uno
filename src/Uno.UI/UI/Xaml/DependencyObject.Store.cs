@@ -242,6 +242,9 @@ namespace Microsoft.UI.Xaml
 		// DependencyObject off the finalization queue. It is not load-bearing — pooled weak handles are
 		// freed by ManagedGCHandle's own finalizer; BinderDispose only recycled pooled weak refs/arrays.
 		// BinderDispose is kept (now unreferenced) so this is the ONLY behavioral diff vs the base.
+		// Consequence: nothing sets _isDisposed any more, so IsDisposed stays false and its callers
+		// (EventManager/CustomEventManager) are inert. They are kept for the same reason; if this
+		// experiment is promoted, drop BinderDispose, _gate, IsDisposed and its guards together.
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited

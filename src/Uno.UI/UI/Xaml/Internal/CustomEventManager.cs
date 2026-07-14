@@ -74,6 +74,7 @@ internal sealed class CustomKeepLastEventManager<
 
 		foreach (var item in _buffers)
 		{
+			// Inert while the DO finalizer is removed — see the EXPERIMENT note in DependencyObject.Store.cs.
 			if (((DependencyObject)(object)item.Key).IsDisposed)
 			{
 				continue;

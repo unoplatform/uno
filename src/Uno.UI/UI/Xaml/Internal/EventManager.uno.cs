@@ -70,7 +70,8 @@ internal sealed partial class EventManager
 		// This is actually what we want and what WinUI does.
 		foreach (var item in _layoutUpdatedSubscribers)
 		{
-			// Sometimes, we are racing with GC and the DependencyObject is disposed (via finalizer)
+			// Guards against a disposed DependencyObject. Inert while the DO finalizer is removed —
+			// nothing sets IsDisposed (see the EXPERIMENT note in DependencyObject.Store.cs).
 			if (((DependencyObject)item.Key).IsDisposed)
 			{
 				continue;
