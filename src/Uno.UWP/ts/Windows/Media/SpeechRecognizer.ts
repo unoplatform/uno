@@ -53,7 +53,16 @@ namespace Windows.Media {
 			// Configure and start asynchronously so on-device availability can be probed before
 			// listening. Results and errors keep flowing through the dispatch callbacks, so the
 			// synchronous return value only signals that a recognizer instance exists.
-			recognizer.startAsync().catch(() => { /* outcome is surfaced via dispatch below */ });
+			recognizer.startAsync().catch(() => {
+				// startAsync only rejects when the dispatch itself failed. Complete the managed
+				// operation here so the awaiting RecognizeAsync() cannot hang forever.
+				if (!recognizer.completed) {
+					recognizer.completed = true;
+					try {
+						SpeechRecognizer.getExports().DispatchError(recognizer.managedId, "aborted");
+					} catch { /* dotnet exports unavailable — nothing else can be done */ }
+				}
+			});
 			return true;
 		}
 
@@ -84,8 +93,10 @@ namespace Windows.Media {
 				recognition.start();
 			} catch {
 				// start() throws synchronously only when already started; treat as a benign cancel.
-				this.completed = true;
+				// `completed` is set only once the dispatch succeeded, so a failing dispatch still
+				// leaves the recognizer open for the caller in `recognize` to complete it.
 				SpeechRecognizer.getExports().DispatchError(this.managedId, "aborted");
+				this.completed = true;
 			}
 		}
 
