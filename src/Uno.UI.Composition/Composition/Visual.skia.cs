@@ -407,7 +407,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
-			var saveCount = session.Canvas.SaveCount;
+			var saveCount = session.Session.SaveCount;
 #endif
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
@@ -435,14 +435,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 			}
 #if DEBUG
-			Debug.Assert(saveCount == session.Canvas.SaveCount);
+			Debug.Assert(saveCount == session.Session.SaveCount);
 #endif
 		}
 
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 		{
 #if DEBUG
-			var canvas = session.Canvas;
+			var canvas = ((SkiaDrawingSession)session.Session).Canvas;
 			canvas.Save();
 			if (visual.GetPostPaintingClipping() is SkiaGeometrySource2D postClip)
 			{
@@ -874,7 +874,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 		else
 		{
-			var canvas = parentSession.Canvas;
+			var canvas = ((SkiaDrawingSession)parentSession.Session).Canvas;
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
 				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
 				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero

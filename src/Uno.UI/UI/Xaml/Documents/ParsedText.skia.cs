@@ -360,7 +360,7 @@ internal readonly struct ParsedText : IParsedText
 			return;
 		}
 
-		var canvas = session.Canvas;
+		var canvas = ((SkiaDrawingSession)session.Session).Canvas;
 		var alignment = _textAlignment;
 		if (_flowDirection == FlowDirection.RightToLeft)
 		{

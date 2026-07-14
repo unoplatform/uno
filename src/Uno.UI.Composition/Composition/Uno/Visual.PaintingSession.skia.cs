@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 
@@ -30,7 +29,6 @@ public partial class Visual
 		private PaintingSession(Visual visual, IDrawingSession drawingSession, ref Matrix4x4 rootTransform, float opacity)
 		{
 			Session = drawingSession;
-			Canvas = ((SkiaDrawingSession)drawingSession).Canvas;
 			RootTransform = ref rootTransform;
 			Opacity = opacity;
 
@@ -38,12 +36,6 @@ public partial class Visual
 		}
 
 		public void Dispose() => Session.RestoreToCount(_saveCount);
-
-		/// <summary>
-		/// The underlying SkiaSharp canvas. Transitional accessor for render code (clips, shadows) not yet
-		/// migrated off direct SkiaSharp; new painting code should use <see cref="Session"/>.
-		/// </summary>
-		public readonly SKCanvas Canvas;
 
 		/// <summary>The backend-neutral drawing surface for this session.</summary>
 		public readonly IDrawingSession Session;

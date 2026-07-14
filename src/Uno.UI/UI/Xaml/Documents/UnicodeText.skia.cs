@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Buffers;
 using Uno.Disposables;
+using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
@@ -973,6 +974,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		// Glyph rasterization is inherently Skia (SKTextBlob); reach the canvas via a contained downcast.
+		var canvas = ((SkiaDrawingSession)session.Session).Canvas;
+
 		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
 		using var textBlobBuilder = new SKTextBlobBuilder();
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
@@ -981,20 +985,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
 				textBlobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), font, CollectionsMarshal.AsSpan(positions));
-				session.Canvas.DrawText(textBlobBuilder.Build(), 0, 0, _spareDrawPaint); // SKTextBlobBuilder::Build resets the builder
+				canvas.DrawText(textBlobBuilder.Build(), 0, 0, _spareDrawPaint); // SKTextBlobBuilder::Build resets the builder
 			}
 		}
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
 			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
-			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
+			canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
 		{
 			_spareCompositionUnderlinePaint.Color = color;
-			session.Canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
+			canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text

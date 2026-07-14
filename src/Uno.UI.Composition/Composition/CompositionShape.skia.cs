@@ -52,16 +52,16 @@ public partial class CompositionShape
 
 		if (hasOffset || hasTransform)
 		{
-			session.Canvas.Save();
+			session.Session.Save();
 
 			if (hasOffset)
 			{
-				session.Canvas.Translate(offset.X, offset.Y);
+				session.Session.Translate(offset.X, offset.Y);
 			}
 
 			if (hasTransform)
 			{
-				session.Canvas.Concat(transform.ToSKMatrix());
+				session.Session.Concat(new Matrix4x4(transform));
 			}
 		}
 
@@ -69,7 +69,7 @@ public partial class CompositionShape
 
 		if (hasOffset || hasTransform)
 		{
-			session.Canvas.Restore();
+			session.Session.Restore();
 		}
 	}
 
