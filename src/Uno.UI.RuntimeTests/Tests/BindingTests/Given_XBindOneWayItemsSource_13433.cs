@@ -15,7 +15,6 @@ public class Given_XBindOneWayItemsSource_13433
 	{
 		var page = new XBindOneWayItemsSourcePage_13433();
 		await UITestHelper.Load(page);
-		await UITestHelper.WaitForIdle();
 
 		Assert.IsNotNull(page.Items, "Page.Items should not have been reset to null by the OneWay binding.");
 		Assert.AreEqual(3, page.Items.Count, "Page.Items should still hold the 3 initial entries.");
