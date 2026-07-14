@@ -1280,9 +1280,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// This bypasses the WinUI-aligned deferred path so that test assertions
 				// can read VerticalOffset/HorizontalOffset right after input injection.
 				_hasPendingScrollUpdate = false;
+
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
 				HorizontalOffset = horizontalOffset;
 				VerticalOffset = verticalOffset;
-				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode);
+				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode, oldHorizontalOffset, oldVerticalOffset);
 			}
 			else
 			{
@@ -1378,6 +1382,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_isViewChangedRaisedInIntermediateMode;
 		private int m_iViewChangedDelay;
 
+		// Offsets as they were before the first batched change, so a delayed event still
+		// reports the full delta to the automation peer.
+		private double m_delayedOldHorizontalOffset;
+		private double m_delayedOldVerticalOffset;
+
 		// Pending offsets — applied during ArrangeOverride to align with WinUI behavior.
 		// On WinUI, offsets are stored via SetOffsetsWithExtents + InvalidateArrange and
 		// applied during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
@@ -1407,19 +1416,37 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_iViewChangedDelay == 0 && m_isViewChangedDelayed)
 			{
-				RaiseViewChanged(m_isDelayedViewChangedIntermediate);
+				RaiseViewChanged(m_isDelayedViewChangedIntermediate, m_delayedOldHorizontalOffset, m_delayedOldVerticalOffset);
 			}
 		}
+
+		/// <summary>
+		/// Raises the ViewChanged event for a change that did not alter the offsets
+		/// (or whose offsets are still the pre-change values).
+		/// </summary>
+		private void RaiseViewChanged(bool isIntermediate)
+			=> RaiseViewChanged(isIntermediate, HorizontalOffset, VerticalOffset);
 
 		/// <summary>
 		/// Raises the ViewChanged event, or stores it for later if the delay counter is active.
 		/// When delayed, only the latest isIntermediate value is retained.
 		/// </summary>
-		private void RaiseViewChanged(bool isIntermediate)
+		/// <remarks>
+		/// The offset DPs already hold the new values when this is called from the arrange pass,
+		/// so the automation peer must be given the pre-change offsets to detect a scroll-percent change.
+		/// </remarks>
+		private void RaiseViewChanged(bool isIntermediate, double oldHorizontalOffset, double oldVerticalOffset)
 		{
 			if (m_iViewChangedDelay > 0)
 			{
-				// Batch: store the event for later, keeping the latest isIntermediate value.
+				// Batch: store the event for later, keeping the latest isIntermediate value
+				// and the offsets from before the first batched change.
+				if (!m_isViewChangedDelayed)
+				{
+					m_delayedOldHorizontalOffset = oldHorizontalOffset;
+					m_delayedOldVerticalOffset = oldVerticalOffset;
+				}
+
 				m_isViewChangedDelayed = true;
 				m_isDelayedViewChangedIntermediate = isIntermediate;
 				return;
@@ -1444,8 +1471,8 @@ namespace Microsoft.UI.Xaml.Controls
 					ViewportHeight,
 					MinHorizontalOffset,
 					MinVerticalOffset,
-					HorizontalOffset,
-					VerticalOffset);
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 
 			UpdatePartial(isIntermediate);
@@ -1506,10 +1533,16 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_hasPendingScrollUpdate = false;
 
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
 				HorizontalOffset = _pendingHorizontalOffset;
 				VerticalOffset = _pendingVerticalOffset;
 
-				RaiseViewChanged(_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode);
+				RaiseViewChanged(
+					_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode,
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 		}
 #else
@@ -1730,9 +1763,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
 #if __SKIA__
-				// Batch ViewChanged events during the programmatic view change.
-				// When disableAnimation is true, the entire SCP → OnPresenterScrolled chain
-				// is synchronous, so the delay counter batches the events within this scope.
+				// Batch the ViewChanged events that ChangeViewCore raises synchronously, i.e. zoom
+				// changes (OnPresenterZoomed) and, in Synchronous UpdatesMode, offset changes.
+				// In the default Deferred mode, OnPresenterScrolled only stores the pending offsets
+				// and the event is raised later during the arrange pass, so nothing is batched here.
 				DelayViewChanged();
 				try
 				{
