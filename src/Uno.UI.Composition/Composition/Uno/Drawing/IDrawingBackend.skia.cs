@@ -1,7 +1,10 @@
 #nullable enable
 
+using System;
 using System.Numerics;
+using Microsoft.UI.Composition;
 using Windows.Foundation;
+using Windows.Graphics.Effects;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
@@ -67,4 +70,23 @@ internal interface IDrawingBackend
 
 	/// <summary>Creates a normal (Gaussian) blur mask filter with the given standard deviation.</summary>
 	IMaskFilter CreateBlurMaskFilter(float sigma);
+
+	/// <summary>
+	/// Realizes a neutral <see cref="IGraphicsEffect"/> graph into an opaque backend effect. Mirrors the
+	/// public <c>CompositionEffectBrush</c> graph rather than any backend-specific representation.
+	/// </summary>
+	/// <param name="effect">The root of the effect graph to realize.</param>
+	/// <param name="bounds">The bounds the effect is generated for.</param>
+	/// <param name="sourceResolver">Maps an effect source-parameter name to its bound input brush, or null.</param>
+	/// <param name="useBackdropBlurClamp">Clamps backdrop blurs to the element's area (prevents edge bleeding).</param>
+	/// <param name="isSoftwareRenderer">Whether the compositor is currently using a software renderer.</param>
+	/// <param name="hasBackdropInput">Set to true when the graph references a backdrop brush.</param>
+	/// <returns>The realized effect, or null when the graph resolves to nothing renderable.</returns>
+	IEffectFilter? CreateEffectFilter(
+		IGraphicsEffect effect,
+		Rect bounds,
+		Func<string, CompositionBrush?> sourceResolver,
+		bool useBackdropBlurClamp,
+		bool isSoftwareRenderer,
+		out bool hasBackdropInput);
 }

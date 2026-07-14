@@ -67,4 +67,11 @@ internal interface IDrawingSession
 
 	/// <summary>Replays previously recorded <paramref name="data"/> into this session.</summary>
 	void Draw(IRenderData data);
+
+	/// <summary>
+	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:
+	/// a transparent offscreen layer whose backdrop is the filtered content, optionally modulated by
+	/// <paramref name="opacity"/>. Mirrors the WinUI effect-brush paint semantics.
+	/// </summary>
+	void DrawEffectBackdrop(IEffectFilter filter, float opacity);
 }

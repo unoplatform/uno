@@ -60,6 +60,21 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
+	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
+	{
+		var rec = new SKCanvasSaveLayerRec { Backdrop = ((SkiaEffectFilter)filter).Filter };
+		SKPaint? opacityPaint = null;
+		if (opacity < 1)
+		{
+			opacityPaint = new SKPaint { Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity)) };
+			rec.Paint = opacityPaint;
+		}
+
+		_canvas.SaveLayer(rec);
+		_canvas.Restore();
+		opacityPaint?.Dispose();
+	}
+
 	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
 
 	public void SetMatrix(in Matrix4x4 matrix)

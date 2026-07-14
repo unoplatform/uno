@@ -97,6 +97,20 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	public IMaskFilter CreateBlurMaskFilter(float sigma)
 		=> new SkiaMaskFilter(SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma));
 
+	public IEffectFilter? CreateEffectFilter(
+		global::Windows.Graphics.Effects.IGraphicsEffect effect,
+		Rect bounds,
+		System.Func<string, CompositionBrush?> sourceResolver,
+		bool useBackdropBlurClamp,
+		bool isSoftwareRenderer,
+		out bool hasBackdropInput)
+	{
+		var factory = new SkiaEffectFactory(sourceResolver, useBackdropBlurClamp, isSoftwareRenderer);
+		var filter = factory.GenerateEffectFilter(effect, bounds.ToSKRect());
+		hasBackdropInput = factory.HasBackdropBrushInput;
+		return filter is null ? null : new SkiaEffectFilter(filter);
+	}
+
 	private static SKShaderTileMode ToSK(GradientTileMode mode) => mode switch
 	{
 		GradientTileMode.Repeat => SKShaderTileMode.Repeat,
