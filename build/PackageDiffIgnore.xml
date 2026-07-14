@@ -2282,6 +2282,11 @@
 	  </Types>
 
 	  <Fields>
+		  <!-- DependencyPropertyValuePrecedences enum cleanup: obsolete/misused members removed and style levels renamed to match WinUI's BaseValueSource (#16356, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Removed unused TemplatedParent precedence (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed ExplicitStyle to Style to match WinUI BaseValueSourceStyle (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Removed misused ImplicitStyle precedence; default styles now use BuiltInStyle (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::DefaultStyle" reason="Renamed DefaultStyle to BuiltInStyle to match WinUI BaseValueSourceBuiltInStyle (#16356, breaking changes for 7.0)" />
 		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ScrollingInputKinds::value__" reason="WinUI sync: type restructured in WinAppSDK 1.8" />
 
 		  <!-- ====================================================================== -->

@@ -425,9 +425,67 @@ namespace Uno.UI.Tests.BinderTests
 			var testProperty = DependencyProperty.Register(nameof(When_Two_Precedences_Set_Then_Only_Highest_Returned), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
-			SUT.SetValue(testProperty, "ALowPriorityValue", DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(testProperty, "ALowPriorityValue", DependencyPropertyValuePrecedences.BuiltInStyle);
 
 			Assert.AreEqual("Not42", SUT.GetValue(testProperty));
+		}
+
+		[TestMethod]
+		public void When_Each_Precedence_Set_Then_Highest_Wins()
+		{
+			var testProperty = DependencyProperty.Register(nameof(When_Each_Precedence_Set_Then_Highest_Wins), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("default"));
+			var SUT = new MockDependencyObject();
+
+			// No value set: the metadata default value is used.
+			Assert.AreEqual(DependencyPropertyValuePrecedences.DefaultValue, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("default", SUT.GetValue(testProperty));
+
+			// Set each precedence from weakest to strongest; each one must win over the previous,
+			// validating the ordinal ordering of the surviving precedences.
+			SUT.SetValue(testProperty, "builtInStyle", DependencyPropertyValuePrecedences.BuiltInStyle);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.BuiltInStyle, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("builtInStyle", SUT.GetValue(testProperty));
+
+			SUT.SetValue(testProperty, "style", DependencyPropertyValuePrecedences.Style);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Style, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("style", SUT.GetValue(testProperty));
+
+			SUT.SetValue(testProperty, "local", DependencyPropertyValuePrecedences.Local);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Local, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("local", SUT.GetValue(testProperty));
+
+			SUT.SetValue(testProperty, "animation", DependencyPropertyValuePrecedences.Animations);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("animation", SUT.GetValue(testProperty));
+
+			// Clearing the animation modifier falls back to the local value.
+			SUT.ClearValue(testProperty, DependencyPropertyValuePrecedences.Animations);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Local, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("local", SUT.GetValue(testProperty));
+		}
+
+		[TestMethod]
+		public void When_BuiltInStyle_Set_Then_Takes_Precedence_Over_Inherited_Value()
+		{
+			var SUT = new MockDependencyObject();
+			var testProperty = DependencyProperty.Register(
+				nameof(When_BuiltInStyle_Set_Then_Takes_Precedence_Over_Inherited_Value),
+				typeof(string),
+				typeof(MockDependencyObject),
+				new PropertyMetadata("default"));
+
+			SUT.SetValue(testProperty, "inherited", DependencyPropertyValuePrecedences.Inheritance);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Inheritance, SUT.GetCurrentHighestValuePrecedence(testProperty));
+
+			// BuiltInStyle (default style from Generic.xaml) must win over an inherited value, matching WinUI.
+			SUT.SetValue(testProperty, "builtInStyle", DependencyPropertyValuePrecedences.BuiltInStyle);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.BuiltInStyle, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("builtInStyle", SUT.GetValue(testProperty));
+
+			// Clearing the built-in style falls back to the inherited value.
+			SUT.ClearValue(testProperty, DependencyPropertyValuePrecedences.BuiltInStyle);
+			Assert.AreEqual(DependencyPropertyValuePrecedences.Inheritance, SUT.GetCurrentHighestValuePrecedence(testProperty));
+			Assert.AreEqual("inherited", SUT.GetValue(testProperty));
 		}
 
 		[TestMethod]
@@ -1459,7 +1517,7 @@ namespace Uno.UI.Tests.BinderTests
 				(o, e) =>
 				{
 					e.BypassesPropagation.Should().BeFalse();
-					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
+					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.BuiltInStyle);
 					button.Content = "Frogurt";
 				});
 
@@ -1512,7 +1570,7 @@ namespace Uno.UI.Tests.BinderTests
 				(dependencyObject, args) =>
 				{
 					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
-					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.Style);
 				});
 
 			using var _ = new AssertionScope();
@@ -1530,7 +1588,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Local value is cleared, fallback to style value
 			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
-			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle, "After applying style");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.Style, "After applying style");
 
 			registration2.Dispose();
 
@@ -1582,7 +1640,7 @@ namespace Uno.UI.Tests.BinderTests
 				(dependencyObject, args) =>
 				{
 					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
-					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.Style);
 				});
 
 			using var _ = new AssertionScope();
@@ -1612,7 +1670,7 @@ namespace Uno.UI.Tests.BinderTests
 				Border.BorderThicknessProperty,
 				(dependencyObject, args) =>
 				{
-					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Style);
 					args.NewValue.Should().Be(new Thickness(10d));
 					sut.Child = new Rectangle();
 				});

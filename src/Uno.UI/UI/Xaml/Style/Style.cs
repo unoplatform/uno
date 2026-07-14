@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml
 			// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
 			// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
 			// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
-			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
+			if (baseValueSource == DependencyPropertyValuePrecedences.BuiltInStyle &&
 				dependencyObject is FrameworkElement fe &&
 				fe.GetActiveStyle() is { } activeStyle &&
 				// Make sure to only consider active style if it was explicit.
@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.BuiltInStyle or DependencyPropertyValuePrecedences.Style);
 
 			IDisposable? localPrecedenceDisposable = null;
 
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml
 							{
 								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
-									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.Style))
 									{
 										adjustedSetter.ApplyTo(o);
 									}
