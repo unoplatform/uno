@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -17,7 +18,7 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater;
 	Description = "ScrollViewer + ItemsRepeater chat conversation mimicking an agentic-assistant UI (user bubbles, " +
 		"assistant replies, reasoning expanders, tool-call rows, outcome cards, thinking/benchmark lines, plus nested " +
 		"image-attachment repeaters) on a cooking topic. Message height varies widely (cooking copy + lorem ipsum + " +
-		"image grids) and auto-scroll-on-add is enabled. Generation is seeded, so reloading the sample and" +
+		"image grids) and auto-scroll-on-add is enabled. Generation is seeded, so reloading the sample and " +
 		"clicking \"Add\" produce identical results every time.")]
 public sealed partial class ItemsRepeaterChatConversation : Page
 {
@@ -166,7 +167,8 @@ public sealed partial class ItemsRepeaterChatConversation : Page
 	{
 		Index = _nextIndex++,
 		Kind = ChatMessageKind.Benchmark,
-		Text = $"Generated in {_rng.Next(8, 120) / 10.0:0.0} s · {_rng.Next(120, 4000):N0} tokens · {_rng.Next(1, 24)} tool calls",
+		// Invariant so the generated text stays identical regardless of the machine's culture.
+		Text = FormattableString.Invariant($"Generated in {_rng.Next(8, 120) / 10.0:0.0} s · {_rng.Next(120, 4000):N0} tokens · {_rng.Next(1, 24)} tool calls"),
 		Timestamp = NextTimestamp(),
 	};
 
@@ -289,7 +291,7 @@ public sealed partial class ItemsRepeaterChatConversation : Page
 	private string NextTimestamp()
 	{
 		_clock = _clock.AddMinutes(_rng.Next(1, 4));
-		return _clock.ToString("h:mm tt");
+		return _clock.ToString("h:mm tt", CultureInfo.InvariantCulture);
 	}
 
 	private T Pick<T>(T[] pool) => pool[_rng.Next(pool.Length)];
@@ -477,7 +479,7 @@ public sealed partial class ItemsRepeaterChatConversation : Page
 	];
 }
 
-public enum ChatMessageKind
+internal enum ChatMessageKind
 {
 	User,
 	Assistant,
@@ -488,26 +490,26 @@ public enum ChatMessageKind
 	Benchmark,
 }
 
-public enum ToolCallState
+internal enum ToolCallState
 {
 	InProgress,
 	Success,
 	Failure,
 }
 
-public enum OutcomeSeverity
+internal enum OutcomeSeverity
 {
 	Success,
 	Warning,
 	Critical,
 }
 
-public sealed class ChatImageAttachment
+internal sealed class ChatImageAttachment
 {
 	public Brush Fill { get; init; }
 }
 
-public sealed class ChatMessage : INotifyPropertyChanged
+internal sealed class ChatMessage : INotifyPropertyChanged
 {
 	private bool _isReasoningExpanded;
 
@@ -585,7 +587,7 @@ public sealed class ChatMessage : INotifyPropertyChanged
 	private static Visibility Vis(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 }
 
-public sealed class ChatMessageTemplateSelector : DataTemplateSelector
+internal sealed class ChatMessageTemplateSelector : DataTemplateSelector
 {
 	public DataTemplate UserTemplate { get; set; }
 
