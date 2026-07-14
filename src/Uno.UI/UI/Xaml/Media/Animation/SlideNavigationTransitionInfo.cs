@@ -56,16 +56,13 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 	{
 		var storyboard = new Storyboard();
 
-		// Ensure the element has a TranslateTransform for animation
-		var translateTransform = EnsureTranslateTransform(element);
-
 		if (Effect == SlideNavigationTransitionEffect.FromLeft || Effect == SlideNavigationTransitionEffect.FromRight)
 		{
-			CreateHorizontalSlideAnimations(storyboard, element, translateTransform, trigger);
+			CreateHorizontalSlideAnimations(storyboard, element, trigger);
 		}
 		else // FromBottom
 		{
-			CreateVerticalSlideAnimations(storyboard, element, translateTransform, trigger);
+			CreateVerticalSlideAnimations(storyboard, element, trigger);
 		}
 
 		return new List<Storyboard> { storyboard };
@@ -78,8 +75,11 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 		return translateTransform;
 	}
 
-	private void CreateHorizontalSlideAnimations(Storyboard storyboard, UIElement element, TranslateTransform translateTransform, NavigationTrigger trigger)
+	private void CreateHorizontalSlideAnimations(Storyboard storyboard, UIElement element, NavigationTrigger trigger)
 	{
+		// Every horizontal trigger translates, so the transform is always needed here.
+		var translateTransform = EnsureTranslateTransform(element);
+
 		// Direction factor: FromLeft = 1, FromRight = -1
 		double directionFactor = Effect == SlideNavigationTransitionEffect.FromLeft ? 1.0 : -1.0;
 
@@ -128,16 +128,15 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 		}
 	}
 
-	private static void CreateVerticalSlideAnimations(Storyboard storyboard, UIElement element, TranslateTransform translateTransform, NavigationTrigger trigger)
+	private static void CreateVerticalSlideAnimations(Storyboard storyboard, UIElement element, NavigationTrigger trigger)
 	{
-		var easeIn = new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseIn };
-		var easeOut = new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseOut };
-
+		// The transform is created only for the triggers that translate, so the fade-only
+		// triggers leave the element's RenderTransform untouched.
 		switch (trigger)
 		{
 			case NavigationTrigger.NavigatingTo:
 				// Enter from bottom with slide up and fade in
-				AddVerticalEnterAnimation(storyboard, element, translateTransform, easeOut);
+				AddVerticalEnterAnimation(storyboard, element, EnsureTranslateTransform(element), new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseOut });
 				break;
 
 			case NavigationTrigger.NavigatingAway:
@@ -152,7 +151,7 @@ public partial class SlideNavigationTransitionInfo : NavigationTransitionInfo
 
 			case NavigationTrigger.BackNavigatingAway:
 				// Back exit: slide down and fade out
-				AddVerticalBackExitAnimation(storyboard, element, translateTransform, easeIn);
+				AddVerticalBackExitAnimation(storyboard, element, EnsureTranslateTransform(element), new ExponentialEase { Exponent = SlideEaseExponent, EasingMode = EasingMode.EaseIn });
 				break;
 		}
 	}
