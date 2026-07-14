@@ -4,26 +4,26 @@ using System;
 using System.Threading;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.Hosting;
-using Uno.WinUI.Runtime.Skia.Headless.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.Headless;
 
 /// <summary>
-/// Drives the Skia two-phase render cycle for the headless host. The cycle always runs so the
-/// app lifecycle behaves like a real target, but rasterization is optional: when the caller
-/// supplies a target buffer, frames are drawn straight into it (zero-copy) and the
-/// <c>onFrameRendered</c> callback is invoked; otherwise the visual-tree paint walk is skipped
-/// entirely (via <see cref="FeatureConfiguration.Rendering.SkipVisualTreePainting"/>) so the
-/// pipeline stays live without producing pixels.
+/// Drives the Skia two-phase render cycle for a single headless window. The cycle always runs so the
+/// app lifecycle behaves like a real target, but rasterization is optional: when the window supplies
+/// a target buffer, frames are drawn straight into it (zero-copy) and the <c>onFrameRendered</c>
+/// callback is invoked; otherwise frames are drawn to a Skia null surface (the pipeline runs but
+/// nothing is rasterized). Windows with no buffer at all across the whole app additionally skip the
+/// paint walk globally via <c>FeatureConfiguration.Rendering.SkipVisualTreePainting</c> (set by the host).
 /// </summary>
 internal sealed class HeadlessRenderer : IDisposable
 {
 	private readonly IXamlRootHost _host;
 
+	private readonly int _rawWidth;
+	private readonly int _rawHeight;
 	private readonly bool _hasBuffer;
 	private readonly IntPtr _buffer;
 	private readonly int _rowBytes;
@@ -37,25 +37,16 @@ internal sealed class HeadlessRenderer : IDisposable
 	private SKSurface? _surface;
 	private bool _surfaceTargetsBuffer;
 
-	public HeadlessRenderer(IXamlRootHost host, IntPtr buffer, int rowBytes, SKColorType colorType, Action? onFrameRendered)
+	public HeadlessRenderer(IXamlRootHost host, int rawWidth, int rawHeight, HeadlessWindowOptions options)
 	{
 		_host = host;
-		_hasBuffer = buffer != IntPtr.Zero && onFrameRendered is not null;
-		_buffer = buffer;
-		_rowBytes = rowBytes;
-		_colorType = colorType;
-		_onFrameRendered = onFrameRendered;
-
-		// With no target buffer the visual output is of no interest, so skip the paint walk entirely
-		// (frame scheduling, rendering events and composition animations keep running). Only enabled
-		// here to avoid overriding an explicit opt-out; the buffer path leaves the flag untouched.
-		if (!_hasBuffer)
-		{
-			FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
-		}
-
-		// Publish the configured size/scale so layout and DisplayInformation resolve correctly.
-		HeadlessWindowWrapper.Instance.ApplySize();
+		_rawWidth = rawWidth;
+		_rawHeight = rawHeight;
+		_hasBuffer = options.HasBuffer;
+		_buffer = options.Buffer;
+		_rowBytes = options.RowBytes;
+		_colorType = options.ColorType;
+		_onFrameRendered = options.OnFrameRendered;
 
 		_renderThread = new Thread(_ =>
 		{
@@ -113,8 +104,7 @@ internal sealed class HeadlessRenderer : IDisposable
 	{
 		if (_hasBuffer)
 		{
-			var wrapper = HeadlessWindowWrapper.Instance;
-			if (width == wrapper.RawWidth && height == wrapper.RawHeight)
+			if (width == _rawWidth && height == _rawHeight)
 			{
 				_surfaceTargetsBuffer = true;
 				return SKSurface.Create(new SKImageInfo(width, height, _colorType, SKAlphaType.Premul), _buffer, _rowBytes);
@@ -124,7 +114,7 @@ internal sealed class HeadlessRenderer : IDisposable
 			{
 				this.Log().LogWarning(
 					$"Requested render size {width}x{height} does not match the configured headless buffer size " +
-					$"{wrapper.RawWidth}x{wrapper.RawHeight}; drawing nothing for this frame.");
+					$"{_rawWidth}x{_rawHeight}; drawing nothing for this frame.");
 			}
 		}
 

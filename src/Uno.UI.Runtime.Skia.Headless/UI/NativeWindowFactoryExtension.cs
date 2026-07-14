@@ -1,39 +1,44 @@
 #nullable enable
 
-using System;
-using Uno.UI.Hosting;
+using System.Collections.Generic;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 using Uno.WinUI.Runtime.Skia.Headless.UI;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Headless.UI;
 
-internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
+internal sealed class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
-	private readonly IXamlRootHost _host;
+	private readonly HeadlessHostBuilder _builder;
+	private readonly List<HeadlessWindowWrapper> _windows = new();
+	private int _windowIndex;
 
-	private Window? _initialWindow;
-
-	internal NativeWindowFactoryExtension(IXamlRootHost host)
+	internal NativeWindowFactoryExtension(HeadlessHostBuilder builder)
 	{
-		_host = host;
+		_builder = builder;
 	}
 
-	public bool SupportsClosingCancellation => false;
+	public bool SupportsClosingCancellation => true;
 
-	public bool SupportsMultipleWindows => false;
+	public bool SupportsMultipleWindows => true;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		if (_initialWindow is not null && _initialWindow != window)
+		var index = _windowIndex++;
+		var options = _builder.ResolveWindowOptions(index, window);
+		options.Validate();
+		var wrapper = new HeadlessWindowWrapper(window, xamlRoot, options);
+		_windows.Add(wrapper);
+		return wrapper;
+	}
+
+	/// <summary>Disposes every window's renderer, joining their render threads. Called on host shutdown.</summary>
+	internal void DisposeWindows()
+	{
+		foreach (var window in _windows)
 		{
-			throw new InvalidOperationException("The headless host currently supports a single window only");
+			window.DisposeRenderer();
 		}
-
-		_initialWindow = window;
-		HeadlessWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		XamlRootMap.Register(xamlRoot, _host);
-
-		return HeadlessWindowWrapper.Instance;
 	}
 }

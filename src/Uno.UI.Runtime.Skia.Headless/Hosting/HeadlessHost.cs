@@ -3,11 +3,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Windows.Graphics.Display;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Headless.UI;
@@ -17,7 +20,7 @@ using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Headless;
 
-public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisposable
+public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic]
 	private static bool _isDispatcherThread;
@@ -28,7 +31,7 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisp
 	private readonly HeadlessHostBuilder _hostBuilder;
 	private readonly Func<WUX.Application> _appBuilder;
 
-	private HeadlessRenderer? _renderer;
+	private NativeWindowFactoryExtension? _windowFactory;
 
 	/// <summary>
 	/// Creates a host for a Uno Skia headless (offscreen) application.
@@ -64,7 +67,8 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisp
 			this.Log().Debug($"Application is exiting");
 		}
 
-		_renderer?.Dispose();
+		// Stop all render threads before returning so they never outlive their target buffers.
+		_windowFactory?.DisposeWindows();
 
 		return Task.CompletedTask;
 	}
@@ -73,12 +77,17 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisp
 	{
 		_isDispatcherThread = true;
 
-		var scale = ResolveScale(_hostBuilder.Scale);
-		HeadlessWindowWrapper.Init(_hostBuilder.Width, _hostBuilder.Height, scale);
+		// If no window can ever have a render buffer, skip the paint walk globally to save CPU.
+		// The flag is global (per app), so it can only be enabled when we know every window is bufferless.
+		if (_hostBuilder.KnownBufferless)
+		{
+			FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
+		}
 
-		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension(this));
+		_windowFactory = new NativeWindowFactoryExtension(_hostBuilder);
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => _windowFactory);
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension);
-		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new DisplayInformationExtension(o, _hostBuilder.Orientation));
+		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), ResolveDisplayInformation);
 
 		void Dispatch(System.Action d, NativeDispatcherPriority p)
 			=> _eventLoop.Schedule(d);
@@ -87,40 +96,27 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisp
 		{
 			var app = _appBuilder();
 			app.Host = this;
-
-			// Force the first render once the app has been setup.
-			Dispatch(() => _renderer?.InvalidateRender(), NativeDispatcherPriority.High);
 		}
 
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-		_renderer = new HeadlessRenderer(
-			this,
-			_hostBuilder.RenderBuffer,
-			_hostBuilder.RenderRowBytes,
-			_hostBuilder.RenderColorType,
-			_hostBuilder.OnFrameRendered);
-
 		WUX.Application.Start(CreateApp);
 	}
 
 	/// <summary>
-	/// The configured scale can be overridden globally via the UNO_DISPLAY_SCALE_OVERRIDE environment
-	/// variable, keeping a single source of truth shared by the window bounds and DisplayInformation.
+	/// Resolves the per-window <see cref="IDisplayInformationExtension"/> (the window's own wrapper)
+	/// from the <see cref="DisplayInformation"/>'s window id.
 	/// </summary>
-	private static float ResolveScale(float configuredScale)
-		=> float.TryParse(
-			Environment.GetEnvironmentVariable("UNO_DISPLAY_SCALE_OVERRIDE"),
-			System.Globalization.NumberStyles.Any,
-			System.Globalization.CultureInfo.InvariantCulture,
-			out var envScale) && envScale > 0
-			? envScale
-			: configuredScale;
-
-	void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
-
-	WUX.UIElement? IXamlRootHost.RootElement => HeadlessWindowWrapper.Instance.Window?.RootElement;
+	private static IDisplayInformationExtension ResolveDisplayInformation(DisplayInformation displayInformation)
+	{
+		var appWindow = AppWindow.GetFromWindowId(displayInformation.WindowId);
+		var window = Window.GetFromAppWindow(appWindow);
+		var rootElement = window.RootElement ?? throw new InvalidOperationException($"The window's {nameof(window.RootElement)} is not initialized.");
+		var xamlRoot = rootElement.XamlRoot ?? throw new InvalidOperationException($"The window's {nameof(window.RootElement)} doesn't have a {nameof(XamlRoot)}.");
+		return XamlRootMap.GetHostForRoot(xamlRoot) as HeadlessWindowWrapper
+			?? throw new InvalidOperationException($"The {nameof(XamlRoot)} is not associated with a {nameof(HeadlessWindowWrapper)} instance.");
+	}
 
 	public void Dispose() => _terminationGate.Set();
 }

@@ -3,6 +3,7 @@
 using System;
 using SkiaSharp;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Headless;
 using Uno.UI.Xaml.Controls;
@@ -11,6 +12,8 @@ namespace Uno.UI.Runtime.Skia;
 
 public class HeadlessHostBuilder : IPlatformHostBuilder
 {
+	private Func<HeadlessWindowContext, HeadlessWindowOptions>? _configurator;
+
 	internal HeadlessHostBuilder()
 	{
 	}
@@ -21,8 +24,9 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 		=> new HeadlessHost(appBuilder, this);
 
 	/// <summary>
-	/// Sets the raw pixel dimensions of the offscreen surface. When a render buffer is supplied via
-	/// <see cref="RenderTo"/>, these dimensions are also the expected size of that buffer.
+	/// Sets the default raw pixel dimensions applied to every window that isn't given specific
+	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>. When a render buffer is
+	/// supplied via <see cref="RenderTo"/>, these dimensions are also the expected size of that buffer.
 	/// </summary>
 	/// <param name="width">Width, in raw pixels.</param>
 	/// <param name="height">Height, in raw pixels.</param>
@@ -84,9 +88,12 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
-	/// Opts into real rasterization by rendering each frame directly (zero-copy) into the supplied
-	/// native buffer, invoking <paramref name="onFrameRendered"/> once the buffer has been filled.
-	/// When not called, the render cycle still runs but nothing is rasterized.
+	/// Sets the default render target used by every window that isn't given specific
+	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>: each frame is rendered
+	/// directly (zero-copy) into the supplied native buffer, invoking <paramref name="onFrameRendered"/>
+	/// once the buffer has been filled. When not called, the render cycle still runs but nothing is
+	/// rasterized. A single buffer cannot be shared by multiple windows — use
+	/// <see cref="ConfigureWindow"/> to give each window its own buffer.
 	/// </summary>
 	/// <param name="buffer">Pointer to a caller-owned buffer, sized for the configured dimensions and <paramref name="rowBytes"/>.</param>
 	/// <param name="rowBytes">The number of bytes per pixel row (stride) of <paramref name="buffer"/>.</param>
@@ -109,6 +116,47 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 		OnFrameRendered = onFrameRendered ?? throw new ArgumentNullException(nameof(onFrameRendered));
 		return this;
 	}
+
+	/// <summary>
+	/// Supplies per-window configuration. The <paramref name="configurator"/> is invoked for each
+	/// window as it is created (see <see cref="HeadlessWindowContext.Index"/> to distinguish them) and
+	/// returns that window's <see cref="HeadlessWindowOptions"/>, including an optional dedicated
+	/// buffer. When set, it takes precedence over the builder-level defaults for every window.
+	/// </summary>
+	public HeadlessHostBuilder ConfigureWindow(Func<HeadlessWindowContext, HeadlessWindowOptions> configurator)
+	{
+		_configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
+		return this;
+	}
+
+	/// <summary>
+	/// Resolves the options for a window being created, preferring the per-window
+	/// <see cref="ConfigureWindow"/> configurator and falling back to the builder-level defaults.
+	/// </summary>
+	internal HeadlessWindowOptions ResolveWindowOptions(int index, Window window)
+	{
+		if (_configurator is { } configurator)
+		{
+			return configurator(new HeadlessWindowContext(index, window))
+				?? throw new InvalidOperationException($"The {nameof(ConfigureWindow)} configurator returned null for window #{index}.");
+		}
+
+		return new HeadlessWindowOptions(Width, Height)
+		{
+			Scale = Scale,
+			Orientation = Orientation,
+			Buffer = RenderBuffer,
+			RowBytes = RenderRowBytes,
+			ColorType = RenderColorType,
+			OnFrameRendered = OnFrameRendered,
+		};
+	}
+
+	/// <summary>
+	/// True when no window can possibly have a render buffer, so the global paint walk can be skipped
+	/// entirely. Only known when there is no per-window configurator and no default buffer.
+	/// </summary>
+	internal bool KnownBufferless => _configurator is null && !(RenderBuffer != IntPtr.Zero && OnFrameRendered is not null);
 
 	internal int Width { get; private set; } = NativeWindowWrapperBase.InitialWidth;
 
