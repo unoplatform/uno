@@ -103,6 +103,19 @@ These properties need to be set before the application is initialized. The best 
 
 If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
 
+## Settings storage on Android
+
+On Android, `LocalSettings` and `RoamingSettings` are backed by a dedicated `SharedPreferences` file named `UnoApplicationData`. Both settings containers share this single backing store.
+
+If you need to access the stored values from native code, open the preferences file explicitly:
+
+```csharp
+var preferences = context.GetSharedPreferences("UnoApplicationData", FileCreationMode.Private);
+```
+
+> [!NOTE]
+> Before Uno Platform 7.0, settings were stored in the app's default `SharedPreferences` file (`<package-name>_preferences`), shared with the AndroidX preference screens. Existing values are migrated to the `UnoApplicationData` file automatically the first time settings are accessed. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
+
 ## Settings storage on iOS, tvOS, and Mac Catalyst
 
 On Apple platforms, `LocalSettings` and `RoamingSettings` are backed by a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as `Library/Preferences/UnoApplicationData.plist` inside the application sandbox. Both settings containers share this single backing store.
