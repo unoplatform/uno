@@ -324,8 +324,8 @@ internal sealed class StartCommandHandler
 			_logger.LogWarning(
 				"The DevServer host crashed during startup (exit code {HostExitCode}) before becoming ready — most often a " +
 				"broken add-in dependency. Retrying once in safe mode with add-ins disabled: Hot Reload stays available, " +
-				"but IDE add-ins (Hot Design, Uno Settings) are unavailable for this session. Host error output:\n{StdErr}",
-				result.HostExitCode, result.StdErr);
+				"but IDE add-ins (Hot Design, Uno Settings) are unavailable for this session. See the host output above for details.",
+				result.HostExitCode);
 
 			var safeModeStartInfo = BuildDirectLaunchArgs(
 				hostPath, effectiveParsed, SafeModeAddInsValue, workingDirectory, enableMajorRollForward: enableMajorRollForward);
@@ -340,8 +340,7 @@ internal sealed class StartCommandHandler
 			else
 			{
 				_logger.LogError(
-					"DevServer failed to start even in safe mode, so the crash is not add-in related. Host error output:\n{StdErr}",
-					safeModeResult.StdErr);
+					"DevServer failed to start even in safe mode, so the crash is not add-in related. See the host output above for details.");
 			}
 
 			return safeModeResult.ExitCode;
