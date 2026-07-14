@@ -167,6 +167,13 @@ public class Given_BackgroundSizing
 	#region Visual Rendering
 
 #if HAS_RENDER_TARGET_BITMAP
+	// The border-area samples below expect alpha-blend results (a 50% red border over the parent's
+	// blue or the element's green), whose 8-bit rounding differs slightly between rasterizers.
+	// The band is intentionally wider than the 1-5 used for flat colors: the two modes differ by
+	// ~127 counts in the green/blue channels, so it still cannot conflate InnerBorderEdge with
+	// OuterBorderEdge. Flat, unblended samples keep a tight tolerance.
+	private const int BlendedBorderTolerance = 20;
+
 	[TestMethod]
 	public async Task When_Border_InnerBorderEdge_Background_Not_Under_Border()
 	{
@@ -195,7 +202,7 @@ public class Given_BackgroundSizing
 		// With InnerBorderEdge, the green background does not extend under the border.
 		// The semi-transparent red border blends with the blue parent background,
 		// producing a pixel with no green component: ~(255, 128, 0, 127).
-		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: BlendedBorderTolerance);
 	}
 
 	[TestMethod]
@@ -226,7 +233,7 @@ public class Given_BackgroundSizing
 		// With OuterBorderEdge, the green background extends under the border.
 		// The semi-transparent red border blends with the green background,
 		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
-		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: BlendedBorderTolerance);
 	}
 
 	[TestMethod]
@@ -257,7 +264,7 @@ public class Given_BackgroundSizing
 		// With OuterBorderEdge, the green background extends under the border.
 		// The semi-transparent red border blends with the green background,
 		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
-		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: BlendedBorderTolerance);
 	}
 
 	[TestMethod]
@@ -288,7 +295,7 @@ public class Given_BackgroundSizing
 		// With OuterBorderEdge, the green background extends under the border.
 		// The semi-transparent red border blends with the green background,
 		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
-		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: BlendedBorderTolerance);
 	}
 
 	[TestMethod]
@@ -322,7 +329,7 @@ public class Given_BackgroundSizing
 		// inner edge, leaving the semi-transparent red border blended with the blue parent:
 		// ~(255, 128, 0, 127). Under OuterBorderEdge it would blend with green instead
 		// (~(255, 128, 127, 0)), so this assertion discriminates between the two modes.
-		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: BlendedBorderTolerance);
 
 		// Inner content area stays green (flat, unblended color).
 		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Lime, tolerance: 5);
@@ -356,7 +363,7 @@ public class Given_BackgroundSizing
 		// With InnerBorderEdge, the green background does not extend under the border.
 		// The semi-transparent red border blends with the blue parent background,
 		// producing a pixel with no green component: ~(255, 128, 0, 127).
-		ImageAssert.HasColorAt(screenshotBefore, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
+		ImageAssert.HasColorAt(screenshotBefore, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: BlendedBorderTolerance);
 
 		// Switch to OuterBorderEdge — green background now extends under the border
 		border.BackgroundSizing = BackgroundSizing.OuterBorderEdge;
@@ -367,7 +374,7 @@ public class Given_BackgroundSizing
 		// With OuterBorderEdge, the green background extends under the border.
 		// The semi-transparent red border blends with the green background,
 		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
-		ImageAssert.HasColorAt(screenshotAfter, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
+		ImageAssert.HasColorAt(screenshotAfter, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: BlendedBorderTolerance);
 	}
 #endif
 
