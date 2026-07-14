@@ -273,7 +273,7 @@ doc/articles/studio/Hot Design/
 
 mergedstyles.xaml
 
-# Generated at build time by GenerateThemeResourceV2File (Uno.UI.FluentTheme.v2/FluentMerge.targets)
+# Generated at build time by _GenerateMergedThemeResourceV2 (Uno.UI.FluentTheme.v2/FluentMerge.targets)
 /src/Uno.UI.FluentTheme.v2/themeresources_v2.xaml
 
 !build/ci/publish
