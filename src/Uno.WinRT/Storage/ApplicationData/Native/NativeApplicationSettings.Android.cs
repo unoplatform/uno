@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Android.Content;
-using Android.Preferences;
 using Windows.Storage;
 
 namespace Uno.Storage;
@@ -55,6 +54,9 @@ partial class NativeApplicationSettings
 		preferences.Edit()?.PutString(key, value)?.Commit();
 	}
 
-	private ISharedPreferences CreatePreferences() =>
-		PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
+	private ISharedPreferences CreatePreferences()
+	{
+		var context = ApplicationData.GetAndroidAppContext();
+		return context.GetSharedPreferences(context.PackageName + "_preferences", FileCreationMode.Private)!;
+	}
 }
