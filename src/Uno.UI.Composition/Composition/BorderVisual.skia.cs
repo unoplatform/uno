@@ -141,6 +141,16 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		_borderShape?.Render(in session);
 	}
 
+	internal override void ApplyPrePaintingClipping(IDrawingSession session)
+	{
+		UpdatePathsAndCornerClip();
+		base.ApplyPrePaintingClipping(session);
+		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
+		{
+			session.ClipRoundRect(rect.ToRoundRectangle(), antialias: true);
+		}
+	}
+
 	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
 		// This method is only important for airspace (to accurately deal with corner radii, etc.),
@@ -178,17 +188,17 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			: base.GetPostPaintingClipping();
 	}
 
-	private protected override void ApplyPostPaintingClipping(SKCanvas canvas)
+	private protected override void ApplyPostPaintingClipping(IDrawingSession session)
 	{
 		if (base.GetPostPaintingClipping() is null)
 		{
 			// At the time of writing, this branch is always taken
 			UpdatePathsAndCornerClip();
-			_childClipCausedByCornerRadius?.ApplyClip(this, new SkiaDrawingSession(canvas));
+			_childClipCausedByCornerRadius?.ApplyClip(this, session);
 		}
 		else if (GetPostPaintingClipping() is { } clip)
 		{
-			canvas.ClipPath(clip);
+			session.ClipPath(new SkiaGeometrySource2D(clip), antialias: true);
 		}
 	}
 

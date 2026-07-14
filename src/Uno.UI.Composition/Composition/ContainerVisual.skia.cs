@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Composition;
@@ -156,6 +157,15 @@ public partial class ContainerVisual : Visual
 	}
 
 	private static SKPath _sparePrePaintingClippingPath = new SKPath();
+
+	internal override void ApplyPrePaintingClipping(IDrawingSession session)
+	{
+		base.ApplyPrePaintingClipping(session);
+		if (GetArrangeClipPathInElementCoordinateSpace() is { } rect)
+		{
+			session.ClipRect(rect, antialias: true);
+		}
+	}
 
 	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
 	{

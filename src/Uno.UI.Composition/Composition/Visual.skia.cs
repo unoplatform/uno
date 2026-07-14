@@ -378,19 +378,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			var preClip = _spareRenderPath;
-
-			preClip.Reset();
-
-			if (GetPrePaintingClipping(preClip))
-			{
-				canvas.ClipPath(preClip, antialias: true);
-			}
+			ApplyPrePaintingClipping(session.Session);
 
 			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
 			{
 				PaintStep(this, session);
-				PostPaintingClipStep(this, canvas);
+				PostPaintingClipStep(this, in session);
 				RenderChildrenStep(this, session, applyChildOptimization);
 			}
 			else
@@ -405,7 +398,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				using (childSession)
 				{
 					PaintStep(this, childSession);
-					PostPaintingClipStep(this, recordingCanvas);
+					PostPaintingClipStep(this, in childSession);
 					RenderChildrenStep(this, childSession, applyChildOptimization);
 				}
 
@@ -458,9 +451,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 		}
 
-		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
+		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 		{
 #if DEBUG
+			var canvas = session.Canvas;
 			canvas.Save();
 			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
@@ -470,7 +464,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
 			canvas.Restore();
 #endif
-			visual.ApplyPostPaintingClipping(canvas);
+			visual.ApplyPostPaintingClipping(session.Session);
 #if DEBUG
 			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
 #endif
@@ -909,16 +903,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		return false;
 	}
 
+	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
+	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
+
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual SKPath? GetPostPaintingClipping() => null;
-	/// <summary>This can be overriden if some Visuals can apply the clipping more optimally than generating a path
-	/// and then applying the clip. Specifically, if the clipping is a simple rectangle, creating an SKPath with the
-	/// rectangle might be a lot more overhead than just calling SKCanvas.ClipRect, specifically on WASM.</summary>
-	private protected virtual void ApplyPostPaintingClipping(SKCanvas canvas)
+	/// <summary>Applies the post-painting (children) clipping to the drawing session. Overridable so simple
+	/// rect/round-rect clips can use the session's ClipRect/ClipRoundRect fast paths instead of a full path.</summary>
+	private protected virtual void ApplyPostPaintingClipping(IDrawingSession session)
 	{
 		if (GetPostPaintingClipping() is { } postClip)
 		{
-			canvas.ClipPath(postClip, antialias: true);
+			session.ClipPath(new SkiaGeometrySource2D(postClip), antialias: true);
 		}
 	}
 
