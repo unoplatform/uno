@@ -179,7 +179,7 @@ partial class AppBar
 
 		// Make sure we're not still registered for back button events when no longer
 		// in the tree.
-		Uno.UI.Xaml.Controls.BackButtonIntegration.UnregisterListener(this);
+		BackButtonIntegration.UnregisterListener(this);
 	}
 
 	private void OnLayoutUpdated(object? sender, object args)
@@ -291,6 +291,9 @@ partial class AppBar
 		// Try "ExpandButton" first (post-threshold name), then "MoreButton" (legacy name).
 		m_tpExpandButton = GetTemplateChild<ButtonBase>("ExpandButton")
 			?? GetTemplateChild<ButtonBase>("MoreButton");
+
+		// TODO Uno: The native CommandBar template bypasses the managed measure/clip logic.
+		UpdateIsNativeTemplate();
 
 		// Attach content root size changed handler.
 		if (m_tpContentRoot is not null)
@@ -518,7 +521,7 @@ partial class AppBar
 
 		if (DXamlCore.Current.BackButtonSupported)
 		{
-			Uno.UI.Xaml.Controls.BackButtonIntegration.RegisterListener(this);
+			BackButtonIntegration.RegisterListener(this);
 		}
 	}
 
@@ -582,7 +585,7 @@ partial class AppBar
 		// Raise the event
 		Closed?.Invoke(this, e);
 
-		Uno.UI.Xaml.Controls.BackButtonIntegration.UnregisterListener(this);
+		BackButtonIntegration.UnregisterListener(this);
 	}
 
 	internal override TabStopProcessingResult ProcessTabStopOverride(
