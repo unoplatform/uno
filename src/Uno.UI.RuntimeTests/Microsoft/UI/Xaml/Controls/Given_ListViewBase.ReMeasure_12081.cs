@@ -38,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12081")]
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("https://github.com/unoplatform/uno/issues/12081 - native ListView re-measure path.")]
 #endif
@@ -67,14 +68,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
-			SUT.MeasureCount = 0;
-			SUT.ArrangeCount = 0;
-
-			var firstContainer = SUT.ContainerFromIndex(0) as ListViewItem;
-			Assert.IsNotNull(firstContainer, "First container should exist");
+			// Container generation is asynchronous in the virtualizing panel.
+			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
 
 			var firstCheckBox = firstContainer.FindFirstDescendant<CheckBox>();
 			Assert.IsNotNull(firstCheckBox, "CheckBox should exist in first item");
+
+			// Reset once the tree has settled, so only the toggle-induced layout work is counted.
+			SUT.MeasureCount = 0;
+			SUT.ArrangeCount = 0;
 
 			firstCheckBox.IsChecked = true;
 
