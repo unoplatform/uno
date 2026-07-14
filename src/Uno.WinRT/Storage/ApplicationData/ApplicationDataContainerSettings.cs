@@ -56,18 +56,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	/// </summary>
 	public uint Size => (uint)Count;
 
-	public int Count
-	{
-		get
-		{
-			// Public settings count is equal to the total number of settings in the container excluding internal settings.
-			var allSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(_container.ContainerPath).Count();
-			var internalSettingsPath = _container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix);
-			var internalSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(internalSettingsPath).Count();
-
-			return allSettingsCount - internalSettingsCount;
-		}
-	}
+	public int Count => GetFullPublicKeys().Count();
 
 	public bool IsReadOnly => false;
 
@@ -160,6 +149,12 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	internal void ClearIncludingInternal() =>
 		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerInternalKey);
 
+	internal object GetInternalValue(string key) =>
+		_nativeApplicationSettings[_container.GetSettingKey(key)];
+
+	internal void SetInternalValue(string key, object value) =>
+		_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	private IEnumerable<string> GetFullPublicKeys() => _nativeApplicationSettings
@@ -168,11 +163,13 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	private bool IsCurrentContainerKey(string key) => key.StartsWith(_container.ContainerPath, StringComparison.Ordinal);
 
 	private bool IsInternalKey(string key) =>
-		key.StartsWith(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix), StringComparison.Ordinal);
+		ApplicationDataContainer.IsInternalKey(GetRelativeKey(key));
 
 	private bool IsCurrentContainerPublicKey(string key) =>
 		IsCurrentContainerKey(key) && !IsInternalKey(key);
 
 	private bool IsCurrentContainerInternalKey(string key) =>
 		IsCurrentContainerKey(key) && IsInternalKey(key);
+
+	private string GetRelativeKey(string key) => key.Substring(_container.ContainerPath.Length);
 }

@@ -13,15 +13,19 @@ namespace Windows.Storage;
 /// creating, deleting, enumerating, and traversing the container hierarchy.
 /// </summary>
 /// <remarks>
-/// Settings are stored in platform-specific preference stores. Some keys are used internally by Uno Platform,
-/// and are not surfaced via the public API. These keys are prefixed with "__".
-/// To provide the concept of nested containers, we use the "__�" prefix in key names as the container path separator.
+/// Settings are stored in platform-specific preference stores. A few keys are used internally by Uno Platform
+/// and are not surfaced via the public API: the container list, the app data version, and the keys of nested
+/// containers (which carry a "__{name}{separator}" path prefix).
+/// Internal keys are matched exactly rather than by their "__" prefix: applications built against earlier
+/// versions of Uno Platform may already have stored keys starting with "__", and those must keep behaving
+/// as ordinary settings.
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
 	internal const string InternalSettingPrefix = "__";
 	private const string ContainerSeparator = "�";
-	private const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
+	internal const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
+	internal const string VersionSettingKey = InternalSettingPrefix + "ApplicationDataVersion";
 
 	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
 	private readonly NativeApplicationSettings _nativeApplicationSettings;
@@ -47,6 +51,23 @@ public partial class ApplicationDataContainer : IDisposable
 
 	internal string GetSettingKey(string key) => ContainerPath + key;
 
+	/// <summary>
+	/// Determines whether a key, relative to a container, is owned by Uno Platform rather than by the application.
+	/// </summary>
+	/// <param name="relativeKey">The key, with the owning container's path already removed.</param>
+	internal static bool IsInternalKey(string relativeKey) =>
+		relativeKey == ContainerListKey ||
+		relativeKey == VersionSettingKey ||
+		IsNestedContainerKey(relativeKey);
+
+	/// <summary>
+	/// Keys of a nested container are stored with a "__{name}{separator}" path prefix, so the separator
+	/// is what distinguishes them from an application key that merely starts with "__".
+	/// </summary>
+	private static bool IsNestedContainerKey(string relativeKey) =>
+		relativeKey.StartsWith(InternalSettingPrefix, StringComparison.Ordinal) &&
+		relativeKey.Contains(ContainerSeparator, StringComparison.Ordinal);
+
 	public ApplicationDataLocality Locality { get; }
 
 	public string Name { get; }
@@ -63,10 +84,11 @@ public partial class ApplicationDataContainer : IDisposable
 		{
 			foreach (var containerName in containerList.Split(ContainerSeparator))
 			{
-				if (containerName.Length > 0)
+				// The list is tolerated rather than trusted: an app upgrading from an earlier Uno Platform
+				// version may already own this key, and a duplicate entry must not throw on every access.
+				if (containerName.Length > 0 && !containers.ContainsKey(containerName))
 				{
-					var container = new ApplicationDataContainer(this, containerName);
-					containers.Add(containerName, container);
+					containers.Add(containerName, new ApplicationDataContainer(this, containerName));
 				}
 			}
 		}

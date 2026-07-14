@@ -801,5 +801,41 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual("rootValue", SUT.Values["rootSetting"]);
 			Assert.HasCount(0, SUT.Containers);
 		}
+
+		[TestMethod]
+		public void When_Key_Starts_With_Underscores()
+		{
+			// Apps built against earlier versions of Uno Platform may already have stored keys starting
+			// with "__". Those are ordinary settings and must stay fully visible through the public API.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			SUT.Values["__legacy"] = "value";
+
+			Assert.IsTrue(SUT.Values.ContainsKey("__legacy"));
+			Assert.AreEqual("value", SUT.Values["__legacy"]);
+			Assert.Contains("__legacy", SUT.Values.Keys);
+			Assert.Contains("value", SUT.Values.Values);
+			Assert.HasCount(1, SUT.Values);
+			Assert.Contains(new KeyValuePair<string, object>("__legacy", "value"), SUT.Values.ToList());
+
+			SUT.Values.Clear();
+
+			Assert.IsFalse(SUT.Values.ContainsKey("__legacy"));
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Keys_Are_Hidden_From_Parent()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+
+			var container = SUT.CreateContainer("child", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			// The child's keys and the container bookkeeping must not leak into the parent's settings.
+			Assert.HasCount(1, SUT.Values);
+			Assert.Contains("rootSetting", SUT.Values.Keys);
+			Assert.AreEqual(1, SUT.Values.Keys.Count);
+		}
 	}
 }

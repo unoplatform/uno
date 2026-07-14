@@ -25,8 +25,6 @@ public sealed partial class ApplicationData
 	private readonly Lazy<ApplicationDataContainer> _localSettingsLazy;
 	private readonly Lazy<ApplicationDataContainer> _roamingSettingsLazy;
 
-	private const string VersionSettingKey = ApplicationDataContainer.InternalSettingPrefix + "ApplicationDataVersion";
-
 	private ApplicationData()
 	{
 		_localFolderLazy = new(() => CreateStorageFolder(GetLocalFolder()));
@@ -158,15 +156,9 @@ public sealed partial class ApplicationData
 			throw new InvalidOperationException("The settings container is not initialized.");
 		}
 
-		if (settings.TryGetValue(VersionSettingKey, out var version))
-		{
-			if (version is uint versionValue)
-			{
-				return versionValue;
-			}
-		}
-
-		return 0;
+		return settings.GetInternalValue(ApplicationDataContainer.VersionSettingKey) is uint versionValue
+			? versionValue
+			: 0;
 	}
 
 	private void SetVersionSetting(uint version)
@@ -175,7 +167,8 @@ public sealed partial class ApplicationData
 		{
 			throw new InvalidOperationException("The settings container is not initialized.");
 		}
-		settings[VersionSettingKey] = version;
+
+		settings.SetInternalValue(ApplicationDataContainer.VersionSettingKey, version);
 	}
 
 	private static StorageFolder CreateStorageFolder(string folder)
