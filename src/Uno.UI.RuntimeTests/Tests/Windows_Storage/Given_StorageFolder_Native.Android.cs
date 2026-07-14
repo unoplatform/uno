@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		{
 			var localCache = ApplicationData.Current.LocalCacheFolder.Path;
 			var directory = new File(localCache);
-			var documentFile = DocumentFile.FromFile(directory);
+			var documentFile = DocumentFile.FromFile(directory) ?? throw new InvalidOperationException($"DocumentFile.FromFile('{directory}') return null!");
 			var rootFolder = StorageFolder.GetFromSafDocument(documentFile);
 			return Task.FromResult(rootFolder);
 		}

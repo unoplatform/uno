@@ -18,18 +18,18 @@
 
 			<!-- References from Uno.UI.Toolkit -->
 			<!-- BEGIN UWP-excluded -->
-			<group targetFramework="net9.0-windows10.0.19041.0">
+			<group targetFramework="net10.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
-			<group targetFramework="net10.0-windows10.0.19041.0">
+			<group targetFramework="net11.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
 			<!-- END UWP-excluded -->
 
 			<!-- .NET 9 (Reference API) -->
-			<group targetFramework="net10.0">
+			<group targetFramework="net11.0">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.6.1" />
@@ -37,7 +37,7 @@
 			</group>
 
 			<!-- .NET 8 (Reference API) -->
-			<group targetFramework="net9.0">
+			<group targetFramework="net10.0">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="System.Numerics.Vectors" version="4.5.0" />
 				<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
@@ -51,7 +51,7 @@
 
 		<references>
 			<!-- .NET 8.0 Reference -->
-			<group targetFramework="net9.0">
+			<group targetFramework="net10.0">
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
@@ -62,7 +62,7 @@
 			</group>
 
 			<!-- .NET 9.0 Reference -->
-			<group targetFramework="net10.0">
+			<group targetFramework="net11.0">
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
@@ -91,17 +91,31 @@
 
 		<!-- BEGIN UWP-excluded -->
 		<!-- netcurrent, currently using netprevious to avoid netcore build issues -->
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net9.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net9.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net9.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net9.0-windows10.0.19041.0\Uno.UI.Toolkit" />
-
-		<!-- Duplicated block to avoid nuget from downgrading to net10.0 -->
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net10.0-windows10.0.19041.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net10.0-windows10.0.19041.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net10.0-windows10.0.19041.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net10.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+
+		<!-- Duplicated block to avoid nuget from downgrading to net11.0 -->
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net11.0-windows10.0.19041.0\Uno.UI.Toolkit" />
 		<!-- END UWP-excluded -->
+
+		<!-- net11.0 reference -->
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net11.0\Uno.UI.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net11.0\Uno.UI.Composition.dll" target="lib\net11.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net11.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net11.0\Uno.UI.FluentTheme.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net11.0\Uno.UI.FluentTheme.v1.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net11.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Reference\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Reference\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net11.0\Uno.UI.Toolkit.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net11.0\Uno.UI.Toolkit.pdb" target="lib\net11.0" />
 
 		<!-- net10.0 reference -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net10.0\Uno.UI.dll" target="lib\net10.0" />
@@ -117,19 +131,22 @@
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net10.0\Uno.UI.Toolkit.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net10.0\Uno.UI.Toolkit.pdb" target="lib\net10.0" />
 
-		<!-- net9.0 reference -->
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.UI.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net9.0\Uno.UI.Composition.dll" target="lib\net9.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net9.0\Uno.UI.FluentTheme.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net9.0\Uno.UI.FluentTheme.pdb" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net9.0\Uno.UI.FluentTheme.v1.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net9.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Reference\Release\net9.0\Uno.UI.FluentTheme.v2.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Reference\Release\net9.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net9.0\Uno.UI.Toolkit.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net9.0\Uno.UI.Toolkit.pdb" target="lib\net9.0" />
+		<!-- net11.0 Skia -->
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net11.0\Uno.UI.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net11.0\Uno.UI.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net11.0\*.xml" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net11.0\Uno.UI.FluentTheme.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net11.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net11.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net11.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net11.0\skia" />
 
 		<!-- net10.0 Skia -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net10.0\Uno.UI.dll" target="uno-runtime\net10.0\skia" />
@@ -147,23 +164,6 @@
 		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net10.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.dll" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net10.0\skia" />
-
-		<!-- net9.0 Skia -->
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.UI.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.UI.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net9.0\Uno.UI.Composition.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net9.0\Uno.UI.Composition.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net9.0\*.xml" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net9.0\Uno.UI.FluentTheme.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net9.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net9.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net9.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net9.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net9.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net9.0\Uno.UI.Toolkit.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net9.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net9.0\skia" />
 
 		<!-- Analyzers -->
 		<file src="..\..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers/dotnet/cs" />
@@ -186,27 +186,27 @@
 		<!-- Currently, we're using PkgUno_WinUI in few places. In case we replace its usage with something else, we can remove this empty tools folder -->
 		<file src="_._" target="tools" />
 
-		<file src="Uno.WinUI.targets" target="buildTransitive\net9.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net9.0-android30.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net9.0-ios18.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net9.0-tvos18.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net9.0-maccatalyst18.0" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-android36.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-tvos26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-maccatalyst26.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-windows" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-android37.0" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-ios26.5" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-tvos26.5" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-maccatalyst26.5" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-windows" />
 
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-android30.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-ios18.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-tvos18.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-maccatalyst18.0" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net10.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-android36.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-tvos26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-maccatalyst26.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-windows" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-android37.0" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-ios26.5" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-tvos26.5" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-maccatalyst26.5" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-windows" />
 
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />

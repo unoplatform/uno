@@ -188,15 +188,15 @@ namespace Uno.WinAppSDKSyncGenerator
 			// all three sets of symbols.
 			var platformProject = @"..\..\..\Uno.UWP\Uno";
 
-			_iOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net9.0-ios18.0");
-			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net9.0-tvos18.0");
-			_androidCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net9.0-android");
+			_iOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-ios26.0");
+			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
+			_androidCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-android");
 
 			// Skia and Reference surfaces still come from Uno.UI (kept); it carries the
 			// Uno.UWP / Uno.Foundation / Uno.UI.Dispatching symbols transitively.
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net9.0");
-			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net9.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net9.0");
+			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net10.0");
+			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");

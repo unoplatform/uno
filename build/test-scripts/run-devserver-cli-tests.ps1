@@ -1823,7 +1823,7 @@ function Test-PackageContent {
     Expand-Archive -Path $devServerPkg.FullName -DestinationPath $extractDir
 
     # Verify both TFM Host binaries are present
-    foreach ($tfm in @('net9.0', 'net10.0')) {
+    foreach ($tfm in @('net10.0', 'net11.0')) {
         $hostDll = Join-Path $extractDir "tools/rc/host/$tfm/Uno.UI.RemoteControl.Host.dll"
         if (-not (Test-Path $hostDll)) {
             throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"

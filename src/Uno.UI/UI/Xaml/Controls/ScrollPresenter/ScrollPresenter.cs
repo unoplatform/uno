@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollPresenter.cpp, commit b8cfb8490
 
 using System;
 using System.Collections.Generic;
@@ -235,6 +236,19 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	public double ScrollableWidth => Math.Max(0.0, GetZoomedExtentWidth() - ViewportWidth);
 
 	public double ScrollableHeight => Math.Max(0.0, GetZoomedExtentHeight() - ViewportHeight);
+
+	// AnticipatedZoomedHorizontalOffset, AnticipatedZoomedVerticalOffset and AnticipatedZoomFactor are
+	// used to evaluate the view for the ScrollStarting/ZoomStarting events raised when a ScrollTo, ScrollBy,
+	// ZoomTo or ZoomBy request is handed off to the InteractionTracker.
+	private double AnticipatedZoomedHorizontalOffset() => double.IsNaN(m_anticipatedZoomedHorizontalOffset) ? m_zoomedHorizontalOffset : m_anticipatedZoomedHorizontalOffset;
+
+	private double AnticipatedZoomedVerticalOffset() => double.IsNaN(m_anticipatedZoomedVerticalOffset) ? m_zoomedVerticalOffset : m_anticipatedZoomedVerticalOffset;
+
+	private float AnticipatedZoomFactor() => float.IsNaN(m_anticipatedZoomFactor) ? m_zoomFactor : m_anticipatedZoomFactor;
+
+	private double AnticipatedScrollableWidth() => Math.Max(0.0, m_unzoomedExtentWidth * AnticipatedZoomFactor() - ViewportWidth);
+
+	private double AnticipatedScrollableHeight() => Math.Max(0.0, m_unzoomedExtentHeight * AnticipatedZoomFactor() - ViewportHeight);
 
 	public IScrollController HorizontalScrollController
 	{
@@ -3908,6 +3922,11 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 							unhookCompositionTargetRendering = false;
 						}
 						m_interactionTrackerAsyncOperations.Remove(interactionTrackerAsyncOperation);
+
+						if (m_interactionTrackerAsyncOperations.Count == 0)
+						{
+							ResetAnticipatedView();
+						}
 					}
 					else
 					{
@@ -5112,6 +5131,42 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 	}
 
+	void UpdateAnticipatedOffset(ScrollPresenterDimension dimension, double zoomedOffset)
+	{
+		if (dimension == ScrollPresenterDimension.HorizontalScroll)
+		{
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedHorizontalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedHorizontalOffset != zoomedOffset)
+			{
+				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedHorizontalOffset", m_anticipatedZoomedHorizontalOffset, zoomedOffset);
+
+				m_anticipatedZoomedHorizontalOffset = zoomedOffset;
+			}
+		}
+		else
+		{
+			MUX_ASSERT(dimension == ScrollPresenterDimension.VerticalScroll);
+			bool sameNaN = double.IsNaN(m_anticipatedZoomedVerticalOffset) && double.IsNaN(zoomedOffset);
+			if (!sameNaN && m_anticipatedZoomedVerticalOffset != zoomedOffset)
+			{
+				// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_DBL_DBL, METH_NAME, this, L"old/new anticipatedZoomedVerticalOffset", m_anticipatedZoomedVerticalOffset, zoomedOffset);
+
+				m_anticipatedZoomedVerticalOffset = zoomedOffset;
+			}
+		}
+	}
+
+	void UpdateAnticipatedZoomFactor(float zoomFactor)
+	{
+		bool sameNaN = float.IsNaN(m_anticipatedZoomFactor) && float.IsNaN(zoomFactor);
+		if (!sameNaN && m_anticipatedZoomFactor != zoomFactor)
+		{
+			// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_FLT_FLT, METH_NAME, this, L"old/new anticipatedZoomFactor", m_anticipatedZoomFactor, zoomFactor);
+
+			m_anticipatedZoomFactor = zoomFactor;
+		}
+	}
+
 	void UpdateOffset(ScrollPresenterDimension dimension, double zoomedOffset)
 	{
 		if (dimension == ScrollPresenterDimension.HorizontalScroll)
@@ -5867,6 +5922,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			}
 		}
 
+		double anticipatedZoomedHorizontalOffset = double.NaN;
+		double anticipatedZoomedVerticalOffset = double.NaN;
+
 		switch (offsetsChange.ViewKind())
 		{
 #if ScrollPresenterViewKind_RelativeToEndOfInertiaView // UNO TODO
@@ -5880,10 +5938,14 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 #endif
 			case ScrollPresenterViewKind.RelativeToCurrentView:
 				{
+					anticipatedZoomedHorizontalOffset = AnticipatedZoomedHorizontalOffset();
+					anticipatedZoomedVerticalOffset = AnticipatedZoomedVerticalOffset();
+
 					if (snapPointsMode == ScrollingSnapPointsMode.Default || animationMode == ScrollingAnimationMode.Enabled)
 					{
-						zoomedHorizontalOffset += m_zoomedHorizontalOffset;
-						zoomedVerticalOffset += m_zoomedVerticalOffset;
+						// The new requested deltas are added to the prior deltas that have not been processed yet.
+						zoomedHorizontalOffset += anticipatedZoomedHorizontalOffset;
+						zoomedVerticalOffset += anticipatedZoomedVerticalOffset;
 					}
 					break;
 				}
@@ -5923,6 +5985,22 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 						m_latestInteractionTrackerRequest = m_interactionTracker.TryUpdatePositionBy(
 							new Vector3((float)zoomedHorizontalOffset, (float)zoomedVerticalOffset, 0.0f));
 						m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdatePositionBy;
+
+						if (zoomedHorizontalOffset != 0.0)
+						{
+							double newAnticipatedZoomedHorizontalOffset = zoomedHorizontalOffset + anticipatedZoomedHorizontalOffset;
+							newAnticipatedZoomedHorizontalOffset = Math.Max(0.0, newAnticipatedZoomedHorizontalOffset);
+							newAnticipatedZoomedHorizontalOffset = Math.Min(AnticipatedScrollableWidth(), newAnticipatedZoomedHorizontalOffset);
+							UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, newAnticipatedZoomedHorizontalOffset);
+						}
+
+						if (zoomedVerticalOffset != 0.0)
+						{
+							double newAnticipatedZoomedVerticalOffset = zoomedVerticalOffset + anticipatedZoomedVerticalOffset;
+							newAnticipatedZoomedVerticalOffset = Math.Max(0.0, newAnticipatedZoomedVerticalOffset);
+							newAnticipatedZoomedVerticalOffset = Math.Min(AnticipatedScrollableHeight(), newAnticipatedZoomedVerticalOffset);
+							UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, newAnticipatedZoomedVerticalOffset);
+						}
 					}
 					else
 					{
@@ -5936,7 +6014,21 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 						m_latestInteractionTrackerRequest = m_interactionTracker.TryUpdatePosition(
 							new Vector3(targetPosition, 0.0f));
 						m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdatePosition;
+
+						double newAnticipatedZoomedHorizontalOffset = Math.Max(0.0, zoomedHorizontalOffset);
+						newAnticipatedZoomedHorizontalOffset = Math.Min(AnticipatedScrollableWidth(), newAnticipatedZoomedHorizontalOffset);
+						UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, newAnticipatedZoomedHorizontalOffset);
+
+						double newAnticipatedZoomedVerticalOffset = Math.Max(0.0, zoomedVerticalOffset);
+						newAnticipatedZoomedVerticalOffset = Math.Min(AnticipatedScrollableHeight(), newAnticipatedZoomedVerticalOffset);
+						UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, newAnticipatedZoomedVerticalOffset);
 					}
+
+					RaiseScrollStarting(
+						offsetsChangeCorrelationId,
+						AnticipatedZoomedHorizontalOffset(),
+						AnticipatedZoomedVerticalOffset(),
+						AnticipatedZoomFactor());
 
 					if (isForAsyncOperation)
 					{
@@ -5957,6 +6049,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 							operationTrigger,
 							offsetsChangeCorrelationId));
 					m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdatePositionWithAnimation;
+
+					ResetAnticipatedView();
 					break;
 				}
 		}
@@ -6022,6 +6116,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		m_latestInteractionTrackerRequest = m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(
 			new Vector3(offsetsVelocity, 0.0f));
 		m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdatePositionWithAdditionalVelocity;
+
+		ResetAnticipatedView();
 	}
 
 	// Restores the default scroll inertia decay rate if no offset change with additional velocity operation is in progress.
@@ -6083,7 +6179,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 #endif
 			case ScrollPresenterViewKind.RelativeToCurrentView:
 				{
-					zoomFactor += m_zoomFactor;
+					// The new requested delta is added to the prior deltas that have not been processed yet.
+					zoomFactor += AnticipatedZoomFactor();
 					break;
 				}
 		}
@@ -6110,6 +6207,25 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 					m_latestInteractionTrackerRequest = m_interactionTracker.TryUpdateScale(zoomFactor, centerPoint);
 					m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdateScale;
 
+					double newAnticipatedZoomedHorizontalOffset = zoomFactor / AnticipatedZoomFactor() * (AnticipatedZoomedHorizontalOffset() + centerPoint.X) - centerPoint.X;
+					double newAnticipatedZoomedVerticalOffset = zoomFactor / AnticipatedZoomFactor() * (AnticipatedZoomedVerticalOffset() + centerPoint.Y) - centerPoint.Y;
+
+					UpdateAnticipatedZoomFactor(zoomFactor);
+
+					newAnticipatedZoomedHorizontalOffset = Math.Max(0.0, newAnticipatedZoomedHorizontalOffset);
+					newAnticipatedZoomedHorizontalOffset = Math.Min(AnticipatedScrollableWidth(), newAnticipatedZoomedHorizontalOffset);
+					UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, newAnticipatedZoomedHorizontalOffset);
+
+					newAnticipatedZoomedVerticalOffset = Math.Max(0.0, newAnticipatedZoomedVerticalOffset);
+					newAnticipatedZoomedVerticalOffset = Math.Min(AnticipatedScrollableHeight(), newAnticipatedZoomedVerticalOffset);
+					UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, newAnticipatedZoomedVerticalOffset);
+
+					RaiseZoomStarting(
+						zoomFactorChangeCorrelationId,
+						newAnticipatedZoomedHorizontalOffset,
+						newAnticipatedZoomedVerticalOffset,
+						zoomFactor);
+
 					HookCompositionTargetRendering();
 					break;
 				}
@@ -6123,6 +6239,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 						GetZoomFactorAnimation(zoomFactor, centerPoint2D, zoomFactorChangeCorrelationId),
 						centerPoint);
 					m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdateScaleWithAnimation;
+
+					ResetAnticipatedView();
 					break;
 				}
 		}
@@ -6167,6 +6285,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			zoomFactorVelocity,
 			centerPoint);
 		m_lastInteractionTrackerAsyncOperationType = InteractionTrackerAsyncOperationType.TryUpdateScaleWithAdditionalVelocity;
+
+		ResetAnticipatedView();
 	}
 
 	// Restores the default zoomFactor inertia decay rate if no zoomFactor change with additional velocity operation is in progress.
@@ -6190,6 +6310,17 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 
 		m_interactionTracker.ScaleInertiaDecayRate = null;
+	}
+
+	// Clears the last recorded anticipated view for the ScrollStarting/ZoomStarting events.
+	// Called in two classes of circumstances:
+	// - all queued view change requested were completed,
+	// - an animated view change request is handed off to the InteractionTracker.
+	void ResetAnticipatedView()
+	{
+		UpdateAnticipatedOffset(ScrollPresenterDimension.HorizontalScroll, double.NaN);
+		UpdateAnticipatedOffset(ScrollPresenterDimension.VerticalScroll, double.NaN);
+		UpdateAnticipatedZoomFactor(float.NaN);
 	}
 
 	void CompleteViewChange(
@@ -6298,6 +6429,11 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 					m_interactionTrackerAsyncOperations.Remove(interactionTrackerAsyncOperationRemoved);
 
+					if (m_interactionTrackerAsyncOperations.Count == 0)
+					{
+						ResetAnticipatedView();
+					}
+
 					switch (interactionTrackerAsyncOperationRemoved.GetOperationType())
 					{
 						case InteractionTrackerAsyncOperationType.TryUpdatePositionWithAdditionalVelocity:
@@ -6321,12 +6457,18 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		// SCROLLPRESENTER_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
-		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations)
+		// Uno: iterate a snapshot to allow Remove() inside the loop.
+		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 		{
 			if (interactionTrackerAsyncOperation.IsDelayed())
 			{
 				CompleteViewChange(interactionTrackerAsyncOperation, ScrollPresenterViewChangeResult.Interrupted);
 				m_interactionTrackerAsyncOperations.Remove(interactionTrackerAsyncOperation);
+
+				if (m_interactionTrackerAsyncOperations.Count == 0)
+				{
+					ResetAnticipatedView();
+				}
 			}
 		}
 	}
@@ -6920,6 +7062,50 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	void RaiseStateChanged()
 	{
 		StateChanged?.Invoke(this, null);
+	}
+
+	void RaiseScrollStarting(
+		int offsetsChangeCorrelationId,
+		double anticipatedHorizontalOffset,
+		double anticipatedVerticalOffset,
+		float anticipatedZoomFactor)
+	{
+		if (ScrollStarting is not null)
+		{
+			var scrollStartingEventArgs = new ScrollingScrollStartingEventArgs();
+
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, offsetsChangeCorrelationId);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
+
+			scrollStartingEventArgs.SetCorrelationId(offsetsChangeCorrelationId);
+			scrollStartingEventArgs.SetHorizontalOffset(anticipatedHorizontalOffset);
+			scrollStartingEventArgs.SetVerticalOffset(anticipatedVerticalOffset);
+			scrollStartingEventArgs.SetZoomFactor(anticipatedZoomFactor);
+			ScrollStarting.Invoke(this, scrollStartingEventArgs);
+		}
+	}
+
+	void RaiseZoomStarting(
+		int zoomFactorChangeCorrelationId,
+		double anticipatedHorizontalOffset,
+		double anticipatedVerticalOffset,
+		float anticipatedZoomFactor)
+	{
+		if (ZoomStarting is not null)
+		{
+			var zoomStartingEventArgs = new ScrollingZoomStartingEventArgs();
+
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_INT, METH_NAME, this, zoomFactorChangeCorrelationId);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_DBL_DBL, METH_NAME, this, anticipatedHorizontalOffset, anticipatedVerticalOffset);
+			// SCROLLPRESENTER_TRACE_INFO(*this, TRACE_MSG_METH_FLT, METH_NAME, this, anticipatedZoomFactor);
+
+			zoomStartingEventArgs.SetCorrelationId(zoomFactorChangeCorrelationId);
+			zoomStartingEventArgs.SetHorizontalOffset(anticipatedHorizontalOffset);
+			zoomStartingEventArgs.SetVerticalOffset(anticipatedVerticalOffset);
+			zoomStartingEventArgs.SetZoomFactor(anticipatedZoomFactor);
+			ZoomStarting.Invoke(this, zoomStartingEventArgs);
+		}
 	}
 
 	void RaiseViewChanged()
