@@ -38,6 +38,7 @@ internal class Win32RawElementProvider :
 	private readonly Win32Accessibility _accessibility;
 	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
+	private bool _isInvalidating;
 	private bool _isInvalidated;
 	private const int MaxHitTestDepth = 1024;
 
@@ -84,7 +85,7 @@ internal class Win32RawElementProvider :
 	/// </remarks>
 	internal void Invalidate(HashSet<Win32RawElementProvider>? visited = null)
 	{
-		if (_isRoot || _isInvalidated)
+		if (_isRoot || _isInvalidating || _isInvalidated)
 		{
 			return;
 		}
@@ -95,34 +96,36 @@ internal class Win32RawElementProvider :
 			return;
 		}
 
-		_isInvalidated = true;
-
-		var children = _cachedAutomationChildren;
-		_cachedAutomationChildren = null;
-		if (children is not null)
-		{
-			for (var i = 0; i < children.Count; i++)
-			{
-				var childProvider = _accessibility.TryGetExistingProviderResolvingEventsSource(children[i]);
-				if (childProvider is not null && !ReferenceEquals(childProvider, this))
-				{
-					childProvider.Invalidate(visited);
-				}
-			}
-		}
-
-		_accessibility.OnProviderInvalidated(this);
-
+		_isInvalidating = true;
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaDisconnectProvider(this);
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			var children = _cachedAutomationChildren;
+			_cachedAutomationChildren = null;
+			if (children is not null)
 			{
-				this.Log().Debug($"UiaDisconnectProvider failed for {DescribeElement()}: {ex.Message}");
+				for (var i = 0; i < children.Count; i++)
+				{
+					var childProvider = _accessibility.TryGetExistingProviderResolvingEventsSource(children[i]);
+					if (childProvider is not null && !ReferenceEquals(childProvider, this))
+					{
+						childProvider.Invalidate(visited);
+					}
+				}
 			}
+
+			_accessibility.OnProviderInvalidated(this);
+
+			// UIA can call back into the provider while disconnecting it.
+			if (!Win32UIAutomationInterop.TryDisconnectProvider(this, out var error)
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[UIA] UiaDisconnectProvider failed for {DescribeElement()}.", error);
+			}
+		}
+		finally
+		{
+			_isInvalidated = true;
+			_isInvalidating = false;
 		}
 	}
 

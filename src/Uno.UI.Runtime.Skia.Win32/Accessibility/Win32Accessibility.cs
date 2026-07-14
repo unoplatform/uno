@@ -754,16 +754,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// process-wide and would disconnect providers belonging to other windows.
 		foreach (var pair in _providers)
 		{
-			try
+			if (!Win32UIAutomationInterop.TryDisconnectProvider(pair.Value, out var error)
+				&& this.Log().IsEnabled(LogLevel.Warning))
 			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pair.Value);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
-				}
+				this.Log().Warn("[UIA] UiaDisconnectProvider failed during dispose.", error);
 			}
 		}
 
@@ -775,16 +769,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			{
 				continue;
 			}
-			try
+			if (!Win32UIAutomationInterop.TryDisconnectProvider(pane, out var error)
+				&& this.Log().IsEnabled(LogLevel.Warning))
 			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pane);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"[UIA] UiaDisconnectProvider failed for synthetic pane during dispose: {ex.Message}");
-				}
+				this.Log().Warn("[UIA] UiaDisconnectProvider failed for synthetic pane during dispose.", error);
 			}
 		}
 

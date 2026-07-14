@@ -356,8 +356,30 @@ internal static class Win32UIAutomationInterop
 		[MarshalAs(UnmanagedType.BStr)] string? displayString,
 		[MarshalAs(UnmanagedType.BStr)] string? activityId);
 
+	internal static bool TryDisconnectProvider(IRawElementProviderSimple provider, out Exception? error)
+	{
+		try
+		{
+			var hResult = UiaDisconnectProvider(provider);
+			if (hResult >= 0)
+			{
+				error = null;
+				return true;
+			}
+
+			error = Marshal.GetExceptionForHR(hResult)
+				?? new COMException($"UiaDisconnectProvider failed with HRESULT 0x{hResult:X8}.", hResult);
+			return false;
+		}
+		catch (Exception exception)
+		{
+			error = exception;
+			return false;
+		}
+	}
+
 	[DllImport("uiautomationcore.dll")]
-	internal static extern int UiaDisconnectProvider(
+	private static extern int UiaDisconnectProvider(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider);
 
 	/// <summary>
