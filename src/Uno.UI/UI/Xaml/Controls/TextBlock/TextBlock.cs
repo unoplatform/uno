@@ -607,7 +607,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -616,7 +616,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(

@@ -1746,9 +1746,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnKeyDown(args);
 
-			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
-			// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
-			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
 			var key = args.Key;
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling

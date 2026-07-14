@@ -1696,7 +1696,6 @@ public partial class NavigationView : ContentControl
 										var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
 										footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
 									}
-									// TODO:MZ: Is this still needed for iOS?
 									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredHeightFor(footerItemsRepeater, LayoutUtils.c_infSize);
 									return footerItemsDesiredHeight + footerItemsRepeaterTopBottomMargin;
 								}
