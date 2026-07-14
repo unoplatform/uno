@@ -104,7 +104,7 @@ public class Given_Storyboard
 
 		int run1Completed = 0;
 		int run2Completed = 0;
-		storyboard.Completed += (s, e) => run1Completed = 1;
+		storyboard.Completed += (s, e) => run1Completed++;
 
 		// First run
 		storyboard.Begin();
@@ -114,7 +114,7 @@ public class Given_Storyboard
 		Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100 after first run");
 
 		// Second run without explicit Stop - should also complete
-		storyboard.Completed += (s, e) => run2Completed = 1;
+		storyboard.Completed += (s, e) => run2Completed++;
 		storyboard.Begin();
 		await TestServices.WindowHelper.WaitFor(() => run2Completed > 0, timeoutMS: 3000);
 
