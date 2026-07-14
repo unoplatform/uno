@@ -3,36 +3,36 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ControllerOptions
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowHostInputProcessing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ControllerOptions.AllowHostInputProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ControllerOptions.AllowHostInputProcessing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "AllowHostInputProcessing");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "bool CoreWebView2ControllerOptions.AllowHostInputProcessing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "AllowHostInputProcessing");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Color DefaultBackgroundColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color CoreWebView2ControllerOptions.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CoreWebView2ControllerOptions.DefaultBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "DefaultBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "Color CoreWebView2ControllerOptions.DefaultBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "DefaultBackgroundColor");
 			}
 		}
 #endif

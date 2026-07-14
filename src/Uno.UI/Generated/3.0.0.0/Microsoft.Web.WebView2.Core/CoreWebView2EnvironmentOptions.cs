@@ -3,97 +3,97 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2EnvironmentOptions
 	{
 		// Skipping already declared property AdditionalBrowserArguments
 		// Skipping already declared property AllowSingleSignOnUsingOSPrimaryAccount
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreBrowserExtensionsEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AreBrowserExtensionsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AreBrowserExtensionsEnabled");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ChannelSearchKind ChannelSearchKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ChannelSearchKind%20CoreWebView2EnvironmentOptions.ChannelSearchKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ChannelSearchKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ChannelSearchKind");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration> CustomSchemeRegistrations
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCoreWebView2CustomSchemeRegistration%3E%20CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CustomSchemeRegistrations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CustomSchemeRegistrations");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool EnableTrackingPrevention
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "EnableTrackingPrevention");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "EnableTrackingPrevention");
 			}
 		}
 #endif
 		// Skipping already declared property ExclusiveUserDataFolderAccess
 		// Skipping already declared property IsCustomCrashReportingEnabled
 		// Skipping already declared property Language
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ReleaseChannels ReleaseChannels
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ReleaseChannels%20CoreWebView2EnvironmentOptions.ReleaseChannels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ReleaseChannels");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ReleaseChannels");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ScrollbarStyle ScrollBarStyle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ScrollbarStyle%20CoreWebView2EnvironmentOptions.ScrollBarStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ScrollBarStyle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ScrollBarStyle");
 			}
 		}
 #endif
