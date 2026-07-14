@@ -13,6 +13,28 @@
 		-->
 		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<!-- Honor UnoTargetFrameworkOverride (CI + local single-TFM builds), as the other heads do -->
+	<Import Project="..\..\targetframework-override.props" />
+
+	<!--
+	Windows MSIX is built with MSBuild.exe /t:Publish (no `dotnet -f`). A single-valued but still
+	*plural* <TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects
+	it (NETSDK1129). Collapse the head to a single TargetFramework for the windows override so Publish
+	runs the inner build directly. Scope it to THIS project (not a global /p:TargetFramework, which
+	would also force the TFM onto dependencies like the netstandard2.0 Uno.UI.Tasks pre-build → CS0234).
+
+	Here TargetFramework is set by the project, not passed in as a global property, so it is empty until
+	this point. MSBuild evaluates properties in document order: everything reading $(TargetFramework)
+	must therefore come below, or it silently sees an empty TFM.
+	-->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)')) == 'windows'">
+		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
+		<TargetFrameworks></TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
 		<AssemblyName>SamplesApp</AssemblyName>
@@ -54,21 +76,6 @@
 
 		<!-- Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the source heads do -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
-	</PropertyGroup>
-
-	<!-- Honor UnoTargetFrameworkOverride (CI + local single-TFM builds), as the other heads do -->
-	<Import Project="..\..\targetframework-override.props" />
-
-	<!--
-	Windows MSIX is built with MSBuild.exe /t:Publish (no `dotnet -f`). A single-valued but still
-	*plural* <TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects
-	it (NETSDK1129). Collapse the head to a single TargetFramework for the windows override so Publish
-	runs the inner build directly. Scope it to THIS project (not a global /p:TargetFramework, which
-	would also force the TFM onto dependencies like the netstandard2.0 Uno.UI.Tasks pre-build → CS0234).
-	-->
-	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)')) == 'windows'">
-		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
-		<TargetFrameworks></TargetFrameworks>
 	</PropertyGroup>
 
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
