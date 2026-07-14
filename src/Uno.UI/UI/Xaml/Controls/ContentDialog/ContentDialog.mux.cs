@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ContentDialog_Partial.cpp, tag winui3/release/1.6-stable
 
 using System;
@@ -530,8 +532,6 @@ partial class ContentDialog
 			return false;
 		}
 
-		EnsureDeferralManagers();
-
 		m_hideInProgress = true;
 
 		bool doFireClosing = ShouldFireClosing();
@@ -543,13 +543,18 @@ partial class ContentDialog
 			Closing?.Invoke(this, args);
 		}
 
-		// Continue after deferral
-		bool completedSynchronously = args?.DeferralManager.EventRaiseCompleted() ?? true;
-
-		if (!doFireClosing || completedSynchronously)
+		bool completedSynchronously;
+		if (args != null)
 		{
-			bool isCanceled = args?.Cancel ?? false;
-			HideAfterDeferralWorker(isCanceled, result);
+			// Equivalent of the WinUI DeferralManager::ContinueWith call: when no deferral was taken,
+			// this invokes OnClosingDeferralComplete inline, otherwise once the last deferral completes.
+			completedSynchronously = args.DeferralManager.EventRaiseCompleted();
+		}
+		else
+		{
+			// No Closing event was raised, so there is no deferral to wait for.
+			completedSynchronously = true;
+			HideAfterDeferralWorker(isCanceled: false, result);
 		}
 
 		return completedSynchronously && !(args?.Cancel ?? false);
@@ -606,6 +611,12 @@ partial class ContentDialog
 		}
 		else
 		{
+#if HAS_UNO
+			// Uno specific: stands in for ContentDialogShowAsyncOperation::SetResults - carries the result
+			// over to OnFinishedClosing, which reports it to Closed and to the ShowAsync awaiter.
+			m_lastHideResult = result;
+#endif
+
 			// Try to restore focus back to the original focused element.
 			if (m_spFocusedElementBeforeContentDialogShows?.Target is UIElement previousFocusedElement)
 			{
@@ -699,6 +710,7 @@ partial class ContentDialog
 			m_hideInProgress = false;
 			m_skipClosingEventOnHide = true;
 			m_hasPreparedContent = false;
+			m_lastHideResult = ContentDialogResult.None;
 
 			// Make sure default template is applied, so visual states etc can be set correctly
 			EnsureTemplate();
@@ -711,12 +723,14 @@ partial class ContentDialog
 			m_tpPopup.IsOpen = true;
 			m_tpPopup.IsLightDismissEnabled = false;
 
-			m_tcs = new TaskCompletionSource<ContentDialogResult>();
-			m_tpCurrentAsyncOperation = AsyncOperation.FromTask(_ => m_tcs.Task);
+			// Kept in a local as well, since OnFinishedClosing clears the field once the dialog is closed.
+			var tcs = new TaskCompletionSource<ContentDialogResult>();
+			m_tcs = tcs;
+			m_tpCurrentAsyncOperation = AsyncOperation.FromTask(_ => tcs.Task);
 
 			using (ct.Register(() =>
 			{
-				m_tcs.TrySetCanceled();
+				tcs.TrySetCanceled();
 				Hide();
 			}
 #if !__WASM__
@@ -724,7 +738,7 @@ partial class ContentDialog
 #endif
 				))
 			{
-				return await m_tcs.Task;
+				return await tcs.Task;
 			}
 #else
 			// TODO Uno: Non-Uno path for ShowAsync
@@ -745,26 +759,13 @@ partial class ContentDialog
 
 		if (!m_hideInProgress)
 		{
-			EnsureDeferralManagers();
-
 			var args = new ContentDialogButtonClickEventArgs(OnButtonClickDeferralComplete(command, commandParameter, result));
 
 			clickEventHandler?.Invoke(this, args);
 
-			bool completedSynchronously = args.DeferralManager.EventRaiseCompleted();
-
-			if (completedSynchronously)
-			{
-				if (!args.Cancel)
-				{
-					if (command != null)
-					{
-						command.Execute(commandParameter);
-					}
-
-					HideInternal(result);
-				}
-			}
+			// Equivalent of the WinUI DeferralManager::ContinueWith call: when no deferral was taken,
+			// this invokes OnButtonClickDeferralComplete inline, otherwise once the last deferral completes.
+			args.DeferralManager.EventRaiseCompleted();
 		}
 	}
 
@@ -782,13 +783,6 @@ partial class ContentDialog
 				HideInternal(result);
 			}
 		};
-	}
-
-	private void EnsureDeferralManagers()
-	{
-		m_spClosingDeferralManager ??= new DeferralManager<ContentDialogClosingDeferral>(h => new ContentDialogClosingDeferral(h));
-
-		m_spButtonClickDeferralManager ??= new DeferralManager<ContentDialogButtonClickDeferral>(h => new ContentDialogButtonClickDeferral(h));
 	}
 
 	private void ResetAndPrepareContent()
@@ -1254,15 +1248,14 @@ partial class ContentDialog
 			}
 		}
 
+#if HAS_UNO
+		// Uno specific: stands in for ContentDialogShowAsyncOperation::GetResults.
+		var result = m_lastHideResult;
+#else
 		var result = ContentDialogResult.None;
-		// TODO Uno: Get the result from the async operation
-		// In WinUI this reads the result from the async operation.
+#endif
 
 		RaiseClosedEvent(result);
-
-		// We use a new deferral manager each time the ContentDialog is shown because the
-		// dialog may be forcibly closed and then reshown while a button click deferral is pending.
-		m_spButtonClickDeferralManager = null;
 
 		if (m_dialogShowingStateChangedEventHandler.Disposable != null)
 		{
@@ -1292,8 +1285,13 @@ partial class ContentDialog
 		m_tpCurrentAsyncOperation = null;
 
 #if HAS_UNO
-		// Uno specific: Complete the TaskCompletionSource
-		// This is already handled in HideInternalUno or by the cancellation token.
+		// Uno specific: stands in for ContentDialogShowAsyncOperation::CoreFireCompletion - completes the task
+		// backing ShowAsync. Enqueued so continuations don't run inline within the closing sequence.
+		if (m_tcs is { } tcs)
+		{
+			m_tcs = null;
+			DispatcherQueue.TryEnqueue(() => tcs.TrySetResult(result));
+		}
 #endif
 	}
 
