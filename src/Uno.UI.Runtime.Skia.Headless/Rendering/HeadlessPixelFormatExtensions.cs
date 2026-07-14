@@ -15,4 +15,12 @@ internal static class HeadlessPixelFormatExtensions
 			HeadlessPixelFormat.Rgba8888 => SKColorType.Rgba8888,
 			_ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unsupported headless pixel format."),
 		};
+
+	public static int BytesPerPixel(this HeadlessPixelFormat format)
+		=> format switch
+		{
+			HeadlessPixelFormat.Bgra8888 => 4,
+			HeadlessPixelFormat.Rgba8888 => 4,
+			_ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unsupported headless pixel format."),
+		};
 }

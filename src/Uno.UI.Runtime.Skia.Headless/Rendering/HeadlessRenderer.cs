@@ -1,52 +1,45 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.Headless;
 
 /// <summary>
-/// Drives the Skia two-phase render cycle for a single headless window. The cycle always runs so the
-/// app lifecycle behaves like a real target, but rasterization is optional: when the window supplies
-/// a target buffer, frames are drawn straight into it (zero-copy) and the <c>onFrameRendered</c>
-/// callback is invoked; otherwise frames are drawn to a Skia null surface (the pipeline runs but
-/// nothing is rasterized). Windows with no buffer at all across the whole app additionally skip the
-/// paint walk globally via <c>FeatureConfiguration.Rendering.SkipVisualTreePainting</c> (set by the host).
+/// Drives the Skia two-phase render cycle for a single headless window on a dedicated thread. The
+/// keep-alive cycle always runs (drawing into a null surface) so the app lifecycle, composition
+/// animations and <c>RenderTargetBitmap</c> behave like a real target. On top of it, callers may pull
+/// a frame via <see cref="RenderIntoAsync"/> (typically in response to the window's new-frame signal);
+/// the host schedules that render, drawing into the caller's buffer and completing the task when done.
 /// </summary>
 internal sealed class HeadlessRenderer : IDisposable
 {
-	private readonly IXamlRootHost _host;
+	private readonly record struct RenderRequest(IntPtr Buffer, int RowBytes, SKColorType ColorType, TaskCompletionSource Completion, CancellationToken CancellationToken);
 
+	private readonly IXamlRootHost _host;
 	private readonly int _rawWidth;
 	private readonly int _rawHeight;
-	private readonly bool _hasBuffer;
-	private readonly IntPtr _buffer;
-	private readonly int _rowBytes;
-	private readonly SKColorType _colorType;
-	private readonly Action? _onFrameRendered;
 
+	private readonly ConcurrentQueue<RenderRequest> _requests = new();
 	private readonly AutoResetEvent _renderInvalidationEvent = new(false);
 	private readonly Thread _renderThread;
 	private volatile bool _disposed;
 
-	private SKSurface? _surface;
-	private bool _surfaceTargetsBuffer;
+	private SKSurface? _nullSurface;
 
-	public HeadlessRenderer(IXamlRootHost host, int rawWidth, int rawHeight, HeadlessWindowOptions options)
+	public HeadlessRenderer(IXamlRootHost host, int rawWidth, int rawHeight)
 	{
 		_host = host;
 		_rawWidth = rawWidth;
 		_rawHeight = rawHeight;
-		_hasBuffer = options.HasBuffer;
-		_buffer = options.Buffer;
-		_rowBytes = options.RowBytes;
-		_colorType = options.PixelFormat.ToSkColorType();
-		_onFrameRendered = options.OnFrameRendered;
 
 		_renderThread = new Thread(_ =>
 		{
@@ -59,7 +52,20 @@ internal sealed class HeadlessRenderer : IDisposable
 					{
 						break;
 					}
-					Render();
+
+					// Serve pull requests on top of the cycle; when none are pending, still tick the
+					// keep-alive pass so the lifecycle/animations/RenderTargetBitmap keep advancing.
+					var served = false;
+					while (_requests.TryDequeue(out var request))
+					{
+						ProcessRequest(request);
+						served = true;
+					}
+
+					if (!served)
+					{
+						RenderKeepAlive();
+					}
 				}
 				catch (Exception ex)
 				{
@@ -74,52 +80,94 @@ internal sealed class HeadlessRenderer : IDisposable
 		_renderThread.Start();
 	}
 
-	public void InvalidateRender() => _renderInvalidationEvent.Set();
+	/// <summary>Ticks the render cycle: serves any pending pull requests, else runs a keep-alive pass.</summary>
+	public void Invalidate() => _renderInvalidationEvent.Set();
 
-	private void Render()
+	/// <summary>Queues a render of the current frame into the caller's buffer; see <see cref="HeadlessWindow.RenderIntoAsync"/>.</summary>
+	internal Task RenderIntoAsync(IntPtr buffer, int rowBytes, HeadlessPixelFormat pixelFormat, CancellationToken cancellationToken)
 	{
-		// The visual tree may not be available yet on the first invalidation(s); the cycle will
-		// be driven again once content is loaded.
+		if (buffer == IntPtr.Zero)
+		{
+			throw new ArgumentException("The render buffer pointer must not be null.", nameof(buffer));
+		}
+
+		var minStride = _rawWidth * pixelFormat.BytesPerPixel();
+		if (rowBytes < minStride)
+		{
+			throw new ArgumentOutOfRangeException(nameof(rowBytes), $"The render buffer stride must be at least {minStride} bytes for a {_rawWidth}px-wide {pixelFormat} frame.");
+		}
+
+		if (_disposed)
+		{
+			return Task.FromException(new ObjectDisposedException(nameof(HeadlessRenderer)));
+		}
+
+		if (cancellationToken.IsCancellationRequested)
+		{
+			return Task.FromCanceled(cancellationToken);
+		}
+
+		var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		_requests.Enqueue(new RenderRequest(buffer, rowBytes, pixelFormat.ToSkColorType(), completion, cancellationToken));
+		_renderInvalidationEvent.Set();
+		return completion.Task;
+	}
+
+	private void ProcessRequest(RenderRequest request)
+	{
+		if (request.CancellationToken.IsCancellationRequested)
+		{
+			request.Completion.TrySetCanceled(request.CancellationToken);
+			return;
+		}
+
+		try
+		{
+			// No visual tree yet (e.g. before content is loaded): complete without touching the buffer.
+			if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+			{
+				request.Completion.TrySetResult();
+				return;
+			}
+
+			SKSurface? surface = null;
+			try
+			{
+				ct.OnNativePlatformFrameRequested(null, size =>
+				{
+					surface?.Dispose();
+					surface = SKSurface.Create(new SKImageInfo((int)size.Width, (int)size.Height, request.ColorType, SKAlphaType.Premul), request.Buffer, request.RowBytes);
+					return surface.Canvas;
+				});
+				surface?.Flush();
+			}
+			finally
+			{
+				surface?.Dispose();
+			}
+
+			request.Completion.TrySetResult();
+		}
+		catch (Exception e)
+		{
+			request.Completion.TrySetException(e);
+		}
+	}
+
+	private void RenderKeepAlive()
+	{
 		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
 			return;
 		}
 
-		ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		ct.OnNativePlatformFrameRequested(_nullSurface?.Canvas, size =>
 		{
-			_surface?.Dispose();
-			_surface = CreateSurface((int)size.Width, (int)size.Height);
-			return _surface.Canvas;
+			_nullSurface?.Dispose();
+			_nullSurface = SKSurface.CreateNull((int)size.Width, (int)size.Height);
+			return _nullSurface.Canvas;
 		});
-
-		_surface?.Flush();
-
-		if (_surfaceTargetsBuffer && _surface is not null)
-		{
-			_onFrameRendered!.Invoke();
-		}
-	}
-
-	private SKSurface CreateSurface(int width, int height)
-	{
-		if (_hasBuffer)
-		{
-			if (width == _rawWidth && height == _rawHeight)
-			{
-				_surfaceTargetsBuffer = true;
-				return SKSurface.Create(new SKImageInfo(width, height, _colorType, SKAlphaType.Premul), _buffer, _rowBytes);
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning(
-					$"Requested render size {width}x{height} does not match the configured headless buffer size " +
-					$"{_rawWidth}x{_rawHeight}; drawing nothing for this frame.");
-			}
-		}
-
-		_surfaceTargetsBuffer = false;
-		return SKSurface.CreateNull(width, height);
+		_nullSurface?.Flush();
 	}
 
 	public void Dispose()
@@ -141,7 +189,13 @@ internal sealed class HeadlessRenderer : IDisposable
 			this.LogDebug()?.Debug($"Failed to join the headless rendering thread on exit: {e.Message}");
 		}
 
-		_surface?.Dispose();
+		// Fail any awaiters that never got serviced so they don't hang.
+		while (_requests.TryDequeue(out var request))
+		{
+			request.Completion.TrySetException(new ObjectDisposedException(nameof(HeadlessRenderer)));
+		}
+
+		_nullSurface?.Dispose();
 		_renderInvalidationEvent.Dispose();
 	}
 }

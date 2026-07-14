@@ -87,32 +87,15 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
-	/// Sets the default render target used by every window that isn't given specific
-	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>: each frame is rendered
-	/// directly (zero-copy) into the supplied native buffer, invoking <paramref name="onFrameRendered"/>
-	/// once the buffer has been filled. When not called, the render cycle still runs but nothing is
-	/// rasterized. A single buffer cannot be shared by multiple windows — use
-	/// <see cref="ConfigureWindow"/> to give each window its own buffer.
+	/// Sets the default window-created callback used by every window that isn't given specific
+	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>. It hands over the window's
+	/// <see cref="HeadlessWindow"/> handle once; use it to subscribe to
+	/// <see cref="HeadlessWindow.NewFrameReady"/> and/or call <see cref="HeadlessWindow.RenderIntoAsync"/>.
+	/// When not called, the render cycle still runs but nothing is rasterized.
 	/// </summary>
-	/// <param name="buffer">Pointer to a caller-owned buffer, sized for the configured dimensions and <paramref name="rowBytes"/>.</param>
-	/// <param name="rowBytes">The number of bytes per pixel row (stride) of <paramref name="buffer"/>.</param>
-	/// <param name="pixelFormat">The pixel format of <paramref name="buffer"/>.</param>
-	/// <param name="onFrameRendered">Invoked on the render thread after each frame has been drawn into the buffer.</param>
-	public HeadlessHostBuilder RenderTo(IntPtr buffer, int rowBytes, HeadlessPixelFormat pixelFormat, Action onFrameRendered)
+	public HeadlessHostBuilder OnWindowCreated(Action<HeadlessWindow> handler)
 	{
-		if (buffer == IntPtr.Zero)
-		{
-			throw new ArgumentException("The render buffer pointer must not be null.", nameof(buffer));
-		}
-		if (rowBytes <= 0)
-		{
-			throw new ArgumentOutOfRangeException(nameof(rowBytes), "The render buffer stride must be strictly positive.");
-		}
-
-		RenderBuffer = buffer;
-		RenderRowBytes = rowBytes;
-		RenderPixelFormat = pixelFormat;
-		OnFrameRendered = onFrameRendered ?? throw new ArgumentNullException(nameof(onFrameRendered));
+		WindowCreated = handler ?? throw new ArgumentNullException(nameof(handler));
 		return this;
 	}
 
@@ -144,18 +127,15 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 		{
 			Scale = Scale,
 			Orientation = Orientation,
-			Buffer = RenderBuffer,
-			RowBytes = RenderRowBytes,
-			PixelFormat = RenderPixelFormat,
-			OnFrameRendered = OnFrameRendered,
+			OnWindowCreated = WindowCreated,
 		};
 	}
 
 	/// <summary>
-	/// True when no window can possibly have a render buffer, so the global paint walk can be skipped
-	/// entirely. Only known when there is no per-window configurator and no default buffer.
+	/// True when no window can render (no handle is ever handed out), so the global paint walk can be
+	/// skipped entirely. Only known when there is no per-window configurator and no default callback.
 	/// </summary>
-	internal bool KnownBufferless => _configurator is null && !(RenderBuffer != IntPtr.Zero && OnFrameRendered is not null);
+	internal bool NoWindowCallbacks => _configurator is null && WindowCreated is null;
 
 	internal int Width { get; private set; } = NativeWindowWrapperBase.InitialWidth;
 
@@ -165,11 +145,5 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 
 	internal DisplayOrientations Orientation { get; private set; } = DisplayOrientations.Landscape;
 
-	internal IntPtr RenderBuffer { get; private set; }
-
-	internal int RenderRowBytes { get; private set; }
-
-	internal HeadlessPixelFormat RenderPixelFormat { get; private set; }
-
-	internal Action? OnFrameRendered { get; private set; }
+	internal Action<HeadlessWindow>? WindowCreated { get; private set; }
 }

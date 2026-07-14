@@ -25,6 +25,8 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 	private readonly float _scale;
 	private readonly DisplayOrientations _orientation;
 	private readonly HeadlessRenderer _renderer;
+	private readonly HeadlessWindow _headlessWindow;
+	private readonly bool _rendersOnDemand;
 	private bool _closed;
 	private bool _rendererDisposed;
 
@@ -35,15 +37,20 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		_rawHeight = options.Height;
 		_scale = ResolveScale(options.Scale);
 		_orientation = options.Orientation;
+		_rendersOnDemand = options.RendersOnDemand;
 
 		XamlRootMap.Register(xamlRoot, this);
 
 		// Create the renderer before publishing bounds: setting bounds can synchronously route an
 		// InvalidateRender back through this wrapper (as IXamlRootHost), which needs a live renderer.
-		_renderer = new HeadlessRenderer(this, _rawWidth, _rawHeight, options);
+		_renderer = new HeadlessRenderer(this, _rawWidth, _rawHeight);
+		_headlessWindow = new HeadlessWindow(_renderer, _rawWidth, _rawHeight);
 
 		// The XamlRoot is already associated (base ctor), so bounds can be published synchronously.
 		ApplySize();
+
+		// Hand the caller its window handle once; it may subscribe to NewFrameReady and/or render.
+		options.OnWindowCreated?.Invoke(_headlessWindow);
 	}
 
 	public override object? NativeWindow => null;
@@ -63,7 +70,20 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		SetSizes(rawSize, rawSize);
 	}
 
-	protected override void ShowCore() => _renderer.InvalidateRender();
+	protected override void ShowCore() => RequestFrame();
+
+	// Always tick the render cycle so the lifecycle/animations/RenderTargetBitmap keep advancing, and —
+	// when a handle was handed out — additionally signal the app so it can pull a frame on its own
+	// schedule (layered on top of the keep-alive cycle, not replacing it).
+	private void RequestFrame()
+	{
+		_renderer.Invalidate();
+
+		if (_rendersOnDemand)
+		{
+			_headlessWindow.RaiseNewFrameReady();
+		}
+	}
 
 	protected override void CloseCore()
 	{
@@ -98,7 +118,7 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
-	void IXamlRootHost.InvalidateRender() => _renderer.InvalidateRender();
+	void IXamlRootHost.InvalidateRender() => RequestFrame();
 
 	DisplayOrientations IDisplayInformationExtension.CurrentOrientation => _orientation;
 

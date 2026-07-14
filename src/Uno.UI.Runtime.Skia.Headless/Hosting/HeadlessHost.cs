@@ -77,9 +77,9 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	{
 		_isDispatcherThread = true;
 
-		// If no window can ever have a render buffer, skip the paint walk globally to save CPU.
-		// The flag is global (per app), so it can only be enabled when we know every window is bufferless.
-		if (_hostBuilder.KnownBufferless)
+		// If no window can ever render (no handle is handed out), skip the paint walk globally to save
+		// CPU. The flag is global (per app), so it can only be enabled when we know no window renders.
+		if (_hostBuilder.NoWindowCallbacks)
 		{
 			FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
 		}

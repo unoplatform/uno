@@ -27,7 +27,6 @@ internal sealed class NativeWindowFactoryExtension : INativeWindowFactoryExtensi
 	{
 		var index = _windowIndex++;
 		var options = _builder.ResolveWindowOptions(index, window);
-		options.Validate();
 		var wrapper = new HeadlessWindowWrapper(window, xamlRoot, options);
 		_windows.Add(wrapper);
 		return wrapper;

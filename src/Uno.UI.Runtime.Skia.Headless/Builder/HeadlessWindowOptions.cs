@@ -7,14 +7,14 @@ namespace Uno.UI.Runtime.Skia;
 
 /// <summary>
 /// Per-window configuration returned by <see cref="HeadlessHostBuilder.ConfigureWindow"/>.
-/// Each headless window can have its own size, scale, orientation and (optionally) its own
-/// render target buffer.
+/// Each headless window can have its own size, scale, orientation and (optionally) a per-frame
+/// callback that receives the rendered pixels.
 /// </summary>
 public sealed class HeadlessWindowOptions
 {
 	/// <summary>
-	/// Creates options for a window of the given raw pixel dimensions. When <see cref="Buffer"/> is
-	/// set, these dimensions are also the expected size of that buffer.
+	/// Creates options for a window of the given raw pixel dimensions. These are also the dimensions
+	/// of the frames rendered via <see cref="HeadlessWindow.RenderIntoAsync"/>.
 	/// </summary>
 	/// <param name="width">Width, in raw pixels.</param>
 	/// <param name="height">Height, in raw pixels.</param>
@@ -49,39 +49,12 @@ public sealed class HeadlessWindowOptions
 	public DisplayOrientations Orientation { get; init; } = DisplayOrientations.Landscape;
 
 	/// <summary>
-	/// Pointer to a caller-owned buffer, sized for <see cref="Width"/>/<see cref="Height"/> and
-	/// <see cref="RowBytes"/>. When set (together with <see cref="OnFrameRendered"/>), each frame is
-	/// rendered zero-copy into it; otherwise the paint walk is skipped and nothing is rasterized.
+	/// Invoked once when the window is created, handing over its <see cref="HeadlessWindow"/> handle.
+	/// Use it to subscribe to <see cref="HeadlessWindow.NewFrameReady"/> and/or call
+	/// <see cref="HeadlessWindow.RenderIntoAsync"/>. When left unset, the paint walk is skipped and
+	/// nothing is rasterized (the render cycle still runs).
 	/// </summary>
-	public IntPtr Buffer { get; init; }
+	public Action<HeadlessWindow>? OnWindowCreated { get; init; }
 
-	/// <summary>The number of bytes per pixel row (stride) of <see cref="Buffer"/>.</summary>
-	public int RowBytes { get; init; }
-
-	/// <summary>The pixel format of <see cref="Buffer"/>. Defaults to <see cref="HeadlessPixelFormat.Bgra8888"/>.</summary>
-	public HeadlessPixelFormat PixelFormat { get; init; }
-
-	/// <summary>Invoked on the render thread after each frame has been drawn into <see cref="Buffer"/>.</summary>
-	public Action? OnFrameRendered { get; init; }
-
-	internal bool HasBuffer => Buffer != IntPtr.Zero && OnFrameRendered is not null;
-
-	/// <summary>
-	/// Validates the buffer configuration up-front so misconfiguration surfaces as a clear error at
-	/// window creation rather than as a caught exception on the render thread.
-	/// </summary>
-	internal void Validate()
-	{
-		if (Buffer != IntPtr.Zero)
-		{
-			if (RowBytes <= 0)
-			{
-				throw new InvalidOperationException($"{nameof(RowBytes)} must be strictly positive when a {nameof(Buffer)} is provided.");
-			}
-			if (OnFrameRendered is null)
-			{
-				throw new InvalidOperationException($"{nameof(OnFrameRendered)} must be set when a {nameof(Buffer)} is provided.");
-			}
-		}
-	}
+	internal bool RendersOnDemand => OnWindowCreated is not null;
 }
