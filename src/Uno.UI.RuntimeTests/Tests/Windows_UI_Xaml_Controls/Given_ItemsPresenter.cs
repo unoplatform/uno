@@ -1203,7 +1203,8 @@ public class Given_ItemsPresenter
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Header_Set_To_Null_Layout_Space_Reclaimed()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20966")]
+	public async Task When_Header_And_Footer_Set_To_Null_Layout_Space_Reclaimed()
 	{
 		var lv = new ListView
 		{
@@ -1226,10 +1227,8 @@ public class Given_ItemsPresenter
 		Assert.AreEqual(Visibility.Visible, headerCC.Visibility);
 		Assert.AreEqual(Visibility.Visible, footerCC.Visibility);
 
-		var headerHeightBefore = headerCC.ActualHeight;
-		var footerHeightBefore = footerCC.ActualHeight;
-		Assert.IsTrue(headerHeightBefore > 0, "Header should have non-zero height");
-		Assert.IsTrue(footerHeightBefore > 0, "Footer should have non-zero height");
+		Assert.IsTrue(headerCC.ActualHeight > 0, "Header should have non-zero height");
+		Assert.IsTrue(footerCC.ActualHeight > 0, "Footer should have non-zero height");
 
 		// Set Header to null and verify layout space is reclaimed
 		lv.Header = null;
