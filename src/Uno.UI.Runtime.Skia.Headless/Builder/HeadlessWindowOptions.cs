@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia;
@@ -59,8 +58,8 @@ public sealed class HeadlessWindowOptions
 	/// <summary>The number of bytes per pixel row (stride) of <see cref="Buffer"/>.</summary>
 	public int RowBytes { get; init; }
 
-	/// <summary>The pixel format of <see cref="Buffer"/>.</summary>
-	public SKColorType ColorType { get; init; }
+	/// <summary>The pixel format of <see cref="Buffer"/>. Defaults to <see cref="HeadlessPixelFormat.Bgra8888"/>.</summary>
+	public HeadlessPixelFormat PixelFormat { get; init; }
 
 	/// <summary>Invoked on the render thread after each frame has been drawn into <see cref="Buffer"/>.</summary>
 	public Action? OnFrameRendered { get; init; }

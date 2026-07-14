@@ -45,7 +45,7 @@ internal sealed class HeadlessRenderer : IDisposable
 		_hasBuffer = options.HasBuffer;
 		_buffer = options.Buffer;
 		_rowBytes = options.RowBytes;
-		_colorType = options.ColorType;
+		_colorType = options.PixelFormat.ToSkColorType();
 		_onFrameRendered = options.OnFrameRendered;
 
 		_renderThread = new Thread(_ =>

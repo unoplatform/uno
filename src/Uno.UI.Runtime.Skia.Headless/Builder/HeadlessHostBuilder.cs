@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
@@ -97,9 +96,9 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	/// </summary>
 	/// <param name="buffer">Pointer to a caller-owned buffer, sized for the configured dimensions and <paramref name="rowBytes"/>.</param>
 	/// <param name="rowBytes">The number of bytes per pixel row (stride) of <paramref name="buffer"/>.</param>
-	/// <param name="colorType">The pixel format of <paramref name="buffer"/>.</param>
+	/// <param name="pixelFormat">The pixel format of <paramref name="buffer"/>.</param>
 	/// <param name="onFrameRendered">Invoked on the render thread after each frame has been drawn into the buffer.</param>
-	public HeadlessHostBuilder RenderTo(IntPtr buffer, int rowBytes, SKColorType colorType, Action onFrameRendered)
+	public HeadlessHostBuilder RenderTo(IntPtr buffer, int rowBytes, HeadlessPixelFormat pixelFormat, Action onFrameRendered)
 	{
 		if (buffer == IntPtr.Zero)
 		{
@@ -112,7 +111,7 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 
 		RenderBuffer = buffer;
 		RenderRowBytes = rowBytes;
-		RenderColorType = colorType;
+		RenderPixelFormat = pixelFormat;
 		OnFrameRendered = onFrameRendered ?? throw new ArgumentNullException(nameof(onFrameRendered));
 		return this;
 	}
@@ -147,7 +146,7 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 			Orientation = Orientation,
 			Buffer = RenderBuffer,
 			RowBytes = RenderRowBytes,
-			ColorType = RenderColorType,
+			PixelFormat = RenderPixelFormat,
 			OnFrameRendered = OnFrameRendered,
 		};
 	}
@@ -170,7 +169,7 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 
 	internal int RenderRowBytes { get; private set; }
 
-	internal SKColorType RenderColorType { get; private set; }
+	internal HeadlessPixelFormat RenderPixelFormat { get; private set; }
 
 	internal Action? OnFrameRendered { get; private set; }
 }
