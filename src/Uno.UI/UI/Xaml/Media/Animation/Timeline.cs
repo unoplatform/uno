@@ -428,7 +428,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		#region TimeManager integration (WinUI CTimeline)
 
 		/// <summary>
-		/// Whether this timeline is in an active state (Active or NotStarted).
+		/// Whether this timeline is in an active state (Active, Filling or Paused).
 		/// Used by TimeManager to determine when to remove a timeline from the active list.
 		/// MUX: CTimeline::IsInActiveState()
 		/// </summary>

@@ -25,6 +25,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		internal static TimeManager Instance { get; } = new();
 
+		private TimeManager()
+		{
+		}
+
 		// --- Clock ---
 		// MUX: m_pIClock (RefreshAlignedClock*), m_rTimeStarted, m_rLastTickTime
 		private readonly Stopwatch _clock = new();
