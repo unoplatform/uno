@@ -131,7 +131,7 @@ Declare it as a resource so it is not added to the visual tree.
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:menu="using:Uno.UI.Xaml.Controls">
 	<Application.Resources>
-		<menu:NativeMenu x:Key="AppMenu" x:Name="AppMenu">
+		<menu:NativeMenu x:Key="AppMenu">
 			<menu:NativeMenuItem Role="ApplicationMenu">
 				<menu:NativeMenuItem.SubMenu>
 					<menu:NativeMenu>
@@ -208,7 +208,7 @@ NativeMenuItem paste = new()
 NativeMenuItem ping = new() { Text = "Ping" };
 ping.Click += OnPingClicked;
 
-void OnPingClicked(object? sender, EventArgs e) => Debug.WriteLine("pong");
+void OnPingClicked(object? sender, NativeMenuItemClickEventArgs e) => Debug.WriteLine("pong");
 ```
 
 ### Literal modifiers — no Control→Command remap
@@ -373,7 +373,7 @@ recent.SubMenu = recentMenu;
 // Populate fresh each time the submenu is about to open.
 recentMenu.Opening += OnRecentOpening;
 
-void OnRecentOpening(object? sender, EventArgs e)
+void OnRecentOpening(object? sender, NativeMenuOpeningEventArgs e)
 {
 	recentMenu.Items.Clear();
 

@@ -495,7 +495,7 @@ host registers a concrete impl at startup.
   [`ExtensionsRegistrar.cs:31-38`](../../src/Uno.UI.Runtime.Skia.AppleUIKit/Hosting/ExtensionsRegistrar.cs)
   via `ApiExtensibility.Register(typeof(IXxxExtension), o => new …Extension())`.
 - macOS registers in
-  [`MacSkiaHost.cs:197-205`](../../src/Uno.UI.Runtime.Skia.MacOS/UI/Xaml/Window/MacOSWindowHost.cs)
+  [`MacOSWindowHost.cs:196-204`](../../src/Uno.UI.Runtime.Skia.MacOS/UI/Xaml/Window/MacOSWindowHost.cs)
   (and `MacSkiaHost.cs:66`) the same way. The macOS `NSMenu` impl additionally needs new
   native exports in the UnoNativeMac ObjC layer (e.g. `uno_window_set_main_menu` /
   `uno_app_set_main_menu` + build/update entry points).

@@ -175,12 +175,17 @@ menus as unavailable, and the Toolkit `AppMenuBar` renders fully in-app.
 
 ```csharp
 // Core side-table type that backs NativeMenu.SetMenu / SetApplicationMenu.
+private static INativeMenuExtension? _resolved;
+private static bool _resolveAttempted;
+
 private static INativeMenuExtension? TryGetExtension()
 {
-	if (_resolved is null &&
-		!ApiExtensibility.CreateInstance<INativeMenuExtension>(typeof(NativeMenu), out _resolved))
+	if (!_resolveAttempted)
 	{
-		_resolved = null; // No native host on this platform — in-app fallback only.
+		// A failed resolution is cached too: no native host on this platform means
+		// in-app fallback only, and retrying on every call would be pure overhead.
+		_resolveAttempted = true;
+		ApiExtensibility.CreateInstance<INativeMenuExtension>(typeof(NativeMenu), out _resolved);
 	}
 
 	return _resolved;
