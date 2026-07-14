@@ -222,11 +222,13 @@ namespace Microsoft.UI.Xaml
 			_properties.ResumeBindings();
 		}
 
+		// Currently unreferenced: the finalizer that called this was removed. Kept (with _gate) so the
+		// finalizer removal stays the only behavioral diff — see the EXPERIMENT note in DependencyObject.Store.cs.
 		private void BinderDispose()
 		{
 			lock (_gate)
 			{
-				// Guard the dispose as it may be invoked from both a finalizer and the dispatcher.
+				// Guard the dispose against concurrent invocation.
 				if (_isDisposed)
 				{
 					return;
