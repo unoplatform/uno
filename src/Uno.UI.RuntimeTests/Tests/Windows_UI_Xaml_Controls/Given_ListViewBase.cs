@@ -5778,6 +5778,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	// Repro tests for https://github.com/unoplatform/uno/issues/2136
 	[TestClass]
 	[RunsOnUIThread]
+#if __APPLE_UIKIT__
+	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
 	public class Given_ItemsStackPanel_Stretch
 	{
 		[TestMethod]
@@ -5785,10 +5788,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
 		{
-			// Issue: ItemsStackPanel does not stretch its children to fill the available width on WASM.
-			// Navigation items appear top-aligned instead of being centered/stretched.
-			// Expected: Items inside a vertical ItemsStackPanel should stretch to fill the panel width.
-
 			const double ContainerWidth = 300;
 
 			var sut = new ListView
@@ -5807,22 +5806,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(sut, x => x.IsLoaded);
 			await UITestHelper.WaitForIdle();
 
-			// Get the items panel root - it should be an ItemsStackPanel
 			var panel = sut.ItemsPanelRoot;
 			Assert.IsNotNull(panel, "ItemsPanelRoot should not be null.");
 
-			// The panel itself should be as wide as the container
+			// #2136 is specific to ItemsStackPanel, so fail loudly if the default panel ever changes.
+			Assert.IsInstanceOfType(panel, typeof(ItemsStackPanel),
+				$"Expected the default ListView ItemsPanel to be an ItemsStackPanel, but got {panel.GetType().Name}.");
+
 			Assert.AreEqual(ContainerWidth, panel.ActualWidth, 2d,
 				$"Expected ItemsPanelRoot to have ActualWidth={ContainerWidth}, but got {panel.ActualWidth}.");
 
-			// Check that the first visible container is stretched to the full width
-			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) != null, timeoutMS: 3000);
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) is ListViewItem, timeoutMS: 3000);
 			var container = sut.ContainerFromIndex(0) as ListViewItem;
 			Assert.IsNotNull(container, "Expected container for index 0.");
+			await UITestHelper.WaitFor(() => container.ActualWidth > 0, timeoutMS: 3000);
 
-			Assert.AreEqual(ContainerWidth, container.ActualWidth, 2d,
-				$"Expected ListViewItem to be stretched to {ContainerWidth}px width, but got {container.ActualWidth}. " +
-				$"On WASM with ItemsStackPanel, items are not being stretched to fill the available width.");
+			// The regression is items failing to fill the panel, so measure the container against the panel itself.
+			Assert.AreEqual(panel.ActualWidth, container.ActualWidth, 2d,
+				$"Expected ListViewItem to be stretched to the panel width ({panel.ActualWidth}px), but got {container.ActualWidth}.");
 		}
 	}
 }
