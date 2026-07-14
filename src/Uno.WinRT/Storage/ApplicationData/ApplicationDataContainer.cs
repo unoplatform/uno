@@ -20,7 +20,7 @@ namespace Windows.Storage;
 /// The prefix and separator are private-use code points: they are reserved to Uno Platform, cannot collide with
 /// a key an application would realistically store, and survive a round-trip through every native settings store.
 /// </remarks>
-public partial class ApplicationDataContainer : IDisposable
+public sealed partial class ApplicationDataContainer : IDisposable
 {
 	internal const string InternalSettingPrefix = "\uE000";
 	private const string ContainerSeparator = "\uE001";

@@ -1,4 +1,4 @@
-using Uno.Helpers;
+﻿using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Storage;
@@ -6,7 +6,7 @@ namespace Windows.Storage;
 /// <summary>
 /// Provides data when an app sets the version of the application data in its app data store.
 /// </summary>
-public partial class SetVersionRequest
+public sealed partial class SetVersionRequest
 {
 	internal SetVersionRequest(uint currentVersion, uint desiredVersion)
 	{

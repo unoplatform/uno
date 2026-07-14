@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Windows.Foundation;
 
 namespace Windows.Storage;
@@ -6,7 +6,7 @@ namespace Windows.Storage;
 /// <summary>
 /// Manages a delayed set version operation.
 /// </summary>
-public partial class SetVersionDeferral
+public sealed partial class SetVersionDeferral
 {
 	private readonly DeferralCompletedHandler _handler;
 

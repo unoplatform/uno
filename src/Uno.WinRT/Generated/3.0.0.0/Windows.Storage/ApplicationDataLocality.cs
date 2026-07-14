@@ -10,6 +10,7 @@ namespace Windows.Storage
 		// Skipping already declared field Windows.Storage.ApplicationDataLocality.Roaming
 		// Skipping already declared field Windows.Storage.ApplicationDataLocality.Temporary
 		// Skipping already declared field Windows.Storage.ApplicationDataLocality.LocalCache
+		// Skipping already declared field Windows.Storage.ApplicationDataLocality.SharedLocal
 	}
 #endif
 }

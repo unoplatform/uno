@@ -12,7 +12,7 @@ namespace Windows.Storage;
 /// Provides access to the settings in a settings container. The ApplicationDataContainer.Values
 /// property returns an object that can be cast to this type.
 /// </summary>
-public partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
+public sealed partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
 {
 	private readonly ApplicationDataContainer _container;
 	private readonly NativeApplicationSettings _nativeApplicationSettings;
