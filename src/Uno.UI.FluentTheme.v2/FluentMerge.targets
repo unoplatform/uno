@@ -20,8 +20,8 @@
 	  the merged output out of the automatic Page glob; the merge feeds on the explicit XamlMergeInput
 	  below, and the Uno.XamlMerge.Task targets add the merged file to @(Page).
 	-->
-	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(MSBuildThisFileDirectory)themeresources_v2.xaml</PageExclusions>
 	<XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v2.xaml</XamlMergeOutputFile>
+	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(XamlMergeOutputFile)</PageExclusions>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,8 +55,14 @@
     runs before ResolveProjectReferences, so the shadow copy did not yet exist.
 
     Imported for every variant except the Reference stub, which carries no theme resources (matching the
-    previous committed-file behaviour, where the Reference variant disables the Page glob). The import is
-    not gated on TargetFramework, so GenerateMergedXaml is available in both the outer and inner builds.
+    previous committed-file behaviour, where the Reference variant disables the Page glob).
+
+    The import is deliberately NOT gated on TargetFramework (unlike Uno.UI/XamlMerge.targets): the merged
+    output is kept out of the automatic Page glob by PageExclusions above, so it is the package's own
+    _AdjustedMergedXamlItems target that feeds it to @(Page). Gating the import to the outer build would
+    leave every inner build without the merged dictionary. Re-running the merge per inner build is safe -
+    all variants merge the identical XamlMergeInput set, and BatchMergeXaml only rewrites the file when
+    the content actually differs.
   -->
   <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
 		  Condition="'$(UnoRuntimeIdentifier)' != 'Reference' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
