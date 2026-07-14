@@ -7,12 +7,8 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-/// <summary>
-/// Migrated from SamplesApp.UITests UnoSamples_Tests.ContentControl: exercises ContentPresenter /
-/// ContentControl content-template rendering and toggling by loading the real sample pages.
-/// The samples self-initialize (DataContext / template are set in their constructors), so
-/// RunAsync (which only calls the parameterless ctor) is sufficient — no ViewModel wiring needed.
-/// </summary>
+// Migrated from SamplesApp.UITests UnoSamples_Tests.ContentControl: ContentPresenter/ContentControl
+// template rendering, driven through RunAsync since the samples self-initialize in their constructors.
 [TestClass]
 [RunsOnUIThread]
 public class Given_ContentControl_UITest : SampleControlUITestBase

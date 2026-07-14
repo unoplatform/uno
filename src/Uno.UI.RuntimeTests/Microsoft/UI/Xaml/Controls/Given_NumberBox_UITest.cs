@@ -28,25 +28,32 @@ public class Given_NumberBox_UITest
 			Value = 0,
 		};
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
-		Assert.IsNotNull(upButton, "UpSpinButton part should exist when SpinButtonPlacementMode is Inline");
-		Assert.IsNotNull(downButton, "DownSpinButton part should exist when SpinButtonPlacementMode is Inline");
+			var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
+			var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+			Assert.IsNotNull(upButton, "UpSpinButton part should exist when SpinButtonPlacementMode is Inline");
+			Assert.IsNotNull(downButton, "DownSpinButton part should exist when SpinButtonPlacementMode is Inline");
 
-		new RepeatButtonAutomationPeer(upButton).Invoke();
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(1, numberBox.Value, "Up button should increase the value by SmallChange (default 1)");
+			new RepeatButtonAutomationPeer(upButton).Invoke();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, numberBox.Value, "Up button should increase the value by SmallChange (default 1)");
 
-		new RepeatButtonAutomationPeer(downButton).Invoke();
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(0, numberBox.Value, "Down button should decrease the value by SmallChange (default 1)");
+			new RepeatButtonAutomationPeer(downButton).Invoke();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, numberBox.Value, "Down button should decrease the value by SmallChange (default 1)");
 
-		numberBox.SmallChange = 5;
-		new RepeatButtonAutomationPeer(upButton).Invoke();
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(5, numberBox.Value, "Up button should increase the value by the updated SmallChange");
+			numberBox.SmallChange = 5;
+			new RepeatButtonAutomationPeer(upButton).Invoke();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, numberBox.Value, "Up button should increase the value by the updated SmallChange");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -61,20 +68,27 @@ public class Given_NumberBox_UITest
 			Value = 100,
 		};
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
-		Assert.IsNotNull(upButton);
-		Assert.IsNotNull(downButton);
+			var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
+			var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+			Assert.IsNotNull(upButton);
+			Assert.IsNotNull(downButton);
 
-		new RepeatButtonAutomationPeer(upButton).Invoke();
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(0, numberBox.Value, "Up button should wrap from Maximum to Minimum");
+			new RepeatButtonAutomationPeer(upButton).Invoke();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, numberBox.Value, "Up button should wrap from Maximum to Minimum");
 
-		new RepeatButtonAutomationPeer(downButton).Invoke();
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(100, numberBox.Value, "Down button should wrap from Minimum to Maximum");
+			new RepeatButtonAutomationPeer(downButton).Invoke();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(100, numberBox.Value, "Down button should wrap from Minimum to Maximum");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -89,19 +103,26 @@ public class Given_NumberBox_UITest
 			Value = 0,
 		};
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		Assert.IsNotNull(upButton);
+			var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
+			Assert.IsNotNull(upButton);
 
-		// Simulates the user having typed "50" without committing it (no Enter/LostFocus yet).
-		numberBox.Text = "50";
-		await WindowHelper.WaitForIdle();
+			// Simulates the user having typed "50" without committing it (no Enter/LostFocus yet).
+			numberBox.Text = "50";
+			await WindowHelper.WaitForIdle();
 
-		new RepeatButtonAutomationPeer(upButton).Invoke();
-		await WindowHelper.WaitForIdle();
+			new RepeatButtonAutomationPeer(upButton).Invoke();
+			await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(55, numberBox.Value, "Incrementing should validate the pending text (50) before applying SmallChange (5)");
+			Assert.AreEqual(55, numberBox.Value, "Incrementing should validate the pending text (50) before applying SmallChange (5)");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -114,88 +135,103 @@ public class Given_NumberBox_UITest
 			Maximum = 100,
 		};
 
-		await UITestHelper.Load(numberBox);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
-		Assert.IsNotNull(upButton);
-		Assert.IsNotNull(downButton);
+			var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
+			var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+			Assert.IsNotNull(upButton);
+			Assert.IsNotNull(downButton);
 
-		// Value is NaN by default, so both spin buttons should be disabled.
-		Assert.IsFalse(upButton.IsEnabled, "Up button should be disabled when Value is NaN");
-		Assert.IsFalse(downButton.IsEnabled, "Down button should be disabled when Value is NaN");
+			// Value is NaN by default, so both spin buttons should be disabled.
+			Assert.IsFalse(upButton.IsEnabled, "Up button should be disabled when Value is NaN");
+			Assert.IsFalse(downButton.IsEnabled, "Down button should be disabled when Value is NaN");
 
-		numberBox.Value = 0;
-		await WindowHelper.WaitForIdle();
-		Assert.IsTrue(upButton.IsEnabled, "Up button should be enabled when Value is above Minimum");
-		Assert.IsFalse(downButton.IsEnabled, "Down button should be disabled when Value is at Minimum");
+			numberBox.Value = 0;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(upButton.IsEnabled, "Up button should be enabled when Value is above Minimum");
+			Assert.IsFalse(downButton.IsEnabled, "Down button should be disabled when Value is at Minimum");
 
-		numberBox.Value = 100;
-		await WindowHelper.WaitForIdle();
-		Assert.IsFalse(upButton.IsEnabled, "Up button should be disabled when Value is at Maximum");
-		Assert.IsTrue(downButton.IsEnabled, "Down button should be enabled when Value is below Maximum");
+			numberBox.Value = 100;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(upButton.IsEnabled, "Up button should be disabled when Value is at Maximum");
+			Assert.IsTrue(downButton.IsEnabled, "Down button should be enabled when Value is below Maximum");
 
-		numberBox.IsWrapEnabled = true;
-		await WindowHelper.WaitForIdle();
-		Assert.IsTrue(upButton.IsEnabled, "Both buttons should be enabled when wrapping is enabled");
-		Assert.IsTrue(downButton.IsEnabled, "Both buttons should be enabled when wrapping is enabled");
-		numberBox.IsWrapEnabled = false;
-		await WindowHelper.WaitForIdle();
+			numberBox.IsWrapEnabled = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(upButton.IsEnabled, "Both buttons should be enabled when wrapping is enabled");
+			Assert.IsTrue(downButton.IsEnabled, "Both buttons should be enabled when wrapping is enabled");
+			numberBox.IsWrapEnabled = false;
+			await WindowHelper.WaitForIdle();
 
-		numberBox.Maximum = 200;
-		await WindowHelper.WaitForIdle();
-		Assert.IsTrue(upButton.IsEnabled, "Up button should re-evaluate when Maximum is updated");
-		Assert.IsTrue(downButton.IsEnabled, "Down button should re-evaluate when Maximum is updated");
+			numberBox.Maximum = 200;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(upButton.IsEnabled, "Up button should re-evaluate when Maximum is updated");
+			Assert.IsTrue(downButton.IsEnabled, "Down button should re-evaluate when Maximum is updated");
 
-		numberBox.ValidationMode = NumberBoxValidationMode.Disabled;
-		numberBox.Value = 0;
-		await WindowHelper.WaitForIdle();
-		Assert.IsTrue(upButton.IsEnabled, "Both buttons should be enabled when validation is disabled, even at Minimum");
-		Assert.IsTrue(downButton.IsEnabled, "Both buttons should be enabled when validation is disabled, even at Minimum");
+			numberBox.ValidationMode = NumberBoxValidationMode.Disabled;
+			numberBox.Value = 0;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(upButton.IsEnabled, "Both buttons should be enabled when validation is disabled, even at Minimum");
+			Assert.IsTrue(downButton.IsEnabled, "Both buttons should be enabled when validation is disabled, even at Minimum");
 
-		numberBox.Value = double.NaN;
-		await WindowHelper.WaitForIdle();
-		Assert.IsFalse(upButton.IsEnabled, "Up button should still be disabled for NaN, even when validation is disabled");
-		Assert.IsFalse(downButton.IsEnabled, "Down button should still be disabled for NaN, even when validation is disabled");
+			numberBox.Value = double.NaN;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(upButton.IsEnabled, "Up button should still be disabled for NaN, even when validation is disabled");
+			Assert.IsFalse(downButton.IsEnabled, "Down button should still be disabled for NaN, even when validation is disabled");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
 	public async Task When_Minimum_Maximum_Value_Are_Coerced()
 	{
 		var numberBox = new NumberBox();
-		await UITestHelper.Load(numberBox);
 
-		numberBox.Minimum = 0;
-		numberBox.Maximum = 100;
-		Assert.AreEqual(0, numberBox.Minimum);
-		Assert.AreEqual(100, numberBox.Maximum);
+		try
+		{
+			await UITestHelper.Load(numberBox);
 
-		numberBox.Value = 10;
-		await WindowHelper.WaitForIdle();
+			numberBox.Minimum = 0;
+			numberBox.Maximum = 100;
+			Assert.AreEqual(0, numberBox.Minimum);
+			Assert.AreEqual(100, numberBox.Maximum);
 
-		numberBox.Value = -1;
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(0, numberBox.Value, "Setting Value below Minimum should clamp it to Minimum");
+			numberBox.Value = 10;
+			await WindowHelper.WaitForIdle();
 
-		numberBox.Text = "123";
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(100, numberBox.Value, "Typing a value above Maximum should clamp Value to Maximum");
+			numberBox.Value = -1;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, numberBox.Value, "Setting Value below Minimum should clamp it to Minimum");
 
-		numberBox.Maximum = 90;
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(90, numberBox.Value, "Lowering Maximum below the current Value should clamp Value to the new Maximum");
+			numberBox.Text = "123";
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(100, numberBox.Value, "Typing a value above Maximum should clamp Value to Maximum");
 
-		numberBox.Minimum = 200;
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(200, numberBox.Minimum);
-		Assert.AreEqual(200, numberBox.Maximum, "Raising Minimum above Maximum should also raise Maximum");
-		Assert.AreEqual(200, numberBox.Value, "Value should be clamped to the new Minimum/Maximum");
+			numberBox.Maximum = 90;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(90, numberBox.Value, "Lowering Maximum below the current Value should clamp Value to the new Maximum");
 
-		numberBox.Maximum = 150;
-		await WindowHelper.WaitForIdle();
-		Assert.AreEqual(150, numberBox.Minimum, "Lowering Maximum below Minimum should also lower Minimum");
-		Assert.AreEqual(150, numberBox.Maximum);
-		Assert.AreEqual(150, numberBox.Value, "Value should be clamped to the new Minimum/Maximum");
+			numberBox.Minimum = 200;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(200, numberBox.Minimum);
+			Assert.AreEqual(200, numberBox.Maximum, "Raising Minimum above Maximum should also raise Maximum");
+			Assert.AreEqual(200, numberBox.Value, "Value should be clamped to the new Minimum/Maximum");
+
+			numberBox.Maximum = 150;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(150, numberBox.Minimum, "Lowering Maximum below Minimum should also lower Minimum");
+			Assert.AreEqual(150, numberBox.Maximum);
+			Assert.AreEqual(150, numberBox.Value, "Value should be clamped to the new Minimum/Maximum");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -242,22 +278,29 @@ public class Given_NumberBox_UITest
 			AcceptsExpression = true,
 		};
 
-		await UITestHelper.Load(numberBox);
-
-		// Reset to an empty/NaN state first, matching how the value would look before the expression is entered.
-		numberBox.Text = "";
-		await WindowHelper.WaitForIdle();
-
-		numberBox.Text = expression;
-		await WindowHelper.WaitForIdle();
-
-		if (double.IsNaN(expected))
+		try
 		{
-			Assert.AreEqual(string.Empty, numberBox.Text, $"Expression '{expression}' should fail to parse and reset the text to empty");
+			await UITestHelper.Load(numberBox);
+
+			// Reset to an empty/NaN state first, matching how the value would look before the expression is entered.
+			numberBox.Text = "";
+			await WindowHelper.WaitForIdle();
+
+			numberBox.Text = expression;
+			await WindowHelper.WaitForIdle();
+
+			if (double.IsNaN(expected))
+			{
+				Assert.AreEqual(string.Empty, numberBox.Text, $"Expression '{expression}' should fail to parse and reset the text to empty");
+			}
+			else
+			{
+				Assert.AreEqual(expected, numberBox.Value, 0.0001, $"Expression '{expression}' should evaluate to {expected}");
+			}
 		}
-		else
+		finally
 		{
-			Assert.AreEqual(expected, numberBox.Value, 0.0001, $"Expression '{expression}' should evaluate to {expected}");
+			WindowHelper.WindowContent = null;
 		}
 	}
 }
