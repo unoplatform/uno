@@ -22,10 +22,10 @@ partial class ViewManager
 		m_owner = owner;
 		m_resetPool = new UniqueIdElementPool(owner);
 
-		m_lastFocusedElement = owner;
+		// m_lastFocusedElement, m_ElementFactoryGetArgs and m_ElementFactoryRecycleArgs are tracker_ref
+		// fields in WinUI: passing the owner to their constructor only registers the tracker host, it does
+		// not seed a value. They start null here as well, and the args are lazily created on first use.
 		m_phaser = new Phaser(owner);
-		m_ElementFactoryGetArgs = new ElementFactoryGetArgs();
-		m_ElementFactoryRecycleArgs = new ElementFactoryRecycleArgs();
 	}
 
 	public UIElement GetElement(int index, bool forceCreate, bool suppressAutoRecycle)
