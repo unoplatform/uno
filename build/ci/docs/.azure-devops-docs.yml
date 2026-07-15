@@ -22,6 +22,8 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: ../templates/dotnet-mobile-install-windows.yml
+    parameters:
+      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-maccatalyst --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/jdk-setup.yml
