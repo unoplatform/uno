@@ -172,6 +172,59 @@ public class Given_ContainerVisual
 		visual.RenderRootVisual(new global::Uno.UI.Composition.Drawing.SkiaDrawingSession(surface.Canvas), Vector2.Zero);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RetainedRendering_Disabled_Renders_Identically()
+	{
+		// The retained (SKPicture-cached) path and the immediate path a backend without the retained-recording
+		// capability would take must produce identical output. Render the same scene each way and compare.
+		// The scene exercises per-visual paint, child rendering, corner clipping, and the non-analytic shadow
+		// fallback (gradient content + ThemeShadow) — all of which have a distinct uncached branch.
+		static FrameworkElement BuildScene()
+		{
+			var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
+			gradient.GradientStops.Add(new GradientStop { Color = Colors.Orange, Offset = 0 });
+			gradient.GradientStops.Add(new GradientStop { Color = Colors.Purple, Offset = 1 });
+
+			var border = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = gradient,
+				CornerRadius = new CornerRadius(20),
+				BorderBrush = new SolidColorBrush(Colors.DarkBlue),
+				BorderThickness = new Thickness(4),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Shadow = new ThemeShadow(),
+				Translation = new Vector3(0, 0, 32),
+				Child = new Ellipse { Width = 50, Height = 50, Fill = new SolidColorBrush(Colors.LimeGreen) }
+			};
+
+			var host = new Grid { Width = 180, Height = 180, Background = new SolidColorBrush(Colors.White) };
+			host.Children.Add(border);
+			return host;
+		}
+
+		var retained = BuildScene();
+		await UITestHelper.Load(retained);
+		var expected = await UITestHelper.ScreenShot(retained);
+
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = true;
+			var immediate = BuildScene();
+			await UITestHelper.Load(immediate);
+			var actual = await UITestHelper.ScreenShot(immediate);
+
+			await ImageAssert.AreEqualAsync(actual, expected);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = false;
+		}
+	}
+
 	private class FrameCounterSKCanvasElement : SKCanvasElement
 	{
 		public int FrameCounter { get; private set; }

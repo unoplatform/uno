@@ -10,8 +10,9 @@ using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>.</summary>
-internal class SkiaDrawingSession : IDrawingSession
+/// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>. The Skia
+/// backend also advertises the optional <see cref="IRetainedRenderingSession"/> capability (SKPicture).</summary>
+internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 {
 	// Reused per drawing thread to avoid allocating a native SKPaint per draw. Rendering configures it
 	// fully from PaintParams on every call, so no state leaks between draws.
@@ -49,7 +50,7 @@ internal class SkiaDrawingSession : IDrawingSession
 		return new SkiaRecordingSession(recorder, recordingCanvas);
 	}
 
-	public void Draw(IRenderData data)
+	public void Replay(IRenderData data)
 	{
 		if (data is SkiaRenderData { Picture: var picture } && picture != IntPtr.Zero)
 		{

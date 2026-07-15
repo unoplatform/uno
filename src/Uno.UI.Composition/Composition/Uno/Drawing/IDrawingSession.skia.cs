@@ -66,15 +66,6 @@ internal interface IDrawingSession
 	void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint);
 
 	/// <summary>
-	/// Begins recording into a nested session whose draw calls are captured as an <see cref="IRenderData"/>
-	/// (via <see cref="IRecordingSession.EndRecording"/>) that can later be replayed with <see cref="Draw"/>.
-	/// </summary>
-	IRecordingSession CreateRecording(Rect cullBounds);
-
-	/// <summary>Replays previously recorded <paramref name="data"/> into this session.</summary>
-	void Draw(IRenderData data);
-
-	/// <summary>
 	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:
 	/// a transparent offscreen layer whose backdrop is the filtered content, optionally modulated by
 	/// <paramref name="opacity"/>. Mirrors the WinUI effect-brush paint semantics.

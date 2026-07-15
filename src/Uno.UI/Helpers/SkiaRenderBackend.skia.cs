@@ -19,7 +19,7 @@ internal sealed class SkiaRenderBackend : IRenderBackend
 		{
 			target.Clear(SKColors.Transparent);
 			// Draws nothing if we get a present request before the first frame is recorded.
-			new SkiaDrawingSession(target).Draw(frame);
+			new SkiaDrawingSession(target).Replay(frame);
 			postPresent?.Invoke(target);
 		}
 

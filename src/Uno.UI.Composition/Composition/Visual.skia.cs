@@ -34,6 +34,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
 
+	/// <summary>Test seam: forces the immediate (uncached) render path even on a retained-capable backend.</summary>
+	internal static bool DisableRetainedRendering { get; set; }
+
+	// Per-visual/subtree picture caching requires the backend session to advertise retained recording.
+	// A backend without it (or the test seam above) renders immediately, uncached.
+	private static IRetainedRenderingSession? AsRetained(IDrawingSession session)
+		=> DisableRetainedRendering ? null : session as IRetainedRenderingSession;
+
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
@@ -377,11 +385,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				PostPaintingClipStep(this, in session);
 				RenderChildrenStep(this, session, applyChildOptimization);
 			}
-			else
+			else if (AsRetained(session.Session) is { } retained)
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
-				var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
+				var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -395,10 +403,24 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 
 				session.Session.SaveLayer(ShadowState.ShadowFilter);
-				session.Session.Draw(renderData);
+				retained.Replay(renderData);
 				session.Session.Restore();
 
-				session.Session.Draw(renderData);
+				retained.Replay(renderData);
+			}
+			else
+			{
+				// Same fallback without retained recording: draw the subtree twice directly — into the
+				// drop-shadow-filtered layer (the shadow), then again on top (the content).
+				session.Session.SaveLayer(ShadowState.ShadowFilter);
+				PaintStep(this, session);
+				PostPaintingClipStep(this, in session);
+				RenderChildrenStep(this, session, applyChildOptimization);
+				session.Session.Restore();
+
+				PaintStep(this, session);
+				PostPaintingClipStep(this, in session);
+				RenderChildrenStep(this, session, applyChildOptimization);
 			}
 		}
 
@@ -409,9 +431,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = session.Session.SaveCount;
 #endif
-			if (visual.RequiresRepaintOnEveryFrame)
+			if (visual.RequiresRepaintOnEveryFrame || AsRetained(session.Session) is not { } retained)
 			{
-				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				// Repaint-every-frame content, or a backend without retained recording: paint directly, uncached.
 				visual.Paint(session);
 			}
 			else
@@ -420,7 +442,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
+					var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -431,7 +453,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				if (visual._content is { } content)
 				{
-					session.Session.Draw(content);
+					retained.Replay(content);
 				}
 			}
 #if DEBUG
@@ -442,27 +464,42 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 		{
 #if DEBUG
-			var canvas = ((SkiaDrawingSession)session.Session).Canvas;
-			canvas.Save();
-			if (visual.GetPostPaintingClipping() is SkiaGeometrySource2D postClip)
+			// Skia-only consistency check: the optimized ApplyPostPaintingClipping must match a full path clip.
+			if (session.Session is SkiaDrawingSession skiaSession)
 			{
-				canvas.ClipPath(postClip.Geometry, antialias: true);
-			}
+				var canvas = skiaSession.Canvas;
+				canvas.Save();
+				if (visual.GetPostPaintingClipping() is SkiaGeometrySource2D postClip)
+				{
+					canvas.ClipPath(postClip.Geometry, antialias: true);
+				}
 
-			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
-			canvas.Restore();
+				var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+				canvas.Restore();
+				visual.ApplyPostPaintingClipping(session.Session);
+				Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+				return;
+			}
 #endif
 			visual.ApplyPostPaintingClipping(session.Session);
-#if DEBUG
-			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
-#endif
 		}
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{
+			if (AsRetained(session.Session) is not { } retained)
+			{
+				// No retained recording: render children directly, without subtree caching/collapsing.
+				foreach (var child in visual.GetChildrenInRenderOrder())
+				{
+					child.Render(in session, applyChildOptimization);
+				}
+
+				return;
+			}
+
 			if (visual._childrenContent is { } childrenContent)
 			{
-				session.Session.Draw(childrenContent);
+				retained.Replay(childrenContent);
 			}
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
@@ -476,7 +513,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = session.Session.CreateRecording(InfiniteClipRect.ToRect());
+				var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -489,7 +526,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 
 				var content = recording.EndRecording();
-				session.Session.Draw(content);
+				retained.Replay(content);
 
 				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
 				// In such case, we should not cache this content. Not only it is outdated, it will also lead to a corrupted state,
