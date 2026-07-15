@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Text;
 using HarfBuzzSharp;
 using Microsoft.UI.Composition;
@@ -94,9 +96,6 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
-	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
-	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
-	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -974,31 +973,31 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		// Glyph rasterization is inherently Skia (SKTextBlob); reach the canvas via a contained downcast.
-		var canvas = ((SkiaDrawingSession)session.Session).Canvas;
+		var drawingSession = session.Session;
 
-		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
-		using var textBlobBuilder = new SKTextBlobBuilder();
+		// Glyph outlines are assembled on Skia (font work) then drawn through the neutral path verb.
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
-			_spareDrawPaint.Color = color;
+			var paintColor = Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
-				textBlobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), font, CollectionsMarshal.AsSpan(positions));
-				canvas.DrawText(textBlobBuilder.Build(), 0, 0, _spareDrawPaint); // SKTextBlobBuilder::Build resets the builder
+				using var geometry = GlyphGeometry.Build(font, CollectionsMarshal.AsSpan(glyphs), CollectionsMarshal.AsSpan(positions), 0);
+				drawingSession.DrawPath(geometry, new PaintParams(paintColor) { IsAntialias = true });
 			}
 		}
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
-			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
-			canvas.DrawPath(path, _spareSpellCheckPaint);
+			var geometry = new SkiaGeometrySource2D(path);
+			drawingSession.DrawPath(geometry, new PaintParams(Colors.Red) { Style = PaintStyle.Stroke, StrokeWidth = strokeThickness, IsAntialias = true });
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
 		{
-			_spareCompositionUnderlinePaint.Color = color;
-			canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
+			drawingSession.DrawLine(
+				new Vector2(x1, underlineY),
+				new Vector2(x2, underlineY),
+				new PaintParams(Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue)) { Style = PaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true });
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
