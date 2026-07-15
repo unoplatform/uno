@@ -5805,6 +5805,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(sut, x => x.IsLoaded);
 			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot?.ActualWidth > 0, timeoutMS: 3000);
 
 			var panel = sut.ItemsPanelRoot;
 			Assert.IsNotNull(panel, "ItemsPanelRoot should not be null.");
