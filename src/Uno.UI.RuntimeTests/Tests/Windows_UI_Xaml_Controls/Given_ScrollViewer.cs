@@ -1959,6 +1959,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				() => Math.Abs(parentEndOffset - parent.VerticalOffset) < 1,
 				timeoutMS: 2000,
 				message: "parent SV did not receive enough inertia to reach its scroll end");
+			// Belt-and-suspenders: WaitFor above already gates on this predicate; assert it explicitly
+			// at the point of use so the intent survives if the wait helper is ever changed.
 			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset));
 		}
 #endif
