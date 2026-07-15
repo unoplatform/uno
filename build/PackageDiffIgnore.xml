@@ -2958,19 +2958,19 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 
-		  <!-- #2080 (sync-generator alignment): method/constructor parameter names aligned to the WinAppSDK/CsWinRT
+		  <!-- #8339 (sync-generator alignment): method/constructor parameter names aligned to the WinAppSDK/CsWinRT
 		       metadata for 7.0 (removed the SymbolMatchingHelpers.IgnoreParameterName workaround). Only public members
 		       appear in the diff; the internal PointInt32/RectInt32/SizeInt32 ctors are excluded. Source-only break
 		       (parameter names are not part of the binary signature); affects named-argument callers. -->
-		  <Member fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.UInt16 weight)" reason="WinUI sync #2080: FontWeight ctor param weight-&gt;_Weight (matches WinAppSDK metadata)" />
-		  <Member fullName="System.Void Windows.Foundation.Rect..ctor(Windows.Foundation.Point point, Windows.Foundation.Size size)" reason="WinUI sync #2080: Rect(Point,Size) ctor param point-&gt;location (matches WinAppSDK metadata)" />
-		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Duration.Compare(Microsoft.UI.Xaml.Duration first, Microsoft.UI.Xaml.Duration second)" reason="WinUI sync #2080: Duration.Compare params first/second-&gt;t1/t2 (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
-		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #2080: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.UInt16 weight)" reason="WinUI sync #8339: FontWeight ctor param weight-&gt;_Weight (matches WinAppSDK metadata)" />
+		  <Member fullName="System.Void Windows.Foundation.Rect..ctor(Windows.Foundation.Point point, Windows.Foundation.Size size)" reason="WinUI sync #8339: Rect(Point,Size) ctor param point-&gt;location (matches WinAppSDK metadata)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Duration.Compare(Microsoft.UI.Xaml.Duration first, Microsoft.UI.Xaml.Duration second)" reason="WinUI sync #8339: Duration.Compare params first/second-&gt;t1/t2 (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
