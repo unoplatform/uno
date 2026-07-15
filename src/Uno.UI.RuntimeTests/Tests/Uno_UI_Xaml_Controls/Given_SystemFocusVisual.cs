@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.ConditionMode;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTestPlatforms;
