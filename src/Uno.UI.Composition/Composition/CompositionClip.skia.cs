@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
@@ -35,21 +34,21 @@ partial class CompositionClip
 	/// <summary>
 	/// Optionally overridable if the clip path can be provided as a rounded rect.
 	/// </summary>
-	private protected virtual SKRoundRect? GetClipRoundedRect(Visual visual) => null;
+	private protected virtual RoundRectangle? GetClipRoundedRect(Visual visual) => null;
 	/// <summary>
 	/// Optionally overridable if the clip path can be provided as a rect.
 	/// </summary>
-	private protected virtual SKRect? GetClipRect(Visual visual) => null;
+	private protected virtual Rect? GetClipRect(Visual visual) => null;
 
 	internal void ApplyClip(Visual visual, IDrawingSession session)
 	{
 		if (GetClipRect(visual) is { } clipRect)
 		{
-			session.ClipRect(clipRect.ToRect(), antialias: true);
+			session.ClipRect(clipRect, antialias: true);
 		}
 		else if (GetClipRoundedRect(visual) is { } roundedRect)
 		{
-			session.ClipRoundRect(roundedRect.ToRoundRectangle(), antialias: true);
+			session.ClipRoundRect(roundedRect, antialias: true);
 		}
 		else if (GetClipPath(visual) is { } clipPath)
 		{

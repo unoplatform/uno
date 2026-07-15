@@ -64,7 +64,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// if we use float.Min/MaxValue, weird overflows happen and clipping breaks badly.
 	// https://github.com/mono/skia/blob/927041a58f130e0dd0562ba86cb4170989ad39e9/src/core/SkRecorder.cpp#L79
 	// https://github.com/mono/skia/blob/927041a58f130e0dd0562ba86cb4170989ad39e9/src/core/SkRectPriv.h#L38
-	internal static SKRect InfiniteClipRect { get; } = new(-SafeEdge, -SafeEdge, SafeEdge, SafeEdge);
+	internal static Rect InfiniteClipRect { get; } = new(-SafeEdge, -SafeEdge, SafeEdge * 2d, SafeEdge * 2d);
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -389,7 +389,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
-				var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
+				var recording = retained.CreateRecording(InfiniteClipRect);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -442,7 +442,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
+					var recording = retained.CreateRecording(InfiniteClipRect);
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -513,7 +513,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = retained.CreateRecording(InfiniteClipRect.ToRect());
+				var recording = retained.CreateRecording(InfiniteClipRect);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -586,7 +586,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Root: seed with the unclipped (infinite) region; ancestor clips are intersected into it.
 		var dst = Parent is Visual parent
 			? parent.GetTotalClipPath(false)
-			: DrawingBackend.Current.CreateRectangleGeometry(InfiniteClipRect.ToRect());
+			: DrawingBackend.Current.CreateRectangleGeometry(InfiniteClipRect);
 
 		var totalMatrix = TotalMatrix.ToMatrix3x2();
 		if (GetPrePaintingClipping() is { } pre)

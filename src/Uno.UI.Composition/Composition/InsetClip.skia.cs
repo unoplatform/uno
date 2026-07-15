@@ -1,6 +1,5 @@
 #nullable enable
 
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
@@ -32,8 +31,8 @@ partial class InsetClip
 		return _clipPath.Value.path;
 	}
 
-	private protected override SKRect? GetClipRect(Visual visual)
+	private protected override Rect? GetClipRect(Visual visual)
 	{
-		return GetBounds(visual)?.ToSKRect();
+		return GetBounds(visual);
 	}
 }

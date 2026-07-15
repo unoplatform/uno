@@ -146,7 +146,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_currentSurface = processedData.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
-				_surfaceBrush.MonochromeColor = MonochromeColor?.ToSKColor();
+				_surfaceBrush.MonochromeColor = MonochromeColor;
 				_imageSprite.Brush = _surfaceBrush;
 				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			}
@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// When the image is already loaded, just update the color filter on the brush
 				// instead of reloading the entire image. This avoids flicker.
-				_surfaceBrush.MonochromeColor = MonochromeColor?.ToSKColor();
+				_surfaceBrush.MonochromeColor = MonochromeColor;
 			}
 			else
 			{

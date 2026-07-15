@@ -11,7 +11,7 @@ namespace Uno.UI.Helpers;
 internal sealed class SkiaRenderBackend : IRenderBackend
 {
 	public IRecordingSession BeginFrame()
-		=> SkiaDrawingSession.StartRecording(Visual.InfiniteClipRect.ToRect());
+		=> SkiaDrawingSession.StartRecording(Visual.InfiniteClipRect);
 
 	public void Present(IRenderData frame, SKCanvas target, Action<SKCanvas>? postPresent)
 	{

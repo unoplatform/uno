@@ -12,9 +12,9 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, ISizedBrush
 	{
-		private SKColor? _monochromeColor;
+		private global::Windows.UI.Color? _monochromeColor;
 
-		internal SKColor? MonochromeColor
+		internal global::Windows.UI.Color? MonochromeColor
 		{
 			get => _monochromeColor;
 			set => SetObjectProperty(ref _monochromeColor, value);
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Composition
 			IColorFilter? colorFilter;
 			if (MonochromeColor is { } color)
 			{
-				var faded = global::Windows.UI.Color.FromArgb((byte)(color.Alpha * opacity), color.Red, color.Green, color.Blue);
+				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 				colorFilter = DrawingBackend.Current.CreateBlendModeColorFilter(faded, BlendMode.SrcIn);
 			}
 			else
