@@ -34,16 +34,9 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	private NativeWindowFactoryExtension? _windowFactory;
 
 	/// <summary>
-	/// Creates a host for a Uno Skia headless (offscreen) application.
+	/// Creates a host for a Uno Skia headless (offscreen) application. Use <c>UseHeadless()</c> on the
+	/// <see cref="Uno.UI.Hosting.IUnoPlatformHostBuilder"/> rather than constructing this directly.
 	/// </summary>
-	/// <param name="appBuilder">App builder.</param>
-	/// <remarks>
-	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
-	/// </remarks>
-	public HeadlessHost(Func<WUX.Application> appBuilder) : this(appBuilder, new HeadlessHostBuilder())
-	{
-	}
-
 	internal HeadlessHost(Func<WUX.Application> appBuilder, HeadlessHostBuilder builder)
 	{
 		_appBuilder = appBuilder;
