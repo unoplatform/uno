@@ -1,19 +1,14 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.Foundation;
-using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ScrollViewerTests;
 
@@ -165,10 +160,7 @@ public class Given_ScrollViewer_OffsetIntent
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23695")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)] // async native scrolling
 	public async Task When_ChangeView_BeyondExtent_On_IncrementallyLoadingRepeater_Then_Loading_Is_Bounded()
 	{
 		// End-to-end shape of the reported regression: an ItemsRepeater whose source appends a batch
