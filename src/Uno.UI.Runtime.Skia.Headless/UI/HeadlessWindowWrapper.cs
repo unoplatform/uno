@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.Graphics.Display;
@@ -32,6 +33,13 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		_rawWidth = width;
 		_rawHeight = height;
 		_scale = options.Scale;
+
+		// Scale feeds bounds via division (size / scale), so reject values a per-window configurator
+		// could set that the builder's WithScale/WithDpi would have rejected.
+		if (!float.IsFinite(_scale) || _scale <= 0)
+		{
+			throw new ArgumentOutOfRangeException(nameof(options), $"{nameof(HeadlessWindowOptions)}.{nameof(HeadlessWindowOptions.Scale)} must be a finite, strictly positive value.");
+		}
 
 		XamlRootMap.Register(xamlRoot, this);
 

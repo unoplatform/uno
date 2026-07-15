@@ -23,9 +23,8 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 		=> new HeadlessHost(appBuilder, this);
 
 	/// <summary>
-	/// Sets the default raw pixel dimensions applied to every window that isn't given specific
-	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>. When a render buffer is
-	/// supplied via <see cref="RenderTo"/>, these dimensions are also the expected size of that buffer.
+	/// Sets the default initial raw pixel dimensions applied to every window. Individual windows can be
+	/// resized at runtime via the standard <c>AppWindow.Resize</c>.
 	/// </summary>
 	/// <param name="width">Width, in raw pixels.</param>
 	/// <param name="height">Height, in raw pixels.</param>
@@ -49,9 +48,9 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	/// <param name="scale">The rasterization scale (e.g. <c>1.0</c>, <c>1.5</c>, <c>2.0</c>).</param>
 	public HeadlessHostBuilder WithScale(float scale)
 	{
-		if (scale <= 0)
+		if (!float.IsFinite(scale) || scale <= 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(scale), "The headless rasterization scale must be strictly positive.");
+			throw new ArgumentOutOfRangeException(nameof(scale), "The headless rasterization scale must be a finite, strictly positive value.");
 		}
 
 		Scale = scale;
@@ -66,9 +65,9 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	/// <param name="logicalDpi">The logical DPI (e.g. <c>96</c>, <c>144</c>, <c>192</c>).</param>
 	public HeadlessHostBuilder WithDpi(float logicalDpi)
 	{
-		if (logicalDpi <= 0)
+		if (!float.IsFinite(logicalDpi) || logicalDpi <= 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(logicalDpi), "The headless DPI must be strictly positive.");
+			throw new ArgumentOutOfRangeException(nameof(logicalDpi), "The headless DPI must be a finite, strictly positive value.");
 		}
 
 		Scale = logicalDpi / DisplayInformation.BaseDpi;

@@ -84,18 +84,27 @@ internal sealed class HeadlessRenderer : IDisposable
 		}
 		_disposed = true;
 
-		// Wake the render thread so it can observe _disposed and exit before we dispose the surface.
+		// Wake the render thread so it can observe _disposed and exit before we dispose shared resources.
 		_renderInvalidationEvent.Set();
+		var stopped = false;
 		try
 		{
-			_renderThread.Join(TimeSpan.FromSeconds(1));
+			stopped = _renderThread.Join(TimeSpan.FromSeconds(1));
 		}
 		catch (Exception e)
 		{
 			this.LogDebug()?.Debug($"Failed to join the headless rendering thread on exit: {e.Message}");
 		}
 
-		_nullSurface?.Dispose();
-		_renderInvalidationEvent.Dispose();
+		if (stopped)
+		{
+			_nullSurface?.Dispose();
+			_renderInvalidationEvent.Dispose();
+		}
+		else
+		{
+			// The thread may still be mid-render; leak its surface/event rather than risk a use-after-dispose race.
+			this.LogWarn()?.Warn("The headless rendering thread did not stop within the timeout; its surface and event are left undisposed to avoid a race.");
+		}
 	}
 }
