@@ -3,7 +3,6 @@
 using System.Numerics;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
-using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Extensions;
@@ -24,15 +23,15 @@ namespace Microsoft.UI.Composition
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
-			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
+			SkiaCompositionSurface { Image: { } img } => new(img.PixelWidth, img.PixelHeight),
 			ISkiaSurface skiaSurface => skiaSurface.Size,
-			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
+			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: { } img } } => new(img.PixelWidth, img.PixelHeight),
 			_ => null
 		};
 
-		private Rect GetArrangedImageRect(Size sourceSize, SKRect targetRect)
+		private Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{
-			var size = GetArrangedImageSize(sourceSize, targetRect.Size.ToSize());
+			var size = GetArrangedImageSize(sourceSize, new Size(targetRect.Width, targetRect.Height));
 
 			var point = new Point(targetRect.Left, targetRect.Top);
 			point.X += (targetRect.Width - size.Width) * HorizontalAlignmentRatio;
@@ -102,21 +101,21 @@ namespace Microsoft.UI.Composition
 				return false;
 			}
 
-			var skBounds = bounds.ToSKRect();
-			var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), skBounds);
+			var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.PixelWidth, scs.Image.PixelHeight), bounds);
 			if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
 			{
 				return true;
 			}
 
-			// See the Paint(SKCanvas) overload for the RelativeTransform/Transform ordering rationale.
+			// RelativeTransform is applied to the brush's output before it's mapped to the paint area;
+			// Transform is applied after. (See the WPF brush-transform docs.)
 			var matrix = Matrix3x2.Identity;
-			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
+			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.PixelWidth), (float)(backgroundArea.Height / scs.Image.PixelHeight));
 			matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 			matrix *= TransformMatrix;
-			matrix *= Matrix3x2.CreateScale(skBounds.Width, skBounds.Height).Inverse();
+			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height).Inverse();
 			matrix *= RelativeTransform;
-			matrix *= Matrix3x2.CreateScale(skBounds.Width, skBounds.Height);
+			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height);
 
 			IColorFilter? colorFilter;
 			if (MonochromeColor is { } color)
@@ -133,7 +132,7 @@ namespace Microsoft.UI.Composition
 			session.Concat(new Matrix4x4(matrix));
 			// Opaque paint colour: DrawImage modulates the image alpha by the paint colour's alpha, so a
 			// transparent (default) colour would erase the image. RGB is ignored for image draws.
-			session.DrawImage(new SkiaImage(scs.Image), 0, 0, ImageSampling.Linear, new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true, ColorFilter = colorFilter });
+			session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true, ColorFilter = colorFilter });
 			session.Restore();
 			return true;
 		}

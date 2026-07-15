@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Media
 							{
 								imgSurf.InternalSurface = surface;
 
-								imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
+								imgSurf._decodedSize = new Size((double?)surface.Image?.PixelWidth ?? 0, (double?)surface.Image?.PixelHeight ?? 0);
 								imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 								imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 							}
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Media
 				{
 					imgSurf.InternalSurface = surface;
 
-					imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
+					imgSurf._decodedSize = new Size((double?)surface.Image?.PixelWidth ?? 0, (double?)surface.Image?.PixelHeight ?? 0);
 					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 					imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 				}
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public void Dispose()
 		{
-			InternalSurface?.Image?.Dispose();
+			InternalSurface?.Dispose();
 		}
 	}
 }

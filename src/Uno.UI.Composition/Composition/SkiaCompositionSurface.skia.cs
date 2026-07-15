@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Windows.Graphics;
 
@@ -38,11 +39,19 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		public SKImage? Image => FrameProvider?.CurrentImage;
+		public IImage? Image => FrameProvider?.CurrentImage;
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
 			FrameProvider = FrameProviderFactory.Create(image);
+		}
+
+		private protected override void DisposeInternal()
+		{
+			base.DisposeInternal();
+			// Releases the frame provider (and the underlying image); previously this only happened at
+			// finalization, so callers reached into the raw image to dispose it deterministically.
+			SetFrameProviderAndOnFrameChanged(null, null);
 		}
 
 		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)

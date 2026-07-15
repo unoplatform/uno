@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_imageSprite.Size = roundedSize;
 
-					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
+					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.PixelWidth, _imageSprite.Size.Y / _currentSurface.Image.PixelHeight);
 
 					_surfaceBrush.TransformMatrix = transform;
 
@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				return new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
+				return new Size(_currentSurface.Image.PixelWidth, _currentSurface.Image.PixelHeight);
 			}
 		}
 

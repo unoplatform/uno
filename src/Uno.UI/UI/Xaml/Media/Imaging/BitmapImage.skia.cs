@@ -103,8 +103,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						else if (imageData.Kind == ImageDataKind.CompositionSurface)
 						{
 							var image = imageData.CompositionSurface.Image;
-							PixelWidth = image.Width;
-							PixelHeight = image.Height;
+							PixelWidth = image.PixelWidth;
+							PixelHeight = image.PixelHeight;
 							RaiseImageOpened();
 						}
 
@@ -162,8 +162,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					else if (imageData.Kind == ImageDataKind.CompositionSurface)
 					{
 						var image = imageData.CompositionSurface.Image;
-						PixelWidth = image.Width;
-						PixelHeight = image.Height;
+						PixelWidth = image.PixelWidth;
+						PixelHeight = image.PixelHeight;
 						RaiseImageOpened();
 					}
 

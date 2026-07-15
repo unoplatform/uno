@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
 internal sealed class AnimatedImageFrameProvider : IFrameProvider
 {
 	private readonly SKImage[] _images;
+	private readonly SkiaImage[] _wrapped;
 	private readonly int[] _durations;
 	private readonly Timer? _timer;
 	private readonly Stopwatch? _stopwatch;
@@ -30,6 +32,11 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 	internal AnimatedImageFrameProvider(SKImage[] images, int[] durations, long totalDuration, Action onFrameChanged)
 	{
 		_images = images;
+		_wrapped = new SkiaImage[images.Length];
+		for (int i = 0; i < images.Length; i++)
+		{
+			_wrapped[i] = new SkiaImage(images[i]);
+		}
 		_durations = durations;
 		_totalDuration = totalDuration;
 		_onFrameChanged = new WeakReference<Action>(onFrameChanged);
@@ -57,7 +64,7 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 		_timer = new Timer(OnTimerCallback, null, dueTime: _durations[0], period: Timeout.Infinite);
 	}
 
-	public SKImage? CurrentImage => _images[_currentFrame];
+	public IImage? CurrentImage => _wrapped[_currentFrame];
 
 	private int GetCurrentFrameIndex()
 	{
