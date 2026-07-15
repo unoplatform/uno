@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
@@ -33,19 +32,19 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 				case ID2D1RectangleGeometry rectangleGeometry:
 					{
 						var rect = rectangleGeometry.GetRect();
-						geometrySource = new SkiaGeometrySource2D(BuildRectangleGeometry(rect.Location.ToVector2(), rect.Size.ToVector2()));
+						geometrySource = BuildRectangleGeometry(rect.Location.ToVector2(), rect.Size.ToVector2());
 						break;
 					}
 				case ID2D1RoundedRectangleGeometry roundedRectangleGeometry:
 					{
 						var rect = roundedRectangleGeometry.GetRoundedRect();
-						geometrySource = new SkiaGeometrySource2D(BuildRoundedRectangleGeometry(rect.Rect.Location.ToVector2(), rect.Rect.Size.ToVector2(), new(rect.RadiusX, rect.RadiusY)));
+						geometrySource = BuildRoundedRectangleGeometry(rect.Rect.Location.ToVector2(), rect.Rect.Size.ToVector2(), new(rect.RadiusX, rect.RadiusY));
 						break;
 					}
 				case ID2D1EllipseGeometry ellipseGeometry:
 					{
 						var ellipse = ellipseGeometry.GetEllipse();
-						geometrySource = new SkiaGeometrySource2D(BuildEllipseGeometry(ellipse.Point.ToVector2(), new(ellipse.RadiusX, ellipse.RadiusY)));
+						geometrySource = BuildEllipseGeometry(ellipse.Point.ToVector2(), new(ellipse.RadiusX, ellipse.RadiusY));
 						break;
 					}
 				case ID2D1PathGeometry pathGeometry:

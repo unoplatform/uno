@@ -12,7 +12,7 @@ using static System.Double;
 using System.Diagnostics;
 
 #if __SKIA__
-using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
+using NativePath = Uno.UI.Composition.Drawing.IGeometry;
 
 #elif __WASM__
 using NativePath = Microsoft.UI.Xaml.Shapes.Shape;

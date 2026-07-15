@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 #if __SKIA__
 		[TestMethod]
-		public void StreamGeometry_GetSKPath_CheckFillType()
+		public void StreamGeometry_GetGeometry_CheckFillType()
 		{
 			var streamGeometry = new StreamGeometry();
 			using (var context = streamGeometry.Open())
@@ -181,12 +181,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				context.LineTo(new Point(10, 10), isStroked: true, isSmoothJoin: true);
 			}
 
-			var skPath = streamGeometry.GetSKPath();
+			var skPath = ((Microsoft.UI.Composition.SkiaGeometrySource2D)streamGeometry.GetGeometry()!).Geometry;
 			skPath.FillType.Should().Be(SKPathFillType.EvenOdd);
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_Transform_Applies_To_SKPath()
+		public void RectangleGeometry_Transform_Applies_To_Geometry()
 		{
 			var geometry = new RectangleGeometry
 			{
@@ -194,40 +194,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Transform = new TranslateTransform { X = 30, Y = 20 }
 			};
 
-			var untransformed = geometry.GetSKPath();
-			var transformed = geometry.GetTransformedSKPath();
+			var untransformed = geometry.GetGeometry()!.Bounds;
+			var transformed = geometry.GetTransformedGeometry()!.Bounds;
 
-			// Untransformed path should have bounds at origin
-			Assert.AreEqual(0, untransformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(0, untransformed.Bounds.Top, 0.1f);
+			// Untransformed geometry should have bounds at origin
+			Assert.AreEqual(0, untransformed.Left, 0.1f);
+			Assert.AreEqual(0, untransformed.Top, 0.1f);
 
-			// Transformed path should be offset by the translation
-			Assert.AreEqual(30, transformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(20, transformed.Bounds.Top, 0.1f);
-			Assert.AreEqual(130, transformed.Bounds.Right, 0.1f);
-			Assert.AreEqual(70, transformed.Bounds.Bottom, 0.1f);
+			// Transformed geometry should be offset by the translation
+			Assert.AreEqual(30, transformed.Left, 0.1f);
+			Assert.AreEqual(20, transformed.Top, 0.1f);
+			Assert.AreEqual(130, transformed.Right, 0.1f);
+			Assert.AreEqual(70, transformed.Bottom, 0.1f);
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_NoTransform_Returns_Same_Path()
+		public void RectangleGeometry_NoTransform_Returns_Same_Geometry()
 		{
 			var geometry = new RectangleGeometry
 			{
 				Rect = new Rect(10, 20, 100, 50)
 			};
 
-			var untransformed = geometry.GetSKPath();
-			var transformed = geometry.GetTransformedSKPath();
+			var untransformed = geometry.GetGeometry()!.Bounds;
+			var transformed = geometry.GetTransformedGeometry()!.Bounds;
 
 			// Without a transform, both should have the same bounds
-			Assert.AreEqual(untransformed.Bounds.Left, transformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Top, transformed.Bounds.Top, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Right, transformed.Bounds.Right, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Bottom, transformed.Bounds.Bottom, 0.1f);
+			Assert.AreEqual(untransformed.Left, transformed.Left, 0.1f);
+			Assert.AreEqual(untransformed.Top, transformed.Top, 0.1f);
+			Assert.AreEqual(untransformed.Right, transformed.Right, 0.1f);
+			Assert.AreEqual(untransformed.Bottom, transformed.Bottom, 0.1f);
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_Transform_Updates_GeometrySource2D()
+		public void RectangleGeometry_Transform_Updates_TransformedGeometry()
 		{
 			var geometry = new RectangleGeometry
 			{
@@ -235,12 +235,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Transform = new TranslateTransform { X = 50, Y = 0 }
 			};
 
-			var source = geometry.GetGeometrySource2D();
-			var path = source.Geometry;
+			var bounds = geometry.GetTransformedGeometry()!.Bounds;
 
-			// The path from GetGeometrySource2D should include the transform
-			Assert.AreEqual(50, path.Bounds.Left, 0.1f);
-			Assert.AreEqual(150, path.Bounds.Right, 0.1f);
+			// The transformed geometry should include the transform
+			Assert.AreEqual(50, bounds.Left, 0.1f);
+			Assert.AreEqual(150, bounds.Right, 0.1f);
 		}
 #endif
 	}

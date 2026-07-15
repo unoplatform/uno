@@ -1,8 +1,8 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
 using Uno.Extensions;
 using Microsoft.UI.Composition;
 using System.Numerics;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -24,13 +24,12 @@ namespace Microsoft.UI.Xaml.Shapes
 			return finalSize;
 		}
 
-		private SkiaGeometrySource2D GetGeometry(Rect renderingArea)
+		private IGeometry GetGeometry(Rect renderingArea)
 		{
-			var builder = new SKPathBuilder();
-			builder.AddOval(new SKRect((float)renderingArea.X, (float)renderingArea.Y, (float)renderingArea.Right, (float)renderingArea.Bottom));
-			var geometry = new SkiaGeometrySource2D(builder.Detach());
-
-			return geometry;
+			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var center = new Vector2((float)(renderingArea.X + renderingArea.Width / 2), (float)(renderingArea.Y + renderingArea.Height / 2));
+			builder.AddEllipse(center, (float)(renderingArea.Width / 2), (float)(renderingArea.Height / 2));
+			return builder.Build();
 		}
 	}
 }

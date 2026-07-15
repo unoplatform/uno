@@ -1,7 +1,10 @@
+#nullable enable
+
 ﻿using System;
 using Uno.Media;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -15,7 +18,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath()
+		private IGeometry? GetPath()
 		{
 			if (Math.Abs(X1 - X2) > double.Epsilon || Math.Abs(Y1 - Y2) > double.Epsilon)
 			{
@@ -25,7 +28,7 @@ namespace Microsoft.UI.Xaml.Shapes
 					c.LineTo(new Point(X2, Y2), false, false);
 				});
 
-				return streamGeometry.GetGeometrySource2D();
+				return streamGeometry.GetTransformedGeometry();
 			}
 
 			return null;

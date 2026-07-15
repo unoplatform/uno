@@ -1,8 +1,8 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Numerics;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Composition
@@ -11,40 +11,40 @@ namespace Microsoft.UI.Composition
 	{
 		/// <summary>
 		/// Kappa = (sqrt(2) - 1) * 4/3;
-		//  Used to calculate bezier control points for each of the circle four arcs. 
+		//  Used to calculate bezier control points for each of the circle four arcs.
 		//  - Approximating a 1/4 circle with a bezier curve.
 		/// </summary>
 		private const double CIRCLE_BEZIER_KAPPA = 0.552284749830793398402251632279597438092895833835930764235;
 
-		internal static SKPath BuildLineGeometry(Vector2 start, Vector2 end)
+		internal static IGeometry BuildLineGeometry(Vector2 start, Vector2 end)
 		{
-			var builder = new SKPathBuilder();
+			var builder = DrawingBackend.Current.CreatePathBuilder();
 
-			builder.MoveTo(start.ToSKPoint());
-			builder.LineTo(end.ToSKPoint());
+			builder.MoveTo(start);
+			builder.LineTo(end);
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildRectangleGeometry(Vector2 offset, Vector2 size)
+		internal static IGeometry BuildRectangleGeometry(Vector2 offset, Vector2 size)
 		{
-			var builder = new SKPathBuilder();
+			var builder = DrawingBackend.Current.CreatePathBuilder();
 
 			// Top left
-			builder.MoveTo(new SKPoint(offset.X, offset.Y));
+			builder.MoveTo(offset);
 			// Top right
-			builder.RLineTo(new SKPoint(size.X, 0));
+			builder.LineTo(offset + new Vector2(size.X, 0));
 			// Bottom right
-			builder.RLineTo(new SKPoint(0, size.Y));
+			builder.LineTo(offset + new Vector2(size.X, size.Y));
 			// Bottom left
-			builder.RLineTo(new SKPoint(-size.X, 0));
+			builder.LineTo(offset + new Vector2(0, size.Y));
 			// Top left
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius)
+		internal static IGeometry BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius)
 		{
 			float radiusX = Clamp(cornerRadius.X, 0, size.X * 0.5f);
 			float radiusY = Clamp(cornerRadius.Y, 0, size.Y * 0.5f);
@@ -52,57 +52,60 @@ namespace Microsoft.UI.Composition
 			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusX);
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusY);
 
-			var builder = new SKPathBuilder();
-			var lastPoint = new SKPoint(offset.X + radiusX, offset.Y);
+			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var lastPoint = new Vector2(offset.X + radiusX, offset.Y);
 
 			builder.MoveTo(lastPoint);
 			// Top line
-			builder.LineTo(lastPoint + new SKPoint(size.X - 2 * radiusX, 0));
-			lastPoint += new SKPoint(size.X - 2 * radiusX, 0);
+			builder.LineTo(lastPoint + new Vector2(size.X - 2 * radiusX, 0));
+			lastPoint += new Vector2(size.X - 2 * radiusX, 0);
 			// Top-right Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(radiusX - bezierX, 0),   // 1st control point
-				lastPoint + new SKPoint(radiusX, bezierY),       // 2nd control point
-				lastPoint + new SKPoint(radiusX, radiusY));      // End point
-			lastPoint += new SKPoint(radiusX, radiusY);
+				lastPoint + new Vector2(radiusX - bezierX, 0),   // 1st control point
+				lastPoint + new Vector2(radiusX, bezierY),       // 2nd control point
+				lastPoint + new Vector2(radiusX, radiusY));      // End point
+			lastPoint += new Vector2(radiusX, radiusY);
 
 			// Right line
-			builder.LineTo(lastPoint + new SKPoint(0, size.Y - 2 * radiusY));
-			lastPoint += new SKPoint(0, size.Y - 2 * radiusY);
+			builder.LineTo(lastPoint + new Vector2(0, size.Y - 2 * radiusY));
+			lastPoint += new Vector2(0, size.Y - 2 * radiusY);
 			// Bottom-right Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(0, bezierY),             // 1st control point
-				lastPoint + new SKPoint(-bezierX, radiusY),      // 2nd control point
-				lastPoint + new SKPoint(-radiusX, radiusY));     // End point
-			lastPoint += new SKPoint(-radiusX, radiusY);
+				lastPoint + new Vector2(0, bezierY),             // 1st control point
+				lastPoint + new Vector2(-bezierX, radiusY),      // 2nd control point
+				lastPoint + new Vector2(-radiusX, radiusY));     // End point
+			lastPoint += new Vector2(-radiusX, radiusY);
 
 			// Bottom line
-			builder.LineTo(lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0));
-			lastPoint = lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0);
+			builder.LineTo(lastPoint + new Vector2(-(size.X - 2 * radiusX), 0));
+			lastPoint = lastPoint + new Vector2(-(size.X - 2 * radiusX), 0);
 			// Bottom-left Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(-radiusX + bezierX, 0),  // 1st control point
-				lastPoint + new SKPoint(-radiusX, -bezierY),     // 2nd control point
-				lastPoint + new SKPoint(-radiusX, -radiusY));    // End point
-			lastPoint += new SKPoint(-radiusX, -radiusY);
+				lastPoint + new Vector2(-radiusX + bezierX, 0),  // 1st control point
+				lastPoint + new Vector2(-radiusX, -bezierY),     // 2nd control point
+				lastPoint + new Vector2(-radiusX, -radiusY));    // End point
+			lastPoint += new Vector2(-radiusX, -radiusY);
 
 			// Left line
-			builder.LineTo(lastPoint + new SKPoint(0, -(size.Y - 2 * radiusY)));
-			lastPoint += new SKPoint(0, -(size.Y - 2 * radiusY));
+			builder.LineTo(lastPoint + new Vector2(0, -(size.Y - 2 * radiusY)));
+			lastPoint += new Vector2(0, -(size.Y - 2 * radiusY));
 			// Top-left Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(0, -radiusY + bezierY),  // 1st control point
-				lastPoint + new SKPoint(bezierX, -radiusY),      // 2nd control point
-				lastPoint + new SKPoint(radiusX, -radiusY));     // End point
+				lastPoint + new Vector2(0, -radiusY + bezierY),  // 1st control point
+				lastPoint + new Vector2(bezierX, -radiusY),      // 2nd control point
+				lastPoint + new Vector2(radiusX, -radiusY));     // End point
 
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildEllipseGeometry(Vector2 center, Vector2 radius)
+		internal static IGeometry BuildEllipseGeometry(Vector2 center, Vector2 radius)
 		{
-			SKRect rect = SKRect.Create(center.X - radius.X, center.Y - radius.Y, radius.X * 2, radius.Y * 2);
+			float left = center.X - radius.X;
+			float top = center.Y - radius.Y;
+			float right = center.X + radius.X;
+			float bottom = center.Y + radius.Y;
 
 			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.X);
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.Y);
@@ -113,36 +116,36 @@ namespace Microsoft.UI.Composition
 			// - WPF starts with bottom right ellipse arc.
 			// - TODO: Verify UWP behavior
 
-			var builder = new SKPathBuilder();
+			var builder = DrawingBackend.Current.CreatePathBuilder();
 
-			builder.MoveTo(new SKPoint(rect.Right, rect.Top + radius.Y));
+			builder.MoveTo(new Vector2(right, top + radius.Y));
 			// Bottom-right Arc
 			builder.CubicTo(
-				new SKPoint(rect.Right, rect.Bottom - bezierY),  // 1st control point
-				new SKPoint(rect.Right - bezierX, rect.Bottom),  // 2nd control point
-				new SKPoint(rect.Right - radius.X, rect.Bottom)); // End point
+				new Vector2(right, bottom - bezierY),  // 1st control point
+				new Vector2(right - bezierX, bottom),  // 2nd control point
+				new Vector2(right - radius.X, bottom)); // End point
 
 			// Bottom-left Arc
 			builder.CubicTo(
-				new SKPoint(rect.Left + bezierX, rect.Bottom),      // 1st control point
-				new SKPoint(rect.Left, rect.Bottom - bezierY),      // 2nd control point
-				new SKPoint(rect.Left, rect.Bottom - radius.Y));     // End point
+				new Vector2(left + bezierX, bottom),      // 1st control point
+				new Vector2(left, bottom - bezierY),      // 2nd control point
+				new Vector2(left, bottom - radius.Y));     // End point
 
 			// Top-left Arc
 			builder.CubicTo(
-				new SKPoint(rect.Left, rect.Top + bezierY),           // 1st control point
-				new SKPoint(rect.Left + bezierX, rect.Top),           // 2nd control point
-				new SKPoint(rect.Left + radius.X, rect.Top));          // End point
+				new Vector2(left, top + bezierY),           // 1st control point
+				new Vector2(left + bezierX, top),           // 2nd control point
+				new Vector2(left + radius.X, top));          // End point
 
 			// Top-right Arc
 			builder.CubicTo(
-				new SKPoint(rect.Right - bezierX, rect.Top),       // 1st control point
-				new SKPoint(rect.Right, rect.Top + bezierY),       // 2nd control point
-				new SKPoint(rect.Right, rect.Top + radius.Y));      // End point
+				new Vector2(right - bezierX, top),       // 1st control point
+				new Vector2(right, top + bezierY),       // 2nd control point
+				new Vector2(right, top + radius.Y));      // End point
 
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
 		private static float Clamp(float value, float minValue, float maxValue)

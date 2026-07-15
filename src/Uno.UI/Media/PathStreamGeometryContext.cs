@@ -8,7 +8,7 @@ using static System.Math;
 using Uno.Extensions;
 
 #if __SKIA__
-using PathBuilder = SkiaSharp.SKPathBuilder;
+using Uno.UI.Composition.Drawing;
 #else
 using PathBuilder = System.Object;
 #endif
@@ -19,7 +19,11 @@ namespace Uno.Media
 	{
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;
+#if __SKIA__
+		private readonly IPathBuilder bezierPath = DrawingBackend.Current.CreatePathBuilder();
+#else
 		private PathBuilder bezierPath = new PathBuilder();
+#endif
 
 		internal PathStreamGeometryContext(StreamGeometry owner)
 		{
@@ -29,7 +33,7 @@ namespace Uno.Media
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
 #if __SKIA__
-			bezierPath.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
+			bezierPath.MoveTo(new Vector2((float)startPoint.X, (float)startPoint.Y));
 #endif
 
 			_points.Add(startPoint);
@@ -38,7 +42,7 @@ namespace Uno.Media
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
 #if __SKIA__
-			bezierPath.LineTo((float)point.X, (float)point.Y);
+			bezierPath.LineTo(new Vector2((float)point.X, (float)point.Y));
 #endif
 
 			_points.Add(point);
@@ -47,7 +51,10 @@ namespace Uno.Media
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
 #if __SKIA__
-			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
+			bezierPath.CubicTo(
+				new Vector2((float)point1.X, (float)point1.Y),
+				new Vector2((float)point2.X, (float)point2.Y),
+				new Vector2((float)point3.X, (float)point3.Y));
 #endif
 			_points.Add(point3);
 		}
@@ -55,7 +62,7 @@ namespace Uno.Media
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
 #if __SKIA__
-			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
+			bezierPath.QuadraticTo(new Vector2((float)point1.X, (float)point1.Y), new Vector2((float)point2.X, (float)point2.Y));
 #endif
 
 			_points.Add(point2);
@@ -65,13 +72,11 @@ namespace Uno.Media
 		{
 #if __SKIA__
 			bezierPath.ArcTo(
-				(float)size.Width, (float)size.Height,
+				new Vector2((float)size.Width, (float)size.Height),
 				(float)rotationAngle,
-				isLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
-				sweepDirection == SweepDirection.Clockwise
-					? SkiaSharp.SKPathDirection.Clockwise
-					: SkiaSharp.SKPathDirection.CounterClockwise,
-				(float)point.X, (float)point.Y);
+				isLargeArc,
+				sweepDirection == SweepDirection.Clockwise,
+				new Vector2((float)point.X, (float)point.Y));
 
 			_points.Add(point);
 #else
@@ -165,23 +170,21 @@ namespace Uno.Media
 
 		public override void SetClosedState(bool closed)
 		{
-			if (bezierPath != null)
+			if (closed)
 			{
-				if (closed)
-				{
 #if __SKIA__
-					bezierPath.Close();
+				bezierPath.Close();
 #else
-					throw new NotSupportedException("SetClosedState is not supported on this platform.");
+				throw new NotSupportedException("SetClosedState is not supported on this platform.");
 #endif
-				}
 			}
 		}
 
 		public override void Dispose()
 		{
 #if __SKIA__
-			_owner.Close(bezierPath.Detach());
+			bezierPath.FillRule = _owner.FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
+			_owner.Close(bezierPath.Build());
 #else
 			_owner.Close(bezierPath);
 #endif

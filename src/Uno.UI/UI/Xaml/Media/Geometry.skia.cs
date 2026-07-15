@@ -1,57 +1,45 @@
-﻿using System;
-using SkiaSharp;
-using Microsoft.UI.Composition;
+#nullable enable
+
+using System;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class Geometry
 	{
-		// TODO: Can we mark Geometry and GetSKPath method as abstract?
+		// TODO: Can we mark Geometry and GetGeometry method as abstract?
 		// While this will diverge from UWP, it doesn't seem to matter whether it's abstract or not because
 		// this class doesn't have public constructors in UWP, which makes it not-inheritable either way.
-		internal virtual SKPath GetSKPath() => throw new NotSupportedException($"Geometry {this} is not supported");
+		internal virtual IGeometry? GetGeometry() => throw new NotSupportedException($"Geometry {this} is not supported");
 
 		/// <remarks>
-		/// Note: Try not to depend on this. See the note in <see cref="CompositionSpriteShape.NegativeFillGeometry"/>
+		/// Note: Try not to depend on this. See the note in <see cref="Microsoft.UI.Composition.CompositionSpriteShape.NegativeFillGeometry"/>
 		/// </remarks>
-		internal virtual SKPath GetFilledSKPath() => null;
+		internal virtual IGeometry? GetFilledGeometry() => null;
 
 		/// <summary>
-		/// Returns the SKPath with the <see cref="Transform"/> applied, if any.
+		/// Returns the geometry with the <see cref="Transform"/> applied, if any.
 		/// </summary>
-		internal SKPath GetTransformedSKPath()
-		{
-			var path = GetSKPath();
-			return ApplyTransformToPath(path);
-		}
+		internal IGeometry? GetTransformedGeometry() => ApplyTransform(GetGeometry());
 
 		/// <summary>
-		/// Returns the filled SKPath with the <see cref="Transform"/> applied, if any.
+		/// Returns the filled geometry with the <see cref="Transform"/> applied, if any.
 		/// </summary>
-		internal SKPath GetTransformedFilledSKPath()
-		{
-			var path = GetFilledSKPath();
-			return ApplyTransformToPath(path);
-		}
+		internal IGeometry? GetTransformedFilledGeometry() => ApplyTransform(GetFilledGeometry());
 
-		private SKPath ApplyTransformToPath(SKPath path)
+		private IGeometry? ApplyTransform(IGeometry? geometry)
 		{
-			if (path is null)
+			if (geometry is null)
 			{
 				return null;
 			}
 
 			if (Transform is { MatrixCore: var matrix } && !matrix.IsIdentity)
 			{
-				var skMatrix = matrix.ToSKMatrix();
-				var transformed = new SKPath();
-				path.Transform(skMatrix, transformed);
-				return transformed;
+				return geometry.Transform(matrix);
 			}
 
-			return path;
+			return geometry;
 		}
-
-		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(GetTransformedSKPath());
 	}
 }

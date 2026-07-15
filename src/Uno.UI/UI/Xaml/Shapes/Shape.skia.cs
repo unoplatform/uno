@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
 using Windows.Foundation;
+using Windows.Graphics;
 using Microsoft.UI.Composition;
 using System.Numerics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -27,20 +29,20 @@ namespace Microsoft.UI.Xaml.Shapes
 			((ShapeVisual)visual).Shapes.Add(_shape);
 		}
 
-		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.TightBounds.ToRect();
+		private Rect GetPathBoundingBox(IGeometry path)
+			=> path.TightBounds;
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
-		private protected virtual void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected virtual void Render(IGeometry? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
-			if (path is null)
+			if (path is not IGeometrySource2D source)
 			{
 				_geometry.Path = null;
 				return;
 			}
 
-			_geometry.Path = new CompositionPath(path);
+			_geometry.Path = new CompositionPath(source);
 			// Stretch goes through the geometry-only transform channel so it doesn't scale the
 			// stroke (matching WinUI Path/Rectangle, where StrokeThickness stays constant
 			// regardless of Stretch). The public CompositionShape.Scale stays at identity here

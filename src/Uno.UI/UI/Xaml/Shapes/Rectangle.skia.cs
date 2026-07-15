@@ -4,6 +4,7 @@ using System;
 using Microsoft.UI.Composition;
 using Windows.Foundation;
 using System.Numerics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return finalSize;
 		}
 
-		private SkiaGeometrySource2D GetGeometry(Rect finalRect)
+		private IGeometry GetGeometry(Rect finalRect)
 		{
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
@@ -34,11 +35,9 @@ namespace Microsoft.UI.Xaml.Shapes
 			var offset = new Vector2((float)finalRect.Left, (float)finalRect.Top);
 			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
 
-			var geometry = radiusX is 0 || radiusY is 0
+			return radiusX is 0 || radiusY is 0
 				? CompositionGeometry.BuildRectangleGeometry(offset, size)
 				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
-
-			return new SkiaGeometrySource2D(geometry);
 		}
 	}
 }

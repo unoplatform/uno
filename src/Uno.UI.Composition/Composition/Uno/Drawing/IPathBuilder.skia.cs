@@ -22,6 +22,8 @@ internal interface IPathBuilder
 	/// <summary>Adds a rounded rectangle with (possibly non-uniform) per-corner radii (x, y), ordered TL, TR, BR, BL.</summary>
 	void AddRoundedRectangle(Rect rect, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft);
 	void AddEllipse(Vector2 center, float radiusX, float radiusY);
+	/// <summary>Appends the contours of an existing <paramref name="geometry"/> (used to flatten geometry groups).</summary>
+	void AddGeometry(IGeometry geometry);
 	void Close();
 
 	/// <summary>The winding rule used to fill the built geometry. Defaults to <see cref="GeometryFillRule.NonZero"/>.</summary>
