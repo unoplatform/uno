@@ -194,9 +194,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Asserted without waiting: the selected item's content must be set on initial load, without reselection.
 			contentPresenter.Content.Should().NotBeNull("Content of selected PivotItem should be set on initial load (issue #11914)");
 
-			var tb = contentPresenter.FindFirstChild<TextBlock>();
-			tb.Should().NotBeNull("TextBlock inside ContentPresenter should exist after initial load");
-			tb!.Text.Should().Be("Hello World", "TextBlock content should match PivotItem content");
+			// TextBlock materialization is part of the visual-tree scaffolding, not the #11914 regression.
+			var tb = await WindowHelper.WaitForNonNull(
+				() => contentPresenter.FindFirstChild<TextBlock>(),
+				message: "TextBlock inside ContentPresenter should exist after initial load");
+			tb.Text.Should().Be("Hello World", "TextBlock content should match PivotItem content");
 		}
 
 		[TestMethod]
