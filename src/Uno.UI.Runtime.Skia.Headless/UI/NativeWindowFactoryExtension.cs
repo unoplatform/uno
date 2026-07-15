@@ -27,7 +27,8 @@ internal sealed class NativeWindowFactoryExtension : INativeWindowFactoryExtensi
 	{
 		var index = _windowIndex++;
 		var options = _builder.ResolveWindowOptions(index, window);
-		var wrapper = new HeadlessWindowWrapper(window, xamlRoot, options);
+		// Initial size is the builder default (same for every window); apps resize per window via AppWindow.Resize.
+		var wrapper = new HeadlessWindowWrapper(window, xamlRoot, _builder.Width, _builder.Height, options);
 		_windows.Add(wrapper);
 		return wrapper;
 	}

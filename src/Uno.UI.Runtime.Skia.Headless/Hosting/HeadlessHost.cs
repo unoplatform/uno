@@ -77,12 +77,10 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	{
 		_isDispatcherThread = true;
 
-		// If no window can ever render (no handle is handed out), skip the paint walk globally to save
-		// CPU. The flag is global (per app), so it can only be enabled when we know no window renders.
-		if (_hostBuilder.NoWindowCallbacks)
-		{
-			FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
-		}
+		// Headless windows produce no pixel output, so skip the paint walk globally to save CPU. The
+		// render cycle still ticks (keeping scheduling/animations alive), and RenderTargetBitmap does its
+		// own paint, so on-demand capture is unaffected.
+		FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
 
 		_windowFactory = new NativeWindowFactoryExtension(_hostBuilder);
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => _windowFactory);

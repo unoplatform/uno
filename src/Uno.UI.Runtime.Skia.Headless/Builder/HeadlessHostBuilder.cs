@@ -76,34 +76,10 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
-	/// Sets the orientation reported by <see cref="DisplayInformation.CurrentOrientation"/>.
-	/// This is a reporting value only; it does not rotate the rendered output. Defaults to
-	/// <see cref="DisplayOrientations.Landscape"/>.
-	/// </summary>
-	public HeadlessHostBuilder WithOrientation(DisplayOrientations orientation)
-	{
-		Orientation = orientation;
-		return this;
-	}
-
-	/// <summary>
-	/// Sets the default window-created callback used by every window that isn't given specific
-	/// <see cref="HeadlessWindowOptions"/> by <see cref="ConfigureWindow"/>. It hands over the window's
-	/// <see cref="HeadlessWindow"/> handle once; use it to subscribe to
-	/// <see cref="HeadlessWindow.NewFrameReady"/> and/or call <see cref="HeadlessWindow.RenderIntoAsync"/>.
-	/// When not called, the render cycle still runs but nothing is rasterized.
-	/// </summary>
-	public HeadlessHostBuilder OnWindowCreated(Action<HeadlessWindow> handler)
-	{
-		WindowCreated = handler ?? throw new ArgumentNullException(nameof(handler));
-		return this;
-	}
-
-	/// <summary>
 	/// Supplies per-window configuration. The <paramref name="configurator"/> is invoked for each
 	/// window as it is created (see <see cref="HeadlessWindowContext.Index"/> to distinguish them) and
-	/// returns that window's <see cref="HeadlessWindowOptions"/>, including an optional dedicated
-	/// buffer. When set, it takes precedence over the builder-level defaults for every window.
+	/// returns that window's <see cref="HeadlessWindowOptions"/>. When set, it takes precedence over the
+	/// builder-level defaults for every window.
 	/// </summary>
 	public HeadlessHostBuilder ConfigureWindow(Func<HeadlessWindowContext, HeadlessWindowOptions> configurator)
 	{
@@ -123,27 +99,15 @@ public class HeadlessHostBuilder : IPlatformHostBuilder
 				?? throw new InvalidOperationException($"The {nameof(ConfigureWindow)} configurator returned null for window #{index}.");
 		}
 
-		return new HeadlessWindowOptions(Width, Height)
+		return new HeadlessWindowOptions
 		{
 			Scale = Scale,
-			Orientation = Orientation,
-			OnWindowCreated = WindowCreated,
 		};
 	}
-
-	/// <summary>
-	/// True when no window can render (no handle is ever handed out), so the global paint walk can be
-	/// skipped entirely. Only known when there is no per-window configurator and no default callback.
-	/// </summary>
-	internal bool NoWindowCallbacks => _configurator is null && WindowCreated is null;
 
 	internal int Width { get; private set; } = NativeWindowWrapperBase.InitialWidth;
 
 	internal int Height { get; private set; } = NativeWindowWrapperBase.InitialHeight;
 
 	internal float Scale { get; private set; } = 1f;
-
-	internal DisplayOrientations Orientation { get; private set; } = DisplayOrientations.Landscape;
-
-	internal Action<HeadlessWindow>? WindowCreated { get; private set; }
 }

@@ -14,41 +14,33 @@ namespace Uno.WinUI.Runtime.Skia.Headless.UI;
 /// <summary>
 /// A single headless (offscreen) window. Each window owns its own renderer, acts as its own
 /// <see cref="IXamlRootHost"/> and <see cref="IDisplayInformationExtension"/>, and is registered in
-/// the <see cref="XamlRootMap"/> so the framework drives its render cycle independently.
+/// the <see cref="XamlRootMap"/> so the framework drives its render cycle independently. Its size can be
+/// changed at runtime through the standard <c>AppWindow.Resize</c> (routed here via <see cref="Resize"/>).
 /// </summary>
 internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IDisplayInformationExtension
 {
-	private readonly int _rawWidth;
-	private readonly int _rawHeight;
 	private readonly float _scale;
-	private readonly DisplayOrientations _orientation;
 	private readonly HeadlessRenderer _renderer;
-	private readonly HeadlessWindow _headlessWindow;
-	private readonly bool _rendersOnDemand;
+	private int _rawWidth;
+	private int _rawHeight;
 	private bool _closed;
 	private bool _rendererDisposed;
 
-	public HeadlessWindowWrapper(Window window, XamlRoot xamlRoot, HeadlessWindowOptions options)
+	public HeadlessWindowWrapper(Window window, XamlRoot xamlRoot, int width, int height, HeadlessWindowOptions options)
 		: base(window, xamlRoot)
 	{
-		_rawWidth = options.Width;
-		_rawHeight = options.Height;
+		_rawWidth = width;
+		_rawHeight = height;
 		_scale = options.Scale;
-		_orientation = options.Orientation;
-		_rendersOnDemand = options.RendersOnDemand;
 
 		XamlRootMap.Register(xamlRoot, this);
 
 		// Create the renderer before publishing bounds: setting bounds can synchronously route an
 		// InvalidateRender back through this wrapper (as IXamlRootHost), which needs a live renderer.
-		_renderer = new HeadlessRenderer(this, _rawWidth, _rawHeight);
-		_headlessWindow = new HeadlessWindow(_renderer, _rawWidth, _rawHeight);
+		_renderer = new HeadlessRenderer(this);
 
 		// The XamlRoot is already associated (base ctor), so bounds can be published synchronously.
 		ApplySize();
-
-		// Hand the caller its window handle once; it may subscribe to NewFrameReady and/or render.
-		options.OnWindowCreated?.Invoke(_headlessWindow);
 	}
 
 	public override object? NativeWindow => null;
@@ -68,20 +60,21 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		SetSizes(rawSize, rawSize);
 	}
 
-	protected override void ShowCore() => RequestFrame();
-
-	// Always tick the render cycle so the lifecycle/animations/RenderTargetBitmap keep advancing, and —
-	// when a handle was handed out — additionally signal the app so it can pull a frame on its own
-	// schedule (layered on top of the keep-alive cycle, not replacing it).
-	private void RequestFrame()
+	public override void Resize(SizeInt32 size)
 	{
-		_renderer.Invalidate();
-
-		if (_rendersOnDemand)
+		if (size.Width <= 0 || size.Height <= 0 || (size.Width == _rawWidth && size.Height == _rawHeight))
 		{
-			_headlessWindow.RaiseNewFrameReady();
+			return;
 		}
+
+		_rawWidth = size.Width;
+		_rawHeight = size.Height;
+
+		// Publishing the new bounds relayouts and routes an InvalidateRender back through this wrapper.
+		ApplySize();
 	}
+
+	protected override void ShowCore() => _renderer.Invalidate();
 
 	protected override void CloseCore()
 	{
@@ -116,9 +109,9 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
-	void IXamlRootHost.InvalidateRender() => RequestFrame();
+	void IXamlRootHost.InvalidateRender() => _renderer.Invalidate();
 
-	DisplayOrientations IDisplayInformationExtension.CurrentOrientation => _orientation;
+	DisplayOrientations IDisplayInformationExtension.CurrentOrientation => DisplayOrientations.Landscape;
 
 	uint IDisplayInformationExtension.ScreenWidthInRawPixels => (uint)_rawWidth;
 
