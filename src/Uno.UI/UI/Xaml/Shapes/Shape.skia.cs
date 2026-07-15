@@ -2,7 +2,6 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Composition;
-using SkiaSharp;
 using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -48,8 +47,8 @@ namespace Microsoft.UI.Xaml.Shapes
 			// — it's reserved for true Composition-API transforms (used by AnimatedVisualSource
 			// generated code), which DO scale strokes via the canvas.
 			_shape.SetGeometryTransform(scaleX != null && scaleY != null
-				? SKMatrix.CreateScale((float)scaleX.Value, (float)scaleY.Value)
-				: SKMatrix.CreateIdentity());
+				? Matrix3x2.CreateScale((float)scaleX.Value, (float)scaleY.Value)
+				: Matrix3x2.Identity);
 			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
 			UpdateRender();

@@ -3,7 +3,6 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -15,8 +14,8 @@ namespace Microsoft.UI.Composition
 	{
 		private CompositionGeometry? _fillGeometry;
 
-		private SkiaGeometrySource2D? _geometryWithTransformations;
-		private SkiaGeometrySource2D? _fillGeometryWithTransformations;
+		private IGeometry? _geometryWithTransformations;
+		private IGeometry? _fillGeometryWithTransformations;
 
 		// A transform that gets baked into the geometry without affecting stroke thickness or
 		// the canvas. Set by Microsoft.UI.Xaml.Shapes.Shape to apply Stretch sizing — WinUI's
@@ -24,7 +23,7 @@ namespace Microsoft.UI.Composition
 		// this channel lets Uno match that while keeping CompositionShape.Scale/RotationAngle/
 		// TransformMatrix as proper Composition API transforms (which DO scale strokes via the
 		// canvas, matching WinUI's CompositionSpriteShape).
-		private SKMatrix _geometryTransform = SKMatrix.CreateIdentity();
+		private Matrix3x2 _geometryTransform = Matrix3x2.Identity;
 
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
@@ -42,7 +41,7 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _fillGeometry, value);
 		}
 
-		internal void SetGeometryTransform(SKMatrix transform)
+		internal void SetGeometryTransform(Matrix3x2 transform)
 		{
 			_geometryTransform = transform;
 			RebuildGeometryWithTransformations();
@@ -50,12 +49,12 @@ namespace Microsoft.UI.Composition
 
 		private void RebuildGeometryWithTransformations()
 		{
-			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
+			if (Geometry?.BuildGeometry() is IGeometry geometry)
 			{
 				_geometryWithTransformations = _geometryTransform.IsIdentity
 					? geometry
 					: geometry.Transform(_geometryTransform);
-				if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
+				if (FillGeometry?.BuildGeometry() is IGeometry fillGeometry)
 				{
 					_fillGeometryWithTransformations = _geometryTransform.IsIdentity
 						? fillGeometry
@@ -81,7 +80,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					using var fillGeometry = ((IGeometry)finalFillGeometryWithTransformations).GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
+					using var fillGeometry = finalFillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
 					
 					session.Session.Save();
 					session.Session.ClipPath(fillGeometry, antialias: true);
@@ -91,15 +90,15 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
-						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds.ToRect());
+						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 					}
 					session.Session.Restore();
 				}
 				
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					using var strokeGeometry = ((IGeometry)geometryWithTransformations).GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
-					
+					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
+
 					session.Session.Save();
 					session.Session.ClipPath(strokeGeometry, antialias: true);
 					stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
@@ -126,14 +125,14 @@ namespace Microsoft.UI.Composition
 			{
 				point = CombinedTransformMatrix.Inverse().Transform(point);
 				
-				if (FillBrush is { } && geometryWithTransformations.Contains((float)point.X, (float)point.Y))
+				if (FillBrush is { } && geometryWithTransformations.FillContains(new Vector2((float)point.X, (float)point.Y)))
 				{
 					return true;
 				}
-				
+
 				if (StrokeBrush is { } && StrokeThickness > 0)
 				{
-					using var strokeGeometry = ((IGeometry)geometryWithTransformations).GetStrokeFillGeometry(GetStrokeStyle(withTrim: false));
+					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: false));
 					if (strokeGeometry.FillContains(new Vector2((float)point.X, (float)point.Y)))
 					{
 						return true;
