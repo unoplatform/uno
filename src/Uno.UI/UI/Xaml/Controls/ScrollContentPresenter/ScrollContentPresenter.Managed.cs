@@ -320,6 +320,30 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			// A zoom-only change (offsets left null) can shrink the scrollable range below the current
+			// offsets, so the existing offsets have to be re-clamped against the target zoom factor.
+			if (zoomUpdated && horizontalOffset is null)
+			{
+				var maxOffset = Math.Max(0, ExtentWidth * _zoomFactor - ViewportWidth);
+				var clampedOffset = ValidateInputOffset(HorizontalOffset, 0, maxOffset);
+				if (!NumericExtensions.AreClose(HorizontalOffset, clampedOffset))
+				{
+					HorizontalOffset = clampedOffset;
+					updated = true;
+				}
+			}
+
+			if (zoomUpdated && verticalOffset is null)
+			{
+				var maxOffset = Math.Max(0, ExtentHeight * _zoomFactor - ViewportHeight);
+				var clampedOffset = ValidateInputOffset(VerticalOffset, 0, maxOffset);
+				if (!NumericExtensions.AreClose(VerticalOffset, clampedOffset))
+				{
+					VerticalOffset = clampedOffset;
+					updated = true;
+				}
+			}
+
 			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} z={zoomFactor} | actual: h={HorizontalOffset} v={VerticalOffset} z={_zoomFactor} | opts: {options})");
 
 			if (!options.IsTouch)
@@ -588,8 +612,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var center = args.Position;
 				var zoomRatio = newZoomFactor.Value / _zoomFactor;
 
-				// Formula: new_offset = center + (old_offset - center) * zoomRatio
-				// But we're computing delta, so: delta = (old_offset - center) * (zoomRatio - 1)
+				// Formula: new_offset = (old_offset + center) * zoomRatio - center
+				// Expressed as a delta: delta = (old_offset + center) * (zoomRatio - 1)
 				var zoomOffsetDeltaX = (HorizontalOffset + center.X) * (zoomRatio - 1);
 				var zoomOffsetDeltaY = (VerticalOffset + center.Y) * (zoomRatio - 1);
 
