@@ -27,6 +27,12 @@ internal interface IDrawingBackend
 	/// <summary>Creates a rectangular geometry.</summary>
 	IGeometry CreateRectangleGeometry(Rect rect);
 
+	/// <summary>
+	/// Renders <paramref name="render"/> into a fresh transparent offscreen image of the given pixel size
+	/// and returns it (e.g. to rasterize a brush before nine-slicing it).
+	/// </summary>
+	IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(
 		Vector2 start,

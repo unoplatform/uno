@@ -20,6 +20,16 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		return new SkiaGeometrySource2D(builder.Detach());
 	}
 
+	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
+	{
+		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+		using var surface = SKSurface.Create(info);
+		surface.Canvas.Clear(SKColors.Transparent);
+		render(new SkiaDrawingSession(surface.Canvas));
+		// Snapshot detaches from the surface (copy-on-write), so the returned image outlives it.
+		return new SkiaImage(surface.Snapshot());
+	}
+
 	public IShader CreateLinearGradientShader(
 		Vector2 start,
 		Vector2 end,

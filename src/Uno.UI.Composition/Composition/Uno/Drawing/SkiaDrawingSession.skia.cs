@@ -147,6 +147,25 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint)
 		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), BuildPaint(paint));
 
+	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, in PaintParams paint)
+	{
+		var skImage = ((SkiaImage)image).Image;
+		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);
+		var dst = destination.ToSKRect();
+		var skPaint = BuildPaint(paint);
+		if (centerHollow)
+		{
+			_canvas.Save();
+			_canvas.ClipRect(center, SKClipOperation.Difference, antialias: true);
+			_canvas.DrawImageNinePatch(skImage, center, dst, skPaint);
+			_canvas.Restore();
+		}
+		else
+		{
+			_canvas.DrawImageNinePatch(skImage, center, dst, skPaint);
+		}
+	}
+
 	private static SKPaint BuildPaint(in PaintParams p)
 	{
 		var paint = _sparePaint ??= new SKPaint();

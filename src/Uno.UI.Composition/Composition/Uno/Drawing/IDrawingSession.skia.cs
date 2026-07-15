@@ -66,6 +66,13 @@ internal interface IDrawingSession
 	void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint);
 
 	/// <summary>
+	/// Draws <paramref name="image"/> stretched into <paramref name="destination"/> as a nine-slice: the
+	/// <paramref name="centerSlice"/> rectangle (in image pixels) defines the fixed corners / stretchable
+	/// edges and center. When <paramref name="centerHollow"/> is true the center slice is not drawn.
+	/// </summary>
+	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, in PaintParams paint);
+
+	/// <summary>
 	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:
 	/// a transparent offscreen layer whose backdrop is the filtered content, optionally modulated by
 	/// <paramref name="opacity"/>. Mirrors the WinUI effect-brush paint semantics.
