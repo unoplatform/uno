@@ -876,7 +876,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected internal virtual void Open()
+		internal virtual void Open()
 		{
 			EnsurePopupCreated();
 
