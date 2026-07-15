@@ -170,7 +170,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			private void OnPropertyChanged(object? previousValue, object? newValue, bool shouldRaiseValueChanged)
+			private void OnPropertyChanged(object? newValue, bool shouldRaiseValueChanged)
 			{
 				if (_isDataContextChanging && newValue == DependencyProperty.UnsetValue)
 				{
@@ -375,11 +375,9 @@ namespace Uno.UI.DataBinding
 						// weak with regards to the delegates that are provided.
 						disposables.Add(() =>
 						{
-							var previousValue = valueHandler.PreviousValue;
-
 							valueHandler = null;
 							handlerDisposable.Dispose();
-							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
+							OnPropertyChanged(DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
 						});
 					}
 				}
@@ -465,8 +463,6 @@ namespace Uno.UI.DataBinding
 					_self = WeakReferencePool.RentSelfWeakReference(this);
 				}
 
-				public object? PreviousValue { get; set; }
-
 				public ManagedWeakReference WeakReference
 					=> _self;
 
@@ -474,9 +470,7 @@ namespace Uno.UI.DataBinding
 				{
 					var newValue = _owner.GetSourceValue();
 
-					_owner.OnPropertyChanged(PreviousValue, newValue, shouldRaiseValueChanged: true);
-
-					PreviousValue = newValue;
+					_owner.OnPropertyChanged(newValue, shouldRaiseValueChanged: true);
 				}
 
 				public void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
