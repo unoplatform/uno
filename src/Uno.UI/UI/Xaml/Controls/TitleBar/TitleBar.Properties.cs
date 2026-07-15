@@ -194,7 +194,7 @@ public partial class TitleBar
 			nameof(IsBackButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(false, OnPropertyChanged));
+			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsBackButtonEnabled dependency property.
@@ -214,7 +214,7 @@ public partial class TitleBar
 			nameof(IsPaneToggleButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(false, OnPropertyChanged));
+			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the TemplateSettings dependency property.
@@ -234,7 +234,7 @@ public partial class TitleBar
 			nameof(AutoRefreshDragRegions),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(false, OnPropertyChanged));
+			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsDragRegion attached dependency property.
