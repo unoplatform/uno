@@ -1554,6 +1554,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22007")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
@@ -1563,7 +1564,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Shift_MouseWheel_Then_ScrollHorizontally()
 		{
 #if WINAPPSDK
-			Assert.Inconclusive("Mouse pointer helper not supported on UWP.");
+			Assert.Inconclusive("Mouse pointer helper not supported on WinAppSDK.");
 #else
 			// Shift + vertical mouse wheel must scroll horizontally: wheel-down scrolls right,
 			// wheel-up scrolls left (matching WinUI / standard desktop behavior). See #22007.

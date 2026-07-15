@@ -294,11 +294,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-					// A genuine horizontal wheel (IsHorizontalMouseWheel) already carries the correct horizontal
-					// sign (positive = right), matching WinUI's MouseWheelRight/MouseWheelLeft handling. A vertical
-					// wheel repurposed as horizontal via Shift uses the vertical convention (positive = wheel up),
-					// which must be negated so wheel-down scrolls right and wheel-up scrolls left -- the same inversion
-					// the vertical branch below applies. Without this negation, Shift + wheel scrolling is inverted (#22007).
+					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
+					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
 #if __WASM__
 					success = Set(
