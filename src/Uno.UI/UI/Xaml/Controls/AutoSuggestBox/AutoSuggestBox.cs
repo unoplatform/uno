@@ -65,10 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.IsLightDismissEnabled = false;
 			}
 
-#if __ANDROID__
-			_popup.DisableFocus();
-#endif
-
 #if __APPLE_UIKIT__
 			if (_textBox is { } textbox)
 			{
