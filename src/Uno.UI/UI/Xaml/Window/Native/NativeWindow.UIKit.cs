@@ -152,11 +152,6 @@ public partial class Window : UIWindow
 		}
 	}
 
-	public override UIView? HitTest(CGPoint point, UIEvent? uievent)
-	{
-		return base.HitTest(point, uievent);
-	}
-
 #if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
 	{
