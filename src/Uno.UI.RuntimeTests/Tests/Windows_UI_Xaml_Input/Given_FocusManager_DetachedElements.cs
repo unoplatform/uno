@@ -163,10 +163,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				Children = { removedTextBlock }
 			};
+#if HAS_UNO
 			var cancelAttempted = false;
 			var cancellationAccepted = false;
 			var redirectionAccepted = false;
 			removedTextBlock.LosingFocus += OnLosingFocus;
+#endif
 			try
 			{
 				await UITestHelper.Load(root);
@@ -175,17 +177,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				root.Children.Remove(removedTextBlock);
 				await TestServices.WindowHelper.WaitForIdle();
 
+#if HAS_UNO
+				// Uno raises a non-cancellable LosingFocus while clearing focus for the leaving
+				// element (ClearFocus(canCancel: false)). WinUI drops focus on removal without a
+				// cancellable LosingFocus cycle, so these mechanics assertions are Uno-only; the
+				// parity-relevant outcome (focus leaves the removed element) is asserted for all.
 				Assert.IsTrue(cancelAttempted);
 				Assert.IsFalse(cancellationAccepted);
 				Assert.IsFalse(redirectionAccepted);
+#endif
 				Assert.AreNotEqual(removedTextBlock, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 			}
 			finally
 			{
+#if HAS_UNO
 				removedTextBlock.LosingFocus -= OnLosingFocus;
+#endif
 				TestServices.WindowHelper.WindowContent = null;
 			}
 
+#if HAS_UNO
 			void OnLosingFocus(UIElement sender, LosingFocusEventArgs args)
 			{
 				cancelAttempted = true;
@@ -194,6 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				args.Cancel = true;
 				args.NewFocusedElement = removedTextBlock;
 			}
+#endif
 		}
 
 		[TestMethod]

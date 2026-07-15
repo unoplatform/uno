@@ -8,9 +8,12 @@
 // equivalent, so the whole fixture is Uno-only and excluded from the native WinAppSDK build.
 #if HAS_UNO
 
+using System.Threading.Tasks;
+using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.RuntimeTests.Helpers;
 using static Uno.UI.Xaml.Input.XYFocusBubbling;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
@@ -20,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
 public class Given_XYFocusBubbling
 {
 	[TestMethod]
-	public void VerifyXYFocusPropertyRetrieval()
+	public async Task VerifyXYFocusPropertyRetrieval()
 	{
 		var element = new Control();
 
@@ -34,10 +37,26 @@ public class Given_XYFocusBubbling
 		element.SetValue(UIElement.XYFocusDownProperty, elementDown);
 		element.SetValue(UIElement.XYFocusUpProperty, elementUp);
 
-		Assert.AreEqual(elementLeft, GetDirectionOverride(element, null, FocusNavigationDirection.Left));
-		Assert.AreEqual(elementRight, GetDirectionOverride(element, null, FocusNavigationDirection.Right));
-		Assert.AreEqual(elementUp, GetDirectionOverride(element, null, FocusNavigationDirection.Up));
-		Assert.AreEqual(elementDown, GetDirectionOverride(element, null, FocusNavigationDirection.Down));
+		// The direction overrides must be part of the live visual tree to be valid focus
+		// candidates (CUIElement::IsFocusable requires IsActive()), otherwise they are ignored.
+		var host = new Grid
+		{
+			Children = { element, elementLeft, elementRight, elementUp, elementDown }
+		};
+
+		try
+		{
+			await UITestHelper.Load(host, static x => x.IsLoaded);
+
+			Assert.AreEqual(elementLeft, GetDirectionOverride(element, null, FocusNavigationDirection.Left));
+			Assert.AreEqual(elementRight, GetDirectionOverride(element, null, FocusNavigationDirection.Right));
+			Assert.AreEqual(elementUp, GetDirectionOverride(element, null, FocusNavigationDirection.Up));
+			Assert.AreEqual(elementDown, GetDirectionOverride(element, null, FocusNavigationDirection.Down));
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -48,7 +67,7 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyCorrectOverrideChosenWhenTargetElementHasOverride()
+	public async Task VerifyCorrectOverrideChosenWhenTargetElementHasOverride()
 	{
 		var element = new Control();
 		var candidate = new Control();
@@ -61,12 +80,28 @@ public class Given_XYFocusBubbling
 		parent.SetValue(UIElement.XYFocusRightProperty, directionOverrideOfParent);
 		element.SetValue(UIElement.XYFocusRightProperty, overrideElement);
 
-		var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
-		Assert.AreEqual(overrideElement, retrieved);
+		// The override targets must be part of the live visual tree to be valid focus
+		// candidates (CUIElement::IsFocusable requires IsActive()), otherwise they are ignored.
+		var host = new Grid
+		{
+			Children = { parent, candidate, directionOverrideOfParent, overrideElement }
+		};
+
+		try
+		{
+			await UITestHelper.Load(host, static x => x.IsLoaded);
+
+			var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
+			Assert.AreEqual(overrideElement, retrieved);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
-	public void VerifyCorrectOverrideChosenWhenBubbling()
+	public async Task VerifyCorrectOverrideChosenWhenBubbling()
 	{
 		var element = new Control();
 		var candidate = new Control();
@@ -77,8 +112,24 @@ public class Given_XYFocusBubbling
 
 		parent.SetValue(UIElement.XYFocusRightProperty, directionOverrideOfParent);
 
-		var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
-		Assert.AreEqual(directionOverrideOfParent, retrieved);
+		// The override target must be part of the live visual tree to be a valid focus
+		// candidate (CUIElement::IsFocusable requires IsActive()), otherwise it is ignored.
+		var host = new Grid
+		{
+			Children = { parent, candidate, directionOverrideOfParent }
+		};
+
+		try
+		{
+			await UITestHelper.Load(host, static x => x.IsLoaded);
+
+			var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
+			Assert.AreEqual(directionOverrideOfParent, retrieved);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
