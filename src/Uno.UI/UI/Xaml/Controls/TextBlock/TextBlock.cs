@@ -40,11 +40,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private string _inlinesText; // Text derived from the content of Inlines
 		private IDisposable _foregroundBrushChangedSubscription;
 
-#if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
 		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
-#endif
 
 		private Hyperlink _hyperlinkOver; // do not use: use HyperlinkOver instead
 		private Hyperlink HyperlinkOver
@@ -548,7 +546,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
-#if !__WASM__
 				if (value is SolidColorBrush || value is GradientBrush || value is RadialGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
@@ -557,9 +554,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
 				}
-#else
-				SetValue(ForegroundProperty, value);
-#endif
 			}
 		}
 
@@ -612,8 +606,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IsTextSelectionEnabled Dependency Property
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -621,8 +615,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsTextSelectionEnabledProperty, value);
 		}
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -997,9 +991,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			that._isPressed = true;
-#endif
 
 			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{
@@ -1012,7 +1004,6 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
-#if !__WASM__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1042,7 +1033,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				that.CapturePointer(e.Pointer);
 			}
-#endif
 #if __SKIA__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
 			{
@@ -1067,7 +1057,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e) is { })
 			{
 				// if we release on a hyperlink, we don't select anything
@@ -1075,7 +1064,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			that._isPressed = false;
-#endif
 
 			if (that.IsCaptured(e.Pointer))
 			{
@@ -1103,22 +1091,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
 			// After pointer release, handle touch/pen selection and queue a SelectionFlyout visibility update.
 			that.OnPointerReleasedForSelectionFlyout(e);
-#if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is TextBlock that)
 			{
-#if !__WASM__
 				that._isPressed = false;
 				if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
-#endif
 
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
@@ -1139,7 +1123,6 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1153,7 +1136,6 @@ namespace Microsoft.UI.Xaml.Controls
 					that.Selection = that.Selection with { end = index };
 				}
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
@@ -1206,9 +1188,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void RecalculateSubscribeToPointerEvents()
 		{
 			SubscribeToPointerEvents = HasHyperlink
-#if !__WASM__
 				|| IsTextSelectionEnabled
-#endif
 				;
 		}
 

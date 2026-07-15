@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml
 			UpdateHitTest();
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		private void OnChildAdded(UIElement child)
 		{
 			if (!child._isFrameworkElement)

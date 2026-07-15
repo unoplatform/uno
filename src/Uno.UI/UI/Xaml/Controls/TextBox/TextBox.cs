@@ -150,23 +150,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnLoadedPartial();
 
-#if __ANDROID__
-			SetupTextBoxView();
-#endif
-
 			// This workaround is added in OnLoaded rather than OnApplyTemplate.
 			// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
 			// So, the style setters would override what the workaround does.
 			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __APPLE_UIKIT__
-				// We disable scrolling because the inner ITextBoxView provides its own scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#else
 				// The template of TextBox contains the following:
 				/*
 					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -185,10 +174,6 @@ namespace Microsoft.UI.Xaml.Controls
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
 
-#if __WASM__
-				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
-#endif
-#endif
 			}
 		}
 
@@ -509,9 +494,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Description DependencyProperty
 
 		public
-#if __APPLE_UIKIT__
-		new
-#endif
 		object Description
 		{
 			get => this.GetValue(DescriptionProperty);
@@ -799,8 +781,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFlowDirectionChangedPartial();
 #endif
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -808,8 +790,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -961,11 +943,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region TextAlignment DependencyProperty
 
-#if __ANDROID__
-		public new TextAlignment TextAlignment
-#else
 		public TextAlignment TextAlignment
-#endif
 		{
 			get { return (TextAlignment)GetValue(TextAlignmentProperty); }
 			set { SetValue(TextAlignmentProperty, value); }
@@ -1102,11 +1080,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerPressed(args);
 
 			bool isPointerCaptureRequired =
-#if __WASM__
-				IsPointerCaptureRequired;
-#else
 				true;
-#endif
 
 			if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 			{
@@ -1262,14 +1236,6 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 			}
 
-#if __WASM__
-			if (args.Handled)
-			{
-				// Marking the routed event as Handled makes the browser call preventDefault() for key events.
-				// This is a problem as it breaks the browser caret navigation within the input.
-				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
-			}
-#endif
 		}
 #endif
 

@@ -167,11 +167,7 @@ namespace Uno.UI
 		public static class Font
 		{
 			private static string _symbolsFont =
-#if __WASM__ || __APPLE_UIKIT__
-				"Symbols";
-#else
 				"ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
-#endif
 
 			/// <summary>
 			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon. Must be invoked after App.InitializeComponent() to have an effect.
@@ -511,7 +507,7 @@ namespace Uno.UI
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
-#if __WASM__ || __SKIA__
+#if __SKIA__
 				= true;
 #endif
 
@@ -795,15 +791,7 @@ namespace Uno.UI
 			/// <summary>
 			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
 			/// </summary>
-#if __WASM__
-			public static int WasmBBoxCacheSize
-			{
-				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
-				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
-			}
-#else
 			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
-#endif
 		}
 
 	}

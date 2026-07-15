@@ -759,13 +759,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				static double GetEffectiveMargin(double leadingMargin, double trailingMargin)
 				{
-#if !__WASM__
 					return leadingMargin + trailingMargin;
-#else
-					// Issue needs to be fixed first for WASM for missing trailing Margin
-					// Details here: https://github.com/unoplatform/uno/issues/7000
-					return leadingMargin;
-#endif
 				}
 			}
 			else
@@ -1748,15 +1742,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 
-			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
-			// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
-			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
-#if !__WASM__
 			var key = args.Key;
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
@@ -1847,9 +1836,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				return result;
 			}
-#endif
 		}
-#endif
 
 #if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
