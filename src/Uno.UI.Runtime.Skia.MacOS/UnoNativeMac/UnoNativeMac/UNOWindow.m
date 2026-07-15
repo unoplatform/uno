@@ -1176,9 +1176,9 @@ NSOperatingSystemVersion _osVersion;
     _osVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
 }
 
-// Fix: Borderless windows need to explicitly allow becoming key/main window
-// Without this, keyboard input stops working when TitleBar is hidden
-// See: https://github.com/unoplatform/uno/issues/22400
+// Borderless / title-bar-hidden NSWindows return NO from the default
+// canBecomeKeyWindow / canBecomeMainWindow, which silently drops keyboard
+// input. Always opt in so all UNOWindow instances still receive key events.
 - (BOOL)canBecomeKeyWindow {
     return YES;
 }
