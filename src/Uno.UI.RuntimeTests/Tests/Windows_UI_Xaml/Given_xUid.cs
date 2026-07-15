@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
+[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17727")]
 public class Given_xUid
 {
 	[TestMethod]
