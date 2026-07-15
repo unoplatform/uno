@@ -12,13 +12,6 @@
 				<IsIOS>true</IsIOS>
 			</PropertyGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-			<PropertyGroup>
-				<IsAppleUIKit>true</IsAppleUIKit>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
-				<IsMacCatalyst>true</IsMacCatalyst>
-			</PropertyGroup>
-		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
 			<PropertyGroup>
 				<IsAppleUIKit>true</IsAppleUIKit>
