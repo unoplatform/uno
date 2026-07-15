@@ -811,6 +811,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19731")]
 		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf")]
 		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf#Roboto")]
 		public async Task When_FontFamily_From_MsAppData_Local(string font)
@@ -818,9 +819,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sourceUri = new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf");
 			var sourceFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(sourceUri);
 
+			// Unique per-invocation folder so the two DataRow variants never race on the same directory.
+			var folderName = $"MsAppDataFontTest_{Guid.NewGuid():N}";
 			var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
 			var fontsFolder = await localFolder.CreateFolderAsync(
-				"MsAppDataFontTest",
+				folderName,
 				Windows.Storage.CreationCollisionOption.OpenIfExists);
 			await sourceFile.CopyAsync(fontsFolder, "Roboto-Regular.ttf", Windows.Storage.NameCollisionOption.ReplaceExisting);
 
@@ -838,7 +841,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 				Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-				SUT.FontFamily = new FontFamily(font);
+				SUT.FontFamily = new FontFamily(font.Replace("MsAppDataFontTest", folderName));
 
 				int counter = 3;
 
@@ -859,8 +862,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await fontsFolder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
 				}
-				catch
+				catch (Exception ex)
 				{
+					// Cleanup is best-effort — surface the failure without failing the test.
+					Console.WriteLine($"Failed to delete '{folderName}': {ex}");
 				}
 			}
 		}
