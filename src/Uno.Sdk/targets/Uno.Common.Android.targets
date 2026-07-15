@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<IsAndroid>true</IsAndroid>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' And $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0')) ">24.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
 		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
 
