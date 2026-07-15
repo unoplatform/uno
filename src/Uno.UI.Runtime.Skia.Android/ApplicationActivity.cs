@@ -43,9 +43,6 @@ namespace Microsoft.UI.Xaml
 		private static bool _started;
 		private bool _isContentViewSet;
 
-		// Set on the GL/Vulkan render thread after the first Skia frame; read on the main thread to gate splash-screen dismissal.
-		internal volatile bool FirstFrameRendered;
-
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -258,6 +255,9 @@ namespace Microsoft.UI.Xaml
 			base.OnCreate(bundle);
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
+
+			// Hold the splash on the Skia path until the first Skia frame is presented (see the render views).
+			NativeWindowWrapper.Instance.ArmFirstFrameGate();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
