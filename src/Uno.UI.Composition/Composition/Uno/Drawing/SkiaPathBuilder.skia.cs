@@ -22,6 +22,14 @@ internal sealed class SkiaPathBuilder : IPathBuilder
 	public void QuadraticTo(Vector2 control, Vector2 end)
 		=> _builder.QuadTo(new SKPoint(control.X, control.Y), new SKPoint(end.X, end.Y));
 
+	public void ArcTo(Vector2 radius, float rotationAngle, bool isLargeArc, bool clockwise, Vector2 end)
+		=> _builder.ArcTo(
+			new SKPoint(radius.X, radius.Y),
+			rotationAngle,
+			isLargeArc ? SKPathArcSize.Large : SKPathArcSize.Small,
+			clockwise ? SKPathDirection.Clockwise : SKPathDirection.CounterClockwise,
+			new SKPoint(end.X, end.Y));
+
 	public void AddRectangle(Rect rect) => _builder.AddRect(rect.ToSKRect());
 
 	public void AddRoundedRectangle(Rect rect, float radiusX, float radiusY)

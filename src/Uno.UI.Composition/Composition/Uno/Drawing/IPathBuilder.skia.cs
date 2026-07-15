@@ -15,6 +15,8 @@ internal interface IPathBuilder
 	void LineTo(Vector2 point);
 	void CubicTo(Vector2 control1, Vector2 control2, Vector2 end);
 	void QuadraticTo(Vector2 control, Vector2 end);
+	/// <summary>Adds an elliptical arc to <paramref name="end"/> (SVG/D2D-style: radii, x-axis rotation in degrees, large-arc and clockwise flags).</summary>
+	void ArcTo(Vector2 radius, float rotationAngle, bool isLargeArc, bool clockwise, Vector2 end);
 	void AddRectangle(Rect rect);
 	void AddRoundedRectangle(Rect rect, float radiusX, float radiusY);
 	/// <summary>Adds a rounded rectangle with (possibly non-uniform) per-corner radii (x, y), ordered TL, TR, BR, BL.</summary>
