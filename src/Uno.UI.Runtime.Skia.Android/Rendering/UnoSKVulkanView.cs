@@ -205,6 +205,14 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 				// Update the native layer host clip path
 				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+				if (!ApplicationActivity.Instance.FirstFrameRendered)
+				{
+					ApplicationActivity.Instance.FirstFrameRendered = true;
+					// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+					ApplicationActivity.RelativeLayout?.Post(() =>
+						ApplicationActivity.RelativeLayout?.Invalidate());
+				}
 			});
 		}
 		catch (Exception ex)
