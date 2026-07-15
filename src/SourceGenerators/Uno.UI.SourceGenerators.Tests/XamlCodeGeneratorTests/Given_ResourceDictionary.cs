@@ -262,8 +262,8 @@ public class Given_ResourceDictionary
 
 	// Reproduction for https://github.com/unoplatform/uno/issues/13373
 	// Custom Dictionary subclass declared in XAML produces invalid Add(...) calls
-	// because the generator picks the IDictionary base method that requires
-	// (key, value) but emits only the value, surfacing as CS7036.
+	// because the generator targets the IDictionary Add that requires (key, value)
+	// but omits the key, emitting a single-argument Add(value) call, surfacing as CS7036.
 	[TestMethod]
 	public async Task When_Custom_Dictionary_Class_Used_In_XAML_13373()
 	{
