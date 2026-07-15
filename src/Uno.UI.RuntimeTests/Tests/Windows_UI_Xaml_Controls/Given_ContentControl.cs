@@ -449,7 +449,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					},
 					message: "ItemsControl should realize all item visuals with bound text after double toggle");
 
-				Assert.IsNotNull(realizedTexts);
 				CollectionAssert.AreEqual(
 					expectedItems,
 					realizedTexts,
