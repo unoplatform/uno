@@ -180,40 +180,14 @@ public class Given_ContainerVisual
 		// capability would take must produce identical output. Render the same scene each way and compare.
 		// The scene exercises per-visual paint, child rendering, corner clipping, and the non-analytic shadow
 		// fallback (gradient content + ThemeShadow) — all of which have a distinct uncached branch.
-		static FrameworkElement BuildScene()
-		{
-			var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
-			gradient.GradientStops.Add(new GradientStop { Color = Colors.Orange, Offset = 0 });
-			gradient.GradientStops.Add(new GradientStop { Color = Colors.Purple, Offset = 1 });
-
-			var border = new Border
-			{
-				Width = 100,
-				Height = 100,
-				Background = gradient,
-				CornerRadius = new CornerRadius(20),
-				BorderBrush = new SolidColorBrush(Colors.DarkBlue),
-				BorderThickness = new Thickness(4),
-				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Center,
-				Shadow = new ThemeShadow(),
-				Translation = new Vector3(0, 0, 32),
-				Child = new Ellipse { Width = 50, Height = 50, Fill = new SolidColorBrush(Colors.LimeGreen) }
-			};
-
-			var host = new Grid { Width = 180, Height = 180, Background = new SolidColorBrush(Colors.White) };
-			host.Children.Add(border);
-			return host;
-		}
-
-		var retained = BuildScene();
+		var retained = BuildRenderComparisonScene();
 		await UITestHelper.Load(retained);
 		var expected = await UITestHelper.ScreenShot(retained);
 
 		try
 		{
 			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = true;
-			var immediate = BuildScene();
+			var immediate = BuildRenderComparisonScene();
 			await UITestHelper.Load(immediate);
 			var actual = await UITestHelper.ScreenShot(immediate);
 
@@ -223,6 +197,67 @@ public class Given_ContainerVisual
 		{
 			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = false;
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PictureCollapsing_Produces_Identical_Output()
+	{
+		// Force the picture-collapsing optimization (record a stable subtree into one SKPicture and replay it)
+		// by dropping its frame/visual-count thresholds to zero, and verify the collapsed output still matches
+		// the immediate (uncollapsed) render.
+		var origFrame = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold;
+		var origCount = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold;
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = 0;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = 0;
+
+			var collapsed = BuildRenderComparisonScene();
+			await UITestHelper.Load(collapsed);
+			// First render collapses + caches _childrenContent; the screenshot render then replays the cache.
+			await TestServices.WindowHelper.WaitForIdle();
+			var expected = await UITestHelper.ScreenShot(collapsed);
+
+			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = true;
+			var immediate = BuildRenderComparisonScene();
+			await UITestHelper.Load(immediate);
+			var actual = await UITestHelper.ScreenShot(immediate);
+
+			await ImageAssert.AreEqualAsync(actual, expected);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = false;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = origFrame;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = origCount;
+		}
+	}
+
+	private static FrameworkElement BuildRenderComparisonScene()
+	{
+		var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
+		gradient.GradientStops.Add(new GradientStop { Color = Colors.Orange, Offset = 0 });
+		gradient.GradientStops.Add(new GradientStop { Color = Colors.Purple, Offset = 1 });
+
+		var border = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = gradient,
+			CornerRadius = new CornerRadius(20),
+			BorderBrush = new SolidColorBrush(Colors.DarkBlue),
+			BorderThickness = new Thickness(4),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			Shadow = new ThemeShadow(),
+			Translation = new Vector3(0, 0, 32),
+			Child = new Ellipse { Width = 50, Height = 50, Fill = new SolidColorBrush(Colors.LimeGreen) }
+		};
+
+		var host = new Grid { Width = 180, Height = 180, Background = new SolidColorBrush(Colors.White) };
+		host.Children.Add(border);
+		return host;
 	}
 
 	private class FrameCounterSKCanvasElement : SKCanvasElement
