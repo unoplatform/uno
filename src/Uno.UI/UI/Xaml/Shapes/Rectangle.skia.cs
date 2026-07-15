@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				? CompositionGeometry.BuildRectangleGeometry(offset, size)
 				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
 
-			return (SkiaGeometrySource2D)geometry;
+			return new SkiaGeometrySource2D(geometry);
 		}
 	}
 }

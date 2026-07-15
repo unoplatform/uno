@@ -6,5 +6,5 @@ namespace Microsoft.UI.Xaml.Media;
 
 partial class LineGeometry
 {
-	internal override SKPath GetSKPath() => ((SkiaGeometrySource2D)CompositionGeometry.BuildLineGeometry(StartPoint.ToVector2(), EndPoint.ToVector2())).Geometry;
+	internal override SKPath GetSKPath() => CompositionGeometry.BuildLineGeometry(StartPoint.ToVector2(), EndPoint.ToVector2());
 }

@@ -1,33 +1,42 @@
-#nullable enable
+﻿#nullable enable
 
+using SkiaSharp;
 using System.Numerics;
-using Uno.UI.Composition.Drawing;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionRoundedRectangleGeometry : CompositionGeometry
 	{
-		private IGeometry? _geometry;
+		private SkiaGeometrySource2D? _geometrySource2D;
 
-		internal override IGeometrySource2D? BuildGeometry() => _geometry as IGeometrySource2D;
+		internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D;
 
-		private IGeometry InternalBuildGeometry()
+		private SkiaGeometrySource2D? InternalBuildGeometry()
 		{
+			SKPath? path;
+
 			Vector2 cornerRadius = CornerRadius;
-			return cornerRadius.X == 0 || cornerRadius.Y == 0
+			if (cornerRadius.X == 0 || cornerRadius.Y == 0)
+			{
 				// Simple rectangle
-				? BuildRectangleGeometry(Offset, Size)
+				path = BuildRectangleGeometry(Offset, Size);
+			}
+			else
+			{
 				// Complex rectangle
-				: BuildRoundedRectangleGeometry(Offset, Size, CornerRadius);
+				path = BuildRoundedRectangleGeometry(Offset, Size, CornerRadius);
+			}
+
+			return new SkiaGeometrySource2D(path);
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			if (propertyName is nameof(Offset) or nameof(Size) or nameof(CornerRadius))
 			{
-				_geometry?.Dispose();
-				_geometry = InternalBuildGeometry();
+				_geometrySource2D?.Dispose();
+				_geometrySource2D = InternalBuildGeometry();
 			}
 
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
@@ -35,7 +44,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override void DisposeInternal()
 		{
-			_geometry?.Dispose();
+			_geometrySource2D?.Dispose();
 			base.DisposeInternal();
 		}
 	}
