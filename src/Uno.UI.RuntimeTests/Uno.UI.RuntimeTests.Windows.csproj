@@ -65,7 +65,9 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
 
-		<!-- MUX-imported tests (*.mux.*) rely on MUX/Uno test internals and don't compile against native WinAppSDK. -->
+		<!-- MUX-imported tests (*.mux.*) rely on MUX/Uno test internals and don't compile against native WinAppSDK.
+		     The exclusion is suffix-scoped, so shared MUX test infrastructure (MUX/Helpers, MUX/Input, MUX/Utilities),
+		     which carries no .mux suffix, is intentionally still compiled here. -->
 		<Compile Remove="$(MSBuildThisFileDirectory)**\*.mux.cs" />
 		<Compile Remove="$(MSBuildThisFileDirectory)**\*.mux.xaml.cs" />
 	</ItemGroup>
