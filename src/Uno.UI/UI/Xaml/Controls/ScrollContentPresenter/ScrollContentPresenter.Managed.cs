@@ -487,10 +487,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// We deliberately do NOT change the "tap during visible inertia is muted"
 				// behavior covered by When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored
 				// — that path is gated on the inertia still producing meaningful displacement,
-				// which both checks below explicitly require.
-				var inertiaIsExhausted =
-					(deltaX == 0 && deltaY == 0)
-					|| (Math.Abs(args.Delta.Translation.X) < 1 && Math.Abs(args.Delta.Translation.Y) < 1);
+				// which the check below explicitly requires.
+				//
+				// deltaX/deltaY are already clamped to the remaining scrollable range, so they
+				// encode "0 at the boundary, raw per-tick translation otherwise". Checking both
+				// against the pixel grid therefore also covers a diagonal flick where one axis is
+				// pinned at its boundary while the other decays sub-pixel without ever reaching it.
+				var inertiaIsExhausted = Math.Abs(deltaX) < 1 && Math.Abs(deltaY) < 1;
 				if (inertiaIsExhausted)
 				{
 					recognizer.CompleteGesture();
