@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
@@ -26,7 +25,7 @@ namespace Microsoft.UI.Composition
 			end.X += (float)bounds.Left;
 			end.Y += (float)bounds.Top;
 
-			var localMatrix = CreateTransformMatrix(bounds.ToSKRect()).ToMatrix3x2();
+			var localMatrix = CreateTransformMatrix(bounds);
 
 			shader = DrawingBackend.Current.CreateLinearGradientShader(
 				start, end, GetNeutralColors(), ColorPositions!, NeutralTileMode, localMatrix);

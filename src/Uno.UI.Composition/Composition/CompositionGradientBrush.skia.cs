@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using Windows.UI;
@@ -27,7 +26,7 @@ namespace Microsoft.UI.Composition
 
 			if (!TryBuildShader(bounds, out var shader) || shader is null)
 			{
-				// This gradient kind hasn't been migrated to the neutral factory yet; fall back to SKCanvas.
+				// This gradient kind can't build a neutral shader; nothing is painted.
 				return false;
 			}
 
@@ -66,52 +65,54 @@ namespace Microsoft.UI.Composition
 			_ => GradientTileMode.Clamp,
 		};
 
-		private protected SKMatrix CreateTransformMatrix(SKRect bounds)
+		// Row-vector convention: `a * b` applies `a` first then `b`, matching SKMatrix.PostConcat's
+		// "apply after" semantics used previously.
+		private protected Matrix3x2 CreateTransformMatrix(Rect bounds)
 		{
-			var transform = SKMatrix.Identity;
+			var transform = Matrix3x2.Identity;
 
 			// Translate to origin
 			if (CenterPoint != Vector2.Zero)
 			{
-				transform = SKMatrix.CreateTranslation(-CenterPoint.X, -CenterPoint.Y);
+				transform = Matrix3x2.CreateTranslation(-CenterPoint.X, -CenterPoint.Y);
 			}
 
 			// Scaling
 			if (Scale != Vector2.One)
 			{
-				transform = transform.PostConcat(SKMatrix.CreateScale(Scale.X, Scale.Y));
+				transform *= Matrix3x2.CreateScale(Scale.X, Scale.Y);
 			}
 
 			// Rotating
 			if (RotationAngle != 0)
 			{
-				transform = transform.PostConcat(SKMatrix.CreateRotation(RotationAngle));
+				transform *= Matrix3x2.CreateRotation(RotationAngle);
 			}
 
 			// Translating
 			if (Offset != Vector2.Zero)
 			{
-				transform = transform.PostConcat(SKMatrix.CreateTranslation(Offset.X, Offset.Y));
+				transform *= Matrix3x2.CreateTranslation(Offset.X, Offset.Y);
 			}
 
 			// Translate back
 			if (CenterPoint != Vector2.Zero)
 			{
-				transform = transform.PostConcat(SKMatrix.CreateTranslation(CenterPoint.X, CenterPoint.Y));
+				transform *= Matrix3x2.CreateTranslation(CenterPoint.X, CenterPoint.Y);
 			}
 
 			if (!TransformMatrix.IsIdentity)
 			{
-				transform = transform.PostConcat(TransformMatrix.ToSKMatrix());
+				transform *= TransformMatrix;
 			}
 
-			var relativeTransform = RelativeTransformMatrix.IsIdentity ? SKMatrix.Identity : RelativeTransformMatrix.ToSKMatrix();
+			var relativeTransform = RelativeTransformMatrix;
 			if (!relativeTransform.IsIdentity)
 			{
-				relativeTransform.TransX *= bounds.Width;
-				relativeTransform.TransY *= bounds.Height;
+				relativeTransform.M31 *= (float)bounds.Width;
+				relativeTransform.M32 *= (float)bounds.Height;
 
-				transform = transform.PostConcat(relativeTransform);
+				transform *= relativeTransform;
 			}
 
 			return transform;
