@@ -2818,6 +2818,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
+		[RequiresScaling(1f)]
 		public async Task When_Multiline_Pointer_Tap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
