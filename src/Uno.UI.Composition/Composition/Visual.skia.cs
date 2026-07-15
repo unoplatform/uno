@@ -911,11 +911,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 		else
 		{
-			var canvas = ((SkiaDrawingSession)parentSession.Session).Canvas;
+			var actual = parentSession.Session.TotalMatrix;
+			var expected = Unsafe.IsNullRef(ref rootTransform) ? TotalMatrix : TotalMatrix * rootTransform;
+			var diff = actual - expected;
+			// Due to the limited precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
+			var frobeniusSquared =
+				diff.M11 * diff.M11 + diff.M12 * diff.M12 + diff.M13 * diff.M13 + diff.M14 * diff.M14 +
+				diff.M21 * diff.M21 + diff.M22 * diff.M22 + diff.M23 * diff.M23 + diff.M24 * diff.M24 +
+				diff.M31 * diff.M31 + diff.M32 * diff.M32 + diff.M33 * diff.M33 + diff.M34 * diff.M34 +
+				diff.M41 * diff.M41 + diff.M42 * diff.M42 + diff.M43 * diff.M43 + diff.M44 * diff.M44;
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
-				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
-				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
-				: CompositionMathHelpers.IsCloseRealZero((canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i), 1e-5f));
+				? actual == TotalMatrix
+				: CompositionMathHelpers.IsCloseRealZero(frobeniusSquared, 1e-5f));
 		}
 #endif
 	}

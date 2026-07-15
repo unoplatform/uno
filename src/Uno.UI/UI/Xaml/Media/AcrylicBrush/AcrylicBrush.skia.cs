@@ -13,13 +13,6 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class AcrylicBrush
 {
-	private static Lazy<SkiaSharp.SKImage?> _noiseImage = new(() =>
-	{
-		using Stream? imgStream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(NoiseAssetResourceName);
-		return imgStream is not null
-			? SkiaSharp.SKImage.FromEncodedData(imgStream)
-			: null;
-	});
 	private CompositionEffectBrush? _noiseBrush;
 	private CompositionBrush? _brush;
 	private bool _isUsingOpaqueBrush;
@@ -108,9 +101,7 @@ public partial class AcrylicBrush
 		_brush?.Dispose();
 		if (forceCreateAcrylicBrush)
 		{
-			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
-				? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
-				: CreateAcrylicBrushDirect(compositor);
+			_brush = CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect);
 		}
 		else
 		{
@@ -120,37 +111,7 @@ public partial class AcrylicBrush
 		CompositionBrush = _brush;
 	}
 
-	#region Direct SkiaAcrylicBrush path
-
-	private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
-	{
-		if (_noiseImage.Value is null)
-		{
-			return compositor.CreateColorBrush(FallbackColor);
-		}
-
-		Color tintColor = GetEffectiveTintColor();
-		Color luminosityColor = GetEffectiveLuminosityColor();
-
-		_isUsingOpaqueBrush = tintColor.A == 255;
-
-		var skLuminosity = new SkiaSharp.SKColor(luminosityColor.R, luminosityColor.G, luminosityColor.B, luminosityColor.A);
-		var skTint = new SkiaSharp.SKColor(tintColor.R, tintColor.G, tintColor.B, tintColor.A);
-
-		var existingBrush = new SkiaAcrylicBrush(Compositor.GetSharedCompositor());
-		existingBrush.IsOpaque = _isUsingOpaqueBrush;
-		existingBrush.LuminosityColor = skLuminosity;
-		existingBrush.TintColor = skTint;
-		existingBrush.BlurSigma = BlurRadius;
-		existingBrush.NoiseOpacity = NoiseOpacity;
-		existingBrush.NoiseImage = _noiseImage.Value;
-
-		return existingBrush;
-	}
-
-	#endregion
-
-	#region CompositionEffectBrush path (legacy, behind flag)
+	#region CompositionEffectBrush path
 
 	private CompositionBrush CreateAcrylicBrushViaCompositionEffect(Compositor compositor, bool useCrossFadeEffect)
 	{
