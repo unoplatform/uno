@@ -58,7 +58,7 @@ public sealed partial class AppBarTemplateSettings : DependencyObject
 		internal set => SetValue(HiddenRootMarginProperty, value);
 	}
 
-	public static DependencyProperty HiddenRootMarginProperty { get; } =
+	internal static DependencyProperty HiddenRootMarginProperty { get; } =
 		DependencyProperty.Register(nameof(HiddenRootMargin), typeof(Thickness), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(new Thickness(0)));
 
 	/// <summary>
