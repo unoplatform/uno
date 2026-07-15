@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-using System.Globalization;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.Graphics.Display;
@@ -35,7 +33,7 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 	{
 		_rawWidth = options.Width;
 		_rawHeight = options.Height;
-		_scale = ResolveScale(options.Scale);
+		_scale = options.Scale;
 		_orientation = options.Orientation;
 		_rendersOnDemand = options.RendersOnDemand;
 
@@ -134,19 +132,6 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 	ResolutionScale IDisplayInformationExtension.ResolutionScale => (ResolutionScale)(int)(FloorScale(_scale) * 100.0);
 
 	double? IDisplayInformationExtension.DiagonalSizeInInches => null;
-
-	/// <summary>
-	/// The configured scale can be overridden globally via the UNO_DISPLAY_SCALE_OVERRIDE environment
-	/// variable, keeping a single source of truth shared by the window bounds and DisplayInformation.
-	/// </summary>
-	private static float ResolveScale(float configuredScale)
-		=> float.TryParse(
-			Environment.GetEnvironmentVariable("UNO_DISPLAY_SCALE_OVERRIDE"),
-			NumberStyles.Any,
-			CultureInfo.InvariantCulture,
-			out var envScale) && envScale > 0
-			? envScale
-			: configuredScale;
 
 	private static float FloorScale(float rawScale)
 		=> rawScale switch
