@@ -8,7 +8,7 @@ using Windows.Foundation;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>SkiaSharp-backed <see cref="IPathBuilder"/> that accumulates into an <see cref="SKPathBuilder"/>.</summary>
-internal sealed class SkiaPathBuilder : IPathBuilder
+internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 {
 	private SKPathBuilder _builder = new();
 

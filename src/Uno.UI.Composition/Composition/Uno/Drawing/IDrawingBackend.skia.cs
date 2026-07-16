@@ -23,6 +23,7 @@ internal interface IDrawingBackend
 {
 	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
 	IPathBuilder CreatePathBuilder();
+	IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
 
 	/// <summary>Creates a rectangular geometry.</summary>
 	IGeometry CreateRectangleGeometry(Rect rect);

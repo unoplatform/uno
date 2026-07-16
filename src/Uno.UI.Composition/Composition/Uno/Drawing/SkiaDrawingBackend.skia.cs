@@ -12,6 +12,7 @@ namespace Uno.UI.Composition.Drawing;
 internal sealed class SkiaDrawingBackend : IDrawingBackend
 {
 	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
+	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();
 
 	public IGeometry CreateRectangleGeometry(Rect rect)
 	{
