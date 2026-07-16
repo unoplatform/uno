@@ -1202,10 +1202,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case nameof(Binding.ElementName):
 						var subject = new ElementNameSubject();
-						binding.ElementName = subject;
+						binding.ElementNameSubject = subject;
 
 						if (bindingProperty.Value?.ToString() is { } value)
 						{
+							// Keep the public string in sync so binding.ElementName roundtrips (WinUI parity);
+							// resolution still goes through the subject.
+							binding.ElementName = value;
 							AddElementName(value, subject);
 						}
 						break;

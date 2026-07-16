@@ -4825,8 +4825,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
+				var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;
+
+				// The public ElementName is a string (WinUI parity); the routing subject used
+				// for late binding is carried by the Uno-only ElementNameSubject property.
+				if (memberName == "ElementName")
+				{
+					memberName = "ElementNameSubject";
+				}
+
 				return "{0} = {1}".InvariantCultureFormat(
-					m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name,
+					memberName,
 					BuildBindingOption(m, FindPropertyType(m.Member), isTemplateBindingAttachedProperty));
 			}
 		}

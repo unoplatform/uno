@@ -77,7 +77,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
 									Path = @"Tag",
-									ElementName = _topLevelSubject,
+									ElementNameSubject = _topLevelSubject,
 									Converter = new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties_Return_Value_Converter(),
 									ConverterParameter = "topLevel",
 									ConverterLanguage = "topLevel",
