@@ -30,12 +30,7 @@ namespace Microsoft.UI.Composition
 				return false;
 			}
 
-			session.DrawRect(bounds, new PaintParams(global::Windows.UI.Colors.Black)
-			{
-				IsAntialias = true,
-				Shader = shader,
-				ColorFilter = DrawingBackend.Current.CreateOpacityColorFilter(opacity),
-			});
+			session.DrawRect(bounds, global::Windows.UI.Colors.Black, antialias: true, opacity: opacity, shader: shader);
 			return true;
 		}
 

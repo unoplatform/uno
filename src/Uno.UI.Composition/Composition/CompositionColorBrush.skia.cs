@@ -11,7 +11,7 @@ namespace Microsoft.UI.Composition
 	{
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
-			session.DrawRect(bounds, new PaintParams(Color) { Opacity = opacity, IsAntialias = true });
+			session.DrawRect(bounds, Color, antialias: true, opacity: opacity);
 			return true;
 		}
 

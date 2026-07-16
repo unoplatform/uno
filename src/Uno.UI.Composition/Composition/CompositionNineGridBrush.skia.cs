@@ -36,7 +36,7 @@ namespace Microsoft.UI.Composition
 				new Point(LeftInset * LeftInsetScale, TopInset * TopInsetScale),
 				new Point(sourceBounds.Width - (RightInset * RightInsetScale), sourceBounds.Height - (BottomInset * BottomInsetScale)));
 
-			session.DrawImageNineSlice(image, centerSlice, bounds, IsCenterHollow, new PaintParams(global::Windows.UI.Colors.White) { IsAntialias = true });
+			session.DrawImageNineSlice(image, centerSlice, bounds, IsCenterHollow, antialias: true);
 			return true;
 		}
 

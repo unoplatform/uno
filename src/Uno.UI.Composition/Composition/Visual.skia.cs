@@ -697,22 +697,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void DrawRegionShadow(IDrawingSession session, IGeometry path, float alpha, global::Windows.UI.Color shadowColor, IMaskFilter maskFilter, bool useAdditive, float pathYScale)
 		{
 			var color = global::Windows.UI.Color.FromArgb((byte)(shadowColor.A * alpha), shadowColor.R, shadowColor.G, shadowColor.B);
-			var paint = new PaintParams(color)
-			{
-				IsAntialias = true,
-				MaskFilter = maskFilter,
-				BlendMode = useAdditive ? BlendMode.Plus : BlendMode.SrcOver,
-			};
+			var blendMode = useAdditive ? BlendMode.Plus : BlendMode.SrcOver;
 
 			if (pathYScale.Equals(1f))
 			{
-				session.DrawPath(path, paint);
+				session.DrawPath(path, color, antialias: true, maskFilter: maskFilter, blendMode: blendMode);
 			}
 			else
 			{
 				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
 				// position; the canvas scale only affects the mask blur's per-axis sigma.
-				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), paint);
+				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), color, antialias: true, maskFilter: maskFilter, blendMode: blendMode);
 			}
 		}
 	}

@@ -982,14 +982,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
 				using var geometry = GlyphGeometry.Build(font, CollectionsMarshal.AsSpan(glyphs), CollectionsMarshal.AsSpan(positions), 0);
-				drawingSession.DrawPath(geometry, new PaintParams(paintColor) { IsAntialias = true });
+				drawingSession.DrawPath(geometry, paintColor, antialias: true);
 			}
 		}
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
 			var geometry = new SkiaGeometrySource2D(path);
-			drawingSession.DrawPath(geometry, new PaintParams(Colors.Red) { Style = PaintStyle.Stroke, StrokeWidth = strokeThickness, IsAntialias = true });
+			drawingSession.StrokePath(geometry, Colors.Red, strokeThickness, antialias: true);
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
@@ -997,7 +997,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			drawingSession.DrawLine(
 				new Vector2(x1, underlineY),
 				new Vector2(x2, underlineY),
-				new PaintParams(Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue)) { Style = PaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true });
+				Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue), 1, antialias: true);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text

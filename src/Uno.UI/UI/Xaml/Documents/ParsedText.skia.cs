@@ -550,7 +550,7 @@ internal readonly struct ParsedText : IParsedText
 			drawingSession.DrawLine(
 				new Vector2(x, y),
 				new Vector2(x + width, y),
-				new PaintParams(Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue)) { Style = PaintStyle.Stroke, StrokeWidth = thickness, IsAntialias = true });
+				Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue), thickness, antialias: true);
 		}
 	}
 
@@ -898,7 +898,7 @@ internal readonly struct ParsedText : IParsedText
 		{
 			using var geometry = GlyphGeometry.Build(fontInfo.SKFont, glyphs, positions, y);
 			var c = paint.Color;
-			drawingSession.DrawPath(geometry, new PaintParams(Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue)) { IsAntialias = true });
+			drawingSession.DrawPath(geometry, Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue), antialias: true);
 		}
 	}
 

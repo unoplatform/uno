@@ -2,13 +2,6 @@
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>Whether a paint fills or strokes.</summary>
-internal enum PaintStyle
-{
-	Fill,
-	Stroke,
-}
-
 /// <summary>Stroke end-cap style. <see cref="Triangle"/> has no direct backend primitive and is simulated with custom cap geometry.</summary>
 internal enum StrokeCap
 {

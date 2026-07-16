@@ -8,8 +8,9 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Immediate-mode, stateful drawing surface — the canvas-verb half of the pluggable-backend abstraction
-/// (Track 1). It mirrors the drawing surface the composition layer draws against today, with transient
-/// paint passed inline as <see cref="PaintParams"/> and geometry passed as an <see cref="IGeometry"/> handle.
+/// (Track 1). It mirrors the drawing surface the composition layer draws against today. Each verb takes
+/// exactly the paint inputs it honors (rather than one combined paint struct), and geometry is passed as
+/// an <see cref="IGeometry"/> handle.
 /// </summary>
 /// <remarks>
 /// Retained-mode concerns (display-list recording/replay, e.g. SkiaSharp's SKPicture) are intentionally
@@ -38,7 +39,7 @@ internal interface IDrawingSession
 	void RestoreToCount(int count);
 
 	/// <summary>Begins an offscreen layer, optionally bounded and with a compositing paint applied on restore.</summary>
-	void SaveLayer(Rect? bounds = null, PaintParams? paint = null);
+	void SaveLayer(Rect? bounds = null, bool antialias = false, float opacity = 1f, IColorFilter? colorFilter = null, BlendMode blendMode = BlendMode.SrcOver);
 
 	/// <summary>
 	/// Begins an offscreen layer whose content is transformed by <paramref name="filter"/> when the matching
@@ -54,23 +55,26 @@ internal interface IDrawingSession
 
 	void Clear(Color color);
 
-	void DrawRect(in Rect rect, in PaintParams paint);
+	/// <summary>Fills <paramref name="rect"/> with a solid <paramref name="color"/> or, if given, a <paramref name="shader"/>.</summary>
+	void DrawRect(in Rect rect, Color color, bool antialias = false, float opacity = 1f, IShader? shader = null, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver);
 
-	void DrawPath(IGeometry geometry, in PaintParams paint);
+	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> or, if given, a <paramref name="shader"/>.</summary>
+	void DrawPath(IGeometry geometry, Color color, bool antialias = false, float opacity = 1f, IShader? shader = null, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver);
 
-	void DrawLine(Vector2 p0, Vector2 p1, in PaintParams paint);
+	/// <summary>Strokes the outline of <paramref name="geometry"/>.</summary>
+	void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias = false);
 
-	void DrawCircle(Vector2 center, float radius, in PaintParams paint);
+	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false);
 
 	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>) in the current coordinate space.</summary>
-	void DrawImage(IImage image, float x, float y, ImageSampling sampling, in PaintParams paint);
+	void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias = false, float opacity = 1f, IColorFilter? colorFilter = null, BlendMode blendMode = BlendMode.SrcOver);
 
 	/// <summary>
 	/// Draws <paramref name="image"/> stretched into <paramref name="destination"/> as a nine-slice: the
 	/// <paramref name="centerSlice"/> rectangle (in image pixels) defines the fixed corners / stretchable
 	/// edges and center. When <paramref name="centerHollow"/> is true the center slice is not drawn.
 	/// </summary>
-	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, in PaintParams paint);
+	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false, IColorFilter? colorFilter = null);
 
 	/// <summary>
 	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:
