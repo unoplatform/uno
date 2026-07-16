@@ -222,7 +222,7 @@ public partial class CompositionTarget
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			RenderBackend.Present(lastRenderedFrame.frame, canvas, _fpsHelper.DrawFps);
+			RenderBackend.Present(lastRenderedFrame.frame, new SkiaRenderSurface(canvas), _fpsHelper.DrawFps);
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);

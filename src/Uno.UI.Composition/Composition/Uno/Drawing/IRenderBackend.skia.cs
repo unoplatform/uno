@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -15,15 +14,15 @@ namespace Uno.UI.Composition.Drawing;
 /// <item>Phase 2 (on a vsync/present signal): <see cref="Present"/> draws a recorded frame onto the target.</item>
 /// </list>
 /// </summary>
-/// <remarks>
-/// The present target is still a SkiaSharp <see cref="SKCanvas"/> here — the host swapchain surface hasn't
-/// been neutralized yet; that (and the per-platform host contract) is follow-up work.
-/// </remarks>
 internal interface IRenderBackend
 {
 	/// <summary>Phase 1: begins a frame and returns the session the render cycle records the visual tree into.</summary>
 	IRecordingSession BeginFrame();
 
-	/// <summary>Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.</summary>
-	void Present(IRenderData frame, SKCanvas target, Action<SKCanvas>? postPresent);
+	/// <summary>
+	/// Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.
+	/// <paramref name="postPresent"/>, if provided, draws overlay content (e.g. diagnostics) onto the same
+	/// surface via the session the backend used to present.
+	/// </summary>
+	void Present(IRenderData frame, IRenderSurface target, Action<IDrawingSession>? postPresent);
 }

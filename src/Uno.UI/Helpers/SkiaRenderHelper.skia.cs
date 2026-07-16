@@ -300,12 +300,15 @@ internal static class SkiaRenderHelper
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
-		public void DrawFps(SKCanvas canvas)
+		public void DrawFps(IDrawingSession session)
 		{
 			if (!IsEnabled)
 			{
 				return;
 			}
+
+			// The FPS overlay is a Skia-only diagnostic; unwrap the session to its canvas.
+			var canvas = ((SkiaDrawingSession)session).Canvas;
 
 			var culture = CultureInfo.InvariantCulture;
 			var fpsText = _fps.ToString("F1", culture);
