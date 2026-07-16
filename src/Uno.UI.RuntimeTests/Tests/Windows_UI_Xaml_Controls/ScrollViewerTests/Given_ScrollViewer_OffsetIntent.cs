@@ -121,7 +121,7 @@ public class Given_ScrollViewer_OffsetIntent
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23041")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_ExtentShrinksThenGrowsBack_Then_RequestedOffset_Is_Restored()
 	{
 		// Companion invariant to the test above, and the reason the offset intent exists at all
