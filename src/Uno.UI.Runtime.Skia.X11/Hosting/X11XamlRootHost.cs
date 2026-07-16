@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -678,7 +679,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_ = XLib.XFree(children);
 			if (parent != RootX11Window.Window && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn($"Failed to reparent window 0x{window.ToString("X")} into the application window; it is parented by 0x{parent.ToString("X")} instead, likely a window manager managing it as a toplevel. The native element will likely not be visible.");
+				this.Log().Warn($"Failed to reparent window 0x{window.ToString("X", CultureInfo.InvariantCulture)} into the application window; it is parented by 0x{parent.ToString("X", CultureInfo.InvariantCulture)} instead, likely a window manager managing it as a toplevel. The native element will likely not be visible.");
 			}
 		}
 	}
