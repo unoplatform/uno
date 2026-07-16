@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(IGeometry path)
-			=> path.TightBounds;
+			=> path.Bounds;
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 

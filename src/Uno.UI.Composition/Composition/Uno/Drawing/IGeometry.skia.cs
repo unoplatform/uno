@@ -18,11 +18,8 @@ namespace Uno.UI.Composition.Drawing;
 /// </remarks>
 internal interface IGeometry : IDisposable
 {
-	/// <summary>The loose (control-point) bounds of the geometry.</summary>
-	Rect Bounds { get; }
-
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
-	Rect TightBounds { get; }
+	Rect Bounds { get; }
 
 	/// <summary>Whether the geometry contains no drawable area.</summary>
 	bool IsEmpty { get; }

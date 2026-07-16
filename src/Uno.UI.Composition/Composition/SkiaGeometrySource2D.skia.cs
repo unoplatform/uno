@@ -27,9 +27,6 @@ namespace Microsoft.UI.Composition
 			return new SkiaGeometrySource2D(path);
 		}
 
-		public SKRect Bounds => _geometry.Bounds;
-		public SKRect TightBounds => _geometry.TightBounds;
-
 		public void CanvasDrawPath(SKCanvas canvas, SKPaint paint) => canvas.DrawPath(_geometry, paint);
 
 		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
@@ -50,9 +47,7 @@ namespace Microsoft.UI.Composition
 
 		#region IGeometry (backend-neutral handle)
 
-		Rect IGeometry.Bounds => _geometry.Bounds.ToRect();
-
-		Rect IGeometry.TightBounds => _geometry.TightBounds.ToRect();
+		Rect IGeometry.Bounds => _geometry.TightBounds.ToRect();
 
 		bool IGeometry.IsEmpty => _geometry.IsEmpty;
 
