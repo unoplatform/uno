@@ -3,6 +3,11 @@
 Issue: [unoplatform/uno#23787](https://github.com/unoplatform/uno/issues/23787)
 Related: [spec 049](../049-hotreload-workspace-missing-targeting-pack/spec.md) (workspace init failures), [spec 047](../047-hotreload-workspace-single-tfm/spec.md) (baseline TFM filtering).
 
+**Status: IMPLEMENTED** — `WorkspaceGatedFileUpdater` + `IFileUpdater` in
+`src/Uno.HotReload/IO/`, wired in `ServerHotReloadProcessor`; unit tests in
+`src/Uno.HotReload.Tests/IO/Given_WorkspaceGatedFileUpdater.cs`. See
+*Implementation notes* at the end for the deltas vs. this design.
+
 ## Overview & Objectives
 
 The dev-server processes hot-reload file-update requests (`UpdateFileRequest` /
@@ -264,3 +269,55 @@ transport):
 3. **`Failed` state: no proactive push.** The existing `Disabled` broadcast
    through `HotReloadStatusMessage` is sufficient; revisit only if tooling
    demonstrates a need.
+
+## Implementation notes (deltas & concretizations vs. the design above)
+
+Implemented as designed; the following points are where the implementation
+concretized or slightly adjusted the text:
+
+- **Rejection result code:** rejections (terminal states, TTL expiry,
+  cancellation) use `FileUpdateResult.NotAvailable` (503) on every edit, with
+  the same message duplicated as `GlobalError`. Per-edit results are always
+  populated because `ClientHotReloadProcessor.TryUpdateFilesAsync` treats an
+  empty `Results` array as a "no changes" **success**
+  (`Results.All(NoChanges)` is vacuously true) — a global-error-only response
+  would be silently swallowed.
+- **Winner-takes-the-entry semantics:** each queued entry is claimed
+  atomically (`TryTake`) by exactly one of flush / TTL expiry / cancellation /
+  terminal rejection. Expired or cancelled entries stay in the queue but are
+  skipped by the flush — this is what guarantees R5's "never applied
+  afterwards" without cross-cancelling timers.
+- **Strict FIFO across the flush boundary:** in `Ready`/`NoWorkspace`, a
+  request arriving while the queue is non-empty (or a drain is in progress)
+  is queued behind it rather than passed through, so a flush can never be
+  overtaken by a newer request. Pass-through only happens on an empty, idle
+  queue.
+- **Cancellation (R9):** a queued entry watches its own `CancellationToken`
+  (the processor passes its connection-level token); cancellation completes
+  the request with an explicit "cancelled while waiting" error response
+  rather than a fault, and the entry is never applied.
+- **Inner swap:** `WorkspaceGatedFileUpdater.Inner` is a settable property;
+  `InitializeProcessor` replaces only the decorated `FileUpdater` (editor
+  refinement on `ConfigureServer`) while the gate — lifecycle state and queued
+  requests — survives, per R6. A flush that races the swap uses the inner
+  present at entry-execution time.
+- **Diagnostics surface (R8):** the decorator raises a `WorkspaceGateEvent`
+  (`queued` / `flushed` / `expired` / `rejected`, queue length, wait duration)
+  through an optional callback; the processor relays them as telemetry events
+  `update-<kind>` with `QueueLength` / `WaitDurationMs` measurements, and logs
+  through the existing `IReporter`.
+- **Config key:** `update-file-queue-timeout` (integer, seconds), read once at
+  processor construction via `GetServerConfiguration` — same mechanism as
+  `metadata-updates`.
+- **`Ready` placement:** reported from `InitializeAsync` **after** the
+  `FileSystemObserver` is constructed (not at the `HotReloadEvent.Ready`
+  notification a few lines earlier), closing Window B as required by R2.
+- **Test coverage:** the decorator unit tests (13 tests, MSTest +
+  AwesomeAssertions) cover test-plan items 1–8 at the state-machine level,
+  including two cases the plan didn't list explicitly: an expired entry must
+  not block later live entries from flushing, and an `Inner` swap while
+  queued must flush through the new inner. The **end-to-end DevServer
+  integration tests** (real `ConfigureServer` → `UpdateFile` race against an
+  in-process server) are NOT included in the initial implementation and
+  remain as follow-up; the full existing DevServer suite passes unchanged
+  (481 ✔).
