@@ -458,6 +458,7 @@
 
 			<!-- BEGIN WebView -->
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName=" System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs..ctor()" reason="Should not be public" />

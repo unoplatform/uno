@@ -18,10 +18,12 @@ namespace Uno.UI.Xaml.Controls;
 
 internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
-	Task<System.IO.Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings settings, CancellationToken ct)
+#nullable enable annotations
+	Task<System.IO.Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 		=> throw new NotSupportedException(
 			"CoreWebView2.PrintToPdfStreamAsync is not currently supported on Android. " +
 			"As a workaround, call WebView.CreatePrintDocumentAdapter() and feed it to PrintManager directly.");
+#nullable restore annotations
 
 	Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
 	{
@@ -39,13 +41,16 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 
 	Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
 	{
-		var cookieString = Android.Webkit.CookieManager.Instance.GetCookie(uri) ?? string.Empty;
-		var domain = string.Empty;
-		try
+		ct.ThrowIfCancellationRequested();
+		if (string.IsNullOrEmpty(uri))
 		{
-			domain = new Uri(uri).Host;
+			throw new NotSupportedException(
+				"CoreWebView2CookieManager.GetCookiesAsync cannot enumerate all cookies on Android. " +
+				"Specify an absolute URI to retrieve cookies for that URI.");
 		}
-		catch { }
+
+		var cookieString = Android.Webkit.CookieManager.Instance.GetCookie(uri) ?? string.Empty;
+		var domain = new Uri(uri).Host;
 
 		var list = new List<CoreWebView2Cookie>();
 		if (!string.IsNullOrEmpty(cookieString))
@@ -103,12 +108,9 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	}
 
 	void ISupportsCookieManager.DeleteCookies(string name, string uri)
-	{
-		var manager = Android.Webkit.CookieManager.Instance;
-		var url = string.IsNullOrEmpty(uri) ? "http://localhost" : uri;
-		manager.SetCookie(url, name + "=; Max-Age=0; Path=/");
-		manager.Flush();
-	}
+		=> throw new NotSupportedException(
+			"CoreWebView2CookieManager.DeleteCookies cannot delete every matching cookie on Android. " +
+			"Use DeleteCookie or DeleteCookiesWithDomainAndPath with an exact cookie identity.");
 
 	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
 	{
@@ -440,4 +442,3 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	[System.Text.RegularExpressions.GeneratedRegex(@"^file://(?!/)")]
 	private static partial System.Text.RegularExpressions.Regex MalformedFileUri();
 }
-

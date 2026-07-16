@@ -28,15 +28,18 @@ public partial class CoreWebView2Settings
 	public bool IsWebMessageEnabled { get; set; } = true;
 
 	/// <summary>
-	/// The User Agent string sent with HTTP requests and exposed via navigator.userAgent.
-	/// Setting to null restores the platform default. Not supported on the WebAssembly browser host.
+	/// Determines the User Agent string sent with HTTP requests and exposed via navigator.userAgent.
+	/// The platform browser User Agent is used by default.
 	/// </summary>
+	/// <remarks>
+	/// If the value is null or empty, the User Agent is not updated and the current value remains.
+	/// </remarks>
 	public string? UserAgent
 	{
 		get => _userAgent;
 		set
 		{
-			if (!string.Equals(_userAgent, value, StringComparison.Ordinal))
+			if (!string.IsNullOrEmpty(value) && !string.Equals(_userAgent, value, StringComparison.Ordinal))
 			{
 				var previous = _userAgent;
 				_userAgent = value;

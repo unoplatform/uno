@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Helpers;

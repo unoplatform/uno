@@ -106,8 +106,7 @@ public
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		var all = await tcs.Task;
 
-		string? host = null;
-		try { host = new Uri(uri).Host; } catch { }
+		var host = string.IsNullOrEmpty(uri) ? null : new Uri(uri).Host;
 
 		var result = new List<CoreWebView2Cookie>();
 		foreach (var nc in all)
@@ -168,8 +167,7 @@ public
 
 	void ISupportsCookieManager.DeleteCookies(string name, string? uri)
 	{
-		string? host = null;
-		try { host = uri is null ? null : new Uri(uri).Host; } catch { }
+		var host = string.IsNullOrEmpty(uri) ? null : new Uri(uri).Host;
 		var store = Configuration.WebsiteDataStore.HttpCookieStore;
 		store.GetAllCookies(all =>
 		{

@@ -538,7 +538,14 @@ public partial class CoreWebView2
 			throw new NotSupportedException("CoreWebView2.ShowPrintUI is not supported on this platform.");
 		}
 
-		_ = print.ShowPrintUIAsync(printDialogKind, CancellationToken.None);
+		_ = print.ShowPrintUIAsync(printDialogKind, CancellationToken.None).ContinueWith(
+			static (task, state) => ((CoreWebView2)state!).Log().Error(
+				"Unable to show the WebView print UI.",
+				task.Exception!.GetBaseException()),
+			this,
+			CancellationToken.None,
+			TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+			TaskScheduler.Default);
 	}
 
 	public event global::Windows.Foundation.TypedEventHandler<CoreWebView2, CoreWebView2ContentLoadingEventArgs>? ContentLoading;
@@ -908,4 +915,3 @@ public partial class CoreWebView2
 		}
 	}
 }
-

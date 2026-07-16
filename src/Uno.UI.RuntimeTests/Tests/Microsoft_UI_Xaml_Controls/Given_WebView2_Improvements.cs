@@ -187,11 +187,19 @@ public class Given_WebView2_Improvements
 		var webView = new WebView2 { Width = 320, Height = 240 };
 		var initializedCount = 0;
 		var navigatedUris = new List<string?>();
+		ulong? latestNavigationId = null;
 		var latestNavigationCompleted = false;
 		webView.CoreWebView2Initialized += (_, _) => initializedCount++;
-		webView.NavigationStarting += (_, args) => navigatedUris.Add(args.Uri);
+		webView.NavigationStarting += (_, args) =>
+		{
+			navigatedUris.Add(args.Uri);
+			if (args.Uri == secondSource.AbsoluteUri)
+			{
+				latestNavigationId = args.NavigationId;
+			}
+		};
 		webView.NavigationCompleted += (_, args) =>
-			latestNavigationCompleted |= args.Uri == secondSource;
+			latestNavigationCompleted |= args.NavigationId == latestNavigationId;
 
 		webView.Source = firstSource;
 		webView.Source = secondSource;
@@ -339,14 +347,20 @@ public class Given_WebView2_Improvements
 		await TestServices.WindowHelper.WaitFor(() => completionCount >= 1, 10_000);
 		Assert.AreEqual("\"Uno-WebView2-Test\"", await core.ExecuteScriptAsync("navigator.userAgent"));
 
+		core.Settings.UserAgent = string.Empty;
+		Assert.AreEqual("Uno-WebView2-Test", core.Settings.UserAgent);
+		webView.NavigateToString("<html><body></body></html>");
+		await TestServices.WindowHelper.WaitFor(() => completionCount >= 2, 10_000);
+		Assert.AreEqual("\"Uno-WebView2-Test\"", await core.ExecuteScriptAsync("navigator.userAgent"));
+
 		core.Settings.IsScriptEnabled = false;
 		webView.NavigateToString("<html><body><script>window.__unoInlineScript = true;</script></body></html>");
-		await TestServices.WindowHelper.WaitFor(() => completionCount >= 2, 10_000);
+		await TestServices.WindowHelper.WaitFor(() => completionCount >= 3, 10_000);
 		Assert.AreEqual("\"undefined\"", await core.ExecuteScriptAsync("typeof window.__unoInlineScript"));
 
 		core.Settings.IsScriptEnabled = true;
 		webView.NavigateToString("<html><body><script>window.__unoInlineScript = true;</script></body></html>");
-		await TestServices.WindowHelper.WaitFor(() => completionCount >= 3, 10_000);
+		await TestServices.WindowHelper.WaitFor(() => completionCount >= 4, 10_000);
 		Assert.AreEqual("\"true\"", await core.ExecuteScriptAsync("String(window.__unoInlineScript)"));
 	}
 
@@ -364,6 +378,8 @@ public class Given_WebView2_Improvements
 		cookie.Expires = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds();
 
 		manager.AddOrUpdateCookie(cookie);
+		Assert.IsTrue((await manager.GetCookiesAsync(string.Empty)).Any(item => item.Name == name));
+		Assert.IsTrue((await manager.GetCookiesAsync(null!)).Any(item => item.Name == name));
 		var matching = await manager.GetCookiesAsync("https://example.com/scope/page");
 		var actual = matching.Single(item => item.Name == name);
 

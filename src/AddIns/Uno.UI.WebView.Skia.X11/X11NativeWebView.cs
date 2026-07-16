@@ -42,52 +42,76 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 {
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
+		ct.ThrowIfCancellationRequested();
 		var tempFile = Path.Combine(Path.GetTempPath(), "uno-webview-" + Guid.NewGuid().ToString("N") + ".pdf");
-		var tcs = new TaskCompletionSource<string>();
+		var tempFileUri = new UriBuilder(Uri.UriSchemeFile, string.Empty) { Path = tempFile }.Uri.AbsoluteUri;
+		var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var reg = ct.Register(() => tcs.TrySetCanceled(ct));
 		RunOnGtkThread(() =>
 		{
 			try
 			{
 				var op = new WebKit.PrintOperation(_webview);
 				var printSettings = new Gtk.PrintSettings();
-				printSettings.Set("output-uri", "file://" + tempFile);
+				printSettings.Set("output-uri", tempFileUri);
 				printSettings.Set("output-file-format", "pdf");
 				op.PrintSettings = printSettings;
-				op.Finished += (_, _) => tcs.TrySetResult(tempFile);
-				op.Failed += (_, args) => tcs.TrySetException(new InvalidOperationException("Print failed"));
+				op.Finished += (_, _) =>
+				{
+					if (!tcs.TrySetResult(tempFile))
+					{
+						DeleteTemporaryPrintFile(tempFile);
+					}
+				};
+				op.Failed += (_, _) =>
+				{
+					DeleteTemporaryPrintFile(tempFile);
+					tcs.TrySetException(new InvalidOperationException("Print failed"));
+				};
 				op.Print();
 			}
 			catch (Exception e)
 			{
+				DeleteTemporaryPrintFile(tempFile);
 				tcs.TrySetException(e);
 			}
 		});
-		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		var path = await tcs.Task;
-		var bytes = File.ReadAllBytes(path);
-		try { File.Delete(path); } catch { }
-		return new MemoryStream(bytes, writable: false);
+		try
+		{
+			var bytes = await File.ReadAllBytesAsync(path, ct);
+			return new MemoryStream(bytes, writable: false);
+		}
+		finally
+		{
+			DeleteTemporaryPrintFile(path);
+		}
 	}
 
-	Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
 	{
-		var tcs = new TaskCompletionSource<CoreWebView2PrintStatus>();
-		RunOnGtkThread(() =>
+		ct.ThrowIfCancellationRequested();
+		await RunOnGtkThreadAsync(() =>
 		{
-			try
+			var op = new WebKit.PrintOperation(_webview);
+			return op.RunDialog(_window);
+		}).WaitAsync(ct);
+		return CoreWebView2PrintStatus.Succeeded;
+	}
+
+	private void DeleteTemporaryPrintFile(string path)
+	{
+		try
+		{
+			File.Delete(path);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				var op = new WebKit.PrintOperation(_webview);
-				op.Finished += (_, _) => tcs.TrySetResult(CoreWebView2PrintStatus.Succeeded);
-				op.Failed += (_, _) => tcs.TrySetResult(CoreWebView2PrintStatus.OtherError);
-				op.RunDialog(_window);
+				this.Log().Warn($"Unable to delete temporary print file '{path}'.", e);
 			}
-			catch (Exception e)
-			{
-				tcs.TrySetException(e);
-			}
-		});
-		using var reg = ct.Register(() => tcs.TrySetCanceled());
-		return tcs.Task;
+		}
 	}
 
 	private const string X11CookiesNotSupported =
@@ -341,6 +365,24 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			});
 			return tcs.Task.Result;
 		}
+	}
+
+	private static Task<T> RunOnGtkThreadAsync<T>(Func<T> func)
+	{
+		var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+		GLib.Idle.Add(() =>
+		{
+			try
+			{
+				tcs.TrySetResult(func());
+			}
+			catch (Exception e)
+			{
+				tcs.TrySetException(e);
+			}
+			return false;
+		});
+		return tcs.Task;
 	}
 
 	private static void RunOnGtkThread(Action func)

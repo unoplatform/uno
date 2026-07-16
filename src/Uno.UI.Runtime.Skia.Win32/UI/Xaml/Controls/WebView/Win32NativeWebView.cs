@@ -164,7 +164,7 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 		get => _nativeWebView?.Settings.UserAgent;
 		set
 		{
-			if (_nativeWebView is { } nv && value is not null)
+			if (_nativeWebView is { } nv && !string.IsNullOrEmpty(value))
 			{
 				nv.Settings.UserAgent = value;
 			}
@@ -174,13 +174,25 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 	bool ISupportsScriptEnabled.IsScriptEnabled
 	{
 		get => _nativeWebView?.Settings.IsScriptEnabled ?? true;
-		set { if (_nativeWebView is { } nv) nv.Settings.IsScriptEnabled = value; }
+		set
+		{
+			if (_nativeWebView is { } nv)
+			{
+				nv.Settings.IsScriptEnabled = value;
+			}
+		}
 	}
 
 	bool ISupportsZoomControl.IsZoomControlEnabled
 	{
 		get => _nativeWebView?.Settings.IsZoomControlEnabled ?? true;
-		set { if (_nativeWebView is { } nv) nv.Settings.IsZoomControlEnabled = value; }
+		set
+		{
+			if (_nativeWebView is { } nv)
+			{
+				nv.Settings.IsZoomControlEnabled = value;
+			}
+		}
 	}
 	private readonly CoreWebView2 _coreWebView;
 	private readonly NativeWebView.CoreWebView2 _nativeWebView;
