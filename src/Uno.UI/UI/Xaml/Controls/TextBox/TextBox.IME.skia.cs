@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -45,6 +46,8 @@ public partial class TextBox : IImeSessionHost
 	int IImeSessionHost.SelectionLength => SelectionLength;
 
 	bool IImeSessionHost.IsBackwardSelection => IsBackwardSelection;
+
+	InputScope IImeSessionHost.InputScope => InputScope;
 
 	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 

@@ -3,6 +3,7 @@
 using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Text;
@@ -16,8 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
 	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
 	//
-	// TODO Uno: Cross-process RTF/streams, embedded images and MathML, per-paragraph rendering, and
-	// advanced touch selection UI remain follow-ups.
+	// Standard RTF/streams, inline images, MathML interchange, and per-paragraph alignment are
+	// supported. Full OpenType math layout, non-alignment paragraph layout, and advanced touch
+	// selection UI remain follow-ups.
 	public partial class RichEditBox : ITextBoxViewHost
 	{
 		private TextBoxView? _textBoxView;
@@ -152,13 +154,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Called by <see cref="global::Microsoft.UI.Text.RichEditTextDocument"/> after the document
 		/// text changes so the control can re-render and refresh dependent visuals.
 		/// </summary>
-		internal void OnDocumentTextChanged()
+		internal void OnDocumentTextChanged(bool isContentChanging)
 		{
 			// If the text changed by something other than the active IME composition, cancel it first
 			// (guarded so composition-internal edits don't self-cancel).
 			CancelCompositionOnExternalChange();
 
-			var textChange = PrepareTextChangedNotification();
+			var textChange = PrepareTextChangedNotification(isContentChanging);
 
 			RenderDocument();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
@@ -167,9 +169,12 @@ namespace Microsoft.UI.Xaml.Controls
 			QueueTextChangedNotification(textChange);
 		}
 
+		internal void OnDocumentMathModeChanged() => RenderDocument();
+
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
+			_forceFocusedVisualState = false;
 			_textBoxView?.OnFocusStateChanged(FocusState);
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
@@ -187,11 +192,16 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
+			_forceFocusedVisualState = ShouldForceFocusedVisualState();
 			_textBoxView?.OnFocusStateChanged(FocusState);
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
-			EndImeSession();
-			StopCaret();
+			if (!_forceFocusedVisualState)
+			{
+				EndImeSession();
+				StopCaret();
+				TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+			}
 		}
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
@@ -206,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, "Disabled", useTransitions);
 			}
-			else if (FocusState != FocusState.Unfocused)
+			else if (FocusState != FocusState.Unfocused || _forceFocusedVisualState)
 			{
 				VisualStateManager.GoToState(this, "Focused", useTransitions);
 			}
@@ -280,6 +290,10 @@ namespace Microsoft.UI.Xaml.Controls
 		string ITextBoxViewHost.Text => GetPlainTextContent();
 
 		ContentControl? ITextBoxViewHost.ContentElement => _contentElement;
+
+		FontFamily ITextBoxViewHost.FontFamily => _document?.IsMathMode == true
+			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
+			: FontFamily;
 
 		// TODO Uno: Run the real input pipeline (BeforeTextChanging/TextChanging/coercion) once the
 		// shared editing engine is available. For now the text is passed through unchanged.

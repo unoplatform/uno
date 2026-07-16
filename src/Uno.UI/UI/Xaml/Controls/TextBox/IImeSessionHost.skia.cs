@@ -1,6 +1,7 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -33,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>Whether the current selection is anchored at its end (caret at the start).</summary>
 		bool IsBackwardSelection { get; }
+
+		/// <summary>The input scope used by platform keyboard and IME services.</summary>
+		InputScope InputScope { get; }
 
 		/// <summary>Called when the user begins an IME composition.</summary>
 		void OnImeCompositionStarted();

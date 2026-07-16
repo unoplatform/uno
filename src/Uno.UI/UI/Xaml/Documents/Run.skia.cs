@@ -22,6 +22,13 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
 
+		internal InlineObjectInfo? InlineObject { get; set; }
+
+		internal TextAlignment? ParagraphAlignment { get; set; }
+
+		internal global::Windows.UI.Color? CharacterBackground { get; set; }
+		internal bool IsHidden { get; set; }
+
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
 		{
 			get => (global::Microsoft.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
@@ -373,5 +380,27 @@ namespace Microsoft.UI.Xaml.Documents
 				return (ushort)buffer.GlyphInfos[0].Codepoint;
 			}))
 			.AsMemoized();
+	}
+
+	internal sealed class InlineObjectInfo
+	{
+		internal InlineObjectInfo(SKImage? image, float width, float height, float ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlignment)
+		{
+			Image = image;
+			Width = width;
+			Height = height;
+			Ascent = ascent;
+			VerticalAlignment = verticalAlignment;
+		}
+
+		internal SKImage? Image { get; }
+
+		internal float Width { get; }
+
+		internal float Height { get; }
+
+		internal float Ascent { get; }
+
+		internal global::Microsoft.UI.Text.VerticalCharacterAlignment VerticalAlignment { get; }
 	}
 }

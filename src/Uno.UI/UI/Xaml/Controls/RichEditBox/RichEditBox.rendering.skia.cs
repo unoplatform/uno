@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -35,9 +36,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var document = Document;
 			var text = document.PlainText;
 			var runs = document.FormatRuns;
+			var paragraphRuns = document.ParagraphRuns;
+			var renderParagraphAlignments = HasMixedParagraphAlignments(paragraphRuns);
 			var block = _textBoxView.DisplayBlock;
+			block.FontFamily = document.IsMathMode
+				? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
+				: FontFamily;
+			block.DefaultTabStop = document.DefaultTabStop * 4f / 3f;
 
-			if (AllRunsDefault(runs))
+			if (AllRunsDefault(runs) && !renderParagraphAlignments)
 			{
 				if (_lastRenderWasRich)
 				{
@@ -51,22 +58,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				RenderRuns(block, text, runs);
+				RenderRuns(block, text, runs, paragraphRuns, renderParagraphAlignments);
 				_lastRenderWasRich = true;
 			}
 
 			ApplyParagraphAlignment();
 		}
 
-		// Projects a *uniform* paragraph alignment (Center/Right/Justify) from the Text Object Model onto
-		// the shared single-TextBlock DisplayBlock. A single TextBlock cannot express per-paragraph
-		// alignment, so only a uniform, non-default value is renderable; Left/Undefined/mixed alignments
-		// leave the control-level TextAlignment DP in charge. Setting _paragraphAlignmentOverride makes
-		// ITextBoxViewHost.IsTextAlignmentSetToDefault report false so the block's alignment takes effect.
+		// Projects a uniform paragraph alignment onto the DisplayBlock's block-level fast path. Mixed
+		// alignments are carried by individual runs and resolved per visual line by UnicodeText. Setting
+		// _paragraphAlignmentOverride makes ITextBoxViewHost.IsTextAlignmentSetToDefault report false.
 		//
-		// TODO Uno: per-paragraph alignment divergence, indents, spacing, and lists still require a
-		// multi-paragraph layout (RichTextBlock-style) and remain unrendered — the model round-trips them
-		// faithfully but only uniform alignment is shown.
+		// TODO Uno: Indents, spacing, and lists remain unrendered while their model state round-trips.
 		private void ApplyParagraphAlignment()
 		{
 			if (_textBoxView is null)
@@ -113,43 +116,128 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void RenderRuns(TextBlock block, string text, IReadOnlyList<FormatRun> runs)
+		private static void RenderRuns(
+			TextBlock block,
+			string text,
+			IReadOnlyList<FormatRun> runs,
+			IReadOnlyList<ParagraphRun> paragraphRuns,
+			bool renderParagraphAlignments)
 		{
 			var inlines = block.Inlines;
 			inlines.Clear();
 
 			var position = 0;
-			foreach (var run in runs)
+			var characterRunIndex = 0;
+			var characterRunOffset = 0;
+			var paragraphRunIndex = 0;
+			var paragraphRunOffset = 0;
+			while (position < text.Length && characterRunIndex < runs.Count && paragraphRunIndex < paragraphRuns.Count)
 			{
-				if (position >= text.Length)
+				var characterRun = runs[characterRunIndex];
+				var paragraphRun = paragraphRuns[paragraphRunIndex];
+				var length = Math.Min(
+					text.Length - position,
+					Math.Min(characterRun.Length - characterRunOffset, paragraphRun.Length - paragraphRunOffset));
+				if (characterRun.Format.InlineImage is not null)
 				{
-					break;
+					length = Math.Min(length, 1);
 				}
-
-				var length = Math.Min(run.Length, text.Length - position);
 				if (length <= 0)
 				{
+					if (characterRunOffset >= characterRun.Length)
+					{
+						characterRunIndex++;
+						characterRunOffset = 0;
+					}
+					if (paragraphRunOffset >= paragraphRun.Length)
+					{
+						paragraphRunIndex++;
+						paragraphRunOffset = 0;
+					}
 					continue;
 				}
 
 				var segment = text.Substring(position, length);
+				var inline = CreateRun(segment, characterRun.Format, block.FontSize);
+				if (renderParagraphAlignments && TryMapParagraphAlignment(paragraphRun.Format.Alignment, out var paragraphAlignment))
+				{
+					inline.ParagraphAlignment = paragraphAlignment;
+				}
+
+				if (characterRun.Format.Link is not null)
+				{
+					var hyperlink = new Hyperlink();
+					hyperlink.Inlines.Add(inline);
+					inlines.Add(hyperlink);
+				}
+				else
+				{
+					inlines.Add(inline);
+				}
+
 				position += length;
-				inlines.Add(CreateRun(segment, run.Format));
+				characterRunOffset += length;
+				paragraphRunOffset += length;
+				if (characterRunOffset == characterRun.Length)
+				{
+					characterRunIndex++;
+					characterRunOffset = 0;
+				}
+				if (paragraphRunOffset == paragraphRun.Length)
+				{
+					paragraphRunIndex++;
+					paragraphRunOffset = 0;
+				}
 			}
 		}
 
-		private static Run CreateRun(string text, CharacterFormatState format)
+		private static bool HasMixedParagraphAlignments(IReadOnlyList<ParagraphRun> runs)
+		{
+			if (runs.Count < 2)
+			{
+				return false;
+			}
+
+			var alignment = runs[0].Format.Alignment;
+			for (var i = 1; i < runs.Count; i++)
+			{
+				if (runs[i].Format.Alignment != alignment)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static Run CreateRun(string text, CharacterFormatState format, double inheritedFontSize)
 		{
 			var run = new Run { Text = text };
-
-			if (format.Bold)
+			run.CharacterBackground = format.Background;
+			run.IsHidden = format.Hidden;
+			if (format.InlineImage is { } inlineImage)
 			{
-				run.FontWeight = global::Microsoft.UI.Text.FontWeights.Bold;
+				run.InlineObject = new InlineObjectInfo(
+					inlineImage.GetDecodedImage(),
+					inlineImage.Width,
+					inlineImage.Height,
+					inlineImage.Ascent,
+					inlineImage.VerticalAlignment);
+			}
+
+			if (format.WeightExplicit || format.Weight != 400)
+			{
+				run.FontWeight = new global::Windows.UI.Text.FontWeight((ushort)Math.Clamp(format.Weight, 0, 999));
 			}
 
 			if (format.Italic)
 			{
 				run.FontStyle = global::Windows.UI.Text.FontStyle.Italic;
+			}
+
+			if (format.FontStretch != global::Windows.UI.Text.FontStretch.Normal)
+			{
+				run.FontStretch = format.FontStretch;
 			}
 
 			var decorations = global::Windows.UI.Text.TextDecorations.None;
@@ -178,6 +266,15 @@ namespace Microsoft.UI.Xaml.Controls
 				run.FontSize = format.Size;
 			}
 
+			if (format.Spacing != 0)
+			{
+				var fontSize = format.Size > 0 ? format.Size : (float)inheritedFontSize;
+				if (fontSize > 0)
+				{
+					run.CharacterSpacing = (int)Math.Round(format.Spacing / fontSize * 1000, MidpointRounding.AwayFromZero);
+				}
+			}
+
 			if (!string.IsNullOrEmpty(format.Name))
 			{
 				run.FontFamily = new FontFamily(format.Name);
@@ -192,12 +289,20 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var format = run.Format;
 				if (format.Bold
+					|| format.WeightExplicit
+					|| format.Weight != 400
+										|| format.Background is not null
+										|| format.Hidden
 					|| format.Italic
+					|| format.FontStretch != global::Windows.UI.Text.FontStretch.Normal
 					|| format.Strikethrough
 					|| format.Underline is not global::Microsoft.UI.Text.UnderlineType.None and not global::Microsoft.UI.Text.UnderlineType.Undefined
 					|| format.Foreground is not null
+					|| format.Spacing != 0
 					|| format.Size > 0
-					|| !string.IsNullOrEmpty(format.Name))
+					|| !string.IsNullOrEmpty(format.Name)
+					|| format.Link is not null
+					|| format.InlineImage is not null)
 				{
 					return false;
 				}

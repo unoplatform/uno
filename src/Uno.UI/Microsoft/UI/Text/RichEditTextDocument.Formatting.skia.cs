@@ -36,7 +36,16 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		private CharacterFormatState DefaultFormatState() => _defaultCharacterFormat.Clone();
+		private CharacterFormatState DefaultFormatState()
+		{
+			var state = _defaultCharacterFormat.Clone();
+			if (IsMathMode)
+			{
+				state.Name = MathFontFamilyName;
+			}
+
+			return state;
+		}
 
 		/// <summary>Expands the runs into one (shared) state reference per character.</summary>
 		private List<CharacterFormatState> ExpandRunsRaw()
@@ -115,7 +124,7 @@ namespace Microsoft.UI.Text
 		/// characters at <paramref name="start"/> and inserted <paramref name="insertLength"/> new ones.
 		/// Must be called while <see cref="_runs"/> still reflect the pre-edit text length.
 		/// </summary>
-		private void SpliceRuns(int start, int removeLength, int insertLength)
+		private void SpliceRuns(int start, int removeLength, int insertLength, bool preferForwardFormat = false, bool unlink = false, bool unhide = false)
 		{
 			var expanded = ExpandRunsRaw();
 			var oldLength = expanded.Count;
@@ -134,14 +143,25 @@ namespace Microsoft.UI.Text
 				{
 					// Inserted text inherits the formatting of the character to its left, or (at the very
 					// start) the character to its right, falling back to the default when the doc is empty.
-					insertFormat = start > 0
-						? expanded[start - 1].Clone()
-						: (oldLength > 0 ? expanded[0].Clone() : DefaultFormatState());
+					insertFormat = preferForwardFormat && removeEnd < oldLength
+						? expanded[removeEnd].Clone()
+						: start > 0
+							? expanded[start - 1].Clone()
+							: (oldLength > 0 ? expanded[0].Clone() : DefaultFormatState());
 				}
 			}
 			else
 			{
 				insertFormat = DefaultFormatState();
+			}
+
+			if (unlink)
+			{
+				insertFormat.Link = null;
+			}
+			if (unhide)
+			{
+				insertFormat.Hidden = false;
 			}
 
 			var result = new List<CharacterFormatState>(oldLength - (removeEnd - start) + insertLength);
@@ -188,7 +208,7 @@ namespace Microsoft.UI.Text
 		/// Builds a tri-state character format describing the formatting over [start, end): each tracked
 		/// property is the common value where the characters agree, otherwise "undefined".
 		/// </summary>
-		internal UnoTextCharacterFormat GetFormatOverRange(int start, int end)
+		internal UnoTextCharacterFormat GetFormatOverRange(int start, int end, global::Microsoft.UI.Text.RangeGravity gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior)
 		{
 			SyncRunsToLength(_plainText.Length);
 			var length = _plainText.Length;
@@ -214,52 +234,138 @@ namespace Microsoft.UI.Text
 			if (start == end)
 			{
 				// A degenerate range reports the formatting that newly typed text would take.
-				format.LoadFrom(start > 0 ? expanded[start - 1] : expanded[0]);
+				var preferForward = gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward;
+				format.LoadFrom(preferForward && start < length
+					? expanded[start]
+					: (start > 0 ? expanded[start - 1] : expanded[0]));
 				return format;
 			}
 
 			var first = expanded[start];
-			bool boldUniform = true, italicUniform = true, strikeUniform = true, underlineUniform = true,
-				foregroundUniform = true, sizeUniform = true, nameUniform = true;
+			bool allCapsUniform = true, backgroundUniform = true, boldUniform = true,
+				fontStretchUniform = true, hiddenUniform = true, italicUniform = true,
+				kerningUniform = true, languageTagUniform = true, outlineUniform = true,
+				positionUniform = true, protectedUniform = true, smallCapsUniform = true,
+				spacingUniform = true, strikeUniform = true, subscriptUniform = true,
+				superscriptUniform = true, textScriptUniform = true, underlineUniform = true,
+				foregroundUniform = true, sizeUniform = true, nameUniform = true, weightUniform = true, linkUniform = true;
 			for (var i = start + 1; i < end; i++)
 			{
 				var s = expanded[i];
+				allCapsUniform &= s.AllCaps == first.AllCaps;
+				backgroundUniform &= Nullable.Equals(s.Background, first.Background);
 				boldUniform &= s.Bold == first.Bold;
+				fontStretchUniform &= s.FontStretch == first.FontStretch;
+				hiddenUniform &= s.Hidden == first.Hidden;
 				italicUniform &= s.Italic == first.Italic;
+				kerningUniform &= s.Kerning.Equals(first.Kerning);
+				languageTagUniform &= string.Equals(s.LanguageTag, first.LanguageTag, StringComparison.Ordinal);
+				outlineUniform &= s.Outline == first.Outline;
+				positionUniform &= s.Position.Equals(first.Position);
+				protectedUniform &= s.ProtectedText == first.ProtectedText;
+				smallCapsUniform &= s.SmallCaps == first.SmallCaps;
+				spacingUniform &= s.Spacing.Equals(first.Spacing);
 				strikeUniform &= s.Strikethrough == first.Strikethrough;
+				subscriptUniform &= s.Subscript == first.Subscript;
+				superscriptUniform &= s.Superscript == first.Superscript;
+				textScriptUniform &= s.TextScript == first.TextScript;
 				underlineUniform &= s.Underline == first.Underline;
 				foregroundUniform &= Nullable.Equals(s.Foreground, first.Foreground);
 				sizeUniform &= s.Size.Equals(first.Size);
 				nameUniform &= string.Equals(s.Name, first.Name, StringComparison.Ordinal);
+				weightUniform &= s.Weight == first.Weight;
+				linkUniform &= string.Equals(s.Link, first.Link, StringComparison.Ordinal);
+			}
+
+			format.AllCapsEffect = allCapsUniform ? Effect(first.AllCaps) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			if (backgroundUniform)
+			{
+				format.BackgroundDefined = true;
+				format.BackgroundAutomatic = first.Background is null;
+				if (first.Background is { } background)
+				{
+					format.BackgroundValue = background;
+				}
 			}
 
 			format.BoldEffect = boldUniform ? Effect(first.Bold) : global::Microsoft.UI.Text.FormatEffect.Undefined;
-			format.ItalicEffect = italicUniform ? Effect(first.Italic) : global::Microsoft.UI.Text.FormatEffect.Undefined;
-			format.StrikethroughEffect = strikeUniform ? Effect(first.Strikethrough) : global::Microsoft.UI.Text.FormatEffect.Undefined;
-			format.UnderlineValue = underlineUniform ? first.Underline : global::Microsoft.UI.Text.UnderlineType.Undefined;
-			if (foregroundUniform && first.Foreground is { } fg)
+			if (fontStretchUniform)
 			{
-				format.ForegroundValue = fg;
-				format.ForegroundDefined = true;
+				format.FontStretchValue = first.FontStretch;
+				format.FontStretchDefined = true;
 			}
 
-			if (sizeUniform && first.Size > 0)
+			format.HiddenEffect = hiddenUniform ? Effect(first.Hidden) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.ItalicEffect = italicUniform ? Effect(first.Italic) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			if (kerningUniform)
+			{
+				format.KerningValue = first.Kerning;
+				format.KerningDefined = true;
+			}
+
+			if (languageTagUniform)
+			{
+				format.LanguageTagValue = first.LanguageTag;
+				format.LanguageTagDefined = true;
+			}
+
+			format.OutlineEffect = outlineUniform ? Effect(first.Outline) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			if (positionUniform)
+			{
+				format.PositionValue = first.Position;
+				format.PositionDefined = true;
+			}
+
+			format.ProtectedTextEffect = protectedUniform ? Effect(first.ProtectedText) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.SmallCapsEffect = smallCapsUniform ? Effect(first.SmallCaps) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			if (spacingUniform)
+			{
+				format.SpacingValue = first.Spacing;
+				format.SpacingDefined = true;
+			}
+
+			format.StrikethroughEffect = strikeUniform ? Effect(first.Strikethrough) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.SubscriptEffect = subscriptUniform ? Effect(first.Subscript) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.SuperscriptEffect = superscriptUniform ? Effect(first.Superscript) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.TextScriptValue = textScriptUniform ? first.TextScript : global::Microsoft.UI.Text.TextScript.Undefined;
+			format.UnderlineValue = underlineUniform ? first.Underline : global::Microsoft.UI.Text.UnderlineType.Undefined;
+			if (foregroundUniform)
+			{
+				format.ForegroundDefined = true;
+				format.ForegroundAutomatic = first.Foreground is null;
+				if (first.Foreground is { } fg)
+				{
+					format.ForegroundValue = fg;
+				}
+			}
+
+			if (sizeUniform)
 			{
 				format.SizeValue = first.Size;
 				format.SizeDefined = true;
 			}
 
-			if (nameUniform && !string.IsNullOrEmpty(first.Name))
+			if (nameUniform)
 			{
 				format.NameValue = first.Name;
 				format.NameDefined = true;
 			}
 
+			if (weightUniform)
+			{
+				format.WeightValue = first.Weight;
+				format.WeightDefined = true;
+			}
+
+			format.LinkTypeValue = linkUniform
+				? (first.Link is null ? global::Microsoft.UI.Text.LinkType.NotALink : global::Microsoft.UI.Text.LinkType.FriendlyLinkName)
+				: global::Microsoft.UI.Text.LinkType.Undefined;
+
 			return format;
 		}
 
 		/// <summary>Applies the defined properties of <paramref name="format"/> over [start, end).</summary>
-		internal void SetFormatOverRange(int start, int end, UnoTextCharacterFormat format)
+		internal void SetFormatOverRange(int start, int end, UnoTextCharacterFormat format, global::Microsoft.UI.Text.RangeGravity gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior)
 		{
 			SyncRunsToLength(_plainText.Length);
 			var length = _plainText.Length;
@@ -268,16 +374,48 @@ namespace Microsoft.UI.Text
 
 			if (start == end)
 			{
+				ThrowIfNotEditable(start, end, gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward);
+
 				// Applying a character format at a collapsed caret establishes the pending insertion-point
 				// format (applied to the next typed/inserted text) rather than mutating any existing text.
-				var basis = ResolveCaretBasisFormat(start);
+				var preferForward = gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward;
+				var basis = ResolveCaretBasisFormat(start, preferForward);
 				ApplyCharacterFormatToState(basis, format);
 				_pendingCaretFormat = basis;
 				_pendingCaretPosition = start;
 				return;
 			}
 
+			var onlyRemovingProtection = format.ProtectedTextEffect == global::Microsoft.UI.Text.FormatEffect.Off
+				&& WouldOnlyRemoveProtection(start, end, format);
+			if (IsOwnerReadOnly)
+			{
+				throw new UnauthorizedAccessException("The text range cannot be edited.");
+			}
+			if (!onlyRemovingProtection)
+			{
+				ThrowIfNotEditable(start, end);
+			}
+
 			MutateWithUndo(() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)));
+		}
+
+		private bool WouldOnlyRemoveProtection(int start, int end, UnoTextCharacterFormat format)
+		{
+			var states = ExpandRunsRaw();
+			for (var i = start; i < end; i++)
+			{
+				var original = states[i];
+				var candidate = original.Clone();
+				ApplyCharacterFormatToState(candidate, format);
+				candidate.ProtectedText = original.ProtectedText;
+				if (!candidate.Equals(original))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -285,7 +423,7 @@ namespace Microsoft.UI.Text
 		/// caret, else the character to the left (what newly typed text inherits), else the character to
 		/// the right, else the document default.
 		/// </summary>
-		private CharacterFormatState ResolveCaretBasisFormat(int position)
+		private CharacterFormatState ResolveCaretBasisFormat(int position, bool preferForward)
 		{
 			if (_pendingCaretFormat is { } pending && _pendingCaretPosition == position)
 			{
@@ -298,7 +436,7 @@ namespace Microsoft.UI.Text
 				return DefaultFormatState();
 			}
 
-			var index = Math.Clamp(position > 0 ? position - 1 : 0, 0, expanded.Count - 1);
+			var index = Math.Clamp(preferForward && position < expanded.Count ? position : (position > 0 ? position - 1 : 0), 0, expanded.Count - 1);
 			return expanded[index].Clone();
 		}
 
@@ -316,6 +454,73 @@ namespace Microsoft.UI.Text
 			{
 				ClearPendingCaretFormat();
 			}
+		}
+
+		internal string GetLink(int start, int end, out int linkStart, out int linkEnd)
+		{
+			SyncRunsToLength(_plainText.Length);
+			linkStart = Math.Clamp(start, 0, _plainText.Length);
+			linkEnd = Math.Clamp(end, linkStart, _plainText.Length);
+			if (_plainText.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			var states = ExpandRunsRaw();
+			var probe = linkStart < linkEnd
+				? linkStart
+				: linkStart < states.Count && states[linkStart].Link is not null
+					? linkStart
+					: Math.Max(0, linkStart - 1);
+			var link = states[probe].Link;
+			if (link is null)
+			{
+				return string.Empty;
+			}
+
+			linkStart = probe;
+			while (linkStart > 0 && string.Equals(states[linkStart - 1].Link, link, StringComparison.Ordinal))
+			{
+				linkStart--;
+			}
+
+			linkEnd = probe + 1;
+			while (linkEnd < states.Count && string.Equals(states[linkEnd].Link, link, StringComparison.Ordinal))
+			{
+				linkEnd++;
+			}
+
+			return link;
+		}
+
+		internal void SetLink(int start, int end, string? value)
+		{
+			start = Math.Clamp(start, 0, _plainText.Length);
+			end = Math.Clamp(end, start, _plainText.Length);
+			if (start == end)
+			{
+				throw new ArgumentException("A link requires a nondegenerate range.", nameof(start));
+			}
+			ThrowIfNotEditable(start, end);
+
+			var normalized = NormalizeLink(value);
+			MutateWithUndo(() => ApplyFormatOverRange(start, end, state => state.Link = normalized));
+		}
+
+		private static string? NormalizeLink(string? value)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return null;
+			}
+
+			var start = value[0] == '\ufddf' ? 1 : 0;
+			if (value.Length - start < 2 || value[start] != '"' || value[value.Length - 1] != '"')
+			{
+				throw new ArgumentException("The URL must be enclosed in quotes.", nameof(value));
+			}
+
+			return value;
 		}
 
 		/// <summary>
@@ -336,9 +541,41 @@ namespace Microsoft.UI.Text
 		/// <summary>Writes the defined properties of <paramref name="format"/> into <paramref name="state"/>.</summary>
 		private static void ApplyCharacterFormatToState(CharacterFormatState state, UnoTextCharacterFormat format)
 		{
+			if (format.AllCapsEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.AllCaps = ResolveEffect(format.AllCapsEffect, state.AllCaps);
+			}
+
+			if (format.BackgroundDefined)
+			{
+				state.Background = format.BackgroundAutomatic ? null : format.BackgroundValue;
+			}
+
 			if (format.BoldEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
 				state.Bold = ResolveEffect(format.BoldEffect, state.Bold);
+				state.WeightExplicit = true;
+				if (!format.WeightDefined)
+				{
+					state.Weight = state.Bold ? 700 : 400;
+				}
+			}
+
+			if (format.WeightDefined)
+			{
+				state.Weight = format.WeightValue;
+				state.Bold = state.Weight >= 600;
+				state.WeightExplicit = true;
+			}
+
+			if (format.FontStretchDefined)
+			{
+				state.FontStretch = format.FontStretchValue;
+			}
+
+			if (format.HiddenEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Hidden = ResolveEffect(format.HiddenEffect, state.Hidden);
 			}
 
 			if (format.ItalicEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
@@ -346,9 +583,59 @@ namespace Microsoft.UI.Text
 				state.Italic = ResolveEffect(format.ItalicEffect, state.Italic);
 			}
 
+			if (format.KerningDefined)
+			{
+				state.Kerning = format.KerningValue;
+			}
+
+			if (format.LanguageTagDefined)
+			{
+				state.LanguageTag = format.LanguageTagValue;
+			}
+
+			if (format.OutlineEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Outline = ResolveEffect(format.OutlineEffect, state.Outline);
+			}
+
+			if (format.PositionDefined)
+			{
+				state.Position = format.PositionValue;
+			}
+
+			if (format.ProtectedTextEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.ProtectedText = ResolveEffect(format.ProtectedTextEffect, state.ProtectedText);
+			}
+
+			if (format.SmallCapsEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.SmallCaps = ResolveEffect(format.SmallCapsEffect, state.SmallCaps);
+			}
+
+			if (format.SpacingDefined)
+			{
+				state.Spacing = format.SpacingValue;
+			}
+
 			if (format.StrikethroughEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
 				state.Strikethrough = ResolveEffect(format.StrikethroughEffect, state.Strikethrough);
+			}
+
+			if (format.SubscriptEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Subscript = ResolveEffect(format.SubscriptEffect, state.Subscript);
+			}
+
+			if (format.SuperscriptEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
+			{
+				state.Superscript = ResolveEffect(format.SuperscriptEffect, state.Superscript);
+			}
+
+			if (format.TextScriptValue != global::Microsoft.UI.Text.TextScript.Undefined)
+			{
+				state.TextScript = format.TextScriptValue;
 			}
 
 			if (format.UnderlineValue != global::Microsoft.UI.Text.UnderlineType.Undefined)
@@ -358,7 +645,7 @@ namespace Microsoft.UI.Text
 
 			if (format.ForegroundDefined)
 			{
-				state.Foreground = format.ForegroundValue;
+				state.Foreground = format.ForegroundAutomatic ? null : format.ForegroundValue;
 			}
 
 			if (format.SizeDefined)
@@ -376,7 +663,7 @@ namespace Microsoft.UI.Text
 		public global::Microsoft.UI.Text.ITextCharacterFormat GetDefaultCharacterFormat()
 		{
 			var format = new UnoTextCharacterFormat();
-			format.LoadFrom(_defaultCharacterFormat);
+			format.LoadFrom(DefaultFormatState());
 			format.BindApply(ApplyDefaultCharacterFormat);
 			return format;
 		}
@@ -427,183 +714,5 @@ namespace Microsoft.UI.Text
 			return true;
 		}
 
-		// --- Rich clipboard payload (in-process) --------------------------------------------------
-		//
-		// Copy/paste preserves per-character formatting via an app-private, in-process payload rather
-		// than the OS clipboard: the plain text always goes to the real clipboard, while the format
-		// runs for the copied span are serialized into a compact string and applied on the next paste
-		// whose inserted text matches exactly. This round-trips within the app (across RichEditBox
-		// instances) which is what ClipboardCopyFormat/TestClipboardCopyFormats exercise; a full
-		// RTF/CF_RTF payload that survives cross-process is a documented follow-up.
-		private const string RichClipboardHeader = "UNORICH1";
-
-		/// <summary>
-		/// Serializes the character-format runs spanning [start, end) into a compact, dependency-free
-		/// string (header + ';'-separated runs, each 'len|bold|italic|underline|strike|fgDefined|a|r|g|b|size|nameBase64').
-		/// </summary>
-		internal string SerializeFormatRuns(int start, int end)
-		{
-			SyncRunsToLength(_plainText.Length);
-			start = Math.Clamp(start, 0, _plainText.Length);
-			end = Math.Clamp(end, start, _plainText.Length);
-
-			var expanded = ExpandRunsRaw();
-			var sb = new StringBuilder();
-			sb.Append(RichClipboardHeader);
-
-			var i = start;
-			while (i < end)
-			{
-				var representative = expanded[i];
-				var runStart = i;
-				i++;
-				while (i < end && expanded[i].Equals(representative))
-				{
-					i++;
-				}
-
-				sb.Append(';');
-				AppendSerializedRun(sb, i - runStart, representative);
-			}
-
-			return sb.ToString();
-		}
-
-		private static void AppendSerializedRun(StringBuilder sb, int length, CharacterFormatState state)
-		{
-			sb.Append(length.ToString(CultureInfo.InvariantCulture)).Append('|');
-			sb.Append(state.Bold ? '1' : '0').Append('|');
-			sb.Append(state.Italic ? '1' : '0').Append('|');
-			sb.Append(((int)state.Underline).ToString(CultureInfo.InvariantCulture)).Append('|');
-			sb.Append(state.Strikethrough ? '1' : '0').Append('|');
-			if (state.Foreground is { } fg)
-			{
-				sb.Append('1').Append('|');
-				sb.Append(fg.A).Append('|').Append(fg.R).Append('|').Append(fg.G).Append('|').Append(fg.B).Append('|');
-			}
-			else
-			{
-				sb.Append("0|0|0|0|0|");
-			}
-
-			sb.Append(state.Size.ToString(CultureInfo.InvariantCulture)).Append('|');
-			var name = state.Name ?? string.Empty;
-			sb.Append(Convert.ToBase64String(Encoding.UTF8.GetBytes(name)));
-		}
-
-		/// <summary>
-		/// Applies a payload produced by <see cref="SerializeFormatRuns"/> to [start, start + textLength).
-		/// Returns false (and mutates nothing) when the payload is malformed or its total run length does
-		/// not match <paramref name="textLength"/>, so the caller can fall back to plain-text paste.
-		/// </summary>
-		internal bool ApplySerializedFormatRuns(int start, string payload, int textLength)
-		{
-			if (string.IsNullOrEmpty(payload) || textLength <= 0)
-			{
-				return false;
-			}
-
-			var parts = payload.Split(';');
-			if (parts.Length < 2 || !string.Equals(parts[0], RichClipboardHeader, StringComparison.Ordinal))
-			{
-				return false;
-			}
-
-			var states = new List<CharacterFormatState>(textLength);
-			for (var p = 1; p < parts.Length; p++)
-			{
-				if (!TryParseSerializedRun(parts[p], out var length, out var state))
-				{
-					return false;
-				}
-
-				for (var k = 0; k < length; k++)
-				{
-					states.Add(state.Clone());
-				}
-			}
-
-			if (states.Count != textLength)
-			{
-				return false;
-			}
-
-			SyncRunsToLength(_plainText.Length);
-			start = Math.Clamp(start, 0, _plainText.Length);
-			if (start + textLength > _plainText.Length)
-			{
-				return false;
-			}
-
-			MutateWithUndo(() =>
-			{
-				var expanded = ExpandRunsRaw();
-				for (var k = 0; k < textLength; k++)
-				{
-					expanded[start + k] = states[k];
-				}
-
-				_runs = BuildRunsFromStates(expanded);
-			});
-
-			return true;
-		}
-
-		private static bool TryParseSerializedRun(string text, out int length, out CharacterFormatState state)
-		{
-			length = 0;
-			state = new CharacterFormatState();
-
-			var f = text.Split('|');
-			if (f.Length != 12)
-			{
-				return false;
-			}
-
-			if (!int.TryParse(f[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out length) || length <= 0)
-			{
-				return false;
-			}
-
-			state.Bold = f[1] == "1";
-			state.Italic = f[2] == "1";
-			if (!int.TryParse(f[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out var underline))
-			{
-				return false;
-			}
-
-			state.Underline = (global::Microsoft.UI.Text.UnderlineType)underline;
-			state.Strikethrough = f[4] == "1";
-
-			var foregroundDefined = f[5] == "1";
-			if (!byte.TryParse(f[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out var a)
-				|| !byte.TryParse(f[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out var r)
-				|| !byte.TryParse(f[8], NumberStyles.Integer, CultureInfo.InvariantCulture, out var g)
-				|| !byte.TryParse(f[9], NumberStyles.Integer, CultureInfo.InvariantCulture, out var b))
-			{
-				return false;
-			}
-
-			state.Foreground = foregroundDefined ? global::Windows.UI.Color.FromArgb(a, r, g, b) : null;
-
-			if (!float.TryParse(f[10], NumberStyles.Float, CultureInfo.InvariantCulture, out var size))
-			{
-				return false;
-			}
-
-			state.Size = size;
-
-			try
-			{
-				var name = Encoding.UTF8.GetString(Convert.FromBase64String(f[11]));
-				state.Name = string.IsNullOrEmpty(name) ? null : name;
-			}
-			catch (FormatException)
-			{
-				return false;
-			}
-
-			return true;
-		}
 	}
 }

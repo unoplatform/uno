@@ -702,6 +702,39 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
+	public override PointInt32 ConvertLocalToScreen(Windows.Foundation.Point localPoint)
+		=> TryConvertLocalToScreen(localPoint, out var screenPoint)
+			? screenPoint
+			: base.ConvertLocalToScreen(localPoint);
+
+	public override bool TryConvertLocalToScreen(Windows.Foundation.Point localPoint, out PointInt32 screenPoint)
+	{
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		var point = new Point((int)Math.Round(localPoint.X * scale), (int)Math.Round(localPoint.Y * scale));
+		var success = PInvoke.ClientToScreen(_hwnd, ref point);
+		screenPoint = success ? new PointInt32(point.X, point.Y) : default;
+		return success;
+	}
+
+	public override Windows.Foundation.Point ConvertScreenToLocal(PointInt32 screenPoint)
+		=> TryConvertScreenToLocal(screenPoint, out var localPoint)
+			? localPoint
+			: base.ConvertScreenToLocal(screenPoint);
+
+	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Windows.Foundation.Point localPoint)
+	{
+		var point = new Point(screenPoint.X, screenPoint.Y);
+		if (!PInvoke.ScreenToClient(_hwnd, ref point))
+		{
+			localPoint = default;
+			return false;
+		}
+
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		localPoint = new Windows.Foundation.Point(point.X / scale, point.Y / scale);
+		return true;
+	}
+
 	private unsafe void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
