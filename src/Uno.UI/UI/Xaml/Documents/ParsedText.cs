@@ -895,6 +895,23 @@ internal readonly struct ParsedText : IParsedText
 		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 	}
 
+	public double GetBaselineForIndex(int adjustedIndex)
+	{
+		if (_renderLines.Count == 0)
+		{
+			return _defaultLineHeight;
+		}
+
+		var lineIndex = GetLineAt(Math.Clamp(adjustedIndex, 0, _text.Length)).lineIndex;
+		var lineBottom = 0f;
+		for (var i = 0; i <= lineIndex; i++)
+		{
+			lineBottom += _renderLines[i].Height;
+		}
+
+		return lineBottom + _renderLines[lineIndex].BaselineOffsetY;
+	}
+
 	public Hyperlink GetHyperlinkAt(Point point)
 	{
 		var start = 0;

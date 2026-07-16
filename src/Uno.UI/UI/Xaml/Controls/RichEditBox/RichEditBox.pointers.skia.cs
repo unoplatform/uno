@@ -13,12 +13,13 @@ namespace Microsoft.UI.Xaml.Controls
 	// (ParsedText.GetIndexAt / GetWordAt) and selection plumbing (SetInteractiveSelection) as the
 	// keyboard layer, so caret/selection stay consistent across input modalities.
 	//
-	// TODO Uno: touch selection grippers, the selection flyout, triple-tap line selection and the full
+	// TODO Uno: touch selection grippers, triple-tap line selection and the full
 	// multi-tap gesture model that TextBox implements are intentionally out of scope for this slice.
 	partial class RichEditBox
 	{
 		private bool _hasPointerCapture;
 		private int _pointerSelectionAnchor;
+		private int _pressedLinkIndex = -1;
 
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{
@@ -43,6 +44,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			DismissSelectionFlyoutForPointerPress();
+
 			var currentPoint = e.GetCurrentPoint(null);
 
 			// Right button is reserved for the context menu; let the base handling deal with it.
@@ -54,6 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			e.Handled = true;
 
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
+			_pressedLinkIndex = index;
 
 			if ((e.KeyModifiers & VirtualKeyModifiers.Shift) != 0)
 			{
@@ -98,8 +102,20 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_hasPointerCapture)
 			{
 				e.Handled = true;
+				if (_textBoxView?.DisplayBlock is { } displayBlock)
+				{
+					var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
+					var commandModifier = (e.KeyModifiers & _platformCtrlKey) != 0;
+					if (index == _pressedLinkIndex && (IsReadOnly || commandModifier))
+					{
+						TryNavigateLinkAt(index);
+					}
+				}
+
 				ReleasePointerCapture(e.Pointer);
 				_hasPointerCapture = false;
+				_pressedLinkIndex = -1;
+				QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
 			}
 		}
 
@@ -107,6 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerCaptureLost(e);
 			_hasPointerCapture = false;
+			_pressedLinkIndex = -1;
 		}
 
 		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
@@ -124,6 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var word = displayBlock.ParsedText.GetWordAt(index, true);
 			_pointerSelectionAnchor = word.start;
 			SetInteractiveSelection(word.start, word.length);
+			QueueUpdateSelectionFlyoutVisibility(e.PointerDeviceType, e.GetPosition(this));
 		}
 	}
 }

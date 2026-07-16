@@ -7,11 +7,9 @@ namespace Microsoft.UI.Text
 	// Uno-specific functional implementation of the RichEditBox document-level option knobs and the
 	// clipboard-availability queries for Skia.
 	//
-	// CanCopy/CanPaste are genuinely functional. The four option knobs (CaretType, DefaultTabStop,
-	// AlignmentIncludesTrailingWhitespace, IgnoreTrailingCharacterSpacing) round-trip faithfully but
-	// are document-level configuration that the shared single-TextBlock DisplayBlock does not yet act
-	// on when rendering (see the class summary in RichEditTextDocument.skia.cs). They are
-	// intentionally excluded from undo snapshots — they are settings, not content.
+	// CanCopy/CanPaste are genuinely functional. DefaultTabStop drives shared tab layout; CaretType,
+	// AlignmentIncludesTrailingWhitespace, and IgnoreTrailingCharacterSpacing currently round-trip as
+	// document settings. These options are intentionally excluded from undo snapshots.
 	public partial class RichEditTextDocument
 	{
 		private global::Microsoft.UI.Text.CaretType _caretType = global::Microsoft.UI.Text.CaretType.Normal;
@@ -27,12 +25,19 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>
-		/// Gets or sets the default tab stop, in points. Round-trips; not yet reflected in rendering.
+		/// Gets or sets the default tab stop, in points.
 		/// </summary>
 		public float DefaultTabStop
 		{
 			get => _defaultTabStop;
-			set => _defaultTabStop = value;
+			set
+			{
+				if (!_defaultTabStop.Equals(value))
+				{
+					_defaultTabStop = value;
+					RequestRender(isContentChanging: false);
+				}
+			}
 		}
 
 		/// <summary>
@@ -62,13 +67,14 @@ namespace Microsoft.UI.Text
 		public bool CanCopy() => Selection.StartPosition != Selection.EndPosition;
 
 		/// <summary>
-		/// Returns whether the clipboard currently holds content that can be pasted as text.
+		/// Returns whether the clipboard currently holds text or RTF content that can be pasted.
 		/// </summary>
 		public bool CanPaste()
 		{
 			try
 			{
-				return Clipboard.GetContent().Contains(StandardDataFormats.Text);
+				var content = Clipboard.GetContent();
+				return content.Contains(StandardDataFormats.Rtf) || content.Contains(StandardDataFormats.Text);
 			}
 			catch
 			{

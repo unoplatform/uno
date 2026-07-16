@@ -3,6 +3,8 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -61,6 +63,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool IImeSessionHost.IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
+		InputScope IImeSessionHost.InputScope => InputScope;
+
 		private void StartImeSession() => ImeSessionCoordinator.StartSession(this);
 
 		private void EndImeSession()
@@ -70,6 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Defensively reset composition state in case the extension's CompositionEnded event didn't
 			// fire, so subsequent key events aren't swallowed at the IsComposing check in OnPostKeyDown.
 			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
 			if (_isComposing)
 			{
 				var startIndex = _compositionStartIndex;
@@ -80,7 +85,9 @@ namespace Microsoft.UI.Xaml.Controls
 				_compositionResolvedLength = 0;
 
 				CloseCompositionUndoGroup();
-				TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+				InvokeCompositionEvent(
+					() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
+					nameof(TextCompositionEnded));
 				InvalidateImeRender();
 			}
 			else
@@ -97,6 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_isComposing = true;
+			_platformTextApplyInProgress = false;
 			_compositionStartIndex = _selection.start;
 			// Initialize from the current selection length so the first ReplaceCompositionText replaces
 			// the selected range, matching normal typing behavior.
@@ -106,7 +114,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Open one undo group for the whole composition so a single Undo removes the composed word.
 			OpenCompositionUndoGroup();
 
-			TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
+			InvokeCompositionEvent(
+				() => TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength)),
+				nameof(TextCompositionStarted));
 		}
 
 		void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
@@ -135,7 +145,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_compositionResolvedLength = resolvedLength;
 
-			TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
+			InvokeCompositionEvent(
+				() => TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength)),
+				nameof(TextCompositionChanged));
 			InvalidateImeRender();
 		}
 
@@ -155,12 +167,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var startIndex = _compositionStartIndex;
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
 
 			CloseCompositionUndoGroup();
-			TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength));
+			InvokeCompositionEvent(
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength)),
+				nameof(TextCompositionEnded));
 			InvalidateImeRender();
 		}
 
@@ -169,6 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!_isComposing)
 			{
 				_compositionAppliedByPlatform = false;
+				_platformTextApplyInProgress = false;
 				CloseCompositionUndoGroup();
 				return;
 			}
@@ -178,12 +194,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var length = _compositionLength;
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
 
 			CloseCompositionUndoGroup();
-			TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+			InvokeCompositionEvent(
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
+				nameof(TextCompositionEnded));
 			InvalidateImeRender();
 		}
 
@@ -206,6 +225,11 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				var insertedLength = 0;
+				if (Document.IsRangeProtected(startIndex, endIndex))
+				{
+					return _compositionLength;
+				}
+
 				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(startIndex, endIndex, newText));
 				caretOffset = Math.Min(caretOffset, insertedLength);
 				SetInteractiveSelectionFromComposition(startIndex + caretOffset);
@@ -268,6 +292,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var length = _compositionLength;
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
@@ -275,13 +300,22 @@ namespace Microsoft.UI.Xaml.Controls
 			CloseCompositionUndoGroup();
 
 			// End and restart the session so further IME input still works while the active host stays in sync.
-			ImeSessionCoordinator.Extension?.EndImeSession();
-			TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+			ImeSessionCoordinator.RestartSession(this);
+			InvokeCompositionEvent(
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
+				nameof(TextCompositionEnded));
 			InvalidateImeRender();
+		}
 
-			if (ReferenceEquals(ImeSessionCoordinator.ActiveHost, this))
+		private static void InvokeCompositionEvent(Action invoke, string eventName)
+		{
+			try
 			{
-				ImeSessionCoordinator.Extension?.StartImeSession(this);
+				invoke();
+			}
+			catch (Exception error)
+			{
+				typeof(RichEditBox).LogError()?.Error($"A RichEditBox {eventName} handler failed.", error);
 			}
 		}
 

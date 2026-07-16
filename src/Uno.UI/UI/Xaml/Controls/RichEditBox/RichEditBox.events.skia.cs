@@ -1,7 +1,9 @@
 #nullable enable
 
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -74,10 +76,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Last (start, length) selection span for which SelectionChanged was raised.
 		private (int start, int length) _lastRaisedSelection;
 
-		private TextChangeNotification? PrepareTextChangedNotification()
+		private TextChangeNotification? PrepareTextChangedNotification(bool isContentChanging)
 		{
 			var text = GetPlainTextContent();
-			if (text == _lastObservedText)
+			if (isContentChanging && text == _lastObservedText)
 			{
 				return null;
 			}
@@ -96,7 +98,14 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInvokingTextChanging = true;
-				TextChanging?.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging: true));
+				try
+				{
+					TextChanging?.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging));
+				}
+				catch (Exception error)
+				{
+					typeof(RichEditBox).LogError()?.Error("A RichEditBox TextChanging handler failed.", error);
+				}
 			}
 			finally
 			{
@@ -105,7 +114,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var finalText = GetPlainTextContent();
 			_lastObservedText = finalText;
-			return oldText == finalText ? null : new TextChangeNotification(oldText, finalText);
+			if (isContentChanging && oldText == finalText)
+			{
+				return null;
+			}
+
+			return new TextChangeNotification(oldText, finalText);
 		}
 
 		private void QueueTextChangedNotification(TextChangeNotification? change)
@@ -130,7 +144,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-				TextChanged?.Invoke(this, new RoutedEventArgs()));
+			{
+				try
+				{
+					TextChanged?.Invoke(this, new RoutedEventArgs());
+				}
+				catch (Exception error)
+				{
+					typeof(RichEditBox).LogError()?.Error("A RichEditBox TextChanged handler failed.", error);
+				}
+			});
 		}
 
 		private void RaiseSelectionChangedIfNeeded()
@@ -142,7 +165,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_lastRaisedSelection = current;
-			SelectionChanged?.Invoke(this, new RoutedEventArgs());
+			try
+			{
+				SelectionChanged?.Invoke(this, new RoutedEventArgs());
+			}
+			catch (Exception error)
+			{
+				typeof(RichEditBox).LogError()?.Error("A RichEditBox SelectionChanged handler failed.", error);
+			}
 
 			if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
 				&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))

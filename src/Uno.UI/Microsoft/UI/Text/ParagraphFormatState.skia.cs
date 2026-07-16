@@ -31,13 +31,12 @@ namespace Microsoft.UI.Text
 	// Object Model. Unlike ITextParagraphFormat (which is tri-state and can be "undefined" over a
 	// mixed range), a resolved paragraph state always holds concrete values.
 	//
-	// TODO Uno: A *uniform* paragraph alignment (all paragraphs sharing one Center/Right/Justify value)
-	// is now projected onto the shared single-TextBlock DisplayBlock (see RichEditBox.ApplyParagraphAlignment),
-	// using the same TextAlignment render path as TextBox. Per-paragraph alignment divergence, indents,
-	// spacing, and lists still cannot be shown by a single TextBlock and remain a documented gap — the
-	// state round-trips faithfully through the Text Object Model (get/set/clone/undo/IsEqual) regardless.
+	// Alignment is projected per paragraph through the shared UnicodeText layout. Indents, spacing,
+	// and lists remain model-only, while all state round-trips through get/set/clone/undo/IsEqual.
 	internal sealed class ParagraphFormatState : IEquatable<ParagraphFormatState>
 	{
+		internal const int MaxTabs = 63;
+
 		public global::Microsoft.UI.Text.ParagraphAlignment Alignment = global::Microsoft.UI.Text.ParagraphAlignment.Left;
 		public float FirstLineIndent;
 		public float LeftIndent;
@@ -63,13 +62,45 @@ namespace Microsoft.UI.Text
 
 		public global::Microsoft.UI.Text.ParagraphStyle Style = global::Microsoft.UI.Text.ParagraphStyle.Undefined;
 
-		public List<ParagraphTab> Tabs = new();
+		private ParagraphTab[] _tabs = Array.Empty<ParagraphTab>();
 
-		public ParagraphFormatState Clone()
+		public IReadOnlyList<ParagraphTab> Tabs => _tabs;
+
+		public ParagraphFormatState Clone() => (ParagraphFormatState)MemberwiseClone();
+
+		internal void SetTabs(IReadOnlyList<ParagraphTab> tabs)
 		{
-			var clone = (ParagraphFormatState)MemberwiseClone();
-			clone.Tabs = new List<ParagraphTab>(Tabs);
-			return clone;
+			if (tabs.Count > MaxTabs)
+			{
+				throw new ArgumentException("The paragraph contains too many tab stops.", nameof(tabs));
+			}
+
+			if (tabs.Count == 0)
+			{
+				_tabs = Array.Empty<ParagraphTab>();
+				return;
+			}
+
+			var copy = new ParagraphTab[tabs.Count];
+			for (var i = 0; i < tabs.Count; i++)
+			{
+				ValidateTab(tabs[i]);
+				copy[i] = tabs[i];
+			}
+			_tabs = copy;
+		}
+
+		internal void ShareTabsFrom(ParagraphFormatState source) => _tabs = source._tabs;
+
+		internal static void ValidateTab(ParagraphTab tab)
+		{
+			if (!float.IsFinite(tab.Position)
+				|| tab.Position < 0
+				|| !Enum.IsDefined(tab.Alignment)
+				|| !Enum.IsDefined(tab.Leader))
+			{
+				throw new ArgumentException("The paragraph tab is invalid.");
+			}
 		}
 
 		public bool Equals(ParagraphFormatState? other)
@@ -77,6 +108,10 @@ namespace Microsoft.UI.Text
 			if (other is null)
 			{
 				return false;
+			}
+			if (ReferenceEquals(this, other))
+			{
+				return true;
 			}
 
 			if (Alignment != other.Alignment
@@ -103,6 +138,10 @@ namespace Microsoft.UI.Text
 				|| Tabs.Count != other.Tabs.Count)
 			{
 				return false;
+			}
+			if (ReferenceEquals(_tabs, other._tabs))
+			{
+				return true;
 			}
 
 			for (var i = 0; i < Tabs.Count; i++)

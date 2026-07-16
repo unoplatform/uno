@@ -1453,6 +1453,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
+		private float _defaultTabStop = 48;
+
+		internal float DefaultTabStop
+		{
+			get => _defaultTabStop;
+			set
+			{
+				if (!_defaultTabStop.Equals(value))
+				{
+					_defaultTabStop = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -1515,6 +1530,7 @@ namespace Microsoft.UI.Xaml.Controls
 				IsSpellCheckEnabled,
 				this,
 				isTextBoxOwned,
+				DefaultTabStop,
 				out size);
 
 			if (isTextBoxOwned)

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -16,13 +17,14 @@ namespace Microsoft.UI.Text
 	// the owning document. Character formatting (CharacterFormat) is functional over the document's run
 	// model. Plain-text clipboard (Copy/Cut/Paste/CanPaste) is functional.
 	//
-	// TODO Uno: FormattedText/Gravity/Link, rich/RTF clipboard payloads, streams and embedded images
-	// arrive with the rich-content model and the shared editing engine.
+	// Inline images participate in layout and rendering. Remaining rich object formats require further
+	// shared-layout support.
 	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
 	{
 		private protected readonly RichEditTextDocument _document;
 		private protected int _start;
 		private protected int _end;
+		private global::Microsoft.UI.Text.RangeGravity _gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior;
 
 		internal UnoTextRange(RichEditTextDocument document, int startPosition, int endPosition)
 		{
@@ -35,8 +37,9 @@ namespace Microsoft.UI.Text
 
 		internal void RebaseAfterEdit(int editStart, int editEnd, int insertLength, int documentLength)
 		{
-			_start = RebasePosition(_start, editStart, editEnd, insertLength);
-			_end = RebasePosition(_end, editStart, editEnd, insertLength);
+			var (startForward, endForward) = GetEndpointAffinities();
+			_start = RebasePosition(_start, editStart, editEnd, insertLength, startForward);
+			_end = RebasePosition(_end, editStart, editEnd, insertLength, endForward);
 			_start = Math.Clamp(_start, 0, documentLength);
 			_end = Math.Clamp(_end, 0, documentLength);
 			if (_start > _end)
@@ -45,20 +48,49 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		private static int RebasePosition(int position, int editStart, int editEnd, int insertLength)
+		private static int RebasePosition(int position, int editStart, int editEnd, int insertLength, bool forwardAffinity)
 		{
+			var removeLength = editEnd - editStart;
+			if (removeLength == 0)
+			{
+				if (position < editStart)
+				{
+					return position;
+				}
+
+				if (position > editStart)
+				{
+					return position + insertLength;
+				}
+
+				return editStart + (forwardAffinity ? insertLength : 0);
+			}
+
 			if (position < editStart)
 			{
 				return position;
 			}
 
-			if (position > editEnd || (editStart == editEnd && position == editEnd))
+			if (position > editEnd)
 			{
-				return position + insertLength - (editEnd - editStart);
+				return position + insertLength - removeLength;
 			}
 
-			return editStart + insertLength;
+			return editStart + (forwardAffinity ? insertLength : 0);
 		}
+
+		private (bool startForward, bool endForward) GetEndpointAffinities()
+			=> _gravity switch
+			{
+				global::Microsoft.UI.Text.RangeGravity.Backward => (false, false),
+				global::Microsoft.UI.Text.RangeGravity.Forward => (true, true),
+				global::Microsoft.UI.Text.RangeGravity.Inward => (true, false),
+				global::Microsoft.UI.Text.RangeGravity.Outward => (false, true),
+				_ => (true, true),
+			};
+
+		internal bool UsesForwardCharacterFormatting
+			=> _gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward;
 
 		private protected void Normalize()
 		{
@@ -80,9 +112,6 @@ namespace Microsoft.UI.Text
 		private protected virtual void OnRangeChanged()
 		{
 		}
-
-		private static Exception NotImplemented(string member)
-			=> new NotImplementedException($"Microsoft.UI.Text range member '{member}' is not yet implemented on Uno. TODO Uno: arrives with the rich-content model / shared editing engine.");
 
 		public int StartPosition
 		{
@@ -200,21 +229,34 @@ namespace Microsoft.UI.Text
 
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
 		{
-			// TODO Uno: Honor the rich TextGetOptions once formatted content is supported.
-			value = _document.GetTextInRange(_start, _end, options);
+			value = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf)
+				? RichTextRtfCodec.Write(_document.CaptureFragment(_start, _end, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)))
+				: _document.GetTextInRange(_start, _end, options);
 		}
 
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
-			// TODO Uno: Honor the rich TextSetOptions once formatted content is supported.
-			var replacement = value ?? string.Empty;
-			var insertedLength = _document.ReplaceRange(_start, _end, replacement, this);
+			var insertedLength = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf)
+				? _document.ReplaceRangeWithFragment(_start, _end, RichTextRtfCodec.Read(value ?? string.Empty, _document.GetImportCharacterLimit(_start, _end)), this, options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide))
+				: _document.ReplaceRange(
+					_start,
+					_end,
+					value ?? string.Empty,
+					this,
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide));
 			_end = _start + insertedLength;
 			OnRangeChanged();
 		}
 
 		public global::Microsoft.UI.Text.ITextRange GetClone()
-			=> new UnoTextRange(_document, _start, _end);
+		{
+			var clone = new UnoTextRange(_document, _start, _end)
+			{
+				_gravity = _gravity,
+			};
+			return clone;
+		}
 
 		public bool InRange(global::Microsoft.UI.Text.ITextRange range)
 			=> range is UnoTextRange other
@@ -562,10 +604,14 @@ namespace Microsoft.UI.Text
 				return count > 0 ? 1 : -1;
 			}
 
+			if (unit is global::Microsoft.UI.Text.TextRangeUnit.Screen or global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				return MoveLayoutUnit(unit, count);
+			}
+
 			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
 			if (chunks is null || chunks.Count == 0)
 			{
-				// TODO Uno: Line/Sentence/Screen units require the layout-aware editing engine.
 				return 0;
 			}
 
@@ -714,7 +760,7 @@ namespace Microsoft.UI.Text
 		// Moves <paramref name="position"/> by <paramref name="count"/> unit boundaries along
 		// <paramref name="boundaries"/> and reports the signed number of units actually crossed. Mirrors
 		// the boundary math used by Move so all unit navigation stays consistent.
-		private static int MoveByBoundaries(int[] boundaries, int position, int count, out int unitsMoved)
+		private protected static int MoveByBoundaries(int[] boundaries, int position, int count, out int unitsMoved)
 		{
 			if (count > 0)
 			{
@@ -762,6 +808,93 @@ namespace Microsoft.UI.Text
 			}
 		}
 
+		private int MoveLayoutUnit(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
+		{
+			var direction = Math.Sign(count);
+			var position = direction > 0 ? _end : _start;
+			var unitsMoved = 0;
+			if (_start != _end)
+			{
+				_start = _end = position;
+				unitsMoved = 1;
+				if (Math.Abs(count) == 1)
+				{
+					OnRangeChanged();
+					return direction;
+				}
+			}
+
+			var remaining = Math.Abs(count) - unitsMoved;
+			var moved = unit == global::Microsoft.UI.Text.TextRangeUnit.Screen
+				? _document.TryGetRangePageTarget(position, direction < 0, remaining, out var target, out var actual)
+				: TryGetWindowTarget(position, direction, out target, out actual);
+			if (moved)
+			{
+				_start = _end = target;
+				unitsMoved += actual;
+			}
+
+			if (unitsMoved != 0)
+			{
+				OnRangeChanged();
+			}
+
+			return direction * unitsMoved;
+		}
+
+		private bool TryGetWindowTarget(int position, int direction, out int target, out int unitsMoved)
+		{
+			target = position;
+			unitsMoved = 0;
+			if (!_document.TryGetVisibleRange(out var visibleStart, out var visibleEnd))
+			{
+				return false;
+			}
+
+			target = direction > 0 ? visibleEnd : visibleStart;
+			if (direction > 0 && target <= position || direction < 0 && target >= position)
+			{
+				target = position;
+				return false;
+			}
+
+			unitsMoved = target == position ? 0 : 1;
+			return unitsMoved != 0;
+		}
+
+		private int MoveLayoutEndpoint(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool moveStart)
+		{
+			var direction = Math.Sign(count);
+			var position = moveStart ? _start : _end;
+			var moved = unit == global::Microsoft.UI.Text.TextRangeUnit.Screen
+				? _document.TryGetRangePageTarget(position, direction < 0, Math.Abs(count), out var target, out var actual)
+				: TryGetWindowTarget(position, direction, out target, out actual);
+			if (!moved)
+			{
+				return 0;
+			}
+
+			if (moveStart)
+			{
+				_start = target;
+				if (_start > _end)
+				{
+					_end = _start;
+				}
+			}
+			else
+			{
+				_end = target;
+				if (_end < _start)
+				{
+					_start = _end;
+				}
+			}
+
+			OnRangeChanged();
+			return direction * actual;
+		}
+
 
 		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
@@ -783,6 +916,11 @@ namespace Microsoft.UI.Text
 			if (count == 0)
 			{
 				return 0;
+			}
+
+			if (unit is global::Microsoft.UI.Text.TextRangeUnit.Screen or global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				return MoveLayoutEndpoint(unit, count, moveStart: true);
 			}
 
 			var boundaries = GetUnitBoundaries(unit);
@@ -829,6 +967,11 @@ namespace Microsoft.UI.Text
 				return 0;
 			}
 
+			if (unit is global::Microsoft.UI.Text.TextRangeUnit.Screen or global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				return MoveLayoutEndpoint(unit, count, moveStart: false);
+			}
+
 			var boundaries = GetUnitBoundaries(unit);
 			if (boundaries is null)
 			{
@@ -857,7 +1000,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				var format = _document.GetFormatOverRange(_start, _end);
+				var format = _document.GetFormatOverRange(_start, _end, _gravity);
 				format.Bind(this);
 				return format;
 			}
@@ -865,7 +1008,7 @@ namespace Microsoft.UI.Text
 			{
 				if (value is UnoTextCharacterFormat format)
 				{
-					_document.SetFormatOverRange(_start, _end, format);
+					_document.SetFormatOverRange(_start, _end, format, _gravity);
 				}
 			}
 		}
@@ -873,7 +1016,7 @@ namespace Microsoft.UI.Text
 		// Applies a bound character format to this range's current extent. Called by
 		// UnoTextCharacterFormat's property setters so `range.CharacterFormat.Bold = On` takes effect.
 		internal void ApplyCharacterFormat(UnoTextCharacterFormat format)
-			=> _document.SetFormatOverRange(_start, _end, format);
+			=> _document.SetFormatOverRange(_start, _end, format, _gravity);
 
 		// --- Paragraph formatting (functional over the document paragraph run model) ---
 
@@ -899,24 +1042,55 @@ namespace Microsoft.UI.Text
 		internal void ApplyParagraphFormat(UnoTextParagraphFormat format)
 			=> _document.SetParagraphFormatOverRange(_start, _end, format);
 
-		// --- Deferred surface (clipboard, geometry, streams, embedded images) ---
+		// --- Rich transfer, gravity, clipboard, geometry, streams, and embedded images ---
 
 		public global::Microsoft.UI.Text.ITextRange FormattedText
 		{
-			get => throw NotImplemented("FormattedText.get");
-			set => throw NotImplemented("FormattedText.set");
+			get => GetClone();
+			set
+			{
+				if (value is null)
+				{
+					throw new ArgumentNullException(nameof(value));
+				}
+
+				if (value is UnoTextRange source)
+				{
+					var fragment = source._document.CaptureFragment(source._start, source._end);
+					var insertedLength = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
+					_end = _start + insertedLength;
+				}
+				else
+				{
+					var insertedLength = _document.ReplaceRange(_start, _end, value.Text ?? string.Empty, this);
+					_end = _start + insertedLength;
+				}
+
+				OnRangeChanged();
+			}
 		}
 
 		public global::Microsoft.UI.Text.RangeGravity Gravity
 		{
-			get => throw NotImplemented("Gravity.get");
-			set => throw NotImplemented("Gravity.set");
+			get => _gravity;
+			set => _gravity = value;
 		}
 
 		public string Link
 		{
-			get => throw NotImplemented("Link.get");
-			set => throw NotImplemented("Link.set");
+			get
+			{
+				var link = _document.GetLink(_start, _end, out var linkStart, out var linkEnd);
+				if (link.Length > 0)
+				{
+					_start = linkStart;
+					_end = linkEnd;
+					OnRangeChanged();
+				}
+
+				return link;
+			}
+			set => _document.SetLink(_start, _end, value);
 		}
 
 		public bool CanPaste(int format) => _document.CanPaste();
@@ -938,6 +1112,11 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
+			if (_document.IsRangeProtected(_start, _end))
+			{
+				throw new UnauthorizedAccessException("The text range contains protected text.");
+			}
+
 			_document.CopyToClipboard(_start, _end);
 			_document.ReplaceRange(_start, _end, string.Empty, this);
 			_end = _start;
@@ -946,11 +1125,19 @@ namespace Microsoft.UI.Text
 
 		public virtual void Paste(int format)
 		{
+			if (_document.IsRangeProtected(_start, _end, UsesForwardCharacterFormatting))
+			{
+				throw new UnauthorizedAccessException("The text range contains protected text.");
+			}
+
 			// The OS clipboard read is async on Uno, so unlike WinUI's synchronous paste this replaces the
 			// range on a later dispatcher turn. A matching in-process rich payload restores formatting; the
 			// 'format' argument (a RichEdit clipboard-format id) is not used to select an OS payload.
-			var operationRange = new UnoTextRange(_document, _start, _end);
-			_document.BeginPastePlainText(operationRange, caret =>
+			var operationRange = new UnoTextRange(_document, _start, _end)
+			{
+				Gravity = _gravity,
+			};
+			_document.BeginPasteFromClipboard(operationRange, caret =>
 			{
 				_start = _end = caret;
 				OnRangeChanged();
@@ -981,6 +1168,13 @@ namespace Microsoft.UI.Text
 				}
 
 				target = lineEnd;
+			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				if (!_document.TryGetVisibleRange(out _, out target))
+				{
+					return 0;
+				}
 			}
 			else
 			{
@@ -1032,6 +1226,13 @@ namespace Microsoft.UI.Text
 				}
 
 				target = lineStart;
+			}
+			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				if (!_document.TryGetVisibleRange(out target, out _))
+				{
+					return 0;
+				}
 			}
 			else
 			{
@@ -1095,6 +1296,17 @@ namespace Microsoft.UI.Text
 				_document.TryGetLineBounds(probe, out _, out var lineEnd, out _, out _);
 				_start = lineStart;
 				_end = Math.Max(lineEnd, lineStart);
+				OnRangeChanged();
+				return (_end - _start) - originalLength;
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				if (!_document.TryGetVisibleRange(out _start, out _end))
+				{
+					return 0;
+				}
+
 				OnRangeChanged();
 				return (_end - _start) - originalLength;
 			}
@@ -1204,6 +1416,13 @@ namespace Microsoft.UI.Text
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
 			{
 				return GetLineRanges();
+			}
+
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
+			{
+				return _document.TryGetVisibleRange(out var visibleStart, out var visibleEnd)
+					? new List<(int start, int end)> { (visibleStart, visibleEnd) }
+					: null;
 			}
 
 			var text = GetStoryText();
@@ -1337,7 +1556,7 @@ namespace Microsoft.UI.Text
 			var y = verticalAlign switch
 			{
 				global::Microsoft.UI.Text.VerticalCharacterAlignment.Top => rect.Y,
-				// TODO Uno: Baseline is approximated as the line bottom (no per-line baseline metric here).
+				global::Microsoft.UI.Text.VerticalCharacterAlignment.Baseline when _document.TryGetIndexBaseline(anchor, options, out var baseline) => baseline,
 				_ => rect.Y + rect.Height,
 			};
 			point = new global::Windows.Foundation.Point(x, y);
@@ -1345,15 +1564,20 @@ namespace Microsoft.UI.Text
 
 		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit)
 		{
-			// TODO Uno: 'hit' (WinUI reports a RichEdit hit-test/clip indicator) is reported as 0. The
-			// rect is exact for degenerate and single-line ranges and the endpoint bounding box for
-			// multi-line ranges.
+			// TODO Uno: 'hit' (WinUI reports a RichEdit hit-test/clip indicator) is reported as 0.
 			hit = 0;
-			_document.TryGetRangeRect(_start, _end, options, out rect);
+			if (options.HasFlag(global::Microsoft.UI.Text.PointOptions.Start))
+			{
+				_document.TryGetRangeRect(_start, _start, options, out rect);
+			}
+			else
+			{
+				_document.TryGetRangeRect(_start, _end, options, out rect);
+			}
 		}
 
 		public void ScrollIntoView(global::Microsoft.UI.Text.PointOptions value)
-			=> _document.TryScrollRangeIntoView(_start, _end);
+			=> _document.TryScrollRangeIntoView(_start, _end, value);
 
 		public void SetPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, bool extend)
 		{
@@ -1364,8 +1588,24 @@ namespace Microsoft.UI.Text
 
 			if (extend)
 			{
-				// Extend the range to the hit position, keeping the current anchor.
-				SetRange(_start, index);
+				if (options.HasFlag(global::Microsoft.UI.Text.PointOptions.Start))
+				{
+					_start = index;
+					if (_start > _end)
+					{
+						_end = _start;
+					}
+				}
+				else
+				{
+					_end = index;
+					if (_end < _start)
+					{
+						_start = _end;
+					}
+				}
+
+				OnRangeChanged();
 			}
 			else
 			{
@@ -1382,10 +1622,66 @@ namespace Microsoft.UI.Text
 			_document.Selection.SetRange(_start, _end);
 		}
 
-		public void GetTextViaStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("GetTextViaStream");
+		public void GetTextViaStream(global::Microsoft.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
+			=> _document.GetRangeTextViaStream(_start, _end, options, value);
 
-		public void SetTextViaStream(global::Microsoft.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("SetTextViaStream");
+		public void SetTextViaStream(global::Microsoft.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
+			=> SetText(options, _document.ReadRangeTextViaStream(options, value));
 
-		public void InsertImage(int width, int height, int ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, string alternateText, global::Windows.Storage.Streams.IRandomAccessStream value) => throw NotImplemented("InsertImage");
+		public void InsertImage(int width, int height, int ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, string alternateText, global::Windows.Storage.Streams.IRandomAccessStream value)
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			if (value.Size > InlineImageState.MaxEncodedBytes)
+			{
+				throw new ArgumentException("The image stream is too large.", nameof(value));
+			}
+
+			if (width < 0 || height < 0 || ascent < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(width), "Image dimensions and ascent cannot be negative.");
+			}
+
+			value.Seek(0);
+			using var buffer = new MemoryStream();
+			var source = value.AsStream();
+			var chunk = new byte[8192];
+			while (true)
+			{
+				var read = source.Read(chunk, 0, chunk.Length);
+				if (read == 0)
+				{
+					break;
+				}
+
+				if (buffer.Length + read > InlineImageState.MaxEncodedBytes)
+				{
+					throw new ArgumentException("The image stream is too large.", nameof(value));
+				}
+				buffer.Write(chunk, 0, read);
+			}
+			var image = new InlineImageState
+			{
+				Data = buffer.ToArray(),
+				Width = width,
+				Height = height,
+				Ascent = ascent,
+				VerticalAlignment = verticalAlign,
+				AlternateText = alternateText ?? string.Empty,
+			};
+			image.Validate();
+			var fragment = new RichTextFragment(
+				"\ufffc",
+				new List<CharacterFormatState>
+				{
+					new()
+					{
+						InlineImage = image,
+					},
+				},
+				new List<ParagraphFormatState>());
+			var insertedLength = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
+			_end = _start + insertedLength;
+			OnRangeChanged();
+		}
 	}
 }

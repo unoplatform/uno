@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class TextConstants
 	{
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.UI.Color AutoColor
 		{
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static int MaxUnitCount
 		{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static int MinUnitCount
 		{
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.UI.Color UndefinedColor
 		{
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static float UndefinedFloatValue
 		{
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.UI.Text.FontStretch UndefinedFontStretch
 		{
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.UI.Text.FontStyle UndefinedFontStyle
 		{
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static int UndefinedInt32Value
 		{

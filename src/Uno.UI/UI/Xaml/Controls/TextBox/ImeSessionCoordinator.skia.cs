@@ -62,18 +62,60 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void WireExtensionEvents(IImeTextBoxExtension extension)
 		{
-			extension.CompositionStarted += static (_, _) => _activeHost?.OnImeCompositionStarted();
-			extension.CompositionUpdated += static (_, e) => _activeHost?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
-			extension.CompositionCompleted += static (_, e) => _activeHost?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
-			extension.CompositionEnded += static (_, _) => _activeHost?.OnImeCompositionEnded();
+			extension.CompositionStarted += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
+			extension.CompositionUpdated += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
+			extension.CompositionCompleted += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
+			extension.CompositionEnded += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
+		}
+
+		private static void InvokeActiveHost(Action<IImeSessionHost> callback)
+		{
+			if (_activeHost is not { } host)
+			{
+				return;
+			}
+
+			try
+			{
+				callback(host);
+			}
+			catch (Exception error)
+			{
+				typeof(ImeSessionCoordinator).LogError()?.Error("A platform IME callback failed.", error);
+			}
 		}
 
 		/// <summary>Activates an IME session for <paramref name="host"/> (called on focus).</summary>
 		internal static void StartSession(IImeSessionHost host)
 		{
 			EnsureInitialized();
+			if (ReferenceEquals(_activeHost, host))
+			{
+				return;
+			}
+
+			if (_activeHost is not null)
+			{
+				try
+				{
+					_extension?.EndImeSession();
+				}
+				catch (Exception error)
+				{
+					typeof(ImeSessionCoordinator).LogError()?.Error("Failed to end the previous IME session.", error);
+				}
+			}
+
 			_activeHost = host;
-			_extension?.StartImeSession(host);
+			try
+			{
+				_extension?.StartImeSession(host);
+			}
+			catch (Exception error)
+			{
+				_activeHost = null;
+				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to start the IME session.", error);
+			}
 		}
 
 		/// <summary>
@@ -89,10 +131,46 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			EnsureInitialized();
-			_extension?.EndImeSession();
-			if (ReferenceEquals(_activeHost, host))
+			try
 			{
-				_activeHost = null;
+				_extension?.EndImeSession();
+			}
+			catch (Exception error)
+			{
+				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to end the IME session.", error);
+			}
+			finally
+			{
+				if (ReferenceEquals(_activeHost, host))
+				{
+					_activeHost = null;
+				}
+			}
+		}
+
+		internal static void RestartSession(IImeSessionHost host)
+		{
+			if (!ReferenceEquals(_activeHost, host))
+			{
+				return;
+			}
+
+			try
+			{
+				_extension?.EndImeSession();
+			}
+			catch (Exception error)
+			{
+				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to restart the IME session while ending it.", error);
+			}
+
+			try
+			{
+				_extension?.StartImeSession(host);
+			}
+			catch (Exception error)
+			{
+				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to restart the IME session while starting it.", error);
 			}
 		}
 
@@ -109,10 +187,10 @@ namespace Microsoft.UI.Xaml.Controls
 			_extension = extension;
 			_initialized = true;
 
-			EventHandler onStarted = (_, _) => _activeHost?.OnImeCompositionStarted();
-			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => _activeHost?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied);
-			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => _activeHost?.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied);
-			EventHandler onEnded = (_, _) => _activeHost?.OnImeCompositionEnded();
+			EventHandler onStarted = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
+			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
+			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
+			EventHandler onEnded = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
 
 			extension.CompositionStarted += onStarted;
 			extension.CompositionUpdated += onUpdated;
