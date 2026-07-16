@@ -40,12 +40,12 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 	static Win32NativeAotWebView()
 	{
 		// WebView2Utilities.Initialize probes only next to Environment.ProcessPath, which is the
-		// dotnet host's directory when launched as `dotnet app.dll`. Resolve through the runtime
-		// first (honors deps.json and AppContext.BaseDirectory), then fall back to the library's
-		// own probing (embedded resource, process directory).
-		if (!NativeLibrary.TryLoad("WebView2Loader.dll", typeof(WebView2.Functions).Assembly, null, out _))
+		// dotnet host's directory when launched as `dotnet app.dll`. In that case, fall back to
+		// resolving through the runtime, which honors deps.json and AppContext.BaseDirectory.
+		if (WebView2Utilities.Initialize(Assembly.GetEntryAssembly(), throwOnError: false).IsError
+			&& !NativeLibrary.TryLoad("WebView2Loader.dll", typeof(WebView2.Functions).Assembly, null, out _))
 		{
-			WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
+			throw new DllNotFoundException("Cannot load WebView2Loader.dll. Make sure it's deployed next to the application or resolvable through its deps.json.");
 		}
 	}
 
