@@ -3,6 +3,7 @@
 using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -14,9 +15,6 @@ namespace Microsoft.UI.Xaml.Controls
 	// geometry match what the control renders. All helpers no-op (return false) when the view is not
 	// laid out.
 	//
-	// TODO Uno: PointOptions screen coordinates are approximated as XamlRoot-root-relative coordinates
-	// (true device/screen coordinates need the window's on-screen placement). Round-trips within a
-	// single PointOptions value are exact; only the absolute screen offset differs from WinUI.
 	partial class RichEditBox
 	{
 		// The caret rect of the single character position <paramref name="index"/>, in the coordinate
@@ -32,7 +30,29 @@ namespace Microsoft.UI.Xaml.Controls
 			var text = GetPlainTextContent();
 			index = Math.Clamp(index, 0, text.Length);
 			var local = displayBlock.ParsedText.GetRectForIndex(index);
-			rect = TransformRectFromDisplaySpace(displayBlock, local, options);
+			return TryTransformRectFromDisplaySpace(displayBlock, local, options, out rect);
+		}
+
+		internal bool TryGetIndexBaseline(int index, PointOptions options, out double baseline)
+		{
+			baseline = 0;
+			if (_textBoxView?.DisplayBlock is not { } displayBlock)
+			{
+				return false;
+			}
+
+			var text = GetPlainTextContent();
+			index = Math.Clamp(index, 0, text.Length);
+			var rect = displayBlock.ParsedText.GetRectForIndex(index);
+			if (!TryTransformPointFromDisplaySpace(
+				displayBlock,
+				new Point(rect.X, displayBlock.ParsedText.GetBaselineForIndex(index)),
+				options,
+				out var point))
+			{
+				return false;
+			}
+			baseline = point.Y;
 			return true;
 		}
 
@@ -54,8 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var local = GetRangeRectInDisplaySpace(displayBlock, start, end);
-			rect = TransformRectFromDisplaySpace(displayBlock, local, options);
-			return true;
+			return TryTransformRectFromDisplaySpace(displayBlock, local, options, out rect);
 		}
 
 		// The character index nearest <paramref name="point"/> (given in the coordinate space
@@ -68,15 +87,21 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var local = TransformPointToDisplaySpace(displayBlock, point, options);
-			index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(local, ignoreEndingNewLine: true, extendedSelection: false));
+			if (!TryTransformPointToDisplaySpace(displayBlock, point, options, out var local))
+			{
+				return false;
+			}
+			index = Math.Clamp(
+				displayBlock.ParsedText.GetIndexAt(local, ignoreEndingNewLine: true, extendedSelection: true),
+				0,
+				GetPlainTextContent().Length);
 			return true;
 		}
 
 		// Scrolls the range [start,end) into view through the hosting ScrollViewer.
-		internal bool TryScrollRangeIntoView(int start, int end)
+		internal bool TryScrollRangeIntoView(int start, int end, PointOptions options)
 		{
-			if (_textBoxView?.DisplayBlock is not { } displayBlock)
+			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not ScrollViewer scrollViewer)
 			{
 				return false;
 			}
@@ -89,12 +114,25 @@ namespace Microsoft.UI.Xaml.Controls
 				(start, end) = (end, start);
 			}
 
-			var local = GetRangeRectInDisplaySpace(displayBlock, start, end);
-			displayBlock.StartBringIntoView(new BringIntoViewOptions
+			var index = options.HasFlag(PointOptions.Start) ? start : end;
+			var caretRect = displayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
+			double? horizontalOffset = null;
+			double? verticalOffset = null;
+			if (!options.HasFlag(PointOptions.NoHorizontalScroll))
 			{
-				TargetRect = local,
-				AnimationDesired = false,
-			});
+				horizontalOffset = Math.Max(
+					Math.Min(scrollViewer.HorizontalOffset, caretRect.Left),
+					Math.Ceiling(caretRect.Right - scrollViewer.ViewportWidth + TextBlock.CaretThickness));
+			}
+
+			if (!options.HasFlag(PointOptions.NoVerticalScroll))
+			{
+				verticalOffset = Math.Max(
+					Math.Min(scrollViewer.VerticalOffset, caretRect.Top),
+					caretRect.Bottom - scrollViewer.ViewportHeight);
+			}
+
+			scrollViewer.ChangeView(horizontalOffset, verticalOffset, null, disableAnimation: true);
 			return true;
 		}
 
@@ -116,46 +154,137 @@ namespace Microsoft.UI.Xaml.Controls
 				return new Rect(lineX, startRect.Y, lineRight - lineX, Math.Max(startRect.Height, endRect.Height));
 			}
 
-			// Multi-line: the bounding box of the two endpoints (a documented approximation of the
-			// exact multi-line selection polygon).
-			var left = Math.Min(startRect.X, endRect.X);
-			var right = Math.Max(startRect.X + startRect.Width, endRect.X + endRect.Width);
-			var top = Math.Min(startRect.Y, endRect.Y);
-			var bottom = Math.Max(startRect.Y + startRect.Height, endRect.Y + endRect.Height);
+			var left = double.PositiveInfinity;
+			var right = double.NegativeInfinity;
+			var top = double.PositiveInfinity;
+			var bottom = double.NegativeInfinity;
+			for (var i = start; i <= end; i++)
+			{
+				var current = parsed.GetRectForIndex(i);
+				left = Math.Min(left, current.X);
+				right = Math.Max(right, current.X + current.Width);
+				top = Math.Min(top, current.Y);
+				bottom = Math.Max(bottom, current.Y + current.Height);
+			}
+
 			return new Rect(left, top, right - left, bottom - top);
 		}
 
-		private Rect TransformRectFromDisplaySpace(TextBlock displayBlock, Rect rect, PointOptions options)
+		private bool TryTransformRectFromDisplaySpace(TextBlock displayBlock, Rect rect, PointOptions options, out Rect transformed)
 		{
-			var target = ResolveCoordinateTarget(options);
 			try
 			{
-				return displayBlock.TransformToVisual(target).TransformBounds(rect);
+				if (options.HasFlag(PointOptions.ClientCoordinates))
+				{
+					transformed = displayBlock.TransformToVisual(this).TransformBounds(rect);
+					return true;
+				}
+
+				var rootRect = displayBlock.TransformToVisual(null).TransformBounds(rect);
+				return TryConvertRootToScreen(rootRect, out transformed);
 			}
-			catch
+			catch (Exception error) when (error is InvalidOperationException or ArgumentException)
 			{
-				return rect;
+				typeof(RichEditBox).LogError()?.Error("Failed to transform RichEditBox range geometry.", error);
+				transformed = default;
+				return false;
 			}
 		}
 
-		private Point TransformPointToDisplaySpace(TextBlock displayBlock, Point point, PointOptions options)
+		private bool TryTransformPointToDisplaySpace(TextBlock displayBlock, Point point, PointOptions options, out Point transformed)
 		{
-			var source = ResolveCoordinateTarget(options);
 			try
 			{
-				return source.TransformToVisual(displayBlock).TransformPoint(point);
+				if (options.HasFlag(PointOptions.ClientCoordinates))
+				{
+					transformed = TransformToVisual(displayBlock).TransformPoint(point);
+					return true;
+				}
+
+				if (!TryConvertScreenToRoot(point, out var rootPoint))
+				{
+					transformed = default;
+					return false;
+				}
+				var root = (XamlRoot?.Content as UIElement) ?? this;
+				transformed = root.TransformToVisual(displayBlock).TransformPoint(rootPoint);
+				return true;
 			}
-			catch
+			catch (Exception error) when (error is InvalidOperationException or ArgumentException)
 			{
-				return point;
+				typeof(RichEditBox).LogError()?.Error("Failed to transform a point into RichEditBox display space.", error);
+				transformed = default;
+				return false;
 			}
 		}
 
-		// The visual whose coordinate space a PointOptions value refers to: the RichEditBox itself for
-		// ClientCoordinates, otherwise the XamlRoot visual root (our approximation of screen space).
-		private UIElement ResolveCoordinateTarget(PointOptions options)
-			=> options.HasFlag(PointOptions.ClientCoordinates)
-				? this
-				: (XamlRoot?.Content as UIElement) ?? this;
+		private bool TryTransformPointFromDisplaySpace(TextBlock displayBlock, Point point, PointOptions options, out Point transformed)
+		{
+			try
+			{
+				if (options.HasFlag(PointOptions.ClientCoordinates))
+				{
+					transformed = displayBlock.TransformToVisual(this).TransformPoint(point);
+					return true;
+				}
+
+				return TryConvertRootToScreen(displayBlock.TransformToVisual(null).TransformPoint(point), out transformed);
+			}
+			catch (Exception error) when (error is InvalidOperationException or ArgumentException)
+			{
+				typeof(RichEditBox).LogError()?.Error("Failed to transform a point from RichEditBox display space.", error);
+				transformed = default;
+				return false;
+			}
+		}
+
+		private bool TryConvertRootToScreen(Rect rect, out Rect screenRect)
+		{
+			var root = XamlRoot;
+			var wrapper = root?.VisualTree.ContentRoot.GetOwnerWindow()?.NativeWrapper;
+			if (wrapper is null
+				|| !wrapper.TryConvertLocalToScreen(new Point(rect.X, rect.Y), out var topLeft)
+				|| !wrapper.TryConvertLocalToScreen(new Point(rect.Right, rect.Bottom), out var bottomRight))
+			{
+				screenRect = default;
+				return false;
+			}
+
+			screenRect = new Rect(
+				Math.Min(topLeft.X, bottomRight.X),
+				Math.Min(topLeft.Y, bottomRight.Y),
+				Math.Abs(bottomRight.X - topLeft.X),
+				Math.Abs(bottomRight.Y - topLeft.Y));
+			return true;
+		}
+
+		private bool TryConvertRootToScreen(Point point, out Point screenPoint)
+		{
+			var wrapper = XamlRoot?.VisualTree.ContentRoot.GetOwnerWindow()?.NativeWrapper;
+			if (wrapper is null || !wrapper.TryConvertLocalToScreen(point, out var converted))
+			{
+				screenPoint = default;
+				return false;
+			}
+
+			screenPoint = new Point(converted.X, converted.Y);
+			return true;
+		}
+
+		private bool TryConvertScreenToRoot(Point point, out Point rootPoint)
+		{
+			var root = XamlRoot;
+			var wrapper = root?.VisualTree.ContentRoot.GetOwnerWindow()?.NativeWrapper;
+			if (wrapper is null
+				|| !wrapper.TryConvertScreenToLocal(
+					new global::Windows.Graphics.PointInt32((int)Math.Round(point.X), (int)Math.Round(point.Y)),
+					out rootPoint))
+			{
+				rootPoint = default;
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

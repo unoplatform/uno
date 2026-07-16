@@ -2,6 +2,8 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
 
@@ -14,8 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 	// async on Uno — this matches TextBox.PasteFromClipboard. All mutations flow through
 	// Document.ReplaceRange so the character-format run model is preserved and undo is recorded.
 	//
-	// TODO Uno: Emit and consume a standard RTF clipboard payload so rich formatting survives outside
-	// the current process.
 	partial class RichEditBox
 	{
 		/// <summary>
@@ -103,6 +103,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+			if (Document.IsRangeProtected(start, end))
+			{
+				return;
+			}
 
 			// Raw copy (does not re-raise CopyingToClipboard — WinUI raises CuttingToClipboard for a cut).
 			CopySelectionToClipboardCore(start, end);
@@ -132,6 +136,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+			if (Document.IsRangeProtected(start, end))
+			{
+				throw new UnauthorizedAccessException("The text range contains protected text.");
+			}
 
 			Document.CopyToClipboard(start, end);
 			Document.ReplaceRange(start, end, string.Empty, selection);
@@ -156,77 +164,94 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
+			var content = Clipboard.GetContent();
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(_selection.start, 0, textLength);
+			var end = Math.Clamp(start + _selection.length, start, textLength);
+			var operationRange = Document.GetRange(start, end);
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
-				var content = Clipboard.GetContent();
-				if (!content.AvailableFormats.Contains(StandardDataFormats.Text))
-				{
-					return;
-				}
-
-				string clipboardText;
-				try
-				{
-					clipboardText = await content.GetTextAsync();
-				}
-				catch (InvalidOperationException)
-				{
-					// The clipboard content may have changed or become unavailable; ignore like TextBox.
-					return;
-				}
-
-				PasteTextInteractive(clipboardText);
+				_ = PasteFromClipboardAsync(content, operationRange);
 			});
 		}
 
-		private void PasteTextInteractive(string? clipboardText)
+		private async Task PasteFromClipboardAsync(DataPackageView content, global::Microsoft.UI.Text.ITextRange operationRange)
 		{
-			if (IsReadOnly || string.IsNullOrEmpty(clipboardText))
+			try
 			{
-				return;
-			}
-
-			// RichEditBox is multiline and normalizes newlines to \r like WinUI.
-			var normalized = clipboardText.Replace("\r\n", "\r").Replace('\n', '\r');
-
-			var text = GetPlainTextContent();
-			var start = Math.Clamp(_selection.start, 0, text.Length);
-			var length = Math.Clamp(_selection.length, 0, text.Length - start);
-
-			// Route pasted text through CharacterCasing, then clamp to MaxLength (accounting for the
-			// selection being replaced) so a paste can't push the content past the limit.
-			normalized = ClampInsertToMaxLength(CoerceCasing(normalized), text.Length, start, start + length);
-			if (normalized.Length == 0 && length == 0)
-			{
-				return;
-			}
-
-			// Insert plus restore-formatting are one undoable action. Rich formatting is only re-applied
-			// when the inserted text matches the copied text exactly, so casing/MaxLength changes above
-			// (which alter the text) naturally fall back to a plain paste.
-			RunWithDeferredSelectionSync(() =>
-			{
-				Document.BeginUndoGroup();
-				Document.BatchDisplayUpdates();
-				try
+				if (!content.AvailableFormats.Contains(StandardDataFormats.Rtf)
+					&& !content.AvailableFormats.Contains(StandardDataFormats.Text))
 				{
-					Document.ReplaceRange(start, start + length, normalized);
-					Document.TryApplyRichClipboard(start, normalized);
+					return;
 				}
-				finally
+
+				global::Microsoft.UI.Text.RichTextFragment? fragment = null;
+				string? clipboardText = null;
+				if (content.AvailableFormats.Contains(StandardDataFormats.Rtf))
 				{
 					try
 					{
-						Document.EndUndoGroup();
+						fragment = global::Microsoft.UI.Text.RichTextRtfCodec.Read(
+							await content.GetRtfAsync(),
+							Document.GetImportCharacterLimit(operationRange.StartPosition, operationRange.EndPosition));
 					}
-					finally
+					catch (Exception error) when (error is InvalidOperationException or InvalidCastException or ArgumentException)
 					{
-						Document.ApplyDisplayUpdates();
 					}
 				}
-			});
 
-			SetInteractiveSelection(start + normalized.Length, 0);
+				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
+				{
+					try
+					{
+						clipboardText = await content.GetTextAsync();
+					}
+					catch (Exception error) when (error is InvalidOperationException or InvalidCastException)
+					{
+					}
+				}
+
+				if (IsReadOnly)
+				{
+					return;
+				}
+
+				var text = GetPlainTextContent();
+				var start = Math.Clamp(operationRange.StartPosition, 0, text.Length);
+				var end = Math.Clamp(operationRange.EndPosition, start, text.Length);
+				if (Document.IsRangeProtected(start, end))
+				{
+					return;
+				}
+
+				var insertedLength = 0;
+				RunWithDeferredSelectionSync(() =>
+				{
+					if (fragment is not null && CharacterCasing == CharacterCasing.Normal)
+					{
+						insertedLength = Document.ReplaceRangeWithFragment(start, end, fragment, sourceRange: null);
+					}
+					else if (!string.IsNullOrEmpty(clipboardText ?? fragment?.Text))
+					{
+						var sourceText = clipboardText ?? fragment!.Text;
+						var normalized = CoerceCasing(sourceText.Replace("\r\n", "\r").Replace('\n', '\r'));
+						insertedLength = Document.ReplaceRange(start, end, normalized);
+					}
+				});
+
+				SetInteractiveSelection(start + insertedLength, 0);
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+				{
+					this.Log().Error("RichEditBox interactive paste failed.", error);
+				}
+			}
 		}
+
 	}
 }

@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Documents;
 internal readonly partial struct UnicodeText : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
-	private const float TabStopWidth = 48;
+	private const float FallbackTabStopWidth = 48;
 	private const byte UBIDI_DEFAULT_LTR = 0xfe;
 	private const byte UBIDI_DEFAULT_RTL = 0xff;
 	private const int UBIDI_LTR = 0;
@@ -61,7 +61,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		void Invalidate();
 	}
 
-	private record struct Line(int start, int end, LinkedListNode<Cluster> clusterStart, LinkedListNode<Cluster> clusterLast, float width, float widthWithoutTrailingSpaces, float lineHeight, float baselineOffset, bool hasEllipsis = false);
+	private record struct Line(int start, int end, LinkedListNode<Cluster> clusterStart, LinkedListNode<Cluster> clusterLast, float width, float widthWithoutTrailingSpaces, float lineHeight, float baselineOffset, TextAlignment? textAlignment = null, bool hasEllipsis = false);
 
 	// Positioned glyph in pixel space (offsets/advance already scaled by IFont.Shape).
 	private record struct Glyph(ushort GlyphId, float XAdvance, float XOffset, float YOffset);
@@ -73,13 +73,16 @@ internal readonly partial struct UnicodeText : IParsedText
 		LinkedListNode<Glyph> glyphLast,
 		FontDetails fontDetails,
 		float width,
+		float characterSpacing,
+		bool hidden,
 		bool containsOnlyWhitespace,
 		bool containsTab,
 		bool rtl,
 		int lineIndex,
-		int indexInLine)
+		int indexInLine,
+		InlineObjectInfo? inlineObject = null)
 	{
-		public static Cluster Create(string _text, int indexStart, int indexEnd, LinkedListNode<Glyph> glyphsStart, LinkedListNode<Glyph> glyphsLast, FontDetails fontDetails)
+		public static Cluster Create(string _text, int indexStart, int indexEnd, LinkedListNode<Glyph> glyphsStart, LinkedListNode<Glyph> glyphsLast, FontDetails fontDetails, float characterSpacing, bool hidden)
 		{
 			var clusterContainsTab = false;
 			var clusterContainsOnlyWhitespace = true;
@@ -92,10 +95,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			float clusterWidth = 0;
 			for (var glyphNode = glyphsStart; glyphNode != glyphsLast.Next; glyphNode = glyphNode.Next)
 			{
-				clusterWidth += glyphNode!.Value.XAdvance;
+				clusterWidth += glyphNode!.Value.XAdvance + (clusterContainsTab ? 0 : characterSpacing);
 			}
 
-			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, clusterWidth, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
+			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, hidden ? 0 : clusterWidth, characterSpacing, hidden, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
 		}
 	}
 
@@ -134,7 +137,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
@@ -153,13 +156,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		bool isSpellCheckEnabled,
 		IFontCacheUpdateListener fontListener,
 		bool includeTrailingWhitespaceInMeasurement,
+		float defaultTabStop,
 		out Size calculatedSize)
 	{
 		CI.Assert(maxLines >= 0);
+		var tabStopWidth = defaultTabStop > 0 ? defaultTabStop : FallbackTabStopWidth;
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)>();
+		_runBreaks = new List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -167,6 +172,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		var allRunsLtr = true;
 		string? singleInlineText = null;
 		var nonEmptyInlines = 0;
+		Dictionary<int, InlineObjectInfo>? inlineObjects = null;
+		List<(int end, TextAlignment alignment)>? paragraphAlignments = null;
 
 		foreach (var inline in inlines)
 		{
@@ -179,6 +186,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			singleInlineText = ++nonEmptyInlines == 1 ? inlineText : null;
 			var inlineStart = stringBuilder.Length;
 			stringBuilder.Append(inlineText);
+			if (inline is Run { InlineObject: { } inlineObject })
+			{
+				(inlineObjects ??= new())[inlineStart] = inlineObject;
+			}
+			if (inline is Run { ParagraphAlignment: { } paragraphAlignment })
+			{
+				(paragraphAlignments ??= new()).Add((inlineStart + inlineText.Length, paragraphAlignment));
+			}
 
 			// NoWrap ASCII text without mandatory breaks never consults intermediate line-break opportunities
 			// (no wrapping decisions, single line) — skip the ICU break-iterator pass and emit the sole
@@ -245,7 +260,15 @@ internal readonly partial struct UnicodeText : IParsedText
 			scriptBreaks.Add(inlineStart + inlineText.Length);
 			var runDirection = (inline as Run)?.FlowDirection ?? flowDirection;
 			allRunsLtr &= runDirection is FlowDirection.LeftToRight;
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, runDirection, inline.TextDecorations));
+			var characterSpacing = (float)inline.FontSize * inline.CharacterSpacing / 1000;
+			_runBreaks.Add((
+				inlineStart + inlineText.Length,
+				inline.Foreground,
+				(inline as Run)?.CharacterBackground,
+				characterSpacing,
+				(inline as Run)?.IsHidden == true,
+				runDirection,
+				inline.TextDecorations));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -353,7 +376,9 @@ internal readonly partial struct UnicodeText : IParsedText
 								shapingRun.start + clusters[index],
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
-								shapingRun.fontDetails));
+								shapingRun.fontDetails,
+								shapingRun.characterSpacing,
+								shapingRun.hidden));
 						}
 						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
 					}
@@ -370,7 +395,9 @@ internal readonly partial struct UnicodeText : IParsedText
 								shapingRun.start + clusters[index],
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
-								shapingRun.fontDetails));
+								shapingRun.fontDetails,
+								shapingRun.characterSpacing,
+								shapingRun.hidden));
 						}
 						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
 					}
@@ -382,7 +409,25 @@ internal readonly partial struct UnicodeText : IParsedText
 					shapingRun.end,
 					clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 					_glyphs.Last!,
-					shapingRun.fontDetails));
+					shapingRun.fontDetails,
+					shapingRun.characterSpacing,
+					shapingRun.hidden));
+			}
+		}
+
+		if (inlineObjects is not null)
+		{
+			for (var node = clusterBreaks.First; node is not null; node = node.Next)
+			{
+				if (node.Value.end == node.Value.start + 1 && inlineObjects.TryGetValue(node.Value.start, out var inlineObject))
+				{
+					node.Value = node.Value with
+					{
+						width = inlineObject.Width,
+						containsOnlyWhitespace = false,
+						inlineObject = inlineObject,
+					};
+				}
 			}
 		}
 
@@ -406,7 +451,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var oldValues = (chunkUnderTestWidth, chunkUnderTestTrailingSpaceWidth, maxHeightFontDetailsInChunkUnderTest, chunkUnderTestContainsOnlyWhitespace);
 
 					var clusterWidth = currentClusterBreak.Value.containsTab
-						? ((int)((lineWidth + chunkUnderTestWidth) / TabStopWidth) + 1) * TabStopWidth - (lineWidth + chunkUnderTestWidth)
+						? ((int)((lineWidth + chunkUnderTestWidth) / tabStopWidth) + 1) * tabStopWidth - (lineWidth + chunkUnderTestWidth)
 						: currentClusterBreak.Value.width;
 
 					chunkUnderTestWidth += clusterWidth;
@@ -506,7 +551,7 @@ internal readonly partial struct UnicodeText : IParsedText
 								{
 									// recalculate the width of the tab
 									chunkUnderTestWidth -= clusterWidth;
-									clusterWidth = ((int)(chunkUnderTestWidth / TabStopWidth) + 1) * TabStopWidth - chunkUnderTestWidth;
+									clusterWidth = ((int)(chunkUnderTestWidth / tabStopWidth) + 1) * tabStopWidth - chunkUnderTestWidth;
 									chunkUnderTestWidth += clusterWidth;
 								}
 							}
@@ -556,6 +601,15 @@ internal readonly partial struct UnicodeText : IParsedText
 					currentClusterBreak = currentClusterBreak.Next;
 				}
 			}
+		}
+
+		if (inlineObjects is not null)
+		{
+			AdjustLinesForInlineObjects(lines);
+		}
+		if (paragraphAlignments is not null)
+		{
+			ApplyParagraphAlignments(lines, paragraphAlignments);
 		}
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
@@ -645,6 +699,8 @@ internal readonly partial struct UnicodeText : IParsedText
 							ellipsisGlyphList.Last!,
 							trimFontDetails,
 							ellipsisWidth,
+							0,
+							false,
 							false,
 							false,
 							_rtl,
@@ -851,13 +907,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		return (possibleTrimPoints, lineBreakOpportunitiesLookupStart);
 	}
 
-	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> runBreaks,
+	private static List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction)> EnumerateShapingRuns(
+		List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
 	{
-		var shapingRuns = new List<(int start, int end, FontDetails fontDetails, FlowDirection direction)>();
+		var shapingRuns = new List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction)>();
 
 		int currentRunBreakIndex = 0;
 		int currentScriptBreakIndex = 0;
@@ -877,7 +933,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (nextBreak > start)
 			{
-				shapingRuns.Add((start, nextBreak, fontBreaks[currentFontBreakIndex].fontDetails, bidiBreaks[currentBidiBreakIndex].direction));
+				shapingRuns.Add((start, nextBreak, fontBreaks[currentFontBreakIndex].fontDetails, nextRunBreak.characterSpacing, nextRunBreak.hidden, bidiBreaks[currentBidiBreakIndex].direction));
 				start = nextBreak;
 			}
 
@@ -982,6 +1038,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
 		List<(float x1, float x2, float top, float thickness, Color color)> textDecorationLines = new();
+		List<(SKImage image, Rect destination)>? inlineObjectImages = null;
 
 		Rect? caretRect = default;
 
@@ -1019,10 +1076,24 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
-			var shouldRenderCluster = !cluster.Value.containsTab
+			var shouldRenderCluster = !cluster.Value.hidden && !cluster.Value.containsTab
 				&& (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace);
 
-			if (shouldRenderCluster)
+			if (!cluster.Value.hidden && cluster.Value.inlineObject is { } inlineObject)
+			{
+				if (inlineObject.Image is { } image)
+				{
+					var imageY = GetInlineObjectTop(inlineObject, line.lineHeight, line.baselineOffset);
+					(inlineObjectImages ??= new()).Add((
+						image,
+						new Rect(
+							unalignedX + alignmentOffset,
+							y + imageY,
+							inlineObject.Width,
+							inlineObject.Height)));
+				}
+			}
+			else if (shouldRenderCluster)
 			{
 				var color = useHighContrastAdjustment
 					? WithOpacity(
@@ -1049,7 +1120,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var glyph = glyphNode.Value;
 					glyphs.Add(glyph.GlyphId);
 					positions.Add(new Vector2(positionAcc.X + glyph.XOffset, positionAcc.Y + glyph.YOffset));
-					positionAcc.X += glyph.XAdvance;
+					positionAcc.X += glyph.XAdvance + cluster.Value.characterSpacing;
 					if (cluster.Value.glyphLast == glyphNode)
 					{
 						break;
@@ -1062,6 +1133,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			var backgroundRect = new Rect(
 				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(y)),
 				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(y + line.lineHeight) + 1));
+			if (!cluster.Value.hidden && !useHighContrastAdjustment && _runBreaks[runBreakIndex].background is { } characterBackground)
+			{
+				session.Session.DrawRect(backgroundRect, WithOpacity(characterBackground, effectiveOpacity));
+			}
+
 			if (useHighContrastAdjustment
 				&& shouldRenderCluster
 				&& highlighter.Value.background is null)
@@ -1084,7 +1160,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				FlushHighContrastBackplate(session.Session, ref pendingHighContrastBackplate, highContrastBackplateColor);
 			}
 
-			if (highlighter.Value.background is { } selectionBackground)
+			if (!cluster.Value.hidden && highlighter.Value.background is { } selectionBackground)
 			{
 				if (useHighContrastAdjustment)
 				{
@@ -1096,7 +1172,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			if (_corrections?[wordBoundariesIndex] is { } correction)
+			if (!cluster.Value.hidden && _corrections?[wordBoundariesIndex] is { } correction)
 			{
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : WordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
@@ -1122,7 +1198,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			if (compositionRange is var (compStart, compLen) && compLen > 0)
+			if (!cluster.Value.hidden && compositionRange is var (compStart, compLen) && compLen > 0)
 			{
 				var compEnd = compStart + compLen;
 				if (cluster.Value.start < compEnd && cluster.Value.end > compStart)
@@ -1246,6 +1322,12 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				GlyphRunRenderer.Draw(drawingSession, font, glyphSpan, positionSpan, 0, paintColor);
 			}
+		}
+
+		_spareInlineObjectPaint.Color = SKColors.White.WithAlpha((byte)Math.Clamp(session.Opacity * byte.MaxValue, 0, byte.MaxValue));
+		foreach (var (image, destination) in inlineObjectImages ?? [])
+		{
+			session.Canvas.DrawImage(image, destination, _spareInlineObjectPaint);
 		}
 
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
@@ -1404,7 +1486,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		if (index == 0)
 		{
 			double alignmentOffset = string.IsNullOrEmpty(_text) ? GetAlignmentOffsetForLine(null) : GetAlignmentOffsetForLine(_lines[0]);
-			return new Rect(alignmentOffset, 0, 0, _defaultFontDetails.LineHeight);
+			return new Rect(alignmentOffset, 0, 0, string.IsNullOrEmpty(_text) ? _defaultFontDetails.LineHeight : _lines[0].lineHeight);
 		}
 
 		if (index == _text.Length)
@@ -1437,6 +1519,25 @@ internal readonly partial struct UnicodeText : IParsedText
 			var unalignedX = indexInLine == 0 ? (_rtl ? line.width : 0) : _xyTable[lineIndex].prefixSummedWidths[indexInLine - 1].sumUntilAfterCluster;
 			return new Rect(alignmentOffset + unalignedX, y, cluster.Value.width, line.lineHeight);
 		}
+	}
+
+	public double GetBaselineForIndex(int index)
+	{
+		index = Math.Clamp(index, 0, _text.Length);
+		if (_text.Length == 0)
+		{
+			return -_defaultFontDetails.FontHandle.Ascent;
+		}
+
+		if (index == _text.Length && _endingNewLineLineHeight is not null)
+		{
+			return _xyTable[^1].prefixSummedHeight - _defaultFontDetails.FontHandle.Ascent;
+		}
+
+		var lineIndex = GetLineAt(index).lineIndex;
+		var line = _lines[lineIndex];
+		var lineTop = lineIndex == 0 ? 0 : _xyTable[lineIndex].prefixSummedHeight - line.lineHeight;
+		return lineTop + line.baselineOffset;
 	}
 
 	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection)
@@ -1665,13 +1766,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		var (lineWidth, lineWidthWithoutTrailingSpaces) = line is null ? (0, 0) : (line.Value.width, line.Value.widthWithoutTrailingSpaces);
 		var totalWidth = (float)_availableSize.Width;
+		var textAlignment = line?.textAlignment ?? _textAlignment;
 
 		float alignmentOffset;
 		// Trailing whitespace at the end of a line is assigned the paragraph embedding level
 		// So the trailing space is always on the left if RTL and always on the right if LTR
 		if (_rtl)
 		{
-			alignmentOffset = _textAlignment switch
+			alignmentOffset = textAlignment switch
 			{
 				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= totalWidth => (totalWidth - lineWidthWithoutTrailingSpaces) / 2,
 				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= totalWidth => totalWidth - lineWidth,
@@ -1681,7 +1783,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			alignmentOffset = _textAlignment switch
+			alignmentOffset = textAlignment switch
 			{
 				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= totalWidth => (totalWidth - lineWidthWithoutTrailingSpaces) / 2,
 				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= totalWidth => totalWidth - lineWidthWithoutTrailingSpaces,
@@ -1765,6 +1867,62 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 	}
+
+	private static void AdjustLinesForInlineObjects(List<Line> lines)
+	{
+		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+		{
+			var line = lines[lineIndex];
+			var minTop = 0f;
+			var maxBottom = line.lineHeight;
+			for (var node = line.clusterStart; ; node = node.Next!)
+			{
+				if (node.Value.inlineObject is { } inlineObject)
+				{
+					var top = GetInlineObjectTop(inlineObject, line.lineHeight, line.baselineOffset);
+					minTop = Math.Min(minTop, top);
+					maxBottom = Math.Max(maxBottom, top + inlineObject.Height);
+				}
+
+				if (node == line.clusterLast)
+				{
+					break;
+				}
+			}
+
+			if (minTop < 0 || maxBottom > line.lineHeight)
+			{
+				lines[lineIndex] = line with
+				{
+					lineHeight = maxBottom - minTop,
+					baselineOffset = line.baselineOffset - minTop,
+				};
+			}
+		}
+	}
+
+	private static void ApplyParagraphAlignments(List<Line> lines, List<(int end, TextAlignment alignment)> paragraphAlignments)
+	{
+		var alignmentIndex = 0;
+		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+		{
+			var line = lines[lineIndex];
+			while (alignmentIndex < paragraphAlignments.Count - 1 && paragraphAlignments[alignmentIndex].end <= line.start)
+			{
+				alignmentIndex++;
+			}
+
+			lines[lineIndex] = line with { textAlignment = paragraphAlignments[alignmentIndex].alignment };
+		}
+	}
+
+	private static float GetInlineObjectTop(InlineObjectInfo inlineObject, float lineHeight, float baselineOffset)
+		=> inlineObject.VerticalAlignment switch
+		{
+			global::Microsoft.UI.Text.VerticalCharacterAlignment.Top => 0,
+			global::Microsoft.UI.Text.VerticalCharacterAlignment.Bottom => lineHeight - inlineObject.Height,
+			_ => baselineOffset - (inlineObject.Ascent > 0 ? inlineObject.Ascent : inlineObject.Height),
+		};
 
 	// This method assumes that the FontDetails with the biggest LineHeight is also the one with the biggest ascent.
 	// If that assumption is wrong, we will need an additional lazy parameter for the latter.
