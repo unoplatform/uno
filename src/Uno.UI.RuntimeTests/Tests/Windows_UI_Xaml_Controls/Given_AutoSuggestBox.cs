@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -393,7 +393,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
-			SUT.ChoseItem("ab");
+
+			// Simulate choosing a suggestion by selecting an item in the suggestion list.
+			// The old pre-port API had ChoseItem("ab") which no longer exists.
+			var suggestionsList = (ListView)SUT.GetTemplateChild("SuggestionsList");
+			suggestionsList.SelectedIndex = 0; // selects "ab"
 
 			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.SuggestionChosen, reason);
@@ -410,6 +414,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var suggestionsList = (ListView)SUT.GetTemplateChild("SuggestionsList");
 
 			var expectations = new List<AutoSuggestionBoxTextChangeReason>();
 			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
@@ -418,9 +423,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				reasons.Add(e.Reason);
 			};
 
+			// Simulate choosing a suggestion by selecting an item in the suggestion list.
+			// The old pre-port API had ChoseItem("ab") which no longer exists.
 			expectations.Add(SuggestionChosen);
 			SUT.Focus(FocusState.Programmatic);
-			SUT.ChoseItem("ab");
+			suggestionsList.SelectedIndex = -1;
+			suggestionsList.SelectedIndex = 0; // selects "ab"
 			await WindowHelper.WaitForIdle();
 
 			expectations.Add(ProgrammaticChange);
@@ -437,7 +445,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			expectations.Add(SuggestionChosen);
-			SUT.ChoseItem("ab");
+			suggestionsList.SelectedIndex = -1;
+			suggestionsList.SelectedIndex = 0; // selects "ab"
 			await WindowHelper.WaitForIdle();
 
 			expectations.Add(UserInput);
@@ -455,7 +464,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			expectations.Add(SuggestionChosen);
-			SUT.ChoseItem("ab");
+			suggestionsList.SelectedIndex = -1;
+			suggestionsList.SelectedIndex = 0; // selects "ab"
 			await WindowHelper.WaitForIdle();
 
 			// remove repeating UserInputs in a sequence as a result of typing individual characters. WinUI has a timer
@@ -471,6 +481,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !__SKIA__
+		[Ignore("KeyboardHelper navigation only works on Skia.")]
+#endif
 		public async Task When_Selecting_Suggest_With_UpDown_Key()
 		{
 			AutoSuggestBox SUT = new AutoSuggestBox();
@@ -487,28 +500,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
 
-			Type type = typeof(AutoSuggestBox);
-			MethodInfo HandleUpDownKeys = type.GetMethod("HandleUpDownKeys", BindingFlags.NonPublic | BindingFlags.Instance);
-			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
 
+			// Type "a" to trigger TextChanged which filters suggestions and opens popup.
 			eventRaised = false;
-			textBox.ProcessTextInput("a");
+			await KeyboardHelper.InputText("a");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
+			await WindowHelper.WaitForIdle();
+
+			// Navigate down through filtered suggestions (a1, a2).
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a2", SUT.Text);
 
+			// Type "b" to get new filtered suggestions (b1, b2).
 			eventRaised = false;
-			textBox.ProcessTextInput("b");
+			await KeyboardHelper.InputText("b");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
+			await WindowHelper.WaitForIdle();
+
+			// Navigate down through new filtered suggestions.
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b2", SUT.Text);
 		}
@@ -1288,6 +1306,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var newPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
+		}
+#endif
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_AutoSuggestBox_CornerRadius_With_Helper()
+		{
+			// This test verifies that AutoSuggestBoxHelper.KeepInteriorCornersSquare works correctly
+			// When the popup opens, interior corners should be squared off
+			var SUT = new AutoSuggestBox
+			{
+				CornerRadius = new CornerRadius(8),
+				Width = 400,
+				ItemsSource = new List<string> { "Item 1", "Item 2", "Item 3" }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			SUT.Text = "Item";
+			SUT.MaxHeight = 32;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.IsSuggestionListOpen);
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			Assert.IsNotNull(textBox, "TextBox template child should exist");
+
+			// When popup is open, interior corners should be squared off
+			// The flyout might open up or down, so we check for either configuration
+			var textBoxCornerRadius = textBox.CornerRadius;
+			var isOpenDown = textBoxCornerRadius.BottomLeft == 0 && textBoxCornerRadius.BottomRight == 0;
+			var isOpenUp = textBoxCornerRadius.TopLeft == 0 && textBoxCornerRadius.TopRight == 0;
+
+			Assert.IsTrue(isOpenDown || isOpenUp,
+				$"TextBox corner radius should have squared interior corners. Actual: TL={textBoxCornerRadius.TopLeft}, TR={textBoxCornerRadius.TopRight}, BL={textBoxCornerRadius.BottomLeft}, BR={textBoxCornerRadius.BottomRight}");
+
+			// Get the popup border and verify its corners are also adjusted
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+			Assert.IsTrue(popups.Count > 0, "Popup should be open");
+
+			var popup = popups.Last();
+			var popupBorder = popup.Child as Border;
+			if (popupBorder != null)
+			{
+				var popupCornerRadius = popupBorder.CornerRadius;
+				// Popup corners opposite to textbox should be squared
+				if (isOpenDown)
+				{
+					Assert.IsTrue(popupCornerRadius.TopLeft == 0 && popupCornerRadius.TopRight == 0,
+						$"Popup border should have squared top corners when opening down. Actual: TL={popupCornerRadius.TopLeft}, TR={popupCornerRadius.TopRight}");
+				}
+				else
+				{
+					Assert.IsTrue(popupCornerRadius.BottomLeft == 0 && popupCornerRadius.BottomRight == 0,
+						$"Popup border should have squared bottom corners when opening up. Actual: BL={popupCornerRadius.BottomLeft}, BR={popupCornerRadius.BottomRight}");
+				}
+			}
 		}
 #endif
 	}
