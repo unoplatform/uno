@@ -45,6 +45,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
 			string? runtimeTargetFramework,
+			string? runtimeIdentifier,
 			CancellationToken ct)
 		{
 			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
@@ -110,8 +111,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			// Restrict a multi-targeted head to the flavor the running application reported: the
 			// workspace loads one project per TargetFrameworks entry when the evaluated TargetFramework
 			// is empty, and the non-running flavors would otherwise block hot reload with their
-			// compilation errors or fail the initial emit (they were never built).
-			var currentSolution = workspace.CurrentSolution.FilterHeadProjectTargetFramework(projectPath, runtimeTargetFramework, reporter);
+			// compilation errors or fail the initial emit (they were never built). Then re-point the
+			// kept flavor's compilation outputs to the assembly the running application was actually
+			// built from (RID-specific paths) — this must happen before the watch session starts, as
+			// EnC captures its baselines from those paths.
+			var currentSolution = workspace.CurrentSolution
+				.FilterHeadProjectTargetFramework(projectPath, runtimeTargetFramework, reporter)
+				.AlignHeadProjectCompilationOutputs(projectPath, runtimeIdentifier, reporter);
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, ct);
 
