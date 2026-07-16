@@ -15,7 +15,6 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Input;
 using static Uno.UI.Xaml.Input.XYFocusTreeWalker;
 
@@ -43,11 +42,12 @@ public partial class Given_XYFocusTreeWalker
 
 		root.Children.Add(candidate);
 
+		// Candidates must be in the live visual tree to count as focusable (WinUI's IsActive() gate).
+		TestServices.WindowHelper.WindowContent = root;
 		try
 		{
-			// The candidate must be part of the live visual tree to be focusable
-			// (CUIElement::IsFocusable requires IsActive()), otherwise the walker skips it.
-			await UITestHelper.Load(root, static x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			var candidateList = FindElements(root, current, null, true, false);
 			Assert.HasCount(1, candidateList);
@@ -72,9 +72,11 @@ public partial class Given_XYFocusTreeWalker
 		root.Children.Add(candidate);
 		root.Children.Add(nonFocusableCandidate);
 
+		TestServices.WindowHelper.WindowContent = root;
 		try
 		{
-			await UITestHelper.Load(root, static x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			var candidateList = FindElements(root, current, null, true, false);
 			Assert.HasCount(1, candidateList);

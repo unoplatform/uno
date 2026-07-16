@@ -13,7 +13,6 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.RuntimeTests.Helpers;
 using static Uno.UI.Xaml.Input.XYFocusBubbling;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
@@ -37,16 +36,14 @@ public class Given_XYFocusBubbling
 		element.SetValue(UIElement.XYFocusDownProperty, elementDown);
 		element.SetValue(UIElement.XYFocusUpProperty, elementUp);
 
-		// The direction overrides must be part of the live visual tree to be valid focus
-		// candidates (CUIElement::IsFocusable requires IsActive()), otherwise they are ignored.
-		var host = new Grid
-		{
-			Children = { element, elementLeft, elementRight, elementUp, elementDown }
-		};
-
+		// GetDirectionOverride only returns an override target that is a valid focus candidate,
+		// which now requires live-tree membership - so the override targets must be loaded.
+		var root = new StackPanel { Children = { element, elementLeft, elementRight, elementUp, elementDown } };
+		TestServices.WindowHelper.WindowContent = root;
 		try
 		{
-			await UITestHelper.Load(host, static x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(elementLeft, GetDirectionOverride(element, null, FocusNavigationDirection.Left));
 			Assert.AreEqual(elementRight, GetDirectionOverride(element, null, FocusNavigationDirection.Right));
@@ -80,16 +77,13 @@ public class Given_XYFocusBubbling
 		parent.SetValue(UIElement.XYFocusRightProperty, directionOverrideOfParent);
 		element.SetValue(UIElement.XYFocusRightProperty, overrideElement);
 
-		// The override targets must be part of the live visual tree to be valid focus
-		// candidates (CUIElement::IsFocusable requires IsActive()), otherwise they are ignored.
-		var host = new Grid
-		{
-			Children = { parent, candidate, directionOverrideOfParent, overrideElement }
-		};
-
+		// The override targets must be live-tree focus candidates to be chosen.
+		var root = new StackPanel { Children = { parent, overrideElement, directionOverrideOfParent } };
+		TestServices.WindowHelper.WindowContent = root;
 		try
 		{
-			await UITestHelper.Load(host, static x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
 			Assert.AreEqual(overrideElement, retrieved);
@@ -112,16 +106,12 @@ public class Given_XYFocusBubbling
 
 		parent.SetValue(UIElement.XYFocusRightProperty, directionOverrideOfParent);
 
-		// The override target must be part of the live visual tree to be a valid focus
-		// candidate (CUIElement::IsFocusable requires IsActive()), otherwise it is ignored.
-		var host = new Grid
-		{
-			Children = { parent, candidate, directionOverrideOfParent }
-		};
-
+		var root = new StackPanel { Children = { parent, directionOverrideOfParent } };
+		TestServices.WindowHelper.WindowContent = root;
 		try
 		{
-			await UITestHelper.Load(host, static x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			var retrieved = TryXYFocusBubble(element, candidate, null, FocusNavigationDirection.Right);
 			Assert.AreEqual(directionOverrideOfParent, retrieved);
