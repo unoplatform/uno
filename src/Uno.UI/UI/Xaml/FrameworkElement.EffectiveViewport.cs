@@ -1,7 +1,7 @@
 ﻿#nullable enable
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __APPLE_UIKIT__) && !UNO_HAS_ENHANCED_LIFECYCLE
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 // so avoid check of the '_isLayouted' flag
 #define CHECK_LAYOUTED

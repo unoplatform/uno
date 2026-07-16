@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+#if !__SKIA__ // TODO: Have consistent handling on Wasm and Skia.
 			if (imageSource is BitmapImage bitmapImage && exception is not null)
 			{
 				bitmapImage.RaiseImageFailed(exception);
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
 
-#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+#if !__SKIA__ // TODO: Have consistent handling on Wasm and Skia.
 			if (imageSource is BitmapImage bitmapImage)
 			{
 				bitmapImage.RaiseImageOpened();

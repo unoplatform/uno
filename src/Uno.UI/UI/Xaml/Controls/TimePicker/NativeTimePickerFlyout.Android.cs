@@ -21,7 +21,7 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 	internal UnoTimePickerDialog GetNativeDialog() => _dialog;
 
 
-	internal protected override void Open()
+	internal override void Open()
 	{
 		if (Time.Ticks == DEFAULT_TIME_TICKS)
 		{

@@ -773,7 +773,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if !__APPLE_UIKIT__ && !__ANDROID__ && !__SKIA__ // This is the default implementation, but it can be customized per platform
+#if !__SKIA__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -1062,7 +1062,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !(__SKIA__ || __WASM__)
+#if !__SKIA__
 		internal Rect GetNativeClippedViewport()
 		{
 			Rect rect;

@@ -196,7 +196,7 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.cs`, `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.skia.cs`, `src/Uno.UI/UI/Xaml/Media/AcrylicBrush/AcrylicBrush.skia.cs`
-- [ ] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
+- [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/Flyout.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/Button.cs`
 - [ ] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
