@@ -275,7 +275,7 @@ partial class Window
 			throw new InvalidOperationException("Cannot activate a closed window.");
 		}
 
-		_windowImplementation.RaiseActivated(new WindowActivatedEventArgs(CoreWindowActivationState.CodeActivated));
+		_windowImplementation.RaiseActivated(new WindowActivatedEventArgs(WindowActivationState.CodeActivated));
 	}
 
 	/// <summary>

@@ -155,7 +155,7 @@ namespace UITests.Windows_UI_Core
 			)
 		{
 #if !WINAPPSDK
-			CoreWindowActivationState = e.WindowActivationState;
+			CoreWindowActivationState = (Windows.UI.Core.CoreWindowActivationState)e.WindowActivationState;
 #endif
 			AddHistory("Window.Activated");
 		}

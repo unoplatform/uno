@@ -2546,6 +2546,9 @@
 		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
 		  <!-- ColorKeyFrameCollection carried a binary-compat 'new'-shadow block (Size/Count/IsReadOnly/indexer) that its zero-shadow siblings Double/ObjectKeyFrameCollection never had; the get-only base DependencyObjectCollection<T> members show through with identical behavior. Accessor methods are paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(Size|Count|IsReadOnly|Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- WindowActivatedEventArgs.WindowActivationState retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed property reads as removed (getter accessor paired in <Methods> below). -->
+		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs::WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
 	  </Properties>
 
 	  <Methods>
@@ -2964,6 +2967,9 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+
+		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
+		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
