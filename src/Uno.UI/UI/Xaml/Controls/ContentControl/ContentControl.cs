@@ -414,14 +414,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
-						provider.Store.DataContextProperty is { } dataContextProperty &&
+					if ((ContentTemplateRoot is DependencyObject provider) &&
+						provider.DataContextPropertyInternal is { } dataContextProperty &&
 						// The DataContext may be set directly on the template root
 						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(dataContextProperty))
 					)
 					{
 						_localContentDataContextOverride = true;
-						provider.Store.SetValue(dataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+						provider.SetValue(dataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
 					}
 				}
 			}
@@ -434,11 +434,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void ResetContentDataContextOverride()
 		{
 			if (_localContentDataContextOverride &&
-				ContentTemplateRoot is IDependencyObjectStoreProvider provider &&
-				provider.Store.DataContextProperty is { } dataContextProperty)
+				ContentTemplateRoot is DependencyObject provider &&
+				provider.DataContextPropertyInternal is { } dataContextProperty)
 			{
 				_localContentDataContextOverride = false;
-				provider.Store.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 

@@ -358,7 +358,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				// However, now that Set/GetTemplatedParent has side effect, unless specially overridden.
 
 				sub1WR = new WeakReference(sub1);
-				sub1Store = new WeakReference(((IDependencyObjectStoreProvider)sub1).Store);
+				sub1Store = new WeakReference(((DependencyObject)sub1));
 
 				SUT.SubObject = null;
 			}

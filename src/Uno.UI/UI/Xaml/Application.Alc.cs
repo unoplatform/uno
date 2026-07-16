@@ -380,7 +380,7 @@ partial class Application
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
-		// it as their InheritanceContext parent (DependencyObjectStore._associatedParent); nothing
+		// it as their InheritanceContext parent (DependencyObject._associatedParent); nothing
 		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);

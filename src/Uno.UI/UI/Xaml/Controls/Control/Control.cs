@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
 				baseValue :
-				((IDependencyObjectStoreProvider)this).Store.ReadInheritedValueOrDefaultValue(IsEnabledProperty);
+				((DependencyObject)this).ReadInheritedValueOrDefaultValue(IsEnabledProperty);
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// otherwise use the more local value
-			var store = ((IDependencyObjectStoreProvider)this).Store;
+			var store = ((DependencyObject)this);
 
 			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
 			if (localValue == DependencyProperty.UnsetValue)
@@ -542,9 +542,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CleanupView(View view)
 		{
-			if (view is IDependencyObjectStoreProvider provider)
+			if (view is DependencyObject provider)
 			{
-				provider.Store.Parent = null;
+				provider.Parent = null;
 			}
 		}
 

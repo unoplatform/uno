@@ -1314,7 +1314,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var inline in _inlines)
 				{
-					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}

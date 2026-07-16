@@ -16,7 +16,7 @@ internal static class TemplatedParentScope
 	/// <param name="do"></param>
 	/// <param name="reapplyTemplateBindings">Should be true, if not called from ctor.</param>
 	/// <param name="store"></param>
-	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false, DependencyObjectStore? store = null)
+	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false, DependencyObject? store = null)
 	{
 		// note: `store` instance is used within DOStore.ctor to avoid stack overflow.
 
@@ -27,18 +27,18 @@ internal static class TemplatedParentScope
 		}
 	}
 
-	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true, DependencyObjectStore? store = null)
+	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true, DependencyObject? store = null)
 	{
-		if (@do is IDependencyObjectStoreProvider provider)
+		if (@do is DependencyObject provider)
 		{
-			(store ?? provider.Store).SetTemplatedParent2(tp);
+			(store ?? provider).SetTemplatedParent2(tp);
 
 			// note: This can be safely removed, once moving away from legacy impl.
 			// In the new impl, the templated-parent would be immediately available
 			// before any binding is applied, so there is no need to force update.
 			if (reapplyTemplateBindings)
 			{
-				(store ?? provider.Store).ApplyTemplateBindings();
+				(store ?? provider).ApplyTemplateBindings();
 			}
 		}
 	}

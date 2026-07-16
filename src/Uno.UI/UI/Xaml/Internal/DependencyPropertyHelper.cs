@@ -176,7 +176,7 @@ internal static class DependencyPropertyHelper
 			return (valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle);
 		}
 
-		if (obj is IDependencyObjectStoreProvider { Store: { } store })
+		if (obj is DependencyObject store)
 		{
 			var details = store.GetPropertyDetails(dependencyProperty);
 

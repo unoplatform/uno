@@ -514,7 +514,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(setup.LazyControl, "LazyControl should be resolved by FindName('LazyControl')");
 			// Note: We don't .WaitForIdle() because that will let ResourceBinding kick in, if present.
 
-			var dos = (setup.LazyControl as IDependencyObjectStoreProvider)?.Store!;
+			var dos = (setup.LazyControl as DependencyObject)!;
 			// Note: Just to be clear, the real end goal wasn't testing presence of ResourceBinding.
 			var bindings = dos.GetResourceBindingsForProperty(ContentControl.ContentProperty).ToArray();
 			Assert.IsEmpty(bindings, "There should be no ResourceBinding on LazyControl.Content if it resolved statically at runtime.");

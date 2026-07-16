@@ -5,7 +5,7 @@ using Uno.Collections;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class DependencyObjectStore : IDisposable
+public partial class DependencyObject
 {
 	private readonly struct AncestorsDictionary
 	{
