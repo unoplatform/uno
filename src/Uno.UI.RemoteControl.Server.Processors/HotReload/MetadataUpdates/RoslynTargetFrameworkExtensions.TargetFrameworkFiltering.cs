@@ -136,10 +136,22 @@ public static partial class RoslynTargetFrameworkExtensions
 			// the TargetFramework during evaluation. Nothing to filter, but still trace what
 			// was loaded against what the application reported: a workspace pinned to the
 			// wrong flavor is otherwise invisible in the logs.
-			var singleFlavor = headFlavors[0].TryGetTargetFramework(out var tfm) ? tfm : $"<unresolved: {headFlavors[0].Name}>";
-			reporter.Output(
-				$"Hot-reload workspace loaded '{headProjectPath}' for the single target framework '{singleFlavor}' " +
-				$"(application's '{(string.IsNullOrWhiteSpace(runtimeTargetFramework) ? "<not reported>" : runtimeTargetFramework)}'); nothing to filter.");
+			var resolved = headFlavors[0].TryGetTargetFramework(out var tfm);
+			var singleFlavor = resolved ? tfm! : $"<unresolved: {headFlavors[0].Name}>";
+			if (resolved && !string.IsNullOrWhiteSpace(runtimeTargetFramework) && !RuntimeTargetFrameworkMatches(runtimeTargetFramework, singleFlavor))
+			{
+				reporter.Warn(
+					$"The hot-reload workspace loaded '{headProjectPath}' for the single target framework '{singleFlavor}', " +
+					$"which does not match the application's '{runtimeTargetFramework}'. Hot reload updates will most likely " +
+					"not apply to the running application.");
+			}
+			else
+			{
+				reporter.Output(
+					$"Hot-reload workspace loaded '{headProjectPath}' for the single target framework '{singleFlavor}' " +
+					$"(application's '{(string.IsNullOrWhiteSpace(runtimeTargetFramework) ? "<not reported>" : runtimeTargetFramework)}'); nothing to filter.");
+			}
+
 			return solution;
 		}
 
