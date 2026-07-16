@@ -165,8 +165,10 @@ internal class CliManager
 
 			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: null, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 
-			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
-			return ExitCode;
+			// Passthrough commands (list/cleanup) print output the user asked for → surface it at
+			// Information (verbatim); everything else relays host output at Debug for diagnostics.
+			var stdLevel = requiresHostOutputPassthrough ? LogLevel.Information : LogLevel.Debug;
+			return await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, stdLevel);
 		}
 		catch (Exception ex)
 		{

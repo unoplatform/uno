@@ -111,7 +111,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 					config.MSBuildProperties,
 					HotReloadInfoHelper.GetInfoFilePath(assembly),
 					_serverMetadataUpdatesEnabled,
-					hrDebug);
+					hrDebug,
+					GetRuntimeTargetFramework(assembly));
 
 				await _rcClient.SendMessage(message);
 
@@ -139,6 +140,59 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 				this.Log().LogError("Unable to configure HR server as ProjectConfigurationAttribute is missing.");
 			}
 		}
+	}
+
+	/// <summary>
+	/// Composes the target framework the application is running on, from data available at
+	/// runtime only: the platform is compile-time knowledge of this (per-flavor) client
+	/// assembly (except for the skia flavor, which serves several runtimes and completes the
+	/// picture with a runtime check), the framework version comes from the application assembly's
+	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute"/> (falling back to the
+	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
+	/// stays correct regardless of how the IDE orchestrated the build.
+	/// </summary>
+	private static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
+	{
+		Version? frameworkVersion = null;
+		try
+		{
+			if (appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
+					is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } frameworkName }, ..]
+				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
+			{
+				frameworkVersion = parsed.Version;
+			}
+		}
+		catch (Exception)
+		{
+			// Malformed attribute — fall back to the runtime version below.
+		}
+
+		frameworkVersion ??= Environment.Version;
+
+		var platform =
+#if __ANDROID__ || ANDROID
+			"android";
+#elif __TVOS__ || TVOS
+			"tvos";
+#elif __MACCATALYST__ || MACCATALYST
+			"maccatalyst";
+#elif __IOS__ || IOS
+			"ios";
+#elif __WASM__
+			// The (legacy) native-rendering wasm flavor of this assembly only serves browser heads.
+			"browserwasm";
+#else
+			// The skia flavor of this assembly is compiled for the plain `netX.0` TFM and serves
+			// every skia-rendering head that resolves the `skia` uno-runtime folder — desktop AND
+			// browser (`netX.0-browserwasm` with the skia renderer, the modern default). The
+			// browser case is only distinguishable at runtime. For desktop, the flavor still
+			// cannot tell `netX.0-desktop` from a plain `netX.0` head, so it reports the `skia`
+			// pseudo-platform which the server treats as matching either spelling.
+			OperatingSystem.IsBrowser() ? "browserwasm" : "skia";
+#endif
+
+		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
 	}
 
 	private void ConfigureHotReloadMode()
