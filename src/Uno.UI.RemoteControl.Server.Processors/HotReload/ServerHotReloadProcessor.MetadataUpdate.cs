@@ -177,6 +177,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				configureServer.MetadataUpdateCapabilities,
 				properties,
 				runtimeTargetFramework,
+				runtimeIdentifier,
 				ct);
 
 			return new HotReloadWorkspace(workspace, watch, solution, [Trim(outputPath), Trim(intermediateOutputPath)]);
