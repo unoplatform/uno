@@ -11,9 +11,8 @@ namespace Microsoft.UI.Text
 	// values) when it is read over a range whose paragraphs disagree. Applying a format only writes
 	// back the properties that are defined.
 	//
-	// TODO Uno: The whole surface round-trips through the paragraph run model (get/set/clone/undo)
-	// but nothing is rendered yet — the shared DisplayBlock is a single TextBlock and cannot show
-	// per-paragraph alignment/indents/spacing/lists. Visual rendering is a documented gap.
+	// The whole surface round-trips through the paragraph run model (get/set/clone/undo). Alignment is
+	// rendered per paragraph; indents, spacing, and lists remain visual-layout gaps.
 	internal sealed class UnoTextParagraphFormat : global::Microsoft.UI.Text.ITextParagraphFormat
 	{
 		// When bound, each setter applies immediately through the bound callback: for a range-bound
@@ -28,7 +27,17 @@ namespace Microsoft.UI.Text
 
 		internal void BindApply(Action<UnoTextParagraphFormat> apply) => _apply = apply;
 
-		private void ApplyIfBound() => _apply?.Invoke(this);
+		private void ApplyIfBound(Action<UnoTextParagraphFormat> define)
+		{
+			if (_apply is { } apply)
+			{
+				var delta = new UnoTextParagraphFormat();
+				define(delta);
+				apply(delta);
+			}
+		}
+
+		private void ApplyAllIfBound() => _apply?.Invoke(this);
 
 		// Enum-typed properties use their Undefined member as the "not defined" marker; FormatEffect
 		// properties use FormatEffect.Undefined; numeric properties carry an explicit "defined" flag.
@@ -64,6 +73,9 @@ namespace Microsoft.UI.Text
 		internal global::Microsoft.UI.Text.ParagraphStyle StyleValue = global::Microsoft.UI.Text.ParagraphStyle.Undefined;
 		internal bool TabsDefined;
 		internal List<ParagraphTab> TabsValue = new();
+		internal ParagraphTabMutation TabMutation;
+		internal ParagraphTab TabMutationValue;
+		internal float TabMutationPosition;
 
 		public global::Microsoft.UI.Text.ParagraphAlignment Alignment
 		{
@@ -71,12 +83,12 @@ namespace Microsoft.UI.Text
 			set
 			{
 				AlignmentValue = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.AlignmentValue = value);
 			}
 		}
 
 		// FirstLineIndent and LeftIndent are read-only on the interface; they are written via SetIndents.
-		public float FirstLineIndent => FirstLineIndentDefined ? FirstLineIndentValue : 0f;
+		public float FirstLineIndent => FirstLineIndentDefined ? FirstLineIndentValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 
 		public global::Microsoft.UI.Text.FormatEffect KeepTogether
 		{
@@ -84,7 +96,7 @@ namespace Microsoft.UI.Text
 			set
 			{
 				KeepTogetherEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.KeepTogetherEffect = value);
 			}
 		}
 
@@ -94,14 +106,14 @@ namespace Microsoft.UI.Text
 			set
 			{
 				KeepWithNextEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.KeepWithNextEffect = value);
 			}
 		}
 
-		public float LeftIndent => LeftIndentDefined ? LeftIndentValue : 0f;
+		public float LeftIndent => LeftIndentDefined ? LeftIndentValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 
 		// LineSpacing and LineSpacingRule are read-only on the interface; they are written via SetLineSpacing.
-		public float LineSpacing => LineSpacingDefined ? LineSpacingValue : 0f;
+		public float LineSpacing => LineSpacingDefined ? LineSpacingValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 
 		public global::Microsoft.UI.Text.LineSpacingRule LineSpacingRule => LineSpacingRuleValue;
 
@@ -111,29 +123,37 @@ namespace Microsoft.UI.Text
 			set
 			{
 				ListAlignmentValue = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.ListAlignmentValue = value);
 			}
 		}
 
 		public int ListLevelIndex
 		{
-			get => ListLevelIndexDefined ? ListLevelIndexValue : 0;
+			get => ListLevelIndexDefined ? ListLevelIndexValue : global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
 			set
 			{
 				ListLevelIndexValue = value;
-				ListLevelIndexDefined = true;
-				ApplyIfBound();
+				ListLevelIndexDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
+				ApplyIfBound(delta =>
+				{
+					delta.ListLevelIndexValue = value;
+					delta.ListLevelIndexDefined = ListLevelIndexDefined;
+				});
 			}
 		}
 
 		public int ListStart
 		{
-			get => ListStartDefined ? ListStartValue : 0;
+			get => ListStartDefined ? ListStartValue : global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
 			set
 			{
 				ListStartValue = value;
-				ListStartDefined = true;
-				ApplyIfBound();
+				ListStartDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
+				ApplyIfBound(delta =>
+				{
+					delta.ListStartValue = value;
+					delta.ListStartDefined = ListStartDefined;
+				});
 			}
 		}
 
@@ -143,18 +163,22 @@ namespace Microsoft.UI.Text
 			set
 			{
 				ListStyleValue = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.ListStyleValue = value);
 			}
 		}
 
 		public float ListTab
 		{
-			get => ListTabDefined ? ListTabValue : 0f;
+			get => ListTabDefined ? ListTabValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
 				ListTabValue = value;
-				ListTabDefined = true;
-				ApplyIfBound();
+				ListTabDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				ApplyIfBound(delta =>
+				{
+					delta.ListTabValue = value;
+					delta.ListTabDefined = ListTabDefined;
+				});
 			}
 		}
 
@@ -164,7 +188,7 @@ namespace Microsoft.UI.Text
 			set
 			{
 				ListTypeValue = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.ListTypeValue = value);
 			}
 		}
 
@@ -174,7 +198,7 @@ namespace Microsoft.UI.Text
 			set
 			{
 				NoLineNumberEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.NoLineNumberEffect = value);
 			}
 		}
 
@@ -184,18 +208,22 @@ namespace Microsoft.UI.Text
 			set
 			{
 				PageBreakBeforeEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.PageBreakBeforeEffect = value);
 			}
 		}
 
 		public float RightIndent
 		{
-			get => RightIndentDefined ? RightIndentValue : 0f;
+			get => RightIndentDefined ? RightIndentValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
 				RightIndentValue = value;
-				RightIndentDefined = true;
-				ApplyIfBound();
+				RightIndentDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				ApplyIfBound(delta =>
+				{
+					delta.RightIndentValue = value;
+					delta.RightIndentDefined = RightIndentDefined;
+				});
 			}
 		}
 
@@ -205,29 +233,37 @@ namespace Microsoft.UI.Text
 			set
 			{
 				RightToLeftEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.RightToLeftEffect = value);
 			}
 		}
 
 		public float SpaceAfter
 		{
-			get => SpaceAfterDefined ? SpaceAfterValue : 0f;
+			get => SpaceAfterDefined ? SpaceAfterValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
 				SpaceAfterValue = value;
-				SpaceAfterDefined = true;
-				ApplyIfBound();
+				SpaceAfterDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				ApplyIfBound(delta =>
+				{
+					delta.SpaceAfterValue = value;
+					delta.SpaceAfterDefined = SpaceAfterDefined;
+				});
 			}
 		}
 
 		public float SpaceBefore
 		{
-			get => SpaceBeforeDefined ? SpaceBeforeValue : 0f;
+			get => SpaceBeforeDefined ? SpaceBeforeValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
 				SpaceBeforeValue = value;
-				SpaceBeforeDefined = true;
-				ApplyIfBound();
+				SpaceBeforeDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				ApplyIfBound(delta =>
+				{
+					delta.SpaceBeforeValue = value;
+					delta.SpaceBeforeDefined = SpaceBeforeDefined;
+				});
 			}
 		}
 
@@ -237,7 +273,7 @@ namespace Microsoft.UI.Text
 			set
 			{
 				StyleValue = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.StyleValue = value);
 			}
 		}
 
@@ -249,30 +285,53 @@ namespace Microsoft.UI.Text
 			set
 			{
 				WidowControlEffect = value;
-				ApplyIfBound();
+				ApplyIfBound(delta => delta.WidowControlEffect = value);
 			}
 		}
 
 		public void AddTab(float position, global::Microsoft.UI.Text.TabAlignment align, global::Microsoft.UI.Text.TabLeader leader)
 		{
+			ParagraphFormatState.ValidateTab(new ParagraphTab(position, align, leader));
+			if (TabsValue.Count >= ParagraphFormatState.MaxTabs && !TabsValue.Exists(tab => tab.Position.Equals(position)))
+			{
+				throw new ArgumentException("The paragraph contains too many tab stops.", nameof(position));
+			}
+
+			TabsValue.RemoveAll(tab => tab.Position.Equals(position));
 			TabsValue.Add(new ParagraphTab(position, align, leader));
 			TabsValue.Sort(static (a, b) => a.Position.CompareTo(b.Position));
 			TabsDefined = true;
-			ApplyIfBound();
+			ApplyIfBound(delta =>
+			{
+				delta.TabMutation = ParagraphTabMutation.Add;
+				delta.TabMutationValue = new ParagraphTab(position, align, leader);
+			});
 		}
 
 		public void ClearAllTabs()
 		{
 			TabsValue.Clear();
 			TabsDefined = true;
-			ApplyIfBound();
+			ApplyIfBound(delta =>
+			{
+				delta.TabMutation = ParagraphTabMutation.Clear;
+			});
 		}
 
 		public void DeleteTab(float position)
 		{
+			if (!float.IsFinite(position) || position < 0)
+			{
+				throw new ArgumentException("The paragraph tab position is invalid.", nameof(position));
+			}
+
 			TabsValue.RemoveAll(t => t.Position.Equals(position));
 			TabsDefined = true;
-			ApplyIfBound();
+			ApplyIfBound(delta =>
+			{
+				delta.TabMutation = ParagraphTabMutation.Delete;
+				delta.TabMutationPosition = position;
+			});
 		}
 
 		public void GetTab(int index, out float position, out global::Microsoft.UI.Text.TabAlignment align, out global::Microsoft.UI.Text.TabLeader leader)
@@ -305,7 +364,7 @@ namespace Microsoft.UI.Text
 			if (format is UnoTextParagraphFormat other)
 			{
 				CopyFrom(other);
-				ApplyIfBound();
+				ApplyAllIfBound();
 			}
 		}
 
@@ -347,20 +406,33 @@ namespace Microsoft.UI.Text
 		public void SetIndents(float start, float left, float right)
 		{
 			FirstLineIndentValue = start;
-			FirstLineIndentDefined = true;
+			FirstLineIndentDefined = start != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			LeftIndentValue = left;
-			LeftIndentDefined = true;
+			LeftIndentDefined = left != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			RightIndentValue = right;
-			RightIndentDefined = true;
-			ApplyIfBound();
+			RightIndentDefined = right != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+			ApplyIfBound(delta =>
+			{
+				delta.FirstLineIndentValue = start;
+				delta.FirstLineIndentDefined = start != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				delta.LeftIndentValue = left;
+				delta.LeftIndentDefined = left != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+				delta.RightIndentValue = right;
+				delta.RightIndentDefined = right != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+			});
 		}
 
 		public void SetLineSpacing(global::Microsoft.UI.Text.LineSpacingRule rule, float spacing)
 		{
 			LineSpacingRuleValue = rule;
 			LineSpacingValue = spacing;
-			LineSpacingDefined = true;
-			ApplyIfBound();
+			LineSpacingDefined = spacing != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
+			ApplyIfBound(delta =>
+			{
+				delta.LineSpacingRuleValue = rule;
+				delta.LineSpacingValue = spacing;
+				delta.LineSpacingDefined = LineSpacingDefined;
+			});
 		}
 
 		private void CopyFrom(UnoTextParagraphFormat other)
@@ -438,6 +510,14 @@ namespace Microsoft.UI.Text
 
 		/// <summary>Writes this format's defined properties onto a concrete paragraph state.</summary>
 		internal void ApplyTo(ParagraphFormatState state)
+		{
+			ApplyScalarsTo(state);
+			ApplyTabsTo(state);
+		}
+
+		internal bool UpdatesTabs => TabMutation != ParagraphTabMutation.None || TabsDefined;
+
+		internal void ApplyScalarsTo(ParagraphFormatState state)
 		{
 			if (AlignmentValue != global::Microsoft.UI.Text.ParagraphAlignment.Undefined)
 			{
@@ -544,10 +624,39 @@ namespace Microsoft.UI.Text
 				state.Style = StyleValue;
 			}
 
-			if (TabsDefined)
+		}
+
+		internal void ApplyTabsTo(ParagraphFormatState state)
+		{
+			switch (TabMutation)
 			{
-				state.Tabs = new List<ParagraphTab>(TabsValue);
+				case ParagraphTabMutation.Add:
+					var addedTabs = new List<ParagraphTab>(state.Tabs);
+					addedTabs.RemoveAll(tab => tab.Position.Equals(TabMutationValue.Position));
+					addedTabs.Add(TabMutationValue);
+					addedTabs.Sort(static (left, right) => left.Position.CompareTo(right.Position));
+					state.SetTabs(addedTabs);
+					break;
+				case ParagraphTabMutation.Delete:
+					var remainingTabs = new List<ParagraphTab>(state.Tabs);
+					remainingTabs.RemoveAll(tab => tab.Position.Equals(TabMutationPosition));
+					state.SetTabs(remainingTabs);
+					break;
+				case ParagraphTabMutation.Clear:
+					state.SetTabs(Array.Empty<ParagraphTab>());
+					break;
+				case ParagraphTabMutation.None when TabsDefined:
+					state.SetTabs(TabsValue);
+					break;
 			}
+		}
+
+		internal enum ParagraphTabMutation
+		{
+			None,
+			Add,
+			Delete,
+			Clear,
 		}
 
 		private static global::Microsoft.UI.Text.FormatEffect Effect(bool value)
@@ -555,7 +664,7 @@ namespace Microsoft.UI.Text
 
 		// Resolves a tri-state FormatEffect against the current paragraph boolean: On/Off set the value
 		// directly, Toggle flips it (WinUI's tomToggle), Undefined leaves it unchanged. Applied per
-		// paragraph (via ApplyParagraphFormatOverChars), so a Toggle flips each paragraph independently.
+		// paragraph (via ApplyParagraphFormatOverParagraphs), so a Toggle flips each paragraph independently.
 		private static bool ResolveEffect(global::Microsoft.UI.Text.FormatEffect effect, bool current)
 			=> effect switch
 			{

@@ -11,11 +11,12 @@ namespace Microsoft.UI.Text
 	//
 	// The Word chunk model follows Uno.UI's ParsedText.GetWordAt while treating Unicode text elements as
 	// indivisible. A "word" is a run of letters/digits (or a run of other non-space, non-break text
-	// elements) plus its trailing spaces, while \r, \n, \t and \r\n are each their own chunk. Paragraph
-	// chunks split on \r, \n and \r\n, and each paragraph includes its trailing break.
+	// elements) plus its trailing spaces, while \r, \n, \t and \r\n are each their own chunk. Sentence
+	// chunks end at ., ? or ! followed by ASCII whitespace/end-of-story, and include trailing whitespace.
+	// Paragraph chunks split on \r, \n and \r\n, and each paragraph includes its trailing break.
 	//
 	// TODO Uno: Line/Screen/Window units are geometry-based and are handled by the control against the
-	// shared DisplayBlock layout, not here. Sentence/Section units are not yet supported.
+	// shared DisplayBlock layout, not here. Section units are not yet supported.
 	internal static class TextUnitNavigation
 	{
 		internal static int GetTextElementStart(string text, int position)
@@ -188,12 +189,48 @@ namespace Microsoft.UI.Text
 			return chunks;
 		}
 
+		internal static List<(int start, int length)> GetSentenceChunks(string text)
+		{
+			var chunks = new List<(int start, int length)>();
+			var start = 0;
+			var i = 0;
+			while (i < text.Length)
+			{
+				var isTerminator = text[i] is '.' or '?' or '!';
+				var followedByBoundary = i + 1 == text.Length || IsSentenceWhitespace(text[i + 1]);
+				i++;
+				if (!isTerminator || !followedByBoundary)
+				{
+					continue;
+				}
+
+				while (i < text.Length && IsSentenceWhitespace(text[i]))
+				{
+					i++;
+				}
+
+				chunks.Add((start, i - start));
+				start = i;
+			}
+
+			if (start < text.Length)
+			{
+				chunks.Add((start, text.Length - start));
+			}
+
+			return chunks;
+		}
+
+		private static bool IsSentenceWhitespace(char value)
+			=> value == '\u2029' || value <= '\x7f' && char.IsWhiteSpace(value);
+
 		// Returns the text chunks for a unit, or null when the unit is not text-navigable here
 		// (Character/Story are handled directly by the caller; geometry units by the control).
 		internal static List<(int start, int length)>? GetChunks(string text, global::Microsoft.UI.Text.TextRangeUnit unit)
 			=> unit switch
 			{
 				global::Microsoft.UI.Text.TextRangeUnit.Word => GetWordChunks(text),
+				global::Microsoft.UI.Text.TextRangeUnit.Sentence => GetSentenceChunks(text),
 				global::Microsoft.UI.Text.TextRangeUnit.Paragraph => GetParagraphChunks(text),
 				_ => null,
 			};

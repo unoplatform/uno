@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
@@ -11,6 +12,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -165,6 +167,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 			var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
 			var rtl = _textBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft;
+
+			if (args.Key == VirtualKey.Enter && TryNavigateLinkAtCaret())
+			{
+				args.Handled = true;
+				return;
+			}
 
 			// Text commands: always return from this switch, never break.
 			switch (args.Key)
@@ -366,7 +374,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!string.Equals(text, oldText, StringComparison.Ordinal))
 			{
-				ApplyTextDiff(oldText, text);
+				if (!ApplyTextDiff(oldText, text))
+				{
+					return;
+				}
 			}
 
 			SetInteractiveSelection(selectionStart, selectionLength);
@@ -382,6 +393,59 @@ namespace Microsoft.UI.Xaml.Controls
 			=> DeviceTargetHelper.UsesAppleKeyboardLayout
 				? args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu)
 				: ctrl;
+
+		private bool TryNavigateLinkAtCaret()
+		{
+			var caret = _selection.selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
+			return TryNavigateLinkAt(caret);
+		}
+
+		private bool TryNavigateLinkAt(int position)
+		{
+			var range = Document.GetRange(position, position);
+			var link = range.Link;
+			if (!TryGetLinkUri(link, out var uri))
+			{
+				return false;
+			}
+
+			_ = LaunchLinkAsync(uri);
+			return true;
+		}
+
+		private static async Task LaunchLinkAsync(Uri uri)
+		{
+			try
+			{
+				if (!await global::Windows.System.Launcher.LaunchUriAsync(uri))
+				{
+					typeof(RichEditBox).LogWarn()?.Warn("No handler accepted a RichEditBox hyperlink.");
+				}
+			}
+			catch (Exception error)
+			{
+				typeof(RichEditBox).LogError()?.Error("Failed to launch a RichEditBox hyperlink.", error);
+			}
+		}
+
+		private static bool TryGetLinkUri(string link, out Uri uri)
+		{
+			uri = null!;
+			if (string.IsNullOrEmpty(link))
+			{
+				return false;
+			}
+
+			var start = link[0] == '\ufddf' ? 1 : 0;
+			if (link.Length - start >= 2
+				&& Uri.TryCreate(link.Substring(start + 1, link.Length - start - 2), UriKind.Absolute, out var parsed))
+			{
+				uri = parsed;
+				return true;
+			}
+
+			return false;
+		}
 
 		private static void SnapActiveSelectionToTextElementStart(string text, bool extend, ref int selectionStart, ref int selectionLength)
 		{
@@ -463,7 +527,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <paramref name="newText"/> through the document's ReplaceRange so the character-format run
 		/// model outside the edit is preserved and the change is recorded on the undo history.
 		/// </summary>
-		private void ApplyTextDiff(string oldText, string newText)
+		private bool ApplyTextDiff(string oldText, string newText)
 		{
 			var max = Math.Min(oldText.Length, newText.Length);
 
@@ -483,7 +547,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldEnd = oldText.Length - suffix;
 			var insert = newText.Substring(prefix, newText.Length - suffix - prefix);
 
-			RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, oldEnd, insert));
+			try
+			{
+				RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, oldEnd, insert));
+				return true;
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return false;
+			}
 		}
 
 		private void RunWithDeferredSelectionSync(Action action)

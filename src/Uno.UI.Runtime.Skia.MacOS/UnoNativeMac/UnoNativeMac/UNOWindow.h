@@ -71,6 +71,8 @@ void uno_window_move(NSWindow *window, double x, double y);
 bool uno_window_resize(NSWindow *window, double width, double height);
 
 void uno_window_get_position(NSWindow *window, double *x, double *y);
+void uno_window_convert_local_to_screen(NSWindow *window, double x, double y, double *screenX, double *screenY);
+void uno_window_convert_screen_to_local(NSWindow *window, double screenX, double screenY, double *x, double *y);
 char* uno_window_get_title(NSWindow *window);
 void uno_window_set_title(NSWindow *window, const char* title);
 

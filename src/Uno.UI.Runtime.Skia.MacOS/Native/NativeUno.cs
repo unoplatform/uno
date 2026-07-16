@@ -276,6 +276,12 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_get_position(nint window, out double x, out double y);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_convert_local_to_screen(nint window, double x, double y, out double screenX, out double screenY);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_convert_screen_to_local(nint window, double screenX, double screenY, out double x, out double y);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_window_get_title(nint window);
 

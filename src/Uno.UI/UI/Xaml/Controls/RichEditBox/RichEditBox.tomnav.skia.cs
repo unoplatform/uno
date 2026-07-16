@@ -44,24 +44,13 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
-		// The number of visual lines in the document, or 0 when the view is not laid out.
-		internal int GetLineCountForTom()
-		{
-			if (_textBoxView?.DisplayBlock is not { } displayBlock)
-			{
-				return 0;
-			}
-
-			var text = GetPlainTextContent();
-			return displayBlock.ParsedText.GetLineAt(text.Length).lineIndex + 1;
-		}
-
 		// The caret index reached by moving <paramref name="count"/> visual lines up or down from
 		// <paramref name="position"/>, preserving the sticky horizontal caret offset. Mirrors the
 		// interactive Up/Down arrow logic in TextViewEditor.GetUpDownResult.
-		internal bool TryGetVerticalTarget(int position, bool up, int count, out int target)
+		internal bool TryGetVerticalTarget(int position, bool up, int count, out int target, out int unitsMoved)
 		{
 			target = position;
+			unitsMoved = 0;
 
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
@@ -77,14 +66,19 @@ namespace Microsoft.UI.Xaml.Controls
 			newLineIndex = Math.Clamp(newLineIndex, 0, lineCount - 1);
 			if (newLineIndex == line.lineIndex)
 			{
-				// Already at the first/last line: WinUI moves the caret to the story start/end.
 				target = up ? 0 : text.Length;
-				return target != position;
+				unitsMoved = target == position ? 0 : 1;
+				return unitsMoved != 0;
 			}
+			unitsMoved = Math.Abs(newLineIndex - line.lineIndex);
 
-			var rect = displayBlock.ParsedText.GetRectForIndex(position);
 			var x = _caretXOffset;
-			var y = (newLineIndex + 0.5) * rect.Height;
+			if (!TryGetLineStart(displayBlock.ParsedText, text.Length, newLineIndex, out var newLineStart))
+			{
+				return false;
+			}
+			var targetLineRect = displayBlock.ParsedText.GetRectForIndex(newLineStart);
+			var y = targetLineRect.Y + targetLineRect.Height / 2;
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
 			var newLine = displayBlock.ParsedText.GetLineAt(index);
 			if (text.Length > index - 1
@@ -98,6 +92,108 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			target = index;
+			return true;
+		}
+
+		private static bool TryGetLineStart(Documents.IParsedText parsedText, int textLength, int targetLineIndex, out int lineStart)
+		{
+			lineStart = 0;
+			var position = 0;
+			while (position <= textLength)
+			{
+				var line = parsedText.GetLineAt(position);
+				if (line.lineIndex == targetLineIndex)
+				{
+					lineStart = line.start;
+					return true;
+				}
+
+				var next = line.start + Math.Max(1, line.length);
+				if (next <= position || next > textLength)
+				{
+					break;
+				}
+				position = next;
+			}
+
+			return false;
+		}
+
+		internal bool TryGetPageTarget(int position, bool up, int count, out int target, out int unitsMoved)
+			=> TryGetPageTarget(position, up, count, _caretXOffset, out target, out unitsMoved);
+
+		internal bool TryGetRangePageTarget(int position, bool up, int count, out int target, out int unitsMoved)
+		{
+			if (_textBoxView?.DisplayBlock is not { } displayBlock)
+			{
+				target = position;
+				unitsMoved = 0;
+				return false;
+			}
+
+			var x = displayBlock.ParsedText.GetRectForIndex(Math.Clamp(position, 0, GetPlainTextContent().Length)).X;
+			return TryGetPageTarget(position, up, count, x, out target, out unitsMoved);
+		}
+
+		private bool TryGetPageTarget(int position, bool up, int count, double x, out int target, out int unitsMoved)
+		{
+			target = position;
+			unitsMoved = 0;
+			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not ScrollViewer scrollViewer)
+			{
+				return false;
+			}
+
+			var text = GetPlainTextContent();
+			target = Math.Clamp(position, 0, text.Length);
+			var viewportHeight = double.IsFinite(scrollViewer.ViewportHeight) && scrollViewer.ViewportHeight > 0
+				? scrollViewer.ViewportHeight
+				: scrollViewer.ActualHeight;
+			for (var i = 0; i < count; i++)
+			{
+				var rect = displayBlock.ParsedText.GetRectForIndex(target);
+				var pageHeight = Math.Max(rect.Height, viewportHeight);
+				var y = rect.Y + (up ? -pageHeight : pageHeight);
+				var next = Math.Max(0, displayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
+				if (next == target)
+				{
+					next = up ? 0 : text.Length;
+				}
+
+				if (next == target)
+				{
+					break;
+				}
+
+				target = next;
+				unitsMoved++;
+			}
+
+			return unitsMoved != 0;
+		}
+
+		internal bool TryGetVisibleRange(out int start, out int end)
+		{
+			start = 0;
+			end = 0;
+			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not ScrollViewer scrollViewer)
+			{
+				return false;
+			}
+
+			var left = scrollViewer.HorizontalOffset;
+			var top = scrollViewer.VerticalOffset;
+			var viewportWidth = double.IsFinite(scrollViewer.ViewportWidth) && scrollViewer.ViewportWidth > 0
+				? scrollViewer.ViewportWidth
+				: scrollViewer.ActualWidth;
+			var viewportHeight = double.IsFinite(scrollViewer.ViewportHeight) && scrollViewer.ViewportHeight > 0
+				? scrollViewer.ViewportHeight
+				: scrollViewer.ActualHeight;
+			var right = left + Math.Max(0, viewportWidth);
+			var bottom = top + Math.Max(0, viewportHeight);
+			start = Math.Max(0, displayBlock.ParsedText.GetIndexAt(new Point(left, top), true, false));
+			end = Math.Max(start, displayBlock.ParsedText.GetIndexAt(new Point(right, bottom), true, true));
+			end = Math.Min(end, GetPlainTextContent().Length);
 			return true;
 		}
 	}
