@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionLinearGradientBrush
 	{
-		private protected override bool TryBuildShader(Rect bounds, out IShader? shader)
+		private protected override bool TryBuildShader(Rect bounds, float opacity, out IShader? shader)
 		{
 			var start = StartPoint;
 			var end = EndPoint;
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition
 			var localMatrix = CreateTransformMatrix(bounds);
 
 			shader = DrawingBackend.Current.CreateLinearGradientShader(
-				start, end, GetNeutralColors(), ColorPositions!, NeutralTileMode, localMatrix);
+				start, end, GetNeutralColors(opacity), ColorPositions!, NeutralTileMode, localMatrix);
 			return true;
 		}
 

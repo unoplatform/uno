@@ -130,9 +130,14 @@ namespace Microsoft.UI.Composition
 
 			session.Save();
 			session.Concat(new Matrix4x4(matrix));
-			// Opaque paint colour: DrawImage modulates the image alpha by the paint colour's alpha, so a
-			// transparent (default) colour would erase the image. RGB is ignored for image draws.
-			session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, antialias: true, colorFilter: colorFilter);
+			if (colorFilter is null)
+			{
+				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, antialias: true);
+			}
+			else
+			{
+				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
+			}
 			session.Restore();
 			return true;
 		}

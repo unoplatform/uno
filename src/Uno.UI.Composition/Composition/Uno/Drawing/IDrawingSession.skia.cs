@@ -38,8 +38,14 @@ internal interface IDrawingSession
 
 	void RestoreToCount(int count);
 
-	/// <summary>Begins an offscreen layer, optionally bounded and with a compositing paint applied on restore.</summary>
-	void SaveLayer(Rect? bounds = null, bool antialias = false, float opacity = 1f, IColorFilter? colorFilter = null, BlendMode blendMode = BlendMode.SrcOver);
+	/// <summary>Begins a plain offscreen layer.</summary>
+	void SaveLayer(bool antialias = false);
+
+	/// <summary>Begins an offscreen layer whose content is transformed by <paramref name="colorFilter"/> on restore.</summary>
+	void SaveLayer(IColorFilter colorFilter, bool antialias = false);
+
+	/// <summary>Begins an offscreen layer composited back with <paramref name="blendMode"/> on restore.</summary>
+	void SaveLayer(BlendMode blendMode, bool antialias = false);
 
 	/// <summary>
 	/// Begins an offscreen layer whose content is transformed by <paramref name="filter"/> when the matching
@@ -55,11 +61,17 @@ internal interface IDrawingSession
 
 	void Clear(Color color);
 
-	/// <summary>Fills <paramref name="rect"/> with a solid <paramref name="color"/> or, if given, a <paramref name="shader"/>.</summary>
-	void DrawRect(in Rect rect, Color color, bool antialias = false, float opacity = 1f, IShader? shader = null, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver);
+	/// <summary>Fills <paramref name="rect"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
+	void DrawRect(in Rect rect, Color color, bool antialias = false);
 
-	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> or, if given, a <paramref name="shader"/>.</summary>
-	void DrawPath(IGeometry geometry, Color color, bool antialias = false, float opacity = 1f, IShader? shader = null, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver);
+	/// <summary>Fills <paramref name="rect"/> with <paramref name="shader"/> (which carries its own alpha).</summary>
+	void DrawRect(in Rect rect, IShader shader, bool antialias = false);
+
+	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
+	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
+
+	/// <summary>Fills <paramref name="geometry"/> through a <paramref name="maskFilter"/> (e.g. a blurred drop shadow).</summary>
+	void DrawPath(IGeometry geometry, Color color, IMaskFilter maskFilter, BlendMode blendMode, bool antialias = false);
 
 	/// <summary>Strokes the outline of <paramref name="geometry"/>.</summary>
 	void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias = false);
@@ -67,14 +79,17 @@ internal interface IDrawingSession
 	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false);
 
 	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>) in the current coordinate space.</summary>
-	void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias = false, float opacity = 1f, IColorFilter? colorFilter = null, BlendMode blendMode = BlendMode.SrcOver);
+	void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias = false);
+
+	/// <summary>Draws <paramref name="image"/> with a <paramref name="colorFilter"/> applied (e.g. opacity fade or tint).</summary>
+	void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false);
 
 	/// <summary>
 	/// Draws <paramref name="image"/> stretched into <paramref name="destination"/> as a nine-slice: the
 	/// <paramref name="centerSlice"/> rectangle (in image pixels) defines the fixed corners / stretchable
 	/// edges and center. When <paramref name="centerHollow"/> is true the center slice is not drawn.
 	/// </summary>
-	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false, IColorFilter? colorFilter = null);
+	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false);
 
 	/// <summary>
 	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:

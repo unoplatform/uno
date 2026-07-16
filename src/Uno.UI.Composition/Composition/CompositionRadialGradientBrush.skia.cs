@@ -9,7 +9,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionRadialGradientBrush : CompositionGradientBrush
 	{
-		private protected override bool TryBuildShader(Rect bounds, out IShader? shader)
+		private protected override bool TryBuildShader(Rect bounds, float opacity, out IShader? shader)
 		{
 			var center = EllipseCenter;
 			var gradientOrigin = GradientOriginOffset;
@@ -45,11 +45,11 @@ namespace Microsoft.UI.Composition
 				if (EllipseCenter == GradientOriginOffset)
 				{
 					shader = backend.CreateRadialGradientShader(
-						center, gradientRadius, GetNeutralColors(), positions, tileMode, totalMatrix);
+						center, gradientRadius, GetNeutralColors(opacity), positions, tileMode, totalMatrix);
 				}
 				else
 				{
-					var colors = GetNeutralColors();
+					var colors = GetNeutralColors(opacity);
 					var reversedColors = new global::Windows.UI.Color[colors.Length];
 					for (var i = 0; i < reversedColors.Length; i++)
 					{
@@ -69,21 +69,21 @@ namespace Microsoft.UI.Composition
 					var conical = backend.CreateTwoPointConicalGradientShader(
 						center, gradientRadius, origin, 0,
 						reversedColors, reversedPositions, tileMode, totalMatrix);
-					shader = backend.ComposeShaders(backend.CreateColorShader(GetLastColorOrTransparentNeutral()), conical);
+					shader = backend.ComposeShaders(backend.CreateColorShader(GetLastColorOrTransparentNeutral(opacity)), conical);
 				}
 			}
 			else
 			{
 				// Radius 0: match the last gradient color everywhere (a color shader, modulated by opacity).
-				shader = backend.CreateColorShader(GetLastColorOrTransparentNeutral());
+				shader = backend.CreateColorShader(GetLastColorOrTransparentNeutral(opacity));
 			}
 
 			return true;
 		}
 
-		private global::Windows.UI.Color GetLastColorOrTransparentNeutral()
+		private global::Windows.UI.Color GetLastColorOrTransparentNeutral(float opacity)
 		{
-			var colors = GetNeutralColors();
+			var colors = GetNeutralColors(opacity);
 			return colors.Length > 0 ? colors[colors.Length - 1] : global::Windows.UI.Colors.Transparent;
 		}
 

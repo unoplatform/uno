@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 			session.ClipRect(bounds, antialias: true);
 			session.Clear(global::Windows.UI.Colors.Transparent);
 			Source.TryPaint(session, opacity, bounds);
-			session.SaveLayer(antialias: true, blendMode: BlendMode.DstIn);
+			session.SaveLayer(BlendMode.DstIn, antialias: true);
 			Mask.TryPaint(session, opacity, bounds);
 			session.Restore();
 			session.Restore();

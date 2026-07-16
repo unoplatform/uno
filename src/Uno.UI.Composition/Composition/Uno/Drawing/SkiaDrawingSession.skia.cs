@@ -109,23 +109,23 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 
 	public void RestoreToCount(int count) => _canvas.RestoreToCount(count);
 
-	public void SaveLayer(Rect? bounds, bool antialias, float opacity, IColorFilter? colorFilter, BlendMode blendMode)
+	public void SaveLayer(bool antialias)
 	{
-		if (antialias || opacity < 1f || colorFilter is not null || blendMode != BlendMode.SrcOver)
+		if (antialias)
 		{
-			var paint = _sparePaint ??= new SKPaint();
-			paint.Reset();
-			paint.Color = SKColors.White.WithAlpha((byte)(0xFF * opacity));
-			paint.IsAntialias = antialias;
-			paint.BlendMode = ToSKBlendMode(blendMode);
-			paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;
-			_canvas.SaveLayer(paint);
+			_canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, BlendMode.SrcOver));
 		}
 		else
 		{
 			_canvas.SaveLayer();
 		}
 	}
+
+	public void SaveLayer(IColorFilter colorFilter, bool antialias)
+		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter, BlendMode.SrcOver));
+
+	public void SaveLayer(BlendMode blendMode, bool antialias)
+		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, blendMode));
 
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), antialias);
@@ -138,27 +138,36 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 
 	public void Clear(Color color) => _canvas.Clear(color.ToSKColor());
 
-	public void DrawRect(in Rect rect, Color color, bool antialias, float opacity, IShader? shader, IMaskFilter? maskFilter, BlendMode blendMode)
-		=> _canvas.DrawRect(rect.ToSKRect(), BuildFillPaint(color, antialias, opacity, shader, maskFilter, blendMode));
+	public void DrawRect(in Rect rect, Color color, bool antialias)
+		=> _canvas.DrawRect(rect.ToSKRect(), FillPaint(color, antialias));
 
-	public void DrawPath(IGeometry geometry, Color color, bool antialias, float opacity, IShader? shader, IMaskFilter? maskFilter, BlendMode blendMode)
-		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, BuildFillPaint(color, antialias, opacity, shader, maskFilter, blendMode));
+	public void DrawRect(in Rect rect, IShader shader, bool antialias)
+		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader, antialias));
+
+	public void DrawPath(IGeometry geometry, Color color, bool antialias)
+		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, FillPaint(color, antialias));
+
+	public void DrawPath(IGeometry geometry, Color color, IMaskFilter maskFilter, BlendMode blendMode, bool antialias)
+		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, FillPaint(color, antialias, maskFilter, blendMode));
 
 	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias)
-		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, BuildStrokePaint(color, strokeWidth, antialias));
+		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, StrokePaint(color, strokeWidth, antialias));
 
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
-		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, BuildStrokePaint(color, strokeWidth, antialias));
+		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
 
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias, float opacity, IColorFilter? colorFilter, BlendMode blendMode)
-		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), BuildImagePaint(antialias, opacity, colorFilter, blendMode));
+	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias)
+		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, colorFilter: null));
 
-	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias, IColorFilter? colorFilter)
+	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
+		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, colorFilter));
+
+	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
 	{
 		var skImage = ((SkiaImage)image).Image;
 		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);
 		var dst = destination.ToSKRect();
-		var skPaint = BuildImagePaint(antialias, 1f, colorFilter, BlendMode.SrcOver);
+		var skPaint = ImagePaint(antialias, colorFilter: null);
 		if (centerHollow)
 		{
 			_canvas.Save();
@@ -172,23 +181,39 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		}
 	}
 
-	private static SKPaint BuildFillPaint(Color color, bool antialias, float opacity, IShader? shader, IMaskFilter? maskFilter, BlendMode blendMode)
+	private static SKPaint Spare()
 	{
 		var paint = _sparePaint ??= new SKPaint();
 		paint.Reset();
+		return paint;
+	}
+
+	private static SKPaint FillPaint(Color color, bool antialias, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver)
+	{
+		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
-		paint.Color = color.ToSKColor(opacity);
+		paint.Color = color.ToSKColor();
 		paint.IsAntialias = antialias;
 		paint.BlendMode = ToSKBlendMode(blendMode);
-		paint.Shader = (shader as SkiaShader)?.Shader;
 		paint.MaskFilter = (maskFilter as SkiaMaskFilter)?.MaskFilter;
 		return paint;
 	}
 
-	private static SKPaint BuildStrokePaint(Color color, float strokeWidth, bool antialias)
+	private static SKPaint ShaderPaint(IShader shader, bool antialias)
 	{
-		var paint = _sparePaint ??= new SKPaint();
-		paint.Reset();
+		var paint = Spare();
+		paint.Style = SKPaintStyle.Fill;
+		// The shader is the fill source and already carries its own alpha; keep the paint opaque so it isn't
+		// further modulated (RGB is ignored under a shader).
+		paint.Color = SKColors.White;
+		paint.IsAntialias = antialias;
+		paint.Shader = ((SkiaShader)shader).Shader;
+		return paint;
+	}
+
+	private static SKPaint StrokePaint(Color color, float strokeWidth, bool antialias)
+	{
+		var paint = Spare();
 		paint.Style = SKPaintStyle.Stroke;
 		paint.Color = color.ToSKColor();
 		paint.StrokeWidth = strokeWidth;
@@ -196,12 +221,19 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		return paint;
 	}
 
-	private static SKPaint BuildImagePaint(bool antialias, float opacity, IColorFilter? colorFilter, BlendMode blendMode)
+	private static SKPaint ImagePaint(bool antialias, IColorFilter? colorFilter)
 	{
-		var paint = _sparePaint ??= new SKPaint();
-		paint.Reset();
-		// The image is the source; the paint's alpha modulates it (RGB is ignored).
-		paint.Color = SKColors.White.WithAlpha((byte)(0xFF * opacity));
+		var paint = Spare();
+		// The image is the source; keep the paint opaque (RGB ignored, alpha would modulate the image).
+		paint.Color = SKColors.White;
+		paint.IsAntialias = antialias;
+		paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;
+		return paint;
+	}
+
+	private static SKPaint LayerPaint(bool antialias, IColorFilter? colorFilter, BlendMode blendMode)
+	{
+		var paint = Spare();
 		paint.IsAntialias = antialias;
 		paint.BlendMode = ToSKBlendMode(blendMode);
 		paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;

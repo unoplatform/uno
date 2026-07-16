@@ -11,7 +11,8 @@ namespace Microsoft.UI.Composition
 	{
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
-			session.DrawRect(bounds, Color, antialias: true, opacity: opacity);
+			var color = opacity >= 1f ? Color : Color.FromArgb((byte)(Color.A * opacity), Color.R, Color.G, Color.B);
+			session.DrawRect(bounds, color, antialias: true);
 			return true;
 		}
 

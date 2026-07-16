@@ -701,13 +701,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (pathYScale.Equals(1f))
 			{
-				session.DrawPath(path, color, antialias: true, maskFilter: maskFilter, blendMode: blendMode);
+				session.DrawPath(path, color, maskFilter, blendMode, antialias: true);
 			}
 			else
 			{
 				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
 				// position; the canvas scale only affects the mask blur's per-axis sigma.
-				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), color, antialias: true, maskFilter: maskFilter, blendMode: blendMode);
+				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), color, maskFilter, blendMode, antialias: true);
 			}
 		}
 	}

@@ -24,31 +24,32 @@ namespace Microsoft.UI.Composition
 				UpdateColorStops(ColorStops);
 			}
 
-			if (!TryBuildShader(bounds, out var shader) || shader is null)
+			if (!TryBuildShader(bounds, opacity, out var shader) || shader is null)
 			{
 				// This gradient kind can't build a neutral shader; nothing is painted.
 				return false;
 			}
 
-			session.DrawRect(bounds, global::Windows.UI.Colors.Black, antialias: true, opacity: opacity, shader: shader);
+			session.DrawRect(bounds, shader, antialias: true);
 			return true;
 		}
 
-		/// <summary>Builds this gradient's shader through the backend factory. Default returns false (not migrated).</summary>
-		private protected virtual bool TryBuildShader(Rect bounds, out IShader? shader)
+		/// <summary>Builds this gradient's shader (with <paramref name="opacity"/> baked into the stop alphas) through the backend factory. Default returns false (not migrated).</summary>
+		private protected virtual bool TryBuildShader(Rect bounds, float opacity, out IShader? shader)
 		{
 			shader = null;
 			return false;
 		}
 
-		/// <summary>The gradient stop colors as backend-neutral colors, in stop order.</summary>
-		private protected Color[] GetNeutralColors()
+		/// <summary>The gradient stop colors as backend-neutral colors, in stop order, with <paramref name="opacity"/> folded into their alpha.</summary>
+		private protected Color[] GetNeutralColors(float opacity)
 		{
 			var stops = ColorStops;
 			var colors = new Color[stops.Count];
 			for (var i = 0; i < stops.Count; i++)
 			{
-				colors[i] = stops[i].Color;
+				var c = stops[i].Color;
+				colors[i] = opacity >= 1f ? c : Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
 			}
 			return colors;
 		}

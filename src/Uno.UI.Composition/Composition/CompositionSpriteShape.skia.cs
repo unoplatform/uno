@@ -86,7 +86,9 @@ namespace Microsoft.UI.Composition
 					session.Session.ClipPath(fillGeometry, antialias: true);
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						session.Session.DrawRect(fillGeometry.Bounds, colorFromTransition, opacity: session.Opacity);
+						var opacity = session.Opacity;
+						var color = opacity >= 1f ? colorFromTransition : global::Windows.UI.Color.FromArgb((byte)(colorFromTransition.A * opacity), colorFromTransition.R, colorFromTransition.G, colorFromTransition.B);
+						session.Session.DrawRect(fillGeometry.Bounds, color);
 					}
 					else
 					{
