@@ -221,41 +221,120 @@ namespace Microsoft.UI.Text
 		}
 
 		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
-			=> MoveVertical(up: true, count, extend);
+			=> MoveVertical(unit, up: true, count, extend);
 
 		public int MoveDown(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
-			=> MoveVertical(up: false, count, extend);
+			=> MoveVertical(unit, up: false, count, extend);
 
 		// Vertical caret movement over the shared layout, preserving the sticky horizontal offset.
-		// TODO Uno: honor Window/Screen page units and report the exact number of lines moved.
-		private int MoveVertical(bool up, int count, bool extend)
+		private int MoveVertical(global::Microsoft.UI.Text.TextRangeUnit unit, bool up, int count, bool extend)
 		{
 			if (count <= 0)
 			{
 				return 0;
 			}
 
-			// The caret sits at the range end; move it up/down from there.
-			if (!_document.TryGetVerticalTarget(_end, up, count, out var target) || target == _end)
+			var unitsMoved = 0;
+			var current = IsStartActive ? _start : _end;
+			if (!extend && _start != _end)
 			{
-				return 0;
+				current = up ? _start : _end;
+				SetActivePosition(current, extend: false);
+				unitsMoved = 1;
+				count--;
+				if (count == 0)
+				{
+					OnRangeChanged();
+					return unitsMoved;
+				}
 			}
 
-			if (extend)
+			var target = current;
+			var moved = false;
+			var movedAfterCollapse = 0;
+			switch (unit)
 			{
-				_end = target;
-				if (_end < _start)
+				case global::Microsoft.UI.Text.TextRangeUnit.Screen:
+					moved = _document.TryGetPageTarget(current, up, count, out target, out movedAfterCollapse);
+					break;
+				case global::Microsoft.UI.Text.TextRangeUnit.Window:
+					moved = _document.TryGetVisibleRange(out var windowStart, out var windowEnd);
+					target = up ? windowStart : windowEnd;
+					moved &= up ? target < current : target > current;
+					movedAfterCollapse = moved ? 1 : 0;
+					break;
+				case global::Microsoft.UI.Text.TextRangeUnit.Paragraph:
+					moved = TryGetParagraphTarget(current, up, count, out target, out movedAfterCollapse);
+					break;
+				case global::Microsoft.UI.Text.TextRangeUnit.Line:
+					moved = _document.TryGetVerticalTarget(current, up, count, out target, out movedAfterCollapse);
+					break;
+				default:
+					return 0;
+			}
+			if (!moved || target == current)
+			{
+				if (unitsMoved != 0)
 				{
-					(_start, _end) = (_end, _start);
+					OnRangeChanged();
 				}
+
+				return unitsMoved;
+			}
+
+			SetActivePosition(target, extend);
+			OnRangeChanged();
+			return unitsMoved + movedAfterCollapse;
+		}
+
+		private bool TryGetParagraphTarget(int position, bool up, int count, out int target, out int unitsMoved)
+		{
+			target = position;
+			unitsMoved = 0;
+			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetParagraphChunks(GetStoryText());
+			if (chunks.Count == 0)
+			{
+				return false;
+			}
+
+			var boundaries = new int[chunks.Count + 1];
+			for (var i = 0; i < chunks.Count; i++)
+			{
+				boundaries[i] = chunks[i].start;
+			}
+
+			boundaries[chunks.Count] = _document.TextLength;
+			target = MoveByBoundaries(boundaries, position, up ? -count : count, out var signedUnitsMoved);
+			unitsMoved = Math.Abs(signedUnitsMoved);
+			return unitsMoved != 0;
+		}
+
+		private bool IsStartActive
+			=> _start != _end && _options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
+
+		private void SetActivePosition(int position, bool extend)
+		{
+			position = Math.Clamp(position, 0, _document.TextLength);
+			if (!extend)
+			{
+				_start = _end = position;
+				_options &= ~global::Microsoft.UI.Text.SelectionOptions.StartActive;
+				return;
+			}
+
+			var anchor = IsStartActive ? _end : _start;
+			if (position < anchor)
+			{
+				_start = position;
+				_end = anchor;
+				_options |= global::Microsoft.UI.Text.SelectionOptions.StartActive;
 			}
 			else
 			{
-				_start = _end = target;
+				_start = anchor;
+				_end = position;
+				_options &= ~global::Microsoft.UI.Text.SelectionOptions.StartActive;
 			}
-
-			OnRangeChanged();
-			return count;
 		}
 
 		// Sync the owning control's interactive caret/selection when this programmatic selection changes.

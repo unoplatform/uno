@@ -174,6 +174,80 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XLib.XSync(display, false);
 	}
 
+	public override PointInt32 ConvertLocalToScreen(Point localPoint)
+		=> TryConvertLocalToScreen(localPoint, out var screenPoint)
+			? screenPoint
+			: base.ConvertLocalToScreen(localPoint);
+
+	public override bool TryConvertLocalToScreen(Point localPoint, out PointInt32 screenPoint)
+	{
+		screenPoint = default;
+		if (_host.Closed.IsCompleted)
+		{
+			return false;
+		}
+
+		var x11Window = _host.RootX11Window;
+		using var xLock = X11Helper.XLock(x11Window.Display);
+		if (XLib.XQueryTree(x11Window.Display, x11Window.Window, out var root, out _, out var children, out _) == 0)
+		{
+			return false;
+		}
+		_ = XLib.XFree(children);
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		if (!XLib.XTranslateCoordinates(
+			x11Window.Display,
+			x11Window.Window,
+			root,
+			(int)Math.Round(localPoint.X * scale),
+			(int)Math.Round(localPoint.Y * scale),
+			out var x,
+			out var y,
+			out _))
+		{
+			return false;
+		}
+		screenPoint = new PointInt32(x, y);
+		return true;
+	}
+
+	public override Point ConvertScreenToLocal(PointInt32 screenPoint)
+		=> TryConvertScreenToLocal(screenPoint, out var localPoint)
+			? localPoint
+			: base.ConvertScreenToLocal(screenPoint);
+
+	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint)
+	{
+		localPoint = default;
+		if (_host.Closed.IsCompleted)
+		{
+			return false;
+		}
+
+		var x11Window = _host.RootX11Window;
+		using var xLock = X11Helper.XLock(x11Window.Display);
+		if (XLib.XQueryTree(x11Window.Display, x11Window.Window, out var root, out _, out var children, out _) == 0)
+		{
+			return false;
+		}
+		_ = XLib.XFree(children);
+		if (!XLib.XTranslateCoordinates(
+			x11Window.Display,
+			root,
+			x11Window.Window,
+			screenPoint.X,
+			screenPoint.Y,
+			out var x,
+			out var y,
+			out _))
+		{
+			return false;
+		}
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		localPoint = new Point(x / scale, y / scale);
+		return true;
+	}
+
 	private void UpdatePositionAndSize()
 	{
 		if (_host.Closed.IsCompleted)

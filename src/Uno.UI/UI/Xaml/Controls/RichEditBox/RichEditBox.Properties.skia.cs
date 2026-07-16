@@ -2,6 +2,8 @@
 
 using System;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Media;
 
@@ -186,6 +188,33 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Identifies the <see cref="InputScope"/> dependency property.
+		/// </summary>
+		public static DependencyProperty InputScopeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(InputScope),
+				typeof(InputScope),
+				typeof(RichEditBox),
+				new FrameworkPropertyMetadata(
+					new InputScope
+					{
+						Names =
+						{
+							new InputScopeName { NameValue = InputScopeNameValue.Default },
+						},
+					},
+					OnInputScopeChanged));
+
+		/// <summary>
+		/// Gets or sets the input scope used by software keyboards and IME services.
+		/// </summary>
+		public InputScope InputScope
+		{
+			get => (InputScope)GetValue(InputScopeProperty);
+			set => SetValue(InputScopeProperty, value);
+		}
+
+		/// <summary>
 		/// Identifies the <see cref="IsReadOnly"/> dependency property.
 		/// </summary>
 		public static DependencyProperty IsReadOnlyProperty { get; } =
@@ -243,6 +272,40 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get => (string)GetValue(PlaceholderTextProperty);
 			set => SetValue(PlaceholderTextProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="ProofingMenuFlyout"/> dependency property.
+		/// </summary>
+		public static DependencyProperty ProofingMenuFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ProofingMenuFlyout),
+				typeof(FlyoutBase),
+				typeof(RichEditBox),
+				new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		/// <summary>
+		/// Gets the flyout that displays spelling corrections for the selected text.
+		/// </summary>
+		public FlyoutBase ProofingMenuFlyout => GetProofingMenuFlyout();
+
+		/// <summary>
+		/// Identifies the <see cref="SelectionFlyout"/> dependency property.
+		/// </summary>
+		public static DependencyProperty SelectionFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionFlyout),
+				typeof(FlyoutBase),
+				typeof(RichEditBox),
+				new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		/// <summary>
+		/// Gets or sets the flyout shown when text is selected.
+		/// </summary>
+		public FlyoutBase SelectionFlyout
+		{
+			get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
 		/// <summary>
@@ -381,6 +444,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private static void OnIsTextPredictionEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+			=> ((RichEditBox)sender)._textBoxView?.UpdateProperties();
+
+		private static void OnInputScopeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 			=> ((RichEditBox)sender)._textBoxView?.UpdateProperties();
 
 		private static void OnIsReadOnlyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)

@@ -12,13 +12,20 @@ namespace Microsoft.UI.Text
 	// \r / \n / \r\n, each paragraph including its trailing break), so every character inside a
 	// paragraph shares the same ParagraphFormatState.
 	//
-	// TODO Uno: A uniform paragraph alignment (Center/Right/Justify shared by all paragraphs) is projected
-	// onto the shared DisplayBlock via RichEditBox.ApplyParagraphAlignment (GetUniformParagraphAlignment).
-	// Per-paragraph divergence, indents, spacing, and lists still cannot be rendered by a single TextBlock,
-	// so those remain model-only (faithful get/set/clone/undo).
+	// Alignment is projected per paragraph by the RichEditBox render path. Indents, spacing, and lists
+	// remain model-only and continue to participate faithfully in get/set/clone/undo.
 	public partial class RichEditTextDocument
 	{
 		private List<ParagraphRun> _paragraphRuns = new();
+
+		internal IReadOnlyList<ParagraphRun> ParagraphRuns
+		{
+			get
+			{
+				SyncParagraphRunsToLength(_plainText.Length);
+				return _paragraphRuns;
+			}
+		}
 
 		// The document's default paragraph formatting: the basis for newly inserted text and empty
 		// documents (see DefaultParagraphState). Exposed via Get/SetDefaultParagraphFormat. Like the
@@ -147,6 +154,28 @@ namespace Microsoft.UI.Text
 			_paragraphRuns = BuildParagraphRunsFromStates(result);
 		}
 
+		private void NormalizeParagraphRuns()
+		{
+			SyncParagraphRunsToLength(_plainText.Length);
+			if (_plainText.Length == 0)
+			{
+				return;
+			}
+
+			var states = ExpandParagraphRunsRaw();
+			foreach (var paragraph in TextUnitNavigation.GetParagraphChunks(_plainText))
+			{
+				var format = states[paragraph.start].Clone();
+				var end = Math.Min(states.Count, paragraph.start + paragraph.length);
+				for (var i = paragraph.start; i < end; i++)
+				{
+					states[i] = format;
+				}
+			}
+
+			_paragraphRuns = BuildParagraphRunsFromStates(states);
+		}
+
 		/// <summary>
 		/// Maps the character range [start, end) to the whole-paragraph character span covering every
 		/// paragraph the range touches, plus the first/last paragraph indices. Returns false for an
@@ -182,7 +211,7 @@ namespace Microsoft.UI.Text
 			return true;
 		}
 
-		private void ApplyParagraphFormatOverChars(int start, int end, Action<ParagraphFormatState> apply)
+		private void ApplyParagraphFormatOverParagraphs(int start, int end, UnoTextParagraphFormat paragraphFormat)
 		{
 			SyncParagraphRunsToLength(_plainText.Length);
 			start = Math.Clamp(start, 0, _plainText.Length);
@@ -193,11 +222,40 @@ namespace Microsoft.UI.Text
 			}
 
 			var expanded = ExpandParagraphRunsRaw();
-			for (var i = start; i < end; i++)
+			var transformedStates = new Dictionary<ParagraphFormatState, ParagraphFormatState>();
+			var transformedTabs = new Dictionary<IReadOnlyList<ParagraphTab>, ParagraphFormatState>(ReferenceEqualityComparer.Instance);
+			foreach (var paragraph in TextUnitNavigation.GetParagraphChunks(_plainText))
 			{
-				var clone = expanded[i].Clone();
-				apply(clone);
-				expanded[i] = clone;
+				var paragraphEnd = paragraph.start + paragraph.length;
+				if (paragraphEnd <= start)
+				{
+					continue;
+				}
+				if (paragraph.start >= end)
+				{
+					break;
+				}
+
+				var source = expanded[paragraph.start];
+				if (!transformedStates.TryGetValue(source, out var format))
+				{
+					format = source.Clone();
+					paragraphFormat.ApplyScalarsTo(format);
+					if (paragraphFormat.UpdatesTabs && transformedTabs.TryGetValue(source.Tabs, out var sharedTabs))
+					{
+						format.ShareTabsFrom(sharedTabs);
+					}
+					else if (paragraphFormat.UpdatesTabs)
+					{
+						paragraphFormat.ApplyTabsTo(format);
+						transformedTabs.Add(source.Tabs, format);
+					}
+					transformedStates.Add(source, format);
+				}
+				for (var i = paragraph.start; i < paragraphEnd; i++)
+				{
+					expanded[i] = format;
+				}
 			}
 
 			_paragraphRuns = BuildParagraphRunsFromStates(expanded);
@@ -341,6 +399,15 @@ namespace Microsoft.UI.Text
 		/// <summary>Applies the defined properties of <paramref name="format"/> over every paragraph touched by [start, end).</summary>
 		internal void SetParagraphFormatOverRange(int start, int end, UnoTextParagraphFormat format)
 		{
+			if (TryGetParagraphSpan(start, end, out var protectedStart, out var protectedEnd, out _, out _))
+			{
+				ThrowIfNotEditable(protectedStart, protectedEnd);
+			}
+			else
+			{
+				ThrowIfNotEditable(start, end);
+			}
+
 			MutateWithUndo(() =>
 			{
 				if (!TryGetParagraphSpan(start, end, out var paraStart, out var paraEnd, out _, out _))
@@ -348,7 +415,7 @@ namespace Microsoft.UI.Text
 					return;
 				}
 
-				ApplyParagraphFormatOverChars(paraStart, paraEnd, format.ApplyTo);
+				ApplyParagraphFormatOverParagraphs(paraStart, paraEnd, format);
 			});
 		}
 
@@ -381,8 +448,7 @@ namespace Microsoft.UI.Text
 		/// runs are maximal spans of equal <see cref="ParagraphFormatState"/> (and each paragraph holds a
 		/// uniform state), the set of distinct alignments across runs equals the set across paragraphs, so
 		/// checking that all runs agree answers "do all paragraphs share one alignment". Used by the
-		/// RichEditBox render path to project a <em>uniform</em> alignment onto the shared single-TextBlock
-		/// DisplayBlock, which cannot express per-paragraph alignment.
+		/// RichEditBox render path to retain the block-level fast path for uniformly aligned documents.
 		/// </summary>
 		internal global::Microsoft.UI.Text.ParagraphAlignment? GetUniformParagraphAlignment()
 		{
@@ -432,8 +498,13 @@ namespace Microsoft.UI.Text
 			return true;
 		}
 
-		internal static bool TabsEqual(List<ParagraphTab> a, List<ParagraphTab> b)
+		internal static bool TabsEqual(IReadOnlyList<ParagraphTab> a, IReadOnlyList<ParagraphTab> b)
 		{
+			if (ReferenceEquals(a, b))
+			{
+				return true;
+			}
+
 			if (a.Count != b.Count)
 			{
 				return false;
