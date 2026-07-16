@@ -50,7 +50,7 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 	public string KeyFromIndex(int index)
 		=> KeyFromIndexCore(index);
 
-	internal int IndexOf(object item)
+	public int IndexOf(object item)
 		=> IndexOfCore(item);
 	#endregion
 

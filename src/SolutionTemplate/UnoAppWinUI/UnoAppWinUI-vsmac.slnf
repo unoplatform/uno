@@ -5,8 +5,6 @@
 		"UnoAppWinUI\\UnoAppWinUI.csproj",
 
 		"UnoAppWinUI.Mobile\\UnoAppWinUI.Mobile.csproj",
-
-		"UnoAppWinUI.Wasm\\UnoAppWinUI.Wasm.csproj",
     ]
   }
 }

@@ -16,36 +16,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.Collections;
 
-#if __ANDROID__
-using Android.Graphics;
-using Android.Views;
-#pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
-using nint = System.Int32;
-using nfloat = System.Double;
-using NMath = System.Math;
-using CGSize = Windows.Foundation.Size;
-using _Size = Windows.Foundation.Size;
-using Point = Windows.Foundation.Point;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using CoreGraphics;
-using _Size = Windows.Foundation.Size;
-using Point = Windows.Foundation.Point;
-using ObjCRuntime;
-#elif __WASM__
-#pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
-using nint = System.Int32;
-using nfloat = System.Double;
-using Point = Windows.Foundation.Point;
-using CGSize = Windows.Foundation.Size;
-using _Size = Windows.Foundation.Size;
-using NMath = System.Math;
-using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
-#else
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
 using nfloat = System.Double;
@@ -54,11 +24,10 @@ using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
-	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
+	internal partial interface IFrameworkElement : IDataContextProvider, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
@@ -99,9 +68,6 @@ namespace Microsoft.UI.Xaml
 
 		Transform RenderTransform { get; set; }
 
-#if XAMARIN || __WASM__
-		Point RenderTransformOrigin { get; set; }
-#endif
 		TransitionCollection Transitions { get; set; }
 
 		HorizontalAlignment HorizontalAlignment { get; set; }
@@ -109,8 +75,6 @@ namespace Microsoft.UI.Xaml
 		VerticalAlignment VerticalAlignment { get; set; }
 
 		Uri BaseUri { get; }
-
-		_Size AdjustArrange(_Size finalSize);
 
 		int? RenderPhase { get; set; }
 
@@ -122,16 +86,6 @@ namespace Microsoft.UI.Xaml
 		// Windows.Foundation.Size SizeThatFits (Windows.Foundation.Size size);
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
-
-#if __APPLE_UIKIT__
-
-		/// <summary>
-		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
-		/// </summary>
-		Rect AppliedFrame { get; }
-
-		void SetSubviewsNeedLayout();
-#endif
 
 		AutomationPeer GetAutomationPeer();
 
@@ -145,27 +99,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-#if __APPLE_UIKIT__
-			if (e is UIElement uiElement)
-			{
-				uiElement.ClipsToBounds = false;
-				uiElement.Layer.MasksToBounds = false;
-				uiElement.Layer.MaskedCorners = (CoreAnimation.CACornerMask)0;
-			}
-#endif
-
-#if __ANDROID__
-			if (e is View view)
-			{
-				// TODO:
-				// This causes Android to cycle through every visible IFrameworkElement every time the accessibility focus is changed
-				// and calls the overridden InitializeAccessibilityNodeInfo method.
-				// This could become a performance problem (due to interop) in complex UIs (only if TalkBack is enabled).
-				// A possible optimization could be to set it to ImportantForAccessibility.No if FrameworkElement.CreateAutomationPeer returns null.
-				view.ImportantForAccessibility = ImportantForAccessibility.Yes;
-			}
-#endif
-
 			if (e is IFrameworkElement_EffectiveViewport evp)
 			{
 				evp.InitializeEffectiveViewport();
@@ -179,7 +112,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="name">The name of the template part</param>
 		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
 		{
-			return e.FindName(name) as IFrameworkElement;
+			return e.FindName(name) as DependencyObject;
 		}
 #if !UNO_REFERENCE_API
 		// This extension method is not needed for Skia
@@ -193,26 +126,6 @@ namespace Microsoft.UI.Xaml
 					fe.InvalidateMeasure();
 					break;
 				case View view:
-#if __ANDROID__
-					view.RequestLayout();
-
-					// Invalidate the first "managed" parent to
-					// ensure its .MeasureOverride() gets called
-					var parent = view.Parent;
-					while (parent is { })
-					{
-						if (parent is UIElement uie)
-						{
-							uie.InvalidateMeasure();
-							break;
-						}
-
-						parent = parent.Parent;
-					}
-
-#elif __APPLE_UIKIT__
-					view.SetNeedsLayout();
-#endif
 					break;
 
 				default:
@@ -250,6 +163,12 @@ namespace Microsoft.UI.Xaml
 				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
 			{
 				content = innerContent;
+			}
+			else if (!hasAnyChildren &&
+				e is UserControl userControl &&
+				userControl.Content is IFrameworkElement userControlContent)
+			{
+				content = userControlContent;
 			}
 			else if (!hasAnyChildren &&
 				e is Controls.Primitives.Popup popup)
@@ -307,20 +226,7 @@ namespace Microsoft.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if __APPLE_UIKIT__
-			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif __ANDROID__
-			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
-			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
-
-			var view = ((View)element);
-			view.Measure(widthSpec, heightSpec);
-
-			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
-				.PhysicalToLogicalPixels();
-#else
 			return default(CGSize);
-#endif
 		}
 
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
@@ -410,36 +316,6 @@ namespace Microsoft.UI.Xaml
 				nullAction.Invoke();
 			}
 		}
-
-#if __ANDROID__
-		/// <summary>
-		/// Applies the framework element constraints like the size and max size, using an already measured view.
-		/// </summary>
-		/// <param name="view"></param>
-		public static void OnMeasureOverride<T>(T view)
-			where T : View, IFrameworkElement
-		{
-			var updated = IFrameworkElementHelper
-				.SizeThatFits(view, new _Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels())
-				.LogicalToPhysicalPixels();
-
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
-		}
-
-		/// <summary>
-		/// Applies the framework element constraints like the size and max size, using the provided measured size.
-		/// </summary>
-		/// <param name="view"></param>
-		public static void OnMeasureOverride<T>(T view, _Size measuredSize)
-			where T : View, IFrameworkElement
-		{
-			var updated = IFrameworkElementHelper
-				.SizeThatFits(view, new _Size(measuredSize.Width, measuredSize.Height).PhysicalToLogicalPixels())
-				.LogicalToPhysicalPixels();
-
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
-		}
-#endif
 
 		/// <summary>
 		/// Base constraint reasoning for simple containers that always respect the stretch of their children.

@@ -1982,7 +1982,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return false;
 				}
 
-				if (type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+				if (IsType(type, Generation.DependencyObjectSymbol.Value))
 				{
 					return true;
 				}
@@ -2915,7 +2915,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var symbol = GetType(styleTargetType);
 
-					if (symbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+					if (IsType(symbol, Generation.DependencyObjectSymbol.Value))
 					{
 						var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(symbol.GetFullMetadataName());
 						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
@@ -4221,8 +4221,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
-							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
-							ownerType.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value))
+							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && IsType(FindType(baseTypeSymbol), Generation.DependencyObjectSymbol.Value)) ||
+							IsType(ownerType, Generation.DependencyObjectSymbol.Value)
 						);
 
 					if (isDependencyProperty)
@@ -6451,19 +6451,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildInitializer(writer, xamlObjectDefinition, owner);
 						Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 					}
-					// TODO: Remove this else if in Uno 6 as a breaking change.
-					else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
-					{
-						var propertyType = GetDependencyPropertyTypeForSetter(propertyName);
-						var valueNode = FindMember(xamlObjectDefinition, "Value");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => o.{1} = {2})",
-							currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
-							propertyName,
-							BuildLiteralValue(valueNode!, propertyType)
-						);
-
-					}
 					else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 					{
 						InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
@@ -6553,18 +6540,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"default! /* {xamlGenError.Message} (line: {xamlGenError.LineNumber} | pos: {xamlGenError.LinePosition}) */");
 				}
 			}
-		}
-
-		private bool IsLegacySetter(XamlObjectDefinition xamlObjectDefinition, out string propertyName)
-		{
-			var propertyNode = FindMember(xamlObjectDefinition, "Property");
-			propertyName = propertyNode?.Value?.ToString()!;
-			if (propertyName is not null && !propertyName.Contains('.'))
-			{
-				return !IsDependencyProperty(CurrentStyleTargetType, propertyName);
-			}
-
-			return false;
 		}
 
 		/// <summary>

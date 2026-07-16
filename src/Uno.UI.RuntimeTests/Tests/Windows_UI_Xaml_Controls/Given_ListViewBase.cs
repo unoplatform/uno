@@ -3138,62 +3138,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Item_Removed_And_Relayout_NV286()
 		{
-			using (FeatureConfigurationHelper.UseListViewAnimations())
+			var source = new ObservableCollection<string>();
+			var index = 0;
+			for (int i = 0; i < 5; i++)
 			{
-				var source = new ObservableCollection<string>();
-				var index = 0;
-				for (int i = 0; i < 5; i++)
-				{
-					InsertAnItem();
-				}
-
-				var SUT = new ListView
-				{
-					HorizontalAlignment = HorizontalAlignment.Left,
-					Width = 300,
-					Height = 180,
-					Background = new SolidColorBrush(Colors.Beige),
-					ItemsSource = source,
-					ItemTemplate = NV286_Template
-				};
-
-				var errorCatchGrid = new ErrorCatchGrid
-				{
-					Children =
-					{
-						SUT
-					}
-				};
-
-				WindowHelper.WindowContent = errorCatchGrid;
-				await WindowHelper.WaitForLoaded(SUT);
-				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
-
-				source.RemoveAt(source.Count - 1);
 				InsertAnItem();
-				InsertAnItem();
+			}
 
-				await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
-				var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
-				Assert.IsNotNull(viewToModify);
-				var border = viewToModify.FindFirstDescendant<Border>(b => b.Name == "ItemBorder");
-				Assert.IsNotNull(border);
-				border.Width += 20;
+			var SUT = new ListView
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Width = 300,
+				Height = 180,
+				Background = new SolidColorBrush(Colors.Beige),
+				ItemsSource = source,
+				ItemTemplate = NV286_Template
+			};
 
-				await WindowHelper.WaitForIdle();
-
-				if (errorCatchGrid.Exception is { } e)
+			var errorCatchGrid = new ErrorCatchGrid
+			{
+				Children =
 				{
-					throw e;
+					SUT
 				}
+			};
 
-				// If all goes well, the app will not crash when the removed item finishes animating
+			WindowHelper.WindowContent = errorCatchGrid;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
 
-				void InsertAnItem()
-				{
-					index++;
-					source.Insert(0, $"Item {index}");
-				}
+			source.RemoveAt(source.Count - 1);
+			InsertAnItem();
+			InsertAnItem();
+
+			await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
+			var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
+			Assert.IsNotNull(viewToModify);
+			var border = viewToModify.FindFirstDescendant<Border>(b => b.Name == "ItemBorder");
+			Assert.IsNotNull(border);
+			border.Width += 20;
+
+			await WindowHelper.WaitForIdle();
+
+			if (errorCatchGrid.Exception is { } e)
+			{
+				throw e;
+			}
+
+			// If all goes well, the app will not crash when the removed item finishes animating
+
+			void InsertAnItem()
+			{
+				index++;
+				source.Insert(0, $"Item {index}");
 			}
 		}
 
@@ -3678,39 +3675,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const int ITEMS_TO_ADD = 6;
 			const int INDEX_TO_DELETE = 3;
-			using (FeatureConfigurationHelper.UseListViewAnimations())
+
+			var source = Enumerable.Range(0, ITEMS_TO_ADD).Select(a => new DefaultItem { Name = $"Item {a}", Value = a * a }).ToArray();
+
+			var SUT = new ListView
 			{
-				var source = Enumerable.Range(0, ITEMS_TO_ADD).Select(a => new DefaultItem { Name = $"Item {a}", Value = a * a }).ToArray();
+				Width = 200,
+				Height = 300,
+				ItemTemplate = DefaultItemTemplate
+			};
 
-				var SUT = new ListView
-				{
-					Width = 200,
-					Height = 300,
-					ItemTemplate = DefaultItemTemplate
-				};
+			var model = new When_Deleting_Item_DataContext(source);
+			SUT.DataContext = model;
+			SUT.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath(nameof(model.Items)), Mode = BindingMode.OneWay });
 
-				var model = new When_Deleting_Item_DataContext(source);
-				SUT.DataContext = model;
-				SUT.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath(nameof(model.Items)), Mode = BindingMode.OneWay });
+			WindowHelper.WindowContent = SUT;
 
-				WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
 
-				await WindowHelper.WaitForLoaded(SUT);
+			Assert.AreEqual(ITEMS_TO_ADD, SUT.Items.Count);
 
-				Assert.AreEqual(ITEMS_TO_ADD, SUT.Items.Count);
+			var container = SUT.ContainerFromIndex(INDEX_TO_DELETE) as ContentControl;
 
-				var container = SUT.ContainerFromIndex(INDEX_TO_DELETE) as ContentControl;
+			model.Items.RemoveAt(INDEX_TO_DELETE);
 
-				model.Items.RemoveAt(INDEX_TO_DELETE);
+			// Ensure the container has properly been cleaned
+			// up after being removed.
+			Assert.IsNull(container.Content);
 
-				// Ensure the container has properly been cleaned
-				// up after being removed.
-				Assert.IsNull(container.Content);
+			Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
 
-				Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
-
-				Assert.HasCount(5, SUT.Items);
-			}
+			Assert.HasCount(5, SUT.Items);
 		}
 
 #if __SKIA__ || __WASM__

@@ -13,18 +13,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Diagnostics.CodeAnalysis;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
@@ -123,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
+#if UNO_HAS_MANAGED_POINTERS
 			UpdateHitTest();
 #endif
 
@@ -132,23 +121,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 
-#if __ANDROID__
-			var newValue = (bool)args.NewValue;
-			base.SetNativeIsEnabled(newValue);
-			this.Enabled = newValue;
-#elif __APPLE_UIKIT__
-			UserInteractionEnabled = (bool)args.NewValue;
-#endif
-
 			IsEnabledChanged?.Invoke(this, args);
 
 			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-#endif
 
 #if __SKIA__
 			// Notify UIA clients that IsEnabled (and potentially IsKeyboardFocusable) may have changed.
@@ -292,8 +267,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (
-							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						if (!IsLoaded)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
 
@@ -321,7 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+#if IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
@@ -549,7 +523,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <typeparam name="T">The type of the template part.</typeparam>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		internal T GetTemplateChild<T>(string childName) where T : class, DependencyObject
+		internal T GetTemplateChild<T>(string childName) where T : DependencyObject
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
 		}
@@ -558,7 +532,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return root != null
 				&& name != null
-				&& NameScope.GetNameScope(root) is INameScope nameScope
+				&& NameScope.GetNameScope((DependencyObject)root) is INameScope nameScope
 				&& nameScope.FindName(name) is DependencyObject element
 				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
 				&& !(element is ElementStub)
@@ -609,9 +583,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID__
-		new
-#endif
 		Brush Foreground
 		{
 			get { return (Brush)this.GetValue(ForegroundProperty); }
@@ -691,7 +662,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					true,
-#if __SKIA__ || __WASM__
+#if __SKIA__
 					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 #else
@@ -804,21 +775,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-#if __ANDROID__
-		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
-		private Brush _borderBrushStrongReference;
-#endif
-
 		public Brush BorderBrush
 		{
 			get { return (Brush)this.GetValue(BorderBrushProperty); }
 			set
 			{
 				this.SetValue(BorderBrushProperty, value);
-
-#if __ANDROID__
-				_borderBrushStrongReference = value;
-#endif
 			}
 		}
 
@@ -1044,9 +1006,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnPointerMoved(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs e) { }
-#if !__WASM__
 		[global::Uno.NotImplemented]
-#endif
 		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
@@ -1105,7 +1065,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
 #endif
@@ -1177,7 +1137,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly DragEventHandler OnDropHandler =
 			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
 
@@ -1317,7 +1277,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			if (GetIsEventOverrideImplemented(OnPreviewKeyDown))
 			{
 				result |= RoutedEventFlag.PreviewKeyDown;
@@ -1360,9 +1320,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
-#if !__APPLE_UIKIT__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
-#endif
 
 		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
 

@@ -28,5 +28,23 @@ namespace Windows.UI.Text
 				FontStretch.UltraExpanded => SKFontStyleWidth.UltraExpanded,
 				_ => SKFontStyleWidth.Normal,
 			};
+
+		/// <summary>
+		/// The OpenType <c>wdth</c> variation axis value (in percent of normal width) for a <see cref="FontStretch"/>,
+		/// used to position a variable font on its width axis.
+		/// </summary>
+		public static float ToVariableFontWidth(this FontStretch stretch) =>
+			stretch switch
+			{
+				FontStretch.UltraCondensed => 50f,
+				FontStretch.ExtraCondensed => 62.5f,
+				FontStretch.Condensed => 75f,
+				FontStretch.SemiCondensed => 87.5f,
+				FontStretch.SemiExpanded => 112.5f,
+				FontStretch.Expanded => 125f,
+				FontStretch.ExtraExpanded => 150f,
+				FontStretch.UltraExpanded => 200f,
+				_ => 100f, // Normal / Undefined
+			};
 	}
 }

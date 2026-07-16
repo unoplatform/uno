@@ -111,8 +111,15 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
 			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
+			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
+			// carries the DependencyObject base and the IList implementation; emitting the metadata
+			// DependencyObject base here would clash with that hand-written hierarchy.
+			BaseXamlNamespace + ".DependencyObjectCollection",
 		};
 
+		// Native/WASM symbols come from Uno.UWP after the 7.0 native drop: it still ships per-platform
+		// binaries and references Uno.UI.Dispatching and Uno.Foundation, so its compilation transitively
+		// resolves the Uno.UWP / Uno.UI.Dispatching / Uno.Foundation symbols the generator needs.
 		private Compilation _iOSCompilation;
 		private Compilation _tvOSCompilation;
 		private Compilation _androidCompilation;
@@ -130,6 +137,15 @@ namespace Uno.WinAppSDKSyncGenerator
 		protected List<string> MissingEnumMembers { get; set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
+
+		/// <summary>
+		/// Whether the type currently being generated targets a library that still ships
+		/// per-platform (native) binaries (Uno.UWP / Uno.Foundation / Uno.UI.Dispatching). For the
+		/// Skia-only libraries (Uno.UI, Uno.UI.Composition) rendering is Skia-only after 7.0, so
+		/// the native (__ANDROID__/__IOS__/__TVOS__/__WASM__) symbols are not emitted in the
+		/// generated stubs. Set from <see cref="ShouldEmitNativeDefines"/> in <see cref="GetAllSymbols"/>.
+		/// </summary>
+		protected bool CurrentTypeEmitsNativeDefines { get; private set; } = true;
 
 		private static readonly string[] _unoUINamespaces = new[]
 		{
@@ -166,13 +182,21 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
-			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-ios18.0");
-			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-tvos18.0");
-			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-android");
+			// After the 7.0 native drop, Uno.UI no longer has native/WASM heads. The libraries that
+			// still ship per-platform binaries are Uno.UWP, Uno.Foundation and Uno.UI.Dispatching.
+			// Uno.UWP references the other two, so its native/WASM compilation transitively resolves
+			// all three sets of symbols.
+			var platformProject = @"..\..\..\Uno.UWP\Uno";
 
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net9.0");
-			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net9.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net9.0");
+			_iOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-ios26.0");
+			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
+			_androidCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-android");
+
+			// Skia and Reference surfaces still come from Uno.UI (kept); it carries the
+			// Uno.UWP / Uno.Foundation / Uno.UI.Dispatching symbols transitively.
+			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net10.0");
+			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");
@@ -496,6 +520,20 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 		}
 
+		/// <summary>
+		/// Native (per-platform) symbols are only generated for the libraries that still ship
+		/// per-platform binaries — Uno.UWP, Uno.Foundation and Uno.UI.Dispatching. The Skia-only
+		/// libraries (Uno.UI, Uno.UI.Composition) render through Skia on all targets after 7.0,
+		/// so their generated stubs must not reference __ANDROID__/__IOS__/__TVOS__/__WASM__.
+		/// </summary>
+		private bool ShouldEmitNativeDefines(INamedTypeSymbol type)
+		{
+			var basePath = GetNamespaceBasePath(type);
+			return basePath.Contains(@"\Uno.UWP\", StringComparison.Ordinal)
+				|| basePath.Contains(@"\Uno.Foundation\", StringComparison.Ordinal)
+				|| basePath.Contains(@"\Uno.UI.Dispatching\", StringComparison.Ordinal);
+		}
+
 		protected class PlatformSymbols<T> where T : ISymbol
 		{
 			public T AndroidSymbol;
@@ -505,6 +543,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			public T NetStdReferenceSymbol;
 			public T WasmSymbol;
 			public T SkiaSymbol;
+
+			private readonly bool _emitNativeDefines;
 
 			private ImplementedFor _implementedFor;
 			public ImplementedFor ImplementedFor => _implementedFor;
@@ -517,9 +557,11 @@ namespace Uno.WinAppSDKSyncGenerator
 				T netStdRerefenceType,
 				T wasmType,
 				T skiaType,
-				T uapType
+				T uapType,
+				bool emitNativeDefines = true
 			)
 			{
+				_emitNativeDefines = emitNativeDefines;
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
 				this.TvOSSymbol = tvOSType;
@@ -554,25 +596,36 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
-			public bool HasUndefined =>
-				AndroidSymbol == null
-				|| IOSSymbol == null
-				|| TvOSSymbol == null
-				|| NetStdReferenceSymbol == null
-				|| WasmSymbol == null
-				|| SkiaSymbol == null
-				;
+			public bool HasUndefined => GetRelevantPlatforms().Any(p => p.symbol is null);
+
+			/// <summary>
+			/// The (preprocessor define, platform symbol) pairs that participate in the generated
+			/// stub for the current library. Native (per-platform) targets are excluded for
+			/// Skia-only libraries — see <see cref="Generator.ShouldEmitNativeDefines"/>.
+			/// The native ordering is preserved to minimize diffs for Uno.UWP/Uno.Foundation.
+			/// </summary>
+			private (string define, T symbol)[] GetRelevantPlatforms()
+				=> _emitNativeDefines
+					? new (string define, T symbol)[]
+					{
+						(AndroidDefine, AndroidSymbol),
+						(iOSDefine, IOSSymbol),
+						(tvOSDefine, TvOSSymbol),
+						(WasmDefine, WasmSymbol),
+						(SkiaDefine, SkiaSymbol),
+						(NetStdReferenceDefine, NetStdReferenceSymbol),
+					}
+					: new (string define, T symbol)[]
+					{
+						(SkiaDefine, SkiaSymbol),
+						(NetStdReferenceDefine, NetStdReferenceSymbol),
+					};
 
 			public void AppendIf(IndentedStringBuilder b)
 			{
-				var defines = new[] {
-					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
-					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
-					IsNotDefinedByUno(TvOSSymbol) ? tvOSDefine : "false",
-					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
-					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
-					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
-				};
+				var defines = GetRelevantPlatforms()
+					.Select(p => IsNotDefinedByUno(p.symbol) ? p.define : "false")
+					.ToArray();
 
 				using (b.Indent(-b.CurrentLevel))
 				{
@@ -581,26 +634,13 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			public string GenerateNotImplementedList()
-			{
-				var defines = new[] {
-					IsNotDefinedByUno(AndroidSymbol) ? $"\"{AndroidDefine}\"" : "",
-					IsNotDefinedByUno(IOSSymbol) ? $"\"{iOSDefine}\"" : "",
-					IsNotDefinedByUno(TvOSSymbol) ? $"\"{tvOSDefine}\"" : "",
-					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
-					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
-					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
-				};
-
-				return defines.Where(d => d.Length > 0).JoinBy(", ");
-			}
+				=> GetRelevantPlatforms()
+					.Where(p => IsNotDefinedByUno(p.symbol))
+					.Select(p => $"\"{p.define}\"")
+					.JoinBy(", ");
 
 			public bool IsNotImplementedInAllPlatforms()
-				=> IsNotDefinedByUno(AndroidSymbol) &&
-					IsNotDefinedByUno(IOSSymbol) &&
-					IsNotDefinedByUno(TvOSSymbol) &&
-					IsNotDefinedByUno(WasmSymbol) &&
-					IsNotDefinedByUno(SkiaSymbol) &&
-					IsNotDefinedByUno(NetStdReferenceSymbol);
+				=> GetRelevantPlatforms().All(p => IsNotDefinedByUno(p.symbol));
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
 			{
@@ -641,6 +681,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(INamedTypeSymbol uapType)
 		{
+			CurrentTypeEmitsNativeDefines = ShouldEmitNativeDefines(uapType);
 			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
 			return new PlatformSymbols<INamedTypeSymbol>(
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
@@ -649,7 +690,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				  netStdRerefenceType: _netstdReferenceCompilation.GetTypeByMetadataName(name),
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
 				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
-				  uapType: uapType
+				  uapType: uapType,
+				  emitNativeDefines: CurrentTypeEmitsNativeDefines
 			  );
 		}
 
@@ -676,7 +718,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: filter(netStdReference),
 				wasmType: filter(wasm),
 				skiaType: filter(skia),
-				uapType: uapSymbol
+				uapType: uapSymbol,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 		}
 
@@ -688,7 +731,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: FindMatchingMethod(types.NetStdReferenceSymbol, method),
 				wasmType: FindMatchingMethod(types.WasmSymbol, method),
 				skiaType: FindMatchingMethod(types.SkiaSymbol, method),
-				uapType: method
+				uapType: method,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 
 		protected PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
@@ -699,7 +743,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: GetMatchingPropertyMember(types.NetStdReferenceSymbol, property),
 				wasmType: GetMatchingPropertyMember(types.WasmSymbol, property),
 				skiaType: GetMatchingPropertyMember(types.SkiaSymbol, property),
-				uapType: property
+				uapType: property,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 
 		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
@@ -2287,7 +2332,15 @@ namespace Uno.WinAppSDKSyncGenerator
 			compilation = await InnerLoadProject(projectFile, targetFramework);
 			_projects[key] = compilation;
 			var externalCompilationReferences = compilation.ExternalReferences.OfType<CompilationReference>().Select(r => r.Display).ToArray();
-			string[] expectedRefs = ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"];
+			// The top Uno.UI heads (Skia/Reference) pull in the full platform-layered graph; the Uno.UWP
+			// head used for native/WASM symbols sits on top of Uno.Foundation and Uno.UI.Dispatching.
+			// Asserting Uno.UI.Dispatching is load-bearing: native/WASM Dispatching symbols are resolved
+			// transitively through this head, so a missing reference would otherwise silently strip the
+			// Microsoft.UI.Dispatching native #if defines instead of failing the restore loudly.
+			var isTopProject = projectFile.Replace('/', '\\').Contains(@"\Uno.UI\Uno.UI.", StringComparison.Ordinal);
+			string[] expectedRefs = isTopProject
+				? ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"]
+				: ["Uno.Foundation", "Uno.UI.Dispatching"];
 			foreach (var expectedRef in expectedRefs)
 			{
 				if (!externalCompilationReferences.Contains(expectedRef))

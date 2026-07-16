@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml
 			// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
 			// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
 			// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
-			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
+			if (baseValueSource == DependencyPropertyValuePrecedences.BuiltInStyle &&
 				dependencyObject is FrameworkElement fe &&
 				fe.GetActiveStyle() is { } activeStyle &&
 				// Make sure to only consider active style if it was explicit.
@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.BuiltInStyle or DependencyPropertyValuePrecedences.Style);
 
 			IDisposable? localPrecedenceDisposable = null;
 
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml
 							{
 								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
-									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.Style))
 									{
 										adjustedSetter.ApplyTo(o);
 									}
@@ -236,10 +236,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
-		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value, DependencyObject @do)
+		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value)
 		{
-			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value) && value != DependencyProperty.UnsetValue)
 			{
 				return true;
 			}
@@ -291,10 +290,6 @@ namespace Microsoft.UI.Xaml
 							throw new InvalidOperationException("Property must be set on Setter used in Style"); // TODO: We should also support Setter.Target inside Style https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter#remarks
 						}
 						map[s.Property] = setter;
-					}
-					else if (setter is ICSharpPropertySetter propertySetter)
-					{
-						map[propertySetter.Property] = setter;
 					}
 				}
 			}

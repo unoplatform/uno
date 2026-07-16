@@ -1630,8 +1630,6 @@
 			<!-- END Android PDFDocument -->
 
 			<!-- BEGIN Skia clipping -->
-			<Member fullName="Windows.Foundation.Point Uno.Extensions.Vector2Extensions.ToPoint(System.Numerics.Vector2 v)" reason="Does not exist in WinAppSDK" />
-			<Member fullName="System.Numerics.Vector2 Uno.Extensions.Vector2Extensions.ToVector(Windows.Foundation.Point p)" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Numerics.Matrix3x2 Microsoft.UI.Composition.CompositionClip.get_TransformMatrix()" reason="Converted to auto-property" />
 			<Member fullName="System.Numerics.Vector2 Microsoft.UI.Composition.CompositionClip.get_Scale()" reason="Converted to auto-property" />
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionClip.get_RotationAngle()" reason="Converted to auto-property" />
@@ -2244,6 +2242,9 @@
 		       *EasingFunction, IVisualElement2) and are preserved on the branch. -->
 		  <Member fullName="Windows\.UI\.Composition\.((Back|Bounce|Circle|Elastic|Exponential|Power|Sine)EasingFunction|CompositionEasingFunctionMode|DelegatedInkTrailVisual|ICompositionSupportsSystemBackdrop|ICompositionSurfaceFacade|IVisualElement2|InkTrailPoint|RectangleClip)" reason="WinUI sync: legacy Windows.UI.Composition projections removed (Microsoft.UI.Composition equivalents preserved)" isRegex="true" />
 
+		  <!-- Uno-native dead stub (Visual subclass, private ctor only, no factory, zero consumers) removed. -->
+		  <Member fullName="Microsoft.UI.Composition.DelegatedInkTrailVisual" reason="Removed dead DelegatedInkTrailVisual stub (BC32, breaking changes for 7.0)" />
+
 		  <!-- Group 11b: Windows.UI.Core preview independent-input controllers -->
 		  <Member fullName="Windows\.UI\.Core\.CoreIndependentInput(Filters|SourceController)" reason="WinUI sync: preview independent-input controller types removed by WinAppSDK 1.8" isRegex="true" />
 
@@ -2266,9 +2267,26 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+
+		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
+		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
+
+		  <!-- Legacy WASM IJSObject DOM-interop mechanism (Uno-only, no WinUI counterpart); hard-removed. -->
+		  <Member fullName="Uno.Foundation.Interop.IJSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.IJSObjectMetadata" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+
+		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
+		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 	  </Types>
 
 	  <Fields>
+		  <!-- DependencyPropertyValuePrecedences enum cleanup: obsolete/misused members removed and style levels renamed to match WinUI's BaseValueSource (#16356, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Removed unused TemplatedParent precedence (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed ExplicitStyle to Style to match WinUI BaseValueSourceStyle (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Removed misused ImplicitStyle precedence; default styles now use BuiltInStyle (#16356, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::DefaultStyle" reason="Renamed DefaultStyle to BuiltInStyle to match WinUI BaseValueSourceBuiltInStyle (#16356, breaking changes for 7.0)" />
 		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ScrollingInputKinds::value__" reason="WinUI sync: type restructured in WinAppSDK 1.8" />
 
 		  <!-- ====================================================================== -->
@@ -2508,6 +2526,26 @@
 
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+
+		  <!-- DataContext restricted to FrameworkElement. DataContext / DataContextProperty are
+		       removed from UIElement and every non-FrameworkElement DependencyObject (Brush, Transform, Setter,
+		       GradientStop, Timeline, FlyoutBase, DependencyObjectCollection, ResourceDictionary, VisualState, ElementFactory, ...).
+		       FrameworkElement keeps them, so its members are never reported as removed and are unaffected by these patterns. -->
+		  <Member fullName="System\.Object .+(::|\.)DataContext\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)DataContextProperty\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+
+		  <!-- Uno-only native-bubbling knob (no WinUI counterpart); meaningless once native bubbling is gone on Skia. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement::EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): property-backed store/TemplatedParent members now inherited from the base. -->
+		  <Member fullName="Windows\.UI\.Core\.CoreDispatcher .+(::|\.)Dispatcher\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Dispatching\.DispatcherQueue .+(::|\.)DispatcherQueue\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Boolean .+(::|\.)IsStoreInitialized\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObject .+(::|\.)TemplatedParent\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <!-- ColorKeyFrameCollection carried a binary-compat 'new'-shadow block (Size/Count/IsReadOnly/indexer) that its zero-shadow siblings Double/ObjectKeyFrameCollection never had; the get-only base DependencyObjectCollection<T> members show through with identical behavior. Accessor methods are paired in <Methods> below. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(Size|Count|IsReadOnly|Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 	  </Properties>
 
 	  <Methods>
@@ -2873,6 +2911,59 @@
 		       on the generated Animated*VisualSource sources, so they drop off the concrete
 		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+
+		  <!-- DataContext restricted to FrameworkElement — accessor methods removed from UIElement and every non-FE DependencyObject. -->
+		  <Member fullName="System\.Object .+(::|\.)get_DataContext\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)set_DataContext\(System\.Object value\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)get_DataContextProperty\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)add_DataContextChanged\(.+\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)remove_DataContextChanged\(.+\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
+
+		  <!-- EventsBubblingInManagedCode accessors: paired with the removed DP (see <Properties> above). Uno-only native-bubbling knob with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCodeProperty()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Xaml.RoutedEventFlag Microsoft.UI.Xaml.UIElement.get_EventsBubblingInManagedCode()" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
+		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
+		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
+		       inherited from the DependencyObject base, so the diff reports them "removed" on each previously-declaring
+		       type. They remain available (inherited), so these accessor/method removals are ignored across all types. -->
+		  <Member fullName="Windows\.UI\.Core\.CoreDispatcher .+(::|\.)get_Dispatcher\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Dispatching\.DispatcherQueue .+(::|\.)get_DispatcherQueue\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Boolean .+(::|\.)get_IsStoreInitialized\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)GetValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp, System\.Object value\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ClearValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)ReadLocalValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Object .+(::|\.)GetAnimationBaseValue\(Microsoft\.UI\.Xaml\.DependencyProperty dp\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Int64 .+(::|\.)RegisterPropertyChangedCallback\(Microsoft\.UI\.Xaml\.DependencyProperty dp, Microsoft\.UI\.Xaml\.DependencyPropertyChangedCallback callback\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)UnregisterPropertyChangedCallback\(Microsoft\.UI\.Xaml\.DependencyProperty dp, System\.Int64 token\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObject .+(::|\.)get_TemplatedParent\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)set_TemplatedParent\(Microsoft\.UI\.Xaml\.DependencyObject value\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyProperty .+(::|\.)get_TemplatedParentProperty\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(System\.Object target, System\.String dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(System\.String dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBinding\(Microsoft\.UI\.Xaml\.DependencyProperty dependencyProperty, Microsoft\.UI\.Xaml\.Data\.BindingBase binding\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SetBindingValue\(System\.Object value, System\.String propertyName\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="Microsoft\.UI\.Xaml\.Data\.BindingExpression .+(::|\.)GetBindingExpression\(Microsoft\.UI\.Xaml\.DependencyProperty dependencyProperty\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ClearBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)RestoreBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)ResumeBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+		  <Member fullName="System\.Void .+(::|\.)SuspendBindings\(\)" reason="DependencyObject as class: member inherited from base" isRegex="true" />
+
+		  <!-- op_Explicit binary-compat shim on PointerPoint; hand-emitted only to keep old binaries linking after the explicit-to-implicit conversion change. The implicit operators remain. -->
+		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Input.PointerPoint.op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)" reason="Removed op_Explicit binary-compat shim on Microsoft.UI.Input.PointerPoint (BC43, breaking changes for 7.0)" />
+
+		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
+		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+
+		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
 	  </Methods>
 
 	  <Events>
@@ -2912,17 +3003,82 @@
 		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.ViewManagement.Core.CoreInputView,Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs&gt; Windows.UI.ViewManagement.Core.CoreInputView::PrimaryViewAnimationStarting" reason="WinUI sync: uses removed CoreInputViewAnimationStartingEventArgs (Group 11e)" />
 
 		  <!-- END WinUI sync (Category B): shadow event removals -->
+
+		  <!-- DataContext restricted to FrameworkElement — DataContextChanged removed from UIElement and every non-FE DependencyObject. -->
+		  <Member fullName="Windows\.Foundation\.TypedEventHandler.+(::|\.)DataContextChanged" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Events>
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="6.6">
+	  <Types>
+		  <!-- Legacy cross-target FeatureConfiguration holder class removed with its sole flag (#2053, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Binding" reason="Removed empty FeatureConfiguration.Binding holder after deleting IgnoreINPCSameReferences (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/Timeline" reason="Removed empty FeatureConfiguration.Timeline holder after deleting DefaultsStartingValueFromAnimatedValue (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/VisualState" reason="Removed empty FeatureConfiguration.VisualState holder after deleting ApplySettersBeforeTransition (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/DataTemplateSelector" reason="Removed empty FeatureConfiguration.DataTemplateSelector holder after deleting UseLegacyTemplateSelectorOverload (#2053, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs" reason="Removed empty FeatureConfiguration.ManipulationRoutedEventArgs holder after deleting IsAbsolutePositionEnabled (#2053, breaking changes for 7.0)" />
+	  </Types>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- Native-only FeatureConfiguration knobs removed with the native renderers (#2052, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors::UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2::IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings::IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- Legacy cross-target FeatureConfiguration flags removed (#2053, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Binding::IgnoreINPCSameReferences()" reason="Removed Binding.IgnoreINPCSameReferences legacy flag; binding engine always uses the correct INPC path (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement::UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag; hit-testing locked to the WinUI-aligned default behavior (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (no consumers) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline::DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag; animations always default the starting value from the animated value (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState::ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag; setters always applied at the WinUI-correct time (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag; templates always materialize eagerly (WinUI-aligned) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector::UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag; the two-arg SelectTemplate fallback always runs (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs::IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag; manipulation Position is always container-relative (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag; specific-event prevention always used (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateMeasurePath()" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag; measure dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag; arrange dirty-path is always on globally (per-element opt-out via FrameworkElementHelper remains) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- Cursors.UseHandForInteraction / WebView2.IsInspectable accessors: paired with the removed properties (see <Properties> above). Native-only knobs removed with the native renderers (#2052). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Cursors.get_UseHandForInteraction()" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Cursors.set_UseHandForInteraction(System.Boolean value)" reason="Removed Cursors.UseHandForInteraction flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/WebView2.get_IsInspectable()" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/WebView2.set_IsInspectable(System.Boolean value)" reason="Removed WebView2.IsInspectable flag, superseded by EnableDevTools (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/AndroidSettings.get_IsEdgeToEdgeEnabled()" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/AndroidSettings.set_IsEdgeToEdgeEnabled(System.Boolean value)" reason="Removed AndroidSettings.IsEdgeToEdgeEnabled flag; edge-to-edge is now unconditional on Skia-Android (#2052, breaking changes for 7.0)" />
+		  <!-- Binding.IgnoreINPCSameReferences accessors: paired with the removed property and holder class (#2053). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Binding.get_IgnoreINPCSameReferences()" reason="Removed Binding.IgnoreINPCSameReferences legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Binding.set_IgnoreINPCSameReferences(System.Boolean value)" reason="Removed Binding.IgnoreINPCSameReferences legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/FrameworkElement.get_UseLegacyHitTest()" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/FrameworkElement.set_UseLegacyHitTest(System.Boolean value)" reason="Removed FrameworkElement.UseLegacyHitTest legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_ShowClippingBounds()" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_ShowClippingBounds(System.Boolean value)" reason="Removed orphaned UIElement.ShowClippingBounds diagnostic flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Timeline.get_DefaultsStartingValueFromAnimatedValue()" reason="Removed Timeline.DefaultsStartingValueFromAnimatedValue legacy flag (get-only) (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/VisualState.get_ApplySettersBeforeTransition()" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/VisualState.set_ApplySettersBeforeTransition(System.Boolean value)" reason="Removed VisualState.ApplySettersBeforeTransition legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseLegacyLazyApplyTemplate()" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseLegacyLazyApplyTemplate(System.Boolean value)" reason="Removed Control.UseLegacyLazyApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/DataTemplateSelector.get_UseLegacyTemplateSelectorOverload()" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/DataTemplateSelector.set_UseLegacyTemplateSelectorOverload(System.Boolean value)" reason="Removed DataTemplateSelector.UseLegacyTemplateSelectorOverload legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.get_IsAbsolutePositionEnabled()" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs.set_IsAbsolutePositionEnabled(System.Boolean value)" reason="Removed ManipulationRoutedEventArgs.IsAbsolutePositionEnabled legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_DisablePointersSpecificEventPrevention()" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_DisablePointersSpecificEventPrevention(System.Boolean value)" reason="Removed UIElement.DisablePointersSpecificEventPrevention legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_UseInvalidateMeasurePath()" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateMeasurePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateMeasurePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_UseInvalidateArrangePath()" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_UseInvalidateArrangePath(System.Boolean value)" reason="Removed UIElement.UseInvalidateArrangePath legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control.get_UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Control.set_UseDeferredOnApplyTemplate(System.Boolean value)" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup.get_EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Popup.set_EnableLightDismissByDefault(System.Boolean value)" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox.get_UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBox.set_UseOverlayOnSkia(System.Boolean value)" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

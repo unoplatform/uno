@@ -18,6 +18,7 @@ using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
+
 namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
@@ -362,10 +363,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 
-			var rootClip = _pathPool.Allocate();
-			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
-			rootClip.Rewind();
-			rootClip.AddRect(InfiniteClipRect);
+			using var rootClip = SkiaExtensions.CreateRectPath(InfiniteClipRect);
 			Render(session, rootClip);
 		}
 	}
@@ -418,10 +416,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var toRoot = TotalMatrix.ToSKMatrix();
 
 			var preClip = _spareRenderPath;
-			preClip.Rewind();
+			preClip.Reset();
 
-			ownClip.Rewind();
-			ownClip.AddPath(clipInRoot);
+			clipInRoot.Transform(SKMatrix.Identity, ownClip);
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
@@ -429,13 +426,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
 			}
 
-			childClip.Rewind();
-			childClip.AddPath(ownClip);
+			ownClip.Transform(SKMatrix.Identity, childClip);
 			if (GetPostPaintingClipping() is { } postClip)
 			{
 				var postClipInRoot = _pathPool.Allocate();
-				postClipInRoot.Rewind();
-				postClipInRoot.AddPath(postClip);
+				postClip.Transform(SKMatrix.Identity, postClipInRoot);
 				postClipInRoot.Transform(toRoot);
 				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
 				_pathPool.Free(postClipInRoot);
@@ -605,17 +600,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var localClipCombinedByClipFromParent = _pathPool.Allocate();
 		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
-		localClipCombinedByClipFromParent.Rewind();
-
+		var localMatrix = TotalMatrix.ToSKMatrix();
 		if (GetPrePaintingClipping(_spareRenderPath))
 		{
-			localClipCombinedByClipFromParent.AddPath(_spareRenderPath);
+			_spareRenderPath.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
 		else
 		{
-			localClipCombinedByClipFromParent.AddRect(new SKRect(0, 0, Size.X, Size.Y));
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, Size.X, Size.Y));
+			sizeRect.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
-		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
 		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
 
 		if (IsNativeHostVisual || CanPaint())
@@ -647,8 +641,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		else
 		{
-			dst.Rewind();
-			dst.AddRect(InfiniteClipRect);
+			// Root: seed the caller's accumulator with the unclipped (infinite) region; ancestor clips
+			// get intersected into it below. dst is caller-owned and Op'd in place, hence the copy.
+			using var infiniteRect = SkiaExtensions.CreateRectPath(InfiniteClipRect);
+			infiniteRect.Transform(SKMatrix.Identity, dst);
 		}
 
 		var localPath = _pathPool.Allocate();
@@ -777,7 +773,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
 				// position; the canvas scale only affects the mask blur's per-axis sigma.
 				var scratch = _spareShadowPath;
-				scratch.Rewind();
+				scratch.Reset();
 				path.Transform(SKMatrix.CreateScale(1f, pathYScale), scratch);
 				canvas.DrawPath(scratch, paint);
 			}
@@ -809,7 +805,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var clipPath = _pathPool.Allocate();
 		using var clipPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), clipPath);
-		clipPath.Rewind();
+		clipPath.Reset();
 
 		var hasClip = TryPopulateEffectiveClipInRoot(visual, in toRoot, clipPath);
 
@@ -822,7 +818,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				clipPath.AddPath(ancestorClipInRoot);
+				ancestorClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -837,9 +833,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
 			var sizeCandidate = _spareShadowPath;
-			sizeCandidate.Rewind();
-			sizeCandidate.AddRect(new SKRect(0, 0, size.X, size.Y));
-			sizeCandidate.Transform(toRoot);
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, size.X, size.Y));
+			sizeRect.Transform(toRoot, sizeCandidate);
 			if (hasClip)
 			{
 				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
@@ -864,7 +859,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			foreach (var (path, alpha) in scratch)
 			{
 				var transformed = _spareShadowPath;
-				transformed.Rewind();
+				transformed.Reset();
 				path.Transform(toRoot, transformed);
 
 				if (hasClip)
@@ -890,7 +885,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (postClipLocal is not null)
 		{
 			var postClipInRoot = _spareShadowPath;
-			postClipInRoot.Rewind();
+			postClipInRoot.Reset();
 			postClipLocal.Transform(toRoot, postClipInRoot);
 
 			if (hasClip)
@@ -899,7 +894,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				clipPath.AddPath(postClipInRoot);
+				postClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -920,7 +915,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static bool TryPopulateEffectiveClipInRoot(Visual visual, in SKMatrix toRoot, SKPath dst)
 	{
 		var preClipLocal = _spareShadowPath;
-		preClipLocal.Rewind();
+		preClipLocal.Reset();
 		if (visual.GetPrePaintingClipping(preClipLocal))
 		{
 			preClipLocal.Transform(toRoot, dst);
@@ -956,7 +951,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (Clip is not null)
 		{
 			dst.Reset();
-			dst.AddPath(Clip?.GetClipPath(this));
+			if (Clip.GetClipPath(this) is { } clipPath)
+			{
+				clipPath.Transform(SKMatrix.Identity, dst);
+			}
 			return true;
 		}
 		return false;

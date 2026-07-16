@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class KeyFrameAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.AnimationDelayBehavior DelayBehavior
 		{
 			get

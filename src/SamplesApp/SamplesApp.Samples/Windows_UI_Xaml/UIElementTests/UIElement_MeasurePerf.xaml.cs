@@ -20,23 +20,6 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 		public UIElement_MeasurePerf()
 		{
 			this.InitializeComponent();
-
-#if !WINAPPSDK
-			bool originalUseInvalidateMeasurePath = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
-			bool originalUseInvalidateArrangePath = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
-
-			Loaded += (_, _) =>
-			{
-				optimizeMeasure.IsChecked = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
-				optimizeArrange.IsChecked = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
-			};
-
-			Unloaded += (_, _) =>
-			{
-				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = originalUseInvalidateMeasurePath;
-				FeatureConfiguration.UIElement.UseInvalidateArrangePath = originalUseInvalidateArrangePath;
-			};
-#endif
 		}
 
 		private void BuildUI1(object sender, RoutedEventArgs e)
@@ -187,29 +170,6 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 
 			return (root, leaves, mostInner);
-		}
-
-		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
-		{
-#if !WINAPPSDK
-			if (optimizeMeasure.IsChecked is true)
-			{
-				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;
-			}
-			else
-			{
-				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = false;
-			}
-
-			if (optimizeArrange.IsChecked is true)
-			{
-				FeatureConfiguration.UIElement.UseInvalidateArrangePath = true;
-			}
-			else
-			{
-				FeatureConfiguration.UIElement.UseInvalidateArrangePath = false;
-			}
-#endif
 		}
 	}
 }

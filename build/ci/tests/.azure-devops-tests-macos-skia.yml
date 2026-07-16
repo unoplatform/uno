@@ -17,7 +17,7 @@ jobs:
   cancelTimeoutInMinutes: 0
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmMacImageTest }}
 
   variables:
     SamplesAppArtifactName: samplesapp-desktop-skia

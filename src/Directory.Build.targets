@@ -74,10 +74,45 @@
 	<PropertyGroup>
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
-		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
-		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
+		<SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+		<HarfbuzzSharpVersion>14.2.0</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.2.1</UnoICUVersion>
 	</PropertyGroup>
+
+	<Choose>
+		<When Condition=" $([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework))) == '.NETStandard' ">
+			<ItemGroup>
+				<PackageReference Update="Microsoft.Build" Version="15.9.20" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
+			</ItemGroup>
+		</When>
+		<When Condition=" $([MSBuild]::IsTargetFrameworkCompatible('net11.0', $(TargetFramework))) ">
+			<ItemGroup>
+				<PackageReference Update="Microsoft.CodeAnalysis" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
+				<PackageReference Update="Microsoft.Build" Version="18.7.1" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Framework" Version="18.7.1" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Tasks.Core" Version="18.7.1" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Utilities.Core" Version="18.7.1" ExcludeAssets="runtime" />
+			</ItemGroup>
+		</When>
+		<When Condition=" $([MSBuild]::IsTargetFrameworkCompatible('net10.0', $(TargetFramework))) ">
+			<ItemGroup>
+				<PackageReference Update="Microsoft.CodeAnalysis" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+				<PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
+				<PackageReference Update="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
+				<PackageReference Update="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
+			</ItemGroup>
+		</When>
+	</Choose>
 
 	<ItemGroup>
 		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
@@ -136,8 +171,8 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="$(HarfbuzzSharpVersion)" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.2.25502.107" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' "  Update="Microsoft.Win32.SystemEvents" Version="10.0.9" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' "   Update="Microsoft.Win32.SystemEvents" Version="11.0.0-preview.5.26302.115" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
@@ -161,20 +196,20 @@
 		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.0.1" />
-		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
-		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
 		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.0.7" />
 		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.2" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.8.7.4" />
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.28" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.2" />
+		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.5" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.10.0.2" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.2.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

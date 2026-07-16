@@ -39,8 +39,6 @@ using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
 public partial class TextBox : ITextSelectionGripperHost
 {
-	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
-
 	private TextSelectionGripperPresenter _gripperPresenter;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
@@ -233,7 +231,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	{
 		_proofingMenu.Items.Clear();
 
-		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText is not UnicodeText unicodeText)
+		if (TextBoxView?.DisplayBlock?.ParsedText is not UnicodeText unicodeText)
 		{
 			return;
 		}
@@ -269,7 +267,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	// Ported from: TextBoxBase.cpp pattern for applying text replacement (similar to PasteFromClipboardPartial)
 	private void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
 	{
-		if (IsReadOnly || !_isSkiaTextBox)
+		if (IsReadOnly)
 		{
 			return;
 		}
@@ -404,13 +402,10 @@ public partial class TextBox : ITextSelectionGripperHost
 			{
 				ContentElement.Content = displayBlock;
 
-				if (_isSkiaTextBox)
-				{
-					// The presenter owns the touch-selection gripper visuals and their drag/positioning
-					// logic (shared with selectable TextBlock). It subscribes to DisplayBlock.DrawingFinished
-					// to keep the grippers glued to the selection ends as the text is (re)drawn.
-					_gripperPresenter ??= new TextSelectionGripperPresenter(this);
-				}
+				// The presenter owns the touch-selection gripper visuals and their drag/positioning
+				// logic (shared with selectable TextBlock). It subscribes to DisplayBlock.DrawingFinished
+				// to keep the grippers glued to the selection ends as the text is (re)drawn.
+				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 			}
 
 			TextBoxView.SetTextNative(Text);
@@ -422,50 +417,47 @@ public partial class TextBox : ITextSelectionGripperHost
 		_clipboardChangeSubscription.Disposable = null;
 		TextBoxView?.OnFocusStateChanged(focusState);
 
-		if (_isSkiaTextBox)
+		if (focusState != FocusState.Unfocused)
 		{
-			if (focusState != FocusState.Unfocused)
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			_textBoxNotificationsSingleton?.OnFocused(this);
+			StartImeSession();
+			UpdateCanPasteClipboardContent();
+			Clipboard.ContentChanged += OnClipboardContentChanged;
+			_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
+		}
+		else
+		{
+			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
+			// Check if focus is moving to a text control flyout before deciding to unfocus.
+			_forceFocusedVisualState = ShouldForceFocusedVisualState();
+
+			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
+			// Hide touch caret thumbs when context flyout is opening.
+			if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
+				&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+					or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				_textBoxNotificationsSingleton?.OnFocused(this);
-				StartImeSession();
-				UpdateCanPasteClipboardContent();
-				Clipboard.ContentChanged += OnClipboardContentChanged;
-				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
-			else
-			{
-				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
-				// Check if focus is moving to a text control flyout before deciding to unfocus.
-				_forceFocusedVisualState = ShouldForceFocusedVisualState();
-
-				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
-				// Hide touch caret thumbs when context flyout is opening.
-				if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
-					&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
-						or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-				{
-					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				}
-			}
-
-			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
-			{
-				EndImeSession();
-				TrySetCurrentlyTyping(false);
-				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-				if (SelectionFlyout?.IsOpen == true)
-				{
-					SelectionFlyout.Hide();
-				}
-				if (!initial)
-				{
-					_textBoxNotificationsSingleton?.OnUnfocused(this);
-				}
-				_timer.Stop();
-			}
-			UpdateDisplaySelection();
 		}
+
+		if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
+		{
+			EndImeSession();
+			TrySetCurrentlyTyping(false);
+			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+			}
+			if (!initial)
+			{
+				_textBoxNotificationsSingleton?.OnUnfocused(this);
+			}
+			_timer.Stop();
+		}
+		UpdateDisplaySelection();
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
@@ -525,47 +517,44 @@ public partial class TextBox : ITextSelectionGripperHost
 		// which will update the native input in case of Wasm Skia for example.
 		TextBoxView?.Select(start, length);
 
-		if (_isSkiaTextBox)
+		if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
-			if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-			{
-				// It doesn't make sense to have 2 caret ends when there's no selection.
-				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
-			}
-			else if (CaretMode is CaretDisplayMode.ThumblessCaretHidden)
-			{
-				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			}
-			else if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
-			{
-				_timer.Start(); // restart
-			}
-
-			if (selectionChanged)
-			{
-				UpdateScrolling();
-			}
-			UpdateDisplaySelection();
+			// It doesn't make sense to have 2 caret ends when there's no selection.
+			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 		}
+		else if (CaretMode is CaretDisplayMode.ThumblessCaretHidden)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		}
+		else if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
+		{
+			_timer.Start(); // restart
+		}
+
+		if (selectionChanged)
+		{
+			UpdateScrolling();
+		}
+		UpdateDisplaySelection();
 	}
 
 	partial void SelectAllPartial() => Select(0, Text.Length);
 
 	public int SelectionStart
 	{
-		get => _isSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
+		get => _selection.start;
 		set => Select(start: value, length: SelectionLength);
 	}
 
 	public int SelectionLength
 	{
-		get => _isSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
+		get => _selection.length;
 		set => Select(SelectionStart, value);
 	}
 
 	private void UpdateDisplaySelection()
 	{
-		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
+		if (TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
 			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
@@ -639,7 +628,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	/// <returns>The position in local coordinates, or null if position cannot be determined.</returns>
 	internal Point? GetContextMenuShowPosition()
 	{
-		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText == null)
+		if (TextBoxView?.DisplayBlock?.ParsedText == null)
 		{
 			return null;
 		}
@@ -731,7 +720,7 @@ public partial class TextBox : ITextSelectionGripperHost
 			// Line 5424-5441: Get selection bounds and adjust flyout position
 			var position = _lastPointerPosition;
 
-			if (_isSkiaTextBox && TextBoxView?.DisplayBlock?.ParsedText is { } parsedText)
+			if (TextBoxView?.DisplayBlock?.ParsedText is { } parsedText)
 			{
 				// Get selection bounding rect in DisplayBlock coordinates
 				var startRect = parsedText.GetRectForIndex(SelectionStart);
@@ -785,8 +774,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	{
 		base.OnBringIntoViewRequested(e);
 
-		if (_isSkiaTextBox
-			&& (e.TargetElement is null || e.TargetElement == this)
+		if ((e.TargetElement is null || e.TargetElement == this)
 			&& FocusState != FocusState.Unfocused
 			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
 			&& TextBoxView?.DisplayBlock is { } displayBlock
@@ -817,7 +805,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	/// </remarks>>
 	private void UpdateScrolling(bool putSelectionEndInVisibleViewport)
 	{
-		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
+		if (_contentElement is ScrollViewer sv)
 		{
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
@@ -851,11 +839,6 @@ public partial class TextBox : ITextSelectionGripperHost
 		// This is a minimal copy of OnkeyDownSkia that just sets args.Handled without doing any work.
 		// This is to match WinUI behavior where Handled is set for certain keys before public
 		// subscribers get the event, but before any actual text processing is done.
-		if (!_isSkiaTextBox)
-		{
-			return;
-		}
-
 		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
@@ -1586,30 +1569,27 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void OnTextChangedPartial()
 	{
-		if (_isSkiaTextBox)
+		CancelCompositionOnExternalChange();
+
+		// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
+		// Close the selection flyout when text changes.
+		TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
+		if (_pendingSelection is { } selection)
 		{
-			CancelCompositionOnExternalChange();
-
-			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
-			// Close the selection flyout when text changes.
-			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
-
-			if (_pendingSelection is { } selection)
-			{
-				SelectInternal(selection.start, selection.length);
-			}
-			else
-			{
-				SelectInternal(0, 0);
-			}
-
-			if (_clearHistoryOnTextChanged)
-			{
-				ClearUndoRedoHistory();
-			}
-
-			_textBoxNotificationsSingleton?.NotifyValueChanged(this);
+			SelectInternal(selection.start, selection.length);
 		}
+		else
+		{
+			SelectInternal(0, 0);
+		}
+
+		if (_clearHistoryOnTextChanged)
+		{
+			ClearUndoRedoHistory();
+		}
+
+		_textBoxNotificationsSingleton?.NotifyValueChanged(this);
 	}
 
 	private string RemoveLF(string baseString)
@@ -1654,39 +1634,33 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText)
 	{
-		if (_isSkiaTextBox)
+		if (_currentlyTyping)
 		{
-			if (_currentlyTyping)
-			{
-				TrySetCurrentlyTyping(false);
-			}
-			else
-			{
-				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
-				// we will already get a new action from the setter, so we don't need to commit another one here.
-				CommitAction(new ReplaceAction(Text, newText, selectionStart));
-			}
-
-			_pendingSelection = (selectionStart + adjustedClipboardText.Length, 0);
+			TrySetCurrentlyTyping(false);
 		}
+		else
+		{
+			// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+			// we will already get a new action from the setter, so we don't need to commit another one here.
+			CommitAction(new ReplaceAction(Text, newText, selectionStart));
+		}
+
+		_pendingSelection = (selectionStart + adjustedClipboardText.Length, 0);
 	}
 
 	partial void CutSelectionToClipboardPartial()
 	{
-		if (_isSkiaTextBox)
+		if (_currentlyTyping)
 		{
-			if (_currentlyTyping)
-			{
-				TrySetCurrentlyTyping(false);
-			}
-			else
-			{
-				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
-				// we will already get a new action from the setter, so we don't need to commit another one here.
-				CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
-			}
-			_pendingSelection = (_selection.start, 0);
+			TrySetCurrentlyTyping(false);
 		}
+		else
+		{
+			// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+			// we will already get a new action from the setter, so we don't need to commit another one here.
+			CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
+		}
+		_pendingSelection = (_selection.start, 0);
 	}
 
 	private void EnsureHistory()
@@ -1717,11 +1691,6 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	public void Undo()
 	{
-		if (!_isSkiaTextBox)
-		{
-			return;
-		}
-
 		TrySetCurrentlyTyping(false);
 		if (_historyIndex == 0 || HasPointerCapture)
 		{
@@ -1756,11 +1725,6 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	public void Redo()
 	{
-		if (!_isSkiaTextBox)
-		{
-			return;
-		}
-
 		if (_historyIndex == _history.Count - 1 || HasPointerCapture)
 		{
 			return;

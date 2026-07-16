@@ -71,7 +71,9 @@ partial class Given_UIElement
 		Assert.AreEqual(DC, nested4.DataContext, "3. when reattached, DC (nested4) should still be inherited&unaffected");
 	}
 
-#if HAS_UNO // there is no DC on non-FE DO for winui, not directly*
+#if HAS_UNO // non-FE DependencyObjects have no DataContext of their own on WinUI; Uno keeps an inheritance-context
+	// (mentor) so {Binding}s on them resolve. Since the DataContext itself is no longer observable on a non-FE object,
+	// these tests observe propagation through a {Binding}: a bound property updating == the ambient DataContext reached it.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
@@ -87,7 +89,7 @@ partial class Given_UIElement
 
 		await UITestHelper.Load(tblock, x => x.IsLoaded);
 
-		Assert.AreEqual(dc, run.DataContext);
+		// Run is non-FE: its {Binding} resolves against the connected TextBlock's DataContext (inheritance-context).
 		Assert.AreEqual(dc.Data, run.Text);
 	}
 
@@ -97,31 +99,27 @@ partial class Given_UIElement
 	public async Task MultiParentNonFE_Direct_DataContext_Propagation_WorksOnlyOnce1()
 	{
 		var brush = new SolidColorBrush(Colors.SkyBlue);
-
-#if DEBUG
-		using var disp = brush.RegisterDisposablePropertyChangedCallback(
-			SolidColorBrush.DataContextProperty,
-			(s, e) => { /* breakpoint here to investigate */ });
-#endif
+		// Color tracks the ambient DataContext: it updates only while the brush's inheritance-context is live.
+		brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 		// variant: assignment order: foreground > dc
 
 		var setup0 = new Control();
 		setup0.Foreground = brush;
-		setup0.DataContext = new { Data = "Context 0" };
-		Assert.IsNotNull(brush.DataContext, "0. until it is attached to multiple \"parent\", dc propagate should work");
+		setup0.DataContext = new { Color = Colors.Red };
+		Assert.AreEqual(Colors.Red, brush.Color, "0. until it is attached to multiple \"parent\", dc propagate should work");
 
 		var setup1 = new Control();
 		setup1.Foreground = brush;
-		setup1.DataContext = new { Data = "Context 1" };
-		Assert.IsNull(brush.DataContext, "1. once it is attached to multiple \"parent\", dc should no longer propagate");
+		setup1.DataContext = new { Color = Colors.Green };
+		Assert.AreNotEqual(Colors.Green, brush.Color, "1. once it is attached to multiple \"parent\", dc should no longer propagate");
 
 		setup0.Foreground = null;
 		setup1.Foreground = null;
 		var setup2 = new Control();
 		setup2.Foreground = brush;
-		setup2.DataContext = new { Data = "Context 2" };
-		Assert.IsNull(brush.DataContext, "2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
+		setup2.DataContext = new { Color = Colors.Blue };
+		Assert.AreNotEqual(Colors.Blue, brush.Color, "2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
 	}
 
 	[TestMethod]
@@ -130,31 +128,26 @@ partial class Given_UIElement
 	public async Task MultiParentNonFE_Direct_DataContext_Propagation_WorksOnlyOnce2()
 	{
 		var brush = new SolidColorBrush(Colors.SkyBlue);
-
-#if DEBUG
-		using var disp = brush.RegisterDisposablePropertyChangedCallback(
-			SolidColorBrush.DataContextProperty,
-			(s, e) => { /* breakpoint here to investigate */ });
-#endif
+		brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 		// variant: assignment order: dc > foreground
 
 		var setup0 = new Control();
-		setup0.DataContext = new { Data = "Context 0" };
+		setup0.DataContext = new { Color = Colors.Red };
 		setup0.Foreground = brush;
-		Assert.IsNotNull(brush.DataContext, "0. until it is attached to multiple \"parent\", dc propagate should work");
+		Assert.AreEqual(Colors.Red, brush.Color, "0. until it is attached to multiple \"parent\", dc propagate should work");
 
 		var setup1 = new Control();
-		setup1.DataContext = new { Data = "Context 1" };
+		setup1.DataContext = new { Color = Colors.Green };
 		setup1.Foreground = brush;
-		Assert.IsNull(brush.DataContext, "1. once it is attached to multiple \"parent\", dc should no longer propagate");
+		Assert.AreNotEqual(Colors.Green, brush.Color, "1. once it is attached to multiple \"parent\", dc should no longer propagate");
 
 		setup0.Foreground = null;
 		setup1.Foreground = null;
 		var setup2 = new Control();
-		setup2.DataContext = new { Data = "Context 2" };
+		setup2.DataContext = new { Color = Colors.Blue };
 		setup2.Foreground = brush;
-		Assert.IsNull(brush.DataContext, "2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
+		Assert.AreNotEqual(Colors.Blue, brush.Color, "2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
 	}
 
 	[TestMethod]
@@ -188,33 +181,30 @@ partial class Given_UIElement
 		foreach (var variant in variants)
 		{
 			var brush = new SolidColorBrush(Colors.SkyBlue);
-#if DEBUG
-			using var disp = brush.RegisterDisposablePropertyChangedCallback(
-				SolidColorBrush.DataContextProperty,
-				(s, e) => { /* breakpoint here to investigate */ });
-#endif
+			// Color tracks the ambient DataContext: it updates only while the brush's inheritance-context is live.
+			brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 			var setup0 = new
 			{
 				Host = new Border(),
 				Child = new Control(),
-				DC = new { Data = $"Context {variant.Label}0" },
+				DC = (object)new { Color = Colors.Red },
 			};
 			instructionMap[variant.Instructions[0]](setup0.Host, setup0.Child, setup0.DC, brush);
 			instructionMap[variant.Instructions[1]](setup0.Host, setup0.Child, setup0.DC, brush);
 			instructionMap[variant.Instructions[2]](setup0.Host, setup0.Child, setup0.DC, brush);
-			Assert.IsNotNull(brush.DataContext, $"{variant.Label}0. until it is attached to multiple \"parent\", dc propagate should work");
+			Assert.AreEqual(Colors.Red, brush.Color, $"{variant.Label}0. until it is attached to multiple \"parent\", dc propagate should work");
 
 			var setup1 = new
 			{
 				Host = new Border(),
 				Child = new Control(),
-				DC = new { Data = $"Context {variant.Label}1" },
+				DC = (object)new { Color = Colors.Green },
 			};
 			instructionMap[variant.Instructions[0]](setup1.Host, setup1.Child, setup1.DC, brush);
 			instructionMap[variant.Instructions[1]](setup1.Host, setup1.Child, setup1.DC, brush);
 			instructionMap[variant.Instructions[2]](setup1.Host, setup1.Child, setup1.DC, brush);
-			Assert.IsNull(brush.DataContext, $"{variant.Label}1. once it is attached to multiple \"parent\", dc should no longer propagate");
+			Assert.AreNotEqual(Colors.Green, brush.Color, $"{variant.Label}1. once it is attached to multiple \"parent\", dc should no longer propagate");
 
 			setup0.Child.Foreground = null;
 			setup1.Child.Foreground = null;
@@ -222,12 +212,12 @@ partial class Given_UIElement
 			{
 				Host = new Border(),
 				Child = new Control(),
-				DC = new { Data = $"Context {variant.Label}2" },
+				DC = (object)new { Color = Colors.Blue },
 			};
 			instructionMap[variant.Instructions[0]](setup2.Host, setup2.Child, setup2.DC, brush);
 			instructionMap[variant.Instructions[1]](setup2.Host, setup2.Child, setup2.DC, brush);
 			instructionMap[variant.Instructions[2]](setup2.Host, setup2.Child, setup2.DC, brush);
-			Assert.IsNull(brush.DataContext, $"{variant.Label}2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
+			Assert.AreNotEqual(Colors.Blue, brush.Color, $"{variant.Label}2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
 		}
 	}
 #endif

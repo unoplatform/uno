@@ -94,10 +94,6 @@ namespace Microsoft.UI.Xaml.Controls
 					presenter._mediaPlayerDisposable.Add(Disposable.Create(() => newPlayer.SourceChanged -= newPlayerOnSourceChanged));
 #pragma warning restore IDE0055
 
-#if __APPLE_UIKIT__ || __ANDROID__
-					presenter.SetVideoSurface(newPlayer.RenderSurface);
-#endif
-
 					presenter.OnMediaPlayerChangedPartial(newPlayer);
 				}
 			}

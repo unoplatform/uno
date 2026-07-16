@@ -31,24 +31,18 @@ using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject, IThemeChangeAware
+	public partial class TextBlock : FrameworkElement, IThemeChangeAware
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
 		private IDisposable _foregroundBrushChangedSubscription;
 
-#if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
 		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
-#endif
 
 		private Hyperlink _hyperlinkOver; // do not use: use HyperlinkOver instead
 		private Hyperlink HyperlinkOver
@@ -142,9 +136,6 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
-#if __WASM__
-					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
-#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -300,9 +291,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if __APPLE_UIKIT__
-			new
-#endif
 			string Text
 		{
 			get { return (string)GetValue(TextProperty); }
@@ -411,11 +399,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if __APPLE_UIKIT__
-		/// <summary>
-		/// Supported font families: http://iosfonts.com/
-		/// </summary>
-#endif
 		public FontFamily FontFamily
 		{
 			get => (FontFamily)GetValue(FontFamilyProperty);
@@ -558,15 +541,11 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID__
-		new
-#endif
 			Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
-#if !__WASM__
 				if (value is SolidColorBrush || value is GradientBrush || value is RadialGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
@@ -575,9 +554,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
 				}
-#else
-				SetValue(ForegroundProperty, value);
-#endif
 			}
 		}
 
@@ -630,8 +606,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IsTextSelectionEnabled Dependency Property
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -639,8 +615,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsTextSelectionEnabledProperty, value);
 		}
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -885,15 +861,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			add
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				_isTextTrimmedChanged += value;
 			}
 			remove
@@ -918,15 +885,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				return (bool)GetValue(IsTextTrimmedProperty);
 			}
 
@@ -953,39 +911,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
 
-#if __ANDROID__ || __WASM__
-		/// <summary>
-		/// Returns if the TextBlock is constrained by a maximum number of lines.
-		/// </summary>
-		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
-#endif
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		/// <summary>
-		/// Gets the inlines which affect the typography of the TextBlock.
-		/// </summary>
-		private IEnumerable<(Inline inline, int start, int end)> GetEffectiveInlines()
-		{
-			if (UseInlinesFastPath)
-			{
-				yield break;
-			}
-
-			var start = 0;
-			foreach (var inline in Inlines.SelectMany(InlineExtensions.Enumerate))
-			{
-				if (inline.HasTypographicalEffectWithin(this))
-				{
-					yield return (inline, start, start + inline.GetText().Length);
-				}
-
-				if (inline is Run || inline is LineBreak)
-				{
-					start += inline.GetText().Length;
-				}
-			}
-		}
-#endif
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
@@ -1066,9 +991,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			that._isPressed = true;
-#endif
 
 			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{
@@ -1081,7 +1004,6 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
-#if !__WASM__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1111,7 +1033,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				that.CapturePointer(e.Pointer);
 			}
-#endif
 #if __SKIA__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
 			{
@@ -1136,7 +1057,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e) is { })
 			{
 				// if we release on a hyperlink, we don't select anything
@@ -1144,7 +1064,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			that._isPressed = false;
-#endif
 
 			if (that.IsCaptured(e.Pointer))
 			{
@@ -1172,22 +1091,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
 			// After pointer release, handle touch/pen selection and queue a SelectionFlyout visibility update.
 			that.OnPointerReleasedForSelectionFlyout(e);
-#if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is TextBlock that)
 			{
-#if !__WASM__
 				that._isPressed = false;
 				if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
-#endif
 
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
@@ -1208,7 +1123,6 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1222,7 +1136,6 @@ namespace Microsoft.UI.Xaml.Controls
 					that.Selection = that.Selection with { end = index };
 				}
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
@@ -1275,9 +1188,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void RecalculateSubscribeToPointerEvents()
 		{
 			SubscribeToPointerEvents = HasHyperlink
-#if !__WASM__
 				|| IsTextSelectionEnabled
-#endif
 				;
 		}
 
@@ -1369,32 +1280,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Hyperlink FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
-#if __WASM__
-			var point = e.GetCurrentPoint(null).Position;
-			var elementInCoordinate = WindowManagerInterop.TryGetElementInCoordinate(point) as TextElement;
-			while (elementInCoordinate is not null)
-			{
-				if (elementInCoordinate is Hyperlink)
-				{
-					break;
-				}
-
-				elementInCoordinate = elementInCoordinate.GetParent() as TextElement;
-			}
-
-			if (elementInCoordinate is Hyperlink hyperlink)
-			{
-				foreach (var candidate in _hyperlinks)
-				{
-					if (hyperlink == candidate)
-					{
-						return hyperlink;
-					}
-				}
-			}
-
-			return null;
-#elif __SKIA__
+#if __SKIA__
 			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
 			return null;

@@ -20,10 +20,6 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	/*
@@ -150,7 +146,7 @@ namespace Microsoft.UI.Xaml
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
 		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
@@ -195,54 +191,6 @@ namespace Microsoft.UI.Xaml
 			internal object Handler { get; }
 
 			internal bool HandledEventsToo { get; }
-		}
-
-		#region EventsBubblingInManagedCode DependencyProperty
-
-		public static DependencyProperty EventsBubblingInManagedCodeProperty { get; } = DependencyProperty.Register(
-			"EventsBubblingInManagedCode",
-			typeof(RoutedEventFlag),
-			typeof(UIElement),
-			new FrameworkPropertyMetadata(
-				RoutedEventFlag.None,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)
-			{
-				CoerceValueCallback = CoerceRoutedEventFlag
-			}
-		);
-
-		public RoutedEventFlag EventsBubblingInManagedCode
-		{
-			get => (RoutedEventFlag)GetValue(EventsBubblingInManagedCodeProperty);
-			set => SetValue(EventsBubblingInManagedCodeProperty, value);
-		}
-
-		#endregion
-
-		private static object CoerceRoutedEventFlag(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence)
-		{
-			var @this = (UIElement)dependencyObject;
-
-			// ReadLocalValue will read an outdated value for the precedence currently being set
-			var localValue = precedence is DependencyPropertyValuePrecedences.Local ?
-				baseValue :
-				@this.ReadLocalValue(EventsBubblingInManagedCodeProperty);
-
-			var inheritedValue = precedence is DependencyPropertyValuePrecedences.Inheritance ?
-				baseValue :
-				((IDependencyObjectStoreProvider)@this).Store.ReadInheritedValueOrDefaultValue(EventsBubblingInManagedCodeProperty);
-
-			var combinedFlag = RoutedEventFlag.None;
-			if (localValue is RoutedEventFlag local)
-			{
-				combinedFlag |= local;
-			}
-			if (inheritedValue is RoutedEventFlag inherited)
-			{
-				combinedFlag |= inherited;
-			}
-
-			return combinedFlag;
 		}
 
 		private readonly Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore
@@ -446,7 +394,7 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		public event KeyEventHandler PreviewKeyDown
 		{
 			add => AddHandler(PreviewKeyDownEvent, value, false);
@@ -653,9 +601,7 @@ namespace Microsoft.UI.Xaml
 #endif
 			global::System.Diagnostics.Debug.Assert(routedEvent.Flag is not RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
 
-#if !__WASM__
 			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
-#endif
 
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
@@ -707,8 +653,8 @@ namespace Microsoft.UI.Xaml
 				return isHandled;
 			}
 
-			// [6] & [7] Will the event bubbling natively or in managed code?
-			var isBubblingInManagedCode = IsBubblingInManagedCode(routedEvent, args);
+			// [6] Will the event bubbling natively or in managed code?
+			var isBubblingInManagedCode = IsBubblingInManagedCode(args);
 			if (!isBubblingInManagedCode)
 			{
 				return false; // [8] Return for native bubbling
@@ -728,12 +674,6 @@ namespace Microsoft.UI.Xaml
 				// Sometimes, a PopupPanel will be a parent of an element's template (e.g. ComboBox)
 				// and the parent will not be PopupRoot. In that case, we shouldn't propagate to the element
 				parent = this.GetParent() as UIElement;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-				// This is for safety (legacy support) and should be removed.
-				// A common issue is the managed parent being cleared before unload event raised.
-				parent ??= this.FindFirstParent<UIElement>();
-#endif
 			}
 			else
 			{
@@ -796,7 +736,7 @@ namespace Microsoft.UI.Xaml
 			if (args is KeyRoutedEventArgs keyArgs)
 			{
 				if (routedEvent == KeyDownEvent
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					|| routedEvent == PreviewKeyDownEvent
 #endif
 					)
@@ -804,7 +744,7 @@ namespace Microsoft.UI.Xaml
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
 				else if (routedEvent == KeyUpEvent
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					|| routedEvent == PreviewKeyUpEvent
 #endif
 					)
@@ -964,21 +904,10 @@ namespace Microsoft.UI.Xaml
 		private static bool IsHandled(RoutedEventArgs args)
 			=> args is IHandleableRoutedEventArgs { Handled: true };
 
-		private bool IsBubblingInManagedCode(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			if (args == null || !args.CanBubbleNatively) // [6] From platform?
-			{
-				// Not from platform
-
-				return true; // -> [10] bubble in managed to parents
-			}
-
-			// [7] Event set to bubble in managed code?
-			var eventsBubblingInManagedCode = EventsBubblingInManagedCode;
-			var flag = routedEvent.Flag;
-
-			return eventsBubblingInManagedCode.HasFlag(flag);
-		}
+		// [6] Events that didn't originate from the platform always bubble in managed code to parents ([10]);
+		// events still flagged as bubbling natively are returned for native bubbling ([8]).
+		private static bool IsBubblingInManagedCode(RoutedEventArgs args)
+			=> args is null || !args.CanBubbleNatively;
 
 #pragma warning disable IDE0055 // Fix formatting: Current formatting is readable and rule expectation is unclear
 		private void InvokeHandlers(IList<RoutedEventHandlerInfo> handlers, RoutedEventArgs args, ref bool isHandled)

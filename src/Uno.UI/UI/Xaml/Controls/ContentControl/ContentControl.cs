@@ -14,20 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -428,12 +415,13 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
+						provider.Store.DataContextProperty is { } dataContextProperty &&
 						// The DataContext may be set directly on the template root
-						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(provider.Store.DataContextProperty))
+						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(dataContextProperty))
 					)
 					{
 						_localContentDataContextOverride = true;
-						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+						provider.Store.SetValue(dataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
 					}
 				}
 			}
@@ -445,10 +433,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ResetContentDataContextOverride()
 		{
-			if (_localContentDataContextOverride && ContentTemplateRoot is IDependencyObjectStoreProvider provider)
+			if (_localContentDataContextOverride &&
+				ContentTemplateRoot is IDependencyObjectStoreProvider provider &&
+				provider.Store.DataContextProperty is { } dataContextProperty)
 			{
 				_localContentDataContextOverride = false;
-				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -501,25 +491,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
-#if __ANDROID__
-		// Support for the C# collection initializer style.
-		public void Add(View view)
-		{
-			Content = view;
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			if (Content != null)
-			{
-				return new[] { Content }.GetEnumerator();
-			}
-			else
-			{
-				return Enumerable.Empty<object>().GetEnumerator();
-			}
-		}
-#endif
 
 		public override string GetAccessibilityInnerText()
 		{

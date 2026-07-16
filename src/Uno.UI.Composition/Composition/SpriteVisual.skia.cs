@@ -42,9 +42,9 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			var path = new SKPath();
-			path.AddRect(new SKRect(0, 0, Size.X, Size.Y));
-			output.Add((path, color.Color.A / 255f));
+			var builder = new SKPathBuilder();
+			builder.AddRect(new SKRect(0, 0, Size.X, Size.Y));
+			output.Add((builder.Detach(), color.Color.A / 255f));
 			return true;
 		}
 	}

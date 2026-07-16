@@ -62,17 +62,6 @@ internal partial class NativeWebViewWrapper : INativeWebView
 			ViewGroup.LayoutParams.MatchParent,
 			ViewGroup.LayoutParams.MatchParent);
 #endif
-
-#if !ANDROID_SKIA // We only have the flag for Android native. We can add it to Skia if needed.
-		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
-		{
-			//SetLayerType disables hardware acceleration for a single view.
-			//_owner is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
-			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
-			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-			_webView.SetLayerType(LayerType.Software, null);
-		}
-#endif
 	}
 
 	public string DocumentTitle

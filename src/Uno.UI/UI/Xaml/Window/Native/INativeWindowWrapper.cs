@@ -41,8 +41,4 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	void ExtendContentIntoTitleBar(bool extend);
 
 	void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop);
-
-#if __APPLE_UIKIT__
-	Size GetWindowSize();
-#endif
 }

@@ -44,8 +44,7 @@ var style = new Style(typeof(NativePivotPresenter))
 {
     Setters =
     {
-        new Setter<NativePivotPresenter>("Template", pb => pb
-            .Template = new ControlTemplate(() =>
+        new Setter(Control.TemplateProperty, new ControlTemplate(() =>
                 new Grid
                 {
                     RowDefinitions =
@@ -77,8 +76,7 @@ var style = new Style(typeof(NativePivotPresenter))
                         }
                         .Apply(v => Grid.SetRow(v, 1))
                     }
-            })
-        )
+            }))
     }
 };
 

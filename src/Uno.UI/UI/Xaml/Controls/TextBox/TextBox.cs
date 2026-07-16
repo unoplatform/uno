@@ -87,9 +87,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Occurs when text is pasted into the control.
 		/// </summary>
 		public
-#if __APPLE_UIKIT__
-			new
-#endif
 			event TextControlPasteEventHandler Paste;
 
 		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
@@ -153,23 +150,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnLoadedPartial();
 
-#if __ANDROID__
-			SetupTextBoxView();
-#endif
-
 			// This workaround is added in OnLoaded rather than OnApplyTemplate.
 			// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
 			// So, the style setters would override what the workaround does.
 			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __APPLE_UIKIT__
-				// We disable scrolling because the inner ITextBoxView provides its own scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#else
 				// The template of TextBox contains the following:
 				/*
 					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -181,20 +167,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-#if __SKIA__
-				if (!_isSkiaTextBox)
+#if !__SKIA__
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
-				{
-					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
-				}
 
-#if __WASM__
-				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
-#endif
-#endif
 			}
 		}
 
@@ -341,11 +320,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText
-#if __SKIA__
-				|| _isSkiaTextBox
+#if !__SKIA__
+			if (!_isInputModifyingText)
 #endif
-				)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
@@ -472,7 +449,7 @@ namespace Microsoft.UI.Xaml.Controls
 				baseString = GetFirstLine(baseString);
 			}
 #if __SKIA__
-			else if (_isSkiaTextBox)
+			else
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
@@ -495,19 +472,16 @@ namespace Microsoft.UI.Xaml.Controls
 			if (args.Cancel)
 			{
 #if __SKIA__
-				if (_isSkiaTextBox)
-				{
-					// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
-					// SelectionChanging events followed by a bunch of matching SelectionChanged.
-					// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
-					// events will give incorrect transient values and the SelectionChanged events will end up
-					// with the selection where it started (before the text change). Also, the direction of
-					// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
-					// so anymore.
-					// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
-					// we don't invoke any selection change events (since selection was in fact not changed).
-					_pendingSelection = (SelectionStart, SelectionLength);
-				}
+				// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
+				// SelectionChanging events followed by a bunch of matching SelectionChanged.
+				// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
+				// events will give incorrect transient values and the SelectionChanged events will end up
+				// with the selection where it started (before the text change). Also, the direction of
+				// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
+				// so anymore.
+				// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
+				// we don't invoke any selection change events (since selection was in fact not changed).
+				_pendingSelection = (SelectionStart, SelectionLength);
 #endif
 				return DependencyProperty.UnsetValue;
 			}
@@ -520,9 +494,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Description DependencyProperty
 
 		public
-#if __APPLE_UIKIT__
-		new
-#endif
 		object Description
 		{
 			get => this.GetValue(DescriptionProperty);
@@ -810,8 +781,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFlowDirectionChangedPartial();
 #endif
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -819,8 +790,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -972,11 +943,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region TextAlignment DependencyProperty
 
-#if __ANDROID__
-		public new TextAlignment TextAlignment
-#else
 		public TextAlignment TextAlignment
-#endif
 		{
 			get { return (TextAlignment)GetValue(TextAlignmentProperty); }
 			set { SetValue(TextAlignmentProperty, value); }
@@ -1113,11 +1080,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerPressed(args);
 
 			bool isPointerCaptureRequired =
-#if __WASM__
-				IsPointerCaptureRequired;
-#else
 				true;
-#endif
 
 			if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 			{
@@ -1213,15 +1176,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
 		{
 #if __SKIA__
-			if (_isSkiaTextBox)
-			{
-				OnKeyDownSkia(args);
-			}
-			else
+			OnKeyDownSkia(args);
+#else
+			OnKeyDownNonSkia(args);
 #endif
-			{
-				OnKeyDownNonSkia(args);
-			}
 
 			var modifiers = CoreImports.Input_GetKeyboardModifiers();
 			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
@@ -1234,15 +1192,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if !__SKIA__
 		private void OnKeyDownNonSkia(KeyRoutedEventArgs args)
 		{
-			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
-			// we need to get selectionStart from another source on Skia.
-#if __SKIA__
-			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
-#else
 			var selectionStart = SelectionStart;
-#endif
 
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
@@ -1283,15 +1236,8 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 			}
 
-#if __WASM__
-			if (args.Handled)
-			{
-				// Marking the routed event as Handled makes the browser call preventDefault() for key events.
-				// This is a problem as it breaks the browser caret navigation within the input.
-				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
-			}
-#endif
 		}
+#endif
 
 		protected virtual void UpdateButtonStates()
 		{

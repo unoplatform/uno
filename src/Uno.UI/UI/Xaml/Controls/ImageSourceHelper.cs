@@ -16,11 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return new BitmapImage(new Uri(source));
 		}
-#elif XAMARIN
-		public static string Create(string source)
-		{
-			return source;
-		}
 #endif
 	}
 }

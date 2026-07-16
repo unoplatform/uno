@@ -328,8 +328,9 @@ public class Given_CompositionSpriteShape
 		Assert.IsTrue(shape.TryGetRenderBounds(out var moved));
 		AssertRectClose(new SKRect(100, 50, 120, 60), moved);
 
-		using var path = new SKPath();
-		Assert.IsTrue(shape.GetRenderPath(path));
+		using var builder = new SKPathBuilder();
+		Assert.IsTrue(shape.GetRenderPath(builder));
+		using var path = builder.Detach();
 		AssertRectClose(new SKRect(100, 50, 120, 60), path.Bounds);
 	}
 
@@ -347,8 +348,9 @@ public class Given_CompositionSpriteShape
 		Assert.IsTrue(shape.TryGetRenderBounds(out var rotated));
 		AssertRectClose(expected, rotated);
 
-		using var path = new SKPath();
-		Assert.IsTrue(shape.GetRenderPath(path));
+		using var builder = new SKPathBuilder();
+		Assert.IsTrue(shape.GetRenderPath(builder));
+		using var path = builder.Detach();
 		AssertRectClose(expected, path.Bounds);
 	}
 

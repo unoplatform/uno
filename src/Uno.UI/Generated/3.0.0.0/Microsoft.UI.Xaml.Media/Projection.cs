@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
+#if false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class Projection : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
-		protected Projection() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Projection", "Projection()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Projection.Projection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Projection()
 	}
 }

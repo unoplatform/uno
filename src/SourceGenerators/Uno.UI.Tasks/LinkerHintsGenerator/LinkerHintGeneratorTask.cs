@@ -244,7 +244,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
-			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Microsoft.UI.Xaml.DependencyObject"))
+			// DependencyObject is a base class; the recursion below bottoms out here when it is reached.
+			if (type.FullName == "Microsoft.UI.Xaml.DependencyObject")
 			{
 				return true;
 			}
@@ -387,8 +388,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
 
 				var runtimeTargetFramework =
-					new Version(TargetFrameworkVersion) >= new Version("9.0")
-					? "net9.0"
+					new Version(TargetFrameworkVersion) >= new Version("10.0")
+					? "net10.0"
 					: "netstandard2.0";
 
 				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&

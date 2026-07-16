@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0169
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,38 +20,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 	[Sample("Dialogs", IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class ContentDialog_TextBox : UserControl
 	{
-#if __ANDROID__
-		private bool _initialEnableNativePopups;
-#endif
-
 		public ContentDialog_TextBox()
 		{
 			this.InitializeComponent();
-			Loaded += OnLoaded;
-			Unloaded += OnUnloaded;
-		}
-
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
-#if __ANDROID__
-			_initialEnableNativePopups = Uno.UI.FeatureConfiguration.Popup.UseNativePopup;
-			EnableNativeCheckBox.IsChecked = _initialEnableNativePopups;
-#endif
-		}
-
-		private void OnUnloaded(object sender, RoutedEventArgs e)
-		{
-#if __ANDROID__
-			Uno.UI.FeatureConfiguration.Popup.UseNativePopup = _initialEnableNativePopups;
-#endif
-		}
-
-		private void OnEnableNativeCheckedChanged(object sender, object args)
-		{
-#if __ANDROID__
-			var isChecked = EnableNativeCheckBox.IsChecked ?? _initialEnableNativePopups;
-			Uno.UI.FeatureConfiguration.Popup.UseNativePopup = isChecked;
-#endif
 		}
 
 		private async void ShowContentDialog(object sender, object args)

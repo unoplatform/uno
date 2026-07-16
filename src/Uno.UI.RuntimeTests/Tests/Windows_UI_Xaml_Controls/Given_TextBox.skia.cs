@@ -34,8 +34,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	/// <summary>
 	/// This partial is for testing the skia-based TextBox implementation.
-	/// Most tests here should set UseOverlayOnSkia to false and HideCaret
-	/// to true and then set them back at the end of the test.
+	/// Most tests here should set HideCaret to true and then set it back
+	/// at the end of the test.
 	/// </summary>
 	public partial class Given_TextBox
 	{
@@ -4446,39 +4446,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_FeatureConfiguration_Changes()
-		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = true;
-
-			var SUT = new TextBox
-			{
-				Width = 150,
-				Text = "hello world"
-			};
-
-			await UITestHelper.Load(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, SUT.TextBoxView.DisplayBlock.Opacity);
-
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
-
-			await UITestHelper.Load(new Button()); // a random control to unload SUT
-
-			Assert.AreEqual(1, SUT.TextBoxView.DisplayBlock.Opacity);
-		}
-
-		[TestMethod]
 		public async Task When_Caret_Color_DarkMode()
 		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
 			// The TextBox is purposefully empty. We want the only content pixels to come from the caret.
 			var SUT = new TextBox
 			{
@@ -4603,9 +4572,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Overlay isn't supported on Wasm Skia.
 				Assert.Inconclusive("Not supported on Wasm Skia.");
 			}
-
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
 
 			var SUT = new PasswordBox()
 			{
@@ -4854,9 +4820,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
 		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
 			var SUT = new TextBox
 			{
 				Width = 150,
@@ -5719,21 +5682,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
-			private bool _useOverlay;
 			private bool _hideCaret;
 
 			public TextBoxFeatureConfigDisposable()
 			{
-				_useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
 				_hideCaret = FeatureConfiguration.TextBox.HideCaret;
 
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 				FeatureConfiguration.TextBox.HideCaret = true;
 			}
 
 			public void Dispose()
 			{
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = _useOverlay;
 				FeatureConfiguration.TextBox.HideCaret = _hideCaret;
 			}
 		}

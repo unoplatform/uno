@@ -10,11 +10,6 @@
 
     <utilities:RainbowMeasures MaxWidth="400">
         <StackPanel Spacing="6">
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">
-                    Use MEASURE_DIRTY_PATH
-                </ToggleButton>
-            </StackPanel>
             <TextBlock>Root</TextBlock>
             <Rectangle
                 x:Name="rect_root"

@@ -22,18 +22,7 @@ using Uno.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -49,9 +38,6 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </remarks>
 [ContentProperty(Name = nameof(Content))]
 public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
-	, ICustomClippingElement
-#endif
 {
 #if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
@@ -76,7 +62,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
@@ -222,9 +208,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	#region Foreground Dependency Property
 
 	public
-#if __ANDROID__
-	new
-#endif
 	Brush Foreground
 	{
 		get { return (Brush)this.GetValue(ForegroundProperty); }
@@ -304,7 +287,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				true,
-#if __SKIA__ || __WASM__
+#if __SKIA__
 				// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 #else
@@ -457,9 +440,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	#region TextAlignment Dependency Property
 
 	public
-#if __ANDROID__
-		new
-#endif
 		TextAlignment TextAlignment
 	{
 		get { return (TextAlignment)this.GetValue(TextAlignmentProperty); }
@@ -627,13 +607,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if __WASM__
-		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-		{
-			// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-			(Content as UIElement)?.InvalidateArrange();
-		}
-#endif
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
 #else
@@ -681,9 +654,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
 			if (pTemplatedParent != null
-#if ANDROID || __APPLE_UIKIT__
-				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
-#endif
 				)
 			{
 				// bool needsRefresh = false;
@@ -1157,26 +1127,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		base.UpdateThemeBindings(updateReason);
 		UpdateLastUsedTheme();
 	}
-
-#if __ANDROID__
-	// Support for the C# collection initializer style.
-	public void Add(View view)
-	{
-		Content = view;
-	}
-
-	public IEnumerator GetEnumerator()
-	{
-		if (Content != null)
-		{
-			return new[] { Content }.GetEnumerator();
-		}
-		else
-		{
-			return Enumerable.Empty<object>().GetEnumerator();
-		}
-	}
-#endif
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{

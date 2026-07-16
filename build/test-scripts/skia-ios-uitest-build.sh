@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+_TFM="${TFM:=net10.0-ios}"
+
 cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Skia.netcoremobile
 
-dotnet build -f net10.0-ios -c Release -p:UnoTargetFrameworkOverride=net10.0-ios -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/skia-ios-netcoremobile-sampleapp.binlog
+dotnet build -f "$_TFM" -c Release "-p:UnoTargetFrameworkOverride=$_TFM" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/skia-ios-netcoremobile-sampleapp.binlog
