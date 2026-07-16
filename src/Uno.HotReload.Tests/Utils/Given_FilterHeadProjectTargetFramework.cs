@@ -35,6 +35,12 @@ public sealed class Given_FilterHeadProjectTargetFramework
 		Assert.IsFalse(remainingIds.Contains(androidLib), "a library only reachable from the removed flavor must be removed");
 		Assert.AreEqual(0, reporter.Warnings.Count);
 		Assert.AreEqual(0, reporter.Errors.Count);
+
+		// The restriction trace must carry the loaded flavors, the reported TFM and the kept flavors.
+		var restriction = reporter.Outputs.Single(message => message.Contains("restricted"));
+		StringAssert.Contains(restriction, "restricted to 'net10.0-desktop'");
+		StringAssert.Contains(restriction, "'net10.0-skia'");
+		StringAssert.Contains(restriction, "net10.0-android");
 	}
 
 	[TestMethod]
@@ -68,7 +74,7 @@ public sealed class Given_FilterHeadProjectTargetFramework
 	}
 
 	[TestMethod]
-	public void When_SingleFlavor_Then_SolutionIsUnchanged_And_Silent()
+	public void When_SingleFlavor_Then_SolutionIsUnchanged_And_TracesLoadedVsReported()
 	{
 		using var workspace = new AdhocWorkspace();
 		AddProject(workspace, "app", filePath: _headPath, refPacks: [AndroidPack()]);
@@ -77,12 +83,18 @@ public sealed class Given_FilterHeadProjectTargetFramework
 		var solution = workspace.CurrentSolution;
 
 		// Even a non-matching runtime TFM must not disturb a single-flavor solution: either the
-		// project is single-targeted or MSBuild already pinned the TargetFramework.
+		// project is single-targeted or MSBuild already pinned the TargetFramework. The trace
+		// must still expose the loaded flavor against the reported TFM, so a workspace pinned
+		// to the wrong flavor is diagnosable from the logs.
 		var filtered = solution.FilterHeadProjectTargetFramework(_headPath, "net10.0-skia", reporter);
 
 		Assert.AreSame(solution, filtered);
 		Assert.AreEqual(0, reporter.Warnings.Count);
 		Assert.AreEqual(0, reporter.Errors.Count);
+
+		var trace = reporter.Outputs.Single();
+		StringAssert.Contains(trace, "'net10.0-android36.0'");
+		StringAssert.Contains(trace, "'net10.0-skia'");
 	}
 
 	[TestMethod]
