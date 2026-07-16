@@ -1,16 +1,23 @@
 using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
@@ -33,6 +40,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextWrapping.Wrap, SUT.TextWrapping);
 			Assert.ThrowsExactly<ArgumentException>(() => SUT.MaxLength = -1);
 			Assert.ThrowsExactly<ArgumentException>(() => SUT.TextWrapping = TextWrapping.WrapWholeWords);
+		}
+
+		[TestMethod]
+		public void When_TextConstants_Match_WinUIEdit()
+		{
+			Assert.AreEqual(global::Windows.UI.Color.FromArgb(0, 0, 0, 1), TextConstants.AutoColor);
+			Assert.AreEqual(-1_073_741_823, TextConstants.MinUnitCount);
+			Assert.AreEqual(1_073_741_823, TextConstants.MaxUnitCount);
+			Assert.AreEqual(global::Windows.UI.Color.FromArgb(0, 0, 0, 2), TextConstants.UndefinedColor);
+			Assert.AreEqual(-9_999_999f, TextConstants.UndefinedFloatValue);
+			Assert.AreEqual((global::Windows.UI.Text.FontStretch)(-9_999_999), TextConstants.UndefinedFontStretch);
+			Assert.AreEqual((global::Windows.UI.Text.FontStyle)(-9_999_999), TextConstants.UndefinedFontStyle);
+			Assert.AreEqual(-9_999_999, TextConstants.UndefinedInt32Value);
 		}
 
 		[TestMethod]
@@ -693,11 +713,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Cut_Is_NoOp_When_ReadOnly()
 		{
-			var SUT = new RichEditBox { IsReadOnly = true };
+			var SUT = new RichEditBox();
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
 			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+			SUT.IsReadOnly = true;
 			SUT.Document.Selection.SetRange(0, 5);
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
@@ -1309,6 +1330,268 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Selection_MoveDown_Screen_Moves_By_Viewport()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "00\r11\r22\r33\r44\r55\r66\r77\r88\r99");
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				SUT.Document.Selection.SetRange(0, 0);
+
+				var moved = SUT.Document.Selection.MoveDown(TextRangeUnit.Screen, 1, false);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, moved);
+				Assert.IsTrue(SUT.Document.Selection.StartPosition > 3, $"A screen move should advance farther than one line, was {SUT.Document.Selection.StartPosition}.");
+				Assert.AreEqual(SUT.Document.Selection.StartPosition, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Move_Window_Uses_Visible_Range()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				const string text = "00\r11\r22\r33\r44\r55\r66\r77\r88\r99";
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				SUT.Document.Selection.SetRange(0, 0);
+
+				var moved = SUT.Document.Selection.MoveDown(TextRangeUnit.Window, 1, false);
+
+				Assert.AreEqual(1, moved);
+				Assert.IsTrue(SUT.Document.Selection.StartPosition > 0);
+				Assert.IsTrue(SUT.Document.Selection.StartPosition < text.Length, "The initial viewport should not include the entire story.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Move_Paragraph_Uses_Paragraph_Starts()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc\rdd");
+				SUT.Document.Selection.SetRange(1, 1);
+
+				Assert.AreEqual(2, SUT.Document.Selection.MoveDown(TextRangeUnit.Paragraph, 2, false));
+				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.MoveUp(TextRangeUnit.Paragraph, 1, false));
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Vertical_Move_Collapse_Counts_As_First_Unit()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+				SUT.Document.Selection.SetRange(0, 1);
+
+				Assert.AreEqual(1, SUT.Document.Selection.MoveDown(TextRangeUnit.Line, 1, false));
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Vertical_Extend_Tracks_Active_Start()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+				SUT.Document.Selection.SetRange(6, 6);
+
+				Assert.AreEqual(1, SUT.Document.Selection.MoveUp(TextRangeUnit.Line, 1, true));
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(6, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.Document.Selection.Options.HasFlag(SelectionOptions.StartActive));
+
+				Assert.AreEqual(1, SUT.Document.Selection.MoveUp(TextRangeUnit.Line, 1, true));
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(6, SUT.Document.Selection.EndPosition);
+
+				Assert.AreEqual(1, SUT.Document.Selection.MoveDown(TextRangeUnit.Line, 1, true));
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(6, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.Document.Selection.Options.HasFlag(SelectionOptions.StartActive));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Move_Screen_Uses_Viewport()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "00\r11\r22\r33\r44\r55\r66\r77\r88\r99");
+				await WindowHelper.WaitForIdle();
+				var range = SUT.Document.GetRange(0, 0);
+
+				Assert.AreEqual(1, range.Move(TextRangeUnit.Screen, 1));
+				var pageEnd = range.StartPosition;
+				Assert.IsTrue(pageEnd > 3, $"A screen move should advance farther than one line, was {pageEnd}.");
+
+				Assert.AreEqual(-1, range.Move(TextRangeUnit.Screen, -1));
+				Assert.IsTrue(range.StartPosition < pageEnd);
+				Assert.AreEqual(range.StartPosition, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Move_Screen_Collapse_And_Clamp_Report_Actual_Units()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 60 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var text = string.Join('\r', Enumerable.Range(0, 30).Select(value => value.ToString("D2")));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var range = SUT.Document.GetRange(0, 3);
+				Assert.AreEqual(1, range.Move(TextRangeUnit.Screen, 1));
+				Assert.AreEqual(3, range.StartPosition, "Collapsing a nondegenerate range consumes the first screen unit.");
+
+				var moved = range.Move(TextRangeUnit.Screen, 100);
+				Assert.IsTrue(moved > 0 && moved < 100, $"Movement should report the pages actually crossed, was {moved}.");
+				Assert.AreEqual(text.Length, range.StartPosition);
+				Assert.AreEqual(text.Length, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Window_Operations_Use_Visible_Bounds()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var text = string.Join('\r', Enumerable.Range(0, 20).Select(value => value.ToString("D2")));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var visible = SUT.Document.GetRange(1, 1);
+				visible.Expand(TextRangeUnit.Window);
+				var visibleStart = visible.StartPosition;
+				var visibleEnd = visible.EndPosition;
+				Assert.AreEqual(0, visibleStart);
+				Assert.IsTrue(visibleEnd > visibleStart && visibleEnd < text.Length, $"The viewport should contain a proper story subset, was [{visibleStart},{visibleEnd}).");
+				Assert.AreEqual(1, visible.GetIndex(TextRangeUnit.Window));
+
+				var range = SUT.Document.GetRange(visibleStart, visibleStart);
+				Assert.AreEqual(1, range.Move(TextRangeUnit.Window, 1));
+				Assert.AreEqual(visibleEnd, range.StartPosition);
+				Assert.AreEqual(-1, range.Move(TextRangeUnit.Window, -1));
+				Assert.AreEqual(visibleStart, range.StartPosition);
+
+				range.SetRange(visibleStart, visibleStart);
+				Assert.AreEqual(1, range.MoveEnd(TextRangeUnit.Window, 1));
+				Assert.AreEqual(visibleEnd, range.EndPosition);
+				range.SetRange(visibleEnd, visibleEnd);
+				Assert.AreEqual(-1, range.MoveStart(TextRangeUnit.Window, -1));
+				Assert.AreEqual(visibleStart, range.StartPosition);
+				Assert.AreEqual(visibleEnd, range.EndPosition);
+
+				range.SetIndex(TextRangeUnit.Window, 1, false);
+				Assert.AreEqual(visibleStart, range.StartPosition);
+				range.SetIndex(TextRangeUnit.Window, 1, true);
+				Assert.AreEqual(visibleEnd, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_UndoGroup_Coalesces_Multiple_Edits_Into_One_Undo()
 		{
 			var SUT = new RichEditBox();
@@ -1614,6 +1897,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Mixed_Paragraph_Alignments_Render_Per_Paragraph()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "left\rright");
+				SUT.Document.GetRange(0, 4).ParagraphFormat.Alignment = ParagraphAlignment.Left;
+				SUT.Document.GetRange(5, 10).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 0).GetRect(PointOptions.ClientCoordinates, out var firstParagraphCaret, out _);
+				SUT.Document.GetRange(5, 5).GetRect(PointOptions.ClientCoordinates, out var secondParagraphCaret, out _);
+
+				Assert.IsTrue(
+					secondParagraphCaret.X > firstParagraphCaret.X + 100,
+					$"The right-aligned paragraph should have an independent horizontal offset, was {firstParagraphCaret.X} then {secondParagraphCaret.X}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_GetRect_Returns_Caret_Geometry()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1661,7 +1976,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_GetRect_ClientCoordinates_Preserves_Size()
+		public async Task When_GetRect_ScreenCoordinates_Apply_RasterizationScale()
 		{
 			if (OperatingSystem.IsBrowser())
 			{
@@ -1677,12 +1992,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var range = SUT.Document.GetRange(2, 5);
-			range.GetRect(PointOptions.None, out var rootRect, out _);
+			range.GetRect(PointOptions.None, out var screenRect, out _);
 			range.GetRect(PointOptions.ClientCoordinates, out var clientRect, out _);
 
-			// Both transforms are translation-only, so the size is invariant across coordinate spaces.
-			Assert.AreEqual(rootRect.Width, clientRect.Width, 0.5, "Width should be coordinate-space invariant.");
-			Assert.AreEqual(rootRect.Height, clientRect.Height, 0.5, "Height should be coordinate-space invariant.");
+			var scale = SUT.XamlRoot.RasterizationScale;
+			Assert.AreEqual(clientRect.Width * scale, screenRect.Width, 1, "Screen width should be expressed in physical pixels.");
+			Assert.AreEqual(clientRect.Height * scale, screenRect.Height, 1, "Screen height should be expressed in physical pixels.");
+		}
+
+		[TestMethod]
+		public async Task When_GetRect_Multiline_Range_Includes_Intermediate_Lines()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 600 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				const string text = "x\rThis intermediate line is deliberately much wider\rz";
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var middleStart = text.IndexOf('T');
+				var middleEnd = text.LastIndexOf('\r');
+				SUT.Document.GetRange(0, text.Length).GetRect(PointOptions.ClientCoordinates, out var fullRect, out _);
+				SUT.Document.GetRange(middleStart, middleEnd).GetRect(PointOptions.ClientCoordinates, out var middleRect, out _);
+
+				Assert.IsTrue(fullRect.Width >= middleRect.Width - 0.5, $"The full range should include the widest intermediate line, was {fullRect.Width} vs {middleRect.Width}.");
+				Assert.IsTrue(fullRect.Height > middleRect.Height, "The full range should span all visual lines.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -1703,9 +2050,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var range = SUT.Document.GetRange(4, 4);
 			range.GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.None, out var topPoint);
+			range.GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Baseline, PointOptions.None, out var baselinePoint);
 			range.GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Bottom, PointOptions.None, out var bottomPoint);
 
 			Assert.AreEqual(topPoint.X, bottomPoint.X, 0.5, "Left alignment should give the same X for both vertical anchors.");
+			Assert.IsTrue(baselinePoint.Y > topPoint.Y, $"Baseline should be below the line top, was {baselinePoint.Y} vs {topPoint.Y}.");
+			Assert.IsTrue(baselinePoint.Y < bottomPoint.Y, $"Baseline should be above the line bottom, was {baselinePoint.Y} vs {bottomPoint.Y}.");
 			Assert.IsTrue(bottomPoint.Y > topPoint.Y, $"Bottom anchor should be below the top anchor, was {bottomPoint.Y} vs {topPoint.Y}.");
 		}
 
@@ -1729,6 +2079,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var recovered = SUT.Document.GetRangeFromPoint(point, PointOptions.None);
 
 			Assert.IsTrue(Math.Abs(recovered.StartPosition - 6) <= 1, $"GetRangeFromPoint should recover the origin index, was {recovered.StartPosition}.");
+		}
+
+		[TestMethod]
+		public async Task When_GetPoint_GetRangeFromPoint_ClientCoordinates_RoundTrips()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(6, 6).GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.ClientCoordinates, out var point);
+				var recovered = SUT.Document.GetRangeFromPoint(point, PointOptions.ClientCoordinates);
+
+				Assert.IsTrue(Math.Abs(recovered.StartPosition - 6) <= 1, $"Client-coordinate hit testing should recover the origin index, was {recovered.StartPosition}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+		[TestMethod]
+		public async Task When_GetRangeFromPoint_OffClient_Returns_Nearest_Text()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 300, Height = 80, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "first\rsecond");
+				await WindowHelper.WaitForIdle();
+
+				var above = SUT.Document.GetRangeFromPoint(new Windows.Foundation.Point(10, -100), PointOptions.ClientCoordinates);
+				var below = SUT.Document.GetRangeFromPoint(new Windows.Foundation.Point(250, 1000), PointOptions.ClientCoordinates);
+				var left = SUT.Document.GetRangeFromPoint(new Windows.Foundation.Point(-100, 10), PointOptions.ClientCoordinates);
+				var right = SUT.Document.GetRangeFromPoint(new Windows.Foundation.Point(1000, 10), PointOptions.ClientCoordinates);
+				Assert.AreEqual(0, above.StartPosition);
+				Assert.AreEqual(12, below.StartPosition);
+				Assert.AreEqual(0, left.StartPosition);
+				Assert.IsTrue(right.StartPosition >= 5, $"A point to the right should map to the first line end, was {right.StartPosition}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -1757,19 +2165,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ScrollIntoView_Does_Not_Throw()
+		public async Task When_PointOptions_Start_Selects_Start_Endpoint()
 		{
-			var SUT = new RichEditBox { Width = 200, Height = 60 };
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			await WindowHelper.WaitForIdle();
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
 
-			SUT.Document.SetText(TextSetOptions.None, "Line one\rLine two\rLine three\rLine four\rLine five");
-			await WindowHelper.WaitForIdle();
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				await WindowHelper.WaitForIdle();
 
-			// Should not throw regardless of whether the range is on-screen.
-			SUT.Document.GetRange(40, 44).ScrollIntoView(PointOptions.None);
-			await WindowHelper.WaitForIdle();
+				var range = SUT.Document.GetRange(2, 8);
+				range.GetRect(PointOptions.ClientCoordinates | PointOptions.Start, out var startRect, out _);
+				SUT.Document.GetRange(2, 2).GetRect(PointOptions.ClientCoordinates, out var expectedStartRect, out _);
+				Assert.AreEqual(expectedStartRect.X, startRect.X, 0.5);
+				Assert.IsTrue(startRect.Width <= 1, $"Start geometry should be a caret rect, width was {startRect.Width}.");
+
+				SUT.Document.GetRange(5, 5).GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.ClientCoordinates, out var point);
+				range.SetPoint(point, PointOptions.ClientCoordinates | PointOptions.Start, extend: true);
+				Assert.IsTrue(Math.Abs(range.StartPosition - 5) <= 1, $"Start endpoint should move to the hit index, was {range.StartPosition}.");
+				Assert.AreEqual(8, range.EndPosition, "Moving Start must preserve End when the endpoints do not cross.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ScrollIntoView_Honors_Endpoint_And_Axis_Options()
+		{
+			var SUT = new RichEditBox { Width = 120, Height = 60, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var text = string.Join('\r', Enumerable.Range(0, 20).Select(value => $"Line {value:D2} with long trailing content"));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+				var lastLineStart = text.LastIndexOf("Line", StringComparison.Ordinal);
+				var range = SUT.Document.GetRange(0, text.Length);
+
+				range.ScrollIntoView(PointOptions.NoHorizontalScroll);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, scrollViewer.HorizontalOffset, 0.5, "NoHorizontalScroll must preserve horizontal offset.");
+				Assert.IsTrue(scrollViewer.VerticalOffset > 0, "The range end should scroll vertically into view.");
+
+				scrollViewer.ChangeView(0, 0, null, disableAnimation: true);
+				await WindowHelper.WaitForIdle();
+				var endRange = SUT.Document.GetRange(lastLineStart, text.Length);
+				endRange.ScrollIntoView(PointOptions.Start | PointOptions.NoVerticalScroll);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, scrollViewer.VerticalOffset, 0.5, "NoVerticalScroll must preserve vertical offset.");
+				Assert.IsTrue(scrollViewer.HorizontalOffset <= 1, "The selected start endpoint is at the line's left edge.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -1830,6 +2291,1125 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.SetDefaultCharacterFormat(value);
 
 			Assert.AreEqual(FormatEffect.On, SUT.Document.GetDefaultCharacterFormat().Bold);
+		}
+
+		[TestMethod]
+		public async Task When_AdvancedCharacterFormat_Persists_And_Renders_FontStretch()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "format");
+
+				var range = SUT.Document.GetRange(0, 6);
+				var value = range.CharacterFormat.GetClone();
+				value.AllCaps = FormatEffect.On;
+				value.BackgroundColor = Microsoft.UI.Colors.Gold;
+				value.FontStretch = global::Windows.UI.Text.FontStretch.Expanded;
+				value.Hidden = FormatEffect.On;
+				value.Kerning = 8;
+				value.LanguageTag = "el-GR";
+				value.Outline = FormatEffect.On;
+				value.Position = 2.5f;
+				value.ProtectedText = FormatEffect.On;
+				value.SmallCaps = FormatEffect.On;
+				value.Spacing = 1.5f;
+				value.Subscript = FormatEffect.On;
+				value.Superscript = FormatEffect.Off;
+				value.TextScript = TextScript.Greek;
+				range.CharacterFormat.SetClone(value);
+				await WindowHelper.WaitForIdle();
+
+				var actual = range.CharacterFormat;
+				Assert.AreEqual(FormatEffect.On, actual.AllCaps);
+				Assert.AreEqual(Microsoft.UI.Colors.Gold, actual.BackgroundColor);
+				Assert.AreEqual(global::Windows.UI.Text.FontStretch.Expanded, actual.FontStretch);
+				Assert.AreEqual(FormatEffect.On, actual.Hidden);
+				Assert.AreEqual(8f, actual.Kerning);
+				Assert.AreEqual("el-GR", actual.LanguageTag);
+				Assert.AreEqual(FormatEffect.On, actual.Outline);
+				Assert.AreEqual(2.5f, actual.Position);
+				Assert.AreEqual(FormatEffect.On, actual.ProtectedText);
+				Assert.AreEqual(FormatEffect.On, actual.SmallCaps);
+				Assert.AreEqual(1.5f, actual.Spacing);
+				Assert.AreEqual(FormatEffect.On, actual.Subscript);
+				Assert.AreEqual(FormatEffect.Off, actual.Superscript);
+				Assert.AreEqual(TextScript.Greek, actual.TextScript);
+
+				actual.ProtectedText = FormatEffect.Off;
+				actual.Hidden = FormatEffect.Off;
+				await WindowHelper.WaitForIdle();
+
+				var contentElement = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var block = contentElement?.Content as TextBlock;
+				Assert.IsNotNull(block);
+				var run = block.Inlines.OfType<Run>().Single();
+				Assert.AreEqual(global::Windows.UI.Text.FontStretch.Expanded, run.FontStretch);
+				Assert.AreEqual(Microsoft.UI.Colors.Gold, run.CharacterBackground);
+
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+				var backgroundBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Gold, tolerance: 10);
+				Assert.IsTrue(backgroundBounds is { Width: > 5, Height: > 5 }, $"The character background should be visible, bounds were {backgroundBounds}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+		[TestMethod]
+		public async Task When_Window_Movement_Does_Not_Reverse_Direction_Outside_Viewport()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var text = string.Join('\r', Enumerable.Range(0, 20).Select(value => value.ToString("D2")));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var range = SUT.Document.GetRange(text.Length, text.Length);
+				Assert.AreEqual(0, range.Move(TextRangeUnit.Window, 1));
+				Assert.AreEqual(text.Length, range.StartPosition);
+
+				SUT.Document.Selection.SetRange(text.Length, text.Length);
+				Assert.AreEqual(0, SUT.Document.Selection.MoveDown(TextRangeUnit.Window, 1, false));
+				Assert.AreEqual(text.Length, SUT.Document.Selection.StartPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AdvancedCharacterFormat_Mixed_Range_Reports_Undefined()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, "ab");
+
+			SUT.Document.GetRange(0, 1).CharacterFormat.AllCaps = FormatEffect.On;
+			SUT.Document.GetRange(1, 2).CharacterFormat.AllCaps = FormatEffect.Off;
+			SUT.Document.GetRange(0, 1).CharacterFormat.FontStretch = global::Windows.UI.Text.FontStretch.Expanded;
+			SUT.Document.GetRange(1, 2).CharacterFormat.FontStretch = global::Windows.UI.Text.FontStretch.Condensed;
+
+			var mixed = SUT.Document.GetRange(0, 2).CharacterFormat;
+			Assert.AreEqual(FormatEffect.Undefined, mixed.AllCaps);
+			Assert.AreEqual(TextConstants.UndefinedFontStretch, mixed.FontStretch);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Weight_Preserves_Exact_OpenType_Value()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+			source.Document.SetText(TextSetOptions.None, "ab");
+
+			var first = source.Document.GetRange(0, 1);
+			for (var weight = 0; weight <= 950; weight += 50)
+			{
+				first.CharacterFormat.Weight = weight;
+				Assert.AreEqual(weight, first.CharacterFormat.Weight);
+			}
+
+			first.CharacterFormat.Weight = 350;
+			source.Document.GetRange(1, 2).CharacterFormat.Weight = 900;
+			Assert.AreEqual(TextConstants.UndefinedInt32Value, source.Document.GetRange(0, 2).CharacterFormat.Weight);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => first.CharacterFormat.Weight = 1000);
+
+			await WindowHelper.WaitForIdle();
+			var contentElement = source.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+			var block = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(block);
+			var runs = block.Inlines.OfType<Run>().ToArray();
+			Assert.AreEqual((ushort)350, runs[0].FontWeight.Weight);
+			Assert.AreEqual((ushort)900, runs[1].FontWeight.Weight);
+
+			source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+			Assert.IsTrue(rtf.Contains(",350,", StringComparison.Ordinal), $"The exact weight metadata is missing from: {rtf}");
+			target.Document.SetText(TextSetOptions.FormatRtf, rtf);
+			Assert.AreEqual(350, target.Document.GetRange(0, 1).CharacterFormat.Weight, $"RTF: {rtf}");
+			Assert.AreEqual(900, target.Document.GetRange(1, 2).CharacterFormat.Weight);
+		}
+
+		[TestMethod]
+		public async Task When_Bold_Toggle_Normalizes_Each_Exact_Weight()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ab");
+				SUT.Document.GetRange(0, 1).CharacterFormat.Weight = 350;
+				SUT.Document.GetRange(1, 2).CharacterFormat.Weight = 900;
+
+				SUT.Document.GetRange(0, 2).CharacterFormat.Bold = FormatEffect.Toggle;
+
+				Assert.AreEqual(700, SUT.Document.GetRange(0, 1).CharacterFormat.Weight);
+				Assert.AreEqual(400, SUT.Document.GetRange(1, 2).CharacterFormat.Weight);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Hidden_Text_Has_No_Visual_Advance_But_Retains_Tom_Positions()
+		{
+			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "AXB");
+				SUT.Document.GetRange(1, 2).CharacterFormat.Hidden = FormatEffect.On;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(1, 1).GetRect(PointOptions.ClientCoordinates, out var hiddenStart, out _);
+				SUT.Document.GetRange(2, 2).GetRect(PointOptions.ClientCoordinates, out var hiddenEnd, out _);
+				SUT.Document.GetRange(1, 2).GetRect(PointOptions.ClientCoordinates, out var hiddenRange, out _);
+				Assert.AreEqual(hiddenStart.X, hiddenEnd.X, 0.5, "Hidden text must consume no horizontal advance.");
+				Assert.IsTrue(hiddenRange.Width <= 1, $"A hidden range should have caret-width geometry, was {hiddenRange.Width}.");
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("AXB", text);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(1, 2).CharacterFormat.Hidden);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_NoHidden_Filters_Plain_And_Rtf_Text()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				source.Document.SetText(TextSetOptions.None, "visible hidden tail");
+				source.Document.GetRange(8, 14).CharacterFormat.Hidden = FormatEffect.On;
+
+				source.Document.GetText(TextGetOptions.NoHidden, out var plain);
+				Assert.AreEqual("visible  tail", plain);
+
+				source.Document.GetText(TextGetOptions.NoHidden | TextGetOptions.FormatRtf, out var rtf);
+				target.Document.SetText(TextSetOptions.FormatRtf, rtf);
+				target.Document.GetText(TextGetOptions.None, out var richText);
+				Assert.AreEqual("visible  tail", richText);
+				Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(0, richText.Length).CharacterFormat.Hidden);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Unhide_Prevents_Plain_And_Rtf_Insertions_From_Remaining_Hidden()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ab");
+				SUT.Document.GetRange(0, 2).CharacterFormat.Hidden = FormatEffect.On;
+
+				var plain = SUT.Document.GetRange(1, 1);
+				plain.SetText(TextSetOptions.Unhide, "X");
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(1, 2).CharacterFormat.Hidden);
+
+				const string hiddenRtf = @"{\rtf1\ansi\v Y}";
+				var rich = SUT.Document.GetRange(2, 2);
+				rich.SetText(TextSetOptions.FormatRtf | TextSetOptions.Unhide, hiddenRtf);
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(2, 3).CharacterFormat.Hidden);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aXYb", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Protected_Tom_Mutations_Are_Rejected_Atomically()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.GetRange(2, 4).CharacterFormat.ProtectedText = FormatEffect.On;
+				SUT.Document.ClearUndoRedoHistory();
+
+				var mixed = SUT.Document.GetRange(1, 5);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Text = "X");
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Delete(TextRangeUnit.Character, 1));
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.CharacterFormat.Italic = FormatEffect.On);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.ParagraphFormat.Alignment = ParagraphAlignment.Center);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Link = "\"https://contoso.example\"");
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.SetText(TextSetOptions.None, "replaced"));
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1 replaced}"));
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(1, 2).CharacterFormat.Italic);
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(1, 5).ParagraphFormat.Alignment);
+				Assert.AreEqual(string.Empty, SUT.Document.GetRange(1, 5).Link);
+				Assert.IsFalse(SUT.Document.CanUndo());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Protected_Cut_And_Paste_Reject_Before_Side_Effects()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var seed = new DataPackage();
+				seed.SetText("SEED");
+				Clipboard.SetContent(seed);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.GetRange(2, 4).CharacterFormat.ProtectedText = FormatEffect.On;
+				var mixed = SUT.Document.GetRange(1, 5);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Cut());
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Paste(0));
+				Assert.AreEqual("SEED", await Clipboard.GetContent().GetTextAsync());
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(1, mixed.StartPosition);
+				Assert.AreEqual(5, mixed.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Protection_Is_Explicitly_Removed_Mutation_Succeeds()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				var range = SUT.Document.GetRange(0, 3);
+				range.CharacterFormat.ProtectedText = FormatEffect.On;
+
+				range.CharacterFormat.ProtectedText = FormatEffect.Off;
+				Assert.AreEqual(FormatEffect.Off, range.CharacterFormat.ProtectedText);
+				range.Text = "updated";
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("updated", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Tom_Mutations_Are_Rejected_Atomically()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.ClearUndoRedoHistory();
+				SUT.IsReadOnly = true;
+
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.SetText(TextSetOptions.None, "replaced"));
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).Text = "x");
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).ParagraphFormat.Alignment = ParagraphAlignment.Center);
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.Undo());
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+				Assert.IsFalse(SUT.Document.CanUndo());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Protected_Caret_Uses_Range_Gravity_At_Boundaries()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.GetRange(2, 4).CharacterFormat.ProtectedText = FormatEffect.On;
+
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(3, 3).Text = "X");
+
+				var protectedForwardBoundary = SUT.Document.GetRange(2, 2);
+				protectedForwardBoundary.Gravity = RangeGravity.Forward;
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => protectedForwardBoundary.Text = "X");
+
+				var editableBackwardBoundary = SUT.Document.GetRange(2, 2);
+				editableBackwardBoundary.Gravity = RangeGravity.Backward;
+				editableBackwardBoundary.Text = "X";
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abXcdef", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Deleting_Paragraph_Break_Normalizes_Merged_Paragraph_Format()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+				SUT.Document.GetRange(0, 3).ParagraphFormat.Alignment = ParagraphAlignment.Left;
+				SUT.Document.GetRange(4, 7).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+
+				SUT.Document.GetRange(3, 4).Delete(TextRangeUnit.Character, 1);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aaabbb", text);
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(0, 6).ParagraphFormat.Alignment);
+
+				SUT.Document.GetRange(6, 6).Text = "x";
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(6, 7).ParagraphFormat.Alignment);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Live_Format_Handles_Do_Not_Overwrite_Unrelated_Changes()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+
+				var staleCharacter = SUT.Document.GetRange(0, 3).CharacterFormat;
+				SUT.Document.GetRange(0, 3).CharacterFormat.Italic = FormatEffect.On;
+				staleCharacter.Bold = FormatEffect.On;
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Italic);
+
+				var staleParagraph = SUT.Document.GetRange(0, 3).ParagraphFormat;
+				SUT.Document.GetRange(0, 3).ParagraphFormat.SpaceBefore = 12;
+				staleParagraph.Alignment = ParagraphAlignment.Center;
+				var paragraph = SUT.Document.GetRange(0, 3).ParagraphFormat;
+				Assert.AreEqual(12f, paragraph.SpaceBefore);
+				Assert.AreEqual(ParagraphAlignment.Center, paragraph.Alignment);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Mixed_Formats_Use_TextConstants_And_Sentinel_Setters_Are_NoOps()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ab");
+				SUT.Document.GetRange(0, 1).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Red;
+				SUT.Document.GetRange(1, 2).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Blue;
+				SUT.Document.GetRange(0, 1).CharacterFormat.Size = 12;
+				SUT.Document.GetRange(1, 2).CharacterFormat.Size = 18;
+				SUT.Document.GetRange(0, 1).CharacterFormat.Italic = FormatEffect.On;
+
+				var mixed = SUT.Document.GetRange(0, 2).CharacterFormat;
+				Assert.AreEqual(TextConstants.UndefinedColor, mixed.ForegroundColor);
+				Assert.AreEqual(TextConstants.UndefinedFloatValue, mixed.Size);
+				Assert.AreEqual(TextConstants.UndefinedFontStyle, mixed.FontStyle);
+				mixed.ForegroundColor = TextConstants.UndefinedColor;
+				mixed.Size = TextConstants.UndefinedFloatValue;
+				Assert.AreEqual(Microsoft.UI.Colors.Red, SUT.Document.GetRange(0, 1).CharacterFormat.ForegroundColor);
+				Assert.AreEqual(Microsoft.UI.Colors.Blue, SUT.Document.GetRange(1, 2).CharacterFormat.ForegroundColor);
+
+				SUT.Document.GetRange(0, 2).CharacterFormat.ForegroundColor = TextConstants.AutoColor;
+				Assert.AreEqual(TextConstants.AutoColor, SUT.Document.GetRange(0, 2).CharacterFormat.ForegroundColor);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Explicit_Weight_400_Overrides_Bold_Control_Font()
+		{
+			var SUT = new RichEditBox { FontWeight = global::Windows.UI.Text.FontWeights.Bold };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "normal");
+				SUT.Document.GetRange(0, 6).CharacterFormat.Weight = 400;
+				await WindowHelper.WaitForIdle();
+
+				var block = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+				Assert.IsNotNull(block);
+				Assert.AreEqual((ushort)400, block.Inlines.OfType<Run>().Single().FontWeight.Weight);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Malformed_Rtf_Clipboard_Falls_Back_To_Plain_Text()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var package = new DataPackage();
+				package.SetRtf(@"{\rtf1\red999999999999999999999 broken");
+				package.SetText("fallback");
+				Clipboard.SetContent(package);
+
+				SUT.PasteFromClipboard();
+				await WindowHelper.WaitFor(() =>
+				{
+					SUT.Document.GetText(TextGetOptions.None, out var text);
+					return text == "fallback";
+				});
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Unsafe_Hyperlink_Scheme_Is_Not_Activated()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1{\field{\*\fldinst HYPERLINK ""javascript:alert(1)""}{\fldrslt unsafe}}}");
+
+				Assert.AreEqual(string.Empty, SUT.Document.GetRange(0, 6).Link);
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("unsafe", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Standard_Rtf_Picture_Imports_Without_Uno_Metadata()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				using var stream = CreateImageStream(SKColors.Purple);
+				using var memory = new MemoryStream();
+				stream.AsStreamForRead().CopyTo(memory);
+				var hex = Convert.ToHexString(memory.ToArray());
+				SUT.Document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1 A{{\pict\pngblip\picw2\pich2\picwgoal300\pichgoal150 {hex}}}B}}");
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				SUT.Document.GetText(TextGetOptions.UseObjectText, out var objectText);
+				Assert.AreEqual("A\ufffcB", text);
+				Assert.AreEqual("AB", objectText);
+				SUT.Document.GetRange(1, 2).GetRect(PointOptions.ClientCoordinates, out var imageRect, out _);
+				Assert.AreEqual(20, imageRect.Width, 1);
+				Assert.IsTrue(imageRect.Height >= 10, $"The visual line should contain the 10-DIP picture, height was {imageRect.Height}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Rtf_Stream_NoHidden_Removes_Hidden_Text()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				source.Document.SetText(TextSetOptions.None, "abc");
+				source.Document.GetRange(1, 2).CharacterFormat.Hidden = FormatEffect.On;
+				var stream = new InMemoryRandomAccessStream();
+				source.Document.GetRange(0, 3).GetTextViaStream(TextGetOptions.FormatRtf | TextGetOptions.NoHidden, stream);
+				target.Document.GetRange(0, 0).SetTextViaStream(TextSetOptions.FormatRtf, stream);
+
+				target.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("ac", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Forward_Gravity_Paste_At_Protected_Boundary_Is_Rejected()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcd");
+				SUT.Document.GetRange(1, 3).CharacterFormat.ProtectedText = FormatEffect.On;
+				var package = new DataPackage();
+				package.SetText("X");
+				Clipboard.SetContent(package);
+
+				var range = SUT.Document.GetRange(1, 1);
+				range.Gravity = RangeGravity.Forward;
+				Assert.ThrowsExactly<UnauthorizedAccessException>(() => range.Paste(0));
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcd", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Import_Honors_MaxLength_Before_Model_Allocation()
+		{
+			var SUT = new RichEditBox { MaxLength = 3 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1 abcdef}");
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Import_Rejects_Projected_Text_Above_Hard_Limit()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var rtf = @"{\rtf1 " + new string('a', 262_145) + "}";
+
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, rtf));
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual(string.Empty, text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public void When_Rtf_Import_Rejects_Paragraph_Tabs_Above_Hard_Limit()
+		{
+			var SUT = new RichEditBox();
+			var tabs = string.Join(';', Enumerable.Range(0, 64).Select(index => $"{index}|0|0"));
+			var encodedTabs = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(tabs));
+			var rtf = $@"{{\rtf1{{\*\unopara 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,{encodedTabs}}}text}}";
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, rtf));
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(string.Empty, text);
+		}
+
+		[TestMethod]
+		public void When_Maximum_Rtf_Paragraph_Tabs_Remain_Bounded_Across_Many_Paragraphs()
+		{
+			var SUT = new RichEditBox();
+			var tabs = string.Join(';', Enumerable.Range(0, 63).Select(index => $"{index}|0|0"));
+			var encodedTabs = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(tabs));
+			var paragraphs = string.Concat(Enumerable.Repeat(@"\ql\par\qr\par", 131_072));
+			var rtf = $@"{{\rtf1{{\*\unopara 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,{encodedTabs}}}{paragraphs}}}";
+			SUT.Document.SetText(TextSetOptions.FormatRtf, rtf);
+
+			var range = SUT.Document.GetRange(0, 262_144);
+			var format = range.ParagraphFormat;
+			Assert.AreEqual(63, format.TabCount);
+			Assert.ThrowsExactly<ArgumentException>(() => format.AddTab(64, TabAlignment.Left, TabLeader.Spaces));
+			SUT.Document.ClearUndoRedoHistory();
+			format.AddTab(0, TabAlignment.Right, TabLeader.Dashes);
+
+			var mutated = SUT.Document.GetRange(0, 0).ParagraphFormat;
+			Assert.AreEqual(63, mutated.TabCount);
+			mutated.GetTab(0, out var position, out var alignment, out var leader);
+			Assert.AreEqual(0f, position);
+			Assert.AreEqual(TabAlignment.Right, alignment);
+			Assert.AreEqual(TabLeader.Dashes, leader);
+			Assert.IsFalse(SUT.Document.CanUndo(), "The oversized pre-mutation snapshot must not be retained in undo history.");
+		}
+
+		[TestMethod]
+		public void When_Paragraph_Tab_Mutation_Undo_Restores_Distinct_Paragraph_States()
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.None, "a\rb");
+			SUT.Document.GetRange(0, 1).ParagraphFormat.Alignment = ParagraphAlignment.Left;
+			SUT.Document.GetRange(2, 3).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+			var format = SUT.Document.GetRange(0, 3).ParagraphFormat;
+			format.AddTab(10, TabAlignment.Left, TabLeader.Spaces);
+			SUT.Document.ClearUndoRedoHistory();
+
+			format.AddTab(10, TabAlignment.Right, TabLeader.Dashes);
+			SUT.Document.Undo();
+
+			var first = SUT.Document.GetRange(0, 1).ParagraphFormat;
+			var second = SUT.Document.GetRange(2, 3).ParagraphFormat;
+			first.GetTab(0, out _, out var firstAlignment, out var firstLeader);
+			second.GetTab(0, out _, out var secondAlignment, out var secondLeader);
+			Assert.AreEqual(TabAlignment.Left, firstAlignment);
+			Assert.AreEqual(TabLeader.Spaces, firstLeader);
+			Assert.AreEqual(TabAlignment.Left, secondAlignment);
+			Assert.AreEqual(TabLeader.Spaces, secondLeader);
+			Assert.AreEqual(ParagraphAlignment.Left, first.Alignment);
+			Assert.AreEqual(ParagraphAlignment.Right, second.Alignment);
+		}
+
+		[TestMethod]
+		public void When_Paragraph_Tab_Rejects_Invalid_Positions()
+		{
+			var format = new RichEditBox().Document.GetDefaultParagraphFormat();
+
+			Assert.ThrowsExactly<ArgumentException>(() => format.AddTab(-1, TabAlignment.Left, TabLeader.Spaces));
+			Assert.ThrowsExactly<ArgumentException>(() => format.AddTab(float.NaN, TabAlignment.Left, TabLeader.Spaces));
+			Assert.ThrowsExactly<ArgumentException>(() => format.AddTab(float.PositiveInfinity, TabAlignment.Left, TabLeader.Spaces));
+			Assert.ThrowsExactly<ArgumentException>(() => format.DeleteTab(-1));
+		}
+
+		[TestMethod]
+		public void When_Rtf_Import_Rejects_Language_Tag_Above_Hard_Limit()
+		{
+			var SUT = new RichEditBox();
+			var language = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(new string('a', 257)));
+			var rtf = $@"{{\rtf1{{\*\unochar 0,-,5,0,0,{language},0,0,0,0,0,0,0,0,400,0,1}}text}}";
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, rtf));
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(string.Empty, text);
+		}
+
+		[TestMethod]
+		public void When_Rtf_Export_Rejects_Metadata_Amplification_Before_Stream_Mutation()
+		{
+			var SUT = new RichEditBox();
+			var language = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(new string('a', 256)));
+			var characterMetadata = $@"{{\*\unochar 0,-,5,0,0,{language},0,0,0,0,0,0,0,0,400,0,1}}";
+			var alternatingText = string.Concat(Enumerable.Repeat(@"a{\plain b}", 26_000));
+			SUT.Document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1{characterMetadata}{alternatingText}}}");
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.GetText(TextGetOptions.FormatRtf, out _));
+
+			var stream = new InMemoryRandomAccessStream();
+			var streamAdapter = stream.AsStreamForWrite();
+			streamAdapter.WriteByte(42);
+			streamAdapter.Flush();
+			Assert.AreEqual(1ul, stream.Size);
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SaveToStream(TextGetOptions.FormatRtf, stream));
+			Assert.AreEqual(1ul, stream.Size);
+		}
+
+		[TestMethod]
+		public async Task When_MathML_Rejects_Projected_Text_Above_Hard_Limit()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+				var mathML = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtext>"
+					+ new string('a', 262_145)
+					+ "</mtext></math>";
+
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetMathML(mathML));
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual(string.Empty, text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Same_Rtf_SetText_Synchronizes_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(2, 2);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				SUT.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+
+				SUT.Document.SetText(TextSetOptions.FormatRtf, rtf);
+
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.SelectionStartForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Undefined_Indent_Clone_Does_Not_Overwrite_Existing_Indents()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				var range = SUT.Document.GetRange(0, 3);
+				range.ParagraphFormat.SetIndents(1, 2, 3);
+				var undefined = range.ParagraphFormat.GetClone();
+				undefined.SetIndents(
+					TextConstants.UndefinedFloatValue,
+					TextConstants.UndefinedFloatValue,
+					TextConstants.UndefinedFloatValue);
+
+				range.ParagraphFormat.SetClone(undefined);
+
+				var actual = range.ParagraphFormat;
+				Assert.AreEqual(1f, actual.FirstLineIndent);
+				Assert.AreEqual(2f, actual.LeftIndent);
+				Assert.AreEqual(3f, actual.RightIndent);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Live_Paragraph_Tab_Handles_Merge_Operations()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				var first = SUT.Document.GetRange(0, 3).ParagraphFormat;
+				var second = SUT.Document.GetRange(0, 3).ParagraphFormat;
+
+				first.AddTab(10, TabAlignment.Left, TabLeader.Spaces);
+				second.AddTab(20, TabAlignment.Right, TabLeader.Dashes);
+
+				var actual = SUT.Document.GetRange(0, 3).ParagraphFormat;
+				Assert.AreEqual(2, actual.TabCount);
+				actual.GetTab(0, out var firstPosition, out _, out _);
+				actual.GetTab(1, out var secondPosition, out _, out _);
+				Assert.AreEqual(10f, firstPosition);
+				Assert.AreEqual(20f, secondPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Vertical_Move_Uses_Actual_Target_Line_Height()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 200 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "a\rb\rc");
+				SUT.Document.GetRange(2, 3).CharacterFormat.Size = 80;
+				await WindowHelper.WaitForIdle();
+				SUT.Document.Selection.SetRange(0, 0);
+
+				Assert.AreEqual(2, SUT.Document.Selection.MoveDown(TextRangeUnit.Line, 2, false));
+				Assert.AreEqual(4, SUT.Document.Selection.StartPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Throwing_Change_Handlers_Do_Not_Corrupt_Control_State()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.TextChanging += (_, _) => throw new InvalidOperationException("test");
+				SUT.TextChanged += (_, _) => throw new InvalidOperationException("test");
+				SUT.SelectionChanged += (_, _) => throw new InvalidOperationException("test");
+
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 2);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+				Assert.AreEqual(1, SUT.SelectionStartForTesting);
+				Assert.AreEqual(1, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Interactive_Edit_Over_Mixed_Protected_Selection_Is_Rejected()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.GetRange(2, 4).CharacterFormat.ProtectedText = FormatEffect.On;
+				SUT.Document.Selection.SetRange(1, 5);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				RaiseKey(SUT, VirtualKey.X, unicodeKey: 'x');
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(1, SUT.SelectionStartForTesting);
+				Assert.AreEqual(4, SUT.SelectionLengthForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Ime_Edit_Over_Protected_Selection_Is_Rejected()
+		{
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.GetRange(2, 4).CharacterFormat.ProtectedText = FormatEffect.On;
+				SUT.Document.Selection.SetRange(1, 5);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("x");
+				fake.SimulateCompositionComplete("x");
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abcdef", text);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AdvancedCharacterFormat_FormattedText_And_Undo_Preserve_State()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "abc");
+			var sourceRange = source.Document.GetRange(0, 3);
+			var value = sourceRange.CharacterFormat.GetClone();
+			value.AllCaps = FormatEffect.On;
+			value.BackgroundColor = Microsoft.UI.Colors.Coral;
+			value.FontStretch = global::Windows.UI.Text.FontStretch.SemiExpanded;
+			value.Spacing = 2;
+			value.TextScript = TextScript.Ansi;
+			sourceRange.CharacterFormat.SetClone(value);
+
+			target.Document.GetRange(0, 0).FormattedText = sourceRange;
+			var transferred = target.Document.GetRange(0, 3).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, transferred.AllCaps);
+			Assert.AreEqual(Microsoft.UI.Colors.Coral, transferred.BackgroundColor);
+			Assert.AreEqual(global::Windows.UI.Text.FontStretch.SemiExpanded, transferred.FontStretch);
+			Assert.AreEqual(2f, transferred.Spacing);
+			Assert.AreEqual(TextScript.Ansi, transferred.TextScript);
+
+			source.Document.Undo();
+			var restored = source.Document.GetRange(0, 3).CharacterFormat;
+			Assert.AreEqual(FormatEffect.Off, restored.AllCaps);
+			Assert.AreEqual(global::Windows.UI.Text.FontStretch.Normal, restored.FontStretch);
+			Assert.AreEqual(0f, restored.Spacing);
+			Assert.AreEqual(TextScript.Default, restored.TextScript);
+		}
+
+		[TestMethod]
+		public async Task When_AdvancedCharacterFormat_At_Caret_Applies_To_Typed_Text()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, "a");
+			SUT.Document.Selection.SetRange(1, 1);
+
+			var value = SUT.Document.Selection.CharacterFormat.GetClone();
+			value.AllCaps = FormatEffect.On;
+			value.FontStretch = global::Windows.UI.Text.FontStretch.ExtraExpanded;
+			value.LanguageTag = "en-US";
+			value.Spacing = 3;
+			SUT.Document.Selection.CharacterFormat.SetClone(value);
+			SUT.Document.Selection.TypeText("x");
+
+			var inserted = SUT.Document.GetRange(1, 2).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, inserted.AllCaps);
+			Assert.AreEqual(global::Windows.UI.Text.FontStretch.ExtraExpanded, inserted.FontStretch);
+			Assert.AreEqual("en-US", inserted.LanguageTag);
+			Assert.AreEqual(3f, inserted.Spacing);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterFormat_Spacing_Affects_Layout_And_HitTesting()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 400, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ABCD");
+				await WindowHelper.WaitForIdle();
+
+				var range = SUT.Document.GetRange(0, 4);
+				range.GetRect(PointOptions.ClientCoordinates, out var before, out _);
+				range.CharacterFormat.Spacing = 8;
+				await WindowHelper.WaitForIdle();
+				range.GetRect(PointOptions.ClientCoordinates, out var after, out _);
+				Assert.IsTrue(after.Width > before.Width + 20, $"Character spacing should widen the range, was {before.Width} then {after.Width}.");
+
+				var contentElement = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var block = contentElement?.Content as TextBlock;
+				Assert.IsNotNull(block);
+				Assert.IsTrue(block.Inlines.OfType<Run>().Single().CharacterSpacing > 0);
+
+				SUT.Document.GetRange(3, 3).GetPoint(HorizontalCharacterAlignment.Left, VerticalCharacterAlignment.Top, PointOptions.ClientCoordinates, out var point);
+				var recovered = SUT.Document.GetRangeFromPoint(point, PointOptions.ClientCoordinates);
+				Assert.IsTrue(Math.Abs(recovered.StartPosition - 3) <= 1, $"Spaced text hit testing should recover the final character, was {recovered.StartPosition}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -1905,7 +3485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_TextChanged_Not_Raised_On_Format_Only_Change()
+		public async Task When_TextChanged_Raised_On_Format_Only_Change()
 		{
 			var SUT = new RichEditBox();
 			WindowHelper.WindowContent = SUT;
@@ -1917,12 +3497,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var count = 0;
 			SUT.TextChanged += (s, e) => count++;
 
-			// A character-format change mutates the run model and re-renders, but the plain text is
-			// unchanged, so TextChanged must not fire.
+			// WinUI raises TextChanged for formatting-only document changes as well as text changes.
 			SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, count);
+			Assert.AreEqual(1, count);
 		}
 
 		[TestMethod]
@@ -2864,6 +4443,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_DefaultTabStop_Changes_Tab_Layout()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "A\tB");
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(2, 2).GetRect(PointOptions.ClientCoordinates, out var defaultRect, out _);
+				SUT.Document.DefaultTabStop = 72;
+				await WindowHelper.WaitForIdle();
+				SUT.Document.GetRange(2, 2).GetRect(PointOptions.ClientCoordinates, out var expandedRect, out _);
+
+				Assert.AreEqual(48, expandedRect.X - defaultRect.X, 2, "Doubling the tab stop from 36pt to 72pt should add 48 DIPs before the following character.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_CaretType_RoundTrips()
 		{
 			var SUT = new RichEditBox();
@@ -2996,7 +4604,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_TextChanging_Not_Raised_On_Format_Only_Change()
+		public async Task When_TextChanging_Format_Only_Reports_Content_False()
 		{
 			var SUT = new RichEditBox();
 			WindowHelper.WindowContent = SUT;
@@ -3006,14 +4614,804 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var count = 0;
-			SUT.TextChanging += (s, e) => count++;
+			var isContentChanging = true;
+			SUT.TextChanging += (s, e) =>
+			{
+				count++;
+				isContentChanging = e.IsContentChanging;
+			};
 
-			// A format-only change re-renders but leaves the plain text unchanged, so TextChanging
-			// (paired with TextChanged) must not fire.
 			SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, count);
+			Assert.AreEqual(1, count);
+			Assert.IsFalse(isContentChanging);
+		}
+
+		[TestMethod]
+		public async Task When_FormattedText_Copies_Character_And_Paragraph_Formatting()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "ab");
+			source.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+			source.Document.GetRange(0, 2).ParagraphFormat.Alignment = ParagraphAlignment.Right;
+			target.Document.SetText(TextSetOptions.None, "zz");
+
+			var destination = target.Document.GetRange(0, 2);
+			destination.FormattedText = source.Document.GetRange(0, 2);
+
+			target.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("ab", text);
+			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 1).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(1, 2).CharacterFormat.Bold);
+			Assert.AreEqual(ParagraphAlignment.Right, target.Document.GetRange(0, 2).ParagraphFormat.Alignment);
+			Assert.AreEqual(0, destination.StartPosition);
+			Assert.AreEqual(2, destination.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_FormattedText_Overlap_Is_Snapshotted_And_Undoable()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			SUT.Document.GetRange(1, 3).CharacterFormat.Italic = FormatEffect.On;
+			SUT.Document.ClearUndoRedoHistory();
+
+			var destination = SUT.Document.GetRange(2, 5);
+			destination.FormattedText = SUT.Document.GetRange(1, 4);
+
+			SUT.Document.GetText(TextGetOptions.None, out var copied);
+			Assert.AreEqual("abbcdf", copied);
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(2, 4).CharacterFormat.Italic);
+			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(4, 5).CharacterFormat.Italic);
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var restored);
+			Assert.AreEqual("abcdef", restored);
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(1, 3).CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_FormattedText_Get_Returns_Live_Clone()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			var formatted = SUT.Document.GetRange(1, 2).FormattedText;
+			SUT.Document.GetRange(0, 0).Text = "x";
+
+			Assert.AreEqual(2, formatted.StartPosition);
+			Assert.AreEqual(3, formatted.EndPosition);
+			Assert.AreEqual("b", formatted.Text);
+		}
+
+		[TestMethod]
+		[DataRow(RangeGravity.Backward, 1, 4)]
+		[DataRow(RangeGravity.Forward, 2, 4)]
+		[DataRow(RangeGravity.Inward, 2, 4)]
+		[DataRow(RangeGravity.Outward, 1, 4)]
+		public async Task When_RangeGravity_Controls_Start_Insertion(RangeGravity gravity, int expectedStart, int expectedEnd)
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcd");
+			var range = SUT.Document.GetRange(1, 3);
+			range.Gravity = gravity;
+			SUT.Document.GetRange(1, 1).Text = "X";
+
+			Assert.AreEqual(expectedStart, range.StartPosition);
+			Assert.AreEqual(expectedEnd, range.EndPosition);
+		}
+
+		[TestMethod]
+		[DataRow(RangeGravity.Backward, 1, 3)]
+		[DataRow(RangeGravity.Forward, 1, 4)]
+		[DataRow(RangeGravity.Inward, 1, 3)]
+		[DataRow(RangeGravity.Outward, 1, 4)]
+		public async Task When_RangeGravity_Controls_End_Insertion(RangeGravity gravity, int expectedStart, int expectedEnd)
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcd");
+			var range = SUT.Document.GetRange(1, 3);
+			range.Gravity = gravity;
+			SUT.Document.GetRange(3, 3).Text = "X";
+
+			Assert.AreEqual(expectedStart, range.StartPosition);
+			Assert.AreEqual(expectedEnd, range.EndPosition);
+		}
+
+		[TestMethod]
+		public async Task When_RangeGravity_Controls_Caret_Format_Basis()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "ab");
+			SUT.Document.GetRange(1, 2).CharacterFormat.Bold = FormatEffect.On;
+			var backward = SUT.Document.GetRange(1, 1);
+			backward.Gravity = RangeGravity.Backward;
+			var forward = SUT.Document.GetRange(1, 1);
+			forward.Gravity = RangeGravity.Forward;
+
+			Assert.AreEqual(FormatEffect.Off, backward.CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.On, forward.CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_Sentence_Units_Move_Expand_And_Index()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "One.  Two?\tThree!");
+			var range = SUT.Document.GetRange(0, 0);
+			Assert.AreEqual(1, range.Move(TextRangeUnit.Sentence, 1));
+			Assert.AreEqual(6, range.StartPosition);
+			Assert.AreEqual(2, range.GetIndex(TextRangeUnit.Sentence));
+
+			range.Expand(TextRangeUnit.Sentence);
+			Assert.AreEqual("Two?\t", range.Text);
+			range.SetIndex(TextRangeUnit.Sentence, -1, false);
+			Assert.AreEqual(11, range.StartPosition);
+			Assert.AreEqual(3, range.GetIndex(TextRangeUnit.Sentence));
+		}
+
+		[TestMethod]
+		public async Task When_Link_Set_Get_Expands_To_Whole_Friendly_Name()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "go to Contoso now");
+			SUT.Document.GetRange(6, 13).Link = "\"https://contoso.example\"";
+
+			var partial = SUT.Document.GetRange(8, 9);
+			Assert.AreEqual("\"https://contoso.example\"", partial.Link);
+			Assert.AreEqual(6, partial.StartPosition);
+			Assert.AreEqual(13, partial.EndPosition);
+			Assert.AreEqual(LinkType.FriendlyLinkName, partial.CharacterFormat.LinkType);
+			Assert.AreEqual(LinkType.NotALink, SUT.Document.GetRange(0, 2).CharacterFormat.LinkType);
+		}
+
+		[TestMethod]
+		public async Task When_Link_Validates_Quoted_Nondegenerate_Input()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "abc");
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.GetRange(0, 0).Link = "\"https://contoso.example\"");
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.GetRange(0, 3).Link = "https://contoso.example");
+
+			SUT.Document.GetRange(0, 3).Link = "\ufddf\"https://contoso.example\"";
+			Assert.AreEqual("\ufddf\"https://contoso.example\"", SUT.Document.GetRange(1, 2).Link);
+		}
+
+		[TestMethod]
+		public async Task When_Link_Unlink_Undo_And_FormattedText_Preserve_Metadata()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "link");
+			source.Document.GetRange(0, 4).Link = "\"https://contoso.example\"";
+			target.Document.SetText(TextSetOptions.None, "xxxx");
+			target.Document.GetRange(0, 4).FormattedText = source.Document.GetRange(0, 4);
+			Assert.AreEqual("\"https://contoso.example\"", target.Document.GetRange(0, 4).Link);
+
+			target.Document.ClearUndoRedoHistory();
+			target.Document.GetRange(0, 4).Link = string.Empty;
+			Assert.AreEqual(string.Empty, target.Document.GetRange(0, 4).Link);
+			target.Document.Undo();
+			Assert.AreEqual("\"https://contoso.example\"", target.Document.GetRange(0, 4).Link);
+		}
+
+		[TestMethod]
+		public async Task When_Link_Renders_As_Hyperlink_Inline()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "link plain");
+			SUT.Document.GetRange(0, 4).Link = "\"https://contoso.example\"";
+			await WindowHelper.WaitForIdle();
+
+			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var displayBlock = contentElement?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			Assert.IsInstanceOfType<Hyperlink>(displayBlock.Inlines[0]);
+			var hyperlink = (Hyperlink)displayBlock.Inlines[0];
+			Assert.AreEqual("link", ((Run)hyperlink.Inlines[0]).Text);
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_String_RoundTrips_Unicode_Formatting_Paragraph_And_Link()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "Héllo link");
+			var formatted = source.Document.GetRange(0, 5).CharacterFormat;
+			formatted.Bold = FormatEffect.On;
+			formatted.ForegroundColor = Windows.UI.Colors.Red;
+			formatted.Size = 20;
+			source.Document.GetRange(0, 10).ParagraphFormat.Alignment = ParagraphAlignment.Center;
+			source.Document.GetRange(6, 10).Link = "\"https://contoso.example\"";
+
+			source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+			Assert.IsTrue(rtf.StartsWith("{\\rtf1", StringComparison.Ordinal));
+			target.Document.SetText(TextSetOptions.FormatRtf, rtf);
+
+			target.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("Héllo link", text);
+			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 5).CharacterFormat.Bold);
+			Assert.AreEqual(Windows.UI.Colors.Red, target.Document.GetRange(0, 5).CharacterFormat.ForegroundColor);
+			Assert.AreEqual(20f, target.Document.GetRange(0, 5).CharacterFormat.Size);
+			Assert.AreEqual(ParagraphAlignment.Center, target.Document.GetRange(0, 10).ParagraphFormat.Alignment);
+			Assert.AreEqual("\"https://contoso.example\"", target.Document.GetRange(7, 8).Link);
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_AdvancedCharacterFormat_RoundTrips_Standard_And_Metadata_Controls()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "advanced");
+			var range = source.Document.GetRange(0, 8);
+			var value = range.CharacterFormat.GetClone();
+			value.AllCaps = FormatEffect.On;
+			value.BackgroundColor = Microsoft.UI.Colors.Coral;
+			value.FontStretch = global::Windows.UI.Text.FontStretch.SemiExpanded;
+			value.Hidden = FormatEffect.On;
+			value.Kerning = 8;
+			value.LanguageTag = "en-CA";
+			value.Outline = FormatEffect.On;
+			value.Position = 2.5f;
+			value.ProtectedText = FormatEffect.On;
+			value.SmallCaps = FormatEffect.On;
+			value.Spacing = 2;
+			value.Subscript = FormatEffect.On;
+			value.Superscript = FormatEffect.Off;
+			value.TextScript = TextScript.Ansi;
+			range.CharacterFormat.SetClone(value);
+
+			source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+			Assert.IsTrue(rtf.Contains(@"\caps", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\highlight", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\expndtw40", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\kerning16", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\up5", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\sub", StringComparison.Ordinal));
+			Assert.IsTrue(rtf.Contains(@"\*\unochar", StringComparison.Ordinal));
+
+			target.Document.SetText(TextSetOptions.FormatRtf, rtf);
+			var actual = target.Document.GetRange(0, 8).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, actual.AllCaps);
+			Assert.AreEqual(Microsoft.UI.Colors.Coral, actual.BackgroundColor);
+			Assert.AreEqual(global::Windows.UI.Text.FontStretch.SemiExpanded, actual.FontStretch);
+			Assert.AreEqual(FormatEffect.On, actual.Hidden);
+			Assert.AreEqual(8f, actual.Kerning);
+			Assert.AreEqual("en-CA", actual.LanguageTag);
+			Assert.AreEqual(FormatEffect.On, actual.Outline);
+			Assert.AreEqual(2.5f, actual.Position);
+			Assert.AreEqual(FormatEffect.On, actual.ProtectedText);
+			Assert.AreEqual(FormatEffect.On, actual.SmallCaps);
+			Assert.AreEqual(2f, actual.Spacing);
+			Assert.AreEqual(FormatEffect.On, actual.Subscript);
+			Assert.AreEqual(FormatEffect.Off, actual.Superscript);
+			Assert.AreEqual(TextScript.Ansi, actual.TextScript);
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Standard_AdvancedCharacter_Controls_Are_Parsed()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			const string rtf = @"{\rtf1\ansi{\colortbl ;\red255\green215\blue0;}\caps\highlight1\v\outl\protect\scaps\expndtw40\kerning16\up5\sub X}";
+			SUT.Document.SetText(TextSetOptions.FormatRtf, rtf);
+
+			var actual = SUT.Document.GetRange(0, 1).CharacterFormat;
+			Assert.AreEqual(FormatEffect.On, actual.AllCaps);
+			Assert.AreEqual(global::Windows.UI.Color.FromArgb(255, 255, 215, 0), actual.BackgroundColor);
+			Assert.AreEqual(FormatEffect.On, actual.Hidden);
+			Assert.AreEqual(FormatEffect.On, actual.Outline);
+			Assert.AreEqual(FormatEffect.On, actual.ProtectedText);
+			Assert.AreEqual(FormatEffect.On, actual.SmallCaps);
+			Assert.AreEqual(2f, actual.Spacing);
+			Assert.AreEqual(8f, actual.Kerning);
+			Assert.AreEqual(2.5f, actual.Position);
+			Assert.AreEqual(FormatEffect.On, actual.Subscript);
+			Assert.AreEqual(FormatEffect.Off, actual.Superscript);
+		}
+
+		[TestMethod]
+		public async Task When_MathML_APIs_Require_Valid_Math_Mode()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				Assert.AreEqual(RichEditMathMode.NoMath, SUT.Document.GetMathMode());
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.GetMathML(out _));
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetMathML("<math />"));
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetMathMode((RichEditMathMode)42));
+				Assert.AreEqual(RichEditMathMode.NoMath, SUT.Document.GetMathMode());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_MathMode_Changes_Clear_Content_And_Undo_History()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "before");
+				Assert.IsTrue(SUT.Document.CanUndo());
+
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+				SUT.Document.GetText(TextGetOptions.None, out var mathText);
+				Assert.AreEqual(string.Empty, mathText);
+				Assert.IsFalse(SUT.Document.CanUndo());
+				Assert.AreEqual(RichEditMathMode.MathOnly, SUT.Document.GetMathMode());
+
+				SUT.Document.SetText(TextSetOptions.None, "math");
+				Assert.IsTrue(SUT.Document.CanUndo());
+				SUT.Document.SetMathMode(RichEditMathMode.NoMath);
+				SUT.Document.GetText(TextGetOptions.None, out var plainText);
+				Assert.AreEqual(string.Empty, plainText);
+				Assert.IsFalse(SUT.Document.CanUndo());
+				Assert.AreEqual(RichEditMathMode.NoMath, SUT.Document.GetMathMode());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetMathML_Projects_Presentation_Math_And_RoundTrips_Source()
+		{
+			const string mathML = "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" display=\"block\">"
+				+ "<mml:msup><mml:mi mathcolor=\"#FF0000\">x</mml:mi><mml:mn>3</mml:mn></mml:msup>"
+				+ "<mml:mo>+</mml:mo><mml:mfrac><mml:mn>1</mml:mn><mml:mn>2</mml:mn></mml:mfrac>"
+				+ "</mml:math>";
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+
+				SUT.Document.SetMathML(mathML);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				SUT.Document.GetMathML(out var roundTripped);
+				Assert.AreEqual("x³+½", text);
+				Assert.AreEqual(mathML, roundTripped);
+				Assert.AreEqual(Microsoft.UI.Colors.Red, SUT.Document.GetRange(0, 1).CharacterFormat.ForegroundColor);
+
+				var contentElement = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var block = contentElement?.Content as TextBlock;
+				Assert.IsNotNull(block);
+				Assert.AreEqual("Cambria Math", block.FontFamily.Source);
+				Assert.IsTrue(block.Inlines.OfType<Run>().All(run => run.FontFamily.Source == "Cambria Math"));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_SetMathML_Invalid_Or_Unsafe_Input_Clears_Content()
+		{
+			const string validMathML = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>x</mi></math>";
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+				SUT.Document.SetMathML(validMathML);
+
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetMathML("<math><mi>x</mi></math>"));
+				SUT.Document.GetText(TextGetOptions.None, out var afterInvalidNamespace);
+				Assert.AreEqual(string.Empty, afterInvalidNamespace);
+
+				SUT.Document.SetMathML(validMathML);
+				const string unsafeMathML = "<!DOCTYPE math [<!ENTITY value SYSTEM \"file:///etc/passwd\">]>"
+					+ "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtext>&value;</mtext></math>";
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetMathML(unsafeMathML));
+				SUT.Document.GetText(TextGetOptions.None, out var afterUnsafeInput);
+				Assert.AreEqual(string.Empty, afterUnsafeInput);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_MathMode_Plain_Text_Edit_Exports_MathML()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+				SUT.Document.SetText(TextSetOptions.None, "a < b & c");
+
+				SUT.Document.GetMathML(out var mathML);
+				var document = System.Xml.Linq.XDocument.Parse(mathML);
+				Assert.AreEqual("http://www.w3.org/1998/Math/MathML", document.Root?.Name.NamespaceName);
+				Assert.AreEqual("math", document.Root?.Name.LocalName);
+				Assert.AreEqual("a < b & c", document.Root?.Value);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_MathML_Undo_Redo_Restores_Source_Document()
+		{
+			const string first = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>x</mi></math>";
+			const string second = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>y</mi></math>";
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetMathMode(RichEditMathMode.MathOnly);
+				SUT.Document.SetMathML(first);
+				SUT.Document.ClearUndoRedoHistory();
+				SUT.Document.SetMathML(second);
+
+				SUT.Document.Undo();
+				SUT.Document.GetMathML(out var afterUndo);
+				SUT.Document.GetText(TextGetOptions.None, out var undoText);
+				Assert.AreEqual(first, afterUndo);
+				Assert.AreEqual("x", undoText);
+
+				SUT.Document.Redo();
+				SUT.Document.GetMathML(out var afterRedo);
+				SUT.Document.GetText(TextGetOptions.None, out var redoText);
+				Assert.AreEqual(second, afterRedo);
+				Assert.AreEqual("y", redoText);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Rtf_Stream_RoundTrips_Formatted_Subrange()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "abcde");
+			source.Document.GetRange(1, 4).CharacterFormat.Italic = FormatEffect.On;
+			var stream = new InMemoryRandomAccessStream();
+			source.Document.GetRange(1, 4).GetTextViaStream(TextGetOptions.FormatRtf, stream);
+
+			target.Document.SetText(TextSetOptions.None, "XX");
+			target.Document.GetRange(1, 1).SetTextViaStream(TextSetOptions.FormatRtf, stream);
+
+			target.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("XbcdX", text);
+			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(1, 4).CharacterFormat.Italic);
+		}
+
+		[TestMethod]
+		public async Task When_Document_Plain_And_Rtf_Streams_RoundTrip()
+		{
+			var source = new RichEditBox();
+			var plainTarget = new RichEditBox();
+			var richTarget = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(plainTarget);
+			panel.Children.Add(richTarget);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "one\rtwö");
+			source.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+			var plain = new InMemoryRandomAccessStream();
+			var rich = new InMemoryRandomAccessStream();
+			source.Document.SaveToStream(TextGetOptions.UseLf, plain);
+			source.Document.SaveToStream(TextGetOptions.FormatRtf, rich);
+
+			plainTarget.Document.LoadFromStream(TextSetOptions.None, plain);
+			richTarget.Document.LoadFromStream(TextSetOptions.FormatRtf, rich);
+			plainTarget.Document.GetText(TextGetOptions.None, out var plainText);
+			richTarget.Document.GetText(TextGetOptions.None, out var richText);
+			Assert.AreEqual("one\rtwö", plainText);
+			Assert.AreEqual("one\rtwö", richText);
+			Assert.AreEqual(FormatEffect.Off, plainTarget.Document.GetRange(0, 3).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.On, richTarget.Document.GetRange(0, 3).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_AllowFinalEop_Appends_Converted_Paragraph_Mark()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Document.SetText(TextSetOptions.None, "text");
+			SUT.Document.GetText(TextGetOptions.AllowFinalEop, out var raw);
+			SUT.Document.GetText(TextGetOptions.AllowFinalEop | TextGetOptions.UseLf, out var lf);
+			SUT.Document.GetText(TextGetOptions.AllowFinalEop | TextGetOptions.UseCrlf, out var crlf);
+			Assert.AreEqual("text\r", raw);
+			Assert.AreEqual("text\n", lf);
+			Assert.AreEqual("text\r\n", crlf);
+		}
+
+		[TestMethod]
+		public async Task When_RtfOnly_Clipboard_Paste_Preserves_Formatting_Cross_Process()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "rich");
+			source.Document.GetRange(0, 4).CharacterFormat.Bold = FormatEffect.On;
+			source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+			var package = new DataPackage();
+			package.SetRtf(rtf);
+			Clipboard.SetContent(package);
+			await WindowHelper.WaitForIdle();
+
+			target.PasteFromClipboard();
+			await WindowHelper.WaitFor(() =>
+			{
+				target.Document.GetText(TextGetOptions.None, out var text);
+				return text == "rich";
+			});
+			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 4).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
+		public async Task When_ClipboardCopyFormat_Controls_Rtf_Payload()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, "copy");
+			SUT.Document.Selection.SetRange(0, 4);
+
+			SUT.ClipboardCopyFormat = RichEditClipboardFormat.AllFormats;
+			SUT.Document.Selection.Copy();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
+
+			SUT.ClipboardCopyFormat = RichEditClipboardFormat.PlainText;
+			SUT.Document.Selection.Copy();
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
+			Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+		}
+
+		[TestMethod]
+		public async Task When_InputScope_RoundTrips()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(Microsoft.UI.Xaml.Input.InputScopeNameValue.Default, SUT.InputScope.Names[0].NameValue);
+
+			var scope = new Microsoft.UI.Xaml.Input.InputScope();
+			scope.Names.Add(new Microsoft.UI.Xaml.Input.InputScopeName
+			{
+				NameValue = Microsoft.UI.Xaml.Input.InputScopeNameValue.Url,
+			});
+			SUT.InputScope = scope;
+
+			Assert.AreSame(scope, SUT.InputScope);
+		}
+
+		[TestMethod]
+		public async Task When_InsertImage_Replaces_Range_As_One_Object_With_AlternateText()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, "abcd");
+
+			var range = SUT.Document.GetRange(1, 3);
+			range.InsertImage(20, 10, 7, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(SKColors.Red));
+
+			SUT.Document.GetText(TextGetOptions.None, out var raw);
+			SUT.Document.GetText(TextGetOptions.UseObjectText, out var objectText);
+			Assert.AreEqual("a\ufffcd", raw);
+			Assert.AreEqual("alogod", objectText);
+			Assert.AreEqual(1, range.StartPosition);
+			Assert.AreEqual(2, range.EndPosition);
+			Assert.AreEqual(4, SUT.Document.GetRange(0, 0).StoryLength);
+
+			SUT.Document.Undo();
+			SUT.Document.GetText(TextGetOptions.None, out var restored);
+			Assert.AreEqual("abcd", restored);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		public async Task When_InsertImage_Renders_With_Requested_Layout_Size()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 200,
+				Height = 80,
+				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White),
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				using var surface = SKSurface.Create(new SKImageInfo(2, 2));
+				surface.Canvas.Clear(SKColors.Red);
+				using var image = surface.Snapshot();
+				using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
+				using var stream = new MemoryStream(encoded.ToArray()).AsRandomAccessStream();
+
+				SUT.Document.SetText(TextSetOptions.None, "AB");
+				SUT.Document.GetRange(1, 1).InsertImage(40, 20, 15, VerticalCharacterAlignment.Baseline, "red", stream);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(1, 2).GetRect(PointOptions.ClientCoordinates, out var imageRect, out _);
+				Assert.AreEqual(40, imageRect.Width, 1, "The image object should use its requested DIP advance.");
+				Assert.IsTrue(imageRect.Height >= 20, $"The image should expand its visual line, whose height was {imageRect.Height}.");
+
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+				var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+				Assert.IsTrue(redBounds is { Width: > 20, Height: > 10 }, $"The inserted image should render red pixels, bounds were {redBounds}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Adjacent_Identical_Images_Render_As_Separate_Objects()
+		{
+			var SUT = new RichEditBox { Width = 200, Height = 80 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				using var surface = SKSurface.Create(new SKImageInfo(2, 2));
+				surface.Canvas.Clear(SKColors.Blue);
+				using var image = surface.Snapshot();
+				using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
+				var bytes = encoded.ToArray();
+				SUT.Document.GetRange(0, 0).InsertImage(20, 15, 10, VerticalCharacterAlignment.Baseline, "one", new MemoryStream(bytes).AsRandomAccessStream());
+				SUT.Document.GetRange(1, 1).InsertImage(20, 15, 10, VerticalCharacterAlignment.Baseline, "one", new MemoryStream(bytes).AsRandomAccessStream());
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 1).GetRect(PointOptions.ClientCoordinates, out var first, out _);
+				SUT.Document.GetRange(1, 2).GetRect(PointOptions.ClientCoordinates, out var second, out _);
+				Assert.AreEqual(20, first.Width, 1);
+				Assert.AreEqual(20, second.Width, 1);
+				Assert.AreEqual(first.Right, second.X, 1, "Adjacent image objects should occupy consecutive independent advances.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Image_FormattedText_And_RtfStream_Preserve_ObjectText()
+		{
+			var source = new RichEditBox();
+			var target = new RichEditBox();
+			var streamTarget = new RichEditBox();
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			panel.Children.Add(streamTarget);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			source.Document.SetText(TextSetOptions.None, "x");
+			source.Document.GetRange(1, 1).InsertImage(8, 9, 6, VerticalCharacterAlignment.Bottom, "picture", CreateImageStream(SKColors.Green));
+			target.Document.GetRange(0, 0).FormattedText = source.Document.GetRange(0, 2);
+			target.Document.GetText(TextGetOptions.UseObjectText, out var formattedText);
+			Assert.AreEqual("xpicture", formattedText);
+
+			var stream = new InMemoryRandomAccessStream();
+			source.Document.SaveToStream(TextGetOptions.FormatRtf, stream);
+			streamTarget.Document.LoadFromStream(TextSetOptions.FormatRtf, stream);
+			streamTarget.Document.GetText(TextGetOptions.UseObjectText, out var streamText);
+			Assert.AreEqual("xpicture", streamText);
+			streamTarget.Document.GetText(TextGetOptions.None, out var raw);
+			Assert.AreEqual("x\ufffc", raw);
+		}
+
+		[TestMethod]
+		public async Task When_InsertImage_Validates_And_Counts_Against_MaxLength()
+		{
+			var SUT = new RichEditBox { MaxLength = 1 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var bytes = CreateImageStream(SKColors.Blue);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+				SUT.Document.GetRange(0, 0).InsertImage(-1, 1, 0, VerticalCharacterAlignment.Top, "bad", bytes));
+
+			bytes.Seek(0);
+			SUT.Document.GetRange(0, 0).InsertImage(1, 1, 0, VerticalCharacterAlignment.Top, "one", bytes);
+			bytes.Seek(0);
+			SUT.Document.GetRange(1, 1).InsertImage(1, 1, 0, VerticalCharacterAlignment.Top, "two", bytes);
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("\ufffc", text);
 		}
 
 		[TestMethod]
@@ -3467,8 +5865,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
 
-			// Two paragraphs with different alignments cannot be rendered on a single TextBlock, so no
-			// uniform override is projected.
+			// Mixed alignments use per-line metadata, so no block-level uniform override is projected.
 			SUT.Document.GetRange(0, 0).ParagraphFormat.Alignment = ParagraphAlignment.Center;
 			SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment = ParagraphAlignment.Right;
 			await WindowHelper.WaitForIdle();
@@ -3542,6 +5939,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Default_Text_Command_Flyouts_Are_Available()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.SelectionFlyout);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ProofingMenuFlyout_Is_Stable_MenuFlyout()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var first = SUT.ProofingMenuFlyout;
+				var second = SUT.ProofingMenuFlyout;
+				Assert.IsInstanceOfType<MenuFlyout>(first);
+				Assert.AreSame(first, second);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ContextFlyout_With_Selection_Populates_RichEdit_Commands()
+		{
+			var SUT = new RichEditBox { Width = 200 };
+			TextCommandBarFlyout flyout = null;
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "Test content");
+				SUT.Document.Selection.SetRange(0, 4);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+				Assert.IsNotNull(flyout);
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var commandModifier = OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS()
+					? VirtualKeyModifiers.Windows
+					: VirtualKeyModifiers.Control;
+				var buttons = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>().ToList();
+				Assert.IsTrue(buttons.Any(button => button.KeyboardAccelerators.Any(accelerator => accelerator.Key == VirtualKey.X && accelerator.Modifiers.HasFlag(commandModifier))), "Cut should be available for an editable selection.");
+				Assert.IsTrue(buttons.Any(button => button.KeyboardAccelerators.Any(accelerator => accelerator.Key == VirtualKey.C && accelerator.Modifiers.HasFlag(commandModifier))), "Copy should be available for a selection.");
+				Assert.IsTrue(buttons.Any(button => button.KeyboardAccelerators.Any(accelerator => accelerator.Key == VirtualKey.A && accelerator.Modifiers.HasFlag(commandModifier))), "Select All should be available.");
+			}
+			finally
+			{
+				flyout?.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ContextMenuOpening_Handled_Suppresses_Text_Flyout()
+		{
+			var SUT = new RichEditBox();
+			var flyout = new MenuFlyout();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var eventCount = 0;
+				SUT.ContextMenuOpening += (_, args) =>
+				{
+					eventCount++;
+					args.Handled = true;
+				};
+
+				TextControlFlyoutHelper.ShowAt(
+					flyout,
+					SUT,
+					new Windows.Foundation.Point(10, 10),
+					default,
+					FlyoutShowMode.Standard);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, eventCount);
+				Assert.IsFalse(flyout.IsOpen);
+			}
+			finally
+			{
+				flyout.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_IME_Composition_Inserts_And_Commits()
 		{
 			var fake = new FakeImeTextBoxExtension();
@@ -3575,12 +6080,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var fake = new FakeImeTextBoxExtension();
 			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
 
-			var SUT = new RichEditBox { IsReadOnly = true };
+			var SUT = new RichEditBox();
 			try
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 				SUT.Document.SetText(TextSetOptions.None, "Original");
+				SUT.IsReadOnly = true;
 				SUT.Focus(FocusState.Programmatic);
 				await WindowHelper.WaitForIdle();
 
@@ -4434,6 +6940,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			return null;
+		}
+
+		private static IRandomAccessStream CreateImageStream(SKColor color)
+		{
+			using var surface = SKSurface.Create(new SKImageInfo(2, 2));
+			surface.Canvas.Clear(color);
+			using var image = surface.Snapshot();
+			using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
+			return new MemoryStream(encoded.ToArray()).AsRandomAccessStream();
 		}
 
 		private sealed class ReadOnlyPropertyChangedListener : IAutomationPeerListener
