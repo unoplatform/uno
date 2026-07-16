@@ -9,12 +9,13 @@ internal enum PaintStyle
 	Stroke,
 }
 
-/// <summary>Stroke end-cap style.</summary>
+/// <summary>Stroke end-cap style. <see cref="Triangle"/> has no direct backend primitive and is simulated with custom cap geometry.</summary>
 internal enum StrokeCap
 {
 	Butt,
 	Round,
 	Square,
+	Triangle,
 }
 
 /// <summary>Stroke line-join style.</summary>
@@ -23,6 +24,7 @@ internal enum StrokeJoin
 	Miter,
 	Round,
 	Bevel,
+	MiterOrBevel,
 }
 
 /// <summary>Porter-Duff / separable blend modes used by the drawing pipeline. <see cref="SrcOver"/> is the default.</summary>

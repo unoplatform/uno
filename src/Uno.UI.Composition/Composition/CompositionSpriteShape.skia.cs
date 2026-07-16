@@ -145,15 +145,31 @@ namespace Microsoft.UI.Composition
 		private StrokeStyle GetStrokeStyle(bool withTrim) => new()
 		{
 			Thickness = StrokeThickness,
-			StartCap = StrokeStartCap,
-			EndCap = StrokeEndCap,
-			DashCap = StrokeDashCap,
-			LineJoin = StrokeLineJoin,
+			StartCap = ToStrokeCap(StrokeStartCap),
+			EndCap = ToStrokeCap(StrokeEndCap),
+			DashCap = ToStrokeCap(StrokeDashCap),
+			LineJoin = ToStrokeJoin(StrokeLineJoin),
 			MiterLimit = StrokeMiterLimit,
 			DashArray = StrokeDashArray is { Count: > 0 } dashArray ? dashArray.ToEvenArray() : null,
 			DashOffset = StrokeDashOffset,
 			TrimStart = withTrim ? (Geometry?.TrimStart ?? 0f) : 0f,
 			TrimEnd = withTrim ? (Geometry?.TrimEnd ?? 0f) : 0f,
+		};
+
+		private static StrokeCap ToStrokeCap(CompositionStrokeCap cap) => cap switch
+		{
+			CompositionStrokeCap.Square => StrokeCap.Square,
+			CompositionStrokeCap.Round => StrokeCap.Round,
+			CompositionStrokeCap.Triangle => StrokeCap.Triangle,
+			_ => StrokeCap.Butt, // Flat
+		};
+
+		private static StrokeJoin ToStrokeJoin(CompositionStrokeLineJoin join) => join switch
+		{
+			CompositionStrokeLineJoin.Bevel => StrokeJoin.Bevel,
+			CompositionStrokeLineJoin.Round => StrokeJoin.Round,
+			CompositionStrokeLineJoin.MiterOrBevel => StrokeJoin.MiterOrBevel,
+			_ => StrokeJoin.Miter,
 		};
 
 	}

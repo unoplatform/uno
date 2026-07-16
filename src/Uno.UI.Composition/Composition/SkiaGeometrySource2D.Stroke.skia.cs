@@ -41,7 +41,7 @@ namespace Microsoft.UI.Composition
 			paint.StrokeJoin = ToSKStrokeJoin(style.LineJoin);
 			paint.StrokeMiter = style.MiterLimit;
 
-			var needsCustomCaps = style.StartCap != style.EndCap || style.StartCap == CompositionStrokeCap.Triangle;
+			var needsCustomCaps = style.StartCap != style.EndCap || style.StartCap == StrokeCap.Triangle;
 
 			float[]? dashValues = null;
 			if (style.DashArray is { Length: > 0 } dashArray)
@@ -84,20 +84,20 @@ namespace Microsoft.UI.Composition
 			}
 
 			if (dashValues is not null
-				&& (style.DashCap != CompositionStrokeCap.Flat
-					|| style.StartCap != CompositionStrokeCap.Flat
-					|| style.EndCap != CompositionStrokeCap.Flat))
+				&& (style.DashCap != StrokeCap.Butt
+					|| style.StartCap != StrokeCap.Butt
+					|| style.EndCap != StrokeCap.Butt))
 			{
 				FixDashEndpointCaps(builder, _geometry, style.Thickness, style.DashCap, style.StartCap, style.EndCap,
 					dashValues, style.DashOffset * style.Thickness);
 			}
 
-			if (dashValues is not null && style.DashCap == CompositionStrokeCap.Triangle)
+			if (dashValues is not null && style.DashCap == StrokeCap.Triangle)
 			{
 				AddInternalTriangleDashCaps(builder, _geometry, style.Thickness, dashValues, style.DashOffset * style.Thickness);
 			}
 
-			if (style.LineJoin == CompositionStrokeLineJoin.Miter)
+			if (style.LineJoin == StrokeJoin.Miter)
 			{
 				AddClippedMiterJoints(builder, _geometry, style.Thickness, style.MiterLimit);
 			}
@@ -105,21 +105,21 @@ namespace Microsoft.UI.Composition
 			return new SkiaGeometrySource2D(builder.Detach());
 		}
 
-		private static SKStrokeCap ToSKStrokeCap(CompositionStrokeCap cap) => cap switch
+		private static SKStrokeCap ToSKStrokeCap(StrokeCap cap) => cap switch
 		{
-			CompositionStrokeCap.Flat => SKStrokeCap.Butt,
-			CompositionStrokeCap.Square => SKStrokeCap.Square,
-			CompositionStrokeCap.Round => SKStrokeCap.Round,
-			CompositionStrokeCap.Triangle => SKStrokeCap.Butt, // Simulated via custom geometry
+			StrokeCap.Butt => SKStrokeCap.Butt,
+			StrokeCap.Square => SKStrokeCap.Square,
+			StrokeCap.Round => SKStrokeCap.Round,
+			StrokeCap.Triangle => SKStrokeCap.Butt, // Simulated via custom geometry
 			_ => SKStrokeCap.Butt,
 		};
 
-		private static SKStrokeJoin ToSKStrokeJoin(CompositionStrokeLineJoin join) => join switch
+		private static SKStrokeJoin ToSKStrokeJoin(StrokeJoin join) => join switch
 		{
-			CompositionStrokeLineJoin.Miter => SKStrokeJoin.Miter,
-			CompositionStrokeLineJoin.Bevel => SKStrokeJoin.Bevel,
-			CompositionStrokeLineJoin.Round => SKStrokeJoin.Round,
-			CompositionStrokeLineJoin.MiterOrBevel => SKStrokeJoin.Miter, // Skia's miter limit provides bevel fallback
+			StrokeJoin.Miter => SKStrokeJoin.Miter,
+			StrokeJoin.Bevel => SKStrokeJoin.Bevel,
+			StrokeJoin.Round => SKStrokeJoin.Round,
+			StrokeJoin.MiterOrBevel => SKStrokeJoin.Miter, // Skia's miter limit provides bevel fallback
 			_ => SKStrokeJoin.Miter,
 		};
 
@@ -127,7 +127,7 @@ namespace Microsoft.UI.Composition
 		/// Adds custom cap geometry to the stroke fill path for cases where native SKPaint.StrokeCap
 		/// is insufficient (different start/end caps, or Triangle cap type).
 		/// </summary>
-		private static void AddCustomCaps(SKPathBuilder fillPath, SKPath originalGeometry, float strokeWidth, CompositionStrokeCap startCap, CompositionStrokeCap endCap)
+		private static void AddCustomCaps(SKPathBuilder fillPath, SKPath originalGeometry, float strokeWidth, StrokeCap startCap, StrokeCap endCap)
 		{
 			using var measure = new SKPathMeasure(originalGeometry, false);
 			do
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Composition
 				}
 
 				// Start cap: tangent direction is negated (cap extends backward from start)
-				if (startCap != CompositionStrokeCap.Flat
+				if (startCap != StrokeCap.Butt
 					&& measure.GetPositionAndTangent(0, out var startPos, out var startTan))
 				{
 					using var capPath = BuildCapPath(startPos, new SKPoint(-startTan.X, -startTan.Y), strokeWidth, startCap);
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Composition
 				}
 
 				// End cap: tangent direction as-is (cap extends forward from end)
-				if (endCap != CompositionStrokeCap.Flat
+				if (endCap != StrokeCap.Butt
 					&& measure.GetPositionAndTangent(length, out var endPos, out var endTan))
 				{
 					using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
@@ -177,9 +177,9 @@ namespace Microsoft.UI.Composition
 			SKPathBuilder fillPath,
 			SKPath originalGeometry,
 			float strokeWidth,
-			CompositionStrokeCap dashCap,
-			CompositionStrokeCap startCap,
-			CompositionStrokeCap endCap,
+			StrokeCap dashCap,
+			StrokeCap startCap,
+			StrokeCap endCap,
 			float[] dashValues,
 			float dashOffset)
 		{
@@ -205,7 +205,7 @@ namespace Microsoft.UI.Composition
 					var backDir = new SKPoint(-startTan.X, -startTan.Y);
 
 					// Remove the incorrect DashCap protrusion at start
-					if (dashCap != CompositionStrokeCap.Flat)
+					if (dashCap != StrokeCap.Butt)
 					{
 						using var cutter = BuildHalfPlaneCutter(startPos, backDir, strokeWidth);
 						using var current = fillPath.Snapshot();
@@ -218,7 +218,7 @@ namespace Microsoft.UI.Composition
 					}
 
 					// Add the correct StartCap
-					if (startCap != CompositionStrokeCap.Flat)
+					if (startCap != StrokeCap.Butt)
 					{
 						using var capPath = BuildCapPath(startPos, backDir, strokeWidth, startCap);
 						if (capPath != null)
@@ -238,7 +238,7 @@ namespace Microsoft.UI.Composition
 						// Rendered dash at endpoint → swap DashCap → EndCap if they differ.
 						if (dashCap != endCap)
 						{
-							if (dashCap != CompositionStrokeCap.Flat)
+							if (dashCap != StrokeCap.Butt)
 							{
 								using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
 								using var current = fillPath.Snapshot();
@@ -249,7 +249,7 @@ namespace Microsoft.UI.Composition
 									fillPath.AddPath(result, SKPathAddMode.Append);
 								}
 							}
-							if (endCap != CompositionStrokeCap.Flat)
+							if (endCap != StrokeCap.Butt)
 							{
 								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
 								if (capPath != null)
@@ -264,7 +264,7 @@ namespace Microsoft.UI.Composition
 						// Endpoint at gap/dash boundary → zero-length dash.
 						// DashCap facing backward + EndCap facing forward.
 						var backDir = new SKPoint(-endTan.X, -endTan.Y);
-						if (dashCap != CompositionStrokeCap.Flat)
+						if (dashCap != StrokeCap.Butt)
 						{
 							using var capPath = BuildCapPath(endPos, backDir, strokeWidth, dashCap);
 							if (capPath != null)
@@ -272,7 +272,7 @@ namespace Microsoft.UI.Composition
 								fillPath.AddPath(capPath, SKPathAddMode.Append);
 							}
 						}
-						if (endCap != CompositionStrokeCap.Flat)
+						if (endCap != StrokeCap.Butt)
 						{
 							using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
 							if (capPath != null)
@@ -356,7 +356,7 @@ namespace Microsoft.UI.Composition
 								&& measure.GetPositionAndTangent(dashStart, out var startPos, out var startTan))
 							{
 								var backDir = new SKPoint(-startTan.X, -startTan.Y);
-								using var capPath = BuildCapPath(startPos, backDir, strokeWidth, CompositionStrokeCap.Triangle);
+								using var capPath = BuildCapPath(startPos, backDir, strokeWidth, StrokeCap.Triangle);
 								if (capPath != null)
 								{
 									fillPath.AddPath(capPath, SKPathAddMode.Append);
@@ -369,7 +369,7 @@ namespace Microsoft.UI.Composition
 							if (!isPathEnd
 								&& measure.GetPositionAndTangent(dashEnd, out var endPos, out var endTan))
 							{
-								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, CompositionStrokeCap.Triangle);
+								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, StrokeCap.Triangle);
 								if (capPath != null)
 								{
 									fillPath.AddPath(capPath, SKPathAddMode.Append);
@@ -522,13 +522,13 @@ namespace Microsoft.UI.Composition
 		/// <summary>
 		/// Builds a cap shape at the given position extending in the given direction.
 		/// </summary>
-		private static SKPath? BuildCapPath(SKPoint position, SKPoint direction, float strokeWidth, CompositionStrokeCap capType)
+		private static SKPath? BuildCapPath(SKPoint position, SKPoint direction, float strokeWidth, StrokeCap capType)
 		{
 			var halfWidth = strokeWidth / 2;
 			// Normal perpendicular to direction
 			var normal = new SKPoint(-direction.Y, direction.X);
 
-			if (capType == CompositionStrokeCap.Round)
+			if (capType == StrokeCap.Round)
 			{
 				var builder = new SKPathBuilder();
 				// Build a semicircle oriented in the cap direction
@@ -542,7 +542,7 @@ namespace Microsoft.UI.Composition
 				builder.Close();
 				return builder.Detach();
 			}
-			else if (capType == CompositionStrokeCap.Square)
+			else if (capType == StrokeCap.Square)
 			{
 				var builder = new SKPathBuilder();
 				// Rectangle extending halfWidth beyond endpoint in direction
@@ -553,7 +553,7 @@ namespace Microsoft.UI.Composition
 				builder.AddPoly(new[] { p1, p2, p3, p4 }, true);
 				return builder.Detach();
 			}
-			else if (capType == CompositionStrokeCap.Triangle)
+			else if (capType == StrokeCap.Triangle)
 			{
 				var builder = new SKPathBuilder();
 				// Isoceles triangle: base perpendicular to direction at endpoint, apex at halfWidth in direction
