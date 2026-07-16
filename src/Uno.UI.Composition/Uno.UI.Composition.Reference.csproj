@@ -1,5 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
+	<!--
+		Native WASM/Reference UI rendering has been removed, so Skia is the only cross-runtime
+		implementation. The Reference flavor carries no sources of its own and mirrors Skia
+		(UnoRuntimeIdentifier=Skia) — both heads build the same assembly. It is kept as a
+		distinct head only to preserve the lib/ compile-time reference slot consumed by
+		downstream packages.
+	-->
 	<PropertyGroup>
 		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -8,24 +15,44 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
+		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+		<None Remove="AssemblyInfo.skia.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
+		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Xaml\CornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\FullCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.skia.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Thickness.cs" />
+	</ItemGroup>
+
 </Project>
