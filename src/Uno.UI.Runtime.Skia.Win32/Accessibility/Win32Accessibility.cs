@@ -44,6 +44,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		StructureChangeKind Kind,
 		int[]? ChildRuntimeId);
 	private readonly List<PendingStructureChange> _pendingStructureChanges = new();
+	// Strong references to just-invalidated providers. Keeps their COM-callable
+	// wrappers alive across the window between UiaDisconnectProvider and UIA
+	// delivering the structure-changed notification, so an out-of-proc client
+	// that still holds the proxy observes UIA_E_ELEMENTNOTAVAILABLE rather than a
+	// severed-CCW 0x80070002. Drained once the structure-change flush completes.
+	private readonly HashSet<Win32RawElementProvider> _disconnectedProviders = new(ReferenceEqualityComparer.Instance);
 	private bool _structureChangeFlushQueued;
 
 	// Matches WinUI's AP_BULK_CHILDREN_LIMIT. Within one coalescing window, per container:
@@ -428,6 +434,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		if (!listening)
 		{
+			if (_disconnectedProviders.Count > 0)
+			{
+				// No structure event will queue the deferred tombstone release.
+				EnsureStructureChangeFlushQueued();
+			}
 			return;
 		}
 
@@ -491,29 +502,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			if (_providers.TryGetValue(current, out var provider))
 			{
-				// Clear cached peer lists so a stale provider cannot keep the
-				// removed subtree alive.
-				provider.InvalidateChildrenCache();
-				_pendingStructureChanges.RemoveAll(p => ReferenceEquals(p.Container, provider) || ReferenceEquals(p.Child, provider));
-
-				_providers.Remove(current);
-				if (provider.RepresentedPeer is { } representedPeer)
-				{
-					_peerProviders.Remove(representedPeer);
-				}
-
-				// Disconnect the provider from UIA so stale COM references are released.
-				try
-				{
-					_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
-				}
-				catch (Exception ex)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
-					}
-				}
+				// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
+				// cached children, cascades the disconnect to virtual children —
+				// e.g. WCT DataGrid rows/cells not reachable via the element table —
+				// disconnects from UIA, and updates the lookup tables + tombstone
+				// via OnProviderInvalidated. Every subsequent call on the provider
+				// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
+				// GC'd out from under a client's proxy (0x80070002).
+				provider.Invalidate();
 			}
 
 			foreach (var child in current.GetChildren())
@@ -521,6 +517,34 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				stack.Push(child);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Bookkeeping invoked by <see cref="Win32RawElementProvider.Invalidate"/>:
+	/// drops the provider from the lookup tables (so a re-added element is issued
+	/// a fresh provider) and roots it in the tombstone set until the pending
+	/// structure-change flush completes, guaranteeing the COM-callable wrapper
+	/// outlives UIA's processing of the disconnect.
+	/// </summary>
+	internal void OnProviderInvalidated(Win32RawElementProvider provider)
+	{
+		_pendingStructureChanges.RemoveAll(p => ReferenceEquals(p.Container, provider) || ReferenceEquals(p.Child, provider));
+
+		if (provider.RepresentedPeer is { } representedPeer)
+		{
+			_peerProviders.Remove(representedPeer);
+		}
+
+		// Only drop the element→provider mapping when this provider owns it.
+		// Virtual providers share their owner UIElement with the canonical peer's
+		// provider and must not evict it.
+		if (_providers.TryGetValue(provider.Owner, out var byElement)
+			&& ReferenceEquals(byElement, provider))
+		{
+			_providers.Remove(provider.Owner);
+		}
+
+		_disconnectedProviders.Add(provider);
 	}
 
 	private Win32RawElementProvider FindNearestAncestorProvider(UIElement element)
@@ -557,6 +581,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private void QueueStructureChange(PendingStructureChange change)
 	{
 		_pendingStructureChanges.Add(change);
+		EnsureStructureChangeFlushQueued();
+	}
+
+	private void EnsureStructureChangeFlushQueued()
+	{
 		if (_structureChangeFlushQueued)
 		{
 			return;
@@ -571,14 +600,23 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			if (IsDisposed)
 			{
 				_pendingStructureChanges.Clear();
+				_disconnectedProviders.Clear();
 				return;
 			}
 
-			FlushStructureChanges();
+			try
+			{
+				FlushStructureChanges();
+			}
+			finally
+			{
+				_disconnectedProviders.Clear();
+			}
 		}))
 		{
 			_structureChangeFlushQueued = false;
 			_pendingStructureChanges.Clear();
+			_disconnectedProviders.Clear();
 		}
 	}
 
@@ -677,13 +715,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>
-	/// Resolves a peer to its already-created provider without creating one.
-	/// Used by <see cref="Win32RawElementProvider.InvalidateChildrenCache()"/> to
-	/// cascade cache invalidation through the UIA child links, including to
-	/// virtual peers that are not keyed by element.
+	/// Resolves a peer's events source and returns its peer-keyed provider without
+	/// creating one or falling back to an owner element's provider.
 	/// </summary>
-	internal Win32RawElementProvider? TryGetExistingProviderForPeer(AutomationPeer peer)
-		=> FindExistingProviderForPeer(peer, resolveEventsSource: true);
+	internal Win32RawElementProvider? TryGetExistingProviderResolvingEventsSource(AutomationPeer peer)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		return _peerProviders.TryGetValue(resolvedPeer, out var provider) ? provider : null;
+	}
 
 	/// <summary>
 	/// Looks up an existing provider for the given peer without creating one.
@@ -971,16 +1010,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// process-wide and would disconnect providers belonging to other windows.
 		foreach (var pair in _providers)
 		{
-			try
+			if (!Win32UIAutomationInterop.TryDisconnectProvider(pair.Value, out var error)
+				&& this.Log().IsEnabled(LogLevel.Warning))
 			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pair.Value);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
-				}
+				this.Log().Warn("[UIA] UiaDisconnectProvider failed during dispose.", error);
 			}
 		}
 
@@ -992,22 +1025,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			{
 				continue;
 			}
-			try
+			if (!Win32UIAutomationInterop.TryDisconnectProvider(pane, out var error)
+				&& this.Log().IsEnabled(LogLevel.Warning))
 			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pane);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"[UIA] UiaDisconnectProvider failed for synthetic pane during dispose: {ex.Message}");
-				}
+				this.Log().Warn("[UIA] UiaDisconnectProvider failed for synthetic pane during dispose.", error);
 			}
 		}
 
 		_providers.Clear();
 		_peerProviders.Clear();
 		_pendingStructureChanges.Clear();
+		_disconnectedProviders.Clear();
 	}
 
 	// ──────────────────────────────────────────────────────────────
