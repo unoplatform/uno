@@ -1,9 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -553,6 +556,109 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetFullDescription();
 			Assert.AreEqual(string.Empty, result);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Button_With_PathIcon_Content_And_AutomationName()
+		{
+			var button = new Button
+			{
+				Width = 48,
+				Height = 48,
+				Content = new PathIcon { Data = new RectangleGeometry { Rect = new Rect(0, 0, 12, 12) } },
+			};
+			AutomationProperties.SetName(button, "Refresh");
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+				Assert.AreEqual("Refresh", peer.GetName());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Button_With_PathIcon_Content_Without_AutomationName()
+		{
+			var button = new Button
+			{
+				Width = 48,
+				Height = 48,
+				Content = new PathIcon { Data = new RectangleGeometry { Rect = new Rect(0, 0, 12, 12) } },
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+
+				// Icon content contributes no text — an icon-only button without AutomationProperties.Name is unnamed.
+				Assert.AreEqual(string.Empty, peer.GetName());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Button_With_String_Content_GetName()
+		{
+			var button = new Button { Content = "Help Center" };
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+				Assert.AreEqual("Help Center", peer.GetName());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PathIcon_Has_No_AutomationPeer()
+		{
+			var pathIcon = new PathIcon { Data = new RectangleGeometry { Rect = new Rect(0, 0, 12, 12) } };
+			var button = new Button
+			{
+				Width = 48,
+				Height = 48,
+				Content = pathIcon,
+			};
+			AutomationProperties.SetName(button, "Refresh");
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				Assert.IsNull(FrameworkElementAutomationPeer.CreatePeerForElement(pathIcon));
+
+				var buttonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(buttonPeer);
+				var children = buttonPeer.GetChildren();
+				Assert.IsTrue(children == null || children.Count == 0, "An icon-only Button should be a leaf in the automation tree.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		private class TestAutomationPeer : AutomationPeer
