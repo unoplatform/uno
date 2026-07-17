@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    Loaded="OnLoaded"
     mc:Ignorable="d">
 
     <StackPanel
@@ -23,8 +22,7 @@
             Width="360"
             Height="160"
             HorizontalAlignment="Left"
-            Header="Document"
-            IsReadOnly="True" />
+            Header="Document" />
 
         <StackPanel Orientation="Horizontal" Spacing="8">
             <Button
