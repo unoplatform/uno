@@ -111,7 +111,7 @@ public partial class CompositionTarget
 			(float)bounds.Height,
 			rootElement.Visual,
 			FrameRenderingOptions.invertNativeElementClipPath);
-		var frame = recording.EndRecording();
+		var frame = recording.Finish();
 		var renderedFrame = (frame, path);
 		var previousFrame = default((IRenderData frame, SKPath path)?);
 		lock (_frameGate)

@@ -34,9 +34,9 @@ internal static class SkiaRenderHelper
 	/// <summary>
 	/// Phase 1 of the render cycle (UI thread): walks the visual tree into <paramref name="session"/> (the
 	/// recording session provided by the backend) and computes the native-element clip path. Backend-agnostic;
-	/// the caller obtains the frame via <see cref="IRecordingSession.EndRecording"/>.
+	/// the caller obtains the frame via <see cref="ICommandRecorder.Finish"/>.
 	/// </summary>
-	internal static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(IRecordingSession session, float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		session.Clear(global::Windows.UI.Colors.Transparent);
 

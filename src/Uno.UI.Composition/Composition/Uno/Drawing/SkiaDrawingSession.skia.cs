@@ -40,14 +40,14 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	private protected static void ReturnRecorder(SKPictureRecorder recorder)
 		=> (_recorderPool ??= new()).Push(recorder);
 
-	public IRecordingSession CreateRecording(Rect cullBounds) => StartRecording(cullBounds);
+	public ICommandRecorder CreateRecording() => StartRecording();
 
 	/// <summary>Creates a root recording session (no pre-existing session), used to record a whole frame.</summary>
-	internal static SkiaRecordingSession StartRecording(Rect cullBounds)
+	internal static SkiaCommandRecorder StartRecording()
 	{
 		var recorder = RentRecorder();
-		var recordingCanvas = recorder.BeginRecording(cullBounds.ToSKRect());
-		return new SkiaRecordingSession(recorder, recordingCanvas);
+		var recordingCanvas = recorder.BeginRecording(Visual.InfiniteClipRect.ToSKRect());
+		return new SkiaCommandRecorder(recorder, recordingCanvas);
 	}
 
 	public void Replay(IRenderData data)

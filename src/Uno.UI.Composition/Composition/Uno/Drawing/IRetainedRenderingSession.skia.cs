@@ -18,9 +18,9 @@ internal interface IRetainedRenderingSession
 {
 	/// <summary>
 	/// Begins recording into a nested session whose draw calls are captured as an <see cref="IRenderData"/>
-	/// (via <see cref="IRecordingSession.EndRecording"/>) that can later be replayed with <see cref="Replay"/>.
+	/// (via <see cref="ICommandRecorder.Finish"/>) that can later be replayed with <see cref="Replay"/>.
 	/// </summary>
-	IRecordingSession CreateRecording(Rect cullBounds);
+	ICommandRecorder CreateRecording();
 
 	/// <summary>Replays previously recorded <paramref name="data"/> into this session.</summary>
 	void Replay(IRenderData data);

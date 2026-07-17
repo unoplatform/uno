@@ -10,8 +10,7 @@ namespace Uno.UI.Helpers;
 /// <summary>The default <see cref="IRenderBackend"/>: the established Skia two-phase (SKPicture) lifecycle.</summary>
 internal sealed class SkiaRenderBackend : IRenderBackend
 {
-	public IRecordingSession BeginFrame()
-		=> SkiaDrawingSession.StartRecording(Visual.InfiniteClipRect);
+	public ICommandRecorder BeginFrame() => SkiaDrawingSession.StartRecording();
 
 	public void Present(IRenderData frame, IRenderSurface target, Action<IDrawingSession>? postPresent)
 	{

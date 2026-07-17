@@ -389,7 +389,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
-				var recording = retained.CreateRecording(InfiniteClipRect);
+				var recording = retained.CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -399,7 +399,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					PaintStep(this, childSession);
 					PostPaintingClipStep(this, in childSession);
 					RenderChildrenStep(this, childSession, applyChildOptimization);
-					renderData = recording.EndRecording();
+					renderData = recording.Finish();
 				}
 
 				session.Session.SaveLayer(ShadowState.ShadowFilter);
@@ -442,13 +442,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = retained.CreateRecording(InfiniteClipRect);
+					var recording = retained.CreateRecording();
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
 
 					visual._content?.Dispose();
-					visual._content = recording.EndRecording();
+					visual._content = recording.Finish();
 				}
 
 				if (visual._content is { } content)
@@ -513,7 +513,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = retained.CreateRecording(InfiniteClipRect);
+				var recording = retained.CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -525,7 +525,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					}
 				}
 
-				var content = recording.EndRecording();
+				var content = recording.Finish();
 				retained.Replay(content);
 
 				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
