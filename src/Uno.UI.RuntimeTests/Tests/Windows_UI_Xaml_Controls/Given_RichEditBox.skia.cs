@@ -117,6 +117,155 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Native_Text_Input_Updates_Document_And_Selection()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ab");
+				SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+
+				SUT.UpdateTextFromNative("aXYZb", 4, 0);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aXYZb", text);
+				Assert.AreEqual(4, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(4, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 1).CharacterFormat.Bold);
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(4, 5).CharacterFormat.Bold);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Native_Text_Input_Is_Rejected_While_ReadOnly()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "original");
+				SUT.Document.Selection.SetRange(3, 3);
+				SUT.IsReadOnly = true;
+
+				SUT.UpdateTextFromNative("changed", 7, 0);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("original", text);
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Native_Text_Input_Applies_Casing_And_MaxLength()
+		{
+			var SUT = new RichEditBox
+			{
+				CharacterCasing = CharacterCasing.Upper,
+				MaxLength = 3,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "a");
+
+				SUT.UpdateTextFromNative("abcd", 4, 0);
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aBC", text, "Only the native insertion should be cased and it should respect MaxLength.");
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition, "The native caret should be rebased after MaxLength truncates the insertion.");
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Native_Paste_Replaces_Selection_And_Preserves_Rich_State()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcd");
+				SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+				SUT.Document.GetRange(3, 4).CharacterFormat.Italic = FormatEffect.On;
+				SUT.Document.Selection.SetRange(1, 3);
+				var pasteCount = 0;
+				SUT.Paste += (_, _) => pasteCount++;
+
+				SUT.PasteFromClipboard("XY\nZ");
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("aXY\rZd", text);
+				Assert.AreEqual(5, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(1, pasteCount);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 1).CharacterFormat.Bold);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(5, 6).CharacterFormat.Italic);
+				Assert.IsTrue(SUT.Document.CanUndo());
+
+				SUT.Document.Undo();
+				SUT.Document.GetText(TextGetOptions.None, out text);
+				Assert.AreEqual("abcd", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Native_Paste_Respects_ReadOnly_And_Handled()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.Selection.SetRange(1, 2);
+				var pasteCount = 0;
+
+				SUT.IsReadOnly = true;
+				SUT.Paste += (_, args) =>
+				{
+					pasteCount++;
+					args.Handled = true;
+				};
+				SUT.PasteFromClipboard("X");
+				Assert.AreEqual(0, pasteCount, "Read-only paste should be rejected before raising Paste.");
+
+				SUT.IsReadOnly = false;
+				SUT.PasteFromClipboard("X");
+				Assert.AreEqual(1, pasteCount);
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_AcceptsReturn_False_Ignores_Enter()
 		{
 			var SUT = new RichEditBox { AcceptsReturn = false };
@@ -175,6 +324,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsFalse(textChangedRaised);
 				await WindowHelper.WaitForIdle();
 				Assert.IsTrue(textChangedRaised);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Click_In_Empty_Area_Focuses_Control()
+		{
+			var SUT = new RichEditBox { Width = 220, Height = 140 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+				var bounds = SUT.GetAbsoluteBounds();
+				mouse.MoveTo(new Windows.Foundation.Point(bounds.X + bounds.Width / 2, bounds.Bottom - 12));
+				mouse.Press();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState);
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
 			}
 			finally
 			{
@@ -2443,7 +2620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(rtf.Contains(",350,", StringComparison.Ordinal), $"The exact weight metadata is missing from: {rtf}");
 			target.Document.SetText(TextSetOptions.FormatRtf, rtf);
 			Assert.AreEqual(350, target.Document.GetRange(0, 1).CharacterFormat.Weight, $"RTF: {rtf}");
-			Assert.AreEqual(900, target.Document.GetRange(1, 2).CharacterFormat.Weight);
+			Assert.AreEqual(900, target.Document.GetRange(1, 2).CharacterFormat.Weight, $"RTF: {rtf}");
 		}
 
 		[TestMethod]
@@ -3076,7 +3253,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichEditBox();
 			var language = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(new string('a', 256)));
 			var characterMetadata = $@"{{\*\unochar 0,-,5,0,0,{language},0,0,0,0,0,0,0,0,400,0,1}}";
-			var alternatingText = string.Concat(Enumerable.Repeat(@"a{\plain b}", 26_000));
+			var alternatingText = string.Concat(Enumerable.Repeat(@"a{\plain b}", 50_000));
 			SUT.Document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1{characterMetadata}{alternatingText}}}");
 
 			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.GetText(TextGetOptions.FormatRtf, out _));
@@ -4852,6 +5029,227 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public void When_Empty_Rtf_Replaces_Document_And_Range()
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+			SUT.Document.Selection.SetRange(4, 4);
+
+			SUT.Document.SetText(TextSetOptions.FormatRtf, string.Empty);
+
+			SUT.Document.GetText(TextGetOptions.None, out var cleared);
+			Assert.AreEqual(string.Empty, cleared);
+			Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+			Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var range = SUT.Document.GetRange(2, 4);
+			range.SetText(TextSetOptions.FormatRtf, string.Empty);
+
+			SUT.Document.GetText(TextGetOptions.None, out var rangeText);
+			Assert.AreEqual("abef", rangeText);
+			Assert.AreEqual(2, range.StartPosition);
+			Assert.AreEqual(2, range.EndPosition);
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, " "));
+		}
+
+		[TestMethod]
+		public void When_Empty_Rtf_Stream_Clears_Document()
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.None, "old");
+			var stream = new InMemoryRandomAccessStream();
+
+			SUT.Document.LoadFromStream(TextSetOptions.FormatRtf, stream);
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(string.Empty, text);
+		}
+
+		[TestMethod]
+		public void When_Word_Font_Table_Metadata_Is_Parsed()
+		{
+			const string rtf = @"{\rtf1\ansi\deff1{\fonttbl"
+				+ @"{\f0\fbidi\fnil\fcharset0\fprq2{\*\panose 020b0604020202020204}Segoe UI{\*\falt Arial};}"
+				+ @"{\f1\froman\fcharset0\fprq2 Times New Roman;}}"
+				+ @"default \f0 sans {\f1 serif}\plain default-again}";
+			var SUT = new RichEditBox();
+
+			SUT.Document.SetText(TextSetOptions.FormatRtf, rtf);
+
+			SUT.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual("default sans serifdefault-again", text);
+			Assert.AreEqual("Times New Roman", SUT.Document.GetRange(0, 7).CharacterFormat.Name);
+			Assert.AreEqual("Segoe UI", SUT.Document.GetRange(8, 12).CharacterFormat.Name);
+			Assert.AreEqual("Times New Roman", SUT.Document.GetRange(13, 18).CharacterFormat.Name);
+			Assert.AreEqual("Times New Roman", SUT.Document.GetRange(18, 31).CharacterFormat.Name);
+		}
+
+		[TestMethod]
+		[DataRow("ul", UnderlineType.Single)]
+		[DataRow("ulw", UnderlineType.Words)]
+		[DataRow("uldb", UnderlineType.Double)]
+		[DataRow("uld", UnderlineType.Dotted)]
+		[DataRow("uldash", UnderlineType.Dash)]
+		[DataRow("uldashd", UnderlineType.DashDot)]
+		[DataRow("uldashdd", UnderlineType.DashDotDot)]
+		[DataRow("ulwave", UnderlineType.Wave)]
+		[DataRow("ulth", UnderlineType.Thick)]
+		[DataRow("ulhair", UnderlineType.Thin)]
+		[DataRow("ululdbwave", UnderlineType.DoubleWave)]
+		[DataRow("ulhwave", UnderlineType.HeavyWave)]
+		[DataRow("ulldash", UnderlineType.LongDash)]
+		[DataRow("ulthdash", UnderlineType.ThickDash)]
+		[DataRow("ulthdashd", UnderlineType.ThickDashDot)]
+		[DataRow("ulthdashdd", UnderlineType.ThickDashDotDot)]
+		[DataRow("ulthd", UnderlineType.ThickDotted)]
+		[DataRow("ulthldash", UnderlineType.ThickLongDash)]
+		public void When_Standard_Rtf_Underline_Style_RoundTrips(string control, UnderlineType expected)
+		{
+			var source = new RichEditBox();
+			source.Document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1\{control} text}}");
+			Assert.AreEqual(expected, source.Document.GetRange(0, 4).CharacterFormat.Underline);
+
+			source.Document.GetText(TextGetOptions.FormatRtf, out var exported);
+			Assert.IsTrue(exported.Contains($@"\{control}", StringComparison.Ordinal));
+
+			var target = new RichEditBox();
+			target.Document.SetText(TextSetOptions.FormatRtf, exported);
+			Assert.AreEqual(expected, target.Document.GetRange(0, 4).CharacterFormat.Underline);
+		}
+
+		[TestMethod]
+		public void When_Standard_Double_Wave_Underline_Alias_Is_Parsed()
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\uldbwave text}");
+
+			Assert.AreEqual(UnderlineType.DoubleWave, SUT.Document.GetRange(0, 4).CharacterFormat.Underline);
+		}
+
+		[TestMethod]
+		public void When_Standard_Rtf_Underline_Resets_Are_Parsed()
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\ulth thick\ulth0 plain\ul double?\ulnone none}");
+
+			Assert.AreEqual(UnderlineType.Thick, SUT.Document.GetRange(0, 5).CharacterFormat.Underline);
+			Assert.AreEqual(UnderlineType.None, SUT.Document.GetRange(5, 10).CharacterFormat.Underline);
+			Assert.AreEqual(UnderlineType.Single, SUT.Document.GetRange(10, 17).CharacterFormat.Underline);
+			Assert.AreEqual(UnderlineType.None, SUT.Document.GetRange(17, 21).CharacterFormat.Underline);
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Font_Size_In_Points_Renders_In_Dips()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\fs24 size}");
+				await WindowHelper.WaitForIdle();
+
+				var block = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+				var run = block?.Inlines.OfType<Run>().Single();
+				Assert.IsNotNull(run);
+				Assert.AreEqual(12f, SUT.Document.GetRange(0, 4).CharacterFormat.Size);
+				Assert.AreEqual(16d, run.FontSize, 0.01);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Thick_Underline_Renders_Thicker_Than_Single()
+		{
+			var single = new RichEditBox { Width = 240, Height = 70, Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White) };
+			var thick = new RichEditBox { Width = 240, Height = 70, Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White) };
+			var panel = new StackPanel();
+			panel.Children.Add(single);
+			panel.Children.Add(thick);
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				const string spaces = "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0";
+				ConfigureUnderline(single, UnderlineType.Single);
+				ConfigureUnderline(thick, UnderlineType.Thick);
+				await WindowHelper.WaitForIdle();
+
+				var singleBitmap = await UITestHelper.ScreenShot(single);
+				var thickBitmap = await UITestHelper.ScreenShot(thick);
+				var singleRows = CountRedRows(singleBitmap);
+				var thickRows = CountRedRows(thickBitmap);
+				Assert.IsTrue(thickRows > singleRows, $"A thick underline should cover more pixel rows than a single underline, got {thickRows} and {singleRows}.");
+
+				void ConfigureUnderline(RichEditBox editor, UnderlineType underline)
+				{
+					editor.Document.SetText(TextSetOptions.None, spaces);
+					var format = editor.Document.GetRange(0, spaces.Length).CharacterFormat;
+					format.ForegroundColor = Microsoft.UI.Colors.Red;
+					format.Size = 24;
+					format.Underline = underline;
+				}
+
+				static int CountRedRows(RawBitmap bitmap)
+				{
+					var rows = 0;
+					for (var y = 0; y < bitmap.Height; y++)
+					{
+						var redPixels = 0;
+						for (var x = 0; x < bitmap.Width; x++)
+						{
+							var pixel = bitmap.GetPixel(x, y);
+							if (pixel is { A: > 200, R: > 180, G: < 100, B: < 100 })
+							{
+								redPixels++;
+							}
+						}
+
+						if (redPixels >= 10)
+						{
+							rows++;
+						}
+					}
+
+					return rows;
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public void When_Alternating_Rich_Text_Stream_Remains_Compact_And_RoundTrips()
+		{
+			var input = new System.Text.StringBuilder(@"{\rtf1\ansi ");
+			for (var i = 0; i < 15_000; i++)
+			{
+				input.Append(@"{\b a}{\b0 b}");
+			}
+			input.Append('}');
+			var source = new RichEditBox();
+			source.Document.SetText(TextSetOptions.FormatRtf, input.ToString());
+			var stream = new InMemoryRandomAccessStream();
+
+			source.Document.SaveToStream(TextGetOptions.FormatRtf, stream);
+
+			Assert.IsTrue(stream.Size is > 0 and < 4 * 1024 * 1024, $"Expected compact standard RTF output, size was {stream.Size} bytes.");
+			var target = new RichEditBox();
+			target.Document.LoadFromStream(TextSetOptions.FormatRtf, stream);
+			target.Document.GetText(TextGetOptions.None, out var text);
+			Assert.AreEqual(30_000, text.Length);
+			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 1).CharacterFormat.Bold);
+			Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(1, 2).CharacterFormat.Bold);
+		}
+
+		[TestMethod]
 		public async Task When_Rtf_String_RoundTrips_Unicode_Formatting_Paragraph_And_Link()
 		{
 			var source = new RichEditBox();
@@ -5996,9 +6394,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.ShowAt(SUT);
 				await WindowHelper.WaitForIdle();
 
-				var commandModifier = OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS()
-					? VirtualKeyModifiers.Windows
-					: VirtualKeyModifiers.Control;
+				var commandModifier = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 				var buttons = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).OfType<AppBarButton>().ToList();
 				Assert.IsTrue(buttons.Any(button => button.KeyboardAccelerators.Any(accelerator => accelerator.Key == VirtualKey.X && accelerator.Modifiers.HasFlag(commandModifier))), "Cut should be available for an editable selection.");
 				Assert.IsTrue(buttons.Any(button => button.KeyboardAccelerators.Any(accelerator => accelerator.Key == VirtualKey.C && accelerator.Modifiers.HasFlag(commandModifier))), "Copy should be available for a selection.");
