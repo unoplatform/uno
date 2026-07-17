@@ -20,17 +20,43 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		NativeMethods.Initialize();
 	}
 
-	private string SelectionDirection => _view.TextBox is { IsBackwardSelection: true } ? "backward" : "forward";
+	private bool IsHostFocused => _view.Host is Control { FocusState: not FocusState.Unfocused };
+
+	private int SelectionStart => _view.Host switch
+	{
+		TextBox textBox => textBox.SelectionStart,
+		RichEditBox richEditBox => richEditBox.NativeSelectionStart,
+		_ => 0,
+	};
+
+	private int SelectionLength => _view.Host switch
+	{
+		TextBox textBox => textBox.SelectionLength,
+		RichEditBox richEditBox => richEditBox.NativeSelectionLength,
+		_ => 0,
+	};
+
+	private string SelectionDirection => _view.Host switch
+	{
+		TextBox { IsBackwardSelection: true } => "backward",
+		RichEditBox { NativeSelectionIsBackward: true } => "backward",
+		_ => "forward",
+	};
 
 	[JSExport]
 	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
-			textBox.TextBoxView.UpdateTextFromNative(text);
-			textBox.SelectInternal(selectionStart, selectionLength);
+			case TextBox textBox:
+				textBox.TextBoxView.UpdateTextFromNative(text);
+				textBox.SelectInternal(selectionStart, selectionLength);
+				break;
+			case RichEditBox richEditBox:
+				richEditBox.UpdateTextFromNative(text, selectionStart, selectionLength);
+				break;
 		}
 	}
 
@@ -39,9 +65,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
-			textBox.PasteFromClipboard(clipboardText);
+			case TextBox textBox:
+				textBox.PasteFromClipboard(clipboardText);
+				break;
+			case RichEditBox richEditBox:
+				richEditBox.PasteFromClipboard(clipboardText);
+				break;
 		}
 	}
 
@@ -50,9 +81,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
-			textBox.SelectInternal(selectionStart, selectionLength);
+			case TextBox textBox:
+				textBox.SelectInternal(selectionStart, selectionLength);
+				break;
+			case RichEditBox richEditBox:
+				richEditBox.SelectFromNative(selectionStart, selectionLength);
+				break;
 		}
 	}
 
@@ -61,10 +97,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 
-		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		if (FocusManager.GetFocusedElement(xamlRoot!) is Control control and (TextBox or RichEditBox))
 		{
-			var keyArgs = new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None);
-			textBox.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
+			var keyArgs = new KeyRoutedEventArgs(control, VirtualKey.Enter, VirtualKeyModifiers.None);
+			control.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
 		}
 	}
 
@@ -73,18 +109,24 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void StartEntry()
 	{
+		var host = _view.Host;
 		_isNativeInputActive = NativeMethods.Focus(
-			_view.TextBox?.Visual.Handle ?? 0,
+			(host as UIElement)?.Visual.Handle ?? 0,
 			_view.IsPasswordBox,
-			_view.TextBox?.Text,
-			_view.TextBox?.AcceptsReturn ?? false,
+			host?.Text,
+			host switch
+			{
+				TextBox textBox => textBox.AcceptsReturn,
+				RichEditBox richEditBox => richEditBox.AcceptsReturn,
+				_ => false,
+			},
 			GetInputModeValue(),
 			GetEnterKeyHintValue());
 
 		if (_isNativeInputActive)
 		{
 			InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
-			NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
+			NativeMethods.UpdateSelection(SelectionStart, SelectionLength, SelectionDirection);
 		}
 	}
 
@@ -104,7 +146,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void UpdateSize()
 	{
-		if (!_view.TextBox?.IsFocused ?? true)
+		if (!IsHostFocused)
 		{
 			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
 			// when this TextBox is the one in focus
@@ -115,7 +157,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void UpdatePosition()
 	{
-		if (!_view.TextBox?.IsFocused ?? true)
+		if (!IsHostFocused)
 		{
 			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
 			// when this TextBox is the one in focus
@@ -133,7 +175,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void SetText(string text)
 	{
-		if (!_view.TextBox?.IsFocused ?? true)
+		if (!IsHostFocused)
 		{
 			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
 			// when this TextBox is the one in focus
@@ -144,7 +186,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void Select(int start, int length)
 	{
-		if (!_view.TextBox?.IsFocused ?? true)
+		if (!IsHostFocused)
 		{
 			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
 			// when this TextBox is the one in focus
@@ -158,7 +200,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 	public void UpdateProperties()
 	{
-		if (!_view.TextBox?.IsFocused ?? true)
+		if (!IsHostFocused)
 		{
 			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
 			// when this TextBox is the one in focus
@@ -177,7 +219,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private string GetEnterKeyHintValue()
 	{
-		if (_view?.TextBox is { } textBox)
+		if (_view.Host is TextBox textBox)
 		{
 			return TextBoxExtensions.GetInputReturnType(textBox).ToEnterKeyHintValue();
 		}
@@ -187,9 +229,13 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private string GetInputModeValue()
 	{
-		if (_view?.TextBox is { } textBox)
+		if (_view.Host is TextBox textBox)
 		{
 			return textBox.InputScope.ToInputModeValue();
+		}
+		if (_view.Host is RichEditBox richEditBox)
+		{
+			return richEditBox.InputScope.ToInputModeValue();
 		}
 		return "";
 	}
