@@ -29,7 +29,7 @@
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
-					if (input instanceof HTMLInputElement) {
+					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
 
 						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
