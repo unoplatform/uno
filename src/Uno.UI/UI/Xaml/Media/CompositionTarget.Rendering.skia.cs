@@ -222,10 +222,12 @@ public partial class CompositionTarget
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			RenderBackend.Present(lastRenderedFrame.frame, new SkiaRenderSurface(canvas));
-			// The FPS overlay is a host-side diagnostic drawn on top of the presented frame; the host flushes
-			// after this returns, so it lands on screen. Kept out of the pluggable IRenderBackend.Present.
-			_fpsHelper.DrawFps(canvas);
+			using (var present = RenderBackend.BeginPresent(new SkiaRenderSurface(canvas)))
+			{
+				present.Clear(global::Windows.UI.Colors.Transparent);
+				present.Replay(lastRenderedFrame.frame);
+				_fpsHelper.DrawFps(present);
+			}
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);

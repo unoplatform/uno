@@ -9,7 +9,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <item>Phase 1 (UI thread): <see cref="BeginFrame"/> returns the <see cref="ICommandRecorder"/> that the
 /// cycle walks the visual tree into (the walk lives in <c>Visual.skia.cs</c>, not here); the cycle then
 /// calls <see cref="ICommandRecorder.Finish"/> to obtain the opaque <see cref="IRenderData"/> frame.</item>
-/// <item>Phase 2 (on a vsync/present signal): <see cref="Present"/> draws a recorded frame onto the target.</item>
+/// <item>Phase 2 (on a vsync/present signal): <see cref="BeginPresent"/> composes a recorded frame onto the target.</item>
 /// </list>
 /// </summary>
 internal interface IRenderBackend
@@ -17,6 +17,9 @@ internal interface IRenderBackend
 	/// <summary>Phase 1: begins a frame and returns the session the render cycle records the visual tree into.</summary>
 	ICommandRecorder BeginFrame();
 
-	/// <summary>Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.</summary>
-	void Present(IRenderData frame, IRenderSurface target);
+	/// <summary>
+	/// Phase 2: begins composing onto <paramref name="target"/>. The cycle replays the recorded frame and
+	/// draws any overlay into the returned session, then disposes it to finalize (present) the composition.
+	/// </summary>
+	IPresentSession BeginPresent(IRenderSurface target);
 }
