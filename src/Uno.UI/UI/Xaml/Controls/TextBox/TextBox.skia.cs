@@ -42,6 +42,10 @@ public partial class TextBox : ITextSelectionGripperHost
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextSelectionGripperPresenter _gripperPresenter;
+
+	// Test hook: the pair of touch-selection grippers when they are currently showing, otherwise null.
+	internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? VisibleGrippersForTesting => _gripperPresenter?.VisibleGrippersForTesting;
+
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();

@@ -4752,6 +4752,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// A single touch tap near the left selects the first word and shows both selection thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			var lengthBeforeDrag = SUT.SelectionLength;
+
+			var grippers = SUT.VisibleGrippersForTesting;
+			Assert.IsNotNull(grippers, "expected the selection grippers to be visible after selecting a word");
+
+			// Drag the end gripper to the right to extend the selection, spanning >800ms press-to-release
+			// (a deliberate readjust naturally exceeds the hold threshold).
+			var endGripperCenter = grippers.Value.end.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(endGripperCenter);
+			finger.MoveBy(60, 0, stepOffsetInMilliseconds: 100); // spans >800ms, past the hold threshold, so a bug would open the context menu
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The drag readjusted (extended) the selection...
+			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
+			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that opens the context menu and hides the thumbs).
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
 		public Task When_Touch_SingleTap_Places_Caret_Android()
 			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
 

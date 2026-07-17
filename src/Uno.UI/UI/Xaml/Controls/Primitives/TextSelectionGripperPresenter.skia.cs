@@ -253,9 +253,10 @@ internal sealed class TextSelectionGripperPresenter
 		var current = args.GetCurrentPoint(null);
 
 		var holdDuration = current.Timestamp - previous.Timestamp;
-		if (holdDuration >= GestureRecognizer.HoldMinDelayMicroseconds)
+		var stayedInPlace = !GestureRecognizer.IsOutOfTapRange(previous.Position, current.Position);
+		if (stayedInPlace && holdDuration >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Gripper was held: open the context menu (mirrors WinUI OnGripperHeld).
+			// The gripper was held in place (not dragged): open the context menu (mirrors WinUI OnGripperHeld).
 			args.Handled = true;
 			_host.RequestGripperContextMenu(args);
 		}
@@ -267,6 +268,7 @@ internal sealed class TextSelectionGripperPresenter
 		}
 		else
 		{
+			// The gripper was dragged to adjust the selection: keep the thumbs and re-show the selection toolbar.
 			_host.QueueGripperSelectionFlyout(args);
 		}
 	}
