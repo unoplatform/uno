@@ -24,6 +24,9 @@ public partial class TextBox
 	// this is necessary because we can receive a PointerReleased without a PointerPressed (e.g. clicking on the
 	// TextBox while the context menu is open to dismiss it). We want to ignore such PointerPressed's.
 	private bool _isPressed;
+	// True while an iOS-convention touch caret-drag is in progress (started by a long-press): the caret
+	// follows the finger until release. See BeginTouchCaretDrag / OnContextRequestedImpl.
+	private bool _touchCaretDrag;
 
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
@@ -37,8 +40,16 @@ public partial class TextBox
 
 		if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
-			// do nothing whether the touch pointer is pressed on not.
-			// Moving while pressing the caret thumb or stem will move it. Anything else won't do anything.
+			if (_touchCaretDrag)
+			{
+				// iOS caret dragging (started by a long-press): the caret follows the finger.
+				var point = e.GetCurrentPoint(TextBoxView.DisplayBlock);
+				var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point.Position, true, true));
+				Select(index, 0);
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			// Otherwise do nothing: moving while pressing the caret thumb or stem moves it (handled by the
+			// gripper presenter); any other plain touch move does nothing.
 		}
 		else
 		{
@@ -196,6 +207,13 @@ public partial class TextBox
 			return;
 		}
 
+		if (_touchCaretDrag)
+		{
+			// End the iOS caret-drag; OnPointerMoved has already positioned the caret at the finger.
+			_touchCaretDrag = false;
+			return;
+		}
+
 		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
 
 		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
@@ -270,28 +288,53 @@ public partial class TextBox
 
 	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu:
 	// Android selects the word under the press (the selection toolbar then appears via the selection
-	// flyout). Mouse/pen right-click and the Windows convention keep the default context flyout.
+	// flyout); iOS starts dragging the caret. Mouse/pen right-click and the Windows convention keep
+	// the default context flyout.
 	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
 		if (_isSkiaTextBox
 			&& args.IsTouchInput
-			&& TouchSelectionConvention == TouchTextSelectionConvention.Android
+			&& TouchSelectionConvention != TouchTextSelectionConvention.Windows
 			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
 		{
-			TouchSelectWord(displayBlockPoint);
-			args.TryGetPosition(this, out var textBoxPoint);
-			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
-			args.Handled = true; // suppress the default context flyout
+			switch (TouchSelectionConvention)
+			{
+				case TouchTextSelectionConvention.Android:
+					TouchSelectWord(displayBlockPoint);
+					args.TryGetPosition(this, out var textBoxPoint);
+					QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
+					break;
+				case TouchTextSelectionConvention.iOS:
+					BeginTouchCaretDrag(displayBlockPoint);
+					break;
+			}
+
+			args.Handled = true; // suppress the default context flyout on iOS/Android
 			return;
 		}
 
 		base.OnContextRequestedImpl(args);
 	}
 
+	// iOS long-press: place the caret at the press point and capture the pointer so the caret follows
+	// the finger (see OnPointerMoved). Approximates the native magnifier without the zoomed loupe.
+	private void BeginTouchCaretDrag(Point displayBlockPoint)
+	{
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(displayBlockPoint, true, true));
+		Select(index, 0);
+		CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		_touchCaretDrag = true;
+		if (PointerRoutedEventArgs.LastPointerEvent?.Pointer is { } pointer)
+		{
+			CapturePointer(pointer);
+		}
+	}
+
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
 	{
 		_isPressed = false;
 		_mouseMultiTapChunk = null;
+		_touchCaretDrag = false;
 	}
 
 	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)

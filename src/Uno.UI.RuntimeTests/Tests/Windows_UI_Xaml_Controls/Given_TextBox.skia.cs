@@ -4893,6 +4893,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Native iOS: a touch long-press begins dragging the caret; the caret follows the finger and
+		// no selection is created (no context menu).
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_iOS()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			// Press, then simulate the 800ms hold as a touch ContextRequested (the iOS long-press
+			// entry) so the caret-drag starts and captures the pointer, without waiting on the timer.
+			finger.Press(startPoint);
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(startPoint);
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(args.Handled); // context menu suppressed
+			Assert.AreEqual(0, SUT.SelectionLength); // a caret, not a selection
+			var caretAfterPress = SUT.SelectionStart;
+
+			// Dragging the finger to the right moves the caret with it (still no selection).
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.IsTrue(SUT.SelectionStart > caretAfterPress, $"caret should advance with the drag (was {caretAfterPress}, now {SUT.SelectionStart})");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_Touch_Focused_Then_Scrolled_Away()
