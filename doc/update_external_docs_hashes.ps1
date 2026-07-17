@@ -80,7 +80,7 @@ if (-not $repos -or $repos.Count -eq 0) {
 }
 
 Write-Host "Found $($repos.Count) repositories to update:" -ForegroundColor Green
-$repos | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
+$repos | ForEach-Object { Write-Host "  - $($_.Name) [track=$($_.Track)]" -ForegroundColor Gray }
 
 # Determine behavior based on the provided branch
 $branchInput = $Branch
@@ -91,7 +91,7 @@ if (-not $branchInput) {
 $useReleaseBranches = $branchInput -like 'release/stable/*'
 
 if ($useReleaseBranches) {
-    Write-Host "Running in release mode for '$branchInput' - will use each repo's latest 'release/stable/*' branch if available, otherwise its default branch." -ForegroundColor Cyan
+    Write-Host "Running in release mode for '$branchInput' - repos marked track='release' use their highest 'release/stable/*' branch (fallback to default); all other repos always use their default branch." -ForegroundColor Cyan
 } else {
     Write-Host "Running in default mode for '$branchInput' - will use each repo's default branch." -ForegroundColor Cyan
 }
@@ -100,8 +100,10 @@ if ($useReleaseBranches) {
 $content = Get-Content $scriptPath -Raw
 $updatedCount = 0
 
-foreach ($repo in $repos) {
-    Write-Host "Processing $repo..." -ForegroundColor Cyan
+foreach ($repoObj in $repos) {
+    $repo  = $repoObj.Name
+    $track = $repoObj.Track
+    Write-Host "Processing $repo (track=$track)..." -ForegroundColor Cyan
 
     try {
         # First, get the repository info to find the default branch
@@ -112,9 +114,11 @@ foreach ($repo in $repos) {
         Write-Host "  Default branch: $defaultBranch" -ForegroundColor Gray
 
         $targetBranch = $defaultBranch
-        $branchDescription = $defaultBranch
 
-        if ($useReleaseBranches) {
+        # Only repos explicitly marked track='release' follow release/stable/* branches. Others
+        # always track their default branch, even in release mode - their own release branches are
+        # unrelated to the Uno release line and would pin stale/wrong docs.
+        if ($useReleaseBranches -and $track -eq 'release') {
             # Try to locate the latest release/stable/* branch for this repo
             $branchesUrl = "https://api.github.com/repos/unoplatform/$repo/branches?per_page=100"
 
@@ -158,7 +162,6 @@ foreach ($repo in $repos) {
             if ($releaseBranches.Count -gt 0) {
                 $latestRelease = $releaseBranches | Sort-Object Version -Descending | Select-Object -First 1
                 $targetBranch = $latestRelease.Name
-                $branchDescription = $latestRelease.Name
                 Write-Host "  Using latest release branch: $targetBranch" -ForegroundColor Gray
             } else {
                 Write-Host "  No 'release/stable/*' branches found - falling back to default branch '$defaultBranch'." -ForegroundColor DarkYellow
@@ -184,6 +187,15 @@ foreach ($repo in $repos) {
         $newContent = [regex]::Replace($content, $pattern, {
                 param($match)
                 $match.Groups[1].Value + $latestHash + $match.Groups[2].Value
+            })
+
+        # Regenerate the trailing comment so it always reflects the branch actually used. Previously
+        # the comment was left untouched, so a release-branch pin could still read "latest main commit".
+        $commentText = if ($targetBranch -like 'release/stable/*') { "latest $targetBranch branch commit" } else { "latest $targetBranch commit" }
+        $commentPattern = "(`"$escapedRepo`"\s*=\s*@\{[^}]*\}[^\S\r\n]*)#.*"
+        $newContent = [regex]::Replace($newContent, $commentPattern, {
+                param($match)
+                $match.Groups[1].Value + "#" + $commentText
             })
 
         if ($newContent -ne $content) {
