@@ -16,12 +16,12 @@ $external_docs = @{
     "uno.check"          = @{ ref="79d3dfce8fa13e86c0f37d0538087d8450fe4e91" } #latest release/stable/1.34 branch commit
     "uno.xamlmerge.task" = @{ ref="377ce2d9fdeab0d4f0b94a61e008731a40b10220" } #latest release/stable/1.33 branch commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" } #latest main commit
-    "uno.resizetizer"    = @{ ref="e422ad9f26cf21ed02c339e717e0dd0189bb566e" } #latest main commit
-    "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" } #latest master commit
+    "uno.resizetizer"    = @{ ref="f64905ae69aaa2e476e986c0810d03fae47ed6a9" } #latest main commit
+    "uno.uitest"         = @{ ref="d071dad64e0a19897b8ea32a0abf6fc7c08988ad" } #latest master commit
     "uno.extensions"     = @{ ref="55cdc2fe9920b495925eaa171196067b6a695a03" } #latest release/stable/7.2 branch commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
-    "uno.samples"        = @{ ref="e593c241f9d00eb21ca20f67fd3639e1b12f8dd9" } #latest master commit
-    "uno.chefs"          = @{ ref="d54bceea13406bca23e870a89ecee469813c69b3" } #latest main commit
+    "uno.samples"        = @{ ref="2c8e58853a3795fe4250d39787225e55db18499d" } #latest master commit
+    "uno.chefs"          = @{ ref="4bbc0569dc7ac0ddefe8b0de4be31beb3706a90b" } #latest main commit
     "hd-docs"            = @{ ref="c4c2f891544ae17b846b8fd24a90edd974ae6938"; dest="studio/Hot Design" } #latest main commit
     "studio-docs"        = @{ ref="3b86af4dac3e7a21c41b619960d14848ce95e2fd" }  #latest main commit
 }
