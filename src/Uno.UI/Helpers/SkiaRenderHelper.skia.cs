@@ -5,10 +5,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Numerics;
 using System.Threading;
+using Windows.Foundation;
+using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
@@ -110,38 +114,22 @@ internal static class SkiaRenderHelper
 			public void Dispose() => @this.EndFrame();
 		}
 
-		private static readonly SKPaint _backgroundPaint = new() { Color = new SKColor(0, 0, 0, 0xCC), IsAntialias = true };
-		private static readonly SKPaint _idleBackgroundPaint = new() { Color = new SKColor(0x1A, 0x23, 0x3B, 0xCC), IsAntialias = true };
-		private static readonly SKPaint _textPaint = new() { Color = SKColors.White, IsAntialias = true };
-		private static readonly SKPaint _fpsIconPaint = CreateStrokePaint(new SKColor(0x4C, 0xAF, 0x50));
-		private static readonly SKPaint _fpsIconFillPaint = CreateFillPaint(new SKColor(0x4C, 0xAF, 0x50));
-		private static readonly SKPaint _droppedIconPaint = CreateStrokePaint(new SKColor(0xF4, 0x43, 0x36));
-		private static readonly SKPaint _unpresentedIconPaint = CreateStrokePaint(new SKColor(0xFF, 0xC1, 0x07), SKPathEffect.CreateDash(new[] { 2f, 1.5f }, 0));
-		private static readonly SKPaint _frameTimeIconPaint = CreateStrokePaint(new SKColor(0x00, 0xBC, 0xD4));
-		private static readonly SKPaint _frameTimeIconFillPaint = CreateFillPaint(new SKColor(0x00, 0xBC, 0xD4));
-		private static readonly SKPaint _clockIconPaint = CreateStrokePaint(new SKColor(0x21, 0x96, 0xF3));
+		private const float IconStrokeWidth = 1.5f;
+		private static readonly Color _backgroundColor = Color.FromArgb(0xCC, 0, 0, 0);
+		private static readonly Color _idleBackgroundColor = Color.FromArgb(0xCC, 0x1A, 0x23, 0x3B);
+		private static readonly Color _textColor = Colors.White;
+		private static readonly Color _fpsIconColor = Color.FromArgb(0xFF, 0x4C, 0xAF, 0x50);
+		private static readonly Color _droppedIconColor = Color.FromArgb(0xFF, 0xF4, 0x43, 0x36);
+		private static readonly Color _unpresentedIconColor = Color.FromArgb(0xFF, 0xFF, 0xC1, 0x07);
+		private static readonly Color _frameTimeIconColor = Color.FromArgb(0xFF, 0x00, 0xBC, 0xD4);
+		private static readonly Color _clockIconColor = Color.FromArgb(0xFF, 0x21, 0x96, 0xF3);
+		// Kept for text shaping and measurement only (font work, not rendering).
 		private static readonly SKFont _font = new() { Size = 14, Embolden = true };
 
 		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
 		// Sized to fit a three-digit reference value — measured once at type load.
 		private static readonly float _minColumn1Width = MeasureWidth("120.0");
 		private static readonly float _minColumn2Width = MeasureWidth("120.0 ms");
-
-		private static SKPaint CreateStrokePaint(SKColor color, SKPathEffect? pathEffect = null) => new()
-		{
-			Color = color,
-			IsAntialias = true,
-			IsStroke = true,
-			StrokeWidth = 1.5f,
-			StrokeCap = SKStrokeCap.Round,
-			PathEffect = pathEffect,
-		};
-
-		private static SKPaint CreateFillPaint(SKColor color) => new()
-		{
-			Color = color,
-			IsAntialias = true,
-		};
 
 		private readonly TimeSpan[] _frameTimes;
 		// TimeSpan ticks (100ns units); accessed across threads via Interlocked to avoid torn reads on 32-bit.
@@ -307,10 +295,6 @@ internal static class SkiaRenderHelper
 				return;
 			}
 
-			// The FPS overlay is a Skia-only diagnostic; unwrap the present session to its canvas.
-			var canvas = ((SkiaDrawingSession)session).Canvas;
-
-
 			var culture = CultureInfo.InvariantCulture;
 			var fpsText = _fps.ToString("F1", culture);
 			var droppedText = _droppedFrames.ToString(culture);
@@ -325,19 +309,22 @@ internal static class SkiaRenderHelper
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
 
-			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, isIdle ? _idleBackgroundPaint : _backgroundPaint);
+			using (var panel = RoundedRectangle(new Rect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius))
+			{
+				session.DrawPath(panel, isIdle ? _idleBackgroundColor : _backgroundColor, antialias: true);
+			}
 
 			var col1IconX = Padding;
 			var col1TextX = col1IconX + IconSize + IconTextGap;
 			var col2IconX = col1TextX + col1Width + ColumnGap;
 			var col2TextX = col2IconX + IconSize + IconTextGap;
 
-			DrawCell(canvas, col1IconX, col1TextX, 0, fpsText, DrawSpeedometerIcon);
-			DrawCell(canvas, col1IconX, col1TextX, 1, droppedText, DrawDownArrowIcon);
-			DrawCell(canvas, col1IconX, col1TextX, 2, unpresentedText, DrawDashedFrameIcon);
+			DrawCell(session, col1IconX, col1TextX, 0, fpsText, DrawSpeedometerIcon);
+			DrawCell(session, col1IconX, col1TextX, 1, droppedText, DrawDownArrowIcon);
+			DrawCell(session, col1IconX, col1TextX, 2, unpresentedText, DrawDashedFrameIcon);
 
-			DrawCell(canvas, col2IconX, col2TextX, 0, frameTimeText, DrawFrameTimeIcon);
-			DrawCell(canvas, col2IconX, col2TextX, 1, delayText, DrawClockIcon);
+			DrawCell(session, col2IconX, col2TextX, 0, frameTimeText, DrawFrameTimeIcon);
+			DrawCell(session, col2IconX, col2TextX, 1, delayText, DrawClockIcon);
 		}
 
 		private static float MaxTextWidth(params string[] texts)
@@ -360,63 +347,108 @@ internal static class SkiaRenderHelper
 			return rect.Width;
 		}
 
-		private static void DrawCell(SKCanvas canvas, float iconX, float textX, int row, string value, Action<SKCanvas, float, float> drawIcon)
+		private static void DrawCell(IDrawingSession session, float iconX, float textX, int row, string value, Action<IDrawingSession, float, float> drawIcon)
 		{
 			var rowTop = Padding + row * RowHeight;
 			var iconY = rowTop + (RowHeight - IconSize) / 2;
-			drawIcon(canvas, iconX, iconY);
+			drawIcon(session, iconX, iconY);
 
 			_font.MeasureText(value, out var textRect);
 			var textY = rowTop + (RowHeight - textRect.Height) / 2 - textRect.Top;
-			canvas.DrawText(value, textX, textY, SKTextAlign.Left, _font, _textPaint);
+			DrawText(session, value, textX, textY, _textColor);
 		}
 
-		private static void DrawSpeedometerIcon(SKCanvas canvas, float x, float y)
+		// Shape the string with the font (font work stays on Skia) and draw the glyph outlines through the
+		// neutral path verb — the same way a TextBlock renders.
+		private static void DrawText(IDrawingSession session, string text, float x, float baselineY, Color color)
+		{
+			var glyphs = _font.GetGlyphs(text);
+			if (glyphs.Length == 0)
+			{
+				return;
+			}
+
+			var positions = _font.GetGlyphPositions(text, new SKPoint(x, baselineY));
+			using var geometry = GlyphGeometry.Build(_font, glyphs, positions, 0f);
+			session.DrawPath(geometry, color, antialias: true);
+		}
+
+		private static void DrawSpeedometerIcon(IDrawingSession session, float x, float y)
 		{
 			var cx = x + IconSize / 2;
 			var cy = y + IconSize / 2;
 			var r = IconSize / 2 - 1;
-			canvas.DrawCircle(cx, cy, r, _fpsIconPaint);
+			using (var circle = Ellipse(cx, cy, r))
+			{
+				session.StrokePath(circle, _fpsIconColor, IconStrokeWidth, antialias: true);
+			}
 			// Needle pointing up-right (~45°)
 			var needleLen = r * 0.85f;
-			canvas.DrawLine(cx, cy, cx + needleLen * 0.707f, cy - needleLen * 0.707f, _fpsIconPaint);
-			canvas.DrawCircle(cx, cy, 1.2f, _fpsIconFillPaint);
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + needleLen * 0.707f, cy - needleLen * 0.707f), _fpsIconColor, IconStrokeWidth, antialias: true);
+			using (var dot = Ellipse(cx, cy, 1.2f))
+			{
+				session.DrawPath(dot, _fpsIconColor, antialias: true);
+			}
 		}
 
-		private static void DrawDownArrowIcon(SKCanvas canvas, float x, float y)
+		private static void DrawDownArrowIcon(IDrawingSession session, float x, float y)
 		{
 			var cx = x + IconSize / 2;
-			canvas.DrawLine(cx, y + 1, cx, y + IconSize - 2, _droppedIconPaint);
-			canvas.DrawLine(cx - 3.5f, y + IconSize - 5, cx, y + IconSize - 1, _droppedIconPaint);
-			canvas.DrawLine(cx, y + IconSize - 1, cx + 3.5f, y + IconSize - 5, _droppedIconPaint);
+			session.DrawLine(new Vector2(cx, y + 1), new Vector2(cx, y + IconSize - 2), _droppedIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx - 3.5f, y + IconSize - 5), new Vector2(cx, y + IconSize - 1), _droppedIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx, y + IconSize - 1), new Vector2(cx + 3.5f, y + IconSize - 5), _droppedIconColor, IconStrokeWidth, antialias: true);
 		}
 
-		private static void DrawDashedFrameIcon(SKCanvas canvas, float x, float y)
+		private static void DrawDashedFrameIcon(IDrawingSession session, float x, float y)
 		{
-			// Dashed rectangle outline — "frame that didn't make it to screen".
-			canvas.DrawRect(new SKRect(x + 1, y + 1, x + IconSize - 1, y + IconSize - 1), _unpresentedIconPaint);
+			// "Frame that didn't make it to screen". The neutral layer has no dashed stroke, so this is a solid outline.
+			using var frame = Rectangle(new Rect(x + 1, y + 1, IconSize - 2, IconSize - 2));
+			session.StrokePath(frame, _unpresentedIconColor, IconStrokeWidth, antialias: true);
 		}
 
-		private static void DrawFrameTimeIcon(SKCanvas canvas, float x, float y)
+		private static void DrawFrameTimeIcon(IDrawingSession session, float x, float y)
 		{
-			var rect = new SKRect(x + 1, y + 4, x + IconSize - 1, y + IconSize - 4);
-			canvas.DrawRect(rect, _frameTimeIconPaint);
-			var inner = new SKRect(
-				rect.Left + 1.5f,
-				rect.Top + 1.5f,
-				rect.Left + (rect.Right - rect.Left) * 0.65f,
-				rect.Bottom - 1.5f);
-			canvas.DrawRect(inner, _frameTimeIconFillPaint);
+			var rect = new Rect(x + 1, y + 4, IconSize - 2, IconSize - 8);
+			using (var outline = Rectangle(rect))
+			{
+				session.StrokePath(outline, _frameTimeIconColor, IconStrokeWidth, antialias: true);
+			}
+			var inner = new Rect(rect.X + 1.5, rect.Y + 1.5, rect.Width * 0.65 - 1.5, rect.Height - 3);
+			session.DrawRect(inner, _frameTimeIconColor, antialias: true);
 		}
 
-		private static void DrawClockIcon(SKCanvas canvas, float x, float y)
+		private static void DrawClockIcon(IDrawingSession session, float x, float y)
 		{
 			var cx = x + IconSize / 2;
 			var cy = y + IconSize / 2;
 			var r = IconSize / 2 - 1;
-			canvas.DrawCircle(cx, cy, r, _clockIconPaint);
-			canvas.DrawLine(cx, cy, cx, cy - r * 0.55f, _clockIconPaint);
-			canvas.DrawLine(cx, cy, cx + r * 0.75f, cy, _clockIconPaint);
+			using (var circle = Ellipse(cx, cy, r))
+			{
+				session.StrokePath(circle, _clockIconColor, IconStrokeWidth, antialias: true);
+			}
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx, cy - r * 0.55f), _clockIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + r * 0.75f, cy), _clockIconColor, IconStrokeWidth, antialias: true);
+		}
+
+		private static IGeometry Ellipse(float cx, float cy, float r)
+		{
+			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			builder.AddEllipse(new Vector2(cx, cy), r, r);
+			return builder.Build();
+		}
+
+		private static IGeometry Rectangle(Rect rect)
+		{
+			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			builder.AddRectangle(rect);
+			return builder.Build();
+		}
+
+		private static IGeometry RoundedRectangle(Rect rect, float radius)
+		{
+			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			builder.AddRoundedRectangle(rect, radius, radius);
+			return builder.Build();
 		}
 
 		private void TimerTick()

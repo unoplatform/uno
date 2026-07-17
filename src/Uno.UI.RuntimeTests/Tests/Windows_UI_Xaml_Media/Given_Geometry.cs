@@ -241,6 +241,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.AreEqual(50, bounds.Left, 0.1f);
 			Assert.AreEqual(150, bounds.Right, 0.1f);
 		}
+
+		[TestMethod]
+		public void GlyphRun_Shaping_Produces_NonEmpty_Geometry()
+		{
+			// Exercises the font-shaping -> glyph-outline -> IGeometry path the FPS overlay uses to draw text
+			// neutrally (SKFont.GetGlyphs/GetGlyphPositions + GlyphGeometry.Build).
+			using var font = new SkiaSharp.SKFont { Size = 14 };
+			const string text = "120.0";
+			var glyphs = font.GetGlyphs(text);
+			Assert.IsTrue(glyphs.Length > 0, "expected the font to produce glyphs");
+
+			var positions = font.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0));
+			using var geometry = Microsoft.UI.Xaml.Documents.GlyphGeometry.Build(font, glyphs, positions, 0f);
+			var bounds = geometry.Bounds;
+			Assert.IsTrue(bounds.Width > 0 && bounds.Height > 0, $"expected non-empty glyph geometry, got {bounds}");
+		}
 #endif
 	}
 }
