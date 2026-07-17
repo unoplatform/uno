@@ -182,18 +182,18 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
 		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
 
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias)
-		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, colorFilter: null));
+	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity, bool antialias)
+		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, opacity, colorFilter: null));
 
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
-		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, colorFilter));
+		=> _canvas.DrawImage(((SkiaImage)image).Image, x, y, ToSK(sampling), ImagePaint(antialias, opacity: 1f, colorFilter));
 
 	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
 	{
 		var skImage = ((SkiaImage)image).Image;
 		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);
 		var dst = destination.ToSKRect();
-		var skPaint = ImagePaint(antialias, colorFilter: null);
+		var skPaint = ImagePaint(antialias, opacity: 1f, colorFilter: null);
 		if (centerHollow)
 		{
 			_canvas.Save();
@@ -263,11 +263,11 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		return paint;
 	}
 
-	private static SKPaint ImagePaint(bool antialias, IColorFilter? colorFilter)
+	private static SKPaint ImagePaint(bool antialias, float opacity, IColorFilter? colorFilter)
 	{
 		var paint = Spare();
-		// The image is the source; keep the paint opaque (RGB ignored, alpha would modulate the image).
-		paint.Color = SKColors.White;
+		// The image is the source; RGB is ignored and the paint's alpha modulates it (so opacity rides on alpha).
+		paint.Color = SKColors.White.WithAlpha((byte)(0xFF * opacity));
 		paint.IsAntialias = antialias;
 		paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;
 		return paint;

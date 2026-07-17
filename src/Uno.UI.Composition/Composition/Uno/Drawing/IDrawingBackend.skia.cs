@@ -43,42 +43,25 @@ internal interface IDrawingBackend
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix);
 
-	/// <summary>Creates a radial-gradient shader in the current coordinate space.</summary>
+	/// <summary>
+	/// Creates a radial-gradient shader with the full WinUI parameters — per-axis radius and a possibly-offset
+	/// <paramref name="gradientOrigin"/>. The backend internalizes any focal/anisotropy technique.
+	/// </summary>
 	IShader CreateRadialGradientShader(
 		Vector2 center,
-		float radius,
+		Vector2 gradientOrigin,
+		float radiusX,
+		float radiusY,
 		Color[] colors,
 		float[] colorPositions,
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix);
-
-	/// <summary>Creates a two-point conical (radial) gradient shader between two circles.</summary>
-	IShader CreateTwoPointConicalGradientShader(
-		Vector2 start,
-		float startRadius,
-		Vector2 end,
-		float endRadius,
-		Color[] colors,
-		float[] colorPositions,
-		GradientTileMode tileMode,
-		Matrix3x2 localMatrix);
-
-	/// <summary>Creates a shader that paints a single solid color everywhere.</summary>
-	IShader CreateColorShader(Color color);
-
-	/// <summary>Composes two shaders, drawing <paramref name="inner"/> over <paramref name="outer"/>.</summary>
-	IShader ComposeShaders(IShader outer, IShader inner);
-
-	/// <summary>Creates a color filter that multiplies alpha by <paramref name="opacity"/>, or null when it would be a no-op.</summary>
-	IColorFilter? CreateOpacityColorFilter(float opacity);
 
 	/// <summary>Creates a color filter that blends <paramref name="color"/> onto the source using <paramref name="mode"/>.</summary>
 	IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
 
 	/// <summary>Creates a color filter from a 4x5 row-major color matrix (as used by grayscale/alpha-mask effects).</summary>
 	IColorFilter CreateColorMatrixColorFilter(float[] matrix);
-
-	/// <summary>Creates a normal (Gaussian) blur mask filter with the given standard deviation.</summary>
 
 	/// <summary>
 	/// Realizes a neutral <see cref="IGraphicsEffect"/> graph into an opaque backend effect. Mirrors the

@@ -117,26 +117,18 @@ namespace Microsoft.UI.Composition
 			matrix *= RelativeTransform;
 			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height);
 
-			IColorFilter? colorFilter;
-			if (MonochromeColor is { } color)
-			{
-				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
-				colorFilter = DrawingBackend.Current.CreateBlendModeColorFilter(faded, BlendMode.SrcIn);
-			}
-			else
-			{
-				colorFilter = DrawingBackend.Current.CreateOpacityColorFilter(opacity);
-			}
-
 			session.Save();
 			session.Concat(new Matrix4x4(matrix));
-			if (colorFilter is null)
+			if (MonochromeColor is { } color)
 			{
-				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, antialias: true);
+				// Recolor the image to a single tint (its coverage kept), with opacity folded into the tint alpha.
+				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
+				var colorFilter = DrawingBackend.Current.CreateBlendModeColorFilter(faded, BlendMode.SrcIn);
+				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
 			}
 			else
 			{
-				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
+				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, opacity: opacity, antialias: true);
 			}
 			session.Restore();
 			return true;

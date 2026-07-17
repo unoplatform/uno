@@ -52,42 +52,91 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 
 	public IShader CreateRadialGradientShader(
 		Vector2 center,
-		float radius,
+		Vector2 gradientOrigin,
+		float radiusX,
+		float radiusY,
 		Color[] colors,
 		float[] colorPositions,
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix)
-		=> new SkiaShader(SKShader.CreateRadialGradient(
-			new SKPoint(center.X, center.Y),
-			radius,
-			ToSKColors(colors),
-			colorPositions,
-			ToSK(tileMode),
-			localMatrix.ToSKMatrix()));
+	{
+		// SkiaSharp radial gradients take a single radius, so squash the larger axis onto the smaller with a
+		// scale-down matrix and use one radius.
+		ComputeRadiusAndScale(center, radiusX, radiusY, out var radius, out var squash);
 
-	public IShader CreateTwoPointConicalGradientShader(
-		Vector2 start,
-		float startRadius,
-		Vector2 end,
-		float endRadius,
-		Color[] colors,
-		float[] colorPositions,
-		GradientTileMode tileMode,
-		Matrix3x2 localMatrix)
-		=> new SkiaShader(SKShader.CreateTwoPointConicalGradient(
-			new SKPoint(start.X, start.Y),
-			startRadius,
-			new SKPoint(end.X, end.Y),
-			endRadius,
-			ToSKColors(colors),
-			colorPositions,
-			ToSK(tileMode),
-			localMatrix.ToSKMatrix()));
+		if (radius <= 0)
+		{
+			// Radius 0: match the last gradient color everywhere.
+			return new SkiaShader(SKShader.CreateColor(LastColor(colors).ToSKColor()));
+		}
 
-	public IShader CreateColorShader(Color color) => new SkiaShader(SKShader.CreateColor(color.ToSKColor()));
+		// The scale-down matrix is applied before the brush transform (SKMatrix.PreConcat), which in the
+		// row-vector convention is `squash * localMatrix`.
+		var totalMatrix = squash * localMatrix;
+		var skTotal = totalMatrix.ToSKMatrix();
+		var skTile = ToSK(tileMode);
 
-	public IShader ComposeShaders(IShader outer, IShader inner)
-		=> new SkiaShader(SKShader.CreateCompose(((SkiaShader)outer).Shader, ((SkiaShader)inner).Shader));
+		if (center == gradientOrigin)
+		{
+			return new SkiaShader(SKShader.CreateRadialGradient(
+				new SKPoint(center.X, center.Y), radius, ToSKColors(colors), colorPositions, skTile, skTotal));
+		}
+
+		// Offset origin: SkiaSharp has no focal radial gradient, so approximate with a two-point conical
+		// gradient (reversed stops) composed over the last color, which fills the region the conical leaves
+		// uncovered.
+		var reversedColors = new SKColor[colors.Length];
+		for (var i = 0; i < colors.Length; i++)
+		{
+			reversedColors[i] = colors[colors.Length - 1 - i].ToSKColor();
+		}
+
+		var reversedPositions = new float[colorPositions.Length];
+		for (var i = 0; i < colorPositions.Length; i++)
+		{
+			var p = colorPositions[i];
+			reversedPositions[i] = (p > 0 && p < 1) ? System.Math.Abs(1 - p) : p;
+		}
+
+		Matrix3x2.Invert(totalMatrix, out var inverse);
+		var origin = Vector2.Transform(gradientOrigin, inverse);
+
+		var conical = SKShader.CreateTwoPointConicalGradient(
+			new SKPoint(center.X, center.Y), radius, new SKPoint(origin.X, origin.Y), 0,
+			reversedColors, reversedPositions, skTile, skTotal);
+		var fallback = SKShader.CreateColor(LastColor(colors).ToSKColor());
+		return new SkiaShader(SKShader.CreateCompose(fallback, conical));
+	}
+
+	private static Color LastColor(Color[] colors) => colors.Length > 0 ? colors[^1] : Colors.Transparent;
+
+	// SkiaSharp doesn't allow explicit RadiusX/RadiusY on a radial gradient, so we build a scale-down
+	// transform that squashes the larger axis onto the smaller and use a single radius.
+	private static void ComputeRadiusAndScale(Vector2 center, float radiusX, float radiusY, out float radius, out Matrix3x2 matrix)
+	{
+		matrix = Matrix3x2.Identity;
+		if (radiusX == 0 || radiusY == 0)
+		{
+			// Handle this specific case as zero division would cause us troubles.
+			radius = 0;
+			return;
+		}
+
+		if (radiusX >= radiusY)
+		{
+			// radiusX is larger, use it and scale down radiusY.
+			radius = radiusX;
+			var scaleDownRatio = radiusY / radiusX;
+			matrix = new Matrix3x2(1, 0, 0, scaleDownRatio, 0, center.Y - scaleDownRatio * center.Y);
+		}
+		else
+		{
+			// radiusY is larger, use it and scale down radiusX.
+			radius = radiusY;
+			var scaleDownRatio = radiusX / radiusY;
+			matrix = new Matrix3x2(scaleDownRatio, 0, 0, 1, center.X - scaleDownRatio * center.X, 0);
+		}
+	}
 
 	private static SKColor[] ToSKColors(Color[] colors)
 	{
@@ -98,9 +147,6 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		}
 		return skColors;
 	}
-
-	public IColorFilter? CreateOpacityColorFilter(float opacity)
-		=> opacity.ToColorFilter() is { } filter ? new SkiaColorFilter(filter) : null;
 
 	public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode)
 		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SkiaDrawingSession.ToSKBlendMode(mode)));

@@ -83,10 +83,10 @@ internal interface IDrawingSession
 
 	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false);
 
-	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>) in the current coordinate space.</summary>
-	void DrawImage(IImage image, float x, float y, ImageSampling sampling, bool antialias = false);
+	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>), modulated by <paramref name="opacity"/>.</summary>
+	void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false);
 
-	/// <summary>Draws <paramref name="image"/> with a <paramref name="colorFilter"/> applied (e.g. opacity fade or tint).</summary>
+	/// <summary>Draws <paramref name="image"/> with a <paramref name="colorFilter"/> applied (e.g. a monochrome tint).</summary>
 	void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false);
 
 	/// <summary>
