@@ -1312,7 +1312,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(run);
 			Assert.AreEqual("Hello", run.Text);
 			Assert.IsTrue(run.TextDecorations.HasFlag(global::Windows.UI.Text.TextDecorations.Underline));
-			Assert.AreEqual(30d, run.FontSize);
+			Assert.AreEqual(40d, run.FontSize);
 			var brush = run.Foreground as SolidColorBrush;
 			Assert.IsNotNull(brush);
 			Assert.AreEqual(red, brush.Color);
@@ -1322,7 +1322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static void RaiseKey(RichEditBox sut, VirtualKey key, VirtualKeyModifiers modifiers = VirtualKeyModifiers.None, char unicodeKey = '\0')
 		{
 			if (modifiers.HasFlag(VirtualKeyModifiers.Control)
-				&& (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS()))
+				&& Uno.UI.Helpers.DeviceTargetHelper.UsesAppleKeyboardLayout)
 			{
 				modifiers = (modifiers & ~VirtualKeyModifiers.Control) | VirtualKeyModifiers.Windows;
 			}
