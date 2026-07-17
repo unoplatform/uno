@@ -15,10 +15,6 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 		public RichEditBox_CharacterFormatting()
 		{
 			this.InitializeComponent();
-		}
-
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
 			Editor.Document.SetText(TextSetOptions.None, InitialText);
 			Output.Text = "Pick a Start/End range, then apply formatting.";
 		}
