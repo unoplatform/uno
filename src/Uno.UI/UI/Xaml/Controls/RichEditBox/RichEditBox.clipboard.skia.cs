@@ -175,6 +175,24 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
+		/// <summary>
+		/// Pastes text supplied by a native input surface. Browser clipboard events already provide the
+		/// text synchronously, so routing through the OS clipboard again would lose the user gesture that
+		/// grants clipboard access.
+		/// </summary>
+		internal void PasteFromClipboard(string clipboardText)
+		{
+			if (IsReadOnly || RaisePasteIsHandled())
+			{
+				return;
+			}
+
+			var textLength = GetPlainTextContent().Length;
+			var start = Math.Clamp(_selection.start, 0, textLength);
+			var end = Math.Clamp(start + _selection.length, start, textLength);
+			PasteClipboardContent(fragment: null, clipboardText, Document.GetRange(start, end));
+		}
+
 		private async Task PasteFromClipboardAsync(DataPackageView content, global::Microsoft.UI.Text.ITextRange operationRange)
 		{
 			try
@@ -211,35 +229,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				if (IsReadOnly)
-				{
-					return;
-				}
-
-				var text = GetPlainTextContent();
-				var start = Math.Clamp(operationRange.StartPosition, 0, text.Length);
-				var end = Math.Clamp(operationRange.EndPosition, start, text.Length);
-				if (Document.IsRangeProtected(start, end))
-				{
-					return;
-				}
-
-				var insertedLength = 0;
-				RunWithDeferredSelectionSync(() =>
-				{
-					if (fragment is not null && CharacterCasing == CharacterCasing.Normal)
-					{
-						insertedLength = Document.ReplaceRangeWithFragment(start, end, fragment, sourceRange: null);
-					}
-					else if (!string.IsNullOrEmpty(clipboardText ?? fragment?.Text))
-					{
-						var sourceText = clipboardText ?? fragment!.Text;
-						var normalized = CoerceCasing(sourceText.Replace("\r\n", "\r").Replace('\n', '\r'));
-						insertedLength = Document.ReplaceRange(start, end, normalized);
-					}
-				});
-
-				SetInteractiveSelection(start + insertedLength, 0);
+				PasteClipboardContent(fragment, clipboardText, operationRange);
 			}
 			catch (UnauthorizedAccessException)
 			{
@@ -251,6 +241,42 @@ namespace Microsoft.UI.Xaml.Controls
 					this.Log().Error("RichEditBox interactive paste failed.", error);
 				}
 			}
+		}
+
+		private void PasteClipboardContent(
+			global::Microsoft.UI.Text.RichTextFragment? fragment,
+			string? clipboardText,
+			global::Microsoft.UI.Text.ITextRange operationRange)
+		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
+			var text = GetPlainTextContent();
+			var start = Math.Clamp(operationRange.StartPosition, 0, text.Length);
+			var end = Math.Clamp(operationRange.EndPosition, start, text.Length);
+			if (Document.IsRangeProtected(start, end))
+			{
+				return;
+			}
+
+			var insertedLength = 0;
+			RunWithDeferredSelectionSync(() =>
+			{
+				if (fragment is not null && CharacterCasing == CharacterCasing.Normal)
+				{
+					insertedLength = Document.ReplaceRangeWithFragment(start, end, fragment, sourceRange: null);
+				}
+				else if (!string.IsNullOrEmpty(clipboardText ?? fragment?.Text))
+				{
+					var sourceText = clipboardText ?? fragment!.Text;
+					var normalized = CoerceCasing(sourceText.Replace("\r\n", "\r").Replace('\n', '\r'));
+					insertedLength = Document.ReplaceRange(start, end, normalized);
+				}
+			});
+
+			SetInteractiveSelection(start + insertedLength, 0);
 		}
 
 	}

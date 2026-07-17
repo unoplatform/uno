@@ -9,5 +9,8 @@ namespace Microsoft.UI.Text
 	internal sealed record RichTextFragment(
 		string Text,
 		List<CharacterFormatState> CharacterStates,
-		List<ParagraphFormatState> ParagraphStates);
+		List<ParagraphFormatState> ParagraphStates)
+	{
+		internal static RichTextFragment Empty() => new(string.Empty, new(), new());
+	}
 }

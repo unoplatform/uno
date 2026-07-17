@@ -15,10 +15,11 @@ namespace Microsoft.UI.Text
 	// destinations are skipped, allowing documents from native RichEdit to degrade to the modeled data.
 	internal static partial class RichTextRtfCodec
 	{
-		private const int MaxRtfLength = 4 * 1024 * 1024;
+		internal const int MaxRtfInputLength = 16 * 1024 * 1024;
 		internal const int MaxRtfOutputLength = 16 * 1024 * 1024;
 		private const int MaxGroupDepth = 256;
 		private const int MaxFontNameLength = 256;
+		private const int MaxParsedFonts = 4096;
 		private const int MaxParsedCharacters = 262_144;
 		private const int MaxParsedImages = 128;
 		private const int MaxParsedImageBytes = 16 * 1024 * 1024;
@@ -29,9 +30,6 @@ namespace Microsoft.UI.Text
 		private const int MaxFieldInstructionLength = 16 * 1024;
 		private const int MaxEncodedLanguageTagLength = 2 * 1024;
 		private const int MaxEncodedParagraphTabsLength = 8 * 1024;
-
-		[GeneratedRegex(@"\{\\f(?<index>\d+)\s+(?<name>[^;{}]*);\}", RegexOptions.CultureInvariant)]
-		private static partial Regex FontRegex();
 
 		[GeneratedRegex(@"\\red(?<red>\d+)\\green(?<green>\d+)\\blue(?<blue>\d+);", RegexOptions.CultureInvariant)]
 		private static partial Regex ColorRegex();
@@ -115,19 +113,26 @@ namespace Microsoft.UI.Text
 		internal static RichTextFragment Read(string rtf, int maxCharacters = MaxParsedCharacters)
 		{
 			if (string.IsNullOrWhiteSpace(rtf)
-				|| rtf.Length > MaxRtfLength
+				|| rtf.Length > MaxRtfInputLength
 				|| !rtf.TrimStart().StartsWith(@"{\rtf", StringComparison.Ordinal))
 			{
 				throw new ArgumentException("The stream does not contain RTF.", nameof(rtf));
 			}
 
-			var fonts = ParseFonts(rtf);
+			var (fonts, defaultFontName) = ParseFonts(rtf);
 			maxCharacters = Math.Clamp(maxCharacters, 0, MaxParsedCharacters);
 			var colors = ParseColors(rtf);
 			var text = new StringBuilder();
 			var characterStates = new List<CharacterFormatState>();
 			var paragraphStates = new List<ParagraphFormatState>();
-			var stack = new List<ParserFrame> { new(new ParserState()) };
+			var stack = new List<ParserFrame>
+			{
+				new(new ParserState
+				{
+					Character = new CharacterFormatState { Name = defaultFontName },
+					DefaultFontName = defaultFontName,
+				}),
+			};
 			var unicodeFallback = 0;
 			var imageCount = 0;
 			var imageBytes = 0;
@@ -225,7 +230,12 @@ namespace Microsoft.UI.Text
 			builder.Append(@"{\fonttbl");
 			foreach (var pair in fonts)
 			{
-				builder.Append(@"{\f").Append(pair.Value).Append(' ');
+				if (!IsSafeRtfFontName(pair.Key) || pair.Key.Contains(';'))
+				{
+					throw new ArgumentException("The rich text font name is invalid.", nameof(fonts));
+				}
+
+				builder.Append(@"{\f").Append(pair.Value).Append(@"\fnil\fcharset0 ");
 				AppendEscapedAscii(builder, pair.Key);
 				builder.Append(";}");
 			}
@@ -248,22 +258,78 @@ namespace Microsoft.UI.Text
 		private static void AppendCharacterControls(BoundedRtfBuilder builder, CharacterFormatState state, Dictionary<string, int> fonts, Dictionary<global::Windows.UI.Color, int> colors)
 		{
 			builder.Append(@"\plain");
-			builder.Append(state.AllCaps ? @"\caps" : @"\caps0");
-			builder.Append(state.Bold ? @"\b" : @"\b0");
-			builder.Append(state.Hidden ? @"\v" : @"\v0");
-			builder.Append(state.Italic ? @"\i" : @"\i0");
-			builder.Append(state.Outline ? @"\outl" : @"\outl0");
-			builder.Append(state.ProtectedText ? @"\protect" : @"\protect0");
-			builder.Append(state.SmallCaps ? @"\scaps" : @"\scaps0");
-			builder.Append(state.Underline is not global::Microsoft.UI.Text.UnderlineType.None and not global::Microsoft.UI.Text.UnderlineType.Undefined ? @"\ul" : @"\ulnone");
-			builder.Append(state.Strikethrough ? @"\strike" : @"\strike0");
-			builder.Append(state.Superscript ? @"\super" : state.Subscript ? @"\sub" : @"\nosupersub");
-			builder.Append(@"\f").Append(!string.IsNullOrEmpty(state.Name) && fonts.TryGetValue(state.Name, out var font) ? font : 0);
-			builder.Append(@"\fs").Append(state.Size > 0 ? Math.Max(1, (int)Math.Round(state.Size * 2, MidpointRounding.AwayFromZero)) : 24);
-			builder.Append(@"\cf").Append(state.Foreground is { } color && colors.TryGetValue(color, out var colorIndex) ? colorIndex : 0);
-			builder.Append(@"\highlight").Append(state.Background is { } background && colors.TryGetValue(background, out var backgroundIndex) ? backgroundIndex : 0);
-			builder.Append(@"\expndtw").Append((int)Math.Round(state.Spacing * 20, MidpointRounding.AwayFromZero));
-			builder.Append(@"\kerning").Append((int)Math.Round(state.Kerning * 2, MidpointRounding.AwayFromZero));
+			if (state.AllCaps)
+			{
+				builder.Append(@"\caps");
+			}
+			if (state.Bold)
+			{
+				builder.Append(@"\b");
+			}
+			else if (state.WeightExplicit)
+			{
+				builder.Append(@"\b0");
+			}
+			if (state.Hidden)
+			{
+				builder.Append(@"\v");
+			}
+			if (state.Italic)
+			{
+				builder.Append(@"\i");
+			}
+			if (state.Outline)
+			{
+				builder.Append(@"\outl");
+			}
+			if (state.ProtectedText)
+			{
+				builder.Append(@"\protect");
+			}
+			if (state.SmallCaps)
+			{
+				builder.Append(@"\scaps");
+			}
+			if (GetUnderlineControl(state.Underline) is { } underline)
+			{
+				builder.Append('\\').Append(underline);
+			}
+			if (state.Strikethrough)
+			{
+				builder.Append(@"\strike");
+			}
+			if (state.Superscript)
+			{
+				builder.Append(@"\super");
+			}
+			else if (state.Subscript)
+			{
+				builder.Append(@"\sub");
+			}
+			if (!string.IsNullOrEmpty(state.Name) && fonts.TryGetValue(state.Name, out var font))
+			{
+				builder.Append(@"\f").Append(font);
+			}
+			if (state.Size > 0)
+			{
+				builder.Append(@"\fs").Append(Math.Max(1, (int)Math.Round(state.Size * 2, MidpointRounding.AwayFromZero)));
+			}
+			if (state.Foreground is { } color && colors.TryGetValue(color, out var colorIndex))
+			{
+				builder.Append(@"\cf").Append(colorIndex);
+			}
+			if (state.Background is { } background && colors.TryGetValue(background, out var backgroundIndex))
+			{
+				builder.Append(@"\highlight").Append(backgroundIndex);
+			}
+			if (state.Spacing != 0)
+			{
+				builder.Append(@"\expndtw").Append((int)Math.Round(state.Spacing * 20, MidpointRounding.AwayFromZero));
+			}
+			if (state.Kerning != 0)
+			{
+				builder.Append(@"\kerning").Append((int)Math.Round(state.Kerning * 2, MidpointRounding.AwayFromZero));
+			}
 			if (state.Position > 0)
 			{
 				builder.Append(@"\up").Append((int)Math.Round(state.Position * 2, MidpointRounding.AwayFromZero));
@@ -273,8 +339,51 @@ namespace Microsoft.UI.Text
 				builder.Append(@"\dn").Append((int)Math.Round(-state.Position * 2, MidpointRounding.AwayFromZero));
 			}
 
-			AppendCharacterMetadata(builder, state);
+			if (RequiresCharacterMetadata(state))
+			{
+				AppendCharacterMetadata(builder, state);
+			}
+			else
+			{
+				builder.Append(' ');
+			}
 		}
+
+		private static string? GetUnderlineControl(global::Microsoft.UI.Text.UnderlineType underline)
+			=> underline switch
+			{
+				global::Microsoft.UI.Text.UnderlineType.Single => "ul",
+				global::Microsoft.UI.Text.UnderlineType.Words => "ulw",
+				global::Microsoft.UI.Text.UnderlineType.Double => "uldb",
+				global::Microsoft.UI.Text.UnderlineType.Dotted => "uld",
+				global::Microsoft.UI.Text.UnderlineType.Dash => "uldash",
+				global::Microsoft.UI.Text.UnderlineType.DashDot => "uldashd",
+				global::Microsoft.UI.Text.UnderlineType.DashDotDot => "uldashdd",
+				global::Microsoft.UI.Text.UnderlineType.Wave => "ulwave",
+				global::Microsoft.UI.Text.UnderlineType.Thick => "ulth",
+				global::Microsoft.UI.Text.UnderlineType.Thin => "ulhair",
+				global::Microsoft.UI.Text.UnderlineType.DoubleWave => "ululdbwave",
+				global::Microsoft.UI.Text.UnderlineType.HeavyWave => "ulhwave",
+				global::Microsoft.UI.Text.UnderlineType.LongDash => "ulldash",
+				global::Microsoft.UI.Text.UnderlineType.ThickDash => "ulthdash",
+				global::Microsoft.UI.Text.UnderlineType.ThickDashDot => "ulthdashd",
+				global::Microsoft.UI.Text.UnderlineType.ThickDashDotDot => "ulthdashdd",
+				global::Microsoft.UI.Text.UnderlineType.ThickDotted => "ulthd",
+				global::Microsoft.UI.Text.UnderlineType.ThickLongDash => "ulthldash",
+				_ => null,
+			};
+
+		private static bool RequiresCharacterMetadata(CharacterFormatState state)
+			=> state.FontStretch != global::Windows.UI.Text.FontStretch.Normal
+				|| state.LanguageTag.Length != 0
+				|| state.TextScript != global::Microsoft.UI.Text.TextScript.Default
+				|| state.Background is { A: < byte.MaxValue }
+				|| !IsStandardWeight(state);
+
+		private static bool IsStandardWeight(CharacterFormatState state)
+			=> !state.WeightExplicit && !state.Bold && state.Weight == 400
+				|| state.WeightExplicit && !state.Bold && state.Weight == 400
+				|| state.WeightExplicit && state.Bold && state.Weight == 700;
 
 		private static void AppendCharacterMetadata(BoundedRtfBuilder builder, CharacterFormatState state)
 		{
@@ -438,29 +547,299 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		private static Dictionary<int, string> ParseFonts(string rtf)
+		private static (Dictionary<int, string> Fonts, string? DefaultFontName) ParseFonts(string rtf)
 		{
 			var fonts = new Dictionary<int, string>();
-			foreach (Match match in FontRegex().Matches(rtf))
+			var fontTableStart = FindDestinationGroup(rtf, "fonttbl", out var fontTableEnd);
+			if (fontTableStart >= 0)
 			{
-				if (!int.TryParse(match.Groups["index"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var index))
+				var position = fontTableStart;
+				while (position < fontTableEnd)
 				{
-					throw new ArgumentException("The RTF font index is invalid.", nameof(rtf));
-				}
+					if (rtf[position] != '{')
+					{
+						position++;
+						continue;
+					}
 
-				var name = match.Groups["name"].Value.Trim();
-				if (IsSafeRtfFontName(name))
-				{
-					fonts[index] = name;
+					var entryEnd = FindGroupEnd(rtf, position, fontTableEnd);
+					if (entryEnd < 0)
+					{
+						throw new ArgumentException("The RTF font table is malformed.", nameof(rtf));
+					}
+
+					if (TryParseFontEntry(rtf.AsSpan(position + 1, entryEnd - position - 1), out var index, out var name)
+						&& IsSafeRtfFontName(name))
+					{
+						if (fonts.Count >= MaxParsedFonts && !fonts.ContainsKey(index))
+						{
+							throw new ArgumentException("The RTF contains too many fonts.", nameof(rtf));
+						}
+						fonts[index] = name;
+					}
+
+					position = entryEnd + 1;
 				}
 			}
-			return fonts;
+
+			var defaultFont = TryReadHeaderControl(rtf, "deff", out var defaultFontIndex)
+				&& fonts.TryGetValue(defaultFontIndex, out var defaultFontName)
+					? defaultFontName
+					: fonts.TryGetValue(0, out var fontZero) ? fontZero : null;
+			return (fonts, defaultFont);
+		}
+
+		private static int FindDestinationGroup(string rtf, string destination, out int groupEnd)
+		{
+			var depth = 0;
+			for (var i = 0; i < rtf.Length; i++)
+			{
+				switch (rtf[i])
+				{
+					case '\\':
+						SkipControl(rtf, ref i);
+						break;
+					case '{':
+						depth++;
+						var probe = i + 1;
+						if (probe < rtf.Length && rtf[probe] == '\\' && TryReadControlWord(rtf, ref probe, out var word, out _, out _)
+							&& string.Equals(word, destination, StringComparison.Ordinal))
+						{
+							groupEnd = FindGroupEnd(rtf, i, rtf.Length);
+							return groupEnd >= 0 ? probe : -1;
+						}
+						break;
+					case '}':
+						depth--;
+						if (depth < 0)
+						{
+							groupEnd = -1;
+							return -1;
+						}
+						break;
+				}
+			}
+
+			groupEnd = -1;
+			return -1;
+		}
+
+		private static int FindGroupEnd(string rtf, int groupStart, int limit)
+		{
+			var depth = 0;
+			for (var i = groupStart; i < limit; i++)
+			{
+				if (rtf[i] == '\\')
+				{
+					SkipControl(rtf, ref i);
+				}
+				else if (rtf[i] == '{')
+				{
+					depth++;
+				}
+				else if (rtf[i] == '}' && --depth == 0)
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		private static bool TryParseFontEntry(ReadOnlySpan<char> entry, out int index, out string name)
+		{
+			index = 0;
+			name = string.Empty;
+			var builder = new StringBuilder();
+			var foundIndex = false;
+			var depth = 0;
+			for (var i = 0; i < entry.Length; i++)
+			{
+				var value = entry[i];
+				if (value == '{')
+				{
+					depth++;
+					continue;
+				}
+				if (value == '}')
+				{
+					depth--;
+					continue;
+				}
+				if (value == '\\')
+				{
+					if (++i >= entry.Length)
+					{
+						break;
+					}
+					if (entry[i] is '\\' or '{' or '}')
+					{
+						if (depth == 0)
+						{
+							builder.Append(entry[i]);
+						}
+						continue;
+					}
+					if (entry[i] == '\'')
+					{
+						if (i + 2 < entry.Length && byte.TryParse(entry.Slice(i + 1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var encoded) && depth == 0)
+						{
+							builder.Append(DecodeWindows1252(encoded));
+						}
+						i = Math.Min(entry.Length - 1, i + 2);
+						continue;
+					}
+					if (!char.IsLetter(entry[i]))
+					{
+						continue;
+					}
+
+					var wordStart = i;
+					while (i + 1 < entry.Length && char.IsLetter(entry[i + 1]))
+					{
+						i++;
+					}
+					var word = entry.Slice(wordStart, i - wordStart + 1);
+					var negative = i + 1 < entry.Length && entry[i + 1] == '-';
+					if (negative)
+					{
+						i++;
+					}
+					var numberStart = i + 1;
+					while (i + 1 < entry.Length && char.IsDigit(entry[i + 1]))
+					{
+						i++;
+					}
+					if (depth == 0 && word.SequenceEqual("f") && i >= numberStart
+						&& int.TryParse(entry.Slice(numberStart, i - numberStart + 1), NumberStyles.None, CultureInfo.InvariantCulture, out var parsedIndex))
+					{
+						index = negative ? -parsedIndex : parsedIndex;
+						foundIndex = index >= 0;
+					}
+					if (i + 1 < entry.Length && entry[i + 1] == ' ')
+					{
+						i++;
+					}
+					continue;
+				}
+
+				if (depth == 0)
+				{
+					if (value == ';')
+					{
+						name = builder.ToString().Trim();
+						return foundIndex && name.Length > 0;
+					}
+					if (builder.Length >= MaxFontNameLength)
+					{
+						return false;
+					}
+					builder.Append(value);
+				}
+			}
+
+			return false;
+		}
+
+		private static bool TryReadHeaderControl(string rtf, string control, out int parameter)
+		{
+			parameter = 0;
+			var depth = 0;
+			for (var i = 0; i < rtf.Length; i++)
+			{
+				if (rtf[i] == '{')
+				{
+					depth++;
+				}
+				else if (rtf[i] == '}')
+				{
+					depth--;
+				}
+				else if (rtf[i] == '\\')
+				{
+					var position = i;
+					if (TryReadControlWord(rtf, ref position, out var word, out var hasParameter, out var value)
+						&& depth == 1 && hasParameter && string.Equals(word, control, StringComparison.Ordinal))
+					{
+						parameter = value;
+						return true;
+					}
+					i = Math.Max(i, position - 1);
+				}
+			}
+
+			return false;
+		}
+
+		private static bool TryReadControlWord(string rtf, ref int position, out string word, out bool hasParameter, out int parameter)
+		{
+			word = string.Empty;
+			hasParameter = false;
+			parameter = 0;
+			if (position >= rtf.Length || rtf[position] != '\\' || position + 1 >= rtf.Length || !char.IsLetter(rtf[position + 1]))
+			{
+				return false;
+			}
+
+			var start = ++position;
+			while (position < rtf.Length && char.IsLetter(rtf[position]))
+			{
+				position++;
+			}
+			word = rtf.Substring(start, position - start);
+			var negative = position < rtf.Length && rtf[position] == '-';
+			if (negative)
+			{
+				position++;
+			}
+			var numberStart = position;
+			while (position < rtf.Length && char.IsDigit(rtf[position]))
+			{
+				position++;
+			}
+			hasParameter = position > numberStart;
+			if (hasParameter && !int.TryParse(rtf.AsSpan(numberStart, position - numberStart), NumberStyles.None, CultureInfo.InvariantCulture, out parameter))
+			{
+				return false;
+			}
+			if (negative)
+			{
+				parameter = -parameter;
+			}
+			if (position < rtf.Length && rtf[position] == ' ')
+			{
+				position++;
+			}
+			return true;
+		}
+
+		private static void SkipControl(string rtf, ref int position)
+		{
+			if (position + 1 >= rtf.Length)
+			{
+				return;
+			}
+			if (rtf[position + 1] == '\'')
+			{
+				position = Math.Min(rtf.Length - 1, position + 3);
+				return;
+			}
+			var controlPosition = position;
+			if (TryReadControlWord(rtf, ref controlPosition, out _, out _, out _))
+			{
+				position = controlPosition - 1;
+			}
+			else
+			{
+				position++;
+			}
 		}
 
 		private static bool IsSafeRtfFontName(string name)
 		{
 			if (name.Length is 0 or > MaxFontNameLength
 				|| Uri.TryCreate(name, UriKind.Absolute, out _)
+				|| name.Contains(';')
 				|| name.Contains('/')
 				|| name.Contains('\\'))
 			{
@@ -1035,7 +1414,11 @@ namespace Microsoft.UI.Text
 					break;
 				case "plain":
 					var link = state.Character.Link;
-					state.Character = new CharacterFormatState { Link = link };
+					state.Character = new CharacterFormatState
+					{
+						Link = link,
+						Name = state.DefaultFontName,
+					};
 					break;
 				case "pard": state.Paragraph = new ParagraphFormatState(); break;
 				case "caps": state.Character.AllCaps = !hasParameter || parameter != 0; break;
@@ -1050,13 +1433,37 @@ namespace Microsoft.UI.Text
 				case "outl": state.Character.Outline = !hasParameter || parameter != 0; break;
 				case "protect": state.Character.ProtectedText = !hasParameter || parameter != 0; break;
 				case "scaps": state.Character.SmallCaps = !hasParameter || parameter != 0; break;
-				case "ul": state.Character.Underline = !hasParameter || parameter != 0 ? global::Microsoft.UI.Text.UnderlineType.Single : global::Microsoft.UI.Text.UnderlineType.None; break;
+				case "ul": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Single); break;
+				case "ulw": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Words); break;
+				case "uldb": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Double); break;
+				case "uld": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Dotted); break;
+				case "uldash": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Dash); break;
+				case "uldashd": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.DashDot); break;
+				case "uldashdd": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.DashDotDot); break;
+				case "ulwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Wave); break;
+				case "ulth": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Thick); break;
+				case "ulhair": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Thin); break;
+				case "uldbwave":
+				case "ululdbwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.DoubleWave); break;
+				case "ulhwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.HeavyWave); break;
+				case "ulldash": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.LongDash); break;
+				case "ulthdash": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.ThickDash); break;
+				case "ulthdashd": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.ThickDashDot); break;
+				case "ulthdashdd": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.ThickDashDotDot); break;
+				case "ulthd": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.ThickDotted); break;
+				case "ulthldash": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.ThickLongDash); break;
 				case "ulnone": state.Character.Underline = global::Microsoft.UI.Text.UnderlineType.None; break;
 				case "strike": state.Character.Strikethrough = !hasParameter || parameter != 0; break;
 				case "sub": state.Character.Subscript = true; state.Character.Superscript = false; break;
 				case "super": state.Character.Superscript = true; state.Character.Subscript = false; break;
 				case "nosupersub": state.Character.Subscript = state.Character.Superscript = false; break;
-				case "f" when hasParameter: state.Character.Name = fonts.TryGetValue(parameter, out var font) ? font : null; break;
+				case "f" when hasParameter:
+				case "af" when hasParameter:
+					if (fonts.TryGetValue(parameter, out var font))
+					{
+						state.Character.Name = font;
+					}
+					break;
 				case "fs" when hasParameter: state.Character.Size = Math.Clamp(parameter / 2f, 0, 4096); break;
 				case "cf" when hasParameter: state.Character.Foreground = colors.TryGetValue(parameter, out var color) ? color : null; break;
 				case "expndtw" when hasParameter: state.Character.Spacing = Math.Clamp(parameter / 20f, -4096, 4096); break;
@@ -1089,6 +1496,12 @@ namespace Microsoft.UI.Text
 			}
 			frame.StarDestination = false;
 		}
+
+		private static global::Microsoft.UI.Text.UnderlineType ResolveUnderline(
+			bool hasParameter,
+			int parameter,
+			global::Microsoft.UI.Text.UnderlineType underline)
+			=> hasParameter && parameter == 0 ? global::Microsoft.UI.Text.UnderlineType.None : underline;
 
 		private static void AppendParsedCharacter(
 			char value,
@@ -1185,6 +1598,7 @@ namespace Microsoft.UI.Text
 			public CharacterFormatState Character = new();
 			public ParagraphFormatState Paragraph = new();
 			public int UnicodeSkipCount = 1;
+			public string? DefaultFontName;
 
 			public ParserState Clone()
 				=> new()
@@ -1192,6 +1606,7 @@ namespace Microsoft.UI.Text
 					Character = Character.Clone(),
 					Paragraph = Paragraph.Clone(),
 					UnicodeSkipCount = UnicodeSkipCount,
+					DefaultFontName = DefaultFontName,
 				};
 		}
 

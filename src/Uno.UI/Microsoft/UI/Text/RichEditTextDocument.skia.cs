@@ -769,7 +769,9 @@ namespace Microsoft.UI.Text
 
 			if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf))
 			{
-				SetDocumentFragment(RichTextRtfCodec.Read(value ?? string.Empty, GetImportCharacterLimit(0, _plainText.Length)));
+				SetDocumentFragment(string.IsNullOrEmpty(value)
+					? RichTextFragment.Empty()
+					: RichTextRtfCodec.Read(value, GetImportCharacterLimit(0, _plainText.Length)));
 				return;
 			}
 

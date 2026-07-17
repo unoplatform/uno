@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _hasPointerCapture;
 		private int _pointerSelectionAnchor;
 		private int _pressedLinkIndex = -1;
+		private PointerRoutedEventArgs? _processedPointerPressedArgs;
 
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{
@@ -38,6 +39,23 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerPressed(PointerRoutedEventArgs e)
 		{
 			base.OnPointerPressed(e);
+			if (!ReferenceEquals(_processedPointerPressedArgs, e))
+			{
+				ProcessPointerPressed(e);
+			}
+		}
+
+		private void OnPointerPressedHandledEventsToo(object sender, PointerRoutedEventArgs e)
+		{
+			if (!ReferenceEquals(_processedPointerPressedArgs, e))
+			{
+				ProcessPointerPressed(e);
+			}
+		}
+
+		private void ProcessPointerPressed(PointerRoutedEventArgs e)
+		{
+			_processedPointerPressedArgs = e;
 
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
@@ -98,6 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerReleased(PointerRoutedEventArgs e)
 		{
 			base.OnPointerReleased(e);
+			_processedPointerPressedArgs = null;
 
 			if (_hasPointerCapture)
 			{
@@ -122,6 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCaptureLost(e);
+			_processedPointerPressedArgs = null;
 			_hasPointerCapture = false;
 			_pressedLinkIndex = -1;
 		}
