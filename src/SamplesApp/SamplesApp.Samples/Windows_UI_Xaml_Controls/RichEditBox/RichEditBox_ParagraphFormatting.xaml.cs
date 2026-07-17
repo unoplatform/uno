@@ -19,10 +19,6 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 		public RichEditBox_ParagraphFormatting()
 		{
 			this.InitializeComponent();
-		}
-
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
 			Editor.Document.SetText(TextSetOptions.None, InitialText);
 			Output.Text = "Apply an alignment to the whole document.";
 		}
