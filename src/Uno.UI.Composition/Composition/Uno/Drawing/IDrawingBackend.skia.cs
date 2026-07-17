@@ -79,7 +79,6 @@ internal interface IDrawingBackend
 	IColorFilter CreateColorMatrixColorFilter(float[] matrix);
 
 	/// <summary>Creates a normal (Gaussian) blur mask filter with the given standard deviation.</summary>
-	IMaskFilter CreateBlurMaskFilter(float sigma);
 
 	/// <summary>
 	/// Realizes a neutral <see cref="IGraphicsEffect"/> graph into an opaque backend effect. Mirrors the

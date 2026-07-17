@@ -108,9 +108,6 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix)
 		=> new SkiaColorFilter(SKColorFilter.CreateColorMatrix(matrix));
 
-	public IMaskFilter CreateBlurMaskFilter(float sigma)
-		=> new SkiaMaskFilter(SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma));
-
 	public IEffectFilter? CreateEffectFilter(
 		global::Windows.Graphics.Effects.IGraphicsEffect effect,
 		Rect bounds,

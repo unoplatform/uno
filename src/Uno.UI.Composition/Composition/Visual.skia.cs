@@ -642,38 +642,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return true; // nothing to cast a shadow from; analytic path succeeded vacuously
 		}
 
-		using var maskFilter = DrawingBackend.Current.CreateBlurMaskFilter(shadow.SigmaX);
 		var shadowColor = shadow.Color;
 
 		session.Save();
 		session.Translate(shadow.Dx, shadow.Dy);
 
-		var pathYScale = 1f;
-		if (!shadow.SigmaX.Equals(shadow.SigmaY) && !shadow.SigmaX.Equals(0f))
-		{
-			// The blur mask supports a single sigma. To get anisotropic device-space blur (SigmaX, SigmaY)
-			// we exploit respectCTM=true: the user-space sigma is multiplied by |CTM scale| per axis. So we
-			// pick sigma = SigmaX, apply session.Scale(1, SigmaY/SigmaX), and pre-scale each region's path by
-			// (1, SigmaX/SigmaY) to cancel the visual stretch — the geometry lands at original coordinates
-			// while the blur becomes (SigmaX, SigmaY) in device pixels. When sigmas are equal (the common
-			// SetElevation case) we skip the scaling entirely.
-			var sy_over_sx = shadow.SigmaY / shadow.SigmaX;
-			session.Scale(1f, sy_over_sx);
-			pathYScale = 1f / sy_over_sx;
-		}
-
 		if (totalRegions > 1)
 		{
-			// Isolate accumulation so Plus blend sums region contributions without polluting the canvas
-			// behind the shadow.
+			// Isolate accumulation so the additive blend sums region contributions without polluting the
+			// canvas behind the shadow.
 			session.SaveLayer();
 			if (accumulator.OpaqueSilhouette is { } opaque)
 			{
-				DrawRegionShadow(session, opaque, 1f, shadowColor, maskFilter, useAdditive: true, pathYScale);
+				DrawRegionShadow(session, opaque, 1f, shadowColor, shadow.SigmaX, shadow.SigmaY, additive: true);
 			}
 			foreach (var (path, alpha) in accumulator.Regions)
 			{
-				DrawRegionShadow(session, path, alpha, shadowColor, maskFilter, useAdditive: true, pathYScale);
+				DrawRegionShadow(session, path, alpha, shadowColor, shadow.SigmaX, shadow.SigmaY, additive: true);
 			}
 			session.Restore();
 		}
@@ -682,33 +667,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// avoiding the SaveLayer was measured to be a significant perf win for the common case of a single region
 			if (accumulator.OpaqueSilhouette is { } opaque)
 			{
-				DrawRegionShadow(session, opaque, 1f, shadowColor, maskFilter, useAdditive: false, pathYScale);
+				DrawRegionShadow(session, opaque, 1f, shadowColor, shadow.SigmaX, shadow.SigmaY, additive: false);
 			}
 			else
 			{
 				var (path, alpha) = accumulator.Regions[0];
-				DrawRegionShadow(session, path, alpha, shadowColor, maskFilter, useAdditive: false, pathYScale);
+				DrawRegionShadow(session, path, alpha, shadowColor, shadow.SigmaX, shadow.SigmaY, additive: false);
 			}
 		}
 
 		session.Restore();
 		return true;
 
-		static void DrawRegionShadow(IDrawingSession session, IGeometry path, float alpha, global::Windows.UI.Color shadowColor, IMaskFilter maskFilter, bool useAdditive, float pathYScale)
+		static void DrawRegionShadow(IDrawingSession session, IGeometry path, float alpha, global::Windows.UI.Color shadowColor, float sigmaX, float sigmaY, bool additive)
 		{
 			var color = global::Windows.UI.Color.FromArgb((byte)(shadowColor.A * alpha), shadowColor.R, shadowColor.G, shadowColor.B);
-			var blendMode = useAdditive ? BlendMode.Plus : BlendMode.SrcOver;
-
-			if (pathYScale.Equals(1f))
-			{
-				session.DrawPath(path, color, maskFilter, blendMode, antialias: true);
-			}
-			else
-			{
-				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
-				// position; the canvas scale only affects the mask blur's per-axis sigma.
-				session.DrawPath(path.Transform(Matrix3x2.CreateScale(1f, pathYScale)), color, maskFilter, blendMode, antialias: true);
-			}
+			session.DrawShadow(path, color, sigmaX, sigmaY, additive, antialias: true);
 		}
 	}
 

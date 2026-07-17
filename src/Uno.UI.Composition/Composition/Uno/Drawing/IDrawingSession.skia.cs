@@ -70,8 +70,13 @@ internal interface IDrawingSession
 	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
 	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
 
-	/// <summary>Fills <paramref name="geometry"/> through a <paramref name="maskFilter"/> (e.g. a blurred drop shadow).</summary>
-	void DrawPath(IGeometry geometry, Color color, IMaskFilter maskFilter, BlendMode blendMode, bool antialias = false);
+	/// <summary>
+	/// Draws <paramref name="silhouette"/> as a soft shadow: its coverage is blurred by (<paramref name="sigmaX"/>,
+	/// <paramref name="sigmaY"/>) in device pixels and filled with <paramref name="color"/>. When
+	/// <paramref name="additive"/> is set, contributions are summed (for overlapping shadow regions). The
+	/// backend chooses the blur technique.
+	/// </summary>
+	void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false);
 
 	/// <summary>Strokes the outline of <paramref name="geometry"/>.</summary>
 	void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias = false);

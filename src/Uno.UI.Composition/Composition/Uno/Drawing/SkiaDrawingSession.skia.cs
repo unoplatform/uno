@@ -147,8 +147,34 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	public void DrawPath(IGeometry geometry, Color color, bool antialias)
 		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, FillPaint(color, antialias));
 
-	public void DrawPath(IGeometry geometry, Color color, IMaskFilter maskFilter, BlendMode blendMode, bool antialias)
-		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, FillPaint(color, antialias, maskFilter, blendMode));
+	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias)
+	{
+		var skPath = ((SkiaGeometrySource2D)silhouette).Geometry;
+		var paint = Spare();
+		paint.Style = SKPaintStyle.Fill;
+		paint.Color = color.ToSKColor();
+		paint.IsAntialias = antialias;
+		paint.BlendMode = additive ? SKBlendMode.Plus : SKBlendMode.SrcOver;
+		paint.MaskFilter = sigmaX > 0f ? BlurFilter(sigmaX) : null;
+
+		if (sigmaX.Equals(sigmaY) || sigmaX.Equals(0f))
+		{
+			_canvas.DrawPath(skPath, paint);
+		}
+		else
+		{
+			// Anisotropic blur via respectCTM: the mask blur (isotropic, sigma = sigmaX) is scaled by the CTM
+			// per axis. Scaling the canvas Y by sigmaY/sigmaX makes the device Y-blur = sigmaY, and pre-scaling
+			// the path Y by the inverse cancels the visual stretch so the shape lands at its original position.
+			var syOverSx = sigmaY / sigmaX;
+			_canvas.Save();
+			_canvas.Scale(1f, syOverSx);
+			using var scaled = new SKPath();
+			skPath.Transform(SKMatrix.CreateScale(1f, 1f / syOverSx), scaled);
+			_canvas.DrawPath(scaled, paint);
+			_canvas.Restore();
+		}
+	}
 
 	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias)
 		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, StrokePaint(color, strokeWidth, antialias));
@@ -188,15 +214,31 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		return paint;
 	}
 
-	private static SKPaint FillPaint(Color color, bool antialias, IMaskFilter? maskFilter = null, BlendMode blendMode = BlendMode.SrcOver)
+	private static SKPaint FillPaint(Color color, bool antialias)
 	{
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
 		paint.Color = color.ToSKColor();
 		paint.IsAntialias = antialias;
-		paint.BlendMode = ToSKBlendMode(blendMode);
-		paint.MaskFilter = (maskFilter as SkiaMaskFilter)?.MaskFilter;
 		return paint;
+	}
+
+	// The blur mask filter is immutable and its sigma is constant across a shadow's regions/frames, so a
+	// single sigma-keyed instance is cached per thread and rebuilt only when the sigma changes.
+	[ThreadStatic]
+	private static SKMaskFilter? _spareBlur;
+	[ThreadStatic]
+	private static float _spareBlurSigma;
+
+	private static SKMaskFilter BlurFilter(float sigma)
+	{
+		if (_spareBlur is null || !_spareBlurSigma.Equals(sigma))
+		{
+			_spareBlur?.Dispose();
+			_spareBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma);
+			_spareBlurSigma = sigma;
+		}
+		return _spareBlur;
 	}
 
 	private static SKPaint ShaderPaint(IShader shader, bool antialias)
