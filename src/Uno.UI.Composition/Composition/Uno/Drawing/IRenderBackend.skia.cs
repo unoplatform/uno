@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
@@ -19,10 +17,6 @@ internal interface IRenderBackend
 	/// <summary>Phase 1: begins a frame and returns the session the render cycle records the visual tree into.</summary>
 	ICommandRecorder BeginFrame();
 
-	/// <summary>
-	/// Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.
-	/// <paramref name="postPresent"/>, if provided, draws overlay content (e.g. diagnostics) onto the same
-	/// surface via the session the backend used to present.
-	/// </summary>
-	void Present(IRenderData frame, IRenderSurface target, Action<IDrawingSession>? postPresent);
+	/// <summary>Phase 2: presents a previously recorded <paramref name="frame"/> onto <paramref name="target"/>.</summary>
+	void Present(IRenderData frame, IRenderSurface target);
 }

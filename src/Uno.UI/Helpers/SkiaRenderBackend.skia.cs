@@ -12,16 +12,14 @@ internal sealed class SkiaRenderBackend : IRenderBackend
 {
 	public ICommandRecorder BeginFrame() => SkiaDrawingSession.StartRecording();
 
-	public void Present(IRenderData frame, IRenderSurface target, Action<IDrawingSession>? postPresent)
+	public void Present(IRenderData frame, IRenderSurface target)
 	{
 		var canvas = ((SkiaRenderSurface)target).Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(SKColors.Transparent);
 			// Draws nothing if we get a present request before the first frame is recorded.
-			var session = new SkiaDrawingSession(canvas);
-			session.Replay(frame);
-			postPresent?.Invoke(session);
+			new SkiaDrawingSession(canvas).Replay(frame);
 		}
 
 		canvas.Flush();
