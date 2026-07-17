@@ -528,7 +528,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// model outside the edit is preserved and the change is recorded on the undo history.
 		/// </summary>
 		private bool ApplyTextDiff(string oldText, string newText)
+			=> ApplyTextDiff(oldText, newText, out _);
+
+		private bool ApplyTextDiff(string oldText, string newText, out AppliedTextDiff appliedDiff)
 		{
+			appliedDiff = default;
 			var max = Math.Min(oldText.Length, newText.Length);
 
 			var prefix = 0;
@@ -545,11 +549,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var start = prefix;
 			var oldEnd = oldText.Length - suffix;
-			var insert = newText.Substring(prefix, newText.Length - suffix - prefix);
+			var nativeInsert = newText.Substring(prefix, newText.Length - suffix - prefix);
+			var insert = CoerceCasing(nativeInsert);
 
 			try
 			{
-				RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, oldEnd, insert));
+				var insertedLength = 0;
+				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(start, oldEnd, insert));
+				appliedDiff = new AppliedTextDiff(start, nativeInsert.Length, insertedLength);
 				return true;
 			}
 			catch (UnauthorizedAccessException)
@@ -557,6 +564,57 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 		}
+
+		internal int NativeSelectionStart => _selection.start;
+
+		internal int NativeSelectionLength => _selection.length;
+
+		internal bool NativeSelectionIsBackward => _selection.selectionEndsAtTheStart;
+
+		internal void UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+		{
+			var oldText = GetPlainTextContent();
+			var appliedDiff = default(AppliedTextDiff);
+			if (IsReadOnly
+				|| (!string.Equals(oldText, text, StringComparison.Ordinal)
+					&& !ApplyTextDiff(oldText, text, out appliedDiff)))
+			{
+				_textBoxView?.Extension?.SetText(oldText);
+				_textBoxView?.Extension?.Select(_selection.start, _selection.length);
+				return;
+			}
+
+			var actualText = GetPlainTextContent();
+			if (!string.Equals(actualText, text, StringComparison.Ordinal))
+			{
+				_textBoxView?.Extension?.SetText(actualText);
+				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, appliedDiff);
+				selectionStart = RebaseNativePosition(selectionStart, appliedDiff);
+				selectionLength = selectionEnd - selectionStart;
+			}
+
+			SetInteractiveSelection(selectionStart, selectionLength);
+		}
+
+		private static int RebaseNativePosition(int position, AppliedTextDiff diff)
+		{
+			var nativeEnd = diff.Start + diff.NativeInsertLength;
+			if (position <= diff.Start)
+			{
+				return position;
+			}
+			if (position >= nativeEnd)
+			{
+				return position + diff.AppliedInsertLength - diff.NativeInsertLength;
+			}
+
+			return diff.Start + Math.Min(position - diff.Start, diff.AppliedInsertLength);
+		}
+
+		private readonly record struct AppliedTextDiff(int Start, int NativeInsertLength, int AppliedInsertLength);
+
+		internal void SelectFromNative(int selectionStart, int selectionLength)
+			=> SetInteractiveSelection(selectionStart, selectionLength);
 
 		private void RunWithDeferredSelectionSync(Action action)
 		{
@@ -712,6 +770,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateDisplaySelection();
+			_textBoxView?.Select(start, end - start);
 		}
 
 		private void DocumentUndoInteractive()

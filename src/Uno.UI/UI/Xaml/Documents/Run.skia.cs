@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal TextAlignment? ParagraphAlignment { get; set; }
 
 		internal global::Windows.UI.Color? CharacterBackground { get; set; }
+		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType { get; set; }
 		internal bool IsHidden { get; set; }
 
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
