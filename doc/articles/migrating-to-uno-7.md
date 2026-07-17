@@ -147,6 +147,19 @@ re-baseline visual tests:
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
 
+### Type-hierarchy changes (WinUI parity)
+
+7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
+change only breaks code that used the Uno-only members leaked by the wrong base.
+
+- **`ImageBrush`** now derives from a real **`TileBrush`** (`Brush → TileBrush →
+  ImageBrush`, matching WinUI) instead of directly from `Brush`. `AlignmentX`,
+  `AlignmentY`, and `Stretch` behave the same for callers but are now **declared on
+  `TileBrush`** — code that referenced the static DPs by their declaring type
+  (`ImageBrush.StretchProperty`, `AlignmentXProperty`, `AlignmentYProperty`) still resolves
+  via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
+  (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
