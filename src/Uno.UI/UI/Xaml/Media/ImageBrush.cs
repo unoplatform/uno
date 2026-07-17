@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial class ImageBrush : Brush
+	public partial class ImageBrush : TileBrush
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
@@ -23,39 +23,6 @@ namespace Microsoft.UI.Xaml.Media
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
 #pragma warning restore CS0067 // The event 'ImageBrush.ImageFailed' is never used
-
-		#region AlignmentX DP
-		public static DependencyProperty AlignmentXProperty { get; } =
-			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
-
-		public AlignmentX AlignmentX
-		{
-			get => (AlignmentX)GetValue(AlignmentXProperty);
-			set => this.SetValue(AlignmentXProperty, value);
-		}
-		#endregion
-
-		#region AlignmentY DP
-		public static DependencyProperty AlignmentYProperty { get; } =
-			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
-
-		public AlignmentY AlignmentY
-		{
-			get => (AlignmentY)GetValue(AlignmentYProperty);
-			set => this.SetValue(AlignmentYProperty, value);
-		}
-		#endregion
-
-		#region Stretch DP
-		public static DependencyProperty StretchProperty { get; } =
-		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
-
-		public Stretch Stretch
-		{
-			get => (Stretch)this.GetValue(StretchProperty);
-			set => this.SetValue(StretchProperty, value);
-		}
-		#endregion
 
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
