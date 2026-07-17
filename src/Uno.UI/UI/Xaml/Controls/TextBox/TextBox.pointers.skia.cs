@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class TextBox
 {
 	/// <summary>
-	/// point is null before first press. repeatedPresses is only valid if point.Pointer.PointerDeviceType
-	/// is Mouse.
+	/// point is null before first press. repeatedPresses counts consecutive multi-taps for both Mouse
+	/// (see OnPointerPressedPartial) and Touch (OnPointerPressedPartial / OnGripperTapped).
 	/// </summary>
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown;
 	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
@@ -104,6 +104,12 @@ public partial class TextBox
 			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
+	// Touch taps can't reuse IsMultiTapGesture: successive touch presses get different pointer ids,
+	// so we compare only the timing and distance between the two taps.
+	private static bool IsTouchMultiTap(PointerPoint previous, PointerPoint current)
+		=> current.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds
+			&& !GestureRecognizer.IsOutOfTapRange(previous.Position, current.Position);
+
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		_isPressed = true;
@@ -117,8 +123,12 @@ public partial class TextBox
 		var currentPoint = args.GetCurrentPoint(null);
 		if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
-			// we handle touch on the PointerReleased end
-			_lastPointerDown = (currentPoint, 0);
+			// We handle touch on the PointerReleased end, but count repeated taps here (mirroring the
+			// mouse multi-tap path) so a touch double-tap can select a word on release.
+			var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, currentPoint)
+				? _lastPointerDown.repeatedPresses + 1
+				: 0;
+			_lastPointerDown = (currentPoint, repeatedPresses);
 			// Dismiss the selection flyout on press; the gesture re-shows it (tap) or yields to the context menu (hold).
 			DismissSelectionFlyoutForPointerPress();
 		}
@@ -195,7 +205,16 @@ public partial class TextBox
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
-			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, wasFocused);
+			var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+			if (TouchSelectionConvention != TouchTextSelectionConvention.Windows && _lastPointerDown.repeatedPresses >= 1)
+			{
+				// Native iOS/Android: a double-tap selects the word under the tap.
+				TouchSelectWord(displayBlockPoint);
+			}
+			else
+			{
+				TouchTap(displayBlockPoint, wasFocused);
+			}
 			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
 			// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
 			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position);
@@ -206,23 +225,47 @@ public partial class TextBox
 	{
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
 
-		var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
+		switch (TouchSelectionConvention)
+		{
+			case TouchTextSelectionConvention.Android:
+				// A single tap places the caret with the single insertion handle; tapping inside an
+				// existing selection collapses it to a caret at the tap (native Android).
+				Select(index, 0);
+				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+				break;
+			case TouchTextSelectionConvention.iOS:
+				// A single tap places a bare blinking caret (no handle); tapping inside a selection
+				// collapses it to a caret at the tap (native iOS).
+				Select(index, 0);
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				break;
+			default: // Windows
+				var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
+				var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
+				if (tappedInsideSelection)
+				{
+					CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+				}
+				else if (_selection.length == 0)
+				{
+					Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
+					CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+				}
+				else // outside a selection
+				{
+					Select(tappedChunk.start, 0);
+					CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+				}
+				break;
+		}
+	}
 
-		var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
-		if (tappedInsideSelection)
-		{
-			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-		}
-		else if (_selection.length == 0)
-		{
-			Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
-			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-		}
-		else // outside a selection
-		{
-			Select(tappedChunk.start, 0);
-			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
-		}
+	private void TouchSelectWord(Point point)
+	{
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
+		var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
+		Select(chunk.start, chunk.length); // touch selection doesn't go backwards (no "negative length")
+		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 	}
 
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)

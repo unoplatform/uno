@@ -4752,6 +4752,108 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public Task When_Touch_SingleTap_Places_Caret_Android()
+			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+
+		[TestMethod]
+		public Task When_Touch_SingleTap_Places_Caret_iOS()
+			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.iOS, TextBox.CaretDisplayMode.ThumblessCaretShowing);
+
+		[TestMethod]
+		public Task When_Touch_DoubleTap_Selects_Word_Android()
+			=> AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_DoubleTap_Selects_Word_iOS()
+			=> AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention.iOS);
+
+		[TestMethod]
+		public Task When_Touch_Tap_Collapses_Selection_Android()
+			=> AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Tap_Collapses_Selection_iOS()
+			=> AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
+		private static async Task AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention convention, TextBox.CaretDisplayMode expectedCaret)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText);
+			Assert.AreEqual(expectedCaret, SUT.CaretMode);
+		}
+
+		// Native iOS/Android: a double-tap selects the word under the tap.
+		private static async Task AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Two back-to-back taps (no idle between) fall inside the multi-tap window.
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			finger.Press(center);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText);
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
+		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Some Text", SUT.SelectedText);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap near the left edge, inside the selected text.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText);
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_Touch_Focused_Then_Scrolled_Away()
 		{

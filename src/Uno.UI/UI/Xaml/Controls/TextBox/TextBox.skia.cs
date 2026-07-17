@@ -115,6 +115,15 @@ public partial class TextBox : ITextSelectionGripperHost
 		}
 	}
 
+	// Settable so runtime tests can force a mobile convention on Skia Desktop, where
+	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Windows.
+	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
+
+	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
+		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
+			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+			: TouchTextSelectionConvention.Windows;
+
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
 		nameof(CanUndo),
 		typeof(bool),
@@ -1800,6 +1809,16 @@ public partial class TextBox : ITextSelectionGripperHost
 		ThumblessCaretShowing,
 		CaretWithThumbsOnlyEndShowing,
 		CaretWithThumbsBothEndsShowing
+	}
+
+	// Which platform's native touch text-selection conventions the Skia TextBox follows.
+	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
+	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	internal enum TouchTextSelectionConvention
+	{
+		Windows,
+		Android,
+		iOS
 	}
 
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
