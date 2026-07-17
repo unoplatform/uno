@@ -16,6 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 	// tracked formatting (weight, style, decorations, foreground, size, family).
 	partial class RichEditBox
 	{
+		private const double DipsPerPoint = 96d / 72d;
 		private bool _lastRenderWasRich;
 
 		// Uno-specific: a *uniform* paragraph alignment resolved from the TOM paragraph model and
@@ -59,6 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				RenderRuns(block, text, runs, paragraphRuns, renderParagraphAlignments);
+				_textBoxView.Extension?.SetText(text);
 				_lastRenderWasRich = true;
 			}
 
@@ -244,6 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (format.Underline is not global::Microsoft.UI.Text.UnderlineType.None and not global::Microsoft.UI.Text.UnderlineType.Undefined)
 			{
 				decorations |= global::Windows.UI.Text.TextDecorations.Underline;
+				run.RichEditUnderlineType = format.Underline;
 			}
 
 			if (format.Strikethrough)
@@ -263,15 +266,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (format.Size > 0)
 			{
-				run.FontSize = format.Size;
+				run.FontSize = format.Size * DipsPerPoint;
 			}
 
 			if (format.Spacing != 0)
 			{
-				var fontSize = format.Size > 0 ? format.Size : (float)inheritedFontSize;
-				if (fontSize > 0)
+				var fontSizeInPoints = format.Size > 0 ? format.Size : (float)(inheritedFontSize / DipsPerPoint);
+				if (fontSizeInPoints > 0)
 				{
-					run.CharacterSpacing = (int)Math.Round(format.Spacing / fontSize * 1000, MidpointRounding.AwayFromZero);
+					run.CharacterSpacing = (int)Math.Round(format.Spacing / fontSizeInPoints * 1000, MidpointRounding.AwayFromZero);
 				}
 			}
 

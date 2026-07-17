@@ -237,7 +237,12 @@ namespace Microsoft.UI.Text
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
 			var insertedLength = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf)
-				? _document.ReplaceRangeWithFragment(_start, _end, RichTextRtfCodec.Read(value ?? string.Empty, _document.GetImportCharacterLimit(_start, _end)), this, options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide))
+				? _document.ReplaceRangeWithFragment(
+					_start,
+					_end,
+					string.IsNullOrEmpty(value) ? RichTextFragment.Empty() : RichTextRtfCodec.Read(value, _document.GetImportCharacterLimit(_start, _end)),
+					this,
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide))
 				: _document.ReplaceRange(
 					_start,
 					_end,

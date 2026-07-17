@@ -3,6 +3,7 @@
 using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Media;
@@ -29,6 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private global::Microsoft.UI.Text.RichEditTextDocument? _document;
 		private bool _isInitializing = true;
 		private bool _propertyChangedCallbacksRegistered;
+		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
 
 		/// <summary>
@@ -61,6 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBoxView();
 			InitializeTextBoxViewProperties();
 			RegisterPropertyChangedCallbacks();
+			RegisterPointerPressedHandler();
 
 			UpdateHeaderPresenterVisibility();
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
@@ -116,6 +119,17 @@ namespace Microsoft.UI.Xaml.Controls
 			RegisterPropertyChangedCallback(HeaderTemplateProperty, (s, _) => ((RichEditBox)s).OnHeaderChanged());
 			RegisterPropertyChangedCallback(PlaceholderTextProperty, (s, _) => ((RichEditBox)s).OnPlaceholderTextChanged());
 			RegisterPropertyChangedCallback(DescriptionProperty, (s, _) => ((RichEditBox)s).UpdateDescriptionVisibility(initialization: false));
+		}
+
+		private void RegisterPointerPressedHandler()
+		{
+			if (_pointerPressedHandlerRegistered)
+			{
+				return;
+			}
+
+			_pointerPressedHandlerRegistered = true;
+			AddHandler(PointerPressedEvent, new PointerEventHandler(OnPointerPressedHandledEventsToo), handledEventsToo: true);
 		}
 
 		private void OnHeaderChanged()

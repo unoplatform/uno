@@ -9,8 +9,8 @@ namespace Microsoft.UI.Text
 {
 	public partial class RichEditTextDocument
 	{
-		private const int MaxStreamBytes = 4 * 1024 * 1024;
 		private const int MaxStreamCharacters = 262_144;
+		private const int MaxPlainStreamBytes = MaxStreamCharacters * 4;
 
 		/// <summary>Replaces the document with plain text or RTF read from a random-access stream.</summary>
 		public void LoadFromStream(global::Microsoft.UI.Text.TextSetOptions options, IRandomAccessStream value)
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Text
 			ArgumentNullException.ThrowIfNull(value);
 			var isRtf = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf);
 			var content = isRtf
-				? RichTextRtfCodec.Write(CaptureFragment(0, _plainText.Length, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)), MaxStreamBytes)
+				? RichTextRtfCodec.Write(CaptureFragment(0, _plainText.Length, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)))
 				: GetTextInRange(0, _plainText.Length, options);
 			WriteStreamText(value, content, isRtf);
 		}
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Text
 		{
 			ArgumentNullException.ThrowIfNull(value);
 			var content = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf)
-				? RichTextRtfCodec.Write(CaptureFragment(start, end, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)), MaxStreamBytes)
+				? RichTextRtfCodec.Write(CaptureFragment(start, end, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)))
 				: GetTextInRange(start, end, options);
 			WriteStreamText(value, content, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf));
 		}
@@ -55,7 +55,9 @@ namespace Microsoft.UI.Text
 
 			value.Seek(0);
 			var stream = value.AsStream();
-			if (stream.CanSeek && stream.Length > MaxStreamBytes)
+			var maxBytes = isRtf ? RichTextRtfCodec.MaxRtfInputLength : MaxPlainStreamBytes;
+			var maxCharacters = isRtf ? RichTextRtfCodec.MaxRtfInputLength : MaxStreamCharacters;
+			if (stream.CanSeek && stream.Length > maxBytes)
 			{
 				throw new ArgumentException("The text stream is too large.", nameof(value));
 			}
@@ -72,7 +74,7 @@ namespace Microsoft.UI.Text
 				}
 
 				builder.Append(buffer, 0, read);
-				if (builder.Length > MaxStreamCharacters)
+				if (builder.Length > maxCharacters)
 				{
 					throw new ArgumentException("The text stream is too large.", nameof(value));
 				}
@@ -88,7 +90,9 @@ namespace Microsoft.UI.Text
 				throw new NotSupportedException("The stream is not writable.");
 			}
 
-			if (content.Length > MaxStreamBytes)
+			var encoding = isRtf ? Encoding.ASCII : new UTF8Encoding(false);
+			var maxBytes = isRtf ? RichTextRtfCodec.MaxRtfOutputLength : MaxPlainStreamBytes;
+			if (encoding.GetByteCount(content) > maxBytes)
 			{
 				throw new ArgumentException("The text stream output is too large.", nameof(content));
 			}
@@ -98,7 +102,7 @@ namespace Microsoft.UI.Text
 			var stream = value.AsStream();
 			using var writer = new StreamWriter(
 				stream,
-				isRtf ? Encoding.ASCII : new UTF8Encoding(false),
+				encoding,
 				bufferSize: 4096,
 				leaveOpen: true);
 			writer.Write(content);
