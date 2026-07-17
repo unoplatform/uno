@@ -2679,6 +2679,10 @@
 
 		  <!-- PrimaryLanguageOverride no longer applies the culture in its setter (restart-to-apply, as on WinUI), so the opt-out flag is gone. Accessors paired in <Methods> below. -->
 		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages::UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag; PrimaryLanguageOverride is always restart-to-apply (BC50, breaking changes for 7.0)" />
+
+		  <!-- FadeIn/FadeOutThemeAnimation reparented from DoubleAnimation to Timeline (WinUI parity); the DoubleAnimation-only From/To/By/EasingFunction/EnableDependentAnimation properties (and their DP fields) read as removed. Accessor methods paired in <Methods> below. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.(FadeIn|FadeOut)ThemeAnimation(::|\.)(From|To|By|EasingFunction|EnableDependentAnimation|FromProperty|ToProperty|ByProperty|EasingFunctionProperty|EnableDependentAnimationProperty)\(\)" reason="Reparented *ThemeAnimation from DoubleAnimation to Timeline for WinUI parity; DoubleAnimation-only members removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3252,6 +3256,10 @@
 
 		  <!-- WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride accessors (paired with the <Properties> entry above). -->
 		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages.get_UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag (BC50, breaking changes for 7.0)" />
+
+		  <!-- FadeIn/FadeOutThemeAnimation reparent accessors (paired with the <Properties> entry above): get_/set_ for the removed From/To/By/EasingFunction/EnableDependentAnimation and the get_ DP-field accessors. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.(FadeIn|FadeOut)ThemeAnimation(::|\.)(get_From|set_From|get_To|set_To|get_By|set_By|get_EasingFunction|set_EasingFunction|get_EnableDependentAnimation|set_EnableDependentAnimation|get_FromProperty|get_ToProperty|get_ByProperty|get_EasingFunctionProperty|get_EnableDependentAnimationProperty)\(.*\)" reason="Reparented *ThemeAnimation from DoubleAnimation to Timeline for WinUI parity; DoubleAnimation-only member accessors removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->
