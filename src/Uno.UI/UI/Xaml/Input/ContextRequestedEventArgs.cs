@@ -81,6 +81,12 @@ public partial class ContextRequestedEventArgs : RoutedEventArgs, IHandleableRou
 	}
 
 	/// <summary>
+	/// Whether this context request originated from touch input (a touch-and-hold gesture)
+	/// as opposed to mouse/pen right-click or keyboard. Set internally by ContextMenuProcessor.
+	/// </summary>
+	internal bool IsTouchInput { get; set; }
+
+	/// <summary>
 	/// Sets the global point position. Used internally by ContextMenuProcessor.
 	/// </summary>
 	/// <param name="point">The global point, or (-1, -1) for keyboard invocation.</param>

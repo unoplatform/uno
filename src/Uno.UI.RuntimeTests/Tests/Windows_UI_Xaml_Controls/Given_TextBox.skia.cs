@@ -4854,6 +4854,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public Task When_Touch_LongPress_Selects_Word_Android()
+			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Android, expectWordSelected: true);
+
+		[TestMethod]
+		public Task When_Touch_LongPress_Keeps_ContextMenu_Windows()
+			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Windows, expectWordSelected: false);
+
+		// Native Android: a touch long-press selects the word (and suppresses the context menu).
+		// The Windows convention keeps the default context-menu behavior (no auto word selection).
+		private static async Task AssertTouchLongPress(TextBox.TouchTextSelectionConvention convention, bool expectWordSelected)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// A touch long-press surfaces as a touch-originated ContextRequested (raised by the Holding
+			// gesture in the framework). Raise it directly to exercise the TextBox's handling
+			// deterministically, without depending on the 800ms hold timer.
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(SUT.GetAbsoluteBoundsRect().GetCenter());
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			if (expectWordSelected)
+			{
+				Assert.AreEqual("Text", SUT.SelectedText);
+				Assert.IsTrue(args.Handled); // context menu suppressed
+			}
+			else
+			{
+				Assert.AreEqual("", SUT.SelectedText);
+			}
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_Touch_Focused_Then_Scrolled_Away()
 		{

@@ -77,6 +77,7 @@ internal partial class ContextMenuProcessor
 	{
 		var args = new ContextRequestedEventArgs();
 		args.SetGlobalPoint(point);
+		args.IsTouchInput = isTouchInput;
 
 		if (source is UIElement uiElement)
 		{

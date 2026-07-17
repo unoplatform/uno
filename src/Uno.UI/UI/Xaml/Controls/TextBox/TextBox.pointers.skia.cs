@@ -268,6 +268,26 @@ public partial class TextBox
 		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 	}
 
+	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu:
+	// Android selects the word under the press (the selection toolbar then appears via the selection
+	// flyout). Mouse/pen right-click and the Windows convention keep the default context flyout.
+	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
+	{
+		if (_isSkiaTextBox
+			&& args.IsTouchInput
+			&& TouchSelectionConvention == TouchTextSelectionConvention.Android
+			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
+		{
+			TouchSelectWord(displayBlockPoint);
+			args.TryGetPosition(this, out var textBoxPoint);
+			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
+			args.Handled = true; // suppress the default context flyout
+			return;
+		}
+
+		base.OnContextRequestedImpl(args);
+	}
+
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
 	{
 		_isPressed = false;
