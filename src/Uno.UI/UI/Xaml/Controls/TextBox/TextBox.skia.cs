@@ -1906,8 +1906,26 @@ public partial class TextBox : ITextSelectionGripperHost
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
 		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
-		=> TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
+	{
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
+		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
+			? _lastPointerDown.repeatedPresses + 1
+			: 0;
+		_lastPointerDown = (press, repeatedPresses);
+
+		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		if (TouchSelectionConvention != TouchTextSelectionConvention.Windows && repeatedPresses >= 1)
+		{
+			TouchSelectWord(displayBlockPoint);
+		}
+		else
+		{
+			TouchTap(displayBlockPoint, true);
+		}
+	}
 	#endregion
 
 	/// <summary>

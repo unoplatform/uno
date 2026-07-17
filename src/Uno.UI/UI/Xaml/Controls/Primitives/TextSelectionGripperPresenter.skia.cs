@@ -67,8 +67,12 @@ internal interface ITextSelectionGripperHost
 	/// <summary>A gripper interaction ended: queue a selection-flyout visibility update.</summary>
 	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args);
 
-	/// <summary>The gripper was tapped (not dragged or held): treat it like a tap on the text.</summary>
-	void OnGripperTapped(PointerRoutedEventArgs args);
+	/// <summary>
+	/// The gripper was tapped (not dragged or held): treat it like a tap on the text. <paramref name="press"/>
+	/// is the tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on
+	/// the insertion handle is still the second tap of a double-tap-to-select-word).
+	/// </summary>
+	void OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args);
 }
 
 /// <summary>
@@ -263,7 +267,7 @@ internal sealed class TextSelectionGripperPresenter
 		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
 			args.Handled = true;
-			_host.OnGripperTapped(args);
+			_host.OnGripperTapped(previous, args);
 			_host.QueueGripperSelectionFlyout(args);
 		}
 		else

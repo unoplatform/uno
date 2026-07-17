@@ -4864,6 +4864,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_Android_After_Handle_Shown()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap ON the first word (near the left) so the insertion handle lands over the tapped character.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var point = new Point(bounds.Left + 20, bounds.GetCenter().Y);
+
+			// First tap: Android places a caret with the single insertion handle.
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle(); // let the insertion handle render + position (a real double-tap has this gap)
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "insertion handle should be visible after the first Android tap");
+
+			// Second tap a few px away: still lands on the insertion handle (within its hit-rect) yet within the
+			// multi-tap window, so the double-tap must still select the word instead of being eaten by the handle.
+			finger.Press(new Point(point.X + 4, point.Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Some ", SUT.SelectedText); // word + trailing space, as with the mouse double-click path
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{
