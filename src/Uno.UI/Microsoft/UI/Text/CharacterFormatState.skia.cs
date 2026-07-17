@@ -36,7 +36,7 @@ namespace Microsoft.UI.Text
 		public int Weight = 400;
 		public bool WeightExplicit;
 
-		/// <summary>Font size in pixels; 0 means "inherit from the control".</summary>
+		/// <summary>Font size in points; 0 means "inherit from the control".</summary>
 		public float Size;
 
 		/// <summary>Font family name; null or empty means "inherit from the control".</summary>

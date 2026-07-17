@@ -62,6 +62,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private record struct Line(int start, int end, LinkedListNode<Cluster> clusterStart, LinkedListNode<Cluster> clusterLast, float width, float widthWithoutTrailingSpaces, float lineHeight, float baselineOffset, TextAlignment? textAlignment = null, bool hasEllipsis = false);
+	private readonly record struct TextDecorationDrawInfo(float X1, float X2, float Y, float Thickness, float FontSize, SKColor Color, global::Microsoft.UI.Text.UnderlineType Style);
 
 	private record struct Glyph(GlyphPosition GlyphPosition, uint Codepoint);
 
@@ -121,7 +122,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly SKPaint _spareSelectionPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
-	private static readonly SKPaint _spareTextDecorationPaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareTextDecorationPaint = new() { Style = SKPaintStyle.Fill, StrokeCap = SKStrokeCap.Butt, IsAntialias = true };
 	private static readonly SKPaint _spareInlineObjectPaint = new() { IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -139,7 +140,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)> _runBreaks;
 	private static readonly SKPaint _spareCharacterBackgroundPaint = new() { IsAntialias = true };
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
@@ -167,7 +168,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)>();
+		_runBreaks = new List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -235,14 +236,16 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
 			var characterSpacing = (float)inline.FontSize * inline.CharacterSpacing / 1000;
+			var run = inline as Run;
 			_runBreaks.Add((
 				inlineStart + inlineText.Length,
 				inline.Foreground,
-				(inline as Run)?.CharacterBackground,
+				run?.CharacterBackground,
 				characterSpacing,
-				(inline as Run)?.IsHidden == true,
-				(inline as Run)?.FlowDirection ?? flowDirection,
-				inline.TextDecorations));
+				run?.IsHidden == true,
+				run?.FlowDirection ?? flowDirection,
+				inline.TextDecorations,
+				run?.RichEditUnderlineType));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -848,7 +851,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations)> runBreaks,
+		List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
@@ -976,6 +979,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
+		List<TextDecorationDrawInfo> textDecorations = new();
 		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 		List<(float x1, float x2, float top, float thickness, SKColor color)> textDecorationLines = new();
@@ -1171,7 +1175,13 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			var runDecorations = _runBreaks[runBreakIndex].decorations;
-			if (runDecorations != TextDecorations.None)
+			var underline = _runBreaks[runBreakIndex].underlineType
+				?? ((runDecorations & TextDecorations.Underline) != 0
+					? global::Microsoft.UI.Text.UnderlineType.Single
+					: global::Microsoft.UI.Text.UnderlineType.None);
+			var hasUnderline = underline is not global::Microsoft.UI.Text.UnderlineType.None and not global::Microsoft.UI.Text.UnderlineType.Undefined
+				&& (underline != global::Microsoft.UI.Text.UnderlineType.Words || !cluster.Value.containsOnlyWhitespace);
+			if (!cluster.Value.hidden && (runDecorations != TextDecorations.None || hasUnderline))
 			{
 				// Underline/strikethrough are filled rects whose top edge sits at baseline + the font's
 				// decoration position and whose height is the font's decoration thickness, matching
@@ -1183,16 +1193,19 @@ internal readonly partial struct UnicodeText : IParsedText
 				// WinUI/DWrite do not decorate collapsed line-trailing whitespace, so clamp the line to the
 				// visible content extent (widthWithoutTrailingSpaces, the same width the alignment uses).
 				// Trailing whitespace is on the right for LTR and on the left for RTL.
+				var decorationWidth = _runBreaks[runBreakIndex].underlineType.HasValue
+					? line.width
+					: line.widthWithoutTrailingSpaces;
 				float contentLeftX, contentRightX;
 				if (_rtl)
 				{
 					contentRightX = alignmentOffset + line.width;
-					contentLeftX = contentRightX - line.widthWithoutTrailingSpaces;
+					contentLeftX = contentRightX - decorationWidth;
 				}
 				else
 				{
 					contentLeftX = alignmentOffset;
-					contentRightX = contentLeftX + line.widthWithoutTrailingSpaces;
+					contentRightX = contentLeftX + decorationWidth;
 				}
 
 				var decorationLeftX = Math.Max(unalignedX + alignmentOffset, contentLeftX);
@@ -1211,7 +1224,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var decorationMetrics = fontDetails.SKFontMetrics;
 					var fallbackThickness = Math.Max(1f, fontDetails.SKFontSize * FallbackDecorationThicknessRatio);
 
-					if ((runDecorations & TextDecorations.Underline) != 0)
+					if (hasUnderline && underline is global::Microsoft.UI.Text.UnderlineType.Single or global::Microsoft.UI.Text.UnderlineType.Words)
 					{
 						AddDecoration(
 							textDecorationLines,
@@ -1220,6 +1233,17 @@ internal readonly partial struct UnicodeText : IParsedText
 							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.SKFontSize * FallbackUnderlinePositionRatio),
 							decorationMetrics.UnderlineThickness ?? fallbackThickness,
 							decorationColor);
+					}
+					else if (hasUnderline)
+					{
+						textDecorations.Add(new TextDecorationDrawInfo(
+							decorationLeftX,
+							decorationRightX,
+							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.SKFontSize * FallbackUnderlinePositionRatio),
+							decorationMetrics.UnderlineThickness ?? fallbackThickness,
+							fontDetails.SKFontSize,
+							decorationColor,
+							underline));
 					}
 
 					if ((runDecorations & TextDecorations.Strikethrough) != 0)
@@ -1256,6 +1280,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		// WinUI renders the decoration lines before the glyphs (D2DTextDrawingContext::HWRender calls
 		// HWRenderLines then HWRenderGlyphTextures), so a decoration never covers the text it belongs to.
+		DrawTextDecorations(session.Canvas, textDecorations);
+		_spareTextDecorationPaint.Style = SKPaintStyle.Fill;
 		foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
 		{
 			_spareTextDecorationPaint.Color = color;
@@ -1340,6 +1366,110 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		decorations.Add((x1, x2, top, thickness, color));
 	}
+
+	private static void DrawTextDecorations(SKCanvas canvas, List<TextDecorationDrawInfo> decorations)
+	{
+		_spareTextDecorationPaint.Style = SKPaintStyle.Stroke;
+		foreach (var decoration in decorations)
+		{
+			var thickness = Math.Max(0.5f, decoration.Thickness);
+			if (IsThickUnderline(decoration.Style))
+			{
+				thickness = Math.Max(2, thickness * 2);
+			}
+			else if (decoration.Style == global::Microsoft.UI.Text.UnderlineType.Thin)
+			{
+				thickness = Math.Max(0.5f, thickness / 2);
+			}
+
+			_spareTextDecorationPaint.Color = decoration.Color;
+			_spareTextDecorationPaint.StrokeWidth = thickness;
+			_spareTextDecorationPaint.StrokeCap = SKStrokeCap.Butt;
+			_spareTextDecorationPaint.PathEffect = null;
+			switch (decoration.Style)
+			{
+				case global::Microsoft.UI.Text.UnderlineType.Double:
+					var separation = Math.Max(1, thickness * 1.5f);
+					canvas.DrawLine(decoration.X1, decoration.Y - separation / 2, decoration.X2, decoration.Y - separation / 2, _spareTextDecorationPaint);
+					canvas.DrawLine(decoration.X1, decoration.Y + separation / 2, decoration.X2, decoration.Y + separation / 2, _spareTextDecorationPaint);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.Wave:
+				case global::Microsoft.UI.Text.UnderlineType.HeavyWave:
+					DrawWave(canvas, decoration, thickness, 0);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.DoubleWave:
+					DrawWave(canvas, decoration, thickness, -Math.Max(1, thickness));
+					DrawWave(canvas, decoration, thickness, Math.Max(1, thickness));
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.Dotted:
+				case global::Microsoft.UI.Text.UnderlineType.ThickDotted:
+					DrawDashedLine(canvas, decoration, thickness, [thickness, thickness * 2], SKStrokeCap.Round);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.Dash:
+				case global::Microsoft.UI.Text.UnderlineType.ThickDash:
+					DrawDashedLine(canvas, decoration, thickness, [thickness * 4, thickness * 2], SKStrokeCap.Butt);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.DashDot:
+				case global::Microsoft.UI.Text.UnderlineType.ThickDashDot:
+					DrawDashedLine(canvas, decoration, thickness, [thickness * 4, thickness * 2, thickness, thickness * 2], SKStrokeCap.Butt);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.DashDotDot:
+				case global::Microsoft.UI.Text.UnderlineType.ThickDashDotDot:
+					DrawDashedLine(canvas, decoration, thickness, [thickness * 4, thickness * 2, thickness, thickness * 2, thickness, thickness * 2], SKStrokeCap.Butt);
+					break;
+				case global::Microsoft.UI.Text.UnderlineType.LongDash:
+				case global::Microsoft.UI.Text.UnderlineType.ThickLongDash:
+					DrawDashedLine(canvas, decoration, thickness, [thickness * 8, thickness * 3], SKStrokeCap.Butt);
+					break;
+				default:
+					canvas.DrawLine(decoration.X1, decoration.Y, decoration.X2, decoration.Y, _spareTextDecorationPaint);
+					break;
+			}
+		}
+
+		_spareTextDecorationPaint.PathEffect = null;
+		_spareTextDecorationPaint.StrokeCap = SKStrokeCap.Butt;
+		_spareTextDecorationPaint.Style = SKPaintStyle.Fill;
+	}
+
+	private static void DrawDashedLine(SKCanvas canvas, TextDecorationDrawInfo decoration, float thickness, float[] intervals, SKStrokeCap cap)
+	{
+		using var pathEffect = SKPathEffect.CreateDash(intervals, 0);
+		_spareTextDecorationPaint.StrokeWidth = thickness;
+		_spareTextDecorationPaint.StrokeCap = cap;
+		_spareTextDecorationPaint.PathEffect = pathEffect;
+		canvas.DrawLine(decoration.X1, decoration.Y, decoration.X2, decoration.Y, _spareTextDecorationPaint);
+		_spareTextDecorationPaint.PathEffect = null;
+	}
+
+	private static void DrawWave(SKCanvas canvas, TextDecorationDrawInfo decoration, float thickness, float yOffset)
+	{
+		var amplitude = Math.Max(1, decoration.FontSize / 12);
+		var step = amplitude * 2;
+		using var path = new SKPath();
+		path.MoveTo(decoration.X1, decoration.Y + yOffset);
+		var x = decoration.X1;
+		var up = true;
+		var segments = 0;
+		while (x + step < decoration.X2 && segments++ < 4096)
+		{
+			x += step;
+			path.LineTo(x, decoration.Y + yOffset + (up ? -amplitude : amplitude));
+			up = !up;
+		}
+		path.LineTo(decoration.X2, decoration.Y + yOffset);
+		_spareTextDecorationPaint.StrokeWidth = thickness;
+		canvas.DrawPath(path, _spareTextDecorationPaint);
+	}
+
+	private static bool IsThickUnderline(global::Microsoft.UI.Text.UnderlineType style)
+		=> style is global::Microsoft.UI.Text.UnderlineType.Thick
+			or global::Microsoft.UI.Text.UnderlineType.HeavyWave
+			or global::Microsoft.UI.Text.UnderlineType.ThickDash
+			or global::Microsoft.UI.Text.UnderlineType.ThickDashDot
+			or global::Microsoft.UI.Text.UnderlineType.ThickDashDotDot
+			or global::Microsoft.UI.Text.UnderlineType.ThickDotted
+			or global::Microsoft.UI.Text.UnderlineType.ThickLongDash;
 
 	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
 	{
