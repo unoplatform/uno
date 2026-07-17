@@ -71,7 +71,7 @@ By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **Sk
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+   <SkiaSharpVersion>4.151.0-rc.1.1</SkiaSharpVersion>
 </PropertyGroup>
 ```
 
@@ -80,7 +80,7 @@ By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **Sk
 
 ### SkiaSharp 4
 
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
+SkiaSharp 4.0 reached general availability as `4.151.0-rc.1.1`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
 
 ### Pinning packages individually
 
@@ -88,9 +88,9 @@ If you need to control individual packages instead of using the `SkiaSharpVersio
 
 ```xml
 <ItemGroup>
-   <PackageReference Update="SkiaSharp" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
+   <PackageReference Update="SkiaSharp" Version="4.151.0-rc.1.1" />
+   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.151.0-rc.1.1" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.151.0-rc.1.1" />
    <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
 </ItemGroup>
 ```

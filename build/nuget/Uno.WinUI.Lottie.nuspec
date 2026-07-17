@@ -32,25 +32,25 @@
 			</group>
 
 			<group targetFramework="net10.0-android">
-				<dependency id="SkiaSharp.Skottie" version="4.148.0" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.android" version="4.148.0" />
+				<dependency id="SkiaSharp.Skottie" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 			<group targetFramework="net10.0-ios26.0">
-				<dependency id="SkiaSharp.Skottie" version="4.148.0" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.ios" version="4.148.0" />
+				<dependency id="SkiaSharp.Skottie" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.ios" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
 			<group targetFramework="net10.0-tvos26.0">
-				<dependency id="SkiaSharp.Skottie" version="4.148.0" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.148.0" />
+				<dependency id="SkiaSharp.Skottie" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
