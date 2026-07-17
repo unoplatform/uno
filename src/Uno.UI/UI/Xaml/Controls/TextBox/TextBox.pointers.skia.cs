@@ -280,9 +280,24 @@ public partial class TextBox
 
 	private void TouchSelectWord(Point point)
 	{
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
-		var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
-		Select(chunk.start, chunk.length); // touch selection doesn't go backwards (no "negative length")
+		var displayBlock = TextBoxView.DisplayBlock;
+		var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
+		var chunk = displayBlock.ParsedText.GetWordAt(index, true);
+
+		// GetWordAt bundles the trailing space into the word chunk; native iOS/Android select just the word,
+		// so trim it off (but keep a whitespace-only chunk intact).
+		var text = displayBlock.Text;
+		var length = chunk.length;
+		while (length > 0 && text[chunk.start + length - 1] == ' ')
+		{
+			length--;
+		}
+		if (length == 0)
+		{
+			length = chunk.length;
+		}
+
+		Select(chunk.start, length); // touch selection doesn't go backwards (no "negative length")
 		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 	}
 

@@ -4896,7 +4896,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Some ", SUT.SelectedText); // word + trailing space, as with the mouse double-click path
+			Assert.AreEqual("Some", SUT.SelectedText); // native Android selects just the word, not the trailing space
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
