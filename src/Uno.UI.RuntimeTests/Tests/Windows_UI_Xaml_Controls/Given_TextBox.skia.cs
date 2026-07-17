@@ -4769,16 +4769,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bounds = SUT.GetAbsoluteBoundsRect();
 			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
 			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "first tap should select the word and show both thumbs");
 			var lengthBeforeDrag = SUT.SelectionLength;
 
-			var grippers = SUT.VisibleGrippersForTesting;
-			Assert.IsNotNull(grippers, "expected the selection grippers to be visible after selecting a word");
+			// The gripper popups are (re)positioned asynchronously on a later frame, so GetAbsoluteBoundsRect
+			// is stale right after selecting. Wait until the end gripper is actually placed over the control
+			// before pressing it, otherwise the press can miss and the drag becomes a no-op (test flake).
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "end gripper should be positioned over the TextBox before dragging it");
 
 			// Drag the end gripper to the right to extend the selection, spanning >800ms press-to-release
 			// (a deliberate readjust naturally exceeds the hold threshold).
-			var endGripperCenter = grippers.Value.end.GetAbsoluteBoundsRect().GetCenter();
+			var endGripperCenter = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().GetCenter();
 			finger.Press(endGripperCenter);
 			finger.MoveBy(60, 0, stepOffsetInMilliseconds: 100); // spans >800ms, past the hold threshold, so a bug would open the context menu
 			finger.Release();
