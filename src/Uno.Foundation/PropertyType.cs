@@ -1,5 +1,8 @@
 ﻿namespace Windows.Foundation;
 
+/// <summary>
+/// lol nothing to see here
+/// </summary>
 public enum PropertyType
 {
 	Empty,
