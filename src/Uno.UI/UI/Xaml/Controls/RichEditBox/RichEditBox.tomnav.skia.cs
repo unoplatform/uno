@@ -33,11 +33,8 @@ namespace Microsoft.UI.Xaml.Controls
 			lineStart = line.start;
 			lineEnd = line.start + line.length;
 
-			// A newline belongs to the line before it, but the line's logical end stops before the \r.
-			if (line.length > 0 && lineEnd > 0 && lineEnd <= text.Length && text[lineEnd - 1] == '\r')
-			{
-				lineEnd--;
-			}
+			// A hard break belongs to the visual line before it, but EndOf(Line) stops before it.
+			lineEnd -= global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthEndingAt(text, lineEnd);
 
 			lineIndex = line.lineIndex;
 			isLast = line.lastLine;

@@ -13,7 +13,7 @@ namespace Microsoft.UI.Text
 	// indivisible. A "word" is a run of letters/digits (or a run of other non-space, non-break text
 	// elements) plus its trailing spaces, while \r, \n, \t and \r\n are each their own chunk. Sentence
 	// chunks end at ., ? or ! followed by ASCII whitespace/end-of-story, and include trailing whitespace.
-	// Paragraph chunks split on \r, \n and \r\n, and each paragraph includes its trailing break.
+	// Paragraph chunks split on \r, \n, \r\n and U+2029, and each paragraph includes its trailing break.
 	//
 	// TODO Uno: Line/Screen/Window units are geometry-based and are handled by the control against the
 	// shared DisplayBlock layout, not here. Section units are not yet supported.
@@ -174,7 +174,7 @@ namespace Microsoft.UI.Text
 						break;
 					}
 
-					if (text[i] is '\r' or '\n')
+					if (text[i] is '\r' or '\n' or '\u2029')
 					{
 						i++;
 						break;
@@ -187,6 +187,100 @@ namespace Microsoft.UI.Text
 			}
 
 			return chunks;
+		}
+
+		internal static List<(int start, int length)> GetParagraphChunksIncludingFinal(string text)
+		{
+			var chunks = GetParagraphChunks(text);
+			if (text.Length == 0 || EndsInParagraphBreak(text))
+			{
+				chunks.Add((text.Length, 0));
+			}
+
+			return chunks;
+		}
+
+		internal static bool IsParagraphBreakAt(string text, int indexAfterBreak)
+		{
+			if (indexAfterBreak <= 0 || indexAfterBreak > text.Length)
+			{
+				return false;
+			}
+
+			var value = text[indexAfterBreak - 1];
+			if (value == '\r' && indexAfterBreak < text.Length && text[indexAfterBreak] == '\n')
+			{
+				return false;
+			}
+
+			return value is '\r' or '\n' or '\u2029';
+		}
+
+		internal static bool EndsInParagraphBreak(string text)
+			=> IsParagraphBreakAt(text, text.Length);
+
+		internal static bool IsParagraphStart(string text, int position)
+			=> position == 0 || IsParagraphBreakAt(text, position);
+
+		internal static int GetHardLineBreakLengthEndingAt(string text, int end)
+		{
+			if (end <= 0 || end > text.Length)
+			{
+				return 0;
+			}
+
+			if (end >= 2 && text[end - 2] == '\r' && text[end - 1] == '\n')
+			{
+				return 2;
+			}
+
+			var value = text[end - 1];
+			if (value == '\r' && end < text.Length && text[end] == '\n')
+			{
+				return 0;
+			}
+
+			return value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
+		}
+
+		internal static int GetHardLineBreakLengthAt(string text, int start)
+		{
+			if (start < 0 || start >= text.Length)
+			{
+				return 0;
+			}
+
+			if (text[start] == '\r' && start + 1 < text.Length && text[start + 1] == '\n')
+			{
+				return 2;
+			}
+
+			return text[start] is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
+		}
+
+		internal static bool IsHardLineBreakAt(string text, int indexAfterBreak)
+			=> GetHardLineBreakLengthEndingAt(text, indexAfterBreak) != 0;
+
+		internal static (int start, int length) GetLogicalLineChunk(string text, int position)
+		{
+			position = Math.Clamp(position, 0, text.Length);
+			var start = 0;
+			for (var end = 1; end <= text.Length; end++)
+			{
+				if (!IsHardLineBreakAt(text, end))
+				{
+					continue;
+				}
+
+				if (position < end)
+				{
+					return (start, end - start);
+				}
+
+				start = end;
+			}
+
+			return (start, text.Length - start);
 		}
 
 		internal static List<(int start, int length)> GetSentenceChunks(string text)

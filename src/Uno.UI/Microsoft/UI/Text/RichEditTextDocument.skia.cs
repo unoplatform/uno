@@ -18,9 +18,9 @@ namespace Microsoft.UI.Text
 	// (CanUndo/CanRedo/Undo/Redo/UndoLimit) with grouping (BeginUndoGroup/EndUndoGroup), and display
 	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
 	//
-	// Standard RTF transport, stream load/save, links, inline images, and MathML interchange are
-	// supported. Full OpenType math layout, advanced RTF destinations, and visual projection of
-	// non-alignment paragraph properties remain.
+	// Standard RTF transport, stream load/save, links, inline images, MathML interchange, and visual
+	// paragraph projection are supported. Full OpenType math layout and advanced RTF destinations
+	// remain outside this managed implementation.
 	public partial class RichEditTextDocument
 	{
 		private readonly RichEditBox _owner;
@@ -57,7 +57,12 @@ namespace Microsoft.UI.Text
 
 		// A point-in-time copy of the document used for undo/redo: the plain text plus deep clones of
 		// the character-formatting runs and paragraph-formatting runs.
-		private sealed record Snapshot(string Text, List<FormatRun> Runs, List<ParagraphRun> ParagraphRuns, string? MathML);
+		private sealed record Snapshot(
+			string Text,
+			List<FormatRun> Runs,
+			List<ParagraphRun> ParagraphRuns,
+			ParagraphFormatState TerminalParagraphFormat,
+			string? MathML);
 
 		// Exact text-coordinate mutation: remove RemoveLength characters at Start, then insert
 		// InsertLength characters. History entries store the ordered edits that transform the current
@@ -159,7 +164,7 @@ namespace Microsoft.UI.Text
 					SyncRunsToLength(text.Length);
 					SyncParagraphRunsToLength(text.Length);
 					SpliceRuns(start, end - start, insert.Length, sourceRange?.UsesForwardCharacterFormatting == true, unlink, unhide);
-					SpliceParagraphRuns(start, end - start, insert.Length);
+					SpliceParagraphRuns(text, start, end - start, insert.Length);
 					_plainText = string.Concat(text.AsSpan(0, start), insert.AsSpan(), text.AsSpan(end));
 					NormalizeParagraphRuns();
 					_mathML = null;
@@ -209,7 +214,28 @@ namespace Microsoft.UI.Text
 			return new RichTextFragment(
 				_plainText.Substring(start, end - start),
 				CloneCharacterStates(characterStates, start, end),
-				CloneParagraphStates(paragraphStates, start, end));
+				CloneParagraphStates(paragraphStates, start, end),
+				GetTerminalParagraphForFragment(start, end, paragraphStates));
+		}
+
+		private ParagraphFormatState GetTerminalParagraphForFragment(
+			int start,
+			int end,
+			List<ParagraphFormatState> paragraphStates)
+		{
+			if (end == _plainText.Length)
+			{
+				return _terminalParagraphFormat.Clone();
+			}
+
+			if (end > start && paragraphStates.Count > 0)
+			{
+				return paragraphStates[end - 1].Clone();
+			}
+
+			return end < paragraphStates.Count
+				? paragraphStates[end].Clone()
+				: _terminalParagraphFormat.Clone();
 		}
 
 		internal RichTextFragment CaptureFragment(int start, int end, bool noHidden)
@@ -235,7 +261,12 @@ namespace Microsoft.UI.Text
 				paragraphStates.Add(i < fragment.ParagraphStates.Count ? fragment.ParagraphStates[i].Clone() : DefaultParagraphState());
 			}
 
-			return new RichTextFragment(text.ToString(), characterStates, paragraphStates);
+			return new RichTextFragment(
+				text.ToString(),
+				characterStates,
+				paragraphStates,
+				fragment.TerminalParagraphState.Clone(),
+				fragment.HasExplicitTerminalParagraphState);
 		}
 
 		internal int ReplaceRangeWithFragment(int start, int end, RichTextFragment fragment, UnoTextRange? sourceRange, bool unhide = false)
@@ -277,9 +308,13 @@ namespace Microsoft.UI.Text
 					var characterBasis = start > 0
 						? oldCharacterStates[start - 1]
 						: (originalLength > 0 ? oldCharacterStates[0] : DefaultFormatState());
-					var paragraphBasis = start > 0
-						? oldParagraphStates[start - 1]
-						: (originalLength > 0 ? oldParagraphStates[0] : DefaultParagraphState());
+					var paragraphBasis = start < originalLength && TextUnitNavigation.IsParagraphStart(_plainText, start)
+						? oldParagraphStates[start]
+						: start == originalLength
+							? _terminalParagraphFormat
+							: start > 0
+								? oldParagraphStates[start - 1]
+								: (originalLength > 0 ? oldParagraphStates[0] : _terminalParagraphFormat);
 					for (var i = 0; i < insertedLength; i++)
 					{
 						var character = i < fragment.CharacterStates.Count
@@ -304,6 +339,14 @@ namespace Microsoft.UI.Text
 					_plainText = string.Concat(_plainText.AsSpan(0, start), insert.AsSpan(), _plainText.AsSpan(end));
 					_runs = BuildRunsFromStates(characterStates);
 					_paragraphRuns = BuildParagraphRunsFromStates(paragraphStates);
+					if (end == originalLength)
+					{
+						_terminalParagraphFormat = insertedLength == fragment.Text.Length && fragment.HasExplicitTerminalParagraphState
+							? fragment.TerminalParagraphState.Clone()
+							: insertedLength > 0
+								? paragraphStates[^1].Clone()
+								: paragraphBasis.Clone();
+					}
 					NormalizeParagraphRuns();
 					_mathML = null;
 				}, () =>
@@ -391,6 +434,9 @@ namespace Microsoft.UI.Text
 				_plainText = text;
 				_runs = BuildRunsFromStates(characterStates);
 				_paragraphRuns = BuildParagraphRunsFromStates(paragraphStates);
+				_terminalParagraphFormat = text.Length == fragment.Text.Length && fragment.HasExplicitTerminalParagraphState
+					? fragment.TerminalParagraphState.Clone()
+					: paragraphStates.Count > 0 ? paragraphStates[^1].Clone() : DefaultParagraphState();
 				_mathML = mathML;
 				RebaseRanges(0, oldLength, text.Length, sourceRange: null);
 				selection.SetRangeInternal(0, 0);
@@ -521,7 +567,8 @@ namespace Microsoft.UI.Text
 			mutate();
 			var textChanged = !string.Equals(_plainText, before.Text, StringComparison.Ordinal);
 			var runsChanged = !RunsEqual(_runs, before.Runs);
-			var paragraphRunsChanged = !ParagraphRunsEqual(_paragraphRuns, before.ParagraphRuns);
+			var paragraphRunsChanged = !ParagraphRunsEqual(_paragraphRuns, before.ParagraphRuns)
+				|| !_terminalParagraphFormat.Equals(before.TerminalParagraphFormat);
 			if (!textChanged
 				&& (runsChanged || paragraphRunsChanged)
 				&& string.Equals(_mathML, before.MathML, StringComparison.Ordinal))
@@ -580,7 +627,8 @@ namespace Microsoft.UI.Text
 			_owner.OnDocumentTextChanged(isContentChanging);
 		}
 
-		private Snapshot CaptureSnapshot() => new(_plainText, CloneRuns(_runs), CloneParagraphRuns(_paragraphRuns), _mathML);
+		private Snapshot CaptureSnapshot()
+			=> new(_plainText, CloneRuns(_runs), CloneParagraphRuns(_paragraphRuns), _terminalParagraphFormat.Clone(), _mathML);
 
 		private HistoryEntry RestoreHistoryEntry(HistoryEntry entry)
 		{
@@ -596,6 +644,7 @@ namespace Microsoft.UI.Text
 			_plainText = entry.Target.Text;
 			_runs = CloneRuns(entry.Target.Runs);
 			_paragraphRuns = CloneParagraphRuns(entry.Target.ParagraphRuns);
+			_terminalParagraphFormat = entry.Target.TerminalParagraphFormat.Clone();
 			_mathML = entry.Target.MathML;
 			return new HistoryEntry(current, InvertTextEdits(entry.RebaseEdits));
 		}
@@ -647,6 +696,7 @@ namespace Microsoft.UI.Text
 			{
 				cost += 128 + run.Format.Tabs.Count * 16;
 			}
+			cost += 128 + snapshot.TerminalParagraphFormat.Tabs.Count * 16;
 
 			return cost;
 		}
@@ -949,6 +999,7 @@ namespace Microsoft.UI.Text
 			if (string.Equals(_plainText, groupStart.Text, StringComparison.Ordinal)
 				&& RunsEqual(_runs, groupStart.Runs)
 				&& ParagraphRunsEqual(_paragraphRuns, groupStart.ParagraphRuns)
+				&& _terminalParagraphFormat.Equals(groupStart.TerminalParagraphFormat)
 				&& string.Equals(_mathML, groupStart.MathML, StringComparison.Ordinal))
 			{
 				// The group made no net change; nothing to record.
