@@ -106,6 +106,11 @@ namespace Microsoft.UI.Text
 				builder.Append("}}");
 			}
 
+			if (previousParagraph is null || !previousParagraph.Equals(fragment.TerminalParagraphState))
+			{
+				AppendParagraphControls(builder, fragment.TerminalParagraphState);
+			}
+
 			builder.Append('}');
 			return builder.ToString();
 		}
@@ -121,6 +126,7 @@ namespace Microsoft.UI.Text
 
 			var (fonts, defaultFontName) = ParseFonts(rtf);
 			maxCharacters = Math.Clamp(maxCharacters, 0, MaxParsedCharacters);
+			var budget = new ParseBudget(maxCharacters);
 			var colors = ParseColors(rtf);
 			var text = new StringBuilder();
 			var characterStates = new List<CharacterFormatState>();
@@ -134,6 +140,7 @@ namespace Microsoft.UI.Text
 				}),
 			};
 			var unicodeFallback = 0;
+			var terminalParagraph = new ParagraphFormatState();
 			var imageCount = 0;
 			var imageBytes = 0;
 			long imagePixels = 0;
@@ -159,6 +166,11 @@ namespace Microsoft.UI.Text
 						throw new ArgumentException("The RTF contains an unmatched closing group.", nameof(rtf));
 					}
 
+					if (stack.Count == 2)
+					{
+						terminalParagraph = stack[stack.Count - 1].State.Paragraph.Clone();
+					}
+
 					CloseFrame(
 						stack,
 						text,
@@ -167,13 +179,13 @@ namespace Microsoft.UI.Text
 						ref imageCount,
 						ref imageBytes,
 						ref imagePixels,
-						maxCharacters);
+						budget);
 					continue;
 				}
 
 				if (value == '\\')
 				{
-					ParseControl(rtf, ref i, stack, fonts, colors, text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters);
+					ParseControl(rtf, ref i, stack, fonts, colors, text, characterStates, paragraphStates, ref unicodeFallback, budget);
 					continue;
 				}
 
@@ -182,7 +194,7 @@ namespace Microsoft.UI.Text
 					continue;
 				}
 
-				AppendParsedCharacter(value, stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters: maxCharacters);
+				AppendParsedCharacter(value, stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, budget: budget);
 			}
 
 			if (stack.Count != 1)
@@ -190,7 +202,12 @@ namespace Microsoft.UI.Text
 				throw new ArgumentException("The RTF contains an unterminated group.", nameof(rtf));
 			}
 
-			return new RichTextFragment(text.ToString(), characterStates, paragraphStates);
+			return new RichTextFragment(
+				text.ToString(),
+				characterStates,
+				paragraphStates,
+				terminalParagraph,
+				!budget.WasTruncated);
 		}
 
 		private static Dictionary<string, int> CollectFonts(List<CharacterFormatState> states)
@@ -887,7 +904,7 @@ namespace Microsoft.UI.Text
 			ref int imageCount,
 			ref int imageBytes,
 			ref long imagePixels,
-			int maxCharacters)
+			ParseBudget budget)
 		{
 			var closed = stack[stack.Count - 1];
 			stack.RemoveAt(stack.Count - 1);
@@ -927,7 +944,7 @@ namespace Microsoft.UI.Text
 						stack[stack.Count - 1].PendingInlineImage = null;
 					}
 					ValidateParsedImageBudget(picture, ref imageCount, ref imageBytes, ref imagePixels);
-					if (!CanAppendParsedCharacter(text, maxCharacters))
+					if (!budget.CanAppend(text))
 					{
 						return;
 					}
@@ -1153,6 +1170,38 @@ namespace Microsoft.UI.Text
 				return false;
 			}
 
+			var parsedAlignment = (global::Microsoft.UI.Text.ParagraphAlignment)alignment;
+			var parsedLineSpacingRule = (global::Microsoft.UI.Text.LineSpacingRule)lineSpacingRule;
+			var parsedListType = (global::Microsoft.UI.Text.MarkerType)listType;
+			var parsedListStyle = (global::Microsoft.UI.Text.MarkerStyle)listStyle;
+			var parsedListAlignment = (global::Microsoft.UI.Text.MarkerAlignment)listAlignment;
+			var parsedStyle = (global::Microsoft.UI.Text.ParagraphStyle)style;
+			if (!float.IsFinite(firstLineIndent)
+				|| !float.IsFinite(leftIndent)
+				|| !float.IsFinite(rightIndent)
+				|| !float.IsFinite(spaceBefore)
+				|| !float.IsFinite(spaceAfter)
+				|| !float.IsFinite(lineSpacing)
+				|| !float.IsFinite(listTab)
+				|| listLevelIndex < 0
+				|| listTab < 0
+				|| !Enum.IsDefined(parsedAlignment)
+				|| !Enum.IsDefined(parsedLineSpacingRule)
+				|| parsedLineSpacingRule == global::Microsoft.UI.Text.LineSpacingRule.Percent
+				|| !Enum.IsDefined(parsedListType)
+				|| !Enum.IsDefined(parsedListStyle)
+				|| !Enum.IsDefined(parsedListAlignment)
+				|| !Enum.IsDefined(parsedStyle)
+				|| fields[14] is not ("0" or "1")
+				|| fields[15] is not ("0" or "1")
+				|| fields[16] is not ("0" or "1")
+				|| fields[17] is not ("0" or "1")
+				|| fields[18] is not ("0" or "1")
+				|| fields[19] is not ("0" or "1"))
+			{
+				return false;
+			}
+
 			List<ParagraphTab> tabs;
 			try
 			{
@@ -1165,17 +1214,17 @@ namespace Microsoft.UI.Text
 
 			try
 			{
-				state.Alignment = (global::Microsoft.UI.Text.ParagraphAlignment)alignment;
+				state.Alignment = parsedAlignment;
 				state.FirstLineIndent = firstLineIndent;
 				state.LeftIndent = leftIndent;
 				state.RightIndent = rightIndent;
 				state.SpaceBefore = spaceBefore;
 				state.SpaceAfter = spaceAfter;
-				state.LineSpacingRule = (global::Microsoft.UI.Text.LineSpacingRule)lineSpacingRule;
+				state.LineSpacingRule = parsedLineSpacingRule;
 				state.LineSpacing = lineSpacing;
-				state.ListType = (global::Microsoft.UI.Text.MarkerType)listType;
-				state.ListStyle = (global::Microsoft.UI.Text.MarkerStyle)listStyle;
-				state.ListAlignment = (global::Microsoft.UI.Text.MarkerAlignment)listAlignment;
+				state.ListType = parsedListType;
+				state.ListStyle = parsedListStyle;
+				state.ListAlignment = parsedListAlignment;
 				state.ListLevelIndex = listLevelIndex;
 				state.ListStart = listStart;
 				state.ListTab = listTab;
@@ -1185,11 +1234,11 @@ namespace Microsoft.UI.Text
 				state.PageBreakBefore = fields[17] == "1";
 				state.RightToLeft = fields[18] == "1";
 				state.WidowControl = fields[19] == "1";
-				state.Style = (global::Microsoft.UI.Text.ParagraphStyle)style;
+				state.Style = parsedStyle;
 				state.SetTabs(tabs);
 				return true;
 			}
-			catch (FormatException)
+			catch (Exception error) when (error is FormatException or ArgumentException)
 			{
 				return false;
 			}
@@ -1272,7 +1321,7 @@ namespace Microsoft.UI.Text
 			List<CharacterFormatState> characterStates,
 			List<ParagraphFormatState> paragraphStates,
 			ref int unicodeFallback,
-			int maxCharacters)
+			ParseBudget budget)
 		{
 			if (++index >= rtf.Length)
 			{
@@ -1282,7 +1331,7 @@ namespace Microsoft.UI.Text
 			var symbol = rtf[index];
 			if (symbol is '\\' or '{' or '}')
 			{
-				AppendParsedCharacter(symbol, stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters: maxCharacters);
+				AppendParsedCharacter(symbol, stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, budget: budget);
 				return;
 			}
 
@@ -1291,7 +1340,7 @@ namespace Microsoft.UI.Text
 				if (index + 2 < rtf.Length && byte.TryParse(rtf.Substring(index + 1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var encoded))
 				{
 					index += 2;
-					AppendParsedCharacter(DecodeWindows1252(encoded), stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters: maxCharacters);
+					AppendParsedCharacter(DecodeWindows1252(encoded), stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, budget: budget);
 				}
 				return;
 			}
@@ -1304,7 +1353,7 @@ namespace Microsoft.UI.Text
 				}
 				else if (symbol == '~')
 				{
-					AppendParsedCharacter('\u00a0', stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters: maxCharacters);
+					AppendParsedCharacter('\u00a0', stack[stack.Count - 1], text, characterStates, paragraphStates, ref unicodeFallback, budget: budget);
 				}
 				return;
 			}
@@ -1341,7 +1390,7 @@ namespace Microsoft.UI.Text
 				index++;
 			}
 
-			HandleControl(word, hasParameter, parameter, stack, fonts, colors, text, characterStates, paragraphStates, ref unicodeFallback, maxCharacters);
+			HandleControl(word, hasParameter, parameter, stack, fonts, colors, text, characterStates, paragraphStates, ref unicodeFallback, budget);
 		}
 
 		private static void HandleControl(
@@ -1355,7 +1404,7 @@ namespace Microsoft.UI.Text
 			List<CharacterFormatState> characterStates,
 			List<ParagraphFormatState> paragraphStates,
 			ref int unicodeFallback,
-			int maxCharacters)
+			ParseBudget budget)
 		{
 			var frame = stack[stack.Count - 1];
 			var state = frame.State;
@@ -1481,12 +1530,12 @@ namespace Microsoft.UI.Text
 				case "sa" when hasParameter: state.Paragraph.SpaceAfter = parameter / 20f; break;
 				case "uc" when hasParameter: state.UnicodeSkipCount = Math.Max(0, parameter); break;
 				case "u" when hasParameter:
-					AppendParsedCharacter((char)(short)parameter, frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, maxCharacters);
+					AppendParsedCharacter((char)(short)parameter, frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, budget: budget);
 					unicodeFallback = state.UnicodeSkipCount;
 					break;
-				case "par": AppendParsedCharacter('\r', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, maxCharacters); break;
-				case "line": AppendParsedCharacter('\n', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, maxCharacters); break;
-				case "tab": AppendParsedCharacter('\t', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, maxCharacters); break;
+				case "par": AppendParsedCharacter('\r', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, budget: budget); break;
+				case "line": AppendParsedCharacter('\n', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, budget: budget); break;
+				case "tab": AppendParsedCharacter('\t', frame, text, characterStates, paragraphStates, ref unicodeFallback, skipFallback: false, budget: budget); break;
 				default:
 					if (frame.StarDestination)
 					{
@@ -1511,8 +1560,9 @@ namespace Microsoft.UI.Text
 			List<ParagraphFormatState> paragraphStates,
 			ref int unicodeFallback,
 			bool skipFallback = true,
-			int maxCharacters = MaxParsedCharacters)
+			ParseBudget? budget = null)
 		{
+			budget ??= new ParseBudget(MaxParsedCharacters);
 			if (skipFallback && unicodeFallback > 0)
 			{
 				unicodeFallback--;
@@ -1530,11 +1580,6 @@ namespace Microsoft.UI.Text
 				{
 					frame.DestinationText.Append(value);
 				}
-				return;
-			}
-
-			if (!CanAppendParsedCharacter(text, maxCharacters))
-			{
 				return;
 			}
 
@@ -1556,24 +1601,42 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
+			if (!budget.CanAppend(text))
+			{
+				return;
+			}
+
 			text.Append(value);
 			characterStates.Add(frame.State.Character.Clone());
 			paragraphStates.Add(frame.State.Paragraph.Clone());
 		}
 
-		private static bool CanAppendParsedCharacter(StringBuilder text, int maxCharacters)
+		private sealed class ParseBudget
 		{
-			if (text.Length < maxCharacters)
+			private readonly int _maxCharacters;
+
+			internal ParseBudget(int maxCharacters)
 			{
-				return true;
+				_maxCharacters = maxCharacters;
 			}
 
-			if (maxCharacters >= MaxParsedCharacters)
-			{
-				throw new ArgumentException("The RTF text content is too large.");
-			}
+			internal bool WasTruncated { get; private set; }
 
-			return false;
+			internal bool CanAppend(StringBuilder text)
+			{
+				if (text.Length < _maxCharacters)
+				{
+					return true;
+				}
+
+				if (_maxCharacters >= MaxParsedCharacters)
+				{
+					throw new ArgumentException("The RTF text content is too large.");
+				}
+
+				WasTruncated = true;
+				return false;
+			}
 		}
 
 		private static char DecodeWindows1252(byte value)

@@ -124,6 +124,9 @@ namespace Microsoft.UI.Xaml.Controls
 			=> TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
 				|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
 
+		private bool ShouldHideGrippersOnFlyoutOpening()
+			=> TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+
 		internal void ForceFocusLoss()
 		{
 			_forceFocusedVisualState = false;

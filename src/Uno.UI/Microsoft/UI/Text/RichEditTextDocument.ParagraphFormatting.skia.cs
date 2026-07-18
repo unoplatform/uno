@@ -9,14 +9,16 @@ namespace Microsoft.UI.Text
 	// Object Model. Paragraph formatting is stored per-character (mirroring the character run model in
 	// RichEditTextDocument.Formatting.skia.cs) so it splices in lock-step with text edits and
 	// participates in the same undo snapshots. Writes always cover whole paragraphs (split on
-	// \r / \n / \r\n, each paragraph including its trailing break), so every character inside a
-	// paragraph shares the same ParagraphFormatState.
+	// \r / \n / \r\n / U+2029, each paragraph including its trailing break), so every character
+	// inside a paragraph shares the same ParagraphFormatState. A separate state represents the
+	// implicit zero-length terminal paragraph after a final break (and the sole paragraph when empty).
 	//
-	// Alignment is projected per paragraph by the RichEditBox render path. Indents, spacing, and lists
-	// remain model-only and continue to participate faithfully in get/set/clone/undo.
+	// Paragraph formatting is projected by the RichEditBox render path and also participates in
+	// get/set/clone/undo.
 	public partial class RichEditTextDocument
 	{
 		private List<ParagraphRun> _paragraphRuns = new();
+		private ParagraphFormatState _terminalParagraphFormat = new();
 
 		internal IReadOnlyList<ParagraphRun> ParagraphRuns
 		{
@@ -24,6 +26,15 @@ namespace Microsoft.UI.Text
 			{
 				SyncParagraphRunsToLength(_plainText.Length);
 				return _paragraphRuns;
+			}
+		}
+
+		internal ParagraphFormatState TerminalParagraphFormat
+		{
+			get
+			{
+				SyncParagraphRunsToLength(_plainText.Length);
+				return _terminalParagraphFormat;
 			}
 		}
 
@@ -89,7 +100,7 @@ namespace Microsoft.UI.Text
 			{
 				// New characters inherit the paragraph formatting of the character to their left (the
 				// paragraph they are extending), falling back to the default for an empty document.
-				var fill = expanded.Count > 0 ? expanded[expanded.Count - 1] : DefaultParagraphState();
+				var fill = expanded.Count > 0 ? expanded[expanded.Count - 1] : _terminalParagraphFormat;
 				while (expanded.Count < length)
 				{
 					expanded.Add(fill);
@@ -101,39 +112,40 @@ namespace Microsoft.UI.Text
 			}
 
 			_paragraphRuns = BuildParagraphRunsFromStates(expanded);
+			SyncTerminalParagraphToMaterializedLastParagraph(expanded);
 		}
 
 		/// <summary>Resets paragraph formatting to a single default run of <paramref name="length"/> characters.</summary>
 		private void ResetParagraphRuns(int length)
-			=> _paragraphRuns = length > 0
-				? new List<ParagraphRun> { new(length, DefaultParagraphState()) }
+		{
+			_terminalParagraphFormat = DefaultParagraphState();
+			_paragraphRuns = length > 0
+				? new List<ParagraphRun> { new(length, _terminalParagraphFormat.Clone()) }
 				: new List<ParagraphRun>();
+		}
 
 		/// <summary>
 		/// Splices the paragraph-run model to match a text edit that removed <paramref name="removeLength"/>
 		/// characters at <paramref name="start"/> and inserted <paramref name="insertLength"/> new ones.
 		/// Must be called while <see cref="_paragraphRuns"/> still reflect the pre-edit text length.
 		/// </summary>
-		private void SpliceParagraphRuns(int start, int removeLength, int insertLength)
+		private void SpliceParagraphRuns(string oldText, int start, int removeLength, int insertLength)
 		{
 			var expanded = ExpandParagraphRunsRaw();
 			var oldLength = expanded.Count;
 			start = Math.Clamp(start, 0, oldLength);
 			var removeEnd = Math.Clamp(start + removeLength, start, oldLength);
 
-			ParagraphFormatState insertFormat;
-			if (insertLength > 0)
-			{
-				// Inserted text inherits the paragraph formatting of the character to its left, or (at
-				// the very start) the character to its right, falling back to the default when empty.
-				insertFormat = start > 0
-					? expanded[start - 1].Clone()
-					: (oldLength > 0 ? expanded[0].Clone() : DefaultParagraphState());
-			}
-			else
-			{
-				insertFormat = DefaultParagraphState();
-			}
+			// Inserted text (and the caret state retained by a tail deletion) inherits the paragraph
+			// containing the edit position. At a paragraph start that is the right-hand paragraph;
+			// at end-of-story it is the explicit terminal paragraph.
+			var insertFormat = start < oldLength && TextUnitNavigation.IsParagraphStart(oldText, start)
+				? expanded[start].Clone()
+				: start == oldLength
+					? _terminalParagraphFormat.Clone()
+					: start > 0
+						? expanded[start - 1].Clone()
+						: (oldLength > 0 ? expanded[0].Clone() : _terminalParagraphFormat.Clone());
 
 			var result = new List<ParagraphFormatState>(oldLength - (removeEnd - start) + insertLength);
 			for (var i = 0; i < start; i++)
@@ -152,6 +164,10 @@ namespace Microsoft.UI.Text
 			}
 
 			_paragraphRuns = BuildParagraphRunsFromStates(result);
+			if (removeEnd == oldLength)
+			{
+				_terminalParagraphFormat = insertFormat.Clone();
+			}
 		}
 
 		private void NormalizeParagraphRuns()
@@ -174,6 +190,15 @@ namespace Microsoft.UI.Text
 			}
 
 			_paragraphRuns = BuildParagraphRunsFromStates(states);
+			SyncTerminalParagraphToMaterializedLastParagraph(states);
+		}
+
+		private void SyncTerminalParagraphToMaterializedLastParagraph(List<ParagraphFormatState> states)
+		{
+			if (states.Count > 0 && !TextUnitNavigation.EndsInParagraphBreak(_plainText))
+			{
+				_terminalParagraphFormat = states[states.Count - 1].Clone();
+			}
 		}
 
 		/// <summary>
@@ -189,54 +214,38 @@ namespace Microsoft.UI.Text
 			lastPara = 0;
 
 			var length = _plainText.Length;
-			if (length == 0)
-			{
-				return false;
-			}
 
 			start = Math.Clamp(start, 0, length);
 			end = Math.Clamp(end, start, length);
 
-			var chunks = TextUnitNavigation.GetParagraphChunks(_plainText);
+			var chunks = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
 			if (chunks.Count == 0)
 			{
 				return false;
 			}
 
-			firstPara = TextUnitNavigation.FindChunkIndex(chunks, Math.Clamp(start, 0, length - 1));
+			firstPara = TextUnitNavigation.FindChunkIndex(chunks, start);
 			var endProbe = end > start ? end - 1 : start;
-			lastPara = TextUnitNavigation.FindChunkIndex(chunks, Math.Clamp(endProbe, 0, length - 1));
+			lastPara = TextUnitNavigation.FindChunkIndex(chunks, endProbe);
 			paraStart = chunks[firstPara].start;
 			paraEnd = chunks[lastPara].start + chunks[lastPara].length;
 			return true;
 		}
 
-		private void ApplyParagraphFormatOverParagraphs(int start, int end, UnoTextParagraphFormat paragraphFormat)
+		private void ApplyParagraphFormatOverParagraphs(int firstParagraph, int lastParagraph, UnoTextParagraphFormat paragraphFormat)
 		{
 			SyncParagraphRunsToLength(_plainText.Length);
-			start = Math.Clamp(start, 0, _plainText.Length);
-			end = Math.Clamp(end, start, _plainText.Length);
-			if (start >= end)
-			{
-				return;
-			}
-
+			var paragraphs = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
+			firstParagraph = Math.Clamp(firstParagraph, 0, paragraphs.Count - 1);
+			lastParagraph = Math.Clamp(lastParagraph, firstParagraph, paragraphs.Count - 1);
 			var expanded = ExpandParagraphRunsRaw();
 			var transformedStates = new Dictionary<ParagraphFormatState, ParagraphFormatState>();
 			var transformedTabs = new Dictionary<IReadOnlyList<ParagraphTab>, ParagraphFormatState>(ReferenceEqualityComparer.Instance);
-			foreach (var paragraph in TextUnitNavigation.GetParagraphChunks(_plainText))
+			for (var paragraphIndex = firstParagraph; paragraphIndex <= lastParagraph; paragraphIndex++)
 			{
+				var paragraph = paragraphs[paragraphIndex];
 				var paragraphEnd = paragraph.start + paragraph.length;
-				if (paragraphEnd <= start)
-				{
-					continue;
-				}
-				if (paragraph.start >= end)
-				{
-					break;
-				}
-
-				var source = expanded[paragraph.start];
+				var source = paragraph.length == 0 ? _terminalParagraphFormat : expanded[paragraph.start];
 				if (!transformedStates.TryGetValue(source, out var format))
 				{
 					format = source.Clone();
@@ -255,6 +264,11 @@ namespace Microsoft.UI.Text
 				for (var i = paragraph.start; i < paragraphEnd; i++)
 				{
 					expanded[i] = format;
+				}
+				if (paragraph.length == 0
+					|| paragraphEnd == _plainText.Length && !TextUnitNavigation.EndsInParagraphBreak(_plainText))
+				{
+					_terminalParagraphFormat = format.Clone();
 				}
 			}
 
@@ -275,10 +289,11 @@ namespace Microsoft.UI.Text
 				return format;
 			}
 
-			var chunks = TextUnitNavigation.GetParagraphChunks(_plainText);
+			var chunks = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
 			var expanded = ExpandParagraphRunsRaw();
 
-			ParagraphFormatState RepresentativeOf(int paraIndex) => expanded[chunks[paraIndex].start];
+			ParagraphFormatState RepresentativeOf(int paraIndex)
+				=> chunks[paraIndex].length == 0 ? _terminalParagraphFormat : expanded[chunks[paraIndex].start];
 
 			var first = RepresentativeOf(firstPara);
 			if (firstPara == lastPara)
@@ -410,12 +425,12 @@ namespace Microsoft.UI.Text
 
 			MutateWithUndo(() =>
 			{
-				if (!TryGetParagraphSpan(start, end, out var paraStart, out var paraEnd, out _, out _))
+				if (!TryGetParagraphSpan(start, end, out _, out _, out var firstPara, out var lastPara))
 				{
 					return;
 				}
 
-				ApplyParagraphFormatOverParagraphs(paraStart, paraEnd, format);
+				ApplyParagraphFormatOverParagraphs(firstPara, lastPara, format);
 			});
 		}
 
@@ -454,7 +469,7 @@ namespace Microsoft.UI.Text
 		{
 			if (_paragraphRuns.Count == 0)
 			{
-				return null;
+				return _terminalParagraphFormat.Alignment;
 			}
 
 			var alignment = _paragraphRuns[0].Format.Alignment;
@@ -464,6 +479,11 @@ namespace Microsoft.UI.Text
 				{
 					return null;
 				}
+			}
+			if (TextUnitNavigation.EndsInParagraphBreak(_plainText)
+				&& _terminalParagraphFormat.Alignment != alignment)
+			{
+				return null;
 			}
 
 			return alignment;

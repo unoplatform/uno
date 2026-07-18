@@ -3,10 +3,13 @@
 using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
+using Windows.Foundation;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -18,12 +21,13 @@ namespace Microsoft.UI.Xaml.Controls
 	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
 	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
 	//
-	// Standard RTF/streams, inline images, MathML interchange, and per-paragraph alignment are
-	// supported. Full OpenType math layout, non-alignment paragraph layout, and advanced touch
-	// selection UI remain follow-ups.
-	public partial class RichEditBox : ITextBoxViewHost
+	// Standard RTF/streams, inline images, MathML interchange, paragraph layout/list projection,
+	// browser editing, and TextBox-style touch/multi-tap selection are supported. Full OpenType math
+	// layout remains outside this managed text engine.
+	public partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost
 	{
 		private TextBoxView? _textBoxView;
+		private TextSelectionGripperPresenter? _gripperPresenter;
 		private ContentControl? _contentElement;
 		private ContentPresenter? _headerPresenter;
 		private UIElement? _placeholderTextPresenter;
@@ -49,6 +53,8 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Ensures we don't keep a reference to a TextBoxView that exists in a previous template.
+			_gripperPresenter?.Hide();
+			_gripperPresenter = null;
 			_textBoxView = null;
 
 			_placeholderTextPresenter = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as UIElement;
@@ -84,6 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_contentElement.Content = displayBlock;
 				}
+				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 
 				RenderDocument();
 			}
@@ -97,11 +104,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			view.SetWrapping();
+			UpdateTextWrappingScrollMode();
 			view.SetTextAlignment();
 			view.UpdateFont();
 			view.DisplayBlock.IsSpellCheckEnabled = IsSpellCheckEnabled;
 			view.UpdateProperties();
 			UpdateSelectionHighlightColor();
+		}
+
+		private void UpdateTextWrappingScrollMode()
+		{
+			if (_contentElement is ScrollViewer scrollViewer)
+			{
+				scrollViewer.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap
+					? ScrollBarVisibility.Auto
+					: ScrollBarVisibility.Disabled;
+			}
 		}
 
 		private void RegisterPropertyChangedCallbacks()
@@ -207,6 +225,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLostFocus(e);
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
+			if (_forceFocusedVisualState
+				&& ShouldHideGrippersOnFlyoutOpening()
+				&& CaretMode is RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing
+					or RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
+			{
+				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
+			}
 			_textBoxView?.OnFocusStateChanged(FocusState);
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
@@ -216,6 +241,13 @@ namespace Microsoft.UI.Xaml.Controls
 				StopCaret();
 				TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
 			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			_gripperPresenter?.Hide();
+			CaretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
+			base.OnUnloaded();
 		}
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
@@ -329,6 +361,71 @@ namespace Microsoft.UI.Xaml.Controls
 			_paragraphAlignmentOverride is null
 			&& (this as IDependencyObjectStoreProvider)?.Store
 				.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
+
+		#endregion
+
+		#region ITextSelectionGripperHost
+
+		TextBlock ITextSelectionGripperHost.GripperTextSurface => _textBoxView!.DisplayBlock;
+
+		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+		GripperMode ITextSelectionGripperHost.GripperMode => CaretMode switch
+		{
+			RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing => GripperMode.EndOnly,
+			RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing => GripperMode.Both,
+			_ => GripperMode.Hidden,
+		};
+
+		int ITextSelectionGripperHost.SelectionLowerIndex => _selection.start;
+
+		int ITextSelectionGripperHost.SelectionUpperIndex => _selection.start + _selection.length;
+
+		void ITextSelectionGripperHost.SetGripperSelection(int start, int end)
+			=> SetInteractiveSelection(start, end - start);
+
+		void ITextSelectionGripperHost.MoveGripperCaret(int index)
+			=> SetInteractiveSelection(index, 0);
+
+		void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+			=> UpdateScrollingForGripper(isEndGripper);
+
+		void ITextSelectionGripperHost.OnGripperPressed()
+			=> DismissSelectionFlyoutForPointerPress();
+
+		void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+		{
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
+		}
+
+		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+
+		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+			=> TouchTap(args.GetCurrentPoint(_textBoxView!.DisplayBlock).Position, wasFocused: true);
+
+		private void UpdateScrollingForGripper(bool isEndGripper)
+		{
+			if (_contentElement is not ScrollViewer scrollViewer || _textBoxView?.DisplayBlock is not { } displayBlock)
+			{
+				return;
+			}
+
+			var index = isEndGripper
+				? _selection.start + _selection.length
+				: _selection.start;
+			var caretRect = displayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
+			var horizontalOffset = Math.Min(scrollViewer.HorizontalOffset, caretRect.Left);
+			horizontalOffset = Math.Max(horizontalOffset, Math.Ceiling(caretRect.Right - scrollViewer.ViewportWidth + TextBlock.CaretThickness));
+			var verticalOffset = Math.Min(scrollViewer.VerticalOffset, caretRect.Top);
+			verticalOffset = Math.Max(verticalOffset, caretRect.Bottom - scrollViewer.ViewportHeight);
+			scrollViewer.ChangeView(horizontalOffset, verticalOffset, null);
+		}
+
+		internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? SelectionGrippersForTesting
+			=> _gripperPresenter?.VisibleGrippersForTesting;
 
 		#endregion
 	}

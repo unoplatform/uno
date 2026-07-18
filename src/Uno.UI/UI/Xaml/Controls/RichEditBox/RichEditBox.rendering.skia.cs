@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
@@ -38,14 +39,24 @@ namespace Microsoft.UI.Xaml.Controls
 			var text = document.PlainText;
 			var runs = document.FormatRuns;
 			var paragraphRuns = document.ParagraphRuns;
-			var renderParagraphAlignments = HasMixedParagraphAlignments(paragraphRuns);
+			var terminalParagraph = document.TerminalParagraphFormat;
+			var renderParagraphAlignments = HasMixedParagraphAlignments(paragraphRuns, terminalParagraph, text);
+			var renderParagraphLayouts = HasVisualParagraphFormatting(paragraphRuns, terminalParagraph);
 			var block = _textBoxView.DisplayBlock;
 			block.FontFamily = document.IsMathMode
 				? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
 				: FontFamily;
 			block.DefaultTabStop = document.DefaultTabStop * 4f / 3f;
+			var terminalListState = BuildListMarkerState(text, paragraphRuns);
+			block.EndingParagraphLayout = renderParagraphLayouts
+				? CreateParagraphLayout(terminalParagraph, terminalListState)
+				: null;
+			block.EndingParagraphAlignment = renderParagraphAlignments
+				&& TryMapParagraphAlignment(terminalParagraph.Alignment, out var terminalAlignment)
+					? terminalAlignment
+					: null;
 
-			if (AllRunsDefault(runs) && !renderParagraphAlignments)
+			if (AllRunsDefault(runs) && !renderParagraphAlignments && !renderParagraphLayouts)
 			{
 				if (_lastRenderWasRich)
 				{
@@ -59,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				RenderRuns(block, text, runs, paragraphRuns, renderParagraphAlignments);
+				RenderRuns(block, text, runs, paragraphRuns, renderParagraphAlignments, renderParagraphLayouts);
 				_textBoxView.Extension?.SetText(text);
 				_lastRenderWasRich = true;
 			}
@@ -70,8 +81,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Projects a uniform paragraph alignment onto the DisplayBlock's block-level fast path. Mixed
 		// alignments are carried by individual runs and resolved per visual line by UnicodeText. Setting
 		// _paragraphAlignmentOverride makes ITextBoxViewHost.IsTextAlignmentSetToDefault report false.
-		//
-		// TODO Uno: Indents, spacing, and lists remain unrendered while their model state round-trips.
 		private void ApplyParagraphAlignment()
 		{
 			if (_textBoxView is null)
@@ -123,7 +132,8 @@ namespace Microsoft.UI.Xaml.Controls
 			string text,
 			IReadOnlyList<FormatRun> runs,
 			IReadOnlyList<ParagraphRun> paragraphRuns,
-			bool renderParagraphAlignments)
+			bool renderParagraphAlignments,
+			bool renderParagraphLayouts)
 		{
 			var inlines = block.Inlines;
 			inlines.Clear();
@@ -133,12 +143,23 @@ namespace Microsoft.UI.Xaml.Controls
 			var characterRunOffset = 0;
 			var paragraphRunIndex = 0;
 			var paragraphRunOffset = 0;
+			var paragraphEnd = 0;
+			ParagraphLayoutInfo? paragraphLayout = null;
+			var listState = new ListMarkerCounterState();
 			while (position < text.Length && characterRunIndex < runs.Count && paragraphRunIndex < paragraphRuns.Count)
 			{
 				var characterRun = runs[characterRunIndex];
 				var paragraphRun = paragraphRuns[paragraphRunIndex];
+				if (position >= paragraphEnd)
+				{
+					paragraphEnd = GetParagraphEnd(text, position);
+					paragraphLayout = CreateParagraphLayout(paragraphRun.Format, listState);
+				}
+				var requiresPerParagraphMarker = paragraphRun.Format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+					and not global::Microsoft.UI.Text.MarkerType.Undefined
+					&& paragraphRun.Format.ListLevelIndex > 0;
 				var length = Math.Min(
-					text.Length - position,
+					requiresPerParagraphMarker ? paragraphEnd - position : text.Length - position,
 					Math.Min(characterRun.Length - characterRunOffset, paragraphRun.Length - paragraphRunOffset));
 				if (characterRun.Format.InlineImage is not null)
 				{
@@ -164,6 +185,13 @@ namespace Microsoft.UI.Xaml.Controls
 				if (renderParagraphAlignments && TryMapParagraphAlignment(paragraphRun.Format.Alignment, out var paragraphAlignment))
 				{
 					inline.ParagraphAlignment = paragraphAlignment;
+				}
+				if (renderParagraphLayouts)
+				{
+					inline.ParagraphLayout = paragraphLayout;
+					inline.FlowDirection = paragraphRun.Format.RightToLeft
+						? FlowDirection.RightToLeft
+						: FlowDirection.LeftToRight;
 				}
 
 				if (characterRun.Format.Link is not null)
@@ -193,14 +221,316 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static bool HasMixedParagraphAlignments(IReadOnlyList<ParagraphRun> runs)
+		private static int GetParagraphEnd(string text, int start)
 		{
-			if (runs.Count < 2)
+			for (var i = start; i < text.Length; i++)
+			{
+				if (text[i] == '\r')
+				{
+					return i + (i + 1 < text.Length && text[i + 1] == '\n' ? 2 : 1);
+				}
+				if (text[i] is '\n' or '\u2029')
+				{
+					return i + 1;
+				}
+			}
+
+			return text.Length;
+		}
+
+		private static ListMarkerCounterState BuildListMarkerState(string text, IReadOnlyList<ParagraphRun> paragraphRuns)
+		{
+			var state = new ListMarkerCounterState();
+			var paragraphRunIndex = 0;
+			var paragraphRunOffset = 0;
+			for (var position = 0; position < text.Length;)
+			{
+				while (paragraphRunIndex < paragraphRuns.Count && paragraphRunOffset >= paragraphRuns[paragraphRunIndex].Length)
+				{
+					paragraphRunOffset -= paragraphRuns[paragraphRunIndex].Length;
+					paragraphRunIndex++;
+				}
+				if (paragraphRunIndex >= paragraphRuns.Count)
+				{
+					break;
+				}
+
+				_ = CreateParagraphLayout(paragraphRuns[paragraphRunIndex].Format, state);
+				var paragraphEnd = GetParagraphEnd(text, position);
+				paragraphRunOffset += paragraphEnd - position;
+				position = paragraphEnd;
+			}
+
+			return state;
+		}
+
+		private sealed class ListMarkerCounterState
+		{
+			internal readonly Dictionary<int, ListMarkerCounter> Counters = new();
+			internal int PreviousLevel;
+			internal bool PreviousWasList;
+		}
+
+		private readonly record struct ListMarkerCounter(
+			global::Microsoft.UI.Text.MarkerType Type,
+			global::Microsoft.UI.Text.MarkerStyle Style,
+			int ConfiguredStart,
+			int Value);
+
+		private static ParagraphLayoutInfo CreateParagraphLayout(ParagraphFormatState format, ListMarkerCounterState listState)
+		{
+			var listType = format.ListType;
+			var hasList = listType is not global::Microsoft.UI.Text.MarkerType.None
+				and not global::Microsoft.UI.Text.MarkerType.Undefined
+				&& format.ListLevelIndex > 0;
+			string? marker = null;
+			if (hasList)
+			{
+				var level = format.ListLevelIndex;
+				var style = format.ListStyle == global::Microsoft.UI.Text.MarkerStyle.Undefined
+					? global::Microsoft.UI.Text.MarkerStyle.Period
+					: format.ListStyle;
+				if (!listState.PreviousWasList)
+				{
+					listState.Counters.Clear();
+				}
+				else if (level <= listState.PreviousLevel)
+				{
+					var deeperLevels = new List<int>();
+					foreach (var existingLevel in listState.Counters.Keys)
+					{
+						if (existingLevel > level)
+						{
+							deeperLevels.Add(existingLevel);
+						}
+					}
+					foreach (var deeperLevel in deeperLevels)
+					{
+						listState.Counters.Remove(deeperLevel);
+					}
+				}
+
+				var configuredStart = format.ListStart;
+				var firstValue = listType == global::Microsoft.UI.Text.MarkerType.UnicodeSequence
+					? (IsValidUnicodeScalar(configuredStart) ? configuredStart : 0x2022)
+					: configuredStart > 0 ? configuredStart : 1;
+				var value = firstValue;
+				if (listState.Counters.TryGetValue(level, out var counter)
+					&& counter.Type == listType
+					&& counter.Style == style
+					&& counter.ConfiguredStart == configuredStart)
+				{
+					value = counter.Value + 1;
+				}
+
+				listState.Counters[level] = new ListMarkerCounter(listType, style, configuredStart, value);
+				listState.PreviousLevel = level;
+				listState.PreviousWasList = true;
+				marker = FormatListMarker(listType, style, value);
+			}
+			else
+			{
+				listState.Counters.Clear();
+				listState.PreviousLevel = 0;
+				listState.PreviousWasList = false;
+			}
+
+			var lineSpacing = format.LineSpacingRule is global::Microsoft.UI.Text.LineSpacingRule.AtLeast or global::Microsoft.UI.Text.LineSpacingRule.Exactly
+				? format.LineSpacing * (float)DipsPerPoint
+				: format.LineSpacing;
+			return new ParagraphLayoutInfo
+			{
+				LeftIndent = format.LeftIndent * (float)DipsPerPoint,
+				RightIndent = format.RightIndent * (float)DipsPerPoint,
+				FirstLineIndent = format.FirstLineIndent * (float)DipsPerPoint,
+				SpaceBefore = Math.Max(0, format.SpaceBefore * (float)DipsPerPoint),
+				SpaceAfter = Math.Max(0, format.SpaceAfter * (float)DipsPerPoint),
+				LineSpacingRule = format.LineSpacingRule,
+				LineSpacing = lineSpacing,
+				RightToLeft = format.RightToLeft,
+				IsList = hasList,
+				MarkerText = marker,
+				ListTab = Math.Max(0, format.ListTab * (float)DipsPerPoint),
+				MarkerAlignment = format.ListAlignment == global::Microsoft.UI.Text.MarkerAlignment.Undefined
+					? global::Microsoft.UI.Text.MarkerAlignment.Right
+					: format.ListAlignment,
+			};
+		}
+
+		private static string? FormatListMarker(
+			global::Microsoft.UI.Text.MarkerType type,
+			global::Microsoft.UI.Text.MarkerStyle style,
+			int number)
+		{
+			if (style == global::Microsoft.UI.Text.MarkerStyle.NoNumber)
+			{
+				return null;
+			}
+
+			var value = type switch
+			{
+				global::Microsoft.UI.Text.MarkerType.Bullet => "•",
+				global::Microsoft.UI.Text.MarkerType.Arabic => number.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+				global::Microsoft.UI.Text.MarkerType.LowercaseEnglishLetter => ToLetters(number, upper: false),
+				global::Microsoft.UI.Text.MarkerType.UppercaseEnglishLetter => ToLetters(number, upper: true),
+				global::Microsoft.UI.Text.MarkerType.LowercaseRoman => ToRoman(number).ToLowerInvariant(),
+				global::Microsoft.UI.Text.MarkerType.UppercaseRoman => ToRoman(number),
+				global::Microsoft.UI.Text.MarkerType.UnicodeSequence when IsValidUnicodeScalar(number) => char.ConvertFromUtf32(number),
+				global::Microsoft.UI.Text.MarkerType.CircledNumber => ToCircledNumber(number, black: false),
+				global::Microsoft.UI.Text.MarkerType.BlackCircleWingding => ToCircledNumber(number, black: false),
+				global::Microsoft.UI.Text.MarkerType.WhiteCircleWingding => ToCircledNumber(number, black: true),
+				global::Microsoft.UI.Text.MarkerType.ArabicWide => ToLocalizedDigits(number, '０'),
+				global::Microsoft.UI.Text.MarkerType.SimplifiedChinese => ToChineseNumber(number, useTens: true),
+				global::Microsoft.UI.Text.MarkerType.TraditionalChinese => number is >= 10 and <= 19 ? ToChineseNumber(number, useTens: true) : ToChineseNumber(number, useTens: false),
+				global::Microsoft.UI.Text.MarkerType.JapanSimplifiedChinese => ToChineseNumber(number, useTens: false),
+				global::Microsoft.UI.Text.MarkerType.JapanKorea => ToChineseNumber(number, useTens: false),
+				global::Microsoft.UI.Text.MarkerType.ArabicDictionary => ToAlphabetic(number, "أبتثجحخدذرزسشصضطظعغفقكلمنهوي"),
+				global::Microsoft.UI.Text.MarkerType.ArabicAbjad => ToAlphabetic(number, "أبجدهوزحطيكلمنسعفصقرشتثخذضظغ"),
+				global::Microsoft.UI.Text.MarkerType.Hebrew => ToAlphabetic(number, "אבגדהוזחטיכלמנסעפצקרשת"),
+				global::Microsoft.UI.Text.MarkerType.ThaiAlphabetic => ToAlphabetic(number, "กขคงจฉชซญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ"),
+				global::Microsoft.UI.Text.MarkerType.ThaiNumeric => ToLocalizedDigits(number, '๐'),
+				global::Microsoft.UI.Text.MarkerType.DevanagariVowel => ToAlphabetic(number, "अआइईउऊऋॠऌॡएऐओऔ"),
+				global::Microsoft.UI.Text.MarkerType.DevanagariConsonant => ToAlphabetic(number, "कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह"),
+				global::Microsoft.UI.Text.MarkerType.DevanagariNumeric => ToLocalizedDigits(number, '०'),
+				_ => string.Empty,
+			};
+			if (type == global::Microsoft.UI.Text.MarkerType.Bullet || value.Length == 0)
+			{
+				return value;
+			}
+
+			return style switch
+			{
+				global::Microsoft.UI.Text.MarkerStyle.Parenthesis => value + ")",
+				global::Microsoft.UI.Text.MarkerStyle.Parentheses => "(" + value + ")",
+				global::Microsoft.UI.Text.MarkerStyle.Plain => value,
+				global::Microsoft.UI.Text.MarkerStyle.Minus => value + "-",
+				_ => value + (type == global::Microsoft.UI.Text.MarkerType.JapanSimplifiedChinese ? "．" : "."),
+			};
+		}
+
+		private static bool IsValidUnicodeScalar(int value)
+			=> value is >= 0 and <= 0x10ffff && value is not >= 0xd800 and <= 0xdfff;
+
+		private static string ToLocalizedDigits(int number, char zero)
+		{
+			var invariant = Math.Max(0, number).ToString(global::System.Globalization.CultureInfo.InvariantCulture);
+			var builder = new StringBuilder(invariant.Length);
+			foreach (var digit in invariant)
+			{
+				builder.Append((char)(zero + digit - '0'));
+			}
+			return builder.ToString();
+		}
+
+		private static string ToAlphabetic(int number, string alphabet)
+		{
+			number = Math.Max(1, number);
+			var builder = new StringBuilder();
+			while (number > 0)
+			{
+				number--;
+				builder.Insert(0, alphabet[number % alphabet.Length]);
+				number /= alphabet.Length;
+			}
+			return builder.ToString();
+		}
+
+		private static string ToCircledNumber(int number, bool black)
+		{
+			if (number == 0)
+			{
+				return black ? "⓿" : "⓪";
+			}
+			if (black && number is >= 1 and <= 10)
+			{
+				return char.ConvertFromUtf32(0x2776 + number - 1);
+			}
+			if (number is >= 1 and <= 20)
+			{
+				return char.ConvertFromUtf32(0x2460 + number - 1);
+			}
+			return number.ToString(global::System.Globalization.CultureInfo.InvariantCulture);
+		}
+
+		private static string ToChineseNumber(int number, bool useTens)
+		{
+			if (number <= 0 || number >= 100 || !useTens)
+			{
+				var digits = Math.Max(0, number).ToString(global::System.Globalization.CultureInfo.InvariantCulture);
+				var builder = new StringBuilder(digits.Length);
+				foreach (var digit in digits)
+				{
+					builder.Append("〇一二三四五六七八九"[digit - '0']);
+				}
+				return builder.ToString();
+			}
+
+			if (number < 10)
+			{
+				return "一二三四五六七八九"[number - 1].ToString();
+			}
+
+			var tens = number / 10;
+			var ones = number % 10;
+			return (tens == 1 ? string.Empty : "一二三四五六七八九"[tens - 1].ToString())
+				+ "十"
+				+ (ones == 0 ? string.Empty : "一二三四五六七八九"[ones - 1].ToString());
+		}
+
+		private static string ToLetters(int number, bool upper)
+		{
+			var builder = new StringBuilder();
+			number = Math.Max(1, number);
+			while (number > 0)
+			{
+				number--;
+				builder.Insert(0, (char)((upper ? 'A' : 'a') + number % 26));
+				number /= 26;
+			}
+			return builder.ToString();
+		}
+
+		private static string ToRoman(int number)
+		{
+			if (number is < 1 or > 3999)
+			{
+				return number.ToString(global::System.Globalization.CultureInfo.InvariantCulture);
+			}
+			var values = new (int value, string text)[]
+			{
+				(1000, "M"), (900, "CM"), (500, "D"), (400, "CD"), (100, "C"), (90, "XC"),
+				(50, "L"), (40, "XL"), (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"),
+			};
+			var builder = new StringBuilder();
+			foreach (var (value, text) in values)
+			{
+				while (number >= value)
+				{
+					builder.Append(text);
+					number -= value;
+				}
+			}
+			return builder.ToString();
+		}
+
+		private static bool HasMixedParagraphAlignments(
+			IReadOnlyList<ParagraphRun> runs,
+			ParagraphFormatState terminalParagraph,
+			string text)
+		{
+			if (runs.Count == 0)
 			{
 				return false;
 			}
 
 			var alignment = runs[0].Format.Alignment;
+			if (global::Microsoft.UI.Text.TextUnitNavigation.EndsInParagraphBreak(text)
+				&& terminalParagraph.Alignment != alignment)
+			{
+				return true;
+			}
+
 			for (var i = 1; i < runs.Count; i++)
 			{
 				if (runs[i].Format.Alignment != alignment)
@@ -211,6 +541,43 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return false;
 		}
+
+		private static bool HasVisualParagraphFormatting(
+			IReadOnlyList<ParagraphRun> runs,
+			ParagraphFormatState terminalParagraph)
+		{
+			foreach (var run in runs)
+			{
+				var format = run.Format;
+				if (format.FirstLineIndent != 0
+					|| format.LeftIndent != 0
+					|| format.RightIndent != 0
+					|| format.SpaceBefore != 0
+					|| format.SpaceAfter != 0
+					|| format.RightToLeft
+					|| format.LineSpacingRule is not global::Microsoft.UI.Text.LineSpacingRule.Single
+						and not global::Microsoft.UI.Text.LineSpacingRule.Undefined
+					|| format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+						and not global::Microsoft.UI.Text.MarkerType.Undefined)
+				{
+					return true;
+				}
+			}
+
+			return HasVisualParagraphFormatting(terminalParagraph);
+		}
+
+		private static bool HasVisualParagraphFormatting(ParagraphFormatState format)
+			=> format.FirstLineIndent != 0
+				|| format.LeftIndent != 0
+				|| format.RightIndent != 0
+				|| format.SpaceBefore != 0
+				|| format.SpaceAfter != 0
+				|| format.RightToLeft
+				|| format.LineSpacingRule is not global::Microsoft.UI.Text.LineSpacingRule.Single
+					and not global::Microsoft.UI.Text.LineSpacingRule.Undefined
+				|| format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+					and not global::Microsoft.UI.Text.MarkerType.Undefined;
 
 		private static Run CreateRun(string text, CharacterFormatState format, double inheritedFontSize)
 		{

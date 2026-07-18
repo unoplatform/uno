@@ -53,6 +53,34 @@ namespace Microsoft.UI.Xaml.Controls
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
+		private ParagraphLayoutInfo? _endingParagraphLayout;
+		internal ParagraphLayoutInfo? EndingParagraphLayout
+		{
+			get => _endingParagraphLayout;
+			set
+			{
+				if (!ReferenceEquals(_endingParagraphLayout, value))
+				{
+					_endingParagraphLayout = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private TextAlignment? _endingParagraphAlignment;
+		internal TextAlignment? EndingParagraphAlignment
+		{
+			get => _endingParagraphAlignment;
+			set
+			{
+				if (_endingParagraphAlignment != value)
+				{
+					_endingParagraphAlignment = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
 		internal event Action? DrawingFinished;
 
 		public TextBlock()
@@ -175,6 +203,9 @@ namespace Microsoft.UI.Xaml.Controls
 				this,
 				isTextBoxOwned,
 				DefaultTabStop,
+				EndingParagraphLayout,
+				EndingParagraphAlignment,
+				Foreground,
 				out size);
 
 			if (isTextBoxOwned)
