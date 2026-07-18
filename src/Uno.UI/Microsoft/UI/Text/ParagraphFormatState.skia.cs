@@ -31,8 +31,8 @@ namespace Microsoft.UI.Text
 	// Object Model. Unlike ITextParagraphFormat (which is tri-state and can be "undefined" over a
 	// mixed range), a resolved paragraph state always holds concrete values.
 	//
-	// Alignment is projected per paragraph through the shared UnicodeText layout. Indents, spacing,
-	// and lists remain model-only, while all state round-trips through get/set/clone/undo/IsEqual.
+	// Paragraph alignment, indents, spacing and lists are projected through the shared UnicodeText
+	// layout, while all state also round-trips through get/set/clone/undo/IsEqual.
 	internal sealed class ParagraphFormatState : IEquatable<ParagraphFormatState>
 	{
 		internal const int MaxTabs = 63;

@@ -41,6 +41,34 @@ namespace Microsoft.UI.Xaml.Controls
 		private char? _pendingHighSurrogate;
 		private bool _isProcessingSelectionChanging;
 		private int _selectionSyncDeferralDepth;
+		private RichEditCaretDisplayMode _caretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
+
+		internal RichEditCaretDisplayMode CaretMode
+		{
+			get => _caretMode;
+			private set
+			{
+				if (_caretMode == value)
+				{
+					return;
+				}
+
+				_caretMode = value;
+				_caretBlinkVisible = value == RichEditCaretDisplayMode.ThumblessCaretShowing;
+				if (value == RichEditCaretDisplayMode.ThumblessCaretShowing)
+				{
+					EnsureCaretTimerHooked();
+					_caretTimer.Start();
+				}
+				else
+				{
+					_caretTimer.Stop();
+				}
+
+				UpdateDisplaySelection();
+				_gripperPresenter?.Update();
+			}
+		}
 
 		#region ITextViewEditorHost
 
@@ -80,18 +108,20 @@ namespace Microsoft.UI.Xaml.Controls
 			Document.SetSelectionRangeInternal(selStart, selEnd);
 			_caretXOffset = (float)_textBoxView.DisplayBlock.ParsedText.GetRectForIndex(selEnd).Left;
 
-			_caretBlinkVisible = true;
-			EnsureCaretTimerHooked();
-			_caretTimer.Start();
-			UpdateDisplaySelection();
+			// Touch focus can be delivered after PointerReleased has already selected a word and
+			// requested thumbs. TextBox performs its TouchTap after its synchronous focus update;
+			// preserve the equivalent final state when RichEditBox's GotFocus arrives later.
+			if (CaretMode is not RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing
+				and not RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
+			{
+				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
+			}
 		}
 
 		internal void StopCaret()
 		{
-			_caretTimer.Stop();
-			_caretBlinkVisible = false;
 			_pendingHighSurrogate = null;
-			UpdateDisplaySelection();
+			CaretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
 		}
 
 		internal void ResumeCaret()
@@ -110,10 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_selection = (start, end - start, isBackward);
 			Document.SetSelectionRangeInternal(start, end);
 			_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
-			_caretBlinkVisible = true;
-			EnsureCaretTimerHooked();
-			_caretTimer.Start();
-			UpdateDisplaySelection();
+			CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
 		}
 
 		private void EnsureCaretTimerHooked()
@@ -127,7 +154,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnCaretTimerTick(object? sender, object e)
 		{
-			if (IsLoaded && FocusState != FocusState.Unfocused)
+			if (IsLoaded
+				&& FocusState != FocusState.Unfocused
+				&& CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
 			{
 				_caretBlinkVisible = !_caretBlinkVisible;
 				UpdateDisplaySelection();
@@ -762,9 +791,17 @@ namespace Microsoft.UI.Xaml.Controls
 				_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
 			}
 
-			_caretBlinkVisible = true;
-			if (FocusState != FocusState.Unfocused && !IsReadOnly)
+			if (end == start && CaretMode == RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
 			{
+				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			}
+			else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretHidden && FocusState != FocusState.Unfocused)
+			{
+				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
+			{
+				_caretBlinkVisible = true;
 				EnsureCaretTimerHooked();
 				_caretTimer.Start();
 			}
@@ -817,7 +854,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var focused = FocusState != FocusState.Unfocused;
 			displayBlock.RenderSelection = focused || _selection.length > 0;
 
-			if (focused && _selection.length == 0 && !IsReadOnly && _caretBlinkVisible)
+			if (focused
+				&& CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing
+				&& _selection.length == 0
+				&& !IsReadOnly
+				&& _caretBlinkVisible)
 			{
 				displayBlock.RenderCaret = (renderedStart, GetOpaqueCaretBrush());
 				IsCaretRenderedForTesting = true;
@@ -874,6 +915,14 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool IsSelectionBackwardForTesting => _selection.selectionEndsAtTheStart;
 
 		internal bool IsCaretRenderedForTesting { get; private set; }
+
+		internal enum RichEditCaretDisplayMode
+		{
+			ThumblessCaretHidden,
+			ThumblessCaretShowing,
+			CaretWithThumbsOnlyEndShowing,
+			CaretWithThumbsBothEndsShowing,
+		}
 
 		#endregion
 	}
