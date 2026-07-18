@@ -1,26 +1,32 @@
 #nullable enable
 
 using System;
+using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Internal;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// Minimal, faithful pointer-driven editing for RichEditBox on Skia.
+	// Pointer-driven editing for RichEditBox on Skia.
 	//
 	// Covers the common mouse/pen/touch cases: click-to-place-caret, Shift+click to extend, press-and-
 	// drag to select, and double-click/tap to select a word. It reuses the same hit-testing
 	// (ParsedText.GetIndexAt / GetWordAt) and selection plumbing (SetInteractiveSelection) as the
 	// keyboard layer, so caret/selection stay consistent across input modalities.
 	//
-	// TODO Uno: touch selection grippers, triple-tap line selection and the full
-	// multi-tap gesture model that TextBox implements are intentionally out of scope for this slice.
 	partial class RichEditBox
 	{
 		private bool _hasPointerCapture;
 		private int _pointerSelectionAnchor;
 		private int _pressedLinkIndex = -1;
 		private PointerRoutedEventArgs? _processedPointerPressedArgs;
+		private (PointerPoint? point, int repeatedPresses) _lastPointerDown;
+		private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
+		private bool _isPressed;
+		private bool _wasFocusedOnPointerPressed;
 
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{
@@ -62,22 +68,51 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			DismissSelectionFlyoutForPointerPress();
-
+			_isPressed = true;
+			_wasFocusedOnPointerPressed = FocusState != FocusState.Unfocused;
 			var currentPoint = e.GetCurrentPoint(null);
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				_pressedLinkIndex = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
+				_lastPointerDown = (currentPoint, 0);
+				DismissSelectionFlyoutForPointerPress();
+				e.Handled = true;
+				_hasPointerCapture = CapturePointer(e.Pointer);
+				return;
+			}
 
 			// Right button is reserved for the context menu; let the base handling deal with it.
 			if (currentPoint.Properties.IsRightButtonPressed)
 			{
+				_isPressed = false;
 				return;
 			}
 
+			DismissSelectionFlyoutForPointerPress();
 			e.Handled = true;
 
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
 			_pressedLinkIndex = index;
-
-			if ((e.KeyModifiers & VirtualKeyModifiers.Shift) != 0)
+			if (currentPoint.Properties.IsLeftButtonPressed
+				&& _lastPointerDown.point is { } previous
+				&& IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), currentPoint))
+			{
+				if (_lastPointerDown.repeatedPresses == 1)
+				{
+					var chunk = GetLogicalLineChunk(index);
+					SetInteractiveSelection(chunk.start, chunk.length);
+					_mouseMultiTapChunk = (chunk.start, chunk.length, true);
+					_lastPointerDown = (currentPoint, 2);
+				}
+				else
+				{
+					var chunk = displayBlock.ParsedText.GetWordAt(index, true);
+					SetInteractiveSelection(chunk.start, chunk.length);
+					_mouseMultiTapChunk = (chunk.start, chunk.length, false);
+					_lastPointerDown = (currentPoint, 1);
+				}
+			}
+			else if ((e.KeyModifiers & VirtualKeyModifiers.Shift) != 0)
 			{
 				// Extend the current selection from its fixed (non-caret) end to the pressed index.
 				var anchor = _selection.selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
@@ -86,8 +121,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
 				_pointerSelectionAnchor = index;
 				SetInteractiveSelection(index, 0);
+				_lastPointerDown = (currentPoint, 0);
 			}
 
 			if (FocusState == FocusState.Unfocused)
@@ -108,15 +145,74 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			e.Handled = true;
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				return;
+			}
 
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, false, true));
-			SetInteractiveSelection(_pointerSelectionAnchor, index - _pointerSelectionAnchor);
+			if (_mouseMultiTapChunk is { } multiTap)
+			{
+				var chunk = multiTap.tripleTap
+					? GetLogicalLineChunk(index)
+					: displayBlock.ParsedText.GetWordAt(index, true);
+				if (chunk.start < multiTap.start)
+				{
+					SetInteractiveSelection(multiTap.start + multiTap.length, chunk.start - multiTap.start - multiTap.length);
+				}
+				else if (chunk.start + chunk.length >= multiTap.start + multiTap.length)
+				{
+					SetInteractiveSelection(multiTap.start, chunk.start + chunk.length - multiTap.start);
+				}
+			}
+			else
+			{
+				SetInteractiveSelection(_pointerSelectionAnchor, index - _pointerSelectionAnchor);
+			}
 		}
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs e)
 		{
 			base.OnPointerReleased(e);
 			_processedPointerPressedArgs = null;
+			_mouseMultiTapChunk = null;
+
+			if (!_isPressed)
+			{
+				return;
+			}
+			_isPressed = false;
+
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				if (!TextControlFlyoutHelper.IsOpen(ContextFlyout))
+				{
+					Focus(FocusState.Pointer);
+				}
+
+				var currentPoint = e.GetCurrentPoint(null);
+				var touchHoldTime = _lastPointerDown.point is { } down
+					? currentPoint.Timestamp - down.Timestamp
+					: 0;
+				if (touchHoldTime < GestureRecognizer.HoldMinDelayMicroseconds && !string.IsNullOrEmpty(GetPlainTextContent()))
+				{
+					var displayBlock = _textBoxView!.DisplayBlock;
+					var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
+					if (!(IsReadOnly && index == _pressedLinkIndex && TryNavigateLinkAt(index)))
+					{
+						TouchTap(e.GetCurrentPoint(displayBlock).Position, _wasFocusedOnPointerPressed);
+						QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, e.GetCurrentPoint(this).Position);
+					}
+				}
+
+				if (_hasPointerCapture)
+				{
+					ReleasePointerCapture(e.Pointer);
+					_hasPointerCapture = false;
+				}
+				_pressedLinkIndex = -1;
+				return;
+			}
 
 			if (_hasPointerCapture)
 			{
@@ -142,6 +238,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerCaptureLost(e);
 			_processedPointerPressedArgs = null;
+			_isPressed = false;
+			_mouseMultiTapChunk = null;
 			_hasPointerCapture = false;
 			_pressedLinkIndex = -1;
 		}
@@ -149,19 +247,54 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
 		{
 			base.OnDoubleTapped(e);
+			e.Handled = true;
+		}
 
+		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			base.OnRightTapped(e);
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
 				return;
 			}
 
-			e.Handled = true;
-
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetPosition(displayBlock), true, true));
-			var word = displayBlock.ParsedText.GetWordAt(index, true);
-			_pointerSelectionAnchor = word.start;
-			SetInteractiveSelection(word.start, word.length);
-			QueueUpdateSelectionFlyoutVisibility(e.PointerDeviceType, e.GetPosition(this));
+			if (index < _selection.start || index >= _selection.start + _selection.length)
+			{
+				SetInteractiveSelection(index, 0);
+			}
+		}
+
+		private void TouchTap(Point point, bool wasFocused)
+		{
+			var displayBlock = _textBoxView!.DisplayBlock;
+			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
+			var tappedChunk = displayBlock.ParsedText.GetWordAt(index, true);
+			var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
+			if (tappedInsideSelection)
+			{
+				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			}
+			else if (_selection.length == 0)
+			{
+				SetInteractiveSelection(tappedChunk.start, tappedChunk.length);
+				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			}
+			else
+			{
+				SetInteractiveSelection(tappedChunk.start, 0);
+				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			}
+		}
+
+		private (int start, int length) GetLogicalLineChunk(int index)
+			=> global::Microsoft.UI.Text.TextUnitNavigation.GetLogicalLineChunk(GetPlainTextContent(), index);
+
+		private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
+		{
+			return previousTap.id == down.PointerId
+				&& down.Timestamp - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayMicroseconds
+				&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, down.Position);
 		}
 	}
 }

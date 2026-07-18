@@ -11,8 +11,8 @@ namespace Microsoft.UI.Text
 	// values) when it is read over a range whose paragraphs disagree. Applying a format only writes
 	// back the properties that are defined.
 	//
-	// The whole surface round-trips through the paragraph run model (get/set/clone/undo). Alignment is
-	// rendered per paragraph; indents, spacing, and lists remain visual-layout gaps.
+	// The whole surface round-trips through the paragraph run model (get/set/clone/undo) and is
+	// projected by the shared Skia text layout.
 	internal sealed class UnoTextParagraphFormat : global::Microsoft.UI.Text.ITextParagraphFormat
 	{
 		// When bound, each setter applies immediately through the bound callback: for a range-bound
@@ -82,6 +82,7 @@ namespace Microsoft.UI.Text
 			get => AlignmentValue;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				AlignmentValue = value;
 				ApplyIfBound(delta => delta.AlignmentValue = value);
 			}
@@ -95,6 +96,7 @@ namespace Microsoft.UI.Text
 			get => KeepTogetherEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				KeepTogetherEffect = value;
 				ApplyIfBound(delta => delta.KeepTogetherEffect = value);
 			}
@@ -105,6 +107,7 @@ namespace Microsoft.UI.Text
 			get => KeepWithNextEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				KeepWithNextEffect = value;
 				ApplyIfBound(delta => delta.KeepWithNextEffect = value);
 			}
@@ -122,6 +125,7 @@ namespace Microsoft.UI.Text
 			get => ListAlignmentValue;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				ListAlignmentValue = value;
 				ApplyIfBound(delta => delta.ListAlignmentValue = value);
 			}
@@ -132,6 +136,10 @@ namespace Microsoft.UI.Text
 			get => ListLevelIndexDefined ? ListLevelIndexValue : global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
 			set
 			{
+				if (value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value && value < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
 				ListLevelIndexValue = value;
 				ListLevelIndexDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
 				ApplyIfBound(delta =>
@@ -162,6 +170,7 @@ namespace Microsoft.UI.Text
 			get => ListStyleValue;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				ListStyleValue = value;
 				ApplyIfBound(delta => delta.ListStyleValue = value);
 			}
@@ -172,6 +181,11 @@ namespace Microsoft.UI.Text
 			get => ListTabDefined ? ListTabValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
+				ValidateFinite(value, nameof(value));
+				if (value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue && value < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
 				ListTabValue = value;
 				ListTabDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 				ApplyIfBound(delta =>
@@ -187,6 +201,7 @@ namespace Microsoft.UI.Text
 			get => ListTypeValue;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				ListTypeValue = value;
 				ApplyIfBound(delta => delta.ListTypeValue = value);
 			}
@@ -197,6 +212,7 @@ namespace Microsoft.UI.Text
 			get => NoLineNumberEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				NoLineNumberEffect = value;
 				ApplyIfBound(delta => delta.NoLineNumberEffect = value);
 			}
@@ -207,6 +223,7 @@ namespace Microsoft.UI.Text
 			get => PageBreakBeforeEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				PageBreakBeforeEffect = value;
 				ApplyIfBound(delta => delta.PageBreakBeforeEffect = value);
 			}
@@ -217,6 +234,7 @@ namespace Microsoft.UI.Text
 			get => RightIndentDefined ? RightIndentValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
+				ValidateFinite(value, nameof(value));
 				RightIndentValue = value;
 				RightIndentDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 				ApplyIfBound(delta =>
@@ -232,6 +250,7 @@ namespace Microsoft.UI.Text
 			get => RightToLeftEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				RightToLeftEffect = value;
 				ApplyIfBound(delta => delta.RightToLeftEffect = value);
 			}
@@ -242,6 +261,7 @@ namespace Microsoft.UI.Text
 			get => SpaceAfterDefined ? SpaceAfterValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
+				ValidateFinite(value, nameof(value));
 				SpaceAfterValue = value;
 				SpaceAfterDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 				ApplyIfBound(delta =>
@@ -257,6 +277,7 @@ namespace Microsoft.UI.Text
 			get => SpaceBeforeDefined ? SpaceBeforeValue : global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			set
 			{
+				ValidateFinite(value, nameof(value));
 				SpaceBeforeValue = value;
 				SpaceBeforeDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 				ApplyIfBound(delta =>
@@ -272,6 +293,7 @@ namespace Microsoft.UI.Text
 			get => StyleValue;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				StyleValue = value;
 				ApplyIfBound(delta => delta.StyleValue = value);
 			}
@@ -284,6 +306,7 @@ namespace Microsoft.UI.Text
 			get => WidowControlEffect;
 			set
 			{
+				ValidateEnum(value, nameof(value));
 				WidowControlEffect = value;
 				ApplyIfBound(delta => delta.WidowControlEffect = value);
 			}
@@ -405,6 +428,9 @@ namespace Microsoft.UI.Text
 
 		public void SetIndents(float start, float left, float right)
 		{
+			ValidateFinite(start, nameof(start));
+			ValidateFinite(left, nameof(left));
+			ValidateFinite(right, nameof(right));
 			FirstLineIndentValue = start;
 			FirstLineIndentDefined = start != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 			LeftIndentValue = left;
@@ -424,6 +450,13 @@ namespace Microsoft.UI.Text
 
 		public void SetLineSpacing(global::Microsoft.UI.Text.LineSpacingRule rule, float spacing)
 		{
+			ValidateEnum(rule, nameof(rule));
+			ValidateFinite(spacing, nameof(spacing));
+			if (rule == global::Microsoft.UI.Text.LineSpacingRule.Percent)
+			{
+				throw new ArgumentException("Percent line spacing is not supported by RichEditBox.", nameof(rule));
+			}
+
 			LineSpacingRuleValue = rule;
 			LineSpacingValue = spacing;
 			LineSpacingDefined = spacing != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
@@ -433,6 +466,22 @@ namespace Microsoft.UI.Text
 				delta.LineSpacingValue = spacing;
 				delta.LineSpacingDefined = LineSpacingDefined;
 			});
+		}
+
+		private static void ValidateFinite(float value, string parameterName)
+		{
+			if (!float.IsFinite(value))
+			{
+				throw new ArgumentException("The paragraph value must be finite.", parameterName);
+			}
+		}
+
+		private static void ValidateEnum<T>(T value, string parameterName) where T : struct, Enum
+		{
+			if (!Enum.IsDefined(value))
+			{
+				throw new ArgumentException("The paragraph value is not defined.", parameterName);
+			}
 		}
 
 		private void CopyFrom(UnoTextParagraphFormat other)

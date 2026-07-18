@@ -739,8 +739,8 @@ namespace Microsoft.UI.Text
 					break;
 				}
 
-				// lineEnd stops before a trailing '\r'; the next visual line starts just past it.
-				var next = lineEnd + (lineEnd < length && text[lineEnd] == '\r' ? 1 : 0);
+				var next = lineEnd;
+				next += global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthAt(text, next);
 				if (next <= probe)
 				{
 					break;
@@ -1445,7 +1445,7 @@ namespace Microsoft.UI.Text
 
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Word
 				|| (unit == global::Microsoft.UI.Text.TextRangeUnit.Paragraph
-					&& (text.Length == 0 || text[text.Length - 1] is '\r' or '\n')))
+					&& (text.Length == 0 || global::Microsoft.UI.Text.TextUnitNavigation.EndsInParagraphBreak(text))))
 			{
 				units.Add((text.Length, text.Length));
 			}
@@ -1476,7 +1476,8 @@ namespace Microsoft.UI.Text
 					break;
 				}
 
-				var next = lineEnd + (lineEnd < text.Length && text[lineEnd] == '\r' ? 1 : 0);
+				var next = lineEnd;
+				next += global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthAt(text, next);
 				if (next <= probe)
 				{
 					break;
