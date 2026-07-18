@@ -499,12 +499,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var owner = (RichEditBox)sender;
 			owner._textBoxView?.SetWrapping();
-			if (owner._contentElement is ScrollViewer scrollViewer)
-			{
-				scrollViewer.HorizontalScrollBarVisibility = owner.TextWrapping == TextWrapping.NoWrap
-					? ScrollBarVisibility.Auto
-					: ScrollBarVisibility.Disabled;
-			}
+			owner.UpdateTextWrappingScrollMode();
 		}
 
 		private static object CoerceTextWrapping(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences precedence)
