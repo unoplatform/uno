@@ -56,6 +56,77 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Emoji_Fallback_Is_Triggered_By_Bases_Not_Sequence_Controls()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x1F469)); // woman
+			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x1F3FD)); // medium skin tone
+			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x20E3)); // keycap
+			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint('1'));
+			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x200D)); // ZWJ
+			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0xFE0F)); // emoji variation selector
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Emoji_Fallback_Loads_Shapes_And_Renders_Zwj_Cluster()
+		{
+			const string emoji = "👩🏽‍💻";
+			var SUT = new RichEditBox
+			{
+				Width = 180,
+				Height = 90,
+				FontSize = 48,
+				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White),
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Document.SetText(TextSetOptions.None, emoji);
+			await WindowHelper.WaitForIdle();
+
+			var details = await Microsoft.UI.Xaml.Documents.TextFormatting.FontDetailsCache.GetFontForCodepoint(
+				0x1F469,
+				(float)SUT.FontSize,
+				SUT.FontWeight,
+				SUT.FontStretch,
+				SUT.FontStyle);
+			Assert.IsNotNull(details, "The WASM fallback service should load Noto COLRv1 on first emoji use.");
+			Assert.AreEqual("Noto Color Emoji", details.SKFont.Typeface.FamilyName);
+
+			using (var buffer = new HarfBuzzSharp.Buffer())
+			{
+				buffer.AddUtf16(emoji);
+				buffer.GuessSegmentProperties();
+				details.Font.Shape(buffer);
+				Assert.AreEqual(1, buffer.Length, "The skin-tone ZWJ sequence should shape as one emoji glyph.");
+			}
+
+			// The text was assigned before the asynchronous font resolved. Completion must invalidate the
+			// original fallback layout and redraw the same grapheme with the downloaded color font.
+			await WindowHelper.WaitForIdle();
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			var chromaticPixels = 0;
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				for (var x = 0; x < bitmap.Width; x++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					var maximum = Math.Max(pixel.R, Math.Max(pixel.G, pixel.B));
+					var minimum = Math.Min(pixel.R, Math.Min(pixel.G, pixel.B));
+					if (pixel.A > 200 && maximum - minimum > 24)
+					{
+						chromaticPixels++;
+					}
+				}
+			}
+
+			Assert.IsGreaterThan(20, chromaticPixels, "COLRv1 rendering should produce colored pixels rather than a monochrome tofu box.");
+		}
+
+		[TestMethod]
 		public async Task When_Text_View_Properties_Change_After_Load()
 		{
 			var SUT = new RichEditBox();
@@ -357,6 +428,159 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Tap_Selects_Word_And_Shows_Grippers()
+		{
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+				finger.Press(GetTextPoint(SUT, 8));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(11, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(RichEditBox.RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+				Assert.IsNotNull(SUT.SelectionGrippersForTesting);
+
+				finger.Press(GetTextPoint(SUT, 8));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(11, SUT.Document.Selection.EndPosition);
+
+				finger.Press(GetTextPoint(SUT, 1));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(RichEditBox.RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Touch_End_Gripper_Drag_Extends_Selection()
+		{
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world again");
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+				finger.Press(GetTextPoint(SUT, 2));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				var grippers = SUT.SelectionGrippersForTesting;
+				Assert.IsNotNull(grippers);
+				finger.Press(grippers.Value.end.GetAbsoluteBounds().GetCenter());
+				var endPoint = GetTextPoint(SUT, 17);
+				finger.MoveTo(new Windows.Foundation.Point(endPoint.X + 12, endPoint.Y), stepOffsetInMilliseconds: 20);
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(17, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Mouse_Triple_Click_Selects_Logical_Line()
+		{
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "first\rsecond\rthird");
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+				mouse.MoveTo(GetTextPoint(SUT, 8));
+				mouse.Press();
+				mouse.Release();
+				mouse.Press();
+				mouse.Release();
+				mouse.Press();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(13, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Mouse_Double_Click_Drag_Extends_By_Word()
+		{
+			var SUT = new RichEditBox { Width = 400 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+				mouse.MoveTo(GetTextPoint(SUT, 8));
+				mouse.Press();
+				mouse.Release();
+				mouse.Press();
+				await WindowHelper.WaitFor(() => SUT.Document.Selection.StartPosition == 6 && SUT.Document.Selection.EndPosition == 11);
+
+				mouse.MoveTo(GetTextPoint(SUT, 1));
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(11, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static Windows.Foundation.Point GetTextPoint(RichEditBox editor, int index)
+		{
+			var displayBlock = editor.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+			Assert.IsNotNull(displayBlock);
+			var textLength = editor.GetPlainTextContent().Length;
+			index = Math.Clamp(index, 0, textLength);
+			var start = displayBlock.ParsedText.GetRectForIndex(index);
+			var end = displayBlock.ParsedText.GetRectForIndex(Math.Min(index + 1, textLength));
+			var point = new Windows.Foundation.Point(
+				(start.X + end.X) / 2 + displayBlock.Padding.Left,
+				start.Y + start.Height / 2 + displayBlock.Padding.Top);
+			return displayBlock.TransformToVisual(null).TransformPoint(point);
 		}
 
 		[TestMethod]
@@ -2074,6 +2298,142 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Inserting_At_Paragraph_Start_Preserves_That_Paragraph_Format()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+				var second = SUT.Document.GetRange(4, 4).ParagraphFormat;
+				second.Alignment = ParagraphAlignment.Right;
+				second.SetIndents(3, 9, 0);
+
+				SUT.Document.Selection.SetRange(4, 4);
+				SUT.Document.Selection.TypeText("X");
+
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(0, 0).ParagraphFormat.Alignment);
+				var actual = SUT.Document.GetRange(4, 4).ParagraphFormat;
+				Assert.AreEqual(ParagraphAlignment.Right, actual.Alignment);
+				Assert.AreEqual(3f, actual.FirstLineIndent);
+				Assert.AreEqual(9f, actual.LeftIndent);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Empty_Paragraph_Format_Projects_And_Is_Inherited_By_Typing()
+		{
+			var SUT = new RichEditBox { Width = 240 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var empty = SUT.Document.GetRange(0, 0).ParagraphFormat;
+				empty.SetIndents(6, 12, 0);
+				empty.SpaceBefore = 3;
+				empty.SetLineSpacing(LineSpacingRule.Exactly, 24);
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(SUT);
+				var caret = block.ParsedText.GetRectForIndex(0);
+				Assert.AreEqual(24, caret.X, 1.5);
+				Assert.AreEqual(4, caret.Y, 1.5);
+				Assert.AreEqual(32, caret.Height, 1.5);
+
+				SUT.Document.Selection.TypeText("x");
+				var typed = SUT.Document.GetRange(0, 0).ParagraphFormat;
+				Assert.AreEqual(6f, typed.FirstLineIndent);
+				Assert.AreEqual(12f, typed.LeftIndent);
+				Assert.AreEqual(LineSpacingRule.Exactly, typed.LineSpacingRule);
+
+				SUT.Document.Undo();
+				Assert.AreEqual(0, SUT.Document.TextLength);
+				Assert.AreEqual(12f, SUT.Document.GetRange(0, 0).ParagraphFormat.LeftIndent);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Terminal_Paragraph_Format_Renders_RoundTrips_Rtf_And_Undoes()
+		{
+			var source = new RichEditBox { Width = 240 };
+			var target = new RichEditBox { Width = 240 };
+			var panel = new StackPanel();
+			panel.Children.Add(source);
+			panel.Children.Add(target);
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				source.Document.SetText(TextSetOptions.None, "a\r");
+				source.Document.BeginUndoGroup();
+				var terminal = source.Document.GetRange(2, 2).ParagraphFormat;
+				terminal.SetIndents(6, 12, 0);
+				terminal.SpaceBefore = 3;
+				terminal.SetLineSpacing(LineSpacingRule.Exactly, 24);
+				terminal.ListType = MarkerType.Arabic;
+				terminal.ListStyle = MarkerStyle.Period;
+				terminal.ListLevelIndex = 1;
+				terminal.ListStart = 1;
+				terminal.ListTab = 18;
+				source.Document.EndUndoGroup();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0f, source.Document.GetRange(0, 0).ParagraphFormat.LeftIndent);
+				var block = GetDisplayBlock(source);
+				Assert.AreEqual("1.", block.EndingParagraphLayout?.MarkerText);
+				var terminalCaret = block.ParsedText.GetRectForIndex(2);
+				Assert.AreEqual(48, terminalCaret.X, 1.5, "The 24-DIP indent plus 24-DIP list tab should position terminal text at 48 DIPs.");
+				Assert.AreEqual(32, terminalCaret.Height, 1.5);
+
+				source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+				target.Document.SetText(TextSetOptions.FormatRtf, rtf);
+				var imported = target.Document.GetRange(2, 2).ParagraphFormat;
+				Assert.AreEqual(12f, imported.LeftIndent);
+				Assert.AreEqual(LineSpacingRule.Exactly, imported.LineSpacingRule);
+				Assert.AreEqual(MarkerType.Arabic, imported.ListType);
+				Assert.AreEqual(1, imported.ListLevelIndex);
+
+				source.Document.Undo();
+				Assert.AreEqual(0f, source.Document.GetRange(2, 2).ParagraphFormat.LeftIndent);
+				Assert.AreEqual(MarkerType.Undefined, source.Document.GetRange(2, 2).ParagraphFormat.ListType);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Logical_Line_Chunks_Handle_Crlf_And_Unicode_Separators()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				const string text = "a\r\nb\u2028c\u2029d";
+				Assert.AreEqual(2, TextUnitNavigation.GetHardLineBreakLengthEndingAt(text, 3));
+				Assert.AreEqual((0, 3), TextUnitNavigation.GetLogicalLineChunk(text, 1));
+				Assert.AreEqual((3, 2), TextUnitNavigation.GetLogicalLineChunk(text, 3));
+				Assert.AreEqual((5, 2), TextUnitNavigation.GetLogicalLineChunk(text, 5));
+				Assert.AreEqual((7, 1), TextUnitNavigation.GetLogicalLineChunk(text, 7));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Mixed_Paragraph_Alignments_Render_Per_Paragraph()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -2103,6 +2463,317 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Paragraph_Indents_Project_To_Caret_Geometry()
+		{
+			var SUT = new RichEditBox { Width = 320, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "first\rsecond");
+				SUT.Document.GetRange(0, 0).ParagraphFormat.SetIndents(12, 24, 18);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 0).GetRect(PointOptions.ClientCoordinates, out var indented, out _);
+				SUT.Document.GetRange(6, 6).GetRect(PointOptions.ClientCoordinates, out var baseline, out _);
+
+				Assert.AreEqual(48, indented.X - baseline.X, 1.5, "TOM points should project to DIPs and combine left + first-line indents.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Hanging_Indent_Projects_Differently_On_Wrapped_Lines()
+		{
+			var SUT = new RichEditBox { Width = 100, TextWrapping = TextWrapping.Wrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda");
+				SUT.Document.GetRange(0, 0).ParagraphFormat.SetIndents(-12, 24, 0);
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(SUT);
+				var firstLine = block.ParsedText.GetLineAt(0);
+				Assert.IsFalse(firstLine.lastLine, "The test text should wrap under the constrained width.");
+				var first = block.ParsedText.GetRectForIndex(0);
+				var continuation = block.ParsedText.GetRectForIndex(firstLine.start + firstLine.length);
+
+				Assert.AreEqual(16, continuation.X - first.X, 1.5, "The continuation line should use the full left indent while the first line hangs by 12 points.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Paragraph_And_Line_Spacing_Project_To_Vertical_Geometry()
+		{
+			var SUT = new RichEditBox { Width = 240 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "a\rb");
+				var firstFormat = SUT.Document.GetRange(0, 0).ParagraphFormat;
+				firstFormat.SetLineSpacing(LineSpacingRule.Exactly, 30);
+				firstFormat.SpaceAfter = 9;
+				SUT.Document.GetRange(2, 2).ParagraphFormat.SpaceBefore = 6;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 0).GetRect(PointOptions.ClientCoordinates, out var first, out _);
+				SUT.Document.GetRange(2, 2).GetRect(PointOptions.ClientCoordinates, out var second, out _);
+
+				Assert.AreEqual(40, first.Height, 1.5, "Exactly 30 points should produce a 40-DIP line box.");
+				Assert.AreEqual(60, second.Y - first.Y, 2, "The second line should follow the 40-DIP line plus 9pt after and 6pt before spacing.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Default_Paragraph_Between_Formatted_Paragraphs_Resets_Layout()
+		{
+			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "one\rtwo\rthree");
+				SUT.Document.GetRange(0, 0).ParagraphFormat.SetIndents(0, 24, 0);
+				SUT.Document.GetRange(8, 8).ParagraphFormat.SetIndents(0, 12, 0);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 0).GetRect(PointOptions.ClientCoordinates, out var first, out _);
+				SUT.Document.GetRange(4, 4).GetRect(PointOptions.ClientCoordinates, out var middle, out _);
+				SUT.Document.GetRange(8, 8).GetRect(PointOptions.ClientCoordinates, out var last, out _);
+
+				Assert.AreEqual(32, first.X - middle.X, 1.5);
+				Assert.AreEqual(16, last.X - middle.X, 1.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Nested_Lists_Number_And_Render_Markers()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+				Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "outer\rnested\rresume");
+
+				ConfigureListParagraph(SUT.Document.GetRange(0, 0).ParagraphFormat, level: 1, leftIndent: 24);
+				ConfigureListParagraph(SUT.Document.GetRange(6, 6).ParagraphFormat, level: 2, leftIndent: 36);
+				ConfigureListParagraph(SUT.Document.GetRange(13, 13).ParagraphFormat, level: 1, leftIndent: 24);
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(SUT);
+				var markers = block.Inlines
+					.OfType<Run>()
+					.Select(run => run.ParagraphLayout?.MarkerText)
+					.Where(marker => marker is not null)
+					.ToArray();
+				CollectionAssert.AreEqual(new[] { "1.", "1.", "2." }, markers);
+
+				var textStart = block.ParsedText.GetRectForIndex(0).X + block.Padding.Left;
+				var screenshot = await UITestHelper.ScreenShot(block);
+				var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 15);
+				Assert.IsTrue(redBounds.Left < textStart - 4, $"The marker should render before the indexed text origin; marker/text bounds began at {redBounds.Left}, text at {textStart}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Line_Separator_Does_Not_Restart_Paragraph_Indent()
+		{
+			var SUT = new RichEditBox { Width = 260, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "a\u2028b\u2029c");
+				SUT.Document.GetRange(0, 0).ParagraphFormat.SetIndents(9, 18, 0);
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(SUT);
+				var first = block.ParsedText.GetRectForIndex(0);
+				var afterLineSeparator = block.ParsedText.GetRectForIndex(2);
+				var afterParagraphSeparator = block.ParsedText.GetRectForIndex(4);
+
+				Assert.AreEqual(12, first.X - afterLineSeparator.X, 1.5, "U+2028 should continue the paragraph and drop only the first-line indent.");
+				Assert.AreEqual(24, afterLineSeparator.X - afterParagraphSeparator.X, 1.5, "U+2029 should begin a separately formatted paragraph.");
+				Assert.AreEqual(0, SUT.Document.GetRange(4, 4).ParagraphFormat.LeftIndent);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtl_Paragraph_List_Projects_Direction_And_Mirrored_Indents()
+		{
+			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "ltr\rאבג");
+				var rtl = SUT.Document.GetRange(4, 4).ParagraphFormat;
+				rtl.RightToLeft = FormatEffect.On;
+				rtl.Alignment = ParagraphAlignment.Right;
+				rtl.SetIndents(6, 12, 18);
+				rtl.ListType = MarkerType.Arabic;
+				rtl.ListStyle = MarkerStyle.Period;
+				rtl.ListLevelIndex = 1;
+				rtl.ListStart = 1;
+				rtl.ListTab = 12;
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(SUT);
+				var rtlRun = block.Inlines.OfType<Run>().First(run => run.Text.Contains("אבג", StringComparison.Ordinal));
+				Assert.AreEqual(FlowDirection.RightToLeft, rtlRun.FlowDirection);
+				Assert.IsTrue(rtlRun.ParagraphLayout?.RightToLeft);
+				Assert.AreEqual("1.", rtlRun.ParagraphLayout?.MarkerText);
+
+				var logicalStart = block.ParsedText.GetRectForIndex(4);
+				var logicalEnd = block.ParsedText.GetRectForIndex(7);
+				Assert.IsGreaterThan(logicalEnd.X, logicalStart.X, "Logical RTL text should progress from the right edge toward the left.");
+				Assert.IsTrue(logicalStart.X <= 300 - 24 - 8, $"The RTL first line should honor its right + first-line indents, got X={logicalStart.X}.");
+				Assert.IsTrue(double.IsFinite(logicalStart.X) && double.IsFinite(logicalEnd.X));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Justified_Paragraph_Expands_Wrapped_Nonfinal_Lines()
+		{
+			const string text = "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda";
+			var left = new RichEditBox { Width = 150, TextWrapping = TextWrapping.Wrap };
+			var justified = new RichEditBox { Width = 150, TextWrapping = TextWrapping.Wrap };
+			var panel = new StackPanel();
+			panel.Children.Add(left);
+			panel.Children.Add(justified);
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				left.Document.SetText(TextSetOptions.None, text);
+				justified.Document.SetText(TextSetOptions.None, text);
+				justified.Document.GetRange(0, 0).ParagraphFormat.Alignment = ParagraphAlignment.Justify;
+				await WindowHelper.WaitForIdle();
+
+				var leftText = GetDisplayBlock(left).ParsedText;
+				var justifiedText = GetDisplayBlock(justified).ParsedText;
+				var firstLine = justifiedText.GetLineAt(0);
+				Assert.IsFalse(firstLine.lastLine);
+				var lastCharacter = firstLine.start + firstLine.length - 1;
+				var leftRect = leftText.GetRectForIndex(lastCharacter);
+				var justifiedRect = justifiedText.GetRectForIndex(lastCharacter);
+				Assert.IsGreaterThan(
+					leftRect.Right + 5,
+					justifiedRect.Right,
+					$"Justification should expand the first wrapped line toward the right content edge, got {leftRect.Right} and {justifiedRect.Right}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Paragraph_Marker_Families_Project_Correct_Glyphs()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "black\rwhite\rjapanese");
+				ConfigureMarker(SUT.Document.GetRange(0, 0).ParagraphFormat, MarkerType.BlackCircleWingding);
+				ConfigureMarker(SUT.Document.GetRange(6, 6).ParagraphFormat, MarkerType.WhiteCircleWingding);
+				ConfigureMarker(SUT.Document.GetRange(12, 12).ParagraphFormat, MarkerType.JapanSimplifiedChinese);
+				await WindowHelper.WaitForIdle();
+
+				var markers = GetDisplayBlock(SUT).Inlines.OfType<Run>()
+					.Select(run => run.ParagraphLayout?.MarkerText)
+					.Where(marker => marker is not null)
+					.ToArray();
+				CollectionAssert.AreEqual(new[] { "①.", "❶.", "一．" }, markers);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+
+			static void ConfigureMarker(ITextParagraphFormat format, MarkerType type)
+			{
+				format.SetIndents(0, 18, 0);
+				format.ListType = type;
+				format.ListStyle = MarkerStyle.Period;
+				format.ListLevelIndex = 1;
+				format.ListStart = 1;
+				format.ListTab = 12;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Percent_Line_Spacing_Is_Rejected()
+		{
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			var format = SUT.Document.GetDefaultParagraphFormat();
+			Assert.ThrowsExactly<ArgumentException>(() => format.SetLineSpacing(LineSpacingRule.Percent, 150));
+			Assert.ThrowsExactly<ArgumentException>(() => format.SetIndents(float.NaN, 0, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => format.SpaceBefore = float.PositiveInfinity);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => format.ListTab = -1);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => format.ListLevelIndex = -1);
+			Assert.ThrowsExactly<ArgumentException>(() => format.ListType = (MarkerType)999);
+		}
+
+		private static void ConfigureListParagraph(ITextParagraphFormat format, int level, float leftIndent)
+		{
+			format.SetIndents(0, leftIndent, 0);
+			format.ListType = MarkerType.Arabic;
+			format.ListStyle = MarkerStyle.Period;
+			format.ListAlignment = MarkerAlignment.Right;
+			format.ListLevelIndex = level;
+			format.ListStart = 1;
+			format.ListTab = 18;
+		}
+
+		private static TextBlock GetDisplayBlock(RichEditBox editor)
+		{
+			var block = editor.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+			Assert.IsNotNull(block);
+			return block;
 		}
 
 		[TestMethod]
@@ -3152,6 +3823,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, rtf));
 				SUT.Document.GetText(TextGetOptions.None, out var text);
 				Assert.AreEqual(string.Empty, text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Exact_Character_Cap_Still_Parses_Terminal_Paragraph_Metadata()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				const string rtf = @"{\rtf1 a{\*\unopara 3,0,12,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,}}";
+				var fragment = RichTextRtfCodec.Read(rtf, maxCharacters: 1);
+
+				Assert.AreEqual("a", fragment.Text);
+				Assert.IsTrue(fragment.HasExplicitTerminalParagraphState);
+				Assert.AreEqual(ParagraphAlignment.Right, fragment.TerminalParagraphState.Alignment);
+				Assert.AreEqual(12f, fragment.TerminalParagraphState.LeftIndent);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Rtf_Truncation_Does_Not_Apply_Discarded_Paragraph_Format()
+		{
+			var SUT = new RichEditBox { MaxLength = 1 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\ql a\par\qr b}");
+
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("a", text);
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(1, 1).ParagraphFormat.Alignment);
 			}
 			finally
 			{
