@@ -4806,6 +4806,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned over the TextBox before dragging");
+
+			// Grab the THUMB near its bottom edge (what a real finger hits) rather than the gripper's center.
+			// The thumb hangs a full line below the caret; sampling the drag point without correcting for that
+			// spilled onto the next render line and snapped the caret to the end of the text (see the Y offset
+			// in TextSelectionGripperPresenter.OnGripperPointerMoved).
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(20, 0, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The caret should track the finger mid-text, NOT jump to the end of the text.
+			Assert.IsTrue(SUT.SelectionStart < SUT.Text.Length, $"caret should NOT jump to end of text (len {SUT.Text.Length}, now {SUT.SelectionStart})");
+		}
+
+		[TestMethod]
 		public Task When_Touch_SingleTap_Places_Caret_Android()
 			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
 
