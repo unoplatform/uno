@@ -1433,6 +1433,36 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private bool _alignmentIncludesTrailingWhitespace;
+
+		internal bool AlignmentIncludesTrailingWhitespace
+		{
+			get => _alignmentIncludesTrailingWhitespace;
+			set
+			{
+				if (_alignmentIncludesTrailingWhitespace != value)
+				{
+					_alignmentIncludesTrailingWhitespace = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private bool _ignoreTrailingCharacterSpacing;
+
+		internal bool IgnoreTrailingCharacterSpacing
+		{
+			get => _ignoreTrailingCharacterSpacing;
+			set
+			{
+				if (_ignoreTrailingCharacterSpacing != value)
+				{
+					_ignoreTrailingCharacterSpacing = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
 		internal event EventHandler? DrawingFinished;
 
 		public TextBlock()
@@ -1564,6 +1594,8 @@ namespace Microsoft.UI.Xaml.Controls
 				EndingParagraphLayout,
 				EndingParagraphAlignment,
 				Foreground,
+				AlignmentIncludesTrailingWhitespace,
+				IgnoreTrailingCharacterSpacing,
 				out size);
 
 			if (isTextBoxOwned)

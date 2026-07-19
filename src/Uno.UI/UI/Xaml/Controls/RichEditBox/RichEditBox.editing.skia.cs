@@ -856,6 +856,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (focused
 				&& CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing
+				&& Document.CaretType != global::Microsoft.UI.Text.CaretType.Null
 				&& _selection.length == 0
 				&& !IsReadOnly
 				&& _caretBlinkVisible)
