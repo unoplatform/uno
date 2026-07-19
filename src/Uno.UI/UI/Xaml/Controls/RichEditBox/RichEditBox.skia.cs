@@ -36,6 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _propertyChangedCallbacksRegistered;
 		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
+		private bool _pendingUpdateScrolling;
+		private int? _pendingScrollingTargetIndex;
+		private int? _bringIntoViewTargetIndex;
 
 		/// <summary>
 		/// Gets an object that facilitates programmatic access to the text and formatting properties
@@ -78,6 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isInitializing = false;
 
 			UpdateVisualState();
+			DispatchUpdateScrolling();
 		}
 
 		private void UpdateTextBoxView()
@@ -198,10 +202,15 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
 
 			OnDocumentTextChangedInteractive();
+			DispatchUpdateScrolling();
 			QueueTextChangedNotification(textChange);
 		}
 
-		internal void OnDocumentMathModeChanged() => RenderDocument();
+		internal void OnDocumentMathModeChanged()
+		{
+			RenderDocument();
+			DispatchUpdateScrolling();
+		}
 
 		internal void OnDocumentCaretTypeChanged() => UpdateDisplaySelection();
 
@@ -245,6 +254,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			DispatchUpdateScrolling();
+		}
+
 		private protected override void OnUnloaded()
 		{
 			_gripperPresenter?.Hide();
@@ -256,6 +271,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnIsEnabledChanged(e);
 			UpdateVisualState();
+		}
+
+		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+		{
+			base.OnBringIntoViewRequested(e);
+
+			if ((e.TargetElement is null || e.TargetElement == this)
+				&& FocusState != FocusState.Unfocused
+				&& !Document.HasPendingDisplayUpdates
+				&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
+				&& _textBoxView?.DisplayBlock is { } displayBlock)
+			{
+				var caret = _bringIntoViewTargetIndex ?? GetActiveSelectionIndex();
+				var caretRect = displayBlock.ParsedText.GetRectForIndex(caret);
+				caretRect = caretRect with
+				{
+					Width = Math.Max(TextBlock.CaretThickness, caretRect.Width),
+				};
+				e.TargetRect = displayBlock.TransformToVisual(this).TransformBounds(caretRect);
+			}
 		}
 
 		internal override void UpdateVisualState(bool useTransitions = true)
@@ -282,30 +317,35 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnFontSizeChanged(oldValue, newValue);
 			_textBoxView?.UpdateFont();
+			DispatchUpdateScrolling();
 		}
 
 		protected override void OnFontFamilyChanged(FontFamily oldValue, FontFamily newValue)
 		{
 			base.OnFontFamilyChanged(oldValue, newValue);
 			_textBoxView?.UpdateFont();
+			DispatchUpdateScrolling();
 		}
 
 		protected override void OnFontStyleChanged(FontStyle oldValue, FontStyle newValue)
 		{
 			base.OnFontStyleChanged(oldValue, newValue);
 			_textBoxView?.UpdateFont();
+			DispatchUpdateScrolling();
 		}
 
 		private protected override void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
 		{
 			base.OnFontStretchChanged(oldValue, newValue);
 			_textBoxView?.UpdateFont();
+			DispatchUpdateScrolling();
 		}
 
 		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
 		{
 			base.OnFontWeightChanged(oldValue, newValue);
 			_textBoxView?.UpdateFont();
+			DispatchUpdateScrolling();
 		}
 
 		private void UpdateSelectionHighlightColor()
@@ -390,7 +430,9 @@ namespace Microsoft.UI.Xaml.Controls
 			=> SetInteractiveSelection(index, 0);
 
 		void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
-			=> UpdateScrollingForGripper(isEndGripper);
+			=> UpdateScrollingToIndex(isEndGripper
+				? _selection.start + _selection.length
+				: _selection.start);
 
 		void ITextSelectionGripperHost.OnGripperPressed()
 			=> DismissSelectionFlyoutForPointerPress();
@@ -408,22 +450,72 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
 			=> TouchTap(args.GetCurrentPoint(_textBoxView!.DisplayBlock).Position, wasFocused: true);
 
-		private void UpdateScrollingForGripper(bool isEndGripper)
+		private int GetActiveSelectionIndex()
+			=> _selection.selectionEndsAtTheStart
+				? _selection.start
+				: _selection.start + _selection.length;
+
+		private void UpdateScrolling()
+			=> UpdateScrollingToIndex(GetActiveSelectionIndex());
+
+		private void DispatchUpdateScrolling()
 		{
+			if (_pendingUpdateScrolling)
+			{
+				return;
+			}
+
+			_pendingUpdateScrolling = true;
+			if (!DispatcherQueue.TryEnqueue(() =>
+			{
+				_pendingUpdateScrolling = false;
+				if (_pendingScrollingTargetIndex is { } targetIndex)
+				{
+					_pendingScrollingTargetIndex = null;
+					UpdateScrollingToIndex(targetIndex);
+				}
+				else
+				{
+					UpdateScrolling();
+				}
+			}))
+			{
+				_pendingUpdateScrolling = false;
+			}
+		}
+
+		private void UpdateScrollingToIndex(int index)
+		{
+			if (Document.HasPendingDisplayUpdates)
+			{
+				_pendingScrollingTargetIndex = index;
+				return;
+			}
+
 			if (_contentElement is not ScrollViewer scrollViewer || _textBoxView?.DisplayBlock is not { } displayBlock)
 			{
 				return;
 			}
 
-			var index = isEndGripper
-				? _selection.start + _selection.length
-				: _selection.start;
 			var caretRect = displayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
 			var horizontalOffset = Math.Min(scrollViewer.HorizontalOffset, caretRect.Left);
 			horizontalOffset = Math.Max(horizontalOffset, Math.Ceiling(caretRect.Right - scrollViewer.ViewportWidth + TextBlock.CaretThickness));
 			var verticalOffset = Math.Min(scrollViewer.VerticalOffset, caretRect.Top);
 			verticalOffset = Math.Max(verticalOffset, caretRect.Bottom - scrollViewer.ViewportHeight);
 			scrollViewer.ChangeView(horizontalOffset, verticalOffset, null);
+
+			if (FocusState != FocusState.Unfocused && scrollViewer.VerticalScrollMode == ScrollMode.Disabled)
+			{
+				_bringIntoViewTargetIndex = index;
+				try
+				{
+					StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+				}
+				finally
+				{
+					_bringIntoViewTargetIndex = null;
+				}
+			}
 		}
 
 		internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? SelectionGrippersForTesting

@@ -104,9 +104,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var length = GetPlainTextContent().Length;
 			var selStart = Math.Clamp(Document.Selection.StartPosition, 0, length);
 			var selEnd = Math.Clamp(Document.Selection.EndPosition, 0, length);
-			_selection = (selStart, selEnd - selStart, false);
-			Document.SetSelectionRangeInternal(selStart, selEnd);
-			_caretXOffset = (float)_textBoxView.DisplayBlock.ParsedText.GetRectForIndex(selEnd).Left;
+			var selectionEndsAtTheStart = selStart != selEnd
+				&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
+			_selection = (selStart, selEnd - selStart, selectionEndsAtTheStart);
+			Document.SetSelectionRangeInternal(selStart, selEnd, selectionEndsAtTheStart: selectionEndsAtTheStart);
+			var caret = selectionEndsAtTheStart ? selStart : selEnd;
+			_caretXOffset = (float)_textBoxView.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
 
 			// Touch focus can be delivered after PointerReleased has already selected a word and
 			// requested thumbs. TextBox performs its TouchTap after its synchronous focus update;
@@ -116,6 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
 			}
+
+			DispatchUpdateScrolling();
 		}
 
 		internal void StopCaret()
@@ -134,11 +139,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var textLength = GetPlainTextContent().Length;
 			var start = Math.Clamp(_selection.start, 0, textLength);
 			var end = Math.Clamp(_selection.start + _selection.length, start, textLength);
-			var isBackward = _selection.selectionEndsAtTheStart;
+			var isBackward = _selection.selectionEndsAtTheStart && start != end;
 			var caret = isBackward ? start : end;
 
 			_selection = (start, end - start, isBackward);
-			Document.SetSelectionRangeInternal(start, end);
+			Document.SetSelectionRangeInternal(start, end, selectionEndsAtTheStart: isBackward);
 			_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
 			CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
 		}
@@ -707,7 +712,9 @@ namespace Microsoft.UI.Xaml.Controls
 			var length = GetPlainTextContent().Length;
 			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
 			var end = Math.Clamp(Document.Selection.EndPosition, start, length);
-			ProcessSelectionChange(start, end, selectionEndsAtTheStart: false, proposalAlreadyInTom: true, raiseForSameRange: true);
+			var selectionEndsAtTheStart = start != end
+				&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
+			ProcessSelectionChange(start, end, selectionEndsAtTheStart, proposalAlreadyInTom: true, raiseForSameRange: true);
 		}
 
 		private void ProcessSelectionChange(int proposedStart, int proposedEnd, bool selectionEndsAtTheStart, bool proposalAlreadyInTom, bool raiseForSameRange)
@@ -721,7 +728,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!proposalAlreadyInTom)
 			{
-				Document.SetSelectionRangeInternal(proposedStart, proposedEnd, clearPendingCaretFormat: false);
+				Document.SetSelectionRangeInternal(
+					proposedStart,
+					proposedEnd,
+					clearPendingCaretFormat: false,
+					selectionEndsAtTheStart: selectionEndsAtTheStart);
 			}
 
 			if (selectionChanged || raiseForSameRange)
@@ -759,11 +770,16 @@ namespace Microsoft.UI.Xaml.Controls
 				proposedStart = handlerStart;
 				proposedEnd = handlerEnd;
 				selectionEndsAtTheStart = selectionChangedByHandler
-					? false
+					? proposedStart != proposedEnd
+						&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive)
 					: selectionEndsAtTheStart && proposedStart != proposedEnd;
 			}
 
-			Document.SetSelectionRangeInternal(proposedStart, proposedEnd, clearPendingCaretFormat: false);
+			Document.SetSelectionRangeInternal(
+				proposedStart,
+				proposedEnd,
+				clearPendingCaretFormat: false,
+				selectionEndsAtTheStart: selectionEndsAtTheStart);
 			Document.ClearPendingCaretFormatIfMoved(proposedStart, proposedEnd);
 			CommitInteractiveSelection(proposedStart, proposedEnd, selectionEndsAtTheStart);
 		}
@@ -773,13 +789,19 @@ namespace Microsoft.UI.Xaml.Controls
 			var textLength = GetPlainTextContent().Length;
 			var start = Math.Clamp(selection.start, 0, textLength);
 			var end = Math.Clamp(selection.start + selection.length, start, textLength);
-			Document.SetSelectionRangeInternal(start, end, clearPendingCaretFormat: false);
+			Document.SetSelectionRangeInternal(
+				start,
+				end,
+				clearPendingCaretFormat: false,
+				selectionEndsAtTheStart: selection.selectionEndsAtTheStart && start != end);
 			CommitInteractiveSelection(start, end, selection.selectionEndsAtTheStart && start != end, raiseSelectionChanged: false);
 		}
 
 		private void CommitInteractiveSelection(int start, int end, bool selectionEndsAtTheStart, bool raiseSelectionChanged = true)
 		{
-			_selection = (start, end - start, selectionEndsAtTheStart);
+			var selection = (start, end - start, selectionEndsAtTheStart);
+			var selectionChanged = selection != _selection;
+			_selection = selection;
 			if (!raiseSelectionChanged)
 			{
 				_lastRaisedSelection = (start, end - start);
@@ -808,6 +830,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateDisplaySelection();
 			_textBoxView?.Select(start, end - start);
+			if (selectionChanged)
+			{
+				UpdateScrolling();
+			}
 		}
 
 		private void DocumentUndoInteractive()
