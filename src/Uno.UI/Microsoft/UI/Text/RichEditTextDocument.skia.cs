@@ -78,6 +78,8 @@ namespace Microsoft.UI.Text
 		/// <summary>The number of characters in the plain-text buffer.</summary>
 		internal int TextLength => _plainText.Length;
 
+		internal bool HasPendingDisplayUpdates => _batchDepth > 0 && _pendingRender;
+
 		/// <summary>Returns the substring of the plain-text buffer between two clamped positions.</summary>
 		internal string GetTextInRange(int start, int end)
 		{
@@ -419,7 +421,7 @@ namespace Microsoft.UI.Text
 				text = TextUnitNavigation.TruncateToUtf16Boundary(text, maxLength);
 			}
 
-			var selection = (UnoTextRange)Selection;
+			var selection = (UnoTextSelection)Selection;
 			var selectionWasNonzero = selection.StartPosition != 0 || selection.EndPosition != 0;
 			var documentChanged = MutateWithUndo(() =>
 			{
@@ -439,7 +441,7 @@ namespace Microsoft.UI.Text
 					: paragraphStates.Count > 0 ? paragraphStates[^1].Clone() : DefaultParagraphState();
 				_mathML = mathML;
 				RebaseRanges(0, oldLength, text.Length, sourceRange: null);
-				selection.SetRangeInternal(0, 0);
+				selection.SetRangeInternal(0, 0, selectionEndsAtTheStart: false);
 			}, textEdit: new TextEdit(0, oldLength, text.Length));
 			if (!documentChanged && selectionWasNonzero)
 			{
@@ -729,14 +731,14 @@ namespace Microsoft.UI.Text
 		/// Mirrors the owning control's interactive caret/selection into <see cref="Selection"/> without
 		/// triggering the drag semantics of the public position setters. Used by the interactive editor.
 		/// </summary>
-		internal void SetSelectionRangeInternal(int start, int end, bool clearPendingCaretFormat = true)
+		internal void SetSelectionRangeInternal(int start, int end, bool clearPendingCaretFormat = true, bool selectionEndsAtTheStart = false)
 		{
 			if (clearPendingCaretFormat)
 			{
 				ClearPendingCaretFormatIfMoved(start, end);
 			}
 
-			((UnoTextRange)Selection).SetRangeInternal(start, end);
+			((UnoTextSelection)Selection).SetRangeInternal(start, end, selectionEndsAtTheStart);
 		}
 
 		/// <summary>
@@ -835,7 +837,7 @@ namespace Microsoft.UI.Text
 			}
 
 			var oldLength = _plainText.Length;
-			var selection = (UnoTextRange)Selection;
+			var selection = (UnoTextSelection)Selection;
 			var selectionWasNonzero = selection.StartPosition != 0 || selection.EndPosition != 0;
 			var documentChanged = MutateWithUndo(() =>
 			{
@@ -844,7 +846,7 @@ namespace Microsoft.UI.Text
 				ResetParagraphRuns(text.Length);
 				_mathML = null;
 				RebaseRanges(0, oldLength, text.Length, sourceRange: null);
-				selection.SetRangeInternal(0, 0);
+				selection.SetRangeInternal(0, 0, selectionEndsAtTheStart: false);
 			}, textEdit: new TextEdit(0, oldLength, text.Length));
 
 			// A same-text/default-format SetText is a content no-op, but it still resets the selection.
