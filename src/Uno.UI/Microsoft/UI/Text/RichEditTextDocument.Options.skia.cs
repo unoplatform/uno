@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Microsoft.UI.Text
@@ -7,9 +8,8 @@ namespace Microsoft.UI.Text
 	// Uno-specific functional implementation of the RichEditBox document-level option knobs and the
 	// clipboard-availability queries for Skia.
 	//
-	// CanCopy/CanPaste are genuinely functional. DefaultTabStop drives shared tab layout; CaretType,
-	// AlignmentIncludesTrailingWhitespace, and IgnoreTrailingCharacterSpacing currently round-trip as
-	// document settings. These options are intentionally excluded from undo snapshots.
+	// CanCopy/CanPaste are genuinely functional. The remaining options drive caret or shared text
+	// layout behavior and are intentionally excluded from undo snapshots.
 	public partial class RichEditTextDocument
 	{
 		private global::Microsoft.UI.Text.CaretType _caretType = global::Microsoft.UI.Text.CaretType.Normal;
@@ -17,11 +17,23 @@ namespace Microsoft.UI.Text
 		private bool _alignmentIncludesTrailingWhitespace;
 		private bool _ignoreTrailingCharacterSpacing;
 
-		/// <summary>Gets or sets the caret type. Round-trips; not yet reflected in rendering.</summary>
+		/// <summary>Gets or sets the caret type.</summary>
 		public global::Microsoft.UI.Text.CaretType CaretType
 		{
 			get => _caretType;
-			set => _caretType = value;
+			set
+			{
+				if (!Enum.IsDefined(value))
+				{
+					throw new ArgumentException("The caret type is not defined.", nameof(value));
+				}
+
+				if (_caretType != value)
+				{
+					_caretType = value;
+					_owner.OnDocumentCaretTypeChanged();
+				}
+			}
 		}
 
 		/// <summary>
@@ -41,23 +53,35 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>
-		/// Gets or sets whether paragraph alignment includes trailing whitespace. Round-trips; not yet
-		/// reflected in rendering.
+		/// Gets or sets whether paragraph alignment includes trailing whitespace.
 		/// </summary>
 		public bool AlignmentIncludesTrailingWhitespace
 		{
 			get => _alignmentIncludesTrailingWhitespace;
-			set => _alignmentIncludesTrailingWhitespace = value;
+			set
+			{
+				if (_alignmentIncludesTrailingWhitespace != value)
+				{
+					_alignmentIncludesTrailingWhitespace = value;
+					RequestRender(isContentChanging: false);
+				}
+			}
 		}
 
 		/// <summary>
-		/// Gets or sets whether trailing character spacing is ignored. Round-trips; not yet reflected
-		/// in rendering.
+		/// Gets or sets whether trailing character spacing is ignored.
 		/// </summary>
 		public bool IgnoreTrailingCharacterSpacing
 		{
 			get => _ignoreTrailingCharacterSpacing;
-			set => _ignoreTrailingCharacterSpacing = value;
+			set
+			{
+				if (_ignoreTrailingCharacterSpacing != value)
+				{
+					_ignoreTrailingCharacterSpacing = value;
+					RequestRender(isContentChanging: false);
+				}
+			}
 		}
 
 		/// <summary>

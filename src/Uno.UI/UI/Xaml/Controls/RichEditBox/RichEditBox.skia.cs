@@ -203,6 +203,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnDocumentMathModeChanged() => RenderDocument();
 
+		internal void OnDocumentCaretTypeChanged() => UpdateDisplaySelection();
+
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
