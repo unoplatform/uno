@@ -43,6 +43,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public void When_Start_End_HorizontalTextAlignment_Match_WinUI()
+		{
+			var SUT = new RichEditBox();
+
+			SUT.HorizontalTextAlignment = TextAlignment.Start;
+			Assert.AreEqual(TextAlignment.Left, SUT.TextAlignment);
+
+			SUT.HorizontalTextAlignment = TextAlignment.End;
+			Assert.AreEqual(TextAlignment.Right, SUT.TextAlignment);
+		}
+
+		[TestMethod]
 		public void When_TextConstants_Match_WinUIEdit()
 		{
 			Assert.AreEqual(global::Windows.UI.Color.FromArgb(0, 0, 0, 1), TextConstants.AutoColor);
@@ -5362,16 +5374,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_CaretType_RoundTrips()
+		public async Task When_CaretType_Null_Suppresses_Visual_Caret()
 		{
-			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			var SUT = new RichEditBox { Width = 240 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				SUT.Document.Selection.SetRange(1, 1);
 
-			Assert.AreEqual(CaretType.Normal, SUT.Document.CaretType);
+				Assert.AreEqual(CaretType.Normal, SUT.Document.CaretType);
+				Assert.IsTrue(SUT.IsCaretRenderedForTesting);
 
-			SUT.Document.CaretType = CaretType.Null;
-			Assert.AreEqual(CaretType.Null, SUT.Document.CaretType);
+				SUT.Document.CaretType = CaretType.Null;
+				Assert.AreEqual(CaretType.Null, SUT.Document.CaretType);
+				Assert.IsFalse(SUT.IsCaretRenderedForTesting);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
+				SUT.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual("abc", text);
+
+				SUT.Document.CaretType = CaretType.Normal;
+				Assert.IsTrue(SUT.IsCaretRenderedForTesting);
+				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.CaretType = (CaretType)int.MaxValue);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -5389,6 +5422,284 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(SUT.Document.AlignmentIncludesTrailingWhitespace);
 			Assert.IsTrue(SUT.Document.IgnoreTrailingCharacterSpacing);
+		}
+
+		[TestMethod]
+		[DataRow(TextAlignment.Left, 0d)]
+		[DataRow(TextAlignment.Center, 0.5d)]
+		[DataRow(TextAlignment.Right, 1d)]
+		public async Task When_AlignmentIncludesTrailingWhitespace_Changes_Aligned_Extent(TextAlignment alignment, double expectedShiftFactor)
+		{
+			const string text = "A   ";
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+				TextAlignment = alignment,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var parsed = GetDisplayBlock(SUT).ParsedText;
+				var excludedStart = parsed.GetRectForIndex(0).X;
+				var trailingWidth = parsed.GetRectForIndex(text.Length).X - parsed.GetRectForIndex(1).X;
+				Assert.IsTrue(trailingWidth > 1, $"The test text should have measurable trailing whitespace, measured {trailingWidth}.");
+
+				SUT.Document.AlignmentIncludesTrailingWhitespace = true;
+				await WindowHelper.WaitForIdle();
+				var includedStart = GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X;
+				Assert.AreEqual(
+					trailingWidth * expectedShiftFactor,
+					excludedStart - includedStart,
+					1,
+					$"{alignment} alignment should shift by the matching fraction of trailing whitespace.");
+
+				SUT.Document.AlignmentIncludesTrailingWhitespace = false;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(excludedStart, GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow("   A")]
+		[DataRow("A A")]
+		public async Task When_AlignmentIncludesTrailingWhitespace_Does_Not_Move_NonTrailing_Spaces(string text)
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+				TextAlignment = TextAlignment.Center,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var before = GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X;
+				SUT.Document.AlignmentIncludesTrailingWhitespace = true;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(before, GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AlignmentIncludesTrailingWhitespace_Mirrors_Rtl_Trailing_Spaces()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+				TextAlignment = TextAlignment.Center,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "אבג   ");
+				SUT.Document.GetRange(0, 0).ParagraphFormat.RightToLeft = FormatEffect.On;
+				await WindowHelper.WaitForIdle();
+
+				var excludedStart = GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X;
+				SUT.Document.AlignmentIncludesTrailingWhitespace = true;
+				await WindowHelper.WaitForIdle();
+				var includedStart = GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X;
+				Assert.IsTrue(
+					includedStart > excludedStart + 1,
+					$"Including visual-left RTL trailing spaces should move the full centered run right, from {excludedStart} to {includedStart}.");
+
+				SUT.Document.AlignmentIncludesTrailingWhitespace = false;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(excludedStart, GetDisplayBlock(SUT).ParsedText.GetRectForIndex(0).X, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow(TextAlignment.Left, 0d, 1d)]
+		[DataRow(TextAlignment.Center, 0.5d, 0.5d)]
+		[DataRow(TextAlignment.Right, 1d, 0d)]
+		public async Task When_IgnoreTrailingCharacterSpacing_Changes_Aligned_Extent(
+			TextAlignment alignment,
+			double expectedStartShiftFactor,
+			double expectedEndShiftFactor)
+		{
+			const float spacingInPoints = 12;
+			const double expectedSpacingInDips = spacingInPoints * 4d / 3d;
+			const string text = "AAAA";
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+				TextAlignment = alignment,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				var range = SUT.Document.GetRange(0, text.Length);
+				range.CharacterFormat.Spacing = spacingInPoints;
+				range.CharacterFormat.Underline = UnderlineType.Single;
+				range.CharacterFormat.Strikethrough = FormatEffect.On;
+				await WindowHelper.WaitForIdle();
+
+				var parsed = GetDisplayBlock(SUT).ParsedText;
+				var spacedStart = parsed.GetRectForIndex(0).X;
+				var spacedEnd = parsed.GetRectForIndex(text.Length).X;
+
+				SUT.Document.IgnoreTrailingCharacterSpacing = true;
+				await WindowHelper.WaitForIdle();
+				parsed = GetDisplayBlock(SUT).ParsedText;
+				var ignoredStart = parsed.GetRectForIndex(0).X;
+				var ignoredEnd = parsed.GetRectForIndex(text.Length).X;
+
+				Assert.AreEqual(expectedSpacingInDips * expectedStartShiftFactor, ignoredStart - spacedStart, 0.25);
+				Assert.AreEqual(expectedSpacingInDips * expectedEndShiftFactor, spacedEnd - ignoredEnd, 0.25);
+				var endRect = parsed.GetRectForIndex(text.Length);
+				Assert.AreEqual(
+					text.Length,
+					parsed.GetIndexAt(new Windows.Foundation.Point(endRect.X - 0.25, endRect.Y + endRect.Height / 2), false, true));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IgnoreTrailingCharacterSpacing_Applies_To_Each_Line()
+		{
+			const float spacingInPoints = 12;
+			const double expectedSpacingInDips = spacingInPoints * 4d / 3d;
+			const string text = "AAAA\rbbbb";
+			var SUT = new RichEditBox
+			{
+				Width = 320,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.GetRange(0, text.Length).CharacterFormat.Spacing = spacingInPoints;
+				await WindowHelper.WaitForIdle();
+
+				var parsed = GetDisplayBlock(SUT).ParsedText;
+				var spacedFirstEnd = parsed.GetRectForIndex(4).X;
+				var spacedSecondEnd = parsed.GetRectForIndex(text.Length).X;
+
+				SUT.Document.IgnoreTrailingCharacterSpacing = true;
+				await WindowHelper.WaitForIdle();
+				parsed = GetDisplayBlock(SUT).ParsedText;
+				var ignoredFirstEnd = parsed.GetRectForIndex(4).X;
+				var ignoredSecondEnd = parsed.GetRectForIndex(text.Length).X;
+
+				Assert.AreEqual(expectedSpacingInDips, spacedFirstEnd - ignoredFirstEnd, 0.25);
+				Assert.AreEqual(expectedSpacingInDips, spacedSecondEnd - ignoredSecondEnd, 0.25);
+				Assert.IsTrue(parsed.GetRectForIndex(4).Y < parsed.GetRectForIndex(5).Y);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IgnoreTrailingCharacterSpacing_Applies_To_Each_Wrapped_Line()
+		{
+			const float spacingInPoints = 6;
+			const double expectedSpacingInDips = spacingInPoints * 4d / 3d;
+			const string text = "alpha beta gamma delta epsilon zeta eta theta";
+			var SUT = new RichEditBox
+			{
+				Width = 140,
+				TextWrapping = TextWrapping.Wrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.GetRange(0, text.Length).CharacterFormat.Spacing = spacingInPoints;
+				await WindowHelper.WaitForIdle();
+
+				var parsed = GetDisplayBlock(SUT).ParsedText;
+				var firstLine = parsed.GetLineAt(0);
+				Assert.IsFalse(firstLine.lastLine, "The constrained editor should create multiple visual lines.");
+				var firstLineEnd = firstLine.start + firstLine.length;
+				var firstSpacedEnd = parsed.GetRectForIndex(firstLineEnd - 1).Right;
+				var finalSpacedEnd = parsed.GetRectForIndex(text.Length).X;
+
+				SUT.Document.IgnoreTrailingCharacterSpacing = true;
+				await WindowHelper.WaitForIdle();
+				parsed = GetDisplayBlock(SUT).ParsedText;
+				var ignoredFirstLine = parsed.GetLineAt(0);
+				Assert.AreEqual(firstLineEnd, ignoredFirstLine.start + ignoredFirstLine.length);
+				Assert.AreEqual(expectedSpacingInDips, firstSpacedEnd - parsed.GetRectForIndex(firstLineEnd - 1).Right, 0.25);
+				Assert.AreEqual(expectedSpacingInDips, finalSpacedEnd - parsed.GetRectForIndex(text.Length).X, 0.25);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IgnoreTrailingCharacterSpacing_Does_Not_Cross_Empty_Line_Boundaries()
+		{
+			const float spacingInPoints = 6;
+			const double expectedSpacingInDips = spacingInPoints * 4d / 3d;
+			const string text = "A\r\rB";
+			var SUT = new RichEditBox
+			{
+				Width = 240,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.GetRange(0, text.Length).CharacterFormat.Spacing = spacingInPoints;
+				await WindowHelper.WaitForIdle();
+
+				var parsed = GetDisplayBlock(SUT).ParsedText;
+				var firstSpacedEnd = parsed.GetRectForIndex(1).Right;
+				var emptyLineCaret = parsed.GetRectForIndex(2);
+				var finalSpacedEnd = parsed.GetRectForIndex(text.Length).X;
+
+				SUT.Document.IgnoreTrailingCharacterSpacing = true;
+				await WindowHelper.WaitForIdle();
+				parsed = GetDisplayBlock(SUT).ParsedText;
+
+				Assert.AreEqual(expectedSpacingInDips, firstSpacedEnd - parsed.GetRectForIndex(1).Right, 0.25);
+				Assert.AreEqual(emptyLineCaret.X, parsed.GetRectForIndex(2).X, 0.1);
+				Assert.AreEqual(expectedSpacingInDips, finalSpacedEnd - parsed.GetRectForIndex(text.Length).X, 0.25);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
