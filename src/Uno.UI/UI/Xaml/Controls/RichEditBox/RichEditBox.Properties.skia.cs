@@ -420,6 +420,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			owner._textBoxView?.SetTextAlignment();
+			owner.DispatchUpdateScrolling();
 		}
 
 		private static void OnTextAlignmentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -432,6 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			owner._textBoxView?.SetTextAlignment();
+			owner.DispatchUpdateScrolling();
 		}
 
 		private static void OnIsSpellCheckEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -500,6 +502,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var owner = (RichEditBox)sender;
 			owner._textBoxView?.SetWrapping();
 			owner.UpdateTextWrappingScrollMode();
+			owner.DispatchUpdateScrolling();
 		}
 
 		private static object CoerceTextWrapping(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences precedence)
