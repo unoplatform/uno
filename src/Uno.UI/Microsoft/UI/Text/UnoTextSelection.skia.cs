@@ -22,7 +22,17 @@ namespace Microsoft.UI.Text
 		public global::Microsoft.UI.Text.SelectionOptions Options
 		{
 			get => _options;
-			set => _options = value;
+			set
+			{
+				var startActiveChanged = _start != _end
+					&& _options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive)
+					!= value.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
+				_options = value;
+				if (startActiveChanged)
+				{
+					_document.NotifySelectionChanged();
+				}
+			}
 		}
 
 		public global::Microsoft.UI.Text.SelectionType Type
@@ -68,6 +78,12 @@ namespace Microsoft.UI.Text
 			OnRangeChanged();
 		}
 
+		internal void SetRangeInternal(int start, int end, bool selectionEndsAtTheStart)
+		{
+			base.SetRangeInternal(start, end);
+			SetStartActive(selectionEndsAtTheStart);
+		}
+
 		public int MoveLeft(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
 		{
 			if (unit != global::Microsoft.UI.Text.TextRangeUnit.Character)
@@ -77,10 +93,10 @@ namespace Microsoft.UI.Text
 
 			if (extend)
 			{
-				var old = _start;
-				_start = Math.Clamp(_start - count, 0, _document.TextLength);
+				var old = IsStartActive ? _start : _end;
+				SetActivePosition(old - count, extend: true);
 				OnRangeChanged();
-				return Math.Abs(_start - old);
+				return Math.Abs((IsStartActive ? _start : _end) - old);
 			}
 
 			// Non-extending left move collapses to the active (left) end. Per the TOM MoveLeft contract,
@@ -88,11 +104,21 @@ namespace Microsoft.UI.Text
 			// only Count-1 further units are moved; a degenerate caret moves the full Count.
 			if (_start != _end && count > 0)
 			{
+				var originalStart = _start;
+				var originalEnd = _end;
+				var originalActive = IsStartActive ? originalStart : originalEnd;
 				var edge = _start;
 				var target = Math.Clamp(edge - (count - 1), 0, _document.TextLength);
 				_start = _end = target;
 				OnRangeChanged();
-				return (edge - target) + 1;
+				if (_start == _end)
+				{
+					return _start <= edge && (_start != originalStart || _end != originalEnd)
+						? (edge - _start) + 1
+						: 0;
+				}
+
+				return Math.Abs((IsStartActive ? _start : _end) - originalActive);
 			}
 
 			_end = _start;
@@ -111,10 +137,10 @@ namespace Microsoft.UI.Text
 
 			if (extend)
 			{
-				var old = _end;
-				_end = Math.Clamp(_end + count, 0, _document.TextLength);
+				var old = IsStartActive ? _start : _end;
+				SetActivePosition(old + count, extend: true);
 				OnRangeChanged();
-				return Math.Abs(_end - old);
+				return Math.Abs((IsStartActive ? _start : _end) - old);
 			}
 
 			// Non-extending right move collapses to the active (right) end. Per the TOM MoveRight contract,
@@ -122,11 +148,21 @@ namespace Microsoft.UI.Text
 			// only Count-1 further units are moved; a degenerate caret moves the full Count.
 			if (_start != _end && count > 0)
 			{
+				var originalStart = _start;
+				var originalEnd = _end;
+				var originalActive = IsStartActive ? originalStart : originalEnd;
 				var edge = _end;
 				var target = Math.Clamp(edge + (count - 1), 0, _document.TextLength);
 				_start = _end = target;
 				OnRangeChanged();
-				return (target - edge) + 1;
+				if (_start == _end)
+				{
+					return _end >= edge && (_start != originalStart || _end != originalEnd)
+						? (_end - edge) + 1
+						: 0;
+				}
+
+				return Math.Abs((IsStartActive ? _start : _end) - originalActive);
 			}
 
 			_start = _end;
@@ -140,25 +176,15 @@ namespace Microsoft.UI.Text
 		{
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
 			{
-				// The caret (range end) determines the current visual line.
-				if (!_document.TryGetLineBounds(_end, out var lineStart, out _, out _, out _))
+				var current = IsStartActive ? _start : _end;
+				if (!_document.TryGetLineBounds(current, out var lineStart, out _, out _, out _))
 				{
 					return 0;
 				}
 
-				var oldStart = _start;
-				_start = lineStart;
-				if (!extend)
-				{
-					_end = lineStart;
-				}
-				else if (_end < _start)
-				{
-					(_start, _end) = (_end, _start);
-				}
-
+				SetActivePosition(lineStart, extend);
 				OnRangeChanged();
-				return Math.Abs(oldStart - _start);
+				return Math.Abs((IsStartActive ? _start : _end) - current);
 			}
 
 			// Only the Story unit (document start) is otherwise supported.
@@ -167,39 +193,25 @@ namespace Microsoft.UI.Text
 				return 0;
 			}
 
-			var old = _start;
-			_start = 0;
-			if (!extend)
-			{
-				_end = 0;
-			}
-
+			var old = IsStartActive ? _start : _end;
+			SetActivePosition(0, extend);
 			OnRangeChanged();
-			return Math.Abs(old - _start);
+			return Math.Abs((IsStartActive ? _start : _end) - old);
 		}
 
 		public int EndKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
 			{
-				if (!_document.TryGetLineBounds(_end, out _, out var lineEnd, out _, out _))
+				var current = IsStartActive ? _start : _end;
+				if (!_document.TryGetLineBounds(current, out _, out var lineEnd, out _, out _))
 				{
 					return 0;
 				}
 
-				var oldEnd = _end;
-				_end = lineEnd;
-				if (!extend)
-				{
-					_start = lineEnd;
-				}
-				else if (_start > _end)
-				{
-					(_start, _end) = (_end, _start);
-				}
-
+				SetActivePosition(lineEnd, extend);
 				OnRangeChanged();
-				return Math.Abs(_end - oldEnd);
+				return Math.Abs((IsStartActive ? _start : _end) - current);
 			}
 
 			// Only the Story unit (document end) is otherwise supported.
@@ -209,15 +221,10 @@ namespace Microsoft.UI.Text
 			}
 
 			var length = _document.TextLength;
-			var old = _end;
-			_end = length;
-			if (!extend)
-			{
-				_start = length;
-			}
-
+			var old = IsStartActive ? _start : _end;
+			SetActivePosition(length, extend);
 			OnRangeChanged();
-			return Math.Abs(length - old);
+			return Math.Abs((IsStartActive ? _start : _end) - old);
 		}
 
 		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
@@ -337,7 +344,27 @@ namespace Microsoft.UI.Text
 			}
 		}
 
+		private void SetStartActive(bool value)
+		{
+			if (value && _start != _end)
+			{
+				_options |= global::Microsoft.UI.Text.SelectionOptions.StartActive;
+			}
+			else
+			{
+				_options &= ~global::Microsoft.UI.Text.SelectionOptions.StartActive;
+			}
+		}
+
 		// Sync the owning control's interactive caret/selection when this programmatic selection changes.
-		private protected override void OnRangeChanged() => _document.NotifySelectionChanged();
+		private protected override void OnRangeChanged()
+		{
+			if (_start == _end)
+			{
+				_options &= ~global::Microsoft.UI.Text.SelectionOptions.StartActive;
+			}
+
+			_document.NotifySelectionChanged();
+		}
 	}
 }
