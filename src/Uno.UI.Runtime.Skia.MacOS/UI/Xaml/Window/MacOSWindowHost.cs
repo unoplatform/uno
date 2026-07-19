@@ -235,7 +235,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// Sticky active-owner tracking (FR-007, research Decision 3): update on
 		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
 		// clear on Deactivated.
-		if (args.WindowActivationState != Microsoft.UI.Xaml.WindowActivationState.Deactivated &&
+		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
 			_accessibility is not null)
 		{
 			AccessibilityRouter.SetActive(this);

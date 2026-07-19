@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml;
 
@@ -9,7 +10,7 @@ namespace Microsoft.UI.Xaml;
 /// </summary>
 public sealed partial class WindowActivatedEventArgs
 {
-	internal WindowActivatedEventArgs(WindowActivationState windowActivationState)
+	internal WindowActivatedEventArgs(CoreWindowActivationState windowActivationState)
 	{
 		WindowActivationState = windowActivationState;
 	}
@@ -22,5 +23,5 @@ public sealed partial class WindowActivatedEventArgs
 	/// <summary>
 	/// Gets the activation state of the window at the time the Activated event was raised.
 	/// </summary>
-	public WindowActivationState WindowActivationState { get; }
+	public CoreWindowActivationState WindowActivationState { get; }
 }
