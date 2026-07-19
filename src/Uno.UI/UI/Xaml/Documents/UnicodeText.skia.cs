@@ -115,6 +115,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly ParagraphLayoutInfo? _endingParagraphLayout;
 	private readonly TextAlignment? _endingParagraphAlignment;
 	private readonly Brush? _defaultForeground;
+	private readonly bool _alignmentIncludesTrailingWhitespace;
 	private readonly bool _rtl;
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	private readonly List<int> _wordBoundaries;
@@ -144,12 +145,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		ParagraphLayoutInfo? endingParagraphLayout,
 		TextAlignment? endingParagraphAlignment,
 		Brush? defaultForeground,
+		bool alignmentIncludesTrailingWhitespace,
+		bool ignoreTrailingCharacterSpacing,
 		out Size calculatedSize)
 	{
 		CI.Assert(maxLines >= 0);
 		_endingParagraphLayout = endingParagraphLayout;
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
+		_alignmentIncludesTrailingWhitespace = alignmentIncludesTrailingWhitespace;
 		var tabStopWidth = defaultTabStop > 0 ? defaultTabStop : FallbackTabStopWidth;
 
 		var stringBuilder = new StringBuilder();
@@ -668,6 +672,10 @@ internal readonly partial struct UnicodeText : IParsedText
 		if (paragraphLayouts is not null)
 		{
 			ApplyParagraphLayouts(lines, paragraphLayouts, _text);
+		}
+		if (ignoreTrailingCharacterSpacing)
+		{
+			RemoveTrailingCharacterSpacing(lines, _text);
 		}
 		ApplyParagraphJustification(lines, _text, (float)availableSize.Width, textAlignment!.Value);
 
@@ -1878,31 +1886,23 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		var contentWidth = Math.Max(0, totalWidth - leftIndent - rightIndent);
 
-		float alignmentOffset;
-		// Trailing whitespace at the end of a line is assigned the paragraph embedding level
-		// So the trailing space is always on the left if RTL and always on the right if LTR
-		if (IsLineRightToLeft(line))
+		var alignmentWidth = _alignmentIncludesTrailingWhitespace ? lineWidth : lineWidthWithoutTrailingSpaces;
+		var alignedStart = textAlignment switch
 		{
-			alignmentOffset = textAlignment switch
-			{
-				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= contentWidth => leftIndent + (contentWidth - lineWidthWithoutTrailingSpaces) / 2,
-				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= contentWidth => leftIndent + contentWidth - lineWidth,
-				_ => leftIndent
-			};
-			alignmentOffset = Math.Min(alignmentOffset, totalWidth - lineWidth);
-		}
-		else
-		{
-			alignmentOffset = textAlignment switch
-			{
-				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= contentWidth => leftIndent + (contentWidth - lineWidthWithoutTrailingSpaces) / 2,
-				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= contentWidth => leftIndent + contentWidth - lineWidthWithoutTrailingSpaces,
-				_ => leftIndent
-			};
-			alignmentOffset = Math.Max(alignmentOffset, 0);
-		}
+			TextAlignment.Center when alignmentWidth <= contentWidth => leftIndent + (contentWidth - alignmentWidth) / 2,
+			TextAlignment.Right when alignmentWidth <= contentWidth => leftIndent + contentWidth - alignmentWidth,
+			_ => leftIndent,
+		};
 
-		return alignmentOffset;
+		// Logical trailing whitespace is visually on the left for RTL lines. When it is excluded from
+		// alignment, offset the full glyph run so the visible extent—not the whitespace—hits the target.
+		var visualTrailingOffset = !_alignmentIncludesTrailingWhitespace && IsLineRightToLeft(line)
+			? lineWidth - lineWidthWithoutTrailingSpaces
+			: 0;
+		var alignmentOffset = alignedStart - visualTrailingOffset;
+		return IsLineRightToLeft(line)
+			? Math.Min(alignmentOffset, totalWidth - lineWidth)
+			: Math.Max(alignmentOffset, 0);
 	}
 
 	private bool IsLineRightToLeft(Line? line)
@@ -2146,6 +2146,44 @@ internal readonly partial struct UnicodeText : IParsedText
 				isLastLineOfParagraph = isLastLineOfParagraph,
 				lineHeight = adjustedLineHeight,
 				baselineOffset = line.baselineOffset + (adjustedLineHeight - line.lineHeight) / 2,
+			};
+		}
+	}
+
+	private static void RemoveTrailingCharacterSpacing(List<Line> lines, string text)
+	{
+		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+		{
+			var line = lines[lineIndex];
+			var contentEnd = line.end - global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthEndingAt(text, line.end);
+			if (contentEnd <= line.start)
+			{
+				continue;
+			}
+
+			var terminalCluster = line.clusterLast;
+			while (terminalCluster is not null && terminalCluster.Value.start >= contentEnd)
+			{
+				terminalCluster = terminalCluster == line.clusterStart ? null : terminalCluster.Previous;
+			}
+
+			if (terminalCluster is null
+				|| terminalCluster.Value is { hidden: true }
+					or { containsTab: true }
+					or { inlineObject: not null }
+				|| terminalCluster.Value.characterSpacing == 0)
+			{
+				continue;
+			}
+
+			var spacing = terminalCluster.Value.characterSpacing;
+			terminalCluster.Value = terminalCluster.Value with { width = terminalCluster.Value.width - spacing };
+			lines[lineIndex] = line with
+			{
+				width = line.width - spacing,
+				widthWithoutTrailingSpaces = terminalCluster.Value.containsOnlyWhitespace
+					? line.widthWithoutTrailingSpaces
+					: line.widthWithoutTrailingSpaces - spacing,
 			};
 		}
 	}

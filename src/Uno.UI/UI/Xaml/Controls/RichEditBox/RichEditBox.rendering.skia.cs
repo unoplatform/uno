@@ -47,6 +47,8 @@ namespace Microsoft.UI.Xaml.Controls
 				? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
 				: FontFamily;
 			block.DefaultTabStop = document.DefaultTabStop * 4f / 3f;
+			block.AlignmentIncludesTrailingWhitespace = document.AlignmentIncludesTrailingWhitespace;
+			block.IgnoreTrailingCharacterSpacing = document.IgnoreTrailingCharacterSpacing;
 			var terminalListState = BuildListMarkerState(text, paragraphRuns);
 			block.EndingParagraphLayout = renderParagraphLayouts
 				? CreateParagraphLayout(terminalParagraph, terminalListState)
