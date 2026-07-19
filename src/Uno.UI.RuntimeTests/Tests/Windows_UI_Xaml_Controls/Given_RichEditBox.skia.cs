@@ -1889,6 +1889,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Selection_Horizontal_Extend_Tracks_Active_Endpoint()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abcdef");
+				SUT.Document.Selection.SetRange(4, 4);
+
+				Assert.AreEqual(2, SUT.Document.Selection.MoveLeft(TextRangeUnit.Character, 2, true));
+				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(4, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.Document.Selection.Options.HasFlag(SelectionOptions.StartActive));
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+
+				Assert.AreEqual(1, SUT.Document.Selection.MoveRight(TextRangeUnit.Character, 1, true));
+				Assert.AreEqual(3, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(4, SUT.Document.Selection.EndPosition);
+				Assert.IsTrue(SUT.Document.Selection.Options.HasFlag(SelectionOptions.StartActive));
+
+				Assert.AreEqual(2, SUT.Document.Selection.MoveRight(TextRangeUnit.Character, 2, true));
+				Assert.AreEqual(4, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
+				Assert.IsFalse(SUT.Document.Selection.Options.HasFlag(SelectionOptions.StartActive));
+				Assert.IsFalse(SUT.IsSelectionBackwardForTesting);
+
+				SUT.Document.Selection.Options |= SelectionOptions.StartActive;
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting, "Changing StartActive alone should update the interactive active endpoint.");
+				SUT.Document.Selection.Options &= ~SelectionOptions.StartActive;
+				Assert.IsFalse(SUT.IsSelectionBackwardForTesting);
+
+				SUT.Document.Selection.SetRange(1, 3);
+				SUT.SelectionChanging += (s, e) => e.Cancel = true;
+				Assert.AreEqual(0, SUT.Document.Selection.MoveLeft(TextRangeUnit.Character, 1, false));
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndKey(TextRangeUnit.Story, false));
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Range_Move_Screen_Uses_Viewport()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -3091,6 +3139,324 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Caret_Movement_Scrolls_Internal_Viewport()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 180,
+				Height = 80,
+				TextWrapping = TextWrapping.Wrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var text = string.Join('\r', Enumerable.Range(0, 40).Select(value => $"Line {value:D2} with wrapped content"));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.Selection.SetRange(0, 0);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+				Assert.AreEqual(0, scrollViewer.VerticalOffset, 0.5);
+
+				RaiseDocumentEndKey(SUT);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "Keyboard movement to the document end should scroll the internal viewport.");
+				Assert.AreEqual(text.Length, SUT.Document.Selection.StartPosition);
+
+				RaiseDocumentHomeKey(SUT);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset <= 0.5,
+					timeoutMS: 5000,
+					message: "Keyboard movement to the document start should restore the internal viewport.");
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Caret_Movement_Scrolls_Horizontally()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 140,
+				Height = 60,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				const string text = "A long line whose final caret is well beyond the viewport width";
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.Selection.SetRange(0, 0);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+				Assert.AreEqual(0, scrollViewer.HorizontalOffset, 0.5);
+
+				RaiseDocumentEndKey(SUT);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.HorizontalOffset > 0,
+					timeoutMS: 5000,
+					message: "Keyboard movement to the line end should scroll horizontally.");
+				var originalOffset = scrollViewer.HorizontalOffset;
+
+				SUT.FontSize *= 2;
+				await WindowHelper.WaitFor(
+					() => scrollViewer.HorizontalOffset > originalOffset + 1,
+					timeoutMS: 5000,
+					message: "A font geometry change should keep the unchanged document-end caret visible.");
+
+				RaiseDocumentHomeKey(SUT);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.HorizontalOffset <= 0.5,
+					timeoutMS: 5000,
+					message: "Keyboard movement to the line start should restore the horizontal viewport.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Disabled_Internal_Scrolling_Brings_Outer_Viewport_To_Caret()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 220,
+				Height = 900,
+				TextWrapping = TextWrapping.Wrap,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			ScrollViewer.SetVerticalScrollMode(SUT, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(SUT, ScrollBarVisibility.Disabled);
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 140,
+				Content = SUT,
+			};
+			try
+			{
+				WindowHelper.WindowContent = outerScrollViewer;
+				await WindowHelper.WaitForLoaded(outerScrollViewer);
+				var text = string.Join('\r', Enumerable.Range(0, 45).Select(value => $"Outer line {value:D2}"));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.Selection.SetRange(0, 0);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				RaiseDocumentEndKey(SUT);
+				await WindowHelper.WaitFor(
+					() => outerScrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "The outer ScrollViewer should bring the document-end caret into view.");
+				Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight + 0.5);
+				var endOffset = outerScrollViewer.VerticalOffset;
+
+				RaiseDocumentHomeKey(SUT);
+				await WindowHelper.WaitFor(
+					() => outerScrollViewer.VerticalOffset < endOffset - 1,
+					timeoutMS: 5000,
+					message: "The outer ScrollViewer should scroll upward toward the document-start caret.");
+				var displayBlock = GetDisplayBlock(SUT);
+				var caretRect = displayBlock.ParsedText.GetRectForIndex(0);
+				var caretInViewport = displayBlock.TransformToVisual(outerScrollViewer).TransformBounds(caretRect);
+				Assert.IsTrue(
+					caretInViewport.Bottom >= 0 && caretInViewport.Top <= outerScrollViewer.ActualHeight,
+					$"The document-start caret should be inside the outer viewport, but was {caretInViewport}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Programmatic_StartActive_Selection_Scrolls_To_Start()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 180,
+				Height = 80,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var text = string.Join('\r', Enumerable.Range(0, 40).Select(value => $"Line {value:D2}"));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				await WindowHelper.WaitForIdle();
+
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+				SUT.Document.Selection.SetRange(text.Length, text.Length);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "Moving the programmatic caret to the end should scroll downward.");
+
+				SUT.Document.Selection.Options |= SelectionOptions.StartActive;
+				SUT.Document.Selection.SetRange(0, text.Length);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset <= 0.5,
+					timeoutMS: 5000,
+					message: "A StartActive programmatic selection should scroll to its active start endpoint.");
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				Assert.AreEqual(0, SUT.SelectionStartForTesting);
+				Assert.AreEqual(text.Length, SUT.SelectionLengthForTesting);
+
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting, "Focusing must preserve the TOM's active start endpoint.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Backward_Selection_Gripper_Scrolls_To_Physical_Endpoint()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 220,
+				Height = 900,
+				TextWrapping = TextWrapping.NoWrap,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			ScrollViewer.SetVerticalScrollMode(SUT, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(SUT, ScrollBarVisibility.Disabled);
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 140,
+				Content = SUT,
+			};
+			try
+			{
+				WindowHelper.WindowContent = outerScrollViewer;
+				await WindowHelper.WaitForLoaded(outerScrollViewer);
+				var text = string.Join('\r', Enumerable.Range(0, 45).Select(value => $"Gripper line {value:D2}"));
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Document.Selection.Options |= SelectionOptions.StartActive;
+				SUT.Document.Selection.SetRange(0, text.Length);
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+
+				((ITextSelectionGripperHost)SUT).ScrollForGripper(isEndGripper: true);
+				await WindowHelper.WaitFor(
+					() => outerScrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "The upper-index gripper should scroll to the document end even for a backward selection.");
+				var endOffset = outerScrollViewer.VerticalOffset;
+
+				((ITextSelectionGripperHost)SUT).ScrollForGripper(isEndGripper: false);
+				await WindowHelper.WaitFor(
+					() => outerScrollViewer.VerticalOffset < endOffset - 1,
+					timeoutMS: 5000,
+					message: "The lower-index gripper should scroll back toward the document start.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Preconfigured_Caret_Scrolls_After_Load()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 180,
+				Height = 80,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			var text = string.Join('\r', Enumerable.Range(0, 40).Select(value => $"Preconfigured line {value:D2}"));
+			SUT.Document.SetText(TextSetOptions.None, text);
+			SUT.Document.Selection.SetRange(text.Length, text.Length);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "A caret configured before templating should be brought into view after load.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Batched_Caret_Scrolls_After_Display_Updates()
+		{
+			var SUT = new RichEditBox
+			{
+				Width = 180,
+				Height = 80,
+				TextWrapping = TextWrapping.NoWrap,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Initial");
+				await WindowHelper.WaitForIdle();
+				var scrollViewer = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				Assert.IsNotNull(scrollViewer);
+
+				var text = string.Join('\r', Enumerable.Range(0, 40).Select(value => $"Batched line {value:D2}"));
+				SUT.Document.BatchDisplayUpdates();
+				SUT.Document.SetText(TextSetOptions.None, text);
+				SUT.Document.Selection.Options |= SelectionOptions.StartActive;
+				SUT.Document.Selection.SetRange(0, text.Length);
+				((ITextSelectionGripperHost)SUT).ScrollForGripper(isEndGripper: true);
+				Assert.AreEqual(0, SUT.Document.ApplyDisplayUpdates());
+
+				await WindowHelper.WaitFor(
+					() => scrollViewer.VerticalOffset > 0,
+					timeoutMS: 5000,
+					message: "Applying batched display updates should preserve the requested upper gripper target.");
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(text.Length, SUT.Document.Selection.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static void RaiseDocumentEndKey(RichEditBox editor)
+		{
+			var key = Uno.UI.Helpers.DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
+			RaiseKey(editor, key, VirtualKeyModifiers.Control);
+		}
+
+		private static void RaiseDocumentHomeKey(RichEditBox editor)
+		{
+			var key = Uno.UI.Helpers.DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
+			RaiseKey(editor, key, VirtualKeyModifiers.Control);
 		}
 
 		[TestMethod]
@@ -4535,6 +4901,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					changingCount++;
 					e.Cancel = true;
+					SUT.Document.Selection.Options |= SelectionOptions.StartActive;
 					SUT.Document.Selection.SetRange(4, 6);
 				};
 				SUT.SelectionChanged += (s, e) => changedCount++;
@@ -4547,6 +4914,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(6, SUT.Document.Selection.EndPosition);
 				Assert.AreEqual(4, SUT.SelectionStartForTesting);
 				Assert.AreEqual(2, SUT.SelectionLengthForTesting);
+				Assert.IsTrue(SUT.IsSelectionBackwardForTesting);
 			}
 			finally
 			{
