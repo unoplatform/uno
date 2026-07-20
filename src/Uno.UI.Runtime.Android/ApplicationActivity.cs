@@ -19,6 +19,8 @@ using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
@@ -346,6 +348,16 @@ namespace Uno.UI.Runtime.Android
 
 				// Index 0 keeps it under the native layer host.
 				RelativeLayout.AddView(_renderViewAsView, 0);
+
+				// A XamlRoot host registered before OnStart can only attach its accessibility adapter
+				// once this activity's render view exists.
+				foreach (var pair in XamlRootMap.Enumerate())
+				{
+					if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
+					{
+						androidHost.TryConfigureHelper();
+					}
+				}
 			}
 
 			// The window was handed over in OnCreate, before this render view existed; state bound to
@@ -525,6 +537,16 @@ namespace Uno.UI.Runtime.Android
 			base.OnResume();
 
 			RaiseConfigurationChanges();
+
+			// Activate accessibility routing for the foreground window.
+			foreach (var pair in XamlRootMap.Enumerate())
+			{
+				if (pair.Value is IAccessibilityOwner { Accessibility: { } } owner)
+				{
+					AccessibilityRouter.SetActive(owner);
+					break;
+				}
+			}
 
 			//WebAuthenticationBroker.OnResume();
 		}
