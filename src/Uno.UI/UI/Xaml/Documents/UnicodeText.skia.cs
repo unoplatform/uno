@@ -975,14 +975,30 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var drawingSession = session.Session;
 
-		// Glyph outlines are assembled on Skia (font work) then drawn through the neutral path verb.
+		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
 			var paintColor = Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
-			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
+			foreach (var (skFont, (glyphs, positions)) in fontToGlyphs)
 			{
-				using var geometry = GlyphGeometry.Build(font, CollectionsMarshal.AsSpan(glyphs), CollectionsMarshal.AsSpan(positions), 0);
-				drawingSession.DrawPath(geometry, paintColor, antialias: true);
+				var font = new SkiaFont(skFont);
+				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
+				var positionSpan = MemoryMarshal.Cast<SKPoint, Vector2>(CollectionsMarshal.AsSpan(positions));
+
+				using (var outline = font.BuildGlyphRunOutline(glyphSpan, positionSpan, 0))
+				{
+					drawingSession.DrawPath(outline, paintColor, antialias: true);
+				}
+
+				if (font.HasColorGlyphs)
+				{
+					var images = new List<PositionedGlyphImage>();
+					font.AppendColorGlyphImages(glyphSpan, positionSpan, 0, images);
+					foreach (var g in images)
+					{
+						drawingSession.DrawImage(g.Image, g.X, g.Y, ImageSampling.Linear, antialias: true);
+					}
+				}
 			}
 		}
 

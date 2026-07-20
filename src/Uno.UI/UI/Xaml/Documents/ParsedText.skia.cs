@@ -4,6 +4,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
@@ -896,9 +897,25 @@ internal readonly struct ParsedText : IParsedText
 		static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
 			IDrawingSession drawingSession, float y, SKPaint paint)
 		{
-			using var geometry = GlyphGeometry.Build(fontInfo.SKFont, glyphs, positions, y);
 			var c = paint.Color;
-			drawingSession.DrawPath(geometry, Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue), antialias: true);
+			var color = Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue);
+			var positionsV = MemoryMarshal.Cast<SKPoint, Vector2>(positions);
+			var font = fontInfo.FontHandle;
+
+			using (var outline = font.BuildGlyphRunOutline(glyphs, positionsV, y))
+			{
+				drawingSession.DrawPath(outline, color, antialias: true);
+			}
+
+			if (font.HasColorGlyphs)
+			{
+				var images = new List<PositionedGlyphImage>();
+				font.AppendColorGlyphImages(glyphs, positionsV, y, images);
+				foreach (var g in images)
+				{
+					drawingSession.DrawImage(g.Image, g.X, g.Y, ImageSampling.Linear, antialias: true);
+				}
+			}
 		}
 	}
 

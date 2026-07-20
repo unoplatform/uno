@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI;
@@ -125,6 +126,7 @@ internal static class SkiaRenderHelper
 		private static readonly Color _clockIconColor = Color.FromArgb(0xFF, 0x21, 0x96, 0xF3);
 		// Kept for text shaping and measurement only (font work, not rendering).
 		private static readonly SKFont _font = new() { Size = 14, Embolden = true };
+		private static readonly IFont _fontHandle = new SkiaFont(_font);
 
 		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
 		// Sized to fit a three-digit reference value — measured once at type load.
@@ -369,7 +371,8 @@ internal static class SkiaRenderHelper
 			}
 
 			var positions = _font.GetGlyphPositions(text, new SKPoint(x, baselineY));
-			using var geometry = GlyphGeometry.Build(_font, glyphs, positions, 0f);
+			var positionsV = MemoryMarshal.Cast<SKPoint, Vector2>(positions);
+			using var geometry = _fontHandle.BuildGlyphRunOutline(glyphs, positionsV, 0f);
 			session.DrawPath(geometry, color, antialias: true);
 		}
 

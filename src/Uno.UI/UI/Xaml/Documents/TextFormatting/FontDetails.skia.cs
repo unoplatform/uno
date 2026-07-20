@@ -5,12 +5,17 @@ using System.Runtime.InteropServices;
 using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX, SKFontMetrics SKFontMetrics, Font Font)
 {
 	private (float textScaleX, float textScaleY)? _textScale;
+	private IFont? _fontHandle;
+
+	/// <summary>The backend render-time font handle (outline glyphs -> geometry, color glyphs -> images).</summary>
+	internal IFont FontHandle => _fontHandle ??= new SkiaFont(SKFont);
 	// TODO: Investigate best value to use here. SKShaper uses a constant 512 scale, Avalonia uses default font scale. Not 100% sure how much difference it
 	// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
 	private const int FontScale = 512;

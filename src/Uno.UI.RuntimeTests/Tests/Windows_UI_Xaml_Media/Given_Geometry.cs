@@ -245,17 +245,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[TestMethod]
 		public void GlyphRun_Shaping_Produces_NonEmpty_Geometry()
 		{
-			// Exercises the font-shaping -> glyph-outline -> IGeometry path the FPS overlay uses to draw text
-			// neutrally (SKFont.GetGlyphs/GetGlyphPositions + GlyphGeometry.Build).
-			using var font = new SkiaSharp.SKFont { Size = 14 };
+			// Exercises the font-shaping -> glyph-outline -> IGeometry path text rendering uses
+			// (SkiaFont.BuildGlyphRunOutline).
+			using var skFont = new SkiaSharp.SKFont { Size = 14 };
 			const string text = "120.0";
-			var glyphs = font.GetGlyphs(text);
+			var glyphs = skFont.GetGlyphs(text);
 			Assert.IsTrue(glyphs.Length > 0, "expected the font to produce glyphs");
 
-			var positions = font.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0));
-			using var geometry = Microsoft.UI.Xaml.Documents.GlyphGeometry.Build(font, glyphs, positions, 0f);
+			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
+				skFont.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0)));
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			using var geometry = font.BuildGlyphRunOutline(glyphs, positions, 0f);
 			var bounds = geometry.Bounds;
 			Assert.IsTrue(bounds.Width > 0 && bounds.Height > 0, $"expected non-empty glyph geometry, got {bounds}");
+		}
+
+		[TestMethod]
+		public void ColorGlyph_Rasterizes_To_Image()
+		{
+			// Color glyphs (emoji: COLR/CBDT/sbix/SVG) have no outline; SkiaFont must rasterize them to images.
+			using var typeface = SkiaSharp.SKFontManager.Default.MatchCharacter(0x1F600);
+			if (typeface is null)
+			{
+				// No emoji font in this environment — nothing to exercise.
+				return;
+			}
+
+			using var skFont = new SkiaSharp.SKFont(typeface, 32);
+			var glyphs = skFont.GetGlyphs("\U0001F600"); // grinning face
+			if (glyphs.Length == 0 || glyphs[0] == 0)
+			{
+				return; // the matched font doesn't actually carry this emoji glyph
+			}
+
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
+				skFont.GetGlyphPositions("\U0001F600", new SkiaSharp.SKPoint(0, 0)));
+
+			if (!font.HasColorGlyphs)
+			{
+				return; // matched a non-color font
+			}
+
+			var images = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.PositionedGlyphImage>();
+			font.AppendColorGlyphImages(glyphs, positions, 0f, images);
+
+			Assert.IsTrue(images.Count > 0, "expected the color emoji glyph to rasterize to at least one image");
+			Assert.IsTrue(images[0].Width > 0 && images[0].Height > 0, "expected the rasterized glyph image to have a positive size");
 		}
 #endif
 	}
