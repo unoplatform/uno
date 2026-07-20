@@ -32,13 +32,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty GroupNameProperty { get; } =
 			DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(string.Empty, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 
-		public new bool IsChecked
+		public bool IsChecked
 		{
 			get { return (bool)GetValue(IsCheckedProperty); }
 			set { SetValue(IsCheckedProperty, value); }
 		}
 
-		public static new DependencyProperty IsCheckedProperty { get; } =
+		public static DependencyProperty IsCheckedProperty { get; } =
 			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(false, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 	}
 }
