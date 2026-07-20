@@ -54,8 +54,7 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		// Interlaced PNGs (Adam7) are uncommon; fall back to the codec for those.
-		if (!sawHeader || width <= 0 || height <= 0 || interlace != 0)
+		if (!sawHeader || width <= 0 || height <= 0 || interlace is not (0 or 1))
 		{
 			return false;
 		}
@@ -77,28 +76,80 @@ internal static partial class ManagedImageDecoder
 		idat.Position = 0;
 		using var inflate = new ZLibStream(idat, CompressionMode.Decompress);
 		var bitsPerPixel = channels * bitDepth;
-		var stride = (width * bitsPerPixel + 7) / 8;
-		var raw = new byte[(stride + 1) * height];
-		ReadExactly(inflate, raw);
-
-		var bgra = new byte[width * height * 4];
 		var bytesPerPixel = Math.Max(1, bitsPerPixel / 8);
-		var previous = new byte[stride];
-		var current = new byte[stride];
+		var bgra = new byte[width * height * 4];
 
-		var rawOffset = 0;
-		for (var y = 0; y < height; y++)
+		if (interlace == 0)
 		{
-			var filter = raw[rawOffset++];
-			Array.Copy(raw, rawOffset, current, 0, stride);
-			rawOffset += stride;
-			Unfilter(filter, current, previous, bytesPerPixel);
-			EmitScanline(current, bgra, y, width, bitDepth, colorType, palette, paletteAlpha);
-			(previous, current) = (current, previous);
+			var stride = (width * bitsPerPixel + 7) / 8;
+			var raw = new byte[(stride + 1) * height];
+			ReadExactly(inflate, raw);
+			DecodePass(raw, 0, width, height, 0, 0, 1, 1, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha);
+		}
+		else
+		{
+			// Adam7: (startX, startY, stepX, stepY) for the 7 passes.
+			ReadOnlySpan<int> passes = stackalloc int[]
+			{
+				0, 0, 8, 8,  4, 0, 8, 8,  0, 4, 4, 8,  2, 0, 4, 4,  0, 2, 2, 4,  1, 0, 2, 2,  0, 1, 1, 2,
+			};
+
+			var total = 0;
+			for (var i = 0; i < 7; i++)
+			{
+				var (pw, ph) = PassSize(width, height, passes[i * 4], passes[i * 4 + 1], passes[i * 4 + 2], passes[i * 4 + 3]);
+				if (pw > 0 && ph > 0)
+				{
+					total += (((pw * bitsPerPixel + 7) / 8) + 1) * ph;
+				}
+			}
+
+			var raw = new byte[total];
+			ReadExactly(inflate, raw);
+
+			var offset = 0;
+			for (var i = 0; i < 7; i++)
+			{
+				int startX = passes[i * 4], startY = passes[i * 4 + 1], stepX = passes[i * 4 + 2], stepY = passes[i * 4 + 3];
+				var (pw, ph) = PassSize(width, height, startX, startY, stepX, stepY);
+				if (pw > 0 && ph > 0)
+				{
+					offset = DecodePass(raw, offset, pw, ph, startX, startY, stepX, stepY, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha);
+				}
+			}
 		}
 
 		decoded = new DecodedImage(width, height, new[] { bgra }, new[] { 0 });
 		return true;
+	}
+
+	private static (int width, int height) PassSize(int width, int height, int startX, int startY, int stepX, int stepY)
+		=> (width > startX ? (width - startX + stepX - 1) / stepX : 0, height > startY ? (height - startY + stepY - 1) / stepY : 0);
+
+	private static int DecodePass(byte[] raw, int offset, int passW, int passH, int startX, int startY, int stepX, int stepY,
+		byte[] bgra, int width, int bitsPerPixel, int bytesPerPixel, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha)
+	{
+		var stride = (passW * bitsPerPixel + 7) / 8;
+		var previous = new byte[stride];
+		var current = new byte[stride];
+		for (var py = 0; py < passH; py++)
+		{
+			var filter = raw[offset++];
+			Array.Copy(raw, offset, current, 0, stride);
+			offset += stride;
+			Unfilter(filter, current, previous, bytesPerPixel);
+
+			var outY = startY + py * stepY;
+			for (var px = 0; px < passW; px++)
+			{
+				var outX = startX + px * stepX;
+				EmitPixel(current, px, bgra, (outY * width + outX) * 4, bitDepth, colorType, palette, paletteAlpha);
+			}
+
+			(previous, current) = (current, previous);
+		}
+
+		return offset;
 	}
 
 	private static void Unfilter(byte filter, byte[] cur, byte[] prev, int bpp)
@@ -145,49 +196,41 @@ internal static partial class ManagedImageDecoder
 		return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
 	}
 
-	private static void EmitScanline(byte[] line, byte[] bgra, int y, int width, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha)
+	private static void EmitPixel(byte[] line, int x, byte[] bgra, int outOffset, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha)
 	{
-		var rowOffset = y * width * 4;
-		for (var x = 0; x < width; x++)
+		byte r, g, b, a = 255;
+		switch (colorType)
 		{
-			var o = rowOffset + x * 4;
-			byte r, g, b, a = 255;
-			switch (colorType)
+			case 0: // grayscale
+				r = g = b = SampleChannel(line, x, 0, 1, bitDepth);
+				break;
+			case 2: // RGB (8/16-bit)
+				r = SampleChannel(line, x, 0, 3, bitDepth);
+				g = SampleChannel(line, x, 1, 3, bitDepth);
+				b = SampleChannel(line, x, 2, 3, bitDepth);
+				break;
+			case 3: // palette
 			{
-				case 0: // grayscale
-				{
-					var v = SampleChannel(line, x, 0, 1, bitDepth);
-					r = g = b = v;
-					break;
-				}
-				case 2: // RGB (8/16-bit)
-					r = SampleChannel(line, x, 0, 3, bitDepth);
-					g = SampleChannel(line, x, 1, 3, bitDepth);
-					b = SampleChannel(line, x, 2, 3, bitDepth);
-					break;
-				case 3: // palette
-				{
-					var index = ReadIndex(line, x, bitDepth);
-					r = palette![index * 3];
-					g = palette[index * 3 + 1];
-					b = palette[index * 3 + 2];
-					a = paletteAlpha is not null && index < paletteAlpha.Length ? paletteAlpha[index] : (byte)255;
-					break;
-				}
-				case 4: // grayscale + alpha
-					r = g = b = SampleChannel(line, x, 0, 2, bitDepth);
-					a = SampleChannel(line, x, 1, 2, bitDepth);
-					break;
-				default: // 6: RGBA
-					r = SampleChannel(line, x, 0, 4, bitDepth);
-					g = SampleChannel(line, x, 1, 4, bitDepth);
-					b = SampleChannel(line, x, 2, 4, bitDepth);
-					a = SampleChannel(line, x, 3, 4, bitDepth);
-					break;
+				var index = ReadIndex(line, x, bitDepth);
+				r = palette![index * 3];
+				g = palette[index * 3 + 1];
+				b = palette[index * 3 + 2];
+				a = paletteAlpha is not null && index < paletteAlpha.Length ? paletteAlpha[index] : (byte)255;
+				break;
 			}
-
-			SetPixelPremul(bgra, o, r, g, b, a);
+			case 4: // grayscale + alpha
+				r = g = b = SampleChannel(line, x, 0, 2, bitDepth);
+				a = SampleChannel(line, x, 1, 2, bitDepth);
+				break;
+			default: // 6: RGBA
+				r = SampleChannel(line, x, 0, 4, bitDepth);
+				g = SampleChannel(line, x, 1, 4, bitDepth);
+				b = SampleChannel(line, x, 2, 4, bitDepth);
+				a = SampleChannel(line, x, 3, 4, bitDepth);
+				break;
 		}
+
+		SetPixelPremul(bgra, outOffset, r, g, b, a);
 	}
 
 	private static byte SampleChannel(byte[] line, int x, int channel, int channels, int bitDepth)
