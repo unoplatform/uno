@@ -104,6 +104,10 @@ else
 	then
 		export TEST_FILTERS="FullyQualifiedName = SamplesApp.UITests.Runtime.RuntimeTests"
 
+	elif [ "$UITEST_AUTOMATED_GROUP" == 'MobileAccessibility' ];
+	then
+		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml_Automation.MobileAccessibility_Tests"
+
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
 	then
 		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
