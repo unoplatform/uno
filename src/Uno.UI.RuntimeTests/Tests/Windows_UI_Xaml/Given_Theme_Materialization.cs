@@ -50,10 +50,10 @@ public class Given_Theme_Materialization
 		""";
 
 	private static Color? ColorOf(object element)
-		=> (element as Border)?.Background is SolidColorBrush b ? b.Color : null;
+		=> (element as Border)?.Background is SolidColorBrush b ? b.Color : default(Color?);
 
 	private static Color? ForegroundOf(object element)
-		=> (element as TextBlock)?.Foreground is SolidColorBrush b ? b.Color : null;
+		=> (element as TextBlock)?.Foreground is SolidColorBrush b ? b.Color : default(Color?);
 
 	// Builds an app-level ResourceDictionary carrying the sentinel ThemeDictionaries.
 	// Used by the popup/flyout/runtime-add repros (T4/T5/T6) which reference {ThemeResource SentinelBrush}

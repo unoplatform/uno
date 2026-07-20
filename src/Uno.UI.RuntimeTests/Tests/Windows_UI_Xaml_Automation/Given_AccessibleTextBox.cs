@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -432,5 +433,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(capabilities.CanValue, "TextBox should have CanValue capability");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_TextBox_On_Mobile_Then_Native_TextState_Is_Editable()
+		{
+			var textBox = new TextBox { Text = "editable content" };
+			AutomationProperties.SetAutomationId(textBox, "textbox-textstate-t045");
+
+			await UITestHelper.Load(textBox);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(textBox);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.TextState, "TextState must be populated for a TextBox.");
+
+			var ts = snapshot.Details!.TextState!;
+			Assert.IsTrue(ts.IsEditable, "An enabled TextBox must report IsEditable=true.");
+			Assert.IsFalse(ts.IsReadOnly, "A non-read-only TextBox must report IsReadOnly=false.");
+		}
 	}
 }
