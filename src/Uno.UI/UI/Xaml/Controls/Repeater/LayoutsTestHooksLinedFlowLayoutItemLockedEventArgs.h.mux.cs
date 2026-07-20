@@ -6,6 +6,8 @@ namespace Microsoft.UI.Private.Controls;
 
 partial class LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs
 {
+	// ILayoutsTestHooksLinedFlowLayoutItemLockedEventArgs overrides
+
 	private readonly int m_itemIndex;
 	private readonly int m_lineIndex;
 }

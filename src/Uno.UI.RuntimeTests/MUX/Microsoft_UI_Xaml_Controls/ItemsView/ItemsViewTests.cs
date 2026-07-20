@@ -1928,38 +1928,38 @@ public class ItemsViewTests : MUXApiTestBase
 				switch (trigger)
 				{
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative:
-					{
-						args.ItemsRangeStartIndex = -1;
-						break;
-					}
+						{
+							args.ItemsRangeStartIndex = -1;
+							break;
+						}
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased:
-					{
-						args.ItemsRangeStartIndex++;
-						break;
-					}
+						{
+							args.ItemsRangeStartIndex++;
+							break;
+						}
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall:
-					{
-						args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-						args.ItemsRangeStartIndex--;
-						break;
-					}
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							args.ItemsRangeStartIndex--;
+							break;
+						}
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength:
-					{
-						args.SetMinWidths(new double[args.ItemsRangeRequestedLength - 1]);
-						break;
-					}
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength - 1]);
+							break;
+						}
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex:
-					{
-						args.ItemsRangeStartIndex--;
-						args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-						break;
-					}
+						{
+							args.ItemsRangeStartIndex--;
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							break;
+						}
 					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent:
-					{
-						args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-						args.SetMaxWidths(new double[args.ItemsRangeRequestedLength + 1]);
-						break;
-					}
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							args.SetMaxWidths(new double[args.ItemsRangeRequestedLength + 1]);
+							break;
+						}
 				}
 			}
 			catch (ArgumentException exception)
