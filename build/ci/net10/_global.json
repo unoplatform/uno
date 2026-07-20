@@ -1,6 +1,6 @@
 {
 	"sdk": {
-		"version": "10.0.105",
+		"version": "10.0.302",
 		"allowPrerelease": true,
 		"rollForward": "disable"
 	},
@@ -8,7 +8,7 @@
 		"runner": "Microsoft.Testing.Platform"
 	},
 	"tools": {
-		"dotnet": "10.0.105"
+		"dotnet": "10.0.302"
 	},
 	"msbuild-sdks": {
 		"Microsoft.Build.NoTargets": "3.7.56"
