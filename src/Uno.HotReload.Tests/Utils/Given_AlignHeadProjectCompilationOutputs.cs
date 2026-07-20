@@ -155,6 +155,21 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 		StringAssert.Contains(reporter.Warnings.Single(), "app(net10.0-android)");
 	}
 
+	[TestMethod]
+	public void When_Rid_And_OutputPathHasNoDirectory_Then_Warns()
+	{
+		// A bare-filename output path has no directory to probe: the alignment must warn and
+		// skip instead of failing the workspace initialization.
+		using var workspace = new AdhocWorkspace();
+		AddProject(workspace, "app(net10.0-android)", _headPath, assemblyPath: "app.dll");
+
+		var reporter = new RecordingReporter();
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
+
+		Assert.AreSame(workspace.CurrentSolution, aligned);
+		StringAssert.Contains(reporter.Warnings.Single(), "app.dll");
+	}
+
 	// ────────────────────────────────────────────────────────────────────────
 	// Fixture
 	// ────────────────────────────────────────────────────────────────────────

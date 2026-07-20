@@ -75,7 +75,15 @@ public static partial class RoslynExtensions
 			// output — it is the binary that was actually deployed. Even when the RID-less file
 			// exists it can be a stale twin (an earlier RID-less build) with a mismatching MVID.
 			var fileName = Path.GetFileName(evaluatedPath);
-			var directory = Path.GetDirectoryName(evaluatedPath)!;
+			var directory = Path.GetDirectoryName(evaluatedPath);
+			if (string.IsNullOrEmpty(directory) || string.IsNullOrEmpty(fileName))
+			{
+				reporter.Warn(
+					$"The output assembly path '{evaluatedPath}' of '{project.Name}' has no directory component — " +
+					"the RID-specific alignment cannot probe for the deployed output and is skipped.");
+				continue;
+			}
+
 			var ridSpecificPath = Path.Join(directory, runtimeIdentifier, fileName);
 
 			if (TryReadMvid(ridSpecificPath, out _))
@@ -174,7 +182,7 @@ public static partial class RoslynExtensions
 			mvid = metadataReader.GetGuid(metadataReader.GetModuleDefinition().Mvid);
 			return mvid != Guid.Empty;
 		}
-		catch (Exception)
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException or BadImageFormatException or InvalidOperationException)
 		{
 			return false;
 		}
