@@ -290,8 +290,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				else
 				{
 					// We are relying on IDE, we won't have any other hot-reload initialization steps.
-					await Notify(HotReloadEvent.Ready);
+					// Report NoWorkspace *before* awaiting Notify so an UpdateFile racing this window
+					// passes through immediately (strict IDE-driven pass-through) instead of being queued.
 					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.NoWorkspace);
+					await Notify(HotReloadEvent.Ready);
 					this.Log().LogDebug("Metadata updater **NOT** initialized.");
 				}
 			}

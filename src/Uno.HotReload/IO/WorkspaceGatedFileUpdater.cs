@@ -147,8 +147,7 @@ public sealed class WorkspaceGatedFileUpdater(
 	/// <inheritdoc />
 	public Task<IUpdateFileResponse> UpdateAsync(IUpdateFileRequest request, CancellationToken ct)
 	{
-		PendingUpdate entry;
-		int queueLength;
+		PendingUpdate? queued = null;
 
 		lock (_gate)
 		{
@@ -167,21 +166,27 @@ public sealed class WorkspaceGatedFileUpdater(
 					goto default; // A flush is in progress: queue behind it to preserve ordering.
 
 				default:
-					entry = new PendingUpdate(request, ct);
-					_queue.Enqueue(entry);
-					queueLength = _queue.Count;
-
-					// Schedule the TTL outside the state machine: whichever of flush /
-					// terminal-rejection / timeout / cancellation takes the entry first wins.
-					_ = WatchTimeoutAsync(entry);
+					queued = new PendingUpdate(request, ct);
+					_queue.Enqueue(queued);
+					var queueLength = _queue.Count;
 
 					// Guard the diagnostics: a throwing reporter/onEvent must not leave the just-enqueued
 					// entry orphaned (the caller would see the exception instead of the awaiter).
 					try { reporter?.Verbose($"Hot-reload workspace not ready ({_state}), queuing update request '{request.RequestId}' ({queueLength} pending)."); } catch { /* diagnostics are best-effort */ }
 					try { onEvent?.Invoke(new WorkspaceGateEvent("queued", queueLength)); } catch { /* diagnostics are best-effort */ }
-
-					return entry.Task;
+					break;
 			}
+		}
+
+		if (queued is not null)
+		{
+			// Arm the TTL OUTSIDE the lock: if ct is already cancelled (or the timeout is zero) the
+			// watcher runs synchronously through its finally -> CompactQueue, which re-enters _gate;
+			// starting it under the held lock would run that re-entrant queue mutation mid-enqueue on
+			// this thread. Whichever of flush / terminal-rejection / timeout / cancellation takes the
+			// entry first wins.
+			_ = WatchTimeoutAsync(queued);
+			return queued.Task;
 		}
 
 		return _inner.UpdateAsync(request, ct);
