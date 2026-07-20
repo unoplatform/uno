@@ -77,7 +77,10 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 				$"Re-creating stranded (unmaterialized) content {liveType.Name} of {host.GetType().Name} as {expectedType.Name}");
 		}
 
-		if (Activator.CreateInstance(expectedType) is not FrameworkElement newContent)
+		// Despite its name, Frame.CreatePageInstance is the centralized, type-agnostic
+		// hot-reload-aware creation path (replacement-type resolution + bindable metadata
+		// provider support) also used by NavigationCache and PagePool.
+		if (Frame.CreatePageInstance(liveType) is not FrameworkElement newContent)
 		{
 			return null;
 		}

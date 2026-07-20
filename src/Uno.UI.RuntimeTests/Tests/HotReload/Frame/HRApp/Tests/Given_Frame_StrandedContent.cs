@@ -1,7 +1,5 @@
-using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
@@ -21,7 +19,8 @@ public class Given_Frame_StrandedContent : BaseTestClass
 	[TestMethod]
 	public async Task When_Page_Updated_While_Unmaterialized_Then_Content_Recreated()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		var ct = cts.Token;
 
 		var host = new Grid { Visibility = Visibility.Collapsed };
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
