@@ -3027,8 +3027,10 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleButton">
+					<!--  BackgroundSizing is bound for propagation, but has no visual effect in this legacy template: RootGrid owns the Background while ContentPresenter owns the border. The Fluent (v2) ToggleButton style carries Background and border together on its ContentPresenter, which is where BackgroundSizing takes effect. Aligning this template with the WinUI single-ContentPresenter root is a follow-up.  -->
 					<Grid x:Name="RootGrid"
 						  Background="{TemplateBinding Background}"
+						  BackgroundSizing="{TemplateBinding BackgroundSizing}"
 						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
@@ -3238,6 +3240,7 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						<ContentPresenter x:Name="ContentPresenter"
+										  BackgroundSizing="{TemplateBinding BackgroundSizing}"
 										  BorderBrush="{TemplateBinding BorderBrush}"
 										  BorderThickness="{TemplateBinding BorderThickness}"
 										  Content="{TemplateBinding Content}"
