@@ -286,6 +286,61 @@ public class Given_WorkspaceGatedFileUpdater
 		events.Select(evt => evt.Kind).Should().ContainInOrder("queued", "flushed");
 	}
 
+	[TestMethod]
+	[Description(
+		"A throwing diagnostic callback (reporter/onEvent) during the flush must never orphan the " +
+		"request's awaiter nor wedge the drain loop: the request still completes and a subsequent " +
+		"request must still flow through (the gate must not stay permanently 'draining').")]
+	public async Task When_OnEventThrowsDuringFlush_Then_RequestCompletesAndGateNotWedged()
+	{
+		var inner = new RecordingUpdater();
+		var sut = new WorkspaceGatedFileUpdater(inner, onEvent: evt =>
+		{
+			if (evt.Kind == "flushed")
+			{
+				throw new InvalidOperationException("telemetry sink blew up");
+			}
+		});
+		sut.ReportWorkspaceState(HotReloadWorkspaceState.Initializing);
+
+		var first = sut.UpdateAsync(Request("first.xaml"), CancellationToken.None);
+		sut.ReportWorkspaceState(HotReloadWorkspaceState.Ready);
+
+		// Despite the callback throwing, the awaiter is resolved (completed before the callback runs).
+		(await first.WaitAsync(_flushTimeout)).GlobalError.Should().BeNull();
+
+		// The drain loop must have reset its state: a later request still gets applied.
+		var second = sut.UpdateAsync(Request("second.xaml"), CancellationToken.None);
+		(await second.WaitAsync(_flushTimeout)).GlobalError.Should().BeNull();
+		inner.Requests.Should().HaveCount(2);
+	}
+
+	[TestMethod]
+	[Description(
+		"Expired/cancelled entries must be compacted out of the queue rather than lingering: a " +
+		"workspace stuck initializing must not accumulate dead entries. Observed via the queue " +
+		"length reported on the next enqueue.")]
+	public async Task When_EntryExpires_Then_ItIsRemovedFromTheQueue()
+	{
+		var inner = new RecordingUpdater();
+		var events = new ConcurrentQueue<WorkspaceGateEvent>();
+		var sut = new WorkspaceGatedFileUpdater(inner, queueTimeout: TimeSpan.FromMilliseconds(100), onEvent: events.Enqueue);
+		sut.ReportWorkspaceState(HotReloadWorkspaceState.Initializing);
+
+		// First request expires while the workspace stays 'Initializing'.
+		var expired = sut.UpdateAsync(Request("expired.xaml"), CancellationToken.None);
+		(await expired.WaitAsync(_flushTimeout)).GlobalError.Should().NotBeNull();
+
+		// Let the timeout path's compaction (which runs after the awaiter is resolved) settle.
+		await Task.Delay(50);
+
+		// Second enqueue must see a queue of 1 (the expired entry was compacted out, not still present).
+		_ = sut.UpdateAsync(Request("next.xaml"), CancellationToken.None);
+
+		var queuedLengths = events.Where(evt => evt.Kind == "queued").Select(evt => evt.QueueLength).ToArray();
+		queuedLengths.Should().Equal([1, 1], "the expired entry must not inflate the queue length");
+	}
+
 	private static TestUpdateRequest Request(string filePath)
 		=> new([new FileEdit(filePath, OldText: null, NewText: "<new content />")]);
 

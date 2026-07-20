@@ -41,7 +41,10 @@ public sealed class WorkspaceGatedFileUpdater(
 
 	private readonly object _gate = new();
 	private readonly Queue<PendingUpdate> _queue = new();
-	private IFileUpdater _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+	// Read on the drain task's thread, written from the message-processing thread via the Inner setter
+	// (called on each ConfigureServer). volatile guarantees the drain loop sees the updated reference
+	// promptly on weakly-ordered targets (ARM Skia: iOS, Android, M-series Mac).
+	private volatile IFileUpdater _inner = inner ?? throw new ArgumentNullException(nameof(inner));
 	private HotReloadWorkspaceState _state = HotReloadWorkspaceState.NotConfigured;
 	private bool _draining;
 
@@ -126,9 +129,11 @@ public sealed class WorkspaceGatedFileUpdater(
 			{
 				if (entry.TryTake())
 				{
-					reporter?.Warn($"Hot-reload update request '{entry.Request.RequestId}' rejected after {entry.Age.Elapsed.TotalSeconds:F1}s in queue: {error}");
-					onEvent?.Invoke(new WorkspaceGateEvent("rejected", 0, entry.Age.Elapsed));
+					// Resolve the awaiter before any external callback: a throwing reporter/onEvent must
+					// neither orphan this entry's TaskCompletionSource nor abort the loop over the rest.
 					entry.Complete(Reject(entry.Request, error));
+					try { reporter?.Warn($"Hot-reload update request '{entry.Request.RequestId}' rejected after {entry.Age.Elapsed.TotalSeconds:F1}s in queue: {error}"); } catch { /* diagnostics are best-effort */ }
+					try { onEvent?.Invoke(new WorkspaceGateEvent("rejected", 0, entry.Age.Elapsed)); } catch { /* diagnostics are best-effort */ }
 				}
 			}
 		}
@@ -170,8 +175,10 @@ public sealed class WorkspaceGatedFileUpdater(
 					// terminal-rejection / timeout / cancellation takes the entry first wins.
 					_ = WatchTimeoutAsync(entry);
 
-					reporter?.Verbose($"Hot-reload workspace not ready ({_state}), queuing update request '{request.RequestId}' ({queueLength} pending).");
-					onEvent?.Invoke(new WorkspaceGateEvent("queued", queueLength));
+					// Guard the diagnostics: a throwing reporter/onEvent must not leave the just-enqueued
+					// entry orphaned (the caller would see the exception instead of the awaiter).
+					try { reporter?.Verbose($"Hot-reload workspace not ready ({_state}), queuing update request '{request.RequestId}' ({queueLength} pending)."); } catch { /* diagnostics are best-effort */ }
+					try { onEvent?.Invoke(new WorkspaceGateEvent("queued", queueLength)); } catch { /* diagnostics are best-effort */ }
 
 					return entry.Task;
 			}
@@ -182,61 +189,136 @@ public sealed class WorkspaceGatedFileUpdater(
 
 	private async Task DrainAsync()
 	{
-		while (true)
+		// Launched fire-and-forget: an unexpected escape must never leave _draining stuck true (which
+		// would permanently divert every future Ready request into the queue with no drain to flush it),
+		// and the error must be logged rather than silently dropped into TaskScheduler.
+		try
 		{
-			PendingUpdate entry;
-			lock (_gate)
+			while (true)
 			{
-				// Terminal transitions clear the queue themselves; only stop on empty.
-				if (_queue.Count is 0)
+				PendingUpdate entry;
+				lock (_gate)
 				{
-					_draining = false;
-					return;
+					// Terminal transitions clear the queue themselves; only stop on empty.
+					if (_queue.Count is 0)
+					{
+						return; // _draining is reset in the finally below.
+					}
+
+					entry = _queue.Dequeue();
 				}
 
-				entry = _queue.Dequeue();
-			}
+				if (!entry.TryTake())
+				{
+					continue; // Already expired or cancelled while queued.
+				}
 
-			if (!entry.TryTake())
-			{
-				continue; // Already expired or cancelled while queued.
-			}
+				IUpdateFileResponse response;
+				try
+				{
+					response = await _inner.UpdateAsync(entry.Request, entry.Ct).ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					response = Reject(entry.Request, ex.Message);
+				}
 
-			reporter?.Verbose($"Hot-reload workspace ready, applying queued update request '{entry.Request.RequestId}' (waited {entry.Age.Elapsed.TotalSeconds:F1}s).");
-			onEvent?.Invoke(new WorkspaceGateEvent("flushed", GetQueueLength(), entry.Age.Elapsed));
-
-			try
-			{
-				entry.Complete(await _inner.UpdateAsync(entry.Request, entry.Ct).ConfigureAwait(false));
+				// Resolve the awaiter before any external callback: a throwing reporter/onEvent must
+				// neither orphan this entry's TaskCompletionSource nor escape the loop.
+				entry.Complete(response);
+				try { reporter?.Verbose($"Hot-reload workspace ready, applied queued update request '{entry.Request.RequestId}' (waited {entry.Age.Elapsed.TotalSeconds:F1}s)."); } catch { /* diagnostics are best-effort */ }
+				try { onEvent?.Invoke(new WorkspaceGateEvent("flushed", GetQueueLength(), entry.Age.Elapsed)); } catch { /* diagnostics are best-effort */ }
 			}
-			catch (Exception ex)
+		}
+		catch (Exception ex)
+		{
+			try { reporter?.Error($"Hot-reload queue drain faulted unexpectedly and was aborted: {ex}"); } catch { /* diagnostics are best-effort */ }
+		}
+		finally
+		{
+			lock (_gate)
 			{
-				entry.Complete(Reject(entry.Request, ex.Message));
+				_draining = false;
 			}
 		}
 	}
 
 	private async Task WatchTimeoutAsync(PendingUpdate entry)
 	{
+		// Fire-and-forget: any escape here would silently orphan the caller's awaiter, so every path
+		// must resolve the entry. A claimed entry is then physically dropped from the queue (see finally).
+		var taken = false;
 		try
 		{
-			await Task.Delay(QueueTimeout, entry.Ct).ConfigureAwait(false);
-		}
-		catch (OperationCanceledException)
-		{
-			if (entry.TryTake())
+			try
 			{
-				entry.Complete(Reject(entry.Request, "The update request has been cancelled while waiting for the hot-reload workspace to initialize."));
+				await Task.Delay(QueueTimeout, entry.Ct).ConfigureAwait(false);
 			}
-			return;
-		}
+			catch (OperationCanceledException)
+			{
+				taken = entry.TryTake();
+				if (taken)
+				{
+					entry.Complete(Reject(entry.Request, "The update request has been cancelled while waiting for the hot-reload workspace to initialize."));
+				}
+				return;
+			}
 
-		if (entry.TryTake())
+			taken = entry.TryTake();
+			if (taken)
+			{
+				var error = $"The hot-reload workspace was not ready within {QueueTimeout.TotalSeconds:F0}s; the request was not applied.";
+				// Resolve the awaiter before any external callback so a throwing reporter/onEvent can't
+				// orphan the request.
+				entry.Complete(Reject(entry.Request, error));
+				try { reporter?.Warn($"Hot-reload update request '{entry.Request.RequestId}' expired: {error}"); } catch { /* diagnostics are best-effort */ }
+				try { onEvent?.Invoke(new WorkspaceGateEvent("expired", GetQueueLength(), entry.Age.Elapsed)); } catch { /* diagnostics are best-effort */ }
+			}
+		}
+		catch (Exception ex)
 		{
-			var error = $"The hot-reload workspace was not ready within {QueueTimeout.TotalSeconds:F0}s; the request was not applied.";
-			reporter?.Warn($"Hot-reload update request '{entry.Request.RequestId}' expired: {error}");
-			onEvent?.Invoke(new WorkspaceGateEvent("expired", GetQueueLength(), entry.Age.Elapsed));
-			entry.Complete(Reject(entry.Request, error));
+			// Unexpected fault (e.g. a throwing dependency): still guarantee the awaiter is resolved.
+			taken = entry.TryTake();
+			if (taken)
+			{
+				entry.Complete(Reject(entry.Request, ex.Message));
+			}
+		}
+		finally
+		{
+			if (taken)
+			{
+				CompactQueue();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Removes entries already claimed (by timeout / cancellation) from the queue, preserving FIFO order
+	/// of the survivors. Claimed entries are otherwise only discarded lazily on the next flush; without
+	/// this a workspace that never reaches a flushing or terminal state (stuck <c>Initializing</c>) would
+	/// let dead entries — and the queue-length telemetry — grow unbounded.
+	/// </summary>
+	private void CompactQueue()
+	{
+		lock (_gate)
+		{
+			if (_queue.Count is 0)
+			{
+				return;
+			}
+
+			var live = _queue.Where(static entry => !entry.IsTaken).ToArray();
+			if (live.Length == _queue.Count)
+			{
+				return; // Nothing claimed — avoid the rebuild.
+			}
+
+			_queue.Clear();
+			foreach (var entry in live)
+			{
+				_queue.Enqueue(entry);
+			}
 		}
 	}
 
@@ -280,6 +362,12 @@ public sealed class WorkspaceGatedFileUpdater(
 		/// </summary>
 		public bool TryTake()
 			=> Interlocked.CompareExchange(ref _taken, 1, 0) is 0;
+
+		/// <summary>
+		/// Whether the entry has already been claimed (by flush / timeout / cancellation / terminal
+		/// rejection). Used to compact claimed-but-still-queued entries out of the queue.
+		/// </summary>
+		public bool IsTaken => Volatile.Read(ref _taken) is 1;
 
 		public void Complete(IUpdateFileResponse response)
 			=> _result.TrySetResult(response);

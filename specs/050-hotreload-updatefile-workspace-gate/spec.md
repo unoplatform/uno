@@ -1,9 +1,12 @@
 # Hot-Reload: Gate `UpdateFile` Requests on Workspace Initialization
 
-Issue: [unoplatform/uno#23787](https://github.com/unoplatform/uno/issues/23787)
-Related: [spec 049](../049-hotreload-workspace-missing-targeting-pack/spec.md) (workspace init failures), [spec 047](../047-hotreload-workspace-single-tfm/spec.md) (baseline TFM filtering).
+**Repo**: `uno` (Uno.HotReload)
+**Created**: 2026-07-16
+**Status**: Implemented
+**Issue**: [unoplatform/uno#23787](https://github.com/unoplatform/uno/issues/23787)
+**Related**: [spec 047](../047-hotreload-workspace-single-tfm/spec.md) (baseline TFM filtering)
 
-**Status: IMPLEMENTED** — `WorkspaceGatedFileUpdater` + `IFileUpdater` in
+**Implementation** — `WorkspaceGatedFileUpdater` + `IFileUpdater` in
 `src/Uno.HotReload/IO/`, wired in `ServerHotReloadProcessor`; unit tests in
 `src/Uno.HotReload.Tests/IO/Given_WorkspaceGatedFileUpdater.cs`. See
 *Implementation notes* at the end for the deltas vs. this design.
@@ -60,14 +63,14 @@ Established from source review of `Uno.UI.RemoteControl.Server.Processors`,
 
 | # | Fact | Consequence |
 |---|------|-------------|
-| F1 | `ServerHotReloadProcessor.ProcessUpdateFile` (both overloads) calls `_fileUpdater.UpdateAsync(request, _ct.Token)` immediately; nothing awaits or checks `_workspace` (`ServerHotReloadProcessor.cs:314`, `:328`). `_workspace.GetAsync` is in fact **never consumed** outside `InitializeAsync` itself. | Any request racing the init writes to disk unguarded. |
-| F2 | The workspace is created asynchronously: `InitializeInner` stores `(InitializeAsync(ct), ct)` into `_workspace` and returns; the baseline is read **from disk** inside `LoadSolutionFromDisk` → `CompilationWorkspaceProvider.CreateWorkspaceAsync` (`ServerHotReloadProcessor.MetadataUpdate.cs:70`, `:88-97`). | Window A. |
-| F3 | The `FileSystemObserver` is constructed only **after** the manager is fully created and `Ready` notified (`ServerHotReloadProcessor.MetadataUpdate.cs:105`). | Window B. |
-| F4 | `_fileUpdater` is initialized **in the constructor** with the on-disk editor (`ServerHotReloadProcessor.cs:56`), before any `ConfigureServer`. | A request arriving before *any* configuration still writes to disk — the gate must also cover the not-yet-configured state. |
-| F5 | Visual Studio mode: the client computes `devServerEnabled = false` when `BuildingInsideVisualStudio` (`ClientHotReloadProcessor.Agent.cs:102-124`) → `ConfigureServer.EnableMetadataUpdates = false` → server-side `InitializeMetadataUpdater` returns `false` → `Notify(Ready)` immediately, **no workspace is ever created** (`ServerHotReloadProcessor.cs:261-270`). File edits are routed to the `IDEFileEditor` (VS applies them, VS's HR pipeline emits deltas). | HR is active as soon as the app starts; the gate must NOT apply — pass-through preserved. |
-| F6 | `ConfigureServer` can be received **multiple times** on one connection (explicit warning in `InitializeProcessor`, `ServerHotReloadProcessor.cs:66-77` — e.g. once by the app, once by design-time tooling). `InitializeInner` guards with `_workspace is not null` → warn + return: the workspace is initialized **once per connection**. `_useRoslynHotReload` is a sticky OR across calls (`MetadataUpdate.cs:40`), so a *later* `ConfigureServer` can be the one that enables and triggers the init. | The gate must key on the workspace lifecycle, not on "first ConfigureServer processed"; mode can transition no-workspace → workspace-initializing on a subsequent `ConfigureServer`. |
-| F7 | `RemoteControlServer` is a **per-connection instance** ("Creates a per-connection server instance", `RemoteControlServer.cs:45`); processors are registered per connection. A client reconnection (e.g. an app/worker restart against a long-lived dev-server) gets a **fresh `ServerHotReloadProcessor`** with `_workspace == null`. | Workspace "re-init" happens naturally via a new connection — no in-place re-init path exists (a commented-out `ProcessPackWorkspaceAsync` reload sketch exists at `ServerHotReloadProcessor.cs:364-405` but is dead code). |
-| F8 | Within one connection there is no recovery: if `InitializeAsync` faults, `_workspace` stays non-null holding a **faulted task** forever; `Dispose()` cancels `_workspace.Ct` (kills manager + observer) with no reset (`ServerHotReloadProcessor.cs:415-419`). | "Workspace unloaded / failed and will never come back" is a real terminal state on a live connection — queued and future requests must fail fast with an explicit error. |
+| F1 | `ServerHotReloadProcessor.ProcessUpdateFile` (both overloads) calls `_fileUpdater.UpdateAsync(request, _ct.Token)` immediately; nothing awaits or checks `_workspace`. `_workspace.GetAsync` is in fact **never consumed** outside `InitializeAsync` itself. | Any request racing the init writes to disk unguarded. |
+| F2 | The workspace is created asynchronously: `ServerHotReloadProcessor.InitializeInner` stores `(InitializeAsync(ct), ct)` into `_workspace` and returns; the baseline is read **from disk** inside `LoadSolutionFromDisk` → `CompilationWorkspaceProvider.CreateWorkspaceAsync` (`ServerHotReloadProcessor.MetadataUpdate.cs`). | Window A. |
+| F3 | The `FileSystemObserver` is constructed only **after** the manager is fully created and `Ready` notified (`ServerHotReloadProcessor.InitializeAsync`, `ServerHotReloadProcessor.MetadataUpdate.cs`). | Window B. |
+| F4 | `_fileUpdater` is initialized **in the `ServerHotReloadProcessor` constructor** with the on-disk editor, before any `ConfigureServer`. | A request arriving before *any* configuration still writes to disk — the gate must also cover the not-yet-configured state. |
+| F5 | Visual Studio mode: the client computes `devServerEnabled = false` when `BuildingInsideVisualStudio` (`ClientHotReloadProcessor.Agent.cs`) → `ConfigureServer.EnableMetadataUpdates = false` → server-side `InitializeMetadataUpdater` returns `false` → `Notify(Ready)` immediately, **no workspace is ever created** (`ServerHotReloadProcessor.InitializeMetadataUpdater`). File edits are routed to the `IDEFileEditor` (VS applies them, VS's HR pipeline emits deltas). | HR is active as soon as the app starts; the gate must NOT apply — pass-through preserved. |
+| F6 | `ConfigureServer` can be received **multiple times** on one connection (explicit warning in `ServerHotReloadProcessor.InitializeProcessor` — e.g. once by the app, once by design-time tooling). `InitializeInner` guards with `_workspace is not null` → warn + return: the workspace is initialized **once per connection**. `_useRoslynHotReload` is a sticky OR across calls (`ServerHotReloadProcessor.MetadataUpdate.cs`), so a *later* `ConfigureServer` can be the one that enables and triggers the init. | The gate must key on the workspace lifecycle, not on "first ConfigureServer processed"; mode can transition no-workspace → workspace-initializing on a subsequent `ConfigureServer`. |
+| F7 | `RemoteControlServer` is a **per-connection instance** ("Creates a per-connection server instance", `RemoteControlServer`); processors are registered per connection. A client reconnection (e.g. an app/worker restart against a long-lived dev-server) gets a **fresh `ServerHotReloadProcessor`** with `_workspace == null`. | Workspace "re-init" happens naturally via a new connection — no in-place re-init path exists (a commented-out `ServerHotReloadProcessor.ProcessPackWorkspaceAsync` reload sketch exists but is dead code). |
+| F8 | Within one connection there is no recovery: if `InitializeAsync` faults, `_workspace` stays non-null holding a **faulted task** forever; `ServerHotReloadProcessor.Dispose` cancels `_workspace.Ct` (kills manager + observer) with no reset. | "Workspace unloaded / failed and will never come back" is a real terminal state on a live connection — queued and future requests must fail fast with an explicit error. |
 | F9 | There is **no server-side time bound** on update processing: the transport is WebSocket frames (not HTTP request/response). The client's `UpdateRequest.ServerUpdateTimeout` (default 10 s, extendable ×10/×30 via `WithExtendedTimeouts`) is purely client-side — the client stops *waiting*, but the server would still apply the edit later, mutating disk with nobody listening. | A hard server-side limit is required; applying an edit after the requester gave up is strictly worse than failing it. |
 
 ---
@@ -88,11 +91,12 @@ The gate is driven by an explicit lifecycle around `_workspace`:
    ┌────────────────┐        ┌──────────────────┐
    │ NoWorkspace    │        │ Initializing     │  (metadata updates enabled — F2)
    │ (VS/IDE-driven)│        └───┬──────────┬───┘
-   └────────────────┘   success  │          │ failure
-     pass-through               ▼          ▼
-                        ┌───────────┐  ┌───────────┐
-                        │  Ready    │  │  Failed   │  (terminal — F8)
-                        └───────────┘  └───────────┘
+   └───────┬────────┘   success  │          │ failure
+     pass-through│               ▼          ▼
+                 │        ┌───────────┐  ┌───────────┐
+                 │        │  Ready    │  │  Failed   │  (terminal — F8)
+                 │        └───────────┘  └───────────┘
+                 └─ subsequent ConfigureServer (enables metadata updates — F6) ─▶ Initializing
                               any state ──Dispose──▶ Disposed (terminal)
 ```
 
@@ -147,8 +151,12 @@ construction.
   and the IDE is not solicited. FIFO order is preserved on flush.
 - **R2 — Flush on Ready, after baseline.** The queue is flushed only once the
   baseline solution has been captured **and** the `FileSystemObserver` is
-  active (i.e. at the point `HotReloadEvent.Ready` is notified today — closing
-  both Window A and Window B). Flushed requests follow the normal
+  active — i.e. after *both* Window A and Window B have closed. Note this is
+  **not** where `HotReloadEvent.Ready` is notified today: today's `Notify(Ready)`
+  fires *before* the `FileSystemObserver` is constructed, so the implementation
+  reports the gate's `Ready` transition from a later point (after the observer
+  exists) rather than reusing the existing notification (see *Implementation
+  notes → `Ready` placement*). Flushed requests follow the normal
   `FileUpdater.UpdateAsync` path (including the existing `BufferGate` batching).
 - **R3 — VS pass-through.** In `NoWorkspace` mode nothing is gated. Requests
   received while `NotConfigured` and resolved to `NoWorkspace` by the first
@@ -159,12 +167,16 @@ construction.
   (e.g. `"Hot-reload workspace failed to initialize; reconnect to retry"`).
   Existing `FileUpdateResult` codes are reused (≥ `Failed`); no wire-format
   change.
-- **R5 — Hard queue TTL.** Every queued request carries a deadline. On expiry
-  the server responds with an explicit timeout error and **never applies the
-  edit afterwards** (F9). Default: **30 s** (decided — covers typical workspace
-  loads while staying within the same order of magnitude as the client's
-  default patience; the client's debugger-extended timeouts go far beyond, so
-  the server limit is the effective bound). Configurable via a server
+- **R5 — Hard queue TTL.** Every queued request carries a deadline. TTL is
+  enforced **proactively (timer-based)**: each queued request arms its own timer
+  (`WatchTimeoutAsync` awaiting `Task.Delay(QueueTimeout, ct)`), so on expiry the
+  server responds with the explicit timeout error **within ~TTL regardless of
+  how long initialization takes** — the error is *not* deferred until the queue
+  next flushes or reaches a terminal state. The expired request is **never
+  applied afterwards** (F9). Default: **30 s** (decided — covers typical
+  workspace loads while staying within the same order of magnitude as the
+  client's default patience; the client's debugger-extended timeouts go far
+  beyond, so the server limit is the effective bound). Configurable via a server
   configuration key (same mechanism as `metadata-updates`, e.g.
   `update-file-queue-timeout`). A request whose deadline expires is removed
   without touching the disk.
@@ -257,6 +269,12 @@ transport):
    FIFO and batch through the `BufferGate`.
 8. **Dispose during queue (R9):** close the connection with a non-empty queue;
    assert clean teardown (no unobserved exceptions).
+9. **`NoWorkspace → Initializing` mode change (F6/R6):** first `ConfigureServer`
+   resolves to `NoWorkspace` (`EnableMetadataUpdates=false`) and two update
+   requests pass through (no queuing); a second `ConfigureServer` with
+   `EnableMetadataUpdates=true` transitions to `Initializing`; a third request
+   is now queued. Assert the third request is applied **exactly once** after
+   `Ready`, and the first two are **not** replayed (R6).
 
 ## Resolved decisions
 
@@ -284,9 +302,14 @@ concretized or slightly adjusted the text:
   would be silently swallowed.
 - **Winner-takes-the-entry semantics:** each queued entry is claimed
   atomically (`TryTake`) by exactly one of flush / TTL expiry / cancellation /
-  terminal rejection. Expired or cancelled entries stay in the queue but are
-  skipped by the flush — this is what guarantees R5's "never applied
-  afterwards" without cross-cancelling timers.
+  terminal rejection. A claimed entry is guaranteed to be skipped by the flush
+  (which re-checks `TryTake` before applying) — this is what guarantees R5's
+  "never applied afterwards" without cross-cancelling timers. To avoid the queue
+  retaining already-claimed entries when the workspace never reaches a flushing
+  or terminal state (stuck `Initializing`), the timeout/cancellation path
+  compacts them out of the queue (`CompactQueue`), preserving FIFO order of the
+  survivors, so a stalled workspace cannot accumulate dead entries (nor inflate
+  the queue-length telemetry).
 - **Strict FIFO across the flush boundary:** in `Ready`/`NoWorkspace`, a
   request arriving while the queue is non-empty (or a drain is in progress)
   is queued behind it rather than passed through, so a flush can never be
