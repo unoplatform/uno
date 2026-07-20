@@ -9,6 +9,8 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
+using Microsoft.UI.Private.Controls;
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater;
 
 [TestClass]
@@ -91,6 +93,105 @@ public class Given_LinedFlowLayout
 		sut.MinItemSpacing.Should().Be(6);
 		sut.ItemsJustification.Should().Be(LinedFlowLayoutItemsJustification.SpaceEvenly);
 		sut.ItemsStretch.Should().Be(LinedFlowLayoutItemsStretch.Fill);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_LayoutsTestHooksSetForcedWrapMultiplier_Then_RoundTripsAndInvalidates()
+	{
+		var sut = new LinedFlowLayout();
+		object invalidatedSender = null;
+		LayoutsTestHooksLinedFlowLayoutInvalidatedEventArgs invalidatedArgs = null;
+		LayoutsTestHooks.LinedFlowLayoutInvalidated += OnInvalidated;
+		try
+		{
+			LayoutsTestHooks.SetLinedFlowLayoutForcedWrapMultiplier(sut, 3.0);
+
+			LayoutsTestHooks.GetLinedFlowLayoutForcedWrapMultiplier(sut).Should().Be(3.0);
+			invalidatedSender.Should().BeSameAs(sut);
+			invalidatedArgs.Should().NotBeNull();
+			invalidatedArgs.InvalidationTrigger.Should().Be(LinedFlowLayoutInvalidationTrigger.InvalidateLayoutCall);
+			LayoutsTestHooks.GetLayoutFirstRealizedItemIndex(sut).Should().Be(-1);
+			LayoutsTestHooks.GetLayoutLastRealizedItemIndex(sut).Should().Be(-1);
+		}
+		finally
+		{
+			LayoutsTestHooks.LinedFlowLayoutInvalidated -= OnInvalidated;
+		}
+
+		void OnInvalidated(object sender, LayoutsTestHooksLinedFlowLayoutInvalidatedEventArgs args)
+		{
+			invalidatedSender = sender;
+			invalidatedArgs = args;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_AverageItemsPerLineChanges_Then_TestHookRaisesChanged()
+	{
+		var sut = new LinedFlowLayout();
+		object changedSender = null;
+		var changedCount = 0;
+		LayoutsTestHooks.LinedFlowLayoutSnappedAverageItemsPerLineChanged += OnChanged;
+		try
+		{
+			sut.SetAverageItemsPerLine((2.0, 2.0), unlockItems: false);
+
+			changedCount.Should().Be(1);
+			changedSender.Should().BeSameAs(sut);
+			LayoutsTestHooks.GetLinedFlowLayoutRawAverageItemsPerLine(sut).Should().Be(2.0);
+			LayoutsTestHooks.GetLinedFlowLayoutSnappedAverageItemsPerLine(sut).Should().Be(2.0);
+		}
+		finally
+		{
+			LayoutsTestHooks.LinedFlowLayoutSnappedAverageItemsPerLineChanged -= OnChanged;
+		}
+
+		void OnChanged(object sender, object args)
+		{
+			changedSender = sender;
+			changedCount++;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_ItemLocked_Then_TestHookReportsItemAndLine()
+	{
+		var sut = new LinedFlowLayout
+		{
+			m_itemCount = 6,
+			m_averageItemsPerLine = (2.0, 2.0),
+			m_itemsInfoFirstIndex = 0,
+		};
+		object lockedSender = null;
+		LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs lockedArgs = null;
+		LayoutsTestHooks.LinedFlowLayoutItemLocked += OnItemLocked;
+		try
+		{
+			var lineIndex = sut.LockItemToLine(2);
+
+			lineIndex.Should().Be(1);
+			lockedSender.Should().BeSameAs(sut);
+			lockedArgs.Should().NotBeNull();
+			lockedArgs.ItemIndex.Should().Be(2);
+			lockedArgs.LineIndex.Should().Be(1);
+			LayoutsTestHooks.GetLinedFlowLayoutLineIndex(sut, 2).Should().Be(1);
+		}
+		finally
+		{
+			LayoutsTestHooks.LinedFlowLayoutItemLocked -= OnItemLocked;
+		}
+
+		void OnItemLocked(object sender, LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs args)
+		{
+			lockedSender = sender;
+			lockedArgs = args;
+		}
 	}
 
 	[TestMethod]
@@ -679,5 +780,6 @@ public class Given_LinedFlowLayout
 		firstStillSizedItemIndex.Should().Be(-1);
 		lastStillSizedItemIndex.Should().Be(-1);
 	}
+
 }
 #endif

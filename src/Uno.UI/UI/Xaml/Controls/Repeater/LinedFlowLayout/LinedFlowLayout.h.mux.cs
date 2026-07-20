@@ -24,6 +24,97 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_cannotShareLinedFlowLayout = "LinedFlowLayout cannot be shared.";
 		private const int s_measureCountdownStart = 5;
 
+		#region LayoutsTestHooks
+
+		internal int FirstRealizedItemIndexDbg()
+		{
+			if (!m_wasInitializedForContext)
+			{
+				return -1;
+			}
+
+			return m_elementManager.GetFirstRealizedDataIndex();
+		}
+
+		internal int LastRealizedItemIndexDbg()
+		{
+			if (!m_wasInitializedForContext)
+			{
+				return -1;
+			}
+
+			int realizedElementCount = m_elementManager.GetRealizedElementCount;
+			return realizedElementCount == 0 ? -1 : m_elementManager.GetFirstRealizedDataIndex() + realizedElementCount - 1;
+		}
+
+		internal int FirstFrozenItemIndexDbg() => m_firstFrozenItemIndex;
+
+		internal int LastFrozenItemIndexDbg() => m_lastFrozenItemIndex;
+
+		internal double AverageItemAspectRatioDbg() => m_averageItemAspectRatioDbg;
+
+		internal double ForcedAverageItemAspectRatioDbg() => m_forcedAverageItemAspectRatioDbg;
+
+		internal void ForcedAverageItemAspectRatioDbg(double forcedAverageItemAspectRatio)
+		{
+			if (m_forcedAverageItemAspectRatioDbg != forcedAverageItemAspectRatio)
+			{
+				m_forcedAverageItemAspectRatioDbg = forcedAverageItemAspectRatio;
+				InvalidateLayout();
+			}
+		}
+
+		internal double ForcedAverageItemsPerLineDividerDbg() => m_forcedAverageItemsPerLineDividerDbg;
+
+		internal void ForcedAverageItemsPerLineDividerDbg(double forcedAverageItemsPerLineDivider)
+		{
+			if (m_forcedAverageItemsPerLineDividerDbg != forcedAverageItemsPerLineDivider)
+			{
+				m_forcedAverageItemsPerLineDividerDbg = forcedAverageItemsPerLineDivider;
+				InvalidateLayout();
+			}
+		}
+
+		internal double ForcedWrapMultiplierDbg() => m_forcedWrapMultiplierDbg;
+
+		// Allows to change LinedFlowLayout::GetItemWidthMultiplierThreshold()'s return value for testing purposes.
+		internal void ForcedWrapMultiplierDbg(double forcedWrapMultiplier)
+		{
+			if (m_forcedWrapMultiplierDbg != forcedWrapMultiplier)
+			{
+				m_forcedWrapMultiplierDbg = forcedWrapMultiplier;
+				InvalidateLayout();
+			}
+		}
+
+		internal bool IsFastPathSupportedDbg() => m_isFastPathSupportedDbg;
+
+		// Allows the fall path layout to be turned off for testing purposes.
+		// This allows for instance to provide sizing information for an entire
+		// small source collection and still exercise the regular path.
+		internal void IsFastPathSupportedDbg(bool isFastPathSupported)
+		{
+			if (m_isFastPathSupportedDbg != isFastPathSupported)
+			{
+				m_isFastPathSupportedDbg = isFastPathSupported;
+
+				if (UsesFastPathLayout())
+				{
+					ResetItemsInfo();
+				}
+
+				InvalidateLayout();
+			}
+		}
+
+		internal double RawAverageItemsPerLineDbg() => m_averageItemsPerLine.first;
+
+		internal double SnappedAverageItemsPerLineDbg() => m_averageItemsPerLine.second;
+
+		internal int GetLineIndexDbg(int itemIndex) => GetLineIndex(itemIndex, UsesFastPathLayout());
+
+		#endregion
+
 		// The desired aspect ratio associated with an item has a weight between 1 and 16. Each time an item's
 		// aspect ratio is evaluated, its weight is incremented up to 16. The average aspect ratio is computed
 		// using those weights to stabilize m_averageItemsPerLine and reduce total re-layouts (LinedFlowLayout.cpp).
