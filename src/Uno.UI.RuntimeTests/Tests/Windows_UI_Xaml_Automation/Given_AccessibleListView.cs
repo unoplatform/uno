@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -172,11 +173,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreNotEqual("0", GetSemanticAttribute(listView, "tabindex"), "A composite listbox container must not be a tab stop (tabindex must not be \"0\"); the roving stop lives on the active item.");
 		}
 
-
-
-
-
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_ListView_Multiple_Select_On_Mobile_Then_Native_Collection_CanSelectMultiple()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "One", "Two", "Three" },
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+			AutomationProperties.SetAutomationId(listView, "listview-multiselect-t045");
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(listView);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.Collection, "Collection must be populated for a ListView.");
+			Assert.IsTrue(
+				snapshot.Details!.Collection!.CanSelectMultiple,
+				"Multiple-selection ListView must report CanSelectMultiple=true in Collection details.");
+		}
 
 	}
 }
