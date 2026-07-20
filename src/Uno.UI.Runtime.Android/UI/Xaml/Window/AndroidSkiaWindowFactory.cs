@@ -20,7 +20,7 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 		wrapper.SetWindow(window, xamlRoot);
 
 		// The XamlRootMap is how consumers resolve the owning activity from a XamlRoot.
-		XamlRootMap.Register(xamlRoot, new AndroidSkiaXamlRootHost(window, wrapper));
+		XamlRootMap.Register(xamlRoot, new AndroidSkiaXamlRootHost(window, wrapper, xamlRoot));
 
 		return wrapper;
 	}

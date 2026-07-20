@@ -28,7 +28,11 @@ internal sealed class AndroidHost : UnoPlatformHost, IApplicationHost
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 	}
 
-	protected override void Initialize() => ExtensionsRegistrar.Register();
+	protected override void Initialize()
+	{
+		ExtensionsRegistrar.Register();
+		AccessibilityRouter.EnsureInitialized();
+	}
 
 	protected override Task RunLoop()
 	{
