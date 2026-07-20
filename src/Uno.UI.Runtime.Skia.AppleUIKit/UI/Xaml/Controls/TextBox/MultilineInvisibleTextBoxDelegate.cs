@@ -58,6 +58,12 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 				return true;
 			}
 
+			// Suppress the iOS autocorrect autospace fired when the caret leaves a word (see IsNoOpReplacement).
+			if (InvisibleTextBoxAutocorrect.IsNoOpReplacement(textView.Text, range, replacementString))
+			{
+				return false;
+			}
+
 			// TODO:MZ:
 			//if (textBox.OnKey(text.FirstOrDefault()))
 			//{
