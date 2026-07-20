@@ -61,6 +61,12 @@ internal static partial class ManagedImageDecoder
 			return TryDecodeJpeg(d, out decoded);
 		}
 
+		if (d.Length >= 12 && d[0] == (byte)'R' && d[1] == (byte)'I' && d[2] == (byte)'F' && d[3] == (byte)'F'
+			&& d[8] == (byte)'W' && d[9] == (byte)'E' && d[10] == (byte)'B' && d[11] == (byte)'P')
+		{
+			return TryDecodeWebp(d, out decoded);
+		}
+
 		return false;
 	}
 
