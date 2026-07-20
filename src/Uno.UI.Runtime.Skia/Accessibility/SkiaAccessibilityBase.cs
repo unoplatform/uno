@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Uno.Foundation.Logging;
 using Uno.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
@@ -29,10 +28,15 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private const int PoliteThrottleMs = 500;
 	private const int AssertiveThrottleMs = 200;
 
+	private readonly object _announcementGate = new();
 	private string? _pendingPoliteContent;
 	private string? _pendingAssertiveContent;
+	private WeakReference<UIElement>? _pendingPoliteSource;
+	private WeakReference<UIElement>? _pendingAssertiveSource;
 	private Timer? _politeDebounceTimer;
 	private Timer? _assertiveDebounceTimer;
+	private long _politeAnnouncementVersion;
+	private long _assertiveAnnouncementVersion;
 	private long _politeThrottleTimestamp;
 	private long _assertiveThrottleTimestamp;
 	private string? _lastAnnouncedPoliteContent;
@@ -42,13 +46,14 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private UIElement? _trackedFocusedElement;
 
 	// Disposal state — guards pending dispatcher callbacks after the window closes.
-	private bool _isDisposed;
+	private volatile bool _isDisposed;
 
 	// Tracks scroll-source elements (ScrollViewer / ScrollPresenter) we are subscribed to,
 	// so descendant accessibility positions can be re-emitted when the scroll offset changes.
 	// Keyed by Visual handle so removal can find the entry without holding a strong reference.
-	private readonly System.Collections.Generic.Dictionary<nint, EventHandler<ScrollViewerViewChangedEventArgs>> _scrollViewerSubscriptions = new();
-	private readonly System.Collections.Generic.Dictionary<nint, Windows.Foundation.TypedEventHandler<ScrollPresenter, object>> _scrollPresenterSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, (ScrollViewer Source, EventHandler<ScrollViewerViewChangedEventArgs> Handler)> _scrollViewerSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, (ScrollPresenter Source, Windows.Foundation.TypedEventHandler<ScrollPresenter, object> Handler)> _scrollPresenterSubscriptions = new();
+	private readonly System.Collections.Generic.Stack<UIElement> _reemitStack = new();
 
 	/// <summary>
 	/// Whether this instance has been disposed. Pending dispatcher callbacks
@@ -63,6 +68,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	/// <summary>Whether accessibility is currently enabled and the tree is initialized.</summary>
 	public abstract bool IsAccessibilityEnabled { get; }
+
+	protected virtual bool ShouldInvalidateOnScroll => IsAccessibilityEnabled;
 
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Tree management
@@ -152,7 +159,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			void Handler(object? sender, ScrollViewerViewChangedEventArgs e) => OnScrollSourceChanged(scrollViewer);
 			scrollViewer.ViewChanged += Handler;
-			_scrollViewerSubscriptions[handle] = Handler;
+			_scrollViewerSubscriptions[handle] = (scrollViewer, Handler);
 		}
 		else if (element is ScrollPresenter scrollPresenter)
 		{
@@ -164,7 +171,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(scrollPresenter);
 			scrollPresenter.ViewChanged += Handler;
-			_scrollPresenterSubscriptions[handle] = Handler;
+			_scrollPresenterSubscriptions[handle] = (scrollPresenter, Handler);
 		}
 	}
 
@@ -173,17 +180,17 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		if (element is ScrollViewer scrollViewer)
 		{
 			var handle = scrollViewer.Visual.Handle;
-			if (_scrollViewerSubscriptions.Remove(handle, out var handler))
+			if (_scrollViewerSubscriptions.Remove(handle, out var subscription))
 			{
-				scrollViewer.ViewChanged -= handler;
+				subscription.Source.ViewChanged -= subscription.Handler;
 			}
 		}
 		else if (element is ScrollPresenter scrollPresenter)
 		{
 			var handle = scrollPresenter.Visual.Handle;
-			if (_scrollPresenterSubscriptions.Remove(handle, out var handler))
+			if (_scrollPresenterSubscriptions.Remove(handle, out var subscription))
 			{
-				scrollPresenter.ViewChanged -= handler;
+				subscription.Source.ViewChanged -= subscription.Handler;
 			}
 		}
 	}
@@ -193,7 +200,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// UIElement.GetTransform, which composes ancestor scroll offsets and transforms.
 	private void OnScrollSourceChanged(UIElement scrollSource)
 	{
-		if (_isDisposed || !IsAccessibilityEnabled)
+		if (_isDisposed || !ShouldInvalidateOnScroll)
 		{
 			return;
 		}
@@ -203,30 +210,30 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	private void ReemitDescendantPositions(UIElement element)
 	{
+		_reemitStack.Clear();
 		foreach (var child in element.GetChildren())
 		{
+			_reemitStack.Push(child);
+		}
+
+		while (_reemitStack.Count > 0)
+		{
+			var child = _reemitStack.Pop();
 			if (child.Visual is ContainerVisual childVisual)
 			{
-				try
-				{
-					OnSizeOrOffsetChanged(childVisual);
-				}
-				catch (Exception ex)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"[A11y] ReemitDescendantPositions failed for {child.GetType().Name}: {ex.Message}");
-					}
-				}
+				OnSizeOrOffsetChanged(childVisual);
 			}
 
-			ReemitDescendantPositions(child);
+			foreach (var descendant in child.GetChildren())
+			{
+				_reemitStack.Push(descendant);
+			}
 		}
 	}
 
 	internal void RouteVisualOffsetOrSizeChanged(Microsoft.UI.Composition.Visual visual)
 	{
-		if (_isDisposed || !IsAccessibilityEnabled)
+		if (_isDisposed || !ShouldInvalidateOnScroll)
 		{
 			return;
 		}
@@ -255,17 +262,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			return;
 		}
 
-		try
-		{
-			NotifyPropertyChangedEventCore(peer, automationProperty, oldValue, newValue);
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"[A11y] NotifyPropertyChangedEvent failed: property={automationProperty} peer={peer.GetType().Name}: {ex.Message}", ex);
-			}
-		}
+		NotifyPropertyChangedEventCore(peer, automationProperty, oldValue, newValue);
 	}
 
 	/// <summary>
@@ -280,21 +277,22 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		// the raw container peer. ResolveProviderPeer returns `this` for every other peer, so this
 		// is a no-op outside those three control types. (Win32 does the equivalent via
 		// FindExistingProviderForPeer(peer, resolveEventsSource: true).)
+		var sourcePeer = peer;
 		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
 		if (automationProperty == AutomationElementIdentifiers.NameProperty &&
-			TryGetPeerOwner(peer, out var element))
+			TryGetPeerOwner(peer, sourcePeer, out var element))
 		{
 			var label = AriaMapper.ResolveLabel(peer);
-			UpdateName(element.Visual.Handle, peer, label ?? (string)newValue);
+			UpdateName(element.Visual.Handle, peer, label ?? newValue as string);
 		}
 		else if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateToggleState(element.Visual.Handle, peer, (ToggleState)newValue);
 		}
 		else if (automationProperty == RangeValuePatternIdentifiers.ValueProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			if (newValue is double doubleValue)
 			{
@@ -302,46 +300,48 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.ValueProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
-			UpdateTextValue(element.Visual.Handle, newValue as string);
+			UpdateTextValue(
+				element.Visual.Handle,
+				peer.IsPassword() ? null : newValue as string);
 		}
 		else if (automationProperty == ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			var isExpanded = newValue is ExpandCollapseState state &&
 				(state == ExpandCollapseState.Expanded || state == ExpandCollapseState.PartiallyExpanded);
 			UpdateExpandCollapseState(element.Visual.Handle, isExpanded);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.IsEnabledProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateEnabled(element.Visual.Handle, newValue is true);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateHelpText(element.Visual.Handle, newValue as string);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HeadingLevelProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			var level = ConvertHeadingLevel(newValue);
 			UpdateHeadingLevel(element.Visual.Handle, level);
 		}
 		else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateSelected(element.Visual.Handle, newValue is true);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			var landmarkType = newValue is AutomationLandmarkType lt ? lt : AutomationLandmarkType.None;
 			UpdateLandmark(element.Visual.Handle, AriaMapper.GetLandmarkRole(landmarkType));
 		}
 		else if (automationProperty == RangeValuePatternIdentifiers.MinimumProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			if (newValue is double min &&
 				peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeProvider)
@@ -350,7 +350,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 		else if (automationProperty == RangeValuePatternIdentifiers.MaximumProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			if (newValue is double max &&
 				peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeProvider)
@@ -359,12 +359,17 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.IsReadOnlyProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateIsReadOnly(element.Visual.Handle, newValue is true);
 		}
+		else if (automationProperty == AutomationElementIdentifiers.IsKeyboardFocusableProperty &&
+			TryGetPeerOwner(peer, sourcePeer, out element))
+		{
+			UpdateFocusable(element.Visual.Handle, newValue is true);
+		}
 		else if (automationProperty == AutomationElementIdentifiers.IsOffscreenProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			// WinUI 3's RaiseAutomaticPropertyChanges tracks IsOffscreen and raises
 			// property change events when an element moves on/off screen.
@@ -383,24 +388,69 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			return;
 		}
 
+		var sourcePeer = peer;
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		switch (eventId)
 		{
-			case AutomationEvents.AutomationFocusChanged when TryGetPeerOwner(peer, out var focusedElement):
+			case AutomationEvents.AutomationFocusChanged when TryGetPeerOwner(peer, sourcePeer, out var focusedElement):
 				SetNativeFocus(focusedElement.Visual.Handle);
 				TrackFocusedElement(focusedElement);
 				break;
 
-			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
-				if (TryGetPeerOwner(peer, out var textElement) &&
+			case AutomationEvents.TextEditTextChanged:
+			case AutomationEvents.ConversionTargetChanged:
+				if (TryGetPeerOwner(peer, sourcePeer, out var textElement) &&
 					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
 				{
-					UpdateTextValue(textElement.Visual.Handle, textValueProvider.Value);
+					UpdateTextValue(
+						textElement.Visual.Handle,
+						peer.IsPassword() ? null : textValueProvider.Value);
 				}
 				break;
 
 			case AutomationEvents.StructureChanged:
+			case AutomationEvents.SelectionPatternOnInvalidated:
+			case AutomationEvents.WindowOpened:
+			case AutomationEvents.WindowClosed:
+			case AutomationEvents.MenuOpened:
+			case AutomationEvents.MenuClosed:
+			case AutomationEvents.LayoutInvalidated:
+			case AutomationEvents.AsyncContentLoaded:
 				OnNativeStructureChanged();
+				break;
+
+			case AutomationEvents.SelectionItemPatternOnElementAddedToSelection:
+			case AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection:
+			case AutomationEvents.SelectionItemPatternOnElementSelected:
+				if (TryGetPeerOwner(peer, sourcePeer, out var selectedElement) &&
+					peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+				{
+					UpdateSelected(selectedElement.Visual.Handle, selectionItemProvider.IsSelected);
+				}
+				break;
+
+			case AutomationEvents.LiveRegionChanged:
+				UIElement? liveRegionElement = null;
+				if (TryGetPeerOwner(peer, sourcePeer, out liveRegionElement) &&
+					IsBlockedByActiveModal(liveRegionElement))
+				{
+					break;
+				}
+
+				var announcement = peer.GetName();
+				if (!string.IsNullOrEmpty(announcement))
+				{
+					if (peer.GetLiveSetting() == AutomationLiveSetting.Assertive)
+					{
+						AnnounceAssertive(announcement, liveRegionElement);
+					}
+					else if (peer.GetLiveSetting() == AutomationLiveSetting.Polite)
+					{
+						AnnouncePolite(announcement, liveRegionElement);
+					}
+				}
 				break;
 		}
 	}
@@ -412,23 +462,43 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			return;
 		}
 
+		var sourcePeer = peer;
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		UIElement? sourceElement = null;
+		if (TryGetPeerOwner(peer, sourcePeer, out sourceElement) &&
+			IsBlockedByActiveModal(sourceElement))
+		{
+			return;
+		}
+
 		var assertive = notificationProcessing == AutomationNotificationProcessing.ImportantAll ||
 						notificationProcessing == AutomationNotificationProcessing.ImportantMostRecent;
 
 		if (assertive)
 		{
-			AnnounceAssertive(displayString);
+			AnnounceAssertive(displayString, sourceElement);
 		}
 		else
 		{
-			AnnouncePolite(displayString);
+			AnnouncePolite(displayString, sourceElement);
 		}
 	}
 
 	public virtual void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
-		// TextEditTextChanged is a UIA-specific event (Win32 override raises UiaRaiseTextEditTextChangedEvent).
-		// Non-Win32 backends (macOS/WASM) have no direct NSAccessibility/ARIA equivalent, so the base is a no-op.
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if (TryGetPeerOwner(peer, out var element) &&
+			peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
+		{
+			UpdateTextValue(
+				element.Visual.Handle,
+				peer.IsPassword() ? null : valueProvider.Value);
+		}
 	}
 
 	public virtual void NotifyInvalidatePeer(AutomationPeer peer)
@@ -479,19 +549,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				return true;
 			}
 
-			// Fall back to parent's owner if container is not yet materialized
-			// (e.g., virtualized items that haven't been realized).
-			var parent = itemPeer.GetParent();
-			if (parent is FrameworkElementAutomationPeer { Owner: { } parentElement })
-			{
-				owner = parentElement;
-				return true;
-			}
+			// Unrealized items have no native node to update. Targeting the parent
+			// collection would apply item state to the wrong accessibility element.
 		}
 
 		owner = null;
 		return false;
 	}
+
+	internal static bool TryGetPeerOwner(
+		AutomationPeer peer,
+		AutomationPeer fallbackPeer,
+		[NotNullWhen(true)] out UIElement? owner)
+		=> TryGetPeerOwner(peer, out owner) ||
+			(!ReferenceEquals(peer, fallbackPeer) && TryGetPeerOwner(fallbackPeer, out owner));
 
 	/// <summary>
 	/// Determines whether a UIElement should be accessibility-focusable.
@@ -570,17 +641,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// </summary>
 	protected static bool IsDescendantOf(UIElement element, nint ancestorHandle)
 	{
-		DependencyObject? current = element;
+		UIElement? current = element;
 		while (current is not null)
 		{
-			if (current is UIElement uiElement && uiElement.Visual.Handle == ancestorHandle)
+			if (current.Visual.Handle == ancestorHandle)
 			{
 				return true;
 			}
-			current = (current as FrameworkElement)?.Parent;
+			current = current.GetUIElementAdjustedParentInternal();
 		}
 		return false;
 	}
+
+	protected virtual bool IsBlockedByActiveModal(UIElement element)
+		=> false;
 
 	/// <summary>
 	/// Resolves the accessibility role for a peer, with support for platform-specific overrides.
@@ -779,93 +853,187 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// ──────────────────────────────────────────────────────────────
 
 	public void AnnouncePolite(string text)
+		=> AnnouncePolite(text, source: null);
+
+	private void AnnouncePolite(string text, UIElement? source)
 	{
-		_pendingPoliteContent = text;
-		var oldTimer = _politeDebounceTimer;
-		_politeDebounceTimer = new Timer(_ => FlushPoliteAnnouncement(), null, AnnouncementDebounceMs, Timeout.Infinite);
-		oldTimer?.Dispose();
+		lock (_announcementGate)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_pendingPoliteContent = text;
+			_pendingPoliteSource = source is null ? null : new WeakReference<UIElement>(source);
+			var version = ++_politeAnnouncementVersion;
+			_politeDebounceTimer?.Dispose();
+			_politeDebounceTimer = new Timer(
+				_ => FlushPoliteAnnouncement(version),
+				null,
+				AnnouncementDebounceMs,
+				Timeout.Infinite);
+		}
 	}
 
 	public void AnnounceAssertive(string text)
+		=> AnnounceAssertive(text, source: null);
+
+	private void AnnounceAssertive(string text, UIElement? source)
 	{
-		_pendingAssertiveContent = text;
-		var oldTimer = _assertiveDebounceTimer;
-		_assertiveDebounceTimer = new Timer(_ => FlushAssertiveAnnouncement(), null, AnnouncementDebounceMs, Timeout.Infinite);
-		oldTimer?.Dispose();
+		lock (_announcementGate)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_pendingAssertiveContent = text;
+			_pendingAssertiveSource = source is null ? null : new WeakReference<UIElement>(source);
+			var version = ++_assertiveAnnouncementVersion;
+			_assertiveDebounceTimer?.Dispose();
+			_assertiveDebounceTimer = new Timer(
+				_ => FlushAssertiveAnnouncement(version),
+				null,
+				AnnouncementDebounceMs,
+				Timeout.Infinite);
+		}
 	}
 
-	private void FlushPoliteAnnouncement()
+	private void FlushPoliteAnnouncement(long version)
 	{
-		if (_isDisposed)
+		string? content;
+		WeakReference<UIElement>? source;
+		lock (_announcementGate)
 		{
-			return;
+			if (_isDisposed || version != _politeAnnouncementVersion)
+			{
+				return;
+			}
+
+			content = _pendingPoliteContent;
+			source = _pendingPoliteSource;
+			_pendingPoliteContent = null;
+			_pendingPoliteSource = null;
+			_politeDebounceTimer?.Dispose();
+			_politeDebounceTimer = null;
+
+			if (string.IsNullOrEmpty(content))
+			{
+				return;
+			}
+
+			var now = Environment.TickCount64;
+			if (now - _politeThrottleTimestamp < PoliteThrottleMs)
+			{
+				var remaining = PoliteThrottleMs - (int)(now - _politeThrottleTimestamp);
+				_pendingPoliteContent = content;
+				_pendingPoliteSource = source;
+				_politeDebounceTimer = new Timer(
+					_ => FlushPoliteAnnouncement(version),
+					null,
+					remaining,
+					Timeout.Infinite);
+				return;
+			}
+
+			if (string.Equals(content, _lastAnnouncedPoliteContent, StringComparison.Ordinal))
+			{
+				// U+FEFF makes repeated text lexically distinct so the native
+				// accessibility service does not suppress the announcement.
+				content += "\uFEFF";
+			}
+
+			_politeThrottleTimestamp = now;
+			_lastAnnouncedPoliteContent = content;
 		}
 
-		var content = _pendingPoliteContent;
-		_pendingPoliteContent = null;
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = null;
-
-		if (string.IsNullOrEmpty(content))
-		{
-			return;
-		}
-
-		var now = Environment.TickCount64;
-		if (now - _politeThrottleTimestamp < PoliteThrottleMs)
-		{
-			var remaining = PoliteThrottleMs - (int)(now - _politeThrottleTimestamp);
-			_pendingPoliteContent = content;
-			_politeDebounceTimer = new Timer(_ => FlushPoliteAnnouncement(), null, remaining, Timeout.Infinite);
-			return;
-		}
-
-		if (string.Equals(content, _lastAnnouncedPoliteContent, StringComparison.Ordinal))
-		{
-			// Append a zero-width non-breaking space so the platform sees a
-			// different string and re-announces it.
-			content += "\uFEFF";
-		}
-
-		_politeThrottleTimestamp = now;
-		_lastAnnouncedPoliteContent = content;
-		AnnounceOnPlatform(content, assertive: false);
+		AnnounceOnPlatformIfAllowed(content, assertive: false, source);
 	}
 
-	private void FlushAssertiveAnnouncement()
+	private void FlushAssertiveAnnouncement(long version)
 	{
-		if (_isDisposed)
+		string? content;
+		WeakReference<UIElement>? source;
+		lock (_announcementGate)
+		{
+			if (_isDisposed || version != _assertiveAnnouncementVersion)
+			{
+				return;
+			}
+
+			content = _pendingAssertiveContent;
+			source = _pendingAssertiveSource;
+			_pendingAssertiveContent = null;
+			_pendingAssertiveSource = null;
+			_assertiveDebounceTimer?.Dispose();
+			_assertiveDebounceTimer = null;
+
+			if (string.IsNullOrEmpty(content))
+			{
+				return;
+			}
+
+			var now = Environment.TickCount64;
+			if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
+			{
+				var remaining = AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp);
+				_pendingAssertiveContent = content;
+				_pendingAssertiveSource = source;
+				_assertiveDebounceTimer = new Timer(
+					_ => FlushAssertiveAnnouncement(version),
+					null,
+					remaining,
+					Timeout.Infinite);
+				return;
+			}
+
+			if (string.Equals(content, _lastAnnouncedAssertiveContent, StringComparison.Ordinal))
+			{
+				// U+FEFF makes repeated text lexically distinct without changing
+				// the text spoken by the native accessibility service.
+				content += "\uFEFF";
+			}
+
+			_assertiveThrottleTimestamp = now;
+			_lastAnnouncedAssertiveContent = content;
+		}
+
+		AnnounceOnPlatformIfAllowed(content, assertive: true, source);
+	}
+
+	private void AnnounceOnPlatformIfAllowed(
+		string content,
+		bool assertive,
+		WeakReference<UIElement>? source)
+	{
+		if (source is null)
+		{
+			AnnounceOnPlatform(content, assertive);
+			return;
+		}
+
+		if (!source.TryGetTarget(out var element))
 		{
 			return;
 		}
 
-		var content = _pendingAssertiveContent;
-		_pendingAssertiveContent = null;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = null;
-
-		if (string.IsNullOrEmpty(content))
+		void Announce()
 		{
-			return;
+			if (!_isDisposed && !IsBlockedByActiveModal(element))
+			{
+				AnnounceOnPlatform(content, assertive);
+			}
 		}
 
-		var now = Environment.TickCount64;
-		if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
+		if (element.DispatcherQueue.HasThreadAccess)
 		{
-			var remaining = AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp);
-			_pendingAssertiveContent = content;
-			_assertiveDebounceTimer = new Timer(_ => FlushAssertiveAnnouncement(), null, remaining, Timeout.Infinite);
-			return;
+			Announce();
 		}
-
-		if (string.Equals(content, _lastAnnouncedAssertiveContent, StringComparison.Ordinal))
+		else
 		{
-			content += "\uFEFF";
+			_ = element.DispatcherQueue.TryEnqueue(Announce);
 		}
-
-		_assertiveThrottleTimestamp = now;
-		_lastAnnouncedAssertiveContent = content;
-		AnnounceOnPlatform(content, assertive: true);
 	}
 
 	/// <summary>
@@ -874,8 +1042,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// </summary>
 	protected void ResetAnnouncementTracking()
 	{
-		_lastAnnouncedPoliteContent = null;
-		_lastAnnouncedAssertiveContent = null;
+		lock (_announcementGate)
+		{
+			_lastAnnouncedPoliteContent = null;
+			_lastAnnouncedAssertiveContent = null;
+		}
 	}
 
 	// ──────────────────────────────────────────────────────────────
@@ -903,25 +1074,36 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		{
 			DisposeCore();
 		}
-		catch (Exception ex)
+		finally
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			lock (_announcementGate)
 			{
-				this.Log().Error($"[A11y] DisposeCore failed on {GetType().Name}: {ex.Message}", ex);
+				_politeDebounceTimer?.Dispose();
+				_politeDebounceTimer = null;
+				_assertiveDebounceTimer?.Dispose();
+				_assertiveDebounceTimer = null;
+				_pendingPoliteContent = null;
+				_pendingAssertiveContent = null;
+				_pendingPoliteSource = null;
+				_pendingAssertiveSource = null;
+				_politeAnnouncementVersion++;
+				_assertiveAnnouncementVersion++;
 			}
+
+			foreach (var subscription in _scrollViewerSubscriptions.Values)
+			{
+				subscription.Source.ViewChanged -= subscription.Handler;
+			}
+			_scrollViewerSubscriptions.Clear();
+
+			foreach (var subscription in _scrollPresenterSubscriptions.Values)
+			{
+				subscription.Source.ViewChanged -= subscription.Handler;
+			}
+			_scrollPresenterSubscriptions.Clear();
+
+			UntrackFocusedElement();
 		}
-
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = null;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = null;
-		_pendingPoliteContent = null;
-		_pendingAssertiveContent = null;
-
-		_scrollViewerSubscriptions.Clear();
-		_scrollPresenterSubscriptions.Clear();
-
-		UntrackFocusedElement();
 	}
 
 	/// <summary>

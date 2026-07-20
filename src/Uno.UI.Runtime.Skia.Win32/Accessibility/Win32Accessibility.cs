@@ -691,6 +691,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		if (automationProperty == ValuePatternIdentifiers.ValueProperty && peer.IsPassword())
+		{
+			return;
+		}
+
 		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{

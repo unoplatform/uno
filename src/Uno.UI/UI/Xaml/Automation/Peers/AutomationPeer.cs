@@ -345,20 +345,19 @@ public partial class AutomationPeer : DependencyObject
 		// activation paths a disabled element should simply not activate, so swallow that exception
 		// and report "not invoked". The Win32 UIA COM wrappers call the providers directly (not via
 		// this helper), so they still surface UIA_E_ELEMENTNOTENABLED to the UIA client.
-		// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
 		try
 		{
-			if (this is IInvokeProvider invokeProvider)
+			if ((GetPattern(PatternInterface.Invoke) as IInvokeProvider ?? this as IInvokeProvider) is { } invokeProvider)
 			{
 				invokeProvider.Invoke();
 				return true;
 			}
-			else if (this is IToggleProvider toggleProvider)
+			else if ((GetPattern(PatternInterface.Toggle) as IToggleProvider ?? this as IToggleProvider) is { } toggleProvider)
 			{
 				toggleProvider.Toggle();
 				return true;
 			}
-			else if (this is ISelectionItemProvider selectionItemProvider)
+			else if ((GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider ?? this as ISelectionItemProvider) is { } selectionItemProvider)
 			{
 				selectionItemProvider.Select();
 				return true;

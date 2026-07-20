@@ -1175,7 +1175,7 @@ internal static partial class SemanticElementFactory
 	internal static void ApplyOwnerScopedAriaAttributes(UIElement owner, IntPtr handle)
 	{
 		// aria-level from AutomationProperties.Level (distinct from heading level, which is
-		// emitted by the heading factory). Level is a 1-based hierarchical position; 0 = unset.
+		// emitted by the heading factory). Level is a 1-based hierarchical position; negative means unset.
 		var level = AutomationProperties.GetLevel(owner);
 		if (level > 0)
 		{

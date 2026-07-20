@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -1989,6 +1990,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
 	{
+		if (!NativeDispatcher.Main.HasThreadAccess)
+		{
+			NativeDispatcher.Main.Enqueue(() => AnnounceOnPlatform(text, assertive));
+			return;
+		}
+
 		if (assertive)
 		{
 			NativeMethods.AnnounceAssertive(text);

@@ -9,6 +9,8 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]

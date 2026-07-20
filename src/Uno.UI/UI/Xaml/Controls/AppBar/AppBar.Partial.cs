@@ -327,7 +327,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ToolTipService.SetToolTip(m_tpExpandButton, toolTip);
 
 				var automationName = AutomationProperties.GetName((Button)m_tpExpandButton);
-				if (automationName == null)
+				if (string.IsNullOrEmpty(automationName))
 				{
 					automationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_MORE_BUTTON);
 					AutomationProperties.SetName((Button)m_tpExpandButton, automationName);
