@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Private.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -23,8 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// line-breaking orchestration (<see cref="MeasureOverride"/>/<see cref="ArrangeOverride"/>/
 	/// <see cref="OnItemsChangedCore"/>), the <see cref="LockItemToLine"/> API and their helpers
 	/// are ported. Default item transitions (<see cref="CreateDefaultItemTransitionProvider"/>)
-	/// are deferred to WS-D4 (see that method), and the ETW/test-hook notifications are stubbed
-	/// as WS-D5 TODOs.
+	/// are deferred to WS-D4 (see that method).
 	/// </remarks>
 	public partial class LinedFlowLayout : VirtualizingLayout
 	{
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 								{
 									m_lockedItemIndexes.Add(lockedItemIndexTmp, lockedLineIndex);
 
-									// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
+									NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
 								}
 							}
 
@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 								{
 									m_lockedItemIndexes.Add(lockedItemIndexTmp, lockedLineIndex);
 
-									// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
+									NotifyLinedFlowLayoutItemLockedDbg(lockedItemIndexTmp, lockedLineIndex);
 								}
 							}
 
@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_lockedItemIndexes.Add(itemIndex, lockedLineIndex);
 			}
 
-			// TODO (WS-D5): NotifyLinedFlowLayoutItemLockedDbg(itemIndex, lockedLineIndex);
+			NotifyLinedFlowLayoutItemLockedDbg(itemIndex, lockedLineIndex);
 
 			return lockedLineIndex;
 		}
@@ -228,7 +228,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (forceRelayout)
 			{
 				// Perform a complete re-layout during the next layout pass.
-				// TODO (WS-D5): NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.InvalidateLayoutCall).
+				NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.InvalidateLayoutCall);
 				m_forceRelayout = true;
 			}
 
@@ -714,7 +714,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Raises the ItemsUnlocked event when there are locked items. Raised when previously locked
 		// items are cleared because the source collection or the average items per line changed.
-		private void UnlockItems()
+		internal void UnlockItems()
 		{
 			if (m_lockedItemIndexes.Count > 0 || m_isFirstOrLastItemLocked)
 			{
@@ -1256,7 +1256,12 @@ namespace Microsoft.UI.Xaml.Controls
 					UnlockItems();
 				}
 
-				// TODO (WS-D5): globalTestHooks.NotifyLinedFlowLayoutSnappedAverageItemsPerLineChanged(this).
+				var globalTestHooks = LayoutsTestHooks.GetGlobalTestHooks();
+
+				if (globalTestHooks is not null)
+				{
+					globalTestHooks.NotifyLinedFlowLayoutSnappedAverageItemsPerLineChanged(this);
+				}
 			}
 		}
 
@@ -3709,7 +3714,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 							if (desiredWidthChanged || !hasOldDesiredWidth)
 							{
-								// TODO (WS-D5): NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.ItemDesiredWidthChange).
+								NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.ItemDesiredWidthChange);
 
 								if (itemIndex < m_firstFrozenItemIndex)
 								{
@@ -5691,7 +5696,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						SetAverageItemsPerLine(newAverageItemsPerLine, true /*unlockItems*/);
 
-						// TODO (WS-D5): NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.SnappedAverageItemsPerLineChange).
+						NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger.SnappedAverageItemsPerLineChange);
 
 						if (m_isVirtualizingContext)
 						{
@@ -6479,11 +6484,33 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490.
-		private void ClearItemAspectRatios()
+		internal void ClearItemAspectRatios()
 		{
 			if (m_aspectRatios != null)
 			{
 				m_aspectRatios.Clear();
+			}
+		}
+
+		// Raises the LayoutsTestHooks LinedFlowLayoutInvalidated event for testing purposes.
+		private void NotifyLinedFlowLayoutInvalidatedDbg(LinedFlowLayoutInvalidationTrigger invalidationTrigger)
+		{
+			var globalTestHooks = LayoutsTestHooks.GetGlobalTestHooks();
+
+			if (globalTestHooks is not null)
+			{
+				globalTestHooks.NotifyLinedFlowLayoutInvalidated(this, invalidationTrigger);
+			}
+		}
+
+		// Raises the LayoutsTestHooks LinedFlowLayoutItemLocked event for testing purposes.
+		private void NotifyLinedFlowLayoutItemLockedDbg(int itemIndex, int lineIndex)
+		{
+			var globalTestHooks = LayoutsTestHooks.GetGlobalTestHooks();
+
+			if (globalTestHooks is not null)
+			{
+				globalTestHooks.NotifyLinedFlowLayoutItemLocked(this, itemIndex, lineIndex);
 			}
 		}
 
