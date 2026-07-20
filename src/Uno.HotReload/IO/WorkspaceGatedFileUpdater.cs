@@ -199,10 +199,14 @@ public sealed class WorkspaceGatedFileUpdater(
 				PendingUpdate entry;
 				lock (_gate)
 				{
-					// Terminal transitions clear the queue themselves; only stop on empty.
+					// Terminal transitions clear the queue themselves; only stop on empty. Reset
+					// _draining here — atomically with the empty check, under the same lock — so a
+					// request arriving in Ready state can never observe (empty queue + draining still
+					// latched) and get enqueued with no drain left to flush it.
 					if (_queue.Count is 0)
 					{
-						return; // _draining is reset in the finally below.
+						_draining = false;
+						return;
 					}
 
 					entry = _queue.Dequeue();
@@ -213,33 +217,51 @@ public sealed class WorkspaceGatedFileUpdater(
 					continue; // Already expired or cancelled while queued.
 				}
 
-				IUpdateFileResponse response;
-				try
+				// Re-check the lifecycle immediately before applying: a terminal transition may have
+				// raced the dequeue (the terminal sweep in ReportWorkspaceState only sees still-queued
+				// entries, not one already dequeued here). Terminal states must reject without applying.
+				HotReloadWorkspaceState state;
+				lock (_gate)
 				{
-					response = await _inner.UpdateAsync(entry.Request, entry.Ct).ConfigureAwait(false);
+					state = _state;
 				}
-				catch (Exception ex)
+
+				IUpdateFileResponse response;
+				string kind;
+				if (state is HotReloadWorkspaceState.Failed or HotReloadWorkspaceState.Disposed)
 				{
-					response = Reject(entry.Request, ex.Message);
+					response = Reject(entry.Request, GetTerminalError(state));
+					kind = "rejected";
+				}
+				else
+				{
+					try
+					{
+						response = await _inner.UpdateAsync(entry.Request, entry.Ct).ConfigureAwait(false);
+					}
+					catch (Exception ex)
+					{
+						response = Reject(entry.Request, ex.Message);
+					}
+					kind = "flushed";
 				}
 
 				// Resolve the awaiter before any external callback: a throwing reporter/onEvent must
 				// neither orphan this entry's TaskCompletionSource nor escape the loop.
 				entry.Complete(response);
-				try { reporter?.Verbose($"Hot-reload workspace ready, applied queued update request '{entry.Request.RequestId}' (waited {entry.Age.Elapsed.TotalSeconds:F1}s)."); } catch { /* diagnostics are best-effort */ }
-				try { onEvent?.Invoke(new WorkspaceGateEvent("flushed", GetQueueLength(), entry.Age.Elapsed)); } catch { /* diagnostics are best-effort */ }
+				try { reporter?.Verbose($"Hot-reload queued update request '{entry.Request.RequestId}' {kind} (waited {entry.Age.Elapsed.TotalSeconds:F1}s)."); } catch { /* diagnostics are best-effort */ }
+				try { onEvent?.Invoke(new WorkspaceGateEvent(kind, GetQueueLength(), entry.Age.Elapsed)); } catch { /* diagnostics are best-effort */ }
 			}
 		}
 		catch (Exception ex)
 		{
-			try { reporter?.Error($"Hot-reload queue drain faulted unexpectedly and was aborted: {ex}"); } catch { /* diagnostics are best-effort */ }
-		}
-		finally
-		{
+			// Unexpected escape despite the guards above: release the gate under the lock so future work
+			// can still be drained, and log rather than dropping the fault into TaskScheduler.
 			lock (_gate)
 			{
 				_draining = false;
 			}
+			try { reporter?.Error($"Hot-reload queue drain faulted unexpectedly and was aborted: {ex}"); } catch { /* diagnostics are best-effort */ }
 		}
 	}
 
@@ -338,10 +360,14 @@ public sealed class WorkspaceGatedFileUpdater(
 	private static IUpdateFileResponse Reject(IUpdateFileRequest request, string error)
 		// Per-edit results are populated (not just the global error) so clients that scan
 		// Results do not mistake the rejection for an empty "no changes" success.
+		// Guard against a default (uninitialized) ImmutableArray — Select would throw NRE — matching
+		// FileUpdater.UpdateAsync's own IsDefaultOrEmpty entry guard.
 		=> new GatedUpdateResponse(
 			request.RequestId,
 			error,
-			[.. request.Edits.Select(edit => new FileEditResult(edit.FilePath, FileUpdateResult.NotAvailable, error))]);
+			request.Edits.IsDefaultOrEmpty
+				? []
+				: [.. request.Edits.Select(edit => new FileEditResult(edit.FilePath, FileUpdateResult.NotAvailable, error))]);
 
 	private sealed class PendingUpdate(IUpdateFileRequest request, CancellationToken ct)
 	{

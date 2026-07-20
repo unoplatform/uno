@@ -309,7 +309,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task SafeNotifyMetadataInitializationFailed(Exception? ex = null)
 		{
-			var errorMessage = ex?.Message ?? ex?.ToString();
+			var errorMessage = ex?.Message;
 
 			// Terminal for this connection: fail queued and future update requests instead of queuing forever.
 			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Failed);
