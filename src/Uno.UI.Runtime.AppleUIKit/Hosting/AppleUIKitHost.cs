@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.AppleUIKit.Extensions;
 
 namespace Uno.UI.Runtime.AppleUIKit;
@@ -14,7 +15,7 @@ internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 	private readonly Type? _uiApplicationDelegateOverride;
 
 	/// <summary>
-	/// Creates a host for an Uno Skia Android application.
+	/// Creates a host for an Uno Skia Apple UIKit application.
 	/// </summary>
 	/// <param name="appBuilder">App builder.</param>
 	/// <remarks>
@@ -28,7 +29,11 @@ internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
 
-	protected override void Initialize() => ExtensionsRegistrar.Register();
+	protected override void Initialize()
+	{
+		AccessibilityRouter.EnsureInitialized();
+		ExtensionsRegistrar.Register();
+	}
 
 	protected override Task RunLoop()
 	{
