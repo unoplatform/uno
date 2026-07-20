@@ -66,7 +66,7 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		// CNOMU update: the live type maps to a replacement type.
 		// In-place (EnC) update: same type identity, but present in the updated list.
 		var isUpdated = expectedType != liveType || Array.IndexOf(updatedTypes, liveType) >= 0;
-		if (!isUpdated || expectedType.GetConstructor(Type.EmptyTypes) is null)
+		if (!isUpdated)
 		{
 			return null;
 		}
@@ -77,10 +77,31 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 				$"Re-creating stranded (unmaterialized) content {liveType.Name} of {host.GetType().Name} as {expectedType.Name}");
 		}
 
-		// Despite its name, Frame.CreatePageInstance is the centralized, type-agnostic
-		// hot-reload-aware creation path (replacement-type resolution + bindable metadata
-		// provider support) also used by NavigationCache and PagePool.
-		if (Frame.CreatePageInstance(liveType) is not FrameworkElement newContent)
+		FrameworkElement? newContent;
+		try
+		{
+			// Despite its name, Frame.CreatePageInstance is the centralized, type-agnostic
+			// hot-reload-aware creation path (replacement-type resolution + bindable metadata
+			// provider support) also used by NavigationCache and PagePool. No constructor
+			// pre-check here: a bindable metadata activator may construct types a reflection
+			// probe would reject, so creation failure is handled instead of predicted.
+			newContent = Frame.CreatePageInstance(liveType) as FrameworkElement;
+		}
+		catch (Exception e)
+		{
+			// The replacement type cannot be constructed (e.g. no parameterless constructor
+			// and no bindable activator) — keep the stale content rather than failing the
+			// hot-reload pass; the visual-tree walk applies the same tolerance.
+			if (typeof(ContentControlElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(ContentControlElementMetadataUpdateHandler).Log().Debug(
+					$"Could not re-create stranded content {liveType.Name} as {expectedType.Name}: {e.Message}");
+			}
+
+			return null;
+		}
+
+		if (newContent is null)
 		{
 			return null;
 		}
