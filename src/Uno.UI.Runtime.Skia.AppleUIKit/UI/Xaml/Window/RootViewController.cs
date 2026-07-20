@@ -17,11 +17,12 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Runtime.Skia;
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
+internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost, IAccessibilityOwner
 {
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
@@ -29,6 +30,33 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private UIView? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
+	private AppleUIKitAccessibility? _accessibility;
+
+	// IAccessibilityOwner
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void SetAccessibility(AppleUIKitAccessibility accessibility)
+		=> _accessibility = accessibility;
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is { } acc)
+		{
+			AccessibilityRouter.NotifyDisposed(this);
+			acc.Dispose();
+			_accessibility = null;
+		}
+	}
+
+	/// <summary>
+	/// Forwards an initial-build trigger to the accessibility adapter once content is loaded.
+	/// Called from <see cref="NativeWindowWrapper.ShowCore"/> after the root element's Loaded event.
+	/// </summary>
+	internal void TriggerInitialBuild() => _accessibility?.TriggerInitialBuild();
+
+	/// <summary>Exposes the Metal canvas view for the accessibility adapter.</summary>
+	internal UnoSKMetalView? SkCanvasView => _skCanvasView;
 
 	public RootViewController()
 	{
