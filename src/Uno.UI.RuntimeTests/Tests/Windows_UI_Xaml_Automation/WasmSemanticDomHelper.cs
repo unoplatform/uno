@@ -1,6 +1,8 @@
 ﻿#if HAS_UNO
 using System;
+#if __WASM__
 using System.Globalization;
+#endif
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +35,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// (e.g. the test runner header).
 		/// </summary>
 		public static string GetSemanticElementId(UIElement element)
-			=> "uno-semantics-" + ((long)element.Visual.Handle).ToString(CultureInfo.InvariantCulture);
+		{
+#if __WASM__
+			return "uno-semantics-" + ((long)element.Visual.Handle).ToString(CultureInfo.InvariantCulture);
+#else
+			throw new PlatformNotSupportedException();
+#endif
+		}
 
 		/// <summary>Returns true when the element's semantic node currently exists in the DOM.</summary>
 		public static bool SemanticElementExists(UIElement element)
@@ -66,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// <summary>
 		/// Invokes <c>Uno.Foundation.WebAssemblyRuntime.InvokeJS</c> via reflection. The runtime
 		/// assembly isn't a direct reference of the runtime-tests project, so the lookup is kept
-		/// here in one place — and intentionally fails fast (<see cref="Assert.IsNotNull"/>) so a
+		/// here in one place — and intentionally fails fast (<c>Assert.IsNotNull</c>) so a
 		/// runtime rename surfaces with a clear test failure instead of silently returning empty.
 		/// The resolved <see cref="MethodInfo"/> is cached because the DOM-level tests call this
 		/// many times per test (every attribute read goes through here), and re-resolving the
