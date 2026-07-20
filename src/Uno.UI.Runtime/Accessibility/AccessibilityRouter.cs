@@ -29,8 +29,8 @@ namespace Uno.UI.Runtime;
 /// </remarks>
 internal static class AccessibilityRouter
 {
-	private static IAccessibilityOwner? _activeOwner;
-	private static bool _initialized;
+	private static volatile IAccessibilityOwner? _activeOwner;
+	private static volatile bool _initialized;
 	private static readonly object _gate = new();
 
 	/// <summary>
@@ -68,13 +68,18 @@ internal static class AccessibilityRouter
 	/// Called by wrappers on platform activation signals:
 	///   * Win32: WM_ACTIVATE with WA_ACTIVE or WA_CLICKACTIVE.
 	///   * macOS: NSWindowDidBecomeMainNotification.
+	///   * Android: Activity resume/window-focus activation.
+	///   * iOS: Window/controller activation.
 	/// Never called on deactivation; the last-active owner is retained so
 	/// source-less announcements that arrive while the app is inactive
 	/// still have a target when the user returns.
 	/// </remarks>
 	public static void SetActive(IAccessibilityOwner owner)
 	{
-		_activeOwner = owner;
+		lock (_gate)
+		{
+			_activeOwner = owner;
+		}
 	}
 
 	/// <summary>
@@ -84,9 +89,12 @@ internal static class AccessibilityRouter
 	/// </summary>
 	public static void NotifyDisposed(IAccessibilityOwner owner)
 	{
-		if (ReferenceEquals(_activeOwner, owner))
+		lock (_gate)
 		{
-			_activeOwner = FindAnyLiveOwner();
+			if (ReferenceEquals(_activeOwner, owner))
+			{
+				_activeOwner = FindAnyLiveOwner(owner);
+			}
 		}
 	}
 
@@ -97,7 +105,8 @@ internal static class AccessibilityRouter
 	/// <summary>Resolves an automation peer to its owning window's instance, or null.</summary>
 	public static SkiaAccessibilityBase? Resolve(AutomationPeer peer)
 	{
-		if (!SkiaAccessibilityBase.TryGetPeerOwner(peer, out var element))
+		var providerPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if (!SkiaAccessibilityBase.TryGetPeerOwner(providerPeer, peer, out var element))
 		{
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -113,7 +122,16 @@ internal static class AccessibilityRouter
 	/// <summary>Resolves a UIElement to its owning window's instance, or null.</summary>
 	public static SkiaAccessibilityBase? Resolve(UIElement element)
 	{
-		if (element.XamlRoot is not { } xamlRoot)
+		var current = element;
+		var xamlRoot = current.XamlRoot;
+		while (xamlRoot is null &&
+			current.GetUIElementAdjustedParentInternal() is { } adjustedParent)
+		{
+			current = adjustedParent;
+			xamlRoot = current.XamlRoot;
+		}
+
+		if (xamlRoot is null)
 		{
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -135,11 +153,12 @@ internal static class AccessibilityRouter
 	public static SkiaAccessibilityBase? TryGetActive()
 		=> _activeOwner?.Accessibility;
 
-	internal static IAccessibilityOwner? FindAnyLiveOwner()
+	internal static IAccessibilityOwner? FindAnyLiveOwner(IAccessibilityOwner? excludedOwner = null)
 	{
 		foreach (var pair in XamlRootMap.Enumerate())
 		{
 			if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility } owner &&
+				!ReferenceEquals(owner, excludedOwner) &&
 				accessibility.IsAccessibilityEnabled)
 			{
 				return owner;
@@ -227,7 +246,7 @@ internal static class AccessibilityRouter
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(AccessibilityRouter).Log().Debug(
-					$"[A11y] Source-less polite announcement dropped — no active accessibility owner (FR-008). Text=\"{text}\"");
+					"[A11y] Source-less polite announcement dropped because no accessibility owner is active.");
 			}
 		}
 
@@ -242,7 +261,7 @@ internal static class AccessibilityRouter
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(AccessibilityRouter).Log().Debug(
-					$"[A11y] Source-less assertive announcement dropped — no active accessibility owner (FR-008). Text=\"{text}\"");
+					"[A11y] Source-less assertive announcement dropped because no accessibility owner is active.");
 			}
 		}
 	}

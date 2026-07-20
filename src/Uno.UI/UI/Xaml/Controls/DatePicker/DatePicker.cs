@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpDayPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_DAY");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -475,7 +475,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpMonthPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_MONTH");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -489,7 +489,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Disposable.Create(() => m_tpYearPicker.SelectionChanged -= OnSelectorSelectionChanged);
 
 					strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
-					if (strAutomationName == null)
+					if (string.IsNullOrEmpty(strAutomationName))
 					{
 						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_YEAR");
 						strComboAutomationName = strAutomationName + strParentAutomationName;
@@ -2276,4 +2276,3 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
-
