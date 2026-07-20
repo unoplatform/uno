@@ -220,12 +220,19 @@ internal sealed class TextSelectionGripperPresenter
 
 		var surface = _host.GripperTextSurface;
 		// Subtract the grab offset captured on press so the drag samples the caret's own line (where the finger
-		// started relative to it), not the thumb's position a line below. Dragging vertically still moves across
-		// lines because the finger's own vertical movement is preserved in GetCurrentPoint.
+		// started relative to it), not the thumb's position a line below.
 		var moveSurface = args.GetCurrentPoint(surface).Position;
-		var point = new Point(
-			moveSurface.X - surface.Padding.Left,
-			moveSurface.Y - gripper.GrabOffsetY - surface.Padding.Top);
+		var sampleY = moveSurface.Y - gripper.GrabOffsetY - surface.Padding.Top;
+
+		// Clamp the sampled Y into the text's vertical span (first line's centre .. last line's centre) so a finger
+		// that drifts above or below the text still adjusts the caret horizontally, instead of GetIndexAt clamping
+		// the out-of-range Y and snapping the caret to a line's start/end. GetRectForIndex clamps its index, so
+		// int.MaxValue yields the last line's rect.
+		var firstLine = surface.ParsedText.GetRectForIndex(0);
+		var lastLine = surface.ParsedText.GetRectForIndex(int.MaxValue);
+		sampleY = Math.Clamp(sampleY, firstLine.GetMidY(), lastLine.GetMidY());
+
+		var point = new Point(moveSurface.X - surface.Padding.Left, sampleY);
 		var index = Math.Max(0, surface.ParsedText.GetIndexAt(point, false, true));
 
 		if (_host.GripperMode == GripperMode.EndOnly)

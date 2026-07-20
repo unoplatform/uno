@@ -4857,6 +4857,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Touch_Handle_Drag_Off_Text_Vertically_Still_Adjusts()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.GetCenter().X, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is { } vg && vg.end.GetAbsoluteBoundsRect().Width > 0,
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned before dragging");
+
+			var caretBefore = SUT.SelectionStart;
+			Assert.IsTrue(caretBefore > 2 && caretBefore < SUT.Text.Length - 2, $"precondition: caret should be mid-text (now {caretBefore})");
+
+			// Grab the thumb and drag LEFT while far BELOW the text. The Y is off the text, but the caret should
+			// still follow the finger left (clamped Y) instead of snapping to the line's start.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(-30, 300, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.SelectionStart < caretBefore, $"caret should move left while dragging below the text (before {caretBefore}, now {SUT.SelectionStart})");
+			Assert.IsTrue(SUT.SelectionStart > 0, $"caret should NOT snap to start of line (now {SUT.SelectionStart})");
+
+			var caretAfterLeft = SUT.SelectionStart;
+
+			// Grab the thumb again and drag RIGHT while far ABOVE the text: the caret follows the finger right.
+			gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(60, -300, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.SelectionStart > caretAfterLeft, $"caret should move right while dragging above the text (before {caretAfterLeft}, now {SUT.SelectionStart})");
+			Assert.IsTrue(SUT.SelectionStart < SUT.Text.Length, $"caret should NOT snap to end of line (now {SUT.SelectionStart})");
+		}
+
+		[TestMethod]
 		public Task When_Touch_SingleTap_Places_Caret_Android()
 			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
 
