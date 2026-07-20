@@ -5051,11 +5051,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Android, expectWordSelected: true);
 
 		[TestMethod]
-		public Task When_Touch_LongPress_Keeps_ContextMenu_Windows()
-			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Windows, expectWordSelected: false);
+		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
+			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
 
 		// Native Android: a touch long-press selects the word (and suppresses the context menu).
-		// The Windows convention keeps the default context-menu behavior (no auto word selection).
+		// The Desktop convention keeps the default context-menu behavior (no auto word selection).
 		private static async Task AssertTouchLongPress(TextBox.TouchTextSelectionConvention convention, bool expectWordSelected)
 		{
 			var SUT = new TextBox

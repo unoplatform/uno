@@ -120,13 +120,13 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	// Settable so runtime tests can force a mobile convention on Skia Desktop, where
-	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Windows.
+	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
 	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
 
 	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
 		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
 			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
-			: TouchTextSelectionConvention.Windows;
+			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
 		nameof(CanUndo),
@@ -1820,7 +1820,8 @@ public partial class TextBox : ITextSelectionGripperHost
 	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
 	internal enum TouchTextSelectionConvention
 	{
-		Windows,
+		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		Desktop,
 		Android,
 		iOS
 	}
@@ -1917,7 +1918,7 @@ public partial class TextBox : ITextSelectionGripperHost
 		_lastPointerDown = (press, repeatedPresses);
 
 		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
-		if (TouchSelectionConvention != TouchTextSelectionConvention.Windows && repeatedPresses >= 1)
+		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
 		{
 			TouchSelectWord(displayBlockPoint);
 		}

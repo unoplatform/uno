@@ -224,7 +224,7 @@ public partial class TextBox
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
 			var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
-			if (TouchSelectionConvention != TouchTextSelectionConvention.Windows && _lastPointerDown.repeatedPresses >= 1)
+			if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && _lastPointerDown.repeatedPresses >= 1)
 			{
 				// Native iOS/Android: a double-tap selects the word under the tap.
 				TouchSelectWord(displayBlockPoint);
@@ -257,7 +257,7 @@ public partial class TextBox
 				Select(index, 0);
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				break;
-			default: // Windows
+			default: // Desktop
 				var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 				var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
 				if (tappedInsideSelection)
@@ -303,13 +303,13 @@ public partial class TextBox
 
 	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu:
 	// Android selects the word under the press (the selection toolbar then appears via the selection
-	// flyout); iOS starts dragging the caret. Mouse/pen right-click and the Windows convention keep
+	// flyout); iOS starts dragging the caret. Mouse/pen right-click and the Desktop convention keep
 	// the default context flyout.
 	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
 		if (_isSkiaTextBox
 			&& args.IsTouchInput
-			&& TouchSelectionConvention != TouchTextSelectionConvention.Windows
+			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop
 			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
 		{
 			switch (TouchSelectionConvention)
