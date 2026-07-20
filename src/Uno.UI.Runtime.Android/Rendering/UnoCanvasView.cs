@@ -100,9 +100,18 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	public void InvalidateRender()
 	{
-		ExploreByTouchHelper.InvalidateRoot();
 		// Request the call of IRenderer.OnDrawFrame for one frame
 		RequestRender();
+	}
+
+	protected override void OnSizeChanged(int width, int height, int oldWidth, int oldHeight)
+	{
+		base.OnSizeChanged(width, height, oldWidth, oldHeight);
+
+		if (width != oldWidth || height != oldHeight)
+		{
+			ExploreByTouchHelper.InvalidateAccessibilityRoot();
+		}
 	}
 
 	public override bool OnCheckIsTextEditor()
