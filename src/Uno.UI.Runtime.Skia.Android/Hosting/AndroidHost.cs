@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.Android;
@@ -35,6 +36,8 @@ public class AndroidHost : ISkiaApplicationHost
 	{
 		try
 		{
+			AccessibilityRouter.EnsureInitialized();
+
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => AndroidCorePointerInputSource.Instance);
 			ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), o => AndroidKeyboardInputSource.Instance);
