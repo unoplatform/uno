@@ -9,7 +9,7 @@ jobs:
 
 - job: Android_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
-  timeoutInMinutes: 45
+  timeoutInMinutes: 50
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
   pool: ${{ parameters.vmLinuxPool }}
@@ -99,6 +99,37 @@ jobs:
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
     displayName: Run Android Skia Tests
+
+  - pwsh: |
+      $env:ANDROID_HOME = "$(build.sourcesdirectory)/build/android-sdk"
+      $env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+      $env:UNO_UITEST_PLATFORM = "Android"
+      $env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
+      $env:UITEST_VARIANT = "skia"
+      Remove-Item Env:UNO_UITEST_ANDROIDAPK_PATH -ErrorAction SilentlyContinue
+
+      $adb = Join-Path $env:ANDROID_HOME "platform-tools/adb"
+      $device = (& $adb devices) |
+        Select-Object -Skip 1 |
+        Where-Object { $_ -match "\sdevice$" } |
+        Select-Object -First 1
+      if (-not $device)
+      {
+        throw "No Android emulator is available for the Skia UIAutomator tests."
+      }
+      $env:ANDROID_SERIAL = ($device -split "\s+")[0]
+
+      dotnet test "$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj" `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=net10.0-android `
+        -p:UnoFastDevBuild=true `
+        --filter "FullyQualifiedName~MobileAccessibility_Android_UiAutomator_Tests"
+      if ($LASTEXITCODE -ne 0)
+      {
+        exit $LASTEXITCODE
+      }
+    displayName: Run Android Skia accessibility UIAutomator tests
+    condition: eq(variables['UITEST_RUNTIME_TEST_GROUP'], '0')
 
   - task: PublishTestResults@2
     condition: always()
