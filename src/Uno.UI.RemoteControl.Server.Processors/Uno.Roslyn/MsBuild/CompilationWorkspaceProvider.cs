@@ -109,6 +109,14 @@ public static class CompilationWorkspaceProvider
 				workspace = null!;
 				await Task.Delay(5_000, ct);
 			}
+			catch
+			{
+				// Non-retried failure (the final attempt, or any other exception type): dispose the
+				// partially-created workspace before surfacing the exception — same lingering MSBuild
+				// evaluation-node concern as the retry path above.
+				workspace?.Dispose();
+				throw;
+			}
 		}
 
 		return workspace;
