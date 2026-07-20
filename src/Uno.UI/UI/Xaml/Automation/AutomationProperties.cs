@@ -220,7 +220,7 @@ public partial class AutomationProperties
 			"LandmarkType",
 			typeof(AutomationLandmarkType),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
+			new FrameworkPropertyMetadata(default(AutomationLandmarkType), OnLandmarkTypeChanged));
 
 	/// <summary>
 	/// Identifies the Level attached property, which specifies the hierarchical level of the element within a set or outline.
@@ -260,7 +260,7 @@ public partial class AutomationProperties
 			"LocalizedLandmarkType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnLocalizedLandmarkTypeChanged));
 
 	/// <summary>
 	/// Identifies the Name attached property, which provides the accessible name for an element.

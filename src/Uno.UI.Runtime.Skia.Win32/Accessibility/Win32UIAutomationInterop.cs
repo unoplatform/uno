@@ -140,6 +140,8 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_FlowsFromPropertyId = 30148;
 	internal const int UIA_OptimizeForVisualContentPropertyId = 30149;
 	internal const int UIA_IsPeripheralPropertyId = 30150;
+	internal const int UIA_AnnotationTypesPropertyId = 30155;
+	internal const int UIA_AnnotationObjectsPropertyId = 30156;
 	internal const int UIA_ProviderDescriptionPropertyId = 30107;
 	internal const int UIA_IsDialogPropertyId = 30174;
 	internal const int UIA_PositionInSetPropertyId = 30152;
@@ -187,6 +189,7 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_HeaderControlTypeId = 50034;
 	internal const int UIA_HeaderItemControlTypeId = 50035;
 	internal const int UIA_TableControlTypeId = 50036;
+	internal const int UIA_TitleBarControlTypeId = 50037;
 	internal const int UIA_SeparatorControlTypeId = 50038;
 	internal const int UIA_SemanticZoomControlTypeId = 50039;
 	internal const int UIA_AppBarControlTypeId = 50040;
@@ -233,9 +236,10 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_ToolTipClosedEventId = 20001;
 	internal const int UIA_StructureChangedEventId = 20002;
 	internal const int UIA_MenuOpenedEventId = 20003;
-	internal const int UIA_MenuClosedEventId = 20004;
+	internal const int UIA_MenuClosedEventId = 20007;
 	internal const int UIA_AutomationFocusChangedEventId = 20005;
-	internal const int UIA_AutomationPropertyChangedEventId = 20006;
+	internal const int UIA_LayoutInvalidatedEventId = 20008;
+	internal const int UIA_AutomationPropertyChangedEventId = 20004;
 	internal const int UIA_Invoke_InvokedEventId = 20009;
 	internal const int UIA_SelectionItem_ElementAddedToSelectionEventId = 20010;
 	internal const int UIA_SelectionItem_ElementRemovedFromSelectionEventId = 20011;
@@ -385,6 +389,12 @@ internal static class Win32UIAutomationInterop
 			return false;
 		}
 	}
+
+	[DllImport("uiautomationcore.dll")]
+	internal static extern int UiaRaiseTextEditTextChangedEvent(
+		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
+		int textEditChangeType,
+		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_BSTR)] string[]? changedData);
 
 	[DllImport("uiautomationcore.dll")]
 	private static extern int UiaDisconnectProvider(

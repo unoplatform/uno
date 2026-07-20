@@ -113,10 +113,13 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 	/// </summary>
 	public void Toggle()
 	{
-		if (IsEnabled())
+		if (!IsEnabled())
 		{
-			((ToggleSwitch)Owner).AutomationPeerToggle();
+			// UIA_E_ELEMENTNOTENABLED — match WinUI: check enabled before acting.
+			throw new ElementNotEnabledException();
 		}
+
+		((ToggleSwitch)Owner).AutomationPeerToggle();
 	}
 
 	internal void RaiseToggleStatePropertyChangedEvent(object pOldValue, object pNewValue)

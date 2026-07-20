@@ -182,7 +182,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// labeller is present: at the end of CreateAOM for the initial build, and at the end of the
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
-	private readonly List<(IntPtr Handle, AutomationPeer Peer)> _pendingLabelledBy = new();
+	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -406,7 +406,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						if (AutomationProperties.GetLabeledBy(child) is not null
 							&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
 						{
-							_pendingLabelledBy.Add((childHandle, labelledPeer));
+							_pendingLabelledBy.Add((childHandle, new WeakReference<AutomationPeer>(labelledPeer)));
 						}
 					}
 					else
@@ -483,6 +483,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
+			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -1327,7 +1328,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// labeller's own (later) drain. ResolveLabelledByIdRef's HasSemanticElement gate still applies.
 		for (var i = _pendingLabelledBy.Count - 1; i >= 0; i--)
 		{
-			var (labelledHandle, labelledPeer) = _pendingLabelledBy[i];
+			var (labelledHandle, labelledPeerReference) = _pendingLabelledBy[i];
+			if (!HasSemanticElement(labelledHandle)
+				|| !labelledPeerReference.TryGetTarget(out var labelledPeer))
+			{
+				_pendingLabelledBy.RemoveAt(i);
+				continue;
+			}
+
 			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(labelledPeer);
 			if (labelledById is not null)
 			{
@@ -1658,7 +1666,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (_isCreatingAOM && _semanticParentMap.ContainsKey(handle) && AutomationProperties.GetLabeledBy(child) is not null
 			&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
 		{
-			_pendingLabelledBy.Add((handle, labelledPeer));
+			_pendingLabelledBy.Add((handle, new WeakReference<AutomationPeer>(labelledPeer)));
 		}
 
 		// Register virtualized containers (and backfill their already-realized items) at AOM-build
@@ -1785,6 +1793,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				role = "group";
 			}
 		}
+		// WA-01: role=generic (control type Custom) is ARIA name-prohibited. When such an element has
+		// an accessible name it would otherwise emit aria-label on a prohibited role (dropped by ATs /
+		// flagged by axe "aria-label on prohibited role"). Promote it to role=group, which permits a
+		// name — matching WinUI3's named-container → UIA Group.
+		else if (string.Equals(role, "generic", StringComparison.Ordinal) && hasAccessibleName)
+		{
+			role = "group";
+		}
 
 		// Elements with a LandmarkType get the corresponding ARIA landmark role.
 		// This overrides any other role since landmarks are a higher-level semantic.
@@ -1795,10 +1811,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (landmarkType != AutomationLandmarkType.None)
 		{
 			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
-			if (!string.IsNullOrEmpty(landmarkRole)
-				&& (landmarkRole is not ("region" or "form") || hasAccessibleName))
+			if (AriaMapper.CanExposeLandmarkRole(landmarkRole, hasAccessibleName))
 			{
 				role = landmarkRole;
+			}
+			else if (automationPeer is LandmarkTargetAutomationPeer)
+			{
+				// This peer exists only to promote the landmark. If region/form is invalid because
+				// it has no name, do not leak the peer's synthetic Group role into the DOM.
+				role = null;
 			}
 		}
 
@@ -2077,12 +2098,39 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Sync landmark role for VoiceOver rotor navigation
 			var attributes = AriaMapper.GetAriaAttributes(peer);
-			if (!string.IsNullOrEmpty(attributes.LandmarkRole))
+			var hasAccessibleName = !string.IsNullOrEmpty(attributes.Label);
+			string? role;
+			if (AriaMapper.CanExposeLandmarkRole(attributes.LandmarkRole, hasAccessibleName))
 			{
-				NativeMethods.UpdateLandmarkRole(element.Visual.Handle, attributes.LandmarkRole);
+				role = attributes.LandmarkRole;
 			}
+			else if (peer is LandmarkTargetAutomationPeer)
+			{
+				role = null;
+			}
+			else
+			{
+				role = attributes.Role;
+				if (string.Equals(role, "generic", StringComparison.Ordinal) && hasAccessibleName)
+				{
+					role = "group";
+				}
+				else if (string.Equals(role, "region", StringComparison.Ordinal) &&
+					!AriaMapper.QualifiesAsNamedScrollRegion(peer, element))
+				{
+					role = null;
+				}
+			}
+
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, role);
+			UpdateRoleDescription(element.Visual.Handle, attributes.RoleDescription);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LocalizedLandmarkTypeProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var roleDescription = AriaMapper.GetAriaAttributes(peer).RoleDescription;
+			UpdateRoleDescription(element.Visual.Handle, roleDescription);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.IsEnabledProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2423,12 +2471,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	protected override void UpdateHeadingLevel(nint handle, int level)
 		=> NativeMethods.UpdateAriaLevel(handle, level);
 	protected override void UpdateLandmark(nint handle, string? landmarkRole)
-	{
-		if (!string.IsNullOrEmpty(landmarkRole))
-		{
-			NativeMethods.UpdateLandmarkRole(handle, landmarkRole);
-		}
-	}
+		=> NativeMethods.UpdateLandmarkRole(handle, landmarkRole);
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription)
+		=> NativeMethods.UpdateAriaRoleDescription(handle, roleDescription ?? string.Empty);
 	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly)
 		=> NativeMethods.UpdateTextBoxReadOnly(handle, isReadOnly);
 	protected override void UpdateFocusable(nint handle, bool focusable)
@@ -2606,7 +2651,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateAriaDescription(IntPtr handle, string description);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateLandmarkRole")]
-		internal static partial void UpdateLandmarkRole(IntPtr handle, string role);
+		internal static partial void UpdateLandmarkRole(IntPtr handle, string? role);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);

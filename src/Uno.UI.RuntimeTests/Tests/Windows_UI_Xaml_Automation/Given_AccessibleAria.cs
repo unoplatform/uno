@@ -630,6 +630,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"An unnamed Custom (region) landmark must NOT emit a role (region requires a name).");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_LandmarkType_Changes_Then_Role_Is_Gated_And_Restored()
+		{
+			var button = new Button { Width = 100, Height = 30 };
+
+			await UITestHelper.Load(button);
+			button.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000,
+				message: "Timed out waiting for the Button semantic node.");
+
+			Assert.AreEqual(string.Empty, GetSemanticAttribute(button, "role"),
+				"A native button uses its implicit HTML role before a landmark override is applied.");
+
+			AutomationProperties.SetLandmarkType(button, AutomationLandmarkType.Custom);
+			await UITestHelper.WaitForIdle();
+			Assert.AreNotEqual("region", GetSemanticAttribute(button, "role"),
+				"An unnamed Custom landmark must not become an unnamed region.");
+
+			AutomationProperties.SetLandmarkType(button, AutomationLandmarkType.Main);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(button, "role") == "main", timeoutMS: 5000,
+				message: "Timed out waiting for the live Main landmark role.");
+
+			AutomationProperties.SetLandmarkType(button, AutomationLandmarkType.None);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(button, "role") == "button", timeoutMS: 5000,
+				message: "Timed out waiting for the control role to be restored.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_LocalizedLandmarkType_Changes_Then_RoleDescription_Updates()
+		{
+			var button = new Button { Content = "Open", Width = 100, Height = 30 };
+			AutomationProperties.SetLandmarkType(button, AutomationLandmarkType.Main);
+
+			try
+			{
+				await UITestHelper.Load(button);
+				button.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000,
+					message: "Timed out waiting for the Button semantic node.");
+
+				AutomationProperties.SetLocalizedLandmarkType(button, "Primary content");
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(button, "aria-roledescription") == "Primary content",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the live landmark role description.");
+
+				AutomationProperties.SetLocalizedLandmarkType(button, "Updated content");
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(button, "aria-roledescription") == "Updated content",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the updated landmark role description.");
+
+				AutomationProperties.SetLocalizedLandmarkType(button, string.Empty);
+				await UITestHelper.WaitFor(
+					() => !SemanticElementHasAttribute(button, "aria-roledescription"),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the landmark role description to be removed.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		/// <summary>
 		/// T021 (FR-019, WASM): when AutomationProperties.LabeledBy points to an element that has its own
 		/// semantic node, the labelled control must emit aria-labelledby as an IDREF to that labeller's

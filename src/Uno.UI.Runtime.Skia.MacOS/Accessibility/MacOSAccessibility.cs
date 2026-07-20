@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -152,6 +153,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
+				if (owner is Control { IsEnabled: false })
+				{
+					return;
+				}
+
 				var peer = owner.GetOrCreateAutomationPeer();
 				if (peer is IRangeValueProvider rangeProvider && !rangeProvider.IsReadOnly)
 				{
@@ -178,6 +184,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
+				if (owner is Control { IsEnabled: false })
+				{
+					return;
+				}
+
 				var peer = owner.GetOrCreateAutomationPeer();
 				if (peer is IRangeValueProvider rangeProvider && !rangeProvider.IsReadOnly)
 				{
@@ -330,6 +341,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 
 				AddAccessibilityElement(parent.Visual.Handle, child, index);
 				TryRegisterModalDialog(child);
+				QueueChildrenChanged();
 				foreach (var childChild in child.GetChildren())
 				{
 					OnChildAdded(child, childChild, null);
@@ -360,7 +372,36 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			}
 
 			NativeUno.uno_accessibility_remove_element(_windowHandle, parent.Visual.Handle, child.Visual.Handle);
+			QueueChildrenChanged();
 		}
+	}
+
+	private bool _childrenChangedPostQueued;
+
+	/// <summary>
+	/// Coalesces a VoiceOver structural-refresh notification (NSAccessibilityCreatedNotification on
+	/// the window, via <c>uno_accessibility_post_children_changed</c>) after direct tree mutations.
+	/// <see cref="OnChildAdded"/>/<see cref="OnChildRemoved"/> recurse over subtrees, so many
+	/// mutations collapse into a single post per UI tick, mirroring Win32's coalesced StructureChanged
+	/// flush. Without this, VoiceOver never learns that a dynamically added/removed element entered or
+	/// left the tree (MAC-03).
+	/// </summary>
+	private void QueueChildrenChanged()
+	{
+		if (_childrenChangedPostQueued || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		_childrenChangedPostQueued = true;
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			_childrenChangedPostQueued = false;
+			if (IsAccessibilityEnabled)
+			{
+				NativeUno.uno_accessibility_post_children_changed(_windowHandle);
+			}
+		}, NativeDispatcherPriority.Normal);
 	}
 
 	protected override void OnSizeOrOffsetChanged(Visual visual)
@@ -534,6 +575,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	private static void ApplyAttributes(nint handle, AutomationPeer peer, UIElement? owner = null)
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
+
+		var automationId = peer.GetAutomationId();
+		// AutomationProperties.AutomationId → NSAccessibility accessibilityIdentifier, so
+		// XCUITest / Appium can locate the element (parity with the WASM xamlautomationid).
+		NativeUno.uno_accessibility_update_identifier(handle, string.IsNullOrEmpty(automationId) ? null : automationId);
 
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
@@ -765,6 +811,9 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	protected override void UpdateLandmark(nint handle, string? landmarkRole)
 		=> NativeUno.uno_accessibility_update_landmark(handle, landmarkRole);
 
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription)
+		=> NativeUno.uno_accessibility_update_role_description(handle, roleDescription);
+
 	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly)
 		=> NativeUno.uno_accessibility_update_read_only(handle, isReadOnly);
 
@@ -780,6 +829,10 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			return;
 		}
+
+		// Match WinUI: resolve the EventsSource so ListItem/TabItem/TreeItem events target the data
+		// peer the client sees. ResolveProviderPeer returns `this` for every other peer.
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
 		base.NotifyAutomationEvent(peer, eventId);
 

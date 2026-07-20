@@ -11,6 +11,9 @@ using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Automation;
+#if __SKIA__
+using Microsoft.UI.Xaml.Automation.Peers;
+#endif
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -140,6 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
 			UpdateSuggestionList();
+			RaiseSuggestionsListLayoutInvalidated();
 		}
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -208,6 +212,21 @@ namespace Microsoft.UI.Xaml.Controls
 				// ASB respectively.
 				LayoutPopup();
 			}
+		}
+
+		// WinUI raises LayoutInvalidated on the suggestions list part from OnItemsChanged (Items /
+		// ItemsSource collection changes) — not on text changes — so a UIA client re-reads the
+		// re-laid-out suggestions. Gated on an active listener to avoid materializing a peer during
+		// normal layout.
+		private void RaiseSuggestionsListLayoutInvalidated()
+		{
+#if __SKIA__
+			if (_suggestionsList is not null && AutomationPeer.ListenerExistsHelper(AutomationEvents.LayoutInvalidated))
+			{
+				FrameworkElementAutomationPeer.CreatePeerForElement(_suggestionsList)
+					?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+			}
+#endif
 		}
 
 		private void UpdateTextFromSuggestion(Object o)

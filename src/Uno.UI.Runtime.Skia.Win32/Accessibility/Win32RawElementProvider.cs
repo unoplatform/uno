@@ -30,7 +30,7 @@ internal class Win32RawElementProvider :
 {
 	private static int _nextRuntimeId = 1;
 
-	private readonly UIElement _owner;
+	private UIElement _owner;
 	private readonly nint _hwnd;
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
@@ -83,9 +83,9 @@ internal class Win32RawElementProvider :
 	/// virtual) children too — e.g. WCT DataGrid row/cell providers that are keyed
 	/// only by peer and are never reachable through the element table.
 	/// </remarks>
-	internal void Invalidate(HashSet<Win32RawElementProvider>? visited = null)
+	internal void Invalidate(HashSet<Win32RawElementProvider>? visited = null, bool allowRoot = false)
 	{
-		if (_isRoot || _isInvalidating || _isInvalidated)
+		if ((_isRoot && !allowRoot) || _isInvalidating || _isInvalidated)
 		{
 			return;
 		}
@@ -125,6 +125,7 @@ internal class Win32RawElementProvider :
 		finally
 		{
 			_isInvalidated = true;
+			_owner = null!;
 			_isInvalidating = false;
 		}
 	}
@@ -329,7 +330,7 @@ internal class Win32RawElementProvider :
 
 				// Semantics
 				Win32UIAutomationInterop.UIA_HeadingLevelPropertyId => _isVirtualPeer ? null : MapHeadingLevel(AutomationProperties.GetHeadingLevel(_owner)),
-				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => _isVirtualPeer ? null : MapLandmarkType(AutomationProperties.GetLandmarkType(_owner)),
+				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => _isVirtualPeer ? null : GetLandmarkTypeProperty(),
 				Win32UIAutomationInterop.UIA_LocalizedLandmarkTypePropertyId => _isVirtualPeer ? null : GetNonEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)),
 				Win32UIAutomationInterop.UIA_LiveSettingPropertyId => _isVirtualPeer ? 0 : (int)AutomationProperties.GetLiveSetting(_owner),
 				Win32UIAutomationInterop.UIA_OrientationPropertyId => MapOrientation(peer),
@@ -347,18 +348,24 @@ internal class Win32RawElementProvider :
 
 				// Relation properties
 				Win32UIAutomationInterop.UIA_LabeledByPropertyId => GetLabeledByProvider(peer),
-				Win32UIAutomationInterop.UIA_DescribedByPropertyId => null,
-				Win32UIAutomationInterop.UIA_ControllerForPropertyId => null,
-				Win32UIAutomationInterop.UIA_FlowsToPropertyId => null,
-				Win32UIAutomationInterop.UIA_FlowsFromPropertyId => null,
+				Win32UIAutomationInterop.UIA_DescribedByPropertyId => GetRelationProviders(peer?.GetDescribedBy()),
+				Win32UIAutomationInterop.UIA_ControllerForPropertyId => GetRelationProviders(peer?.GetControlledPeers()),
+				Win32UIAutomationInterop.UIA_FlowsToPropertyId => GetRelationProviders(peer?.GetFlowsTo()),
+				Win32UIAutomationInterop.UIA_FlowsFromPropertyId => GetRelationProviders(peer?.GetFlowsFrom()),
 
 				// ARIA properties - not applicable for non-web frameworks
 				Win32UIAutomationInterop.UIA_AriaRolePropertyId => null,
 				Win32UIAutomationInterop.UIA_AriaPropertiesPropertyId => null,
 
 				// Culture / peripheral / other
-				Win32UIAutomationInterop.UIA_CulturePropertyId => null,
-				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => null,
+				// Culture is a locale LCID; WinUI serves VT_EMPTY (null) when unset (0).
+				Win32UIAutomationInterop.UIA_CulturePropertyId => GetPositiveOrNull(peer?.GetCulture() ?? 0),
+				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => peer?.IsPeripheral() ?? false,
+
+				// Annotations — one GetAnnotations() serves both the type ids and the element providers
+				// (WinUI UIAWrapper.cpp:707-712).
+				Win32UIAutomationInterop.UIA_AnnotationTypesPropertyId => GetAnnotationTypes(peer),
+				Win32UIAutomationInterop.UIA_AnnotationObjectsPropertyId => GetAnnotationObjects(peer),
 
 				_ => null,
 			};
@@ -1289,17 +1296,86 @@ internal class Win32RawElementProvider :
 			var labeledByElement = AutomationProperties.GetLabeledBy(_owner);
 			if (labeledByElement is UIElement labelElement)
 			{
-				return _accessibility.GetOrCreateProvider(labelElement);
+				return _accessibility.GetProviderForRelatedElement(labelElement);
 			}
 		}
 
 		// Fall back to peer's GetLabeledBy()
 		if (peer?.GetLabeledBy() is { } labeledByPeer)
 		{
-			return _accessibility.GetProviderForPeer(labeledByPeer);
+			return _accessibility.GetProviderForRelatedPeer(labeledByPeer);
 		}
 
 		return null;
+	}
+
+	// Converts a peer relation list (DescribedBy / ControllerFor / FlowsTo / FlowsFrom) to the UIA
+	// provider array the relation property expects. Returns null when empty so the property reads as
+	// not-supported rather than an empty array, matching WinUI (UIAWrapper.cpp relation handling).
+	private IRawElementProviderSimple[]? GetRelationProviders(IEnumerable<AutomationPeer>? peers)
+	{
+		if (peers is null)
+		{
+			return null;
+		}
+
+		List<IRawElementProviderSimple>? providers = null;
+		foreach (var relatedPeer in peers)
+		{
+			if (relatedPeer is not null && _accessibility.GetProviderForRelatedPeer(relatedPeer) is { } provider)
+			{
+				(providers ??= new List<IRawElementProviderSimple>()).Add(provider);
+			}
+		}
+
+		return providers?.ToArray();
+	}
+
+	// Serves UIA_AnnotationTypesPropertyId: the AnnotationType id of each annotation on this element
+	// (WinUI ConvertToVariant for AnnotationTypes_Property). AutomationPeerAnnotation.Type mirrors the
+	// WinUI AnnotationType enum, so the raw int value is the UIA annotation type id.
+	private int[]? GetAnnotationTypes(AutomationPeer? peer)
+	{
+		var annotations = peer?.GetAnnotations();
+		if (annotations is null || annotations.Count == 0)
+		{
+			return null;
+		}
+
+		var types = new int[annotations.Count];
+		for (var i = 0; i < annotations.Count; i++)
+		{
+			types[i] = (int)annotations[i].Type;
+		}
+
+		return types;
+	}
+
+	// Serves UIA_AnnotationObjectsPropertyId: an array index-aligned with AnnotationTypes carrying the
+	// provider for each annotation's target element (AutomationPeerAnnotation.Peer), with a null entry
+	// for element-less annotations, returning nothing when every entry is null. Mirrors WinUI's
+	// CUIAWindow::AutomationPeerAnnotationCollectionToVariant (a null is a valid annotation object).
+	private IRawElementProviderSimple?[]? GetAnnotationObjects(AutomationPeer? peer)
+	{
+		var annotations = peer?.GetAnnotations();
+		if (annotations is null || annotations.Count == 0)
+		{
+			return null;
+		}
+
+		var objects = new IRawElementProviderSimple?[annotations.Count];
+		var hasNonNull = false;
+		for (var i = 0; i < annotations.Count; i++)
+		{
+			if (annotations[i].Peer is { } annotationPeer &&
+				_accessibility.GetProviderForPeer(annotationPeer) is { } provider)
+			{
+				objects[i] = provider;
+				hasNonNull = true;
+			}
+		}
+
+		return hasNonNull ? objects : null;
 	}
 
 	private string? GetName(AutomationPeer? peer)
@@ -1309,6 +1385,7 @@ internal class Win32RawElementProvider :
 			// Root without a peer returns the window title
 			return GetWindowTitle();
 		}
+
 		// Return null instead of empty string so UIA knows the name is unset
 		// and can fall back to other name computation strategies.
 		return GetNonEmpty(peer?.GetName());
@@ -1446,6 +1523,19 @@ internal class Win32RawElementProvider :
 		_ => Win32UIAutomationInterop.HeadingLevel_None,
 	};
 
+	private int? GetLandmarkTypeProperty()
+	{
+		var type = AutomationProperties.GetLandmarkType(_owner);
+		if (type == AutomationLandmarkType.None &&
+			!string.IsNullOrEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)))
+		{
+			// Match WinUI (UIAWrapper.cpp): a LocalizedLandmarkType with no LandmarkType is a Custom landmark.
+			return Win32UIAutomationInterop.UIA_CustomLandmarkTypeId;
+		}
+
+		return MapLandmarkType(type);
+	}
+
 	internal static int? MapLandmarkType(AutomationLandmarkType type) => type switch
 	{
 		AutomationLandmarkType.None => null,
@@ -1496,6 +1586,7 @@ internal class Win32RawElementProvider :
 		AutomationControlType.Header => Win32UIAutomationInterop.UIA_HeaderControlTypeId,
 		AutomationControlType.HeaderItem => Win32UIAutomationInterop.UIA_HeaderItemControlTypeId,
 		AutomationControlType.Table => Win32UIAutomationInterop.UIA_TableControlTypeId,
+		AutomationControlType.TitleBar => Win32UIAutomationInterop.UIA_TitleBarControlTypeId,
 		AutomationControlType.Separator => Win32UIAutomationInterop.UIA_SeparatorControlTypeId,
 		AutomationControlType.SemanticZoom => Win32UIAutomationInterop.UIA_SemanticZoomControlTypeId,
 		AutomationControlType.AppBar => Win32UIAutomationInterop.UIA_AppBarControlTypeId,
@@ -1555,6 +1646,8 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId => "BoundingRectangle",
 		Win32UIAutomationInterop.UIA_RuntimeIdPropertyId => "RuntimeId",
 		Win32UIAutomationInterop.UIA_ClickablePointPropertyId => "ClickablePoint",
+		Win32UIAutomationInterop.UIA_AnnotationTypesPropertyId => "AnnotationTypes",
+		Win32UIAutomationInterop.UIA_AnnotationObjectsPropertyId => "AnnotationObjects",
 		Win32UIAutomationInterop.UIA_CulturePropertyId => "Culture",
 		Win32UIAutomationInterop.UIA_LabeledByPropertyId => "LabeledBy",
 		Win32UIAutomationInterop.UIA_DescribedByPropertyId => "DescribedBy",
