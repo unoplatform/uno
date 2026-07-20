@@ -79,8 +79,17 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	public void InvalidateRender()
 	{
-		ExploreByTouchHelper.InvalidateRoot();
 		_framePacer.RequestFrame();
+	}
+
+	protected override void OnSizeChanged(int width, int height, int oldWidth, int oldHeight)
+	{
+		base.OnSizeChanged(width, height, oldWidth, oldHeight);
+
+		if (width != oldWidth || height != oldHeight)
+		{
+			ExploreByTouchHelper.InvalidateAccessibilityRoot();
+		}
 	}
 
 	#region SurfaceHolder.Callback

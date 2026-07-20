@@ -1,18 +1,38 @@
+#nullable enable
+
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.UI.Runtime.Android;
 
-internal class AndroidSkiaXamlRootHost : IXamlRootHost
+internal class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner
 {
 	private readonly Window _window;
 	private readonly NativeWindowWrapper _wrapper;
+	private readonly AndroidSkiaAccessibility _accessibility;
 
-	public AndroidSkiaXamlRootHost(Window window, NativeWindowWrapper wrapper)
+	public AndroidSkiaXamlRootHost(Window window, NativeWindowWrapper wrapper, XamlRoot xamlRoot)
 	{
 		_window = window;
 		_wrapper = wrapper;
+		_accessibility = new AndroidSkiaAccessibility(xamlRoot);
+		TryConfigureHelper();
+	}
+
+	// IAccessibilityOwner
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	/// <summary>
+	/// Tries to connect the accessibility adapter to the render view's helper.
+	/// Idempotent via <see cref="AndroidSkiaAccessibility.Configure"/>.
+	/// </summary>
+	internal void TryConfigureHelper()
+	{
+		if (_wrapper.CurrentActivity?.RenderView is { ExploreByTouchHelper: { } helper })
+		{
+			_accessibility.Configure(helper);
+		}
 	}
 
 	// Resolved through the wrapper (not stored) so it follows the activity currently
