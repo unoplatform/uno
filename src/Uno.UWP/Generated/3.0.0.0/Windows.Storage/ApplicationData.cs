@@ -20,13 +20,7 @@ namespace Windows.Storage
 		// Skipping already declared property Version
 		// Skipping already declared method Windows.Storage.ApplicationData.GetForUserAsync(Windows.System.User)
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction SetVersionAsync(uint desiredVersion, global::Windows.Storage.ApplicationDataSetVersionHandler handler)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)");
-		}
-#endif
+		// Skipping already declared method Windows.Storage.ApplicationData.SetVersionAsync(uint, Windows.Storage.ApplicationDataSetVersionHandler)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync()
