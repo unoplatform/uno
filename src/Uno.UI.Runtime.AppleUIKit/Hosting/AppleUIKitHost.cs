@@ -6,6 +6,7 @@ using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.AppleUIKit.Extensions;
 
 namespace Uno.UI.Runtime.AppleUIKit;
@@ -30,7 +31,11 @@ internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
 
-	protected override void Initialize() => ExtensionsRegistrar.Register();
+	protected override void Initialize()
+	{
+		AccessibilityRouter.EnsureInitialized();
+		ExtensionsRegistrar.Register();
+	}
 
 	protected override Task RunLoop()
 	{
