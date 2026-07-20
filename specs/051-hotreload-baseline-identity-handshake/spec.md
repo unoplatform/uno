@@ -1,14 +1,15 @@
 # Hot-Reload Baseline Identity Handshake: RID & Module MVIDs in `ConfigureServer`
 
 > **Status: DRAFT — hard requirement: needs reviews before implementation.**
-> Written 2026-07-16, following the uno-private#2256 investigation. Nothing below is
+> Written 2026-07-16, following an internal investigation into hot-reload silence on
+> RID-specific Android deployments. Nothing below is
 > committed design; the protocol addition in particular must be reviewed (message
 > compatibility, module-list scope) before any code is written.
 
 ## Overview & Objectives
 
-The RID-specific baseline alignment (follow-up of spec 047/049, shipped for
-uno-private#2256) re-points the kept head flavor's `CompilationOutputInfo` to the output the
+The RID-specific baseline alignment (follow-up of spec 047/049, shipped as part of the same
+investigation) re-points the kept head flavor's `CompilationOutputInfo` to the output the
 running application was *probably* built from: the trigger is declarative (the
 `RuntimeIdentifier` captured in the application's build properties), and a candidate path is
 accepted when its module is **readable** (a valid PE with an MVID — the same primitive
@@ -102,7 +103,7 @@ of the current alignment):
 
 - **Evaluation-side RID injection** (global properties, or the
   `UnoHotReloadRuntimeIdentifier`/`UnoHotReloadTargetFramework` props pipe): rejected during
-  the 2256 investigation — `MSBuildWorkspace` applies global properties to every project of
+  the same investigation — `MSBuildWorkspace` applies global properties to every project of
   the graph without MSBuild's P2P negotiation (`SetTargetFramework` /
   `GlobalPropertiesToRemove`), so a global RID relocates the expected outputs of every
   RID-less-built library; and the props pipe is maintenance the team wants to remove, not
@@ -127,8 +128,8 @@ of the current alignment):
 
 ## References
 
-- uno-private#2256 (both episodes: `netX.0-skia` TFM misreport; RID-less baseline silently
-  "not built").
+- Internal issue tracking (both episodes: `netX.0-skia` TFM misreport; RID-less baseline
+  silently "not built").
 - PRs: #23790 (client runtime TFM probe, master), #23791 (6.6 backport, merged), #23798
   (RID-specific baseline alignment, 6.6), plus its master port.
 - Roslyn: `EditSession.cs` ("project not built" on `mvid == Guid.Empty`),

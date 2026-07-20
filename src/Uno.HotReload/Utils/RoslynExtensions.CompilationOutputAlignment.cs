@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Uno.HotReload.Tracking;
 
@@ -35,18 +36,18 @@ public static partial class RoslynExtensions
 	/// <param name="headProjectPath">Full path of the head project (<c>.csproj</c>) the application runs.</param>
 	/// <param name="runtimeIdentifier">The runtime identifier captured from the running application's build, when any.</param>
 	/// <param name="reporter">Reporter used to surface the alignment decisions.</param>
+	/// <param name="cancellationToken">Cancellation of the filesystem probing.</param>
 	public static Solution AlignHeadProjectCompilationOutputs(
 		this Solution solution,
 		string headProjectPath,
 		string? runtimeIdentifier,
-		IReporter reporter)
+		IReporter reporter,
+		CancellationToken cancellationToken)
 	{
-		foreach (var projectId in solution.Projects
+		foreach (var project in solution.Projects
 			.Where(p => PathComparer.PathEquals(p.FilePath, headProjectPath))
-			.Select(p => p.Id)
 			.ToList())
 		{
-			var project = solution.GetProject(projectId)!;
 			var evaluatedPath = project.CompilationOutputInfo.AssemblyPath;
 			if (string.IsNullOrEmpty(evaluatedPath))
 			{
@@ -75,13 +76,13 @@ public static partial class RoslynExtensions
 			// exists it can be a stale twin (an earlier RID-less build) with a mismatching MVID.
 			var fileName = Path.GetFileName(evaluatedPath);
 			var directory = Path.GetDirectoryName(evaluatedPath)!;
-			var ridSpecificPath = Path.Combine(directory, runtimeIdentifier, fileName);
+			var ridSpecificPath = Path.Join(directory, runtimeIdentifier, fileName);
 
 			if (TryReadMvid(ridSpecificPath, out _))
 			{
 				solution = Remap(project, ridSpecificPath);
 			}
-			else if (FindNewestReadableCandidate(directory, fileName, evaluatedPath) is { } candidate)
+			else if (FindNewestReadableCandidate(directory, fileName, evaluatedPath, cancellationToken) is { } candidate)
 			{
 				// Custom output layouts (artifacts output path, intermediate-path overrides, …):
 				// probe the evaluated directory subtree for the assembly instead.
@@ -116,7 +117,7 @@ public static partial class RoslynExtensions
 	/// excluding reference-assembly folders (<c>ref</c>/<c>refint</c> — readable PEs, but not an
 	/// EnC baseline) and preferring the most recently written candidate.
 	/// </summary>
-	private static string? FindNewestReadableCandidate(string directory, string fileName, string evaluatedPath)
+	private static string? FindNewestReadableCandidate(string directory, string fileName, string evaluatedPath, CancellationToken cancellationToken)
 	{
 		try
 		{
@@ -127,15 +128,30 @@ public static partial class RoslynExtensions
 
 			return Directory
 				.EnumerateFiles(directory, fileName, SearchOption.AllDirectories)
-				.Where(path => !PathComparer.PathEquals(path, evaluatedPath))
-				.Where(path => Path.GetDirectoryName(path) is { } dir
-					&& Path.GetFileName(dir) is { } dirName
-					&& !dirName.Equals("ref", StringComparison.OrdinalIgnoreCase)
-					&& !dirName.Equals("refint", StringComparison.OrdinalIgnoreCase))
+				.Where(path =>
+				{
+					cancellationToken.ThrowIfCancellationRequested();
+					if (PathComparer.PathEquals(path, evaluatedPath))
+					{
+						return false;
+					}
+
+					for (var dir = Path.GetDirectoryName(path); dir is not null && !PathComparer.PathEquals(dir, directory); dir = Path.GetDirectoryName(dir))
+					{
+						var segment = Path.GetFileName(dir);
+						if (segment.Equals("ref", StringComparison.OrdinalIgnoreCase)
+							|| segment.Equals("refint", StringComparison.OrdinalIgnoreCase))
+						{
+							return false;
+						}
+					}
+
+					return true;
+				})
 				.OrderByDescending(File.GetLastWriteTimeUtc)
 				.FirstOrDefault(path => TryReadMvid(path, out _));
 		}
-		catch (Exception)
+		catch (Exception e) when (e is not OperationCanceledException)
 		{
 			// IO race with a build in progress — treat as "no candidate" rather than failing the
 			// workspace initialization.

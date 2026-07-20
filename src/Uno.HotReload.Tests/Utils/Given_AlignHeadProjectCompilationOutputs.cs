@@ -40,13 +40,13 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 	[TestMethod]
 	public void When_NoRid_And_OutputReadable_Then_SolutionUnchanged()
 	{
-		var evaluatedPath = EmitAssembly(Path.Combine(_outputRoot, "app.dll"));
+		var evaluatedPath = EmitAssembly(Path.Join(_outputRoot, "app.dll"));
 		using var workspace = new AdhocWorkspace();
 		AddProject(workspace, "app(net10.0-desktop)", _headPath, evaluatedPath);
 
 		var reporter = new RecordingReporter();
 		var solution = workspace.CurrentSolution;
-		var aligned = solution.AlignHeadProjectCompilationOutputs(_headPath, runtimeIdentifier: null, reporter);
+		var aligned = solution.AlignHeadProjectCompilationOutputs(_headPath, runtimeIdentifier: null, reporter, CancellationToken.None);
 
 		Assert.AreSame(solution, aligned);
 		Assert.AreEqual(0, reporter.Warnings.Count);
@@ -55,12 +55,12 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 	[TestMethod]
 	public void When_NoRid_And_OutputMissing_Then_Warns()
 	{
-		var evaluatedPath = Path.Combine(_outputRoot, "app.dll"); // never emitted
+		var evaluatedPath = Path.Join(_outputRoot, "app.dll"); // never emitted
 		using var workspace = new AdhocWorkspace();
 		AddProject(workspace, "app(net10.0-desktop)", _headPath, evaluatedPath);
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, runtimeIdentifier: null, reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, runtimeIdentifier: null, reporter, CancellationToken.None);
 
 		Assert.AreSame(workspace.CurrentSolution, aligned);
 		StringAssert.Contains(reporter.Warnings.Single(), evaluatedPath);
@@ -71,15 +71,16 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 	{
 		// Both the RID-less twin and the RID-specific output exist: the RID-specific one is the
 		// binary that was deployed, the RID-less one can be stale — it must lose.
-		var evaluatedPath = EmitAssembly(Path.Combine(_outputRoot, "app.dll"));
-		var ridPath = EmitAssembly(Path.Combine(_outputRoot, "android-x64", "app.dll"));
+		var evaluatedPath = EmitAssembly(Path.Join(_outputRoot, "app.dll"));
+		var ridPath = EmitAssembly(Path.Join(_outputRoot, "android-x64", "app.dll"));
 		using var workspace = new AdhocWorkspace();
 		var projectId = AddProject(workspace, "app(net10.0-android)", _headPath, evaluatedPath);
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
 
 		Assert.AreEqual(ridPath, aligned.GetProject(projectId)!.CompilationOutputInfo.AssemblyPath);
+		Assert.AreNotEqual(evaluatedPath, aligned.GetProject(projectId)!.CompilationOutputInfo.AssemblyPath);
 		Assert.AreEqual(0, reporter.Warnings.Count);
 	}
 
@@ -89,10 +90,10 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 		// No RID-named folder (custom output layout); the real output sits deeper in the
 		// evaluated directory subtree. Reference-assembly folders must never be picked, even
 		// when their files are more recent.
-		var evaluatedPath = Path.Combine(_outputRoot, "app.dll"); // never emitted
-		var candidatePath = EmitAssembly(Path.Combine(_outputRoot, "custom", "app.dll"));
-		var refPath = EmitAssembly(Path.Combine(_outputRoot, "ref", "app.dll"));
-		var refintPath = EmitAssembly(Path.Combine(_outputRoot, "refint", "app.dll"));
+		var evaluatedPath = Path.Join(_outputRoot, "app.dll"); // never emitted
+		var candidatePath = EmitAssembly(Path.Join(_outputRoot, "custom", "app.dll"));
+		var refPath = EmitAssembly(Path.Join(_outputRoot, "ref", "app.dll"));
+		var refintPath = EmitAssembly(Path.Join(_outputRoot, "refint", "app.dll"));
 		File.SetLastWriteTimeUtc(refPath, DateTime.UtcNow.AddHours(1));
 		File.SetLastWriteTimeUtc(refintPath, DateTime.UtcNow.AddHours(1));
 
@@ -100,7 +101,7 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 		var projectId = AddProject(workspace, "app(net10.0-android)", _headPath, evaluatedPath);
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
 
 		Assert.AreEqual(candidatePath, aligned.GetProject(projectId)!.CompilationOutputInfo.AssemblyPath);
 	}
@@ -108,13 +109,14 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 	[TestMethod]
 	public void When_Rid_And_OnlyRidlessOutput_Then_EvaluatedKept()
 	{
-		var evaluatedPath = EmitAssembly(Path.Combine(_outputRoot, "app.dll"));
+		var evaluatedPath = EmitAssembly(Path.Join(_outputRoot, "app.dll"));
 		using var workspace = new AdhocWorkspace();
 		var projectId = AddProject(workspace, "app(net10.0-android)", _headPath, evaluatedPath);
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
 
+		Assert.AreSame(workspace.CurrentSolution, aligned);
 		Assert.AreEqual(evaluatedPath, aligned.GetProject(projectId)!.CompilationOutputInfo.AssemblyPath);
 		Assert.AreEqual(0, reporter.Warnings.Count);
 	}
@@ -125,16 +127,16 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 		// The RID path exists but is not a PE — module readability is the acceptance gate, mere
 		// file existence is not enough. A non-head project with a dead output path must not
 		// produce any warning: only the head flavor is aligned.
-		var evaluatedPath = Path.Combine(_outputRoot, "app.dll"); // never emitted
-		Directory.CreateDirectory(Path.Combine(_outputRoot, "android-x64"));
-		File.WriteAllText(Path.Combine(_outputRoot, "android-x64", "app.dll"), "not a PE");
+		var evaluatedPath = Path.Join(_outputRoot, "app.dll"); // never emitted
+		Directory.CreateDirectory(Path.Join(_outputRoot, "android-x64"));
+		File.WriteAllText(Path.Join(_outputRoot, "android-x64", "app.dll"), "not a PE");
 
 		using var workspace = new AdhocWorkspace();
 		AddProject(workspace, "app(net10.0-android)", _headPath, evaluatedPath);
-		AddProject(workspace, "lib", Given_TryGetTargetFramework.ToOsPath("/src/lib/lib.csproj"), Path.Combine(_outputRoot, "lib", "lib.dll"));
+		AddProject(workspace, "lib", Given_TryGetTargetFramework.ToOsPath("/src/lib/lib.csproj"), Path.Join(_outputRoot, "lib", "lib.dll"));
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
 
 		Assert.AreSame(workspace.CurrentSolution, aligned);
 		StringAssert.Contains(reporter.Warnings.Single(), "app.dll");
@@ -147,10 +149,10 @@ public sealed class Given_AlignHeadProjectCompilationOutputs
 		AddProject(workspace, "app(net10.0-android)", _headPath, assemblyPath: null);
 
 		var reporter = new RecordingReporter();
-		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter);
+		var aligned = workspace.CurrentSolution.AlignHeadProjectCompilationOutputs(_headPath, "android-x64", reporter, CancellationToken.None);
 
 		Assert.AreSame(workspace.CurrentSolution, aligned);
-		Assert.AreEqual(1, reporter.Warnings.Count);
+		StringAssert.Contains(reporter.Warnings.Single(), "app(net10.0-android)");
 	}
 
 	// ────────────────────────────────────────────────────────────────────────
