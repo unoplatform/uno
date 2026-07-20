@@ -46,6 +46,12 @@ namespace Microsoft.UI.Composition
 			FrameProvider = FrameProviderFactory.Create(SkiaImageFrames.FromImage(image), null);
 		}
 
+		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG or offscreen) as a surface.</summary>
+		internal SkiaCompositionSurface(IImage image)
+			: this(((SkiaImage)image).Image)
+		{
+		}
+
 		private protected override void DisposeInternal()
 		{
 			base.DisposeInternal();

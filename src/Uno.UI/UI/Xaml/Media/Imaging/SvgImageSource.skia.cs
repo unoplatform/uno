@@ -9,12 +9,16 @@ using Windows.Application­Model;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using System.Reflection;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
 	private static MethodInfo _fromPictureMethod;
+
+	// The SkiaSharp-free managed SVG engine; set when the markup parses (the primary, add-in-free path).
+	private ManagedSvg _managedSvg;
 
 	private protected unsafe override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
@@ -23,6 +27,22 @@ partial class SvgImageSource
 			asyncImage = imageTask.ContinueWith(task =>
 			{
 				var imageData = task.Result;
+
+				// Primary path: render through the managed, backend-neutral SVG engine (no Skia dependency).
+				if (_managedSvg is { } managed)
+				{
+					var width = targetWidth is > 0 ? targetWidth.Value
+						: RasterizePixelWidth > 0 ? (int)Math.Ceiling(RasterizePixelWidth)
+						: (int)Math.Ceiling(managed.SourceSize.Width);
+					var height = targetHeight is > 0 ? targetHeight.Value
+						: RasterizePixelHeight > 0 ? (int)Math.Ceiling(RasterizePixelHeight)
+						: (int)Math.Ceiling(managed.SourceSize.Height);
+
+					var svgImage = managed.Render(Math.Max(1, width), Math.Max(1, height));
+					return ImageData.FromCompositionSurface(new SkiaCompositionSurface(svgImage));
+				}
+
+				// Fallback: the optional Skia-based add-in (e.g. features the managed engine doesn't yet cover).
 				if (imageData is { Kind: ImageDataKind.ByteArray, ByteArray: not null } &&
 					_svgProvider?.TryGetLoadedDataAsPictureAsync() is SKPicture picture)
 				{

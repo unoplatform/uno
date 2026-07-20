@@ -5,7 +5,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
@@ -14,8 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	private const string SvgPackageName = "Uno.WinUI.Svg";
-
 	private Task<ImageData>? _currentOpenTask;
 
 	private ISvgProvider? _svgProvider;
@@ -24,10 +21,9 @@ partial class SvgImageSource
 
 	private void InitSvgProvider()
 	{
-		if (!ApiExtensibility.CreateInstance(this, out _svgProvider))
-		{
-			LogSvgPackageError();
-		}
+		// The Skia-based add-in is now optional — the managed engine (ManagedSvg) is the primary SVG path.
+		// The add-in, when installed, still drives the vector SvgCanvas and serves as a rendering fallback.
+		ApiExtensibility.CreateInstance(this, out _svgProvider);
 
 		if (_svgProvider is not null)
 		{
@@ -44,17 +40,22 @@ partial class SvgImageSource
 
 	private async Task<ImageData> LoadSvgImageAsync(CancellationToken ct)
 	{
-		if (_svgProvider is null)
+		var imageData = await GetSvgImageDataAsync(ct);
+		if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
 		{
-			LogSvgPackageError();
 			return ImageData.Empty;
 		}
 
-		var imageData = await GetSvgImageDataAsync(ct);
+		// Primary: the managed, Skia-free SVG engine parses the markup.
+		if (Uno.UI.Composition.Drawing.ManagedSvg.TryParse(imageData.ByteArray, out var managed))
+		{
+			_managedSvg = managed;
+			SourceLoaded?.Invoke(this, EventArgs.Empty);
+			return imageData;
+		}
 
-		if (imageData.Kind == ImageDataKind.ByteArray &&
-			imageData.ByteArray is not null &&
-			await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
+		// Fallback: the optional Skia-based add-in (drives the vector SvgCanvas and any unsupported markup).
+		if (_svgProvider is not null && await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
 		{
 			return imageData;
 		}
@@ -64,9 +65,9 @@ partial class SvgImageSource
 
 	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas();
 
-	internal bool IsParsed => _svgProvider?.IsParsed ?? false;
+	internal bool IsParsed => _managedSvg is not null || (_svgProvider?.IsParsed ?? false);
 
-	internal Size SourceSize => _svgProvider?.SourceSize ?? default;
+	internal Size SourceSize => _managedSvg?.SourceSize ?? _svgProvider?.SourceSize ?? default;
 
 	private void OnSourceLoaded(object? sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
 
@@ -76,14 +77,6 @@ partial class SvgImageSource
 	{
 		_currentOpenTask = null;
 		Unload();
-	}
-
-	private void LogSvgPackageError()
-	{
-		if (this.Log().IsEnabled(LogLevel.Error))
-		{
-			this.Log().LogError($"To use SVG on this platform, make sure to install the {SvgPackageName} package.");
-		}
 	}
 }
 #endif
