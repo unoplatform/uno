@@ -6,5 +6,7 @@ namespace Microsoft.UI.Private.Controls;
 
 partial class LayoutsTestHooksLinedFlowLayoutInvalidatedEventArgs
 {
+	// ILayoutsTestHooksLinedFlowLayoutInvalidatedEventArgs overrides
+
 	private readonly LinedFlowLayoutInvalidationTrigger m_invalidationTrigger;
 }

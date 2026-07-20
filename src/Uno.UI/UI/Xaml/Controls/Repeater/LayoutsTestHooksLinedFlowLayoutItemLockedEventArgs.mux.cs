@@ -12,7 +12,10 @@ partial class LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs
 		m_lineIndex = lineIndex;
 	}
 
-	// ILayoutsTestHooksLinedFlowLayoutItemLockedEventArgs overrides
+	// #pragma region ILayoutsTestHooksLinedFlowLayoutItemLockedEventArgs
+
 	internal int ItemIndex => m_itemIndex;
 	internal int LineIndex => m_lineIndex;
+
+	// #pragma endregion
 }

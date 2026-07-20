@@ -10,9 +10,9 @@ namespace Microsoft.UI.Private.Controls;
 
 partial class LayoutsTestHooks
 {
-	private static LayoutsTestHooks? s_testHooks;
-
 	internal static LayoutsTestHooks? GetGlobalTestHooks() => s_testHooks;
+
+	private static LayoutsTestHooks? s_testHooks;
 
 	private event TypedEventHandler<object, object>? m_layoutAnchorIndexChangedEventSource;
 	private event TypedEventHandler<object, object>? m_layoutAnchorOffsetChangedEventSource;
