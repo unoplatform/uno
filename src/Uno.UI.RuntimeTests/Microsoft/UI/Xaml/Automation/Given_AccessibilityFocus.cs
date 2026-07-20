@@ -1,144 +1,86 @@
-using System;
+#nullable enable
+
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+
+[TestClass]
+public class Given_AccessibilityFocus
 {
-	/// <summary>
-	/// Runtime tests for accessibility focus management.
-	/// Tests focus synchronization between the visual and semantic layers.
-	/// </summary>
-	[TestClass]
-	public class Given_AccessibilityFocus
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_MoveFocus_Next_Then_Focus_Moves_Sequentially()
 	{
-		/// <summary>
-		/// T086: Verifies that sequential focus movement works via automation peers.
-		/// </summary>
-		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
-		[RunsOnUIThread]
-		public async Task When_Tab_Pressed_Then_Focus_Moves_Sequentially()
+		var first = new Button { Content = "First" };
+		var second = new Button { Content = "Second" };
+		var third = new Button { Content = "Third" };
+		var panel = new StackPanel { Children = { first, second, third } };
+		await UITestHelper.Load(panel);
+
+		Assert.IsTrue(first.Focus(FocusState.Programmatic));
+		var moved = FocusManager.TryMoveFocus(
+			FocusNavigationDirection.Next,
+			new FindNextElementOptions { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
+
+		Assert.IsTrue(moved);
+		Assert.AreSame(second, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Dialog_Content_Is_Shown_Then_It_Can_Receive_Focus()
+	{
+		var opener = new Button { Content = "Open Dialog" };
+		var dialogContent = new Button
 		{
-			// Arrange
-			var panel = new StackPanel();
-			var button1 = new Button { Content = "First", IsTabStop = true };
-			var button2 = new Button { Content = "Second", IsTabStop = true };
-			var button3 = new Button { Content = "Third", IsTabStop = true };
+			Content = "Dialog Button",
+			Visibility = Visibility.Collapsed,
+		};
+		var panel = new StackPanel { Children = { opener, dialogContent } };
+		await UITestHelper.Load(panel);
 
-			panel.Children.Add(button1);
-			panel.Children.Add(button2);
-			panel.Children.Add(button3);
+		Assert.IsTrue(opener.Focus(FocusState.Programmatic));
+		dialogContent.Visibility = Visibility.Visible;
+		Assert.IsTrue(dialogContent.Focus(FocusState.Programmatic));
+		await TestServices.WindowHelper.WaitForIdle();
 
-			await UITestHelper.Load(panel);
+		Assert.AreSame(dialogContent, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+		Assert.IsTrue(FrameworkElementAutomationPeer.CreatePeerForElement(dialogContent).IsKeyboardFocusable());
+	}
 
-			// Act
-			button1.Focus(FocusState.Keyboard);
-			await TestServices.WindowHelper.WaitForIdle();
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Focused_Element_Is_Disabled_Then_Peer_State_Is_Updated()
+	{
+		var button = new Button { Content = "Will Disable" };
+		await UITestHelper.Load(button);
+		Assert.IsTrue(button.Focus(FocusState.Programmatic));
 
-			// Assert
-			var peer1 = FrameworkElementAutomationPeer.CreatePeerForElement(button1);
-			Assert.IsNotNull(peer1, "Button1 should have an automation peer");
-			Assert.IsTrue(peer1.IsKeyboardFocusable(), "Button1 should be keyboard focusable");
+		button.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
 
-			var peer2 = FrameworkElementAutomationPeer.CreatePeerForElement(button2);
-			Assert.IsTrue(peer2.IsKeyboardFocusable(), "Button2 should be keyboard focusable");
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+		Assert.IsNotNull(peer);
+		Assert.IsFalse(peer.IsEnabled());
+	}
 
-			var peer3 = FrameworkElementAutomationPeer.CreatePeerForElement(button3);
-			Assert.IsTrue(peer3.IsKeyboardFocusable(), "Button3 should be keyboard focusable");
-		}
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Element_Is_Not_Focusable_Then_Peer_Reports_Not_Focusable()
+	{
+		var textBlock = new TextBlock { Text = "Not focusable" };
+		await UITestHelper.Load(textBlock);
 
-		/// <summary>
-		/// T087: Verifies that dialog-like content receives focus when shown.
-		/// </summary>
-		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
-		[RunsOnUIThread]
-		public async Task When_Dialog_Opens_Then_Focus_Moves_To_Dialog()
-		{
-			// Arrange
-			var panel = new StackPanel();
-			var button = new Button { Content = "Open Dialog", IsTabStop = true };
-			var dialogContent = new Button
-			{
-				Content = "Dialog Button",
-				IsTabStop = true,
-				Visibility = Visibility.Collapsed
-			};
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
 
-			panel.Children.Add(button);
-			panel.Children.Add(dialogContent);
-
-			await UITestHelper.Load(panel);
-
-			button.Focus(FocusState.Keyboard);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// Act - Simulate dialog opening
-			dialogContent.Visibility = Visibility.Visible;
-			dialogContent.Focus(FocusState.Programmatic);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// Assert
-			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(dialogContent);
-			Assert.IsNotNull(peer, "Dialog button should have an automation peer");
-			Assert.IsTrue(peer.IsKeyboardFocusable(), "Dialog content should be keyboard focusable");
-		}
-
-		/// <summary>
-		/// T088: Verifies that when an element with focus is disabled, focus state is consistent.
-		/// </summary>
-		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
-		[RunsOnUIThread]
-		public async Task When_Element_Disabled_With_Focus_Then_Focus_Moves_Away()
-		{
-			// Arrange
-			var panel = new StackPanel();
-			var button1 = new Button { Content = "Will Disable", IsTabStop = true };
-			var button2 = new Button { Content = "Fallback", IsTabStop = true };
-
-			panel.Children.Add(button1);
-			panel.Children.Add(button2);
-
-			await UITestHelper.Load(panel);
-
-			button1.Focus(FocusState.Keyboard);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// Act
-			button1.IsEnabled = false;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// Assert
-			var peer1 = FrameworkElementAutomationPeer.CreatePeerForElement(button1);
-			Assert.IsFalse(peer1.IsEnabled(), "Disabled button should report IsEnabled=false");
-		}
-
-		/// <summary>
-		/// Verifies that non-focusable elements are correctly identified.
-		/// </summary>
-		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
-		[RunsOnUIThread]
-		public async Task When_Element_Not_Focusable_Then_Peer_Reports_Not_Focusable()
-		{
-			// Arrange
-			var textBlock = new TextBlock { Text = "Not focusable" };
-			await UITestHelper.Load(textBlock);
-
-			// Act
-			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
-
-			// Assert
-			Assert.IsNotNull(peer);
-			Assert.IsFalse(peer.IsKeyboardFocusable(), "TextBlock should not be keyboard focusable");
-		}
+		Assert.IsNotNull(peer);
+		Assert.IsFalse(peer.IsKeyboardFocusable());
 	}
 }

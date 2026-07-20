@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var panel = new StackPanel { Children = { target, described } };
 			await UITestHelper.Load(panel);
 
-			described.SetValue(AutomationProperties.DescribedByProperty, new List<DependencyObject> { target });
+			AutomationProperties.GetDescribedBy(described).Add(target);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(described);
 			Assert.IsNotNull(peer);
@@ -49,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var panel = new StackPanel { Children = { controller, controlled } };
 			await UITestHelper.Load(panel);
 
-			controller.SetValue(AutomationProperties.ControlledPeersProperty, new List<UIElement> { controlled });
+			AutomationProperties.GetControlledPeers(controller).Add(controlled);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(controller);
 			Assert.IsNotNull(peer);
