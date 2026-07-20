@@ -1,19 +1,17 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
 internal sealed class AnimatedImageFrameProvider : IFrameProvider
 {
-	private readonly SKImage[] _images;
-	private readonly SkiaImage[] _wrapped;
-	private readonly int[] _durations;
+	private readonly IImageFrames _frames;
+	private readonly IReadOnlyList<int> _durations;
 	private readonly Timer? _timer;
 	private readonly Stopwatch? _stopwatch;
 	private readonly long _totalDuration;
@@ -29,33 +27,31 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 	// So, if AnimatedImageFrameProvider holds onto onFrameChanged, the SkiaCompositionSurface is never GC'ed.
 	// That's why we make it a WeakReference.
 	// Note that SkiaCompositionSurface keeps an unused private field storing onFrameChanged so that it's not GC'ed early.
-	internal AnimatedImageFrameProvider(SKImage[] images, int[] durations, long totalDuration, Action onFrameChanged)
+	internal AnimatedImageFrameProvider(IImageFrames frames, Action onFrameChanged)
 	{
-		_images = images;
-		_wrapped = new SkiaImage[images.Length];
-		for (int i = 0; i < images.Length; i++)
-		{
-			_wrapped[i] = new SkiaImage(images[i]);
-		}
-		_durations = durations;
-		_totalDuration = totalDuration;
-		_onFrameChanged = new WeakReference<Action>(onFrameChanged);
-		Debug.Assert(images.Length > 1);
-		Debug.Assert(durations is not null);
-		Debug.Assert(durations.Length == images.Length);
-		Debug.Assert(totalDuration != 0);
-		Debug.Assert(onFrameChanged is not null);
+		_frames = frames;
+		_durations = frames.DurationsMs;
 
-		if (_images.Length < 2)
+		if (_frames.Frames.Count < 2)
 		{
 			throw new ArgumentException("AnimatedImageFrameProvider should only be used when there is at least two frames");
 		}
 
+		Debug.Assert(_durations is not null);
+		Debug.Assert(_durations.Count == _frames.Frames.Count);
+		Debug.Assert(onFrameChanged is not null);
+
+		long total = 0;
 		long pressure = 0;
-		for (int i = 0; i < _images.Length; i++)
+		for (var i = 0; i < _frames.Frames.Count; i++)
 		{
-			pressure += _images[i].Info.BytesSize;
+			total += _durations[i];
+			pressure += (long)_frames.Frames[i].PixelWidth * _frames.Frames[i].PixelHeight * 4;
 		}
+
+		_totalDuration = total;
+		_onFrameChanged = new WeakReference<Action>(onFrameChanged);
+		Debug.Assert(_totalDuration != 0);
 
 		_memoryPressure = pressure;
 		GC.AddMemoryPressure(_memoryPressure);
@@ -64,12 +60,12 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 		_timer = new Timer(OnTimerCallback, null, dueTime: _durations[0], period: Timeout.Infinite);
 	}
 
-	public IImage? CurrentImage => _wrapped[_currentFrame];
+	public IImage? CurrentImage => _frames.Frames[_currentFrame];
 
 	private int GetCurrentFrameIndex()
 	{
 		var currentTimestampInMilliseconds = _stopwatch!.ElapsedMilliseconds % _totalDuration;
-		for (int i = 0; i < _durations.Length; i++)
+		for (int i = 0; i < _durations.Count; i++)
 		{
 			if (currentTimestampInMilliseconds < _durations[i])
 			{
@@ -128,12 +124,7 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 		if (Interlocked.Exchange(ref _disposed, 1) == 0)
 		{
 			_timer?.Dispose();
-
-			for (int i = 0; i < _images.Length; i++)
-			{
-				_images[i].Dispose();
-			}
-
+			_frames.Dispose();
 			GC.RemoveMemoryPressure(_memoryPressure);
 		}
 	}

@@ -43,7 +43,7 @@ namespace Microsoft.UI.Composition
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			FrameProvider = FrameProviderFactory.Create(image);
+			FrameProvider = FrameProviderFactory.Create(SkiaImageFrames.FromImage(image), null);
 		}
 
 		private protected override void DisposeInternal()
@@ -64,18 +64,16 @@ namespace Microsoft.UI.Composition
 
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
-			using var stream = new SKManagedStream(imageStream);
-
 			try
 			{
 				var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
-				if (!FrameProviderFactory.TryCreate(stream, onFrameChanged, targetWidth, targetHeight, out var provider))
+				if (!DrawingBackend.Current.TryDecodeImage(imageStream, targetWidth, targetHeight, out var frames))
 				{
 					SetFrameProviderAndOnFrameChanged(null, null);
 					return (false, "Failed to decode image");
 				}
 
-				SetFrameProviderAndOnFrameChanged(provider, onFrameChanged);
+				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, onFrameChanged), onFrameChanged);
 				GC.KeepAlive(onFrameChanged);
 				return (true, "Success");
 			}
@@ -89,14 +87,10 @@ namespace Microsoft.UI.Composition
 		/// <summary>
 		/// Copies the provided pixels to the composition surface
 		/// </summary>
-		internal unsafe void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
+		internal void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
 		{
-			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
-
-			using (var pData = data.Pin())
-			{
-				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4)), null);
-			}
+			var frames = DrawingBackend.Current.CreateImageFrame(pixelWidth, pixelHeight, data.Span);
+			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
 		}
 
 		~SkiaCompositionSurface()

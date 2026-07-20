@@ -1,32 +1,27 @@
 #nullable enable
 
 using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Threading;
-using SkiaSharp;
-using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
 internal sealed class SingleFrameProvider : IFrameProvider
 {
-	private readonly SkiaImage _image;
-	private readonly int _bytes;
+	private readonly IImageFrames _frames;
+	private readonly long _bytes;
 	private bool _disposed;
 	private readonly object _lock = new();
 
-	public SingleFrameProvider(SKImage image)
+	public SingleFrameProvider(IImageFrames frames)
 	{
-		_image = new SkiaImage(image);
-		_bytes = image.Info.BytesSize;
+		_frames = frames;
+		var image = frames.Frames[0];
+		_bytes = (long)image.PixelWidth * image.PixelHeight * 4;
 		// https://github.com/unoplatform/uno/issues/20285
 		GC.AddMemoryPressure(_bytes);
 	}
 
-	public IImage? CurrentImage => _image;
+	public IImage? CurrentImage => _frames.Frames[0];
 
 	public void Dispose()
 	{
@@ -35,7 +30,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 			if (!_disposed)
 			{
 				_disposed = true;
-				_image.Image.Dispose();
+				_frames.Dispose();
 				GC.RemoveMemoryPressure(_bytes);
 			}
 		}

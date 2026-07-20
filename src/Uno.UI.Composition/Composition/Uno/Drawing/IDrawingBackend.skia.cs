@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Windows.Foundation;
@@ -33,6 +35,16 @@ internal interface IDrawingBackend
 	/// and returns it (e.g. to rasterize a brush before nine-slicing it).
 	/// </summary>
 	IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+
+	/// <summary>
+	/// Decodes an encoded image stream (PNG/JPEG/GIF/…) into one or more frames, applying EXIF orientation and,
+	/// when a target size is given, scaling. Returns false when the bytes can't be decoded. The backend owns the
+	/// codec; callers see only the neutral <see cref="IImageFrames"/> (dispose it to release the frames).
+	/// </summary>
+	bool TryDecodeImage(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames);
+
+	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single-frame <see cref="IImageFrames"/>.</summary>
+	IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
 
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(

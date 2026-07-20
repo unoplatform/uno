@@ -31,6 +31,24 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		return new SkiaImage(surface.Snapshot());
 	}
 
+	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out IImageFrames? frames)
+	{
+		if (SkiaImageDecoder.TryDecode(stream, targetWidth, targetHeight, out var skiaFrames))
+		{
+			frames = skiaFrames;
+			return true;
+		}
+
+		frames = null;
+		return false;
+	}
+
+	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, System.ReadOnlySpan<byte> bgraPremul)
+	{
+		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		return SkiaImageFrames.FromImage(SKImage.FromPixelCopy(info, bgraPremul));
+	}
+
 	public IShader CreateLinearGradientShader(
 		Vector2 start,
 		Vector2 end,
