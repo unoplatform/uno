@@ -14,8 +14,36 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 	private (float textScaleX, float textScaleY)? _textScale;
 	private IFont? _fontHandle;
 
+	// Opt-in switch to render text through the SkiaSharp-free managed font backend (ManagedFont) instead of
+	// SkiaFont. Set UNO_MANAGED_FONT_BACKEND=1 before launching to exercise the alternative drawing backend.
+	private static readonly bool _useManagedFontBackend =
+		Environment.GetEnvironmentVariable("UNO_MANAGED_FONT_BACKEND") is "1" or "true";
+
 	/// <summary>The backend render-time font handle (outline glyphs -> geometry, color glyphs -> images).</summary>
-	internal IFont FontHandle => _fontHandle ??= new SkiaFont(SKFont);
+	internal IFont FontHandle => _fontHandle ??= CreateFontHandle();
+
+	private IFont CreateFontHandle() =>
+		_useManagedFontBackend && TryCreateManagedFont() is { } managed ? managed : new SkiaFont(SKFont);
+
+	private IFont? TryCreateManagedFont()
+	{
+		var typeface = SKFont.Typeface;
+		if (typeface is null)
+		{
+			return null;
+		}
+
+		using var stream = typeface.OpenStream(out var ttcIndex);
+		if (stream is null)
+		{
+			return null;
+		}
+
+		var bytes = new byte[stream.Length];
+		return stream.Read(bytes, bytes.Length) == bytes.Length && ManagedFont.TryCreate(bytes, ttcIndex, SKFont.Size, out var managed)
+			? managed
+			: null;
+	}
 	// TODO: Investigate best value to use here. SKShaper uses a constant 512 scale, Avalonia uses default font scale. Not 100% sure how much difference it
 	// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
 	private const int FontScale = 512;
