@@ -77,12 +77,9 @@ partial class Frame
 		}
 
 		/// <summary>
-		/// Re-creates the frame's current page when its type was hot-reloaded but the page
-		/// was never materialized in the visual tree (see
-		/// <see cref="ContentControlElementMetadataUpdateHandler.CreateReplacementForStrandedContent"/>,
-		/// which implements the shared stranded-content detection), then keeps the
-		/// navigation history pointing at the new instance — the Frame-specific part a
-		/// plain <see cref="ContentControl"/> does not need.
+		/// Re-creates the frame's current page when it was hot-reloaded while never
+		/// materialized (see <see cref="ContentControlElementMetadataUpdateHandler.CreateReplacementForStrandedContent"/>),
+		/// then keeps the navigation history pointing at the new instance.
 		/// </summary>
 		private static void PatchStrandedContent(Frame frame, Type[] updatedTypes)
 		{
@@ -92,19 +89,18 @@ partial class Frame
 			}
 
 			newPage.Frame = frame;
+			frame.SetContent(newPage);
 
-			// In legacy mode OnContentChanged syncs CurrentEntry automatically when Content
-			// changes; the WinUI-behavior history entry must be patched explicitly.
+			// Legacy mode syncs CurrentEntry in OnContentChanged; the WinUI-behavior
+			// history entry must be patched explicitly.
 			if (frame._useWinUIBehavior && frame.GetCurrentPageStackEntry() is { } entry)
 			{
 				entry.Instance = newPage;
 				SetSourcePageType(entry, newPage.GetType());
 			}
 
-			frame.SetContent(newPage);
-
 			[UnconditionalSuppressMessage("Trimming", "IL2067")]
-			// The replacement type comes from TypeMappings which preserves constructors for hot reload.
+			// Replacement types come from TypeMappings, which preserves their constructors.
 			static void SetSourcePageType(Navigation.PageStackEntry entry, Type type)
 			{
 				entry.SourcePageType = type;

@@ -16,9 +16,8 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 {
 	public static void ElementUpdate(FrameworkElement element, Type[] updatedTypes)
 	{
-		// Frame has its own element-update handler which additionally keeps the navigation
-		// history in sync with the re-created page — let it own its content patching
-		// entirely so the two handlers never double-replace the same instance.
+		// Frame's own handler patches its content and syncs the navigation history;
+		// skipping it here prevents the two handlers from double-replacing.
 		if (element is not ContentControl contentControl || contentControl is Frame)
 		{
 			return;
@@ -31,30 +30,22 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 	}
 
 	/// <summary>
-	/// Creates a replacement for the host's current content when that content's type was
-	/// hot-reloaded but the content was never materialized in the visual tree — e.g. the
-	/// host lives under an ancestor that has not had a layout pass, so its template was
-	/// never applied and the content exists only as <see cref="ContentControl.Content"/>.
-	/// The hot-reload visual-tree walk enumerates materialized children only, so it cannot
-	/// replace such an instance itself; without this, the stale pre-update content is what
-	/// gets displayed once the subtree is finally materialized.
-	/// Returns <see langword="null"/> when there is nothing to patch (data-item content,
-	/// materialized content, type not updated, or no parameterless constructor).
+	/// Re-creates content whose type was hot-reloaded while the content was never
+	/// materialized in the visual tree (host not laid out, template never applied) —
+	/// the HR visual-tree walk only enumerates materialized children and cannot
+	/// replace such an instance itself. Returns null when there is nothing to patch.
 	/// </summary>
 	[UnconditionalSuppressMessage("Trimming", "IL2072")]
-	// Hot reload is only expected to work when trimming is disabled; TypeMappings
-	// preserves the replacement types' constructors.
+	// Hot reload requires trimming disabled; TypeMappings preserves replacement ctors.
 	internal static FrameworkElement? CreateReplacementForStrandedContent(ContentControl host, Type[] updatedTypes)
 	{
-		// Content can be a plain data item rendered through a ContentTemplate — only view
-		// instances can be re-created here.
+		// Data-item content rendered through a ContentTemplate is never re-created.
 		if (host.Content is not FrameworkElement currentContent)
 		{
 			return null;
 		}
 
-		// Materialized content is enumerated (and replaced) by the hot-reload visual-tree
-		// walk itself — patching it here as well would double-replace it.
+		// Materialized content is replaced by the visual-tree walk itself.
 		if (VisualTreeHelper.GetParent(currentContent) is not null)
 		{
 			return null;
@@ -63,8 +54,7 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		var liveType = currentContent.GetType();
 		var expectedType = liveType.GetReplacementType();
 
-		// CNOMU update: the live type maps to a replacement type.
-		// In-place (EnC) update: same type identity, but present in the updated list.
+		// Same triggers as the walk: a CNOMU replacement type or an in-place (EnC) update.
 		var isUpdated = expectedType != liveType || Array.IndexOf(updatedTypes, liveType) >= 0;
 		if (!isUpdated)
 		{
@@ -80,22 +70,16 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		FrameworkElement? newContent;
 		try
 		{
-			// Despite its name, Frame.CreatePageInstance is the centralized, type-agnostic
-			// hot-reload-aware creation path (replacement-type resolution + bindable metadata
-			// provider support) also used by NavigationCache and PagePool. No constructor
-			// pre-check here: a bindable metadata activator may construct types a reflection
-			// probe would reject, so creation failure is handled instead of predicted.
+			// Centralized HR-aware creation (replacement-type resolution + bindable
+			// metadata provider), also used by NavigationCache and PagePool.
 			newContent = Frame.CreatePageInstance(liveType) as FrameworkElement;
 		}
 		catch (Exception e)
 		{
-			// The replacement type cannot be constructed (e.g. no parameterless constructor
-			// and no bindable activator) — keep the stale content rather than failing the
-			// hot-reload pass; the visual-tree walk applies the same tolerance.
-			if (typeof(ContentControlElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Debug))
+			if (typeof(ContentControlElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Warning))
 			{
-				typeof(ContentControlElementMetadataUpdateHandler).Log().Debug(
-					$"Could not re-create stranded content {liveType.Name} as {expectedType.Name}: {e.Message}");
+				typeof(ContentControlElementMetadataUpdateHandler).Log().Warn(
+					$"Could not re-create stranded content {liveType.Name} as {expectedType.Name}; keeping the stale instance.", e);
 			}
 
 			return null;
@@ -103,13 +87,18 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 
 		if (newContent is null)
 		{
+			if (typeof(ContentControlElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(ContentControlElementMetadataUpdateHandler).Log().Warn(
+					$"Could not re-create stranded content {liveType.Name} as {expectedType.Name} (no instance produced); keeping the stale instance.");
+			}
+
 			return null;
 		}
 
-		// Carry the DataContext over only when the old content had its own value —
-		// an inherited DataContext must keep flowing from the host rather than being
-		// pinned onto the new instance.
-		if (!ReferenceEquals(currentContent.DataContext, host.DataContext))
+		// Copy the DataContext only when it was locally set; an inherited value must
+		// keep flowing from the host instead of being pinned on the new instance.
+		if (currentContent.ReadLocalValue(FrameworkElement.DataContextProperty) != DependencyProperty.UnsetValue)
 		{
 			newContent.DataContext = currentContent.DataContext;
 		}

@@ -9,12 +9,10 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 public class Given_Frame_StrandedContent : BaseTestClass
 {
 	/// <summary>
-	/// A page navigated into a frame whose subtree never had a layout pass (e.g. a
-	/// collapsed ancestor) exists only as <c>Frame.Content</c> — the frame's template is
-	/// never applied, so the page is not a materialized visual child and the hot-reload
-	/// visual-tree walk cannot see it. The frame's element-update handler must re-create
-	/// the stranded page so the updated content is shown once the subtree finally lays
-	/// out; without that, the stale pre-update page is displayed.
+	/// A page navigated into a frame whose subtree never had a layout pass exists only
+	/// as <c>Frame.Content</c> — the HR visual-tree walk cannot see it. The frame's
+	/// element-update handler must re-create it (and keep the navigation history in
+	/// sync) so the updated content is shown once the subtree lays out.
 	/// </summary>
 	[TestMethod]
 	public async Task When_Page_Updated_While_Unmaterialized_Then_Content_Recreated()
@@ -32,9 +30,8 @@ public class Given_Frame_StrandedContent : BaseTestClass
 		var stalePage = frame.Content as Page;
 		Assert.IsNotNull(stalePage, "Frame.Navigate must set Frame.Content even without a layout pass");
 
-		// Precondition: the page must be live-but-unmaterialized. If it has a visual
-		// parent, this test would exercise the regular visual-tree walk replacement
-		// path instead of the stranded-content one.
+		// Precondition: live-but-unmaterialized, otherwise this test exercises the
+		// regular visual-tree walk path instead of the stranded-content one.
 		Assert.IsNull(VisualTreeHelper.GetParent(stalePage), "the page must not be a materialized visual child");
 
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
@@ -42,13 +39,15 @@ public class Given_Frame_StrandedContent : BaseTestClass
 			Given_Frame.FirstPageTextBlockChangedText,
 			async () =>
 			{
-				// The stranded page must have been re-created by the frame's
-				// element-update handler (the visual-tree walk cannot reach it).
-				Assert.AreNotEqual(stalePage, frame.Content, "the stranded page must be re-created by the hot reload");
+				Assert.AreNotSame(stalePage, frame.Content, "the stranded page must be re-created by the hot reload");
 
-				// Reveal the subtree — the moment a real app's host view becomes
-				// visible — and verify the updated content is what gets displayed.
 				host.Visibility = Visibility.Visible;
+				await frame.ValidateTextOnChildTextBlock(Given_Frame.FirstPageTextBlockChangedText);
+
+				// Back-navigation must land on the re-created instance, not the stale one.
+				frame.Navigate(typeof(HR_Frame_Pages_Page2));
+				await frame.ValidateTextOnChildTextBlock(Given_Frame.SecondPageTextBlockOriginalText);
+				frame.GoBack();
 				await frame.ValidateTextOnChildTextBlock(Given_Frame.FirstPageTextBlockChangedText);
 			},
 			ct);
