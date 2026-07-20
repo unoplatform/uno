@@ -338,11 +338,10 @@ public partial class TextBox
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(displayBlockPoint, true, true));
 		Select(index, 0);
 		CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-		_touchCaretDrag = true;
-		if (PointerRoutedEventArgs.LastPointerEvent?.Pointer is { } pointer)
-		{
-			CapturePointer(pointer);
-		}
+		// Only enter caret-drag mode if we actually hold the pointer; without capture OnPointerMoved can't track
+		// the finger, so leaving the flag set would make OnPointerReleasedPartial skip normal touch-release handling.
+		_touchCaretDrag = PointerRoutedEventArgs.LastPointerEvent?.Pointer is { } pointer
+			&& (CapturePointer(pointer) || HasPointerCapture);
 	}
 
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
