@@ -394,11 +394,24 @@ internal static partial class ManagedImageDecoder
 
 	private static int Sample(JpegComponent c, int x, int y, int hMax, int vMax)
 	{
-		var cx = x * c.H / hMax;
-		var cy = y * c.V / vMax;
-		if (cx >= c.PlaneWidth) cx = c.PlaneWidth - 1;
-		if (cy >= c.PlaneHeight) cy = c.PlaneHeight - 1;
-		return c.Plane![cy * c.PlaneWidth + cx];
+		// Bilinear chroma upsampling (reduces block-edge error vs nearest; exact for full-res luma where H==hMax).
+		var fx = (x + 0.5) * c.H / hMax - 0.5;
+		var fy = (y + 0.5) * c.V / vMax - 0.5;
+		if (fx < 0) fx = 0;
+		if (fy < 0) fy = 0;
+
+		var x0 = Math.Min((int)fx, c.PlaneWidth - 1);
+		var y0 = Math.Min((int)fy, c.PlaneHeight - 1);
+		var x1 = Math.Min(x0 + 1, c.PlaneWidth - 1);
+		var y1 = Math.Min(y0 + 1, c.PlaneHeight - 1);
+		var tx = fx - x0;
+		var ty = fy - y0;
+
+		var plane = c.Plane!;
+		var w = c.PlaneWidth;
+		var top = plane[y0 * w + x0] * (1 - tx) + plane[y0 * w + x1] * tx;
+		var bottom = plane[y1 * w + x0] * (1 - tx) + plane[y1 * w + x1] * tx;
+		return (int)(top * (1 - ty) + bottom * ty + 0.5);
 	}
 
 	private static byte Clamp(double v) => (byte)Math.Clamp((int)(v + 0.5), 0, 255);
