@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -17,9 +19,264 @@ namespace Microsoft.UI.Xaml.Automation;
 public sealed partial class AutomationProperties
 {
 	private static readonly ConditionalWeakTable<DependencyObject, RelationshipSubscriptions> _relationshipSubscriptions = new();
+	private static readonly ConditionalWeakTable<DependencyObject, HashSet<DependencyProperty>> _initializingCollections = new();
 
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
+#if __APPLE_UIKIT__
+		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
+		{
+			view.AccessibilityIdentifier = (string)args.NewValue;
+		}
+#elif __ANDROID__
+		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
+		{
+			view.ContentDescription = (string)args.NewValue;
+		}
+#elif __WASM__
+		if (dependencyObject is UIElement uiElement)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				// Use safe cast + trim + remove-when-empty so we never throw on a null NewValue
+				// or persist a stale xamlautomationid="" attribute in the DOM. Matches the WASM
+				// Skia ``setXamlAutomationId`` and ``setAriaStringAttribute`` contracts.
+				var automationId = (args.NewValue as string)?.Trim();
+				if (!string.IsNullOrEmpty(automationId))
+				{
+					uiElement.SetAttribute("xamlautomationid", automationId);
+				}
+				else
+				{
+					uiElement.RemoveAttribute("xamlautomationid");
+				}
+			}
+
+			// AutomationId is a test/automation identifier, not an accessible name source.
+			// aria-label must be sourced from AutomationProperties.Name (peer name resolution),
+			// not from AutomationId — otherwise assistive tech announces the dev-only id.
+
+			var role = FindHtmlRole(uiElement);
+			if (!string.IsNullOrEmpty(role))
+			{
+				uiElement.SetAttribute("role", role);
+			}
+			else
+			{
+				// FR-020 role-token normalization can now return null for non-ARIA control types.
+				// Explicitly clear any previously-set role so stale tokens don't survive a normalization
+				// change (or a control-type swap) that drops the role for this element.
+				uiElement.RemoveAttribute("role");
+			}
+		}
+#endif
+		NotifyAutomationPropertyChanged(
+			dependencyObject,
+			args,
+			AutomationElementIdentifiers.AutomationIdProperty);
+	}
+
+	private static void OnAutomationPropertyChanged(
+		DependencyObject dependencyObject,
+		DependencyPropertyChangedEventArgs args)
+	{
+		if (_initializingCollections.TryGetValue(dependencyObject, out var properties) &&
+			properties.Contains(args.Property))
+		{
+			return;
+		}
+
+		var automationProperty = GetAutomationProperty(args.Property);
+
+		if (automationProperty is not null)
+		{
+			NotifyAutomationPropertyChanged(dependencyObject, args, automationProperty);
+		}
+	}
+
+	private static AutomationProperty? GetAutomationProperty(DependencyProperty property)
+		=> property == AcceleratorKeyProperty ? AutomationElementIdentifiers.AcceleratorKeyProperty :
+			property == AccessKeyProperty ? AutomationElementIdentifiers.AccessKeyProperty :
+			property == AnnotationsProperty ? AutomationElementIdentifiers.AnnotationsProperty :
+			property == ControlledPeersProperty ? AutomationElementIdentifiers.ControlledPeersProperty :
+			property == CultureProperty ? AutomationElementIdentifiers.CultureProperty :
+			property == DescribedByProperty ? AutomationElementIdentifiers.DescribedByProperty :
+			property == FlowsFromProperty ? AutomationElementIdentifiers.FlowsFromProperty :
+			property == FlowsToProperty ? AutomationElementIdentifiers.FlowsToProperty :
+			property == FullDescriptionProperty ? AutomationElementIdentifiers.FullDescriptionProperty :
+			property == HelpTextProperty ? AutomationElementIdentifiers.HelpTextProperty :
+			property == IsDialogProperty ? AutomationElementIdentifiers.IsDialogProperty :
+			property == IsPeripheralProperty ? AutomationElementIdentifiers.IsPeripheralProperty :
+			property == IsRequiredForFormProperty ? AutomationElementIdentifiers.IsRequiredForFormProperty :
+			property == ItemStatusProperty ? AutomationElementIdentifiers.ItemStatusProperty :
+			property == ItemTypeProperty ? AutomationElementIdentifiers.ItemTypeProperty :
+			property == LabeledByProperty ? AutomationElementIdentifiers.LabeledByProperty :
+			property == LandmarkTypeProperty ? AutomationElementIdentifiers.LandmarkTypeProperty :
+			property == LevelProperty ? AutomationElementIdentifiers.LevelProperty :
+			property == LiveSettingProperty ? AutomationElementIdentifiers.LiveSettingProperty :
+			property == LocalizedControlTypeProperty ? AutomationElementIdentifiers.LocalizedControlTypeProperty :
+			property == LocalizedLandmarkTypeProperty ? AutomationElementIdentifiers.LocalizedLandmarkTypeProperty :
+			property == PositionInSetProperty ? AutomationElementIdentifiers.PositionInSetProperty :
+			property == SizeOfSetProperty ? AutomationElementIdentifiers.SizeOfSetProperty :
+			property == AutomationControlTypeProperty ? AutomationElementIdentifiers.ControlTypeProperty :
+			null;
+
+	private static IList<T> GetOrCreateAutomationCollection<T>(
+		DependencyObject element,
+		DependencyProperty dependencyProperty,
+		AutomationProperty automationProperty)
+	{
+		if (element.GetValue(dependencyProperty) is IList<T> collection)
+		{
+			return collection;
+		}
+
+		collection = new AutomationPropertyCollection<T>(
+			element,
+			dependencyProperty,
+			automationProperty);
+		var initializingProperties = _initializingCollections.GetOrCreateValue(element);
+		initializingProperties.Add(dependencyProperty);
+		try
+		{
+			element.SetValue(dependencyProperty, collection);
+		}
+		finally
+		{
+			initializingProperties.Remove(dependencyProperty);
+		}
+
+		return collection;
+	}
+
+	private static void NotifyAutomationCollectionChanged(
+		DependencyObject dependencyObject,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(
+				peer,
+				automationProperty,
+				oldValue,
+				newValue);
+		}
+#endif
+	}
+
+	private sealed class AutomationPropertyCollection<T> : Collection<T>
+	{
+		private readonly WeakReference<DependencyObject> _owner;
+		private readonly DependencyProperty _dependencyProperty;
+		private readonly AutomationProperty _automationProperty;
+
+		internal AutomationPropertyCollection(
+			DependencyObject owner,
+			DependencyProperty dependencyProperty,
+			AutomationProperty automationProperty)
+		{
+			_owner = new(owner);
+			_dependencyProperty = dependencyProperty;
+			_automationProperty = automationProperty;
+		}
+
+		protected override void ClearItems()
+		{
+			if (Count == 0)
+			{
+				return;
+			}
+
+			var oldValue = CaptureValueForNotification();
+			base.ClearItems();
+			NotifyChanged(oldValue);
+		}
+
+		protected override void InsertItem(int index, T item)
+		{
+			var oldValue = CaptureValueForNotification();
+			base.InsertItem(index, item);
+			NotifyChanged(oldValue);
+		}
+
+		protected override void RemoveItem(int index)
+		{
+			var oldValue = CaptureValueForNotification();
+			base.RemoveItem(index);
+			NotifyChanged(oldValue);
+		}
+
+		protected override void SetItem(int index, T item)
+		{
+			var oldValue = CaptureValueForNotification();
+			base.SetItem(index, item);
+			NotifyChanged(oldValue);
+		}
+
+		private T[]? CaptureValueForNotification()
+		{
+#if __SKIA__
+			if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+				_owner.TryGetTarget(out var owner) &&
+				ReferenceEquals(owner.GetValue(_dependencyProperty), this))
+			{
+				return this.ToArray();
+			}
+#endif
+			return null;
+		}
+
+		private void NotifyChanged(T[]? oldValue)
+		{
+			if (oldValue is not null &&
+				_owner.TryGetTarget(out var owner) &&
+				ReferenceEquals(owner.GetValue(_dependencyProperty), this))
+			{
+				NotifyAutomationCollectionChanged(
+					owner,
+					_automationProperty,
+					oldValue,
+					this.ToArray());
+			}
+		}
+	}
+
+	private static void OnAccessibilityViewChanged(
+		DependencyObject dependencyObject,
+		DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.StructureChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyAutomationEvent(peer, AutomationEvents.StructureChanged);
+		}
+#endif
+	}
+
+	private static void NotifyAutomationPropertyChanged(
+		DependencyObject dependencyObject,
+		DependencyPropertyChangedEventArgs args,
+		AutomationProperty automationProperty)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(
+				peer,
+				automationProperty,
+				args.OldValue,
+				args.NewValue);
+		}
+#endif
 	}
 
 	private static void OnNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
