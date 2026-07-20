@@ -48,12 +48,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		#region Background DependencyProperty
+
+		public Brush Background
 		{
-			// this is defined in the FrameworkElement mixin, and must not be used in Control.
-			// When setting the background color in a Control, the property is simply used as a placeholder
-			// for children controls, applied by inheritance.
+			get => (Brush)GetValue(BackgroundProperty);
+			set => SetValue(BackgroundProperty, value);
 		}
+
+		public static DependencyProperty BackgroundProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Background),
+				typeof(Brush),
+				typeof(Control),
+				new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Control)s)?.OnBackgroundChanged(e)));
+
+		// Uno-only plumbing (WinUI has no OnBackgroundChanged); kept as narrow as possible while
+		// still allowing same-assembly painters (Page, CalendarViewBaseItem) to react.
+		private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// A Control doesn't paint its own Background; the value is used as a placeholder
+			// applied by the template's root painter (a Border/Panel/ContentPresenter).
+		}
+
+		#endregion
 
 		internal virtual void UpdateVisualState(bool useTransitions = true)
 		{
