@@ -4809,10 +4809,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
 		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_Android()
 			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.Android);
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaUIKit)] // iOS convention: run on Desktop (dev) + real iOS only
 		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_iOS()
 			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.iOS);
 
