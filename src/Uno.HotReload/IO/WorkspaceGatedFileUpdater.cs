@@ -189,6 +189,18 @@ public sealed class WorkspaceGatedFileUpdater(
 			return queued.Task;
 		}
 
+		// Pass-through: re-check the lifecycle as late as possible — a terminal transition
+		// (ReportWorkspaceState from the init task / Dispose) may have raced the pass-through decision
+		// made under the lock above. Terminal states must reject without applying (mirrors the same
+		// re-check on the drain path).
+		lock (_gate)
+		{
+			if (_state is HotReloadWorkspaceState.Failed or HotReloadWorkspaceState.Disposed)
+			{
+				return Task.FromResult(Reject(request, GetTerminalError(_state)));
+			}
+		}
+
 		return _inner.UpdateAsync(request, ct);
 	}
 
