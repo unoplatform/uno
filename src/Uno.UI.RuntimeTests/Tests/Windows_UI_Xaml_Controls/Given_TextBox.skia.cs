@@ -4809,6 +4809,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_Android()
+			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_iOS()
+			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android sister of When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs: on mobile a
+		// single tap only places a caret, so the word selection comes from a double-tap. Dragging the end
+		// gripper then readjusts (extends) the selection, and spanning past the 800ms hold threshold must NOT
+		// be mistaken for a long-press (which word-selects on Android / caret-drags on iOS) and must keep both thumbs.
+		private static async Task AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the first word (back-to-back, no idle between) to select it and show both thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "double-tap should select the word and show both thumbs");
+			var lengthBeforeDrag = SUT.SelectionLength;
+
+			// The gripper popups are (re)positioned asynchronously on a later frame, so GetAbsoluteBoundsRect
+			// is stale right after selecting. Wait until the end gripper is actually placed over the control
+			// before pressing it, otherwise the press can miss and the drag becomes a no-op (test flake).
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "end gripper should be positioned over the TextBox before dragging it");
+
+			// Grab the end THUMB near its bottom edge (what a real finger hits): the thumb hangs a full line
+			// below the caret, so sampling from the center can spill onto the next render line.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(60, 0, stepOffsetInMilliseconds: 100); // spans >800ms, past the hold threshold, so a bug would trigger the long-press
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The drag readjusted (extended) the selection...
+			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
+			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that changes the selection and hides thumbs).
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
 		public async Task When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line()
 		{
 			var SUT = new TextBox
