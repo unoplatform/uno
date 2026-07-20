@@ -193,7 +193,7 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
 
 _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type base-class realignments, enum/type-shape changes, and behaviour-changing defaults. Several silently change runtime behaviour even on defaults — gate each on a migration note + runtime/visual validation, not compile-only._
 
-- [ ] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
+- [x] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.cs`, `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.skia.cs`, `src/Uno.UI/UI/Xaml/Media/AcrylicBrush/AcrylicBrush.skia.cs`
 - [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
