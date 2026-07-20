@@ -2,10 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference LayoutsTestHooks.idl, commit b8cfb8490
 
-#nullable enable
-
 namespace Microsoft.UI.Private.Controls;
 
-internal partial class LayoutsTestHooks
+internal partial class LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs
 {
 }
