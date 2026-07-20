@@ -150,7 +150,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
 	/// stays correct regardless of how the IDE orchestrated the build.
 	/// </summary>
-	private static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
+	// Internal (rather than private) to allow validation from runtime tests via InternalsVisibleTo.
+	internal static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
 	{
 		Version? frameworkVersion = null;
 		try
