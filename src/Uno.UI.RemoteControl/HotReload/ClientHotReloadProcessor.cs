@@ -144,9 +144,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 
 	/// <summary>
 	/// Composes the target framework the application is running on, from data available at
-	/// runtime only: the platform is compile-time knowledge of this (per-flavor) client
-	/// assembly (except for the skia flavor, which serves several runtimes and completes the
-	/// picture with a runtime check), the framework version comes from the application assembly's
+	/// runtime only: the platform is probed through <see cref="OperatingSystem"/> checks, the
+	/// framework version comes from the application assembly's
 	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute"/> (falling back to the
 	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
 	/// stays correct regardless of how the IDE orchestrated the build.
@@ -170,27 +169,20 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 
 		frameworkVersion ??= Environment.Version;
 
+		// The platform MUST be probed at runtime, not from compile-time symbols: the skia flavor
+		// of this assembly is compiled for the plain `netX.0` TFM yet serves every skia-rendering
+		// head — the uno-runtime asset selection swaps it in for `netX.0-android`, `netX.0-ios`,
+		// etc. heads too, where `__ANDROID__`-style symbols were never defined. Mac Catalyst is
+		// tested before iOS as it also reports IsIOS(). On desktop no check matches, and the
+		// flavor cannot tell a `netX.0-desktop` head from a plain `netX.0` one, so it reports the
+		// `skia` pseudo-platform which the server treats as matching either spelling.
 		var platform =
-#if __ANDROID__ || ANDROID
-			"android";
-#elif __TVOS__ || TVOS
-			"tvos";
-#elif __MACCATALYST__ || MACCATALYST
-			"maccatalyst";
-#elif __IOS__ || IOS
-			"ios";
-#elif __WASM__
-			// The (legacy) native-rendering wasm flavor of this assembly only serves browser heads.
-			"browserwasm";
-#else
-			// The skia flavor of this assembly is compiled for the plain `netX.0` TFM and serves
-			// every skia-rendering head that resolves the `skia` uno-runtime folder — desktop AND
-			// browser (`netX.0-browserwasm` with the skia renderer, the modern default). The
-			// browser case is only distinguishable at runtime. For desktop, the flavor still
-			// cannot tell `netX.0-desktop` from a plain `netX.0` head, so it reports the `skia`
-			// pseudo-platform which the server treats as matching either spelling.
-			OperatingSystem.IsBrowser() ? "browserwasm" : "skia";
-#endif
+			OperatingSystem.IsAndroid() ? "android"
+			: OperatingSystem.IsTvOS() ? "tvos"
+			: OperatingSystem.IsMacCatalyst() ? "maccatalyst"
+			: OperatingSystem.IsIOS() ? "ios"
+			: OperatingSystem.IsBrowser() ? "browserwasm"
+			: "skia";
 
 		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
 	}
