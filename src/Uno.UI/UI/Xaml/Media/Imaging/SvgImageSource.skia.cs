@@ -79,7 +79,7 @@ partial class SvgImageSource
 							new SKSurfaceProperties(SKPixelGeometry.Unknown)
 					]);
 
-					return ImageData.FromCompositionSurface(new(skImage));
+					return ImageData.FromCompositionSurface(new(new global::Uno.UI.Composition.Drawing.SkiaImage(skImage)));
 				}
 				else
 				{

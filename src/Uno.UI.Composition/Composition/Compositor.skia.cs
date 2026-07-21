@@ -2,7 +2,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,11 +22,6 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 	private int _frameNumber;
 #endif
-
-	static partial void Initialize()
-	{
-		UnoSkiaApi.Initialize();
-	}
 
 	internal bool? IsSoftwareRenderer { get; set; }
 

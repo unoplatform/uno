@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SkiaSharp;
@@ -8,6 +9,13 @@ internal static class UnoSkiaApi
 {
 	private const string SKIA = "libSkiaSharp";
 	private const string SKIA_Apple = "@rpath/libSkiaSharp.framework/libSkiaSharp";
+
+	// The native-library resolver is the Skia backend's own concern, so it self-installs when this
+	// assembly loads rather than being driven by Compositor (which stays backend-neutral). When the
+	// Skia backend is eventually a separate assembly, this initializer travels with it and runs on
+	// that assembly's load.
+	[ModuleInitializer]
+	internal static void ModuleInitialize() => Initialize();
 
 	internal static void Initialize()
 	{

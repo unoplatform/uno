@@ -86,6 +86,8 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 		return SkiaImageFrames.FromImage(SKImage.FromPixelCopy(info, bgraPremul));
 	}
 
+	public IImageFrames CreateImageFrames(IImage image) => SkiaImageFrames.FromImage(((SkiaImage)image).Image);
+
 	public IShader CreateLinearGradientShader(
 		Vector2 start,
 		Vector2 end,
