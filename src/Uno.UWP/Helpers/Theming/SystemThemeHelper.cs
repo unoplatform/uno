@@ -72,9 +72,9 @@ internal static partial class SystemThemeHelper
 	/// <summary>
 	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
 	/// OS/app-global dimension OR-ed onto the Light/Dark base theme (matching WinUI's
-	/// <c>FrameworkTheming::GetTheme</c>). Sourced from
-	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable, so it also
-	/// serves as the override hook for runtime tests. Defaults to <c>false</c>.
+	/// <c>FrameworkTheming::GetTheme</c>). The effective value comes from the platform and is cached until
+	/// the platform reports a change. <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>
+	/// overrides that value when explicitly set, including for runtime tests.
 	/// </summary>
 	internal static bool IsHighContrast =>
 		Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride
@@ -338,6 +338,43 @@ internal static partial class SystemThemeHelper
 		GetHighContrastSystemColorsPlatform(ref result);
 		return result;
 	}
+
+	internal static string ResolveHighContrastSchemeName(
+		string? configuredSchemeName,
+		bool isHighContrastEnabled,
+		Color window,
+		Color windowText)
+	{
+		if (!string.IsNullOrEmpty(configuredSchemeName))
+		{
+			return configuredSchemeName;
+		}
+
+		if (!isHighContrastEnabled)
+		{
+			return string.Empty;
+		}
+
+		if (IsWhite(window) && IsBlack(windowText))
+		{
+			return "High Contrast White";
+		}
+
+		if (IsBlack(window) && IsWhite(windowText))
+		{
+			return "High Contrast Black";
+		}
+
+		return "High Contrast";
+	}
+
+	private static bool IsWhite(Color color) =>
+		(color.R == 0xFF && color.G == 0xFF && color.B == 0xFF)
+		|| (color.R == 0xEB && color.G == 0xEB && color.B == 0xEB);
+
+	private static bool IsBlack(Color color) =>
+		(color.R == 0x00 && color.G == 0x00 && color.B == 0x00)
+		|| (color.R == 0x10 && color.G == 0x10 && color.B == 0x10);
 
 #if __ANDROID__ || __APPLE_UIKIT__
 	private static string GetMobileHighContrastSchemeName(SystemTheme systemTheme) =>

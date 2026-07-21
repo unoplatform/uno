@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Helpers.Theming;
 using Uno.UI.Xaml.Core;
+using MColors = Microsoft.UI.Colors;
 
 // Not named ….Theming: a child namespace called "Theming" would shadow the Microsoft.UI.Xaml.Theming
 // static class for every test in Uno.UI.Tests.Windows_UI_Xaml.
@@ -331,5 +333,25 @@ public class Given_FrameworkTheming
 		{
 			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = previousHighContrast;
 		}
+	}
+
+	[TestMethod]
+	public void When_HighContrast_Scheme_Is_Resolved()
+	{
+		Assert.AreEqual(
+			"Custom Contrast",
+			SystemThemeHelper.ResolveHighContrastSchemeName("Custom Contrast", false, MColors.Red, MColors.Blue));
+		Assert.AreEqual(
+			string.Empty,
+			SystemThemeHelper.ResolveHighContrastSchemeName(null, false, MColors.White, MColors.Black));
+		Assert.AreEqual(
+			"High Contrast White",
+			SystemThemeHelper.ResolveHighContrastSchemeName(null, true, MColors.White, MColors.Black));
+		Assert.AreEqual(
+			"High Contrast Black",
+			SystemThemeHelper.ResolveHighContrastSchemeName(null, true, MColors.Black, MColors.White));
+		Assert.AreEqual(
+			"High Contrast",
+			SystemThemeHelper.ResolveHighContrastSchemeName(null, true, MColors.Red, MColors.Blue));
 	}
 }

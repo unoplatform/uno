@@ -1,6 +1,8 @@
 #if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 
+#if __SKIA__
 using System.Linq;
+#endif
 using Uno.Helpers.Theming;
 using Uno.UI.Xaml;
 using Windows.UI;

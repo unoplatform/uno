@@ -19,6 +19,7 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 {
 	private const string SoftwareMicrosoftWindowsCurrentVersionThemesPersonalize = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
 	private const string ControlPanelAccessibilityHighContrast = @"Control Panel\Accessibility\HighContrast";
+	private const string HighContrastSchemeValue = "High Contrast Scheme";
 
 	public static Win32SystemThemeHelperExtension Instance { get; } = new();
 
@@ -112,20 +113,26 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 
 	public string GetHighContrastSchemeName()
 	{
+		using var highContrastKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(ControlPanelAccessibilityHighContrast);
+		var configuredSchemeName = highContrastKey?.GetValue(HighContrastSchemeValue) as string;
+		var isHighContrastEnabled = IsHighContrastEnabled();
+
+		if (!string.IsNullOrEmpty(configuredSchemeName) || !isHighContrastEnabled)
+		{
+			return SystemThemeHelper.ResolveHighContrastSchemeName(
+				configuredSchemeName,
+				isHighContrastEnabled,
+				default,
+				default);
+		}
+
 		var window = GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOW);
 		var windowText = GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOWTEXT);
-
-		if (IsWhite(window) && IsBlack(windowText))
-		{
-			return "High Contrast White";
-		}
-
-		if (IsBlack(window) && IsWhite(windowText))
-		{
-			return "High Contrast Black";
-		}
-
-		return "High Contrast #1";
+		return SystemThemeHelper.ResolveHighContrastSchemeName(
+			configuredSchemeName,
+			isHighContrastEnabled,
+			window,
+			windowText);
 	}
 
 	public HighContrastSystemColors? GetHighContrastSystemColors()
@@ -162,11 +169,4 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 			(byte)((color >> 16) & 0xFF));
 	}
 
-	private static bool IsWhite(Color color) =>
-		(color.R == 0xFF && color.G == 0xFF && color.B == 0xFF)
-		|| (color.R == 0xEB && color.G == 0xEB && color.B == 0xEB);
-
-	private static bool IsBlack(Color color) =>
-		(color.R == 0x00 && color.G == 0x00 && color.B == 0x00)
-		|| (color.R == 0x10 && color.G == 0x10 && color.B == 0x10);
 }
