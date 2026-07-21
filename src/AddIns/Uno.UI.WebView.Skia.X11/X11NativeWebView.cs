@@ -180,7 +180,17 @@ public class X11NativeWebView : INativeWebView
 			// painting the next one. Our window gets reparented into the app's window and
 			// is never managed by the WM, so no acknowledgement ever comes and GTK (and
 			// therefore WebKit) stops painting entirely, leaving the webview blank.
-			gdk_x11_window_set_frame_sync_enabled(_window.Window.Handle, false);
+			try
+			{
+				gdk_x11_window_set_frame_sync_enabled(_window.Window.Handle, false);
+			}
+			catch (EntryPointNotFoundException e) // GTK < 3.8
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Couldn't disable GDK frame sync. The webview might not render under Mutter-based window managers (e.g. GNOME).", e);
+				}
+			}
 
 			// Set override-redirect before the window is first mapped, so that the WM never
 			// starts managing it as a toplevel. Some WMs (e.g. Weston's XWM on WSLg) would
