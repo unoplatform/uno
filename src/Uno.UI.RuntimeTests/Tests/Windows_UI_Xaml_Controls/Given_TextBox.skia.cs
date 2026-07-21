@@ -5244,6 +5244,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
 			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
 
+		// A touch long-press on a mobile convention must select the word BEFORE the text control's flyout
+		// computes its commands. Regression: the inner DisplayBlock's ContextRequested class handler used to
+		// open the ContextFlyout with an empty selection (Cut/Copy omitted) before OnContextRequestedImpl
+		// selected the word. Driven with a real injected hold so the whole bubbling path is exercised.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Flyout_Includes_Copy_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
+
+			var openFlyout =
+				(SUT.SelectionFlyout as TextCommandBarFlyout) is { IsOpen: true } sel ? sel :
+				(SUT.ContextFlyout as TextCommandBarFlyout) is { IsOpen: true } ctx ? ctx :
+				null;
+
+			Assert.IsNotNull(openFlyout, "a text command flyout should be open after the long-press");
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(openFlyout);
+
+			Assert.IsTrue(hasCopy, "Copy should be available: the word is selected");
+			Assert.IsTrue(hasCut, "Cut should be available: the word is selected");
+		}
+
+		// Sibling guard for the desktop/mouse path: a right-click over the text (whose ContextRequested
+		// originates on the inner DisplayBlock and bubbles to the TextBox) must still open the ContextFlyout,
+		// reflecting the current selection. Guards the OnContextRequestedCore DisplayBlock deferral.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RightClick_Over_Selection_Flyout_Includes_Copy()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var overText = new Point(bounds.Left + 20, bounds.GetCenter().Y); // inside "Some Text" and inside the selection
+			mouse.PressRight(overText);
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			var contextFlyout = SUT.ContextFlyout as TextCommandBarFlyout;
+			Assert.IsTrue(contextFlyout?.IsOpen == true, "the ContextFlyout should open on right-click over the text");
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(contextFlyout);
+			Assert.IsTrue(hasCopy, $"Copy should be available (selectedText='{SUT.SelectedText}')");
+			Assert.IsTrue(hasCut, $"Cut should be available (selectedText='{SUT.SelectedText}')");
+
+			contextFlyout.Hide();
+		}
+
 		// Native Android: a touch long-press selects the word (and suppresses the context menu).
 		// The Desktop convention keeps the default context-menu behavior (no auto word selection).
 		private static async Task AssertTouchLongPress(TextBox.TouchTextSelectionConvention convention, bool expectWordSelected)
