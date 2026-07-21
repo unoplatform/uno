@@ -308,7 +308,9 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 			}
 			else
 			{
-				const int steps = 24;
+				// Adaptive: ~2px chords, scaled by the control-polygon length, so large curves stay smooth.
+				var controlLength = Vector2.Distance(current, seg.C1) + Vector2.Distance(seg.C1, seg.C2) + Vector2.Distance(seg.C2, seg.End);
+				var steps = Math.Clamp((int)MathF.Ceiling(controlLength / 2f), 8, 256);
 				for (var i = 1; i <= steps; i++)
 				{
 					yield return EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps);
