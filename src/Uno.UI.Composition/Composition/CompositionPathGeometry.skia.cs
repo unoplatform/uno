@@ -69,9 +69,9 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 			_geometrySource2D?.Dispose();
 		}
-		else if (Path?.GeometrySource is SkiaGeometrySource2D skiaGeometry)
+		else if (Path?.GeometrySource is IGeometry geometry)
 		{
-			geometrySource = skiaGeometry;
+			geometrySource = geometry;
 		}
 		else
 		{

@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using System;
 using System.Numerics;
 using Windows.Foundation;
