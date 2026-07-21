@@ -135,6 +135,9 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
+	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
+		IsAccessibilityEnabled && Win32UIAutomationInterop.UiaClientsAreListening();
+
 	// ──────────────────────────────────────────────────────────────
 	//  Announcements — override base to dispatch at the UIA layer
 	//  (base's debouncing/throttling still runs; AnnounceOnPlatform
@@ -685,10 +688,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			_peerProviders.Remove(representedPeer);
 		}
 
-		if (_providers.TryGetValue(provider.Owner, out var byElement)
+		if (provider.Owner is { } owner
+			&& _providers.TryGetValue(owner, out var byElement)
 			&& ReferenceEquals(byElement, provider))
 		{
-			_providers.Remove(provider.Owner);
+			_providers.Remove(owner);
 		}
 
 		// Additional aliases are removed lazily when looked up. ConditionalWeakTable entries do not
@@ -1152,9 +1156,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 						provider, Win32UIAutomationInterop.UIA_LiveRegionChangedEventId);
 					// Also announce the live region text for reliable Narrator delivery
 					var label = peer.GetName();
-					if (!string.IsNullOrEmpty(label))
+					if (!string.IsNullOrEmpty(label)
+						&& provider.Owner is { } owner)
 					{
-						var liveSetting = AutomationProperties.GetLiveSetting(provider.Owner);
+						var liveSetting = AutomationProperties.GetLiveSetting(owner);
 						if (liveSetting == AutomationLiveSetting.Assertive)
 						{
 							AnnounceAssertive(label);
