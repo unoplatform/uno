@@ -5208,6 +5208,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
+		// thumb a line below the caret, so GetIndexAt spilled onto the next render line and jumped the caret to the
+		// end of the text. A tap on the handle must keep the caret where the handle already is. Sister (no-drag case)
+		// of When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line.
+		[TestMethod]
+		public async Task When_Touch_Tap_Handle_From_Thumb_Keeps_Caret_Android()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned over the TextBox before tapping it");
+
+			var caretBeforeTap = SUT.SelectionStart;
+			Assert.IsTrue(caretBeforeTap < SUT.Text.Length, $"the first tap should place the caret mid-text (len {SUT.Text.Length}, was {caretBeforeTap})");
+
+			// Wait past the 500ms multi-tap window so tapping the handle is a single tap (not double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the THUMB near its bottom edge (what a real finger hits) — the geometry that used to jump the caret.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The tap keeps a collapsed caret exactly where the handle was — it must NOT jump to the end of the text.
+			Assert.AreEqual(0, SUT.SelectionLength, "tapping the handle keeps a collapsed caret");
+			Assert.AreEqual(caretBeforeTap, SUT.SelectionStart, $"tapping the insertion handle must not move the caret (len {SUT.Text.Length}, was {caretBeforeTap}, now {SUT.SelectionStart})");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{

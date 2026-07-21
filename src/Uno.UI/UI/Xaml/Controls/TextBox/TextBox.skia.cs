@@ -1926,7 +1926,7 @@ public partial class TextBox : ITextSelectionGripperHost
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
 		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
+	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
 		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
 		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
@@ -1936,14 +1936,15 @@ public partial class TextBox : ITextSelectionGripperHost
 			: 0;
 		_lastPointerDown = (press, repeatedPresses);
 
-		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
+		// the caret line and would jump the caret to the end of the text).
 		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
 		{
-			TouchSelectWord(displayBlockPoint);
+			TouchSelectWordAt(anchorIndex);
 		}
 		else
 		{
-			TouchTap(displayBlockPoint, true);
+			TouchTapAt(anchorIndex);
 		}
 	}
 	#endregion

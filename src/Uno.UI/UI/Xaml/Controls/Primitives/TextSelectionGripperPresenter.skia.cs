@@ -68,11 +68,14 @@ internal interface ITextSelectionGripperHost
 	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args);
 
 	/// <summary>
-	/// The gripper was tapped (not dragged or held): treat it like a tap on the text. <paramref name="press"/>
-	/// is the tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on
-	/// the insertion handle is still the second tap of a double-tap-to-select-word).
+	/// The gripper was tapped (not dragged or held): treat it like a tap on the text at the character the gripper
+	/// points at. <paramref name="anchorIndex"/> is that character index (the gripper's own selection edge / caret),
+	/// so the tap pins there instead of re-sampling the finger — which sits on the thumb below the caret line and
+	/// would spill onto the line below (on a single-line box, the end of the text). <paramref name="press"/> is the
+	/// tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on the insertion
+	/// handle is still the second tap of a double-tap-to-select-word).
 	/// </summary>
-	void OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args);
+	void OnGripperTapped(PointerPoint press, int anchorIndex);
 }
 
 /// <summary>
@@ -288,7 +291,11 @@ internal sealed class TextSelectionGripperPresenter
 		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
 			args.Handled = true;
-			_host.OnGripperTapped(previous, args);
+			// Pin the tap to the character this gripper points at (its selection edge / caret). The finger grabbed
+			// the thumb below the caret line, so re-sampling the release point would spill onto the line below and
+			// jump to the end of the text — the same hazard the drag path avoids with GrabOffsetY.
+			var anchorIndex = gripper == _startGripper ? _host.SelectionLowerIndex : _host.SelectionUpperIndex;
+			_host.OnGripperTapped(previous, anchorIndex);
 			_host.QueueGripperSelectionFlyout(args);
 		}
 		else
