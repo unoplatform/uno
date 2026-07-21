@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using Android.Content;
 using Android.Content.Res;
 using Android.Database;
 using Android.OS;
