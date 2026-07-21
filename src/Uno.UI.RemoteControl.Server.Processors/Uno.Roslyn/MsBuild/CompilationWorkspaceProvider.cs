@@ -191,7 +191,7 @@ public static class CompilationWorkspaceProvider
 
 			var remediation = sdkRoot is null
 				? "Run 'dotnet workload update' with the SDK the dev-server uses (uno-check can locate and fix it), or restore the project with that SDK, then restart the application."
-				: $"Run '{Path.Join(sdkRoot, "dotnet")} workload update' (or a restore with that SDK), then restart the application.";
+				: $"Run '\"{Path.Join(sdkRoot, OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet")}\" workload update' (or a restore with that SDK), then restart the application.";
 
 			reporter.Warn(
 				$"The hot-reload workspace loaded {Describe(brokenFlavors)} without any .NET framework references even after a restore attempt: " +
