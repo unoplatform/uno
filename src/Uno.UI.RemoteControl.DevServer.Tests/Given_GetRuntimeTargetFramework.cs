@@ -33,6 +33,6 @@ public class Given_GetRuntimeTargetFramework
 	{
 		var version = ClientHotReloadProcessor.ResolveFrameworkVersion(frameworkName);
 
-		version.Should().Be(Environment.Version);
+		version.Should().Be(ClientHotReloadProcessor.FallbackVersion);
 	}
 }

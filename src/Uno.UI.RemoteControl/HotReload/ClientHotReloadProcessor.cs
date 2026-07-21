@@ -179,10 +179,16 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 	}
 
 	/// <summary>
+	/// The framework version reported when the application's target framework cannot be resolved
+	/// (absent, malformed, or a non-.NETCoreApp moniker) — the version of the running .NET runtime.
+	/// </summary>
+	internal static Version FallbackVersion => Environment.Version;
+
+	/// <summary>
 	/// Parses the .NETCoreApp framework version out of a
 	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute.FrameworkName"/> value
 	/// (e.g. <c>".NETCoreApp,Version=v10.0"</c> → <c>10.0</c>), falling back to
-	/// <see cref="Environment.Version"/> when the value is absent, malformed, or not a
+	/// <see cref="FallbackVersion"/> when the value is absent, malformed, or not a
 	/// .NETCoreApp moniker. Kept free of the platform <c>#if</c> in
 	/// <see cref="GetRuntimeTargetFramework"/> so the fallback is unit-testable.
 	/// </summary>
@@ -201,7 +207,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 			// Malformed FrameworkName — fall back to the runtime version below.
 		}
 
-		return Environment.Version;
+		return FallbackVersion;
 	}
 
 	private void ConfigureHotReloadMode()
