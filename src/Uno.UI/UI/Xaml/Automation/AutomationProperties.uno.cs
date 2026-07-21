@@ -1,16 +1,23 @@
 ﻿#nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
+using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Automation;
 
 [Bindable]
 public sealed partial class AutomationProperties
 {
+	private static readonly ConditionalWeakTable<DependencyObject, RelationshipSubscriptions> _relationshipSubscriptions = new();
+
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
 #if __APPLE_UIKIT__
@@ -111,6 +118,155 @@ public sealed partial class AutomationProperties
 			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.LocalizedLandmarkTypeProperty, args.OldValue, args.NewValue);
 		}
 #endif
+	}
+
+	private static void OnControlledPeersChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
+		OnRelationshipPropertyChanged(
+			dependencyObject,
+			ControlledPeersProperty,
+			AutomationElementIdentifiers.ControlledPeersProperty,
+			args);
+
+	private static void OnDescribedByChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
+		OnRelationshipPropertyChanged(
+			dependencyObject,
+			DescribedByProperty,
+			AutomationElementIdentifiers.DescribedByProperty,
+			args);
+
+	private static void OnFlowsToChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
+		OnRelationshipPropertyChanged(
+			dependencyObject,
+			FlowsToProperty,
+			AutomationElementIdentifiers.FlowsToProperty,
+			args);
+
+	private static void OnRelationshipPropertyChanged(
+		DependencyObject dependencyObject,
+		DependencyProperty dependencyProperty,
+		AutomationProperty automationProperty,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var subscriptions = _relationshipSubscriptions.GetValue(
+			dependencyObject,
+			static _ => new RelationshipSubscriptions());
+		subscriptions.Set(
+			dependencyProperty,
+			SubscribeToRelationshipChanges(
+				args.NewValue,
+				new WeakReference<DependencyObject>(dependencyObject),
+				automationProperty));
+
+		NotifyRelationshipPropertyChanged(dependencyObject, automationProperty, args.OldValue, args.NewValue);
+	}
+
+	private static void NotifyRelationshipPropertyChanged(
+		DependencyObject dependencyObject,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, automationProperty, oldValue, newValue);
+		}
+#endif
+	}
+
+	private static IDisposable? SubscribeToRelationshipChanges(
+		object? value,
+		WeakReference<DependencyObject> owner,
+		AutomationProperty automationProperty)
+	{
+		if (value is IObservableVector<DependencyObject> dependencyObjects)
+		{
+			VectorChangedEventHandler<DependencyObject>? handler = null;
+			handler = (_, _) =>
+			{
+				if (owner.TryGetTarget(out var target))
+				{
+					NotifyRelationshipPropertyChanged(target, automationProperty, dependencyObjects, dependencyObjects);
+				}
+				else
+				{
+					dependencyObjects.VectorChanged -= handler;
+				}
+			};
+			dependencyObjects.VectorChanged += handler;
+			return new RelationshipSubscription(() => dependencyObjects.VectorChanged -= handler);
+		}
+
+		if (value is IObservableVector<UIElement> uiElements)
+		{
+			VectorChangedEventHandler<UIElement>? handler = null;
+			handler = (_, _) =>
+			{
+				if (owner.TryGetTarget(out var target))
+				{
+					NotifyRelationshipPropertyChanged(target, automationProperty, uiElements, uiElements);
+				}
+				else
+				{
+					uiElements.VectorChanged -= handler;
+				}
+			};
+			uiElements.VectorChanged += handler;
+			return new RelationshipSubscription(() => uiElements.VectorChanged -= handler);
+		}
+
+		if (value is INotifyCollectionChanged observable)
+		{
+			NotifyCollectionChangedEventHandler? handler = null;
+			handler = (_, _) =>
+			{
+				if (owner.TryGetTarget(out var target))
+				{
+					NotifyRelationshipPropertyChanged(target, automationProperty, observable, observable);
+				}
+				else
+				{
+					observable.CollectionChanged -= handler;
+				}
+			};
+			observable.CollectionChanged += handler;
+			return new RelationshipSubscription(() => observable.CollectionChanged -= handler);
+		}
+
+		return null;
+	}
+
+	private sealed class RelationshipSubscriptions
+	{
+		private readonly Dictionary<DependencyProperty, IDisposable> _subscriptions = new();
+
+		public void Set(DependencyProperty property, IDisposable? subscription)
+		{
+			if (_subscriptions.Remove(property, out var previous))
+			{
+				previous.Dispose();
+			}
+
+			if (subscription is not null)
+			{
+				_subscriptions[property] = subscription;
+			}
+		}
+	}
+
+	private sealed class RelationshipSubscription : IDisposable
+	{
+		private Action? _unsubscribe;
+
+		public RelationshipSubscription(Action unsubscribe) => _unsubscribe = unsubscribe;
+
+		public void Dispose()
+		{
+			_unsubscribe?.Invoke();
+			_unsubscribe = null;
+		}
 	}
 
 	// FR-023: a runtime IsDataValidForForm change must reach assistive tech. The attached property is not

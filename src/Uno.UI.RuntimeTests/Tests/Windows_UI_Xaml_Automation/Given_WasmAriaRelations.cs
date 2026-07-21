@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
@@ -40,7 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var collapsed = new TextBlock { Text = "Hidden help", Visibility = Visibility.Collapsed };
 			AutomationProperties.SetName(collapsed, "Hidden help");
 			var field = new TextBox();
-			field.SetValue(AutomationProperties.DescribedByProperty, new List<DependencyObject> { visible, collapsed });
+			var describedByTargets = new DependencyObjectCollection { visible, collapsed };
+			field.SetValue(AutomationProperties.DescribedByProperty, describedByTargets);
 			var panel = new StackPanel { Children = { visible, collapsed, field } };
 
 			await UITestHelper.Load(panel);
@@ -54,6 +54,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var describedBy = GetSemanticAttribute(field, "aria-describedby");
 			Assert.AreEqual(GetSemanticElementId(visible), describedBy, "aria-describedby must reference only the target that has a semantic node.");
 			Assert.IsFalse(describedBy.Contains(GetSemanticElementId(collapsed)), "A node-less (collapsed) target must not produce a dangling IDREF.");
+
+			describedByTargets.Remove(visible);
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(field, "aria-describedby") == string.Empty,
+				timeoutMS: 5000,
+				message: "aria-describedby must be removed when every remaining target lacks a semantic node.");
 		}
 #endif
 	}

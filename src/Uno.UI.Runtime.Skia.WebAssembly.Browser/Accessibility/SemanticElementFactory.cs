@@ -1272,7 +1272,8 @@ internal static partial class SemanticElementFactory
 
 	/// <summary>
 	/// Resolves a collection of AutomationPeers to a space-separated list of DOM element IDs
-	/// using the uno-semantics-{handle} convention.
+	/// using the uno-semantics-{handle} convention. Returns an empty string when the collection
+	/// exists but none of its peers has a semantic node, allowing live updates to clear stale IDREFs.
 	/// </summary>
 	internal static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers)
 	{
@@ -1304,7 +1305,7 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		return sb?.ToString();
+		return sb?.ToString() ?? string.Empty;
 	}
 
 	private static partial class NativeMethods

@@ -69,7 +69,9 @@ public partial class AutomationProperties
 			"ControlledPeers",
 			typeof(IList<UIElement>),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(IList<UIElement>)));
+			new FrameworkPropertyMetadata(
+				default(IList<UIElement>),
+				OnControlledPeersChanged));
 
 	/// <summary>
 	/// Identifies the Culture attached property, which reports the default input language or content locale for the element.
@@ -89,7 +91,9 @@ public partial class AutomationProperties
 			"DescribedBy",
 			typeof(IList<DependencyObject>),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(IList<DependencyObject>)));
+			new FrameworkPropertyMetadata(
+				default(IList<DependencyObject>),
+				OnDescribedByChanged));
 
 	/// <summary>
 	/// Identifies the FlowsFrom attached property, which indicates the reading order origin for the element.
@@ -109,7 +113,9 @@ public partial class AutomationProperties
 			"FlowsTo",
 			typeof(IList<DependencyObject>),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(IList<DependencyObject>)));
+			new FrameworkPropertyMetadata(
+				default(IList<DependencyObject>),
+				OnFlowsToChanged));
 
 	/// <summary>
 	/// Identifies the FullDescription attached property, which provides a complete description of the element for assistive technologies.
