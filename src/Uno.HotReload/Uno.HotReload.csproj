@@ -29,9 +29,9 @@
 		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
-		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on a vulnerable version.
-		     Pinned to 8.0.3 to address GHSA-37gx-xxp4-5rgx / GHSA-w3x6-4m5h-cxqf (affects <= 8.0.2). -->
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
+		<!-- Avoid vulnerable transitive versions from Microsoft.Build.Tasks.Core.
+		     9.0.18 is the first patched 9.x release for the July 2026 advisories. -->
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.18" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
