@@ -12,20 +12,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property DebugSettings
 		// Skipping already declared property DispatcherShutdownMode
 		// Skipping already declared property FocusVisualKind
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.ApplicationHighContrastAdjustment HighContrastAdjustment
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Application", "HighContrastAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "HighContrastAdjustment");
-			}
-		}
-#endif
+		// Skipping already declared property HighContrastAdjustment
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property Resources
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Application()

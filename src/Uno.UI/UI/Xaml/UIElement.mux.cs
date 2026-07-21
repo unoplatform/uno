@@ -1096,9 +1096,10 @@ namespace Microsoft.UI.Xaml
 		// MUX Reference: CUIElement::NotifyThemeChangedCore — uielement.cpp:14483-14508
 		internal virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 		{
-			// TODO Uno: NOT PORTED — "Set opacity dirty to ensure it is correct when having
-			// HighContrastAdjustment opacity overrides." (CUIElement::NWSetOpacityDirty,
-			// uielement.cpp:14486) — HighContrastAdjustment rendering is not implemented.
+#if __SKIA__
+			// MUX Reference: CUIElement::NWSetOpacityDirty (uielement.cpp:14486).
+			UpdateHighContrastOpacityOverride(forceInvalidate: true);
+#endif
 
 			// Notify element's properties that theme has changed
 			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChangedCoreImpl(theme, forceRefresh);
@@ -1220,6 +1221,13 @@ namespace Microsoft.UI.Xaml
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
 			// here. The CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
 			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
+
+#if __SKIA__
+			if (@params.IsLive)
+			{
+				UpdateHighContrastOpacityOverride();
+			}
+#endif
 
 			// Extends EnterImpl to the ContextFlyout.
 			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,

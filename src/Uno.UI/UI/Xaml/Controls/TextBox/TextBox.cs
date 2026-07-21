@@ -265,6 +265,10 @@ namespace Microsoft.UI.Xaml.Controls
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
 			_header = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
 
+#if __SKIA__
+			UpdateHighContrastBackgroundOverride();
+#endif
+
 			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
 			{
 				_deleteButton = new WeakReference<Button>(button);

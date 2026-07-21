@@ -93,6 +93,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareBackplatePaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
@@ -812,11 +813,24 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
-	public void Draw(in Visual.PaintingSession session,
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
+			? 1f
+			: session.Opacity;
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground) =
+			useHighContrastAdjustment
+				? UIElement.GetHighContrastTextColors()
+				: default;
+		if (useHighContrastAdjustment)
+		{
+			_spareBackplatePaint.Color = ToSkColor(highContrastBackground, effectiveOpacity);
+		}
+
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
@@ -843,6 +857,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var wordBoundariesIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
+		SKRect? pendingHighContrastBackplate = null;
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
 		{
 			var cluster = _clustersInLogicalOrder[clusterIndex];
@@ -872,10 +887,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
+			var shouldRenderCluster = !cluster.Value.containsTab
+				&& (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace);
 
-			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
+			if (shouldRenderCluster)
 			{
-				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				var color = useHighContrastAdjustment
+					? ToSkColor(
+						highlighter.Value.background is not null
+							? highContrastSelectionForeground
+							: highContrastForeground,
+						effectiveOpacity)
+					: BrushToColor(
+						highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
+						effectiveOpacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
 					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
@@ -908,7 +933,31 @@ internal readonly partial struct UnicodeText : IParsedText
 				MathF.Floor(y),
 				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
 				MathF.Floor(y + line.lineHeight) + 1);
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
+			if (useHighContrastAdjustment
+				&& shouldRenderCluster
+				&& highlighter.Value.background is null)
+			{
+				if (pendingHighContrastBackplate is { } pending
+					&& CanMergeHighContrastBackplates(pending, backgroundRect))
+				{
+					pendingHighContrastBackplate = new SKRect(
+						Math.Min(pending.Left, backgroundRect.Left),
+						pending.Top,
+						Math.Max(pending.Right, backgroundRect.Right),
+						pending.Bottom);
+				}
+				else
+				{
+					FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+					pendingHighContrastBackplate = backgroundRect;
+				}
+			}
+			else if (useHighContrastAdjustment)
+			{
+				FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+			}
+
+			highlighter.Value.background?.Paint(session.Canvas, effectiveOpacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
@@ -950,7 +999,13 @@ internal readonly partial struct UnicodeText : IParsedText
 					var underlineY = y + line.baselineOffset + fontDetails.SKFontSize / 6.0f;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					var foreColor = useHighContrastAdjustment
+						? ToSkColor(
+							highlighter.Value.background is not null
+								? highContrastSelectionForeground
+								: highContrastForeground,
+							effectiveOpacity)
+						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
 					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
 				}
 			}
@@ -972,6 +1027,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+
 		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
 		using var textBlobBuilder = new SKTextBlobBuilder();
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
@@ -986,6 +1043,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
+			_spareSpellCheckPaint.Color = new SKColor(SKColors.Red.Red, SKColors.Red.Green, SKColors.Red.Blue, (byte)(255 * effectiveOpacity));
 			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
@@ -1007,7 +1065,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.Paint(session.Canvas, session.Opacity, caretRect.Value);
+			caret!.Value.brush.Paint(session.Canvas, effectiveOpacity, caretRect.Value);
 		}
 	}
 
@@ -1055,6 +1113,28 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return color;
+	}
+
+	private static SKColor ToSkColor(global::Windows.UI.Color color, float opacity) =>
+		new(
+			color.R,
+			color.G,
+			color.B,
+			(byte)(color.A * opacity));
+
+	private static bool CanMergeHighContrastBackplates(SKRect current, SKRect next) =>
+		current.Top == next.Top
+		&& current.Bottom == next.Bottom
+		&& next.Left <= current.Right + 1
+		&& next.Right >= current.Left - 1;
+
+	private static void FlushHighContrastBackplate(SKCanvas canvas, ref SKRect? pendingBackplate)
+	{
+		if (pendingBackplate is { } backplate)
+		{
+			canvas.DrawRect(backplate, _spareBackplatePaint);
+			pendingBackplate = null;
+		}
 	}
 
 
