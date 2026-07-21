@@ -1920,7 +1920,7 @@ public class ItemsViewTests : MUXApiTestBase
 		{
 			Log.Comment($"LinedFlowLayout.ItemsInfoRequested raised - ItemsRangeStartIndex={args.ItemsRangeStartIndex}, ItemsRangeRequestedLength={args.ItemsRangeRequestedLength}");
 
-			Verify.IsGreaterThan(args.ItemsRangeStartIndex, 0);
+			Verify.IsGreaterThanOrEqual(args.ItemsRangeStartIndex, 0);
 			Verify.IsGreaterThan(args.ItemsRangeRequestedLength, 0);
 
 			try

@@ -294,12 +294,13 @@ partial class LayoutsTestHooks
 		/* static */
 		remove
 		{
-			EnsureHooks();
-			s_testHooks!.m_layoutAnchorIndexChangedEventSource -= value;
+			if (s_testHooks is not null)
+			{
+				s_testHooks.m_layoutAnchorIndexChangedEventSource -= value;
+			}
 		}
 	}
 
-	/* static */
 	internal void NotifyLayoutAnchorIndexChanged(object layout) =>
 		m_layoutAnchorIndexChangedEventSource?.Invoke(layout, null!);
 
@@ -314,12 +315,13 @@ partial class LayoutsTestHooks
 		/* static */
 		remove
 		{
-			EnsureHooks();
-			s_testHooks!.m_layoutAnchorOffsetChangedEventSource -= value;
+			if (s_testHooks is not null)
+			{
+				s_testHooks.m_layoutAnchorOffsetChangedEventSource -= value;
+			}
 		}
 	}
 
-	/* static */
 	internal void NotifyLayoutAnchorOffsetChanged(object layout) =>
 		m_layoutAnchorOffsetChangedEventSource?.Invoke(layout, null!);
 
@@ -334,12 +336,13 @@ partial class LayoutsTestHooks
 		/* static */
 		remove
 		{
-			EnsureHooks();
-			s_testHooks!.m_linedFlowLayoutSnappedAverageItemsPerLineChangedEventSource -= value;
+			if (s_testHooks is not null)
+			{
+				s_testHooks.m_linedFlowLayoutSnappedAverageItemsPerLineChangedEventSource -= value;
+			}
 		}
 	}
 
-	/* static */
 	internal void NotifyLinedFlowLayoutSnappedAverageItemsPerLineChanged(object linedFlowLayout) =>
 		m_linedFlowLayoutSnappedAverageItemsPerLineChangedEventSource?.Invoke(linedFlowLayout, null!);
 
@@ -354,12 +357,13 @@ partial class LayoutsTestHooks
 		/* static */
 		remove
 		{
-			EnsureHooks();
-			s_testHooks!.m_linedFlowLayoutInvalidatedEventSource -= value;
+			if (s_testHooks is not null)
+			{
+				s_testHooks.m_linedFlowLayoutInvalidatedEventSource -= value;
+			}
 		}
 	}
 
-	/* static */
 	internal void NotifyLinedFlowLayoutInvalidated(object linedFlowLayout, LinedFlowLayoutInvalidationTrigger invalidationTrigger) =>
 		m_linedFlowLayoutInvalidatedEventSource?.Invoke(
 			linedFlowLayout,
@@ -376,12 +380,13 @@ partial class LayoutsTestHooks
 		/* static */
 		remove
 		{
-			EnsureHooks();
-			s_testHooks!.m_linedFlowLayoutItemLockedEventSource -= value;
+			if (s_testHooks is not null)
+			{
+				s_testHooks.m_linedFlowLayoutItemLockedEventSource -= value;
+			}
 		}
 	}
 
-	/* static */
 	internal void NotifyLinedFlowLayoutItemLocked(object linedFlowLayout, int itemIndex, int lineIndex) =>
 		m_linedFlowLayoutItemLockedEventSource?.Invoke(
 			linedFlowLayout,
