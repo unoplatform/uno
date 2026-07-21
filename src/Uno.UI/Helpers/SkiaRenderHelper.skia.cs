@@ -65,8 +65,11 @@ internal static class SkiaRenderHelper
 		var nativeVisualsInZOrder = new List<Visual>();
 		var accumulated = rootVisual.GetNativeViewPathAndZOrder(parentClip, seedClip, nativeVisualsInZOrder);
 
-		// The native-clipping consumers below still operate on SKPath; unwrap the geometry handle here.
-		var clipPath = ((SkiaGeometrySource2D)accumulated).Geometry;
+		// The native-clipping consumers below still operate on SKPath; unwrap the geometry handle here
+		// (a native SkiaGeometrySource2D passes through; a managed geometry is rebuilt into an SKPath).
+		var clipPath = accumulated is SkiaGeometrySource2D skiaGeom
+			? skiaGeom.Geometry
+			: Uno.UI.Composition.Drawing.SkiaGeometryInterop.ToSKPath((Uno.UI.Composition.Drawing.ManagedGeometry)accumulated);
 
 		if (!invertPath)
 		{
