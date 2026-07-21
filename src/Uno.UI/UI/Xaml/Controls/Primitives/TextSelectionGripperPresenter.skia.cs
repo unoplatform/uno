@@ -64,8 +64,13 @@ internal interface ITextSelectionGripperHost
 	/// <summary>The gripper was long-pressed: open the context menu.</summary>
 	void RequestGripperContextMenu(PointerRoutedEventArgs args);
 
-	/// <summary>A gripper interaction ended: queue a selection-flyout visibility update.</summary>
-	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args);
+	/// <summary>
+	/// A gripper interaction ended: queue a selection-flyout visibility update. <paramref name="allowEmptySelection"/>
+	/// is set when the gripper was tapped (not dragged), so the flyout re-opens even over a collapsed caret (the single
+	/// insertion handle) — mirroring the native iOS/Android insertion-handle popup. The host still restricts this to its
+	/// mobile touch conventions.
+	/// </summary>
+	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection);
 
 	/// <summary>
 	/// The gripper was tapped (not dragged or held): treat it like a tap on the text at the character the gripper
@@ -296,12 +301,13 @@ internal sealed class TextSelectionGripperPresenter
 			// jump to the end of the text — the same hazard the drag path avoids with GrabOffsetY.
 			var anchorIndex = gripper == _startGripper ? _host.SelectionLowerIndex : _host.SelectionUpperIndex;
 			_host.OnGripperTapped(previous, anchorIndex);
-			_host.QueueGripperSelectionFlyout(args);
+			// A tap on the (single) insertion handle re-opens the flyout even over a collapsed caret.
+			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: true);
 		}
 		else
 		{
 			// The gripper was dragged to adjust the selection: keep the thumbs and re-show the selection toolbar.
-			_host.QueueGripperSelectionFlyout(args);
+			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: false);
 		}
 	}
 

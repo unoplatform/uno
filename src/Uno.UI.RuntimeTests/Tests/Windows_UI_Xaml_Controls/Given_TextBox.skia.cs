@@ -5266,6 +5266,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(caretBeforeTap, SUT.SelectionStart, $"tapping the insertion handle must not move the caret (len {SUT.Text.Length}, was {caretBeforeTap}, now {SUT.SelectionStart})");
 		}
 
+		// Native Android: tapping the single insertion handle re-opens the selection flyout (Paste / Select-all)
+		// even over a collapsed caret, mirroring the native insertion-handle popup. This is an Uno addition beyond
+		// the WinUI port, which shows the SelectionFlyout only for a non-empty selection.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// First tap: Android places a collapsed caret with the single insertion handle.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 20, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the first Android tap should place the single insertion handle");
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the insertion handle should be visible after the first Android tap");
+
+			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits).
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150); // the flyout visibility update is queued to the dispatcher
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "tapping the handle keeps a collapsed caret (no word selected)");
+
+			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
+			Assert.IsTrue(flyout?.IsOpen == true, "tapping the insertion handle should open the selection flyout over the collapsed caret");
+
+			// The flyout must be populated/useful, not empty: Select All is present (there is text), while Copy is
+			// absent (nothing is selected).
+			var (hasSelectAll, _, hasCopy, _) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{

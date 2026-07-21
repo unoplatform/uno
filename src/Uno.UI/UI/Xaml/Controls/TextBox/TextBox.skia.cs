@@ -680,16 +680,20 @@ public partial class TextBox : ITextSelectionGripperHost
 	private PointerDeviceType _lastInputDeviceType;
 	private Point _lastPointerPosition;
 	private bool _isSelectionFlyoutUpdateQueued;
+	// Uno addition (not part of the WinUI port): lets the flyout re-open over a collapsed caret when the single
+	// insertion handle is tapped. See QueueGripperSelectionFlyout / OnGripperTapped.
+	private bool _allowEmptySelectionFlyout;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
 	private bool HasSelectionFlyout() => SelectionFlyout is not null;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
 	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
-	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position, bool allowEmptySelection = false)
 	{
 		_lastInputDeviceType = deviceType;
 		_lastPointerPosition = position;
+		_allowEmptySelectionFlyout = allowEmptySelection;
 
 		// Line 5358-5360: Prevent duplicate queued updates
 		if (!_isSelectionFlyoutUpdateQueued)
@@ -725,8 +729,11 @@ public partial class TextBox : ITextSelectionGripperHost
 
 			case PointerDeviceType.Pen:
 			case PointerDeviceType.Touch:
-				// Line 5403-5411: Pen/Touch - show if selection exists
-				if (selectionLength > 0)
+				// Line 5403-5411: Pen/Touch - show if selection exists.
+				// Uno addition (beyond the WinUI port): also show over a collapsed caret when the single insertion
+				// handle was tapped, matching the native iOS/Android Paste/Select-all popup (gated to those
+				// conventions by the caller).
+				if (selectionLength > 0 || _allowEmptySelectionFlyout)
 				{
 					shouldShow = true;
 					showMode = FlyoutShowMode.Transient;
@@ -780,6 +787,7 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		// Line 5450: Reset input device type after processing
 		_lastInputDeviceType = default;
+		_allowEmptySelectionFlyout = default;
 	}
 
 	#endregion
@@ -1923,8 +1931,13 @@ public partial class TextBox : ITextSelectionGripperHost
 		OnContextRequested(this, contextArgs);
 	}
 
-	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
-		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
+		=> QueueUpdateSelectionFlyoutVisibility(
+			args.Pointer.PointerDeviceType,
+			args.GetCurrentPoint(this).Position,
+			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
+			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
+			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
 
 	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
