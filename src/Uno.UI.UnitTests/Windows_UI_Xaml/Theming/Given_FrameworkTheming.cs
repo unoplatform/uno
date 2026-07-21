@@ -313,4 +313,23 @@ public class Given_FrameworkTheming
 	}
 
 	#endregion
+
+	[TestMethod]
+	public void When_HighContrast_Is_Off_System_Color_Uses_Unmapped_Sentinel()
+	{
+		var previousHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = false;
+
+			var interop = new SystemThemingInterop();
+
+			Assert.AreEqual(0xFFAABBCCu, interop.GetSystemColor(Win32SystemColorIds.COLOR_WINDOW));
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = previousHighContrast;
+		}
+	}
 }

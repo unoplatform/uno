@@ -88,6 +88,11 @@ internal sealed class SystemThemingInterop : IThemingInterop
 		// WinUI (SystemThemingInterop.cpp:179-203) returns the live OS system-color palette —
 		// ConvertFromABGRToARGB(GetSysColor(colorId) | 0xFF000000) — with a test-override palette
 		// (s_sysColorPaletteOverride) taking precedence.
+		if (!SystemThemeHelper.IsHighContrast)
+		{
+			return 0xFFAABBCC;
+		}
+
 		if (SystemThemeHelper.HighContrastSystemColors is not { } colors)
 		{
 			return GetFallbackSystemColor(colorId);
