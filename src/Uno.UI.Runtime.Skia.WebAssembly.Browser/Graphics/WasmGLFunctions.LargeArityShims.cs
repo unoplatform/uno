@@ -5,30 +5,14 @@ using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 
-// Gl functions with more than 8 arguments. These can't round-trip through a managed dispatcher on
-// browser-wasm (the [UnmanagedCallersOnly] 8-arg cap - dotnet/runtime#109338 - and, under full AOT,
-// a C->managed callback resolved by name has no valid native-to-interp entry; see
-// unoplatform/kahua-private#520). Instead each is handled by a C shim (build/native/uno_gl_shim.c)
-// that forwards straight to the JS WebGL layer via EM_JS.
-//
-// The dispatch table entry points to the C wrapper's function-table index, retrieved at static
-// init time via the [DllImport("uno_gl_shim")] getters in NativeShimGetters below.
+// The >8-arg gl functions are served from emscripten's native C GL by uno_gl_resolve (see
+// WasmGLFunctions.GetProcAddress and build/native/uno_gl_shim.c). Silk.NET still calli's into the
+// resolved addresses; under the interpreter those managed->native calls need matching invoke
+// trampolines, which the SignaturePrimer [DllImport]s below prime at build time (float-bearing and
+// 9/10/11-arg all-i32 signatures). See unoplatform/kahua-private#520.
 internal static unsafe partial class WasmGLFunctions
 {
-	private static void RegisterLargeArityShimEntries()
-	{
-		KeepSignaturePrimer();
-
-		_addresses["glTexImage2D"] = (IntPtr)NativeShimGetters.uno_get_glTexImage2D_ptr();
-		_addresses["glTexSubImage2D"] = (IntPtr)NativeShimGetters.uno_get_glTexSubImage2D_ptr();
-		_addresses["glTexImage3D"] = (IntPtr)NativeShimGetters.uno_get_glTexImage3D_ptr();
-		_addresses["glTexSubImage3D"] = (IntPtr)NativeShimGetters.uno_get_glTexSubImage3D_ptr();
-		_addresses["glCopyTexSubImage3D"] = (IntPtr)NativeShimGetters.uno_get_glCopyTexSubImage3D_ptr();
-		_addresses["glCompressedTexImage3D"] = (IntPtr)NativeShimGetters.uno_get_glCompressedTexImage3D_ptr();
-		_addresses["glCompressedTexSubImage2D"] = (IntPtr)NativeShimGetters.uno_get_glCompressedTexSubImage2D_ptr();
-		_addresses["glCompressedTexSubImage3D"] = (IntPtr)NativeShimGetters.uno_get_glCompressedTexSubImage3D_ptr();
-		_addresses["glBlitFramebuffer"] = (IntPtr)NativeShimGetters.uno_get_glBlitFramebuffer_ptr();
-	}
+	private static void RegisterLargeArityShimEntries() => KeepSignaturePrimer();
 
 	// Signature primer: surfaces float-bearing calli signatures to the build-time
 	// ManagedToNativeGenerator so it emits matching interp->native trampoline cookies.
@@ -137,25 +121,4 @@ internal static unsafe partial class WasmGLFunctions
 			SignaturePrimer.DummyV11I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 	}
-
-	// Pointer getters for the C shims, resolved through the wasm runtime's static PInvoke table.
-	// uno_gl_shim.c is linked via WasmShellNativeCompile -> NativeFileReference, and the wasm SDK
-	// auto-registers every NativeFileReference's base name as a PInvoke module
-	// (_WasmPInvokeModules in WasmApp.Common.targets), so DllImport("uno_gl_shim") binds
-	// statically - same mechanism as DllImport("unoicu") against unoicu.a.
-	private static class NativeShimGetters
-	{
-		private const string ShimLibrary = "uno_gl_shim";
-
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexImage2D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexSubImage2D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexImage3D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexSubImage3D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glCopyTexSubImage3D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glCompressedTexImage3D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glCompressedTexSubImage2D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glCompressedTexSubImage3D_ptr();
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glBlitFramebuffer_ptr();
-	}
-
 }

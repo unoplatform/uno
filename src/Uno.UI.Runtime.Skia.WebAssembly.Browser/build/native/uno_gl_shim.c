@@ -1,130 +1,65 @@
-// gl functions with more than 8 arguments (glTexImage2D, glBlitFramebuffer, etc.) can't be
-// dispatched to managed code on browser-wasm: [UnmanagedCallersOnly] callbacks cap at 8 args on
-// the interpreter (dotnet/runtime#109338), and a C->managed callback resolved by EntryPoint name
-// has no valid native-to-interp entry under full AOT (it traps with "null function or function
-// signature mismatch" at the callback). See unoplatform/kahua-private#520.
+// GLCanvasElement resolves OpenGL entry points straight from emscripten's own C GL library
+// (-lGL, shared with SkiaSharp) via uno_gl_resolve, instead of Uno's hand-written JS shim. This
+// avoids the C->managed [UnmanagedCallersOnly] callback that traps under WASM full AOT (see
+// unoplatform/kahua-private#520) and reuses emscripten's C-GL<->WebGL bridging (integer-id/handle
+// tables, pointer/PBO marshaling, getter pointer-writes), which operates on the same shared
+// context and window.GL.* tables the framework already uses.
 //
-// Instead, each shim forwards straight to the JS WebGL layer via EM_JS - no managed hop at all.
-// Silk.NET still calli's into these C wrappers (managed->native), which the interpreter's invoke
-// thunks handle in both interpreter and AOT builds. The framework hands Silk.NET the C wrapper's
-// address via the uno_get_*_ptr getters (called through [DllImport("uno_gl_shim")]).
+// The one adaptation emscripten's GL does NOT do is promoting the unsized RGB/RGBA internal
+// formats (excluded from WebGL2's color-renderable set) to their sized RGB8/RGBA8 forms, which the
+// offscreen FBO color attachment relies on. glTexImage2D/glTexImage3D are therefore served from
+// small wrappers that promote before forwarding to emscripten.
 //
-// The DllImport module name resolves because this file is linked via WasmShellNativeCompile
-// -> NativeFileReference, and the wasm SDK registers every NativeFileReference's base name
-// as a static PInvoke module (_WasmPInvokeModules in WasmApp.Common.targets) - the same
-// mechanism that makes DllImport("unoicu") work against unoicu.a.
-//
-// The EM_JS bodies call the same JS entry points the rest of WasmGLFunctions uses
-// (globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.*), so pointer arguments (heap offsets) are
-// interpreted identically to the [JSImport] path used for the <=8-arg functions.
+// Silk.NET still calli's into the resolved addresses (managed->native); the interpreter's invoke
+// thunks handle that in both interpreter and AOT builds. The float/large-arity signatures are
+// primed by the SignaturePrimer [DllImport]s (WasmGLFunctions.LargeArityShims.cs), whose native
+// bodies are the uno_dummy_* stubs below.
 
+#include <GLES3/gl3.h>
 #include <emscripten.h>
+#include <emscripten/html5_webgl.h>
+#include <string.h>
 #include <stdint.h>
 
-// glTexImage2D: 9 args
-EM_JS(void, uno_js_glTexImage2D, (int target, int level, int internalformat, int width, int height, int border, int format, int type, int pixels), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
-});
+#define UNO_PTR(x) ((const void*)(intptr_t)(x))
+
+// WebGL2 color-renderability: unsized RGB/RGBA aren't renderable; promote to the sized forms when
+// the pixel type is UNSIGNED_BYTE (the only case the framework and samples rely on).
+static int uno_promote_internalformat(int internalformat, int type)
+{
+	if (type == GL_UNSIGNED_BYTE)
+	{
+		if (internalformat == GL_RGB) return GL_RGB8;
+		if (internalformat == GL_RGBA) return GL_RGBA8;
+	}
+	return internalformat;
+}
+
 EMSCRIPTEN_KEEPALIVE
 void uno_glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int pixels) {
-	uno_js_glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+	glTexImage2D(target, level, uno_promote_internalformat(internalformat, type), width, height, border, format, type, UNO_PTR(pixels));
 }
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glTexImage2D_ptr(void) { return (int)(intptr_t)&uno_glTexImage2D; }
 
-// glTexSubImage2D: 9 args
-EM_JS(void, uno_js_glTexSubImage2D, (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int pixels), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int pixels) {
-	uno_js_glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glTexSubImage2D_ptr(void) { return (int)(intptr_t)&uno_glTexSubImage2D; }
-
-// glTexImage3D: 10 args
-EM_JS(void, uno_js_glTexImage3D, (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int pixels), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
-});
 EMSCRIPTEN_KEEPALIVE
 void uno_glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int pixels) {
-	uno_js_glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	glTexImage3D(target, level, uno_promote_internalformat(internalformat, type), width, height, depth, border, format, type, UNO_PTR(pixels));
 }
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glTexImage3D_ptr(void) { return (int)(intptr_t)&uno_glTexImage3D; }
 
-// glTexSubImage3D: 11 args
-EM_JS(void, uno_js_glTexSubImage3D, (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int pixels), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
-});
+// Central resolver: emscripten's native GL for every entry point, with the two promotion wrappers
+// substituted for the calls that need WebGL2 unsized->sized internal-format promotion. Returns a
+// wasm function-table index (0 = not available, the framework then falls back to its JS shim).
 EMSCRIPTEN_KEEPALIVE
-void uno_glTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int pixels) {
-	uno_js_glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+int uno_gl_resolve(const char* name) {
+	if (strcmp(name, "glTexImage2D") == 0) return (int)(intptr_t)&uno_glTexImage2D;
+	if (strcmp(name, "glTexImage3D") == 0) return (int)(intptr_t)&uno_glTexImage3D;
+	return (int)(intptr_t)emscripten_webgl_get_proc_address(name);
 }
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glTexSubImage3D_ptr(void) { return (int)(intptr_t)&uno_glTexSubImage3D; }
-
-// glCopyTexSubImage3D: 9 args
-EM_JS(void, uno_js_glCopyTexSubImage3D, (int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glCopyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height) {
-	uno_js_glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glCopyTexSubImage3D_ptr(void) { return (int)(intptr_t)&uno_glCopyTexSubImage3D; }
-
-// glCompressedTexImage3D: 9 args
-EM_JS(void, uno_js_glCompressedTexImage3D, (int target, int level, int internalformat, int width, int height, int depth, int border, int imageSize, int data), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glCompressedTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int imageSize, int data) {
-	uno_js_glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glCompressedTexImage3D_ptr(void) { return (int)(intptr_t)&uno_glCompressedTexImage3D; }
-
-// glCompressedTexSubImage2D: 9 args
-EM_JS(void, uno_js_glCompressedTexSubImage2D, (int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, int data), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glCompressedTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, int data) {
-	uno_js_glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glCompressedTexSubImage2D_ptr(void) { return (int)(intptr_t)&uno_glCompressedTexSubImage2D; }
-
-// glCompressedTexSubImage3D: 11 args
-EM_JS(void, uno_js_glCompressedTexSubImage3D, (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int imageSize, int data), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glCompressedTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int imageSize, int data) {
-	uno_js_glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glCompressedTexSubImage3D_ptr(void) { return (int)(intptr_t)&uno_glCompressedTexSubImage3D; }
-
-// glBlitFramebuffer: 10 args
-EM_JS(void, uno_js_glBlitFramebuffer, (int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter), {
-	globalThis.Uno.UI.Runtime.Skia.WasmGLFunctions.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
-});
-EMSCRIPTEN_KEEPALIVE
-void uno_glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter) {
-	uno_js_glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
-}
-EMSCRIPTEN_KEEPALIVE
-int uno_get_glBlitFramebuffer_ptr(void) { return (int)(intptr_t)&uno_glBlitFramebuffer; }
 
 // Dummy bodies for the SignaturePrimer [DllImport] declarations in
-// WasmGLFunctions.LargeArityShims.cs. Those declarations prime the interpreter's managed->native
-// trampoline cookies (including the 9/10/11-arg all-i32 signatures Silk.NET uses to calli the
-// shim wrappers above); these C bodies exist solely so wasm-ld can resolve the symbols. They're
-// never called at runtime - the managed callers sit behind a volatile-false guard.
+// WasmGLFunctions.LargeArityShims.cs. They prime the interpreter's managed->native trampoline
+// cookies (float-bearing and 9/10/11-arg all-i32 signatures Silk.NET uses to calli the resolved
+// GL entry points); these C bodies exist solely so wasm-ld can resolve the symbols. They're never
+// called at runtime - the managed callers sit behind a volatile-false guard.
 void uno_dummy_VFFFF(float a, float b, float c, float d) { (void)a; (void)b; (void)c; (void)d; }
 void uno_dummy_VIF(int a, float b) { (void)a; (void)b; }
 void uno_dummy_VIFFFF(int a, float b, float c, float d, float e) { (void)a; (void)b; (void)c; (void)d; (void)e; }

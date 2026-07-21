@@ -37,8 +37,24 @@ internal static unsafe partial class WasmGLFunctions
 
 	public static IntPtr GetProcAddress(string name)
 	{
+		// Prefer emscripten's native C GL library (it shares the WebGL context and window.GL.*
+		// handle tables the framework uses). uno_gl_resolve returns emscripten's address for every
+		// entry point, substituting small C wrappers for glTexImage2D/glTexImage3D that add the
+		// WebGL2 unsized->sized internal-format promotion emscripten doesn't do.
+		var native = ResolveNative(name);
+		if (native != IntPtr.Zero)
+		{
+			return native;
+		}
+
+		// Fallback: entry points emscripten's proc table doesn't expose are served by the
+		// hand-written JS shim. Logged so a validation run reveals exactly what still needs it.
 		if (_addresses.TryGetValue(name, out var p))
 		{
+			if (typeof(WasmGLFunctions).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(WasmGLFunctions).Log().Debug($"GL '{name}' not in emscripten proc table; using JS shim fallback.");
+			}
 			return p;
 		}
 
@@ -50,6 +66,25 @@ internal static unsafe partial class WasmGLFunctions
 		}
 
 		return IntPtr.Zero;
+	}
+
+	private static IntPtr ResolveNative(string name)
+	{
+		var namePtr = Marshal.StringToHGlobalAnsi(name);
+		try
+		{
+			return (IntPtr)GlResolver.uno_gl_resolve(namePtr);
+		}
+		finally
+		{
+			Marshal.FreeHGlobal(namePtr);
+		}
+	}
+
+	private static class GlResolver
+	{
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int uno_gl_resolve(IntPtr name);
 	}
 
 	static WasmGLFunctions()
