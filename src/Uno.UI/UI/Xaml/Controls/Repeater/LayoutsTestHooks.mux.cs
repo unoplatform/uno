@@ -291,7 +291,6 @@ partial class LayoutsTestHooks
 			EnsureHooks();
 			s_testHooks!.m_layoutAnchorIndexChangedEventSource += value;
 		}
-		/* static */
 		remove
 		{
 			if (s_testHooks is not null)
@@ -312,7 +311,6 @@ partial class LayoutsTestHooks
 			EnsureHooks();
 			s_testHooks!.m_layoutAnchorOffsetChangedEventSource += value;
 		}
-		/* static */
 		remove
 		{
 			if (s_testHooks is not null)
@@ -333,7 +331,6 @@ partial class LayoutsTestHooks
 			EnsureHooks();
 			s_testHooks!.m_linedFlowLayoutSnappedAverageItemsPerLineChangedEventSource += value;
 		}
-		/* static */
 		remove
 		{
 			if (s_testHooks is not null)
@@ -354,7 +351,6 @@ partial class LayoutsTestHooks
 			EnsureHooks();
 			s_testHooks!.m_linedFlowLayoutInvalidatedEventSource += value;
 		}
-		/* static */
 		remove
 		{
 			if (s_testHooks is not null)
@@ -377,7 +373,6 @@ partial class LayoutsTestHooks
 			EnsureHooks();
 			s_testHooks!.m_linedFlowLayoutItemLockedEventSource += value;
 		}
-		/* static */
 		remove
 		{
 			if (s_testHooks is not null)
