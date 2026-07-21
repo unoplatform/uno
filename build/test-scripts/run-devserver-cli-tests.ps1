@@ -1476,6 +1476,47 @@ function Invoke-CodexSelectionFlowTest {
     throw "Codex selection flow failed after $maxAttempts attempts. Last error: $($lastError.Exception.Message)"
 }
 
+function Get-CodexReportedSolutionPath {
+    param([object]$Value)
+
+    if ($null -eq $Value) {
+        return $null
+    }
+
+    foreach ($propertyName in @('selectedSolutionPath', 'solutionPath')) {
+        $property = $Value.PSObject.Properties[$propertyName]
+        if ($null -ne $property -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)) {
+            return [string]$property.Value
+        }
+    }
+
+    $solutionProperty = $Value.PSObject.Properties['solution']
+    if ($null -ne $solutionProperty -and $null -ne $solutionProperty.Value) {
+        if ($solutionProperty.Value -is [string]) {
+            return [string]$solutionProperty.Value
+        }
+
+        foreach ($propertyName in @('path', 'solutionPath')) {
+            $property = $solutionProperty.Value.PSObject.Properties[$propertyName]
+            if ($null -ne $property -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)) {
+                return [string]$property.Value
+            }
+        }
+    }
+
+    $workspaceProperty = $Value.PSObject.Properties['workspace']
+    if ($null -ne $workspaceProperty -and $null -ne $workspaceProperty.Value) {
+        foreach ($propertyName in @('solution', 'solutionPath')) {
+            $property = $workspaceProperty.Value.PSObject.Properties[$propertyName]
+            if ($null -ne $property -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)) {
+                return [string]$property.Value
+            }
+        }
+    }
+
+    return $null
+}
+
 function Invoke-SingleCodexSelectionFlow {
     param(
         [string]$WorkingDirectory,
@@ -1585,19 +1626,21 @@ Begin now.
         $selectionResult = $json.selectionRaw | ConvertFrom-Json -ErrorAction Stop
         $afterHealth = $json.afterRaw | ConvertFrom-Json -ErrorAction Stop
 
-        if ($selectionResult.selectedSolutionPath -ne $SolutionPath) {
-            throw "codex-selection.json reported selectedSolutionPath '$($selectionResult.selectedSolutionPath)' instead of '$SolutionPath'."
+        $selectionSolutionPath = Get-CodexReportedSolutionPath -Value $selectionResult
+        if ($selectionSolutionPath -ne $SolutionPath) {
+            throw "codex-selection.json reported solution path '$selectionSolutionPath' instead of '$SolutionPath'."
         }
 
-        if ($afterHealth.selectedSolutionPath -ne $SolutionPath) {
-            Write-Log "Codex afterRaw did not retain selectedSolutionPath '$SolutionPath'. This model-driven flow will log the mismatch for diagnostics, but the deterministic MCP E2E tests own the strict uno_health contract."
+        $afterSolutionPath = Get-CodexReportedSolutionPath -Value $afterHealth
+        if ($afterSolutionPath -ne $SolutionPath) {
+            Write-Log "Codex afterRaw did not retain solution path '$SolutionPath'. This model-driven flow will log the mismatch for diagnostics, but the deterministic MCP E2E tests own the strict uno_health contract."
             Write-Log "Codex beforeRaw: $($json.beforeRaw)"
             Write-Log "Codex selectionRaw: $($json.selectionRaw)"
             Write-Log "Codex afterRaw: $($json.afterRaw)"
         }
 
         $validationSucceeded = $true
-        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-result.validated' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $afterHealth.status
+        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-result.validated' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details ("solution={0}" -f $afterSolutionPath)
         Write-Log "Codex selection flow validated successfully."
     }
     finally {
