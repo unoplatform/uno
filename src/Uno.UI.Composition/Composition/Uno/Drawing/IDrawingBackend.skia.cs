@@ -46,6 +46,10 @@ internal interface IDrawingBackend
 	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single-frame <see cref="IImageFrames"/>.</summary>
 	IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
 
+	/// <summary>Wraps an already-decoded <see cref="IImage"/> as a single-frame <see cref="IImageFrames"/>, taking
+	/// ownership of the image (disposing the frames releases it).</summary>
+	IImageFrames CreateImageFrames(IImage image);
+
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(
 		Vector2 start,

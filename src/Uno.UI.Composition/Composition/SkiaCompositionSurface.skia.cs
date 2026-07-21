@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,15 +40,11 @@ namespace Microsoft.UI.Composition
 
 		public IImage? Image => FrameProvider?.CurrentImage;
 
-		internal SkiaCompositionSurface(SKImage image)
-		{
-			FrameProvider = FrameProviderFactory.Create(SkiaImageFrames.FromImage(image), null);
-		}
-
-		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG or offscreen) as a surface.</summary>
+		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG, an offscreen snapshot, or raw pixels
+		/// uploaded through the backend) as a surface.</summary>
 		internal SkiaCompositionSurface(IImage image)
-			: this(((SkiaImage)image).Image)
 		{
+			FrameProvider = FrameProviderFactory.Create(DrawingBackend.Current.CreateImageFrames(image), null);
 		}
 
 		private protected override void DisposeInternal()
