@@ -178,9 +178,9 @@ parses encoded bytes → BGRA-premultiplied pixel frames; the backend wraps them
 | PNG | color types 0/2/3/4/6, depths 1–16, all filters, **+ Adam7 interlace** |
 | GIF | LZW, animation (delays/disposal/transparency), interlace |
 | BMP | uncompressed 8/24/32-bit |
-| JPEG | baseline (Huffman/IDCT/YCbCr/restart), EXIF orientation, bilinear chroma |
+| JPEG | **baseline + progressive** (Huffman/IDCT/YCbCr/restart, coefficient-buffer model), EXIF orientation, bilinear chroma |
 | WebP | **lossless (VP8L)**: LZ77 + color cache + meta-Huffman + 4 transforms |
-| _fallback → Skia codec_ | progressive JPEG, WebP lossy (VP8) + animated WebP, TIFF, ICO |
+| _fallback → Skia codec_ | WebP lossy (VP8) + animated WebP, TIFF, ICO |
 
 Validated pixel-perfect (maxDiff=0) vs Skia for PNG/GIF/BMP/VP8L; JPEG within avgDiff ~0.01.
 
@@ -234,8 +234,8 @@ frame cycle. No SkiaSharp type appears on any of these interfaces.
 **Still Skia (the remaining path to fully dropping SkiaSharp):**
 1. **The rasterizer itself** — the default `IDrawingSession`/`RenderOffscreen` pixel work is SkiaSharp. A
    fully Skia-free runtime needs an alternative `IDrawingBackend` that rasterizes (the largest remaining piece).
-2. **Image decode fallbacks** — progressive JPEG, WebP **lossy (VP8)** and animated WebP (both need the
-   ~2000-line RFC 6386 VP8 intra decoder), TIFF, ICO still route to the Skia codec.
+2. **Image decode fallbacks** — WebP **lossy (VP8)** and animated WebP (both need the ~2000-line RFC 6386
+   VP8 intra decoder), TIFF, ICO still route to the Skia codec.
 3. **`SKCanvasElement`/`SvgCanvas`** — intentionally Skia-only (an app-facing "draw with raw Skia" control in
    a separate package); out of scope for core neutrality.
 4. **Transitional internals** — a few backend-internal spots still hand an `SKImage` to the composition
