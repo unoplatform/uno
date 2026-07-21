@@ -201,6 +201,13 @@ public partial class TextBox
 		}
 		_isPressed = false;
 
+		if (!_isSkiaTextBox)
+		{
+			// Touch selection is handled by the native control for the overlay TextBox; the press side
+			// never runs for it, so _lastPointerDown is left uninitialized here.
+			return;
+		}
+
 		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
 		{
 			// Mouse is handled on the PointerPressed side
