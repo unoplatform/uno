@@ -12,7 +12,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <item>Phase 2 (on a vsync/present signal): <see cref="BeginPresent"/> composes a recorded frame onto the target.</item>
 /// </list>
 /// </summary>
-internal interface IRenderBackend
+public interface IRenderBackend
 {
 	/// <summary>Phase 1: begins a frame and returns the session the render cycle records the visual tree into.</summary>
 	ICommandRecorder BeginFrame();

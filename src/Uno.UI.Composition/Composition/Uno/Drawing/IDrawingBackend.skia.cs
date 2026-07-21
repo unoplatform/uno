@@ -21,7 +21,7 @@ namespace Uno.UI.Composition.Drawing;
 /// (geometry today; images, typefaces and shaders later) that cross the backend boundary. Transient draw
 /// configuration (paint) is passed inline on the drawing-session verbs instead of being manufactured here.
 /// </remarks>
-internal interface IDrawingBackend
+public interface IDrawingBackend
 {
 	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
 	IPathBuilder CreatePathBuilder();

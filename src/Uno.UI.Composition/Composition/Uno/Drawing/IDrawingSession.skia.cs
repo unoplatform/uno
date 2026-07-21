@@ -16,7 +16,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Retained-mode concerns (display-list recording/replay, e.g. SkiaSharp's SKPicture) are intentionally
 /// NOT on this interface — they are an implementation detail of the backend behind it.
 /// </remarks>
-internal interface IDrawingSession
+public interface IDrawingSession
 {
 	/// <summary>The current total transform, from the drawing origin to the current coordinate space.</summary>
 	Matrix4x4 TotalMatrix { get; }

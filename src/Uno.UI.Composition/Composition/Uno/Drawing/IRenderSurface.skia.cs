@@ -8,6 +8,6 @@ namespace Uno.UI.Composition.Drawing;
 /// composition passes it through without inspecting it; the Skia backend wraps an <c>SKCanvas</c>,
 /// another backend may wrap a texture, a device context, or any surface it owns.
 /// </summary>
-internal interface IRenderSurface
+public interface IRenderSurface
 {
 }

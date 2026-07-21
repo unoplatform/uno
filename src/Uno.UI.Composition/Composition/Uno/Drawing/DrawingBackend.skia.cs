@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Holds the process-wide <see cref="IDrawingBackend"/>. Defaults to the SkiaSharp backend; a host or
 /// experiment can replace it before the first frame via <see cref="Register"/>.
 /// </summary>
-internal static class DrawingBackend
+public static class DrawingBackend
 {
 	private static IDrawingBackend? _current;
 

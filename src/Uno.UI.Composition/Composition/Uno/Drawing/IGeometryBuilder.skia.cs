@@ -7,7 +7,7 @@ namespace Uno.UI.Composition.Drawing;
 /// a winding rule and a terminal <see cref="Build"/>. Split into two specializations so imperative "pen"
 /// construction and whole-primitive construction can't be interleaved on one builder.
 /// </summary>
-internal interface IGeometryBuilder
+public interface IGeometryBuilder
 {
 	/// <summary>The winding rule baked into the geometry at <see cref="Build"/> time. Defaults to <see cref="GeometryFillRule.NonZero"/>.</summary>
 	GeometryFillRule FillRule { get; set; }

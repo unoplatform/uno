@@ -10,6 +10,6 @@ namespace Uno.UI.Composition.Drawing;
 /// backend stores an <c>SKPicture</c>, another backend may store a texture, a command buffer, or any
 /// metadata it maintains for the recorded content. Composition holds it opaquely and never inspects it.
 /// </summary>
-internal interface IRenderData : IDisposable
+public interface IRenderData : IDisposable
 {
 }

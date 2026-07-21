@@ -9,7 +9,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <see cref="IGeometryBuilder.Build"/>. This is the surface used by path/stream geometries and the
 /// D2D command stream. For whole-shape construction use <see cref="IPrimitiveGeometryBuilder"/> instead.
 /// </summary>
-internal interface IPathBuilder : IGeometryBuilder
+public interface IPathBuilder : IGeometryBuilder
 {
 	void MoveTo(Vector2 point);
 	void LineTo(Vector2 point);

@@ -6,6 +6,6 @@ namespace Uno.UI.Composition.Drawing;
 /// Opaque, backend-created color-filter handle (e.g. an opacity/alpha modulation applied to a paint).
 /// Passed to <see cref="IDrawingSession"/> draw verbs and produced by <see cref="IDrawingBackend"/>.
 /// </summary>
-internal interface IColorFilter
+public interface IColorFilter
 {
 }

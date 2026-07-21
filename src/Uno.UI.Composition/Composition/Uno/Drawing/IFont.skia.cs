@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// become a single filled <see cref="IGeometry"/>; color glyphs (emoji — COLR/CBDT/sbix/SVG) become
 /// positioned images. Font loading and shaping stay backend-internal; this is only the render-time handle.
 /// </summary>
-internal interface IFont
+public interface IFont
 {
 	/// <summary>
 	/// Builds the combined filled outline of the run's outline glyphs (color glyphs are excluded — draw those
@@ -27,4 +27,4 @@ internal interface IFont
 }
 
 /// <summary>A color glyph rasterized to an <see cref="IImage"/>, with the destination rectangle to draw it at.</summary>
-internal readonly record struct PositionedGlyphImage(IImage Image, float X, float Y, float Width, float Height);
+public readonly record struct PositionedGlyphImage(IImage Image, float X, float Y, float Width, float Height);
