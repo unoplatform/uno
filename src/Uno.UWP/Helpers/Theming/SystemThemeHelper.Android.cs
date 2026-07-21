@@ -121,7 +121,7 @@ internal static partial class SystemThemeHelper
 			{
 				_onChanged();
 			}
-			catch (Exception e)
+			catch (Exception e) when (e is ObjectDisposedException or InvalidOperationException)
 			{
 				typeof(SystemThemeHelper).LogError()?.Error("High contrast settings observer failed.", e);
 			}
