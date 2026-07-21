@@ -1,5 +1,6 @@
 #if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 
+using System.Linq;
 using Uno.Helpers.Theming;
 using Uno.UI.Xaml;
 using Windows.UI;
@@ -80,9 +81,9 @@ public partial class UIElement
 			UpdateHighContrastOpacityOverride();
 		}
 
-		for (var i = 0; i < _children.Count; i++)
+		foreach (var child in _children.ToArray())
 		{
-			_children[i].NotifyApplicationHighContrastAdjustmentChangedCore();
+			child.NotifyApplicationHighContrastAdjustmentChangedCore();
 		}
 #endif
 	}

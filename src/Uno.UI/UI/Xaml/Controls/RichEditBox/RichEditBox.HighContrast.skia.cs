@@ -2,10 +2,14 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class RichEditBox : IHighContrastAdjustmentAware
 {
-	protected override void OnApplyTemplate()
+	private protected override void ApplyTemplate(out bool addedVisuals)
 	{
-		base.OnApplyTemplate();
-		UpdateHighContrastBackgroundOverride();
+		base.ApplyTemplate(out addedVisuals);
+
+		if (addedVisuals)
+		{
+			UpdateHighContrastBackgroundOverride();
+		}
 	}
 
 	void IHighContrastAdjustmentAware.OnHighContrastAdjustmentChanged() =>

@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Documents;
 internal readonly struct ParsedText : IParsedText
 {
 	private static readonly SKPaint _spareDrawPaint = new();
-	private static readonly SKPaint _spareBackplatePaint = new();
+	private static readonly SKPaint _spareBackplatePaint = new() { IsAntialias = true };
 	// This is safe as a static field.
 	// 1) It's only accessed from UI thread.
 	// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
@@ -605,8 +605,6 @@ internal readonly struct ParsedText : IParsedText
 				return;
 			}
 
-			_spareBackplatePaint.Reset();
-			_spareBackplatePaint.IsAntialias = true;
 			_spareBackplatePaint.Color = ToSkColor(background, opacity);
 			canvas.DrawRect(
 				new SKRect(
