@@ -9,11 +9,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class WriteableBitmap
 	{
-		private SkiaCompositionSurface _surface;
+		private CompositionImageSurface _surface;
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			_surface ??= new SkiaCompositionSurface();
+			_surface ??= new CompositionImageSurface();
 
 			_surface.CopyPixels(PixelWidth, PixelHeight, _buffer.AsReadOnlyMemory());
 

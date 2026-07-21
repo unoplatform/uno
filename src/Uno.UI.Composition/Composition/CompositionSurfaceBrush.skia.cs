@@ -23,9 +23,9 @@ namespace Microsoft.UI.Composition
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
-			SkiaCompositionSurface { Image: { } img } => new(img.PixelWidth, img.PixelHeight),
+			CompositionImageSurface { Image: { } img } => new(img.PixelWidth, img.PixelHeight),
 			ISkiaSurface skiaSurface => skiaSurface.Size,
-			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: { } img } } => new(img.PixelWidth, img.PixelHeight),
+			ICompositionImageSurfaceProvider { ImageSurface: { Image: { } img } } => new(img.PixelWidth, img.PixelHeight),
 			_ => null
 		};
 
@@ -61,14 +61,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private static bool TryGetSkiaCompositionSurface(ICompositionSurface? surface, [NotNullWhen(true)] out SkiaCompositionSurface? skiaCompositionSurface)
+		private static bool TryGetCompositionImageSurface(ICompositionSurface? surface, [NotNullWhen(true)] out CompositionImageSurface? skiaCompositionSurface)
 		{
-			if (surface is SkiaCompositionSurface scs)
+			if (surface is CompositionImageSurface scs)
 			{
 				skiaCompositionSurface = scs;
 				return true;
 			}
-			else if (surface is ISkiaCompositionSurfaceProvider scsp && scsp.SkiaCompositionSurface is SkiaCompositionSurface scsps)
+			else if (surface is ICompositionImageSurfaceProvider scsp && scsp.ImageSurface is CompositionImageSurface scsps)
 			{
 				skiaCompositionSurface = scsps;
 				return true;
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || Surface is ISkiaSurface;
+		internal override bool CanPaint() => TryGetCompositionImageSurface(Surface, out _) || Surface is ISkiaSurface;
 
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			if (!TryGetSkiaCompositionSurface(Surface, out var scs))
+			if (!TryGetCompositionImageSurface(Surface, out var scs))
 			{
 				return false;
 			}

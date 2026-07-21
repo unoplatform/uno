@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 				var image = SKImage.FromPixelCopy(info, buffer.Pointer, bytesPerRow);
 
-				return ImageData.FromCompositionSurface(new SkiaCompositionSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(image)));
+				return ImageData.FromCompositionSurface(new CompositionImageSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(image)));
 			}
 			catch (Exception error)
 			{

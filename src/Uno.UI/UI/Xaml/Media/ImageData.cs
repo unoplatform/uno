@@ -28,9 +28,9 @@ internal partial struct ImageData
 	}
 
 #if __SKIA__
-	public static ImageData FromCompositionSurface(SkiaCompositionSurface compositionSurface) => new(compositionSurface);
+	public static ImageData FromCompositionSurface(CompositionImageSurface compositionSurface) => new(compositionSurface);
 
-	private ImageData(SkiaCompositionSurface compositionSurface)
+	private ImageData(CompositionImageSurface compositionSurface)
 	{
 		Kind = ImageDataKind.CompositionSurface;
 		CompositionSurface = compositionSurface;
@@ -48,7 +48,7 @@ internal partial struct ImageData
 	public byte[]? ByteArray { get; } = null;
 
 #if __SKIA__
-	public SkiaCompositionSurface? CompositionSurface { get; } = null;
+	public CompositionImageSurface? CompositionSurface { get; } = null;
 #endif
 
 	public override string ToString() =>

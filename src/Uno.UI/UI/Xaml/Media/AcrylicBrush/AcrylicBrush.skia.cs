@@ -167,7 +167,7 @@ public partial class AcrylicBrush
 		{
 			Compositor compositor = Compositor.GetSharedCompositor();
 			CompositionSurfaceBrush surfaceBrush = compositor.CreateSurfaceBrush();
-			SkiaCompositionSurface surface = new SkiaCompositionSurface();
+			CompositionImageSurface surface = new CompositionImageSurface();
 			using Stream? imgStream = GetType().Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
 
 			if (imgStream is not null && surface.LoadFromStream(256, 256, imgStream).success)

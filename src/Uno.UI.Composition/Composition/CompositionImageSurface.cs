@@ -11,9 +11,9 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal partial class SkiaCompositionSurface : ICompositionSurface
+	internal partial class CompositionImageSurface : ICompositionSurface
 	{
-		internal SkiaCompositionSurface()
+		internal CompositionImageSurface()
 		{
 		}
 	}

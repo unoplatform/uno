@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 		private Size _lastMeasuredSize;
-		private SkiaCompositionSurface _currentSurface;
+		private CompositionImageSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 		private ImageData? _pendingImageData;

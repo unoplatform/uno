@@ -70,7 +70,7 @@ public class Given_AcrylicBrush
 		using var snapshot = surface.Snapshot();
 
 		var compositor = Compositor.GetSharedCompositor();
-		using var brush = compositor.CreateSurfaceBrush(new SkiaCompositionSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(snapshot)));
+		using var brush = compositor.CreateSurfaceBrush(new CompositionImageSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(snapshot)));
 		using var visual = compositor.CreateSpriteVisual();
 		visual.Size = new(200, 200);
 		visual.Brush = brush;

@@ -39,7 +39,7 @@ partial class SvgImageSource
 						: (int)Math.Ceiling(managed.SourceSize.Height);
 
 					var svgImage = managed.Render(Math.Max(1, width), Math.Max(1, height));
-					return ImageData.FromCompositionSurface(new SkiaCompositionSurface(svgImage));
+					return ImageData.FromCompositionSurface(new CompositionImageSurface(svgImage));
 				}
 
 				// Fallback: the optional Skia-based add-in (e.g. features the managed engine doesn't yet cover).

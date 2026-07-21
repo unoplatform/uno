@@ -22,11 +22,11 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 	private int _disposed;
 
 	// Note: The Timer will keep holding onto the AnimatedImageFrameProvider until stopped (it's a static root).
-	// But we only stop the timer when we dispose AnimatedImageFrameProvider from SkiaCompositionSurface finalizer.
-	// The onFrameChanged Action is also holding onto SkiaCompositionSurface.
-	// So, if AnimatedImageFrameProvider holds onto onFrameChanged, the SkiaCompositionSurface is never GC'ed.
+	// But we only stop the timer when we dispose AnimatedImageFrameProvider from CompositionImageSurface finalizer.
+	// The onFrameChanged Action is also holding onto CompositionImageSurface.
+	// So, if AnimatedImageFrameProvider holds onto onFrameChanged, the CompositionImageSurface is never GC'ed.
 	// That's why we make it a WeakReference.
-	// Note that SkiaCompositionSurface keeps an unused private field storing onFrameChanged so that it's not GC'ed early.
+	// Note that CompositionImageSurface keeps an unused private field storing onFrameChanged so that it's not GC'ed early.
 	internal AnimatedImageFrameProvider(IImageFrames frames, Action onFrameChanged)
 	{
 		_frames = frames;
