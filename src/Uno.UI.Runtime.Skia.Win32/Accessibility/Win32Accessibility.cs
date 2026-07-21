@@ -1360,7 +1360,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
 			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (
+			ex is System.Runtime.InteropServices.COMException
+				or DllNotFoundException
+				or EntryPointNotFoundException
+				or BadImageFormatException
+				or TypeLoadException
+				or System.Runtime.InteropServices.SEHException)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
