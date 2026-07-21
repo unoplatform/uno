@@ -58,6 +58,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// severed-CCW 0x80070002. Drained once the structure-change flush completes.
 	private readonly HashSet<Win32RawElementProvider> _disconnectedProviders = new(ReferenceEqualityComparer.Instance);
 	private bool _structureChangeFlushQueued;
+	private int _uiaClientsAreListeningFailureLogged;
 
 	// Matches WinUI's AP_BULK_CHILDREN_LIMIT. Within one coalescing window, per container:
 	// if total add+remove exceeds this, collapse to a single ChildrenInvalidated; otherwise a
@@ -136,7 +137,30 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
 	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
-		IsAccessibilityEnabled && Win32UIAutomationInterop.UiaClientsAreListening();
+		IsAccessibilityEnabled && AreUiaClientsListening();
+
+	private bool AreUiaClientsListening()
+	{
+		try
+		{
+			return Win32UIAutomationInterop.UiaClientsAreListening();
+		}
+		catch (Exception error) when (
+			error is DllNotFoundException
+				or EntryPointNotFoundException
+				or BadImageFormatException
+				or TypeLoadException
+				or System.Runtime.InteropServices.SEHException)
+		{
+			if (Interlocked.Exchange(ref _uiaClientsAreListeningFailureLogged, 1) == 0
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("[UIA] Unable to query whether UI Automation clients are listening.", error);
+			}
+
+			return false;
+		}
+	}
 
 	// ──────────────────────────────────────────────────────────────
 	//  Announcements — override base to dispatch at the UIA layer
@@ -435,7 +459,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		if (!Win32UIAutomationInterop.UiaClientsAreListening())
+		if (!AreUiaClientsListening())
 		{
 			return;
 		}
@@ -547,7 +571,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		// Capture the removed child's runtime id BEFORE cleanup — ChildRemoved carries it so a
 		// client can drop exactly that node. Only an already-existing provider is meaningful here.
-		var listening = Win32UIAutomationInterop.UiaClientsAreListening();
+		var listening = AreUiaClientsListening();
 		var existingProvider = listening ? TryGetExistingProviderForElement(child) : null;
 		int[]? childRuntimeId = existingProvider?.GetRuntimeId();
 
@@ -936,7 +960,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
 	{
-		if (!IsAccessibilityEnabled || !Win32UIAutomationInterop.UiaClientsAreListening())
+		if (!IsAccessibilityEnabled || !AreUiaClientsListening())
 		{
 			return;
 		}
@@ -1052,7 +1076,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			TrackFocusedElement(focusedElement);
 		}
 
-		if (!Win32UIAutomationInterop.UiaClientsAreListening())
+		if (!AreUiaClientsListening())
 		{
 			return;
 		}
@@ -1184,7 +1208,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	public override void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (!IsAccessibilityEnabled
-			|| !Win32UIAutomationInterop.UiaClientsAreListening()
+			|| !AreUiaClientsListening()
 			|| string.IsNullOrEmpty(displayString))
 		{
 			return;
@@ -1219,7 +1243,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	public override void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
 		if (!IsAccessibilityEnabled
-			|| !Win32UIAutomationInterop.UiaClientsAreListening()
+			|| !AreUiaClientsListening()
 			|| changedData is null)
 		{
 			// WinUI rejects a null changedData (E_POINTER) without raising; mirror that (no crash).
