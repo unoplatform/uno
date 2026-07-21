@@ -6,6 +6,6 @@
 
 namespace Microsoft.UI.Private.Controls;
 
-internal partial class LayoutsTestHooks
+internal partial class LayoutsTestHooksLinedFlowLayoutItemLockedEventArgs
 {
 }
