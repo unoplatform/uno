@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using Uno;
+using Uno.Helpers.Theming;
 using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
@@ -31,29 +32,26 @@ namespace Windows.UI.ViewManagement
 		/// Gets a value that indicates whether the system high contrast feature is on or off.
 		/// </summary>
 		/// <remarks>
-		/// In Uno Platform this returns the value of <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/>.
-		/// The default is false.
+		/// This reflects the effective platform high-contrast state.
+		/// <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/> can override the platform value.
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HighContrast => WinRTFeatureConfiguration.Accessibility.HighContrast;
+		public bool HighContrast => SystemThemeHelper.IsHighContrast;
 
 		/// <summary>
 		/// Gets the name of the default high contrast color scheme.
 		/// </summary>
 		/// <remarks>
-		/// In Uno Platform this returns the value of <see cref="WinRTFeatureConfiguration.Accessibility.HighContrastScheme"/>.
-		/// The default is "High Contrast Black".
+		/// This reflects the effective platform high-contrast scheme.
+		/// <see cref="WinRTFeatureConfiguration.Accessibility.HighContrastScheme"/> can override the platform value.
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HighContrastScheme => WinRTFeatureConfiguration.Accessibility.HighContrastScheme;
+		public string HighContrastScheme => SystemThemeHelper.HighContrastSchemeName;
 
 		/// <summary>
 		/// Occurs when the system high contrast feature turns on or off.
 		/// </summary>
 		/// <remarks>
-		///	Raised when <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/> changes.
+		/// Raised when the effective platform or overridden high-contrast state changes.
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged;
 
 		internal static void OnHighContrastChanged()
