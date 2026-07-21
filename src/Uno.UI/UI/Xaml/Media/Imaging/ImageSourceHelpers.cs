@@ -81,7 +81,7 @@ internal static partial class ImageSourceHelpers
 							{
 								throw new InvalidOperationException($"{nameof(SKImage)}.{nameof(SKImage.FromPixels)} returned null.");
 							}
-							return ImageData.FromCompositionSurface(new SkiaCompositionSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(image)));
+							return ImageData.FromCompositionSurface(new CompositionImageSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(image)));
 						}
 						catch (Exception e)
 						{
@@ -93,7 +93,7 @@ internal static partial class ImageSourceHelpers
 			}
 		}
 
-		var surface = new SkiaCompositionSurface();
+		var surface = new CompositionImageSurface();
 		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
 
 		if (result.success)

@@ -16,13 +16,13 @@ using System.Threading;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ISkiaCompositionSurfaceProvider
+	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ICompositionImageSurfaceProvider
 	{
 		private double _dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
-		internal SkiaCompositionSurface? InternalSurface;
+		internal CompositionImageSurface? InternalSurface;
 
-		SkiaCompositionSurface? ISkiaCompositionSurfaceProvider.SkiaCompositionSurface => InternalSurface;
+		CompositionImageSurface? ICompositionImageSurfaceProvider.ImageSurface => InternalSurface;
 
 		internal LoadedImageSurface(Action<LoadedImageSurface> loadAction)
 		{
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Media
 
 						if (stream is not null)
 						{
-							var surface = new SkiaCompositionSurface();
+							var surface = new CompositionImageSurface();
 							var (success, _) = surface.LoadFromStream(width, height, stream);
 
 							if (success)
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			var retVal = new LoadedImageSurface((LoadedImageSurface imgSurf) =>
 			{
-				var surface = new SkiaCompositionSurface();
+				var surface = new CompositionImageSurface();
 				var result = surface.LoadFromStream(width, height, stream.AsStream());
 
 				if (result.success)

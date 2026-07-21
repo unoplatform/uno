@@ -16,14 +16,14 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
+	internal partial class CompositionImageSurface : CompositionObject, ICompositionSurface
 	{
 		// Don't set this field directly. Use SetFrameProviderAndOnFrameChanged instead.
 		private IFrameProvider? _frameProvider;
 
 		// Unused: But intentionally kept!
-		// This is here to keep the Action lifetime the same as SkiaCompositionSurface.
-		// i.e, only cause the Action to be GC'ed if SkiaCompositionSurface is GC'ed.
+		// This is here to keep the Action lifetime the same as CompositionImageSurface.
+		// i.e, only cause the Action to be GC'ed if CompositionImageSurface is GC'ed.
 		private Action? _onFrameChanged;
 
 		// Don't set directly. Use SetFrameProviderAndOnFrameChanged instead
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Composition
 
 		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG, an offscreen snapshot, or raw pixels
 		/// uploaded through the backend) as a surface.</summary>
-		internal SkiaCompositionSurface(IImage image)
+		internal CompositionImageSurface(IImage image)
 		{
 			FrameProvider = FrameProviderFactory.Create(DrawingBackend.Current.CreateImageFrames(image), null);
 		}
@@ -94,7 +94,7 @@ namespace Microsoft.UI.Composition
 			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
 		}
 
-		~SkiaCompositionSurface()
+		~CompositionImageSurface()
 		{
 			SetFrameProviderAndOnFrameChanged(null, null);
 		}
