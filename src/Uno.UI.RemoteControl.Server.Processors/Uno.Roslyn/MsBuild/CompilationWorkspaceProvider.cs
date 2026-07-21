@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -93,14 +94,19 @@ public static class CompilationWorkspaceProvider
 		}
 
 		MSBuildWorkspace workspace = null!;
-		var workspaceDiagnostics = new List<WorkspaceDiagnostic>();
+		ConcurrentQueue<WorkspaceDiagnostic> workspaceDiagnostics = null!;
 		var openRetries = 3;
 		var restoreAttempted = false;
 
 		while (true)
 		{
-			workspaceDiagnostics.Clear();
 			workspace = MSBuildWorkspace.Create(globalProperties);
+
+			// Fresh per workspace instance and thread-safe: MSBuildWorkspace raises WorkspaceFailed
+			// from background threads (potentially concurrently), so the buffer is never shared or
+			// cleared across retries while a previous instance's handler might still be firing.
+			var diagnostics = new ConcurrentQueue<WorkspaceDiagnostic>();
+			workspaceDiagnostics = diagnostics;
 
 			workspace.WorkspaceFailed += (_sender, diag) =>
 			{
@@ -109,7 +115,7 @@ public static class CompilationWorkspaceProvider
 				// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
 				// The diagnostics are buffered: when the load leaves a head flavor unresolved they
 				// are the only trace of the root cause and get re-emitted as warnings (below).
-				workspaceDiagnostics.Add(diag.Diagnostic);
+				diagnostics.Enqueue(diag.Diagnostic);
 				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 			};
 
@@ -171,7 +177,7 @@ public static class CompilationWorkspaceProvider
 	private static void ReportUnresolvedHeadFlavors(
 		Solution solution,
 		string projectPath,
-		List<WorkspaceDiagnostic> workspaceDiagnostics,
+		IReadOnlyCollection<WorkspaceDiagnostic> workspaceDiagnostics,
 		IReporter reporter)
 	{
 		var headFlavors = solution.Projects

@@ -20,8 +20,10 @@ internal static class DotnetRestoreRunner
 	private static readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(120);
 
 	/// <summary>
-	/// Restores <paramref name="projectPath"/>. Never throws: failures are reported and
-	/// surface as <see langword="false"/> — the caller decides how to degrade.
+	/// Restores <paramref name="projectPath"/>. Only throws <see cref="OperationCanceledException"/>
+	/// when <paramref name="ct"/> is cancelled — all other failures are reported via
+	/// <paramref name="reporter"/> and surface as <see langword="false"/>, so the caller decides
+	/// how to degrade.
 	/// </summary>
 	internal static async Task<bool> TryRestoreAsync(string projectPath, IReporter reporter, CancellationToken ct, TimeSpan? timeout = null)
 	{
@@ -75,18 +77,19 @@ internal static class DotnetRestoreRunner
 			{
 				await process.WaitForExitAsync(timeoutCts.Token);
 			}
-			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+			catch (OperationCanceledException)
 			{
-				reporter.Warn($"'dotnet restore' timed out after {(timeout ?? _defaultTimeout).TotalSeconds:F0}s; killing it.");
-				try
+				// WaitForExitAsync observed either the caller's token or the timeout — the restore
+				// is still running in both cases. Kill the whole tree (and wait for it to exit) so a
+				// cancelled or timed-out init never orphans a long-running 'dotnet restore'.
+				await KillProcessTreeAsync(process);
+
+				if (ct.IsCancellationRequested)
 				{
-					process.Kill(entireProcessTree: true);
-				}
-				catch
-				{
-					// The process may have exited in the meantime; nothing else to do.
+					throw;
 				}
 
+				reporter.Warn($"'dotnet restore' timed out after {(timeout ?? _defaultTimeout).TotalSeconds:F0}s; killed it.");
 				return false;
 			}
 
@@ -107,6 +110,31 @@ internal static class DotnetRestoreRunner
 		{
 			reporter.Warn($"'dotnet restore' failed to run: {e.Message}");
 			return false;
+		}
+	}
+
+	/// <summary>
+	/// Best-effort kill of the process and its children, then a bounded, uncancellable wait for
+	/// the tree to exit. Swallows every failure (already exited, kill raced with a natural exit,
+	/// or the wait elapsed) — cleanup must never mask the cancellation/timeout being handled.
+	/// </summary>
+	private static async Task KillProcessTreeAsync(Process process)
+	{
+		try
+		{
+			if (process.HasExited)
+			{
+				return;
+			}
+
+			process.Kill(entireProcessTree: true);
+
+			using var reapTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+			await process.WaitForExitAsync(reapTimeout.Token);
+		}
+		catch
+		{
+			// Best effort; nothing actionable if the kill or the bounded wait did not complete.
 		}
 	}
 }
