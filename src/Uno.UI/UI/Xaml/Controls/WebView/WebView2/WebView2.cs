@@ -156,7 +156,14 @@ public partial class WebView2 : Control, IWebView
 		_isClosed = true;
 		var coreWebView2 = _coreWebView2;
 		_coreWebView2 = null;
-		coreWebView2?.Close();
+		if (coreWebView2 is not null)
+		{
+			coreWebView2.NavigationStarting -= CoreWebView2_NavigationStarting;
+			coreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
+			coreWebView2.SourceChanged -= CoreWebView2_SourceChanged;
+			coreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
+			coreWebView2.Close();
+		}
 		(CanGoBack, CanGoForward) = (false, false);
 	}
 

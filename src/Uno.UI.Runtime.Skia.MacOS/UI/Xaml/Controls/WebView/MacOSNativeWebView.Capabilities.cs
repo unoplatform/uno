@@ -131,7 +131,7 @@ internal partial class MacOSNativeWebView :
 			throw new System.NotSupportedException("WKWebView on macOS does not support custom CoreWebView2 PDF print settings.");
 		}
 
-		var tcs = new TaskCompletionSource<byte[]>();
+		var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var gch = GCHandle.Alloc(tcs);
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		NativeUno.uno_webview_print_to_pdf(_webview, GCHandle.ToIntPtr(gch));
@@ -243,13 +243,22 @@ internal partial class MacOSNativeWebView :
 
 	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
 	{
-		await GetPendingCookieMutations();
+		try
+		{
+			await GetPendingCookieMutations();
+		}
+		catch (System.Exception error)
+		{
+			// A faulted prior mutation must not block reads; the queue already logs and continues.
+			this.Log().Error("A pending CoreWebView2 cookie mutation failed before reading cookies.", error);
+		}
+
 		return await GetCookiesCoreAsync(uri, ct);
 	}
 
 	private async Task<IReadOnlyList<CoreWebView2Cookie>> GetCookiesCoreAsync(string uri, CancellationToken ct)
 	{
-		var tcs = new TaskCompletionSource<string?>();
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var gch = GCHandle.Alloc(tcs);
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		NativeUno.uno_webview_get_cookies(_webview, GCHandle.ToIntPtr(gch), uri);

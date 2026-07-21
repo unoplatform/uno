@@ -37,7 +37,13 @@ namespace Microsoft.UI.Xaml.Controls {
 
         static postWebMessage(htmlId: string, payload: string, isJson: boolean): void {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
-            const webview = (iframe.contentWindow as any)?.chrome?.webview;
+            let webview: any;
+            try {
+                // Reading properties of a cross-origin contentWindow throws SecurityError.
+                webview = (iframe.contentWindow as any)?.chrome?.webview;
+            } catch {
+                webview = undefined;
+            }
             if (typeof webview?.__unoDispatchMessage !== "function") {
                 throw new Error("Web messaging is available only to same-origin WebView content on WebAssembly.");
             }

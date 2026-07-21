@@ -47,9 +47,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				return;
 			}
 
-			WebView.CoreWebView2.Settings.UserAgent = null;
-			WebView.CoreWebView2.Reload();
-			UpdateStatus();
+			// CoreWebView2Settings.UserAgent ignores null/empty (matching WinUI), so the User-Agent
+			// cannot be reset to the platform default through this API — recreate the WebView2 instead.
+			StatusText.Text = "Reset-to-default is not supported: Settings.UserAgent ignores null/empty. "
+				+ "Recreate the WebView2 to restore the platform User-Agent.";
 		}
 
 		private async void OnShowClick(object sender, RoutedEventArgs e)
