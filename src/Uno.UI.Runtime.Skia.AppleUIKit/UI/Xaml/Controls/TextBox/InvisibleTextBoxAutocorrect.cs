@@ -1,3 +1,4 @@
+using System;
 using Foundation;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -20,6 +21,6 @@ internal static class InvisibleTextBoxAutocorrect
 		}
 
 		return (int)(range.Location + range.Length) <= currentText.Length
-			&& currentText.Substring((int)range.Location, (int)range.Length) == replacementString;
+			&& currentText.AsSpan((int)range.Location, (int)range.Length).SequenceEqual(replacementString);
 	}
 }
