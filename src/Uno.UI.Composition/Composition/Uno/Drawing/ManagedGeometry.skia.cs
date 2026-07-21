@@ -13,7 +13,7 @@ namespace Uno.UI.Composition.Drawing;
 /// plain arithmetic. Backends that can't consume it natively read <see cref="Contours"/> and rebuild
 /// their own representation (the Skia backend turns them into an SKPath for rasterization).
 /// </summary>
-internal sealed class ManagedGeometry : IGeometry
+internal sealed partial class ManagedGeometry : IGeometry
 {
 	private Rect? _bounds;
 
@@ -109,6 +109,8 @@ internal sealed class ManagedGeometry : IGeometry
 		return Trim(trimStart, trimEnd);
 	}
 
+	// GetStrokeFillGeometry lives in ManagedGeometry.Stroke.skia.cs.
+
 	/// <summary>
 	/// Trims the outline to the arc-length fraction [<paramref name="trimStart"/>, <paramref name="trimEnd"/>]
 	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the
@@ -194,8 +196,6 @@ internal sealed class ManagedGeometry : IGeometry
 
 		return new ManagedGeometry(result, FillRule);
 	}
-
-	public IGeometry GetStrokeFillGeometry(in StrokeStyle style) => throw new NotImplementedException("ManagedGeometry.GetStrokeFillGeometry");
 
 	public void Dispose() { }
 
