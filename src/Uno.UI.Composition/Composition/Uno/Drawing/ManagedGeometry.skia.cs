@@ -98,7 +98,102 @@ internal sealed class ManagedGeometry : IGeometry
 	// Implemented in later parts of the managed-geometry engine.
 	public IGeometry Combine(IGeometry other, GeometryCombineMode mode) => throw new NotImplementedException("ManagedGeometry.Combine");
 
-	public IGeometry GetFilledGeometry(float trimStart, float trimEnd) => throw new NotImplementedException("ManagedGeometry.GetFilledGeometry");
+	public IGeometry GetFilledGeometry(float trimStart, float trimEnd)
+	{
+		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming".
+		if (trimStart == 0f && trimEnd == 0f)
+		{
+			return new ManagedGeometry(Contours, FillRule);
+		}
+
+		return Trim(trimStart, trimEnd);
+	}
+
+	/// <summary>
+	/// Trims the outline to the arc-length fraction [<paramref name="trimStart"/>, <paramref name="trimEnd"/>]
+	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the
+	/// result is a polyline — matching the rendered curve within flattening tolerance.
+	/// </summary>
+	private ManagedGeometry Trim(float trimStart, float trimEnd)
+	{
+		var polylines = new List<(Vector2[] Points, float StartLength)>();
+		var total = 0f;
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Count == 0)
+			{
+				continue;
+			}
+
+			var pts = new List<Vector2> { contour.Start };
+			foreach (var flat in Flatten(contour, includeImplicitClose: contour.Closed))
+			{
+				pts.Add(flat);
+			}
+
+			polylines.Add((pts.ToArray(), total));
+			for (var i = 1; i < pts.Count; i++)
+			{
+				total += Vector2.Distance(pts[i - 1], pts[i]);
+			}
+		}
+
+		var startLen = trimStart * total;
+		var endLen = trimEnd * total;
+		if (total <= 0 || startLen >= endLen)
+		{
+			return new ManagedGeometry(Array.Empty<ManagedContour>(), FillRule);
+		}
+
+		var result = new List<ManagedContour>();
+		foreach (var (points, offset) in polylines)
+		{
+			var kept = new List<Vector2>();
+			var pos = offset;
+			for (var i = 1; i < points.Length; i++)
+			{
+				var a = points[i - 1];
+				var b = points[i];
+				var segLen = Vector2.Distance(a, b);
+				if (segLen <= 0)
+				{
+					continue;
+				}
+
+				var segStart = pos;
+				var segEnd = pos + segLen;
+				// Intersect [segStart, segEnd] with [startLen, endLen].
+				var lo = MathF.Max(segStart, startLen);
+				var hi = MathF.Min(segEnd, endLen);
+				if (lo < hi)
+				{
+					var p0 = Vector2.Lerp(a, b, (lo - segStart) / segLen);
+					var p1 = Vector2.Lerp(a, b, (hi - segStart) / segLen);
+					if (kept.Count == 0)
+					{
+						kept.Add(p0);
+					}
+
+					kept.Add(p1);
+				}
+
+				pos = segEnd;
+			}
+
+			if (kept.Count >= 2)
+			{
+				var segments = new ManagedPathSegment[kept.Count - 1];
+				for (var i = 1; i < kept.Count; i++)
+				{
+					segments[i - 1] = ManagedPathSegment.Line(kept[i]);
+				}
+
+				result.Add(new ManagedContour(kept[0], segments, closed: false));
+			}
+		}
+
+		return new ManagedGeometry(result, FillRule);
+	}
 
 	public IGeometry GetStrokeFillGeometry(in StrokeStyle style) => throw new NotImplementedException("ManagedGeometry.GetStrokeFillGeometry");
 
