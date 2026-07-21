@@ -23,7 +23,7 @@ internal static class DotnetRestoreRunner
 	/// Restores <paramref name="projectPath"/>. Never throws: failures are reported and
 	/// surface as <see langword="false"/> — the caller decides how to degrade.
 	/// </summary>
-	public static async Task<bool> TryRestoreAsync(string projectPath, IReporter reporter, CancellationToken ct, TimeSpan? timeout = null)
+	internal static async Task<bool> TryRestoreAsync(string projectPath, IReporter reporter, CancellationToken ct, TimeSpan? timeout = null)
 	{
 		try
 		{
@@ -32,7 +32,7 @@ internal static class DotnetRestoreRunner
 				// "dotnet" from PATH, environment inherited: the same muxer resolution the
 				// BuildHost uses, so the restored state matches the SDK of the workspace.
 				FileName = "dotnet",
-				WorkingDirectory = Path.GetDirectoryName(projectPath),
+				WorkingDirectory = Path.GetDirectoryName(projectPath) ?? Environment.CurrentDirectory,
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
 				UseShellExecute = false,

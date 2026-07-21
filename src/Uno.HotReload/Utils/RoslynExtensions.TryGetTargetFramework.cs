@@ -112,16 +112,9 @@ public static partial class RoslynExtensions
 	{
 		ArgumentNullException.ThrowIfNull(project);
 
-		foreach (var reference in project.MetadataReferences)
-		{
-			if (reference is PortableExecutableReference { FilePath: { Length: > 0 } path }
-				&& TryParseRefPackPath(path, out _, out _, out _))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return project.MetadataReferences.Any(reference =>
+			reference is PortableExecutableReference { FilePath: { Length: > 0 } path }
+			&& TryParseRefPackPath(path, out _, out _, out _));
 	}
 
 	/// <summary>

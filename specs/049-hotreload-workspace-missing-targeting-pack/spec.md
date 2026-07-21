@@ -96,17 +96,24 @@ When D1 fires on any head flavor:
    - no extra global properties (the restore must reproduce what the app's own build
      restore would do; the workspace-only `UnoIsHotReloadHost` marker is deliberately not
      passed);
-   - bounded by a timeout (default 120 s) and the init `CancellationToken`;
+   - bounded by a timeout — the `DotnetRestoreRunner.TryRestoreAsync` `timeout` parameter,
+     defaulting to 120 s and overridable by callers (integration tests pass a short value) —
+     and the init `CancellationToken`;
    - stdout/stderr relayed at verbose level, one info line for start/outcome.
 3. Re-run `MSBuildWorkspace.Create` + `OpenProjectAsync` (fresh workspace — Roslyn caches
    the design-time build results per workspace instance).
-4. Re-evaluate D1. Recovery is attempted **at most once per init**; the flag lives in the
-   `CreateWorkspaceAsync` retry loop alongside the existing
-   "app build not yet completed" retry.
+4. Re-evaluate D1. Recovery is attempted **at most once per `CreateWorkspaceAsync` call**:
+   the `restoreAttempted` flag is declared *outside* the retry loop, so the separate
+   "app build not yet completed" open-retry path never resets it — once a restore has run,
+   no later loop iteration (an open-retry or the post-restore reopen) can trigger a second.
 
-If the restore process fails to start (no `dotnet`, non-zero exit), log the outcome and
-fall through to D3 with the first workspace re-opened (a failed restore does not abort HR
-init — degraded-but-functional beats dead, same policy as 047).
+Whatever the restore's outcome — clean exit, non-zero exit, timeout, or failure to start
+(no `dotnet` on `PATH`) — the workspace is reopened exactly once (step 3) and D1 is
+re-evaluated against that reopened workspace. A non-zero or aborted restore is treated the
+same as success (its result is not branched on) because a partial restore may still have
+materialized the missing packs; the outcome is only logged. If D1 still fires, init falls
+through to D3 (a failed restore does not abort HR init — degraded-but-functional beats
+dead, same policy as 047).
 
 ### D3 — Actionable diagnostic
 
@@ -130,7 +137,7 @@ failure mode "design-time build failed with MSBuild errors") are logged at Verbo
 `CompilationWorkspaceProvider` and never reach users. Buffer the diagnostics during
 `OpenProjectAsync`; when the loaded solution ends up with any unresolved head flavor
 (D1 signature *or* `TryGetTargetFramework == false`), re-emit the buffered
-`WorkspaceDiagnosticKind.Failure` entries at **Warn** (bounded, e.g. first 10). Nominal
+`WorkspaceDiagnosticKind.Failure` entries at **Warn** (first 10, then drop the rest). Nominal
 loads keep today's quiet behavior.
 
 ### Explicit non-goals
@@ -166,7 +173,7 @@ loads keep today's quiet behavior.
 | `Uno.HotReload/Utils/RoslynExtensions.TryGetTargetFramework.cs` | Expose `HasFrameworkReferences(Project)` (reusing `TryParseRefPackPath`); no behavior change to the resolver itself. |
 | `Uno.HotReload/Utils/RoslynExtensions.TargetFrameworkFiltering.cs` | D3 message enrichment: when flavors are `<unresolved:` **and** carry references without ref packs, the keep-all warning gains the missing-targeting-pack hint (kept coherent with the D3 warning emitted by the provider). |
 | `Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/CompilationWorkspaceProvider.cs` | D1 detection after `OpenProjectAsync`; D2 one-shot restore + reopen inside the existing retry loop; D4 diagnostic buffering/re-emission; D3 warning. |
-| `Uno.UI.RemoteControl.Server.Processors/…` (new) `DotnetRestoreRunner` (or equivalent helper) | Process invocation: muxer resolution mirroring the BuildHost (F5), cwd, timeout, cancellation, output relay. |
+| `Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/DotnetRestoreRunner.cs` (new) | Process invocation: muxer resolution mirroring the BuildHost (F5), cwd, timeout, cancellation, output relay. |
 | `Uno.UI.RemoteControl.Server.Processors/HotReload/ServerHotReloadProcessor.MetadataUpdate.cs` | Unchanged flow; benefits from the recovered workspace. |
 
 ---

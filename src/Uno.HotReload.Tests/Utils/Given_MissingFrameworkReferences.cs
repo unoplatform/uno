@@ -110,7 +110,7 @@ public sealed class Given_MissingFrameworkReferences
 		var headPath = ToOsPath("/src/app/app.csproj");
 		var libPath = ToOsPath("/src/lib/lib.csproj");
 
-		var workspace = new AdhocWorkspace();
+		using var workspace = new AdhocWorkspace();
 		var solution = workspace.CurrentSolution
 			// Healthy head flavor (desktop): SDK-installed ref pack.
 			.AddProject(CreateProjectInfo("app(net10.0-desktop)", headPath,
