@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Windows.Foundation;
+using Windows.Graphics;
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -13,7 +14,7 @@ namespace Uno.UI.Composition.Drawing;
 /// plain arithmetic. Backends that can't consume it natively read <see cref="Contours"/> and rebuild
 /// their own representation (the Skia backend turns them into an SKPath for rasterization).
 /// </summary>
-internal sealed partial class ManagedGeometry : IGeometry
+internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 {
 	private Rect? _bounds;
 
