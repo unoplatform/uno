@@ -9,6 +9,6 @@ namespace Uno.UI.Composition.Drawing;
 /// render cycle composes the recorded frame (via <see cref="IRetainedRenderingSession.Replay"/>) and any
 /// overlay content into it as peer draws, then disposes it to finalize (present) the result onto the surface.
 /// </summary>
-internal interface IPresentSession : IDrawingSession, IRetainedRenderingSession, IDisposable
+public interface IPresentSession : IDrawingSession, IRetainedRenderingSession, IDisposable
 {
 }

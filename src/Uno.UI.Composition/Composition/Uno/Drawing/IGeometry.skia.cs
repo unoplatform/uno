@@ -16,7 +16,7 @@ namespace Uno.UI.Composition.Drawing;
 /// outside of any draw call — hit-testing, for instance, happens with no canvas at all — so it must cross
 /// the backend boundary as a stateful object rather than as inline draw parameters.
 /// </remarks>
-internal interface IGeometry : IDisposable
+public interface IGeometry : IDisposable
 {
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
 	Rect Bounds { get; }

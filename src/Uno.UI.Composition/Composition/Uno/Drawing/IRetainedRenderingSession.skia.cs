@@ -14,7 +14,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Kept off the core <see cref="IDrawingSession"/> so a third-party backend only has to provide the
 /// immediate-mode drawing verbs — retained recording is an implementation choice, not an obligation.
 /// </remarks>
-internal interface IRetainedRenderingSession
+public interface IRetainedRenderingSession
 {
 	/// <summary>
 	/// Begins recording into a nested session whose draw calls are captured as an <see cref="IRenderData"/>

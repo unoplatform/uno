@@ -10,6 +10,6 @@ namespace Uno.UI.Composition.Drawing;
 /// Shaders are expensive to build and are cached by the producing brush across frames, so — like
 /// <see cref="IGeometry"/> — they cross the boundary as handles rather than by value.
 /// </remarks>
-internal interface IShader
+public interface IShader
 {
 }

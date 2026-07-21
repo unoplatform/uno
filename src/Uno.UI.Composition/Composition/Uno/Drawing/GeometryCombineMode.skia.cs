@@ -3,7 +3,7 @@
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>Boolean combination modes for <see cref="IGeometry.Combine"/>.</summary>
-internal enum GeometryCombineMode
+public enum GeometryCombineMode
 {
 	Union,
 	Intersect,

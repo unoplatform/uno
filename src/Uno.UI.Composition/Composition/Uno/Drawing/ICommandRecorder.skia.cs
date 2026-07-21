@@ -9,7 +9,7 @@ namespace Uno.UI.Composition.Drawing;
 /// begin/record/<see cref="Finish"/> command-buffer shape (SKPicture, D3D/Vulkan/WebGPU command buffers), not
 /// specific to any backend.
 /// </summary>
-internal interface ICommandRecorder : IDrawingSession, IRetainedRenderingSession
+public interface ICommandRecorder : IDrawingSession, IRetainedRenderingSession
 {
 	/// <summary>Finishes recording and returns the backend's retained representation of what was drawn.</summary>
 	IRenderData Finish();

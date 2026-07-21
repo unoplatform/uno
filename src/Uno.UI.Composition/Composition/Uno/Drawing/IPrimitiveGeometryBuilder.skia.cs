@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// (so overlaps resolve as even-odd/non-zero across the whole set). For point-by-point construction use
 /// <see cref="IPathBuilder"/> instead.
 /// </summary>
-internal interface IPrimitiveGeometryBuilder : IGeometryBuilder
+public interface IPrimitiveGeometryBuilder : IGeometryBuilder
 {
 	void AddRectangle(Rect rect);
 	void AddRoundedRectangle(Rect rect, float radiusX, float radiusY);
