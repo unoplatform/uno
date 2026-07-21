@@ -95,8 +95,7 @@ internal sealed partial class ManagedGeometry : IGeometry
 		return new ManagedGeometry(transformed, FillRule);
 	}
 
-	// Implemented in later parts of the managed-geometry engine.
-	public IGeometry Combine(IGeometry other, GeometryCombineMode mode) => throw new NotImplementedException("ManagedGeometry.Combine");
+	// Combine lives in ManagedGeometry.Combine.skia.cs.
 
 	public IGeometry GetFilledGeometry(float trimStart, float trimEnd)
 	{
