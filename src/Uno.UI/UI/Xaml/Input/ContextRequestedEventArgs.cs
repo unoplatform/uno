@@ -87,6 +87,14 @@ public partial class ContextRequestedEventArgs : RoutedEventArgs, IHandleableRou
 	internal bool IsTouchInput { get; set; }
 
 	/// <summary>
+	/// Set by a handler that marks the event Handled for a touch-and-hold but does NOT open a context
+	/// menu (e.g. the Skia TextBox iOS caret-drag / Android word-select). It tells ContextMenuProcessor
+	/// not to flag the hold as showing a menu, so a later HoldingState.Canceled won't spuriously raise
+	/// ContextCanceled or close a light-dismiss popup.
+	/// </summary>
+	internal bool PreventContextMenuOnHolding { get; set; }
+
+	/// <summary>
 	/// Sets the global point position. Used internally by ContextMenuProcessor.
 	/// </summary>
 	/// <param name="point">The global point, or (-1, -1) for keyboard invocation.</param>

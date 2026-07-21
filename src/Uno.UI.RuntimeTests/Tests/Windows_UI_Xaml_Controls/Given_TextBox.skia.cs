@@ -5160,6 +5160,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_Android()
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_iOS()
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android handle a touch-and-hold without opening a context menu. Routing it through the
+		// ContextMenuProcessor (the path the Holding gesture uses) must NOT flag the hold as menu-showing;
+		// otherwise a later HoldingState.Canceled (the finger moving during the caret-drag / after word-select)
+		// would spuriously raise ContextCanceled or close a light-dismiss popup the TextBox lives in.
+		private static async Task AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var processor = VisualTree.GetContentRootForElement(SUT)?.InputManager?.ContextMenuProcessor;
+			Assert.IsNotNull(processor);
+			processor.SetIsContextMenuOnHolding(false);
+
+			processor.RaiseContextRequestedEvent(SUT, SUT.GetAbsoluteBoundsRect().GetCenter(), isTouchInput: true);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(processor.IsContextMenuOnHolding, "a mobile touch-and-hold is handled without a context menu, so it must not be flagged as menu-showing");
+		}
+
 		// Native iOS: a touch long-press begins dragging the caret; the caret follows the finger and
 		// no selection is created (no context menu).
 		[TestMethod]
@@ -5202,6 +5235,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionLength);
+			// The capture taken to drag the caret must be released on pointer up, not held past the gesture.
+			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
 		}
 
 		[TestMethod]

@@ -217,6 +217,7 @@ public partial class TextBox
 		if (_touchCaretDrag)
 		{
 			// End the iOS caret-drag; OnPointerMoved has already positioned the caret at the finger.
+			// The framework releases the touch capture on pointer-up, so no explicit release is needed here.
 			_touchCaretDrag = false;
 			return;
 		}
@@ -332,6 +333,9 @@ public partial class TextBox
 			}
 
 			args.Handled = true; // suppress the default context flyout on iOS/Android
+			// We handled the hold without opening a context menu, so don't let a later HoldingState.Canceled
+			// (finger moves during the caret-drag / after word-select) spuriously cancel a non-existent menu.
+			args.PreventContextMenuOnHolding = true;
 			return;
 		}
 

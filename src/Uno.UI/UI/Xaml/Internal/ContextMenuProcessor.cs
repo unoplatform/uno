@@ -93,7 +93,9 @@ internal partial class ContextMenuProcessor
 			uiElement.RaiseEvent(UIElement.ContextRequestedEvent, args);
 		}
 
-		if (args.Handled && isTouchInput)
+		// PreventContextMenuOnHolding: a handler marked the event Handled without showing a menu (e.g. the Skia
+		// TextBox mobile touch conventions), so don't treat the hold as menu-showing.
+		if (args.Handled && isTouchInput && !args.PreventContextMenuOnHolding)
 		{
 			_isContextMenuOnHolding = true;
 		}
