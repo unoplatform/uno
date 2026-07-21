@@ -56,14 +56,17 @@ namespace Microsoft.UI.Composition
 		IGeometry IGeometry.Transform(Matrix3x2 matrix) => Transform(matrix.ToSKMatrix());
 
 		IGeometry IGeometry.Combine(IGeometry other, GeometryCombineMode mode)
-			=> Op((SkiaGeometrySource2D)other, mode switch
+		{
+			using var lease = SkiaGeometryInterop.Lease(other);
+			return new SkiaGeometrySource2D(_geometry.Op(lease.Path, mode switch
 			{
 				GeometryCombineMode.Union => SKPathOp.Union,
 				GeometryCombineMode.Intersect => SKPathOp.Intersect,
 				GeometryCombineMode.Difference => SKPathOp.Difference,
 				GeometryCombineMode.Xor => SKPathOp.Xor,
 				_ => SKPathOp.Union,
-			});
+			}));
+		}
 
 		#endregion
 

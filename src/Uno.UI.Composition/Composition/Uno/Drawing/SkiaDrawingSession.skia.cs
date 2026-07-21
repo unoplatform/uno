@@ -134,7 +134,10 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		=> _canvas.ClipRoundRect(ToSK(roundRect), ToSK(operation), antialias);
 
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
-		=> _canvas.ClipPath(((SkiaGeometrySource2D)geometry).Geometry, ToSK(operation), antialias);
+	{
+		using var lease = SkiaGeometryInterop.Lease(geometry);
+		_canvas.ClipPath(lease.Path, ToSK(operation), antialias);
+	}
 
 	public void Clear(Color color) => _canvas.Clear(color.ToSKColor());
 
@@ -145,11 +148,15 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader, antialias));
 
 	public void DrawPath(IGeometry geometry, Color color, bool antialias)
-		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, FillPaint(color, antialias));
+	{
+		using var lease = SkiaGeometryInterop.Lease(geometry);
+		_canvas.DrawPath(lease.Path, FillPaint(color, antialias));
+	}
 
 	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias)
 	{
-		var skPath = ((SkiaGeometrySource2D)silhouette).Geometry;
+		using var lease = SkiaGeometryInterop.Lease(silhouette);
+		var skPath = lease.Path;
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
 		paint.Color = color.ToSKColor();
@@ -177,7 +184,10 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	}
 
 	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias)
-		=> _canvas.DrawPath(((SkiaGeometrySource2D)geometry).Geometry, StrokePaint(color, strokeWidth, antialias));
+	{
+		using var lease = SkiaGeometryInterop.Lease(geometry);
+		_canvas.DrawPath(lease.Path, StrokePaint(color, strokeWidth, antialias));
+	}
 
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
 		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
