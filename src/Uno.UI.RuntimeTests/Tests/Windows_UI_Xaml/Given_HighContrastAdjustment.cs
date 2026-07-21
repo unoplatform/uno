@@ -27,6 +27,19 @@ public class Given_HighContrastAdjustment
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_HighContrast_Scheme_Is_Read_Repeatedly()
+	{
+		var settings = new AccessibilitySettings();
+		var expected = settings.HighContrastScheme;
+
+		for (var i = 0; i < 100; i++)
+		{
+			Assert.AreEqual(expected, settings.HighContrastScheme);
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Element_Value_Inherits()
 	{
 		var child = new Border();
