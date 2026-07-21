@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI.Composition.Drawing;

@@ -2,10 +2,10 @@
 #nullable enable
 
 using System;
+using SkiaSharp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;

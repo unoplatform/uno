@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;

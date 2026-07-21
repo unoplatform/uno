@@ -10,7 +10,6 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
