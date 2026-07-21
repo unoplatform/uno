@@ -18,7 +18,8 @@ internal static class HealthReportFactory
 		string? upstreamError = null,
 		bool forceRootsFallback = false,
 		bool rootsProvided = false,
-		bool hostRespondedNoMcp = false)
+		bool hostRespondedNoMcp = false,
+		string? latestUnoSdkVersion = null)
 	{
 		var issues = new List<ValidationIssue>();
 
@@ -103,9 +104,29 @@ internal static class HealthReportFactory
 
 		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(discovery));
 
+		var currentUnoSdkVersion = discovery?.UnoSdkVersion;
+		// The recommended-version manifest is for the public Uno.Sdk. Only compare/advise for
+		// Uno.Sdk workspaces — an Uno.Sdk.Private project must not be told to "update" to a
+		// public version it does not track.
+		var isPublicUnoSdk = string.Equals(discovery?.UnoSdkPackage, "Uno.Sdk", StringComparison.OrdinalIgnoreCase);
+		var recommendedUnoSdkVersion = isPublicUnoSdk ? latestUnoSdkVersion : null;
+		var unoSdkUpdateAvailable = SdkManifest.IsNewer(recommendedUnoSdkVersion, currentUnoSdkVersion);
+		if (unoSdkUpdateAvailable)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.UnoSdkUpdateAvailable,
+				Severity = ValidationSeverity.Warning,
+				Message = $"A newer recommended Uno.Sdk is available: {recommendedUnoSdkVersion} (current {currentUnoSdkVersion}).",
+				Remediation = $"Update the \"Uno.Sdk\" version in global.json to {recommendedUnoSdkVersion}, then restart the DevServer.",
+			});
+		}
+
+		// An available SDK update is advisory: it must not, on its own, degrade the health
+		// status of an otherwise-working DevServer, so it is excluded from the Degraded trigger.
 		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
 			? HealthStatus.Unhealthy
-			: issues.Count > 0
+			: issues.Any(i => i.Severity == ValidationSeverity.Warning && i.Code != IssueCode.UnoSdkUpdateAvailable)
 				? HealthStatus.Degraded
 				: HealthStatus.Healthy;
 
@@ -125,7 +146,10 @@ internal static class HealthReportFactory
 			HostEndpoint = hostEndpoint,
 			UpstreamConnected = upstreamConnected,
 			ToolCount = toolCount,
-			UnoSdkVersion = discovery?.UnoSdkVersion,
+			UnoSdkPackage = discovery?.UnoSdkPackage,
+			UnoSdkVersion = currentUnoSdkVersion,
+			LatestUnoSdkVersion = recommendedUnoSdkVersion,
+			UnoSdkUpdateAvailable = unoSdkUpdateAvailable,
 			DiscoveryDurationMs = discovery?.DiscoveryDurationMs ?? 0,
 			ConnectionState = connectionState,
 			DiscoveredSolutions = discoveredSolutions,
