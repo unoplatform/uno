@@ -1123,8 +1123,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			(byte)(color.A * opacity));
 
 	private static bool CanMergeHighContrastBackplates(SKRect current, SKRect next) =>
-		current.Top == next.Top
-		&& current.Bottom == next.Bottom
+		Math.Abs(current.Top - next.Top) <= 1f
+		&& Math.Abs(current.Bottom - next.Bottom) <= 1f
 		&& next.Left <= current.Right + 1
 		&& next.Right >= current.Left - 1;
 

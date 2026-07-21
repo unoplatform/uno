@@ -17,8 +17,8 @@ namespace Uno.Helpers.Theming {
 		}
 
 		public static getHighContrast(): boolean {
-			return window.matchMedia?.("(prefers-contrast: more)").matches === true
-				|| window.matchMedia?.("(forced-colors: active)").matches === true;
+			return window.matchMedia?.("(prefers-contrast: more)")?.matches === true
+				|| window.matchMedia?.("(forced-colors: active)")?.matches === true;
 		}
 
 		public static observeSystemTheme() {
@@ -46,12 +46,14 @@ namespace Uno.Helpers.Theming {
 				}
 			}
 
-			window.matchMedia?.("(prefers-contrast: more)").addEventListener("change", () => {
-				SystemThemeHelper.dispatchHighContrastChange();
-			});
-			window.matchMedia?.("(forced-colors: active)").addEventListener("change", () => {
-				SystemThemeHelper.dispatchHighContrastChange();
-			});
+			if (window.matchMedia) {
+				window.matchMedia("(prefers-contrast: more)").addEventListener("change", () => {
+					SystemThemeHelper.dispatchHighContrastChange();
+				});
+				window.matchMedia("(forced-colors: active)").addEventListener("change", () => {
+					SystemThemeHelper.dispatchHighContrastChange();
+				});
+			}
 		}
 	}
 }
