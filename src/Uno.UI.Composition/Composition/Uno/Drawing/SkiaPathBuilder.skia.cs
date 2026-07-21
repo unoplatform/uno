@@ -56,9 +56,11 @@ internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 	public void AddEllipse(Vector2 center, float radiusX, float radiusY)
 		=> _builder.AddOval(new SKRect(center.X - radiusX, center.Y - radiusY, center.X + radiusX, center.Y + radiusY));
 
-	// The backend owns its geometry representation, so unwrapping to SKPath here is legitimate.
 	public void AddGeometry(IGeometry geometry)
-		=> _builder.AddPath(((SkiaGeometrySource2D)geometry).Geometry, SKPathAddMode.Append);
+	{
+		using var lease = SkiaGeometryInterop.Lease(geometry);
+		_builder.AddPath(lease.Path, SKPathAddMode.Append);
+	}
 
 	public void Close() => _builder.Close();
 
