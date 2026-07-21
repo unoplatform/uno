@@ -103,7 +103,9 @@ public partial class AutomationProperties
 			"FlowsFrom",
 			typeof(IList<DependencyObject>),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(IList<DependencyObject>)));
+			new FrameworkPropertyMetadata(
+				default(IList<DependencyObject>),
+				OnFlowsFromChanged));
 
 	/// <summary>
 	/// Identifies the FlowsTo attached property, which indicates the next elements in the reading order.

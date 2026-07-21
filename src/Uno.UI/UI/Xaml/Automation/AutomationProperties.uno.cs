@@ -134,6 +134,13 @@ public sealed partial class AutomationProperties
 			AutomationElementIdentifiers.DescribedByProperty,
 			args);
 
+	private static void OnFlowsFromChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
+		OnRelationshipPropertyChanged(
+			dependencyObject,
+			FlowsFromProperty,
+			AutomationElementIdentifiers.FlowsFromProperty,
+			args);
+
 	private static void OnFlowsToChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
 		OnRelationshipPropertyChanged(
 			dependencyObject,
