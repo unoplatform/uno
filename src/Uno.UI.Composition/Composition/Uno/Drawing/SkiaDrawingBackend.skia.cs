@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
@@ -11,6 +12,11 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>The default <see cref="IDrawingBackend"/>, backed by SkiaSharp.</summary>
 internal sealed class SkiaDrawingBackend : IDrawingBackend
 {
+	// Self-registers when this assembly loads, so the core never news-up a concrete backend. When the
+	// Skia backend becomes a separate assembly, this travels with it and registers on that assembly's load.
+	[ModuleInitializer]
+	internal static void Register() => DrawingBackend.Register(new SkiaDrawingBackend());
+
 	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();
 
