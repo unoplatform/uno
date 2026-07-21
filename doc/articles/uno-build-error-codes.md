@@ -168,6 +168,7 @@ Solution: Move your Uno solution/project(s) to a different location, one that is
 The DevServer package (Uno.WinUI.DevServer or Uno.UI.DevServer) is intended for development builds only and provides features such as Hot Reload and Remote Control debugging. These features should not be included in optimized/release builds.
 
 To fix this issue:
+
 - If you're building for release, remove the `PackageReference` to `Uno.WinUI.DevServer` or `Uno.UI.DevServer` from your project file
 - If you need to keep the package reference, set `<Optimize>false</Optimize>` in your project configuration
 - Consider using conditional package references that only include DevServer in Debug configuration:
