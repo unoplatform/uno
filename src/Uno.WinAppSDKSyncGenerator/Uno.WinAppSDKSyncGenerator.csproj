@@ -25,7 +25,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Basic.Reference.Assemblies.Net100" />
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.9" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 	</ItemGroup>
