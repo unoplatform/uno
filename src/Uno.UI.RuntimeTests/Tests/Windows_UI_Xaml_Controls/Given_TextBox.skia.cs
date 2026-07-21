@@ -2111,7 +2111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
-			Assert.AreEqual(SUT.Text.Substring(2, 4), await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(SUT.Text.Substring(2, 4), await ClipboardHelper.WaitForTextAsync(SUT.Text.Substring(2, 4)));
 			Assert.AreEqual(2, SUT.SelectionStart);
 			Assert.AreEqual(4, SUT.SelectionLength);
 
@@ -2174,7 +2174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
-			Assert.AreEqual("llo ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("llo ", await ClipboardHelper.WaitForTextAsync("llo "));
 			Assert.AreEqual("Heworld", SUT.Text);
 			Assert.AreEqual(2, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
@@ -3096,7 +3096,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Hello ", await ClipboardHelper.WaitForTextAsync("Hello "));
 		}
 
 		[TestMethod]
