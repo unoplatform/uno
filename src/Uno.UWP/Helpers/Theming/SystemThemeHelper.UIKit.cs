@@ -24,9 +24,9 @@ internal static partial class SystemThemeHelper
 
 	static partial void ObserveThemeChangesPlatform()
 	{
-		_darkerSystemColorsChangedObserver ??= NSNotificationCenter.DefaultCenter.AddObserver(
-			UIApplication.DarkerSystemColorsStatusDidChangeNotification,
-			_ => UIApplication.SharedApplication.BeginInvokeOnMainThread(RefreshHighContrast));
+		_darkerSystemColorsChangedObserver ??=
+			UIApplication.Notifications.ObserveDarkerSystemColorsStatusDidChange(
+				(_, _) => UIApplication.SharedApplication.BeginInvokeOnMainThread(RefreshHighContrast));
 	}
 
 	static partial void GetIsHighContrastEnabledPlatform(ref bool result)

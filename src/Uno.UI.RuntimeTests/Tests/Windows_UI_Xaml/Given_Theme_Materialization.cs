@@ -9,7 +9,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
+#if HAS_UNO
 using Uno.Helpers.Theming;
+#endif
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
