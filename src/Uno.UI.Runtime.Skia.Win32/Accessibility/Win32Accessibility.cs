@@ -48,7 +48,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		Win32RawElementProvider? Child,
 		StructureChangeKind Kind,
 		int[]? ChildRuntimeId,
-		StructureChangeType? ExplicitType = null);
+		StructureChangeType? ExplicitType = null,
+		UIElement? Element = null);
 	private readonly List<PendingStructureChange> _pendingStructureChanges = new();
 	private readonly HashSet<Win32RawElementProvider> _pendingAddedProviders = new(ReferenceEqualityComparer.Instance);
 	// Strong references to just-invalidated providers. Keeps their COM-callable
@@ -137,7 +138,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
 	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
-		IsAccessibilityEnabled && AreUiaClientsListening();
+		IsAccessibilityEnabled
+		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());
 
 	private bool AreUiaClientsListening()
 	{
@@ -464,12 +466,30 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		if (TryCancelPendingRemoval(ancestorProvider, child))
+		{
+			// Removal disconnects the old provider before the batch is flushed, so the pair cannot
+			// become a silent no-op. Collapse it to one refresh signal: UIA drops the stale runtime id
+			// and re-queries the re-added element without observing a transient remove/add pair.
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null));
+			return;
+		}
+
 		// If UIA has not materialized any provider between the changed parent and the root, there
 		// is no specific accessible container to update. Keep the root-level signal coarse instead
 		// of eagerly creating peers for every element added anywhere in the app.
 		if (ReferenceEquals(ancestorProvider, _rootProvider))
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 			return;
 		}
 
@@ -478,7 +498,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var childProvider = GetOrCreateProvider(child);
 		if (childProvider is not null)
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, childProvider, StructureChangeKind.Added, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				childProvider,
+				StructureChangeKind.Added,
+				null,
+				Element: child));
 			return;
 		}
 
@@ -493,13 +518,41 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			foreach (var provider in entering)
 			{
-				QueueStructureChange(new PendingStructureChange(ancestorProvider, provider, StructureChangeKind.Added, null));
+				QueueStructureChange(new PendingStructureChange(
+					ancestorProvider,
+					provider,
+					StructureChangeKind.Added,
+					null,
+					Element: child));
 			}
 		}
 		else
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 		}
+	}
+
+	private bool TryCancelPendingRemoval(Win32RawElementProvider container, UIElement child)
+	{
+		for (var i = _pendingStructureChanges.Count - 1; i >= 0; i--)
+		{
+			var pending = _pendingStructureChanges[i];
+			if (pending.ExplicitType is null
+				&& ReferenceEquals(pending.Container, container)
+				&& ReferenceEquals(pending.Element, child)
+				&& pending.Kind is StructureChangeKind.Removed or StructureChangeKind.Invalidated)
+			{
+				_pendingStructureChanges.RemoveAt(i);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
@@ -608,8 +661,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		QueueStructureChange(childRuntimeId is not null
-			? new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Removed, childRuntimeId)
-			: new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			? new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Removed,
+				childRuntimeId,
+				Element: child)
+			: new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 	}
 
 	/// <summary>
@@ -642,7 +705,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 					null,
 					null);
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (
+				ex is System.Runtime.InteropServices.COMException
+					or DllNotFoundException
+					or EntryPointNotFoundException
+					or BadImageFormatException
+					or TypeLoadException
+					or System.Runtime.InteropServices.SEHException)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{

@@ -2037,6 +2037,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	// that differs from the base routing pattern.
 	protected override void NotifyPropertyChangedEventCore(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
 			TryGetPeerOwner(peer, out var element))
 		{

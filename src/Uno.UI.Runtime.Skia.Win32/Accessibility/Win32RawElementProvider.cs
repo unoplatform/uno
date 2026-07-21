@@ -61,8 +61,10 @@ internal class Win32RawElementProvider :
 		_isVirtualPeer = isVirtualPeer;
 		_accessibility = accessibility;
 		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
-		_runtimeId = Interlocked.Increment(ref _nextRuntimeId);
+		_runtimeId = GetNextRuntimeId();
 	}
+
+	private static int GetNextRuntimeId() => Interlocked.Increment(ref _nextRuntimeId);
 
 	internal bool RepresentsPeer(AutomationPeer peer)
 		=> ReferenceEquals(GetAutomationPeer(), peer);
@@ -315,7 +317,7 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_ClickablePointPropertyId => GetClickablePoint(peer),
 
 				// State
-				Win32UIAutomationInterop.UIA_IsEnabledPropertyId => peer?.IsEnabled() ?? (ConnectedOwner is Control c ? c.IsEnabled : true),
+				Win32UIAutomationInterop.UIA_IsEnabledPropertyId => peer?.IsEnabled() ?? (ConnectedOwner is not Control c || c.IsEnabled),
 				Win32UIAutomationInterop.UIA_IsKeyboardFocusablePropertyId => peer?.IsKeyboardFocusable() ?? false,
 				Win32UIAutomationInterop.UIA_HasKeyboardFocusPropertyId => peer?.HasKeyboardFocus() ?? false,
 				Win32UIAutomationInterop.UIA_IsOffscreenPropertyId => peer?.IsOffscreen() ?? false,

@@ -194,7 +194,8 @@ internal static class AccessibilityRouter
 		{
 			foreach (var pair in XamlRootMap.Enumerate())
 			{
-				if (pair.Value is IAccessibilityOwner { Accessibility: { IsAccessibilityEnabled: true } })
+				if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility }
+					&& accessibility.ListenerExistsHelper(eventId))
 				{
 					return true;
 				}
