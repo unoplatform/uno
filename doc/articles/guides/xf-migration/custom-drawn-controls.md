@@ -34,7 +34,7 @@ Because of this, you probably don't need to change any of the SkiaSharp drawing 
 2. Hook up the drawing logic from your Xamarin.Forms control
 
 > [!NOTE]
-> While `SKXamlCanvas` is the most straightforward option for migrating existing Xamarin.Forms controls (because its API closely matches `SKCanvasView`), the Uno Platform documentation recommends using `SKCanvasElement` on Skia-based targets when possible. `SKCanvasElement` is designed for Uno's Skia renderers, providing hardware acceleration and avoiding additional buffer copies, which can improve performance on platforms such as WebAssembly, Skia GTK, and Skia WPF.
+> While `SKXamlCanvas` is the most straightforward option for migrating existing Xamarin.Forms controls (because its API closely matches `SKCanvasView`), the Uno Platform documentation recommends using `SKCanvasElement` on Skia-based targets when possible. `SKCanvasElement` is designed for Uno's Skia renderers, providing hardware acceleration and avoiding additional buffer copies, which can improve performance on platforms such as WebAssembly and Skia Desktop.
 
 ## Migration Example: Microcharts
 
@@ -329,7 +329,7 @@ using (var paint = new SKPaint())
 The Microcharts.Samples.Uno project demonstrates how to use Microcharts in an Uno Platform app. The project structure:
 
 - **Shared project**: Contains XAML and code-behind for the app
-- **Platform projects**: Windows, Mobile, Skia.GTK, WebAssembly
+- **Platform projects**: Windows, Mobile, Skia Desktop, WebAssembly
 - **Samples project**: Contains example data used by all sample projects
 
 This shows how easy it is to share or port code between different .NET platforms, as all the logic is platform-agnostic.

@@ -190,7 +190,7 @@ The method `InitializeComponent` should always be called in class constructor. A
 Some components like `ProgressRing` and `MediaPlayerElement` requires you to reference a specific NuGet package for them to work correctly.
 
 - For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
-- For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
+- For `MediaPlayerElement` on WebAssembly or Skia Desktop, it requires the matching NuGet package: `Uno.WinUI.MediaPlayer.WebAssembly`, `Uno.WinUI.MediaPlayer.Skia.Win32`, or `Uno.WinUI.MediaPlayer.Skia.X11`. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
 
 ### UNO0008
 
