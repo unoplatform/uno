@@ -66,7 +66,7 @@ public class X11NativeWebView : INativeWebView
 	private static extern IntPtr gdk_x11_window_get_xid(IntPtr window);
 
 	[DllImport("libgdk-3.so", CallingConvention = CallingConvention.Cdecl)]
-	private static extern void gdk_x11_window_set_frame_sync_enabled(IntPtr window, bool frameSyncEnabled);
+	private static extern void gdk_x11_window_set_frame_sync_enabled(IntPtr window, int frameSyncEnabled);
 
 	static X11NativeWebView()
 	{
@@ -182,7 +182,7 @@ public class X11NativeWebView : INativeWebView
 			// therefore WebKit) stops painting entirely, leaving the webview blank.
 			try
 			{
-				gdk_x11_window_set_frame_sync_enabled(_window.Window.Handle, false);
+				gdk_x11_window_set_frame_sync_enabled(_window.Window.Handle, /* False */ 0);
 			}
 			catch (EntryPointNotFoundException e) // GTK < 3.8
 			{
