@@ -8,6 +8,7 @@ using Uno.HotReload.IO;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using IdeFileEdit = Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload.FileEdit;
 
 namespace Uno.UI.RemoteControl.Host.HotReload;
 
@@ -55,7 +56,7 @@ internal sealed class IdeFileUpdater(
 			var message = new UpdateFileRequestIdeMessage(
 				nextIdeCorrelationId(),
 				request.RequestId,
-				[.. writes.Select(x => new FileEdit(x.edit.FilePath, x.edit.OldText, x.edit.NewText, x.edit.IsCreateDeleteAllowed))],
+				[.. writes.Select(x => new IdeFileEdit(x.edit.FilePath, x.edit.OldText, x.edit.NewText, x.edit.IsCreateDeleteAllowed))],
 				request.ForceSaveOnDisk,
 				request.IsForceHotReloadDisabled,
 				request.ForceHotReloadDelay,

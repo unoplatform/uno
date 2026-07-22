@@ -71,7 +71,7 @@ Why not reuse the existing concrete `UpdateFileRequest` directly: it is an `IMes
 visible to `Messaging` through the **linked-source mechanism already used for exactly this**
 (`IUpdateFileRequest.cs` / `FileEdit.cs` compile into both `Uno.HotReload` and
 `Uno.UI.RemoteControl` behind `#if UNO_HOTRELOAD` today — the same link is added to
-`Messaging`; namespace unification to be settled at implementation, serializer support for
+`Messaging` under its own namespace, see the implementation notes; serializer support for
 the nested records to be verified with `IdeMessageSerializer`).
 
 The legacy `UpdateFileIdeMessage` and `ForceHotReloadIdeMessage` records are kept (F7 makes
@@ -227,14 +227,20 @@ Deltas vs. the design above (first implementation pass):
   correlated message; introducing the typed `UpdateFileResponseIdeMessage` (per-file results) requires
   generalizing that plumbing and is deferred to a follow-up. `IdeFileUpdater` maps the
   single ack onto uniform per-edit results.
-- **The shared contracts are single-sourced in `Uno.UI.RemoteControl.Messaging`, in the
-  engine namespace `Uno.HotReload.IO`** (review decision: the RC namespace is legacy):
-  `IUpdateFileRequest`/`FileEdit`/`FileEditResult`/`FileUpdateResult` compile ONLY into
-  Messaging (`UNO_RC_MESSAGING` branch of the existing `#if UNO_HOTRELOAD` dance) and
-  `Uno.HotReload` now references Messaging instead of compiling its own copies — one real
-  type shared by the engine, the dev-server and the IDE (no duplicate-type aliasing, and the
-  engine↔IDE edit mapping disappears entirely). Note: the `Uno.HotReload` package now
-  depends on `Uno.WinUI.DevServer.Messaging`.
+- **The shared contracts stay dual-compiled (linked sources), each assembly under its own
+  namespace**: `IUpdateFileRequest`/`FileEdit`/`FileEditResult`/`FileUpdateResult` compile
+  into `Uno.HotReload` as `Uno.HotReload.IO` and into `Uno.UI.RemoteControl.Messaging` as
+  `Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload` (`UNO_RC_MESSAGING` branch of the
+  existing `#if UNO_HOTRELOAD` dance); `IdeFileUpdater` maps the engine edits onto the
+  Messaging `FileEdit` when building the batch. Two alternatives were rejected: *the same
+  namespace in both assemblies* — `Server.Processors` references both (Messaging comes
+  transitively with the IDE-channel types), so identical fully-qualified names are a CS0433
+  storm that `extern alias` cannot fix (aliasing de-globalizes unrelated Messaging types
+  used everywhere, and linked shared sources cannot carry per-project aliases); and
+  *single-sourcing the contracts in Messaging with `Uno.HotReload` referencing it* —
+  `Uno.HotReload.dll` must remain a standalone, dependency-free assembly because it is
+  consumed through raw `<Reference>`/HintPath without NuGet dependency resolution (e.g.
+  studio-live).
 - **Escape hatch (R8)**: server configuration `hot-reload-ide-updater=false` restores the
   legacy per-file `UpdateFileIdeMessage` + `IDEFileEditor` composition (kept compiled).
 - **F9 refinement**: the `Microsoft.VisualStudio.SDK` meta-package does **not** provide

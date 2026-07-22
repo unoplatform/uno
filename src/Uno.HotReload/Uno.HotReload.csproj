@@ -16,11 +16,15 @@
 	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
-		<!-- The file-update contracts (IUpdateFileRequest, FileEdit, FileEditResult, FileUpdateResult)
-		     are compiled once into Uno.UI.RemoteControl.Messaging (namespace Uno.HotReload.IO) and
-		     consumed from there, so the engine, the dev-server and the IDE share the same types (spec 052). -->
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfoHelper.cs" />
+		<!-- The file-update contracts are dual-compiled by design: linked here under Uno.HotReload.IO
+		     and into Uno.UI.RemoteControl.Messaging under ...Messaging.IdeChannel.HotReload (spec 052).
+		     Do NOT replace these links with a reference to the Messaging assembly: Uno.HotReload.dll is
+		     consumed as a standalone, dependency-free assembly (raw HintPath references, e.g. studio-live). -->
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" Link="IO\IUpdateFileRequest.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" Link="IO\FileEdit.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" Link="IO\FileEditResult.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileUpdateResult.cs" Link="IO\FileUpdateResult.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

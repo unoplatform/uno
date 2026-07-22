@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
-using Uno.HotReload.IO;
+using Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload;
 
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
