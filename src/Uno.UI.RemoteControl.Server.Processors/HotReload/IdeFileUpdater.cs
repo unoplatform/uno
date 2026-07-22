@@ -3,6 +3,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.HotReload.Info;
 using Uno.HotReload.IO;
 using Uno.HotReload.Tracking;
@@ -62,7 +64,17 @@ internal sealed class IdeFileUpdater(
 				request.ForceHotReloadDelay,
 				request.ForceHotReloadAttempts);
 
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation($"Forwarding batched update #{message.CorrelationId} to the IDE: {writes.Length} edit(s) of request {request.RequestId}.");
+			}
+
 			var (isSuccess, error) = await sendToIde(message);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation($"IDE acknowledged batched update #{message.CorrelationId}: success={isSuccess}{(error is null ? "" : $", error={error}")}.");
+			}
 
 			foreach (var (edit, index) in writes)
 			{

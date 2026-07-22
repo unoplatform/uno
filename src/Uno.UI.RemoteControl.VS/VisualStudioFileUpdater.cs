@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
+using RoslynCompilation = Microsoft.CodeAnalysis.Compilation;
 using RoslynProjectId = Microsoft.CodeAnalysis.ProjectId;
 using RoslynSolution = Microsoft.CodeAnalysis.Solution;
 using Task = System.Threading.Tasks.Task;
@@ -41,6 +42,8 @@ internal sealed class VisualStudioFileUpdater(
 	{
 		try
 		{
+			debug($"BatchUpdate #{request.CorrelationId}: received {request.Edits.Length} edit(s) for request {request.RequestId}.");
+
 			var createdFiles = new List<string>();
 			var deferredSaves = new List<Document>();
 
@@ -66,6 +69,8 @@ internal sealed class VisualStudioFileUpdater(
 					deferredSaves.Add(openDocument);
 				}
 			}
+
+			debug($"BatchUpdate #{request.CorrelationId}: edits applied ({createdFiles.Count} created file(s), {deferredSaves.Count} deferred save(s)); acknowledging{(request.IsForceHotReloadDisabled ? "" : " and scheduling the readiness-gated hot reload")}.");
 
 			// Ack once the writes are applied: the readiness wait and the hot-reload trigger run
 			// asynchronously, and their outcome flows through the hot-reload operation channel.
@@ -174,8 +179,10 @@ internal sealed class VisualStudioFileUpdater(
 	{
 		try
 		{
+			var stopwatch = Stopwatch.StartNew();
 			if (createdFiles.Count > 0)
 			{
+				debug($"BatchUpdate: waiting for workspace readiness ({createdFiles.Count} created file(s))...");
 				await WaitForWorkspaceReadinessAsync(createdFiles, TimeSpan.FromSeconds(10), ct);
 			}
 
@@ -195,6 +202,7 @@ internal sealed class VisualStudioFileUpdater(
 
 			// Programmatically trigger the "Apply Code Changes" command in Visual Studio,
 			// which will trigger the hot reload (same mechanics as ForceHotReloadIdeMessage).
+			debug($"BatchUpdate: triggering Debug.ApplyCodeChanges (readiness + deferred saves took {stopwatch.ElapsedMilliseconds} ms).");
 			dte.ExecuteCommand("Debug.ApplyCodeChanges");
 		}
 		catch (Exception e)
@@ -204,11 +212,14 @@ internal sealed class VisualStudioFileUpdater(
 	}
 
 	/// <summary>
-	/// Waits until the VS Roslyn workspace can compile the change-set containing
-	/// <paramref name="createdFiles"/>: the files must be integrated by the project system
-	/// (Document / AdditionalDocument) and the source generators of every touched project must
-	/// have produced their outputs (forced through <c>GetCompilationAsync</c> — the materialized
-	/// outputs are cached on the snapshot the subsequent EnC evaluation reuses).
+	/// Waits until the VS Roslyn workspace can actually compile the change-set containing
+	/// <paramref name="createdFiles"/>. Being known to the project system is NOT enough: a
+	/// created .xaml can be listed as AdditionalDocument before its item metadata is complete,
+	/// in which case the XAML generator silently skips it and EnC evaluates a compilation
+	/// without the generated partial (CS1061 on InitializeComponent). Readiness therefore
+	/// requires the EFFECT of every created file in a fresh compilation of every project
+	/// containing it (multi-TFM ⇒ all heads): a source file must contribute its syntax tree,
+	/// a .xaml must have produced its per-file generated output.
 	/// Bounded by <paramref name="timeout"/>; on expiry the caller proceeds anyway.
 	/// </summary>
 	private async Task WaitForWorkspaceReadinessAsync(List<string> createdFiles, TimeSpan timeout, CancellationToken ct)
@@ -221,52 +232,90 @@ internal sealed class VisualStudioFileUpdater(
 		}
 
 		var stopwatch = Stopwatch.StartNew();
-
-		// 1) Wait for the created files to be integrated by the project system.
 		while (stopwatch.Elapsed < timeout)
 		{
-			if (createdFiles.All(file => IsKnownToSolution(workspace.CurrentSolution, file)))
+			ct.ThrowIfCancellationRequested();
+
+			if (await AreCreatedFilesEffectiveAsync(workspace.CurrentSolution, createdFiles, timeout - stopwatch.Elapsed, ct))
 			{
-				break;
+				debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms.");
+				return;
 			}
 
 			await Task.Delay(100, ct);
 		}
 
-		// 2) Force the source generators to run on every touched project (multi-TFM projects
-		//    yield several Roslyn projects — all of them are processed).
-		var solution = workspace.CurrentSolution;
-		foreach (var projectId in createdFiles.SelectMany(file => GetProjectsContaining(solution, file)).Distinct().ToList())
+		debug($"Workspace readiness timed out after {timeout}; triggering hot reload anyway.");
+	}
+
+	private static async Task<bool> AreCreatedFilesEffectiveAsync(RoslynSolution solution, List<string> createdFiles, TimeSpan budget, CancellationToken ct)
+	{
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		cts.CancelAfter(budget);
+
+		try
 		{
-			if (stopwatch.Elapsed >= timeout)
+			var compilations = new Dictionary<RoslynProjectId, RoslynCompilation?>();
+			foreach (var file in createdFiles)
 			{
-				break;
+				var projectIds = GetProjectsContaining(solution, file).Distinct().ToList();
+				if (projectIds.Count == 0)
+				{
+					// Not integrated by the project system yet.
+					return false;
+				}
+
+				foreach (var projectId in projectIds)
+				{
+					if (!compilations.TryGetValue(projectId, out var compilation))
+					{
+						compilation = solution.GetProject(projectId) is { } project
+							? await project.GetCompilationAsync(cts.Token)
+							: null;
+						compilations[projectId] = compilation;
+					}
+
+					if (compilation is null || !IsFileEffective(compilation, file))
+					{
+						return false;
+					}
+				}
 			}
 
-			if (solution.GetProject(projectId) is { } project)
-			{
-				using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-				cts.CancelAfter(timeout - stopwatch.Elapsed);
-				try
-				{
-					await project.GetCompilationAsync(cts.Token);
-				}
-				catch (OperationCanceledException) when (!ct.IsCancellationRequested)
-				{
-					break;
-				}
-			}
+			return true;
 		}
-
-		if (stopwatch.Elapsed >= timeout)
+		catch (OperationCanceledException) when (!ct.IsCancellationRequested)
 		{
-			debug($"Workspace readiness timed out after {timeout}; triggering hot reload anyway.");
+			// Budget expired mid-compilation — the outer loop reports the timeout.
+			return false;
 		}
 	}
 
-	private static bool IsKnownToSolution(RoslynSolution solution, string filePath)
-		=> solution.GetDocumentIdsWithFilePath(filePath).Any()
-			|| solution.Projects.Any(project => project.AdditionalDocuments.Any(additional => string.Equals(additional.FilePath, filePath, StringComparison.OrdinalIgnoreCase)));
+	private static bool IsFileEffective(RoslynCompilation compilation, string filePath)
+	{
+		if (filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase))
+		{
+			// The per-file generated output (hint name "<Page>_<hash>.cs", or "<Page>.g.*") is
+			// the signal that the XAML generator actually processed the file. Note: the
+			// code-behind is named "<Page>.xaml.cs" and must NOT satisfy this check.
+			var expectedPrefix = Path.GetFileNameWithoutExtension(filePath);
+			return compilation.SyntaxTrees.Any(tree =>
+			{
+				var name = Path.GetFileName(tree.FilePath);
+				return name.StartsWith(expectedPrefix + "_", StringComparison.OrdinalIgnoreCase)
+					|| name.StartsWith(expectedPrefix + ".g.", StringComparison.OrdinalIgnoreCase);
+			});
+		}
+
+		if (filePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+		{
+			return compilation.SyntaxTrees.Any(tree => string.Equals(tree.FilePath, filePath, StringComparison.OrdinalIgnoreCase));
+		}
+
+		// Other file kinds (assets…) have no compilation effect to observe — being part of a
+		// project (checked above) is the best signal available.
+		return true;
+	}
 
 	private static IEnumerable<RoslynProjectId> GetProjectsContaining(RoslynSolution solution, string filePath)
 		=> solution

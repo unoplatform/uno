@@ -117,12 +117,16 @@ also hosts the shared apply-file-content logic used by the legacy per-file path)
    `ServerUpdateTimeout`.
 3. **Readiness** (only when the request carries the force intent and the batch contains
    creations, `OldText == null`):
-   - poll `workspace.CurrentSolution.GetDocumentIdsWithFilePath(path)` (covers `Document` and
-     `AdditionalDocument`) for each created file, ~100 ms period — absorbs the project-system
-     glob re-evaluation;
-   - for each touched Roslyn project (multi-TFM ⇒ several projects per csproj — all of them):
-     `await project.GetCompilationAsync(ct)` — forces generator execution; the materialized
-     outputs are cached on the snapshot EnC will evaluate (F9);
+   - poll fresh `workspace.CurrentSolution` snapshots (~100 ms period). Readiness is NOT mere
+     presence — a created `.xaml` can be listed as `AdditionalDocument` before its item
+     metadata is complete, and the XAML generator then silently skips it (observed during
+     validation as a residual CS1061 fired by a presence-only gate after ~550 ms, while the
+     workspace only became compilable ~3.4 s after the writes). Each created file must have
+     its **effect visible in the compilation** of every Roslyn project containing it
+     (multi-TFM ⇒ all heads; `GetCompilationAsync` forces generator execution): a source file
+     contributes its syntax tree, a `.xaml` has produced its per-file generated output
+     (hint `<Page>_<hash>.cs` — the `<Page>.xaml.cs` code-behind must not satisfy the check);
+   - the materialized generator outputs are cached on the snapshot EnC will evaluate (F9);
    - bounded by a total readiness timeout (default **10 s**); on expiry, proceed anyway (never
      worse than today) and log a warning.
 4. **Save & trigger**: perform the deferred `document.Save()`s (when the save flag requires

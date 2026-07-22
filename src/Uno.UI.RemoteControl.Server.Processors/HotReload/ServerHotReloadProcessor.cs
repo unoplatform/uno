@@ -112,6 +112,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			// per-file UpdateFileIdeMessage flow.
 			var useBatchedIdeUpdates = !"false".Equals(_remoteControlServer.GetServerConfiguration("hot-reload-ide-updater"), StringComparison.OrdinalIgnoreCase);
 
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation($"HotReload file updater: {(isRunningInsideVisualStudio && useBatchedIdeUpdates ? "batched IDE updates (spec 052)" : $"legacy per-file path (isRunningInsideVisualStudio={isRunningInsideVisualStudio}, hot-reload-ide-updater={useBatchedIdeUpdates})")}.");
+			}
+
 			if (isRunningInsideVisualStudio && useBatchedIdeUpdates)
 			{
 				return new IdeFileUpdater(
