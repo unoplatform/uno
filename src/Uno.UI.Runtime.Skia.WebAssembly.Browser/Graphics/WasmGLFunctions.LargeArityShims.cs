@@ -12,8 +12,6 @@ namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 // (float-bearing and 9/10/11-arg all-i32 signatures). Tracked internally.
 internal static unsafe partial class WasmGLFunctions
 {
-	private static void RegisterLargeArityShimEntries() => KeepSignaturePrimer();
-
 	// Signature primer: surfaces float-bearing calli signatures to the build-time
 	// ManagedToNativeGenerator so it emits matching interp->native trampoline cookies.
 	// Silk.NET's gl.ClearColor / gl.Uniform1f / gl.Uniform4f etc. are dispatched as
@@ -90,7 +88,7 @@ internal static unsafe partial class WasmGLFunctions
 		internal static extern void DummyV11I(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 	}
 
-	// Referenced from RegisterLargeArityShimEntries behind an always-false volatile guard so the
+	// Referenced from KeepSignaturePrimer behind an always-false volatile guard so the
 	// IL trimmer keeps the SignaturePrimer DllImports without them ever being called. Never assigned
 	// by design (always default false), hence the CS0649 suppression.
 #pragma warning disable CS0649

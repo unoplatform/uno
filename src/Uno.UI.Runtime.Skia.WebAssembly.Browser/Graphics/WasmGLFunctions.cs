@@ -114,7 +114,7 @@ internal static unsafe partial class WasmGLFunctions
 		RegisterFramebufferEntries();
 		RegisterDrawingEntries();
 		RegisterAdvancedFeaturesEntries();
-		RegisterLargeArityShimEntries();
+		KeepSignaturePrimer();
 		RegisterMiscEntries();
 	}
 
