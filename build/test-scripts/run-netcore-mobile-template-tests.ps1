@@ -157,7 +157,7 @@ $release = $default + '-p:Configuration=Release'
 
 & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
-$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" });
+$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeaturesOverride=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeaturesOverride=Material%3BToolkit" });
 
 $projects =
 @(
