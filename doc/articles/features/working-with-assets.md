@@ -21,7 +21,7 @@ At the moment, the following image file types are supported as `Content` assets:
 | iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
 | macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
 | WebAssembly†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
-| Skia Desktop|       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| Skia Desktop |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 
 * † Actual WebAssembly image format support is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
 * ‡ **Gif animation support**:
