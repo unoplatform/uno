@@ -2579,6 +2579,9 @@
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed property reads as removed (getter accessor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs::WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
+
+		  <!-- ImageBrush reparented to derive from a materialized TileBrush (Brush -> TileBrush -> ImageBrush, WinUI parity); AlignmentX/AlignmentY/Stretch and their DP fields are now declared on TileBrush and read as removed from ImageBrush (still resolve via inheritance at runtime). Accessor methods paired in <Methods> below. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.ImageBrush(::|\.)(AlignmentX|AlignmentY|Stretch|AlignmentXProperty|AlignmentYProperty|StretchProperty)\(\)" reason="Moved AlignmentX/AlignmentY/Stretch owner from ImageBrush to TileBrush base for WinUI parity (breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3035,6 +3038,9 @@
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
+
+		  <!-- ImageBrush->TileBrush reparent accessors (paired with the <Properties> entry above): get_/set_ for AlignmentX/AlignmentY/Stretch and the get_ DP-field accessors, now inherited from TileBrush. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.ImageBrush(::|\.)(get_AlignmentX|set_AlignmentX|get_AlignmentY|set_AlignmentY|get_Stretch|set_Stretch|get_AlignmentXProperty|get_AlignmentYProperty|get_StretchProperty)\(.*\)" reason="Moved AlignmentX/AlignmentY/Stretch owner from ImageBrush to TileBrush base for WinUI parity (breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
