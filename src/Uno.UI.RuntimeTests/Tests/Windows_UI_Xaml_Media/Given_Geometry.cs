@@ -181,8 +181,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				context.LineTo(new Point(10, 10), isStroked: true, isSmoothJoin: true);
 			}
 
-			var skPath = ((Microsoft.UI.Composition.SkiaGeometrySource2D)streamGeometry.GetGeometry()!).Geometry;
-			skPath.FillType.Should().Be(SKPathFillType.EvenOdd);
+			// Backend-neutral: verify the default EvenOdd fill rule regardless of the active geometry backend.
+			var geometry = streamGeometry.GetGeometry()!;
+			if (geometry is Microsoft.UI.Composition.SkiaGeometrySource2D skiaGeometry)
+			{
+				skiaGeometry.Geometry.FillType.Should().Be(SKPathFillType.EvenOdd);
+			}
+			else if (geometry is Uno.UI.Composition.Drawing.ManagedGeometry managedGeometry)
+			{
+				managedGeometry.FillRule.Should().Be(Uno.UI.Composition.Drawing.GeometryFillRule.EvenOdd);
+			}
+			else
+			{
+				Assert.Fail($"Unexpected geometry backend type {geometry.GetType()}");
+			}
 		}
 
 		[TestMethod]
