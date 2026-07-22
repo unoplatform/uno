@@ -15,6 +15,16 @@
 		<UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.slnx'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
 	</PropertyGroup>
 
+	<!--
+		The generated assembly-info file can surface an ENC0033 rude edit ("Deleting attribute requires
+		restarting the application") which then blocks every hot-reload apply of the session (#23839).
+		Bake in the documented workaround (https://github.com/unoplatform/uno.templates/issues/376) for
+		any project referencing this package: opt out by setting GenerateAssemblyInfo explicitly.
+	-->
+	<PropertyGroup>
+		<GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == '' and '$(Configuration)' == 'Debug'">false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
 	<Target Name="GetRemoteControlHostPath">
 		<PropertyGroup>
 			<_IsRCClientRemote>false</_IsRCClientRemote>
