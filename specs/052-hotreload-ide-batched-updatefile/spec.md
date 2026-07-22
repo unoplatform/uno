@@ -103,7 +103,9 @@ standalone `ForceHotReloadIdeMessage` (retries never rewrite files).
 
 ### Extension side — apply, wait for readiness, then trigger
 
-New handler for `UpdateFileRequestIdeMessage` in `EntryPoint`:
+New handler for `UpdateFileRequestIdeMessage`: `EntryPoint`'s message switch routes it to
+`VisualStudioFileUpdater` (the IDE-side counterpart of the dev-server's `IdeFileUpdater`, which
+also hosts the shared apply-file-content logic used by the legacy per-file path):
 
 1. **Apply** every edit sequentially, in batch order, reusing the current per-file logic
    (in-memory `ReplaceText` for open documents, `File.WriteAllText` otherwise) — but **without
@@ -178,7 +180,8 @@ not source-verified — it is part of the manual validation matrix below.
 
 ### Compatibility & rollout
 
-Per F7, the message sender (server processors) and handler (EntryPoint) ship in the same
+Per F7, the message sender (server processors) and handler (`VisualStudioFileUpdater`, routed
+by EntryPoint) ship in the same
 `Uno.WinUI.DevServer` package: they can never disagree on the contract. The `uno.studio` VSIX
 is not modified. Rider / VS Code / CLI are untouched (they use the on-disk editor path and the
 dev-server workspace; spec 050 already covers their gating).
