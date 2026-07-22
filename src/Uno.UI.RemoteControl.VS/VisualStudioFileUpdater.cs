@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.Shell;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
-using RoslynCompilation = Microsoft.CodeAnalysis.Compilation;
 using RoslynProjectId = Microsoft.CodeAnalysis.ProjectId;
 using RoslynSolution = Microsoft.CodeAnalysis.Solution;
 using Task = System.Threading.Tasks.Task;
@@ -182,6 +181,7 @@ internal sealed class VisualStudioFileUpdater(
 			var stopwatch = Stopwatch.StartNew();
 			if (createdFiles.Count > 0)
 			{
+				NudgeProjectSystem(createdFiles);
 				debug($"BatchUpdate: waiting for workspace readiness ({createdFiles.Count} created file(s))...");
 				await WaitForWorkspaceReadinessAsync(createdFiles, TimeSpan.FromSeconds(10), ct);
 			}
@@ -214,12 +214,15 @@ internal sealed class VisualStudioFileUpdater(
 	/// <summary>
 	/// Waits until the VS Roslyn workspace can actually compile the change-set containing
 	/// <paramref name="createdFiles"/>. Being known to the project system is NOT enough: a
-	/// created .xaml can be listed as AdditionalDocument before its item metadata is complete,
-	/// in which case the XAML generator silently skips it and EnC evaluates a compilation
-	/// without the generated partial (CS1061 on InitializeComponent). Readiness therefore
-	/// requires the EFFECT of every created file in a fresh compilation of every project
-	/// containing it (multi-TFM ⇒ all heads): a source file must contribute its syntax tree,
-	/// a .xaml must have produced its per-file generated output.
+	/// created .xaml is listed as AdditionalDocument before its item metadata is complete, and
+	/// the XAML generator silently skips it until then — EnC would evaluate a compilation
+	/// without the generated partial (CS1061 on InitializeComponent). The wait stays passive
+	/// (cheap snapshot reads only): forcing compilations while polling starves the design-time
+	/// build being awaited, and waiting for the workspace's own generated documents is
+	/// pointless — VS runs source generators in "balanced" mode (re-run on save/build only, so
+	/// they stay frozen during the wait), while the EnC delta-builder re-runs them itself on
+	/// its own snapshot at apply time. The delivered item metadata is therefore the exact
+	/// readiness signal.
 	/// Bounded by <paramref name="timeout"/>; on expiry the caller proceeds anyway.
 	/// </summary>
 	private async Task WaitForWorkspaceReadinessAsync(List<string> createdFiles, TimeSpan timeout, CancellationToken ct)
@@ -232,89 +235,183 @@ internal sealed class VisualStudioFileUpdater(
 		}
 
 		var stopwatch = Stopwatch.StartNew();
+		RoslynSolution? lastChecked = null;
+		var lastCheckAt = TimeSpan.MinValue;
+		string? lastReason = null;
+		var checks = 0;
 		while (stopwatch.Elapsed < timeout)
 		{
 			ct.ThrowIfCancellationRequested();
 
-			if (await AreCreatedFilesEffectiveAsync(workspace.CurrentSolution, createdFiles, timeout - stopwatch.Elapsed, ct))
+			// Re-check when the workspace produced a new snapshot (the wait is on project
+			// system / design-time build activity — redoing work on every tick would compete
+			// with the build we are waiting for), plus a forced re-check every second as a
+			// safety net: a false negative evaluated on what turns out to be the final
+			// snapshot must not stall until the timeout.
+			var solution = workspace.CurrentSolution;
+			if (!ReferenceEquals(solution, lastChecked) || stopwatch.Elapsed - lastCheckAt >= TimeSpan.FromSeconds(1))
 			{
-				debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms.");
-				return;
+				lastChecked = solution;
+				lastCheckAt = stopwatch.Elapsed;
+				checks++;
+
+				var notReady = GetNotReadyReason(solution, createdFiles);
+				if (notReady is null)
+				{
+					debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms ({checks} check(s)).");
+					return;
+				}
+
+				if (notReady != lastReason)
+				{
+					lastReason = notReady;
+					debug($"BatchUpdate: not ready after {stopwatch.ElapsedMilliseconds} ms — {notReady}");
+				}
 			}
 
 			await Task.Delay(100, ct);
 		}
 
-		debug($"Workspace readiness timed out after {timeout}; triggering hot reload anyway.");
+		debug($"Workspace readiness timed out after {timeout} ({checks} check(s), last reason: {lastReason ?? "none"}); triggering hot reload anyway.");
 	}
 
-	private static async Task<bool> AreCreatedFilesEffectiveAsync(RoslynSolution solution, List<string> createdFiles, TimeSpan budget, CancellationToken ct)
+	/// <summary>
+	/// Returns <see langword="null"/> when the workspace can compile the change-set, otherwise
+	/// the precise first reason it cannot. Stages per created file: part of a Roslyn project →
+	/// (.xaml only) surfaced as analyzer AdditionalFile → its
+	/// "build_metadata.AdditionalFiles.SourceItemGroup" analyzer-config option delivered — the
+	/// exact predicate Uno's XAML generator uses to accept a file, and it only appears once
+	/// the design-time build ran. Deliberately NOT checked: the workspace's generated
+	/// documents — VS runs generators in "balanced" mode so they stay frozen until a
+	/// save/build and would never show the new page during the wait, while the EnC
+	/// delta-builder re-runs generators itself at apply time (verified: it emits the new
+	/// page's generated partial while the workspace still exposes the stale set).
+	/// All stages are cheap snapshot reads — no compilation, no generator run.
+	/// </summary>
+	private static string? GetNotReadyReason(RoslynSolution solution, List<string> createdFiles)
 	{
-		using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-		cts.CancelAfter(budget);
-
-		try
+		foreach (var file in createdFiles)
 		{
-			var compilations = new Dictionary<RoslynProjectId, RoslynCompilation?>();
-			foreach (var file in createdFiles)
+			var name = Path.GetFileName(file);
+			var projectIds = GetProjectsContaining(solution, file).Distinct().ToList();
+			if (projectIds.Count == 0)
 			{
-				var projectIds = GetProjectsContaining(solution, file).Distinct().ToList();
-				if (projectIds.Count == 0)
-				{
-					// Not integrated by the project system yet.
-					return false;
-				}
-
-				foreach (var projectId in projectIds)
-				{
-					if (!compilations.TryGetValue(projectId, out var compilation))
-					{
-						compilation = solution.GetProject(projectId) is { } project
-							? await project.GetCompilationAsync(cts.Token)
-							: null;
-						compilations[projectId] = compilation;
-					}
-
-					if (compilation is null || !IsFileEffective(compilation, file))
-					{
-						return false;
-					}
-				}
+				return $"{name} is not part of any Roslyn project yet";
 			}
 
-			return true;
+			if (!file.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase))
+			{
+				// A regular document contributes its syntax tree to the compilation by
+				// construction — being part of a project is enough.
+				continue;
+			}
+
+			foreach (var projectId in projectIds)
+			{
+				if (solution.GetProject(projectId) is not { } project)
+				{
+					return $"{name}: project {projectId} vanished from the snapshot";
+				}
+
+				var additionalFile = project.AnalyzerOptions.AdditionalFiles
+					.FirstOrDefault(f => string.Equals(f.Path, file, StringComparison.OrdinalIgnoreCase));
+				if (additionalFile is null)
+				{
+					return $"{name} is not surfaced as an analyzer AdditionalFile yet (project '{project.Name}', {project.AnalyzerOptions.AdditionalFiles.Length} additional file(s))";
+				}
+
+				if (!project.AnalyzerOptions.AnalyzerConfigOptionsProvider.GetOptions(additionalFile)
+						.TryGetValue("build_metadata.AdditionalFiles.SourceItemGroup", out var sourceItemGroup)
+					|| string.IsNullOrEmpty(sourceItemGroup))
+				{
+					return $"{name}: SourceItemGroup item metadata not delivered yet (project '{project.Name}')";
+				}
+			}
 		}
-		catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+
+		return null;
+	}
+
+	/// <summary>
+	/// Routes created files through the project system (DTE <c>AddFromFile</c>) instead of
+	/// relying on the file watcher: the watcher path is debounced and its design-time build
+	/// runs at low priority while debugging (observed: 8-10 s before the AdditionalFiles item
+	/// metadata shows up), whereas an explicit add is processed promptly — like a user adding
+	/// the file in Solution Explorer. For SDK-style globbing projects the call does not modify
+	/// the csproj: the item is already matched by the glob.
+	/// </summary>
+	private void NudgeProjectSystem(List<string> createdFiles)
+	{
+		foreach (var file in createdFiles)
 		{
-			// Budget expired mid-compilation — the outer loop reports the timeout.
-			return false;
+			try
+			{
+				var stopwatch = Stopwatch.StartNew();
+				if (dte.Solution.FindProjectItem(file) is not null)
+				{
+					debug($"BatchUpdate: {Path.GetFileName(file)} already known to the project system (FindProjectItem, {stopwatch.ElapsedMilliseconds} ms) — no nudge.");
+					continue;
+				}
+
+				if (FindContainingProject(file) is { } project)
+				{
+					project.ProjectItems.AddFromFile(file);
+					debug($"BatchUpdate: added {Path.GetFileName(file)} to project {project.Name} in {stopwatch.ElapsedMilliseconds} ms (project-system nudge).");
+				}
+				else
+				{
+					debug($"BatchUpdate: no containing project found for {Path.GetFileName(file)} — no nudge, the file watcher will pick it up.");
+				}
+			}
+			catch (Exception e)
+			{
+				debug($"BatchUpdate: project-system nudge failed for {Path.GetFileName(file)}: {e.Message} — the file watcher will pick it up.");
+			}
 		}
 	}
 
-	private static bool IsFileEffective(RoslynCompilation compilation, string filePath)
+	private Project? FindContainingProject(string filePath)
 	{
-		if (filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase))
+		Project? best = null;
+		var bestLength = -1;
+
+		void Visit(Project? project)
 		{
-			// The per-file generated output (hint name "<Page>_<hash>.cs", or "<Page>.g.*") is
-			// the signal that the XAML generator actually processed the file. Note: the
-			// code-behind is named "<Page>.xaml.cs" and must NOT satisfy this check.
-			var expectedPrefix = Path.GetFileNameWithoutExtension(filePath);
-			return compilation.SyntaxTrees.Any(tree =>
+			if (project is null)
 			{
-				var name = Path.GetFileName(tree.FilePath);
-				return name.StartsWith(expectedPrefix + "_", StringComparison.OrdinalIgnoreCase)
-					|| name.StartsWith(expectedPrefix + ".g.", StringComparison.OrdinalIgnoreCase);
-			});
+				return;
+			}
+
+			try
+			{
+				if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+				{
+					foreach (ProjectItem item in project.ProjectItems)
+					{
+						Visit(item.SubProject);
+					}
+				}
+				else if (project.FullName is { Length: > 0 } projectPath
+					&& Path.GetDirectoryName(projectPath) is { Length: > 0 } projectDir
+					&& filePath.StartsWith(projectDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
+					&& projectDir.Length > bestLength)
+				{
+					best = project;
+					bestLength = projectDir.Length;
+				}
+			}
+			catch
+			{
+				// Some project nodes (unloaded, miscellaneous) throw on property access — skip them.
+			}
 		}
 
-		if (filePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+		foreach (Project project in dte.Solution.Projects)
 		{
-			return compilation.SyntaxTrees.Any(tree => string.Equals(tree.FilePath, filePath, StringComparison.OrdinalIgnoreCase));
+			Visit(project);
 		}
 
-		// Other file kinds (assets…) have no compilation effect to observe — being part of a
-		// project (checked above) is the best signal available.
-		return true;
+		return best;
 	}
 
 	private static IEnumerable<RoslynProjectId> GetProjectsContaining(RoslynSolution solution, string filePath)

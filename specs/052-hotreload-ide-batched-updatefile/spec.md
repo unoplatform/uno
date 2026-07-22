@@ -117,16 +117,27 @@ also hosts the shared apply-file-content logic used by the legacy per-file path)
    `ServerUpdateTimeout`.
 3. **Readiness** (only when the request carries the force intent and the batch contains
    creations, `OldText == null`):
-   - poll fresh `workspace.CurrentSolution` snapshots (~100 ms period). Readiness is NOT mere
-     presence — a created `.xaml` can be listed as `AdditionalDocument` before its item
-     metadata is complete, and the XAML generator then silently skips it (observed during
-     validation as a residual CS1061 fired by a presence-only gate after ~550 ms, while the
-     workspace only became compilable ~3.4 s after the writes). Each created file must have
-     its **effect visible in the compilation** of every Roslyn project containing it
-     (multi-TFM ⇒ all heads; `GetCompilationAsync` forces generator execution): a source file
-     contributes its syntax tree, a `.xaml` has produced its per-file generated output
-     (hint `<Page>_<hash>.cs` — the `<Page>.xaml.cs` code-behind must not satisfy the check);
-   - the materialized generator outputs are cached on the snapshot EnC will evaluate (F9);
+   - poll `workspace.CurrentSolution` (~100 ms period), re-checking only when a new snapshot
+     appeared. Readiness is NOT mere presence — a created `.xaml` is listed as
+     `AdditionalDocument` before its item metadata is complete, and the XAML generator then
+     silently skips it (observed during validation as a residual CS1061 fired by a
+     presence-only gate after ~550 ms, while the workspace only became compilable ~3.4 s after
+     the writes);
+   - **the wait must stay passive**: forcing `GetCompilationAsync` while polling starves the
+     very design-time build being awaited (observed: DTB latency growing from ~3.4 s to the
+     10 s readiness timeout). The per-snapshot checks are near-free reads: every created file
+     is part of a project (multi-TFM ⇒ all heads), and every created `.xaml` has its
+     `build_metadata.AdditionalFiles.SourceItemGroup` analyzer-config option delivered — the
+     exact predicate Uno's XAML generator uses to accept an AdditionalFile;
+   - the delivered metadata IS the readiness signal — deliberately do **not** wait for the
+     workspace's generated documents: VS runs source generators in "balanced" mode (re-run on
+     save/build only), so they stay frozen during the wait and would never show the new page,
+     while the EnC delta-builder re-runs generators itself on its own snapshot at apply time
+     (verified: it emits the new page's generated partial while the workspace still exposes
+     the stale set);
+   - creations are also routed through the project system (DTE `AddFromFile`, no csproj change
+     on SDK-style globbing projects) instead of relying on the debounced file watcher, which
+     brings the metadata delivery from 3-10 s down to a few hundred ms;
    - bounded by a total readiness timeout (default **10 s**); on expiry, proceed anyway (never
      worse than today) and log a warning.
 4. **Save & trigger**: perform the deferred `document.Save()`s (when the save flag requires
