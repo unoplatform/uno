@@ -71,9 +71,9 @@ internal sealed class IdeFileUpdater(
 
 			var (isSuccess, error) = await sendToIde(message);
 
-			if (this.Log().IsEnabled(LogLevel.Information))
+			if (!isSuccess && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogInformation($"IDE acknowledged batched update #{message.CorrelationId}: success={isSuccess}{(error is null ? "" : $", error={error}")}.");
+				this.Log().LogWarning($"IDE failed to apply batched update #{message.CorrelationId}: {error ?? "(no error detail)"}.");
 			}
 
 			foreach (var (edit, index) in writes)

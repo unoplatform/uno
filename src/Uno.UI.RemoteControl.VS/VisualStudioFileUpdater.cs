@@ -69,8 +69,6 @@ internal sealed class VisualStudioFileUpdater(
 				}
 			}
 
-			debug($"BatchUpdate #{request.CorrelationId}: edits applied ({createdFiles.Count} created file(s), {deferredSaves.Count} deferred save(s)); acknowledging{(request.IsForceHotReloadDisabled ? "" : " and scheduling the readiness-gated hot reload")}.");
-
 			// Ack once the writes are applied: the readiness wait and the hot-reload trigger run
 			// asynchronously, and their outcome flows through the hot-reload operation channel.
 			if (ideChannelClient() is { } channel)
@@ -182,7 +180,6 @@ internal sealed class VisualStudioFileUpdater(
 			if (createdFiles.Count > 0)
 			{
 				NudgeProjectSystem(createdFiles);
-				debug($"BatchUpdate: waiting for workspace readiness ({createdFiles.Count} created file(s))...");
 				await WaitForWorkspaceReadinessAsync(createdFiles, TimeSpan.FromSeconds(10), ct);
 			}
 
@@ -238,7 +235,6 @@ internal sealed class VisualStudioFileUpdater(
 		RoslynSolution? lastChecked = null;
 		var lastCheckAt = TimeSpan.MinValue;
 		string? lastReason = null;
-		var checks = 0;
 		while (stopwatch.Elapsed < timeout)
 		{
 			ct.ThrowIfCancellationRequested();
@@ -253,26 +249,19 @@ internal sealed class VisualStudioFileUpdater(
 			{
 				lastChecked = solution;
 				lastCheckAt = stopwatch.Elapsed;
-				checks++;
 
-				var notReady = GetNotReadyReason(solution, createdFiles);
-				if (notReady is null)
+				lastReason = GetNotReadyReason(solution, createdFiles);
+				if (lastReason is null)
 				{
-					debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms ({checks} check(s)).");
+					debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms.");
 					return;
-				}
-
-				if (notReady != lastReason)
-				{
-					lastReason = notReady;
-					debug($"BatchUpdate: not ready after {stopwatch.ElapsedMilliseconds} ms — {notReady}");
 				}
 			}
 
 			await Task.Delay(100, ct);
 		}
 
-		debug($"Workspace readiness timed out after {timeout} ({checks} check(s), last reason: {lastReason ?? "none"}); triggering hot reload anyway.");
+		debug($"Workspace readiness timed out after {timeout} (last reason: {lastReason ?? "none"}); triggering hot reload anyway.");
 	}
 
 	/// <summary>
@@ -349,7 +338,8 @@ internal sealed class VisualStudioFileUpdater(
 				var stopwatch = Stopwatch.StartNew();
 				if (dte.Solution.FindProjectItem(file) is not null)
 				{
-					debug($"BatchUpdate: {Path.GetFileName(file)} already known to the project system (FindProjectItem, {stopwatch.ElapsedMilliseconds} ms) — no nudge.");
+					// Already picked up by the project system (globs are fast) — the readiness
+					// gate below still waits for its item metadata.
 					continue;
 				}
 
