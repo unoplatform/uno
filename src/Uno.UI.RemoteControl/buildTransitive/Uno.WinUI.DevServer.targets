@@ -19,10 +19,11 @@
 		The generated assembly-info file can surface an ENC0033 rude edit ("Deleting attribute requires
 		restarting the application") which then blocks every hot-reload apply of the session (#23839).
 		Bake in the documented workaround (https://github.com/unoplatform/uno.templates/issues/376) for
-		any project referencing this package: opt out by setting GenerateAssemblyInfo explicitly.
+		any project referencing this package: opt out by setting UnoDisableGenerateAssemblyInfoWorkaround
+		to true (or by setting GenerateAssemblyInfo explicitly).
 	-->
 	<PropertyGroup>
-		<GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == '' and '$(Configuration)' == 'Debug'">false</GenerateAssemblyInfo>
+		<GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == '' and '$(Configuration)' == 'Debug' and '$(UnoDisableGenerateAssemblyInfoWorkaround)' != 'true'">false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 	<Target Name="GetRemoteControlHostPath">
