@@ -162,7 +162,7 @@ To build an app with this feature enabled:
    ```
 
    > [!NOTE]
-   > Cross-OS native compilation is not supported. To build a Native AOT app for a given OS (Windows, Linux, or macOS), you'll need to build on that OS — for example on a physical machine, a virtual machine, or a per-OS CI agent. Cross-*architecture* compilation on the same OS (for example x64 to arm64) is supported when the matching native toolchain is installed.
+   > Cross-OS native compilation is not supported. To build a Native AOT app for a given OS (Windows, Linux, or macOS), you'll need to build on that OS — for example on a physical machine, a virtual machine, or a per-OS CI agent. Cross-architecture compilation on the same OS (for example x64 to arm64) is supported when the matching native toolchain is installed.
 
 ### Automatic Binding Preservation
 

@@ -8,13 +8,13 @@ Uno Platform 6.6 introduces support for [.NET Native AOT deployment](https://lea
 
 Enabling Native AOT enables faster app startup and improves performance, typically at the cost of larger app sizes. Consider the [Uno.Chefs sample app](xref:Uno.Chefs.Overview):
 
-| **Environment**   | **Baseline Runtime** | **Baseline Publish Size** | **NativeAOT Publish Size** | **Publish Size Change** | **Baseline Startup** | **NativeAOT Startup** | **Startup Improvement** |
-| ----------------- | -------------------- | ------------------------: | -------------------------: | ----------------------: | -------------------: | --------------------: | ----------------------: |
-| Android, .NET 10  | MonoVM               |                     93 MB |                     109 MB |                    +17% |               0.895s |                0.348s |          **61% faster** |
-| iOS, .NET 10      | MonoVM               |                    138 MB |                     122 MB |                    -12% |               0.940s |                0.742s |          **21% faster** |
-| Linux, .NET 10    | CoreCLR              |                    541 MB |                     625 MB |                    +16% |               0.870s |                0.350s |          **60% faster** |
-| macOS, .NET 10    | CoreCLR              |                    547 MB |                     720 MB |                    +32% |               1.347s |                0.555s |          **59% faster** |
-| Windows, .NET 10  | CoreCLR              |                    725 MB |                     970 MB |                    +34% |               1.605s |                0.824s |          **49% faster** |
+| **Environment**  | **Baseline Runtime** | **Baseline Publish Size** | **Native AOT Publish Size** | **Publish Size Change** | **Baseline Startup** | **Native AOT Startup** | **Startup Improvement** |
+| ---------------- | -------------------- | ------------------------: | --------------------------: | ----------------------: | -------------------: | ---------------------: | ----------------------: |
+| Android, .NET 10 | MonoVM               |                     93 MB |                      109 MB |                    +17% |               0.895s |                 0.348s |          **61% faster** |
+| iOS, .NET 10     | MonoVM               |                    138 MB |                      122 MB |                    -12% |               0.940s |                 0.742s |          **21% faster** |
+| Linux, .NET 10   | CoreCLR              |                    541 MB |                      625 MB |                    +16% |               0.870s |                 0.350s |          **60% faster** |
+| macOS, .NET 10   | CoreCLR              |                    547 MB |                      720 MB |                    +32% |               1.347s |                 0.555s |          **59% faster** |
+| Windows, .NET 10 | CoreCLR              |                    725 MB |                      970 MB |                    +34% |               1.605s |                 0.824s |          **49% faster** |
 
 <!--
   Benchmark provenance (kept out of the rendered page so hardcoded version numbers don't go stale for readers):
