@@ -116,7 +116,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`, `src/Uno.UI/UI/Xaml/UIElement.Pointers.Managed.cs`
-- [ ] **BC45** — Remove `UseLegacyContentAlignment` flag  `d2·S`
+- [x] **BC45** — Remove `UseLegacyContentAlignment` flag  `d2·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/DependencyPropertyMixinGenerator.cs`
 - [ ] **BC55** — Replace deprecated Android `PreferenceManager` ⚠️  `d2·S` · #1833
@@ -298,7 +298,7 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - **Setter pipeline (Phase 3):** `BC37` (remove CLR-property Setter codegen) → `BC44` (remove `Setter<T>`) → `BC63` (remove `SetterBase.set_Property`). Land adjacently, in order.
 - **DataContext / DependencyObject (Phase 7):** do `BC58` (generator-wide DataContext->FE-only) **first**; it gates `BC54` (FlyoutBase symptom) and de-risks `BC26` (DependencyObject->class). All touch the same generated DO mixin.
 - **Background / UserControl (Phase 7):** `BC38` (Background -> Control) precedes `BC14` (UserControl -> Control) so the property relocation is not redone.
-- **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — each changes runtime behaviour even for default users.
+- **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default — source-breaking only; the flag defaulted to `false`, so default users are unaffected), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — most change runtime behaviour even for default users.
 - **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
 
 ---
