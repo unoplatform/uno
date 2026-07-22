@@ -198,10 +198,29 @@ public partial class ClientHotReloadProcessor
 				return result with { Error = new ArgumentOutOfRangeException(nameof(req.Edits), "Invalid edits (no edits or edit.FilePath is null or empty).") };
 			}
 
+			// Client-side gate: until the first status notification, the hot-reload engine is not
+			// initialized yet and cannot track this request (CurrentStatus is null, cf. StatusSink).
+			// Fail with an explicit, actionable error instead of an accidental NullReferenceException
+			// deeper in the pipeline — client-side counterpart of the server-side workspace gate.
+			if (CurrentStatus is null)
+			{
+				return result with { Error = new InvalidOperationException(
+					"Hot reload is not initialized yet (no status has been received from the hot-reload engine). "
+					+ "Wait for the first ClientHotReloadProcessor.StatusChanged notification before sending file updates.") };
+			}
+
 			var log = this.Log();
 			var trace = log.IsTraceEnabled() ? log : default;
 			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.Edits.First().FilePath)}]";
+
+			if (CurrentStatus.State is HotReloadState.Disabled)
+			{
+				// Do not reject: with hot-reload disabled a file update is still a legitimate
+				// way to persist changes (files are written / forwarded to the IDE) — but no
+				// hot-reload should be expected, so surface the state to the caller's logs.
+				log.Warn($"{tag} Hot reload is disabled for this session — the update will still be processed (files may be written), but no hot-reload is expected to be applied.");
+			}
 
 			debug?.Debug($"{tag} Updating {req.Edits.Length} file(s).");
 			if (debug?.IsTraceEnabled() ?? false)
@@ -425,7 +444,7 @@ public partial class ClientHotReloadProcessor
 	}
 
 	private int GetCurrentLocalHotReloadId()
-		=> CurrentStatus.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
+		=> CurrentStatus?.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
 
 	private async ValueTask<HotReloadClientOperation> WaitForLocalHotReloadAsync(int hotReloadId, TimeSpan timeout, CancellationToken ct)
 	{
