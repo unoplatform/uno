@@ -17,13 +17,19 @@
 
 	<!--
 		The generated assembly-info file can surface an ENC0033 rude edit ("Deleting attribute requires
-		restarting the application") which then blocks every hot-reload apply of the session (#23839).
-		Bake in the documented workaround (https://github.com/unoplatform/uno.templates/issues/376) for
-		any project referencing this package: opt out by setting UnoDisableGenerateAssemblyInfoWorkaround
-		to true (or by setting GenerateAssemblyInfo explicitly).
+		restarting the application") which then blocks every hot-reload apply of the session (#23839),
+		and version-attribute mismatches between build contexts fail every hot-reload compile with
+		CS7038. Suppress only the version attributes in Debug — the volatile part of the generated
+		file — rather than disabling GenerateAssemblyInfo wholesale (the historically documented csproj
+		workaround, https://github.com/unoplatform/uno.templates/issues/376): a full disable also strips
+		AssemblyMetadata (e.g. UnoMCPProcessorPath, required by the app MCP client) and csproj-declared
+		InternalsVisibleTo. Opt out by setting UnoDisableGenerateAssemblyInfoWorkaround to true (or any
+		of the individual properties explicitly).
 	-->
-	<PropertyGroup>
-		<GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == '' and '$(Configuration)' == 'Debug' and '$(UnoDisableGenerateAssemblyInfoWorkaround)' != 'true'">false</GenerateAssemblyInfo>
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug' and '$(UnoDisableGenerateAssemblyInfoWorkaround)' != 'true'">
+		<GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
 	</PropertyGroup>
 
 	<Target Name="GetRemoteControlHostPath">
