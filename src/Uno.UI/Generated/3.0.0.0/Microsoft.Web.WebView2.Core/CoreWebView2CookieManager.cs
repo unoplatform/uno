@@ -9,24 +9,12 @@ namespace Microsoft.Web.WebView2.Core
 	public partial class CoreWebView2CookieManager
 	{
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.GetCookiesAsync(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie CreateCookie(string name, string value, string Domain, string Path)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "CreateCookie(string name, string value, string Domain, string Path)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CreateCookie(string, string, string, string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CopyCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.AddOrUpdateCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookies(string, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteCookiesWithDomainAndPath(string name, string Domain, string Path)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "DeleteCookiesWithDomainAndPath(string name, string Domain, string Path)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookiesWithDomainAndPath(string, string, string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteAllCookies()
 	}
 }

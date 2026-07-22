@@ -29,13 +29,13 @@ public partial class CoreWebView2CookieManager
 	/// </summary>
 	/// <param name="name">The cookie name.</param>
 	/// <param name="value">The cookie value.</param>
-	/// <param name="domain">The cookie domain.</param>
-	/// <param name="path">The cookie path.</param>
+	/// <param name="Domain">The cookie domain.</param>
+	/// <param name="Path">The cookie path.</param>
 	/// <returns>The newly created cookie.</returns>
-	public CoreWebView2Cookie CreateCookie(string name, string value, string domain, string path)
+	public CoreWebView2Cookie CreateCookie(string name, string value, string Domain, string Path)
 	{
-		ValidateCookieIdentity(name, domain, path);
-		return new CoreWebView2Cookie(name, value ?? throw new ArgumentNullException(nameof(value)), domain, path);
+		ValidateCookieIdentity(name, Domain, Path);
+		return new CoreWebView2Cookie(name, value ?? throw new ArgumentNullException(nameof(value)), Domain, Path);
 	}
 
 	private static void ValidateCookieIdentity(string name, string domain, string path)
@@ -141,10 +141,10 @@ public partial class CoreWebView2CookieManager
 	/// Deletes cookies with a matching name, domain, and path.
 	/// </summary>
 	/// <param name="name">The required cookie name.</param>
-	/// <param name="domain">The exact cookie domain.</param>
-	/// <param name="path">The exact cookie path.</param>
-	public void DeleteCookiesWithDomainAndPath(string name, string domain, string path)
-		=> Native.DeleteCookiesWithDomainAndPath(name, domain, path);
+	/// <param name="Domain">The exact cookie domain.</param>
+	/// <param name="Path">The exact cookie path.</param>
+	public void DeleteCookiesWithDomainAndPath(string name, string Domain, string Path)
+		=> Native.DeleteCookiesWithDomainAndPath(name, Domain, Path);
 
 	/// <summary>
 	/// Deletes all cookies in the current user profile.
