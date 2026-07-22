@@ -255,8 +255,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				expected,
-				SUT
+				Children =
+				{
+					expected,
+					SUT
+				}
 			});
 
 			Action OnFrameRendered = async () =>
@@ -1048,8 +1051,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				textbox,
-				textblock
+				Children =
+				{
+					textbox,
+					textblock
+				}
 			});
 
 			for (int i = 0; i < 5; i++)

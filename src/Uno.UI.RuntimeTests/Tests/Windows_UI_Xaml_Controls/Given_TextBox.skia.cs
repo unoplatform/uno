@@ -4130,8 +4130,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sp = new StackPanel()
 			{
-				SUT,
-				new TextBox() { Text="focus dummy" }
+				Children =
+				{
+					SUT,
+					new TextBox() { Text="focus dummy" }
+				}
 			};
 
 			WindowHelper.WindowContent = sp;

@@ -252,17 +252,4 @@ public partial class Panel : FrameworkElement, IPanel
 	private void UpdateBorder() => _borderRenderer.Update();
 #endif
 
-	/// <summary>        
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this 
-	/// new Panel 
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-	void Add(
-		UIElement view
-		) => Children.Add(view);
 }

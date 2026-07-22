@@ -286,7 +286,7 @@ public class Given_InputManager
 		var button1 = stackPanel.Children[0] as Button;
 		var button2 = stackPanel.Children[1] as Button;
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -332,7 +332,7 @@ public class Given_InputManager
 
 		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -373,7 +373,7 @@ public class Given_InputManager
 
 		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -420,7 +420,7 @@ public class Given_InputManager
 
 		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -465,7 +465,7 @@ public class Given_InputManager
 
 		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -518,7 +518,7 @@ public class Given_InputManager
 		var cursor = InputSystemCursor.Create(InputSystemCursorShape.IBeam);
 		button1.SetProtectedCursor(cursor);
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 
@@ -572,7 +572,7 @@ public class Given_InputManager
 
 		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
-		var border = new Border { scrollViewer };
+		var border = new Border { Child = scrollViewer };
 
 		await UITestHelper.Load(border);
 

@@ -929,20 +929,6 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 #endif
 
-		/// <summary>
-		/// Sets the content of the ScrollViewer
-		/// </summary>
-		/// <param name="view"></param>
-		/// <remarks>Used in the context of member initialization</remarks>
-		public
-#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
-			new
-#endif
-			void Add(View view)
-		{
-			Content = view;
-		}
-
 		protected override void OnApplyTemplate()
 		{
 			// Cleanup previous template
