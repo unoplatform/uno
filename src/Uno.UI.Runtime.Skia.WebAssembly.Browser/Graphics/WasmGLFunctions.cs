@@ -9,28 +9,25 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 
-// JS-backed implementations of OpenGL ES 3.0 entry points used by GLCanvasElement on browser-wasm.
-// Each entry is an [UnmanagedCallersOnly] static method whose address lives in dotnet.wasm's own
-// function table; Silk.NET resolves them via INativeContext.GetProcAddress and calls them as
-// delegate*[unmanaged[Cdecl]]. The bodies trampoline into the TS WebGL2 shim through [JSImport].
+// OpenGL ES 3.0 entry points for GLCanvasElement on browser-wasm.
+//
+// GetProcAddress resolves each name from emscripten's native C GL (-lGL, shared with SkiaSharp)
+// via uno_gl_resolve first. The JS-backed [UnmanagedCallersOnly] entries registered below are a
+// fallback for the few names emscripten's proc table doesn't expose. Each fallback entry lives in
+// dotnet.wasm's own function table and trampolines into the TS WebGL2 shim through [JSImport];
+// Silk.NET calls them as delegate*[unmanaged[Cdecl]].
 //
 // The JSImport source generator doesn't support uint/ushort, so the NativeMethods bridge passes
 // everything as int; uint args from the [UnmanagedCallersOnly] signature are bit-cast at the
 // call boundary (no behavior change since wasm32 transfers them as i32 anyway).
 //
-// Entries with 9 or more arguments can't be dispatched directly from managed code: the mono-wasm
-// interpreter caps native-to-interp trampolines at 8 args (dotnet/runtime#109338). These route
-// through native C shims (build/native/uno_gl_shim.c) that pack args into a struct and call a
-// 1-arg managed dispatcher; see WasmGLFunctions.LargeArityShims.cs.
-//
 // Float-bearing calli signatures (VFFFF for gl.ClearColor, VIF for gl.Uniform1f, VIFFFF for
 // gl.Uniform4f) need to be discovered by the build-time ManagedToNativeGenerator via [DllImport]
 // declarations; see SignaturePrimer in WasmGLFunctions.LargeArityShims.cs.
 //
-// Adding a new entry: add an [UnmanagedCallersOnly] method below, register it in the static ctor
-// dictionary, and add the matching JSImport + TS implementation. If the new signature has any
-// float/double parameters, add a matching [DllImport] dummy to SignaturePrimer (plus a C body
-// in uno_gl_shim.c) too.
+// Adding a fallback entry: add an [UnmanagedCallersOnly] method below, register it in the static
+// ctor dictionary, and add the matching JSImport + TS implementation. If the new signature has any
+// float/double parameters, add a matching [DllImport] dummy to SignaturePrimer too.
 internal static unsafe partial class WasmGLFunctions
 {
 	private static Dictionary<string, IntPtr> _addresses = null!;
@@ -51,9 +48,10 @@ internal static unsafe partial class WasmGLFunctions
 		// hand-written JS shim. Logged so a validation run reveals exactly what still needs it.
 		if (_addresses.TryGetValue(name, out var p))
 		{
-			if (typeof(WasmGLFunctions).Log().IsEnabled(LogLevel.Debug))
+			var log = typeof(WasmGLFunctions).Log();
+			if (log.IsEnabled(LogLevel.Debug))
 			{
-				typeof(WasmGLFunctions).Log().Debug($"GL '{name}' not in emscripten proc table; using JS shim fallback.");
+				log.Debug($"GL '{name}' not in emscripten proc table; using JS shim fallback.");
 			}
 			return p;
 		}
@@ -138,7 +136,7 @@ internal static unsafe partial class WasmGLFunctions
 			["glDeleteTextures"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, IntPtr, void>)&glDeleteTextures,
 			["glBindTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, uint, void>)&glBindTexture,
 			["glActiveTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glActiveTexture,
-			// glTexImage2D has 9 args -> registered in RegisterLargeArityShimEntries.
+			// glTexImage2D (9 args) is served from emscripten's native GL via uno_gl_resolve.
 			["glTexParameteri"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, int, void>)&glTexParameteri,
 			["glTexParameterIuiv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, IntPtr, void>)&glTexParameterIuiv,
 			["glReadBuffer"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glReadBuffer,

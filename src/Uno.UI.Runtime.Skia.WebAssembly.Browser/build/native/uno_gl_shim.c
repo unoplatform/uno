@@ -1,7 +1,7 @@
 // GLCanvasElement resolves OpenGL entry points straight from emscripten's own C GL library
 // (-lGL, shared with SkiaSharp) via uno_gl_resolve, instead of Uno's hand-written JS shim. This
-// avoids the C->managed [UnmanagedCallersOnly] callback that traps under WASM full AOT (see
-// unoplatform/kahua-private#520) and reuses emscripten's C-GL<->WebGL bridging (integer-id/handle
+// avoids the C->managed [UnmanagedCallersOnly] callback that traps under WASM full AOT (tracked
+// internally) and reuses emscripten's C-GL<->WebGL bridging (integer-id/handle
 // tables, pointer/PBO marshaling, getter pointer-writes), which operates on the same shared
 // context and window.GL.* tables the framework already uses.
 //
@@ -10,7 +10,7 @@
 // offscreen FBO color attachment relies on. glTexImage2D/glTexImage3D are therefore served from
 // small wrappers that promote before forwarding to emscripten.
 //
-// Silk.NET still calli's into the resolved addresses (managed->native); the interpreter's invoke
+// Silk.NET still uses calli to reach the resolved addresses (managed->native); the interpreter's invoke
 // thunks handle that in both interpreter and AOT builds. The float/large-arity signatures are
 // primed by the SignaturePrimer [DllImport]s (WasmGLFunctions.LargeArityShims.cs), whose native
 // bodies are the uno_dummy_* stubs below.

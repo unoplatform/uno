@@ -11,7 +11,7 @@ using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	// Port of the unoplatform/kahua-private#520 repro (a minimal 3D model viewer): a lit sphere
+	// Port of the internal WASM-AOT GL repro (a minimal 3D model viewer): a lit sphere
 	// encircled by a tilted ring, drawn through GLCanvasElement with a per-vertex normal/UV mesh,
 	// a Blinn-Phong shader, and a 1x1 white fallback texture. The file-loading (Assimp) path of the
 	// original is dropped - it isn't needed to exercise the reported crash.

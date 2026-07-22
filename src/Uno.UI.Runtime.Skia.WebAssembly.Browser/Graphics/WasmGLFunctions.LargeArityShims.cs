@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 
 // The >8-arg gl functions are served from emscripten's native C GL by uno_gl_resolve (see
-// WasmGLFunctions.GetProcAddress and build/native/uno_gl_shim.c). Silk.NET still calli's into the
-// resolved addresses; under the interpreter those managed->native calls need matching invoke
-// trampolines, which the SignaturePrimer [DllImport]s below prime at build time (float-bearing and
-// 9/10/11-arg all-i32 signatures). See unoplatform/kahua-private#520.
+// WasmGLFunctions.GetProcAddress and build/native/uno_gl_shim.c). Silk.NET still uses calli to
+// reach the resolved addresses; under the interpreter those managed->native calls need matching
+// invoke trampolines, which the SignaturePrimer [DllImport]s below prime at build time
+// (float-bearing and 9/10/11-arg all-i32 signatures). Tracked internally.
 internal static unsafe partial class WasmGLFunctions
 {
 	private static void RegisterLargeArityShimEntries() => KeepSignaturePrimer();
