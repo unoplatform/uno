@@ -1,8 +1,8 @@
-#if UNO_HOTRELOAD
+#if UNO_HOTRELOAD // HR Engine + Dev Server (JSON contract with client)
 namespace Uno.HotReload.IO;
-#elif UNO_RC_MESSAGING
+#elif UNO_RC_MESSAGING // IDE <-> Dev-Server
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload;
-#else
+#else // Client
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 #endif
 
