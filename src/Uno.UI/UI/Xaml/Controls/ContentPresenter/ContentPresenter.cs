@@ -481,17 +481,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				HorizontalAlignment.Stretch,
-				FrameworkPropertyMetadataOptions.AffectsArrange,
-				(s, e) => ((ContentPresenter)s)?.OnHorizontalContentAlignmentChanged((HorizontalAlignment)e.OldValue, (HorizontalAlignment)e.NewValue)
+				FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
-
-	protected virtual void OnHorizontalContentAlignmentChanged(HorizontalAlignment oldHorizontalContentAlignment, HorizontalAlignment newHorizontalContentAlignment)
-	{
-		OnHorizontalContentAlignmentChangedPartial(oldHorizontalContentAlignment, newHorizontalContentAlignment);
-	}
-
-	partial void OnHorizontalContentAlignmentChangedPartial(HorizontalAlignment oldHorizontalContentAlignment, HorizontalAlignment newHorizontalContentAlignment);
 
 	#endregion
 
@@ -510,17 +502,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				VerticalAlignment.Stretch,
-				FrameworkPropertyMetadataOptions.AffectsArrange,
-				(s, e) => ((ContentPresenter)s)?.OnVerticalContentAlignmentChanged((VerticalAlignment)e.OldValue, (VerticalAlignment)e.NewValue)
+				FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
-
-	protected virtual void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
-	{
-		OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
-	}
-
-	partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 
 	#endregion
 

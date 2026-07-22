@@ -211,8 +211,8 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
   - See notes.
   - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.wasm.cs`
-- [ ] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
-  - Delete the `TextBox` override; make base `OnVerticalContentAlignmentChanged` `private protected`.
+- [x] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
+  - Delete the empty `TextBox` override and the `ContentPresenter` base virtual (both no-ops; layout stays driven by `AffectsArrange`).
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
 - [ ] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
