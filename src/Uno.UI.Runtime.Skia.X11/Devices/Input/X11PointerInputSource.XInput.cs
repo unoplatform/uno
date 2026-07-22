@@ -309,7 +309,10 @@ internal partial class X11PointerInputSource
 
 		var timeInMicroseconds = (ulong)(data.time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 		var deviceType = data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse;
-		var pointerId = (uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid); // for touch, data.detail is the touch ID
+		// For touch, data.detail is the touch ID. For mouse, we use the master device id (not sourceid):
+		// WM-generated crossing events (map-under-pointer, grab activation) carry sourceid = master while
+		// regular events carry sourceid = slave, so keying on sourceid splits one cursor into two pointer ids.
+		var pointerId = (uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.deviceid);
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: timeInMicroseconds,
@@ -361,7 +364,7 @@ internal partial class X11PointerInputSource
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: timestampInMicroseconds,
 			PointerDevice.For(PointerDeviceType.Mouse),
-			(uint)data.sourceid,
+			(uint)data.deviceid, // master device id, must match the id used for button/motion events
 			new Point(data.event_x / scale, data.event_y / scale),
 			new Point(data.event_x / scale, data.event_y / scale),
 			properties.HasPressedButton,
