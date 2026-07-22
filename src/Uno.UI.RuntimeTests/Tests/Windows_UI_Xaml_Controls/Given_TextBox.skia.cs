@@ -5343,6 +5343,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
 			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
 			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
+
+			var selectAllLabel = selectAllButton.FindVisualChildByName("TextLabel") as TextBlock;
+			Assert.IsNotNull(selectAllLabel, "the primary Select All button template should expose a TextLabel");
+			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
 		}
 
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).

@@ -945,6 +945,16 @@ partial class TextCommandBarFlyout
 
 						InitializeButtonWithUICommand(button, command, executeFunc);
 
+						// Uno specific: promoted to the primary bar of a transient insertion-caret flyout, Select All can be
+						// hosted directly under the command bar instead of its PrimaryItemsControl, so the implicit
+						// CommandBarFlyoutAppBarButtonStyle never reaches it and its text label stays collapsed. Assign that
+						// style explicitly so the button always carries the flyout template (Cut/Copy/Paste get it implicitly).
+						if (Application.Current?.Resources.TryGetValue("CommandBarFlyoutAppBarButtonStyle", out var flyoutButtonStyle) == true &&
+							flyoutButtonStyle is Style style)
+						{
+							button.Style = style;
+						}
+
 						m_buttons[TextControlButtons.SelectAll] = button;
 						return button;
 					}
