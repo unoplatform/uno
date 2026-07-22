@@ -2930,6 +2930,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <!-- CoreWebView2InitializedEventArgs is a non-activatable args type in WinUI (framework-raised, exposes Exception); the public parameterless ctor is removed. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Aligned to WinUI IDL (non-activatable args type)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
