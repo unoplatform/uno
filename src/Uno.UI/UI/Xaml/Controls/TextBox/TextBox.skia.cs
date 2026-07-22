@@ -42,6 +42,10 @@ public partial class TextBox : ITextSelectionGripperHost
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextSelectionGripperPresenter _gripperPresenter;
+
+	// Test hook: the pair of touch-selection grippers when they are currently showing, otherwise null.
+	internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? VisibleGrippersForTesting => _gripperPresenter?.VisibleGrippersForTesting;
+
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
@@ -114,6 +118,15 @@ public partial class TextBox : ITextSelectionGripperHost
 			}
 		}
 	}
+
+	// Settable so runtime tests can force a mobile convention on Skia Desktop, where
+	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
+	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
+
+	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
+		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
+			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
 		nameof(CanUndo),
@@ -1821,6 +1834,17 @@ public partial class TextBox : ITextSelectionGripperHost
 		CaretWithThumbsBothEndsShowing
 	}
 
+	// Which platform's native touch text-selection conventions the Skia TextBox follows.
+	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
+	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	internal enum TouchTextSelectionConvention
+	{
+		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		Desktop,
+		Android,
+		iOS
+	}
+
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
 
 	private abstract record TextBoxAction;
@@ -1902,8 +1926,26 @@ public partial class TextBox : ITextSelectionGripperHost
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
 		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
-		=> TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
+	{
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
+		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
+			? _lastPointerDown.repeatedPresses + 1
+			: 0;
+		_lastPointerDown = (press, repeatedPresses);
+
+		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
+		{
+			TouchSelectWord(displayBlockPoint);
+		}
+		else
+		{
+			TouchTap(displayBlockPoint, true);
+		}
+	}
 	#endregion
 
 	/// <summary>
