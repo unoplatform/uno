@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
+#if !__WASM__
+using Uno.UI.Xaml.Core;
+#endif
 
 #if __WASM__
 using System.Collections.Specialized;
@@ -161,7 +164,22 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		/// <inheritdoc />
+#if __WASM__
 		public void Clear() => _collection.Clear();
+#else
+		public void Clear()
+		{
+			foreach (var inline in _collection)
+			{
+				if (ClearFocusForRemovedInline(inline))
+				{
+					break;
+				}
+			}
+
+			_collection.Clear();
+		}
+#endif
 
 		/// <inheritdoc />
 		public bool Contains(Inline item) => _collection.Contains(item);
@@ -170,7 +188,17 @@ namespace Microsoft.UI.Xaml.Documents
 		public void CopyTo(Inline[] array, int arrayIndex) => _collection.CopyTo(array, arrayIndex);
 
 		/// <inheritdoc />
-		public bool Remove(Inline item) => _collection.Remove(item);
+		public bool Remove(Inline item)
+		{
+			var index = _collection.IndexOf(item);
+			if (index < 0)
+			{
+				return false;
+			}
+
+			RemoveAt(index);
+			return true;
+		}
 
 		/// <inheritdoc />
 		public int Count => _collection.Count;
@@ -189,7 +217,15 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		/// <inheritdoc />
+#if __WASM__
 		public void RemoveAt(int index) => _collection.RemoveAt(index);
+#else
+		public void RemoveAt(int index)
+		{
+			ClearFocusForRemovedInline(_collection[index]);
+			_collection.RemoveAt(index);
+		}
+#endif
 
 		/// <inheritdoc />
 		public Inline this[int index]
@@ -198,9 +234,32 @@ namespace Microsoft.UI.Xaml.Documents
 			set
 			{
 				ValidateInline(value, nameof(value));
+#if !__WASM__
+				if (!ReferenceEquals(_collection[index], value))
+				{
+					ClearFocusForRemovedInline(_collection[index]);
+				}
+#endif
+
 				_collection[index] = value;
 			}
 		}
+
+#if !__WASM__
+		private static bool ClearFocusForRemovedInline(Inline inline)
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(inline, VisualTree.LookupOptions.NoFallback);
+			if (focusManager?.FocusedElement is Inline focusedInline &&
+				inline.Enumerate().Any(candidate => ReferenceEquals(candidate, focusedInline)))
+			{
+				// Non-WASM inline collections do not run a live Leave walk when an item is removed.
+				focusManager.ClearFocus(canCancel: false);
+				return true;
+			}
+
+			return false;
+		}
+#endif
 
 		/// <summary>
 		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a

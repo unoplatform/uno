@@ -329,6 +329,12 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			_window.Add(_webview);
 			_webview.ShowAll();
 			_window.Realize(); // creates the Gdk window (and the X11 window) without showing it
+
+			// Set override-redirect before the window is first mapped, so that the WM never
+			// starts managing it as a toplevel. Some WMs (e.g. Weston's XWM on WSLg) would
+			// otherwise never let go of the window when we reparent it into the app's window,
+			// leaving the webview invisible.
+			_window.Window.OverrideRedirect = true;
 			return gdk_x11_window_get_xid(_window.Window.Handle);
 		});
 
@@ -360,10 +366,18 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			var tcs = new TaskCompletionSource<T>();
 			GLib.Idle.Add(() =>
 			{
-				tcs.SetResult(func());
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					tcs.SetResult(func());
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
-			return tcs.Task.Result;
+			return tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 
@@ -396,11 +410,19 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			var tcs = new TaskCompletionSource();
 			GLib.Idle.Add(() =>
 			{
-				func();
-				tcs.SetResult();
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					func();
+					tcs.SetResult();
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
-			tcs.Task.Wait();
+			tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 

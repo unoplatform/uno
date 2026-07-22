@@ -19,6 +19,7 @@
 #if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
+using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml;
@@ -384,20 +385,19 @@ public partial class DependencyObjectStore
 			LeaveProperties(namescopeOwner, @params);
 		}
 
-		// TODO Uno: NOT PORTED — focus/input cleanup (depends.cpp:1312-1339); Uno handles focus and
-		// pointer cleanup of leaving elements through its own visual-tree paths:
-		//if (params.fIsLive)
-		//{
-		//	// If we're currently the focused element, remove ourselves from being focused
-		//	const auto contentRoot = VisualTree::GetContentRootForElement(this, LookupOptions::NoFallback);
-		//	if (contentRoot != nullptr)
-		//	{
-		//		CFocusManager * pFocusManager = contentRoot->GetFocusManagerNoRef();
-		//
-		//		if (pFocusManager && pFocusManager->GetFocusedElementNoRef() == this)
-		//		{
-		//			pFocusManager->ClearFocus();
-		//		}
+		if (@params.IsLive && @params.VisualTree?.ContentRoot.FocusManager is { } focusManager)
+		{
+			var focusedElement = focusManager.FocusedElement;
+			if (ReferenceEquals(focusedElement, ActualInstance) ||
+				focusedElement is TextElement textElement &&
+				ReferenceEquals(textElement.GetContainingFrameworkElement(), ActualInstance))
+			{
+				// A leaving object cannot retain focus, even if LosingFocus handlers try to cancel.
+				focusManager.ClearFocus(canCancel: false);
+			}
+		}
+
+		// TODO Uno: NOT PORTED — remaining input cleanup (depends.cpp:1328-1339):
 		//
 		//		const auto& akExport = contentRoot->GetAKExport();
 		//
@@ -406,7 +406,6 @@ public partial class DependencyObjectStore
 		//			akExport.RemoveElementFromAKMode(this);
 		//		}
 		//	}
-		//}
 		//
 		//CInputServices *inputServices = GetContext()->GetInputServices();
 		//
