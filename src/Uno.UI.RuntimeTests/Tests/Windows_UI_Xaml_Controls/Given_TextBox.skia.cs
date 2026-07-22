@@ -5335,6 +5335,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
 			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
 			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+
+			// Select All must sit in the primary bar (so the flyout has a primary command and stays open) and, like
+			// Cut/Copy/Paste, must show its text label there — not render as a bare icon — so it reads as a command.
+			var selectAllButton = flyout!.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
+			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
 		}
 
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
