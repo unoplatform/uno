@@ -5185,12 +5185,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var processor = VisualTree.GetContentRootForElement(SUT)?.InputManager?.ContextMenuProcessor;
 			Assert.IsNotNull(processor);
-			processor.SetIsContextMenuOnHolding(false);
+			var nonNullProcessor = processor ?? throw new InvalidOperationException("ContextMenuProcessor should be available for this test.");
+			nonNullProcessor.SetIsContextMenuOnHolding(false);
 
-			processor.RaiseContextRequestedEvent(SUT, SUT.GetAbsoluteBoundsRect().GetCenter(), isTouchInput: true);
+			nonNullProcessor.RaiseContextRequestedEvent(SUT, SUT.GetAbsoluteBoundsRect().GetCenter(), isTouchInput: true);
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsFalse(processor.IsContextMenuOnHolding, "a mobile touch-and-hold is handled without a context menu, so it must not be flagged as menu-showing");
+			Assert.IsFalse(nonNullProcessor.IsContextMenuOnHolding, "a mobile touch-and-hold is handled without a context menu, so it must not be flagged as menu-showing");
 		}
 
 		// Native iOS: a touch long-press begins dragging the caret; the caret follows the finger and

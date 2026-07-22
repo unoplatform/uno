@@ -118,7 +118,9 @@ public partial class TextBox
 	// Touch taps can't reuse IsMultiTapGesture: successive touch presses get different pointer ids,
 	// so we compare only the timing and distance between the two taps.
 	private static bool IsTouchMultiTap(PointerPoint previous, PointerPoint current)
-		=> current.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds
+		=> previous.PointerDeviceType == PointerDeviceType.Touch
+			&& current.PointerDeviceType == PointerDeviceType.Touch
+			&& current.Timestamp - previous.Timestamp <= GestureRecognizer.MultiTapMaxDelayMicroseconds
 			&& !GestureRecognizer.IsOutOfTapRange(previous.Position, current.Position);
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
@@ -332,10 +334,13 @@ public partial class TextBox
 					break;
 			}
 
-			args.Handled = true; // suppress the default context flyout on iOS/Android
+			// suppress the default context flyout on iOS/Android
+			args.Handled = true;
+
 			// We handled the hold without opening a context menu, so don't let a later HoldingState.Canceled
 			// (finger moves during the caret-drag / after word-select) spuriously cancel a non-existent menu.
 			args.PreventContextMenuOnHolding = true;
+
 			return;
 		}
 
