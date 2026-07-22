@@ -125,11 +125,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
 
+		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
+		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
+		// refresh rate through UpdateRenderTimerFps.
+		_framePacer = CreateFramePacer();
+
 		UpdateWindowPropertiesFromPackage();
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		_framePacer = CreateFramePacer();
 		_renderThread = InitRenderThread();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
@@ -180,7 +184,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		Task.Run(SetWindowIcon);
+		// Icon path resolution must stay on the UI thread: BitmapImage.GetScaledPath reads
+		// DisplayInformation, and creating it from another thread races the one created for
+		// the window (X11DisplayInformationExtension would then be "set twice"). Only the
+		// decoding and the X11 calls are offloaded, inside SetWindowIcon.
+		SetWindowIcon();
 
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
@@ -212,7 +220,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(iconPath);
+				BeginSetIconFromFile(iconPath);
 			}
 			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -221,7 +229,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(scaledPath);
+				BeginSetIconFromFile(scaledPath);
 			}
 			else
 			{
@@ -231,6 +239,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 			}
 		}
+
+		void BeginSetIconFromFile(string path) => Task.Run(() =>
+		{
+			try
+			{
+				SetIconFromFile(path);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to set the window icon from [{path}].", e);
+				}
+			}
+		});
 
 		unsafe void SetIconFromFile(string iconPath)
 		{
