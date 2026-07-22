@@ -56,12 +56,12 @@ The batched message **implements the existing `IUpdateFileRequest`** (which alre
 everything needed, *including* the hot-reload intent: `Edits`, `ForceSaveOnDisk`,
 `IsForceHotReloadDisabled`, `ForceHotReloadDelay/Attempts`, `RequestId`), and the reply
 **implements `IUpdateFileResponse`** (per-file `FileEditResult`s + `GlobalError` +
-`HotReloadCorrelationId`), so `IdeBatchFileUpdater` forwards the request and re-emits the
+`HotReloadCorrelationId`), so `IdeFileUpdater` forwards the request and re-emits the
 response with no bespoke mapping layer:
 
 ```
-UpdateFilesIdeMessage(long CorrelationId, …)  : IdeMessageWithCorrelationId, IUpdateFileRequest
-UpdateFilesIdeResult(long CorrelationId, …)   : IdeMessageWithCorrelationId, IUpdateFileResponse
+UpdateFileRequestIdeMessage(long CorrelationId, …)  : IdeMessageWithCorrelationId, IUpdateFileRequest
+UpdateFileResponseIdeMessage(long CorrelationId, …)   : IdeMessageWithCorrelationId, IUpdateFileResponse
 ```
 
 Why not reuse the existing concrete `UpdateFileRequest` directly: it is an `IMessage`
@@ -86,11 +86,11 @@ auto-retry, and the legacy update message is kept one release as a rollback path
 - `ApplyEditsAsync(request)` — base: current `Task.WhenAll` over `IFileEditor.EditAsync`;
 - `TriggerHotReloadAsync(request)` — base: current pre-delay + `requestHotReload()`.
 
-A new `IdeBatchFileUpdater : FileUpdater` (wired by `CreateFileUpdater` when
+A new `IdeFileUpdater : FileUpdater` (wired by `CreateFileUpdater` when
 `isRunningInsideVisualStudio`, replacing `IDEFileEditor`) overrides:
 
 - `ApplyEditsAsync` — splits the request: **deletes** (`NewText == null`) go to the on-disk
-  editor (unchanged semantics), **writes** are sent as one `UpdateFilesIdeMessage` carrying
+  editor (unchanged semantics), **writes** are sent as one `UpdateFileRequestIdeMessage` carrying
   the `IUpdateFileRequest` data as-is (the force intent is `!IsForceHotReloadDisabled`),
   preserving edit order and the per-request save flag (fixes F2);
 - `TriggerHotReloadAsync` — no-op: the trigger travels with the batch.
@@ -103,7 +103,7 @@ standalone `ForceHotReloadIdeMessage` (retries never rewrite files).
 
 ### Extension side — apply, wait for readiness, then trigger
 
-New handler for `UpdateFilesIdeMessage` in `EntryPoint`:
+New handler for `UpdateFileRequestIdeMessage` in `EntryPoint`:
 
 1. **Apply** every edit sequentially, in batch order, reusing the current per-file logic
    (in-memory `ReplaceText` for open documents, `File.WriteAllText` otherwise) — but **without
@@ -195,7 +195,7 @@ dev-server workspace; spec 050 already covers their gating).
 ## Testing & validation
 
 - **Unit (buildable on any OS)**: `FileUpdater` template refactor — existing tests unchanged;
-  `IdeBatchFileUpdater` — ordering, delete-split, info-file-before-send, retry arming, message
+  `IdeFileUpdater` — ordering, delete-split, info-file-before-send, retry arming, message
   shape (mock IDE callback).
 - **Manual (Windows/VS)**: the minimal repro from #23840 — create a `.xaml`/`.xaml.cs` pair
   during an active debug session. Success criterion: **no popup**, the view type (incl.
@@ -221,22 +221,27 @@ Deltas vs. the design above (first implementation pass):
 
 - **Batch ack is the standard `IdeResultMessage`** (Success/Fail): the server↔IDE
   request/response plumbing (`SendAndWaitForResult`) is `Result`-typed and shared by every
-  correlated message; introducing the typed `UpdateFilesIdeResult` (per-file results) requires
-  generalizing that plumbing and is deferred to a follow-up. `IdeBatchFileUpdater` maps the
+  correlated message; introducing the typed `UpdateFileResponseIdeMessage` (per-file results) requires
+  generalizing that plumbing and is deferred to a follow-up. `IdeFileUpdater` maps the
   single ack onto uniform per-edit results.
-- **Shared contracts land in `Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload`** (not
-  `…IdeChannel` itself): many existing files import `…Messaging.IdeChannel` broadly, and
-  placing `IUpdateFileRequest`/`FileEdit`/`FileEditResult`/`FileUpdateResult` there created
-  CS0104 ambiguities with the RC/engine copies. Only the new code imports the sub-namespace.
-  The links compile with the `UNO_RC_MESSAGING` define (third branch of the existing
-  `#if UNO_HOTRELOAD` dance).
-- **Escape hatch (R8)**: server configuration `hot-reload-ide-batch=false` restores the
+- **The shared contracts are single-sourced in `Uno.UI.RemoteControl.Messaging`, in the
+  engine namespace `Uno.HotReload.IO`** (review decision: the RC namespace is legacy):
+  `IUpdateFileRequest`/`FileEdit`/`FileEditResult`/`FileUpdateResult` compile ONLY into
+  Messaging (`UNO_RC_MESSAGING` branch of the existing `#if UNO_HOTRELOAD` dance) and
+  `Uno.HotReload` now references Messaging instead of compiling its own copies — one real
+  type shared by the engine, the dev-server and the IDE (no duplicate-type aliasing, and the
+  engine↔IDE edit mapping disappears entirely). Note: the `Uno.HotReload` package now
+  depends on `Uno.WinUI.DevServer.Messaging`.
+- **Escape hatch (R8)**: server configuration `hot-reload-ide-updater=false` restores the
   legacy per-file `UpdateFileIdeMessage` + `IDEFileEditor` composition (kept compiled).
 - **F9 refinement**: the `Microsoft.VisualStudio.SDK` meta-package does **not** provide
   `Microsoft.VisualStudio.LanguageServices` — an explicit compile-time reference (Roslyn
   4.4 line, matching VS 17.4, `ExcludeAssets="runtime"`) was added to the extension project.
 - **Empty-content edits** (`NewText.Length == 0`) are skipped by the IDE batch handler, in
   parity with the legacy single-file handler's `FileContent is { Length: > 0 }` guard.
+- `IFileEditor` is documented as a legacy seam (request-level variants must implement/derive
+  `IFileUpdater`); `IDEFileEditor` is `[Obsolete]`, suppressed only at the legacy
+  escape-hatch composition site.
 - The `FileUpdater` template refactor is covered by the existing engine test suite (green);
-  dedicated `IdeBatchFileUpdater` unit tests (ordering, delete split, info-file-before-send,
+  dedicated `IdeFileUpdater` unit tests (ordering, delete split, info-file-before-send,
   retry arming) are still to be added.

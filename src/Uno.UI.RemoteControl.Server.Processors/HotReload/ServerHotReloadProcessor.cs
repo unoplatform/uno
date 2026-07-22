@@ -108,13 +108,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			Func<ValueTask> requestHotReload = async () => { await RequestHotReloadToIde(); };
 
 			// Escape hatch for the batched IDE update path (spec 052) — set the
-			// "hot-reload-ide-batch" server configuration to "false" to restore the legacy
+			// "hot-reload-ide-updater" server configuration to "false" to restore the legacy
 			// per-file UpdateFileIdeMessage flow.
-			var useBatchedIdeUpdates = !"false".Equals(_remoteControlServer.GetServerConfiguration("hot-reload-ide-batch"), StringComparison.OrdinalIgnoreCase);
+			var useBatchedIdeUpdates = !"false".Equals(_remoteControlServer.GetServerConfiguration("hot-reload-ide-updater"), StringComparison.OrdinalIgnoreCase);
 
 			if (isRunningInsideVisualStudio && useBatchedIdeUpdates)
 			{
-				return new IdeBatchFileUpdater(
+				return new IdeFileUpdater(
 					onDisk,
 					_solutionWatchersGate,
 					_tracker,
@@ -128,6 +128,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					GetNextIdeCorrelationId);
 			}
 
+#pragma warning disable CS0618 // IDEFileEditor is the legacy escape-hatch path (spec 052)
 			IFileEditor editor = isRunningInsideVisualStudio
 				? new IDEFileEditor(
 					async (filePath, newText, saveToDisk) =>
@@ -137,6 +138,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					},
 					onDisk)
 				: onDisk;
+#pragma warning restore CS0618
 
 			return new FileUpdater(
 				editor,

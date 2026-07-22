@@ -693,7 +693,7 @@ public partial class EntryPoint : IDisposable
 				case UpdateFileIdeMessage ufm:
 					await OnUpdateFileRequestedAsync(ufm);
 					break;
-				case UpdateFilesIdeMessage ufsm:
+				case UpdateFileRequestIdeMessage ufsm:
 					await OnUpdateFilesRequestedAsync(ufsm);
 					break;
 				case NotificationRequestIdeMessage nr:
@@ -919,7 +919,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task OnUpdateFilesRequestedAsync(UpdateFilesIdeMessage request)
+	private async Task OnUpdateFilesRequestedAsync(UpdateFileRequestIdeMessage request)
 	{
 		try
 		{

@@ -7,25 +7,24 @@ using Uno.HotReload.Info;
 using Uno.HotReload.IO;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
-using IdeFileEdit = Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload.FileEdit;
-using UpdateFilesIdeMessage = Uno.UI.RemoteControl.Messaging.IdeChannel.UpdateFilesIdeMessage;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host.HotReload;
 
 /// <summary>
 /// <see cref="FileUpdater"/> variant for IDE-driven hot reload (Visual Studio): all content
 /// edits of a request — and the hot-reload trigger — are forwarded to the IDE as a single
-/// <see cref="UpdateFilesIdeMessage"/>, so the IDE can apply them in order and wait for its
+/// <see cref="UpdateFileRequestIdeMessage"/>, so the IDE can apply them in order and wait for its
 /// workspace to be able to compile the change-set before triggering EnC (spec 052).
 /// Deletes are applied on disk by the base editor, like the legacy <see cref="IDEFileEditor"/> did.
 /// </summary>
-internal sealed class IdeBatchFileUpdater(
+internal sealed class IdeFileUpdater(
 	IFileEditor onDiskEditor,
 	BufferGate gate,
 	HotReloadTracker tracker,
 	HotReloadInfoFile hotReloadInfoFile,
 	Func<ValueTask> requestHotReload,
-	Func<UpdateFilesIdeMessage, ValueTask<(bool IsSuccess, string? Error)>> sendToIde,
+	Func<UpdateFileRequestIdeMessage, ValueTask<(bool IsSuccess, string? Error)>> sendToIde,
 	Func<long> nextIdeCorrelationId)
 	: FileUpdater(onDiskEditor, gate, tracker, hotReloadInfoFile, requestHotReload)
 {
@@ -53,10 +52,10 @@ internal sealed class IdeBatchFileUpdater(
 
 		if (writes.Length > 0)
 		{
-			var message = new UpdateFilesIdeMessage(
+			var message = new UpdateFileRequestIdeMessage(
 				nextIdeCorrelationId(),
 				request.RequestId,
-				[.. writes.Select(x => new IdeFileEdit(x.edit.FilePath, x.edit.OldText, x.edit.NewText, x.edit.IsCreateDeleteAllowed))],
+				[.. writes.Select(x => new FileEdit(x.edit.FilePath, x.edit.OldText, x.edit.NewText, x.edit.IsCreateDeleteAllowed))],
 				request.ForceSaveOnDisk,
 				request.IsForceHotReloadDisabled,
 				request.ForceHotReloadDelay,

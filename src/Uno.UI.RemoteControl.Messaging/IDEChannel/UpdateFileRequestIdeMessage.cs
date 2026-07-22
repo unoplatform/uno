@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
-using Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload;
+using Uno.HotReload.IO;
 
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
@@ -16,7 +16,7 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 /// Deletes (<see cref="FileEdit.NewText"/> is null) are not forwarded to the IDE — the
 /// dev-server applies them on disk — so every edit of this message carries content.
 /// </remarks>
-public record UpdateFilesIdeMessage(
+public record UpdateFileRequestIdeMessage(
 	long CorrelationId,
 	string RequestId,
 	ImmutableArray<FileEdit> Edits,
