@@ -147,6 +147,20 @@ re-baseline visual tests:
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
 
+### Type-hierarchy changes (WinUI parity)
+
+7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
+change only breaks code that used the Uno-only members leaked by the wrong base.
+
+- **`FadeInThemeAnimation` / `FadeOutThemeAnimation`** now derive directly from `Timeline`
+  (matching WinUI) instead of Uno's `DoubleAnimation`. The `DoubleAnimation`-only members
+  they used to inherit — `From`, `To`, `By`, `EasingFunction`, and
+  `EnableDependentAnimation` — are gone; WinUI never exposed them on these theme
+  animations. `TargetName` and the `Timeline` members (`Duration`, `BeginTime`,
+  `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
+  styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
+  fade-out).
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
