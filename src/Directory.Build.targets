@@ -4,7 +4,8 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<!-- The generator's assembly version is stamped into Given_MvvmGeneratedMembers goldens; regenerate them (WRITE_EXPECTED) when bumping. -->
+		<CommunityToolkitMvvmVersion>8.4.2</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
 	<!-- 
@@ -72,8 +73,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>4.2.1</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>4.2.3</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>2.2.3</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.2.1</UnoICUVersion>
@@ -137,12 +138,12 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.2.25502.107" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.9" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
-		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Update="GtkSharp" Version="3.24.24.95" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
-		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
+		<PackageReference Update="AwesomeAssertions" Version="9.4.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
@@ -152,13 +153,13 @@
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.4022.49" Condition="'$(MSBuildProjectName)' != 'Uno.WinAppSDKSyncGenerator.References'" />
 		<PackageReference Update="WebView2Aot" Version="1.5.0" />
 
-		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
+		<PackageReference Update="Basic.Reference.Assemblies.Net100" Version="1.8.9" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
@@ -213,6 +214,36 @@
 		<ItemGroup>
 			<_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
 			<ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
+		</ItemGroup>
+	</Target>
+
+	<!--
+		Microsoft.Web.WebView2's build targets inject Microsoft.Web.WebView2.Core as a plain
+		Reference (dropping the `Aliases` set on the PackageReference) and pull in a WPF assembly
+		that conflicts with WindowsBase. Repo projects that alias WebView2 but don't consume the
+		Uno.Sdk (Uno.UI.Runtime.Skia.Win32, SamplesApp.Skia.Generic, …) therefore lose the alias
+		and hit a CoreWebView2 collision with Uno.UI's own projection. Re-apply the alias to the
+		resolved Core reference and drop the unused WPF one. Mirrors the workarounds in Uno.Sdk's
+		Uno.SingleProject.Desktop.targets. Both targets are no-ops when WebView2 isn't referenced.
+	-->
+	<Target Name="_UnoRemoveWebView2WpfReference" BeforeTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<_unoWpfWebView2Reference Include="@(Reference)" Condition="'%(Reference.FileName)' == 'Microsoft.Web.WebView2.Wpf'" />
+			<Reference Remove="@(_unoWpfWebView2Reference)" Condition=" '@(_unoWpfWebView2Reference)' != '' " />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoReapplyWebView2Alias" AfterTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<_unoWebView2AliasedRef Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' == 'Microsoft.Web.WebView2' and '%(PackageReference.Aliases)' != ''" />
+		</ItemGroup>
+		<PropertyGroup Condition=" '@(_unoWebView2AliasedRef)' != ''">
+			<_unoWebView2Alias>%(_unoWebView2AliasedRef.Aliases)</_unoWebView2Alias>
+		</PropertyGroup>
+		<ItemGroup Condition=" '@(_unoWebView2AliasedRef)' != ''">
+			<ReferencePath Update="@(ReferencePath)" Condition="'%(FileName)' == 'Microsoft.Web.WebView2.Core'">
+				<Aliases>$(_unoWebView2Alias)</Aliases>
+			</ReferencePath>
 		</ItemGroup>
 	</Target>
 
