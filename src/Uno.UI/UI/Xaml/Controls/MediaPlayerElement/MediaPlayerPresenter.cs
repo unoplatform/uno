@@ -9,14 +9,46 @@ using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class MediaPlayerPresenter : Border
+	public partial class MediaPlayerPresenter : FrameworkElement
 	{
 		private WeakReference<MediaPlayerElement>? _wrOwner;
 		private CompositeDisposable? _mediaPlayerDisposable;
+		private UIElement? _child;
 
 		internal void SetOwner(MediaPlayerElement owner)
 		{
 			_wrOwner = new WeakReference<MediaPlayerElement>(owner);
+		}
+
+		/// <summary>
+		/// Hosts the video surface. Replaces the <see cref="Border.Child"/> slot the presenter
+		/// relied on before it was reparented from <see cref="Border"/> to <see cref="FrameworkElement"/>
+		/// (WinUI parity); the platform <c>IMediaPlayerPresenterExtension</c>s set it.
+		/// </summary>
+		internal UIElement Child
+		{
+			get => _child!;
+			set
+			{
+				if (_child == value)
+				{
+					return;
+				}
+
+				if (_child is not null)
+				{
+					RemoveChild(_child);
+				}
+
+				_child = value;
+
+				if (value is not null)
+				{
+					AddChild(value);
+				}
+
+				InvalidateMeasure();
+			}
 		}
 
 		private float GetScaledOtherDimension(
@@ -202,6 +234,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			if (_child is { } child)
+			{
+				MeasureElement(child, availableSize);
+			}
+
 			var layoutOwner = GetLayoutOwner();
 			var explicitWidth = layoutOwner.Width;
 			var explicitHeight = layoutOwner.Height;
@@ -274,6 +311,16 @@ namespace Microsoft.UI.Xaml.Controls
 					return new Size(NaturalVideoWidth, NaturalVideoHeight);
 				}
 			}
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			if (_child is { } child)
+			{
+				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+			}
+
+			return finalSize;
 		}
 	}
 }

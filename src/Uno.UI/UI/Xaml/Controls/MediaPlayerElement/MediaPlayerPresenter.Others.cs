@@ -10,7 +10,7 @@ using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class MediaPlayerPresenter : Border
+	public partial class MediaPlayerPresenter : FrameworkElement
 	{
 		private IMediaPlayerPresenterExtension? _extension;
 
