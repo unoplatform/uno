@@ -406,8 +406,8 @@ public sealed class Given_TryGetTargetFramework
 			parseOptions: parseOptions,
 			metadataReferences: metadataReferences);
 
-		var solution = workspace.AddProject(projectInfo);
-		return solution;
+		var project = workspace.AddProject(projectInfo);
+		return project;
 	}
 
 	/// <summary>

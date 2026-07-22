@@ -153,22 +153,12 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 	// Internal (rather than private) to allow validation from runtime tests via InternalsVisibleTo.
 	internal static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
 	{
-		Version? frameworkVersion = null;
-		try
-		{
-			if (appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
-					is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } frameworkName }, ..]
-				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
-			{
-				frameworkVersion = parsed.Version;
-			}
-		}
-		catch (Exception)
-		{
-			// Malformed attribute — fall back to the runtime version below.
-		}
+		var frameworkName = appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
+			is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } name }, ..]
+			? name
+			: null;
 
-		frameworkVersion ??= Environment.Version;
+		var frameworkVersion = ResolveFrameworkVersion(frameworkName);
 
 		// The platform MUST be probed at runtime, not from compile-time symbols: the skia flavor
 		// of this assembly is compiled for the plain `netX.0` TFM yet serves every skia-rendering
@@ -186,6 +176,38 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 			: "skia";
 
 		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
+	}
+
+	/// <summary>
+	/// The framework version reported when the application's target framework cannot be resolved
+	/// (absent, malformed, or a non-.NETCoreApp moniker) — the version of the running .NET runtime.
+	/// </summary>
+	internal static Version FallbackVersion => Environment.Version;
+
+	/// <summary>
+	/// Parses the .NETCoreApp framework version out of a
+	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute.FrameworkName"/> value
+	/// (e.g. <c>".NETCoreApp,Version=v10.0"</c> → <c>10.0</c>), falling back to
+	/// <see cref="FallbackVersion"/> when the value is absent, malformed, or not a
+	/// .NETCoreApp moniker. Kept free of the platform <c>#if</c> in
+	/// <see cref="GetRuntimeTargetFramework"/> so the fallback is unit-testable.
+	/// </summary>
+	internal static Version ResolveFrameworkVersion(string? frameworkName)
+	{
+		try
+		{
+			if (frameworkName is { Length: > 0 }
+				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
+			{
+				return parsed.Version;
+			}
+		}
+		catch (ArgumentException)
+		{
+			// Malformed FrameworkName — fall back to the runtime version below.
+		}
+
+		return FallbackVersion;
 	}
 
 	private void ConfigureHotReloadMode()

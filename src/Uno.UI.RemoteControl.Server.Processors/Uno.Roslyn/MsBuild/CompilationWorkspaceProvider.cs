@@ -102,8 +102,20 @@ public static class CompilationWorkspaceProvider
 			catch (InvalidOperationException) when (i > 1)
 			{
 				// When we load the workspace right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
-				// We retry a few times to let the build complete.
+				// We retry a few times to let the build complete. Dispose the failed workspace first:
+				// MSBuildWorkspace hosts MSBuild evaluation nodes (real OS resources), so a workspace
+				// left behind on a failed attempt would linger for the server's lifetime.
+				workspace?.Dispose();
+				workspace = null!;
 				await Task.Delay(5_000, ct);
+			}
+			catch
+			{
+				// Non-retried failure (the final attempt, or any other exception type): dispose the
+				// partially-created workspace before surfacing the exception — same lingering MSBuild
+				// evaluation-node concern as the retry path above.
+				workspace?.Dispose();
+				throw;
 			}
 		}
 
