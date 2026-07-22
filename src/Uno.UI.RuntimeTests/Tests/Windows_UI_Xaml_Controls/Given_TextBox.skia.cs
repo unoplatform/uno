@@ -5348,6 +5348,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(selectAllLabel, "the primary Select All button template should expose a TextLabel");
 			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
 			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
+
+			// With Select All in the primary bar there is nothing in the overflow, so the "..." overflow button must
+			// not appear (it would otherwise show a dangling "..." over an empty menu, because the labelled primary bar
+			// is taller than the command bar's compact height). See TextCommandBarFlyout.UpdateButtons.
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the insertion-caret flyout should have no secondary commands");
+			var commandBar = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+				.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+				.FirstOrDefault(c => c is not null);
+			Assert.IsNotNull(commandBar, "the open selection flyout should host a CommandBarFlyoutCommandBar");
+			var moreButton = commandBar.FindVisualChildByName("MoreButton") as FrameworkElement;
+			Assert.IsNotNull(moreButton, "the command bar template should expose a MoreButton");
+			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
 		}
 
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).

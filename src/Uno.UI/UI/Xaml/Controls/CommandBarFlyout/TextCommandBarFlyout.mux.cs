@@ -353,6 +353,18 @@ partial class TextCommandBarFlyout
 			selectAllButton.Icon = commandListForSelectAll == PrimaryCommands ? new SymbolIcon(Symbol.SelectAll) : null;
 		}
 		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, commandListForSelectAll);
+
+		// Uno specific: the command bar shows the overflow ("...") button whenever its primary bar is taller than the
+		// compact height (i.e. its buttons carry labels), even with nothing in the overflow — which dangles a "..." over
+		// an empty menu on the label-carrying touch/pen selection flyout (most visibly the touch insertion-caret flyout,
+		// where Select All is promoted to the primary bar and nothing is secondary). For that touch/pen UX, gate the
+		// overflow button on the actual secondary-command count; keep WinUI's default (Auto) for mouse/keyboard.
+		if (m_commandBar is { } commandBar)
+		{
+			commandBar.OverflowButtonVisibility = InputDevicePrefersPrimaryCommands && SecondaryCommands.Count == 0
+				? CommandBarOverflowButtonVisibility.Collapsed
+				: CommandBarOverflowButtonVisibility.Auto;
+		}
 	}
 
 	private TextControlButtons GetButtonsToAdd()
