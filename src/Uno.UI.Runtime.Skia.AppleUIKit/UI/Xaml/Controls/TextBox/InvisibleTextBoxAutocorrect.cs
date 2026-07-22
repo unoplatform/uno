@@ -15,12 +15,17 @@ internal static class InvisibleTextBoxAutocorrect
 	/// </summary>
 	internal static bool IsNoOpReplacement(string? currentText, NSRange range, string replacementString)
 	{
-		if (range.Length <= 0 || currentText is null)
+		// Bound-check in nint space before the int casts, so a pathological or NSNotFound
+		// range can't overflow into a negative offset/length and make AsSpan throw.
+		if (currentText is null
+			|| range.Location < 0
+			|| range.Length <= 0
+			|| range.Location > currentText.Length
+			|| range.Length > currentText.Length - range.Location)
 		{
 			return false;
 		}
 
-		return (int)(range.Location + range.Length) <= currentText.Length
-			&& currentText.AsSpan((int)range.Location, (int)range.Length).SequenceEqual(replacementString);
+		return currentText.AsSpan((int)range.Location, (int)range.Length).SequenceEqual(replacementString);
 	}
 }
