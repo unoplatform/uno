@@ -5266,14 +5266,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(caretBeforeTap, SUT.SelectionStart, $"tapping the insertion handle must not move the caret (len {SUT.Text.Length}, was {caretBeforeTap}, now {SUT.SelectionStart})");
 		}
 
-		// Native Android: tapping the single insertion handle re-opens the selection flyout (Paste / Select-all)
-		// even over a collapsed caret, mirroring the native insertion-handle popup. This is an Uno addition beyond
-		// the WinUI port, which shows the SelectionFlyout only for a non-empty selection.
+		// Native Android: tapping the single insertion handle re-opens the selection flyout even over a collapsed
+		// caret (no selection), mirroring the native insertion-handle popup. This is an Uno addition beyond the WinUI
+		// port, which shows the SelectionFlyout only for a non-empty selection. The clipboard is cleared so Paste is
+		// unavailable: Select All alone must keep the flyout open, since a transient flyout with no primary command
+		// self-hides (see TextCommandBarFlyout's Opened handler).
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
 		public async Task When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android()
 		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
 
 			var SUT = new TextBox
 			{
@@ -5296,6 +5308,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "the first Android tap should place the single insertion handle");
 			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the insertion handle should be visible after the first Android tap");
 
+			// Empty the clipboard so Paste is unavailable — Select All is then the only command, the scenario that
+			// used to leave the flyout with no primary command and self-hide.
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
 			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
 			await Task.Delay(600);
 
@@ -5310,13 +5327,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("", SUT.SelectedText, "tapping the handle keeps a collapsed caret (no word selected)");
 
 			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
-			Assert.IsTrue(flyout?.IsOpen == true, "tapping the insertion handle should open the selection flyout over the collapsed caret");
+			Assert.IsTrue(flyout?.IsOpen == true, "tapping the insertion handle should open the selection flyout over the collapsed caret, even with an empty clipboard");
 
-			// The flyout must be populated/useful, not empty: Select All is present (there is text), while Copy is
-			// absent (nothing is selected).
-			var (hasSelectAll, _, hasCopy, _) = GetAvailableCommands(flyout);
+			// Select All keeps the flyout usable with an empty clipboard; Copy and Paste are absent (nothing is
+			// selected, nothing to paste).
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
 			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
 			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
 		}
 
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).

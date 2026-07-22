@@ -336,7 +336,14 @@ partial class TextCommandBarFlyout
 
 		addButtonToCommandsIfPresent(TextControlButtons.Undo, SecondaryCommands);
 		addButtonToCommandsIfPresent(TextControlButtons.Redo, SecondaryCommands);
-		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, SecondaryCommands);
+
+		// Uno specific: on a touch/pen insertion-caret flyout (no selection), Select All is the only command with an
+		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
+		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
+		var selectAllCommands = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
+			? PrimaryCommands
+			: SecondaryCommands;
+		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, selectAllCommands);
 	}
 
 	private TextControlButtons GetButtonsToAdd()
