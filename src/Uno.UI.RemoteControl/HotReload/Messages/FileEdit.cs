@@ -1,5 +1,9 @@
+#nullable enable
+
 #if UNO_HOTRELOAD
 namespace Uno.HotReload.IO;
+#elif UNO_RC_MESSAGING
+namespace Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload;
 #else
 namespace Uno.UI.RemoteControl.HotReload;
 #endif

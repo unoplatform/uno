@@ -30,6 +30,9 @@
 
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
+		<!-- Roslyn workspace access for the batched hot-reload readiness wait (spec 052).
+		     Compile-time only: the assemblies are provided by Visual Studio at runtime. -->
+		<PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.4.0" ExcludeAssets="runtime" />
 		
 		<!--
 		Uno Studio.Extension is relying on this package:

@@ -217,4 +217,26 @@ dev-server workspace; spec 050 already covers their gating).
 
 ## Implementation notes
 
-*To be filled during implementation (deltas vs. this design).*
+Deltas vs. the design above (first implementation pass):
+
+- **Batch ack is the standard `IdeResultMessage`** (Success/Fail): the server↔IDE
+  request/response plumbing (`SendAndWaitForResult`) is `Result`-typed and shared by every
+  correlated message; introducing the typed `UpdateFilesIdeResult` (per-file results) requires
+  generalizing that plumbing and is deferred to a follow-up. `IdeBatchFileUpdater` maps the
+  single ack onto uniform per-edit results.
+- **Shared contracts land in `Uno.UI.RemoteControl.Messaging.IdeChannel.HotReload`** (not
+  `…IdeChannel` itself): many existing files import `…Messaging.IdeChannel` broadly, and
+  placing `IUpdateFileRequest`/`FileEdit`/`FileEditResult`/`FileUpdateResult` there created
+  CS0104 ambiguities with the RC/engine copies. Only the new code imports the sub-namespace.
+  The links compile with the `UNO_RC_MESSAGING` define (third branch of the existing
+  `#if UNO_HOTRELOAD` dance).
+- **Escape hatch (R8)**: server configuration `hot-reload-ide-batch=false` restores the
+  legacy per-file `UpdateFileIdeMessage` + `IDEFileEditor` composition (kept compiled).
+- **F9 refinement**: the `Microsoft.VisualStudio.SDK` meta-package does **not** provide
+  `Microsoft.VisualStudio.LanguageServices` — an explicit compile-time reference (Roslyn
+  4.4 line, matching VS 17.4, `ExcludeAssets="runtime"`) was added to the extension project.
+- **Empty-content edits** (`NewText.Length == 0`) are skipped by the IDE batch handler, in
+  parity with the legacy single-file handler's `FileContent is { Length: > 0 }` guard.
+- The `FileUpdater` template refactor is covered by the existing engine test suite (green);
+  dedicated `IdeBatchFileUpdater` unit tests (ordering, delete split, info-file-before-send,
+  retry arming) are still to be added.
