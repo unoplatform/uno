@@ -24,8 +24,12 @@
 		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
-		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
+		<!-- Override the vulnerable System.Security.Cryptography.Xml that Microsoft.Build.Tasks.Core
+		     pulls in transitively. 10.0.10 is the first release clear of the July 2026 .NET
+		     XML-encryption advisories (CVE-2026-47304 / GHSA-g8r8-53c2-pm3f plus GHSA-cvvh-rhrc-wg4q,
+		     GHSA-23rf-6693-g89p, GHSA-8q5v-6pqq-x66h; all affect <= 10.0.9). The 8.0.x line has no
+		     fixed release (8.0.4 is the highest published and still in range). -->
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
