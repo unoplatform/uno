@@ -66,12 +66,30 @@ internal static unsafe partial class WasmGLFunctions
 		return IntPtr.Zero;
 	}
 
+	// Set once if the native resolver can't be reached (shim not linked / symbol mismatch); further
+	// calls then skip the P/Invoke so GetProcAddress falls back to the JS shim without re-throwing.
+	private static bool _nativeResolveUnavailable;
+
 	private static IntPtr ResolveNative(string name)
 	{
+		if (_nativeResolveUnavailable)
+		{
+			return IntPtr.Zero;
+		}
+
 		var namePtr = Marshal.StringToHGlobalAnsi(name);
 		try
 		{
 			return (IntPtr)GlResolver.uno_gl_resolve(namePtr);
+		}
+		catch (Exception e) when (e is DllNotFoundException or EntryPointNotFoundException)
+		{
+			_nativeResolveUnavailable = true;
+			if (typeof(WasmGLFunctions).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(WasmGLFunctions).Log().Error("Native GL resolver (uno_gl_shim) is unavailable; falling back to the JS shim for all GL entry points.", e);
+			}
+			return IntPtr.Zero;
 		}
 		finally
 		{
