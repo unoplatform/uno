@@ -32,6 +32,13 @@ internal sealed partial class ManagedGeometry
 		var pieces = new List<ManagedContour>();
 		foreach (var run in source.EnumerateStrokeRuns(style))
 		{
+			if (run.ZeroLengthDash)
+			{
+				AddCap(pieces, run.Points[0], -run.Tangent, hw, run.StartCap); // backward
+				AddCap(pieces, run.Points[0], run.Tangent, hw, run.EndCap); // forward
+				continue;
+			}
+
 			StampRun(pieces, run.Points, run.Closed, run.StartCap, run.EndCap, hw, style);
 		}
 
@@ -52,6 +59,11 @@ internal sealed partial class ManagedGeometry
 		public bool Closed { get; }
 		public StrokeCap StartCap { get; }
 		public StrokeCap EndCap { get; }
+
+		/// <summary>A zero-length dash at an endpoint that fell in a gap: a backward cap (<see cref="StartCap"/>)
+		/// and a forward cap (<see cref="EndCap"/>) stamped at <see cref="Points"/>[0] along ±<see cref="Tangent"/>.</summary>
+		public bool ZeroLengthDash { get; init; }
+		public Vector2 Tangent { get; init; }
 	}
 
 	/// <summary>Flattens each contour and splits it into the runs to stroke (one per dash, or the whole contour).</summary>
@@ -153,6 +165,48 @@ internal sealed partial class ManagedGeometry
 
 			idx++;
 		}
+
+		// WinUI renders a zero-length dash at an open path's endpoint ONLY when the endpoint coincides with a
+		// gap boundary (not mid-gap): a backward dash cap plus a forward end cap.
+		if (!closed && points.Count >= 2 && EndpointAtGapBoundary(pathLength, dashes, patternPos))
+		{
+			yield return new StrokeRun(new[] { points[^1] }, closed: false, style.DashCap, style.EndCap)
+			{
+				ZeroLengthDash = true,
+				Tangent = Dir(points[^2], points[^1]),
+			};
+		}
+	}
+
+	/// <summary>True when the path end falls exactly at a gap→dash boundary (WinUI's zero-length-dash condition).</summary>
+	private static bool EndpointAtGapBoundary(float pathLength, float[] dashes, float patternPos)
+	{
+		const float tolerance = 0.1f;
+		var pos = patternPos;
+		var idx = 0;
+		while (pos < pathLength)
+		{
+			var segLen = dashes[idx % dashes.Length];
+			if (segLen <= 0)
+			{
+				idx++;
+				continue;
+			}
+
+			var segEnd = pos + segLen;
+			var isDash = idx % 2 == 0;
+			if (segEnd >= pathLength - tolerance)
+			{
+				// Endpoint inside a rendered dash (already capped) or mid-gap → no zero-length dash;
+				// only a gap ending at the endpoint qualifies.
+				return !isDash && MathF.Abs(segEnd - pathLength) < tolerance;
+			}
+
+			pos = segEnd;
+			idx++;
+		}
+
+		return false;
 	}
 
 	private static List<Vector2> ExtractSubPolyline(List<Vector2> points, float from, float to)
@@ -283,32 +337,74 @@ internal sealed partial class ManagedGeometry
 		AddTriangle(pieces, v + nIn, v, v + nOut);
 		AddTriangle(pieces, v - nIn, v, v - nOut);
 
-		var miter = style.LineJoin is StrokeJoin.Miter or StrokeJoin.MiterOrBevel;
-		if (miter)
+		if (style.LineJoin is StrokeJoin.Miter or StrokeJoin.MiterOrBevel)
 		{
-			AddMiterTip(pieces, v, dIn, dOut, nIn, nOut, style.MiterLimit <= 0 ? 10f : style.MiterLimit, hw, side: 1);
-			AddMiterTip(pieces, v, dIn, dOut, nIn, nOut, style.MiterLimit <= 0 ? 10f : style.MiterLimit, hw, side: -1);
+			AddMiterJoin(pieces, v, dIn, dOut, hw, style.MiterLimit <= 0 ? 10f : style.MiterLimit);
 		}
 	}
 
-	private static void AddMiterTip(List<ManagedContour> pieces, Vector2 v, Vector2 dIn, Vector2 dOut, Vector2 nIn, Vector2 nOut, float miterLimit, float hw, int side)
+	/// <summary>
+	/// Adds the outer-side miter geometry: a full pointed tip within the limit, otherwise the WinUI
+	/// miter-clip trapezoid truncated at the limit (matching SkiaGeometrySource2D's DoLimitedMiter).
+	/// </summary>
+	private static void AddMiterJoin(List<ManagedContour> pieces, Vector2 v, Vector2 dIn, Vector2 dOut, float hw, float miterLimit)
 	{
-		var a = v + side * nIn;
-		var b = v + side * nOut;
-		// Intersect line(a, dIn) with line(b, dOut).
-		if (!LineIntersect(a, dIn, b, dOut, out var tip))
+		var dot = dIn.X * dOut.X + dIn.Y * dOut.Y;
+		var sinHalfSq = (1 + dot) / 2;
+		if (sinHalfSq <= 0)
 		{
 			return;
 		}
 
-		var dist = Vector2.Distance(tip, v);
-		var bisector = side * (nIn + nOut);
-		if (dist > miterLimit * hw || Vector2.Dot(tip - v, bisector) <= 0)
+		var sinHalf = MathF.Sqrt(sinHalfSq);
+		var cross = dIn.X * dOut.Y - dIn.Y * dOut.X;
+		if (MathF.Abs(cross) < 1e-6f)
 		{
-			return; // Over the miter limit or on the inner side → keep the bevel.
+			return;
 		}
 
-		AddTriangle(pieces, a, tip, b);
+		// Outward normals toward the miter (outer) side.
+		Vector2 nIn, nOut;
+		if (cross > 0)
+		{
+			nIn = new Vector2(dIn.Y, -dIn.X);
+			nOut = new Vector2(dOut.Y, -dOut.X);
+		}
+		else
+		{
+			nIn = new Vector2(-dIn.Y, dIn.X);
+			nOut = new Vector2(-dOut.Y, dOut.X);
+		}
+
+		var bevelIn = v + nIn * hw;
+		var bevelOut = v + nOut * hw;
+
+		if (sinHalf >= 1f / miterLimit)
+		{
+			// Within the limit: full pointed miter tip (intersection of the two outer offset edges).
+			if (LineIntersect(bevelIn, dIn, bevelOut, dOut, out var tip))
+			{
+				AddTriangle(pieces, bevelIn, tip, bevelOut);
+			}
+
+			return;
+		}
+
+		// Over the limit: truncate the miter at the limit distance (clipped trapezoid).
+		var cosHalfSq = (1 - dot) / 2;
+		if (cosHalfSq <= 1e-12f)
+		{
+			return;
+		}
+
+		var rRatio = (miterLimit - sinHalf) / MathF.Sqrt(cosHalfSq);
+		if (rRatio <= 0)
+		{
+			return;
+		}
+
+		var ext = rRatio * hw;
+		AddPolygon(pieces, bevelIn, bevelIn + dIn * ext, bevelOut - dOut * ext, bevelOut);
 	}
 
 	private static void AddCap(List<ManagedContour> pieces, Vector2 end, Vector2 outwardDir, float hw, StrokeCap cap)
@@ -317,7 +413,7 @@ internal sealed partial class ManagedGeometry
 		switch (cap)
 		{
 			case StrokeCap.Round:
-				AddDisc(pieces, end, hw);
+				AddSemicircle(pieces, end, outwardDir, hw);
 				break;
 			case StrokeCap.Square:
 				var ext = outwardDir * hw;
@@ -332,25 +428,72 @@ internal sealed partial class ManagedGeometry
 		}
 	}
 
-	private static void AddDisc(List<ManagedContour> pieces, Vector2 center, float radius)
+	/// <summary>Half-disc at <paramref name="center"/> bulging toward <paramref name="outwardDir"/> (a round cap).</summary>
+	private static void AddSemicircle(List<ManagedContour> pieces, Vector2 center, Vector2 outwardDir, float radius)
 	{
-		const int steps = 24;
-		var segments = new ManagedPathSegment[steps];
-		var start = center + new Vector2(radius, 0);
-		for (var i = 1; i <= steps; i++)
+		var startAngle = MathF.Atan2(-outwardDir.X, outwardDir.Y); // angle of the +normal (-dir.Y, dir.X)
+		const int steps = 16;
+		var pts = new Vector2[steps + 1];
+		for (var i = 0; i <= steps; i++)
 		{
-			var a = i / (float)steps * MathF.PI * 2f;
-			segments[i - 1] = ManagedPathSegment.Line(center + new Vector2(radius * MathF.Cos(a), radius * MathF.Sin(a)));
+			var a = startAngle + i / (float)steps * MathF.PI; // sweep 180° through the outward side
+			pts[i] = center + new Vector2(radius * MathF.Cos(a), radius * MathF.Sin(a));
 		}
 
-		pieces.Add(new ManagedContour(start, segments, closed: true));
+		AddLoop(pieces, pts);
+	}
+
+	private static void AddDisc(List<ManagedContour> pieces, Vector2 center, float radius)
+	{
+		var steps = Math.Clamp((int)MathF.Ceiling(radius * 2f), 24, 96);
+		var pts = new Vector2[steps];
+		for (var i = 0; i < steps; i++)
+		{
+			var a = i / (float)steps * MathF.PI * 2f;
+			pts[i] = center + new Vector2(radius * MathF.Cos(a), radius * MathF.Sin(a));
+		}
+
+		AddLoop(pieces, pts);
 	}
 
 	private static void AddTriangle(List<ManagedContour> pieces, Vector2 a, Vector2 b, Vector2 c)
-		=> pieces.Add(new ManagedContour(a, new[] { ManagedPathSegment.Line(b), ManagedPathSegment.Line(c) }, closed: true));
+		=> AddLoop(pieces, new[] { a, b, c });
 
 	private static void AddPolygon(List<ManagedContour> pieces, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
-		=> pieces.Add(new ManagedContour(a, new[] { ManagedPathSegment.Line(b), ManagedPathSegment.Line(c), ManagedPathSegment.Line(d) }, closed: true));
+		=> AddLoop(pieces, new[] { a, b, c, d });
+
+	/// <summary>
+	/// Adds a closed piece with a consistent (positive-area) winding. Every stamped piece must wind the same
+	/// way so that under NonZero fill their overlaps union (winding accumulates) instead of cancelling to a hole.
+	/// </summary>
+	private static void AddLoop(List<ManagedContour> pieces, Vector2[] pts)
+	{
+		if (pts.Length < 3)
+		{
+			return;
+		}
+
+		double area = 0;
+		for (var i = 0; i < pts.Length; i++)
+		{
+			var a = pts[i];
+			var b = pts[(i + 1) % pts.Length];
+			area += (double)a.X * b.Y - (double)b.X * a.Y;
+		}
+
+		if (area < 0)
+		{
+			Array.Reverse(pts);
+		}
+
+		var segments = new ManagedPathSegment[pts.Length - 1];
+		for (var i = 1; i < pts.Length; i++)
+		{
+			segments[i - 1] = ManagedPathSegment.Line(pts[i]);
+		}
+
+		pieces.Add(new ManagedContour(pts[0], segments, closed: true));
+	}
 
 	private static bool LineIntersect(Vector2 p0, Vector2 d0, Vector2 p1, Vector2 d1, out Vector2 point)
 	{
