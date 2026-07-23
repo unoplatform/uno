@@ -419,12 +419,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true")
+		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
+		if (webgpuMode is "1" or "true" or "swapchain")
 		{
 			try
 			{
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = new X11WebGpuRenderer(this, TopX11Window);
+				_renderer = webgpuMode is "swapchain"
+					? new X11WebGpuSwapchainRenderer(this, TopX11Window)
+					: new X11WebGpuRenderer(this, TopX11Window);
 			}
 			catch (Exception e)
 			{

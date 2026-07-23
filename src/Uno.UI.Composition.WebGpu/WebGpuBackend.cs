@@ -29,11 +29,15 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public BindGroupLayout* ImgBgl;
 	public Sampler* Smp;
 
-	public const TextureFormat ColorFormat = TextureFormat.Rgba8Unorm;
+	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
+	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
+	public readonly TextureFormat ColorFormat;
+	public const TextureFormat DefaultColorFormat = TextureFormat.Rgba8Unorm;
 	public const TextureFormat DepthStencilFormat = TextureFormat.Depth24PlusStencil8;
 
-	public WebGpuDevice()
+	public WebGpuDevice(TextureFormat colorFormat = DefaultColorFormat)
 	{
+		ColorFormat = colorFormat;
 		W = WebGPU.GetApi();
 		W.TryGetDeviceExtension(null, out Native);
 		var idesc = new InstanceDescriptor();
@@ -169,12 +173,26 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		Width = width; Height = height;
 		var td = new TextureDescriptor
 		{
-			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.ColorFormat,
+			Size = new Extent3D((uint)width, (uint)height, 1), Format = device.ColorFormat,
 			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D,
 			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc,
 		};
 		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
 		View = device.W.TextureCreateView(Tex, null);
+		var dd = new TextureDescriptor
+		{
+			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.DepthStencilFormat,
+			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.RenderAttachment,
+		};
+		DepthTex = device.W.DeviceCreateTexture(device.Dev, ref dd);
+		DepthView = device.W.TextureCreateView(DepthTex, null);
+	}
+
+	// External-color variant for a swapchain: the color View/Tex are provided per frame (the acquired
+	// swapchain image); only the depth/stencil is owned here. Set View before each present.
+	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
+	{
+		Width = width; Height = height;
 		var dd = new TextureDescriptor
 		{
 			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.DepthStencilFormat,
