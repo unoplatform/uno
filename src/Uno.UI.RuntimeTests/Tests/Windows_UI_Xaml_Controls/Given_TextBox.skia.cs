@@ -5377,6 +5377,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
 		}
 
+		// Over an EMPTY textbox with clipboard content, Paste is the only available command and, under a touch/pen flyout,
+		// is promoted to the primary bar with nothing in the overflow — the lone-primary/no-secondary case. Like Cut/Copy/
+		// Paste in a selection flyout, that primary Paste button must show its text label, not render as a bare icon — the
+		// same primary-bar label miss that hit a lone Select All.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // touch flyout path: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Paste_Only_Flyout_Shows_Label()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			// Empty textbox: with nothing to select there is no Select All, so a populated clipboard leaves Paste as the
+			// sole command — the lone-primary/no-secondary flyout.
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = ""
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// Focus so the clipboard subscription is live, then put text on the clipboard so Paste is available.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			var dp = new DataPackage();
+			dp.SetText("clipboard text");
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitFor(() => SUT.CanPasteClipboardContent, message: "the clipboard should read non-empty so Paste is available");
+
+			// A touch tap sets the last input device to Touch so the flyout opens in primary-commands mode (Paste on the
+			// bar). The empty box swallows the tap (its tap-to-caret path is gated on non-empty text), so it only sets the
+			// input mode — matching how a touch-opened context flyout reaches this state on device.
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "the context flyout should open over the empty box");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(flyout.InputDevicePrefersPrimaryCommands, "the touch tap should open the flyout in primary-commands mode (Paste on the bar)");
+
+			// Empty box + clipboard content: Paste is the only command (no selection → no Copy; no text → no Select All),
+			// sitting alone in the primary bar with an empty overflow.
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasPaste, "Paste should be available over an empty box when the clipboard has content");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty box (nothing is selected)");
+			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty box (there is no text to select)");
+			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Paste should be the lone primary command over an empty box");
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the Paste-only flyout should have no secondary commands");
+
+			var pasteButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(pasteButton, "Paste should be a primary (bar) command over an empty box with clipboard content");
+			Assert.IsNotNull(pasteButton.Icon, "the primary Paste button should have an icon");
+
+			// The lone primary Paste button must show its text label, not just its icon — the reported bug.
+			if (pasteButton.FindVisualChildByName("TextLabel") is not TextBlock pasteLabel)
+			{
+				Assert.Fail("the primary Paste button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, pasteLabel.Visibility, "the lone primary Paste button must show its text label, not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(pasteLabel.Text), "the primary Paste button label must have text");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{
