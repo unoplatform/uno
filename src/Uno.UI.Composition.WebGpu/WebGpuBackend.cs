@@ -153,13 +153,16 @@ struct U { op: vec4<f32> };
 	public void Dispose() { }
 }
 
-public sealed unsafe class WebGpuRenderSurface : IRenderSurface
+public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 {
 	public Texture* Tex;
 	public TextureView* View;
 	public Texture* DepthTex;
 	public TextureView* DepthView;
-	public readonly int Width, Height;
+	public int Width { get; }
+	public int Height { get; }
+	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+	public void Dispose() { }
 
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height)
 	{
@@ -538,5 +541,5 @@ public sealed class WebGpuRenderBackend : IRenderBackend
 	public readonly WebGpuDevice Device;
 	public WebGpuRenderBackend(WebGpuDevice device) => Device = device;
 	public ICommandRecorder BeginFrame() => new WebGpuCommandRecorder();
-	public IPresentSession BeginPresent(IRenderSurface target) => new WebGpuPresentSession(Device, (WebGpuRenderSurface)target);
+	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(Device, (WebGpuRenderSurface)target);
 }

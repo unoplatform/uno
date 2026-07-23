@@ -9,6 +9,6 @@ internal sealed class SkiaRenderBackend : IRenderBackend
 {
 	public ICommandRecorder BeginFrame() => SkiaDrawingSession.StartRecording();
 
-	public IPresentSession BeginPresent(IRenderSurface target)
-		=> new SkiaPresentSession(((SkiaRenderSurface)target).Canvas);
+	public IPresentSession BeginPresent(IRenderTarget target)
+		=> new SkiaPresentSession(((SkiaRenderTarget)target).Canvas);
 }

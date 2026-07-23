@@ -412,7 +412,11 @@ public interface IGraphicsBackend               // the registerable unit (matche
 public interface IRenderBackend
 {
     ICommandRecorder BeginFrame();                     // record the tree → IRenderData (UI thread)
-    void Render(IRenderTarget target, IRenderData frame);   // replay the clipped frame into the color target
+    IPresentSession BeginPresent(IRenderTarget target); // render session onto the color target (phase 2)
+    // The session form (rather than a bare Render(target, frame)) is retained because the framework
+    // composes present-time overlays into it — the FPS counter, whose timing is only known at present —
+    // and the per-frame Clear, before/after replaying the recorded frame. IPresentSession : IDrawingSession,
+    // IRetainedRenderingSession, IDisposable.
 }
 
 public static class GraphicsBackend
