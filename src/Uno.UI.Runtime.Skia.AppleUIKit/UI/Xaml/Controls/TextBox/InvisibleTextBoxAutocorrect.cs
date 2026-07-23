@@ -13,7 +13,7 @@ internal static class InvisibleTextBoxAutocorrect
 	/// suppress that autospace; genuine edits and real corrections change the text, so they are not
 	/// matched here and pass through untouched.
 	/// </summary>
-	internal static bool IsNoOpReplacement(string? currentText, NSRange range, string replacementString)
+	internal static bool IsNoOpAutocorrectReplacement(string? currentText, NSRange range, string replacementString)
 	{
 		// Bound-check in nint space before the int casts, so a pathological or NSNotFound
 		// range can't overflow into a negative offset/length and make AsSpan throw.

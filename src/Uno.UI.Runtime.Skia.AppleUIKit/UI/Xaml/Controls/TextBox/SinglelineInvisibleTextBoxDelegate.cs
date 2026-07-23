@@ -50,8 +50,8 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 				return true;
 			}
 
-			// Suppress the iOS autocorrect autospace fired when the caret leaves a word (see IsNoOpReplacement).
-			if (InvisibleTextBoxAutocorrect.IsNoOpReplacement(textField.Text, range, replacementString))
+			// Suppress the iOS autocorrect autospace fired when the caret leaves a word (see IsNoOpAutocorrectReplacement).
+			if (InvisibleTextBoxAutocorrect.IsNoOpAutocorrectReplacement(textField.Text, range, replacementString))
 			{
 				return false;
 			}
