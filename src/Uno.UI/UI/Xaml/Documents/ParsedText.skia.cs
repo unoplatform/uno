@@ -4,14 +4,12 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition.Drawing;
 
@@ -19,8 +17,6 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly struct ParsedText : IParsedText
 {
-	private static readonly SKPaint _spareDrawPaint = new();
-
 	public static readonly object InitialSelection = new SelectionDetails(0, 0, 0, 0);
 	public static readonly ParsedText Empty = new([], [], Size.Empty, TextAlignment.Left, TextWrapping.NoWrap, 20, FlowDirection.LeftToRight);
 
@@ -348,8 +344,8 @@ internal readonly struct ParsedText : IParsedText
 			// empty, so caret is at the beginning
 			if (caret is not null)
 			{
-				var caretRect = new SKRect(0, 0, caret.Value.thickness, _defaultLineHeight);
-				caret.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.ToRect());
+				var caretRect = new Rect(new Point(0, 0), new Point(caret.Value.thickness, _defaultLineHeight));
+				caret.Value.brush.TryPaint(session.Session, session.Opacity, caretRect);
 			}
 
 			return;
@@ -390,45 +386,41 @@ internal readonly struct ParsedText : IParsedText
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
-				var paint = _spareDrawPaint;
-
-				paint.Reset();
-
-				paint.IsStroke = false;
-				paint.IsAntialias = true;
+				// Opaque black when no foreground brush applies.
+				var foregroundColor = Color.FromArgb(255, 0, 0, 0);
 
 				if (inline.Foreground is SolidColorBrush scb)
 				{
 					var scbColor = scb.Color;
-					paint.Color = new SKColor(
-						red: scbColor.R,
-						green: scbColor.G,
-						blue: scbColor.B,
-						alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
+					foregroundColor = Color.FromArgb(
+						(byte)(scbColor.A * scb.Opacity * session.Opacity),
+						scbColor.R,
+						scbColor.G,
+						scbColor.B);
 				}
 				else if (inline.Foreground is GradientBrush gb)
 				{
 					var gbColor = gb.FallbackColorWithOpacity;
-					paint.Color = new SKColor(
-						red: gbColor.R,
-						green: gbColor.G,
-						blue: gbColor.B,
-						alpha: (byte)(gbColor.A * session.Opacity));
+					foregroundColor = Color.FromArgb(
+						(byte)(gbColor.A * session.Opacity),
+						gbColor.R,
+						gbColor.G,
+						gbColor.B);
 				}
 				else if (inline.Foreground is XamlCompositionBrushBase xcbb)
 				{
 					var gbColor = xcbb.FallbackColorWithOpacity;
-					paint.Color = new SKColor(
-						red: gbColor.R,
-						green: gbColor.G,
-						blue: gbColor.B,
-						alpha: (byte)(gbColor.A * session.Opacity));
+					foregroundColor = Color.FromArgb(
+						(byte)(gbColor.A * session.Opacity),
+						gbColor.R,
+						gbColor.G,
+						gbColor.B);
 				}
 
 				// TODO: Consider using a stackalloc for small values of GlyphsLength.
 				// Note that using a stackalloc will require refactoring this code to a separate method to avoid having a stackalloc in a loop.
 				var glyphs = ArrayPool<ushort>.Shared.Rent(segmentSpan.GlyphsLength);
-				var positions = ArrayPool<SKPoint>.Shared.Rent(segmentSpan.GlyphsLength);
+				var positions = ArrayPool<Vector2>.Shared.Rent(segmentSpan.GlyphsLength);
 
 				// The pool can rent us arrays of size larger than the requested size.
 				// So, we pass these spans around to make sure nothing tries to read beyond the correct size.
@@ -447,7 +439,7 @@ internal readonly struct ParsedText : IParsedText
 						}
 
 						glyphsSpan[i] = glyphInfo.GlyphId;
-						positionsSpan[i] = new SKPoint(x + glyphInfo.OffsetX - segmentSpan.CharacterSpacing, glyphInfo.OffsetY);
+						positionsSpan[i] = new Vector2(x + glyphInfo.OffsetX - segmentSpan.CharacterSpacing, glyphInfo.OffsetY);
 						x += glyphInfo.AdvanceX;
 					}
 				}
@@ -476,7 +468,7 @@ internal readonly struct ParsedText : IParsedText
 							}
 
 							glyphsSpan[j] = glyphInfo.GlyphId;
-							positionsSpan[j] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
+							positionsSpan[j] = new Vector2(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
 							x += glyphInfo.AdvanceX;
 						}
 					}
@@ -497,11 +489,11 @@ internal readonly struct ParsedText : IParsedText
 				{
 					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
 					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, drawingSession, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), session.Opacity);
-					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, drawingSession, y + baselineOffsetY, paint);
+					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, drawingSession, y + baselineOffsetY, foregroundColor);
 				}
 				else
 				{
-					RenderText(null, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, drawingSession, y + baselineOffsetY, paint);
+					RenderText(null, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, drawingSession, y + baselineOffsetY, foregroundColor);
 				}
 
 				// START decorations
@@ -520,14 +512,14 @@ internal readonly struct ParsedText : IParsedText
 					{
 						// TODO: what should default thickness/position be if metrics does not contain it?
 						float yPos = y + baselineOffsetY + (font.UnderlinePosition ?? 0);
-						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.UnderlineThickness ?? 1, paint);
+						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.UnderlineThickness ?? 1, foregroundColor);
 					}
 
 					if ((decorations & TextDecorations.Strikethrough) != 0)
 					{
 						// TODO: what should default thickness/position be if metrics does not contain it?
 						float yPos = y + baselineOffsetY + (font.StrikeoutPosition ?? fontInfo.FontSize / -2);
-						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.StrikeoutThickness ?? 1, paint);
+						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.StrikeoutThickness ?? 1, foregroundColor);
 					}
 				}
 				// END decorations
@@ -540,18 +532,17 @@ internal readonly struct ParsedText : IParsedText
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 				characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
 
-				ArrayPool<SKPoint>.Shared.Return(positions);
+				ArrayPool<Vector2>.Shared.Return(positions);
 				ArrayPool<ushort>.Shared.Return(glyphs);
 			}
 		}
 
-		static void DrawDecoration(IDrawingSession drawingSession, float x, float y, float width, float thickness, SKPaint paint)
+		static void DrawDecoration(IDrawingSession drawingSession, float x, float y, float width, float thickness, Color color)
 		{
-			var c = paint.Color;
 			drawingSession.DrawLine(
 				new Vector2(x, y),
 				new Vector2(x + width, y),
-				Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue), thickness, antialias: true);
+				color, thickness, antialias: true);
 		}
 	}
 
@@ -741,7 +732,7 @@ internal readonly struct ParsedText : IParsedText
 	#endregion
 
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
-		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
+		int characterCountSoFar, Span<Vector2> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, IDrawingSession drawingSession,
 		CompositionBrush brush, float opacity)
 	{
@@ -796,15 +787,15 @@ internal readonly struct ParsedText : IParsedText
 
 			if (Math.Abs(left - right) > 0.01)
 			{
-				var rect = new SKRect(left, y - line.Height, right, y);
-				brush.TryPaint(drawingSession, opacity, rect.ToRect());
+				var rect = new Rect(new Point(left, y - line.Height), new Point(right, y));
+				brush.TryPaint(drawingSession, opacity, rect);
 			}
 		}
 	}
 
 	private void RenderText(SelectionDetails? selection, int lineIndex, int characterCountSoFar,
-		RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-		IDrawingSession drawingSession, float y, SKPaint paint)
+		RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<Vector2> positions, Span<ushort> glyphs,
+		IDrawingSession drawingSession, float y, Color color)
 	{
 		if (selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 		{
@@ -816,7 +807,7 @@ internal readonly struct ParsedText : IParsedText
 					glyphs,
 					drawingSession,
 					y,
-					paint);
+					color);
 			}
 		}
 		else
@@ -865,21 +856,18 @@ internal readonly struct ParsedText : IParsedText
 					glyphs.Slice(0, startOfSelection),
 					drawingSession,
 					y,
-					paint);
+					color);
 			}
 
 			if (endOfSelection - startOfSelection > 0) // selection
 			{
-				var color = paint.Color;
-				paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
 				DrawText(
 					fontInfo,
 					positions.Slice(startOfSelection, endOfSelection - startOfSelection),
 					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection),
 					drawingSession,
 					y,
-					paint);
-				paint.Color = color;
+					Color.FromArgb(255, 255, 255, 255)); // selection is always white
 			}
 
 			if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
@@ -890,19 +878,16 @@ internal readonly struct ParsedText : IParsedText
 					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection),
 					drawingSession,
 					y,
-					paint);
+					color);
 			}
 		}
 
-		static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-			IDrawingSession drawingSession, float y, SKPaint paint)
+		static void DrawText(FontDetails fontInfo, Span<Vector2> positions, Span<ushort> glyphs,
+			IDrawingSession drawingSession, float y, Color color)
 		{
-			var c = paint.Color;
-			var color = Color.FromArgb(c.Alpha, c.Red, c.Green, c.Blue);
-			var positionsV = MemoryMarshal.Cast<SKPoint, Vector2>(positions);
 			var font = fontInfo.FontHandle;
 
-			using (var outline = font.BuildGlyphRunOutline(glyphs, positionsV, y))
+			using (var outline = font.BuildGlyphRunOutline(glyphs, positions, y))
 			{
 				drawingSession.DrawPath(outline, color, antialias: true);
 			}
@@ -910,7 +895,7 @@ internal readonly struct ParsedText : IParsedText
 			if (font.HasColorGlyphs)
 			{
 				var images = new List<PositionedGlyphImage>();
-				font.AppendColorGlyphImages(glyphs, positionsV, y, images);
+				font.AppendColorGlyphImages(glyphs, positions, y, images);
 				foreach (var g in images)
 				{
 					using var glyphTexture = global::Uno.UI.Composition.Drawing.DrawingBackend.Current.CreateImageTexture(g.Image);
@@ -922,7 +907,7 @@ internal readonly struct ParsedText : IParsedText
 
 	private void HandleCaret(int caretIndex, float caretThickness, IDrawingSession drawingSession,
 		CompositionBrush caretBrush, float opacity, int characterCountSoFar, RenderSegmentSpan segmentSpan,
-		Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
+		Span<Vector2> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 	{
 		var spanStartingIndex = characterCountSoFar;
 		{
@@ -965,8 +950,8 @@ internal readonly struct ParsedText : IParsedText
 			}
 			if (caretLocation != float.MinValue)
 			{
-				var caretRect = new SKRect(caretLocation, y - line.Height, caretLocation + caretThickness, y);
-				caretBrush.TryPaint(drawingSession, opacity, caretRect.ToRect());
+				var caretRect = new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + caretThickness, y));
+				caretBrush.TryPaint(drawingSession, opacity, caretRect);
 			}
 		}
 	}
