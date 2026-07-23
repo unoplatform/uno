@@ -510,7 +510,7 @@ internal readonly struct ParsedText : IParsedText
 
 				if ((decorations & allDecorations) != 0)
 				{
-					var metrics = fontInfo.SKFontMetrics;
+					var font = fontInfo.FontHandle;
 					float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
 					// We don't need to see where selection starts and ends in this case, as the decoration color doesn't
@@ -519,15 +519,15 @@ internal readonly struct ParsedText : IParsedText
 					if ((decorations & TextDecorations.Underline) != 0)
 					{
 						// TODO: what should default thickness/position be if metrics does not contain it?
-						float yPos = y + baselineOffsetY + (metrics.UnderlinePosition ?? 0);
-						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, metrics.UnderlineThickness ?? 1, paint);
+						float yPos = y + baselineOffsetY + (font.UnderlinePosition ?? 0);
+						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.UnderlineThickness ?? 1, paint);
 					}
 
 					if ((decorations & TextDecorations.Strikethrough) != 0)
 					{
 						// TODO: what should default thickness/position be if metrics does not contain it?
-						float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? fontInfo.SKFontSize / -2);
-						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
+						float yPos = y + baselineOffsetY + (font.StrikeoutPosition ?? fontInfo.FontSize / -2);
+						DrawDecoration(drawingSession, xBeforeGlyphOffsets, yPos, width, font.StrikeoutThickness ?? 1, paint);
 					}
 				}
 				// END decorations
@@ -789,8 +789,8 @@ internal readonly struct ParsedText : IParsedText
 				var newLineIncludedInSelection = SpanEndsInNewLine(segmentSpan) && bg.EndIndex - spanStartingIndex > positions.Length;
 				if (selectionNotEmpty && newLineIncludedInSelection)
 				{
-					// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
-					right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
+					// fontInfo.FontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
+					right += (segment.LineBreakAfter ? fontInfo.FontSize / 3 : 0);
 				}
 			}
 

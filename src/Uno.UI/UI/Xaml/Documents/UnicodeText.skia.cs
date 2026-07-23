@@ -172,7 +172,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 				}
 
-				if (!inline.FontInfo.SKFont.ContainsGlyph(codepoint))
+				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
 				{
 					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
 				}
@@ -549,9 +549,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					buffer.AddUtf16(HorizontalEllipsis);
 					buffer.GuessSegmentProperties();
 					var trimFontDetails = trimPoint.Value.fontDetails;
-					if (!trimFontDetails.SKFont.ContainsGlyph(HorizontalEllipsis[0]))
+					if (!trimFontDetails.FontHandle.ContainsGlyph(HorizontalEllipsis[0]))
 					{
-						trimFontDetails = GetFallbackFont(HorizontalEllipsis[0], trimFontDetails.SKFontSize, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, fontListener) ?? trimFontDetails;
+						trimFontDetails = GetFallbackFont(HorizontalEllipsis[0], trimFontDetails.FontSize, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, fontListener) ?? trimFontDetails;
 					}
 					trimFontDetails.Font.Shape(buffer); // This can be cached and reused across trim points, but it's not expected to be a hotspot
 					var trimGlyphPositions = buffer.GetGlyphPositionSpan();
@@ -834,7 +834,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
+		Dictionary<SKColor, Dictionary<IFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 
@@ -879,11 +879,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
-					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
+					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<SKPoint> positions)>();
 				}
-				if (!fontToGlyphs.TryGetValue(fontDetails.SKFont, out var glyphsAndPositions))
+				if (!fontToGlyphs.TryGetValue(fontDetails.FontHandle, out var glyphsAndPositions))
 				{
-					fontToGlyphs[fontDetails.SKFont] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
+					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
 				}
 				var glyphs = glyphsAndPositions.glyphs;
 				var positions = glyphsAndPositions.positions;
@@ -916,7 +916,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
-					var fontSize = fontDetails.SKFontSize;
+					var fontSize = fontDetails.FontSize;
 					var scale = fontSize / 12.0f;
 					var step = 4 * scale;
 					var amplitude = 2 * scale;
@@ -948,7 +948,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (cluster.Value.start < compEnd && cluster.Value.end > compStart)
 				{
 					// Place the underline just below the baseline
-					var underlineY = y + line.baselineOffset + fontDetails.SKFontSize / 6.0f;
+					var underlineY = y + line.baselineOffset + fontDetails.FontSize / 6.0f;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
 					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
@@ -979,9 +979,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
 			var paintColor = Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
-			foreach (var (skFont, (glyphs, positions)) in fontToGlyphs)
+			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
-				var font = new SkiaFont(skFont);
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
 				var positionSpan = MemoryMarshal.Cast<SKPoint, Vector2>(CollectionsMarshal.AsSpan(positions));
 
@@ -1395,7 +1394,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			if (symbolsFontTask.loadedTask.IsCompletedSuccessfully
 				&& symbolsFontTask.loadedTask.Result is { } symbolsFont
-				&& symbolsFont.SKFont.ContainsGlyph(codepoint))
+				&& symbolsFont.FontHandle.ContainsGlyph(codepoint))
 			{
 				return symbolsFont;
 			}
@@ -1479,19 +1478,19 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		if (lineStackingStrategy is LineStackingStrategy.MaxHeight || !(lineHeight > 0))
 		{
-			return (Math.Max(lineHeight, fontDetailsWithMaxHeightInLine.LineHeight), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+			return (Math.Max(lineHeight, fontDetailsWithMaxHeightInLine.LineHeight), -fontDetailsWithMaxHeightInLine.FontHandle.Ascent);
 		}
 		else if (lineStackingStrategy is LineStackingStrategy.BaselineToBaseline)
 		{
 			if (isFirstLine)
 			{
-				return (Math.Min(fontDetailsWithMaxHeightInLine.LineHeight, Math.Max(-fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent, lineHeight)), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+				return (Math.Min(fontDetailsWithMaxHeightInLine.LineHeight, Math.Max(-fontDetailsWithMaxHeightInLine.FontHandle.Ascent, lineHeight)), -fontDetailsWithMaxHeightInLine.FontHandle.Ascent);
 			}
 			else
 			{
 				if (isLastLine)
 				{
-					return (lineHeight + fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent, lineHeight);
+					return (lineHeight + fontDetailsWithMaxHeightInLine.FontHandle.Descent, lineHeight);
 				}
 				else
 				{
@@ -1501,7 +1500,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else if (lineStackingStrategy is LineStackingStrategy.BlockLineHeight)
 		{
-			return (lineHeight, lineHeight - fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent);
+			return (lineHeight, lineHeight - fontDetailsWithMaxHeightInLine.FontHandle.Descent);
 		}
 		else
 		{

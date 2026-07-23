@@ -41,9 +41,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal float LineHeight => FontInfo.LineHeight;
 
-		internal float AboveBaselineHeight => -FontInfo.SKFontMetrics.Ascent;
+		internal float AboveBaselineHeight => -FontInfo.FontHandle.Ascent;
 
-		internal float BelowBaselineHeight => FontInfo.SKFontMetrics.Descent;
+		internal float BelowBaselineHeight => FontInfo.FontHandle.Descent;
 
 		protected override void OnFontFamilyChanged()
 		{
