@@ -46,6 +46,13 @@ public static class CompilationWorkspaceProvider
 	];
 
 	/// <summary>
+	/// The workspace-only MSBuild property that flags a hot-reload host build. It shapes how the
+	/// workspace evaluates the projects, but is deliberately NOT forwarded to the recovery restore
+	/// (which must reproduce the application's own restore, not the hot-reload variant).
+	/// </summary>
+	private const string UnoIsHotReloadHostProperty = "UnoIsHotReloadHost";
+
+	/// <summary>
 	/// Opens the hot-reload <see cref="MSBuildWorkspace"/> for <paramref name="projectPath"/>: the
 	/// projects are evaluated with the whitelisted global properties only (see
 	/// <see cref="_globalPropertiesAllowList"/>). The workspace owns the MSBuild services and is
@@ -79,7 +86,7 @@ public static class CompilationWorkspaceProvider
 		{
 			// Flag the current build as created for hot reload, which allows for running targets
 			// or setting props/items in the context of the hot reload workspace.
-			["UnoIsHotReloadHost"] = "True",
+			[UnoIsHotReloadHostProperty] = "True",
 		};
 
 		foreach (var property in _globalPropertiesAllowList)
@@ -156,7 +163,14 @@ public static class CompilationWorkspaceProvider
 					$"The hot-reload workspace loaded {Describe(brokenFlavors)} without any .NET framework references " +
 					"(missing targeting pack at design time); attempting to recover with 'dotnet restore'.");
 				workspace.Dispose();
-				await DotnetRestoreRunner.TryRestoreAsync(projectPath, reporter, ct);
+
+				// Restore under the same allow-listed evaluation context the workspace used (minus the
+				// workspace-only hot-reload marker), so a property-conditioned targeting pack is
+				// restored for the graph that was actually opened.
+				var restoreProperties = globalProperties
+					.Where(entry => entry.Key != UnoIsHotReloadHostProperty)
+					.ToDictionary(entry => entry.Key, entry => entry.Value);
+				await DotnetRestoreRunner.TryRestoreAsync(projectPath, restoreProperties, reporter, ct);
 				continue;
 			}
 

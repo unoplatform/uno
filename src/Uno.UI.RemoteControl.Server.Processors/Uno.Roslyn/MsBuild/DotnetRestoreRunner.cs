@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -20,12 +21,14 @@ internal static class DotnetRestoreRunner
 	private static readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(120);
 
 	/// <summary>
-	/// Restores <paramref name="projectPath"/>. Only throws <see cref="OperationCanceledException"/>
-	/// when <paramref name="ct"/> is cancelled — all other failures are reported via
-	/// <paramref name="reporter"/> and surface as <see langword="false"/>, so the caller decides
-	/// how to degrade.
+	/// Restores <paramref name="projectPath"/> under <paramref name="globalProperties"/> (the
+	/// workspace's allow-listed evaluation context, forwarded as <c>-p:</c> arguments so the
+	/// restore evaluates the same project graph the workspace opened). Only throws
+	/// <see cref="OperationCanceledException"/> when <paramref name="ct"/> is cancelled — all other
+	/// failures are reported via <paramref name="reporter"/> and surface as <see langword="false"/>,
+	/// so the caller decides how to degrade.
 	/// </summary>
-	internal static async Task<bool> TryRestoreAsync(string projectPath, IReporter reporter, CancellationToken ct, TimeSpan? timeout = null)
+	internal static async Task<bool> TryRestoreAsync(string projectPath, IReadOnlyDictionary<string, string> globalProperties, IReporter reporter, CancellationToken ct, TimeSpan? timeout = null)
 	{
 		try
 		{
@@ -41,6 +44,15 @@ internal static class DotnetRestoreRunner
 			};
 			startInfo.ArgumentList.Add("restore");
 			startInfo.ArgumentList.Add(projectPath);
+
+			// Forward the workspace's evaluation context so the restore resolves the SAME project
+			// graph the workspace opened. Without Configuration/Platform/Solution*, a restore of a
+			// property-conditioned targeting pack (e.g. a Release-only TargetingPackVersion) would
+			// evaluate the default (Debug) graph and leave the reloaded workspace just as broken.
+			foreach (var (key, value) in globalProperties)
+			{
+				startInfo.ArgumentList.Add($"-p:{key}={value}");
+			}
 
 			using var process = new Process { StartInfo = startInfo };
 

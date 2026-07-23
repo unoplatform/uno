@@ -93,9 +93,12 @@ When D1 fires on any head flavor:
    - executable: `dotnet` resolved exactly as the BuildHost resolves it (PATH of the host
      process, environment inherited — F5);
    - working directory: the head project directory (`global.json` honored);
-   - no extra global properties (the restore must reproduce what the app's own build
-     restore would do; the workspace-only `UnoIsHotReloadHost` marker is deliberately not
-     passed);
+   - the workspace's allow-listed global properties (`Configuration`, `Platform`, `Solution*`)
+     forwarded as `-p:` arguments, so the restore evaluates the **same** project graph the
+     workspace opened; the workspace-only `UnoIsHotReloadHost` marker is deliberately *not*
+     passed. Forwarding is required: a property-conditioned targeting pack (e.g. a
+     `Release`-only `TargetingPackVersion`) would otherwise be restored for the default (Debug)
+     graph, leaving the reloaded workspace just as broken;
    - bounded by a timeout — the `DotnetRestoreRunner.TryRestoreAsync` `timeout` parameter,
      defaulting to 120 s and overridable by callers (integration tests pass a short value) —
      and the init `CancellationToken`;
