@@ -10,19 +10,18 @@ namespace Uno.UI.Composition.Drawing;
 /// <see cref="INativeWindow"/>; owns the swapchain/surface, present, and the dirty-rect blit internally.
 /// A backend consumes it (downcasting to its kind-specific type) to build pipelines and render targets.
 /// </summary>
+/// <summary>
+/// A thin init handle for a backend's GPU device/connection (instance/adapter/device/queue), produced by the
+/// context factory and passed to the matched backend pair to bind it to the device. It is not a resource
+/// factory — resource creation (textures, shaders, filters, …) lives on <see cref="IDrawingBackend"/>, and the
+/// frame render target is a render-side concern.
+/// </summary>
 public interface IGraphicsContext : IDisposable
 {
 	GraphicsContextKind Kind { get; }
 
 	/// <summary>Whether the context has been lost (device removed, surface invalidated) and must be recreated.</summary>
 	bool IsLost { get; }
-
-	/// <summary>
-	/// Produces the color <see cref="IRenderTarget"/> the backend renders into, at the given pixel size (recreated
-	/// on resize). Whether it is backed by the window swapchain or a retained offscreen texture — and the
-	/// dirty-rect blit/present — is internal to the context; the backend only ever sees the returned view.
-	/// </summary>
-	IRenderTarget CreateRenderTarget(int width, int height);
 }
 
 /// <summary>

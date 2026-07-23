@@ -395,11 +395,10 @@ public interface INativeWindow                  // host-provided; GPU-agnostic
 public delegate IGraphicsContext? GraphicsContextFactory(
     GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements);
 
-public interface IGraphicsContext : IDisposable
+public interface IGraphicsContext : IDisposable   // thin device/init handle; NOT a resource factory
 {
     GraphicsContextKind Kind { get; }
     bool IsLost { get; }
-    IRenderTarget CreateRenderTarget(int width, int height);  // the color target; swapchain/offscreen/blit internal
 }
 
 public interface IRenderTarget : IDisposable { PixelSize Size { get; } }   // kind-matched color view
