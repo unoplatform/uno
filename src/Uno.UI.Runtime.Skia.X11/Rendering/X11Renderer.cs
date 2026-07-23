@@ -15,7 +15,7 @@ internal abstract class X11Renderer : IDisposable
 	private SKColor _background = SKColors.White;
 	private SKSurface? _surface;
 	private X11AirspaceRenderHelper? _airspaceHelper;
-	private readonly IXamlRootHost _host;
+	protected readonly IXamlRootHost _host;
 	protected readonly X11Window _x11Window;
 
 	protected X11Renderer(IXamlRootHost host, X11Window x11Window)
@@ -26,7 +26,7 @@ internal abstract class X11Renderer : IDisposable
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
-	public void Render()
+	public virtual void Render()
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
