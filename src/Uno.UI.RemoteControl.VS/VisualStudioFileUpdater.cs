@@ -76,15 +76,28 @@ internal sealed class VisualStudioFileUpdater(
 				await channel.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), ct);
 			}
 
-			if (!request.IsForceHotReloadDisabled)
+			// Finalization runs on a VS-tracked task (not a raw thread-pool Task.Run): the DTE
+			// calls inside marshal to the UI thread. It also runs when the hot-reload trigger is
+			// disabled — the deferred saves must be flushed regardless (ForceSaveOnDisk semantics
+			// do not depend on the trigger).
+			if (!request.IsForceHotReloadDisabled || deferredSaves.Count > 0)
 			{
-				_ = Task.Run(() => WaitReadinessAndTriggerHotReloadAsync(createdFiles, deferredSaves, ct), ct);
+				_ = ThreadHelper.JoinableTaskFactory.RunAsync(() => WaitReadinessAndTriggerHotReloadAsync(request.IsForceHotReloadDisabled, createdFiles, deferredSaves, ct));
 			}
 		}
-		catch (Exception e) when (ideChannelClient() is { } channel)
+		catch (Exception e)
 		{
-			// Send a message back to indicate that the request has failed.
-			await channel.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Fail(e)), ct);
+			if (ideChannelClient() is { } channel)
+			{
+				// Send a message back to indicate that the request has failed.
+				await channel.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Fail(e)), ct);
+			}
+			else
+			{
+				// No channel to ack on (early init / teardown): the dev-server will only give up
+				// on its wait-for-IDE timeout — leave a trace so that wait is explainable.
+				debug($"BatchUpdate #{request.CorrelationId}: failed with no channel to ack ({e.Message}).");
+			}
 
 			throw;
 		}
@@ -172,19 +185,29 @@ internal sealed class VisualStudioFileUpdater(
 		}
 	}
 
-	private async Task WaitReadinessAndTriggerHotReloadAsync(List<string> createdFiles, List<Document> deferredSaves, CancellationToken ct)
+	private async Task WaitReadinessAndTriggerHotReloadAsync(bool isForceHotReloadDisabled, List<string> createdFiles, List<Document> deferredSaves, CancellationToken ct)
 	{
 		try
 		{
 			var stopwatch = Stopwatch.StartNew();
-			if (createdFiles.Count > 0)
+			if (!isForceHotReloadDisabled && createdFiles.Count > 0)
 			{
+				// DTE is STA COM: marshal to the UI thread for the project-system mutation, then
+				// run the readiness polling through the thread pool so the UI thread is not held
+				// for up to the 10 s readiness budget.
+				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
 				NudgeProjectSystem(createdFiles);
-				await WaitForWorkspaceReadinessAsync(createdFiles, TimeSpan.FromSeconds(10), ct);
+
+				await Task.Run(() => WaitForWorkspaceReadinessAsync(createdFiles, TimeSpan.FromSeconds(10), ct), ct);
 			}
 
+			// document.Save() and ExecuteCommand are DTE calls too — back to the UI thread (this
+			// also covers the trigger-disabled path, which never switched above).
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
+
 			// Deferred saves: performed only once the workspace can compile the change-set, so a
-			// save-triggered hot reload evaluates a coherent snapshot.
+			// save-triggered hot reload evaluates a coherent snapshot. Flushed even when the
+			// hot-reload trigger is disabled — ForceSaveOnDisk semantics do not depend on it.
 			foreach (var document in deferredSaves)
 			{
 				try
@@ -197,10 +220,19 @@ internal sealed class VisualStudioFileUpdater(
 				}
 			}
 
+			if (isForceHotReloadDisabled)
+			{
+				return;
+			}
+
 			// Programmatically trigger the "Apply Code Changes" command in Visual Studio,
 			// which will trigger the hot reload (same mechanics as ForceHotReloadIdeMessage).
 			debug($"BatchUpdate: triggering Debug.ApplyCodeChanges (readiness + deferred saves took {stopwatch.ElapsedMilliseconds} ms).");
 			dte.ExecuteCommand("Debug.ApplyCodeChanges");
+		}
+		catch (OperationCanceledException)
+		{
+			// Shutdown/teardown: expected, not a trigger failure — keep the log signal clean.
 		}
 		catch (Exception e)
 		{

@@ -37,7 +37,9 @@ internal sealed class IdeFileUpdater(
 		// before the IDE can possibly act on that trigger (spec 052, R6).
 		await PersistHotReloadInfoAsync(hotReload, request);
 
-		var results = new FileEditResult?[request.Edits.Length];
+		// Non-nullable by construction: the delete loop below fills every NewText==null slot,
+		// the write fan-out fills every other one — each index is covered exactly once.
+		var results = new FileEditResult[request.Edits.Length];
 
 		// Deletes are not forwarded to the IDE — apply them on disk through the base editor.
 		for (var i = 0; i < request.Edits.Length; i++)
@@ -82,15 +84,16 @@ internal sealed class IdeFileUpdater(
 			}
 		}
 
-		return [.. results.Select(result => result!)];
+		return [.. results];
 	}
 
 	protected override Task FinalizeAsync(HotReloadOperation hotReload, IUpdateFileRequest request, ImmutableArray<FileEditResult> results, CancellationToken ct)
 	{
-		// The info file is already persisted and the trigger traveled with the batch (no
-		// separate force, no blind pre-delay) — but the no-changes auto-retry must stay
-		// armed: retries go through the standalone ForceHotReloadIdeMessage and never
-		// re-send file contents.
+		// The info file is already persisted (ApplyEditsAsync). For write batches the trigger
+		// traveled with the UpdateFileRequestIdeMessage (no blind pre-delay); for delete-only
+		// batches no IDE message is sent and the NoChanges auto-retry below provides the
+		// trigger. Either way the retry must stay armed: retries go through the standalone
+		// ForceHotReloadIdeMessage and never re-send file contents.
 		if (request.IsForceHotReloadDisabled is false && HasAnySuccessfulEdit(results))
 		{
 			hotReload.EnableAutoRetryIfNoChanges(request.ForceHotReloadAttempts, request.ForceHotReloadDelay);
