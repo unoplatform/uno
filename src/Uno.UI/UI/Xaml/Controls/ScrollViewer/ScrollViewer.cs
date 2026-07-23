@@ -801,12 +801,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// to ensure there is no unwanted difference caused by double
 			// precision, which could then cause the scroll bars to appear
 			// for no reason.
+			// When zoomed, the effective extent is scaled by the zoom factor.
 
-			var scrollableHeight = Math.Max(Math.Round(ExtentHeight - ViewportHeight, 4), 0);
+			var scaledExtentHeight = ExtentHeight * ZoomFactor;
+			var scaledExtentWidth = ExtentWidth * ZoomFactor;
+
+			var scrollableHeight = Math.Max(Math.Round(scaledExtentHeight - ViewportHeight, 4), 0);
 
 			ScrollableHeight = scrollableHeight;
 
-			var scrollableWidth = Math.Max(Math.Round(ExtentWidth - ViewportWidth, 4), 0);
+			var scrollableWidth = Math.Max(Math.Round(scaledExtentWidth - ViewportWidth, 4), 0);
 
 			ScrollableWidth = scrollableWidth;
 
@@ -1332,6 +1336,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ZoomFactor = zoomFactor;
 
+			// Recalculate scrollable dimensions with new zoom factor
+			UpdateDimensionProperties();
+
 			// Note: We should also defer the intermediate zoom changes
 			Update(isIntermediate: false);
 
@@ -1812,6 +1819,47 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+			// Handle Ctrl+Plus/Minus for zoom
+			if (ZoomMode == ZoomMode.Enabled)
+			{
+				var isCtrlDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+				if (isCtrlDown)
+				{
+					// Windows.System.VirtualKey has no OEM members, so the Win32 virtual-key codes are used directly.
+					// Both are layout independent: VK_OEM_PLUS/VK_OEM_MINUS always map to the +/- key of any layout.
+					const VirtualKey oemPlus = (VirtualKey)187;
+					const VirtualKey oemMinus = (VirtualKey)189;
+
+					var isZoomIn = key is VirtualKey.Add or oemPlus;
+					var isZoomOut = key is VirtualKey.Subtract or oemMinus;
+
+					if (isZoomIn || isZoomOut)
+					{
+						var oldZoom = ZoomFactor;
+						var zoomDelta = isZoomIn ? 1.1f : 0.9f; // 10% zoom per key press
+						var newZoom = Math.Clamp(oldZoom * zoomDelta, MinZoomFactor, MaxZoomFactor);
+
+						if (Math.Abs(newZoom - oldZoom) > 0.001f)
+						{
+							// Zoom toward the center of the viewport (no cursor position available for keyboard zoom).
+							// Offsets are in scaled pixels, so the content point under the center scales with the zoom ratio.
+							var zoomRatio = newZoom / oldZoom;
+							var viewportCenterX = ViewportWidth / 2;
+							var viewportCenterY = ViewportHeight / 2;
+
+							var newHorizontalOffset = (HorizontalOffset + viewportCenterX) * zoomRatio - viewportCenterX;
+							var newVerticalOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
+
+							ChangeView(newHorizontalOffset, newVerticalOffset, newZoom, disableAnimation: false);
+							args.Handled = true;
+						}
+						return;
+					}
+				}
+			}
+#endif
 
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
