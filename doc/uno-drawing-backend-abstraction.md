@@ -201,7 +201,7 @@ provides today falls into six jobs, and each has a home:
 | **metrics** (ascent/descent/lineGap, underline & strikeout pos/thickness) | `SKFontMetrics`/`SKFont` | ✅ **`IFont`** — the handle exposes metrics (SkiaSharp sign convention; `ManagedFont` parses `post`/`OS-2`) |
 | **glyph coverage** ("does *this* font have the glyph") | `SKFont.ContainsGlyph` | ✅ **`IFont`** — `GetGlyphIndex`/`ContainsGlyph` |
 | **shaping table access** (HarfBuzz `Face` source) | `SKTypeface.GetTableData` | ✅ **`IFont`** — `GetFontTable`/`UnitsPerEm`; `SkiaFont` serves from its *variable-instanced* `SKTypeface` (shaping byte-identical to before), `ManagedFont` from its bytes. HarfBuzz stays (not Skia). |
-| value types (`SKPoint`/`SKRect`/`SKColor`/`SKPath`) | pervasive in layout/draw | existing equivalents — `Vector2`/`Point`, `Windows.Foundation.Rect`, `Windows.UI.Color`, `IGeometry` (spell-check squiggle via `IPathBuilder`). Mechanical, independent of the font seam. **(not yet done)** |
+| value types (`SKPoint`/`SKRect`/`SKColor`/`SKPath`) | pervasive in layout/draw | ✅ existing equivalents — `Vector2`, `Windows.Foundation.Rect` (via `Point`), `Windows.UI.Color`, `IGeometry` (spell-check squiggle via `IPathBuilder`). Also collapsed the vestigial `SKPaint` color-carrier to `Color`. |
 | **font resolution + fallback** (family/weight/style → face; *which* font covers a codepoint) | `SKTypeface.FromFamilyName`, `SKFontManager.MatchCharacter` | the genuinely new part → **`IFontManager` seam** (below) **(not yet done)** |
 
 So the font *handle* (`IFont`) absorbs metrics + coverage + table access — none of it a separate abstraction,
@@ -214,8 +214,11 @@ resolved `SKTypeface` only as the *interim resolution handle* (used by Run's fal
 `Inline`, `UnicodeText`, `ParsedText`, `Run`) reads metrics/coverage/tables only through `IFont`; `Given_TextBlock`
 runtime tests pass 103/103 on both the default Skia path *and* the fully Skia-less managed-font path
 (`UNO_MANAGED_FONT_BACKEND=1`), which now exercises ManagedFont metrics + coverage + HarfBuzz-from-ManagedFont-tables
-end-to-end. **Still Skia in the text layer:** the value-type sweep (mechanical) and font resolution/fallback (the
-`IFontManager` seam).
+end-to-end. The **value-type sweep is also done** — `UnicodeText`/`ParsedText` layout & draw code uses
+`Vector2`/`Rect`/`Color`/`IGeometry` (validated: TextBlock 103/103 on both paths, TextBox unchanged at its
+pre-existing headless baseline). **Still Skia in the text layer:** only font resolution/fallback — the
+`IFontManager` seam — plus the backend-internal `SKFont` that `FontDetails` builds to feed `SkiaFont` (which
+moves once resolution is behind the seam).
 
 #### Font resolution & fallback — approaches
 

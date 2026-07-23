@@ -834,11 +834,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Dictionary<SKColor, Dictionary<IFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
-		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
-		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
+		Dictionary<Color, Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>> _colorToFontToGlyphs = new();
+		List<(IGeometry path, float strokeThickness)> spellCheckUnderlines = new();
+		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
 
-		SKRect? caretRect = default;
+		Rect? caretRect = default;
 
 		var runBreakIndex = 0;
 		var wordBoundariesIndex = 0;
@@ -871,7 +871,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				? 0
 				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
-			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
+			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 
 			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
@@ -879,11 +879,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
-					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<SKPoint> positions)>();
+					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>();
 				}
 				if (!fontToGlyphs.TryGetValue(fontDetails.FontHandle, out var glyphsAndPositions))
 				{
-					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
+					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<Vector2>());
 				}
 				var glyphs = glyphsAndPositions.glyphs;
 				var positions = glyphsAndPositions.positions;
@@ -892,7 +892,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				{
 					var glyph = glyphNode.Value;
 					glyphs.Add((ushort)glyph.Codepoint);
-					positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
+					positions.Add(new Vector2(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
 						positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
 					positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails);
 					if (cluster.Value.glyphLast == glyphNode)
@@ -904,12 +904,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			// Floor every edge and +1 the trailing edges so adjacent background
 			// rects always overlap by 1 px, preventing antialiased-edge seams.
-			var backgroundRect = new SKRect(
-				MathF.Floor(unalignedX + alignmentOffset),
-				MathF.Floor(y),
-				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
-				MathF.Floor(y + line.lineHeight) + 1);
-			highlighter.Value.background?.TryPaint(session.Session, session.Opacity, backgroundRect.ToRect());
+			var backgroundRect = new Rect(
+				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(y)),
+				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(y + line.lineHeight) + 1));
+			highlighter.Value.background?.TryPaint(session.Session, session.Opacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
@@ -922,23 +920,23 @@ internal readonly partial struct UnicodeText : IParsedText
 					var amplitude = 2 * scale;
 					var yOffset = 2 * scale;
 
-					var p = new SKPathBuilder();
+					var p = DrawingBackend.Current.CreatePathBuilder();
 					var underlineY = y + line.baselineOffset + yOffset;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					p.MoveTo(underlineLeftX, underlineY);
+					p.MoveTo(new Vector2(underlineLeftX, underlineY));
 					var x = underlineLeftX;
 					var up = true;
 					while (x + step < underlineRightX)
 					{
 						x += step;
 						var yWave = underlineY + (up ? -amplitude : amplitude);
-						p.LineTo(x, yWave);
+						p.LineTo(new Vector2(x, yWave));
 						up = !up;
 					}
-					p.LineTo(underlineRightX, underlineY);
+					p.LineTo(new Vector2(underlineRightX, underlineY));
 
-					spellCheckUnderlines.Add((p.Detach(), scale));
+					spellCheckUnderlines.Add((p.Build(), scale));
 				}
 			}
 
@@ -961,14 +959,14 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
 				{
 					caretRect = cluster.Value.rtl
-						? new SKRect(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y, cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight)
-						: new SKRect(alignmentOffset + unalignedX, y, alignmentOffset + unalignedX + caretThickness, y + line.lineHeight);
+						? new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y), new Point(cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight))
+						: new Rect(new Point(alignmentOffset + unalignedX, y), new Point(alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
 				}
 				else if (_endingNewLineLineHeight is null && caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
 				{
 					caretRect = cluster.Value.rtl
-						? new SKRect(alignmentOffset + unalignedX - caretThickness, y, alignmentOffset + unalignedX, y + line.lineHeight)
-						: new SKRect(cluster.Value.width + alignmentOffset + unalignedX, y, cluster.Value.width + alignmentOffset + unalignedX + caretThickness, y + line.lineHeight);
+						? new Rect(new Point(alignmentOffset + unalignedX - caretThickness, y), new Point(alignmentOffset + unalignedX, y + line.lineHeight))
+						: new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX, y), new Point(cluster.Value.width + alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
 				}
 			}
 		}
@@ -978,11 +976,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
-			var paintColor = Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
+				var paintColor = color;
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
-				var positionSpan = MemoryMarshal.Cast<SKPoint, Vector2>(CollectionsMarshal.AsSpan(positions));
+				var positionSpan = CollectionsMarshal.AsSpan(positions);
 
 				using (var outline = font.BuildGlyphRunOutline(glyphSpan, positionSpan, 0))
 				{
@@ -1004,8 +1002,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
-			var geometry = new SkiaGeometrySource2D(path);
-			drawingSession.StrokePath(geometry, Colors.Red, strokeThickness, antialias: true);
+			drawingSession.StrokePath(path, Colors.Red, strokeThickness, antialias: true);
+			path.Dispose();
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
@@ -1013,7 +1011,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			drawingSession.DrawLine(
 				new Vector2(x1, underlineY),
 				new Vector2(x2, underlineY),
-				Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue), 1, antialias: true);
+					color, 1, antialias: true);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
@@ -1021,13 +1019,13 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = GetAlignmentOffsetForLine(null);
 			var top = _text.Length == 0 ? 0 : _xyTable[^1].prefixSummedHeight;
 			caretRect = _rtl
-				? new SKRect(alignmentOffset - caret.Value.thickness, top, alignmentOffset, top + _defaultFontDetails.LineHeight)
-				: new SKRect(alignmentOffset, top, alignmentOffset + caret.Value.thickness, top + _defaultFontDetails.LineHeight);
+				? new Rect(new Point(alignmentOffset - caret.Value.thickness, top), new Point(alignmentOffset, top + _defaultFontDetails.LineHeight))
+				: new Rect(new Point(alignmentOffset, top), new Point(alignmentOffset + caret.Value.thickness, top + _defaultFontDetails.LineHeight));
 		}
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.Value.ToRect());
+			caret!.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.Value);
 		}
 	}
 
@@ -1043,35 +1041,35 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static SKColor BrushToColor(Brush? brush, float opacity)
+	private static Color BrushToColor(Brush? brush, float opacity)
 	{
-		var color = SKColors.Black;
+		var color = Colors.Black;
 		if (brush is SolidColorBrush scb)
 		{
 			var scbColor = scb.Color;
-			color = new SKColor(
-				red: scbColor.R,
-				green: scbColor.G,
-				blue: scbColor.B,
-				alpha: (byte)(scbColor.A * scb.Opacity * opacity));
+			color = Color.FromArgb(
+				(byte)(scbColor.A * scb.Opacity * opacity),
+				scbColor.R,
+				scbColor.G,
+				scbColor.B);
 		}
 		else if (brush is GradientBrush gb)
 		{
 			var gbColor = gb.FallbackColorWithOpacity;
-			color = new SKColor(
-				red: gbColor.R,
-				green: gbColor.G,
-				blue: gbColor.B,
-				alpha: (byte)(gbColor.A * opacity));
+			color = Color.FromArgb(
+				(byte)(gbColor.A * opacity),
+				gbColor.R,
+				gbColor.G,
+				gbColor.B);
 		}
 		else if (brush is XamlCompositionBrushBase xcbb)
 		{
 			var gbColor = xcbb.FallbackColorWithOpacity;
-			color = new SKColor(
-				red: gbColor.R,
-				green: gbColor.G,
-				blue: gbColor.B,
-				alpha: (byte)(gbColor.A * opacity));
+			color = Color.FromArgb(
+				(byte)(gbColor.A * opacity),
+				gbColor.R,
+				gbColor.G,
+				gbColor.B);
 		}
 
 		return color;
