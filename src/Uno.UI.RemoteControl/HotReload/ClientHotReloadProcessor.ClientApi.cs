@@ -185,6 +185,17 @@ public partial class ClientHotReloadProcessor
 	public Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
 		=> TryUpdateFilesAsync(req, ct);
 
+	/// <summary>
+	/// Applies a batch of file edits through the dev-server, optionally waiting for the
+	/// resulting hot-reload to be applied locally.
+	/// </summary>
+	/// <remarks>
+	/// Must not be called before the first <see cref="StatusChanged"/> notification: until the
+	/// hot-reload engine has published its initial status, the request cannot be tracked and
+	/// the call fails with an <see cref="InvalidOperationException"/> in the result's
+	/// <c>Error</c> — regardless of <c>WaitForHotReload</c> (the gate also applies to
+	/// write/persist-only usages).
+	/// </remarks>
 	public async Task<UpdateResult> TryUpdateFilesAsync(UpdateRequest req, CancellationToken ct)
 	{
 		var result = default(UpdateResult);
@@ -199,14 +210,21 @@ public partial class ClientHotReloadProcessor
 			}
 
 			// Client-side gate: until the first status notification, the hot-reload engine is not
-			// initialized yet and cannot track this request (CurrentStatus is null, cf. StatusSink).
-			// Fail with an explicit, actionable error instead of an accidental NullReferenceException
-			// deeper in the pipeline — client-side counterpart of the server-side workspace gate.
-			if (CurrentStatus is null)
+			// initialized yet and cannot track this request — fail with an explicit, actionable
+			// error instead of an accidental NullReferenceException deeper in the pipeline
+			// (client-side counterpart of the server-side workspace gate). CurrentStatus is
+			// declared non-nullable but is legitimately null until that first notification
+			// (StatusSink.Current starts as null!): capture through a nullable local so the
+			// check reads truthfully under nullable analysis.
+			Status? currentStatus = _status.Current;
+			if (currentStatus is null)
 			{
-				return result with { Error = new InvalidOperationException(
-					"Hot reload is not initialized yet (no status has been received from the hot-reload engine). "
-					+ "Wait for the first ClientHotReloadProcessor.StatusChanged notification before sending file updates.") };
+				return result with
+				{
+					Error = new InvalidOperationException(
+						"Hot reload is not initialized yet (no status has been received from the hot-reload engine). "
+						+ "Wait for the first ClientHotReloadProcessor.StatusChanged notification before sending file updates.")
+				};
 			}
 
 			var log = this.Log();
@@ -214,12 +232,15 @@ public partial class ClientHotReloadProcessor
 			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.Edits.First().FilePath)}]";
 
-			if (CurrentStatus.State is HotReloadState.Disabled)
+			if (currentStatus.State is HotReloadState.Disabled)
 			{
 				// Do not reject: with hot-reload disabled a file update is still a legitimate
 				// way to persist changes (files are written / forwarded to the IDE) — but no
 				// hot-reload should be expected, so surface the state to the caller's logs.
-				log.Warn($"{tag} Hot reload is disabled for this session — the update will still be processed (files may be written), but no hot-reload is expected to be applied.");
+				if (log.IsEnabled(LogLevel.Warning))
+				{
+					log.Warn($"{tag} Hot reload is disabled for this session — the update will still be processed (files may be written), but no hot-reload is expected to be applied.");
+				}
 			}
 
 			debug?.Debug($"{tag} Updating {req.Edits.Length} file(s).");
