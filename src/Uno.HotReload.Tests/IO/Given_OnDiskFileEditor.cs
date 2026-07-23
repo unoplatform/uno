@@ -41,7 +41,7 @@ public class Given_OnDiskFileEditor
 	public async Task When_WriteToMissingFileWithoutCreate_Then_FileNotFound()
 	{
 		var ct = TestContext.CancellationTokenSource.Token;
-		var filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), "Page.xaml");
+		var filePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"), "Page.xaml");
 
 		var (result, _) = await new OnDiskFileEditor().EditAsync(
 			new FileEdit(filePath, OldText: null, NewText: "<Page />"),
