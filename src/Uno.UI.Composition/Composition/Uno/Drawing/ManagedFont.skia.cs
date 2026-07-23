@@ -39,7 +39,16 @@ internal sealed class ManagedFont : IFont
 	private readonly ColrTable? _colr;
 	private readonly Color[]? _palette;
 
-	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette)
+	// Metrics: cmap (char→glyph), hmtx (advances), and vertical line metrics (font units).
+	private readonly CmapTable? _cmap;
+	private readonly int _hmtx;
+	private readonly int _numHMetrics;
+	private readonly int _ascent;
+	private readonly int _descent;
+	private readonly int _lineGap;
+
+	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette,
+		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int lineGap)
 	{
 		_data = data;
 		_pixelSize = pixelSize;
@@ -51,7 +60,38 @@ internal sealed class ManagedFont : IFont
 		_cff = cff;
 		_colr = colr;
 		_palette = palette;
+		_cmap = cmap;
+		_hmtx = hmtx;
+		_numHMetrics = numHMetrics;
+		_ascent = ascent;
+		_descent = descent;
+		_lineGap = lineGap;
 	}
+
+	private float Scale => _pixelSize / _unitsPerEm;
+
+	/// <summary>Maps a Unicode codepoint to a glyph index via the font's cmap (0 = .notdef / missing).</summary>
+	public ushort GetGlyphIndex(int codepoint) => _cmap?.Map(_data, codepoint) ?? 0;
+
+	/// <summary>The glyph's horizontal advance in font units (hmtx; glyphs past numHMetrics reuse the last advance).</summary>
+	public int GetAdvanceWidth(ushort glyph)
+	{
+		if (_hmtx == 0 || _numHMetrics == 0) { return 0; }
+		var i = glyph < _numHMetrics ? glyph : _numHMetrics - 1;
+		return U16(_data, _hmtx + i * 4);
+	}
+
+	/// <summary>The glyph's advance in pixels (at this font's size).</summary>
+	public float GetAdvance(ushort glyph) => GetAdvanceWidth(glyph) * Scale;
+
+	/// <summary>Ascent in pixels (positive above the baseline).</summary>
+	public float Ascent => _ascent * Scale;
+
+	/// <summary>Descent in pixels (negative below the baseline, matching sfnt sign conventions).</summary>
+	public float Descent => _descent * Scale;
+
+	/// <summary>Recommended extra line spacing in pixels.</summary>
+	public float LineGap => _lineGap * Scale;
 
 	/// <summary>
 	/// Parses <paramref name="data"/> (a full sfnt or TrueType collection) into a managed font. Returns false when the
@@ -71,7 +111,7 @@ internal sealed class ManagedFont : IFont
 			}
 
 			var numTables = U16(data, baseOffset + 4);
-			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0;
+			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0, cmap = 0, hmtx = 0, hhea = 0, os2 = 0;
 			var dir = baseOffset + 12;
 			for (var i = 0; i < numTables; i++, dir += 16)
 			{
@@ -85,6 +125,10 @@ internal sealed class ManagedFont : IFont
 					case 0x43464620: cff = offset; break;  // 'CFF '
 					case 0x434F4C52: colr = offset; break; // 'COLR'
 					case 0x4350414C: cpal = offset; break; // 'CPAL'
+					case 0x636D6170: cmap = offset; break; // 'cmap'
+					case 0x686D7478: hmtx = offset; break; // 'hmtx'
+					case 0x68686561: hhea = offset; break; // 'hhea'
+					case 0x4F532F32: os2 = offset; break;  // 'OS/2'
 				}
 			}
 
@@ -96,6 +140,21 @@ internal sealed class ManagedFont : IFont
 			var unitsPerEm = U16(data, head + 18);
 			var longLoca = U16(data, head + 50) == 1;
 			var numGlyphs = U16(data, maxp + 4);
+
+			// Horizontal metrics + vertical line metrics (font units). Prefer OS/2 typo metrics when
+			// the font asks for them (fsSelection bit 7 = USE_TYPO_METRICS); else fall back to hhea.
+			var numHMetrics = hhea != 0 ? U16(data, hhea + 34) : 0;
+			int ascent = 0, descent = 0, lineGap = 0;
+			if (hhea != 0) { ascent = S16(data, hhea + 4); descent = S16(data, hhea + 6); lineGap = S16(data, hhea + 8); }
+			if (os2 != 0 && os2 + 78 <= data.Length)
+			{
+				var useTypo = (U16(data, os2 + 62) & 0x80) != 0; // fsSelection USE_TYPO_METRICS
+				if (useTypo || hhea == 0)
+				{
+					ascent = S16(data, os2 + 68); descent = S16(data, os2 + 70); lineGap = S16(data, os2 + 72);
+				}
+			}
+			var cmapTable = cmap != 0 ? CmapTable.Parse(data, cmap) : null;
 
 			var cffTable = cff != 0 ? CffTable.Parse(data, cff) : null;
 			var hasOutlines = (glyf != 0 && loca != 0) || cffTable is not null;
@@ -117,7 +176,8 @@ internal sealed class ManagedFont : IFont
 				}
 			}
 
-			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette);
+			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette,
+				cmapTable, hmtx, numHMetrics, ascent, descent, lineGap);
 			return true;
 		}
 		catch
@@ -544,6 +604,82 @@ internal sealed class ManagedFont : IFont
 	internal static int U16(byte[] d, int o) => (d[o] << 8) | d[o + 1];
 	internal static short S16(byte[] d, int o) => (short)U16(d, o);
 	internal static uint U32(byte[] d, int o) => ((uint)d[o] << 24) | ((uint)d[o + 1] << 16) | ((uint)d[o + 2] << 8) | d[o + 3];
+
+	/// <summary>Unicode <c>cmap</c> subtable (format 4 BMP or format 12 full) mapping codepoints to glyph indices.</summary>
+	private sealed class CmapTable
+	{
+		private readonly int _offset; // absolute offset of the chosen subtable
+		private readonly int _format;
+
+		private CmapTable(int offset, int format) { _offset = offset; _format = format; }
+
+		public static CmapTable? Parse(byte[] d, int cmap)
+		{
+			int numTables = U16(d, cmap + 2);
+			int best = -1, bestScore = -1;
+			for (var i = 0; i < numTables; i++)
+			{
+				var rec = cmap + 4 + i * 8;
+				int plat = U16(d, rec), enc = U16(d, rec + 2);
+				var off = (int)U32(d, rec + 4);
+				// Prefer full-Unicode (3/10, 0/{4,6}) over BMP (3/1, 0/3) over any Unicode platform-0.
+				var score = (plat, enc) switch
+				{
+					(3, 10) => 5,
+					(0, 6) => 4,
+					(0, 4) => 4,
+					(3, 1) => 3,
+					(0, 3) => 3,
+					(0, _) => 2,
+					_ => -1,
+				};
+				if (score > bestScore) { bestScore = score; best = cmap + off; }
+			}
+			if (best < 0) { return null; }
+			var format = U16(d, best);
+			return format is 4 or 12 ? new CmapTable(best, format) : null;
+		}
+
+		public ushort Map(byte[] d, int codepoint) => _format == 12 ? Map12(d, codepoint) : Map4(d, codepoint);
+
+		private ushort Map4(byte[] d, int cp)
+		{
+			if (cp > 0xFFFF) { return 0; }
+			var o = _offset;
+			var segX2 = U16(d, o + 6);
+			var segCount = segX2 / 2;
+			var endO = o + 14;
+			var startO = endO + segX2 + 2;
+			var deltaO = startO + segX2;
+			var rangeO = deltaO + segX2;
+			for (var i = 0; i < segCount; i++)
+			{
+				var end = U16(d, endO + i * 2);
+				if (cp > end) { continue; }
+				var start = U16(d, startO + i * 2);
+				if (cp < start) { return 0; }
+				int idDelta = S16(d, deltaO + i * 2);
+				var idRange = U16(d, rangeO + i * 2);
+				if (idRange == 0) { return (ushort)((cp + idDelta) & 0xFFFF); }
+				var gi = U16(d, rangeO + i * 2 + idRange + (cp - start) * 2);
+				return gi == 0 ? (ushort)0 : (ushort)((gi + idDelta) & 0xFFFF);
+			}
+			return 0;
+		}
+
+		private ushort Map12(byte[] d, int cp)
+		{
+			var o = _offset;
+			var nGroups = (int)U32(d, o + 12);
+			var g = o + 16;
+			for (var i = 0; i < nGroups; i++, g += 12)
+			{
+				uint startC = U32(d, g), endC = U32(d, g + 4), startG = U32(d, g + 8);
+				if (cp >= startC && cp <= endC) { return (ushort)(startG + (cp - startC)); }
+			}
+			return 0;
+		}
+	}
 
 	/// <summary>COLRv0 base-glyph -> colored layer records (glyph id + CPAL palette index).</summary>
 	private sealed class ColrTable
