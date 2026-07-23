@@ -372,6 +372,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
+	private WColor? _presentClear;
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
 	private bool SetScissor(RenderPassEncoder* pass, Vector4 clip)
@@ -456,7 +457,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		var clear = rd.ClearColor;
+		// The neutral loop calls present.Clear(...) before Replay; honor it (else fall back to the frame's clear).
+		var clear = _presentClear ?? rd.ClearColor;
 		var ca = new RenderPassColorAttachment
 		{
 			View = _s.View, LoadOp = clear.HasValue ? LoadOp.Clear : LoadOp.Load, StoreOp = StoreOp.Store,
@@ -521,7 +523,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
-	public void Clear(WColor color) { }
+	public void Clear(WColor color) => _presentClear = color;
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false) { }
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) { }
 	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false) { }
