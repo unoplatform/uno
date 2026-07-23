@@ -25,6 +25,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* StencilEvenOdd;
 	public RenderPipeline* StencilNonZero;
 	public RenderPipeline* CoverPipe;
+	public RenderPipeline* ImagePipe;
+	public BindGroupLayout* ImgBgl;
+	public Sampler* Smp;
 
 	public const TextureFormat ColorFormat = TextureFormat.Rgba8Unorm;
 	public const TextureFormat DepthStencilFormat = TextureFormat.Depth24PlusStencil8;
@@ -82,6 +85,39 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.Invert), Face(CompareFunction.Always, StencilOperation.Invert), 0xFF, 0xFF);
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.IncrementWrap), Face(CompareFunction.Always, StencilOperation.DecrementWrap), 0xFF, 0xFF);
 		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
+		CreateImagePipeline();
+	}
+
+	private const string ImageWgsl = @"
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+struct U { op: vec4<f32> };
+@group(0) @binding(0) var tex: texture_2d<f32>;
+@group(0) @binding(1) var smp: sampler;
+@group(0) @binding(2) var<uniform> u: U;
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return textureSample(tex, smp, i.uv) * u.op.x; }";
+
+	private void CreateImagePipeline()
+	{
+		var module = Module(ImageWgsl);
+		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
+		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
+		var attrs = stackalloc VertexAttribute[2];
+		attrs[0] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		attrs[1] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
+		var vbl = new VertexBufferLayout { ArrayStride = 16, StepMode = VertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
+		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		// premultiplied image pixels -> One/OneMinusSrcAlpha
+		var blend = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add } };
+		var target = new ColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = ColorWriteMask.All };
+		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
+		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
+		ImagePipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
+		ImgBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 0);
+		var sd = new SamplerDescriptor { AddressModeU = AddressMode.ClampToEdge, AddressModeV = AddressMode.ClampToEdge, MagFilter = FilterMode.Linear, MinFilter = FilterMode.Linear, MipmapFilter = MipmapFilterMode.Nearest, MaxAnisotropy = 1 };
+		Smp = W.DeviceCreateSampler(Dev, ref sd);
 	}
 
 	private RenderPipeline* MakePipe(ShaderModule* module, byte* vs, byte* fs, bool colorWrite, bool colorAttrs, BlendState* blend, StencilFaceState front, StencilFaceState back, uint stencilWrite, uint stencilRead)
@@ -155,12 +191,22 @@ internal sealed class PathFill
 	public Vector4 Clip;
 }
 
+internal sealed class ImageCmd
+{
+	public Vector2 P0, P1, P2, P3;
+	public byte[] Rgba;
+	public int W, H;
+	public float Opacity;
+	public Vector4 Clip;
+}
+
 public sealed class WebGpuRenderData : IRenderData
 {
 	internal List<(WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector4 clip)> Rects = new();
 	internal List<PathFill> Paths = new();
+	internal List<ImageCmd> Images = new();
 	internal WColor? ClearColor;
-	public void Dispose() { Rects = null; Paths = null; }
+	public void Dispose() { Rects = null; Paths = null; Images = null; }
 }
 
 public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
@@ -241,7 +287,14 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 		FillGeometry(sg, color, evenOdd: false);
 	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) { }
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
+	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
+	{
+		int w = image.PixelWidth, h = image.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		var bgra = new byte[w * h * 4]; image.CopyPixels(bgra);
+		var rgba = new byte[w * h * 4];
+		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
+		_data.Images.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), Rgba = rgba, W = w, H = h, Opacity = opacity, Clip = _clip });
+	}
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
 	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
@@ -303,6 +356,32 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			pathBufs.Add(((nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip));
 		}
 
+		var imgDraws = new List<(nint bg, nint quad, Vector4 clip)>();
+		foreach (var im in rd.Images)
+		{
+			var td = new TextureDescriptor { Size = new Extent3D((uint)im.W, (uint)im.H, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
+			var tex = W.DeviceCreateTexture(_d.Dev, ref td);
+			var view = W.TextureCreateView(tex, null);
+			var dst = new ImageCopyTexture { Texture = tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+			var layout = new TextureDataLayout { BytesPerRow = (uint)(im.W * 4), RowsPerImage = (uint)im.H };
+			var writeExtent = new Extent3D((uint)im.W, (uint)im.H, 1);
+			fixed (byte* p = im.Rgba) { W.QueueWriteTexture(_d.Q, in dst, p, (nuint)im.Rgba.Length, in layout, in writeExtent); }
+			var ubd = new BufferDescriptor { Size = 16, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+			var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+			var op = stackalloc float[4]; op[0] = im.Opacity; op[1] = op[2] = op[3] = 0;
+			W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 16);
+			var entries = stackalloc BindGroupEntry[3];
+			entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
+			entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+			entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 16 };
+			var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+			var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+			var q = new float[24];
+			void QV(int idx, Vector2 pos, float u, float v) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = v; }
+			QV(0, im.P0, 0, 0); QV(4, im.P1, 1, 0); QV(8, im.P2, 1, 1); QV(12, im.P0, 0, 0); QV(16, im.P2, 1, 1); QV(20, im.P3, 0, 1);
+			imgDraws.Add(((nint)bg, (nint)MakeBuffer(q), im.Clip));
+		}
+
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
 		var clear = rd.ClearColor;
 		var ca = new RenderPassColorAttachment
@@ -339,6 +418,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
 			W.RenderPassEncoderSetStencilReference(pass, 0);
 			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)cover, 0, (nuint)(36 * sizeof(float)));
+			W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		}
+
+		foreach (var (bg, quad, clip) in imgDraws)
+		{
+			if (!SetScissor(pass, clip)) { continue; }
+			W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+			W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)bg, 0, (uint*)null);
+			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)quad, 0, (nuint)(24 * sizeof(float)));
 			W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		}
 
