@@ -286,7 +286,12 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
 		FillGeometry(sg, color, evenOdd: false);
 	}
-	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) { }
+	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false)
+	{
+		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; } dir /= len;
+		var n = new Vector2(-dir.Y, dir.X) * (strokeWidth / 2f);
+		_data.Rects.Add((color, Map(p0.X + n.X, p0.Y + n.Y), Map(p1.X + n.X, p1.Y + n.Y), Map(p1.X - n.X, p1.Y - n.Y), Map(p0.X - n.X, p0.Y - n.Y), _clip));
+	}
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
 		int w = image.PixelWidth, h = image.PixelHeight; if (w <= 0 || h <= 0) { return; }
