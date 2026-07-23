@@ -22,7 +22,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public Device* Dev;
 	public Queue* Q;
 	public RenderPipeline* SolidPipe;
-	public RenderPipeline* StencilPipe;
+	public RenderPipeline* StencilEvenOdd;
+	public RenderPipeline* StencilNonZero;
 	public RenderPipeline* CoverPipe;
 
 	public const TextureFormat ColorFormat = TextureFormat.Rgba8Unorm;
@@ -77,12 +78,13 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 			Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add },
 		};
 
-		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.Always, StencilOperation.Keep), 0x00, 0x00);
-		StencilPipe = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.Invert), 0xFF, 0xFF);
-		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
+		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.Always, StencilOperation.Keep), Face(CompareFunction.Always, StencilOperation.Keep), 0x00, 0x00);
+		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.Invert), Face(CompareFunction.Always, StencilOperation.Invert), 0xFF, 0xFF);
+		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.IncrementWrap), Face(CompareFunction.Always, StencilOperation.DecrementWrap), 0xFF, 0xFF);
+		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
 	}
 
-	private RenderPipeline* MakePipe(ShaderModule* module, byte* vs, byte* fs, bool colorWrite, bool colorAttrs, BlendState* blend, StencilFaceState face, uint stencilWrite, uint stencilRead)
+	private RenderPipeline* MakePipe(ShaderModule* module, byte* vs, byte* fs, bool colorWrite, bool colorAttrs, BlendState* blend, StencilFaceState front, StencilFaceState back, uint stencilWrite, uint stencilRead)
 	{
 		var attrs = stackalloc VertexAttribute[2];
 		attrs[0] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -100,7 +102,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		var ds = new DepthStencilState
 		{
 			Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always,
-			StencilFront = face, StencilBack = face, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
 		};
 		var pd = new RenderPipelineDescriptor
 		{
@@ -149,6 +151,7 @@ internal sealed class PathFill
 	public float[] FanDevice;
 	public Vector2 BbMin, BbMax;
 	public WColor Color;
+	public bool EvenOdd;
 }
 
 public sealed class WebGpuRenderData : IRenderData
@@ -194,13 +197,16 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 	private bool _firstInContour;
 
 	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false)
+		=> FillGeometry(geometry, color, geometry.FillRule == GeometryFillRule.EvenOdd);
+
+	private void FillGeometry(IGeometry geometry, WColor color, bool evenOdd)
 	{
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_data.Paths.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color });
+			_data.Paths.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd });
 		}
 		_fan = null;
 	}
@@ -218,7 +224,11 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) { }
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
-	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) { }
+	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false)
+	{
+		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
+		FillGeometry(sg, color, evenOdd: false);
+	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) { }
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
@@ -261,7 +271,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		Silk.NET.WebGPU.Buffer* rectBuf = rectV.Count > 0 ? MakeBuffer(rectV.ToArray()) : null;
 
-		var pathBufs = new List<(nint fan, uint fanCount, nint cover)>();
+		var pathBufs = new List<(nint fan, uint fanCount, nint cover, bool evenOdd)>();
 		foreach (var pf in rd.Paths)
 		{
 			var fanNdc = new float[pf.FanDevice.Length];
@@ -272,7 +282,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
 			var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 			CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
-			pathBufs.Add(((nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray())));
+			pathBufs.Add(((nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd));
 		}
 
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
@@ -298,9 +308,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			W.RenderPassEncoderDraw(pass, (uint)(rectV.Count / 6), 1, 0, 0);
 		}
 
-		foreach (var (fan, fanCount, cover) in pathBufs)
+		foreach (var (fan, fanCount, cover, evenOdd) in pathBufs)
 		{
-			W.RenderPassEncoderSetPipeline(pass, _d.StencilPipe);
+			W.RenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)fan, 0, (nuint)(fanCount * 2 * sizeof(float)));
 			W.RenderPassEncoderDraw(pass, fanCount, 1, 0, 0);
 
