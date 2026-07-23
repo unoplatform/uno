@@ -577,10 +577,6 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 
 	public bool IsLost => false;
 
-	// Offscreen render target (color + depth/stencil). A windowed provider would instead hand out the
-	// swapchain's current image and own the dirty-rect blit; the backend can't tell the difference.
-	public IRenderTarget CreateRenderTarget(int width, int height) => new WebGpuRenderSurface(Device, width, height);
-
 	public void Dispose() { }
 }
 
