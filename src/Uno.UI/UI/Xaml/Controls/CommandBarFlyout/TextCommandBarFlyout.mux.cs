@@ -348,9 +348,16 @@ partial class TextCommandBarFlyout
 			GetButton(TextControlButtons.SelectAll) is AppBarButton selectAllButton)
 		{
 			// In the primary bar Select All is shown like Cut/Copy/Paste (icon + label), so restore the icon its
-			// command clears (see GetButton). The button instance is cached and reused, so clear the icon again when
-			// it routes back to the overflow menu, which stays text-only.
-			selectAllButton.Icon = commandListForSelectAll == PrimaryCommands ? new SymbolIcon(Symbol.SelectAll) : null;
+			// command clears (see GetButton). The button instance is cached and reused, so reuse the existing icon
+			// (allocate only once) in the primary bar and clear it again when it routes back to the text-only overflow.
+			if (commandListForSelectAll == PrimaryCommands)
+			{
+				selectAllButton.Icon ??= new SymbolIcon(Symbol.SelectAll);
+			}
+			else
+			{
+				selectAllButton.Icon = null;
+			}
 		}
 		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, commandListForSelectAll);
 
