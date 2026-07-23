@@ -46,9 +46,18 @@ internal sealed class ManagedFont : IFont
 	private readonly int _ascent;
 	private readonly int _descent;
 	private readonly int _lineGap;
+	private readonly int? _underlinePosition;
+	private readonly int? _underlineThickness;
+	private readonly int? _strikeoutPosition;
+	private readonly int? _strikeoutThickness;
+
+	// Offset of the sfnt table directory within _data (past the ttc header for a collection), so table bytes
+	// can be served on demand (GetFontTable) for the shaper face.
+	private readonly int _sfntOffset;
 
 	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette,
-		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int lineGap)
+		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int lineGap, int? underlinePosition, int? underlineThickness,
+		int? strikeoutPosition, int? strikeoutThickness, int sfntOffset)
 	{
 		_data = data;
 		_pixelSize = pixelSize;
@@ -66,12 +75,20 @@ internal sealed class ManagedFont : IFont
 		_ascent = ascent;
 		_descent = descent;
 		_lineGap = lineGap;
+		_underlinePosition = underlinePosition;
+		_underlineThickness = underlineThickness;
+		_strikeoutPosition = strikeoutPosition;
+		_strikeoutThickness = strikeoutThickness;
+		_sfntOffset = sfntOffset;
 	}
 
 	private float Scale => _pixelSize / _unitsPerEm;
 
 	/// <summary>Maps a Unicode codepoint to a glyph index via the font's cmap (0 = .notdef / missing).</summary>
 	public ushort GetGlyphIndex(int codepoint) => _cmap?.Map(_data, codepoint) ?? 0;
+
+	/// <summary>Whether this font has a glyph for <paramref name="codepoint"/>.</summary>
+	public bool ContainsGlyph(int codepoint) => GetGlyphIndex(codepoint) != 0;
 
 	/// <summary>The glyph's horizontal advance in font units (hmtx; glyphs past numHMetrics reuse the last advance).</summary>
 	public int GetAdvanceWidth(ushort glyph)
@@ -84,14 +101,61 @@ internal sealed class ManagedFont : IFont
 	/// <summary>The glyph's advance in pixels (at this font's size).</summary>
 	public float GetAdvance(ushort glyph) => GetAdvanceWidth(glyph) * Scale;
 
-	/// <summary>Ascent in pixels (positive above the baseline).</summary>
-	public float Ascent => _ascent * Scale;
+	// sfnt stores ascent up-positive / descent down-negative; the IFont contract follows SkiaSharp (ascent
+	// negative above the baseline, descent positive below), so both are negated here.
 
-	/// <summary>Descent in pixels (negative below the baseline, matching sfnt sign conventions).</summary>
-	public float Descent => _descent * Scale;
+	/// <summary>Distance from the baseline to the top of the text, negative (above the baseline).</summary>
+	public float Ascent => -_ascent * Scale;
+
+	/// <summary>Distance from the baseline to the bottom of the text, positive (below the baseline).</summary>
+	public float Descent => -_descent * Scale;
 
 	/// <summary>Recommended extra line spacing in pixels.</summary>
 	public float LineGap => _lineGap * Scale;
+
+	// post stores the underline offset up-negative (below baseline); Skia's convention is positive-below, so negate.
+
+	/// <summary>Underline stroke offset from the baseline (positive below), or null if the font doesn't specify one.</summary>
+	public float? UnderlinePosition => _underlinePosition is { } p ? -p * Scale : null;
+
+	/// <summary>Underline stroke thickness in pixels, or null if the font doesn't specify one.</summary>
+	public float? UnderlineThickness => _underlineThickness is { } t ? t * Scale : null;
+
+	// OS/2 stores the strikeout offset up-positive (above baseline); Skia's convention is negative-above, so negate.
+
+	/// <summary>Strikeout stroke offset from the baseline (negative above), or null if the font doesn't specify one.</summary>
+	public float? StrikeoutPosition => _strikeoutPosition is { } p ? -p * Scale : null;
+
+	/// <summary>Strikeout stroke thickness in pixels, or null if the font doesn't specify one.</summary>
+	public float? StrikeoutThickness => _strikeoutThickness is { } t ? t * Scale : null;
+
+	/// <summary>The font's units-per-em (design grid).</summary>
+	public int UnitsPerEm => _unitsPerEm;
+
+	/// <summary>Returns the bytes of the sfnt table with the given tag, or null if absent.</summary>
+	public byte[]? GetFontTable(uint tag)
+	{
+		var numTables = U16(_data, _sfntOffset + 4);
+		var dir = _sfntOffset + 12;
+		for (var i = 0; i < numTables; i++, dir += 16)
+		{
+			if (U32(_data, dir) == tag)
+			{
+				var offset = (int)U32(_data, dir + 8);
+				var length = (int)U32(_data, dir + 12);
+				if (offset < 0 || length < 0 || offset + length > _data.Length)
+				{
+					return null;
+				}
+
+				var bytes = new byte[length];
+				Array.Copy(_data, offset, bytes, 0, length);
+				return bytes;
+			}
+		}
+
+		return null;
+	}
 
 	/// <summary>
 	/// Parses <paramref name="data"/> (a full sfnt or TrueType collection) into a managed font. Returns false when the
@@ -111,7 +175,7 @@ internal sealed class ManagedFont : IFont
 			}
 
 			var numTables = U16(data, baseOffset + 4);
-			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0, cmap = 0, hmtx = 0, hhea = 0, os2 = 0;
+			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0, cmap = 0, hmtx = 0, hhea = 0, os2 = 0, post = 0;
 			var dir = baseOffset + 12;
 			for (var i = 0; i < numTables; i++, dir += 16)
 			{
@@ -129,6 +193,7 @@ internal sealed class ManagedFont : IFont
 					case 0x686D7478: hmtx = offset; break; // 'hmtx'
 					case 0x68686561: hhea = offset; break; // 'hhea'
 					case 0x4F532F32: os2 = offset; break;  // 'OS/2'
+					case 0x706F7374: post = offset; break; // 'post'
 				}
 			}
 
@@ -154,6 +219,22 @@ internal sealed class ManagedFont : IFont
 					ascent = S16(data, os2 + 68); descent = S16(data, os2 + 70); lineGap = S16(data, os2 + 72);
 				}
 			}
+			// post table (v1/v2/v3 all share the header): underlinePosition + underlineThickness in font units.
+			int? underlinePosition = null, underlineThickness = null;
+			if (post != 0 && post + 12 <= data.Length)
+			{
+				underlinePosition = S16(data, post + 8);
+				underlineThickness = S16(data, post + 10);
+			}
+
+			// OS/2: yStrikeoutSize @26, yStrikeoutPosition @28 (font units).
+			int? strikeoutThickness = null, strikeoutPosition = null;
+			if (os2 != 0 && os2 + 30 <= data.Length)
+			{
+				strikeoutThickness = S16(data, os2 + 26);
+				strikeoutPosition = S16(data, os2 + 28);
+			}
+
 			var cmapTable = cmap != 0 ? CmapTable.Parse(data, cmap) : null;
 
 			var cffTable = cff != 0 ? CffTable.Parse(data, cff) : null;
@@ -177,7 +258,8 @@ internal sealed class ManagedFont : IFont
 			}
 
 			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette,
-				cmapTable, hmtx, numHMetrics, ascent, descent, lineGap);
+				cmapTable, hmtx, numHMetrics, ascent, descent, lineGap, underlinePosition, underlineThickness,
+				strikeoutPosition, strikeoutThickness, baseOffset);
 			return true;
 		}
 		catch

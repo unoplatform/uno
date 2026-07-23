@@ -17,14 +17,67 @@ internal sealed class SkiaFont : IFont
 	private static readonly uint _svgTag = Tag("SVG ");
 
 	private readonly SKFont _font;
+	private readonly SKFontMetrics _metrics;
 
 	public SkiaFont(SKFont font)
 	{
 		_font = font;
+		_metrics = font.Metrics;
 		HasColorGlyphs = HasColorTables(font.Typeface);
 	}
 
 	public bool HasColorGlyphs { get; }
+
+	public float Ascent => _metrics.Ascent;
+
+	public float Descent => _metrics.Descent;
+
+	public float LineGap => _metrics.Leading;
+
+	public float? UnderlinePosition => _metrics.UnderlinePosition;
+
+	public float? UnderlineThickness => _metrics.UnderlineThickness;
+
+	public float? StrikeoutPosition => _metrics.StrikeoutPosition;
+
+	public float? StrikeoutThickness => _metrics.StrikeoutThickness;
+
+	public ushort GetGlyphIndex(int codepoint) => _font.GetGlyph(codepoint);
+
+	public bool ContainsGlyph(int codepoint) => _font.ContainsGlyph(codepoint);
+
+	public int UnitsPerEm => _font.Typeface?.UnitsPerEm ?? 0;
+
+	public byte[]? GetFontTable(uint tag)
+	{
+		var typeface = _font.Typeface;
+		if (typeface is null)
+		{
+			return null;
+		}
+
+		// GetTableData throws when the table is absent (HarfBuzz probes optional tags), so size-check first.
+		var fourByteTag = new SKFourByteTag(tag);
+		var size = typeface.GetTableSize(fourByteTag);
+		if (size == 0)
+		{
+			return null;
+		}
+
+		var bytes = new byte[size];
+		unsafe
+		{
+			fixed (byte* p = bytes)
+			{
+				if (!typeface.TryGetTableData(fourByteTag, 0, size, (IntPtr)p))
+				{
+					return null;
+				}
+			}
+		}
+
+		return bytes;
+	}
 
 	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
 	{

@@ -54,9 +54,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SegmentInfo GetSegmentStartingFrom(int i, ReadOnlySpan<char> text)
 		{
-			var skFont = FontInfo.SKFont;
+			var fontInfo = FontInfo;
 
-			var defaultTypeface = skFont.Typeface;
+			var defaultTypeface = fontInfo.Typeface;
 
 			if (i < text.Length && text[i] == '\t')
 			{
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var (codepoint, codepointLength) = GetCodePoint(text, i);
 
-				var currentTypeface = skFont.ContainsGlyph(codepoint)
+				var currentTypeface = fontInfo.FontHandle.ContainsGlyph(codepoint)
 					? defaultTypeface
 					: SKFontManager.Default.MatchCharacter(codepoint);
 
@@ -185,13 +185,13 @@ namespace Microsoft.UI.Xaml.Documents
 			List<Segment> segments = new();
 			using HarfBuzzSharp.Buffer buffer = new();
 			var fontInfo = FontInfo;
-			var defaultTypeface = fontInfo.SKFont.Typeface;
+			var defaultTypeface = fontInfo.Typeface;
 			var defaultFont = fontInfo.Font;
-			var fontSize = fontInfo.SKFontSize;
+			var fontSize = fontInfo.FontSize;
 
 			defaultFont.GetScale(out int defaultFontScale, out _);
-			float defaultTextSizeY = fontInfo.SKFontSize / defaultFontScale;
-			float defaultTextSizeX = defaultTextSizeY * fontInfo.SKFontScaleX;
+			float defaultTextSizeY = fontInfo.FontSize / defaultFontScale;
+			float defaultTextSizeX = defaultTextSizeY * fontInfo.FontScaleX;
 
 			var text = Text.AsSpan();
 			int i = 0;
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Documents
 					font = fallbackFont.Font;
 					font.GetScale(out fontScale, out _);
 					textSizeY = fontSize / fontScale;
-					textSizeX = textSizeY * fontInfo.SKFontScaleX;
+					textSizeX = textSizeY * fontInfo.FontScaleX;
 				}
 				else
 				{

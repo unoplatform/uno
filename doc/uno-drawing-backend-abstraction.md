@@ -162,7 +162,107 @@ positioned `IImage`s (`PositionedGlyphImage`, drawn via `DrawImage`). Obtained f
 - **`SkiaFont`** — default (`SKFont.GetGlyphPath` + offscreen rasterization for color glyphs).
 - **`ManagedFont`** — alternative, SkiaSharp-free: reads outlines straight from sfnt tables (TrueType `glyf`
   simple+composite, CFF/Type2), emits via `IPathBuilder`; COLRv0/CPAL color layers composited via
-  `RenderOffscreen`. Toggle `UNO_MANAGED_FONT_BACKEND=1`; falls back to `SkiaFont` if a font can't be parsed.
+  `RenderOffscreen`. Also parses **metrics** — `cmap` (Unicode fmt 4/12 → glyph index), `hmtx` (advances),
+  `hhea`/`OS-2` (ascent/descent/line-gap) — validated pixel-for-glyph against SkiaSharp. Toggle
+  `UNO_MANAGED_FONT_BACKEND=1`; falls back to `SkiaFont` if a font can't be parsed.
+
+## Text layout & shaping — architecture decisions
+
+The `IFont` seam above is the text boundary of the **render** abstraction: it takes *already-shaped* input
+(glyph indices + positions) and produces neutral `IGeometry`/`IImage`. Everything upstream of it — **shaping**
+(string → glyphs+positions) and the **text engine** (segmentation, bidi, script, line wrapping, alignment,
+trimming, hit-testing, caret) — lives in `Uno.UI`'s text layer (`FontDetails`, `UnicodeText`, `ParsedText`,
+`Run`, `Inline`) and is **not** part of the pluggable backend SPI. A render backend never sees it.
+
+Decisions:
+
+- **The shaper is NOT abstracted.** Shaping is upstream of the backend and font/script-dependent, not
+  render-backend-dependent; in practice everyone uses HarfBuzz, and no backend author would override it. Keep
+  it internal, non-overridable.
+- **The text engine is NOT abstracted (for now).** `UnicodeText` (segmentation/bidi/wrap/arrange/hit-test) is
+  mostly pure, backend-agnostic logic. A pluggable text-engine seam *could* be advantageous for perf/features
+  — e.g. [PretextSharp](https://github.com/wieslawsoltes/PretextSharp), a managed-C#/MIT line-layout engine
+  with a graphics-agnostic contract that delegates shaping to platform backends, is a real candidate — but the
+  engine's contract is large and deeply XAML-integrated (`TextBlock`/`TextBox`/selection/caret), so it's
+  **kept to the side as not worth it now**. Revisit only if text layout is measured to be a bottleneck, and
+  then gate on a prototype (e.g. PretextSharp against Uno's workload) before designing a seam.
+
+### Goal: make the text logic Skia-less
+
+The priority for the text layer is to remove **SkiaSharp** from it (HarfBuzz + ICU are native but *not* Skia —
+the goal is Skia-less, not zero-native). "Text logic" = the layout/measure/draw code (`FontDetails`,
+`UnicodeText`, `ParsedText`, `Run`, `Inline`) — it must talk only to `IFont` + neutral types. A *backend*
+font impl (`SkiaFont`) may still use SkiaSharp internally; `ManagedFont` is the Skia-free impl. What Skia
+provides today falls into six jobs, and each has a home:
+
+| Text concern | Skia today | Home / Skia-less path |
+|---|---|---|
+| glyph outlines / color glyphs | `SkiaFont.GetGlyphPath` | ✅ `IFont` (`ManagedFont` alt, toggle) |
+| **metrics** (ascent/descent/lineGap, underline & strikeout pos/thickness) | `SKFontMetrics`/`SKFont` | ✅ **`IFont`** — the handle exposes metrics (SkiaSharp sign convention; `ManagedFont` parses `post`/`OS-2`) |
+| **glyph coverage** ("does *this* font have the glyph") | `SKFont.ContainsGlyph` | ✅ **`IFont`** — `GetGlyphIndex`/`ContainsGlyph` |
+| **shaping table access** (HarfBuzz `Face` source) | `SKTypeface.GetTableData` | ✅ **`IFont`** — `GetFontTable`/`UnitsPerEm`; `SkiaFont` serves from its *variable-instanced* `SKTypeface` (shaping byte-identical to before), `ManagedFont` from its bytes. HarfBuzz stays (not Skia). |
+| value types (`SKPoint`/`SKRect`/`SKColor`/`SKPath`) | pervasive in layout/draw | existing equivalents — `Vector2`/`Point`, `Windows.Foundation.Rect`, `Windows.UI.Color`, `IGeometry` (spell-check squiggle via `IPathBuilder`). Mechanical, independent of the font seam. **(not yet done)** |
+| **font resolution + fallback** (family/weight/style → face; *which* font covers a codepoint) | `SKTypeface.FromFamilyName`, `SKFontManager.MatchCharacter` | the genuinely new part → **`IFontManager` seam** (below) **(not yet done)** |
+
+So the font *handle* (`IFont`) absorbs metrics + coverage + table access — none of it a separate abstraction,
+and none throwaway (it's the target regardless of when resolution is replaced). `FontDetails` now holds an
+`IFont` (+ the HarfBuzz `Font` built from `IFont`'s tables) instead of `SKFont`/`SKFontMetrics`; it keeps the
+resolved `SKTypeface` only as the *interim resolution handle* (used by Run's fallback matching) until the
+`IFontManager` seam replaces it.
+
+**Status:** the `IFont` absorption is **done and validated** — the text layout/measure/draw code (`FontDetails`,
+`Inline`, `UnicodeText`, `ParsedText`, `Run`) reads metrics/coverage/tables only through `IFont`; `Given_TextBlock`
+runtime tests pass 103/103 on both the default Skia path *and* the fully Skia-less managed-font path
+(`UNO_MANAGED_FONT_BACKEND=1`), which now exercises ManagedFont metrics + coverage + HarfBuzz-from-ManagedFont-tables
+end-to-end. **Still Skia in the text layer:** the value-type sweep (mechanical) and font resolution/fallback (the
+`IFontManager` seam).
+
+#### Font resolution & fallback — approaches
+
+Everything except resolution reduces to *font bytes → `ManagedFont` (metrics/outlines) + HarfBuzz face (from
+those same bytes)*. The open question is only **how to turn a family name + style into bytes**, and how to
+find a fallback font for a codepoint the chosen family can't render. Today this is 100% Skia
+(`FontDetailsCache`): `SKTypeface.FromFamilyName(name, weight, width, slant)`, `.ttc`/`.otc` face selection by
+family/PostScript name, variable-font axis positioning (`wght`/`wdth`/`ital`/`slnt`), and default-font
+fallback (`SKTypeface.FromFamilyName(null)`). Application/URI fonts and per-codepoint fallback already route
+through neutral-ish seams (`AppDataUriEvaluator` byte load; `IFontFallbackService` via `ApiExtensibility`); it
+is **system-family resolution + variable-font positioning** that is Skia-only.
+
+Three ways to remove that dependency:
+
+- **A) Managed font manager (pure C#).** Enumerate the OS font directories, parse each face's `name`/`OS-2`/
+  `fvar` tables, and match family + weight/width/slant ourselves (reusing `ManagedFont`'s sfnt parser); glyph
+  fallback = scan candidate faces' `cmap`s for coverage.
+  *Pro:* zero native, one implementation everywhere, fully introspectable.
+  *Con:* re-implements OS font matching — locale-aware family aliases, synthetic bold/oblique, the platform
+  fallback *chain* (CJK/emoji/symbol ordering) — which is exactly the fiddly, locale-sensitive part users
+  notice when it's wrong. Variable-font instancing (applying an axis position to `glyf`/`gvar`) is also
+  non-trivial to add to `ManagedFont`.
+
+- **B) Platform font APIs behind a seam (recommended target).** Define an `IFontManager` extensibility point
+  (mirroring `IFontFallbackService`): `family + style → font bytes/handle`, plus the existing
+  codepoint→fallback. Provide it via `ApiExtensibility` with per-runtime implementations in the
+  `Uno.UI.Runtime.Skia.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
+  (Linux), **Android font APIs** (Android).
+  *Pro:* correct, locale-aware matching + fallback chains for free; the text *logic* (metrics/shaping/render)
+  becomes Skia-less regardless of resolver; matches the rest of this design (platform specifics live in
+  `Runtime.Skia.*`, core stays neutral).
+  *Con:* several native implementations to write and maintain; variable-font positioning still needs handling
+  (either the platform API instances it, or we do it in `ManagedFont`).
+
+- **C) Skia as byte-source only (interim).** Keep `SKTypeface.FromFamilyName` purely to *locate* a face, then
+  `OpenStream` → bytes → `ManagedFont` + HarfBuzz-from-bytes for everything downstream.
+  *Pro:* smallest step; unblocks the managed-text toggle *now* with correct matching; no new native code.
+  *Con:* SkiaSharp still linked as the resolver — text logic is Skia-less but the assembly isn't
+  Skia-*free*. Only a stepping stone.
+
+**Chosen direction: B is the target, reached via C as the interim.** Introduce the `IFontManager` seam and
+route `FontDetailsCache` through it. Ship a **Skia-backed implementation first** (option C behavior — Skia
+resolves, managed code does metrics/shaping/render), which makes the *logic* Skia-less immediately and is
+drop-in replaceable. Then add native `IFontManager` implementations per runtime (option B) to make the
+core assembly Skia-*free*. Option A stays a fallback for platforms without a good native font API, not the
+primary path. Variable-font positioning is handled at the resolver seam (platform instancing where available;
+otherwise a follow-up in `ManagedFont`).
 
 ---
 

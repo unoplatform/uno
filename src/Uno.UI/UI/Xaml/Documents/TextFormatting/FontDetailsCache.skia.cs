@@ -377,7 +377,7 @@ internal static class FontDetailsCache
 			}
 			else
 			{
-				return FontDetails.Create(loadedTypeface, details.SKFontSize);
+				return FontDetails.Create(loadedTypeface, details.FontSize);
 			}
 		}
 	});
