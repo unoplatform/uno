@@ -28,7 +28,7 @@ public partial class Frame : ContentControl
 
 	// Process-wide page pool. Previously each Frame overwrote this static with its own new
 	// PagePool, orphaning every earlier pool while its 30s scavenger loop kept it alive forever.
-	private static PagePool _pool = PagePool.Instance;
+	private static readonly PagePool _pool = PagePool.Instance;
 
 	private void CtorLegacy()
 	{
