@@ -36,11 +36,11 @@ it — distinct from the benign runtime dependent-handle residual.
 | # | Cache | Kind | Fix | Test |
 |---|-------|------|-----|------|
 | 1 | `ResourceLoader._lookupAssemblies` / `_parsedResources` | `List<Assembly>` / `HashSet<(Assembly,string)>` | `ClearNonDefaultAlcAssemblies()` in cleanup hook | `Given_ResourceLoader_Alc` |
-| 2 | `UIElementNativeRegistrar._classNames` (WASM) | `Dictionary<Type,int>` | `ClearNonDefaultAlcEntries()` in cleanup hook | `Given_UIElementNativeRegistrar_Alc` (WASM runtime) |
+| 2 | `UIElementNativeRegistrar._classNames` (WASM) | `Dictionary<Type,int>` | `ClearNonDefaultAlcEntries()` in cleanup hook | ALC pin guard (WASM runtime); dedicated unit test TBD |
 | 3 | `AppWindow` / `ApplicationView` / `CoreDragDropManager` WindowId maps | `ConcurrentDictionary<WindowId,…>` | `DestroyForWindowId(WindowId)` mirrored on each; called from `CloseAlcWindow` | `Given_WindowId_Maps_Alc` |
-| 4 | `CompositionTarget._handlers` (WASM) | `List<EventHandler<object>>` | `ClearNonDefaultAlcHandlers()` in cleanup hook; per-frame snapshot reuse | `Given_CompositionTarget_Alc` (WASM runtime) |
-| 6 | Hot-reload client status history `HotReloadClientOperation.Types` | `Type[]` per op, unbounded history | null `Type[]` at terminal state (curated strings retained); ring buffer (~100 ops) | `Given_HotReloadClientOperation_Types` |
-| 7 | `PagePool` (WASM) | orphaned pool + eternal 30s scavenger; `Type`-keyed instances | lazy singleton; scavenger only when pooling enabled; ALC-sweep `Type` keys | `Given_PagePool_Alc` |
+| 4 | `CompositionTarget._handlers` (WASM) | `List<EventHandler<object>>` | `ClearNonDefaultAlcHandlers()` in cleanup hook; per-frame snapshot reuse | `Given_CompositionTargetFrameDispatcher` (unit) + `Given_CompositionTarget` (WASM runtime) |
+| 6 | Hot-reload client status history `HotReloadClientOperation.Types` | `Type[]` per op, unbounded history | null `Type[]` at terminal state (curated strings retained); ring buffer (~100 ops) | `Given_HotReloadClientOperation_Alc` |
+| 7 | `PagePool` (WASM) | orphaned pool + eternal 30s scavenger; `Type`-keyed instances | lazy singleton; scavenger only when pooling enabled; ALC-sweep `Type` keys | ALC pin guard (WASM runtime); dedicated unit test TBD |
 | 8 | `HtmlElementHelper._cache` (WASM), `FeatureConfiguration.Style.UseUWPDefaultStylesOverride` | `Dictionary<Type,…>` | extend sweep with `RemoveNonDefaultAlcEntries` | `Given_ResidualTypeStatics_Alc` |
 
 ### Skipped (verified not an ALC pin)
