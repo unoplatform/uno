@@ -111,6 +111,25 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 	// GetStrokeFillGeometry lives in ManagedGeometry.Stroke.skia.cs.
 
+	public void StreamFlattened(IFlattenedPathSink sink)
+	{
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Count == 0)
+			{
+				continue;
+			}
+
+			sink.BeginContour(contour.Start);
+			foreach (var p in Flatten(contour, includeImplicitClose: false))
+			{
+				sink.LineTo(p);
+			}
+
+			sink.EndContour(contour.Closed);
+		}
+	}
+
 	/// <summary>
 	/// Trims the outline to the arc-length fraction [<paramref name="trimStart"/>, <paramref name="trimEnd"/>]
 	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the
