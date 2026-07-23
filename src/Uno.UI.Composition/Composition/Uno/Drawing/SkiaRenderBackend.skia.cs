@@ -1,8 +1,6 @@
 #nullable enable
 
-using Uno.UI.Composition.Drawing;
-
-namespace Uno.UI.Helpers;
+namespace Uno.UI.Composition.Drawing;
 
 /// <summary>The default <see cref="IRenderBackend"/>: the established Skia two-phase (SKPicture) lifecycle.</summary>
 internal sealed class SkiaRenderBackend : IRenderBackend
