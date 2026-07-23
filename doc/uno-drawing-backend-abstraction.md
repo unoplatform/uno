@@ -37,10 +37,12 @@ Layers, bottom to top: **resource factory** (`IDrawingBackend`) → **drawing se
 consuming value paint + handles; optionally `IRetainedRenderingSession` for recording) → **frame lifecycle**
 (`IRenderBackend`: record → `IRenderData` → present).
 
-**Conventions.** Types are `internal`, namespace `Uno.UI.Composition.Drawing`, files under
-`src/Uno.UI.Composition/Composition/Uno/Drawing/*.skia.cs` (Skia target), shaped for a later deliberate flip
-to `public`. Backend-neutral geometry currency is `IGeometry`; `SKPath`/`SKImage`/`SKFont` etc. live only
-inside the Skia implementation classes and are never exposed on an interface.
+**Conventions.** The SPI is **`public`** (namespace `Uno.UI.Composition.Drawing`, files under
+`src/Uno.UI.Composition/Composition/Uno/Drawing/*.skia.cs`, Skia target) — the deliberate flip is done, so a
+foreign backend in a separate assembly implements it with no `[InternalsVisibleTo]`. The backend
+implementations (`Skia*`, `Managed*`) stay `internal` — they are one implementation, not the contract.
+Backend-neutral geometry currency is `IGeometry`; `SKPath`/`SKImage`/`SKFont` etc. live only inside the Skia
+implementation classes and are never exposed on an interface.
 
 ---
 
@@ -69,7 +71,9 @@ IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sig
 
 ### `DrawingBackend` (static)
 Process-wide holder: `DrawingBackend.Current` resolves to `SkiaDrawingBackend` by default;
-`DrawingBackend.Register(IDrawingBackend)` swaps it before the first frame.
+`DrawingBackend.Register(IDrawingBackend)` swaps it before the first frame. **This default-and-swap
+scheme is being replaced** — see "Backend registration model" below for the decided target
+(matched-pair registration on the host builder, no module-init default).
 
 ---
 
@@ -222,6 +226,225 @@ Each seam is proven by building the *same artifact two independent ways and comp
 backend renders/decodes with zero SkiaSharp, and its output is compared pixel-for-pixel against the Skia
 backend (e.g. `Given_IFont_AlternativeBackend`, and pixel-parity of the managed decoders/SVG). Identical
 output is the evidence the interface carries everything the backend needs.
+
+---
+
+## Backend registration & graphics negotiation (decided; not yet implemented)
+
+This is the model the whole pluggable story hangs on. It has five moving parts — registration,
+negotiation, the host's contribution, the framework's contribution, and the per-frame contract —
+plus a clear answer to "who drives."
+
+### The two seams stay separate
+
+`IDrawingBackend` (resource/content **factory** — geometries, shaders, filters, images; the
+`Uno.UI.Composition` layer, frame-independent) and `IRenderBackend` (**frame/present** pipeline,
+host-adjacent, per-surface) live at different layers and lifetimes (a shader is built once and
+reused across frames before any window exists; a present is per-tick). They are **not** collapsed
+into one interface — that would force one construction moment and drag the host-adjacent present
+concern into the content layer. A backend is registered as a **matched pair** (see `IGraphicsBackend`)
+so the two can never come from different families.
+
+### Handle model — why the matched pair is mandatory
+
+`IShader` / `IColorFilter` / `IEffectFilter` are **opaque** and consumed *only* by the paired
+renderer, which downcasts them to its own concrete type. A Skia factory paired with a foreign
+renderer would fault that cast (a `WebGpuShader` cast can never receive a `SkiaShader`). So the fix
+for gradients/effects is **not** to make `IShader` introspectable — it is to guarantee the factory
+and renderer are the same family. (`IGeometry` / `IImage` are the opposite: core itself introspects
+them — `Bounds`, `FillContains`, `Combine`, pixels — so they carry neutral members + readbacks and a
+*shared managed* implementation is legitimate. Rule of thumb: consumed only by the paired renderer →
+opaque + cast-back; introspected by core → neutral abstraction.)
+
+### Registration — user-side, uniform, no default
+
+There is **no default backend**. The core references no backend package; `Uno…Skia` is one
+optionally-referenced package among peers, so an app that registers only WebGPU never links Skia and
+the linker drops it. The app registers its choice with **one process-static call, identical on every
+platform** (including Android/iOS, which have no fluent host builder), placed in the shared app
+bootstrap that runs everywhere:
+
+```csharp
+// ordered by preference: try WebGPU, fall back to Skia
+GraphicsBackend.Register(new IGraphicsBackend[] { new WebGpuGraphicsBackend(), new SkiaGraphicsBackend() });
+```
+
+No `[ModuleInitializer]` self-registration: cross-assembly initializer order is undefined and a
+plugin assembly may not even be loaded, so it can't serve third parties — and it would bake a
+backend into core. Unregistered access throws with a message naming the fix. Standalone consumers
+(unit tests, offscreen harnesses) are their own composition root and register too. Where a fluent
+host builder exists, a `.UseSkiaRendering()` extension may be **thin sugar over the same static
+call** — never a separate mechanism, so the mechanism stays uniform.
+
+Two orthogonal choices, kept separate: the **windowing host** (`UseX11()` / Android `Activity`) is
+*where pixels go*; the **graphics backend** (`GraphicsBackend.Register`) is *how pixels are
+produced*. `DrawingBackend.Current` and the render backend remain process-global → one backend per
+process; per-window backends would require making those per-host (a separate change).
+
+### Negotiation — lazy, ordered, create-until-success
+
+Two ordered preference lists: the **user's backend list** (above) and each **backend's context-kind
+list** (owned by the backend — the user never needs to know Skia prefers Vulkan over GL). Nothing is
+created speculatively; contexts are created on demand until one succeeds:
+
+```
+foreach backend in userBackendList:                         // user's order
+    foreach kind in backend.PreferredContexts:              // backend's order
+        provider = resolveProvider(kind)                    // our Uno.Graphics.<kind> provider
+        if provider is null: continue                       // that kind's package isn't referenced
+        if (provider.TryCreate(host.NativeWindow, backend.Requirements) is { } ctx)
+            return backend.CreateRenderBackend(ctx)          // first success wins; stop
+        // creation failed (unavailable, or requirements unmet) → fully disposed → next kind
+    // no kind worked → next backend
+throw "no registered backend could initialize on this host (attempted: …)";
+```
+
+`TryCreate` does a cheap availability probe before the real init (as Uno already does —
+`X11VulkanSurfaceFactory.IsVulkanAvailable()`), must fully clean up on failure (a null return means
+"as if never attempted"), and treating a later `CreateRenderBackend` failure like a context failure
+keeps the walk robust.
+
+### Who provides what
+
+- **Host provides `INativeWindow` only** — the tagged native handle (X11 `Display`+`Window`, Win32
+  `HWND`, Android `ANativeWindow`, `CAMetalLayer`) + size + resize events. This is the *only* thing
+  that is both platform-specific and GPU-agnostic. **The host references no GPU API and no backend.**
+- **Framework owns context + surface creation**, via modular **per-kind providers**
+  (`Uno.Graphics.WebGpu`, `Uno.Graphics.Vulkan`, `Uno.Graphics.OpenGL`, …), each referencing only its
+  own native lib and pulled in transitively by whichever backend prefers it. A provider creates the
+  context (the platform init), owns the swapchain/surface, and owns the **blit-with-dirty-rects** and
+  present. Uno already has most of this code (`VulkanContext`, the EGL/GL renderers, the
+  `*VulkanSurfaceFactory` set) — the refactor splits each renderer's "acquire context/surface" half
+  (→ provider) from its "wrap as `SKSurface`" half (→ the Skia backend).
+- **Backend consumes** a ready context, builds its pipelines + its own scratch/stencil from it, and
+  fills a render target. It writes **no** graphics-init and **no** windowing code.
+
+### Contexts, not surfaces — and capabilities
+
+The negotiation currency is the **context** (the GPU-API connection/device: `IWebGpuContext` =
+Instance/Adapter/Device/Queue; GL context; `VkDevice`+queue; `MTLDevice`) — that's where the API
+family and the hard platform init live, and it's shareable + offscreen-capable. Well-known kinds:
+`OpenGL, OpenGLES, Vulkan, Metal, WebGpu, Software`. WebGPU is a first-class provided context, not a
+special case.
+
+A backend declares **capabilities/requirements** (min stencil bits, depth, MSAA sample count,
+preferred color format, limits). These are **support guarantees on the created context** — the
+provider selects a device that supports them or `TryCreate` fails (feeding the negotiation fallback).
+Requirements split by role: color-format/sample-count **configure the framework-created color
+target**; stencil/depth-format/limits are **device-support the backend relies on when it allocates
+its *own* attachments**. The backend still allocates its own depth/stencil/scratch (technique- and
+size-specific, never presented) from the context — capabilities only guarantee the device *can*.
+
+### The render target is a view — surface vs texture stays internal
+
+In every API the render target is a **color attachment view of a uniform type regardless of origin**
+(WebGPU `TextureView`, Vulkan `VkImageView`, Metal `MTLTexture`, GL framebuffer) — a swapchain image
+and an offscreen texture produce the *same* type. So the backend is handed a **render-target view**
+and never learns whether it's backed by the window swapchain (direct, no blit) or a retained
+offscreen texture (then we blit dirty rects). That decision is ours, per frame.
+
+No "previous contents retained" flag is needed: the **dirty region is expressed as a clip in the
+recorded frame** (backend-independent), so the backend just replays the clipped frame; the invariant
+that pixels *outside* the dirty region already hold the previous frame is **ours to uphold** by our
+target management (a constraint on our strategy, not the backend contract). The render-target view
+is **kind-matched** (opaque to core; a `WebGpu` provider mints the one a WebGPU backend downcasts).
+
+### Who drives the pipeline
+
+- **The render loop / frame cadence — us (push).** `CompositionTarget`'s scheduler owns
+  vsync/invalidation/threading and *pushes* frames; the backend never runs its own loop or blocks on
+  vsync.
+- **The frame lifecycle — us.** Acquire the color target, ensure render-thread + context-current,
+  blit (dirty rects), present, and the sync points between the backend's render and our blit.
+- **The scene's GPU commands — the backend.** Pipelines/PSOs, its render pass (our color attachment +
+  its own depth/stencil, its load ops), draw calls, and **submitting** that work (or issuing
+  immediate GL calls). The backend submits its own scene commands — the one model that unifies
+  immediate-mode GL with command-buffer APIs, since it doesn't force a shared command-buffer across
+  the seam. We sequence `acquire → backend.Render() → our blit → present` single-threaded on the
+  shared queue; where a barrier/flush is needed before we sample the offscreen texture, we insert it.
+- **Hard contract: thread + context affinity.** The backend does all GPU work (render *and* resource
+  creation) only inside the calls we make, on the render thread we invoke it on, with the context
+  already current. It may not render on arbitrary threads.
+
+### Interface sketch
+
+```csharp
+public enum GraphicsContextKind { OpenGL, OpenGLES, Vulkan, Metal, WebGpu, Software }
+
+public readonly struct GraphicsRequirements
+{
+    public int MinStencilBits { get; init; }   // e.g. 8 for even-odd/nonzero fills
+    public bool NeedsDepth { get; init; }
+    public int SampleCount { get; init; }       // MSAA
+    public ColorFormat PreferredColor { get; init; }
+}
+
+public interface INativeWindow                  // host-provided; GPU-agnostic
+{
+    NativeWindowKind Kind { get; }              // X11 / Win32 / Android / Metal / …
+    nint Handle { get; } nint Display { get; }
+    PixelSize Size { get; }
+    event EventHandler Resized;
+}
+
+public interface IGraphicsContextProvider       // framework-owned, one per kind (Uno.Graphics.<kind>)
+{
+    GraphicsContextKind Kind { get; }
+    IGraphicsContext? TryCreate(INativeWindow window, in GraphicsRequirements requirements);
+}
+
+public interface IGraphicsContext : IDisposable
+{
+    bool IsLost { get; }
+    // owns swapchain/surface/present/blit internally; hands the backend a color target per frame
+}
+
+public interface IRenderTarget : IDisposable { PixelSize Size { get; } }   // kind-matched color view
+
+public interface IGraphicsBackend               // the registerable unit (matched pair)
+{
+    IReadOnlyList<GraphicsContextKind> PreferredContexts { get; }   // ordered
+    GraphicsRequirements Requirements { get; }
+    IDrawingBackend Drawing { get; }
+    IRenderBackend CreateRenderBackend(IGraphicsContext context);
+}
+
+public interface IRenderBackend
+{
+    ICommandRecorder BeginFrame();                     // record the tree → IRenderData (UI thread)
+    void Render(IRenderTarget target, IRenderData frame);   // replay the clipped frame into the color target
+}
+
+public static class GraphicsBackend
+{
+    public static void Register(IReadOnlyList<IGraphicsBackend> backendsInPreferenceOrder);
+    // no default; unregistered access throws
+}
+```
+
+### ⚠️ Breaking change — removal of the Skia-assuming rendering options
+
+The existing per-host "rendering backend" / "surface type" options **select which GPU API *Skia*
+renders through** (Skia-on-Vulkan, Skia-on-OpenGL, Skia software). They conflate the *graphics
+backend* choice with a *Skia-internal surface/GPU-API* choice, which is incoherent once the graphics
+backend itself is pluggable. They are **removed**:
+
+| Removed API | Assembly |
+|-------------|----------|
+| `X11RenderingBackend` enum (`Default`/`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.RenderingBackend(…)` | `Uno.UI.Runtime.Skia.X11` |
+| `Win32RenderingBackend` enum (`Default`/`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.RenderingBackend(…)` | `Uno.UI.Runtime.Skia.Win32` |
+| `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.Skia.MacOS`, `Uno.UI.Runtime.Skia.Win32` |
+| `FeatureConfiguration.Rendering.UseOpenGLOnX11`, `FeatureConfiguration.Rendering.UseVulkanOnX11` | `Uno.UI` |
+
+**Rationale.** The host builder now selects a *graphics backend* (Skia / WebGPU / third party); the
+GPU API and surface type are that backend's own internal concern — a WebGPU backend targets
+Vulkan/Metal/D3D via `wgpu`; a Skia backend picks its `GRContext` surface. A host-level,
+cross-backend "Vulkan/OpenGL/Software" knob no longer has a coherent meaning.
+
+**Migration.** Selecting a renderer becomes "register a backend on the host builder" rather than
+"select a GPU API". Any GPU-API preference a specific backend still supports becomes that backend's
+own configuration, not a shared host-builder enum. Removing these public enums/methods/flags will be
+flagged by the `Uno.PackageDiff` CI gate (expected; this doc is the reference for why).
 
 ---
 
