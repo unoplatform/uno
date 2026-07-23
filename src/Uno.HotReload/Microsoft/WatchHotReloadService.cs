@@ -14,6 +14,15 @@ using Microsoft.CodeAnalysis.Host;
 
 namespace Uno.HotReload.Microsoft;
 
+/// <summary>
+/// Reflection shim over Roslyn's <c>ExternalAccess.UnitTesting.Api.UnitTestingHotReloadService</c>,
+/// the stable EnC session surface across the Roslyn lines we embed (identical shape from 4.14 to
+/// 5.6, verified). The historical target, <c>ExternalAccess.Watch.Api.WatchHotReloadService</c>,
+/// was removed from Microsoft.CodeAnalysis.Features between Roslyn 5.0 and 5.3; the UnitTesting
+/// twin only differs by taking the capabilities at <c>StartSessionAsync</c> (instead of the
+/// constructor) and an explicit <c>commitUpdates</c> flag on emit (Watch always committed ready
+/// updates — passing <c>true</c> preserves that behavior).
+/// </summary>
 internal partial class WatchHotReloadService
 {
 	private readonly Func<Solution, CancellationToken, Task>? _startSessionAsync;
@@ -25,28 +34,33 @@ internal partial class WatchHotReloadService
 	{
 		if (Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
 		{
-			if (featuresAssembly.GetType("Microsoft.CodeAnalysis.ExternalAccess.Watch.Api.WatchHotReloadService", false) is { } watchHotReloadServiceType)
+			if (featuresAssembly.GetType("Microsoft.CodeAnalysis.ExternalAccess.UnitTesting.Api.UnitTestingHotReloadService", false) is { } hotReloadServiceType)
 			{
-				_targetInstance = Activator.CreateInstance(
-					watchHotReloadServiceType,
-					services,
-					ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities));
+				_targetInstance = Activator.CreateInstance(hotReloadServiceType, services);
 
-				if (watchHotReloadServiceType.GetMethod(nameof(StartSessionAsync)) is { } startSessionAsyncMethod)
+				if (hotReloadServiceType.GetMethod(nameof(StartSessionAsync)) is { } startSessionAsyncMethod)
 				{
-					_startSessionAsync = (Func<Solution, CancellationToken, Task>)startSessionAsyncMethod
-						.CreateDelegate(typeof(Func<Solution, CancellationToken, Task>), _targetInstance);
+					// Bind strongly so a signature drift on a future Roslyn bump fails here, at
+					// session creation, instead of surfacing as a mid-session invocation error.
+					var startSessionAsync = (Func<Solution, ImmutableArray<string>, CancellationToken, Task>)startSessionAsyncMethod
+						.CreateDelegate(typeof(Func<Solution, ImmutableArray<string>, CancellationToken, Task>), _targetInstance);
+					var capabilities = ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities);
+
+					_startSessionAsync = (s, ct) => startSessionAsync(s, capabilities, ct);
 				}
 				else
 				{
 					throw new InvalidOperationException($"Cannot find {nameof(StartSessionAsync)}");
 				}
 
-				if (watchHotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync)) is { } emitSolutionUpdateAsyncMethod)
+				if (hotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync)) is { } emitSolutionUpdateAsyncMethod)
 				{
 					_emitSolutionUpdateAsync = async (s, ct) =>
 					{
-						var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, ct });
+						// commitUpdates: true == the historical Watch behavior (the EnC service
+						// commits the emitted solution update when its status is Ready, making it
+						// the baseline of the next emit).
+						var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, true, ct });
 
 						if (r is Task t)
 						{
@@ -71,7 +85,7 @@ internal partial class WatchHotReloadService
 					throw new InvalidOperationException($"Cannot find {nameof(EmitSolutionUpdateAsync)}");
 				}
 
-				if (watchHotReloadServiceType.GetMethod(nameof(EndSession)) is { } endSessionMethod)
+				if (hotReloadServiceType.GetMethod(nameof(EndSession)) is { } endSessionMethod)
 				{
 #pragma warning disable CA2263
 					_endSession = (Action)endSessionMethod.CreateDelegate(typeof(Action), _targetInstance);
@@ -81,6 +95,13 @@ internal partial class WatchHotReloadService
 				{
 					throw new InvalidOperationException($"Cannot find {nameof(EndSession)}");
 				}
+			}
+			else
+			{
+				// Historically silent (null service, first use threw a bare "cannot be null"):
+				// name the missing type so a future Roslyn bump that moves it again is diagnosable
+				// from the session log.
+				throw new InvalidOperationException("Cannot find Microsoft.CodeAnalysis.ExternalAccess.UnitTesting.Api.UnitTestingHotReloadService in Microsoft.CodeAnalysis.Features.");
 			}
 		}
 	}

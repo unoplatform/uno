@@ -109,6 +109,21 @@ Compatibility notes for the implementing agent:
   (`ModuleId`, `ILDelta`, `MetadataDelta`, `PdbDelta`, `UpdatedTypes`) and the
   constructor arity of the service. If 5.6 renamed/extended them, extend the shim (keep
   reflection, do not take a compile-time dependency).
+  **RESOLVED during implementation**: Roslyn *removed* `ExternalAccess.Watch` from
+  `Microsoft.CodeAnalysis.Features` between 5.0 and 5.3. The shim now targets its twin,
+  `Microsoft.CodeAnalysis.ExternalAccess.UnitTesting.Api.UnitTestingHotReloadService`,
+  whose shape is byte-for-byte identical from 4.14 to 5.6 (verified by reflection on
+  4.14.0 / 5.0.0 / 5.3.0 / 5.6.0): the only deltas vs Watch are the capabilities moving
+  from the constructor to `StartSessionAsync` and an explicit `commitUpdates` flag on
+  emit — `true` reproduces Watch's implicit commit-on-ready (confirmed against the
+  Roslyn source). Empirically validated on both 4.14.0 and 5.6.0: session start + a
+  **real EnC delta emission** (on-disk baseline dll+pdb) + the five `Update` fields.
+- Companion compile-time pins required by `Workspaces.MSBuild` 5.6.0 in the net10.0
+  groups (all `ExcludeAssets="runtime"` where already the case): `Microsoft.Build*`
+  17.7.2/17.8.43 → **18.0.2**, `Microsoft.Extensions.Logging*` 9.0.0 → **10.0.1**.
+- `Workspace.WorkspaceFailed` (event) is `[Obsolete]` (error under warnaserror) in 5.x:
+  use `RegisterWorkspaceFailedHandler` behind `#if NET10_0_OR_GREATER` — the API does
+  not exist on the 4.x line.
 - `Microsoft.CodeAnalysis.Workspaces.MSBuild` 5.x loads projects through the
   out-of-process BuildHost; smoke-test that `CompilationEnvironment`'s assembly
   resolver registration still applies (it hooks the ALC of
