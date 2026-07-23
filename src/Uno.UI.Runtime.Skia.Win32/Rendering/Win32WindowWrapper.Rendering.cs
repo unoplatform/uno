@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -56,11 +57,11 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		var clipPath = ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		var clipPath = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
 		{
 			_surface?.Dispose();
 			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
-			return _surface.Canvas;
+			return new SkiaRenderTarget(_surface.Canvas);
 		});
 
 		// _surface is created lazily inside resizeFunc; still null means the CompositionTarget

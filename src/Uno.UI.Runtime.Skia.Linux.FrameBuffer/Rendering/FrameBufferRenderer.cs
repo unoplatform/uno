@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using Windows.Graphics.Display;
 using Windows.Graphics.Interop.Direct2D;
@@ -68,7 +69,7 @@ internal abstract class FrameBufferRenderer
 		_surface?.Canvas.RotateDegrees(degrees);
 		_surface?.Canvas.Clear(SKColors.Transparent);
 
-		ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
 		{
 			_surface?.Dispose();
 			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
@@ -80,7 +81,7 @@ internal abstract class FrameBufferRenderer
 			_surface.Canvas.Translate((float)transX, (float)transY);
 			_surface.Canvas.RotateDegrees(degrees);
 			_surface.Canvas.Clear(SKColors.Transparent);
-			return _surface.Canvas;
+			return new SkiaRenderTarget(_surface.Canvas);
 		});
 		if (_cursorVisible ?? _receivedMouseEvent)
 		{

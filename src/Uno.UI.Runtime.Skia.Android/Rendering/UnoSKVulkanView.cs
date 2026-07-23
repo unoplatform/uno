@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using System.Threading;
 using Android.Content;
@@ -200,8 +201,8 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 					return;
 
 				var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(
-					skSurface.Canvas,
-					size => skSurface.Canvas);
+					new SkiaRenderTarget(skSurface.Canvas),
+					size => new SkiaRenderTarget(skSurface.Canvas));
 
 				// Update the native layer host clip path
 				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
