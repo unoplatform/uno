@@ -21,6 +21,9 @@ public interface IGeometry : IDisposable
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
 	Rect Bounds { get; }
 
+	/// <summary>The fill rule a backend renderer must use when filling this geometry (even-odd vs winding).</summary>
+	GeometryFillRule FillRule { get; }
+
 	/// <summary>Whether the geometry contains no drawable area.</summary>
 	bool IsEmpty { get; }
 

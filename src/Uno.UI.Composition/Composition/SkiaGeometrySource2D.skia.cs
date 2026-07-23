@@ -49,6 +49,8 @@ namespace Microsoft.UI.Composition
 
 		Rect IGeometry.Bounds => _geometry.TightBounds.ToRect();
 
+		GeometryFillRule IGeometry.FillRule => _geometry.FillType == SKPathFillType.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
+
 		bool IGeometry.IsEmpty => _geometry.IsEmpty;
 
 		bool IGeometry.FillContains(Vector2 point) => _geometry.Contains(point.X, point.Y);
