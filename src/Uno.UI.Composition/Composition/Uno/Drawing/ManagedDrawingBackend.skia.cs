@@ -46,6 +46,11 @@ public sealed class ManagedDrawingBackend : IDrawingBackend
 	public IImageFrames CreateImageFrames(IImage image)
 		=> throw new NotImplementedException("Managed IImageFrames is not yet implemented.");
 
+	// The managed factory is a CPU-resource factory (geometry/decode); GPU textures are created by the
+	// device-bound backend factory (e.g. WebGpuDrawingBackend), not here.
+	public IImageTexture CreateImageTexture(IImage image)
+		=> throw new NotSupportedException("ManagedDrawingBackend has no GPU device; use a device-bound backend factory to create textures.");
+
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix)
 		=> throw new NotImplementedException("Managed gradient shaders are not yet implemented.");
 

@@ -107,6 +107,14 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 
 	public IImageFrames CreateImageFrames(IImage image) => SkiaImageFrames.FromImage(((SkiaImage)image).Image);
 
+	public IImageTexture CreateImageTexture(IImage image)
+	{
+		var info = new SKImageInfo(image.PixelWidth, image.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		var pixels = new byte[image.PixelWidth * image.PixelHeight * 4];
+		image.CopyPixels(pixels);
+		return new SkiaImageTexture(SKImage.FromPixelCopy(info, pixels));
+	}
+
 	public IShader CreateLinearGradientShader(
 		Vector2 start,
 		Vector2 end,

@@ -597,3 +597,71 @@ public sealed class WebGpuGraphicsBackend : IGraphicsBackend
 
 	public IRenderBackend CreateRenderBackend(IGraphicsContext context) => new WebGpuRenderBackend(((WebGpuGraphicsContext)context).Device);
 }
+
+// --- Device-bound factory (IImageTexture + eventual shaders) ---
+
+/// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>
+public sealed unsafe class WebGpuImageTexture : IImageTexture
+{
+	private readonly WebGpuDevice _d;
+	public Texture* Tex;
+	public TextureView* View;
+
+	public int PixelWidth { get; }
+	public int PixelHeight { get; }
+
+	public WebGpuImageTexture(WebGpuDevice device, IImage image)
+	{
+		_d = device;
+		int w = image.PixelWidth, h = image.PixelHeight;
+		PixelWidth = w; PixelHeight = h;
+		var bgra = new byte[w * h * 4];
+		image.CopyPixels(bgra);
+		var rgba = new byte[w * h * 4];
+		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
+		var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst | TextureUsage.CopySrc };
+		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
+		View = device.W.TextureCreateView(Tex, null);
+		var dst = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+		var layout = new TextureDataLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
+		var ext = new Extent3D((uint)w, (uint)h, 1);
+		fixed (byte* p = rgba) { device.W.QueueWriteTexture(device.Q, in dst, p, (nuint)rgba.Length, in layout, in ext); }
+	}
+
+	public void Dispose()
+	{
+		if (View != null) { _d.W.TextureViewRelease(View); View = null; }
+		if (Tex != null) { _d.W.TextureDestroy(Tex); Tex = null; }
+	}
+}
+
+/// <summary>
+/// The device-bound WebGPU resource factory: geometry + decode delegate to the managed engine (neutral,
+/// SkiaSharp-free); GPU textures are created here on the wgpu device. Shaders/effects are not yet
+/// implemented (gradients/effects TODO — the managed engine has no GPU equivalents).
+/// </summary>
+public sealed class WebGpuDrawingBackend : IDrawingBackend
+{
+	private readonly WebGpuDevice _device;
+	private readonly ManagedDrawingBackend _managed = new();
+
+	public WebGpuDrawingBackend(WebGpuDevice device) => _device = device;
+
+	public IPathBuilder CreatePathBuilder() => _managed.CreatePathBuilder();
+	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _managed.CreatePrimitiveGeometryBuilder();
+	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _managed.CreateRectangleGeometry(rect);
+
+	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
+
+	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => _managed.RenderOffscreen(pixelWidth, pixelHeight, render);
+	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, out IImageFrames frames) => _managed.TryDecodeImage(stream, targetWidth, targetHeight, out frames);
+	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => _managed.CreateImageFrame(pixelWidth, pixelHeight, bgraPremul);
+	public IImageFrames CreateImageFrames(IImage image) => _managed.CreateImageFrames(image);
+
+	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => throw new NotImplementedException("WebGPU gradient shaders not yet implemented.");
+	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => throw new NotImplementedException("WebGPU gradient shaders not yet implemented.");
+	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => throw new NotImplementedException("WebGPU color filters not yet implemented.");
+	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => throw new NotImplementedException("WebGPU color filters not yet implemented.");
+	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) { hasBackdropInput = false; throw new NotImplementedException("WebGPU effects not yet implemented."); }
+	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => throw new NotImplementedException("WebGPU drop-shadow not yet implemented.");
+}
