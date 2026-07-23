@@ -21,5 +21,5 @@ public interface IRenderBackend
 	/// Phase 2: begins composing onto <paramref name="target"/>. The cycle replays the recorded frame and
 	/// draws any overlay into the returned session, then disposes it to finalize (present) the composition.
 	/// </summary>
-	IPresentSession BeginPresent(IRenderSurface target);
+	IPresentSession BeginPresent(IRenderTarget target);
 }
