@@ -70,6 +70,90 @@ namespace Microsoft.UI.Composition
 
 		#endregion
 
+		void IGeometry.StreamFlattened(IFlattenedPathSink sink)
+		{
+			using var it = _geometry.CreateIterator(false);
+			var pts = new SKPoint[4];
+			var inContour = false;
+			var closed = false;
+			var current = default(SKPoint);
+			SKPathVerb verb;
+			while ((verb = it.Next(pts)) != SKPathVerb.Done)
+			{
+				switch (verb)
+				{
+					case SKPathVerb.Move:
+						if (inContour) { sink.EndContour(closed); }
+						sink.BeginContour(new Vector2(pts[0].X, pts[0].Y));
+						current = pts[0];
+						inContour = true;
+						closed = false;
+						break;
+					case SKPathVerb.Line:
+						sink.LineTo(new Vector2(pts[1].X, pts[1].Y));
+						current = pts[1];
+						break;
+					case SKPathVerb.Quad:
+						FlattenQuad(sink, current, pts[1], pts[2]);
+						current = pts[2];
+						break;
+					case SKPathVerb.Conic:
+						FlattenConic(sink, current, pts[1], pts[2], it.ConicWeight());
+						current = pts[2];
+						break;
+					case SKPathVerb.Cubic:
+						FlattenCubic(sink, current, pts[1], pts[2], pts[3]);
+						current = pts[3];
+						break;
+					case SKPathVerb.Close:
+						closed = true;
+						break;
+				}
+			}
+
+			if (inContour) { sink.EndContour(closed); }
+		}
+
+		private static void FlattenQuad(IFlattenedPathSink sink, SKPoint p0, SKPoint c, SKPoint p1)
+		{
+			const int steps = 16;
+			for (var i = 1; i <= steps; i++)
+			{
+				var t = i / (float)steps;
+				var u = 1 - t;
+				var x = u * u * p0.X + 2 * u * t * c.X + t * t * p1.X;
+				var y = u * u * p0.Y + 2 * u * t * c.Y + t * t * p1.Y;
+				sink.LineTo(new Vector2(x, y));
+			}
+		}
+
+		private static void FlattenConic(IFlattenedPathSink sink, SKPoint p0, SKPoint c, SKPoint p1, float w)
+		{
+			const int steps = 16;
+			for (var i = 1; i <= steps; i++)
+			{
+				var t = i / (float)steps;
+				var u = 1 - t;
+				var denom = u * u + 2 * u * t * w + t * t;
+				var x = (u * u * p0.X + 2 * u * t * w * c.X + t * t * p1.X) / denom;
+				var y = (u * u * p0.Y + 2 * u * t * w * c.Y + t * t * p1.Y) / denom;
+				sink.LineTo(new Vector2(x, y));
+			}
+		}
+
+		private static void FlattenCubic(IFlattenedPathSink sink, SKPoint p0, SKPoint c1, SKPoint c2, SKPoint p1)
+		{
+			const int steps = 24;
+			for (var i = 1; i <= steps; i++)
+			{
+				var t = i / (float)steps;
+				var u = 1 - t;
+				var x = u * u * u * p0.X + 3 * u * u * t * c1.X + 3 * u * t * t * c2.X + t * t * t * p1.X;
+				var y = u * u * u * p0.Y + 3 * u * u * t * c1.Y + 3 * u * t * t * c2.Y + t * t * t * p1.Y;
+				sink.LineTo(new Vector2(x, y));
+			}
+		}
+
 		public void Dispose() => _geometry.Dispose();
 	}
 }

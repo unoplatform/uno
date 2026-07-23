@@ -41,4 +41,24 @@ public interface IGeometry : IDisposable
 	/// WinUI stroke semantics (caps, miter-clip, dash caps). The caller-owned result must be disposed.
 	/// </summary>
 	IGeometry GetStrokeFillGeometry(in StrokeStyle style);
+
+	/// <summary>
+	/// Streams the geometry's outline to <paramref name="sink"/> as flattened polyline contours (curves
+	/// subdivided). This is the neutral "geometry → segments" readback a backend renderer needs to
+	/// tessellate/fill a path without knowing the concrete geometry type.
+	/// </summary>
+	void StreamFlattened(IFlattenedPathSink sink);
+}
+
+/// <summary>Receives flattened polyline contours from <see cref="IGeometry.StreamFlattened"/>.</summary>
+public interface IFlattenedPathSink
+{
+	/// <summary>Starts a new contour at <paramref name="start"/>.</summary>
+	void BeginContour(Vector2 start);
+
+	/// <summary>Adds a straight edge to <paramref name="point"/> within the current contour.</summary>
+	void LineTo(Vector2 point);
+
+	/// <summary>Ends the current contour; <paramref name="closed"/> mirrors the source subpath's closed flag.</summary>
+	void EndContour(bool closed);
 }
