@@ -182,31 +182,39 @@ public sealed unsafe class WebGpuRenderSurface : IRenderSurface
 	}
 }
 
-internal sealed class PathFill
+// Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.
+internal abstract class WebGpuCommand
+{
+	public Vector4 Clip;
+}
+
+internal sealed class RectCommand : WebGpuCommand
+{
+	public WColor Color;
+	public Vector2 P0, P1, P2, P3;
+}
+
+internal sealed class PathFill : WebGpuCommand
 {
 	public float[] FanDevice;
 	public Vector2 BbMin, BbMax;
 	public WColor Color;
 	public bool EvenOdd;
-	public Vector4 Clip;
 }
 
-internal sealed class ImageCmd
+internal sealed class ImageCmd : WebGpuCommand
 {
 	public Vector2 P0, P1, P2, P3;
 	public byte[] Rgba;
 	public int W, H;
 	public float Opacity;
-	public Vector4 Clip;
 }
 
 public sealed class WebGpuRenderData : IRenderData
 {
-	internal List<(WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector4 clip)> Rects = new();
-	internal List<PathFill> Paths = new();
-	internal List<ImageCmd> Images = new();
+	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
-	public void Dispose() { Rects = null; Paths = null; Images = null; }
+	public void Dispose() { Commands = null; }
 }
 
 public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
@@ -246,8 +254,12 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 	private Vector2 Map(float x, float y) => new(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
 
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
-		=> _data.Rects.Add((color, Map((float)rect.Left, (float)rect.Top), Map((float)rect.Right, (float)rect.Top),
-			Map((float)rect.Right, (float)rect.Bottom), Map((float)rect.Left, (float)rect.Bottom), _clip));
+		=> _data.Commands.Add(new RectCommand
+		{
+			Color = color, Clip = _clip,
+			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+		});
 
 	private List<float> _fan;
 	private Vector2 _pivot, _prev, _bbMin, _bbMax;
@@ -263,7 +275,7 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_data.Paths.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = _clip });
+			_data.Commands.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = _clip });
 		}
 		_fan = null;
 	}
@@ -290,7 +302,12 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 	{
 		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; } dir /= len;
 		var n = new Vector2(-dir.Y, dir.X) * (strokeWidth / 2f);
-		_data.Rects.Add((color, Map(p0.X + n.X, p0.Y + n.Y), Map(p1.X + n.X, p1.Y + n.Y), Map(p1.X - n.X, p1.Y - n.Y), Map(p0.X - n.X, p0.Y - n.Y), _clip));
+		_data.Commands.Add(new RectCommand
+		{
+			Color = color, Clip = _clip,
+			P0 = Map(p0.X + n.X, p0.Y + n.Y), P1 = Map(p1.X + n.X, p1.Y + n.Y),
+			P2 = Map(p1.X - n.X, p1.Y - n.Y), P3 = Map(p0.X - n.X, p0.Y - n.Y),
+		});
 	}
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
@@ -298,7 +315,7 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 		var bgra = new byte[w * h * 4]; image.CopyPixels(bgra);
 		var rgba = new byte[w * h * 4];
 		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
-		_data.Images.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), Rgba = rgba, W = w, H = h, Opacity = opacity, Clip = _clip });
+		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), Rgba = rgba, W = w, H = h, Opacity = opacity, Clip = _clip });
 	}
 	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
 	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
@@ -313,19 +330,28 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 	{
 		if (data is not WebGpuRenderData d) { return; }
 		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
-		foreach (var r in d.Rects) { _data.Rects.Add((r.color, T(r.p0), T(r.p1), T(r.p2), T(r.p3), ClipCompose(r.clip, T))); }
-		foreach (var p in d.Paths)
+		foreach (var cmd in d.Commands)
 		{
-			var src = p.FanDevice; var dst = new float[src.Length];
-			var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
-			for (int i = 0; i < src.Length; i += 2)
+			switch (cmd)
 			{
-				var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
-				bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
+				case RectCommand r:
+					_data.Commands.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip, T), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
+					break;
+				case PathFill p:
+					var src = p.FanDevice; var dst = new float[src.Length];
+					var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+					for (int i = 0; i < src.Length; i += 2)
+					{
+						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
+						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
+					}
+					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
+					break;
+				case ImageCmd im:
+					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), Rgba = im.Rgba, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) });
+					break;
 			}
-			_data.Paths.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 		}
-		foreach (var im in d.Images) { _data.Images.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), Rgba = im.Rgba, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) }); }
 	}
 
 	// Transform a child clip AABB by the current matrix and intersect it with the current clip.
@@ -368,53 +394,62 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var rd = (WebGpuRenderData)data;
 		var W = _d.W;
 
-		var rectV = new List<float>();
-		foreach (var (col, p0, p1, p2, p3, _) in rd.Rects)
+		// Build GPU resources for every command up front (buffers/textures must be created outside the
+		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
+		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad).
+		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, Vector4 clip)>();
+		foreach (var cmd in rd.Commands)
 		{
-			var c = new Vector4(col.R / 255f, col.G / 255f, col.B / 255f, col.A / 255f);
-			void V(Vector2 p) { var n = Ndc(p); rectV.Add(n.X); rectV.Add(n.Y); rectV.Add(c.X); rectV.Add(c.Y); rectV.Add(c.Z); rectV.Add(c.W); }
-			V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
-		}
-		Silk.NET.WebGPU.Buffer* rectBuf = rectV.Count > 0 ? MakeBuffer(rectV.ToArray()) : null;
-
-		var pathBufs = new List<(nint fan, uint fanCount, nint cover, bool evenOdd, Vector4 clip)>();
-		foreach (var pf in rd.Paths)
-		{
-			var fanNdc = new float[pf.FanDevice.Length];
-			for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
-			var fanBuf = MakeBuffer(fanNdc);
-			var c = new Vector4(pf.Color.R / 255f, pf.Color.G / 255f, pf.Color.B / 255f, pf.Color.A / 255f);
-			var cov = new List<float>();
-			void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
-			var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-			CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
-			pathBufs.Add(((nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip));
-		}
-
-		var imgDraws = new List<(nint bg, nint quad, Vector4 clip)>();
-		foreach (var im in rd.Images)
-		{
-			var td = new TextureDescriptor { Size = new Extent3D((uint)im.W, (uint)im.H, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
-			var tex = W.DeviceCreateTexture(_d.Dev, ref td);
-			var view = W.TextureCreateView(tex, null);
-			var dst = new ImageCopyTexture { Texture = tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
-			var layout = new TextureDataLayout { BytesPerRow = (uint)(im.W * 4), RowsPerImage = (uint)im.H };
-			var writeExtent = new Extent3D((uint)im.W, (uint)im.H, 1);
-			fixed (byte* p = im.Rgba) { W.QueueWriteTexture(_d.Q, in dst, p, (nuint)im.Rgba.Length, in layout, in writeExtent); }
-			var ubd = new BufferDescriptor { Size = 16, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-			var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
-			var op = stackalloc float[4]; op[0] = im.Opacity; op[1] = op[2] = op[3] = 0;
-			W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 16);
-			var entries = stackalloc BindGroupEntry[3];
-			entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
-			entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-			entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 16 };
-			var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-			var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
-			var q = new float[24];
-			void QV(int idx, Vector2 pos, float u, float v) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = v; }
-			QV(0, im.P0, 0, 0); QV(4, im.P1, 1, 0); QV(8, im.P2, 1, 1); QV(12, im.P0, 0, 0); QV(16, im.P2, 1, 1); QV(20, im.P3, 0, 1);
-			imgDraws.Add(((nint)bg, (nint)MakeBuffer(q), im.Clip));
+			switch (cmd)
+			{
+				case RectCommand rc:
+				{
+					var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
+					var v = new List<float>();
+					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
+					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
+					ops.Add((0, (nint)MakeBuffer(v.ToArray()), 0, 0, false, rc.Clip));
+					break;
+				}
+				case PathFill pf:
+				{
+					var fanNdc = new float[pf.FanDevice.Length];
+					for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
+					var fanBuf = MakeBuffer(fanNdc);
+					var c = new Vector4(pf.Color.R / 255f, pf.Color.G / 255f, pf.Color.B / 255f, pf.Color.A / 255f);
+					var cov = new List<float>();
+					void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
+					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
+					CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
+					ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip));
+					break;
+				}
+				case ImageCmd im:
+				{
+					var td = new TextureDescriptor { Size = new Extent3D((uint)im.W, (uint)im.H, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
+					var tex = W.DeviceCreateTexture(_d.Dev, ref td);
+					var view = W.TextureCreateView(tex, null);
+					var dst = new ImageCopyTexture { Texture = tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+					var layout = new TextureDataLayout { BytesPerRow = (uint)(im.W * 4), RowsPerImage = (uint)im.H };
+					var writeExtent = new Extent3D((uint)im.W, (uint)im.H, 1);
+					fixed (byte* p = im.Rgba) { W.QueueWriteTexture(_d.Q, in dst, p, (nuint)im.Rgba.Length, in layout, in writeExtent); }
+					var ubd = new BufferDescriptor { Size = 16, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					var op = stackalloc float[4]; op[0] = im.Opacity; op[1] = op[2] = op[3] = 0;
+					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 16);
+					var entries = stackalloc BindGroupEntry[3];
+					entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
+					entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 16 };
+					var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+					var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+					var q = new float[24];
+					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
+					QV(0, im.P0, 0, 0); QV(4, im.P1, 1, 0); QV(8, im.P2, 1, 1); QV(12, im.P0, 0, 0); QV(16, im.P2, 1, 1); QV(20, im.P3, 0, 1);
+					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip));
+					break;
+				}
+			}
 		}
 
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
@@ -433,36 +468,32 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
 
-		if (rectBuf != null)
+		foreach (var (kind, b0, u0, b1, flag, clip) in ops)
 		{
-			W.RenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-			W.RenderPassEncoderSetVertexBuffer(pass, 0, rectBuf, 0, (nuint)(rectV.Count * sizeof(float)));
-			for (int i = 0; i < rd.Rects.Count; i++)
+			if (!SetScissor(pass, clip)) { continue; }
+			switch (kind)
 			{
-				if (SetScissor(pass, rd.Rects[i].clip)) { W.RenderPassEncoderDraw(pass, 6, 1, (uint)(i * 6), 0); }
+				case 0:
+					W.RenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(36 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					break;
+				case 1:
+					W.RenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, u0, 1, 0, 0);
+					W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+					W.RenderPassEncoderSetStencilReference(pass, 0);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(36 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					break;
+				case 2:
+					W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					break;
 			}
-		}
-
-		foreach (var (fan, fanCount, cover, evenOdd, clip) in pathBufs)
-		{
-			if (!SetScissor(pass, clip)) { continue; }
-			W.RenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)fan, 0, (nuint)(fanCount * 2 * sizeof(float)));
-			W.RenderPassEncoderDraw(pass, fanCount, 1, 0, 0);
-
-			W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-			W.RenderPassEncoderSetStencilReference(pass, 0);
-			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)cover, 0, (nuint)(36 * sizeof(float)));
-			W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		}
-
-		foreach (var (bg, quad, clip) in imgDraws)
-		{
-			if (!SetScissor(pass, clip)) { continue; }
-			W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
-			W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)bg, 0, (uint*)null);
-			W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)quad, 0, (nuint)(24 * sizeof(float)));
-			W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		}
 
 		W.RenderPassEncoderEnd(pass);
