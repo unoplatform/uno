@@ -33,15 +33,6 @@ public sealed class SkiaGraphicsContext : IGraphicsContext
 	public void Dispose() => _surface?.Dispose();
 }
 
-/// <summary>The provider for the software Skia context.</summary>
-public sealed class SkiaContextProvider : IGraphicsContextProvider
-{
-	public GraphicsContextKind Kind => GraphicsContextKind.Software;
-
-	public IGraphicsContext? TryCreate(INativeWindow window, in GraphicsRequirements requirements)
-		=> new SkiaGraphicsContext();
-}
-
 /// <summary>The registerable Skia backend pair (the built-in default choice; registered like any other backend).</summary>
 public sealed class SkiaGraphicsBackend : IGraphicsBackend
 {

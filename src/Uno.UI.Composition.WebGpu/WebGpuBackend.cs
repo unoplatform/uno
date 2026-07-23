@@ -546,7 +546,7 @@ public sealed class WebGpuRenderBackend : IRenderBackend
 
 // --- New-SPI pluggable-backend surface (see doc/uno-drawing-backend-abstraction.md) ---
 
-/// <summary>A <see cref="IGraphicsContext"/> wrapping a <see cref="WebGpuDevice"/>. Created by <see cref="WebGpuContextProvider"/>.</summary>
+/// <summary>A <see cref="IGraphicsContext"/> wrapping a <see cref="WebGpuDevice"/>. Created by the graphics-layer context factory for <see cref="GraphicsContextKind.WebGpu"/>.</summary>
 public sealed class WebGpuGraphicsContext : IGraphicsContext
 {
 	public WebGpuGraphicsContext(WebGpuDevice device) => Device = device;
@@ -562,30 +562,6 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 	public IRenderTarget CreateRenderTarget(int width, int height) => new WebGpuRenderSurface(Device, width, height);
 
 	public void Dispose() { }
-}
-
-/// <summary>The framework-owned per-kind provider for <see cref="GraphicsContextKind.WebGpu"/>.</summary>
-public sealed class WebGpuContextProvider : IGraphicsContextProvider
-{
-	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
-
-	public IGraphicsContext TryCreate(INativeWindow window, in GraphicsRequirements requirements)
-	{
-		// WebGPU uses Depth24PlusStencil8, so up to 8 stencil bits are always available.
-		if (requirements.MinStencilBits > 8)
-		{
-			return null;
-		}
-
-		try
-		{
-			return new WebGpuGraphicsContext(new WebGpuDevice());
-		}
-		catch
-		{
-			return null;
-		}
-	}
 }
 
 /// <summary>The registerable WebGPU backend pair. Prefers a WebGPU context; needs an 8-bit stencil for path fills.</summary>
