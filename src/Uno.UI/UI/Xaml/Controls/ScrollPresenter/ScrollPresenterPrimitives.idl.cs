@@ -67,7 +67,7 @@ public partial class ScrollPresenter :
 	 FrameworkElement,
 	 IScrollAnchorProvider
 {
-	public new Brush Background
+	public Brush Background
 	{
 		get => (Brush)GetValue(BackgroundProperty);
 		set => SetValue(BackgroundProperty, value);
@@ -193,7 +193,7 @@ public partial class ScrollPresenter :
 	public event TypedEventHandler<ScrollPresenter, ScrollingScrollStartingEventArgs> ScrollStarting;
 	public event TypedEventHandler<ScrollPresenter, ScrollingZoomStartingEventArgs> ZoomStarting;
 
-	public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+	public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 		nameof(Background),
 		typeof(Brush),
 		typeof(ScrollPresenter),

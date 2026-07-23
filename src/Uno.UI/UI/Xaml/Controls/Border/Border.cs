@@ -290,7 +290,20 @@ public partial class Border : FrameworkElement
 
 	#endregion
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	public Brush Background
+	{
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
+
+	public static DependencyProperty BackgroundProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Background),
+			typeof(Brush),
+			typeof(Border),
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Border)s)?.OnBackgroundChanged(e)));
+
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();

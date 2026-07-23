@@ -2582,6 +2582,9 @@
 
 		  <!-- MediaPlayerPresenter reparented from Border to FrameworkElement (WinUI parity); the Border-only Child/BorderBrush/BorderThickness/CornerRadius/Padding/BackgroundSizing/ChildTransitions surface (and DP fields) reads as removed. Background stays (Uno declares it on FrameworkElement). Accessor methods paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.MediaPlayerPresenter(::|\.)(Child|ChildProperty|BorderBrush|BorderBrushProperty|BorderThickness|BorderThicknessProperty|CornerRadius|CornerRadiusProperty|Padding|PaddingProperty|BackgroundSizing|BackgroundSizingProperty|ChildTransitions|ChildTransitionsProperty|BackgroundTransition|BackgroundTransitionProperty)\(\)" reason="Reparented MediaPlayerPresenter from Border to FrameworkElement for WinUI parity; Border-only members removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- FrameworkElement.Background removed: declared per-type to match WinUI (BC38, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.FrameworkElement::Background()" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::BackgroundProperty()" reason="WinUI sync (BC38): BackgroundProperty declared per-type, not on FrameworkElement" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3041,6 +3044,18 @@
 
 		  <!-- MediaPlayerPresenter->FrameworkElement reparent accessors (paired with the <Properties> entry above): get_/set_ and DP-field get_ accessors for the removed Border-only members. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.MediaPlayerPresenter(::|\.)(get_Child|set_Child|get_ChildProperty|get_BorderBrush|set_BorderBrush|get_BorderBrushProperty|get_BorderThickness|set_BorderThickness|get_BorderThicknessProperty|get_CornerRadius|set_CornerRadius|get_CornerRadiusProperty|get_Padding|set_Padding|get_PaddingProperty|get_BackgroundSizing|set_BackgroundSizing|get_BackgroundSizingProperty|get_ChildTransitions|set_ChildTransitions|get_ChildTransitionsProperty|get_BackgroundTransition|set_BackgroundTransition|Add)\(.*\)" reason="Reparented MediaPlayerPresenter from Border to FrameworkElement for WinUI parity; Border-only member accessors removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- FrameworkElement.Background accessors + OnBackgroundChanged relocated to the declaring types (BC38, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.FrameworkElement.get_Background()" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Background(Microsoft.UI.Xaml.Media.Brush value)" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_BackgroundProperty()" reason="WinUI sync (BC38): BackgroundProperty declared per-type, not on FrameworkElement" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged moved to the declaring types" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Shapes.Shape.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): Shape has no Background in WinUI (uses Fill)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Panel.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Border.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Page.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CalendarViewBaseItem.OnBackgroundChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="WinUI sync (BC38): OnBackgroundChanged is Uno-only plumbing, narrowed to private protected" />
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
