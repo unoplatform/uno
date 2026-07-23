@@ -262,7 +262,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public async Task CanChangeFocusAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -303,7 +305,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public async Task ValidateElementEvents()
@@ -373,7 +375,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public async Task ValidateElementIndexChangedEventOnStableReset()
@@ -441,7 +443,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public async Task ValidateGetElementAtCachingForLayout()
 		{
 			List<int> data = Enumerable.Range(0, 15).ToList();
@@ -560,7 +564,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public async Task CanResetLayoutAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -777,7 +783,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		// Why does this test work?
 		// When the elements get created from the RecyclingElementFactory, we get already "existing" data templates.
 		// However, the reason for the crash in #2384 is that those "empty" data templates actually still had their data context

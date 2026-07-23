@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// UniformGridLayoutState.cpp, commit a4dcfc96267edb80fe9cc346eb24c0dfac21b40d
+// MUX Reference UniformGridLayoutState.cpp, commit b8cfb8490
 
 #nullable enable
 
@@ -48,24 +48,36 @@ namespace Microsoft.UI.Xaml.Controls
 				var realizedElement = m_flowAlgorithm.GetElementIfRealized(0);
 				if (realizedElement is { })
 				{
+					// This is relatively cheap, when item 0 is realized, always use it to find the size.
 					realizedElement.Measure(CalculateAvailableSize(availableSize, orientation, stretch, maxItemsPerLine, layoutItemWidth, layoutItemHeight, minRowSpacing, minColumnSpacing));
 					SetSize(realizedElement.DesiredSize, layoutItemWidth, layoutItemHeight, availableSize, stretch,
 						orientation, minRowSpacing, minColumnSpacing, maxItemsPerLine);
 				}
 				else
 				{
-					// Not realized by flowlayout, so do this now!
-					var firstElement = context.GetOrCreateElementAt(0, ElementRealizationOptions.ForceCreate);
-
-					if (firstElement is { })
+					// Not realized by flowlayout, so do this now but just once per layout pass since this is expensive and
+					// has the potential to repeatedly invalidate layout due to recycling causing layout cycles.
+					if (!m_isEffectiveSizeValid)
 					{
-						firstElement.Measure(CalculateAvailableSize(availableSize, orientation, stretch, maxItemsPerLine, layoutItemWidth, layoutItemHeight, minRowSpacing, minColumnSpacing));
-						SetSize(firstElement.DesiredSize, layoutItemWidth, layoutItemHeight, availableSize, stretch,
-							orientation, minRowSpacing, minColumnSpacing, maxItemsPerLine);
-						context.RecycleElement(firstElement);
+						var firstElement = context.GetOrCreateElementAt(0, ElementRealizationOptions.ForceCreate);
+
+						if (firstElement is { })
+						{
+							firstElement.Measure(CalculateAvailableSize(availableSize, orientation, stretch, maxItemsPerLine, layoutItemWidth, layoutItemHeight, minRowSpacing, minColumnSpacing));
+							SetSize(firstElement.DesiredSize, layoutItemWidth, layoutItemHeight, availableSize, stretch,
+								orientation, minRowSpacing, minColumnSpacing, maxItemsPerLine);
+							context.RecycleElement(firstElement);
+						}
 					}
 				}
+
+				m_isEffectiveSizeValid = true;
 			}
+		}
+
+		internal void InvalidateElementSize()
+		{
+			m_isEffectiveSizeValid = false;
 		}
 
 		private Size CalculateAvailableSize(
@@ -84,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// for the column width (or row height) being provided.
 			if (orientation == Orientation.Horizontal)
 			{
-				if (!itemWidth.IsNaN())
+				if (!itemWidth.IsNaN() && availableSize.Width.IsFinite())
 				{
 					double allowedColumnWidth = itemWidth;
 					if (stretch != UniformGridLayoutItemsStretch.None)
@@ -97,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				if (!itemHeight.IsNaN())
+				if (!itemHeight.IsNaN() && availableSize.Height.IsFinite())
 				{
 					double allowedRowHeight = itemHeight;
 					if (stretch != UniformGridLayoutItemsStretch.None)
@@ -105,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 						allowedRowHeight += CalculateExtraPixelsInLine(maxItemsPerLine, (float)availableSize.Height, itemHeight, minRowSpacing);
 					}
 
-					return new Size(availableSize.Width, (float)itemHeight);
+					return new Size(availableSize.Width, (float)allowedRowHeight);
 				}
 			}
 

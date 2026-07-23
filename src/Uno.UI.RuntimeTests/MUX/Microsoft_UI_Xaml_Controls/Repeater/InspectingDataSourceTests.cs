@@ -205,14 +205,18 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/10167")]
+#endif
 		public async Task ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
 		{
 			await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/10167")]
+#endif
 		public async Task ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
 		{
 			await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);

@@ -3,89 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LinedFlowLayoutItemsInfoRequestedEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		internal LinedFlowLayoutItemsInfoRequestedEventArgs()
-		{
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ItemsRangeRequestedLength
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeRequestedLength");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ItemsRangeStartIndex
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeStartIndex");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeStartIndex");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MaxWidth
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MaxWidth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MaxWidth");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MinWidth
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MinWidth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MinWidth");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetDesiredAspectRatios(double[] values)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetDesiredAspectRatios(double[] values)");
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetMinWidths(double[] values)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetMinWidths(double[] values)");
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetMaxWidths(double[] values)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetMaxWidths(double[] values)");
-		}
-#endif
+		// Skipping already declared property ItemsRangeRequestedLength
+		// Skipping already declared property ItemsRangeStartIndex
+		// Skipping already declared property MaxWidth
+		// Skipping already declared property MinWidth
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetDesiredAspectRatios(double[])
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetMinWidths(double[])
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.SetMaxWidths(double[])
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.set
