@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.WebGpu</AssemblyName>
+		<RootNamespace>Uno.UI.Composition.WebGpu</RootNamespace>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<Description>EXPERIMENTAL WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.WebGPU" Version="2.23.0" />
+		<PackageReference Include="Silk.NET.WebGPU.Native.WGPU" Version="2.23.0" />
+		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" Version="2.23.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
+	</ItemGroup>
+</Project>
