@@ -479,7 +479,7 @@ internal class Win32RawElementProvider :
 
 					// Clip to ancestor scroll/clip regions so Narrator doesn't report
 					// bounds for content that is scrolled out of view.
-					logicalRect = ClipToAncestors(_owner, logicalRect);
+					logicalRect = ClipToElementAndAncestors(_owner, logicalRect);
 
 					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
 					{
@@ -1621,17 +1621,17 @@ internal class Win32RawElementProvider :
 	}
 
 	/// <summary>
-	/// Clips a logical rect to ancestor elements that have Clip set (e.g., ScrollViewer).
+	/// Clips a logical rect to the element and ancestors that have Clip set (e.g., ScrollViewer).
 	/// This prevents Narrator from reporting bounds for content scrolled out of view.
 	/// </summary>
-	private static Windows.Foundation.Rect ClipToAncestors(UIElement element, Windows.Foundation.Rect rect)
+	private static Windows.Foundation.Rect ClipToElementAndAncestors(UIElement element, Windows.Foundation.Rect rect)
 	{
-		var ancestor = element.GetParent() as UIElement;
-		while (ancestor is not null)
+		UIElement? current = element;
+		while (current is not null)
 		{
-			if (ancestor.Clip is RectangleGeometry clip)
+			if (current.Clip is RectangleGeometry clip)
 			{
-				var clipTransform = UIElement.GetTransform(from: ancestor, to: null);
+				var clipTransform = UIElement.GetTransform(from: current, to: null);
 				var clipRect = clipTransform.Transform(clip.Rect);
 				rect.Intersect(clipRect);
 				if (rect.IsEmpty)
@@ -1639,7 +1639,7 @@ internal class Win32RawElementProvider :
 					return new Windows.Foundation.Rect(0, 0, 0, 0);
 				}
 			}
-			ancestor = ancestor.GetParent() as UIElement;
+			current = current.GetParent() as UIElement;
 		}
 		return rect;
 	}

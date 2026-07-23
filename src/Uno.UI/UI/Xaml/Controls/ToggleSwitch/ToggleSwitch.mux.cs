@@ -360,20 +360,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Point AutomationGetClickablePoint()
 		{
-			//UNO TODO: Implement AutomationGetClickablePoint on ToggleSwitch
-			return new Point();
-
-			//	auto clickableElement =
-			//		_tpThumb ?
-			//		static_cast<UIElement*>(_tpThumb.Cast<Thumb>()) :
-			//		static_cast<UIElement*>(this);
-
-			//	XPOINTF point;
-			//	static_cast<CUIElement*>(clickableElement.GetHandle()).GetClickablePointRasterizedClient(&point));
-
-			//	*result = { point.x, point.y };
-
-			//	return S_OK;
+			var clickableElement = _tpThumb is not null ? (UIElement)_tpThumb : this;
+			return clickableElement.GetClickablePointRasterizedClient();
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() =>

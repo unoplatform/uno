@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -112,6 +115,211 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetClickablePoint();
 			Assert.AreEqual(default, result);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_FrameworkElementAutomationPeer_GetClickablePoint()
+		{
+			var button = new Button
+			{
+				Content = "Subject",
+				Width = 120,
+				Height = 40,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(40, 30, 0, 0),
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Grid
+				{
+					Width = 300,
+					Height = 200,
+					Children = { button },
+				});
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+
+				var bounds = peer.GetBoundingRectangle();
+				var point = peer.GetClickablePoint();
+
+				Assert.AreEqual(bounds.X + bounds.Width / 2, point.X, 0.5);
+				Assert.AreEqual(bounds.Y + bounds.Height / 2, point.Y, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_PartiallyClipped_FrameworkElementAutomationPeer_GetClickablePoint()
+		{
+			var button = new Button
+			{
+				Content = "Subject",
+				Width = 120,
+				Height = 40,
+			};
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 80,
+				Height = 20,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+				VerticalScrollMode = ScrollMode.Enabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Hidden,
+				Content = button,
+			};
+
+			try
+			{
+				await UITestHelper.Load(scrollViewer);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+
+				var bounds = peer.GetBoundingRectangle();
+				var point = peer.GetClickablePoint();
+
+				Assert.IsTrue(bounds.Width < button.ActualWidth);
+				Assert.IsTrue(bounds.Height < button.ActualHeight);
+				Assert.AreEqual(bounds.X + bounds.Width / 2, point.X, 0.5);
+				Assert.AreEqual(bounds.Y + bounds.Height / 2, point.Y, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_SelfClipped_FrameworkElementAutomationPeer_GetClickablePoint()
+		{
+			var button = new Button
+			{
+				Content = "Subject",
+				Width = 120,
+				Height = 40,
+				Clip = new RectangleGeometry { Rect = new Rect(0, 0, 20, 40) },
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+				Assert.IsNotNull(peer);
+
+				var clippedBounds = button
+					.TransformToVisual(null)
+					.TransformBounds(new Rect(0, 0, 20, 40));
+				var point = peer.GetClickablePoint();
+
+				Assert.AreEqual(clippedBounds.X + clippedBounds.Width / 2, point.X, 0.5);
+				Assert.AreEqual(clippedBounds.Y + clippedBounds.Height / 2, point.Y, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ToggleSwitchAutomationPeer_GetClickablePoint()
+		{
+			var toggleSwitch = new ToggleSwitch
+			{
+				Header = "Subject",
+				Width = 160,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(40, 30, 0, 0),
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Grid
+				{
+					Width = 300,
+					Height = 200,
+					Children = { toggleSwitch },
+				});
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(toggleSwitch);
+				Assert.IsNotNull(peer);
+
+				var thumb = toggleSwitch.FindFirstDescendant<Thumb>();
+				Assert.IsNotNull(thumb);
+
+				var thumbPeer = FrameworkElementAutomationPeer.CreatePeerForElement(thumb);
+				Assert.IsNotNull(thumbPeer);
+
+				var thumbBounds = thumbPeer.GetBoundingRectangle();
+				var point = peer.GetClickablePoint();
+
+				Assert.AreEqual(thumbBounds.X + thumbBounds.Width / 2, point.X, 0.5);
+				Assert.AreEqual(thumbBounds.Y + thumbBounds.Height / 2, point.Y, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_ColorSpectrumAutomationPeer_GetClickablePoint()
+		{
+			var colorSpectrum = new ColorSpectrum
+			{
+				Width = 300,
+				Height = 160,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(40, 30, 0, 0),
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Grid
+				{
+					Width = 400,
+					Height = 240,
+					Children = { colorSpectrum },
+				});
+				await WindowHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(colorSpectrum);
+				Assert.IsNotNull(peer);
+
+				var inputTarget = colorSpectrum.FindFirstDescendant<FrameworkElement>("InputTarget")
+					?? throw new InvalidOperationException("ColorSpectrum InputTarget not found.");
+				var inputBounds = inputTarget
+					.TransformToVisual(null)
+					.TransformBounds(new Rect(0, 0, inputTarget.ActualWidth, inputTarget.ActualHeight));
+				var point = peer.GetClickablePoint();
+
+				Assert.IsTrue(inputBounds.Width > 0);
+				Assert.IsTrue(inputBounds.Height > 0);
+				Assert.AreEqual(inputBounds.X + inputBounds.Width / 2, point.X, 0.5);
+				Assert.AreEqual(inputBounds.Y + inputBounds.Height / 2, point.Y, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
