@@ -178,7 +178,7 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
 - [x] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Application.cs`, `src/Uno.UI/UI/Xaml/Application.skia.cs`, `src/Uno.UI/UI/Xaml/Application.wasm.cs`
-- [ ] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S` — **BLOCKED (deferred)**
+- [x] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S` — DONE (relocated PointerPoint to Uno.UWP)
   - Adjust signature to match WinUI.
   - **Blocked: not a mechanical signature flip.** `VisualInteractionSource.TryRedirectForManipulation` is declared in `Uno.UI.Composition`, but `Microsoft.UI.Input.PointerPoint` exists only in `Uno.UI` (the `IS_UNO_UI_PROJECT` branch of `PointerPoint.cs`). `Uno.UI.Composition` references `Uno.UWP`/`Uno.Foundation`, not `Uno.UI`, so it cannot name that type in the public signature — the param stays `Windows.UI.Input.PointerPoint`. Genuinely matching WinUI requires relocating `Microsoft.UI.Input.PointerPoint` to a lower assembly (broad, risky, not effort-S). Deferred out of this sweep; left as-is with the existing divergence comment.
   - Files: `src/Uno.UI.Composition/Composition/VisualInteractionSource.cs`, `src/Uno.UI.Composition/Composition/ICompositionTarget.cs`, `src/Uno.UI/UI/Xaml/Media/CompositionTarget.cs`
