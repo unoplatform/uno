@@ -306,7 +306,37 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 
 	public IRenderData Finish() => _data;
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
-	public void Replay(IRenderData data) { }
+
+	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in
+	// the target session's current matrix + clip — matching Skia's sk_canvas_draw_picture semantics.
+	public void Replay(IRenderData data)
+	{
+		if (data is not WebGpuRenderData d) { return; }
+		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
+		foreach (var r in d.Rects) { _data.Rects.Add((r.color, T(r.p0), T(r.p1), T(r.p2), T(r.p3), ClipCompose(r.clip, T))); }
+		foreach (var p in d.Paths)
+		{
+			var src = p.FanDevice; var dst = new float[src.Length];
+			var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+			for (int i = 0; i < src.Length; i += 2)
+			{
+				var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
+				bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
+			}
+			_data.Paths.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
+		}
+		foreach (var im in d.Images) { _data.Images.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), Rgba = im.Rgba, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) }); }
+	}
+
+	// Transform a child clip AABB by the current matrix and intersect it with the current clip.
+	private Vector4 ClipCompose(Vector4 c, Func<Vector2, Vector2> t)
+	{
+		if (c.X <= -1e8f && c.Y <= -1e8f && c.Z >= 1e8f && c.W >= 1e8f) { return _clip; }
+		var a = t(new Vector2(c.X, c.Y)); var b = t(new Vector2(c.Z, c.Y)); var e = t(new Vector2(c.Z, c.W)); var f = t(new Vector2(c.X, c.W));
+		var l = MathF.Min(MathF.Min(a.X, b.X), MathF.Min(e.X, f.X)); var top = MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(e.Y, f.Y));
+		var r = MathF.Max(MathF.Max(a.X, b.X), MathF.Max(e.X, f.X)); var bo = MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(e.Y, f.Y));
+		return new Vector4(MathF.Max(_clip.X, l), MathF.Max(_clip.Y, top), MathF.Min(_clip.Z, r), MathF.Min(_clip.W, bo));
+	}
 }
 
 public sealed unsafe class WebGpuPresentSession : IPresentSession
