@@ -125,6 +125,11 @@ Skia/WinUI behavior:
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
 `WebView2.EnableDevTools` instead.
 
+The cross-platform `Control.UseLegacyContentAlignment` flag is also removed. It opted into the
+legacy Top/Left default for `HorizontalContentAlignment`/`VerticalContentAlignment`; the default is
+now always the WinUI-correct **Center/Center**. Apps that set it to `true` should instead set
+`HorizontalContentAlignment`/`VerticalContentAlignment` explicitly (via a `Style` or per control).
+
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
 ### Behavioral changes (same API, different result)

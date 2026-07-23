@@ -136,14 +136,6 @@ namespace Uno.UI
 			public static bool UseImplicitContentFromTemplatedParent { get; set; }
 		}
 
-		public static class Control
-		{
-			/// <summary>
-			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
-			/// </summary>
-			public static bool UseLegacyContentAlignment { get; set; }
-		}
-
 		public static class DependencyObject
 		{
 			/// <summary>
