@@ -35,6 +35,8 @@ jobs:
     parameters:
       UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios'
 
+  - template: ../templates/pack-local-uno-sdk.yml
+
   - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
@@ -54,7 +56,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/$(netCurrentTargetFramework)-ios/iossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Head/bin/SamplesApp.Head/Release/$(netCurrentTargetFramework)-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
       CleanTargetFolder: false

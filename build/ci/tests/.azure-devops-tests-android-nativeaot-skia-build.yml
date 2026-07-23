@@ -25,18 +25,20 @@ jobs:
     parameters:
       UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f $(netCurrentTargetFramework)-android -p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework)-android -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot -p:SkiaPublishAot=true -p:SkiaSharpVersion=4.148.0 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-nativeaot.binlog
+  - template: ../templates/pack-local-uno-sdk.yml
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -c Release -r android-x64 -f $(netCurrentTargetFramework)-android -p:UnoTargetFrameworkOverride=$(netCurrentTargetFramework)-android -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot -p:SkiaPublishAot=true -p:SkiaSharpVersion=4.148.0 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-nativeaot.binlog
     displayName: Build Android+NativeAOT Skia Head
 
   - script: >
-      rm -Rf src/SamplesApp/SamplesApp.Skia.netcoremobile/obj
+      rm -Rf src/SamplesApp/SamplesApp.Head/obj
     workingDirectory: $(Build.SourcesDirectory)
     displayName: Delete obj folder to free up disk space
 
   - task: CopyFiles@2
     displayName: 'Copy Generated Android APK'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/$(netCurrentTargetFramework)-android/android-x64/publish/
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Head/bin/SamplesApp.Head/Release/$(netCurrentTargetFramework)-android/android-x64/publish/
       Contents: 'uno.platform.samplesapp.skia.nativeaot-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android-nativeaot
       CleanTargetFolder: false
