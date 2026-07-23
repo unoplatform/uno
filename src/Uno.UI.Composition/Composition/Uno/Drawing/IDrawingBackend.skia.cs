@@ -50,6 +50,13 @@ public interface IDrawingBackend
 	/// ownership of the image (disposing the frames releases it).</summary>
 	IImageFrames CreateImageFrames(IImage image);
 
+	/// <summary>
+	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU texture (see
+	/// <see cref="IImageTexture"/>). Done once; the caller owns and disposes the result. This is the "store"
+	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="TryDecodeImage"/>.
+	/// </summary>
+	IImageTexture CreateImageTexture(IImage image);
+
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(
 		Vector2 start,
