@@ -133,7 +133,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
 if ($TestGroup -eq '1')
 {
     $skiaAlignProject = "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj"
-    $skiaAlignVersion = "4.148.0"
+    $skiaAlignVersion = "4.151.0-rc.1.1"
     $skiaAlignAssets = "5.6/uno56netcurrent/uno56netcurrent/obj/project.assets.json"
 
     Write-Host "Validating SkiaSharp.NativeAssets.Linux aligns with an overridden SkiaSharpVersion ($skiaAlignVersion) - issue #23658"

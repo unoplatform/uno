@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
     <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup Condition="exists('..\UnoAppWinUI.Windows')">
     <EmbeddedResource Include="..\UnoAppWinUI.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
@@ -13,8 +13,8 @@
     <PackageReference Include="Uno.WinUI.DevServer" Version="$(NBGV_SemVer2)" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(NBGV_SemVer2)" />
     <PackageReference Include="Uno.WinUI.Lottie" Version="$(NBGV_SemVer2)" />
-    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="4.148.0" />
-    <PackageReference Include="SkiaSharp.Skottie" Version="4.148.0" />
+    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="4.151.0-rc.1.1" />
+    <PackageReference Include="SkiaSharp.Skottie" Version="4.151.0-rc.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UnoAppWinUI\UnoAppWinUI.csproj" />

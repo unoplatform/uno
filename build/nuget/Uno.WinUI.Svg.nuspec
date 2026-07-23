@@ -29,22 +29,22 @@
 
 			<group targetFramework="net10.0-android">
 				<dependency id="Svg.Skia" version="3.0.6" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.android" version="4.148.0" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net10.0-ios26.0">
 				<dependency id="Svg.Skia" version="3.0.6" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.ios" version="4.148.0" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.ios" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net10.0-tvos26.0">
 				<dependency id="Svg.Skia" version="3.0.6" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.148.0" />
-				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.148.0" />
+				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.151.0-rc.1.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>

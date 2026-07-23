@@ -42,7 +42,7 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0" />
-		<PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.3" />
+		<PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
