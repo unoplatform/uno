@@ -16,6 +16,13 @@ public interface IGraphicsContext : IDisposable
 
 	/// <summary>Whether the context has been lost (device removed, surface invalidated) and must be recreated.</summary>
 	bool IsLost { get; }
+
+	/// <summary>
+	/// Produces the color <see cref="IRenderTarget"/> the backend renders into, at the given pixel size (recreated
+	/// on resize). Whether it is backed by the window swapchain or a retained offscreen texture — and the
+	/// dirty-rect blit/present — is internal to the context; the backend only ever sees the returned view.
+	/// </summary>
+	IRenderTarget CreateRenderTarget(int width, int height);
 }
 
 /// <summary>

@@ -543,3 +543,65 @@ public sealed class WebGpuRenderBackend : IRenderBackend
 	public ICommandRecorder BeginFrame() => new WebGpuCommandRecorder();
 	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(Device, (WebGpuRenderSurface)target);
 }
+
+// --- New-SPI pluggable-backend surface (see doc/uno-drawing-backend-abstraction.md) ---
+
+/// <summary>A <see cref="IGraphicsContext"/> wrapping a <see cref="WebGpuDevice"/>. Created by <see cref="WebGpuContextProvider"/>.</summary>
+public sealed class WebGpuGraphicsContext : IGraphicsContext
+{
+	public WebGpuGraphicsContext(WebGpuDevice device) => Device = device;
+
+	public WebGpuDevice Device { get; }
+
+	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
+
+	public bool IsLost => false;
+
+	// Offscreen render target (color + depth/stencil). A windowed provider would instead hand out the
+	// swapchain's current image and own the dirty-rect blit; the backend can't tell the difference.
+	public IRenderTarget CreateRenderTarget(int width, int height) => new WebGpuRenderSurface(Device, width, height);
+
+	public void Dispose() { }
+}
+
+/// <summary>The framework-owned per-kind provider for <see cref="GraphicsContextKind.WebGpu"/>.</summary>
+public sealed class WebGpuContextProvider : IGraphicsContextProvider
+{
+	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
+
+	public IGraphicsContext TryCreate(INativeWindow window, in GraphicsRequirements requirements)
+	{
+		// WebGPU uses Depth24PlusStencil8, so up to 8 stencil bits are always available.
+		if (requirements.MinStencilBits > 8)
+		{
+			return null;
+		}
+
+		try
+		{
+			return new WebGpuGraphicsContext(new WebGpuDevice());
+		}
+		catch
+		{
+			return null;
+		}
+	}
+}
+
+/// <summary>The registerable WebGPU backend pair. Prefers a WebGPU context; needs an 8-bit stencil for path fills.</summary>
+public sealed class WebGpuGraphicsBackend : IGraphicsBackend
+{
+	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
+
+	public WebGpuGraphicsBackend(IDrawingBackend drawing) => Drawing = drawing;
+
+	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
+
+	public GraphicsRequirements Requirements => new() { MinStencilBits = 8, PreferredColor = GraphicsColorFormat.Rgba8888 };
+
+	// Geometry/images are neutral, so the WebGPU backend can reuse a shared managed factory. Shaders/filters/
+	// effects would need a WebGPU-owned factory — deferred; this proves the negotiation + render path.
+	public IDrawingBackend Drawing { get; }
+
+	public IRenderBackend CreateRenderBackend(IGraphicsContext context) => new WebGpuRenderBackend(((WebGpuGraphicsContext)context).Device);
+}
