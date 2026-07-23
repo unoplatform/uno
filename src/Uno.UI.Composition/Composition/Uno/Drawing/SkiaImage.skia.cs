@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
@@ -14,4 +15,13 @@ internal sealed class SkiaImage : IImage
 	public int PixelWidth => Image.Width;
 
 	public int PixelHeight => Image.Height;
+
+	public unsafe void CopyPixels(Span<byte> destination)
+	{
+		var info = new SKImageInfo(PixelWidth, PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		fixed (byte* dst = destination)
+		{
+			Image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0);
+		}
+	}
 }
