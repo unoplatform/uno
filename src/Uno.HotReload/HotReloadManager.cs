@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
@@ -228,10 +229,16 @@ public sealed class HotReloadManager : IDisposable
 					break;
 
 				// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
+				// The audit is scoped to the projects owning this pass's changed files (spec 054): a pass must
+				// never complete Failed on errors from projects it never touched. When the change-set resolves
+				// to no project the audit yields no errors and we fall through to NoChanges below.
 				// FIXME: GetCompilationErrors side-effects into _tracker but doesn't populate `diagnostics`;
 				// consumers see Failed without the reason (asymmetric with rude edits). Needs dedup before fixing.
-				case (true, true) when GetCompilationErrors(result.Solution, ct) is { IsEmpty: false } compilationErrors:
-					_tracker.Output($"Hot reload blocked by {compilationErrors.Length} compilation error(s).");
+				case (true, true) when GetCompilationErrors(result.Solution, files, ct) is { Errors.IsEmpty: false } audit:
+					_tracker.Output(
+						$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
+						$"{string.Join(", ", audit.AuditedProjects.Select(project => project.Name))} " +
+						$"(edited: {FormatEditedFiles(files)}).");
 					outcome = HotReloadOperationResult.Failed;
 					break;
 
@@ -278,12 +285,22 @@ public sealed class HotReloadManager : IDisposable
 	/// </summary>
 	private const int MaxCompilationErrorsPerCycle = 20;
 
-	private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
+	private CompilationAudit GetCompilationErrors(Solution solution, ImmutableHashSet<string> files, CancellationToken cancellationToken)
 	{
+		// Scope the audit to the projects owning the pass's changed files. A file that resolves to no
+		// project contributes nothing (it was already surfaced via NotifyIgnored); when the whole
+		// change-set resolves to nothing there is no project to judge, so we return an empty audit and
+		// the caller falls through to NoChanges rather than failing the pass on foreign projects.
+		var auditedProjects = ResolveAuditProjects(solution, files);
+		if (auditedProjects.IsEmpty)
+		{
+			return new CompilationAudit(ImmutableArray<string>.Empty, ImmutableArray<Project>.Empty);
+		}
+
 		// ALC-hosted workspaces always have a single project — sequential iteration avoids
 		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
 		var builder = ImmutableArray.CreateBuilder<string>();
-		foreach (var project in solution.Projects)
+		foreach (var project in auditedProjects)
 		{
 			if (!project.TryGetCompilation(out var compilation))
 			{
@@ -310,14 +327,73 @@ public sealed class HotReloadManager : IDisposable
 					if (OperatingSystem.IsBrowser() && builder.Count >= MaxCompilationErrorsPerCycle)
 					{
 						_tracker.Output($"... and more errors (capped at {MaxCompilationErrorsPerCycle}).");
-						return builder.ToImmutable();
+						return new CompilationAudit(builder.ToImmutable(), auditedProjects);
 					}
 				}
 			}
 		}
 
+		return new CompilationAudit(builder.ToImmutable(), auditedProjects);
+	}
+
+	/// <summary>
+	/// Resolves the pass's change-set to the distinct set of projects that own those files — as source
+	/// <see cref="Document"/>s (via <see cref="Solution.GetDocumentIdsWithFilePath(string)"/>) or as
+	/// <see cref="AdditionalDocument"/>s (XAML and other generator inputs, whose edits can block
+	/// compilation exactly like a source edit). A file belonging to no project contributes nothing, so a
+	/// change-set touching only foreign/out-of-solution files resolves to an empty set.
+	/// </summary>
+	private static ImmutableArray<Project> ResolveAuditProjects(Solution solution, ImmutableHashSet<string> files)
+	{
+		var projectIds = new HashSet<ProjectId>();
+		foreach (var file in files)
+		{
+			foreach (var documentId in solution.GetDocumentIdsWithFilePath(file))
+			{
+				projectIds.Add(documentId.ProjectId);
+			}
+
+			foreach (var project in solution.Projects)
+			{
+				if (project.AdditionalDocuments.Any(document => PathComparer.PathEquals(document.FilePath, file)))
+				{
+					projectIds.Add(project.Id);
+				}
+			}
+		}
+
+		var builder = ImmutableArray.CreateBuilder<Project>(projectIds.Count);
+		foreach (var projectId in projectIds)
+		{
+			if (solution.GetProject(projectId) is { } project)
+			{
+				builder.Add(project);
+			}
+		}
+
 		return builder.ToImmutable();
 	}
+
+	/// <summary>
+	/// Formats the pass's edited file names for the blocked-compilation output line: base names only
+	/// (<see cref="Path.GetFileName(string)"/>), capped to the first 3 with a <c>+N more</c> suffix beyond.
+	/// </summary>
+	private static string FormatEditedFiles(ImmutableHashSet<string> files)
+	{
+		const int maxNamed = 3;
+		var names = files.Select(Path.GetFileName).ToArray();
+		var named = string.Join(", ", names.Take(maxNamed));
+
+		return names.Length > maxNamed
+			? $"{named} +{names.Length - maxNamed} more"
+			: named;
+	}
+
+	/// <summary>
+	/// Outcome of the change-set-scoped blocked-compilation audit: the formatted compilation errors found
+	/// in the audited projects, and the projects that were audited (named in the blocked output line).
+	/// </summary>
+	private readonly record struct CompilationAudit(ImmutableArray<string> Errors, ImmutableArray<Project> AuditedProjects);
 
 	/// <inheritdoc />
 	public void Dispose()

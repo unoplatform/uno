@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Uno.HotReload.Diffing;
 using Uno.HotReload.Tests.TestUtils;
 using Uno.HotReload.Tracking;
@@ -11,6 +12,10 @@ namespace Uno.HotReload.Tests;
 public class Given_HotReloadManager
 {
 	private static readonly TimeSpan _testTimeout = TimeSpan.FromSeconds(30);
+
+	// A single core reference is enough for the trivial types these tests compile; used to build
+	// a project that genuinely compiles clean (so the scoped audit finds no errors in it).
+	private static readonly MetadataReference _coreLib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
 
 	[TestMethod]
 	[Description(
@@ -279,10 +284,10 @@ public class Given_HotReloadManager
 
 	[TestMethod]
 	[Description(
-		"Spec 045 §1: an emitted cycle that produces no metadata updates and no rude edits, but whose solution " +
-		"carries compilation errors, completes as Failed (not NoChanges) — the manager probes the committed " +
-		"solution's compilation via GetCompilationErrors. The handler is invoked with Failed so consumers see the " +
-		"blocked reload.")]
+		"Spec 045 §1 + spec 054 R1/R2: an emitted cycle that produces no metadata updates and no rude edits, but " +
+		"whose own change-set project does not compile, completes as Failed (not NoChanges). The manager audits the " +
+		"committed solution's compilation via GetCompilationErrors, scoped to the changed file's project; the handler " +
+		"is invoked with Failed and the output line names the audited project and edited file.")]
 	public async Task When_CompilationErrors_Then_HandlerInvokedWithFailed()
 	{
 		using var harness = new HotReloadManagerHarness(
@@ -290,11 +295,12 @@ public class Given_HotReloadManager
 			// that probes the committed solution's compilation for blocking errors.
 			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
 			// Mutate the solution (so it isn't the NoChanges fast-path) by adding a document with a
-			// reference-independent syntax error (CS1513 '}' expected).
+			// reference-independent syntax error (CS1513 '}' expected). Its file path matches the pass's
+			// change-set, so the file resolves to this project and the scoped audit judges it.
 			onUpdate: solution =>
 			{
 				var projectId = solution.ProjectIds[0];
-				var broken = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {");
+				var broken = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {", filePath: "/work/Broken.cs");
 				return new SolutionUpdateResult(broken, ChangeSet.IgnoreAll([]));
 			},
 			// GetCompilationErrors reads TryGetCompilation (the cached compilation), so the result
@@ -307,6 +313,110 @@ public class Given_HotReloadManager
 		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.Failed, "a solution that does not compile blocks the reload");
 		harness.Handler.Calls.Should().ContainSingle()
 			.Which.Result.Should().Be(HotReloadOperationResult.Failed);
+		harness.Reporter.Outputs.Should().Contain(
+			o => o.Contains("Hot reload blocked") && o.Contains("TestProject") && o.Contains("Broken.cs"),
+			"the blocked-compilation line names the audited project and the edited file (spec 054 R2)");
+	}
+
+	// ── Spec 054: scope the blocked-compilation audit to the pass's change-set ──
+
+	[TestMethod]
+	[Description(
+		"Spec 054 R1: a pass whose change-set touches only a healthy project must not complete Failed because an " +
+		"unrelated project carries compilation errors. The audit is scoped to the change-set's projects, so a foreign " +
+		"project's errors never block the reload.")]
+	public async Task When_ChangeSetTouchesHealthyProject_Then_ForeignErrorsDoNotBlock()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			onUpdate: solution =>
+			{
+				// Project A (the default test project): a healthy, compiling library owning the edited file.
+				var projectA = solution.ProjectIds[0];
+				solution = solution
+					.WithProjectCompilationOptions(projectA, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+					.AddMetadataReference(projectA, _coreLib)
+					.AddDocument(DocumentId.CreateNewId(projectA), "A.cs", "namespace App { public class A { } }", filePath: "/work/A.cs");
+
+				// Project B: unrelated to the pass and does not compile (CS0103). It must never be audited.
+				var projectB = ProjectId.CreateNewId();
+				solution = solution
+					.AddProject(ProjectInfo.Create(
+						projectB, VersionStamp.Default, "LibraryB", "LibraryB", LanguageNames.CSharp,
+						compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)))
+					.AddMetadataReference(projectB, _coreLib)
+					.AddDocument(DocumentId.CreateNewId(projectB), "B.cs", "namespace Lib { public class B { public void M() { Missing(); } } }", filePath: "/lib/B.cs");
+
+				return new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]));
+			},
+			// Realize both projects' compilations so the manager's TryGetCompilation audit could observe B's error.
+			warmCompilation: true);
+
+		var batch = ImmutableHashSet.Create("/work/A.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(
+			HotReloadOperationResult.NoChanges,
+			"the pass touched only the healthy project A; project B's errors are foreign and must not block the reload");
+		harness.Reporter.Outputs.Should().NotContain(
+			o => o.Contains("Hot reload blocked"),
+			"no blocked-compilation line is emitted when the change-set's own projects compile");
+	}
+
+	[TestMethod]
+	[Description(
+		"Spec 054 R1: an edit to an AdditionalDocument (e.g. XAML, a generator input) resolves to its owning project, " +
+		"which is then audited. When that project does not compile, the reload is blocked and the line names the edit.")]
+	public async Task When_ChangeSetIsAdditionalDocument_Then_OwningProjectIsAudited()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			onUpdate: solution =>
+			{
+				var projectId = solution.ProjectIds[0];
+				// The project does not compile (broken source)...
+				solution = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {", filePath: "/work/Broken.cs");
+				// ...and the pass's changed file is one of its XAML additional documents.
+				solution = solution.AddAdditionalDocument(DocumentId.CreateNewId(projectId), "View.xaml", "<Page />", filePath: "/work/View.xaml");
+				return new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]));
+			},
+			warmCompilation: true);
+
+		var batch = ImmutableHashSet.Create("/work/View.xaml");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(
+			HotReloadOperationResult.Failed,
+			"the edited XAML file is an additional document of a project that does not compile, so the pass is blocked");
+		harness.Reporter.Outputs.Should().Contain(
+			o => o.Contains("Hot reload blocked") && o.Contains("View.xaml"),
+			"the blocked line names the edited additional document");
+	}
+
+	[TestMethod]
+	[Description(
+		"Spec 054 R1: when the change-set resolves to no project in the solution, the audit is skipped entirely and " +
+		"the pass completes NoChanges — even if an unrelated project in the solution does not compile.")]
+	public async Task When_ChangeSetIsOutsideSolution_Then_AuditSkipped()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			onUpdate: solution =>
+			{
+				var projectId = solution.ProjectIds[0];
+				// The (only) project does not compile, but the pass's file does not belong to it.
+				var broken = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {", filePath: "/work/Broken.cs");
+				return new SolutionUpdateResult(broken, ChangeSet.IgnoreAll([]));
+			},
+			warmCompilation: true);
+
+		var batch = ImmutableHashSet.Create("/elsewhere/Unknown.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(
+			HotReloadOperationResult.NoChanges,
+			"the change-set resolves to no project, so the audit is skipped and the broken untouched project does not fail the pass");
+		harness.Reporter.Outputs.Should().NotContain(o => o.Contains("Hot reload blocked"));
 	}
 
 	private sealed record MarkerSolutionUpdateResult(Solution Solution, ChangeSet IgnoredChanges, string Marker)
