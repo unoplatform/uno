@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Uno.UI.Composition.Drawing;
+using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -162,7 +163,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			}
 
 			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface is null ? null : new SkiaRenderTarget(surface.Canvas),
 			size =>
 			{
 				// read the info from the buffer
@@ -201,7 +202,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				}
 
 				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-				return surface!.Canvas;
+				return new SkiaRenderTarget(surface!.Canvas);
 			});
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;

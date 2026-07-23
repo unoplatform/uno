@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Uno.UI.Composition.Drawing;
+using System;
 using System.Globalization;
 using CoreAnimation;
 using CoreGraphics;
@@ -113,7 +114,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(new SkiaRenderTarget(canvas), _ => new SkiaRenderTarget(canvas));
 
 		if (clipPath is not null)
 		{

@@ -159,15 +159,19 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	// Render jobs run on the render thread with the GPU context current; this is a Skia-specific concern
+	// (GRContext GPU tasks). Non-Skia targets have no GRContext and simply run jobs with null.
+	private static GRContext? GetGRContext(IRenderTarget? target) => (target as SkiaRenderTarget)?.Canvas.Context as GRContext;
+
+	private SKPath Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		// Run pending render jobs even when there's no frame to present. When the canvas
+		// Run pending render jobs even when there's no frame to present. When the target
 		// doesn't exist yet, jobs stay queued for the next pass (the one that will create it).
-		if (canvas is not null && !_renderJobs.IsEmpty)
+		if (target is not null && !_renderJobs.IsEmpty)
 		{
-			RunRenderJobs(canvas.Context as GRContext);
+			RunRenderJobs(GetGRContext(target));
 		}
 
 		(IRenderData frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
@@ -202,34 +206,34 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			if (target is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
 			{
-				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
+				target = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
 				_lastScaledNativeClipPath = null;
 
-				// Jobs that couldn't run at method entry because the canvas didn't exist yet.
+				// Jobs that couldn't run at method entry because the target didn't exist yet.
 				if (!_renderJobs.IsEmpty)
 				{
-					RunRenderJobs(canvas.Context as GRContext);
+					RunRenderJobs(GetGRContext(target));
 				}
 			}
 
-			canvas.Save();
-			if (rasterizationScale != 1)
-			{
-				canvas.Scale(rasterizationScale, rasterizationScale);
-			}
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using var renderTarget = new SkiaRenderTarget(canvas);
-			using (var present = RenderBackend.BeginPresent(renderTarget))
+			using (var present = RenderBackend.BeginPresent(target))
 			{
+				// Scaling (DPI) is applied through the neutral session so it works for any backend.
+				present.Save();
+				if (rasterizationScale != 1)
+				{
+					present.Scale(rasterizationScale, rasterizationScale);
+				}
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				present.Replay(lastRenderedFrame.frame);
 				_fpsHelper.DrawFps(present);
+				present.Restore();
 			}
-			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);
 

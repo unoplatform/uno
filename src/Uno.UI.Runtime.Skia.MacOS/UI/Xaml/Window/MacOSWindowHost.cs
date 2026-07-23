@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -110,7 +111,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
 			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return surface.Canvas;
+			return new SkiaRenderTarget(surface.Canvas);
 		});
 
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
@@ -159,7 +160,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_bitmap = new SKBitmap(info);
 			_surface = SKSurface.Create(info, _bitmap.GetPixels());
 			_rowBytes = info.RowBytes;
-			return _surface.Canvas;
+			return new SkiaRenderTarget(_surface.Canvas);
 		});
 
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();

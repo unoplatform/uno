@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
@@ -46,7 +47,7 @@ internal abstract class X11Renderer : IDisposable
 		}
 
 		_surface?.Canvas.Clear(_background);
-		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
 		{
 			_surface?.Dispose();
 			using (X11Helper.XLock(display))
@@ -56,7 +57,7 @@ internal abstract class X11Renderer : IDisposable
 			_surface.Canvas.Clear(_background);
 			_airspaceHelper?.Dispose();
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
-			return _surface.Canvas;
+			return new SkiaRenderTarget(_surface.Canvas);
 		});
 
 		_airspaceHelper?.XShapeClip(nativeElementClipPath);

@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Composition.Drawing;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
@@ -93,9 +94,9 @@ internal partial class BrowserRenderer
 			_canvas = null;
 		}
 
-		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas is null ? null : new SkiaRenderTarget(_canvas), size =>
 		{
-			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
+			return new SkiaRenderTarget(_canvas = _renderer.Resize((int)size.Width, (int)size.Height));
 		});
 
 		if (_canvas is not null)
