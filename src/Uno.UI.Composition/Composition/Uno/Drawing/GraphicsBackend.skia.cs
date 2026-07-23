@@ -29,11 +29,24 @@ public readonly struct GraphicsActivation
 /// backend preference and the available per-kind context providers (both user-side; there is no default
 /// backend), then the host calls <see cref="Activate"/> once its window exists.
 /// </summary>
+/// <summary>
+/// Creates a context of a known kind for a window, or <see langword="null"/> if that API is unavailable or
+/// the requirements can't be met (fully cleaning up so it's "as if never attempted"). The context kinds are a
+/// closed, Uno-owned set — third parties plug in <see cref="IGraphicsBackend"/>s, not new kinds — so this is a
+/// single concrete factory (implemented over a switch in the Uno graphics layer), not a per-kind plugin.
+/// </summary>
+public delegate IGraphicsContext? GraphicsContextFactory(GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements);
+
 public static class GraphicsBackend
 {
 	private static readonly object _gate = new();
 	private static IReadOnlyList<IGraphicsBackend> _backends = Array.Empty<IGraphicsBackend>();
-	private static readonly Dictionary<GraphicsContextKind, IGraphicsContextProvider> _providers = new();
+
+	/// <summary>
+	/// The concrete context factory (set once by the Uno graphics layer). Core stays free of GPU-API libraries;
+	/// this single seam reaches the graphics layer that concretely creates each known context kind.
+	/// </summary>
+	public static GraphicsContextFactory? ContextFactory { get; set; }
 
 	/// <summary>
 	/// Registers the app's backend preference, most-preferred first. Uniform across every platform (there is
@@ -45,16 +58,6 @@ public static class GraphicsBackend
 		lock (_gate)
 		{
 			_backends = backendsInPreferenceOrder;
-		}
-	}
-
-	/// <summary>Registers a per-kind context provider (one per <c>Uno.Graphics.&lt;kind&gt;</c> package). Last registration per kind wins.</summary>
-	public static void RegisterProvider(IGraphicsContextProvider provider)
-	{
-		ArgumentNullException.ThrowIfNull(provider);
-		lock (_gate)
-		{
-			_providers[provider.Kind] = provider;
 		}
 	}
 
@@ -81,31 +84,24 @@ public static class GraphicsBackend
 				"list (e.g. new[] { new SkiaGraphicsBackend() }) during app initialization.");
 		}
 
+		var factory = ContextFactory
+			?? throw new InvalidOperationException(
+				"No GraphicsBackend.ContextFactory set. The Uno graphics layer must install the concrete " +
+				"context factory before Activate is called.");
+
 		var attempts = new StringBuilder();
 		foreach (var backend in backends)
 		{
 			foreach (var kind in backend.PreferredContexts)
 			{
-				IGraphicsContextProvider? provider;
-				lock (_gate)
-				{
-					_providers.TryGetValue(kind, out provider);
-				}
-
-				if (provider is null)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: no provider registered for that kind");
-					continue;
-				}
-
 				IGraphicsContext? context = null;
 				try
 				{
-					context = provider.TryCreate(window, backend.Requirements);
+					context = factory(kind, window, backend.Requirements);
 				}
 				catch (Exception e)
 				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: provider threw ({e.GetType().Name})");
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
 					continue;
 				}
 

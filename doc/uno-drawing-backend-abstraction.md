@@ -290,11 +290,9 @@ created speculatively; contexts are created on demand until one succeeds:
 ```
 foreach backend in userBackendList:                         // user's order
     foreach kind in backend.PreferredContexts:              // backend's order
-        provider = resolveProvider(kind)                    // our Uno.Graphics.<kind> provider
-        if provider is null: continue                       // that kind's package isn't referenced
-        if (provider.TryCreate(host.NativeWindow, backend.Requirements) is { } ctx)
+        if (ContextFactory(kind, host.NativeWindow, backend.Requirements) is { } ctx)  // concrete, Uno-owned
             return backend.CreateRenderBackend(ctx)          // first success wins; stop
-        // creation failed (unavailable, or requirements unmet) → fully disposed → next kind
+        // kind unavailable / requirements unmet → factory returned null (fully disposed) → next kind
     // no kind worked → next backend
 throw "no registered backend could initialize on this host (attempted: …)";
 ```
@@ -309,13 +307,18 @@ keeps the walk robust.
 - **Host provides `INativeWindow` only** — the tagged native handle (X11 `Display`+`Window`, Win32
   `HWND`, Android `ANativeWindow`, `CAMetalLayer`) + size + resize events. This is the *only* thing
   that is both platform-specific and GPU-agnostic. **The host references no GPU API and no backend.**
-- **Framework owns context + surface creation**, via modular **per-kind providers**
-  (`Uno.Graphics.WebGpu`, `Uno.Graphics.Vulkan`, `Uno.Graphics.OpenGL`, …), each referencing only its
-  own native lib and pulled in transitively by whichever backend prefers it. A provider creates the
-  context (the platform init), owns the swapchain/surface, and owns the **blit-with-dirty-rects** and
-  present. Uno already has most of this code (`VulkanContext`, the EGL/GL renderers, the
-  `*VulkanSurfaceFactory` set) — the refactor splits each renderer's "acquire context/surface" half
-  (→ provider) from its "wrap as `SKSurface`" half (→ the Skia backend).
+- **Framework owns context + surface creation**, concretely. The context kinds are a **closed,
+  Uno-owned set** (`gl/gles/vulkan/metal/wgpu/software`) — third parties plug in *backends*, not new
+  kinds — so there is **no per-kind provider plugin interface**. Instead a single concrete
+  `GraphicsContextFactory` (a `switch` over the known kinds, living in the Uno graphics layer that
+  references the API libs) creates each context, owns its swapchain/surface, and owns the
+  **blit-with-dirty-rects** and present. Core reaches it through one internal seam
+  (`GraphicsBackend.ContextFactory`) so core stays free of GPU-API libraries. Uno already has most of
+  the creation code (`VulkanContext`, the EGL/GL renderers, the `*VulkanSurfaceFactory` set) — the
+  refactor splits each renderer's "acquire context/surface" half (→ the factory) from its "wrap as
+  `SKSurface`" half (→ the Skia backend). The **`Software`** context is special: it's a neutral CPU
+  **framebuffer** (pointer + width/height/stride) that lives in core with no lib, and each backend
+  *wraps* it (Skia via `SKSurface.Create(info, ptr, stride)`, a managed rasterizer via the raw bytes).
 - **Backend consumes** a ready context, builds its pipelines + its own scratch/stencil from it, and
   fills a render target. It writes **no** graphics-init and **no** windowing code.
 
@@ -387,11 +390,10 @@ public interface INativeWindow                  // host-provided; GPU-agnostic
     event EventHandler Resized;
 }
 
-public interface IGraphicsContextProvider       // framework-owned, one per kind (Uno.Graphics.<kind>)
-{
-    GraphicsContextKind Kind { get; }
-    IGraphicsContext? TryCreate(INativeWindow window, in GraphicsRequirements requirements);
-}
+// concrete, Uno-owned creation over the closed kind set — NOT a per-kind plugin interface.
+// Set once by the Uno graphics layer; core reaches it via GraphicsBackend.ContextFactory.
+public delegate IGraphicsContext? GraphicsContextFactory(
+    GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements);
 
 public interface IGraphicsContext : IDisposable
 {
