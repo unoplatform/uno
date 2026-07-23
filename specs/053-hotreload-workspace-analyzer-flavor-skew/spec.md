@@ -2,8 +2,8 @@
 
 **Repo**: `uno` (Uno.UI.RemoteControl.Server.Processors / Uno.HotReload)
 **Created**: 2026-07-23
-**Status**: Approved — ready for implementation
-**Related**: [spec 054](../054-hotreload-audit-changeset-scope/spec.md) (audit scoping — the path that *surfaced* this bug), [spec 055](../055-hotreload-noop-pass-dedup/spec.md)
+**Status**: Implemented in this PR ([#23863](https://github.com/unoplatform/uno/pull/23863))
+**Related**: spec 054 — audit scoping, the path that *surfaced* this bug ([PR #23864](https://github.com/unoplatform/uno/pull/23864)) · spec 055 — no-op watcher passes ([PR #23865](https://github.com/unoplatform/uno/pull/23865)). Each spec lands in its own PR: the spec files live on those branches, not on master yet, so they are referenced by PR link rather than by relative path.
 
 ## Overview & Objectives
 
@@ -52,21 +52,32 @@ Three deliverables (one PR):
 
 ### R1 — `CompilerApiVersion` pinned to the embedded Roslyn
 
-In `CompilationWorkspaceProvider.CreateWorkspaceAsync`
-(`src/Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/CompilationWorkspaceProvider.cs`),
-add to the `globalProperties` dictionary:
+**As implemented**: the computation lives in `Uno.HotReload/Roslyn/EmbeddedRoslyn.cs`
+(internal, `InternalsVisibleTo` the processors and the unit tests — the only reachable
+placement for a unit test, since no test project compiles against `Server.Processors`).
+`Compilation` below is `Microsoft.CodeAnalysis.Compilation`; the assembly identity is read
+once and cached, and a hypothetical unversioned assembly throws a diagnosable error instead
+of a `NullReferenceException`:
+
+```csharp
+internal static Version Version { get; } = typeof(Compilation).Assembly.GetName().Version
+	?? throw new InvalidOperationException("The embedded Microsoft.CodeAnalysis assembly has no version.");
+
+internal static string CompilerApiVersion { get; } = $"roslyn{Version.Major}.{Version.Minor}";
+```
+
+`CompilationWorkspaceProvider.CreateWorkspaceAsync`
+(`src/Uno.UI.RemoteControl.Server.Processors/Uno.Roslyn/MsBuild/CompilationWorkspaceProvider.cs`)
+forwards it in the `globalProperties` dictionary:
 
 ```csharp
 // The workspace compiles with the embedded Microsoft.CodeAnalysis, not with the SDK's
 // csc: force the analyzer multi-targeting (analyzers/dotnet/roslyn{X.Y} folders) to
-// select flavors loadable by the embedded Roslyn. Without this, an SDK newer than the
-// embedded Roslyn selects flavors that fail to type-load, and
-// AnalyzerFileReference.GetGenerators() silently returns zero generators (missing
-// generated code in every compile of the affected projects).
-["CompilerApiVersion"] = $"roslyn{typeof(Compilation).Assembly.GetName().Version!.Major}.{typeof(Compilation).Assembly.GetName().Version!.Minor}",
+// select flavors loadable by the embedded Roslyn.
+["CompilerApiVersion"] = EmbeddedRoslyn.CompilerApiVersion,
 ```
 
-- Computed at **runtime** from `typeof(Microsoft.CodeAnalysis.Compilation).Assembly` —
+- Computed at **runtime** from the loaded `Microsoft.CodeAnalysis` assembly —
   never hardcode the version: it must follow R2's bumps (and any future ones) for free.
 - MSBuild semantics making this reliable: a **global** property is immutable for the
   evaluation; the unconditional `<CompilerApiVersion>roslyn5.6</CompilerApiVersion>`
@@ -97,8 +108,11 @@ Files with per-TFM conditional `PackageReference`s to update (all
 - `src/Uno.HotReload/Uno.HotReload.csproj` (same)
 - Sweep for other `Microsoft.CodeAnalysis` pins in the dev-server component set
   (`Uno.UI.RemoteControl.Host`, `Uno.UI.RemoteControl.Messaging`, DevServer tests):
-  `grep -rn "Microsoft.CodeAnalysis" src/*/[!o]*.csproj` — keep every flavor-pair
-  consistent (a mixed 4.x/5.x graph in one host flavor must not ship).
+  `grep -rn --include='*.csproj' "Microsoft.CodeAnalysis" src/` — keep every flavor-pair
+  consistent (a mixed 4.x/5.x graph in one host flavor must not ship). Sweep result: the
+  two csproj above are the only dev-server projects pinning `Microsoft.CodeAnalysis.*`
+  (other hits — `Uno.Analyzers`, `Uno.WinAppSDKSyncGenerator`, analyzer test projects —
+  are outside the dev-server component set and intentionally untouched).
 
 Compatibility notes for the implementing agent:
 
@@ -136,25 +150,22 @@ Compatibility notes for the implementing agent:
 Requirement (verbatim from review): *the log must state which project is impacted and
 make it clear hot reload will not work on it* — a few lines, not a 2,500-line error dump.
 
-Implementation sketch, in the workspace initialization path (after
-`OpenProjectAsync` completes, e.g. at the end of `CreateWorkspaceAsync` or in the
-`LoadSolutionFromDisk` continuation in `ServerHotReloadProcessor.MetadataUpdate.cs`):
+**As implemented** — `EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(Solution, IReporter)`
+(`Uno.HotReload/Roslyn/EmbeddedRoslyn.cs`), called at the end of
+`CompilationWorkspaceProvider.CreateWorkspaceAsync`, after the load recovery/reporting.
+Two passes:
 
-```csharp
-foreach (var project in workspace.CurrentSolution.Projects)
-{
-    foreach (var reference in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
-    {
-        // Subscribe BEFORE forcing materialization: the event carries the real
-        // load/type-load exception that GetGenerators() otherwise swallows.
-        reference.AnalyzerLoadFailed += (_, e) => failures.Add((project, reference, e));
-        _ = reference.GetGenerators(LanguageNames.CSharp); // force load once, cached by Roslyn
-    }
-}
-```
-
-- Aggregate and emit **one `reporter.Warn` line per (project, analyzer reference)**,
-  de-duplicated across projects sharing the same reference instance, e.g.:
+1. Over the **distinct** `AnalyzerFileReference`s of the solution
+   (`AnalyzerFileReference` equality is path+loader based, so a reference shared by N
+   projects is forced **once**): subscribe a named handler to `AnalyzerLoadFailed`
+   *before* forcing `GetGenerators(LanguageNames.CSharp)` (the event carries the real
+   load/type-load exception that `GetGenerators()` otherwise swallows; the forced load is
+   one-time, cached by Roslyn), unsubscribe in a `finally` (no handler accumulation across
+   reloads), and keep the **first** failure per reference (`Dictionary<AnalyzerFileReference,
+   AnalyzerLoadFailureEventArgs>.TryAdd`).
+2. Over the projects: emit exactly **one `reporter.Warn` per (project, failed reference)**
+   pair — per-project granularity is deliberate (the requirement is naming every impacted
+   project); the *load work and failure capture* are what get deduplicated, e.g.:
 
   `Analyzer 'CommunityToolkit.Mvvm.SourceGenerators' (analyzers/dotnet/roslyn5.0) failed to load in the hot-reload workspace (Roslyn 4.14): its generated code will be MISSING — hot reload will NOT work for project 'Contoso.ViewModels' (and any project consuming its generated members).`
 
@@ -178,26 +189,38 @@ foreach (var project in workspace.CurrentSolution.Projects)
   not execute).
 - Scoping the full-solution error audit is spec 054, not this one.
 
-## Test plan
+## Test plan — status as implemented
 
-1. **Unit — pin format**: assert the computed `CompilerApiVersion` matches
-   `roslyn{Major}.{Minor}` of `typeof(Compilation).Assembly` and is non-empty.
-2. **Integration (DevServer.Tests)**: a test project graph where a class library uses
-   `CommunityToolkit.Mvvm` 8.4.2 `[ObservableProperty]` + `[RelayCommand]` and the head
-   references it. Load the workspace via `CompilationWorkspaceProvider` (SDK 10 CI
-   image), then `GetCompilationAsync` on the library:
-   - without R1 (guard test, optional): expect the CS0759/CS0103 signature;
-   - with R1: expect **0 errors** and generated documents from
-     `ObservablePropertyGenerator`/`RelayCommandGenerator`
-     (`Project.GetSourceGeneratedDocumentsAsync`, group by generated-doc path).
-3. **R3 logging**: with a deliberately unloadable analyzer reference (e.g. reference a
-   `roslyn5.0` flavor path directly while running the 4.14-line host build, or a
-   corrupt dll), assert exactly one warn line per (project, reference) and that it
-   names the project.
+1. **Unit — pin format**: **done** — `Uno.HotReload.Tests/Roslyn/Given_EmbeddedRoslyn.cs`,
+   2 tests: shape (`^roslyn\d+\.\d+$`) + equality with the loaded assembly's
+   `major.minor`, and a **package-line guard** comparing against the leading
+   `AssemblyInformationalVersion` (the flavor folders are named after the *package*
+   version — this test fails if a future Roslyn changes its assembly-versioning scheme,
+   the regression the review called out as required red/green coverage at the unit level).
+2. **Integration (workspace-level red/green)**: **not automated in this PR** — no test
+   project compiles against `Server.Processors` (`DevServer.Tests` references it with
+   `ReferenceOutputAssembly="false"` and validates through a spawned host), so hosting
+   `CompilationWorkspaceProvider` in a test needs a new SDK-pinned fixture graph +
+   harness; tracked as a follow-up. The red/green evidence for R1 is the reproducible
+   standalone `MSBuildWorkspace` probe used for the diagnosis (same global properties as
+   the provider, SDK 10.0.302, real MVVM-Toolkit project graph): **red** without the pin
+   (roslyn5.0 flavor selected, 0 generators, 229 errors), **green** with the pin on the
+   4.14 embed (7 generators, 0 errors), **green** again on the 5.6.0 embed (generators
+   produce their documents, 0 errors / 0 CS8784-CS8785).
+3. **R3 logging**: **done** — 2 tests in `Given_EmbeddedRoslyn`: a corrupt analyzer under
+   a `roslyn9.9` flavor-style folder shared by **two** projects yields exactly one
+   warning per project (naming the project, the analyzer, the flavor segment, the
+   embedded Roslyn version and the no-hot-reload consequence); a loadable reference
+   yields none.
 4. **Manual validation protocol**: on an SDK-10 machine, `dotnet run` a head app whose
    library uses the MVVM Toolkit; edit a `.cs` in the library → the update must apply
    (previously: blocked with the phantom-error wall as soon as any pass compiled the
    library, cf. spec 054).
+
+Additional coverage from the implementation pass: the retargeted EnC shim was validated
+by emitting a **real delta** (on-disk baseline, IL/metadata/PDB + updated types) against
+both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (103 tests) runs
+green on the net10/Roslyn 5.6 flavor.
 
 ## Resolved decisions
 

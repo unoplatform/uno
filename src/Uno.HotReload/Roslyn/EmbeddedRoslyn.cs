@@ -18,9 +18,12 @@ namespace Uno.HotReload.Roslyn;
 internal static class EmbeddedRoslyn
 {
 	/// <summary>
-	/// Version of the embedded Microsoft.CodeAnalysis assemblies.
+	/// Version of the embedded Microsoft.CodeAnalysis assemblies. Read once; the explicit throw
+	/// turns a hypothetical unversioned assembly into a diagnosable failure at first use instead
+	/// of a bare NullReferenceException.
 	/// </summary>
-	internal static Version Version { get; } = typeof(Compilation).Assembly.GetName().Version!;
+	internal static Version Version { get; } = typeof(Compilation).Assembly.GetName().Version
+		?? throw new InvalidOperationException("The embedded Microsoft.CodeAnalysis assembly has no version.");
 
 	/// <summary>
 	/// The MSBuild <c>CompilerApiVersion</c> value matching the embedded Roslyn, computed at
