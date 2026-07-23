@@ -18,6 +18,7 @@ public class Given_DefinitionsLoader
 			"cursor",
 			"windsurf",
 			"kiro",
+			"kimi-code",
 			"gemini-antigravity",
 			"gemini-cli",
 			"junie-rider",
@@ -143,6 +144,18 @@ public class Given_DefinitionsLoader
 		profile.ConfigPaths.Should().Contain("{workspace}/.junie/mcp/mcp.json");
 		profile.ConfigPaths.Should().Contain("{home}/.junie/mcp/mcp.json");
 		profile.WriteTarget.Should().Be("{workspace}/.junie/mcp/mcp.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_KimiCodeUsesKimiCodeConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["kimi-code"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.kimi-code/mcp.json");
+		profile.ConfigPaths.Should().Contain("{home}/.kimi-code/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.kimi-code/mcp.json");
+		profile.JsonRootKey.Should().Be("mcpServers");
 	}
 
 	[TestMethod]
