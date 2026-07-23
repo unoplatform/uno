@@ -395,8 +395,9 @@ public interface IGraphicsContextProvider       // framework-owned, one per kind
 
 public interface IGraphicsContext : IDisposable
 {
+    GraphicsContextKind Kind { get; }
     bool IsLost { get; }
-    // owns swapchain/surface/present/blit internally; hands the backend a color target per frame
+    IRenderTarget CreateRenderTarget(int width, int height);  // the color target; swapchain/offscreen/blit internal
 }
 
 public interface IRenderTarget : IDisposable { PixelSize Size { get; } }   // kind-matched color view
