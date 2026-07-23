@@ -895,7 +895,7 @@ namespace Microsoft.UI.Xaml
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
-			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != (global::Microsoft.UI.Input.PointerDeviceType)pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return DataPackageOperation.None;

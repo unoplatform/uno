@@ -1,5 +1,6 @@
 #nullable enable
 
+using Microsoft.UI.Input;
 using System;
 using Windows.Devices.Input;
 

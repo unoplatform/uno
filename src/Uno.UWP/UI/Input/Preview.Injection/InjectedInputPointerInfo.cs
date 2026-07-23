@@ -1,5 +1,6 @@
 #nullable enable
 
+using Microsoft.UI.Input;
 using System;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -73,7 +74,7 @@ public partial struct InjectedInputPointerInfo
 		}
 
 		properties.PointerUpdateKind = update;
-		if (state.Type is PointerDeviceType.Pen)
+		if (state.Type is global::Windows.Devices.Input.PointerDeviceType.Pen)
 		{
 			properties.IsBarrelButtonPressed = properties.IsRightButtonPressed;
 		}

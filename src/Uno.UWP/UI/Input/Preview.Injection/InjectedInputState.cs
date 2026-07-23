@@ -29,7 +29,7 @@ internal class InjectedInputState
 
 	public Point Position { get; set; }
 
-	public PointerPointProperties Properties { get; set; } = new();
+	public global::Microsoft.UI.Input.PointerPointProperties Properties { get; set; } = new();
 
 	public void StartNewSequence(bool initial = false)
 	{

@@ -23,7 +23,7 @@ using Windows.Foundation;
 using Windows.System;
 using static DirectUI.ElevationHelper;
 
-using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -2219,7 +2219,7 @@ partial class ComboBox
 	{
 		var pointerDeviceType = args.PointerDeviceType;
 
-		if (m_selectAllOnTouch && pointerDeviceType == PointerDeviceType.Touch && m_tpEditableTextPart is not null)
+		if (m_selectAllOnTouch && pointerDeviceType == global::Microsoft.UI.Input.PointerDeviceType.Touch && m_tpEditableTextPart is not null)
 		{
 			m_tpEditableTextPart.SelectAll();
 		}

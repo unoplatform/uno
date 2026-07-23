@@ -27,7 +27,7 @@ using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Composition;
 

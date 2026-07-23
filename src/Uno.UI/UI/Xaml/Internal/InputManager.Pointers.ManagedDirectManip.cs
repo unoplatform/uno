@@ -57,7 +57,7 @@ partial class InputManager
 		internal void RegisterDirectManipulationHandler(PointerIdentifier pointer, IDirectManipulationHandler handler)
 			=> RegisterDirectManipulationHandlerCore(pointer, handler);
 
-		internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, InteractionTracker tracker)
+		internal void RedirectPointer(Microsoft.UI.Input.PointerPoint pointer, InteractionTracker tracker)
 			=> RegisterDirectManipulationHandlerCore(pointer.Pointer, new InteractionTrackerToDirectManipulationHandler(tracker));
 
 		private void RegisterDirectManipulationHandlerCore(PointerIdentifier pointer, IDirectManipulationHandler handler)
