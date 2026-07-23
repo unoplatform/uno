@@ -5321,13 +5321,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(150); // the flyout visibility update is queued to the dispatcher
+			// The flyout visibility update is queued to the dispatcher; wait for it to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "tapping the insertion handle should open the selection flyout over the collapsed caret, even with an empty clipboard");
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("", SUT.SelectedText, "tapping the handle keeps a collapsed caret (no word selected)");
 
-			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
-			Assert.IsTrue(flyout?.IsOpen == true, "tapping the insertion handle should open the selection flyout over the collapsed caret, even with an empty clipboard");
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
 
 			// Select All keeps the flyout usable with an empty clipboard; Copy and Paste are absent (nothing is
 			// selected, nothing to paste).
@@ -5338,14 +5344,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Select All must sit in the primary bar (so the flyout has a primary command and stays open) and, like
 			// Cut/Copy/Paste, must show its text label there — not render as a bare icon — so it reads as a command.
-			var selectAllButton = flyout!.PrimaryCommands
+			var selectAllButton = flyout.PrimaryCommands
 				.OfType<AppBarButton>()
 				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
 			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
 			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
 
-			var selectAllLabel = selectAllButton.FindVisualChildByName("TextLabel") as TextBlock;
-			Assert.IsNotNull(selectAllLabel, "the primary Select All button template should expose a TextLabel");
+			if (selectAllButton.FindVisualChildByName("TextLabel") is not TextBlock selectAllLabel)
+			{
+				Assert.Fail("the primary Select All button template should expose a TextLabel");
+				return;
+			}
 			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
 			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
 
@@ -5353,12 +5362,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// not appear (it would otherwise show a dangling "..." over an empty menu, because the labelled primary bar
 			// is taller than the command bar's compact height). See TextCommandBarFlyout.UpdateButtons.
 			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the insertion-caret flyout should have no secondary commands");
-			var commandBar = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
-				.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
-				.FirstOrDefault(c => c is not null);
-			Assert.IsNotNull(commandBar, "the open selection flyout should host a CommandBarFlyoutCommandBar");
-			var moreButton = commandBar.FindVisualChildByName("MoreButton") as FrameworkElement;
-			Assert.IsNotNull(moreButton, "the command bar template should expose a MoreButton");
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
 			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
 		}
 
@@ -5424,7 +5439,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(150);
+			// The flyout visibility update is queued to the dispatcher; wait for a flyout to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
@@ -5470,8 +5489,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(150);
 			await WindowHelper.WaitForIdle();
 
-			var contextFlyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsTrue(contextFlyout?.IsOpen == true, "the ContextFlyout should open on right-click over the text");
+			if (SUT.ContextFlyout is not TextCommandBarFlyout contextFlyout || !contextFlyout.IsOpen)
+			{
+				Assert.Fail("the ContextFlyout should open on right-click over the text");
+				return;
+			}
 
 			var (_, hasCut, hasCopy, _) = GetAvailableCommands(contextFlyout);
 			Assert.IsTrue(hasCopy, $"Copy should be available (selectedText='{SUT.SelectedText}')");
