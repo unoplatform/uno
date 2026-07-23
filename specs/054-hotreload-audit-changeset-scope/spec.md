@@ -3,9 +3,9 @@
 **Repo**: `uno` (Uno.HotReload)
 **Created**: 2026-07-23
 **Status**: Approved — ready for implementation
-**Related**: [spec 053](../053-hotreload-workspace-analyzer-flavor-skew/spec.md) (the
-generator-loading skew this audit surfaced), [spec 055](../055-hotreload-noop-pass-dedup/spec.md)
-(the no-op pass that lands in this audit), [spec 050](../050-hotreload-updatefile-workspace-gate/spec.md)
+**Related**: spec 053 (forthcoming — the generator-loading skew this audit surfaced),
+spec 055 (forthcoming — the no-op pass that lands in this audit),
+[spec 050](../050-hotreload-updatefile-workspace-gate/spec.md)
 
 ## Overview & Objectives
 
@@ -55,11 +55,16 @@ GetCompilationErrors(result.Solution, files, ct)
 where `files` is the pass's change-set (the `ImmutableHashSet<string>` already flowing
 through `ProcessSolutionChanged`). Project resolution, per file:
 
-- `solution.GetDocumentIdsWithFilePath(file)` → `documentId.ProjectId`;
-- plus projects where the file is an **AdditionalDocument**
-  (`project.AdditionalDocuments.Any(d => PathComparer.PathEquals(d.FilePath, file))`) —
-  XAML and other generator inputs are additional documents, and an edit to one can
-  block compilation exactly like a source edit;
+- a project owns the file when any of its **documents** or **additional documents** has a
+  matching path, matched through `PathComparer.PathEquals` — the same separator/case-agnostic
+  comparison the rest of the hot-reload pipeline (`ChangesDetector`, `SolutionUpdater`, …)
+  uses. Do **not** resolve regular documents through Roslyn's `GetDocumentIdsWithFilePath`
+  index: its comparator can silently miss a source document on Linux when the workspace
+  stored a different casing/separator than the change event carried, while the additional-
+  document scan would still match it — an asymmetry the whole pipeline avoids by always
+  going through `PathComparer`;
+- **AdditionalDocuments** matter because XAML and other generator inputs are additional
+  documents, and an edit to one can block compilation exactly like a source edit;
 - union over all files, distinct.
 
 Rules:
@@ -69,19 +74,23 @@ Rules:
 - If the resolved set is **empty** (e.g. every file of the pass is outside the
   solution), **skip the audit entirely** and fall through to the `NoChanges` outcome —
   never fail a pass on foreign projects.
-- Inside the scoped projects, keep the existing behavior byte-for-byte: same
-  `TryGetCompilation` + `GetDiagnostics` walk, same error formatting/colors, same
-  WASM cap (`MaxCompilationErrorsPerCycle`), same `Failed` outcome when errors exist.
+- Inside the scoped projects, keep the **diagnostic walk and per-error formatting**
+  byte-for-byte: same `TryGetCompilation` + `GetDiagnostics` walk, same error
+  formatting/colors, same WASM cap (`MaxCompilationErrorsPerCycle`), same `Failed`
+  outcome when errors exist. (The byte-for-byte constraint covers the walk and the
+  colored per-error lines — the single summary line necessarily changes per R2.)
 
 ### R2 — keep the reason visible
 
 The `"Hot reload blocked by N compilation error(s)."` output line must additionally
-name the audited projects, e.g.:
+name the project(s) that produced the errors and the edited files, e.g.:
 
 `Hot reload blocked by 3 compilation error(s) in MyApp (edited: MainPage.xaml.cs).`
 
-(project names joined with `, `; file names via `Path.GetFileName`, capped to the
-first 3 with `+N more` beyond.)
+(Only the projects that actually produced an error are named — a scoped project can be
+clean — joined with `, ` and ordered so the line is deterministic. Project names are
+**uncapped**: a change-set spans very few projects in practice. File names via
+`Path.GetFileName`, ordered and capped to the first 3 with `+N more` beyond.)
 
 ### R3 — do not touch the other outcomes
 
@@ -115,6 +124,10 @@ existing `HotReloadManager`/`WorkspaceGatedFileUpdater` tests):
    A is audited (arrange an error in A to observe `Failed`).
 4. **Out-of-solution files**: change-set = one unknown path → audit skipped, outcome
    `NoChanges`.
+5. **Mixed change-set (some resolve, some don't)**: change-set = one in-solution file
+   whose project has an error + one unknown path → outcome `Failed` (the audit runs on
+   the resolved subset; the unknown file contributes nothing), guarding against an
+   implementation that short-circuits on the first unresolvable file.
 
 ## Resolved decisions
 

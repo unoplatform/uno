@@ -419,6 +419,35 @@ public class Given_HotReloadManager
 		harness.Reporter.Outputs.Should().NotContain(o => o.Contains("Hot reload blocked"));
 	}
 
+	[TestMethod]
+	[Description(
+		"Spec 054 R1: a change-set mixing an in-solution file and an unknown path audits the resolved subset " +
+		"only — the unknown file contributes nothing, and the resolved file's broken project still blocks the pass. " +
+		"Guards against an implementation that bails on the first unresolvable file instead of unioning over all.")]
+	public async Task When_ChangeSetMixed_InSolutionAndUnknown_Then_AuditRunsOnResolvedSubset()
+	{
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			onUpdate: solution =>
+			{
+				var projectId = solution.ProjectIds[0];
+				var broken = solution.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {", filePath: "/work/Broken.cs");
+				return new SolutionUpdateResult(broken, ChangeSet.IgnoreAll([]));
+			},
+			warmCompilation: true);
+
+		// One file resolves (owns the broken project), the other is outside the solution.
+		var batch = ImmutableHashSet.Create("/work/Broken.cs", "/elsewhere/Unknown.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(
+			HotReloadOperationResult.Failed,
+			"the resolved file's project has errors; the unresolved file is silently skipped, not a short-circuit");
+		harness.Reporter.Outputs.Should().Contain(
+			o => o.Contains("Hot reload blocked") && o.Contains("Broken.cs"),
+			"the blocked line names the resolved edited file");
+	}
+
 	private sealed record MarkerSolutionUpdateResult(Solution Solution, ChangeSet IgnoredChanges, string Marker)
 		: SolutionUpdateResult(Solution, IgnoredChanges, []);
 }

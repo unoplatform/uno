@@ -237,7 +237,7 @@ public sealed class HotReloadManager : IDisposable
 				case (true, true) when GetCompilationErrors(result.Solution, files, ct) is { Errors.IsEmpty: false } audit:
 					_tracker.Output(
 						$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
-						$"{string.Join(", ", audit.AuditedProjects.Select(project => project.Name))} " +
+						$"{string.Join(", ", audit.BlockingProjects)} " +
 						$"(edited: {FormatEditedFiles(files)}).");
 					outcome = HotReloadOperationResult.Failed;
 					break;
@@ -294,12 +294,15 @@ public sealed class HotReloadManager : IDisposable
 		var auditedProjects = ResolveAuditProjects(solution, files);
 		if (auditedProjects.IsEmpty)
 		{
-			return new CompilationAudit(ImmutableArray<string>.Empty, ImmutableArray<Project>.Empty);
+			return new CompilationAudit([], []);
 		}
 
 		// ALC-hosted workspaces always have a single project — sequential iteration avoids
 		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
-		var builder = ImmutableArray.CreateBuilder<string>();
+		// Only the projects that actually produce an error are named in the output line (a scoped
+		// project can be clean), and the names are ordered so the blocked line is deterministic.
+		var errors = ImmutableArray.CreateBuilder<string>();
+		var blockingProjects = new SortedSet<string>(StringComparer.Ordinal);
 		foreach (var project in auditedProjects)
 		{
 			if (!project.TryGetCompilation(out var compilation))
@@ -319,69 +322,60 @@ public sealed class HotReloadManager : IDisposable
 				{
 					var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
 					_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
-					builder.Add(diagnostic);
+					errors.Add(diagnostic);
+					blockingProjects.Add(project.Name);
 
 					// On WASM, memory.grow() is irreversible — cap diagnostic formatting
 					// to avoid unbounded string allocations when code is heavily broken.
 					// On desktop, report all errors for full IDE-like diagnostics.
-					if (OperatingSystem.IsBrowser() && builder.Count >= MaxCompilationErrorsPerCycle)
+					if (OperatingSystem.IsBrowser() && errors.Count >= MaxCompilationErrorsPerCycle)
 					{
 						_tracker.Output($"... and more errors (capped at {MaxCompilationErrorsPerCycle}).");
-						return new CompilationAudit(builder.ToImmutable(), auditedProjects);
+						return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
 					}
 				}
 			}
 		}
 
-		return new CompilationAudit(builder.ToImmutable(), auditedProjects);
+		return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
 	}
 
 	/// <summary>
 	/// Resolves the pass's change-set to the distinct set of projects that own those files — as source
-	/// <see cref="Document"/>s (via <see cref="Solution.GetDocumentIdsWithFilePath(string)"/>) or as
-	/// <see cref="AdditionalDocument"/>s (XAML and other generator inputs, whose edits can block
-	/// compilation exactly like a source edit). A file belonging to no project contributes nothing, so a
-	/// change-set touching only foreign/out-of-solution files resolves to an empty set.
+	/// <see cref="Document"/>s or as <see cref="AdditionalDocument"/>s (XAML and other generator inputs,
+	/// whose edits can block compilation exactly like a source edit). Both document kinds are matched
+	/// through <see cref="PathComparer"/> — the same separator/case-agnostic comparison the rest of the
+	/// hot-reload pipeline uses — so a document never escapes the scope because the workspace stored its
+	/// path with a different separator or casing than the change event carried. A file belonging to no
+	/// project contributes nothing, so a change-set touching only foreign/out-of-solution files resolves
+	/// to an empty set.
 	/// </summary>
 	private static ImmutableArray<Project> ResolveAuditProjects(Solution solution, ImmutableHashSet<string> files)
 	{
-		var projectIds = new HashSet<ProjectId>();
-		foreach (var file in files)
-		{
-			foreach (var documentId in solution.GetDocumentIdsWithFilePath(file))
-			{
-				projectIds.Add(documentId.ProjectId);
-			}
+		// Index the change-set once through the pipeline's path comparer so each project's documents are
+		// matched with a single O(1) lookup instead of an O(files) scan per document.
+		var changeSet = files.ToHashSet(PathComparer.PathEqualityComparer);
 
-			foreach (var project in solution.Projects)
-			{
-				if (project.AdditionalDocuments.Any(document => PathComparer.PathEquals(document.FilePath, file)))
-				{
-					projectIds.Add(project.Id);
-				}
-			}
-		}
-
-		var builder = ImmutableArray.CreateBuilder<Project>(projectIds.Count);
-		foreach (var projectId in projectIds)
-		{
-			if (solution.GetProject(projectId) is { } project)
-			{
-				builder.Add(project);
-			}
-		}
-
-		return builder.ToImmutable();
+		return solution.Projects
+			.Where(project =>
+				project.Documents.Any(document => document.FilePath is { } path && changeSet.Contains(path))
+				|| project.AdditionalDocuments.Any(document => document.FilePath is { } path && changeSet.Contains(path)))
+			.ToImmutableArray();
 	}
 
 	/// <summary>
 	/// Formats the pass's edited file names for the blocked-compilation output line: base names only
-	/// (<see cref="Path.GetFileName(string)"/>), capped to the first 3 with a <c>+N more</c> suffix beyond.
+	/// (<see cref="Path.GetFileName(string)"/>), ordered for a deterministic message, capped to the first
+	/// 3 with a <c>+N more</c> suffix beyond.
 	/// </summary>
 	private static string FormatEditedFiles(ImmutableHashSet<string> files)
 	{
 		const int maxNamed = 3;
-		var names = files.Select(Path.GetFileName).ToArray();
+		var names = files
+			.Select(Path.GetFileName)
+			.OfType<string>()
+			.OrderBy(name => name, StringComparer.Ordinal)
+			.ToArray();
 		var named = string.Join(", ", names.Take(maxNamed));
 
 		return names.Length > maxNamed
@@ -391,9 +385,10 @@ public sealed class HotReloadManager : IDisposable
 
 	/// <summary>
 	/// Outcome of the change-set-scoped blocked-compilation audit: the formatted compilation errors found
-	/// in the audited projects, and the projects that were audited (named in the blocked output line).
+	/// in the audited projects, and the distinct, ordered names of the projects that actually produced
+	/// those errors (named in the blocked output line).
 	/// </summary>
-	private readonly record struct CompilationAudit(ImmutableArray<string> Errors, ImmutableArray<Project> AuditedProjects);
+	private readonly record struct CompilationAudit(ImmutableArray<string> Errors, ImmutableArray<string> BlockingProjects);
 
 	/// <inheritdoc />
 	public void Dispose()
