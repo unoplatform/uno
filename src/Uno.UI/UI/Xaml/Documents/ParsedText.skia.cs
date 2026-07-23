@@ -913,7 +913,8 @@ internal readonly struct ParsedText : IParsedText
 				font.AppendColorGlyphImages(glyphs, positionsV, y, images);
 				foreach (var g in images)
 				{
-					drawingSession.DrawImage(g.Image, g.X, g.Y, ImageSampling.Linear, antialias: true);
+					using var glyphTexture = global::Uno.UI.Composition.Drawing.DrawingBackend.Current.CreateImageTexture(g.Image);
+					drawingSession.DrawImage(glyphTexture, g.X, g.Y, ImageSampling.Linear, antialias: true);
 				}
 			}
 		}

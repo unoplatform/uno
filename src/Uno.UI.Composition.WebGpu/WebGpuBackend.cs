@@ -223,10 +223,10 @@ internal sealed class PathFill : WebGpuCommand
 	public bool EvenOdd;
 }
 
-internal sealed class ImageCmd : WebGpuCommand
+internal sealed unsafe class ImageCmd : WebGpuCommand
 {
 	public Vector2 P0, P1, P2, P3;
-	public byte[] Rgba;
+	public TextureView* View;   // the pre-uploaded WebGpuImageTexture view (no per-frame upload)
 	public int W, H;
 	public float Opacity;
 }
@@ -238,7 +238,7 @@ public sealed class WebGpuRenderData : IRenderData
 	public void Dispose() { Commands = null; }
 }
 
-public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
+public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 {
 	private readonly Stack<(Matrix4x4 m, Vector4 clip)> _stack = new();
 	private Matrix4x4 _m = Matrix4x4.Identity;
@@ -330,16 +330,16 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 			P2 = Map(p1.X - n.X, p1.Y - n.Y), P3 = Map(p0.X - n.X, p0.Y - n.Y),
 		});
 	}
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
-		int w = image.PixelWidth, h = image.PixelHeight; if (w <= 0 || h <= 0) { return; }
-		var bgra = new byte[w * h * 4]; image.CopyPixels(bgra);
-		var rgba = new byte[w * h * 4];
-		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
-		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), Rgba = rgba, W = w, H = h, Opacity = opacity, Clip = _clip });
+		if (texture is not WebGpuImageTexture t) { return; }
+		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		// No per-frame upload — the texture is already resident; record its view for the present pass.
+		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, Clip = _clip });
 	}
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
-	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
+	// Color-filtered (tinted) image draw isn't supported yet on WebGPU — fall back to an untinted draw.
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => DrawImage(texture, x, y, sampling, 1f, antialias);
+	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 
 	public IRenderData Finish() => _data;
@@ -369,7 +369,7 @@ public sealed class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 					break;
 				case ImageCmd im:
-					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), Rgba = im.Rgba, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) });
+					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) });
 					break;
 			}
 		}
@@ -448,13 +448,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				case ImageCmd im:
 				{
-					var td = new TextureDescriptor { Size = new Extent3D((uint)im.W, (uint)im.H, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
-					var tex = W.DeviceCreateTexture(_d.Dev, ref td);
-					var view = W.TextureCreateView(tex, null);
-					var dst = new ImageCopyTexture { Texture = tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
-					var layout = new TextureDataLayout { BytesPerRow = (uint)(im.W * 4), RowsPerImage = (uint)im.H };
-					var writeExtent = new Extent3D((uint)im.W, (uint)im.H, 1);
-					fixed (byte* p = im.Rgba) { W.QueueWriteTexture(_d.Q, in dst, p, (nuint)im.Rgba.Length, in layout, in writeExtent); }
+					// The texture is already resident (WebGpuImageTexture); just bind its view — no upload.
+					var view = im.View;
 					var ubd = new BufferDescriptor { Size = 16, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
 					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
 					var op = stackalloc float[4]; op[0] = im.Opacity; op[1] = op[2] = op[3] = 0;
@@ -548,9 +543,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) { }
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) { }
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
-	public void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
-	public void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
+	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 	public void Dispose() { }
@@ -604,15 +599,19 @@ public sealed class WebGpuGraphicsBackend : IGraphicsBackend
 public sealed unsafe class WebGpuImageTexture : IImageTexture
 {
 	private readonly WebGpuDevice _d;
+	private readonly IImage _source; // kept for the neutral CopyPixels cross-backend fallback
 	public Texture* Tex;
 	public TextureView* View;
 
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
 
+	public void CopyPixels(Span<byte> destination) => _source.CopyPixels(destination);
+
 	public WebGpuImageTexture(WebGpuDevice device, IImage image)
 	{
 		_d = device;
+		_source = image;
 		int w = image.PixelWidth, h = image.PixelHeight;
 		PixelWidth = w; PixelHeight = h;
 		var bgra = new byte[w * h * 4];
@@ -636,32 +635,32 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 }
 
 /// <summary>
-/// The device-bound WebGPU resource factory: geometry + decode delegate to the managed engine (neutral,
-/// SkiaSharp-free); GPU textures are created here on the wgpu device. Shaders/effects are not yet
-/// implemented (gradients/effects TODO — the managed engine has no GPU equivalents).
+/// The device-bound WebGPU resource factory. It WRAPS an inner factory (the host's existing one — Skia or
+/// managed), overriding only <see cref="CreateImageTexture"/> to produce a wgpu texture on the device.
+/// Everything else (geometry, decode, image frames, shaders, filters, offscreen) delegates to the inner
+/// factory — so a real app renders unchanged, but images become GPU-resident wgpu textures the WebGPU
+/// renderer consumes. (A future WebGpuShader would move shader creation here too.)
 /// </summary>
 public sealed class WebGpuDrawingBackend : IDrawingBackend
 {
 	private readonly WebGpuDevice _device;
-	private readonly ManagedDrawingBackend _managed = new();
+	private readonly IDrawingBackend _inner;
 
-	public WebGpuDrawingBackend(WebGpuDevice device) => _device = device;
-
-	public IPathBuilder CreatePathBuilder() => _managed.CreatePathBuilder();
-	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _managed.CreatePrimitiveGeometryBuilder();
-	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _managed.CreateRectangleGeometry(rect);
+	public WebGpuDrawingBackend(WebGpuDevice device, IDrawingBackend inner) { _device = device; _inner = inner; }
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 
-	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => _managed.RenderOffscreen(pixelWidth, pixelHeight, render);
-	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, out IImageFrames frames) => _managed.TryDecodeImage(stream, targetWidth, targetHeight, out frames);
-	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => _managed.CreateImageFrame(pixelWidth, pixelHeight, bgraPremul);
-	public IImageFrames CreateImageFrames(IImage image) => _managed.CreateImageFrames(image);
-
-	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => throw new NotImplementedException("WebGPU gradient shaders not yet implemented.");
-	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => throw new NotImplementedException("WebGPU gradient shaders not yet implemented.");
-	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => throw new NotImplementedException("WebGPU color filters not yet implemented.");
-	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => throw new NotImplementedException("WebGPU color filters not yet implemented.");
-	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) { hasBackdropInput = false; throw new NotImplementedException("WebGPU effects not yet implemented."); }
-	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => throw new NotImplementedException("WebGPU drop-shadow not yet implemented.");
+	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
+	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
+	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);
+	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => _inner.RenderOffscreen(pixelWidth, pixelHeight, render);
+	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, out IImageFrames frames) => _inner.TryDecodeImage(stream, targetWidth, targetHeight, out frames);
+	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => _inner.CreateImageFrame(pixelWidth, pixelHeight, bgraPremul);
+	public IImageFrames CreateImageFrames(IImage image) => _inner.CreateImageFrames(image);
+	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => _inner.CreateLinearGradientShader(start, end, colors, colorPositions, tileMode, localMatrix);
+	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => _inner.CreateRadialGradientShader(center, gradientOrigin, radiusX, radiusY, colors, colorPositions, tileMode, localMatrix);
+	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => _inner.CreateBlendModeColorFilter(color, mode);
+	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => _inner.CreateColorMatrixColorFilter(matrix);
+	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) => _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
+	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => _inner.CreateDropShadowFilter(dx, dy, sigmaX, sigmaY, color);
 }

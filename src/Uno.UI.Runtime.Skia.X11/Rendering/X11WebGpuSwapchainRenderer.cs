@@ -2,6 +2,7 @@ using System;
 using Microsoft.UI.Xaml.Media;
 using Silk.NET.WebGPU;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.WebGpu;
 using Uno.UI.Hosting;
 
@@ -26,6 +27,9 @@ internal sealed unsafe class X11WebGpuSwapchainRenderer : X11Renderer
 		_device = new WebGpuDevice(TextureFormat.Bgra8Unorm);
 		_backend = new WebGpuRenderBackend(_device);
 		CompositionTarget.RenderBackend = _backend;
+		// Wrap the existing factory with the device-bound WebGPU one so images become WebGpuImageTexture
+		// (consumable by the WebGPU renderer); everything else delegates to the inner factory.
+		DrawingBackend.Register(new WebGpuDrawingBackend(_device, DrawingBackend.Current));
 
 		var xlib = new SurfaceDescriptorFromXlibWindow
 		{
