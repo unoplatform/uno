@@ -29,14 +29,16 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			// Rasterize the source brush into an offscreen image, then draw it nine-sliced onto the target.
+			// Rasterize the source brush into an offscreen image, upload it to a transient texture, then draw
+			// it nine-sliced onto the target.
 			var image = DrawingBackend.Current.RenderOffscreen(pixelWidth, pixelHeight, s => Source.TryPaint(s, opacity, sourceBounds));
+			using var texture = DrawingBackend.Current.CreateImageTexture(image);
 
 			var centerSlice = new Rect(
 				new Point(LeftInset * LeftInsetScale, TopInset * TopInsetScale),
 				new Point(sourceBounds.Width - (RightInset * RightInsetScale), sourceBounds.Height - (BottomInset * BottomInsetScale)));
 
-			session.DrawImageNineSlice(image, centerSlice, bounds, IsCenterHollow, antialias: true);
+			session.DrawImageNineSlice(texture, centerSlice, bounds, IsCenterHollow, antialias: true);
 			return true;
 		}
 

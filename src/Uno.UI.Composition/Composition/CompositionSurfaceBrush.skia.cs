@@ -117,6 +117,11 @@ namespace Microsoft.UI.Composition
 			matrix *= RelativeTransform;
 			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height);
 
+			if (scs.GetTexture() is not { } texture)
+			{
+				return true;
+			}
+
 			session.Save();
 			session.Concat(new Matrix4x4(matrix));
 			if (MonochromeColor is { } color)
@@ -124,11 +129,11 @@ namespace Microsoft.UI.Composition
 				// Recolor the image to a single tint (its coverage kept), with opacity folded into the tint alpha.
 				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 				var colorFilter = DrawingBackend.Current.CreateBlendModeColorFilter(faded, BlendMode.SrcIn);
-				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
+				session.DrawImage(texture, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
 			}
 			else
 			{
-				session.DrawImage(scs.Image, 0, 0, ImageSampling.Linear, opacity: opacity, antialias: true);
+				session.DrawImage(texture, 0, 0, ImageSampling.Linear, opacity: opacity, antialias: true);
 			}
 			session.Restore();
 			return true;

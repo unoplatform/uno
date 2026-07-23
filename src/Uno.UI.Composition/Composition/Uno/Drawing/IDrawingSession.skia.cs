@@ -83,18 +83,18 @@ public interface IDrawingSession
 
 	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false);
 
-	/// <summary>Draws <paramref name="image"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>), modulated by <paramref name="opacity"/>.</summary>
-	void DrawImage(IImage image, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false);
+	/// <summary>Draws <paramref name="texture"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>), modulated by <paramref name="opacity"/>.</summary>
+	void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false);
 
-	/// <summary>Draws <paramref name="image"/> with a <paramref name="colorFilter"/> applied (e.g. a monochrome tint).</summary>
-	void DrawImage(IImage image, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false);
+	/// <summary>Draws <paramref name="texture"/> with a <paramref name="colorFilter"/> applied (e.g. a monochrome tint).</summary>
+	void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false);
 
 	/// <summary>
-	/// Draws <paramref name="image"/> stretched into <paramref name="destination"/> as a nine-slice: the
+	/// Draws <paramref name="texture"/> stretched into <paramref name="destination"/> as a nine-slice: the
 	/// <paramref name="centerSlice"/> rectangle (in image pixels) defines the fixed corners / stretchable
 	/// edges and center. When <paramref name="centerHollow"/> is true the center slice is not drawn.
 	/// </summary>
-	void DrawImageNineSlice(IImage image, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false);
+	void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false);
 
 	/// <summary>
 	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:

@@ -16,4 +16,12 @@ public interface IImageTexture : IDisposable
 	int PixelWidth { get; }
 
 	int PixelHeight { get; }
+
+	/// <summary>
+	/// Neutral pixel readback (BGRA8888 premultiplied, tightly packed), used only as a cross-backend fallback:
+	/// when a session whose backend didn't create this texture needs to draw it (e.g. a Skia RenderTargetBitmap
+	/// pass in a WebGPU app), it reads the pixels and materializes its own resource. The matched backend never
+	/// calls this — it casts the texture to its concrete type.
+	/// </summary>
+	void CopyPixels(Span<byte> destination);
 }

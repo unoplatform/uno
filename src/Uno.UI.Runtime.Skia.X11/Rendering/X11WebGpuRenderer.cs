@@ -31,9 +31,11 @@ internal sealed unsafe class X11WebGpuRenderer : X11Renderer
 		_device = new WebGpuDevice();
 		_backend = new WebGpuRenderBackend(_device);
 
-		// Route the shared render loop through WebGPU. The drawing factory (geometry/fonts/images)
-		// is left as-is — WebGPU consumes its neutral IGeometry/IImage; only the render backend changes.
+		// Route the shared render loop through WebGPU.
 		CompositionTarget.RenderBackend = _backend;
+		// Wrap the existing factory with the device-bound WebGPU one so images become WebGpuImageTexture
+		// (consumable by the WebGPU renderer); everything else delegates to the inner factory.
+		DrawingBackend.Register(new WebGpuDrawingBackend(_device, DrawingBackend.Current));
 
 		using (X11Helper.XLock(_x11Window.Display))
 		{

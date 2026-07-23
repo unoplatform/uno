@@ -40,6 +40,37 @@ namespace Microsoft.UI.Composition
 
 		public IImage? Image => FrameProvider?.CurrentImage;
 
+		private IImage? _texturedImage;
+		private IImageTexture? _texture;
+
+		/// <summary>
+		/// The framework-owned GPU texture for the current frame's image, created once via the active backend
+		/// factory and reused across frames (recreated only when the frame changes). Disposed with the surface.
+		/// </summary>
+		internal IImageTexture? GetTexture()
+		{
+			var img = Image;
+			if (img is null)
+			{
+				DisposeTexture();
+				return null;
+			}
+			if (!ReferenceEquals(img, _texturedImage))
+			{
+				DisposeTexture();
+				_texture = DrawingBackend.Current.CreateImageTexture(img);
+				_texturedImage = img;
+			}
+			return _texture;
+		}
+
+		private void DisposeTexture()
+		{
+			_texture?.Dispose();
+			_texture = null;
+			_texturedImage = null;
+		}
+
 		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG, an offscreen snapshot, or raw pixels
 		/// uploaded through the backend) as a surface.</summary>
 		internal CompositionImageSurface(IImage image)
@@ -57,6 +88,7 @@ namespace Microsoft.UI.Composition
 
 		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
 		{
+			DisposeTexture();
 			FrameProvider = provider;
 			_onFrameChanged = onFrameChanged;
 		}
