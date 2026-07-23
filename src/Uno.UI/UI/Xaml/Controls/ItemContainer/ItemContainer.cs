@@ -346,8 +346,11 @@ partial class ItemContainer : Control
 					case PointerDeviceType.Mouse:
 						m_pointerInfo.ResetIsMouseButtonPressed(true /*isForLeftMouseButton*/);
 						m_pointerInfo.ResetIsMouseButtonPressed(false /*isForLeftMouseButton*/);
-						m_pointerInfo.ResetIsMousePointerOver();
-						UpdateMousePointerOverInstance(false /*isPointerOver*/);
+						// Uno Doc: Pointer cancellation / capture loss does not imply the mouse
+						// cursor left the element (e.g. capture transferred to a popup). Leave
+						// IsMousePointerOver to be cleared by OnPointerExited.
+						// m_pointerInfo.ResetIsMousePointerOver();
+						// UpdateMousePointerOverInstance(false /*isPointerOver*/);
 						break;
 				}
 			}
