@@ -77,6 +77,7 @@
       "Uno.UI.Runtime.Skia.Android\\Uno.UI.Runtime.Skia.Android.csproj",
       "Uno.UI.Runtime.Skia.AppleUIKit\\Uno.UI.Runtime.Skia.AppleUIKit.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
+      "Uno.UI.Runtime.Skia.Headless\\Uno.UI.Runtime.Skia.Headless.csproj",
       "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
       "Uno.UI.Runtime.Skia.WebAssembly.Browser\\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj",
       "Uno.UI.Runtime.Skia.Win32.Support\\Uno.UI.Runtime.Skia.Win32.Support.csproj",
