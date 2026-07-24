@@ -819,19 +819,11 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
 
-			// Prefer the WinUI-parity recompute when the caller has expressed an offset intent (most
-			// recent programmatic ChangeView). The recompute keeps VerticalOffset/HorizontalOffset
-			// aligned with the user's intent (clamped to the current ScrollableHeight) across the
-			// realization cascades that virtualizing content (ItemsRepeater) produces. If the
-			// recompute applied an adjustment, skip the legacy TrimOverscroll so we don't double-clamp
-			// in the same arrange cycle.
-			// When no intent is armed (e.g. wheel-driven or touch-driven scrolling), only run the
-			// legacy TrimOverscroll if the SV's *viewport* (its own size) actually changed. Pure
-			// extent shrinkage from virtualizing content's realization must NOT be auto-clamped —
-			// that's the path that produces the "wheel fight" the user reports on high-variance
-			// ItemsRepeater content (issue #23041 / studio.live#816). The viewport-resize case
-			// (When_SizeChanged_Offsets_Adjusted) still runs because that pass sees ViewportHeight
-			// or ViewportWidth different from its previous snapshot.
+			// The recompute realigns the offset with the armed intent, so a TrimOverscroll on top of it
+			// would double-clamp in the same arrange cycle.
+			// Without an intent (wheel- or touch-driven scrolling), TrimOverscroll must only run when the
+			// SV's own viewport changed: auto-clamping the pure extent shrinkage that virtualizing content
+			// produces while realizing is what makes the wheel fight the user's input (#23041).
 			var viewportChanged =
 				!NumericExtensions.AreClose(vpHeight, _lastTrimViewportHeight) ||
 				!NumericExtensions.AreClose(vpWidth, _lastTrimViewportWidth);
@@ -1227,7 +1219,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Scrollbar interactions are explicit offset requests: arm the intent so the post-layout
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
-			_verticalOffsetIntent = offset;
+			SetVerticalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1255,7 +1247,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 
 			// Arm the intent — see OnVerticalScrollBarScrolled.
-			_horizontalOffsetIntent = offset;
+			SetHorizontalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: offset,
@@ -1525,21 +1517,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Capture the caller's offset intent so the post-layout recompute can preserve it across
-			// realization-driven extent fluctuations. The recompute (RecomputeOffsetsFromIntent) clamps
-			// the intent to the current ScrollableHeight without overwriting the intent itself, mirroring
-			// WinUI's m_Offset.Y vs m_ComputedOffset.Y separation in ScrollContentPresenter
-			// (ScrollContentPresenter_Partial.cpp:902 SetVerticalOffsetPrivate vs :3170 CoerceOffsets).
+			// realization-driven extent fluctuations. See SetVerticalOffsetIntent for the bound it carries.
 			// Intent is only updated when this is an external/programmatic ChangeView; internal calls
 			// (TrimOverscroll, the recompute itself) set _isInternalOffsetAdjustment to suppress this.
 			if (!_isInternalOffsetAdjustment)
 			{
 				if (horizontalOffset is double hh)
 				{
-					_horizontalOffsetIntent = hh;
+					SetHorizontalOffsetIntent(hh);
 				}
 				if (verticalOffset is double vv)
 				{
-					_verticalOffsetIntent = vv;
+					SetVerticalOffsetIntent(vv);
 				}
 			}
 
@@ -1567,11 +1556,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Tracks the caller-requested offset (the user's intent) separately from VerticalOffset/
-		// HorizontalOffset (the displayed/clamped value). Mirrors WinUI's pattern in
-		// ScrollContentPresenter where m_Offset is the requested offset (validated only against the
-		// CURRENT ScrollableHeight at request time) and m_ComputedOffset is the one returned to
-		// callers (recoerced after every layout pass).
+		// Tracks the caller-requested offset (the user's intent), bounded at request time, separately from
+		// VerticalOffset/HorizontalOffset (the value displayed after coercion against the live extent).
 		// Cleared on user input (mouse wheel, touch press) so wheel-driven scrolling never gets
 		// auto-pushed back toward a stale programmatic intent.
 		private double? _verticalOffsetIntent;
@@ -1595,14 +1581,43 @@ namespace Microsoft.UI.Xaml.Controls
 			_horizontalOffsetIntent = null;
 		}
 
-		// Called by ScrollContentPresenter from its public SetVerticalOffset/SetHorizontalOffset
-		// entry points which bypass ScrollViewer.ChangeView. These represent explicit programmatic
-		// requests in the same sense as ChangeView; the new value supersedes any prior intent so
-		// the recompute step does not pull the offset back to a stale intent (which the user has
-		// just explicitly overridden).
-		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = offset;
+		// Every offset request — ChangeView, the ISCP setters, scrollbar interactions — is stored clamped
+		// to the scrollable extent known at request time, as WinUI does (ScrollViewer::AdjustTargetVerticalOffset
+		// clamps against ComputePixelExtentHeight before ScrollContentPresenter::SetOffsetsWithExtents
+		// stores it). Bounding the stored value is what keeps later extent growth from carrying the offset
+		// past what the caller could reach. Re-coercing it against the live extent every pass
+		// (RecomputeOffsetsFromIntent) is Uno-specific: it restores the offset after the transient
+		// realization shrink that a virtualized StackLayout's extent estimate produces (#23041).
+		internal void SetVerticalOffsetIntent(double offset)
+		{
+			if (TryClampOffsetIntent(offset, ScrollableHeight, out var clamped))
+			{
+				_verticalOffsetIntent = clamped;
+			}
+		}
 
-		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = offset;
+		internal void SetHorizontalOffsetIntent(double offset)
+		{
+			if (TryClampOffsetIntent(offset, ScrollableWidth, out var clamped))
+			{
+				_horizontalOffsetIntent = clamped;
+			}
+		}
+
+		// WinUI's ValidateInputOffset rejects a NaN offset outright. Leaving the intent untouched keeps a
+		// NaN out of the recompute, which could never satisfy it, and keeps a NaN bound out of the clamp,
+		// which would store the request unbounded and let it chase the extent again.
+		private static bool TryClampOffsetIntent(double offset, double scrollable, out double clamped)
+		{
+			if (double.IsNaN(offset) || double.IsNaN(scrollable))
+			{
+				clamped = default;
+				return false;
+			}
+
+			clamped = Math.Clamp(offset, 0, scrollable);
+			return true;
+		}
 
 		// Recomputes VerticalOffset/HorizontalOffset = clamp(intent, 0, ScrollableHeight/Width) when
 		// an intent is armed. Called from UpdateDimensionProperties after the SV's extent/viewport
