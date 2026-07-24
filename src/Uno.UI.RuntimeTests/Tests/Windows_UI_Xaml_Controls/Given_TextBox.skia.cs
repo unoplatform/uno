@@ -5457,6 +5457,152 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(string.IsNullOrEmpty(pasteLabel.Text), "the primary Paste button label must have text");
 		}
 
+		// Repro: with a full selection's touch flyout open (both thumbs showing), Select All sits in the OVERFLOW
+		// (it's a secondary command while text is selected). Opening the overflow ("...") realizes it there; then
+		// tapping the LEFT thumb collapses the selection and reopens the flyout with Select All promoted to the lone
+		// primary command. That overflow-realized-then-promoted button must still show BOTH its icon and its text
+		// label, like Cut/Copy/Paste - not render as a bare icon. The overflow->primary re-parent is the path the
+		// creation-time style workaround misses, distinct from When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android
+		// (which never realizes Select All in the overflow first).
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_SelectAll_Overflow_Then_Tap_Left_Thumb_Flyout_Shows_SelectAll_Label()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "asd",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Select all: "asd" is a single word, so a touch double-tap selects the whole text, shows both thumbs, and
+			// opens the selection flyout - the touch path that surfaces it (a programmatic SelectAll never sets the
+			// touch input mode nor the thumbs).
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "asd" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "the double-tap should select all the text and show both thumbs");
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "the selection flyout should open over the full selection");
+			await WindowHelper.WaitForIdle();
+
+			// Empty the clipboard so Paste is unavailable - over the collapsed caret Select All is then the lone command.
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			// Click the overflow ("...") button: expand the bar so Select All (a secondary command while the selection
+			// stands) is realized in the overflow.
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the full selection keeps Select All in the overflow");
+			await Task.Delay(600); // clear the multi-tap window from the double-tap before tapping the MoreButton
+			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should open the command bar (realizing Select All in the overflow)");
+			await WindowHelper.WaitForIdle();
+
+			// Select All has now been realized once in the overflow. Fully hide the flyout so the collapsing thumb tap
+			// opens it cleanly from a closed state - reopening an already-open flyout via the gripper races its async
+			// Hide (worse after the overflow toggle) and no-ops.
+			SUT.SelectionFlyout?.Hide();
+			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before the collapsing thumb tap");
+			await WindowHelper.WaitForIdle();
+
+			// The gripper popups are (re)positioned on a later frame, so GetAbsoluteBoundsRect is stale right after the
+			// selection. Wait until the LEFT (start) thumb is actually placed over the control before tapping it.
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.start.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "the left thumb should be positioned over the TextBox before tapping it");
+
+			// Wait past the 500ms multi-tap window so tapping the thumb is a single tap (collapses to a caret) rather
+			// than a double-tap-to-select-word.
+			await Task.Delay(600);
+
+			// Tap the LEFT thumb (grab near its bottom edge, what a real finger hits) to collapse the selection and
+			// open the flyout over the caret - now with Select All promoted from the overflow to the lone primary command.
+			var leftThumb = SUT.VisibleGrippersForTesting!.Value.start.GetAbsoluteBoundsRect();
+			finger.Press(new Point(leftThumb.GetCenter().X, leftThumb.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "tapping the left thumb should open the selection flyout over the collapsed caret");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "tapping the thumb collapses the selection to a caret");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// Empty clipboard + collapsed caret => Select All is the lone command (no Cut/Copy, no Paste).
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+
+			// Select All must sit in the primary bar and, like Cut/Copy/Paste, must show BOTH its icon and its text
+			// label there - not render as a bare icon. This is the reported bug on the overflow -> primary path.
+			var selectAllButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
+			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
+
+			if (selectAllButton.FindVisualChildByName("TextLabel") is not TextBlock selectAllLabel)
+			{
+				Assert.Fail("the primary Select All button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{
@@ -5539,6 +5685,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(hasCopy, "Copy should be available: the word is selected");
 			Assert.IsTrue(hasCut, "Cut should be available: the word is selected");
+		}
+
+		// Repro for the long-press gripper path: after a touch long-press selects the word on the Android
+		// convention, BOTH selection thumbs must actually lay out and stay visible (not just the flyout).
+		// Sister of When_Touch_LongPress_Flyout_Includes_Copy_Android, which only checks the flyout commands
+		// and so would pass even if the flyout-focus path hid the thumbs.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Shows_Grippers_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The word-select + flyout-visibility update are queued to the dispatcher; wait for the selection to settle.
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Text", message: "the long-press should have selected the word");
+			// Force the selection flyout to actually open (the user's real scenario) so the flyout-focus path runs...
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle(); // ...and let it settle before checking the steady state.
+
+			// Steady state (Assert, not WaitFor): after the flyout opens, the word must stay selected AND both
+			// thumbs must remain — a bug that flips CaretMode back to thumbless leaves the highlight but drops the thumbs.
+			Assert.AreEqual("Text", SUT.SelectedText, "selection should persist while the flyout is open");
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must survive the flyout opening");
+			Assert.IsTrue(
+				SUT.VisibleGrippersForTesting is { } vg
+					&& vg.start.GetAbsoluteBoundsRect().Width > 0
+					&& vg.end.GetAbsoluteBoundsRect().Width > 0,
+				"both selection thumbs should stay laid out and visible while the flyout is open");
 		}
 
 		// Sibling guard for the desktop/mouse path: a right-click over the text (whose ContextRequested

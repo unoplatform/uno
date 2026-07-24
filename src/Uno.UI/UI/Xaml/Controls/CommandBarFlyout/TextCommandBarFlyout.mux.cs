@@ -867,6 +867,17 @@ partial class TextCommandBarFlyout
 	{
 		if (m_buttons.TryGetValue(textControlButton, out var result))
 		{
+			// Uno specific: CommandBarOverflowPresenter.ClearContainerForItemOverride clears an item's Style when it
+			// leaves the overflow, wiping the flyout style assigned at creation. Re-apply it to a cached button before
+			// it is (re)realized in the primary bar so it carries the flyout template (with PrimaryLabelStates) - a
+			// no-op when already styled. Without this, a button that transited overflow->primary (e.g. Select All after
+			// the "..." overflow is opened over a full selection, then promoted on caret-collapse) falls back to the
+			// default AppBarButton template and its text label stays collapsed.
+			if (result is AppBarButton cachedButton &&
+				textControlButton is TextControlButtons.Cut or TextControlButtons.Copy or TextControlButtons.Paste or TextControlButtons.SelectAll)
+			{
+				ApplyCommandBarFlyoutButtonStyle(cachedButton);
+			}
 			return result;
 		}
 		else
