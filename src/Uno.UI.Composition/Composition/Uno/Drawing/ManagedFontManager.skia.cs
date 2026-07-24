@@ -18,7 +18,7 @@ namespace Uno.UI.Composition.Drawing;
 /// matching, so locale-specific family aliases and the platform's precise fallback ordering aren't reproduced.
 /// The index is built lazily on first use (reads font-file headers once).
 /// </remarks>
-internal sealed class ManagedFontManager : IFontManager
+public sealed class ManagedFontManager : IFontManager
 {
 	private sealed record FaceEntry(string Path, int TtcIndex, int Weight, int WidthClass, bool Italic);
 

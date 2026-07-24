@@ -63,7 +63,7 @@ namespace SkiaSharpExample
 		{
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedFonts = true;
+				Uno.UI.Composition.Drawing.DrawingBackendOptions.FontManager = new Uno.UI.Composition.Drawing.ManagedFontManager();
 			}
 
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
