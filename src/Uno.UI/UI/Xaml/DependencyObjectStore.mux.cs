@@ -26,22 +26,17 @@ namespace Microsoft.UI.Xaml;
 
 public partial class DependencyObjectStore
 {
-	// MUX Reference: CDependencyObject.h:302 — m_bitFields.fIsProcessingEnterLeave.
-	private bool _isProcessingEnterLeave;
-
-	// MUX Reference: CDependencyObject.h — m_bitFields.fLive. For UIElements the live state is
-	// UIElement.IsActiveInVisualTree (set by the visual Enter walk); this field carries it for
-	// every other DependencyObject so the theme block and (Phase 3) UpdateThemeReference can gate
-	// on IsActive like WinUI's CDependencyObject::IsActive().
-	private bool _isActive;
-
-	internal bool IsProcessingEnterLeave => _isProcessingEnterLeave;
+	// _isProcessingEnterLeave (CDependencyObject.h:302 fIsProcessingEnterLeave) and the live-state bit
+	// (CDependencyObject.h fLive) live on the packed StoreFlags field (DependencyObjectStore.Theming.cs).
+	internal bool IsProcessingEnterLeave => GetFlag(StoreFlags.IsProcessingEnterLeave);
 
 	/// <summary>
 	/// Whether this object is part of the live tree — WinUI's CDependencyObject::IsActive()
-	/// (m_bitFields.fLive). UIElements carry the bit on UIElement.IsActiveInVisualTree.
+	/// (m_bitFields.fLive). UIElements carry the bit on UIElement.IsActiveInVisualTree; this store
+	/// carries it (StoreFlags.IsActive) for every other DependencyObject so the theme block and
+	/// UpdateThemeReference can gate on IsActive like WinUI's CDependencyObject::IsActive().
 	/// </summary>
-	internal bool IsActive => ActualInstance is UIElement uiElement ? uiElement.IsActiveInVisualTree : _isActive;
+	internal bool IsActive => ActualInstance is UIElement uiElement ? uiElement.IsActiveInVisualTree : GetFlag(StoreFlags.IsActive);
 
 	// MUX Reference: CDependencyObject ActivateImpl/DeactivateImpl — set/clear m_bitFields.fLive.
 	// UIElement's bit (and its Uno-specific Depth reset) is managed by UIElement.ActivateImpl/DeactivateImpl.
@@ -53,7 +48,7 @@ public partial class DependencyObjectStore
 		}
 		else
 		{
-			_isActive = true;
+			SetFlag(StoreFlags.IsActive, true);
 		}
 	}
 
@@ -65,7 +60,7 @@ public partial class DependencyObjectStore
 		}
 		else
 		{
-			_isActive = false;
+			SetFlag(StoreFlags.IsActive, false);
 		}
 	}
 
@@ -83,7 +78,7 @@ public partial class DependencyObjectStore
 		}
 		else
 		{
-			_isProcessingEnterLeave = true;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, true);
 		}
 
 		try
@@ -136,7 +131,7 @@ public partial class DependencyObjectStore
 		}
 		finally
 		{
-			_isProcessingEnterLeave = false;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, false);
 		}
 	}
 
@@ -297,7 +292,7 @@ public partial class DependencyObjectStore
 		}
 		else
 		{
-			_isProcessingEnterLeave = true;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, true);
 		}
 
 		try
@@ -325,7 +320,7 @@ public partial class DependencyObjectStore
 		}
 		finally
 		{
-			_isProcessingEnterLeave = false;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, false);
 		}
 	}
 

@@ -286,23 +286,9 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal bool IsResourceDictionaryItem
 		{
-			get => (_storeFlags & StoreFlags.IsResourceDictionaryItem) != 0;
-			set => _storeFlags = value
-				? _storeFlags | StoreFlags.IsResourceDictionaryItem
-				: _storeFlags & ~StoreFlags.IsResourceDictionaryItem;
+			get => GetFlag(StoreFlags.IsResourceDictionaryItem);
+			set => SetFlag(StoreFlags.IsResourceDictionaryItem, value);
 		}
-
-		// Single-byte bitfield for boolean per-store flags. A DependencyObjectStore is allocated once per
-		// DependencyObject, so per-instance size matters; folding flags here keeps that footprint flat as
-		// more are added. Prefer extending StoreFlags over introducing new standalone bool fields.
-		[Flags]
-		private enum StoreFlags : byte
-		{
-			None = 0,
-			IsResourceDictionaryItem = 1 << 0,
-		}
-
-		private StoreFlags _storeFlags;
 
 		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.

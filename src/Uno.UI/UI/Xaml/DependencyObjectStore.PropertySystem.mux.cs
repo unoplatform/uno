@@ -211,7 +211,11 @@ public partial class DependencyObjectStore
 
 		// ItemsSource is a data-source (non-visual-tree) property on every items control;
 		// WinUI's sparse-property walk enters only IsVisualTreeProperty values (PropertySystem.cpp:1183),
-		// so its source items are never theme-entered. Match by name to cover them all.
+		// so its source items are never theme-entered. Matched by name — deliberately, since it must cover
+		// every items control (ItemsControl, ItemsRepeater, …) including third-party ones, whose ItemsSource
+		// is by convention also a raw data source and equally unsafe to enumerate. A DP-reference allowlist
+		// would only cover the framework's own; porting WinUI's CEnterDependencyProperty metadata (the
+		// follow-up noted above) is what removes the name match for good.
 		if (property.Name == "ItemsSource")
 		{
 			return false;
@@ -326,7 +330,7 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		_isProcessingEnterLeave = true;
+		SetFlag(StoreFlags.IsProcessingEnterLeave, true);
 		try
 		{
 			EstablishThemeOnEnterCore(@params);
@@ -334,7 +338,7 @@ public partial class DependencyObjectStore
 		}
 		finally
 		{
-			_isProcessingEnterLeave = false;
+			SetFlag(StoreFlags.IsProcessingEnterLeave, false);
 		}
 	}
 }
