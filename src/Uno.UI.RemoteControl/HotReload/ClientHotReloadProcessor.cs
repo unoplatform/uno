@@ -111,7 +111,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 					config.MSBuildProperties,
 					HotReloadInfoHelper.GetInfoFilePath(assembly),
 					_serverMetadataUpdatesEnabled,
-					hrDebug);
+					hrDebug,
+					GetRuntimeTargetFramework(assembly));
 
 				await _rcClient.SendMessage(message);
 
@@ -139,6 +140,74 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 				this.Log().LogError("Unable to configure HR server as ProjectConfigurationAttribute is missing.");
 			}
 		}
+	}
+
+	/// <summary>
+	/// Composes the target framework the application is running on, from data available at
+	/// runtime only: the platform is probed through <see cref="OperatingSystem"/> checks, the
+	/// framework version comes from the application assembly's
+	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute"/> (falling back to the
+	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
+	/// stays correct regardless of how the IDE orchestrated the build.
+	/// </summary>
+	// Internal (rather than private) to allow validation from runtime tests via InternalsVisibleTo.
+	internal static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
+	{
+		var frameworkName = appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
+			is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } name }, ..]
+			? name
+			: null;
+
+		var frameworkVersion = ResolveFrameworkVersion(frameworkName);
+
+		// The platform MUST be probed at runtime, not from compile-time symbols: the skia flavor
+		// of this assembly is compiled for the plain `netX.0` TFM yet serves every skia-rendering
+		// head — the uno-runtime asset selection swaps it in for `netX.0-android`, `netX.0-ios`,
+		// etc. heads too, where `__ANDROID__`-style symbols were never defined. Mac Catalyst is
+		// tested before iOS as it also reports IsIOS(). On desktop no check matches, and the
+		// flavor cannot tell a `netX.0-desktop` head from a plain `netX.0` one, so it reports the
+		// `skia` pseudo-platform which the server treats as matching either spelling.
+		var platform =
+			OperatingSystem.IsAndroid() ? "android"
+			: OperatingSystem.IsTvOS() ? "tvos"
+			: OperatingSystem.IsMacCatalyst() ? "maccatalyst"
+			: OperatingSystem.IsIOS() ? "ios"
+			: OperatingSystem.IsBrowser() ? "browserwasm"
+			: "skia";
+
+		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
+	}
+
+	/// <summary>
+	/// The framework version reported when the application's target framework cannot be resolved
+	/// (absent, malformed, or a non-.NETCoreApp moniker) — the version of the running .NET runtime.
+	/// </summary>
+	internal static Version FallbackVersion => Environment.Version;
+
+	/// <summary>
+	/// Parses the .NETCoreApp framework version out of a
+	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute.FrameworkName"/> value
+	/// (e.g. <c>".NETCoreApp,Version=v10.0"</c> → <c>10.0</c>), falling back to
+	/// <see cref="FallbackVersion"/> when the value is absent, malformed, or not a
+	/// .NETCoreApp moniker. Kept free of the platform <c>#if</c> in
+	/// <see cref="GetRuntimeTargetFramework"/> so the fallback is unit-testable.
+	/// </summary>
+	internal static Version ResolveFrameworkVersion(string? frameworkName)
+	{
+		try
+		{
+			if (frameworkName is { Length: > 0 }
+				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
+			{
+				return parsed.Version;
+			}
+		}
+		catch (ArgumentException)
+		{
+			// Malformed FrameworkName — fall back to the runtime version below.
+		}
+
+		return FallbackVersion;
 	}
 
 	private void ConfigureHotReloadMode()

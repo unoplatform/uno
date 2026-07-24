@@ -216,6 +216,18 @@ namespace Windows.Storage
 				_ => throw new ArgumentOutOfRangeException(nameof(accessMode))
 			};
 
+		/// <summary>
+		/// Maps <see cref="FileAccessMode"/> to the <see cref="FileMode"/> used to open the stream:
+		/// a ReadWrite open creates the file when it is missing, a Read open requires it to exist.
+		/// </summary>
+		private static FileMode ToFileMode(FileAccessMode accessMode)
+			=> accessMode switch
+			{
+				FileAccessMode.Read => FileMode.Open,
+				FileAccessMode.ReadWrite => FileMode.OpenOrCreate,
+				_ => throw new ArgumentOutOfRangeException(nameof(accessMode))
+			};
+
 		private static FileShare ToFileShare(StorageOpenOptions options)
 			=> options switch
 			{

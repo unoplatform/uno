@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,18 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
 
+	static Win32NativeAotWebView()
+	{
+		// WebView2Utilities.Initialize probes only next to Environment.ProcessPath, which is the
+		// dotnet host's directory when launched as `dotnet app.dll`. In that case, fall back to
+		// resolving through the runtime, which honors deps.json and AppContext.BaseDirectory.
+		if (WebView2Utilities.Initialize(Assembly.GetEntryAssembly(), throwOnError: false).IsError
+			&& !NativeLibrary.TryLoad("WebView2Loader.dll", typeof(WebView2.Functions).Assembly, null, out _))
+		{
+			throw new DllNotFoundException("Cannot load WebView2Loader.dll. Make sure it's deployed next to the application or resolvable through its deps.json.");
+		}
+	}
+
 	public Win32NativeAotWebView(CoreWebView2 owner, ContentPresenter presenter)
 	: base(presenter)
 	{
@@ -48,7 +61,6 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 		{
 			try
 			{
-				WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
 				var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 
 				// These options must be applied at environment creation time; CoreWebView2EnvironmentOptions cannot be

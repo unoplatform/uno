@@ -1,6 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<Target Name="ValidateDevServerConfiguration"
+			BeforeTargets="CoreCompile"
+			Condition="'$(Optimize)' == 'true'">
+		<Error
+			Code="UNOB0019"
+			HelpLink="https://aka.platform.uno/UNOB0019"
+			Text="The DevServer package is intended for development builds only and should not be used with optimized/release builds. Please remove the reference to Uno.WinUI.DevServer (or Uno.UI.DevServer) or set 'Optimize' to 'false'." />
+	</Target>
+
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.devserver.targets'" />
 		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'" />
@@ -13,6 +22,23 @@
 	<PropertyGroup>
 		<!-- Keep the inner path with '/' separator -->
 		<UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.slnx'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
+	</PropertyGroup>
+
+	<!--
+		The generated assembly-info file can surface an ENC0033 rude edit ("Deleting attribute requires
+		restarting the application") which then blocks every hot-reload apply of the session (#23839),
+		and version-attribute mismatches between build contexts fail every hot-reload compile with
+		CS7038. Suppress only the version attributes in Debug — the volatile part of the generated
+		file — rather than disabling GenerateAssemblyInfo wholesale (the historically documented csproj
+		workaround, https://github.com/unoplatform/uno.templates/issues/376): a full disable also strips
+		AssemblyMetadata (e.g. UnoMCPProcessorPath, required by the app MCP client) and csproj-declared
+		InternalsVisibleTo. Opt out by setting UnoDisableGenerateAssemblyInfoWorkaround to true (or any
+		of the individual properties explicitly).
+	-->
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug' and '$(UnoDisableGenerateAssemblyInfoWorkaround)' != 'true'">
+		<GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
 	</PropertyGroup>
 
 	<Target Name="GetRemoteControlHostPath">
