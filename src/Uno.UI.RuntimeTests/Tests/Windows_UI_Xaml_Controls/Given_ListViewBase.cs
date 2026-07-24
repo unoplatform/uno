@@ -5472,7 +5472,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Isolation: drive the heavy layout path a drop used to call, with NO collection change at all.
 			var layout = (SUT.ItemsPanelRoot as IVirtualizingPanel)?.GetLayouter()
 				?? throw new InvalidOperationException("ListView is not backed by a virtualizing panel layout");
+#if __APPLE_UIKIT__
+			// The native iOS/tvOS layouter exposes RefreshLayout(); the managed/Android layouter uses Refresh().
+			// Compile-only branch — this test is Skia-only at runtime (see [PlatformCondition] above).
+			layout.RefreshLayout();
+#else
 			layout.Refresh();
+#endif
 			await UITestHelper.WaitForIdle();
 
 			var after = CaptureContainersByItem(SUT, source);
