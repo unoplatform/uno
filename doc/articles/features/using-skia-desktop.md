@@ -162,9 +162,7 @@ To build an app with this feature enabled:
    ```
 
    > [!NOTE]
-   > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for Linux or Mac, you'll need to build on the corresponding host.
-   > [!NOTE]
-   > .NET Native AOT on Windows is not yet supported as WPF does not support it at this time.
+   > Cross-OS native compilation is not supported. To build a Native AOT app for a given OS (Windows, Linux, or macOS), you'll need to build on that OS — for example on a physical machine, a virtual machine, or a per-OS CI agent. Cross-architecture compilation on the same OS (for example x64 to arm64) is supported when the matching native toolchain is installed.
 
 ### Automatic Binding Preservation
 
