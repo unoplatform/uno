@@ -171,6 +171,12 @@ public partial class ClientHotReloadProcessor
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload) { ForceSaveToDisk = forceSaveToDisk }, ct);
 
+	/// <summary>
+	/// Applies a batch of file edits through the dev-server, throwing on failure — the thrown
+	/// error is the one reported by <see cref="TryUpdateFilesAsync"/>, including
+	/// <see cref="HotReloadNotInitializedException"/> when called before the first
+	/// <see cref="StatusChanged"/> notification.
+	/// </summary>
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
@@ -192,7 +198,7 @@ public partial class ClientHotReloadProcessor
 	/// <remarks>
 	/// Must not be called before the first <see cref="StatusChanged"/> notification: until the
 	/// hot-reload engine has published its initial status, the request cannot be tracked and
-	/// the call fails with an <see cref="InvalidOperationException"/> in the result's
+	/// the call fails with a <see cref="HotReloadNotInitializedException"/> in the result's
 	/// <c>Error</c> — regardless of <c>WaitForHotReload</c> (the gate also applies to
 	/// write/persist-only usages).
 	/// </remarks>
@@ -209,34 +215,32 @@ public partial class ClientHotReloadProcessor
 				return result with { Error = new ArgumentOutOfRangeException(nameof(req.Edits), "Invalid edits (no edits or edit.FilePath is null or empty).") };
 			}
 
-			// Client-side gate: until the first status notification, the hot-reload engine is not
-			// initialized yet and cannot track this request — fail with an explicit, actionable
-			// error instead of an accidental NullReferenceException deeper in the pipeline
-			// (client-side counterpart of the server-side workspace gate). CurrentStatus is
-			// declared non-nullable but is legitimately null until that first notification
-			// (StatusSink.Current starts as null!): capture through a nullable local so the
-			// check reads truthfully under nullable analysis.
-			Status? currentStatus = _status.Current;
-			if (currentStatus is null)
-			{
-				return result with
-				{
-					Error = new InvalidOperationException(
-						"Hot reload is not initialized yet (no status has been received from the hot-reload engine). "
-						+ "Wait for the first ClientHotReloadProcessor.StatusChanged notification before sending file updates.")
-				};
-			}
-
 			var log = this.Log();
 			var trace = log.IsTraceEnabled() ? log : default;
 			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.Edits.First().FilePath)}]";
+
+			// Client-side gate (counterpart of the server-side workspace gate): until the first status
+			// notification the request cannot be tracked. CurrentStatus is declared non-nullable but is
+			// legitimately null until then (StatusSink.Current starts as null!), hence the nullable local.
+			Status? currentStatus = CurrentStatus;
+			if (currentStatus is null)
+			{
+				if (log.IsEnabled(LogLevel.Warning))
+				{
+					log.Warn($"{tag} Rejecting the update: hot reload is not initialized yet — wait for the first StatusChanged notification before sending file updates.");
+				}
+
+				return result with { Error = new HotReloadNotInitializedException() };
+			}
 
 			if (currentStatus.State is HotReloadState.Disabled)
 			{
 				// Do not reject: with hot-reload disabled a file update is still a legitimate
 				// way to persist changes (files are written / forwarded to the IDE) — but no
 				// hot-reload should be expected, so surface the state to the caller's logs.
+				// This client-side check is advisory only: the server remains the authoritative
+				// enforcement point when hot reload is disabled.
 				if (log.IsEnabled(LogLevel.Warning))
 				{
 					log.Warn($"{tag} Hot reload is disabled for this session — the update will still be processed (files may be written), but no hot-reload is expected to be applied.");
