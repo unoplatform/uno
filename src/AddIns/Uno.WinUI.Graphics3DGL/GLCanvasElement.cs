@@ -47,9 +47,12 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private bool _changingGlInitialized;
 
-	// On GLES (Android), glReadPixels with BGRA is the optional GL_EXT_read_format_bgra extension.
-	// When it's absent we read RGBA and swap R/B into the BGRA back buffer. Desktop GL/ANGLE keep
-	// BGRA (core), and WASM keeps BGRA too (its JS shim swaps internally), so this stays false there.
+	// On GLES, glReadPixels with BGRA is optional and driver metadata about it can't be trusted:
+	// Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet rejects BGRA reads from
+	// the element's framebuffer (and reports an RGBA implementation-defined read pair). When an
+	// actual BGRA read doesn't work we read RGBA (always legal on GLES) and swap R/B into the
+	// BGRA back buffer. Desktop GL keeps BGRA (core), and WASM keeps BGRA too (its JS shim swaps
+	// internally), so this stays false there.
 	private bool _readbackAsRgbaWithSwap;
 
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
@@ -524,25 +527,34 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		}
 	}
 
-	// Decides the readback format once, while the context is current. Only GLES (Android) can lack
-	// BGRA read support; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
+	// Decides the readback format once, while the context is current and the element's framebuffer
+	// is bound (see OnLoaded). Any GLES context can lack BGRA read support, and extension strings
+	// can't be trusted for it (Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet
+	// rejects BGRA reads from the element's framebuffer), so on GLES we probe with an actual 1x1
+	// BGRA read; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
 	private static bool NeedsRgbaReadbackSwap(GL gl)
 	{
-		if (!OperatingSystem.IsAndroid())
+		// WASM readback stays BGRA regardless of what the context reports: the JS shim swaps
+		// internally and doesn't surface the native readback capabilities.
+		if (OperatingSystem.IsBrowser())
 		{
 			return false;
 		}
 
-		gl.GetInteger(GLEnum.NumExtensions, out var extensionCount);
-		for (uint i = 0; i < extensionCount; i++)
+		// GLES version strings are mandated to start with "OpenGL ES"; desktop GL version strings
+		// never have this prefix. BGRA readback is core on desktop GL.
+		if (!(gl.GetStringS(StringName.Version)?.StartsWith("OpenGL ES", StringComparison.Ordinal) ?? false))
 		{
-			if (gl.GetStringS(StringName.Extensions, i) == "GL_EXT_read_format_bgra")
-			{
-				return false;
-			}
+			return false;
 		}
 
-		return true;
+		// The drain is bounded because GetError can keep returning GL_CONTEXT_LOST forever on a
+		// lost context.
+		for (var i = 0; i < 8 && gl.GetError() is not GLEnum.NoError; i++) { }
+
+		Span<byte> probe = stackalloc byte[BytesPerPixel];
+		gl.ReadPixels(0, 0, 1, 1, GLEnum.Bgra, GLEnum.UnsignedByte, probe);
+		return gl.GetError() is not GLEnum.NoError;
 	}
 
 	private static unsafe void SwapRedBlue(byte* pixels, int pixelCount)
