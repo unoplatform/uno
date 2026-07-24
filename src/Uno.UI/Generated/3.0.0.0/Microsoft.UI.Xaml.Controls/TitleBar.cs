@@ -3,280 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Content")]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TitleBar : global::Microsoft.UI.Xaml.Controls.Control
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty AutoRefreshDragRegionsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoRefreshDragRegions), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IconSourceProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IconSource), typeof(global::Microsoft.UI.Xaml.Controls.IconSource),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconSource)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsBackButtonEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsBackButtonEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsBackButtonVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsBackButtonVisible), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsDragRegionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsDragRegion", typeof(bool?),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool?)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsPaneToggleButtonVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsPaneToggleButtonVisible), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LeftHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty RightHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(RightHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SubtitleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Subtitle), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TemplateSettings), typeof(global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TitleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Title), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoRefreshDragRegions
-		{
-			get
-			{
-				return (bool)this.GetValue(AutoRefreshDragRegionsProperty);
-			}
-			set
-			{
-				this.SetValue(AutoRefreshDragRegionsProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement Content
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
-			}
-			set
-			{
-				this.SetValue(ContentProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.IconSource IconSource
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.IconSource)this.GetValue(IconSourceProperty);
-			}
-			set
-			{
-				this.SetValue(IconSourceProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBackButtonEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsBackButtonEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsBackButtonEnabledProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBackButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsBackButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsBackButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPaneToggleButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPaneToggleButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsPaneToggleButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement LeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(LeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement RightHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(RightHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(RightHeaderProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subtitle
-		{
-			get
-			{
-				return (string)this.GetValue(SubtitleProperty);
-			}
-			set
-			{
-				this.SetValue(SubtitleProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings TemplateSettings
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)this.GetValue(TemplateSettingsProperty);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				return (string)this.GetValue(TitleProperty);
-			}
-			set
-			{
-				this.SetValue(TitleProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public TitleBar() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "TitleBar()");
-		}
-#endif
+		// Skipping already declared property AutoRefreshDragRegionsProperty
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property IconSourceProperty
+		// Skipping already declared property IsBackButtonEnabledProperty
+		// Skipping already declared property IsBackButtonVisibleProperty
+		// Skipping already declared property IsDragRegionProperty
+		// Skipping already declared property IsPaneToggleButtonVisibleProperty
+		// Skipping already declared property LeftHeaderProperty
+		// Skipping already declared property RightHeaderProperty
+		// Skipping already declared property SubtitleProperty
+		// Skipping already declared property TemplateSettingsProperty
+		// Skipping already declared property TitleProperty
+		// Skipping already declared property AutoRefreshDragRegions
+		// Skipping already declared property Content
+		// Skipping already declared property IconSource
+		// Skipping already declared property IsBackButtonEnabled
+		// Skipping already declared property IsBackButtonVisible
+		// Skipping already declared property IsPaneToggleButtonVisible
+		// Skipping already declared property LeftHeader
+		// Skipping already declared property RightHeader
+		// Skipping already declared property Subtitle
+		// Skipping already declared property TemplateSettings
+		// Skipping already declared property Title
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool? GetIsDragRegion(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			return (bool?)element.GetValue(IsDragRegionProperty);
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsDragRegion(global::Microsoft.UI.Xaml.UIElement element, bool? value)
-		{
-			element.SetValue(IsDragRegionProperty, value);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBar.GetIsDragRegion(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBar.SetIsDragRegion(Microsoft.UI.Xaml.UIElement, bool?)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSourceProperty.get
@@ -293,13 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RecomputeDragRegions()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "RecomputeDragRegions()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBar.RecomputeDragRegions()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.get
@@ -321,37 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.set
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TitleBar, object> BackRequested
-		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "event BackRequested");
-			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "event BackRequested");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TitleBar, object> PaneToggleRequested
-		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "event PaneToggleRequested");
-			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "event PaneToggleRequested");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TitleBar.BackRequested
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested
 	}
 }

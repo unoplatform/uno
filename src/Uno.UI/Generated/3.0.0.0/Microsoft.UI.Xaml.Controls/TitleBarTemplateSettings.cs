@@ -3,40 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TitleBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IconElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IconElement), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.IconElement IconElement
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.IconElement)this.GetValue(IconElementProperty);
-			}
-			set
-			{
-				this.SetValue(IconElementProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public TitleBarTemplateSettings() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings", "TitleBarTemplateSettings()");
-		}
-#endif
+		// Skipping already declared property IconElementProperty
+		// Skipping already declared property IconElement
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.get
