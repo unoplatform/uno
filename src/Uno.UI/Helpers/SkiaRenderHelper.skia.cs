@@ -35,7 +35,9 @@ internal static class SkiaRenderHelper
 
 	internal static (SKPicture picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath, SKPath? damage = null)
 	{
-		var canvas = _recorder.BeginRecording(Visual.InfiniteClipRect);
+		// Bounding the recording to the frame makes the picture's CullRect report the frame size
+		// (in logical pixels), which consumers of RenderingEventArgs.FrameData rely on.
+		var canvas = _recorder.BeginRecording(new SKRect(0, 0, width, height));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 

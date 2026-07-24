@@ -91,7 +91,13 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 		var oldExStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 		var oldStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
+		// WS_EX_LAYERED is intentionally never set — and actively cleared — on the hosted child window. It is
+		// the only way to give a classic Win32 child window per-window alpha, but a layered child is excluded
+		// from the OS's normal hit-testing and input routing (WindowFromPoint, mouse buttons, WM_SETCURSOR all
+		// resolve to the parent), which prevents hosted content such as WebView2 from receiving focus/clicks.
+		// Clearing it also covers a window that arrives already layered (e.g. re-attached after a prior attach
+		// set it). Native element opacity is therefore unsupported here (as on X11); see ChangeNativeElementOpacity.
+		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal & ~(int)WINDOW_EX_STYLE.WS_EX_LAYERED);
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
@@ -465,13 +471,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
-		if (content is not Win32NativeWindow window)
-		{
-			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
-		}
-
-		var success = PInvoke.SetLayeredWindowAttributes((HWND)window.Hwnd, new COLORREF(0), (byte)Math.Round(opacity * 255), LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetLayeredWindowAttributes)} failed: {Win32Helper.GetErrorMessage()}"); }
+		// Native element opacity is not supported on Win32. Per-window alpha for a classic Win32 child
+		// window requires WS_EX_LAYERED, which excludes the child from the OS's normal hit-testing and
+		// input routing and thus breaks focus/clicks for hosted content such as WebView2 (see
+		// AttachNativeElement). X11 likewise does not support opacity for hosted child windows.
 	}
 
 	public bool SupportsZIndex() => true;

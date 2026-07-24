@@ -255,8 +255,9 @@
 }
 
 - (void)doCommandBySelector:(SEL)selector {
-    // Let the system handle unrecognized commands (e.g., moveLeft:, deleteBackward:)
-    [super doCommandBySelector:selector];
+    // No-op: editor commands (moveLeft:, moveToLeftEndOfLine:, deleteBackward:, ...) are
+    // handled by the managed key processing once the event falls through, and calling super
+    // would reach NSResponder's default which beeps on every unhandled navigation key.
 }
 
 #pragma mark - NSDraggingDestination

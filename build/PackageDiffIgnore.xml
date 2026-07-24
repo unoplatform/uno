@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -2274,10 +2274,14 @@
 
 		  <!-- END WinUI sync: Windows.* legacy / preview namespaces removed -->
 
+<<<<<<< HEAD
 		  <!-- ItemsRepeater animator surface removed by WinAppSDK 1.8 (replaced by TransitionManager / ItemCollectionTransitionProvider). No references remain in WinUI microsoft-ui-xaml sources. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+=======
+	  </Types>
+>>>>>>> origin/master
 
 		  <!-- Uno-only generic setter (not part of the WinUI surface); removed with its non-DP Style codegen fallback. -->
 		  <Member fullName="Microsoft.UI.Xaml.Setter`1" reason="Removed Uno-only generic Setter&lt;T&gt; (BC44, breaking changes for 7.0)" />
@@ -2552,10 +2556,11 @@
 
 		  <!-- END WinUI sync (Category C): independent property removals -->
 
-		  <!-- ItemsRepeater.Animator property: paired with removed ElementAnimator type (see <Types> above). -->
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
-		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 
+<<<<<<< HEAD
+=======
+	  </Properties>
+>>>>>>> origin/master
 
 		  <!-- DataContext restricted to FrameworkElement. DataContext / DataContextProperty are
 		       removed from UIElement and every non-FrameworkElement DependencyObject (Brush, Transform, Setter,
@@ -2642,7 +2647,6 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer..ctor(System.Object owner)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer..ctor(System.Object o)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer..ctor(System.Object item, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent)" reason="AP reorganization - constructor signature alignment" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.DatePickerFlyoutPresenterAutomationPeer..ctor()" reason="AP reorganization - constructor signature alignment (now requires owner)" />
 		  <!-- END AutomationPeer API alignment -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
@@ -2653,7 +2657,6 @@
 		       app's MethodTable and prevents collectible AssemblyLoadContext unload.
 		       Callers using .App<App>(...) need to drop the explicit type argument to resolve to the new
 		       non-generic overload. UnoPlatformHostBuilderExtensions is source-rebuilt per consuming app. -->
-		  <Member fullName="Uno.UI.Hosting.IUnoPlatformHostBuilder Uno.UI.Hosting.UnoPlatformHostBuilderExtensions.App(Uno.UI.Hosting.IUnoPlatformHostBuilder builder, System.Func`1&lt;TApplication&gt; appBuilder)" reason="Replaced by non-generic App(Func&lt;Application&gt;) to allow collectible ALC collection on CoreCLR" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.SetSubMenuDirection(System.Boolean isSubMenuDirectionUp)" reason="Moved to explicit ISubMenuOwner interface implementation" />
 
 		  <!-- BEGIN WinUI sync: WinRT IVector.get_Size replaced by ICollection.Count -->
@@ -2971,20 +2974,18 @@
 
 		  <!-- END WinUI sync (Category C): independent method removals -->
 
-		  <!-- ItemsRepeater.Animator accessors: paired with removed ElementAnimator type (see <Types>) and ItemsRepeater::Animator property (see <Properties>). -->
-		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
-		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater.get_Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.set_Animator(Microsoft.UI.Xaml.Controls.ElementAnimator value)" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 
-		  <!-- Layout.CreateDefaultItemTransitionProvider narrowed from public to protected internal virtual to match WinUI's protected virtual (docs: learn.microsoft.com/.../layout.createdefaultitemtransitionprovider). Uno adds 'internal' so ItemsRepeater (same assembly) can invoke the protected-for-external method. -->
-		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
 
+<<<<<<< HEAD
 		  <!-- AnimatedIcon rework: the Uno-specific legacy IAnimatedVisualSource hooks
 		       (Load/Unload/Update/Play/Pause/Resume/Stop/SetProgress/Measure) are no-ops
 		       that never existed in WinUI. They are now explicit interface implementations
 		       on the generated Animated*VisualSource sources, so they drop off the concrete
 		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+=======
+	  </Methods>
+>>>>>>> origin/master
 
 		  <!-- DataContext restricted to FrameworkElement — accessor methods removed from UIElement and every non-FE DependencyObject. -->
 		  <Member fullName="System\.Object .+(::|\.)get_DataContext\(\)" reason="DataContext restricted to FrameworkElement" isRegex="true" />
@@ -3096,9 +3097,47 @@
 
 		  <!-- END WinUI sync (Category B): shadow event removals -->
 
+<<<<<<< HEAD
 		  <!-- DataContext restricted to FrameworkElement — DataContextChanged removed from UIElement and every non-FE DependencyObject. -->
 		  <Member fullName="Windows\.Foundation\.TypedEventHandler.+(::|\.)DataContextChanged" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Events>
+=======
+	<IgnoreSet baseVersion="6.6">
+	  <Types>
+		  <!-- WinUI sync (WinAppSDK 1.8): ElementAnimator/ItemsRepeater animation surface removed. Migrated to the 6.6 base after 6.6 went stable. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+	  </Types>
+	  <Properties>
+		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+	  </Properties>
+	  <Methods>
+		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater.get_Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.DatePickerFlyoutPresenterAutomationPeer..ctor()" reason="AP reorganization - constructor signature alignment (now requires owner)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.set_Animator(Microsoft.UI.Xaml.Controls.ElementAnimator value)" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Uno.UI.Hosting.IUnoPlatformHostBuilder Uno.UI.Hosting.UnoPlatformHostBuilderExtensions.App(Uno.UI.Hosting.IUnoPlatformHostBuilder builder, System.Func`1&lt;TApplication&gt; appBuilder)" reason="Replaced by non-generic App(Func&lt;Application&gt;) to allow collectible ALC collection on CoreCLR" />
+		  <!-- AnimatedIcon rework: the Uno-specific legacy IAnimatedVisualSource hooks
+		       (Load/Unload/Update/Play/Pause/Resume/Stop/SetProgress/Measure) are no-ops
+		       that never existed in WinUI. They are now explicit interface implementations
+		       on the generated Animated*VisualSource sources, so they drop off the concrete
+		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+	  </Methods>
+>>>>>>> origin/master
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
