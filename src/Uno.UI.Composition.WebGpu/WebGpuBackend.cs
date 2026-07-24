@@ -26,8 +26,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* StencilNonZero;
 	public RenderPipeline* CoverPipe;
 	public RenderPipeline* ImagePipe;
+	public RenderPipeline* GradientPipe;
 	public BindGroupLayout* ImgBgl;
+	public BindGroupLayout* GradBgl;
 	public Sampler* Smp;
+
+	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16).
+	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16;
+	public const int MaxGradientStops = 16;
 
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
@@ -90,6 +96,62 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.IncrementWrap), Face(CompareFunction.Always, StencilOperation.DecrementWrap), 0xFF, 0xFF);
 		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
 		CreateImagePipeline();
+		CreateGradientPipeline(&blend);
+	}
+
+	// Evaluates a linear/radial gradient per pixel. The quad is positioned in NDC; the fragment uses its
+	// framebuffer position (device pixels) so the gradient geometry can be baked to device space at record time.
+	private const string GradientWgsl = @"
+struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4> };
+@group(0) @binding(0) var<uniform> g: Grad;
+@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
+fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
+@fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
+  var t: f32 = 0.0;
+  if (g.header.x < 0.5) {
+    let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
+    if (denom > 0.0) { t = dot(fc.xy - a, ab) / denom; }
+  } else {
+    let c = g.geo.xy; let rx = g.geo.z;
+    if (rx > 0.0) { t = distance(fc.xy, c) / rx; }
+  }
+  let tm = g.header.z;
+  if (tm < 0.5) { t = clamp(t, 0.0, 1.0); }
+  else if (tm < 1.5) { t = fract(t); }
+  else { let f = fract(t * 0.5) * 2.0; if (f > 1.0) { t = 2.0 - f; } else { t = f; } }
+  let n = i32(g.header.y);
+  var col = g.colors[0];
+  if (t <= stopAt(0)) { col = g.colors[0]; }
+  else if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
+  else {
+    for (var i = 0; i < n - 1; i = i + 1) {
+      let s0 = stopAt(i); let s1 = stopAt(i + 1);
+      if (t >= s0 && t <= s1) {
+        var u = 0.0;
+        if (s1 > s0) { u = (t - s0) / (s1 - s0); }
+        col = mix(g.colors[i], g.colors[i + 1], u);
+        break;
+      }
+    }
+  }
+  return col;
+}";
+
+	private void CreateGradientPipeline(BlendState* blend)
+	{
+		var module = Module(GradientWgsl);
+		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
+		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
+		var attr = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		var vbl = new VertexBufferLayout { ArrayStride = 8, StepMode = VertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
+		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var target = new ColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = ColorWriteMask.All };
+		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
+		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
+		GradientPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
+		GradBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 0);
 	}
 
 	private const string ImageWgsl = @"
@@ -231,6 +293,26 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public float Opacity;
 }
 
+internal sealed class GradientCmd : WebGpuCommand
+{
+	public Vector2 P0, P1, P2, P3;   // device-space quad
+	public float[] Uniform;          // packed Grad struct (WebGpuDevice.GradientUniformBytes / 4 floats)
+}
+
+// Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
+// the recorder can read the gradient parameters back and evaluate them in the WGSL gradient pipeline.
+public sealed class WebGpuShader : IShader
+{
+	public bool Radial;
+	public Vector2 P0;          // start (linear) / center (radial), in gradient-local space
+	public Vector2 P1;          // end (linear) / gradient origin (radial)
+	public float RadiusX, RadiusY;
+	public WColor[] Colors;
+	public float[] Stops;
+	public GradientTileMode TileMode;
+	public Matrix3x2 LocalMatrix;
+}
+
 public sealed class WebGpuRenderData : IRenderData
 {
 	internal List<WebGpuCommand> Commands = new();
@@ -312,7 +394,64 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	void IFlattenedPathSink.EndContour(bool closed) { }
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
 
-	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) { }
+	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
+	{
+		if (shader is not WebGpuShader g)
+		{
+			return;
+		}
+
+		// Compose the gradient's local matrix with the current matrix, so gradient geometry is baked to device
+		// space (the WGSL fragment evaluates in device pixels). Linear is exact under affine; radial radii are
+		// scaled by the combined axis lengths (an ellipse under non-uniform scale is approximated).
+		var lm = new Matrix4x4(
+			g.LocalMatrix.M11, g.LocalMatrix.M12, 0, 0,
+			g.LocalMatrix.M21, g.LocalMatrix.M22, 0, 0,
+			0, 0, 1, 0,
+			g.LocalMatrix.M31, g.LocalMatrix.M32, 0, 1);
+		var m = lm * _m;
+		Vector2 MapM(Vector2 p) => new(p.X * m.M11 + p.Y * m.M21 + m.M41, p.X * m.M12 + p.Y * m.M22 + m.M42);
+		var a = MapM(g.P0);
+		var b = MapM(g.P1);
+		var sx = new Vector2(m.M11, m.M12).Length();
+		var sy = new Vector2(m.M21, m.M22).Length();
+
+		var count = Math.Min(g.Colors?.Length ?? 0, WebGpuDevice.MaxGradientStops);
+		if (count == 0)
+		{
+			return;
+		}
+
+		var u = new float[WebGpuDevice.GradientUniformBytes / 4];
+		u[0] = g.Radial ? 1f : 0f;
+		u[1] = count;
+		u[2] = g.TileMode switch { GradientTileMode.Repeat => 1f, GradientTileMode.Mirror => 2f, _ => 0f };
+		if (g.Radial)
+		{
+			u[4] = a.X; u[5] = a.Y; u[6] = g.RadiusX * sx; u[7] = g.RadiusY * sy;
+		}
+		else
+		{
+			u[4] = a.X; u[5] = a.Y; u[6] = b.X; u[7] = b.Y;
+		}
+
+		for (var i = 0; i < count; i++)
+		{
+			var c = g.Colors[i];
+			u[8 + i * 4] = c.R / 255f;
+			u[8 + i * 4 + 1] = c.G / 255f;
+			u[8 + i * 4 + 2] = c.B / 255f;
+			u[8 + i * 4 + 3] = c.A / 255f;
+			u[72 + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
+		}
+
+		_data.Commands.Add(new GradientCmd
+		{
+			Clip = _clip, Uniform = u,
+			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+		});
+	}
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false)
 	{
@@ -370,6 +509,22 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					break;
 				case ImageCmd im:
 					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) });
+					break;
+				case GradientCmd gc:
+					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
+					// gradient stays aligned with its (transformed) quad.
+					var uu = (float[])gc.Uniform.Clone();
+					var ga = T(new Vector2(uu[4], uu[5])); uu[4] = ga.X; uu[5] = ga.Y;
+					if (uu[0] < 0.5f)
+					{
+						var gb = T(new Vector2(uu[6], uu[7])); uu[6] = gb.X; uu[7] = gb.Y;
+					}
+					else
+					{
+						var s = new Vector2(_m.M11, _m.M12).Length();
+						uu[6] *= s; uu[7] *= s;
+					}
+					_data.Commands.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
 					break;
 			}
 		}
@@ -466,6 +621,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip));
 					break;
 				}
+				case GradientCmd gc:
+				{
+					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
+					var ubd = new BufferDescriptor { Size = bytes, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					fixed (float* p = gc.Uniform) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
+					var gentry = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+					var gbgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+					var gbg = W.DeviceCreateBindGroup(_d.Dev, ref gbgd);
+					var gq = new float[12];
+					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
+					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
+					ops.Add((3, (nint)gbg, 0, (nint)MakeBuffer(gq), false, gc.Clip));
+					break;
+				}
 			}
 		}
 
@@ -509,6 +679,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
 					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					break;
+				case 3:
+					W.RenderPassEncoderSetPipeline(pass, _d.GradientPipe);
+					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
 			}
@@ -658,8 +834,10 @@ public sealed class WebGpuDrawingBackend : IDrawingBackend
 	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, out IImageFrames frames) => _inner.TryDecodeImage(stream, targetWidth, targetHeight, out frames);
 	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => _inner.CreateImageFrame(pixelWidth, pixelHeight, bgraPremul);
 	public IImageFrames CreateImageFrames(IImage image) => _inner.CreateImageFrames(image);
-	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => _inner.CreateLinearGradientShader(start, end, colors, colorPositions, tileMode, localMatrix);
-	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix) => _inner.CreateRadialGradientShader(center, gradientOrigin, radiusX, radiusY, colors, colorPositions, tileMode, localMatrix);
+	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
+		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
+	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
+		=> new WebGpuShader { Radial = true, P0 = center, P1 = gradientOrigin, RadiusX = radiusX, RadiusY = radiusY, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => _inner.CreateBlendModeColorFilter(color, mode);
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => _inner.CreateColorMatrixColorFilter(matrix);
 	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) => _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
