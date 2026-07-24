@@ -35,6 +35,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16;
 	public const int MaxGradientStops = 16;
 
+	// Multisample count for anti-aliasing. Every pipeline + the color/depth render targets use this; the pass
+	// renders into a multisampled color texture that resolves into the single-sample present/readback texture.
+	public const uint MsaaSamples = 4;
+
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
 	public readonly TextureFormat ColorFormat;
@@ -149,7 +153,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
 		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
+		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
 		GradientPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
 		GradBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 0);
 	}
@@ -179,7 +183,7 @@ struct U { op: vec4<f32> };
 		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
 		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
+		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
 		ImagePipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
 		ImgBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 0);
 		var sd = new SamplerDescriptor { AddressModeU = AddressMode.ClampToEdge, AddressModeV = AddressMode.ClampToEdge, MagFilter = FilterMode.Linear, MinFilter = FilterMode.Linear, MipmapFilter = MipmapFilterMode.Nearest, MaxAnisotropy = 1 };
@@ -210,7 +214,7 @@ struct U { op: vec4<f32> };
 		{
 			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
 			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
-			Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
+			Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
 			Layout = null,
 		};
 		return W.DeviceCreateRenderPipeline(Dev, ref pd);
@@ -222,9 +226,11 @@ struct U { op: vec4<f32> };
 public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 {
 	public Texture* Tex;
-	public TextureView* View;
+	public TextureView* View;              // single-sample resolve target (offscreen readback / swapchain image)
+	public Texture* MsaaColorTex;
+	public TextureView* MsaaColorView;     // multisampled color the pass renders into, resolved into View
 	public Texture* DepthTex;
-	public TextureView* DepthView;
+	public TextureView* DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
@@ -241,24 +247,32 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		};
 		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
 		View = device.W.TextureCreateView(Tex, null);
-		var dd = new TextureDescriptor
-		{
-			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.DepthStencilFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.RenderAttachment,
-		};
-		DepthTex = device.W.DeviceCreateTexture(device.Dev, ref dd);
-		DepthView = device.W.TextureCreateView(DepthTex, null);
+		CreateMultisampledTargets(device, width, height);
 	}
 
 	// External-color variant for a swapchain: the color View/Tex are provided per frame (the acquired
-	// swapchain image); only the depth/stencil is owned here. Set View before each present.
+	// swapchain image, used as the resolve target); the multisampled color + depth are owned here.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
 		Width = width; Height = height;
+		CreateMultisampledTargets(device, width, height);
+	}
+
+	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
+	{
+		var cd = new TextureDescriptor
+		{
+			Size = new Extent3D((uint)width, (uint)height, 1), Format = device.ColorFormat,
+			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment,
+		};
+		MsaaColorTex = device.W.DeviceCreateTexture(device.Dev, ref cd);
+		MsaaColorView = device.W.TextureCreateView(MsaaColorTex, null);
+
 		var dd = new TextureDescriptor
 		{
 			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.DepthStencilFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.RenderAttachment,
+			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.RenderAttachment,
 		};
 		DepthTex = device.W.DeviceCreateTexture(device.Dev, ref dd);
 		DepthView = device.W.TextureCreateView(DepthTex, null);
@@ -675,7 +689,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var clear = _presentClear ?? rd.ClearColor;
 		var ca = new RenderPassColorAttachment
 		{
-			View = _s.View, LoadOp = clear.HasValue ? LoadOp.Clear : LoadOp.Load, StoreOp = StoreOp.Store,
+			// Render into the multisampled color and resolve into the single-sample present/readback texture.
+			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
+			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
+			View = _s.MsaaColorView, ResolveTarget = _s.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard,
 			ClearValue = clear.HasValue ? new Silk.NET.WebGPU.Color(clear.Value.R / 255.0, clear.Value.G / 255.0, clear.Value.B / 255.0, clear.Value.A / 255.0) : default,
 		};
 		var dsa = new RenderPassDepthStencilAttachment
