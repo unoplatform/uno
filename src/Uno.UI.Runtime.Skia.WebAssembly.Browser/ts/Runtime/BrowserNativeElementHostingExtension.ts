@@ -176,6 +176,10 @@ namespace Uno.UI.NativeElementHosting {
 			element.innerHTML = html;
 		}
 
+		public static setInputPolicy(elementId: string, value: number) {
+			this.getElementOrThrow(elementId).dataset.unoNativeInputPolicy = value.toString();
+		}
+
 		public static registerNativeHtmlEvent(owner: any, elementId: string, eventName: string, managedHandler: string) {
 			const element = this.getElementOrThrow(elementId);
 

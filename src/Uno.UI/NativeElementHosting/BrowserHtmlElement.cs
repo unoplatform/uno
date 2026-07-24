@@ -16,6 +16,27 @@ using Uno.UI.Xaml;
 namespace Uno.UI.NativeElementHosting;
 
 /// <summary>
+/// Defines how scroll input originating from a <see cref="BrowserHtmlElement"/> is routed on Skia WebAssembly.
+/// </summary>
+public enum BrowserHtmlElementInputPolicy
+{
+	/// <summary>
+	/// Native HTML owns all input. This is the default behavior.
+	/// </summary>
+	NativeOnly,
+
+	/// <summary>
+	/// Scroll gestures are routed to the enclosing Uno Platform ScrollViewer.
+	/// </summary>
+	UnoOnly,
+
+	/// <summary>
+	/// Native HTML consumes scroll input first and transfers any boundary residual to the enclosing Uno Platform ScrollViewer.
+	/// </summary>
+	Negotiated,
+}
+
+/// <summary>
 /// A managed handle to a DOM HTMLElement.
 /// </summary>
 public sealed partial class BrowserHtmlElement : IDisposable
@@ -30,6 +51,24 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	public string ElementId { get; }
 
 	internal bool IsOwner { get; }
+
+	private BrowserHtmlElementInputPolicy _inputPolicy;
+
+	/// <summary>
+	/// Gets or sets the input policy used when this element is hosted in the Skia WebAssembly renderer.
+	/// </summary>
+	public BrowserHtmlElementInputPolicy InputPolicy
+	{
+		get => _inputPolicy;
+		set
+		{
+			if (_inputPolicy != value)
+			{
+				_inputPolicy = value;
+				OnInputPolicyChanged(value);
+			}
+		}
+	}
 
 	private BrowserHtmlElement(bool isOwner)
 	{
@@ -223,6 +262,8 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 	public void Dispose()
 		=> DisposeNative();
+
+	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value);
 
 	partial void DisposeNative();
 }

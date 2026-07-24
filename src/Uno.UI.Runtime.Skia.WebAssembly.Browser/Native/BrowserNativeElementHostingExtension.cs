@@ -1,9 +1,12 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.NativeElementHosting;
+using Uno.UI.Extensions;
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 
 namespace Uno.UI.Runtime.Skia;
@@ -12,6 +15,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 {
 	private readonly ContentPresenter _presenter;
 	private static (string path, string fillType)? _lastSvgClipPath;
+	private static readonly Dictionary<string, WeakReference<BrowserNativeElementHostingExtension>> _hosts = new();
 
 	public BrowserNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -24,13 +28,63 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	public void AttachNativeElement(object content)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
-		NativeMethods.AttachNativeElement(((BrowserHtmlElement)content).ElementId);
+		var element = (BrowserHtmlElement)content;
+		NativeMethods.AttachNativeElement(element.ElementId);
+		_hosts[element.ElementId] = new(this);
 	}
 
 	public void DetachNativeElement(object content)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
-		NativeMethods.DetachNativeElement(((BrowserHtmlElement)content).ElementId);
+		var element = (BrowserHtmlElement)content;
+		_hosts.Remove(element.ElementId);
+		NativeMethods.DetachNativeElement(element.ElementId);
+	}
+
+	internal static bool ApplyNegotiatedScroll(string elementId, double horizontalDelta, double verticalDelta)
+	{
+		if (!_hosts.TryGetValue(elementId, out var weakExtension)
+			|| !weakExtension.TryGetTarget(out var extension))
+		{
+			_hosts.Remove(elementId);
+			return false;
+		}
+
+		return extension.ApplyNegotiatedScroll(horizontalDelta, verticalDelta);
+	}
+
+	private bool ApplyNegotiatedScroll(double horizontalDelta, double verticalDelta)
+	{
+		var remainingHorizontalDelta = horizontalDelta;
+		var remainingVerticalDelta = verticalDelta;
+		var didScroll = false;
+
+		foreach (var ancestor in _presenter.GetVisualAncestry())
+		{
+			if (ancestor is not ScrollViewer scrollViewer)
+			{
+				continue;
+			}
+
+			var initialHorizontalOffset = scrollViewer.HorizontalOffset;
+			var initialVerticalOffset = scrollViewer.VerticalOffset;
+			scrollViewer.ChangeView(
+				horizontalOffset: initialHorizontalOffset + remainingHorizontalDelta,
+				verticalOffset: initialVerticalOffset + remainingVerticalDelta,
+				zoomFactor: null,
+				disableAnimation: true);
+
+			remainingHorizontalDelta -= scrollViewer.HorizontalOffset - initialHorizontalOffset;
+			remainingVerticalDelta -= scrollViewer.VerticalOffset - initialVerticalOffset;
+			didScroll |= initialHorizontalOffset != scrollViewer.HorizontalOffset || initialVerticalOffset != scrollViewer.VerticalOffset;
+
+			if (remainingHorizontalDelta == 0 && remainingVerticalDelta == 0)
+			{
+				break;
+			}
+		}
+
+		return didScroll;
 	}
 
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
