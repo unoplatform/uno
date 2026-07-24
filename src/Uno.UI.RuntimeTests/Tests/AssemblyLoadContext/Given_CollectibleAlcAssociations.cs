@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -135,6 +136,8 @@ public class Given_CollectibleAlcAssociations
 	/// needing to stage a full secondary application.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.NoInlining)]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Reflection.Emit probe is guarded at runtime by RuntimeFeature.IsDynamicCodeSupported; on trimmed/AOT targets the test returns Inconclusive before emitting.")]
+	[UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Reflection.Emit probe is guarded at runtime by RuntimeFeature.IsDynamicCodeSupported; on trimmed/AOT targets the test returns Inconclusive before emitting.")]
 	private static Border CreateCollectibleBorder()
 	{
 		if (!RuntimeFeature.IsDynamicCodeSupported)
