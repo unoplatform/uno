@@ -998,6 +998,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
+		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
+		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
+		{
+			opacity = 1.0f;
+		}
+
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, parentSession.Damage, out session);
 
 		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)

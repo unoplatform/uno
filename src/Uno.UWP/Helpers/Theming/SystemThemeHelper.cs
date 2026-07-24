@@ -1,8 +1,11 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using Windows.ApplicationModel.Core;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace Uno.Helpers.Theming;
 
@@ -13,9 +16,48 @@ namespace Uno.Helpers.Theming;
 internal static partial class SystemThemeHelper
 {
 	private static EventHandler? _systemThemeChanged;
-	private static bool _changesObserved;
+	private static EventHandler? _highContrastChanged;
+	private static int _changesObserved;
 	private static SystemTheme? _lastSystemTheme;
 	private static SystemTheme? _systemThemeOverride;
+	private static bool? _lastHighContrast;
+	private static string? _lastHighContrastScheme;
+	private static HighContrastSystemColors? _lastHighContrastSystemColors;
+	private static bool _lastHighContrastSystemColorsInitialized;
+
+#if __ANDROID__ || __APPLE_UIKIT__
+	private static readonly HighContrastSystemColors _mobileHighContrastBlackSystemColors = new(
+		ButtonFaceColor: Colors.Black,
+		ButtonTextColor: Colors.White,
+		GrayTextColor: Color.FromArgb(255, 63, 242, 63),
+		HighlightColor: Color.FromArgb(255, 26, 235, 255),
+		HighlightTextColor: Colors.Black,
+		HotlightColor: Colors.Yellow,
+		WindowColor: Colors.Black,
+		WindowTextColor: Colors.White,
+		ActiveCaptionColor: Colors.Black,
+		BackgroundColor: Colors.Black,
+		CaptionTextColor: Colors.White,
+		InactiveCaptionColor: Colors.Black,
+		InactiveCaptionTextColor: Color.FromArgb(255, 63, 242, 63),
+		DisabledTextColor: Color.FromArgb(255, 63, 242, 63));
+
+	private static readonly HighContrastSystemColors _mobileHighContrastWhiteSystemColors = new(
+		ButtonFaceColor: Colors.White,
+		ButtonTextColor: Colors.Black,
+		GrayTextColor: Color.FromArgb(255, 109, 109, 109),
+		HighlightColor: Colors.Black,
+		HighlightTextColor: Colors.White,
+		HotlightColor: Colors.Blue,
+		WindowColor: Colors.White,
+		WindowTextColor: Colors.Black,
+		ActiveCaptionColor: Colors.White,
+		BackgroundColor: Colors.White,
+		CaptionTextColor: Colors.Black,
+		InactiveCaptionColor: Colors.White,
+		InactiveCaptionTextColor: Color.FromArgb(255, 109, 109, 109),
+		DisabledTextColor: Color.FromArgb(255, 109, 109, 109));
+#endif
 
 	/// <summary>
 	/// Gets the current system theme. When <see cref="SystemThemeOverride"/> is set (for testing),
@@ -30,11 +72,55 @@ internal static partial class SystemThemeHelper
 	/// <summary>
 	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
 	/// OS/app-global dimension OR-ed onto the Light/Dark base theme (matching WinUI's
-	/// <c>FrameworkTheming::GetTheme</c>). Sourced from
-	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable, so it also
-	/// serves as the override hook for runtime tests. Defaults to <c>false</c>.
+	/// <c>FrameworkTheming::GetTheme</c>). The effective value comes from the platform and is cached until
+	/// the platform reports a change. <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>
+	/// overrides that value when explicitly set, including for runtime tests.
 	/// </summary>
-	internal static bool IsHighContrast => Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
+	internal static bool IsHighContrast =>
+		Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride
+		?? (_lastHighContrast ??= GetIsHighContrastEnabled());
+
+	internal static string HighContrastSchemeName
+	{
+		get
+		{
+			if (Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride is { } overrideScheme)
+			{
+				return overrideScheme;
+			}
+
+			if (IsHighContrast && HighContrastSystemColors is null)
+			{
+				return SystemTheme == SystemTheme.Dark ? "High Contrast Black" : "High Contrast White";
+			}
+
+			return _lastHighContrastScheme ??= GetHighContrastSchemeName();
+		}
+	}
+
+	internal static HighContrastSystemColors? HighContrastSystemColors
+	{
+		get
+		{
+			if (!IsHighContrast)
+			{
+				return null;
+			}
+
+			if (Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride is { } overrideColors)
+			{
+				return overrideColors;
+			}
+
+			if (!_lastHighContrastSystemColorsInitialized)
+			{
+				_lastHighContrastSystemColors = GetHighContrastSystemColors();
+				_lastHighContrastSystemColorsInitialized = true;
+			}
+
+			return _lastHighContrastSystemColors;
+		}
+	}
 
 	/// <summary>
 	/// Test hook (analogous to <c>ScaleOverride</c>): when set, <see cref="SystemTheme"/> reports this
@@ -54,6 +140,8 @@ internal static partial class SystemThemeHelper
 				return;
 			}
 
+			var previousScheme = HighContrastSchemeName;
+			var previousColors = HighContrastSystemColors;
 			_systemThemeOverride = value;
 
 			if (value is null)
@@ -68,6 +156,12 @@ internal static partial class SystemThemeHelper
 			// can legitimately desync from the effective theme (e.g. after a test sets then restores an
 			// explicit app theme), so a conditional raise could skip and leave a stale theme (test flakiness).
 			RaiseSystemThemeChanged();
+
+			if (!string.Equals(previousScheme, HighContrastSchemeName, StringComparison.Ordinal)
+				|| previousColors != HighContrastSystemColors)
+			{
+				NotifyHighContrastSettingsChanged();
+			}
 		}
 	}
 
@@ -84,13 +178,28 @@ internal static partial class SystemThemeHelper
 		remove => _systemThemeChanged -= value;
 	}
 
+	internal static event EventHandler? HighContrastChanged
+	{
+		add
+		{
+			_highContrastChanged += value;
+			ObserveThemeChanges();
+		}
+		remove => _highContrastChanged -= value;
+	}
+
 	/// <summary>
 	/// Removes event handlers whose target belongs to a non-default ALC.
 	/// Called during ALC teardown to release references to inner-app objects.
 	/// </summary>
 	internal static void ClearNonDefaultAlcHandlers()
 	{
-		var handler = _systemThemeChanged;
+		ClearNonDefaultAlcHandlers(ref _systemThemeChanged);
+		ClearNonDefaultAlcHandlers(ref _highContrastChanged);
+	}
+
+	private static void ClearNonDefaultAlcHandlers(ref EventHandler? handler)
+	{
 		if (handler is null)
 		{
 			return;
@@ -109,7 +218,7 @@ internal static partial class SystemThemeHelper
 				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(handlerAssembly);
 				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
 				{
-					_systemThemeChanged -= (EventHandler)d;
+					handler -= (EventHandler)d;
 				}
 			}
 		}
@@ -120,16 +229,21 @@ internal static partial class SystemThemeHelper
 	/// </summary>
 	internal static void ObserveThemeChanges()
 	{
-		if (_changesObserved)
+		if (Interlocked.Exchange(ref _changesObserved, 1) != 0)
 		{
 			return;
 		}
 
-		_changesObserved = true;
-
 		// Seed the OS-theme cache; an active SystemThemeOverride stays authoritative because the
 		// SystemTheme getter checks it before the cache.
 		_lastSystemTheme ??= GetSystemTheme();
+		_lastHighContrast ??= GetIsHighContrastEnabled();
+		_lastHighContrastScheme ??= GetHighContrastSchemeName();
+		if (!_lastHighContrastSystemColorsInitialized)
+		{
+			_lastHighContrastSystemColors = GetHighContrastSystemColors();
+			_lastHighContrastSystemColorsInitialized = true;
+		}
 
 		ObserveThemeChangesPlatform();
 
@@ -145,16 +259,51 @@ internal static partial class SystemThemeHelper
 	/// </summary>
 	internal static void RefreshSystemTheme()
 	{
-		var previousTheme = SystemTheme;
+		RefreshThemeState(refreshSystemTheme: true);
+	}
 
-		// Re-poll the real OS theme; while an override is active this refreshes the cache
-		// silently (the effective theme stays pinned to the override).
-		_lastSystemTheme = GetSystemTheme();
+	internal static void RefreshHighContrast()
+	{
+		RefreshThemeState(refreshSystemTheme: false);
+	}
+
+	private static void RefreshThemeState(bool refreshSystemTheme)
+	{
+		var previousTheme = SystemTheme;
+		var previousHighContrast = IsHighContrast;
+		var previousScheme = HighContrastSchemeName;
+		var previousColors = HighContrastSystemColors;
+
+		if (refreshSystemTheme)
+		{
+			// Re-poll the real OS theme; while an override is active this refreshes the cache
+			// silently (the effective theme stays pinned to the override).
+			_lastSystemTheme = GetSystemTheme();
+		}
+
+		_lastHighContrast = GetIsHighContrastEnabled();
+		_lastHighContrastScheme = GetHighContrastSchemeName();
+		_lastHighContrastSystemColors = GetHighContrastSystemColors();
+		_lastHighContrastSystemColorsInitialized = true;
 
 		if (SystemTheme != previousTheme)
 		{
 			RaiseSystemThemeChanged();
 		}
+
+		if (previousHighContrast != IsHighContrast
+			|| !string.Equals(previousScheme, HighContrastSchemeName, StringComparison.Ordinal)
+			|| previousColors != HighContrastSystemColors)
+		{
+			NotifyHighContrastSettingsChanged();
+		}
+	}
+
+	internal static void NotifyHighContrastSettingsChanged()
+	{
+		AccessibilitySettings.OnHighContrastChanged();
+		UISettings.OnColorValuesChanged();
+		_highContrastChanged?.Invoke(null, EventArgs.Empty);
 	}
 
 	/// <summary>
@@ -162,6 +311,80 @@ internal static partial class SystemThemeHelper
 	/// the theme change is listened to on the Application/Window level.
 	/// </summary>
 	static partial void ObserveThemeChangesPlatform();
+
+	static partial void GetIsHighContrastEnabledPlatform(ref bool result);
+
+	static partial void GetHighContrastSchemeNamePlatform(ref string result);
+
+	static partial void GetHighContrastSystemColorsPlatform(ref HighContrastSystemColors? result);
+
+	private static bool GetIsHighContrastEnabled()
+	{
+		var result = false;
+		GetIsHighContrastEnabledPlatform(ref result);
+		return result;
+	}
+
+	private static string GetHighContrastSchemeName()
+	{
+		var result = "High Contrast Black";
+		GetHighContrastSchemeNamePlatform(ref result);
+		return result;
+	}
+
+	private static HighContrastSystemColors? GetHighContrastSystemColors()
+	{
+		HighContrastSystemColors? result = null;
+		GetHighContrastSystemColorsPlatform(ref result);
+		return result;
+	}
+
+	internal static string ResolveHighContrastSchemeName(
+		string? configuredSchemeName,
+		bool isHighContrastEnabled,
+		Color window,
+		Color windowText)
+	{
+		if (!string.IsNullOrEmpty(configuredSchemeName))
+		{
+			return configuredSchemeName;
+		}
+
+		if (!isHighContrastEnabled)
+		{
+			return string.Empty;
+		}
+
+		if (IsWhite(window) && IsBlack(windowText))
+		{
+			return "High Contrast White";
+		}
+
+		if (IsBlack(window) && IsWhite(windowText))
+		{
+			return "High Contrast Black";
+		}
+
+		return "High Contrast";
+	}
+
+	private static bool IsWhite(Color color) =>
+		(color.R == 0xFF && color.G == 0xFF && color.B == 0xFF)
+		|| (color.R == 0xEB && color.G == 0xEB && color.B == 0xEB);
+
+	private static bool IsBlack(Color color) =>
+		(color.R == 0x00 && color.G == 0x00 && color.B == 0x00)
+		|| (color.R == 0x10 && color.G == 0x10 && color.B == 0x10);
+
+#if __ANDROID__ || __APPLE_UIKIT__
+	private static string GetMobileHighContrastSchemeName(SystemTheme systemTheme) =>
+		systemTheme == SystemTheme.Dark ? "High Contrast Black" : "High Contrast White";
+
+	private static HighContrastSystemColors GetMobileHighContrastSystemColors(SystemTheme systemTheme) =>
+		systemTheme == SystemTheme.Dark
+			? _mobileHighContrastBlackSystemColors
+			: _mobileHighContrastWhiteSystemColors;
+#endif
 
 	private static void RaiseSystemThemeChanged() => _systemThemeChanged?.Invoke(null, EventArgs.Empty);
 }

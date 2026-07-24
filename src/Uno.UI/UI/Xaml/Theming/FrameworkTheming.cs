@@ -250,24 +250,25 @@ internal sealed class FrameworkTheming
 			"SystemListAccentHighColor"
 		};
 
-		// C++: static const xstring_ptr_storage brushKeyStorage[]
+		// C++: static const xstring_ptr_storage brushKeyStorage[].
+		// Uno system XAML uses the *ColorBrush names below; null entries have no local equivalent.
 		string?[] brushKeyStorage =
 		{
 			// System color resources
-			"SystemColorActiveCaptionBrush",
-			"SystemColorBackgroundBrush",
-			"SystemColorButtonFaceBrush",
-			"SystemColorButtonTextBrush",
-			"SystemColorCaptionTextBrush",
-			"SystemColorGrayTextBrush",
-			"SystemColorHighlightBrush",
-			"SystemColorHighlightTextBrush",
-			"SystemColorHotlightBrush",
-			"SystemColorInactiveCaptionBrush",
-			"SystemColorInactiveCaptionTextBrush",
-			"SystemColorWindowBrush",
-			"SystemColorWindowTextBrush",
-			"SystemColorDisabledTextBrush",
+			null,
+			null,
+			"SystemColorButtonFaceColorBrush",
+			"SystemColorButtonTextColorBrush",
+			null,
+			"SystemColorGrayTextColorBrush",
+			"SystemColorHighlightColorBrush",
+			"SystemColorHighlightTextColorBrush",
+			"SystemColorHotlightColorBrush",
+			null,
+			null,
+			"SystemColorWindowColorBrush",
+			"SystemColorWindowTextColorBrush",
+			null,
 
 			// Accent color resources
 			"SystemColorControlAccentBrush",

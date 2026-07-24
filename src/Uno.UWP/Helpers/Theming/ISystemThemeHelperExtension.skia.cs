@@ -19,4 +19,16 @@ internal interface ISystemThemeHelperExtension
 	/// </summary>
 	/// <returns>System theme.</returns>
 	SystemTheme GetSystemTheme();
+
+	bool IsHighContrastEnabled() => false;
+
+	string GetHighContrastSchemeName() => "High Contrast Black";
+
+	HighContrastSystemColors? GetHighContrastSystemColors() => null;
+
+	event EventHandler HighContrastChanged
+	{
+		add { }
+		remove { }
+	}
 }

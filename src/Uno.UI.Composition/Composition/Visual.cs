@@ -150,6 +150,8 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _opacity, value);
 		}
 
+		internal bool IsHighContrastOpacityOverrideActive { get; set; }
+
 		public Vector3 RotationAxis
 		{
 			get => _rotationAxis;

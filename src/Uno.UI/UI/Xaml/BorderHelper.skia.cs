@@ -30,7 +30,18 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		if (@this is Border { UseBackgroundOverride: true } && ThemingHelper.IsHighContrastActive)
+		{
+			var windowBrush = Uno.UI.ResourceResolver.ResolveTopLevelResource(
+				"SystemColorWindowColorBrush",
+				null) as Brush;
+			@this.BorderVisual.BackgroundBrush =
+				(windowBrush ?? @this.Background)?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
+		else
+		{
+			@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)

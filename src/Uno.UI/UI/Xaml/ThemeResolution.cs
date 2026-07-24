@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using Uno.Helpers.Theming;
-
 // Port of WinUI's per-object effective-theme resolution.
 //
 // MUX References:
@@ -73,7 +71,7 @@ internal static class ThemeResolution
 	/// (<see cref="ResourceDictionary"/>.GetActiveThemeDictionary), which reads the same global state.
 	/// </summary>
 	private static Theme GetApplicationHighContrastTheme()
-		=> SystemThemeHelper.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+		=> ThemingHelper.IsHighContrastActive ? Theme.HighContrast : Theme.HighContrastNone;
 
 	/// <summary>
 	/// Gets the per-object theme stored on the object's <see cref="DependencyObjectStore"/>, or

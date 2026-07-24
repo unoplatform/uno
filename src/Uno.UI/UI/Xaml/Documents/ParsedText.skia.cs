@@ -10,12 +10,14 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using WinUIColor = Windows.UI.Color;
 
 namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly struct ParsedText : IParsedText
 {
 	private static readonly SKPaint _spareDrawPaint = new();
+	private static readonly SKPaint _spareBackplatePaint = new() { IsAntialias = true };
 	// This is safe as a static field.
 	// 1) It's only accessed from UI thread.
 	// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
@@ -342,18 +344,27 @@ internal readonly struct ParsedText : IParsedText
 	// composition underline rendering is implemented by UnicodeText (the actual
 	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
 	// fallback and never has an active composition to render.
-	public void Draw(in Visual.PaintingSession session,
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
+			? 1f
+			: session.Opacity;
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground) =
+			useHighContrastAdjustment
+				? UIElement.GetHighContrastTextColors()
+				: default;
+
 		if (_renderLines.Count == 0)
 		{
 			// empty, so caret is at the beginning
 			if (caret is not null)
 			{
 				var caretRect = new SKRect(0, 0, caret.Value.thickness, _defaultLineHeight);
-				caret.Value.brush.Paint(session.Canvas, session.Opacity, caretRect);
+				caret.Value.brush.Paint(session.Canvas, effectiveOpacity, caretRect);
 			}
 
 			return;
@@ -401,14 +412,18 @@ internal readonly struct ParsedText : IParsedText
 				paint.IsStroke = false;
 				paint.IsAntialias = true;
 
-				if (inline.Foreground is SolidColorBrush scb)
+				if (useHighContrastAdjustment)
+				{
+					paint.Color = ToSkColor(highContrastForeground, effectiveOpacity);
+				}
+				else if (inline.Foreground is SolidColorBrush scb)
 				{
 					var scbColor = scb.Color;
 					paint.Color = new SKColor(
 						red: scbColor.R,
 						green: scbColor.G,
 						blue: scbColor.B,
-						alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
+						alpha: (byte)(scbColor.A * scb.Opacity * effectiveOpacity));
 				}
 				else if (inline.Foreground is GradientBrush gb)
 				{
@@ -417,7 +432,7 @@ internal readonly struct ParsedText : IParsedText
 						red: gbColor.R,
 						green: gbColor.G,
 						blue: gbColor.B,
-						alpha: (byte)(gbColor.A * session.Opacity));
+						alpha: (byte)(gbColor.A * effectiveOpacity));
 				}
 				else if (inline.Foreground is XamlCompositionBrushBase xcbb)
 				{
@@ -426,7 +441,7 @@ internal readonly struct ParsedText : IParsedText
 						red: gbColor.R,
 						green: gbColor.G,
 						blue: gbColor.B,
-						alpha: (byte)(gbColor.A * session.Opacity));
+						alpha: (byte)(gbColor.A * effectiveOpacity));
 				}
 
 				// TODO: Consider using a stackalloc for small values of GlyphsLength.
@@ -494,14 +509,33 @@ internal readonly struct ParsedText : IParsedText
 				// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
 				// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
+				if (useHighContrastAdjustment)
+				{
+					var backplateWidth = s == line.RenderOrderedSegmentSpans.Count - 1
+						? segmentSpan.WidthWithoutTrailingSpaces
+						: segmentSpan.Width;
+					DrawBackplate(canvas, xBeforeGlyphOffsets, y, line.Height, backplateWidth, highContrastBackground, effectiveOpacity);
+				}
+
 				// limited support for highlighters
 				var highlighter = highlighters.FirstOrDefault();
 				var selection = highlighter?.Ranges?.FirstOrDefault();
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), session.Opacity);
-					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), effectiveOpacity);
+					RenderText(
+						selectionDetails,
+						lineIndex,
+						characterCountSoFar,
+						segmentSpan,
+						fontInfo,
+						positionsSpan,
+						glyphsSpan,
+						canvas,
+						y + baselineOffsetY,
+						paint,
+						useHighContrastAdjustment ? ToSkColor(highContrastSelectionForeground, effectiveOpacity) : null);
 				}
 				else
 				{
@@ -538,7 +572,7 @@ internal readonly struct ParsedText : IParsedText
 
 				if (caret is not null)
 				{
-					HandleCaret(caret.Value.index, caret.Value.thickness, canvas, caret.Value.brush, session.Opacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(caret.Value.index, caret.Value.thickness, canvas, caret.Value.brush, effectiveOpacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
@@ -555,6 +589,30 @@ internal readonly struct ParsedText : IParsedText
 			paint.IsStroke = true;
 			canvas.DrawLine(x, y, x + width, y, paint);
 			paint.IsStroke = false;
+		}
+
+		static void DrawBackplate(
+			SKCanvas canvas,
+			float x,
+			float y,
+			float lineHeight,
+			float width,
+			WinUIColor background,
+			float opacity)
+		{
+			if (width <= 0)
+			{
+				return;
+			}
+
+			_spareBackplatePaint.Color = ToSkColor(background, opacity);
+			canvas.DrawRect(
+				new SKRect(
+					MathF.Round(x, MidpointRounding.AwayFromZero),
+					y - lineHeight,
+					MathF.Round(x + width, MidpointRounding.AwayFromZero),
+					y),
+				_spareBackplatePaint);
 		}
 	}
 
@@ -807,7 +865,7 @@ internal readonly struct ParsedText : IParsedText
 
 	private void RenderText(SelectionDetails? selection, int lineIndex, int characterCountSoFar,
 		RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-		SKCanvas canvas, float y, SKPaint paint)
+		SKCanvas canvas, float y, SKPaint paint, SKColor? selectionColor = null)
 	{
 		if (selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 		{
@@ -874,7 +932,7 @@ internal readonly struct ParsedText : IParsedText
 			if (endOfSelection - startOfSelection > 0) // selection
 			{
 				var color = paint.Color;
-				paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
+				paint.Color = selectionColor ?? new SKColor(255, 255, 255, 255);
 				DrawText(
 					fontInfo,
 					positions.Slice(startOfSelection, endOfSelection - startOfSelection),
@@ -909,6 +967,13 @@ internal readonly struct ParsedText : IParsedText
 			UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 		}
 	}
+
+	private static SKColor ToSkColor(WinUIColor color, float opacity) =>
+		new(
+			color.R,
+			color.G,
+			color.B,
+			(byte)(color.A * opacity));
 
 	private void HandleCaret(int caretIndex, float caretThickness, SKCanvas canvas,
 		CompositionBrush caretBrush, float opacity, int characterCountSoFar, RenderSegmentSpan segmentSpan,

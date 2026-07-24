@@ -6,6 +6,7 @@
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
+static high_contrast_change_fn_ptr high_contrast_change;
 static text_scale_factor_change_fn_ptr text_scale_factor_change;
 static id<MTLDevice> device;
 
@@ -30,6 +31,61 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     NSAppearanceName appearanceName = [appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua,
                                                                                       NSAppearanceNameDarkAqua]];
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
+}
+
+inline high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void)
+{
+    return high_contrast_change;
+}
+
+void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p)
+{
+    high_contrast_change = p;
+}
+
+bool uno_get_high_contrast(void)
+{
+    return [[NSWorkspace sharedWorkspace] accessibilityDisplayShouldIncreaseContrast];
+}
+
+static uint32 nscolor_to_argb(NSColor *color)
+{
+    NSColor *rgbColor = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (rgbColor == nil) {
+        return 0xFF000000;
+    }
+
+    CGFloat red;
+    CGFloat green;
+    CGFloat blue;
+    CGFloat alpha;
+    [rgbColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    return ((uint32)(alpha * 255.0 + 0.5) << 24)
+        | ((uint32)(red * 255.0 + 0.5) << 16)
+        | ((uint32)(green * 255.0 + 0.5) << 8)
+        | (uint32)(blue * 255.0 + 0.5);
+}
+
+void uno_get_high_contrast_colors(UnoHighContrastColors *colors)
+{
+    if (colors == NULL) {
+        return;
+    }
+
+    colors->windowColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->windowTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->buttonFaceColor = nscolor_to_argb([NSColor controlColor]);
+    colors->buttonTextColor = nscolor_to_argb([NSColor controlTextColor]);
+    colors->grayTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->highlightColor = nscolor_to_argb([NSColor selectedContentBackgroundColor]);
+    colors->highlightTextColor = nscolor_to_argb([NSColor alternateSelectedControlTextColor]);
+    colors->hotlightColor = nscolor_to_argb([NSColor linkColor]);
+    colors->activeCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->backgroundColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->captionTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->inactiveCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->inactiveCaptionTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->disabledTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
 }
 
 inline text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void)
@@ -77,6 +133,11 @@ bool uno_app_initialize(bool *metal)
 
         // KVO observation for dark/light theme
         [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:kThemeChangeContext];
+
+        [[NSNotificationCenter defaultCenter] addObserver:ad
+                                                 selector:@selector(accessibilityDisplayOptionsChanged:)
+                                                     name:NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
+                                                   object:[NSWorkspace sharedWorkspace]];
 
         // Text size preference: observe via NSDistributedNotificationCenter (primary, undocumented name
         // used by macOS Sonoma when the Accessibility Text Size slider moves) and via KVO on the
@@ -271,6 +332,19 @@ void uno_application_quit(void)
             uno_get_system_theme_change_callback()();
         });
     }
+}
+
+- (void)accessibilityDisplayOptionsChanged:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.accessibilityDisplayOptionsChanged %@", notification.name);
+#endif
+    dispatch_async(dispatch_get_main_queue(), ^{
+        high_contrast_change_fn_ptr cb = uno_get_high_contrast_change_callback();
+        if (cb != NULL) {
+            cb();
+        }
+    });
 }
 
 - (void)textScalePreferenceChanged:(NSNotification *)notification
