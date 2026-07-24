@@ -5603,6 +5603,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
 		}
 
+		// Repro: touch-select a misspelled word so the selection flyout (Transient) includes the "proofing" submenu
+		// button in its overflow. Expanding the overflow ("...") must NOT auto-open the proofing submenu - the WinUI
+		// auto-open only belongs to the context menu (Standard show mode) that opens already expanded. In the Transient
+		// selection flyout the proofing button only loads once the user taps the overflow, and auto-opening there
+		// hijacks that tap.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Flyout_Overflow_Does_Not_AutoOpen_Proofing()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "helllo", // a single misspelled word, so a touch double-tap selects it whole
+				IsSpellCheckEnabled = true,
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the word to select it whole, show both thumbs and open the (Transient) selection flyout.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "helllo",
+				message: "the double-tap should select the whole misspelled word");
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "the selection flyout should open over the selected word");
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// The proofing button is the only secondary command carrying a (MenuFlyout) submenu. If spell-check is
+			// unavailable on this host or the word yielded no suggestions, the button is absent - nothing to assert.
+			if (flyout.SecondaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Flyout is MenuFlyout) is not { } proofingButton
+				|| proofingButton.Flyout is not MenuFlyout proofingMenu
+				|| proofingMenu.Items.Count == 0)
+			{
+				Assert.Inconclusive("The proofing menu was not populated (spell-check service unavailable or no suggestions for the test word).");
+				return;
+			}
+
+			// Find the command bar and its overflow ("...") button.
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the proofing button sits in the overflow");
+
+			// Tap the overflow to expand the bar - this realizes the proofing button (firing its Loaded handler, the
+			// code path under test). Wait past the multi-tap window from the double-tap first.
+			await Task.Delay(600);
+			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should expand the command bar");
+			// Confirm the proofing button actually loaded, so the assertion below is not vacuous.
+			await WindowHelper.WaitFor(() => proofingButton.IsLoaded, message: "the proofing button should be realized once the overflow is expanded");
+			await WindowHelper.WaitForIdle();
+
+			// The auto-open (when it misfires) is scheduled ~100ms after the button loads; wait well past that.
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(proofingMenu.IsOpen, "the proofing submenu must not auto-open when the overflow is expanded in a Transient selection flyout");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{

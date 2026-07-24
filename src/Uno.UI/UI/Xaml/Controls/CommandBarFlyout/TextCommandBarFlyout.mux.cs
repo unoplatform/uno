@@ -28,7 +28,14 @@ partial class TextCommandBarFlyout
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TextCommandBarFlyout);
 		m_dispatcherHelper = new DispatcherHelper(this);
 
-		Opening += (s, e) => UpdateButtons();
+		Opening += (s, e) =>
+		{
+			// Uno specific: capture the show mode now, before CommandBarFlyout's CommandBar.Opened handler
+			// flips a Transient flyout to Standard on expand. Only a context menu opens Standard from the start.
+			m_openedAsContextMenu = ShowMode == FlyoutShowMode.Standard;
+			m_openedByTouch = WasOpenedByTouch;
+			UpdateButtons();
+		};
 
 		Opened += (s, e) =>
 		{
@@ -220,6 +227,16 @@ partial class TextCommandBarFlyout
 
 			void onProofingButtonLoaded(object sender, object eventArgs)
 			{
+				// Uno specific: suppress the auto-open only for a touch-driven selection flyout. There the
+				// proofing button loads only once the user taps the overflow, and auto-opening the submenu
+				// would hijack that tap. A context menu (Standard show mode) still auto-opens, and pen/mouse
+				// keep the WinUI default. The show mode is read from the value captured at open time because
+				// the CommandBar's Opened handler flips the live ShowMode to Standard on expand.
+				if (!m_openedAsContextMenu && m_openedByTouch)
+				{
+					return;
+				}
+
 				// If we have a proofing menu, we'll start with it open by invoking the button
 				// as soon as the CommandBar opening animation completes.
 				// We invoke the button instead of just showing the flyout to make the button
