@@ -168,6 +168,14 @@ public sealed class HotReloadManager : IDisposable
 		// before any short-circuit so the report reflects skipped inputs.
 		hotReload.NotifyIgnored(result.IgnoredChanges.GetAllPaths());
 
+		// Up-to-date entries were consumed (their content is already in the solution) — not
+		// ignored. Surface them for diagnosability only: they are how a re-observation of
+		// content the pipeline just applied resolves to a plain NoChanges instead of forking.
+		if (result.UpToDateChanges.GetAllPaths().ToImmutableArray() is { IsEmpty: false } upToDate)
+		{
+			_tracker.Verbose($"{upToDate.Length} file(s) already up to date ({string.Join(", ", upToDate.Select(Path.GetFileName))})");
+		}
+
 		// Commit unconditionally, ahead of every terminal branch (spec 045 §2): an updater may have
 		// rebound metadata/analyzer references (e.g. newly resolved packages) onto result.Solution.
 		// If a cycle exited early without committing, those references would be lost and the next

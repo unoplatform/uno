@@ -27,16 +27,40 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		ChangeSet changeSet,
 		CancellationToken ct)
 	{
-		// Update existing documents
+		// Update existing documents and additional documents, skipping texts that are already
+		// up to date: a file-system event can re-observe a file whose content is already in the
+		// solution (e.g. an event joining a batch right after its content was applied), and
+		// re-applying byte-identical text would fork the snapshot — defeating the caller's
+		// reference-equality NoChanges short-circuit. Only realized texts are compared: an
+		// unrealized text means the document was never read into this snapshot, so the batch
+		// cannot be a re-observation of it. Skipped entries are surfaced through
+		// <see cref="SolutionUpdateResult.UpToDateChanges"/>.
+		var upToDateDocuments = ImmutableArray.CreateBuilder<Document>();
 		foreach (var document in changeSet.EditedDocuments)
 		{
-			solution = solution.WithDocumentText(document.Id, await GetSourceTextAsync(document.FilePath!, ct).ConfigureAwait(false));
+			var text = await GetSourceTextAsync(document.FilePath!, ct).ConfigureAwait(false);
+			if (document.TryGetText(out var current) && current.ContentEquals(text))
+			{
+				upToDateDocuments.Add(document);
+			}
+			else
+			{
+				solution = solution.WithDocumentText(document.Id, text);
+			}
 		}
 
-		// Update existing additional documents
+		var upToDateAdditionalDocuments = ImmutableArray.CreateBuilder<TextDocument>();
 		foreach (var additionalDocument in changeSet.EditedAdditionalDocuments)
 		{
-			solution = solution.WithAdditionalDocumentText(additionalDocument.Id, await GetSourceTextAsync(additionalDocument.FilePath!, ct).ConfigureAwait(false));
+			var text = await GetSourceTextAsync(additionalDocument.FilePath!, ct).ConfigureAwait(false);
+			if (additionalDocument.TryGetText(out var current) && current.ContentEquals(text))
+			{
+				upToDateAdditionalDocuments.Add(additionalDocument);
+			}
+			else
+			{
+				solution = solution.WithAdditionalDocumentText(additionalDocument.Id, text);
+			}
 		}
 
 		// Added documents has been detected using a temporary solution.
@@ -112,7 +136,8 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		// `with` semantics: zero out only the fields this updater consumed. Anything
 		// else (project-level edits, the upstream-detected IgnoredFiles, and any new
 		// ChangeSet member added in the future) flows through to the caller as
-		// ignored automatically.
+		// ignored automatically. Up-to-date files were consumed (their content is in
+		// the solution) — they are reported through UpToDateChanges, not as ignored.
 		var ignored = changeSet with
 		{
 			EditedDocuments = [],
@@ -123,7 +148,14 @@ public sealed class SolutionUpdater : ISolutionUpdater
 			RemovedAdditionalDocuments = [],
 		};
 
-		return new SolutionUpdateResult(solution, ignored);
+		return new SolutionUpdateResult(solution, ignored)
+		{
+			UpToDateChanges = ChangeSet.Empty with
+			{
+				EditedDocuments = upToDateDocuments.ToImmutable(),
+				EditedAdditionalDocuments = upToDateAdditionalDocuments.ToImmutable(),
+			},
+		};
 	}
 
 	private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
