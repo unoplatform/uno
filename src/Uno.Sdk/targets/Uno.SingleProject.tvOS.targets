@@ -1,0 +1,36 @@
+<Project>
+	<PropertyGroup>
+		<!-- Required for C# Hot Reload -->
+		<UseInterpreter Condition="'$(Optimize)' != 'true'">True</UseInterpreter>
+
+		<IPhoneResourcePrefix Condition="$(IPhoneResourcePrefix) == ''">$(tvOSProjectFolder)Resources</IPhoneResourcePrefix>
+
+		<_SingleProjecttvOSExcludes>$(tvOSProjectFolder)/**/.*/**</_SingleProjecttvOSExcludes>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(CodesignEntitlements) == ''">
+		<CodesignEntitlements Condition=" Exists('$(tvOSProjectFolder)Entitlements.plist') ">$(tvOSProjectFolder)Entitlements.plist</CodesignEntitlements>
+		<CodesignEntitlements Condition=" Exists('$(tvOSProjectFolder)Entitlements-$(Configuration).plist') ">$(tvOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
+	</PropertyGroup>
+
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' ">
+		<None Include="$(tvOSProjectFolder)Info.plist" LogicalName="Info.plist" />
+
+		<ImageAsset Include="$(tvOSProjectFolder)**/*.xcassets/**/*.png;$(tvOSProjectFolder)**/*.xcassets/*/*.jpg;$(tvOSProjectFolder)**/*.xcassets/**/*.pdf;$(tvOSProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(tvOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(tvOSProjectFolder)**/*.storyboard;$(tvOSProjectFolder)**/*.xib" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(tvOSProjectFolder)Resources\**" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+
+		<!-- Apple privacy manifest support https://learn.microsoft.com/en-us/dotnet/maui/ios/privacy-manifest -->
+		<None
+			Include="$(tvOSProjectFolder)PrivacyInfo.xcprivacy"
+			LogicalName="PrivacyInfo.xcprivacy"
+			Condition="exists('$(tvOSProjectFolder)PrivacyInfo.xcprivacy')" />
+		<BundleResource
+			Include="$(tvOSProjectFolder)PrivacyInfo.xcprivacy"
+			LogicalName="PrivacyInfo.xcprivacy"
+			Condition="exists('$(tvOSProjectFolder)PrivacyInfo.xcprivacy')" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
+</Project>
