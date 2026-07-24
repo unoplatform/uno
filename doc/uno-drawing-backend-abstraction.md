@@ -271,10 +271,15 @@ otherwise a follow-up in `ManagedFont`).
 `GetDefaultFont`, all returning `IFont`) hangs off `IDrawingBackend.FontManager`. `SkiaFontManager` holds all
 the Skia resolution (`SKTypeface.FromData`/`FromFamilyName`, `.ttc` face selection, variable-font axes,
 `SKFontManager.MatchCharacter`); `FontDetailsCache`/`Run`/`UnicodeText` now resolve through it with `IFont`
-currency and no direct Skia. `ManagedFontManager` (system-font enumeration, option A, used as the managed
-resolver) is the remaining piece. **Backend selection moved off environment variables:** `DrawingBackendOptions`
+currency and no direct Skia. `ManagedFontManager` (option A) is the **SkiaSharp-free** resolver: it indexes the
+OS font directories by parsing each face's `name`/`OS-2`/`head` tables, matches family + weight/width/italic
+with a nearest-score, produces `ManagedFont` handles, and does codepoint fallback by scanning indexed `cmap`s.
+With it selected, the entire font path — resolution, metrics, coverage, shaping-tables, outlines — is
+Skia-free (only the final geometry rasterization is the drawing backend's job). Validated: `Given_TextBlock`
+103/103 on the default Skia resolver *and* with `UseManagedFonts` (DejaVu resolved via managed lookup on Linux).
+**Backend selection moved off environment variables:** `DrawingBackendOptions`
 (`UseManagedFonts`/`UseManagedGeometry`/`UseManagedImageDecoder`), set by the host at init, replaces the former
-`UNO_MANAGED_*` toggles.
+`UNO_MANAGED_*` toggles (the SamplesApp host bridges those env vars to the options as a dev/test affordance).
 
 ---
 

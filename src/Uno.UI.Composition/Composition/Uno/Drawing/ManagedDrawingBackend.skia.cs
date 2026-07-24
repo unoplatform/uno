@@ -19,7 +19,9 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public sealed class ManagedDrawingBackend : IDrawingBackend
 {
-	public IFontManager FontManager => throw new NotImplementedException("Managed font resolution is not yet wired here; use SkiaDrawingBackend with DrawingBackendOptions.UseManagedFonts.");
+	private readonly ManagedFontManager _fontManager = new();
+
+	public IFontManager FontManager => _fontManager;
 
 	public IPathBuilder CreatePathBuilder() => new ManagedPathBuilder();
 
