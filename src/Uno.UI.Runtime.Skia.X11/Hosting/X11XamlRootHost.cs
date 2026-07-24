@@ -522,6 +522,31 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
 		_ = XLib.XSetWMProtocols(RootX11Window.Display, RootX11Window.Window, new[] { deleteWindow }, 1);
 
+		// Advertise the process owning the window. Per EWMH, _NET_WM_PID is only valid alongside
+		// WM_CLIENT_MACHINE (the hostname the pid is valid on). Desktop environments use these to
+		// tie the window to its process, e.g. KDE Plasma's task manager matches audio streams to
+		// taskbar buttons by pid, and WMs can offer to kill an unresponsive window's process.
+		_ = XLib.XChangeProperty(
+			display,
+			RootX11Window.Window,
+			X11Helper.GetAtom(display, X11Helper._NET_WM_PID),
+			X11Helper.GetAtom(display, X11Helper.XA_CARDINAL),
+			32,
+			PropertyMode.Replace,
+			new IntPtr[] { (IntPtr)Environment.ProcessId },
+			1);
+
+		var hostname = System.Text.Encoding.ASCII.GetBytes(Environment.MachineName);
+		_ = XLib.XChangeProperty(
+			display,
+			RootX11Window.Window,
+			X11Helper.GetAtom(display, X11Helper.WM_CLIENT_MACHINE),
+			X11Helper.GetAtom(display, X11Helper.XA_STRING),
+			8,
+			PropertyMode.Replace,
+			hostname,
+			hostname.Length);
+
 		lock (_x11WindowToXamlRootHostMutex)
 		{
 			_firstWindowCreated = true;
