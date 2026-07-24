@@ -12,6 +12,8 @@ public class Given_HotReloadManager
 {
 	private static readonly TimeSpan _testTimeout = TimeSpan.FromSeconds(30);
 
+	public TestContext TestContext { get; set; } = null!;
+
 	[TestMethod]
 	[Description(
 		"A batch whose files intersect an in-flight operation merges into it, but its compile " +
@@ -307,6 +309,48 @@ public class Given_HotReloadManager
 		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.Failed, "a solution that does not compile blocks the reload");
 		harness.Handler.Calls.Should().ContainSingle()
 			.Which.Result.Should().Be(HotReloadOperationResult.Failed);
+	}
+
+	// ── Spec 055: the pipeline's own info-file write must never re-trigger a pass ──
+
+	[TestMethod]
+	[Description(
+		"Spec 055 R1: a batch fully reduced by the updater (reference-equal solution, entries reported " +
+		"in UpToDateChanges) short-circuits as a NoChanges completion — the emitter is never invoked " +
+		"and no blocked-compilation audit line is produced.")]
+	public async Task When_FullyReducedBatch_Then_NoChangesWithoutEmitNorAudit()
+	{
+		var ct = TestContext.CancellationTokenSource.Token;
+		var emitInvoked = false;
+		using var harness = new HotReloadManagerHarness(
+			_ =>
+			{
+				emitInvoked = true;
+				return Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], []));
+			},
+			onUpdate: solution =>
+			{
+				// Mirror the real updater: up-to-date entries are surfaced via EditedDocuments (with
+				// their file path), never IgnoredFiles. Build a document to reference but return the
+				// original solution unchanged, so the reference-equality NoChanges short-circuit fires.
+				var docId = DocumentId.CreateNewId(solution.ProjectIds[0]);
+				var upToDateDoc = solution
+					.AddDocument(docId, "Model.cs", "class Model { }", filePath: "/work/Model.cs")
+					.GetDocument(docId)!;
+				return new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]))
+				{
+					UpToDateChanges = ChangeSet.Empty with { EditedDocuments = [upToDateDoc] },
+				};
+			});
+
+		var batch = ImmutableHashSet.Create("/work/Model.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), ct).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.NoChanges);
+		emitInvoked.Should().BeFalse("a fully-reduced batch must not reach the emitter");
+		harness.Reporter.Outputs.Should().NotContain(m => m.Contains("Hot reload blocked"), "a no-op batch must not land in the blocked-compilation audit");
+		harness.Reporter.Outputs.Should().Contain(m => m.Contains("No changes found"));
+		harness.Reporter.VerboseMessages.Should().Contain(m => m.Contains("already up to date") && m.Contains("Model.cs"));
 	}
 
 	private sealed record MarkerSolutionUpdateResult(Solution Solution, ChangeSet IgnoredChanges, string Marker)
