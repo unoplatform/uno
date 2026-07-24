@@ -327,6 +327,14 @@ public sealed class ManagedFontManager : IFontManager
 
 	private static IEnumerable<string> GetFontDirectories()
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			// The browser sandbox exposes no OS font directory. This filesystem resolver finds nothing here;
+			// WebAssembly needs a bundled-font resolver instead (see the drawing-backend doc). Fail soft: an
+			// empty index means MatchFamily/MatchCharacter return null and the caller falls back.
+			yield break;
+		}
+
 		if (OperatingSystem.IsWindows())
 		{
 			yield return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
