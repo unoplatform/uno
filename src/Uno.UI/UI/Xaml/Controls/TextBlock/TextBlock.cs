@@ -1324,7 +1324,10 @@ namespace Microsoft.UI.Xaml.Controls
 		public new bool Focus(FocusState value) => base.Focus(value);
 
 		internal override bool IsFocusable =>
-			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
+#if __CROSSRUNTIME__
+			// WinUI: CTextBlock::IsFocusable requires IsActive() (the element is in the live tree).
+			IsActiveOrAttachedUnderActiveAncestor() &&
+#endif
 			IsVisible() &&
 			// Uno-specific: On Android Skia, we force GetCaretBrowsingModeEnable so that TextBlocks can be navigated
 			// with TalkBack. In this case, we want IsFocusable to be true for the TextBlock to be considered

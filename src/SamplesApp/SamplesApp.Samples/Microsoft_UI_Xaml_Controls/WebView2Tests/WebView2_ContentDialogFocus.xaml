@@ -1,0 +1,35 @@
+﻿<UserControl
+    x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_ContentDialogFocus"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="640"
+            Padding="24"
+            HorizontalAlignment="Left"
+            Spacing="16">
+            <TextBlock
+                FontSize="20"
+                FontWeight="Bold"
+                Text="WebView2 focus/clicks in a ContentDialog (Win32 Skia Desktop)"
+                TextWrapping="Wrap" />
+
+            <TextBlock Text="Click 'Open SSO Modal' below — a ContentDialog opens hosting a WebView2 with a text &lt;input&gt; (mirrors the SSO WebView2 repro). Click into the input and try typing." TextWrapping="Wrap" />
+
+            <TextBlock
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                Text="Bug (pre-fix): keystrokes go nowhere, the input never focuses, and the cursor is stuck. Fixed: the input turns green and updates on every keystroke, showing the I-beam cursor."
+                TextWrapping="Wrap" />
+
+            <Button
+                x:Name="OpenDialogButton"
+                AutomationProperties.AutomationId="WebView2_ContentDialogFocus_OpenDialog"
+                Click="OpenDialogButton_Click"
+                Content="Open SSO Modal (ContentDialog)" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

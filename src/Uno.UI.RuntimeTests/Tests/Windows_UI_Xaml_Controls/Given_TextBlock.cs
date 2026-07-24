@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using System.Collections.Generic;
@@ -1672,7 +1671,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Hello ", await ClipboardHelper.WaitForTextAsync("Hello "));
 		}
 
 #if !HAS_INPUT_INJECTOR
@@ -1719,7 +1718,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("FirstLine", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("FirstLine", await ClipboardHelper.WaitForTextAsync("FirstLine"));
 
 			// move to the center of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 25));
@@ -1734,7 +1733,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Second", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Second", await ClipboardHelper.WaitForTextAsync("Second"));
 
 			// move to the start of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(0, 25));
@@ -1749,7 +1748,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(" ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(" ", await ClipboardHelper.WaitForTextAsync(" "));
 		}
 
 		[TestMethod]
@@ -1847,7 +1846,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, mod));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(SUT.Text, await ClipboardHelper.WaitForTextAsync(SUT.Text));
 		}
 
 		[TestMethod]
@@ -1949,7 +1948,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("world", await ClipboardHelper.WaitForTextAsync("world"));
 		}
 
 		[TestMethod]

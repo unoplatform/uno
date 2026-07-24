@@ -144,55 +144,70 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 
 	/// <summary>
 	/// Composes the target framework the application is running on, from data available at
-	/// runtime only: the platform is compile-time knowledge of this (per-flavor) client
-	/// assembly (except for the skia flavor, which serves several runtimes and completes the
-	/// picture with a runtime check), the framework version comes from the application assembly's
+	/// runtime only: the platform is probed through <see cref="OperatingSystem"/> checks, the
+	/// framework version comes from the application assembly's
 	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute"/> (falling back to the
 	/// runtime version). This intentionally does NOT rely on MSBuild property capture, so it
 	/// stays correct regardless of how the IDE orchestrated the build.
 	/// </summary>
-	private static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
+	// Internal (rather than private) to allow validation from runtime tests via InternalsVisibleTo.
+	internal static string GetRuntimeTargetFramework(System.Reflection.Assembly appAssembly)
 	{
-		Version? frameworkVersion = null;
-		try
-		{
-			if (appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
-					is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } frameworkName }, ..]
-				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
-			{
-				frameworkVersion = parsed.Version;
-			}
-		}
-		catch (Exception)
-		{
-			// Malformed attribute — fall back to the runtime version below.
-		}
+		var frameworkName = appAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false)
+			is [System.Runtime.Versioning.TargetFrameworkAttribute { FrameworkName: { Length: > 0 } name }, ..]
+			? name
+			: null;
 
-		frameworkVersion ??= Environment.Version;
+		var frameworkVersion = ResolveFrameworkVersion(frameworkName);
 
+		// The platform MUST be probed at runtime, not from compile-time symbols: the skia flavor
+		// of this assembly is compiled for the plain `netX.0` TFM yet serves every skia-rendering
+		// head — the uno-runtime asset selection swaps it in for `netX.0-android`, `netX.0-ios`,
+		// etc. heads too, where `__ANDROID__`-style symbols were never defined. Mac Catalyst is
+		// tested before iOS as it also reports IsIOS(). On desktop no check matches, and the
+		// flavor cannot tell a `netX.0-desktop` head from a plain `netX.0` one, so it reports the
+		// `skia` pseudo-platform which the server treats as matching either spelling.
 		var platform =
-#if __ANDROID__ || ANDROID
-			"android";
-#elif __TVOS__ || TVOS
-			"tvos";
-#elif __MACCATALYST__ || MACCATALYST
-			"maccatalyst";
-#elif __IOS__ || IOS
-			"ios";
-#elif __WASM__
-			// The (legacy) native-rendering wasm flavor of this assembly only serves browser heads.
-			"browserwasm";
-#else
-			// The skia flavor of this assembly is compiled for the plain `netX.0` TFM and serves
-			// every skia-rendering head that resolves the `skia` uno-runtime folder — desktop AND
-			// browser (`netX.0-browserwasm` with the skia renderer, the modern default). The
-			// browser case is only distinguishable at runtime. For desktop, the flavor still
-			// cannot tell `netX.0-desktop` from a plain `netX.0` head, so it reports the `skia`
-			// pseudo-platform which the server treats as matching either spelling.
-			OperatingSystem.IsBrowser() ? "browserwasm" : "skia";
-#endif
+			OperatingSystem.IsAndroid() ? "android"
+			: OperatingSystem.IsTvOS() ? "tvos"
+			: OperatingSystem.IsMacCatalyst() ? "maccatalyst"
+			: OperatingSystem.IsIOS() ? "ios"
+			: OperatingSystem.IsBrowser() ? "browserwasm"
+			: "skia";
 
 		return $"net{frameworkVersion.Major}.{frameworkVersion.Minor}-{platform}";
+	}
+
+	/// <summary>
+	/// The framework version reported when the application's target framework cannot be resolved
+	/// (absent, malformed, or a non-.NETCoreApp moniker) — the version of the running .NET runtime.
+	/// </summary>
+	internal static Version FallbackVersion => Environment.Version;
+
+	/// <summary>
+	/// Parses the .NETCoreApp framework version out of a
+	/// <see cref="System.Runtime.Versioning.TargetFrameworkAttribute.FrameworkName"/> value
+	/// (e.g. <c>".NETCoreApp,Version=v10.0"</c> → <c>10.0</c>), falling back to
+	/// <see cref="FallbackVersion"/> when the value is absent, malformed, or not a
+	/// .NETCoreApp moniker. Kept free of the platform <c>#if</c> in
+	/// <see cref="GetRuntimeTargetFramework"/> so the fallback is unit-testable.
+	/// </summary>
+	internal static Version ResolveFrameworkVersion(string? frameworkName)
+	{
+		try
+		{
+			if (frameworkName is { Length: > 0 }
+				&& new System.Runtime.Versioning.FrameworkName(frameworkName) is { Identifier: ".NETCoreApp" } parsed)
+			{
+				return parsed.Version;
+			}
+		}
+		catch (ArgumentException)
+		{
+			// Malformed FrameworkName — fall back to the runtime version below.
+		}
+
+		return FallbackVersion;
 	}
 
 	private void ConfigureHotReloadMode()
