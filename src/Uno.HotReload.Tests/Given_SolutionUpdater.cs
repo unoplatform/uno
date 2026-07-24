@@ -14,7 +14,7 @@ public class Given_SolutionUpdater
 
 	[TestMethod]
 	[Description(
-		"Spec 055 R2: a change-set entry whose on-disk content is byte-identical to the document's " +
+		"Spec 055 R1: a change-set entry whose on-disk content is byte-identical to the document's " +
 		"current text is not re-applied — a fully-reduced batch returns the original solution " +
 		"instance (reference-equal), enabling the manager's NoChanges short-circuit — and the " +
 		"skipped entry is surfaced through UpToDateChanges.")]
@@ -36,13 +36,13 @@ public class Given_SolutionUpdater
 
 		var result = await new SolutionUpdater().UpdateAsync(solution, Edits([solution.GetDocument(documentId)!]), ct);
 
-		result.Solution.Should().BeSameAs(solution, "byte-identical content must not fork the snapshot (spec 055 R2)");
+		result.Solution.Should().BeSameAs(solution, "byte-identical content must not fork the snapshot (spec 055 R1)");
 		result.UpToDateChanges.EditedDocuments.Should().ContainSingle()
 			.Which.Id.Should().Be(documentId);
 	}
 
 	[TestMethod]
-	[Description("Spec 055 R2: genuinely different on-disk content still forks the solution and applies the new text.")]
+	[Description("Spec 055 R1: genuinely different on-disk content still forks the solution and applies the new text.")]
 	public async Task When_DiskContentDiffers_Then_TextIsApplied()
 	{
 		var ct = TestContext.CancellationTokenSource.Token;
@@ -68,7 +68,7 @@ public class Given_SolutionUpdater
 
 	[TestMethod]
 	[Description(
-		"Spec 055 R2: the up-to-date skip applies to additional documents too — a XAML additional " +
+		"Spec 055 R1: the up-to-date skip applies to additional documents too — a XAML additional " +
 		"document re-observed with identical bytes is the same no-op.")]
 	public async Task When_AdditionalDocumentContentIsIdentical_Then_OriginalSolutionInstanceReturned()
 	{
@@ -91,14 +91,14 @@ public class Given_SolutionUpdater
 			Edits([], [solution.GetAdditionalDocument(documentId)!]),
 			ct);
 
-		result.Solution.Should().BeSameAs(solution, "byte-identical additional-document content must not fork the snapshot (spec 055 R2)");
+		result.Solution.Should().BeSameAs(solution, "byte-identical additional-document content must not fork the snapshot (spec 055 R1)");
 		result.UpToDateChanges.EditedAdditionalDocuments.Should().ContainSingle()
 			.Which.Id.Should().Be(documentId);
 	}
 
 	[TestMethod]
 	[Description(
-		"Spec 055 R2: a mixed batch (one file already up to date, one genuinely changed) forks the " +
+		"Spec 055 R1: a mixed batch (one file already up to date, one genuinely changed) forks the " +
 		"solution but only re-applies the changed document; the identical one is reported up to date.")]
 	public async Task When_MixedBatch_Then_OnlyChangedDocumentIsApplied()
 	{
@@ -135,7 +135,7 @@ public class Given_SolutionUpdater
 
 	[TestMethod]
 	[Description(
-		"Spec 055 R2 boundary: the skip only compares realized texts. A document whose text was " +
+		"Spec 055 R1 boundary: the skip only compares realized texts. A document whose text was " +
 		"never read into the snapshot cannot be a re-observation, so the edit is applied (never " +
 		"swallow a first edit).")]
 	public async Task When_DocumentTextNotRealized_Then_EditIsApplied()

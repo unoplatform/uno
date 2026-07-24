@@ -3,10 +3,9 @@
 **Repo**: `uno` (Uno.HotReload)
 **Created**: 2026-07-23
 **Status**: Resolved — implemented on this branch
-**Related**: [spec 054](../054-hotreload-audit-changeset-scope/spec.md) (the audit the
-parasite pass lands in), [spec 053](../053-hotreload-workspace-analyzer-flavor-skew/spec.md),
-[spec 050](../050-hotreload-updatefile-workspace-gate/spec.md) (R6 — the per-request
-info file)
+**Related**: [#23861](https://github.com/unoplatform/uno/issues/23861) (the blocked-compilation
+audit the parasite pass lands in), [spec 050](../050-hotreload-updatefile-workspace-gate/spec.md)
+(R6 — the per-request info file)
 
 ## Overview & Objectives
 
@@ -29,10 +28,16 @@ parasite pass then:
    new snapshot — reference inequality), so it does **not** take the
    `result.Solution == originalSolution` → `NoChanges` shortcut;
 2. emits (`Found 0 metadata updates after 0.007s` — measured) and falls into the
-   `(no rude edit, 0 update)` audit branch (spec 054) — observed completing as `Failed`;
-3. worst of all, if it merged into the originating request's still-open operation, its
-   outcome **overwrites the real one** (observed live: the request's edits applied
-   successfully, the request reported `Failed`).
+   `(no rude edit, 0 update)` audit branch ([#23861](https://github.com/unoplatform/uno/issues/23861))
+   — observed completing as `Failed`;
+3. if it merged into the originating request's **still-open** operation, its outcome degrades
+   the real one. The normal path is already guarded: post-`8076b444aa` the batch↔operation
+   merge decision is under the solution-update gate, so an operation completed by its own pass
+   routes the parasite to a *fresh* operation (no overwrite). What remains exposed is the
+   window where the origin operation is still open when the parasite runs under the gate — the
+   `ProcessFileChanges` exception path (which completes the operation *after* the gate is
+   released) and the auto-retry / deferred-completion window. Observed live: the request's
+   edits applied successfully, yet it reported `Failed`.
 
 Objective: a batch whose content brings nothing new must resolve to a **silent no-op** — it
 must not fork the solution, must not emit, and must not run the audit. The fix is
@@ -48,13 +53,20 @@ on-disk content with the document's current text and **skip identical writes**.
 
 - Comparison: `SourceText.ContentEquals` — regular documents **and** additional documents
   (a XAML additional document re-observed with identical bytes is the same no-op).
+  `ContentEquals` (rather than `GetChecksum`) is deliberate for this access pattern: the
+  compared disk text is read fresh every cycle (`SourceText.From(stream)`), so it never
+  carries a cached checksum — a checksum path would pay a full hash over the fresh text on
+  every cycle, whereas `ContentEquals` short-circuits on length and first difference (the
+  common *actually-changed* case bails immediately), and each document is compared at most
+  once per pass, so there is no repeated-comparison amortisation for a cached hash to exploit.
 - Only *realized* texts are compared (`TryGetText`): an unrealized text means the document
   was never read into this snapshot, so the batch cannot be a re-observation of it — the
   edit is applied unconditionally (never swallow a first edit).
 - A batch where **every** entry was skipped returns the *original* solution instance
   (reference-equal), so the existing `result.Solution == originalSolution` → `NoChanges`
   branch in `ProcessSolutionChanged` short-circuits everything downstream — **before the
-  emit**, so no metadata-update roundtrip and no blocked-compilation audit (spec 054).
+  emit**, so no metadata-update roundtrip and no blocked-compilation audit
+  ([#23861](https://github.com/unoplatform/uno/issues/23861)).
 - Skipped entries are surfaced on the result as `SolutionUpdateResult.UpToDateChanges`
   (a `ChangeSet`) — they were **consumed** (their content is in the solution), *not*
   ignored. The manager reports them with a single verbose line.
@@ -82,7 +94,8 @@ normally.
   untouched).
 - Touching the operation lifecycle: `TryMerge` and the merge-under-gate decision
   (`8076b444aa`) are untouched.
-- The audit itself (spec 054) and the generator-loading skew (spec 053).
+- The audit itself ([#23861](https://github.com/unoplatform/uno/issues/23861)) and the
+  analyzer/generator flavor-loading skew.
 - De-duplicating *semantic* no-ops (identical AST after reformat, etc.) — bytes only.
 
 ## Known residual (accepted)
