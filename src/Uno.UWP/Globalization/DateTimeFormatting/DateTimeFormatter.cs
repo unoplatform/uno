@@ -58,12 +58,15 @@ public sealed partial class DateTimeFormatter
 
 		_firstCulture = new CultureInfo(Languages[0]);
 
-		try
+		// The input can be either a template or a pattern. We try parsing it as a template
+		// first (without throwing), and fall back to treating it as a pattern otherwise.
+		// Using a non-throwing TryParse here avoids first-chance exceptions for the common
+		// pattern case (e.g. TimePicker's "{hour.integer(1)}"), which are noise when debugging.
+		var templateParser = new TemplateParser(formatTemplate);
+		if (templateParser.TryParse(out _))
 		{
 			// Template example:
 			// "year month day dayofweek hour timezone" (that's just an example)
-			var templateParser = new TemplateParser(formatTemplate);
-			templateParser.Parse();
 			IncludeYear = templateParser.Info.IncludeYear;
 			IncludeMonth = templateParser.Info.IncludeMonth;
 			IncludeDay = templateParser.Info.IncludeDay;
@@ -75,7 +78,7 @@ public sealed partial class DateTimeFormatter
 			IsShortDate = templateParser.Info.IsShortDate;
 			IsLongDate = templateParser.Info.IsLongDate;
 			IsShortTime = templateParser.Info.IsShortTime;
-			IsShortDate = templateParser.Info.IsShortDate;
+			IsLongTime = templateParser.Info.IsLongTime;
 
 			// NOTE: We intentionally don't set the user provided template.
 			// Instead, we parse and re-build the template string.
@@ -88,20 +91,13 @@ public sealed partial class DateTimeFormatter
 			Patterns = [patternBuiltFromTemplate];
 			_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		}
-		catch (Exception ex)
+		else
 		{
-			try
-			{
-				// Pattern example:
-				// "Hello {year.full} Hello2 {month.full}" (that's just an example)
-				_patternRootNode = new PatternParser(formatTemplate).Parse();
-				Template = formatTemplate;
-				Patterns = [formatTemplate];
-			}
-			catch (Exception ex2)
-			{
-				throw new AggregateException(ex, ex2);
-			}
+			// Pattern example:
+			// "Hello {year.full} Hello2 {month.full}" (that's just an example)
+			_patternRootNode = new PatternParser(formatTemplate).Parse();
+			Template = formatTemplate;
+			Patterns = [formatTemplate];
 		}
 
 		var calendar = new Calendar(Languages);
