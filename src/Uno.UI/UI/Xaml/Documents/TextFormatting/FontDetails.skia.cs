@@ -1,26 +1,19 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Runtime.InteropServices;
 using HarfBuzzSharp;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
-// The text layer talks to the neutral <see cref="IFont"/> handle (metrics/coverage/outlines/tables) and the
-// HarfBuzz <see cref="Font"/> (shaping); it never touches a Skia font type. <see cref="Typeface"/> is the interim
-// resolution handle (family/style → face) used only by the fallback path in Run — it stays SkiaSharp until the
-// font-manager seam replaces it.
-internal record FontDetails(IFont FontHandle, SKTypeface Typeface, float FontSize, float FontScaleX, Font Font)
+// The text layer talks only to the neutral <see cref="IFont"/> handle (metrics/coverage/outlines/tables) and the
+// HarfBuzz <see cref="Font"/> (shaping); font resolution (family/style → handle) is owned by the backend's
+// <see cref="IFontManager"/>, so nothing here touches a Skia font type.
+internal record FontDetails(IFont FontHandle, float FontSize, float FontScaleX, Font Font)
 {
 	private (float textScaleX, float textScaleY)? _textScale;
-
-	// Opt-in switch to render text through the SkiaSharp-free managed font backend (ManagedFont) instead of
-	// SkiaFont. Set UNO_MANAGED_FONT_BACKEND=1 before launching to exercise the alternative drawing backend.
-	private static readonly bool _useManagedFontBackend =
-		Environment.GetEnvironmentVariable("UNO_MANAGED_FONT_BACKEND") is "1" or "true";
 
 	// TODO: Investigate best value to use here. SKShaper uses a constant 512 scale, Avalonia uses default font scale. Not 100% sure how much difference it
 	// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
@@ -59,47 +52,13 @@ internal record FontDetails(IFont FontHandle, SKTypeface Typeface, float FontSiz
 		return new Blob(handle.AddrOfPinnedObject(), bytes.Length, MemoryMode.ReadOnly, handle.Free);
 	}
 
-	internal static FontDetails Create(SKTypeface skTypeFace, float fontSize) => _createMemorized(skTypeFace, fontSize);
+	internal static FontDetails Create(IFont fontHandle, float fontSize) => _createMemorized(fontHandle, fontSize);
 
-	private static readonly Func<SKTypeface, float, FontDetails> _createMemorized = ((Func<SKTypeface, float, FontDetails>)CreateInternal).AsMemoized();
-	private static FontDetails CreateInternal(SKTypeface skTypeFace, float fontSize)
+	private static readonly Func<IFont, float, FontDetails> _createMemorized = ((Func<IFont, float, FontDetails>)CreateInternal).AsMemoized();
+	private static FontDetails CreateInternal(IFont fontHandle, float fontSize)
 	{
-		var skFont = CreateSKFont(skTypeFace, fontSize);
-		var fontHandle = CreateFontHandle(skFont);
 		var hbFont = CreateHarfBuzzFont(fontHandle);
-
-		return new(fontHandle, skTypeFace, skFont.Size, skFont.ScaleX, hbFont);
-	}
-
-	private static IFont CreateFontHandle(SKFont skFont) =>
-		_useManagedFontBackend && TryCreateManagedFont(skFont) is { } managed ? managed : new SkiaFont(skFont);
-
-	private static IFont? TryCreateManagedFont(SKFont skFont)
-	{
-		var typeface = skFont.Typeface;
-		if (typeface is null)
-		{
-			return null;
-		}
-
-		using var stream = typeface.OpenStream(out var ttcIndex);
-		if (stream is null)
-		{
-			return null;
-		}
-
-		var bytes = new byte[stream.Length];
-		return stream.Read(bytes, bytes.Length) == bytes.Length && ManagedFont.TryCreate(bytes, ttcIndex, skFont.Size, out var managed)
-			? managed
-			: null;
-	}
-
-	private static SKFont CreateSKFont(SKTypeface skTypeFace, float fontSize)
-	{
-		var skFont = new SKFont(skTypeFace, fontSize);
-		skFont.Edging = SKFontEdging.SubpixelAntialias;
-		skFont.Subpixel = true;
-		return skFont;
+		return new(fontHandle, fontSize, 1.0f, hbFont);
 	}
 
 	private static Font CreateHarfBuzzFont(IFont font)

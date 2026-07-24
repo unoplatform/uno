@@ -14,7 +14,6 @@ using HarfBuzzSharp;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Buffers;
 using Uno.Disposables;
 using Uno.UI.Composition.Drawing;
@@ -94,7 +93,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	});
 
-	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -1440,13 +1438,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (!_skFontManagerDefaultMatchCharacterCache.TryGetValue(codepoint, out var defaultSkiaFontTypeface))
+		if (DrawingBackend.Current.FontManager.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
 		{
-			defaultSkiaFontTypeface = _skFontManagerDefaultMatchCharacterCache[codepoint] = SKFontManager.Default.MatchCharacter(codepoint);
-		}
-		if (defaultSkiaFontTypeface is { } typeface)
-		{
-			return FontDetails.Create(typeface, fontSize);
+			return FontDetails.Create(fallback, fontSize);
 		}
 
 		return null;

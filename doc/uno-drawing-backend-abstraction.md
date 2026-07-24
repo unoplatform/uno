@@ -267,6 +267,15 @@ core assembly Skia-*free*. Option A stays a fallback for platforms without a goo
 primary path. Variable-font positioning is handled at the resolver seam (platform instancing where available;
 otherwise a follow-up in `ManagedFont`).
 
+**Status — the seam exists.** `IFontManager` (`CreateFont` from bytes / `MatchFamily` / `MatchCharacter` /
+`GetDefaultFont`, all returning `IFont`) hangs off `IDrawingBackend.FontManager`. `SkiaFontManager` holds all
+the Skia resolution (`SKTypeface.FromData`/`FromFamilyName`, `.ttc` face selection, variable-font axes,
+`SKFontManager.MatchCharacter`); `FontDetailsCache`/`Run`/`UnicodeText` now resolve through it with `IFont`
+currency and no direct Skia. `ManagedFontManager` (system-font enumeration, option A, used as the managed
+resolver) is the remaining piece. **Backend selection moved off environment variables:** `DrawingBackendOptions`
+(`UseManagedFonts`/`UseManagedGeometry`/`UseManagedImageDecoder`), set by the host at init, replaces the former
+`UNO_MANAGED_*` toggles.
+
 ---
 
 ## Image decode — `ManagedImageDecoder`
