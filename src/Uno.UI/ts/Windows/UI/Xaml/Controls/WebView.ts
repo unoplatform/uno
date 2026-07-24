@@ -30,11 +30,46 @@ namespace Microsoft.UI.Xaml.Controls {
         }
 
         static executeScript(htmlId: string, script: string): string {
-            return ((<HTMLIFrameElement>document.getElementById(htmlId)).contentWindow as any).eval(script);
+            const result = ((<HTMLIFrameElement>document.getElementById(htmlId)).contentWindow as any).eval(script);
+            const serialized = JSON.stringify(result);
+            return serialized === undefined ? "null" : serialized;
+        }
+
+        static postWebMessage(htmlId: string, payload: string, isJson: boolean): void {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            let webview: any;
+            try {
+                // Reading properties of a cross-origin contentWindow throws SecurityError.
+                webview = (iframe.contentWindow as any)?.chrome?.webview;
+            } catch {
+                webview = undefined;
+            }
+            if (typeof webview?.__unoDispatchMessage !== "function") {
+                throw new Error("Web messaging is available only to same-origin WebView content on WebAssembly.");
+            }
+
+            webview.__unoDispatchMessage(isJson ? JSON.parse(payload) : payload);
+        }
+
+        static dispatchWebMessage(htmlId: string, payload: string): void {
+            WebView.unoExports.DispatchWebMessage(htmlId, payload);
+        }
+
+        static showPrintUI(htmlId: string): void {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            if (!iframe.contentWindow) {
+                throw new Error("The WebView is not attached.");
+            }
+
+            iframe.contentWindow.print();
         }
 
         static getDocumentTitle(htmlId: string): string {
-            return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument.title;
+            try {
+                return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument?.title ?? "";
+            } catch {
+                return "";
+            }
         }
 
         static setAttribute(htmlId: string, name: string, value: string) {
@@ -94,12 +129,28 @@ namespace Microsoft.UI.Xaml.Controls {
 
         static cleanupEvents(htmlId: string) {
             const iframe = <HTMLIFrameElement>document.getElementById(htmlId);
+            iframe?.removeEventListener('load', WebView.onLoad);
+        }
+
+        static close(htmlId: string) {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement | null;
+            if (!iframe) {
+                return;
+            }
+
             iframe.removeEventListener('load', WebView.onLoad);
+            iframe.removeAttribute("srcdoc");
+            iframe.setAttribute("src", "about:blank");
         }
 
         private static onLoad(event: Event) {
             const iframe = event.currentTarget as HTMLIFrameElement;
-            const absoluteUrl = iframe.contentWindow.location.href;
+            let absoluteUrl = iframe.getAttribute("src") ?? "";
+            try {
+                absoluteUrl = iframe.contentWindow?.location.href ?? absoluteUrl;
+            } catch {
+                // Cross-origin frames expose the load event but not their location.
+            }
             WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
 
             try {

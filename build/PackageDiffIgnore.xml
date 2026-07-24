@@ -458,6 +458,7 @@
 
 			<!-- BEGIN WebView -->
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName=" System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs..ctor()" reason="Should not be public" />
@@ -2906,6 +2907,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <!-- CoreWebView2InitializedEventArgs is a non-activatable args type in WinUI (framework-raised, exposes Exception); the public parameterless ctor is removed. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Aligned to WinUI IDL (non-activatable args type)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater.get_Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />

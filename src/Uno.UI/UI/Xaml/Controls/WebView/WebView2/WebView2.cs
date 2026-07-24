@@ -1,10 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -18,7 +21,9 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class WebView2 : Control, IWebView
 {
 	private bool _sourceChangeFromCore;
-	private bool _coreWebView2Initialized;
+	private bool _isClosed;
+	private int _coreWebView2InitializationCompleted;
+	private CoreWebView2? _coreWebView2;
 
 	/// <summary>
 	/// Initializes a new instance of the WebView2 class.
@@ -26,13 +31,16 @@ public partial class WebView2 : Control, IWebView
 	public WebView2()
 	{
 		DefaultStyleKey = typeof(WebView2);
+		FlowDirection = FlowDirection.LeftToRight;
+		IsTabStop = true;
+		Background = new SolidColorBrush(Colors.Transparent);
 
-		CoreWebView2 = new CoreWebView2(this);
-		CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
-		CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-		CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-		CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
-		CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+		var coreWebView2 = _coreWebView2 = new CoreWebView2(this);
+		coreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
+		coreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+		coreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+		coreWebView2.SourceChanged += CoreWebView2_SourceChanged;
+		coreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
 
 		Loaded += WebView2_Loaded;
 #if __SKIA__
@@ -40,25 +48,33 @@ public partial class WebView2 : Control, IWebView
 #endif
 	}
 
-	public CoreWebView2 CoreWebView2 { get; }
+	// WinRT projections expose this as non-nullable even though WinUI clears the
+	// reference after Close(). Keep the projected signature while preserving that
+	// runtime behavior.
+	public CoreWebView2 CoreWebView2 => _coreWebView2!;
+
+	private CoreWebView2 CoreWebView2OrThrow =>
+		_coreWebView2 ?? throw new ObjectDisposedException(nameof(WebView2));
 
 	bool IWebView.IsLoaded => IsLoaded;
+
+	bool IWebView.RequiresExplicitInitialization => true;
 
 	bool IWebView.SwitchSourceBeforeNavigating => false; // WebView2 switches source only when navigation completes.
 
 	CoreDispatcher IWebView.Dispatcher => Dispatcher;
 
-	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
+	protected override void OnApplyTemplate() => _coreWebView2?.OnOwnerApplyTemplate();
 
 	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
-		if (!_coreWebView2Initialized)
+		if (_isClosed)
 		{
-			EnsureCoreWebView2();
+			return;
 		}
 
 #if __SKIA__
-		CoreWebView2.OnLoaded();
+		_coreWebView2?.OnLoaded();
 #endif
 	}
 
@@ -69,31 +85,133 @@ public partial class WebView2 : Control, IWebView
 	public IAsyncAction EnsureCoreWebView2Async() =>
 		AsyncAction.FromTask(async ct =>
 		{
-			if (!_coreWebView2Initialized)
-			{
-				EnsureCoreWebView2();
-			}
-
-			await CoreWebView2.EnsureNativeWebViewAsync();
+			ThrowIfClosed();
+			await EnsureCoreWebView2CoreAsync();
 		});
 
-	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
-		CoreWebView2.ExecuteScriptAsync(javascriptCode);
+	/// <summary>
+	/// Initializes CoreWebView2 with a custom environment.
+	/// </summary>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment? environment) =>
+		EnsureCoreWebView2Async(environment, controllerOptions: null);
 
-	public void Reload() => CoreWebView2.Reload();
-
-	public void GoForward() => CoreWebView2.GoForward();
-
-	public void GoBack() => CoreWebView2.GoBack();
-
-	public void NavigateToString(string htmlContent) => CoreWebView2.NavigateToString(htmlContent);
-
-	private void EnsureCoreWebView2()
-	{
-		if (!_coreWebView2Initialized)
+	/// <summary>
+	/// Initializes CoreWebView2 with a custom environment and controller options.
+	/// </summary>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment? environment, CoreWebView2ControllerOptions? controllerOptions) =>
+		AsyncAction.FromTask(async ct =>
 		{
-			CoreWebView2Initialized?.Invoke(this, new());
-			_coreWebView2Initialized = true;
+			ThrowIfClosed();
+			CoreWebView2OrThrow.SetCustomEnvironment(environment, controllerOptions);
+			await EnsureCoreWebView2CoreAsync();
+		});
+
+	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode)
+	{
+		ThrowIfClosed();
+		if (!CoreWebView2OrThrow.HasNativeWebView)
+		{
+			throw new InvalidOperationException("ExecuteScriptAsync requires an initialized CoreWebView2. Call EnsureCoreWebView2Async first.");
+		}
+
+		return CoreWebView2OrThrow.ExecuteScriptAsync(javascriptCode);
+	}
+
+	public void Reload()
+	{
+		ThrowIfClosed();
+		if (!CoreWebView2OrThrow.HasNativeWebView)
+		{
+			throw new InvalidOperationException("Reload requires an initialized CoreWebView2. Call EnsureCoreWebView2Async first.");
+		}
+
+		CoreWebView2OrThrow.Reload();
+	}
+
+	public void GoForward() => CoreWebView2OrThrow.GoForward();
+
+	public void GoBack() => CoreWebView2OrThrow.GoBack();
+
+	public void NavigateToString(string htmlContent)
+	{
+		ThrowIfClosed();
+		if (!CoreWebView2OrThrow.HasNativeWebView)
+		{
+			throw new InvalidOperationException("NavigateToString requires an initialized CoreWebView2. Call EnsureCoreWebView2Async first.");
+		}
+
+		CoreWebView2OrThrow.NavigateToString(htmlContent);
+	}
+
+	/// <summary>
+	/// Closes this WebView2 and releases its native web-view resources.
+	/// </summary>
+	public void Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		var coreWebView2 = _coreWebView2;
+		_coreWebView2 = null;
+		if (coreWebView2 is not null)
+		{
+			coreWebView2.NavigationStarting -= CoreWebView2_NavigationStarting;
+			coreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
+			coreWebView2.SourceChanged -= CoreWebView2_SourceChanged;
+			coreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
+			coreWebView2.Close();
+		}
+		(CanGoBack, CanGoForward) = (false, false);
+	}
+
+	private void EnsureCoreWebView2Implicitly()
+	{
+		_ = EnsureCoreWebView2ImplicitlyAsync();
+	}
+
+	private async Task EnsureCoreWebView2ImplicitlyAsync()
+	{
+		try
+		{
+			await EnsureCoreWebView2CoreAsync();
+		}
+		catch
+		{
+			// Initialization failures from Source-driven creation are reported through
+			// CoreWebView2InitializedEventArgs.Exception.
+		}
+	}
+
+	private async Task EnsureCoreWebView2CoreAsync()
+	{
+		try
+		{
+			await CoreWebView2OrThrow.EnsureNativeWebViewAsync();
+			CompleteCoreWebView2Initialization(null);
+		}
+		catch (Exception error)
+		{
+			CompleteCoreWebView2Initialization(error);
+			throw;
+		}
+	}
+
+	private void CompleteCoreWebView2Initialization(Exception? error)
+	{
+		if (Interlocked.Exchange(ref _coreWebView2InitializationCompleted, 1) == 0)
+		{
+			CoreWebView2Initialized?.Invoke(this, new CoreWebView2InitializedEventArgs(error));
+		}
+	}
+
+	private void ThrowIfClosed()
+	{
+		if (_isClosed)
+		{
+			throw new ObjectDisposedException(nameof(WebView2));
 		}
 	}
 

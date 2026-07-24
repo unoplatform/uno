@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using GLib;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
@@ -39,8 +38,167 @@ public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebVie
 	INativeWebView INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
 }
 
-public class X11NativeWebView : INativeWebView
+public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
+	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+	{
+		ct.ThrowIfCancellationRequested();
+		var tempFile = Path.Combine(Path.GetTempPath(), "uno-webview-" + Guid.NewGuid().ToString("N") + ".pdf");
+		var tempFileUri = new UriBuilder(Uri.UriSchemeFile, string.Empty) { Path = tempFile }.Uri.AbsoluteUri;
+		var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var reg = ct.Register(() => tcs.TrySetCanceled(ct));
+		RunOnGtkThread(() =>
+		{
+			try
+			{
+				var op = new WebKit.PrintOperation(_webview);
+				var printSettings = new Gtk.PrintSettings();
+				printSettings.Set("output-uri", tempFileUri);
+				printSettings.Set("output-file-format", "pdf");
+				op.PrintSettings = printSettings;
+				op.Finished += (_, _) =>
+				{
+					if (!tcs.TrySetResult(tempFile))
+					{
+						DeleteTemporaryPrintFile(tempFile);
+					}
+				};
+				op.Failed += (_, _) =>
+				{
+					DeleteTemporaryPrintFile(tempFile);
+					tcs.TrySetException(new InvalidOperationException("Print failed"));
+				};
+				op.Print();
+			}
+			catch (Exception e)
+			{
+				DeleteTemporaryPrintFile(tempFile);
+				tcs.TrySetException(e);
+			}
+		});
+		var path = await tcs.Task;
+		try
+		{
+			var bytes = await File.ReadAllBytesAsync(path, ct);
+			return new MemoryStream(bytes, writable: false);
+		}
+		finally
+		{
+			DeleteTemporaryPrintFile(path);
+		}
+	}
+
+	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		ct.ThrowIfCancellationRequested();
+		await RunOnGtkThreadAsync(() =>
+		{
+			var op = new WebKit.PrintOperation(_webview);
+			return op.RunDialog(_window);
+		}).WaitAsync(ct);
+		return CoreWebView2PrintStatus.Succeeded;
+	}
+
+	private void DeleteTemporaryPrintFile(string path)
+	{
+		try
+		{
+			File.Delete(path);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Unable to delete temporary print file '{path}'.", e);
+			}
+		}
+	}
+
+	private const string X11CookiesNotSupported =
+		"CoreWebView2.CookieManager is not currently surfaced on the X11/WebKitGTK target. " +
+		"Use WebKit.WebContext.CookieManager directly via TryGetPlatformHandle for now.";
+
+	Task<System.Collections.Generic.IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+		=> throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookies(string name, string? uri) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteAllCookies() => throw new NotSupportedException(X11CookiesNotSupported);
+
+	private bool _requestedIsZoomControlEnabled = true;
+	private readonly System.Collections.Generic.Dictionary<string, string> _documentCreatedScripts = new();
+
+	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+	{
+		var id = Guid.NewGuid().ToString();
+		_documentCreatedScripts[id] = javaScript;
+		RunOnGtkThread(() =>
+		{
+			var script = new WebKit.UserScript(
+				javaScript,
+				WebKit.UserContentInjectedFrames.AllFrames,
+				WebKit.UserScriptInjectionTime.Start,
+				null,
+				null);
+			_webview.UserContentManager.AddScript(script);
+		});
+		return Task.FromResult(id);
+	}
+
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
+	{
+		if (!_documentCreatedScripts.Remove(id))
+		{
+			return;
+		}
+
+		RunOnGtkThread(() =>
+		{
+			_webview.UserContentManager.RemoveAllScripts();
+			foreach (var remaining in _documentCreatedScripts.Values)
+			{
+				var script = new WebKit.UserScript(
+					remaining,
+					WebKit.UserContentInjectedFrames.AllFrames,
+					WebKit.UserScriptInjectionTime.Start,
+					null,
+					null);
+				_webview.UserContentManager.AddScript(script);
+			}
+		});
+	}
+
+	string? ISupportsUserAgent.UserAgent
+	{
+		get => RunOnGtkThread(() => _webview.Settings.UserAgent);
+		set => RunOnGtkThread(() => _webview.Settings.UserAgent = value);
+	}
+
+	bool ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => RunOnGtkThread(() => _webview.Settings.EnableJavascript);
+		set => RunOnGtkThread(() => _webview.Settings.EnableJavascript = value);
+	}
+
+	bool ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _requestedIsZoomControlEnabled;
+		set
+		{
+			_requestedIsZoomControlEnabled = value;
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info("CoreWebView2Settings.IsZoomControlEnabled is not honored on the X11/WebKitGTK target.");
+			}
+		}
+	}
+
 	[ThreadStatic] private static bool _isGtkThread;
 	private static readonly Exception? _initException;
 	private static readonly bool _usingWebKit2Gtk41;
@@ -243,6 +401,24 @@ public class X11NativeWebView : INativeWebView
 		}
 	}
 
+	private static Task<T> RunOnGtkThreadAsync<T>(Func<T> func)
+	{
+		var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+		GLib.Idle.Add(() =>
+		{
+			try
+			{
+				tcs.TrySetResult(func());
+			}
+			catch (Exception e)
+			{
+				tcs.TrySetException(e);
+			}
+			return false;
+		});
+		return tcs.Task;
+	}
+
 	private static void RunOnGtkThread(Action func)
 	{
 		if (_isGtkThread)
@@ -346,7 +522,7 @@ public class X11NativeWebView : INativeWebView
 				// you'll get a double free.
 				GC.SuppressFinalize(jsval);
 			}
-			catch (GException e)
+			catch (GLib.GException e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -436,7 +612,7 @@ public class X11NativeWebView : INativeWebView
 		});
 	}
 
-	private void WebViewNotificationHandler(object o, NotifyArgs args)
+	private void WebViewNotificationHandler(object o, GLib.NotifyArgs args)
 	{
 		if (args.Property == "title")
 		{
