@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.UI.Input;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
-using Point = Windows.Foundation.Point;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Input;
 using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.Tests.Windows_UI_Input
 {
@@ -336,12 +336,11 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25); // Ignored
-			sut.ProcessMoveEvent(25 + step, 25);
+			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; the threshold pixels are absorbed and NOT recovered in a delta (see #20473).
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0)
+				v => v.Started().At(25, 25).WithEmptyCumulative()
 			);
 		}
 
@@ -379,19 +378,84 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25);
-			sut.ProcessMoveEvent(25 + step, 25);
+			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; first reported Delta starts at the next move (see #20473).
 			sut.ProcessMoveEvent(25 + step * 2, 25);
 			sut.ProcessMoveEvent(25 + step * 2 + 1, 25);
 
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_DoesNotRecoverThreshold()
+		{
+			// Regression test for #20473: when a touch scroll/pan crosses the start threshold,
+			// the gesture must NOT "recover" those threshold pixels as a delta in the first
+			// ManipulationUpdated. This matches WinUI / native iOS behavior — scrolling starts
+			// at the finger position at the moment the gesture is recognized, with no visible
+			// jump. The threshold translation is silently absorbed: Cumulative continues to
+			// track from the original press point, but Delta excludes the pre-recognition pixels.
+
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var postRecognitionMove = 10; // arbitrary > DeltaTouch.TranslateX (2)
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold, 25); // crosses the threshold — fires Started ONLY
+			sut.ProcessMoveEvent(25 + threshold + postRecognitionMove, 25); // first post-recognition move
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				// First reported Delta after recognition: only the post-recognition movement.
+				// The 'threshold' pixels are NOT re-emitted as a delta (no jump).
+				// Cumulative still tracks from the press point and so includes the threshold.
+				v => v.Delta()
+					.At(25 + threshold + postRecognitionMove, 25)
+					.WithDelta(postRecognitionMove, 0)
+					.WithCumulative(threshold + postRecognitionMove, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_AbsorbsOnlyThreshold_NotWholeCrossingMove()
+		{
+			// Regression test for #20473: a SINGLE coarse pointer move that jumps well past the start
+			// threshold must absorb ONLY the threshold "dead-zone" — the movement beyond it must NOT be
+			// lost. Otherwise scrolling/panning feels sticky when pointer moves are delivered in large or
+			// coalesced chunks (the whole first chunk would be swallowed instead of just the dead-zone).
+			// This guards against the absorbed amount being dependent on the pointer-move granularity.
+
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var bigJump = threshold + 40; // single move that overshoots the threshold by a large margin
+			var postRecognitionMove = 10;
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + bigJump, 25); // one big move: crosses the threshold, fires Started ONLY
+			sut.ProcessMoveEvent(25 + bigJump + postRecognitionMove, 25); // next move carries the deferred overshoot
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				// Only the 'threshold' dead-zone is absorbed silently; the overshoot beyond the threshold
+				// (bigJump - threshold = 40) is NOT lost - it flows into the NEXT move's reported Delta,
+				// together with that move's own incremental movement.
+				v => v.Delta()
+					.At(25 + bigJump + postRecognitionMove, 25)
+					.WithDelta(bigJump - threshold + postRecognitionMove, 0)
+					.WithCumulative(bigJump + postRecognitionMove, 0)
 			);
 		}
 
@@ -400,16 +464,15 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
-			sut.ProcessMoveEvent(25 + step, 25);
+			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; no immediate Delta (see #20473).
 			sut.ProcessUpEvent(25 + step + 1, 25);
 
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.End().At(25 + step + 1, 25).WithCumulative(step + 1, 0)
 			);
 		}
@@ -419,10 +482,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
-			sut.ProcessMoveEvent(25 + step, 25);
+			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; first reported Delta starts at the next move (see #20473).
 			sut.ProcessMoveEvent(25 + step * 2, 25);
 			sut.ProcessMoveEvent(25 + step * 2 + 1, 25);
 			sut.ProcessUpEvent(25 + step * 2 + 2, 25);
@@ -430,7 +493,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0),
 				v => v.End().At(25 + step * 2 + 2, 25).WithCumulative(step * 2 + 2, 0)
 			);
@@ -441,12 +503,12 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
-			sut.ProcessMoveEvent(25 + stepX, 25 + stepY); // Valid move that should cause a started ... but without Y
+			sut.ProcessMoveEvent(25 + stepX, 25 + stepY); // Valid move - fires Started, but threshold pixels are NOT recovered as a delta (see #20473)
 			sut.ProcessMoveEvent(25 + stepX, 25 + stepY * 2); // Invalid move that should also be muted
 			sut.ProcessMoveEvent(25 + stepX * 2, 25 + stepY * 2); // Invalid move that should also be muted
 			sut.ProcessUpEvent(25 + stepX * 2 + 1, 25 + stepY * 2 + 1);
@@ -454,7 +516,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(stepX, 0).WithCumulative(stepX, 0),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(stepX, 0).WithCumulative(stepX * 2, 0),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(stepX * 2 + 1, 0)
 			);
@@ -465,12 +526,12 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + stepX, 25); // Invalid move that should NOT cause the started
-			sut.ProcessMoveEvent(25 + stepX, 25 + stepY); // Valid move that should cause a started ... but without Y
+			sut.ProcessMoveEvent(25 + stepX, 25 + stepY); // Valid move - fires Started, but threshold pixels are NOT recovered as a delta (see #20473)
 			sut.ProcessMoveEvent(25 + stepX * 2, 25 + stepY); // Invalid move that should also be muted
 			sut.ProcessMoveEvent(25 + stepX * 2, 25 + stepY * 2); // Invalid move that should also be muted
 			sut.ProcessUpEvent(25 + stepX * 2 + 1, 25 + stepY * 2 + 1);
@@ -478,7 +539,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(0, stepY).WithCumulative(0, stepY),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(0, stepY).WithCumulative(0, stepY * 2),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(0, stepX * 2 + 1)
 			);
@@ -489,12 +549,12 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
-			sut.ProcessMoveEvent(25 - stepX, 25 - stepY); // Valid move that should cause a started ... but without Y
+			sut.ProcessMoveEvent(25 - stepX, 25 - stepY); // Valid move - fires Started, but threshold pixels are NOT recovered as a delta (see #20473)
 			sut.ProcessMoveEvent(25 - stepX, 25 - stepY * 2); // Invalid move that should also be muted
 			sut.ProcessMoveEvent(25 - stepX * 2, 25 - stepY * 2); // Invalid move that should also be muted
 			sut.ProcessUpEvent(25 - stepX * 2 - 1, 25 - stepY * 2 - 1);
@@ -502,7 +562,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(-stepX, 0).WithCumulative(-stepX, 0),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(-stepX, 0).WithCumulative(-stepX * 2, 0),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(-stepX * 2 - 1, 0)
 			);
@@ -513,12 +572,12 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 - stepX, 25); // Invalid move that should NOT cause the started
-			sut.ProcessMoveEvent(25 - stepX, 25 - stepY); // Valid move that should cause a started ... but without Y
+			sut.ProcessMoveEvent(25 - stepX, 25 - stepY); // Valid move - fires Started, but threshold pixels are NOT recovered as a delta (see #20473)
 			sut.ProcessMoveEvent(25 - stepX * 2, 25 - stepY); // Invalid move that should also be muted
 			sut.ProcessMoveEvent(25 - stepX * 2, 25 - stepY * 2); // Invalid move that should also be muted
 			sut.ProcessUpEvent(25 - stepX * 2 - 1, 25 - stepY * 2 - 1);
@@ -526,7 +585,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(0, -stepY).WithCumulative(0, -stepY),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(0, -stepY).WithCumulative(0, -stepY * 2),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(0, -stepX * 2 - 1)
 			);
@@ -1038,7 +1096,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				// Threshold pixels are absorbed into the cumulative on Started but NOT recovered as a delta (see #20473).
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1085,7 +1143,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 0).WithCumulative(tX: 90, tY: 0),
+				// Threshold pixels are absorbed into the cumulative on Started but NOT recovered as a delta (see #20473).
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1132,7 +1190,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 0, tY: 90).WithCumulative(tX: 0, tY: 90),
+				// Threshold pixels are absorbed into the cumulative on Started but NOT recovered as a delta (see #20473).
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1179,7 +1237,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				// Threshold pixels are absorbed into the cumulative on Started but NOT recovered as a delta (see #20473).
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),

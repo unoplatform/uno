@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI;
-using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -15,6 +11,10 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -151,10 +151,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Make sure to abort any pending direct manip
 			finger.Tap(rect.Location.Offset(-1, -1));
 
-			// Slowly swipe up (scroll down - no inertia)
+			// Slowly swipe up (scroll down - no inertia).
+			// Note: touch scrolling absorbs the ~10px start threshold (dead-zone) on recognition and does
+			// not recover it, so we swipe well past one 50px item to reliably land on the next one (see #20473).
 			finger.Drag(
 				from: rect.GetCenter(),
-				to: new(rect.GetCenter().X, rect.GetCenter().Y - 50),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y - 80),
 				steps: 5,
 				stepOffsetInMilliseconds: 100);
 
@@ -165,7 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Slowly swipe down (scroll up - no inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
-				to: new(rect.GetCenter().X, rect.GetCenter().Y + 50),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 80),
 				steps: 5,
 				stepOffsetInMilliseconds: 100);
 

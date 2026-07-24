@@ -7,12 +7,12 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.System;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
 using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 
 #if IS_UNO_UI_PROJECT
@@ -26,9 +26,15 @@ namespace Windows.UI.Input
 		// Note: this is also responsible to handle "Drag manipulations"
 		internal partial class Manipulation
 		{
-			internal static readonly Thresholds StartTouch = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Start thresholds: the minimum movement required for a tap/press to be promoted to a manipulation.
+			// - Touch / Pen: 10 px, close to Windows touch-slop guidance (~2.7 mm at typical DPI).
+			//   WinUI's InteractionContext threshold is not publicly documented; 10 px is a conservative
+			//   value within the range typically observed on Windows / iOS / Android.
+			// - Mouse: 4 px, matching the Win32 system drag threshold (GetSystemMetrics(SM_CXDRAG),
+			//   default 4 px). Avoids tiny pointer wiggle during a click being mistaken for a drag.
+			internal static readonly Thresholds StartTouch = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartPen = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartMouse = new() { TranslateX = 4, TranslateY = 4, Rotate = 1, Expansion = 4 };
 
 			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
@@ -371,22 +377,29 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: We first start with an empty delta, then invoke Update.
-						//		 This is required to patch a common issue in applications that are using only the
-						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
-						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
-						//		 but there is no side effect to use the same behavior for all pointer types.
+						// Note: ManipulationStarted reports an empty cumulative (UWP behavior for touch / pen).
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
 
 						ApplyRailing(ref changeSet);
 
-						CommitChanges(changeSet);
-						Debug.Assert(changeSet.Delta == changeSet.Cumulative);
-						_recognizer.ManipulationUpdated?.Invoke(
-							_recognizer,
-							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+						// Absorb only the start-threshold dead-zone into the commit history, without firing
+						// ManipulationUpdated: pre-recognition pixels are not recovered as a visible jump (#20473).
+						// Movement beyond the threshold stays uncommitted and flows into the next move's Delta,
+						// which bounds the absorbed amount even when moves are coarsely sampled or coalesced.
+						var thresholdDelta = new ManipulationDelta
+						{
+							Translation = new(
+								ClampMagnitude(changeSet.Delta.Translation.X, _startThresholds.TranslateX),
+								ClampMagnitude(changeSet.Delta.Translation.Y, _startThresholds.TranslateY)),
+							// Single-pointer path (multi-pointer start is handled above): ComputeDelta always
+							// yields 0 / 1 / 0 here, so these pass through unclamped.
+							Rotation = changeSet.Delta.Rotation,
+							Scale = changeSet.Delta.Scale,
+							Expansion = changeSet.Delta.Expansion
+						};
+						CommitChanges(changeSet with { Delta = thresholdDelta });
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
@@ -490,6 +503,11 @@ namespace Windows.UI.Input
 			{
 				_head = new(_head.SumOfDelta.Add(changeSet.Delta), changeSet.Timestamp, changeSet.ActivePointerCount);
 			}
+
+			// Clamps a signed value to ±limit while preserving its sign.
+			// Used to absorb only the start-threshold "dead-zone" of the recognition move (see #20473).
+			private static double ClampMagnitude(double value, double limit)
+				=> Math.Sign(value) * Math.Min(Math.Abs(value), limit);
 
 			private void ApplyRailing(ref ManipulationChangeSet changeSet)
 			{
