@@ -291,6 +291,7 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public TextureView* View;   // the pre-uploaded WebGpuImageTexture view (no per-frame upload)
 	public int W, H;
 	public float Opacity;
+	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
 }
 
 internal sealed class GradientCmd : WebGpuCommand
@@ -478,7 +479,37 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	// Color-filtered (tinted) image draw isn't supported yet on WebGPU — fall back to an untinted draw.
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => DrawImage(texture, x, y, sampling, 1f, antialias);
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
+
+	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
+	{
+		if (texture is not WebGpuImageTexture t) { return; }
+		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+
+		// Source (pixel) column/row edges from the center slice, and the matching destination edges: the corner
+		// insets keep their source pixel size, the middle band stretches to fill the rest of the destination.
+		float sx0 = 0, sx1 = (float)centerSlice.Left, sx2 = (float)centerSlice.Right, sx3 = w;
+		float sy0 = 0, sy1 = (float)centerSlice.Top, sy2 = (float)centerSlice.Bottom, sy3 = h;
+		float dx0 = (float)destination.Left, dx1 = dx0 + sx1, dx3 = (float)destination.Right, dx2 = dx3 - (sx3 - sx2);
+		float dy0 = (float)destination.Top, dy1 = dy0 + sy1, dy3 = (float)destination.Bottom, dy2 = dy3 - (sy3 - sy2);
+		float[] sxe = { sx0, sx1, sx2, sx3 }, sye = { sy0, sy1, sy2, sy3 };
+		float[] dxe = { dx0, dx1, dx2, dx3 }, dye = { dy0, dy1, dy2, dy3 };
+
+		for (var row = 0; row < 3; row++)
+		{
+			for (var col = 0; col < 3; col++)
+			{
+				if (centerHollow && row == 1 && col == 1) { continue; }
+				float dl = dxe[col], dr = dxe[col + 1], dt = dye[row], db = dye[row + 1];
+				if (dr - dl <= 0 || db - dt <= 0) { continue; }
+				_data.Commands.Add(new ImageCmd
+				{
+					View = t.View, W = w, H = h, Opacity = 1f, Clip = _clip,
+					P0 = Map(dl, dt), P1 = Map(dr, dt), P2 = Map(dr, db), P3 = Map(dl, db),
+					U0 = sxe[col] / w, V0 = sye[row] / h, U1 = sxe[col + 1] / w, V1 = sye[row + 1] / h,
+				});
+			}
+		}
+	}
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 
 	public IRenderData Finish() => _data;
@@ -508,7 +539,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 					break;
 				case ImageCmd im:
-					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, Clip = ClipCompose(im.Clip, T) });
+					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, Clip = ClipCompose(im.Clip, T) });
 					break;
 				case GradientCmd gc:
 					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
@@ -617,7 +648,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
 					var q = new float[24];
 					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
-					QV(0, im.P0, 0, 0); QV(4, im.P1, 1, 0); QV(8, im.P2, 1, 1); QV(12, im.P0, 0, 0); QV(16, im.P2, 1, 1); QV(20, im.P3, 0, 1);
+					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
 					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip));
 					break;
 				}
