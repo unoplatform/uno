@@ -276,10 +276,28 @@ OS font directories by parsing each face's `name`/`OS-2`/`head` tables, matches 
 with a nearest-score, produces `ManagedFont` handles, and does codepoint fallback by scanning indexed `cmap`s.
 With it selected, the entire font path — resolution, metrics, coverage, shaping-tables, outlines — is
 Skia-free (only the final geometry rasterization is the drawing backend's job). Validated: `Given_TextBlock`
-103/103 on the default Skia resolver *and* with `UseManagedFonts` (DejaVu resolved via managed lookup on Linux).
-**Backend selection moved off environment variables:** `DrawingBackendOptions`
-(`UseManagedFonts`/`UseManagedGeometry`/`UseManagedImageDecoder`), set by the host at init, replaces the former
-`UNO_MANAGED_*` toggles (the SamplesApp host bridges those env vars to the options as a dev/test affordance).
+103/103 on the default Skia resolver *and* with the managed resolver (DejaVu resolved via managed lookup on Linux).
+
+**The resolver is pluggable by interface, not a managed-specific flag.** `DrawingBackendOptions.FontManager` is
+an `IFontManager?` — `null` means the backend's default (Skia for `SkiaDrawingBackend`), and a host assigns any
+implementation to override (`ManagedFontManager`, or a platform-specific one). This matters because
+`ManagedFontManager` — which discovers fonts by **enumerating filesystem font directories** — is the right
+resolver only where that model holds:
+
+| Target | Filesystem fonts? | Managed resolver | What to use |
+|---|---|---|---|
+| Windows / macOS-desktop / Linux | yes (`C:\Windows\Fonts`, `/usr/share/fonts`, …) | ✅ works | `ManagedFontManager` or default Skia |
+| Android (Skia) | yes (`/system/fonts`) | ✅ works | `ManagedFontManager` or default Skia |
+| **iOS** (Skia) | **no** — the app sandbox blocks reading `/System/Library/Fonts` | ❌ finds nothing | default Skia (SkiaSharp→CoreText), or a future CoreText `IFontManager` |
+| **WebAssembly** (Skia) | **no** — the browser sandbox has no OS font directory | ❌ finds nothing | default Skia (bundled fonts), or a bundled/`@font-face` `IFontManager` |
+
+So on iOS and WASM the *managed filesystem* resolver can't see fonts; those platforms keep the default Skia
+resolver (SkiaSharp routes to CoreText on iOS and to bundled fonts on WASM) until a platform-native
+`IFontManager` (CoreText via `CTFontManager`; a bundled/browser resolver for WASM) is written and plugged in —
+exactly what the pluggable seam is for. **Backend selection moved off environment variables:**
+`DrawingBackendOptions` (`FontManager` + `UseManagedGeometry`/`UseManagedImageDecoder`), set by the host at
+init, replaces the former `UNO_MANAGED_*` toggles (the SamplesApp host bridges those env vars to the options as
+a dev/test affordance).
 
 ---
 
