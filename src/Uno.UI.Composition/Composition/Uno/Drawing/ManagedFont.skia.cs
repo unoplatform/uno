@@ -142,7 +142,7 @@ internal sealed class ManagedFont : IFont
 
 	// Reads the family name from the 'name' table. Prefers the typographic family (nameID 16) over the legacy
 	// family (nameID 1); prefers a Windows UTF-16BE English record, else the first usable record.
-	private static string ParseFamilyName(byte[] d, int name)
+	internal static string ParseFamilyName(byte[] d, int name)
 	{
 		if (name == 0 || name + 6 > d.Length)
 		{

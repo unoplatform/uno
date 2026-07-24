@@ -22,8 +22,10 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	private static bool _useManagedGeometry => DrawingBackendOptions.UseManagedGeometry;
 
 	private readonly SkiaFontManager _skiaFontManager = new();
+	private readonly ManagedFontManager _managedFontManager = new();
 
-	public IFontManager FontManager => _skiaFontManager;
+	// Font resolution runs through the managed system-font manager when opted in, else through Skia.
+	public IFontManager FontManager => DrawingBackendOptions.UseManagedFonts ? _managedFontManager : _skiaFontManager;
 
 	public IPathBuilder CreatePathBuilder() => _useManagedGeometry ? new ManagedPathBuilder() : new SkiaPathBuilder();
 

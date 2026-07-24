@@ -33,6 +33,8 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
+			ApplyManagedBackendOptions();
+
 			UnoPlatformHost? host = default;
 			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
@@ -52,6 +54,27 @@ namespace SkiaSharpExample
 				.Build();
 
 			host.Run();
+		}
+
+		// Dev/test affordance: let the host opt into the SkiaSharp-free managed engines via environment
+		// variables. Backend selection lives in DrawingBackendOptions (init options); the framework itself no
+		// longer reads these variables — only this host does, as a convenience for exercising managed mode.
+		private static void ApplyManagedBackendOptions()
+		{
+			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
+			{
+				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedFonts = true;
+			}
+
+			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
+			{
+				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedGeometry = true;
+			}
+
+			if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
+			{
+				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedImageDecoder = true;
+			}
 		}
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
