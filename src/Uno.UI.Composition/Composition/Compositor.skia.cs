@@ -31,6 +31,8 @@ public partial class Compositor
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
+	internal static bool SkipVisualTreePainting { get; set; }
+
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
@@ -188,7 +190,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, SKPath? damage = null)
 	{
 		if (rootVisual is null)
 		{
@@ -216,7 +218,12 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(canvas, null);
+		// Skip only the paint walk: animations above still tick and transitions/frame
+		// re-requests below still run, so the scene stays live without producing pixels.
+		if (!SkipVisualTreePainting)
+		{
+			rootVisual.RenderRootVisual(canvas, null, damage);
+		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");

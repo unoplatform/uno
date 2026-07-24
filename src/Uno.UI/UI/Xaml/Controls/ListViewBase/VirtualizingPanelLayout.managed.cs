@@ -1242,9 +1242,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_pendingReorder = null;
 
-			// We need a full refresh to properly re-arrange all items at their right location,
-			// ignoring the temp location of the dragged / reordered item.
-			Refresh();
+			// A light re-measure re-arranges all items at their final location (the temp reorder offset was
+			// just cleared) while preserving container identity. A full Refresh() would recycle and re-deal
+			// every container, re-templating the whole list on drop (the reorder flicker).
+			LightRefresh();
 
 			return updatedIndex;
 		}
