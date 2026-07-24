@@ -163,6 +163,15 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		}
 	}
 
+	[JSExport]
+	[return: JSMarshalAs<JSType.Number>]
+	private static int OnNativeScrollDelta(
+		[JSMarshalAs<JSType.Any>] object inputSource,
+		string elementId,
+		double horizontalDelta,
+		double verticalDelta)
+		=> BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(elementId, horizontalDelta, verticalDelta) ? 1 : 0;
+
 	[NotImplemented] public bool HasCapture => false;
 
 	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);

@@ -85,6 +85,14 @@ input::-ms-clear {
     height: 100%;
 }
 
+#uno-native-element-host [data-uno-native-input-policy="1"],
+#uno-native-element-host [data-uno-native-input-policy="1"] *,
+#uno-native-element-host [data-uno-native-input-policy="2"],
+#uno-native-element-host [data-uno-native-input-policy="2"] * {
+	touch-action: none !important;
+	overscroll-behavior: none !important;
+}
+
 /* Uno has its own HR indicator: hide default dotnet indicator. */
 #dotnet-hotreload-toast {
   visibility: collapse;
