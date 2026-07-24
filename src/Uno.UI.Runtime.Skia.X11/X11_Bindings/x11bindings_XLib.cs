@@ -241,6 +241,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		[LibraryImport(libX11)]
 		public static partial IntPtr XSetErrorHandler(XErrorHandler error_handler);
 
+		// Used to restore a previously-active error handler by its raw pointer (e.g. Xlib's default).
+		[LibraryImport(libX11, EntryPoint = "XSetErrorHandler")]
+		public static partial IntPtr XSetErrorHandlerRaw(IntPtr error_handler);
+
 		[LibraryImport(libX11)]
 		public static partial int XConvertSelection(IntPtr display, IntPtr selection, IntPtr target, IntPtr property,
 			IntPtr requestor, IntPtr time);

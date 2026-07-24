@@ -46,6 +46,10 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 		for (var c = 0; c < count; c++)
 		{
 			XVisualInfo* visual = GlxInterface.glXGetVisualFromFBConfig(_display, fbConfigs[c]);
+			if (visual == null)
+			{
+				continue;
+			}
 			using var visualDisposable = new DisposableStruct<IntPtr>(static aa => { _ = XLib.XFree(aa); }, (IntPtr)visual);
 			if (visual->depth == 32) // 24bit color + 8bit stencil as requested above
 			{
@@ -59,10 +63,16 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 			throw new InvalidOperationException("Could not find a suitable framebuffer config.\n");
 		}
 
-		_glContext = GlxInterface.glXCreateNewContext(_display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		if (_glContext == IntPtr.Zero)
+		// glXCreateNewContext returns a non-null handle even when the server rejects the request, so the
+		// failure only surfaces as an asynchronous X error. Trap it instead of letting Xlib abort the process.
+		using (var errorTrap = X11Helper.TrapErrors())
 		{
-			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} failed.");
+			_glContext = GlxInterface.glXCreateNewContext(_display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
+			if (errorTrap.SyncAndHasError(_display) || _glContext == IntPtr.Zero)
+			{
+				throw new InvalidOperationException(
+					$"{nameof(GlxInterface.glXCreateNewContext)} failed ({(_glContext == IntPtr.Zero ? "returned a null context" : "X protocol error: " + errorTrap.ErrorText)}).");
+			}
 		}
 		_pBuffer = GlxInterface.glXCreatePbuffer(_display, bestFbc, new[] { (int)X11Helper.None });
 		if (_pBuffer == IntPtr.Zero)
