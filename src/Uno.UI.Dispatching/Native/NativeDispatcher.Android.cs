@@ -62,57 +62,74 @@ namespace Uno.UI.Dispatching
 		{
 			var ts = Stopwatch.GetTimestamp();
 
-			if (!_trace.IsEnabled)
+			try
 			{
-				while (!_animationQueue.IsEmpty && Stopwatch.GetElapsedTime(ts) < MaxRenderSpan)
+				if (!_trace.IsEnabled)
 				{
-					try
+					while (!_animationQueue.IsEmpty && Stopwatch.GetElapsedTime(ts) < MaxRenderSpan)
 					{
-						if (ImmutableInterlocked.TryDequeue(ref _animationQueue, out UIAsyncOperation action))
+						try
 						{
-							if (!action.IsCancelled)
+							if (ImmutableInterlocked.TryDequeue(ref _animationQueue, out UIAsyncOperation action))
 							{
-								action.Action();
+								if (!action.IsCancelled)
+								{
+									action.Action();
+								}
 							}
 						}
+						catch (global::System.Exception exception)
+						{
+							if (PropagateUnhandledExceptions)
+							{
+								throw;
+							}
+
+							this.Log().Error("Dispatcher unhandled exception", exception);
+						}
 					}
-					catch (global::System.Exception exception)
+				}
+				else
+				{
+					while (!_animationQueue.IsEmpty && Stopwatch.GetElapsedTime(ts) < MaxRenderSpan)
 					{
-						this.Log().Error("Dispatcher unhandled exception", exception);
+						try
+						{
+							using var runActivity = _trace.WriteEventActivity(
+								TraceProvider.NativeDispatcher_InvokeStart,
+								TraceProvider.NativeDispatcher_InvokeStop,
+								relatedActivity: _trace.WriteEventActivity(TraceProvider.NativeDispatcher_Schedule, EventOpcode.Send, _animationArray),
+								payload: _animationArray
+							);
+
+							if (ImmutableInterlocked.TryDequeue(ref _animationQueue, out UIAsyncOperation action))
+							{
+								if (!action.IsCancelled)
+								{
+									action.Action();
+								}
+							}
+						}
+						catch (global::System.Exception exception)
+						{
+							_trace.WriteEvent(TraceProvider.NativeDispatcher_Exception, EventOpcode.Send, new[] { exception.GetType().ToString() });
+
+							if (PropagateUnhandledExceptions)
+							{
+								throw;
+							}
+
+							this.Log().Error("Dispatcher unhandled exception", exception);
+						}
 					}
 				}
 			}
-			else
+			finally
 			{
-				while (!_animationQueue.IsEmpty && Stopwatch.GetElapsedTime(ts) < MaxRenderSpan)
-				{
-					try
-					{
-						using var runActivity = _trace.WriteEventActivity(
-							TraceProvider.NativeDispatcher_InvokeStart,
-							TraceProvider.NativeDispatcher_InvokeStop,
-							relatedActivity: _trace.WriteEventActivity(TraceProvider.NativeDispatcher_Schedule, EventOpcode.Send, _animationArray),
-							payload: _animationArray
-						);
-
-						if (ImmutableInterlocked.TryDequeue(ref _animationQueue, out UIAsyncOperation action))
-						{
-							if (!action.IsCancelled)
-							{
-								action.Action();
-							}
-						}
-					}
-					catch (global::System.Exception exception)
-					{
-						_trace.WriteEvent(TraceProvider.NativeDispatcher_Exception, EventOpcode.Send, new[] { exception.GetType().ToString() });
-
-						this.Log().Error("Dispatcher unhandled exception", exception);
-					}
-				}
+				// Always post the next frame callback, even when a propagated exception unwinds
+				// out of the loop, so any remaining animation items are not stranded.
+				QueueOperations();
 			}
-
-			QueueOperations();
 		}
 
 		private void QueueOperations()
