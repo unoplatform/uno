@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.Vulkan;
+using Uno.UI.Xaml.Controls;
 using Uno.WinUI.Runtime.Skia.Android.Platform.Vulkan;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -34,6 +35,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
+	private bool _firstFrameSignaled;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly object _renderLock = new();
 	private IntPtr _nativeWindow; // Must stay alive while Vulkan surfaces reference it
@@ -205,6 +207,15 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 				// Update the native layer host clip path
 				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+				if (!_firstFrameSignaled)
+				{
+					_firstFrameSignaled = true;
+					NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+					// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+					ApplicationActivity.RelativeLayout?.Post(() =>
+						ApplicationActivity.RelativeLayout?.Invalidate());
+				}
 			});
 		}
 		catch (Exception ex)

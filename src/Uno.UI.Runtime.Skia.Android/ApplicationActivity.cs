@@ -256,6 +256,9 @@ namespace Microsoft.UI.Xaml
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
+			// Hold the splash on the Skia path until the first Skia frame is presented (see the render views).
+			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;

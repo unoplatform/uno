@@ -28,6 +28,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
 
+	// Armed by the Skia render path so splash dismissal waits for the first Skia frame; cleared once that frame is
+	// on screen. Native Android never arms it, so its splash keeps dismissing as soon as content is attached.
+	private volatile bool _awaitingFirstFrame;
+
 	private Rect _previousTrueVisibleBounds;
 
 	public NativeWindowWrapper()
@@ -322,6 +326,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #pragma warning restore 618
 	}
 
+	// Called on the Skia path (in ApplicationActivity.OnCreate) so the splash is held until the first Skia frame.
+	internal void ArmFirstFrameGate() => _awaitingFirstFrame = true;
+
+	// Called on the GL/Vulkan render thread once the first Skia frame has been presented.
+	internal void NotifyFirstFrameRendered() => _awaitingFirstFrame = false;
+
 	private void AddPreDrawListener()
 	{
 		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
@@ -356,7 +366,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		public bool OnPreDraw()
 		{
-			if (_windowWrapper._contentViewAttachedToWindow)
+			if (_windowWrapper._contentViewAttachedToWindow
+				&& !_windowWrapper._awaitingFirstFrame)
 			{
 				_windowWrapper.RemovePreDrawListener();
 				return true;
