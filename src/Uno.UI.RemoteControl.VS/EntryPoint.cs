@@ -74,6 +74,7 @@ public partial class EntryPoint : IDisposable
 	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
 	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
 	private readonly CompositeCommandHandler _commands;
+	private readonly VisualStudioFileUpdater _fileUpdater;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -88,6 +89,7 @@ public partial class EntryPoint : IDisposable
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
+		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -110,6 +112,7 @@ public partial class EntryPoint : IDisposable
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
+		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -689,6 +692,9 @@ public partial class EntryPoint : IDisposable
 				case UpdateFileIdeMessage ufm:
 					await OnUpdateFileRequestedAsync(ufm);
 					break;
+				case UpdateFileRequestIdeMessage ufsm:
+					await _fileUpdater.ProcessAsync(ufsm);
+					break;
 				case NotificationRequestIdeMessage nr:
 					await OnNotificationRequestedAsync(sender, nr);
 					break;
@@ -812,71 +818,7 @@ public partial class EntryPoint : IDisposable
 			{
 				var filePath = Path.GetFullPath(request.FileFullName);
 
-				// Determine the appropriate encoding for the file
-				var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
-				var targetEncoding = EncodingHelpers.GetCompatibleEncoding(currentEncoding, fileContent);
-
-				// Check if document is already open in IDE
-				var document = _dte2
-					.Documents
-					.OfType<Document>()
-					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
-
-				var shouldReopenDocument = false;
-
-				// If document is open but encoding needs to be changed, we close it
-				if (document is not null && currentEncoding != targetEncoding)
-				{
-					// Document is open but does not have the current encoding, save it, then close it to change encoding
-					_debugAction?.Invoke($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
-
-					try
-					{
-						document.Save();
-					}
-					catch
-					{
-						// Ignore save errors
-					}
-
-					document.Close(vsSaveChanges.vsSaveChangesNo);
-					shouldReopenDocument = true;
-					await Task.Delay(250); // Small delay to ensure file system is ready
-				}
-
-				// If the file is open and encoding compatible, we update its content in-memory
-				// TODO: We should NOT assume the `fileContent` to contains the full document content!
-				if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
-				{
-					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
-
-					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-					const int flags = 0b0000_0011;
-					textDocument
-						.StartPoint
-						.CreateEditPoint()
-						.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-					if (request.ForceSaveOnDisk)
-					{
-						// Save the document.
-						document.Save();
-					}
-				}
-				else
-				{
-					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (on disk).");
-
-					File.WriteAllText(filePath, fileContent, targetEncoding);
-
-					if (document is not null)
-					{
-						// Re-open the document to reflect changes in IDE
-						await Task.Delay(250); // Small delay to ensure file system is ready
-						_dte2.Documents.Open(filePath);
-					}
-				}
+				await _fileUpdater.ApplyFileContentAsync(filePath, fileContent, saveOpenDocument: request.ForceSaveOnDisk);
 
 				// Send a message back to indicate that the request has been received and acted upon.
 				if (_ideChannelClient is not null)

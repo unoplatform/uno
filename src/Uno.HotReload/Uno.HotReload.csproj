@@ -17,6 +17,10 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfoHelper.cs" />
+		<!-- The file-update contracts are dual-compiled by design: linked here under Uno.HotReload.IO
+		     and into Uno.UI.RemoteControl.Messaging under ...Messaging.IdeChannel.HotReload (spec 052).
+		     Do NOT replace these links with a reference to the Messaging assembly: Uno.HotReload.dll is
+		     consumed as a standalone, dependency-free assembly (raw HintPath references, e.g. studio-live). -->
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" Link="IO\IUpdateFileRequest.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" Link="IO\FileEdit.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" Link="IO\FileEditResult.cs" />
