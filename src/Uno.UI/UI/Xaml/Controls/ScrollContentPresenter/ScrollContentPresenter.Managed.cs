@@ -468,6 +468,36 @@ namespace Microsoft.UI.Xaml.Controls
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
 					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+
+				// The inertia processor decays velocity over time, but it has no awareness of the
+				// scroll boundary or sub-pixel resolution. Once we hit the boundary the clamped
+				// deltas drop to 0; and once the per-tick translation falls below the pixel grid
+				// the visible motion has stopped — yet the processor keeps ticking for the full
+				// remaining decay duration (potentially seconds for a fast flick). During that
+				// time the DirectManipulation stays in Inertial, so all pointer events are muted
+				// and the user's first tap after the scroll appears to stop is silently dropped
+				// (issue #22246). Complete the gesture so the DM transitions to Completed and
+				// subsequent events are dispatched normally.
+				//
+				// This matches WinUI's native DirectManipulation, which computes the analytical
+				// inertia end position up-front and stops the manipulation once that position is
+				// reached / clamped at the boundary, rather than waiting for the velocity to
+				// arithmetically decay to zero.
+				//
+				// We deliberately do NOT change the "tap during visible inertia is muted"
+				// behavior covered by When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored
+				// — that path is gated on the inertia still producing meaningful displacement,
+				// which the check below explicitly requires.
+				//
+				// deltaX/deltaY are already clamped to the remaining scrollable range, so they
+				// encode "0 at the boundary, raw per-tick translation otherwise". Checking both
+				// against the pixel grid therefore also covers a diagonal flick where one axis is
+				// pinned at its boundary while the other decays sub-pixel without ever reaching it.
+				var inertiaIsExhausted = Math.Abs(deltaX) < 1 && Math.Abs(deltaY) < 1;
+				if (inertiaIsExhausted)
+				{
+					recognizer.CompleteGesture();
+				}
 			}
 			else
 			{
