@@ -50,6 +50,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var winrtOwner = owner;
 			var winrtOwnerAsPanel = EnsureOwnerIsPanelOrNull(winrtOwner);
 
+#if __SKIA__
+			// Uno specific: a pooled element stays parented (and would stay composed) until it is
+			// reused. Suspend its visual so it neither renders at its stale position nor keeps the
+			// render loop awake through continuously-animating content (e.g. an indeterminate
+			// ProgressRing self-invalidating the canvas every frame). Restored in TryGetElementCore.
+			element.IsVisualSuspendedForRecyclePooling = true;
+#endif
+
 			ElementInfo elementInfo = new ElementInfo(element, winrtOwnerAsPanel);
 
 			if (m_elements.TryGetValue(winrtKey, out var infos))
@@ -111,6 +119,11 @@ namespace Microsoft.UI.Xaml.Controls
 							panel.Children.RemoveAt(childIndex);
 						}
 					}
+
+#if __SKIA__
+					// Uno specific: undo the composition suspension applied in PutElementCore.
+					elementInfo.Element.IsVisualSuspendedForRecyclePooling = false;
+#endif
 
 					return elementInfo.Element;
 				}
