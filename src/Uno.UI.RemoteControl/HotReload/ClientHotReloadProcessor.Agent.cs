@@ -53,6 +53,11 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			_instance = this;
 
+			// If this processor copy is owned by a collectible previewed-app context, arm a best-effort
+			// teardown for when that context unloads so its process-wide AssemblyLoad subscriptions are
+			// released (no-op for the default/host context).
+			ArmCollectibleAlcTeardown();
+
 			// Subscribe the drain dispatcher so that pause-handle releases that
 			// drain pending types end up actually applying them through the
 			// standard visual-tree update path.
