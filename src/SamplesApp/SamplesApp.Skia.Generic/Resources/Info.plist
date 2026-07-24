@@ -22,6 +22,8 @@
 	<string>10.15</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to your camera for the camera capture samples.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to use your microphone for speech recognition samples.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
