@@ -33,7 +33,8 @@
 		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
 
 		<!-- Ignore linker warnings for now -->
-		<NoWarn>$(NoWarn);IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
+		<!-- IL2121: unused UnconditionalSuppressMessage in generated MetadataBuilder code (mirrors the native head) -->
+		<NoWarn>$(NoWarn);IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2121;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
 
 		<!--
 		aab is the default packaging format in net6 API 31.

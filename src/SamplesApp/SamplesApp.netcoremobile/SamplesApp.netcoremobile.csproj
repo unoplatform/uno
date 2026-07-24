@@ -39,6 +39,7 @@
 			;IL2121 <!-- error IL2121: SamplesApp.netcoremobile.MetadataBuilder_989.Build(): Unused 'UnconditionalSuppressMessageAttribute' for warning 'IL2111'. -->
 			;IL2104 <!-- error IL2104: Assembly 'Azure.Core|Microsoft.Extensions.Configuration.Binder|Microsoft.Extensions.Options|…' produced trim warnings. -->
 			;IL2026 <!-- error IL2026: System.Data.DataSet.System.Xml.Serialization.IXmlSerializable.GetSchema(): Using member 'System.Data.DataSet.WriteXmlSchema(DataSet, XmlWriter)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. DataSet.GetSchema uses TypeDescriptor and XmlSerialization underneath which are not trimming safe. -->
+			;IL2072 <!-- error IL2072: Activator.CreateInstance(GetType()) in AnimatedVisualsTestbedPage — sample reflection, not trim-safe (mirrors the Skia head). -->
 		</NoWarn>
 
 		<!--
