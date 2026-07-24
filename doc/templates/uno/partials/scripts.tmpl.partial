@@ -20,6 +20,7 @@ mermaid.init(undefined, ".lang-mermaid");
 <!-- Algolia DocSearch -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
 <script>
     /**
      * Initialize Algolia DocSearch
@@ -48,7 +49,92 @@ mermaid.init(undefined, ".lang-mermaid");
                         appId: 'PHB9D8WS99',
                         indexName: 'platform',
                         apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
+                        placeholder: 'Search Docs...',
+                        maxResultsPerGroup: 20,
+                        transformItems(items) {
+                            // 1. Remove breadcrumb-anchored entries (crawler artifact).
+                            var filtered = items.filter(function(item) {
+                                return !(item.url && item.url.includes('#breadcrumb'));
+                            });
+
+                            // 2. Deduplicate page-level (lvl1) results while keeping
+                            //    sub-section results (lvl2+) inline as children.
+                            //    The Algolia crawler creates separate records per
+                            //    heading level. We only dedup the top-level page
+                            //    entries so each page appears once, but keep deeper
+                            //    headings so users can jump directly to sub-sections.
+                            var seenPages = {};
+                            filtered = filtered.filter(function(item) {
+                                if (!item.url) return true;
+                                var base = item.url.split('#')[0].split('?')[0];
+                                if (item.type === 'lvl1') {
+                                    if (seenPages[base]) return false;
+                                    seenPages[base] = true;
+                                }
+                                return true;
+                            });
+
+                            // 3. Disambiguate same-titled results that point to
+                            //    different pages (e.g. XAML vs C# Markup workshop
+                            //    variants). Append a path-derived suffix so they
+                            //    are visually distinguishable in the dropdown.
+                            var titleGroups = {};
+                            filtered.forEach(function(item) {
+                                var key = (item.hierarchy || {})[item.type] || '';
+                                if (key) {
+                                    if (!titleGroups[key]) titleGroups[key] = [];
+                                    titleGroups[key].push(item);
+                                }
+                            });
+                            Object.keys(titleGroups).forEach(function(title) {
+                                var group = titleGroups[title];
+                                if (group.length < 2) return;
+                                // Split each URL into path segments
+                                var segArrays = group.map(function(item) {
+                                    return (item.url || '').split('#')[0].split('?')[0]
+                                        .split('/').filter(Boolean);
+                                });
+                                var maxSegments = segArrays.reduce(function(max, segments) {
+                                    return Math.max(max, segments.length);
+                                }, 0);
+                                // Find the first segment index that differs
+                                var diffIdx = -1;
+                                for (var s = 0; s < maxSegments; s++) {
+                                    var val = segArrays[0][s];
+                                    for (var g = 1; g < segArrays.length; g++) {
+                                        if (!segArrays[g][s] || segArrays[g][s] !== val) {
+                                            diffIdx = s;
+                                            break;
+                                        }
+                                    }
+                                    if (diffIdx >= 0) break;
+                                }
+                                if (diffIdx < 0) return;
+                                group.forEach(function(item, gi) {
+                                    var seg = segArrays[gi][diffIdx] || '';
+                                    seg = decodeURIComponent(seg)
+                                        .replace(/[-_]/g, ' ')
+                                        .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+                                    if (seg && item.hierarchy) {
+                                        var newTitle = title + ' \u2014 ' + seg;
+                                        item.hierarchy[item.type] = newTitle;
+                                        // DocSearch renders display text from
+                                        // _snippetResult / _highlightResult,
+                                        // not raw hierarchy. Update those too.
+                                        var sr = (item._snippetResult || {}).hierarchy;
+                                        if (sr && sr[item.type]) {
+                                            sr[item.type].value = newTitle;
+                                        }
+                                        var hr = (item._highlightResult || {}).hierarchy;
+                                        if (hr && hr[item.type]) {
+                                            hr[item.type].value = newTitle;
+                                        }
+                                    }
+                                });
+                            });
+
+                            return filtered;
+                        }
                     });
                     console.log("DocSearch initialized.");
                     // Disconnect the observer after initialization
@@ -128,6 +214,260 @@ mermaid.init(undefined, ".lang-mermaid");
             retryInitialization();
         }
     });
+</script>
+
+<!-- Full-page Algolia search results overlay -->
+<script>
+    // Inject "See all N results" footer into DocSearch modal when results appear
+    (function() {
+        var algoliaClient = null;
+        var algoliaIndex = null;
+
+        function getAlgoliaIndex() {
+            if (!algoliaIndex && typeof algoliasearch !== 'undefined') {
+                algoliaClient = algoliasearch('PHB9D8WS99', '7877394996f96cde1a9b795dce3f7787');
+                algoliaIndex = algoliaClient.initIndex('platform');
+            }
+            return algoliaIndex;
+        }
+
+        // Watch for the DocSearch modal to open and inject footer
+        var footerObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                m.addedNodes.forEach(function(node) {
+                    if (node.nodeType !== 1) return;
+                    var modal = node.classList && node.classList.contains('DocSearch-Modal')
+                        ? node : node.querySelector && node.querySelector('.DocSearch-Modal');
+                    if (modal) observeModalResults(modal);
+                });
+            });
+        });
+        footerObserver.observe(document.body, { childList: true, subtree: true });
+
+        function observeModalResults(modal) {
+            var resultsObserver = new MutationObserver(function() {
+                injectSeeAllFooter(modal);
+            });
+            resultsObserver.observe(modal, { childList: true, subtree: true });
+            // Also inject immediately in case results are already there
+            injectSeeAllFooter(modal);
+        }
+
+        function injectSeeAllFooter(modal) {
+            // Don't add if already present
+            if (modal.querySelector('.uno-see-all-results')) return;
+
+            var dropdownContainer = modal.querySelector('.DocSearch-Dropdown-Container');
+            if (!dropdownContainer) return;
+
+            // Check if there are actual results
+            var hits = dropdownContainer.querySelectorAll('.DocSearch-Hit');
+            if (hits.length === 0) return;
+
+            var input = modal.querySelector('.DocSearch-Input, input[type="search"]');
+            var query = input ? input.value.trim() : '';
+            if (!query) return;
+
+            var footer = document.createElement('div');
+            footer.className = 'uno-see-all-results';
+            footer.style.cssText = 'text-align:center;padding:12px 0 8px;border-top:1px solid #eee;';
+
+            var link = document.createElement('a');
+            link.href = '#';
+            link.style.cssText = 'color:#5468ff;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;text-align:center;font-variant-numeric:tabular-nums;';
+            link.textContent = 'See all results';
+
+            // Fetch total count from Algolia
+            var idx = getAlgoliaIndex();
+            if (idx) {
+                idx.search(query, { hitsPerPage: 0 }).then(function(res) {
+                    link.textContent = 'See all ' + res.nbHits + ' results';
+                });
+            }
+
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Close DocSearch modal
+                var cancel = modal.querySelector('.DocSearch-Cancel, [class*="Cancel"]');
+                if (cancel) cancel.click();
+                else {
+                    var backdrop = document.querySelector('.DocSearch--active');
+                    if (backdrop) backdrop.classList.remove('DocSearch--active');
+                    modal.parentElement && modal.parentElement.removeChild(modal);
+                }
+                showFullSearchResults(query);
+            });
+
+            footer.appendChild(link);
+            dropdownContainer.parentNode.insertBefore(footer, dropdownContainer.nextSibling);
+        }
+    })();
+
+    /**
+     * Full-page search results overlay powered by Algolia search client.
+     * Fetches all results and displays them paged (20 per page).
+     */
+    function showFullSearchResults(query) {
+        if (!query) return;
+
+        // Remove existing overlay if any
+        var existing = document.getElementById('uno-search-overlay');
+        if (existing) existing.remove();
+
+        var previousBodyOverflow = document.body.style.overflow;
+        var previousBodyPaddingRight = document.body.style.paddingRight;
+        var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
+
+        var overlay = document.createElement('div');
+        overlay.id = 'uno-search-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;padding:24px;';
+
+        var container = document.createElement('div');
+        container.style.cssText = 'background:#fff;border-radius:12px;max-width:1200px;width:100%;height:100%;max-height:calc(100vh - 48px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        // Header
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid #e7e7e7;background:#fff;border-radius:12px 12px 0 0;flex-shrink:0;';
+        header.innerHTML = '<h3 style="margin:0;font-size:20px;">Search results for "<span id="uno-search-query-text"></span>"</h3>'
+            + '<button id="uno-search-close" style="background:none;border:none;font-size:28px;color:#999;cursor:pointer;padding:0;line-height:1;">&times;</button>';
+        container.appendChild(header);
+
+        // Results body
+        var body = document.createElement('div');
+        body.id = 'uno-search-results-body';
+        body.style.cssText = 'padding:16px 24px;overflow-y:auto;flex:1;min-height:0;';
+        body.innerHTML = '<p style="color:#999;">Loading...</p>';
+        container.appendChild(body);
+
+        // Pagination
+        var pager = document.createElement('div');
+        pager.id = 'uno-search-pager';
+        pager.style.cssText = 'display:flex;justify-content:center;gap:8px;padding:16px 24px;border-top:1px solid #e7e7e7;background:#fff;border-radius:0 0 12px 12px;flex-shrink:0;';
+        container.appendChild(pager);
+
+        overlay.appendChild(container);
+        document.body.appendChild(overlay);
+
+        // Set query text
+        document.getElementById('uno-search-query-text').textContent = query;
+
+        // Close handlers
+        function closeOverlay() {
+            if (!document.getElementById('uno-search-overlay')) {
+                return;
+            }
+            overlay.remove();
+            document.body.style.overflow = previousBodyOverflow;
+            document.body.style.paddingRight = previousBodyPaddingRight;
+            document.removeEventListener('keydown', onEsc);
+        }
+
+        document.getElementById('uno-search-close').addEventListener('click', closeOverlay);
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeOverlay();
+            }
+        });
+        function onEsc(e) {
+            if (e.key === 'Escape' && document.getElementById('uno-search-overlay')) {
+                closeOverlay();
+            }
+        }
+        document.addEventListener('keydown', onEsc);
+
+        // Fetch results
+        var client = algoliasearch('PHB9D8WS99', '7877394996f96cde1a9b795dce3f7787');
+        var index = client.initIndex('platform');
+        var currentPage = 0;
+        var hitsPerPage = 20;
+
+        function fetchPage(page) {
+            currentPage = page;
+            body.innerHTML = '<p style="color:#999;">Loading...</p>';
+            body.scrollTop = 0;
+
+            index.search(query, {
+                hitsPerPage: hitsPerPage,
+                page: page,
+                attributesToRetrieve: ['hierarchy', 'url', 'content', 'type'],
+                attributesToHighlight: ['hierarchy.lvl0','hierarchy.lvl1','hierarchy.lvl2','hierarchy.lvl3','content'],
+                highlightPreTag: '<mark>',
+                highlightPostTag: '</mark>'
+            }).then(function(res) {
+                renderResults(res);
+                renderPager(res.page, res.nbPages, res.nbHits);
+            }).catch(function(err) {
+                body.innerHTML = '<p style="color:#d00;">Search failed: ' + err.message + '</p>';
+            });
+        }
+
+        function renderResults(res) {
+            if (res.hits.length === 0) {
+                body.innerHTML = '<p style="color:#666;">No results found.</p>';
+                return;
+            }
+            var html = '';
+            res.hits.forEach(function(hit) {
+                var h = hit._highlightResult || {};
+                var hierarchy = h.hierarchy || hit.hierarchy || {};
+                var title = (hierarchy.lvl2 && hierarchy.lvl2.value) || (hierarchy.lvl1 && hierarchy.lvl1.value) || (hierarchy.lvl0 && hierarchy.lvl0.value) || 'Untitled';
+                var breadcrumb = '';
+                if (hierarchy.lvl0 && hierarchy.lvl0.value && hierarchy.lvl1 && hierarchy.lvl1.value) {
+                    breadcrumb = hierarchy.lvl0.value;
+                    if (hierarchy.lvl1.value !== title) breadcrumb += ' &rsaquo; ' + hierarchy.lvl1.value;
+                }
+                var snippet = (h.content && h.content.value) || '';
+                if (snippet.length > 200) snippet = snippet.substring(0, 200) + '...';
+                var url = hit.url || '#';
+
+                html += '<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;">'
+                    + '<a href="' + url + '" style="color:#5468ff;font-size:16px;font-weight:600;text-decoration:none;">' + title + '</a>';
+                if (breadcrumb) html += '<div style="font-size:12px;color:#999;margin-top:2px;">' + breadcrumb + '</div>';
+                if (snippet) html += '<p style="font-size:14px;color:#444;margin:6px 0 0;line-height:1.5;">' + snippet + '</p>';
+                html += '</div>';
+            });
+            body.innerHTML = html;
+        }
+
+        function renderPager(page, nbPages, nbHits) {
+            var pagerEl = document.getElementById('uno-search-pager');
+            if (nbPages <= 1) { pagerEl.innerHTML = '<span style="color:#999;font-size:13px;">' + nbHits + ' results</span>'; return; }
+
+            var html = '<span style="color:#999;font-size:13px;margin-right:12px;">' + nbHits + ' results</span>';
+
+            if (page > 0) {
+                html += '<button class="uno-page-btn" data-page="' + (page - 1) + '">&laquo; Prev</button>';
+            }
+
+            var start = Math.max(0, page - 3);
+            var end = Math.min(nbPages, page + 4);
+            for (var i = start; i < end; i++) {
+                html += '<button class="uno-page-btn' + (i === page ? ' uno-page-active' : '') + '" data-page="' + i + '">' + (i + 1) + '</button>';
+            }
+
+            if (page < nbPages - 1) {
+                html += '<button class="uno-page-btn" data-page="' + (page + 1) + '">Next &raquo;</button>';
+            }
+
+            pagerEl.innerHTML = html;
+            pagerEl.querySelectorAll('.uno-page-btn').forEach(function(btn) {
+                btn.style.cssText = 'background:none;border:1px solid #ddd;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:13px;color:#333;';
+                if (btn.classList.contains('uno-page-active')) {
+                    btn.style.background = '#5468ff';
+                    btn.style.color = '#fff';
+                    btn.style.borderColor = '#5468ff';
+                }
+                btn.addEventListener('click', function() { fetchPage(parseInt(this.getAttribute('data-page'))); });
+            });
+        }
+
+        fetchPage(0);
+    }
 </script>
 
 <!-- Easy-copy-code -->
