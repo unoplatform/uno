@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using HarfBuzzSharp;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
-using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, SkiaSharp.SKTypeface? Typeface, int NextStartingIndex);
+using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, Uno.UI.Composition.Drawing.IFont? Font, int NextStartingIndex);
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -56,17 +56,17 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			var fontInfo = FontInfo;
 
-			var defaultTypeface = fontInfo.Typeface;
+			var defaultFont = fontInfo.FontHandle;
 
 			if (i < text.Length && text[i] == '\t')
 			{
-				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Typeface: defaultTypeface, NextStartingIndex: i + 1);
+				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Font: defaultFont, NextStartingIndex: i + 1);
 			}
 
 			int leadingSpaces = 0;
 			int trailingSpaces = 0;
 			int lineBreakLength = 0;
-			SKTypeface? segmentTypeface = null;
+			IFont? segmentFont = null;
 
 			// Count leading spaces
 			while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Documents
 				// 1. A fallback font that may be calculated later in this method may have different AdvanceX value for space character
 				// 2. The specified font could actually contain actual drawing for the space character. This is extremely uncommon and is currently
 				//    not supported by the drawing logic, where we just advance x-coordinate to emulate space characters.
-				segmentTypeface = defaultTypeface;
+				segmentFont = defaultFont;
 
 				i++;
 			}
@@ -95,14 +95,14 @@ namespace Microsoft.UI.Xaml.Documents
 				// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
 				if (text[i] == '\t')
 				{
-					return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
+					return (leadingSpaces, trailingSpaces, lineBreakLength, segmentFont, i);
 				}
 
 				if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
 				{
 					if (char.IsWhiteSpace(text[i]))
 					{
-						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
+						if (segmentFont is not null && !SameFont(segmentFont, defaultFont))
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.
@@ -118,11 +118,11 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var (codepoint, codepointLength) = GetCodePoint(text, i);
 
-				var currentTypeface = fontInfo.FontHandle.ContainsGlyph(codepoint)
-					? defaultTypeface
-					: SKFontManager.Default.MatchCharacter(codepoint);
+				var currentFont = defaultFont.ContainsGlyph(codepoint)
+					? defaultFont
+					: DrawingBackend.Current.FontManager.MatchCharacter(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
 
-				if (currentTypeface is null)
+				if (currentFont is null)
 				{
 					// The requested glyph isn't found by the OS.
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -133,14 +133,14 @@ namespace Microsoft.UI.Xaml.Documents
 					// Move over the current codepoint.
 					i += codepointLength;
 				}
-				else if (segmentTypeface is null || currentTypeface == segmentTypeface)
+				else if (segmentFont is null || SameFont(currentFont, segmentFont))
 				{
-					segmentTypeface = currentTypeface;
+					segmentFont = currentFont;
 					i += codepointLength;
 				}
 				else
 				{
-					// Always break the current segment if the previous typeface and the current typeface are both non-null
+					// Always break the current segment if the previous font and the current font are both non-null
 					// and are different.
 					break;
 				}
@@ -158,7 +158,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 					{
-						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
+						if (segmentFont is not null && !SameFont(segmentFont, defaultFont))
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.
@@ -175,8 +175,12 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 
-			return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
+			return (leadingSpaces, trailingSpaces, lineBreakLength, segmentFont, i);
 		}
+
+		// Two handles are the "same font" for segment-grouping when they refer to the same family (fallback
+		// resolution may return distinct IFont instances for the same physical font).
+		private static bool SameFont(IFont a, IFont b) => ReferenceEquals(a, b) || a.FamilyName == b.FamilyName;
 
 		private List<Segment> GetSegments()
 		{
@@ -185,7 +189,7 @@ namespace Microsoft.UI.Xaml.Documents
 			List<Segment> segments = new();
 			using HarfBuzzSharp.Buffer buffer = new();
 			var fontInfo = FontInfo;
-			var defaultTypeface = fontInfo.Typeface;
+			var defaultFontHandle = fontInfo.FontHandle;
 			var defaultFont = fontInfo.Font;
 			var fontSize = fontInfo.FontSize;
 
@@ -198,7 +202,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 			while (i < text.Length)
 			{
-				var (leadingSpaces, trailingSpaces, lineBreakLength, typeface, nextStartingIndex) = GetSegmentStartingFrom(i, text);
+				var (leadingSpaces, trailingSpaces, lineBreakLength, fontHandle, nextStartingIndex) = GetSegmentStartingFrom(i, text);
 
 				int length = nextStartingIndex - i;
 				FontDetails? fallbackFont = null;
@@ -206,21 +210,11 @@ namespace Microsoft.UI.Xaml.Documents
 				int fontScale;
 				float textSizeY;
 				float textSizeX;
-				if (typeface is not null && typeface != defaultTypeface)
+				if (fontHandle is not null && !SameFont(fontHandle, defaultFontHandle))
 				{
-					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
-					if (task.IsCompletedSuccessfully)
-					{
-						fallbackFont = task.Result;
-					}
-					else
-					{
-						task.ContinueWith(_ =>
-						{
-							NativeDispatcher.Main.Enqueue(OnFontLoaded);
-						});
-						fallbackFont = details;
-					}
+					// MatchCharacter returns installed fonts synchronously, so the fallback FontDetails is
+					// built directly from the resolved handle (no async family re-resolution).
+					fallbackFont = FontDetails.Create(fontHandle, (float)FontSize);
 
 					font = fallbackFont.Font;
 					font.GetScale(out fontScale, out _);

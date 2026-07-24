@@ -17,10 +17,13 @@ internal sealed class SkiaDrawingBackend : IDrawingBackend
 	[ModuleInitializer]
 	internal static void Register() => DrawingBackend.Register(new SkiaDrawingBackend());
 
-	// Opt-in switch to build geometry through the SkiaSharp-free ManagedGeometry engine instead of SKPath.
-	// Set UNO_MANAGED_GEOMETRY=1 before launching to exercise the alternative geometry backend.
-	private static readonly bool _useManagedGeometry =
-		System.Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true";
+	// Opt-in switch to build geometry through the SkiaSharp-free ManagedGeometry engine instead of SKPath,
+	// selected via DrawingBackendOptions.UseManagedGeometry at init.
+	private static bool _useManagedGeometry => DrawingBackendOptions.UseManagedGeometry;
+
+	private readonly SkiaFontManager _skiaFontManager = new();
+
+	public IFontManager FontManager => _skiaFontManager;
 
 	public IPathBuilder CreatePathBuilder() => _useManagedGeometry ? new ManagedPathBuilder() : new SkiaPathBuilder();
 

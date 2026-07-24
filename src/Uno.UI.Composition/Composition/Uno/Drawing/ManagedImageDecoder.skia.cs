@@ -9,13 +9,13 @@ namespace Uno.UI.Composition.Drawing;
 /// A SkiaSharp-free image decoder: parses the common encoded formats (PNG, GIF incl. animation, BMP, baseline JPEG)
 /// straight into BGRA-premultiplied pixel frames. Format parsing is entirely managed; the backend turns the pixels
 /// into drawable <see cref="IImage"/> handles (see <c>SkiaDrawingBackend.TryDecodeImage</c>). Opt-in via
-/// <c>UNO_MANAGED_IMAGE_DECODER=1</c>; unsupported inputs return false so the caller falls back to the Skia codec.
+/// <see cref="DrawingBackendOptions.UseManagedImageDecoder"/>; unsupported inputs return false so the caller
+/// falls back to the Skia codec.
 /// </summary>
 internal static partial class ManagedImageDecoder
 {
-	/// <summary>Whether the managed decoder is enabled (env <c>UNO_MANAGED_IMAGE_DECODER=1</c>).</summary>
-	public static bool Enabled { get; } =
-		Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true";
+	/// <summary>Whether the managed decoder is enabled (<see cref="DrawingBackendOptions.UseManagedImageDecoder"/>).</summary>
+	public static bool Enabled => DrawingBackendOptions.UseManagedImageDecoder;
 
 	public static bool TryDecode(byte[] data, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out DecodedImage? decoded)
 	{

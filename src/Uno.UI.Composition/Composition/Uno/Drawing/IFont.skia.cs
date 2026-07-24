@@ -63,6 +63,9 @@ public interface IFont
 	// --- Shaper face source: the raw sfnt so the text layer can build a HarfBuzz face without touching a Skia
 	//     typeface. SkiaFont serves tables from its (already variable-instanced) typeface, so shaping is unchanged. ---
 
+	/// <summary>The font's family name (used to group fallback runs); empty if unknown.</summary>
+	string FamilyName { get; }
+
 	/// <summary>The font's units-per-em (design grid), needed to scale shaped advances.</summary>
 	int UnitsPerEm { get; }
 

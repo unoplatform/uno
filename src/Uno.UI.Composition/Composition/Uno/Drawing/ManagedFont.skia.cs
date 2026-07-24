@@ -55,10 +55,15 @@ internal sealed class ManagedFont : IFont
 	// can be served on demand (GetFontTable) for the shaper face.
 	private readonly int _sfntOffset;
 
+	// 'name' table offset (0 = absent); family name parsed lazily.
+	private readonly int _name;
+	private string? _familyName;
+
 	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette,
 		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int lineGap, int? underlinePosition, int? underlineThickness,
-		int? strikeoutPosition, int? strikeoutThickness, int sfntOffset)
+		int? strikeoutPosition, int? strikeoutThickness, int sfntOffset, int name)
 	{
+		_name = name;
 		_data = data;
 		_pixelSize = pixelSize;
 		_unitsPerEm = unitsPerEm;
@@ -129,8 +134,96 @@ internal sealed class ManagedFont : IFont
 	/// <summary>Strikeout stroke thickness in pixels, or null if the font doesn't specify one.</summary>
 	public float? StrikeoutThickness => _strikeoutThickness is { } t ? t * Scale : null;
 
+	/// <summary>The font's family name from the <c>name</c> table (empty if unavailable).</summary>
+	public string FamilyName => _familyName ??= ParseFamilyName(_data, _name);
+
 	/// <summary>The font's units-per-em (design grid).</summary>
 	public int UnitsPerEm => _unitsPerEm;
+
+	// Reads the family name from the 'name' table. Prefers the typographic family (nameID 16) over the legacy
+	// family (nameID 1); prefers a Windows UTF-16BE English record, else the first usable record.
+	private static string ParseFamilyName(byte[] d, int name)
+	{
+		if (name == 0 || name + 6 > d.Length)
+		{
+			return string.Empty;
+		}
+
+		try
+		{
+			var count = U16(d, name + 2);
+			var storage = name + U16(d, name + 4);
+			string? family1 = null, family16 = null;
+			var recordsStart = name + 6;
+			for (var i = 0; i < count; i++)
+			{
+				var rec = recordsStart + i * 12;
+				if (rec + 12 > d.Length)
+				{
+					break;
+				}
+
+				var nameId = U16(d, rec + 6);
+				if (nameId != 1 && nameId != 16)
+				{
+					continue;
+				}
+
+				var platformId = U16(d, rec + 0);
+				var length = U16(d, rec + 8);
+				var offset = storage + U16(d, rec + 10);
+				if (offset + length > d.Length)
+				{
+					continue;
+				}
+
+				// Platform 3 (Windows) and 0 (Unicode) store UTF-16BE; platform 1 (Mac) stores single-byte.
+				var value = platformId is 3 or 0
+					? DecodeUtf16Be(d, offset, length)
+					: DecodeLatin1(d, offset, length);
+
+				if (value.Length == 0)
+				{
+					continue;
+				}
+
+				if (nameId == 16)
+				{
+					family16 ??= value;
+				}
+				else
+				{
+					family1 ??= value;
+				}
+			}
+
+			return family16 ?? family1 ?? string.Empty;
+		}
+		catch
+		{
+			return string.Empty;
+		}
+	}
+
+	private static string DecodeUtf16Be(byte[] d, int offset, int length)
+	{
+		var chars = new char[length / 2];
+		for (var i = 0; i < chars.Length; i++)
+		{
+			chars[i] = (char)((d[offset + i * 2] << 8) | d[offset + i * 2 + 1]);
+		}
+		return new string(chars);
+	}
+
+	private static string DecodeLatin1(byte[] d, int offset, int length)
+	{
+		var chars = new char[length];
+		for (var i = 0; i < length; i++)
+		{
+			chars[i] = (char)d[offset + i];
+		}
+		return new string(chars);
+	}
 
 	/// <summary>Returns the bytes of the sfnt table with the given tag, or null if absent.</summary>
 	public byte[]? GetFontTable(uint tag)
@@ -175,7 +268,7 @@ internal sealed class ManagedFont : IFont
 			}
 
 			var numTables = U16(data, baseOffset + 4);
-			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0, cmap = 0, hmtx = 0, hhea = 0, os2 = 0, post = 0;
+			int glyf = 0, loca = 0, head = 0, maxp = 0, cff = 0, colr = 0, cpal = 0, cmap = 0, hmtx = 0, hhea = 0, os2 = 0, post = 0, name = 0;
 			var dir = baseOffset + 12;
 			for (var i = 0; i < numTables; i++, dir += 16)
 			{
@@ -194,6 +287,7 @@ internal sealed class ManagedFont : IFont
 					case 0x68686561: hhea = offset; break; // 'hhea'
 					case 0x4F532F32: os2 = offset; break;  // 'OS/2'
 					case 0x706F7374: post = offset; break; // 'post'
+					case 0x6E616D65: name = offset; break; // 'name'
 				}
 			}
 
@@ -259,7 +353,7 @@ internal sealed class ManagedFont : IFont
 
 			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette,
 				cmapTable, hmtx, numHMetrics, ascent, descent, lineGap, underlinePosition, underlineThickness,
-				strikeoutPosition, strikeoutThickness, baseOffset);
+				strikeoutPosition, strikeoutThickness, baseOffset, name);
 			return true;
 		}
 		catch
