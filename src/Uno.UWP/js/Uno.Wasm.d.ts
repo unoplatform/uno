@@ -228,8 +228,10 @@ declare namespace Uno.UI.Dispatching {
     class NativeDispatcher {
         static _dispatcherCallback: any;
         static _isReady: boolean;
+        private static _schedule;
         static init(isReady: Promise<boolean>): void;
         static WakeUp(force: boolean): void;
+        private static createScheduler;
     }
 }
 declare namespace Windows.Gaming.Input {
