@@ -315,7 +315,7 @@ public class Given_HotReloadManager
 
 	[TestMethod]
 	[Description(
-		"Spec 055 R2: a batch fully reduced by the updater (reference-equal solution, entries reported " +
+		"Spec 055 R1: a batch fully reduced by the updater (reference-equal solution, entries reported " +
 		"in UpToDateChanges) short-circuits as a NoChanges completion — the emitter is never invoked " +
 		"and no blocked-compilation audit line is produced.")]
 	public async Task When_FullyReducedBatch_Then_NoChangesWithoutEmitNorAudit()
@@ -328,9 +328,19 @@ public class Given_HotReloadManager
 				emitInvoked = true;
 				return Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], []));
 			},
-			onUpdate: solution => new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]))
+			onUpdate: solution =>
 			{
-				UpToDateChanges = ChangeSet.IgnoreAll(["/work/Model.cs"]),
+				// Mirror the real updater: up-to-date entries are surfaced via EditedDocuments (with
+				// their file path), never IgnoredFiles. Build a document to reference but return the
+				// original solution unchanged, so the reference-equality NoChanges short-circuit fires.
+				var docId = DocumentId.CreateNewId(solution.ProjectIds[0]);
+				var upToDateDoc = solution
+					.AddDocument(docId, "Model.cs", "class Model { }", filePath: "/work/Model.cs")
+					.GetDocument(docId)!;
+				return new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]))
+				{
+					UpToDateChanges = ChangeSet.Empty with { EditedDocuments = [upToDateDoc] },
+				};
 			});
 
 		var batch = ImmutableHashSet.Create("/work/Model.cs");

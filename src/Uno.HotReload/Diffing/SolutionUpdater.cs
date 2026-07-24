@@ -34,7 +34,7 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		// reference-equality NoChanges short-circuit. Only realized texts are compared: an
 		// unrealized text means the document was never read into this snapshot, so the batch
 		// cannot be a re-observation of it. Skipped entries are surfaced through
-		// <see cref="SolutionUpdateResult.UpToDateChanges"/>.
+		// SolutionUpdateResult.UpToDateChanges.
 		var upToDateDocuments = ImmutableArray.CreateBuilder<Document>();
 		foreach (var document in changeSet.EditedDocuments)
 		{
@@ -148,14 +148,17 @@ public sealed class SolutionUpdater : ISolutionUpdater
 			RemovedAdditionalDocuments = [],
 		};
 
-		return new SolutionUpdateResult(solution, ignored)
-		{
-			UpToDateChanges = ChangeSet.Empty with
+		// Keep the common (nothing-skipped) path allocation-free: only build a ChangeSet when at
+		// least one entry was actually up to date, otherwise reuse the shared empty instance.
+		var upToDate = upToDateDocuments.Count is 0 && upToDateAdditionalDocuments.Count is 0
+			? ChangeSet.Empty
+			: ChangeSet.Empty with
 			{
 				EditedDocuments = upToDateDocuments.ToImmutable(),
 				EditedAdditionalDocuments = upToDateAdditionalDocuments.ToImmutable(),
-			},
-		};
+			};
+
+		return new SolutionUpdateResult(solution, ignored) { UpToDateChanges = upToDate };
 	}
 
 	private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)

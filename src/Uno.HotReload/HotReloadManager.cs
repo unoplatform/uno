@@ -171,8 +171,11 @@ public sealed class HotReloadManager : IDisposable
 		// Up-to-date entries were consumed (their content is already in the solution) — not
 		// ignored. Surface them for diagnosability only: they are how a re-observation of
 		// content the pipeline just applied resolves to a plain NoChanges instead of forking.
-		if (result.UpToDateChanges.GetAllPaths().ToImmutableArray() is { IsEmpty: false } upToDate)
+		// Guard on the cheap struct-field check so the common (nothing-skipped) path builds
+		// neither the enumerator nor the array.
+		if (!result.UpToDateChanges.EditedDocuments.IsEmpty || !result.UpToDateChanges.EditedAdditionalDocuments.IsEmpty)
 		{
+			var upToDate = result.UpToDateChanges.GetAllPaths().ToImmutableArray();
 			_tracker.Verbose($"{upToDate.Length} file(s) already up to date ({string.Join(", ", upToDate.Select(Path.GetFileName))})");
 		}
 
