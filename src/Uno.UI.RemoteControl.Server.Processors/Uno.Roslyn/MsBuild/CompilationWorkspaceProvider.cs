@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 
@@ -87,6 +88,15 @@ public static class CompilationWorkspaceProvider
 			// Flag the current build as created for hot reload, which allows for running targets
 			// or setting props/items in the context of the hot reload workspace.
 			[UnoIsHotReloadHostProperty] = "True",
+
+			// The workspace compiles with the embedded Microsoft.CodeAnalysis, not with the SDK's
+			// csc: force the analyzer multi-targeting (analyzers/dotnet/roslyn{X.Y} folders) to
+			// select flavors loadable by the embedded Roslyn. Without this, an SDK newer than the
+			// embedded Roslyn selects flavors that fail to type-load, and
+			// AnalyzerFileReference.GetGenerators() silently returns zero generators (missing
+			// generated code in every compile of the affected projects). As a GLOBAL property this
+			// is immutable for the evaluation, so the SDK's own unconditional assignment is ignored.
+			["CompilerApiVersion"] = EmbeddedRoslyn.CompilerApiVersion,
 		};
 
 		foreach (var property in _globalPropertiesAllowList)
@@ -115,16 +125,25 @@ public static class CompilationWorkspaceProvider
 			var diagnostics = new ConcurrentQueue<WorkspaceDiagnostic>();
 			workspaceDiagnostics = diagnostics;
 
-			workspace.WorkspaceFailed += (_sender, diag) =>
+			// In some cases, load failures may be incorrectly reported such as this one:
+			// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+			// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+			// The diagnostics are buffered: when the load leaves a head flavor unresolved they
+			// are the only trace of the root cause and get re-emitted as warnings (below).
+			void OnWorkspaceFailed(WorkspaceDiagnostic diagnostic)
 			{
-				// In some cases, load failures may be incorrectly reported such as this one:
-				// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
-				// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
-				// The diagnostics are buffered: when the load leaves a head flavor unresolved they
-				// are the only trace of the root cause and get re-emitted as warnings (below).
-				diagnostics.Enqueue(diag.Diagnostic);
-				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
-			};
+				diagnostics.Enqueue(diagnostic);
+				reporter.Verbose($"MSBuildWorkspace {diagnostic}");
+			}
+
+#if NET10_0_OR_GREATER
+			// Roslyn 5.x obsoleted the WorkspaceFailed event (handlers are no longer marshaled
+			// to a UI thread — a non-event for this server); the returned registration lives as
+			// long as the workspace, nothing to dispose separately.
+			_ = workspace.RegisterWorkspaceFailedHandler(args => OnWorkspaceFailed(args.Diagnostic));
+#else
+			workspace.WorkspaceFailed += (_sender, diag) => OnWorkspaceFailed(diag.Diagnostic);
+#endif
 
 			try
 			{
@@ -178,6 +197,11 @@ public static class CompilationWorkspaceProvider
 		}
 
 		ReportUnresolvedHeadFlavors(workspace.CurrentSolution, projectPath, workspaceDiagnostics, reporter);
+
+		// Analyzer load failures are silent (GetGenerators returns an empty array): surface them
+		// now, one warning per impacted project, so the session log carries the signal before any
+		// hot-reload pass compiles with missing generated code.
+		EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(workspace.CurrentSolution, reporter);
 
 		return workspace;
 	}
