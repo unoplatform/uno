@@ -13,7 +13,10 @@ internal sealed record HealthReport
 	public string? HostEndpoint { get; init; }
 	public bool UpstreamConnected { get; init; }
 	public int ToolCount { get; init; }
+	public string? UnoSdkPackage { get; init; }
 	public string? UnoSdkVersion { get; init; }
+	public string? LatestUnoSdkVersion { get; init; }
+	public bool UnoSdkUpdateAvailable { get; init; }
 	public long DiscoveryDurationMs { get; init; }
 	public ConnectionState? ConnectionState { get; init; }
 	public IReadOnlyList<string>? DiscoveredSolutions { get; init; }
@@ -121,4 +124,5 @@ internal enum IssueCode
 	WorkspaceAmbiguous,
 	WorkspaceNotResolved,
 	HostMcpEndpointNotAvailable,
+	UnoSdkUpdateAvailable,
 }
