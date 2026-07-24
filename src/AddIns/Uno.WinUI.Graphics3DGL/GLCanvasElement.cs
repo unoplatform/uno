@@ -493,6 +493,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 
+			// glReadPixels doesn't throw on failure (e.g. an unsupported readback format); it only
+			// sets a GL error and leaves the destination buffer untouched, which shows up as a
+			// permanently blank canvas. Drain errors left over from user code first so the check
+			// after the readback is attributable to the readback itself. The drain is bounded
+			// because GetError can keep returning GL_CONTEXT_LOST forever on a lost context.
+			for (var i = 0; i < 8 && _gl.GetError() is not GLEnum.NoError; i++) { }
+
 #if WINAPPSDK
 			_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
@@ -514,6 +521,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			});
 			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
+
+			if (_gl.GetError() is var readbackError && readbackError is not GLEnum.NoError)
+			{
+				throw new InvalidOperationException(
+					$"glReadPixels failed with {readbackError} while copying the framebuffer to the back buffer.");
+			}
+
 			_backBuffer.Invalidate();
 		}
 		catch (Exception e)
