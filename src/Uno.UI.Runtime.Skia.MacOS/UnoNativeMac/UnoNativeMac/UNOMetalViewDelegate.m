@@ -34,6 +34,14 @@
 
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    // A paused view is driven by the managed render thread, which owns the GRContext. AppKit can
+    // still call this (occlusion changes, backing-store redraws), so bail out rather than touch the
+    // GRContext from the main thread concurrently with the render thread.
+    if (view.isPaused)
+    {
+        return;
+    }
+
 #if DEBUG
     NSLog (@"drawInMTKView: %f %f", view.drawableSize.width, view.drawableSize.height);
 #endif
@@ -99,3 +107,63 @@
 }
 
 @end
+
+// --- Render thread drawable lifecycle functions ---
+// Called from the managed render thread (a background thread). These use
+// CAMetalLayer.nextDrawable directly instead of MTKView.currentDrawable, which is only
+// valid during drawInMTKView: callbacks on the main thread. nextDrawable is thread-safe.
+// See: https://developer.apple.com/documentation/quartzcore/cametallayer
+
+bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* width, double* height)
+{
+    @autoreleasepool {
+        if (window == nil) return false;
+
+        MTKView* view = (MTKView*)window.contentViewController.view;
+        if (view == nil || ![view isKindOfClass:[MTKView class]]) return false;
+
+        UNOWindow* unoWindow = (UNOWindow*)window;
+        UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
+        if (delegate == nil) return false;
+
+        // nextDrawable is thread-safe (unlike MTKView.currentDrawable). It blocks up to ~1s
+        // if all drawables are in use (occluded/minimized window); with maximumDrawableCount=2
+        // set in uno_window_create that is rare, and a nil return is handled by the caller.
+        CAMetalLayer* metalLayer = (CAMetalLayer*)view.layer;
+
+        id<CAMetalDrawable> drawable = [metalLayer nextDrawable];
+        if (drawable == nil) return false;
+
+        // Hold the drawable until present (strong property retains via ARC).
+        delegate.currentFrameDrawable = drawable;
+
+        *texture = (__bridge void*)drawable.texture;
+        CGSize size = metalLayer.drawableSize;
+        *width = size.width;
+        *height = size.height;
+        return true;
+    }
+}
+
+void uno_window_present_frame(NSWindow* window)
+{
+    @autoreleasepool {
+        if (window == nil) return;
+
+        UNOWindow* unoWindow = (UNOWindow*)window;
+        UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
+        if (delegate == nil) return;
+
+        id<CAMetalDrawable> drawable = delegate.currentFrameDrawable;
+        if (drawable == nil) return;
+
+        id<MTLCommandBuffer> commandBuffer = [delegate.queue commandBuffer];
+        [commandBuffer presentDrawable:drawable];
+        [commandBuffer commit];
+
+        // Release the drawable as soon as possible after committing; the command buffer
+        // retains it internally for presentation.
+        // See: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
+        delegate.currentFrameDrawable = nil;
+    }
+}
