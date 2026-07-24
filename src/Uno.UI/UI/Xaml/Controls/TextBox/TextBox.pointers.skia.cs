@@ -250,9 +250,10 @@ public partial class TextBox
 	}
 
 	private void TouchTap(Point point, bool wasFocused)
-	{
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
+		=> TouchTapAt(Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true)));
 
+	private void TouchTapAt(int index)
+	{
 		switch (TouchSelectionConvention)
 		{
 			case TouchTextSelectionConvention.Android:
@@ -289,9 +290,11 @@ public partial class TextBox
 	}
 
 	private void TouchSelectWord(Point point)
+		=> TouchSelectWordAt(Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true)));
+
+	private void TouchSelectWordAt(int index)
 	{
 		var displayBlock = TextBoxView.DisplayBlock;
-		var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
 		var chunk = displayBlock.ParsedText.GetWordAt(index, true);
 
 		// GetWordAt bundles the trailing space into the word chunk; native iOS/Android select just the word,

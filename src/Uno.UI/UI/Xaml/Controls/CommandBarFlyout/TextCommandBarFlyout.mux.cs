@@ -336,7 +336,42 @@ partial class TextCommandBarFlyout
 
 		addButtonToCommandsIfPresent(TextControlButtons.Undo, SecondaryCommands);
 		addButtonToCommandsIfPresent(TextControlButtons.Redo, SecondaryCommands);
-		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, SecondaryCommands);
+
+		// Uno specific: on a touch/pen insertion-caret flyout (no selection), Select All is the only command with an
+		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
+		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
+
+		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
+			? PrimaryCommands
+			: SecondaryCommands;
+		if ((buttonsToAdd & TextControlButtons.SelectAll) != TextControlButtons.None &&
+			GetButton(TextControlButtons.SelectAll) is AppBarButton selectAllButton)
+		{
+			// In the primary bar Select All is shown like Cut/Copy/Paste (icon + label), so restore the icon its
+			// command clears (see GetButton). The button instance is cached and reused, so reuse the existing icon
+			// (allocate only once) in the primary bar and clear it again when it routes back to the text-only overflow.
+			if (commandListForSelectAll == PrimaryCommands)
+			{
+				selectAllButton.Icon ??= new SymbolIcon(Symbol.SelectAll);
+			}
+			else
+			{
+				selectAllButton.Icon = null;
+			}
+		}
+		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, commandListForSelectAll);
+
+		// Uno specific: the command bar shows the overflow ("...") button whenever its primary bar is taller than the
+		// compact height (i.e. its buttons carry labels), even with nothing in the overflow — which dangles a "..." over
+		// an empty menu on the label-carrying touch/pen selection flyout (most visibly the touch insertion-caret flyout,
+		// where Select All is promoted to the primary bar and nothing is secondary). For that touch/pen UX, gate the
+		// overflow button on the actual secondary-command count; keep WinUI's default (Auto) for mouse/keyboard.
+		if (m_commandBar is { } commandBar)
+		{
+			commandBar.OverflowButtonVisibility = InputDevicePrefersPrimaryCommands && SecondaryCommands.Count == 0
+				? CommandBarOverflowButtonVisibility.Collapsed
+				: CommandBarOverflowButtonVisibility.Auto;
+		}
 	}
 
 	private TextControlButtons GetButtonsToAdd()
@@ -928,6 +963,16 @@ partial class TextCommandBarFlyout
 						command.IconSource = null;
 
 						InitializeButtonWithUICommand(button, command, executeFunc);
+
+						// Uno specific: promoted to the primary bar of a transient insertion-caret flyout, Select All can be
+						// hosted directly under the command bar instead of its PrimaryItemsControl, so the implicit
+						// CommandBarFlyoutAppBarButtonStyle never reaches it and its text label stays collapsed. Assign that
+						// style explicitly so the button always carries the flyout template (Cut/Copy/Paste get it implicitly).
+						if (Application.Current?.Resources.TryGetValue("CommandBarFlyoutAppBarButtonStyle", out var flyoutButtonStyle) == true &&
+							flyoutButtonStyle is Style style)
+						{
+							button.Style = style;
+						}
 
 						m_buttons[TextControlButtons.SelectAll] = button;
 						return button;

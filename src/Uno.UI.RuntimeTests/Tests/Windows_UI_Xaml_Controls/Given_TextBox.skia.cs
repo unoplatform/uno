@@ -5208,6 +5208,175 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
+		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
+		// thumb a line below the caret, so GetIndexAt spilled onto the next render line and jumped the caret to the
+		// end of the text. A tap on the handle must keep the caret where the handle already is. Sister (no-drag case)
+		// of When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line.
+		[TestMethod]
+		public async Task When_Touch_Tap_Handle_From_Thumb_Keeps_Caret_Android()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned over the TextBox before tapping it");
+
+			var caretBeforeTap = SUT.SelectionStart;
+			Assert.IsTrue(caretBeforeTap < SUT.Text.Length, $"the first tap should place the caret mid-text (len {SUT.Text.Length}, was {caretBeforeTap})");
+
+			// Wait past the 500ms multi-tap window so tapping the handle is a single tap (not double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the THUMB near its bottom edge (what a real finger hits) — the geometry that used to jump the caret.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The tap keeps a collapsed caret exactly where the handle was — it must NOT jump to the end of the text.
+			Assert.AreEqual(0, SUT.SelectionLength, "tapping the handle keeps a collapsed caret");
+			Assert.AreEqual(caretBeforeTap, SUT.SelectionStart, $"tapping the insertion handle must not move the caret (len {SUT.Text.Length}, was {caretBeforeTap}, now {SUT.SelectionStart})");
+		}
+
+		// Native Android: tapping the single insertion handle re-opens the selection flyout even over a collapsed
+		// caret (no selection), mirroring the native insertion-handle popup. This is an Uno addition beyond the WinUI
+		// port, which shows the SelectionFlyout only for a non-empty selection. The clipboard is cleared so Paste is
+		// unavailable: Select All alone must keep the flyout open, since a transient flyout with no primary command
+		// self-hides (see TextCommandBarFlyout's Opened handler).
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// First tap: Android places a collapsed caret with the single insertion handle.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 20, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the first Android tap should place the single insertion handle");
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the insertion handle should be visible after the first Android tap");
+
+			// Empty the clipboard so Paste is unavailable — Select All is then the only command, the scenario that
+			// used to leave the flyout with no primary command and self-hide.
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits).
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for it to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "tapping the insertion handle should open the selection flyout over the collapsed caret, even with an empty clipboard");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "tapping the handle keeps a collapsed caret (no word selected)");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// Select All keeps the flyout usable with an empty clipboard; Copy and Paste are absent (nothing is
+			// selected, nothing to paste).
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+
+			// Select All must sit in the primary bar (so the flyout has a primary command and stays open) and, like
+			// Cut/Copy/Paste, must show its text label there — not render as a bare icon — so it reads as a command.
+			var selectAllButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
+			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
+
+			if (selectAllButton.FindVisualChildByName("TextLabel") is not TextBlock selectAllLabel)
+			{
+				Assert.Fail("the primary Select All button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
+
+			// With Select All in the primary bar there is nothing in the overflow, so the "..." overflow button must
+			// not appear (it would otherwise show a dangling "..." over an empty menu, because the labelled primary bar
+			// is taller than the command bar's compact height). See TextCommandBarFlyout.UpdateButtons.
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the insertion-caret flyout should have no secondary commands");
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
+		}
+
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
 		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
 		{
@@ -5243,6 +5412,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
 			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
+
+		// A touch long-press on a mobile convention must select the word BEFORE the text control's flyout
+		// computes its commands. Regression: the inner DisplayBlock's ContextRequested class handler used to
+		// open the ContextFlyout with an empty selection (Cut/Copy omitted) before OnContextRequestedImpl
+		// selected the word. Driven with a real injected hold so the whole bubbling path is exercised.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Flyout_Includes_Copy_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for a flyout to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
+
+			var openFlyout =
+				(SUT.SelectionFlyout as TextCommandBarFlyout) is { IsOpen: true } sel ? sel :
+				(SUT.ContextFlyout as TextCommandBarFlyout) is { IsOpen: true } ctx ? ctx :
+				null;
+
+			Assert.IsNotNull(openFlyout, "a text command flyout should be open after the long-press");
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(openFlyout);
+
+			Assert.IsTrue(hasCopy, "Copy should be available: the word is selected");
+			Assert.IsTrue(hasCut, "Cut should be available: the word is selected");
+		}
+
+		// Sibling guard for the desktop/mouse path: a right-click over the text (whose ContextRequested
+		// originates on the inner DisplayBlock and bubbles to the TextBox) must still open the ContextFlyout,
+		// reflecting the current selection. Guards the OnContextRequestedCore DisplayBlock deferral.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RightClick_Over_Selection_Flyout_Includes_Copy()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var overText = new Point(bounds.Left + 20, bounds.GetCenter().Y); // inside "Some Text" and inside the selection
+			mouse.PressRight(overText);
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.ContextFlyout is not TextCommandBarFlyout contextFlyout || !contextFlyout.IsOpen)
+			{
+				Assert.Fail("the ContextFlyout should open on right-click over the text");
+				return;
+			}
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(contextFlyout);
+			Assert.IsTrue(hasCopy, $"Copy should be available (selectedText='{SUT.SelectedText}')");
+			Assert.IsTrue(hasCut, $"Cut should be available (selectedText='{SUT.SelectedText}')");
+
+			contextFlyout.Hide();
+		}
 
 		// Native Android: a touch long-press selects the word (and suppresses the context menu).
 		// The Desktop convention keeps the default context-menu behavior (no auto word selection).

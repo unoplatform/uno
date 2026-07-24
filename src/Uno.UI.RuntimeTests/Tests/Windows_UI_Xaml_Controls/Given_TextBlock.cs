@@ -1449,6 +1449,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		// Regression: tapping a selection gripper re-sampled the finger point, which sits on the thumb below the
+		// caret line, so GetIndexAt spilled onto the text and reselected a different word. Tapping a selection
+		// handle must keep the selection.
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Tap_Gripper_Keeps_Selection()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first word to select it and show the grippers.
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+
+			// Tap the end gripper's thumb near its bottom edge (below the caret line) — the geometry that used to
+			// reselect the word under the thumb instead of leaving the selection alone.
+			var endThumb = grippers.Value.end.GetAbsoluteBounds();
+			finger.Press(new Point(endThumb.GetCenter().X, endThumb.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd(), "tapping a selection gripper must keep the selection, not reselect a word under the thumb");
+			Assert.IsNotNull(sut.SelectionGrippersForTesting, "the grippers should remain visible after tapping one");
+#endif
+		}
+
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
