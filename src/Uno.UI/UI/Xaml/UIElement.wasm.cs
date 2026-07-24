@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -678,6 +679,21 @@ namespace Microsoft.UI.Xaml
 			return new RoutedEventArgs(src);
 		}
 
+		/// <summary>
+		/// Removes <see cref="UIElementNativeRegistrar"/> entries whose key <see cref="Type"/> belongs
+		/// to a non-default (collectible) <see cref="AssemblyLoadContext"/>. A downstream host that
+		/// loads previewed apps into their own collectible AssemblyLoadContexts creates elements of the
+		/// app's control types; the process-lifetime registrar then keeps each such <see cref="Type"/>
+		/// alive for the process lifetime, pinning the context after unload. Called from the ALC
+		/// cleanup hook (<c>Application.CleanupNonDefaultAlcCaches</c>). The corresponding JS-side
+		/// registration map holds only strings (no managed reference / ALC pin) and is intentionally
+		/// left intact: its ids are assigned from a shared counter, so removing entries there could
+		/// collide with still-live registrations. Re-registration after the sweep simply produces a
+		/// fresh id and a few duplicate string entries, which is harmless.
+		/// </summary>
+		internal static void ClearNonDefaultAlcElementRegistrations()
+			=> UIElementNativeRegistrar.ClearNonDefaultAlcEntries();
+
 		private static class UIElementNativeRegistrar
 		{
 			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
@@ -690,6 +706,40 @@ namespace Microsoft.UI.Xaml
 				}
 
 				return classNamesRegistrationId;
+			}
+
+			internal static void ClearNonDefaultAlcEntries()
+			{
+				var defaultAlc = AssemblyLoadContext.Default;
+				List<Type> keysToRemove = null;
+
+				foreach (var key in _classNames.Keys)
+				{
+					// Type.IsCollectible is the fast path — it also catches generic instantiations
+					// over collectible type arguments whose declaring assembly is a shared
+					// (default-ALC) one. Only fall back to the load-context lookup otherwise.
+					if (key.IsCollectible)
+					{
+						(keysToRemove ??= new List<Type>()).Add(key);
+						continue;
+					}
+
+					var alc = AssemblyLoadContext.GetLoadContext(key.Assembly);
+					if (alc is not null && alc != defaultAlc)
+					{
+						(keysToRemove ??= new List<Type>()).Add(key);
+					}
+				}
+
+				if (keysToRemove is null)
+				{
+					return;
+				}
+
+				foreach (var key in keysToRemove)
+				{
+					_classNames.Remove(key);
+				}
 			}
 
 			private static IEnumerable<string> GetClassesForType(Type type)

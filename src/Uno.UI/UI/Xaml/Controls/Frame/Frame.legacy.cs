@@ -26,12 +26,12 @@ public partial class Frame : ContentControl
 
 	private string _navigationState;
 
-	private static PagePool _pool;
+	// Process-wide page pool. Previously each Frame overwrote this static with its own new
+	// PagePool, orphaning every earlier pool while its 30s scavenger loop kept it alive forever.
+	private static readonly PagePool _pool = PagePool.Instance;
 
 	private void CtorLegacy()
 	{
-		_pool = new PagePool();
-
 		var backStack = new ObservableCollection<PageStackEntry>();
 		var forwardStack = new ObservableCollection<PageStackEntry>();
 

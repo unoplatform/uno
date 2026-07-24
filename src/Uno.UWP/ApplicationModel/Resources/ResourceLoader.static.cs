@@ -124,6 +124,55 @@ partial class ResourceLoader
 		}
 	}
 
+	/// <summary>
+	/// Removes every previewed-app assembly registered via <see cref="AddLookupAssembly"/> whose
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> is non-default (collectible), then
+	/// rebuilds the loader caches from the remaining (default-ALC) assemblies. A downstream host
+	/// that loads previewed apps into their own collectible AssemblyLoadContexts calls each of those
+	/// apps' <c>AddLookupAssembly</c>; the process-lifetime <see cref="_lookupAssemblies"/> list
+	/// then holds a strong reference to every loaded app assembly for the process lifetime, pinning
+	/// the context after unload. The parsed resources themselves are keyed by string culture/key (no
+	/// ALC pin), but the loaders' dictionaries are cleared and re-parsed from the still-registered
+	/// default-ALC assemblies so no value parsed from an unloaded assembly lingers.
+	/// </summary>
+	internal static void ClearNonDefaultAlcAssemblies()
+	{
+		var removedAny = _lookupAssemblies.RemoveAll(IsFromNonDefaultAlc) > 0;
+		if (!removedAny)
+		{
+			return;
+		}
+
+		// Rebuild the culture caches from the remaining (default-ALC) assemblies so no resource
+		// value parsed from an unloaded assembly lingers in a loader's dictionary. ClearResources()
+		// empties every loader's per-culture dictionaries, so the parsed-resource markers must be
+		// cleared wholesale too: ProcessResourceFile skips any (assembly, fileName) still present in
+		// _parsedResources, so leaving the remaining assemblies' markers in place would make the
+		// rebuild a no-op and leave the loaders empty until the next full reload.
+		ClearResources();
+		_parsedResources.Clear();
+		if (_loaderContext is not null)
+		{
+			foreach (var assembly in _lookupAssemblies)
+			{
+				ProcessAssembly(assembly, _loaderContext.LanguagePreferences);
+			}
+		}
+	}
+
+	private static bool IsFromNonDefaultAlc(Assembly assembly)
+	{
+		var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+		return alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default;
+	}
+
+	/// <summary>
+	/// Test seam: whether <paramref name="assembly"/> is currently registered as a lookup assembly.
+	/// Lets the ALC sweep be verified without reflecting over the private
+	/// <see cref="_lookupAssemblies"/> field.
+	/// </summary>
+	internal static bool ContainsLookupAssembly(Assembly assembly) => _lookupAssemblies.Contains(assembly);
+
 	private static bool HasContextChangedSignificantly(out LoaderContext context)
 	{
 		var capture = new LoaderContext(
