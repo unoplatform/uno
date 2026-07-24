@@ -163,32 +163,14 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If a non-attached property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type, or an attached property, has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata typeMetadata)
-		{
-			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
-
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
-
-			try
-			{
-				RegisterProperty(ownerType, name, newProperty);
-			}
-			catch (ArgumentException e)
-			{
-				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
-					e
-				);
-			}
-
-			return newProperty;
-		}
+			=> RegisterProperty(ownerType, name, propertyType, typeMetadata, attached: false);
 
 		private static PropertyMetadata FixMetadataIfNeeded(
 			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -237,32 +219,14 @@ namespace Microsoft.UI.Xaml
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
-		/// <returns>A dependency property instance</returns>
-		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		/// <returns>A dependency property instance. If an attached property with the same name and property type has already been registered for the ownerType, that existing instance is returned.</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name but a different property type, or a non-attached property, has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
 			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata defaultMetadata)
-		{
-			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
-
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
-
-			try
-			{
-				RegisterProperty(ownerType, name, newProperty);
-			}
-			catch (ArgumentException e)
-			{
-				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
-					e
-				);
-			}
-
-			return newProperty;
-		}
+			=> RegisterProperty(ownerType, name, propertyType, defaultMetadata, attached: true);
 
 		/// <summary>
 		/// Registers a attachable dependency property on the specified <paramref name="ownerType"/>.
@@ -456,11 +420,41 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
-		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
+		private static DependencyProperty RegisterProperty(
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			string name,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			PropertyMetadata typeMetadata,
+			bool attached)
 		{
+			// WinUI does not de-duplicate registrations (MetadataAPI::RegisterDependencyProperty creates a fresh
+			// DP each time) and apps rely on it, so an exact duplicate returns the already-registered property
+			// instead of throwing. A different propertyType or attached-ness is still a genuine conflict.
+			// Checked before the property is created, so a duplicate neither allocates nor burns a unique id.
+			if (_registry.TryGetValue(ownerType, name, out var existingProperty) &&
+				existingProperty!.Type == propertyType &&
+				existingProperty.IsAttached == attached)
+			{
+				return existingProperty;
+			}
+
+			var newProperty = new DependencyProperty(name, propertyType, ownerType, FixMetadataIfNeeded(propertyType, typeMetadata), attached);
+
 			ResetGetPropertyCache(ownerType, name);
 
-			_registry.Add(ownerType, name, newProperty);
+			try
+			{
+				_registry.Add(ownerType, name, newProperty);
+			}
+			catch (ArgumentException e)
+			{
+				throw new InvalidOperationException(
+					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
+					e
+				);
+			}
+
+			return newProperty;
 		}
 
 		/// <summary>
