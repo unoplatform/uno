@@ -2359,5 +2359,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		public async Task When_BaselineOffset_Reflects_First_Line()
+		{
+			var unpadded = new TextBlock { Text = "Baseline", FontSize = 24 };
+			var padded = new TextBlock { Text = "Baseline", FontSize = 24, Padding = new Thickness(20) };
+			var panel = new StackPanel();
+			panel.Children.Add(unpadded);
+			panel.Children.Add(padded);
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitForIdle();
+
+				var baseline = unpadded.BaselineOffset;
+
+				// The first line's baseline ≈ the font ascent; for FontSize=24 it lands well inside
+				// (0.5·FontSize, 1.5·FontSize) (CTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > unpadded.FontSize * 0.5, $"BaselineOffset {baseline} should exceed half the font size ({unpadded.FontSize})");
+				Assert.IsTrue(baseline < unpadded.FontSize * 1.5, $"BaselineOffset {baseline} should be within 1.5x the font size ({unpadded.FontSize})");
+
+				// WinUI measures the baseline from the content box, so Padding must not change it
+				// (CTextBlock::GetBaselineOffset DWrite branch adds no padding). This also runs on
+				// NativeWinUI, so it doubles as a parity check.
+				Assert.AreEqual(baseline, padded.BaselineOffset, 0.5, "BaselineOffset must be independent of Padding");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		public async Task When_TextLineBounds_Trims_Line_Height()
+		{
+			static TextBlock Create(TextLineBounds bounds) => new() { Text = "Bounds", FontSize = 24, TextLineBounds = bounds };
+
+			var full = Create(TextLineBounds.Full);
+			var trimToBaseline = Create(TextLineBounds.TrimToBaseline);
+			var tight = Create(TextLineBounds.Tight);
+
+			var panel = new StackPanel();
+			panel.Children.Add(full);
+			panel.Children.Add(trimToBaseline);
+			panel.Children.Add(tight);
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitForIdle();
+
+				// CCompositeFontFamily::GetTextLineBoundsMetrics — Full keeps ascent+descent, TrimToBaseline
+				// drops the descent, and Tight trims to cap height at both ends.
+				Assert.IsTrue(tight.ActualHeight > 0, $"Tight height should be positive (was {tight.ActualHeight})");
+				Assert.IsTrue(trimToBaseline.ActualHeight < full.ActualHeight,
+					$"TrimToBaseline height {trimToBaseline.ActualHeight} should be less than Full height {full.ActualHeight}");
+				Assert.IsTrue(tight.ActualHeight < trimToBaseline.ActualHeight,
+					$"Tight height {tight.ActualHeight} should be less than TrimToBaseline height {trimToBaseline.ActualHeight}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

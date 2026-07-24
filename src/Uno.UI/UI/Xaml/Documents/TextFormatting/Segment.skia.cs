@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.UI.Xaml.Documents.RichTextServices;
 using SkiaSharp;
 
 #nullable enable
@@ -8,8 +9,8 @@ using SkiaSharp;
 namespace Microsoft.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
-	/// Represents a stand-alone line break or a segment of a Run that can end in a word-break opportunity and/or a line break. All glyphs in a segment go in
-	/// the same direction (LTR or RTL).
+	/// Represents a stand-alone line break, an embedded inline object, or a segment of a Run that can end in a word-break opportunity and/or a line break. All
+	/// glyphs in a segment go in the same direction (LTR or RTL).
 	/// </summary>
 	[DebuggerDisplay("{DebugText}")]
 	internal sealed class Segment
@@ -68,7 +69,22 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public int LineBreakLength { get; }
 
-		public bool IsTab => Text.Length == 1 && Text[0] == '\t';
+		public bool IsTab => Inline is Run && Text.Length == 1 && Text[0] == '\t';
+
+		/// <summary>
+		/// Gets the embedded object run for segments created from an <see cref="InlineUIContainer"/>, otherwise null.
+		/// </summary>
+		public ObjectRun? ObjectRun { get; }
+
+		/// <summary>
+		/// Gets the measured size and baseline of the embedded object. Only meaningful when <see cref="IsInlineObject"/> is true.
+		/// </summary>
+		public ObjectRunMetrics ObjectMetrics { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether this segment represents an <see cref="InlineUIContainer"/> rather than text.
+		/// </summary>
+		public bool IsInlineObject => ObjectRun is not null;
 
 		/// <summary>
 		/// Gets the section of text of the Run element this segment represents. Throws if this segment represents a LineBreak element.
@@ -81,7 +97,12 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public IReadOnlyList<GlyphInfo> Glyphs => _glyphs ?? throw new InvalidOperationException("Glyphs can only be retrieved for segments representing part of a Run.");
 
-		private string DebugText => Inline is Run ? Text.ToString() : "{LineBreak}";
+		private string DebugText => Inline switch
+		{
+			Run => Text.ToString(),
+			InlineUIContainer => "{InlineUIContainer}",
+			_ => "{LineBreak}",
+		};
 
 		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
 		{
@@ -102,6 +123,19 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		{
 			Inline = lineBreak;
 			LineBreakAfter = true;
+			_text = String.Empty;
+		}
+
+		/// <summary>
+		/// Creates a segment for an embedded inline object, which contributes no glyphs but occupies
+		/// <paramref name="metrics"/>.Width in the line.
+		/// </summary>
+		public Segment(InlineUIContainer container, FlowDirection direction, ObjectRun objectRun, ObjectRunMetrics metrics)
+		{
+			Inline = container;
+			Direction = direction;
+			ObjectRun = objectRun;
+			ObjectMetrics = metrics;
 			_text = String.Empty;
 		}
 

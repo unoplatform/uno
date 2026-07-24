@@ -363,11 +363,13 @@ namespace Microsoft.UI.Xaml.Documents
 		// WASM specific as on WASM BaseClass is UIElement
 
 #if !__WASM__
-		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
-		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
-		{
-			return null;
-		}
+		// MUX Reference CTextElement::OnCreateAutomationPeer — most text elements have no peer; the ones
+		// that do (Hyperlink) override OnCreateAutomationPeerCore. WinUI caches the peer; Uno re-creates it,
+		// which is acceptable for the read-only AP children walk.
+		// TODO Uno: cache the created peer for parity with WinUI's GetOrCreateAutomationPeer.
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer() => OnCreateAutomationPeerCore();
+
+		private protected virtual Automation.Peers.AutomationPeer OnCreateAutomationPeerCore() => null;
 
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
@@ -410,10 +412,11 @@ namespace Microsoft.UI.Xaml.Documents
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
-		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		// MUX Reference TextElement::AppendAutomationPeerChildren — base is a no-op; subclasses
+		// (Block/Paragraph, Span/Hyperlink) override to recurse into their inline content. The
+		// collection-append shape matches WinUI (the peer's GetChildrenCore owns the collection).
+		internal protected virtual void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
 		{
-			//return S_OK;
-			return null;
 		}
 	}
 }

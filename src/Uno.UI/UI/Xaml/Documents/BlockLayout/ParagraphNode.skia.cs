@@ -1,0 +1,1362 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ParagraphNode.h, ParagraphNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
+
+#nullable enable
+#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
+
+using System;
+using Uno.UI.Extensions;
+using System.Collections.Generic;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Documents.RichTextServices;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+
+namespace Microsoft.UI.Xaml.Documents.BlockLayout;
+
+//---------------------------------------------------------------------------
+//
+//  ParagraphNode
+//
+//  Represents layout results for one paragraph of content.
+//
+//---------------------------------------------------------------------------
+internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
+{
+	private static bool IsInfiniteF(float v) => float.IsInfinity(v);
+
+	private readonly List<LineMetrics> m_lines = new();
+
+	// The InlineUIContainers whose object runs landed on the lines this paragraph kept.
+	private readonly HashSet<InlineUIContainer> m_embeddedContainers = new();
+	private readonly ParagraphTextSource m_textSource;
+	private TextRunCache? m_pTextRunCache;
+	private PageNode? m_pPageNode;
+
+	// The width we would use if no constraint was passed (different from m_desiredSize.Width
+	// when TextTrimmingMode != None).
+	private float m_untrimmedDesiredWidth;
+
+	private bool m_hasTrimmedLine = false;
+
+	public ParagraphNode(
+		BlockLayoutEngine pBlockLayoutEngine,
+		Paragraph? pParagraph, // May be NULL for TextBlock which has no Paragraphs, or when RichTextBlock has no content.
+		ContainerNode? pParentNode)
+		: base(pBlockLayoutEngine, pParagraph, pParentNode)
+	{
+		m_textSource = new ParagraphTextSource(pParagraph, pBlockLayoutEngine.GetOwner() as FrameworkElement);
+		m_pTextRunCache = null;
+		m_pPageNode = null;
+		m_untrimmedDesiredWidth = 0;
+
+		m_textSource.SetParagraphNode(this);
+	}
+
+	// NOTE (Uno): the C++ destructor released the run cache, deleted the line cache,
+	// removed embedded elements and deleted the drawing context. Under the GC the run
+	// cache / drawing context are collected, but the line cache and embedded-element
+	// cleanup have observable side effects (page-node bookkeeping), so keep them.
+	// TODO Uno (integrate): hook this into BlockNode disposal once the base defines it.
+	public void Dispose()
+	{
+		DeleteLineCache();
+		RemoveEmbeddedElements();
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::GetBaselineAlignmentOffset
+	//
+	//---------------------------------------------------------------------------
+	public override float GetBaselineAlignmentOffset()
+	{
+		float baselineOffset = (float)GetContentRenderingOffset().Y;
+		if (!IsMeasureDirty() && m_lines.Count > 0)
+		{
+			baselineOffset = m_lines[0].BaselineOffset;
+		}
+		return baselineOffset;
+	}
+
+	// The whole-paragraph ParsedText for this node (shared by all its lines), or null if
+	// not yet formatted. Used by the render paint-walk (RichTextVisual.Paint draws the
+	// paragraph once via ParsedText.Draw at the node's arranged offset).
+	internal ParsedText? GetParsedText()
+		=> (m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line) ? line.ParsedText : null;
+
+	// Number of formatted lines in this paragraph (after MaxLines limiting), used by the control
+	// to detect MaxLines clipping for IsTextTrimmed.
+	internal int LineCount => m_lines.Count;
+
+	// Whether this paragraph has a trimmed (ellipsized) line. Mirrors ParagraphNode::GetHasTrimmedLine;
+	// the overflow's UpdateIsTextTrimmed walks the page's ParagraphNodes looking for one.
+	internal bool GetHasTrimmedLine() => m_hasTrimmedLine;
+
+	public IEmbeddedElementHost GetEmbeddedElementHost() => this;
+
+	// Whether this paragraph placed the container's object run on one of the lines it kept during
+	// measure. Lines dropped for paging or MaxLines never reach m_lines, so their containers are
+	// reported as off-page. Used by PageNode to drop embedded elements whose content didn't fit.
+	internal bool ContainsInlineUIContainer(InlineUIContainer pContainer) => m_embeddedContainers.Contains(pContainer);
+
+	// Recorded as lines are accepted, because the TextLine objects are released once measure ends.
+	private void RecordEmbeddedContainers(TextLine? pTextLine)
+	{
+		if (pTextLine is SkiaTextLine line)
+		{
+			line.CollectInlineObjects(m_embeddedContainers);
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// PageNode::AddElement
+	//
+	//  Synopsis:
+	//      Adds the given embedded element to the host, IEmbeddedElementHost override.
+	//
+	//---------------------------------------------------------------------------
+	void IEmbeddedElementHost.AddElement(InlineUIContainer pContainer)
+	{
+		if (m_pPageNode == null)
+		{
+			// TODO: Lookup IEmbeddedElementHost from parent in better way, this only works for non-nested Paragraph.
+			m_pPageNode = (PageNode?)m_pParentNode;
+			MUX_ASSERT(m_pPageNode != null);
+		}
+
+		// Add the element to the page node, giving this ParagraphNode as context
+		// so if the node is deleted, etc. the PageNode will be able to find elements associated with it.
+		m_pPageNode!.AddElement(pContainer, this);
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::CanAddElement
+	//
+	//  Synopsis:
+	//      Gets a value indicating whether the host can support adding elements,
+	//      IEmbeddedElementHost override. Should be queried before calling
+	//      AddElement. The value may depend on the state of the host, e.g.
+	//      ParagraphNode only permits elements to be added during Measure.
+	//
+	//---------------------------------------------------------------------------
+	bool IEmbeddedElementHost.CanAddElement() => IsMeasureInProgress();
+
+	//---------------------------------------------------------------------------
+	//
+	//  ParagraphNode::RemoveElement
+	//
+	//  Synopsis:
+	//      Removes the given embedded element from the host, IEmbeddedElementHost override.
+	//
+	//---------------------------------------------------------------------------
+	void IEmbeddedElementHost.RemoveElement(InlineUIContainer pContainer)
+	{
+		// ParagraphNode wouldn't be asked to remove an element it hadn't added,
+		// so page node lookup must have happened.
+		MUX_ASSERT(m_pPageNode != null);
+
+		m_pPageNode!.RemoveElement(pContainer, this);
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  ParagraphNode::UpdateElementPosition
+	//
+	//  Synopsis:
+	//      Updates the given embedded element position, IEmbeddedElementHost override.
+	//
+	//---------------------------------------------------------------------------
+	void IEmbeddedElementHost.UpdateElementPosition(InlineUIContainer pContainer, Point position)
+	{
+		// ParagraphNode wouldn't be asked to update position of an element it hadn't added,
+		// so page node lookup must have happened.
+		MUX_ASSERT(m_pPageNode != null);
+
+		// Offsets are relative to this node, so transform them relative to the root, which is the page node.
+		Point positionInPage = TransformOffsetToRoot(position);
+
+		m_pPageNode!.UpdateElementPosition(pContainer, this, positionInPage);
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  ParagraphNode::GetElementPosition
+	//
+	//  Synopsis:
+	//      Retrieves the embedded element position in host space, IEmbeddedElementHost override.
+	//
+	//---------------------------------------------------------------------------
+	Point IEmbeddedElementHost.GetElementPosition(InlineUIContainer pContainer)
+	{
+		// ParagraphNode wouldn't be asked to update position of an element it hadn't added,
+		// so page node lookup must have happened.
+		MUX_ASSERT(m_pPageNode != null);
+
+		Point positionInPage = m_pPageNode!.GetElementPosition(pContainer, this);
+
+		// Offsets will be relative to the page, transform it to this node's coordinate system.
+		positionInPage = TransformOffsetFromRoot(positionInPage);
+
+		return positionInPage;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	//  ParagraphNode::GetAvailableMeasureSize
+	//
+	//  Synopsis:
+	//      Retrieves the available size of the host, IEmbeddedElementHost override.
+	//
+	//---------------------------------------------------------------------------
+	Size IEmbeddedElementHost.GetAvailableMeasureSize() => m_prevAvailableSize;
+
+	public override bool IsAtInsertionPosition(uint position)
+	{
+		uint positionInParagraph = GetPositionInParagraph(position);
+		uint lineIndex = GetLineIndexFromPosition(positionInParagraph, out _);
+		TextFormatter? pTextFormatter = null;
+		TextParagraphProperties? pParagraphProperties = null;
+		TextLine? pTextLine = null;
+		TextLine? pLocalTextLine = null;
+
+		MUX_ASSERT(lineIndex < m_lines.Count);
+		LineMetrics lineMetrics = m_lines[(int)lineIndex];
+
+		if (!lineMetrics.HasMultiCharacterClusters)
+		{
+			// Line does not have clusters. Use simple path to check for basic surrogates and CRLF pair.
+			bool isInSurrogateCRLF = m_textSource.IsInSurrogateCRLF(positionInParagraph);
+			return !isInSurrogateCRLF;
+		}
+		else
+		{
+			// Line has clusters, we need to format it and do a more detailed check.
+			pTextLine = lineMetrics.Line;
+
+			if (pTextLine == null)
+			{
+				FormatLineAtIndex(
+					lineIndex,
+					BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner()),
+					(float)lineMetrics.Rect.Width,
+					ref pTextFormatter,
+					ref pParagraphProperties,
+					ref pLocalTextLine);
+
+				pTextLine = pLocalTextLine;
+			}
+
+			return IsAtInsertionPositionInTextLine(
+				positionInParagraph,
+				lineMetrics.FirstCharIndex,
+				pTextLine!);
+		}
+	}
+
+	public override uint PixelPositionToTextPosition(
+		Point pixelPosition,
+		out TextGravity gravity)
+	{
+		TextFormatter? pTextFormatter = null;
+		TextParagraphProperties? pParagraphProperties = null;
+		TextLine? pTextLine = null;
+		TextLine? pLocalTextLine = null;
+		Point contentOffset = GetContentRenderingOffset();
+		Point linePixel = new Point(pixelPosition.X - contentOffset.X, pixelPosition.Y - contentOffset.Y);
+		uint lineIndex = GetLineIndexFromPoint(linePixel, out _);
+		CharacterHit characterHit;
+		uint characterIndex;
+		float characterDistance = 0.0f;
+
+		MUX_ASSERT(lineIndex < m_lines.Count);
+		LineMetrics lineMetrics = m_lines[(int)lineIndex];
+
+		// Line has clusters, we need to format it and do a more detailed check.
+		pTextLine = lineMetrics.Line;
+
+		// Hit testing should only occur after Arrange, so we don't expect to have a line.
+		if (pTextLine == null)
+		{
+			FormatLineAtIndex(
+				lineIndex,
+				BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner()),
+				(float)lineMetrics.Rect.Width,
+				ref pTextFormatter,
+				ref pParagraphProperties,
+				ref pLocalTextLine);
+
+			pTextLine = pLocalTextLine;
+		}
+
+		// If the detected paragraph direction doesn't align with specificed paragraph direction,
+		// the logical coordinate must be adjusted to match the visual coordinate.
+		if (pTextLine!.AlignmentFollowsReadingOrder)
+		{
+			characterDistance = (float)(linePixel.X - lineMetrics.Rect.X);
+		}
+		else
+		{
+			characterDistance = (float)(lineMetrics.Rect.Width - linePixel.X);
+		}
+
+		characterHit = pTextLine.GetCharacterHitFromDistance(characterDistance);
+		characterIndex = (uint)(characterHit.FirstCharacterIndex + characterHit.TrailingLength);
+
+		// Convert the paragraph-relative character index to one relative to this node, since hit testing through layout nodes
+		// will only compute node-relative offsets, it doesn't know where a paragraoh has broken.
+		uint textPosition = GetLocalPositionFromParagraphPosition(characterIndex);
+
+		// TODO: This is a lossy conversion - at line beginning/end we may need other gravity types. Fix it.
+		gravity = ((characterHit.TrailingLength == 0) ? TextGravity.LineForwardCharacterForward : TextGravity.LineForwardCharacterBackward);
+
+		// If the returned position is after the last character in this line,
+		// it maps to the first character of the next line.
+		// Indicate this by adding LineBackward to the gravity, which means that the position
+		// should be considered in the line above (before the line break)
+		if (textPosition >= (lineMetrics.FirstCharIndex + lineMetrics.Length))
+		{
+			gravity = (TextGravity)(gravity | TextGravity.LineBackward);
+		}
+
+		return textPosition;
+	}
+
+	public override void GetTextBounds(
+		uint start,
+		uint length,
+		List<TextBounds> pBounds)
+	{
+		TextFormatter? pTextFormatter = null;
+		TextParagraphProperties? pParagraphProperties = null;
+		TextLine? pTextLine = null;
+		uint remainingLength = length;
+		TextBounds[]? pLineBounds = null;
+		uint count;
+		Point contentOffset = GetContentRenderingOffset();
+
+		// Start and length should be snapped to paragraph bounds so we can just iterate through lines.
+		MUX_ASSERT(length > 0);
+		MUX_ASSERT(start + length <= m_length);
+
+		// Start+Length is inclusive, so end index is start + length - 1.
+		uint startPositionInParagraph = GetPositionInParagraph(start);
+		uint startLineIndex = GetLineIndexFromPosition(startPositionInParagraph, out Point lineOffset);
+		uint endPositionInParagraph = GetPositionInParagraph(start + length - 1);
+		uint endLineIndex = GetLineIndexFromPosition(endPositionInParagraph, out _);
+
+		MUX_ASSERT(startLineIndex < m_lines.Count);
+		MUX_ASSERT(endLineIndex < m_lines.Count);
+		MUX_ASSERT(startLineIndex <= endLineIndex);
+
+		TextTrimming textTrimming = BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner());
+
+		for (uint i = startLineIndex; i <= endLineIndex; i++)
+		{
+			LineMetrics lineMetrics = m_lines[(int)i];
+			uint lineEndIndex = lineMetrics.FirstCharIndex + lineMetrics.Length;
+
+			MUX_ASSERT(remainingLength > 0);
+
+			start = (i == startLineIndex) ? startPositionInParagraph : lineMetrics.FirstCharIndex;
+			length = Math.Min(remainingLength, lineEndIndex - start);
+
+			FormatLineAtIndex(
+				i,
+				textTrimming,
+				(float)lineMetrics.Rect.Width,
+				ref pTextFormatter,
+				ref pParagraphProperties,
+				ref pTextLine);
+
+			pLineBounds = pTextLine!.GetTextBounds((int)start, (int)length);
+			count = (uint)pLineBounds.Length;
+
+			pBounds.Capacity = pBounds.Count + (int)count;
+			for (uint j = 0; j < count; j++)
+			{
+				// NOTE (Uno): TextBounds is an immutable record struct, so the C++ in-place
+				// mutation of pLineBounds[j].rect.X/Y/Height becomes a recomputed Rect + `with`.
+				Rect rect = pLineBounds[j].Rect;
+
+				// If the detected paragraph direction doesn't align with specificed paragraph direction,
+				// the logical coordinate must be adjusted to match the visual coordinate.
+				if (pTextLine.AlignmentFollowsReadingOrder)
+				{
+					rect.X += (contentOffset.X + lineMetrics.Rect.X);
+				}
+				else
+				{
+					rect.X = lineMetrics.Rect.Width - (rect.Width + rect.X + contentOffset.X);
+				}
+
+				// In y-dimension, bounds should always correspond to the full line advance, including and line height/ stacking strategy properties
+				// applied, regardless of the text bounds within the line.
+				rect.Y += (contentOffset.Y + lineOffset.Y);
+				rect.Height = lineMetrics.VerticalAdvance;
+
+				pBounds.Add(pLineBounds[j] with { Rect = rect });
+			}
+
+			MUX_ASSERT(remainingLength >= length);
+			remainingLength -= length;
+			lineOffset.Y += lineMetrics.VerticalAdvance;
+			pTextLine = null;
+			pLineBounds = null;
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::MeasureCore
+	//
+	//---------------------------------------------------------------------------
+	protected override void MeasureCore(
+		Size availableSize,
+		uint paragraphMaxLines,
+		bool allowEmptyContent,
+		bool measureBottomless,
+		bool suppressTopMargin,
+		BlockNodeBreak? pPreviousBreak)
+	{
+		TextParagraphProperties? pParagraphProperties = null;
+		TextLineBreak? pPreviousLineBreak = null;
+		TextLine? pTextLine = null;
+		ParagraphNodeBreak? pPreviousParagraphBreak = null;
+		ParagraphNodeBreak? pBreak = null;
+		bool endOfParagraph = false;
+		float lineOffset = 0;
+		TextFormatter? pTextFormatter = null;
+		LineStackingStrategy lineStackingStrategy;
+		float defaultFontBaseline;
+		float defaultFontLineAdvance;
+		float defaultLineHeight;
+		uint firstCharIndex = 0;
+		bool addLineToMetrics = true;
+		bool firstLine = true;
+		TextTrimming textTrimming = BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner());
+
+		if (pPreviousBreak != null)
+		{
+			pPreviousParagraphBreak = (ParagraphNodeBreak)pPreviousBreak;
+		}
+
+		EnsureTextCaches(pPreviousParagraphBreak);
+		BlockLayoutHelpers.GetTextFormatter(m_pBlockLayoutEngine.GetOwner(), out pTextFormatter);
+		BlockLayoutHelpers.GetParagraphProperties(m_pElement, m_pBlockLayoutEngine.GetOwner(), out pParagraphProperties);
+
+		if (IsContentDirty())
+		{
+			// Currently this shouldn't ever be the case since we have no incremental content invalidation and PageNode
+			// deletes all its children when content is dirty.
+			if (m_pTextRunCache != null)
+			{
+				m_pTextRunCache.Clear();
+			}
+		}
+		DeleteLineCache();
+		RemoveEmbeddedElements();
+		InvalidateArrange();
+		m_cachedMaxLines = paragraphMaxLines;
+
+		m_desiredSize.Width = m_desiredSize.Height = 0;
+		m_untrimmedDesiredWidth = 0;
+		m_length = 0;
+		m_pBreak = null;
+		m_embeddedContainers.Clear();
+
+		// Get line stacking info.
+		BlockLayoutHelpers.GetLineStackingInfo(
+			m_pElement,
+			m_pBlockLayoutEngine.GetOwner(),
+			out lineStackingStrategy,
+			out defaultFontBaseline,
+			out defaultFontLineAdvance,
+			out defaultLineHeight);
+
+		if (pPreviousParagraphBreak != null)
+		{
+			pPreviousLineBreak = pPreviousParagraphBreak.LineBreak;
+			firstCharIndex = pPreviousParagraphBreak.BreakIndex;
+		}
+
+		// We always want to measure at least one line, whether we add it or not.
+		MUX_ASSERT(availableSize.Height >= 0.0f);
+
+		while (!endOfParagraph &&
+			   (lineOffset <= availableSize.Height) &&
+			   (paragraphMaxLines == 0 || m_lines.Count < paragraphMaxLines))
+		{
+			LineMetrics lineMetrics = new();
+			lineMetrics.LineBreak = pPreviousLineBreak;
+			addLineToMetrics = true;
+
+			pTextLine = pTextFormatter!.FormatLine(
+				m_textSource,
+				firstCharIndex,
+				availableSize.Width,
+				pParagraphProperties!,
+				lineMetrics.LineBreak,
+				m_pTextRunCache);
+
+			endOfParagraph = (pTextLine.TextLineBreak == null);
+
+			ApplyLineStackingStrategy(
+				lineStackingStrategy,
+				defaultFontBaseline,
+				defaultFontLineAdvance,
+				defaultLineHeight,
+				pTextLine,
+				firstLine,
+				endOfParagraph,
+				out float verticalAdvance,
+				out float rectY);
+			lineMetrics.VerticalAdvance = verticalAdvance;
+			lineMetrics.Rect.Y = rectY;
+
+			lineMetrics.FirstCharIndex = firstCharIndex;
+			lineMetrics.Length = pTextLine.Length;
+			lineMetrics.Rect.Width = pTextLine.Width;
+			lineMetrics.Rect.Height = pTextLine.Height;
+			lineMetrics.BaselineOffset = (float)(pTextLine.Baseline + lineMetrics.Rect.Y);
+			lineMetrics.HasMultiCharacterClusters = pTextLine.HasMultiCharacterClusters;
+			lineMetrics.Line = pTextLine;
+
+			// If empty content is allowed and the current line overflows the available height,
+			// do not add it to the line array and exit formatting.
+			// If empty content is not allowed we need to add at least one line.
+			if (lineOffset + lineMetrics.VerticalAdvance > availableSize.Height)
+			{
+				// Create break. No need to release the break break or line from metrics, they
+				// will be released in Cleanup if not reset to NULL.
+				if (!allowEmptyContent)
+				{
+					if (!endOfParagraph)
+					{
+						// If allowEmptyContent == FALSE, we have to add this line even if it doesn't fit,
+						// we'll break after it assuming we're not at EOP.
+						// For the bottomless measure case, we also keep the line if it doesn't fit
+						// completely, assuming TextTrimming is not applied - if it is, paragraph ellipsis will be shown.
+						// This is an optimization - in theory bottomless measure could measure all
+						// content, but that's unnecessary given that all of it will not be rendered.
+						pBreak = new ParagraphNodeBreak(firstCharIndex + lineMetrics.Length,
+														pTextLine.TextLineBreak,
+														m_pTextRunCache!);
+					}
+				}
+				else
+				{
+					// If empty content is allowed, break at the line's start. In paginated mode
+					// or bottomless mode with text trimming, this line should also not be part of
+					// metrics - it will not be rendered at all, or hit testable.
+					// In bottomless mode without trimming, produce the break at the same point - the line technically
+					// didn't fit, but add it to metrics since we want to render a partially clipped line.
+					pBreak = new ParagraphNodeBreak(firstCharIndex,
+													pPreviousLineBreak,
+													m_pTextRunCache!);
+
+					if (!measureBottomless ||
+						textTrimming != TextTrimming.None)
+					{
+						addLineToMetrics = false;
+					}
+				}
+			}
+
+			// If the line fits in available space i.e. no break, or we have to add it,
+			// even if there is a break since we're not allowing empty content,
+			// complete the addition of line metrics and update paragraph metrics.
+			if (addLineToMetrics)
+			{
+				m_lines.Add(lineMetrics);
+				RecordEmbeddedContainers(pTextLine);
+				m_untrimmedDesiredWidth = Math.Max(m_untrimmedDesiredWidth, (float)lineMetrics.Rect.Width);
+				m_desiredSize.Height += lineMetrics.VerticalAdvance;
+				m_length += lineMetrics.Length;
+
+				if (textTrimming != TextTrimming.None)
+				{
+					// Trimming modes can always fit to whatever constraint is provided, so don't
+					// return a larger width than the constraint.  (This is similar to the wrapping
+					// scenarios).  If we ask for more space than the constraint in Measure then
+					// FrameworkElement will give us back that unclipped desired size in Arrange
+					// and there's no way for us to trim or align to the actual arrange slot width.
+					m_desiredSize.Width = Math.Min(m_untrimmedDesiredWidth, (float)availableSize.Width);
+				}
+				else
+				{
+					m_desiredSize.Width = m_untrimmedDesiredWidth;
+				}
+
+				// If paragraphMaxLines has been reached we end formatting
+				if (paragraphMaxLines != 0 && m_lines.Count >= paragraphMaxLines)
+				{
+					// Don't introduce an additional paragraph break if this is the end of the paragraph.
+					if (!endOfParagraph && pBreak == null)
+					{
+						pBreak = new ParagraphNodeBreak(firstCharIndex + lineMetrics.Length,
+														pTextLine.TextLineBreak,
+														m_pTextRunCache!);
+					}
+				}
+
+				// If we have not produced a break, we will format the next line, so we update
+				// the previous break value. If we have produced a break we're not going to format
+				// any more lines but we don't want to let go of the previous break at the end of formatting,
+				// since its part of metrics.
+				pPreviousLineBreak = (pBreak == null) ? pTextLine.TextLineBreak : null;
+				pTextLine = null;
+			}
+
+			firstCharIndex += lineMetrics.Length;
+			lineOffset += lineMetrics.VerticalAdvance;
+			allowEmptyContent = true;
+			firstLine = false;
+		}
+
+		m_measuredLines = (uint)m_lines.Count;
+		m_pBreak = pBreak;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::ArrangeCore
+	//
+	//---------------------------------------------------------------------------
+	protected override void ArrangeCore(Size finalSize)
+	{
+		float lineOffset = 0.0f;
+		TextAlignment textAlignment = TextAlignment.Left;
+		TextTrimming textTrimming = BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner());
+		ParagraphDrawingContext? pDrawingContext = null;
+		TextDrawingContext? pTextDrawingContext = null;
+		TextFormatter? pTextFormatter = null;
+		TextParagraphProperties? pParagraphProperties = null;
+		float renderWidth = 0.0f;
+
+		MUX_ASSERT(!IsInfiniteF((float)finalSize.Width));
+		MUX_ASSERT(!IsInfiniteF((float)finalSize.Height));
+
+		// Clear all drawing instructions from the drawing context.
+		// The drawing context is not used in Arrange, but should be cleared here since Arrange implies a Render to follow,
+		// and if no Render follows we don't want stale content on the drawing context. Additionally, DrawingContext
+		// may be needed for callers to push some state to it between Arrange and Render. By the time Render is called
+		// the DC should be initialized and ready with any necessary state.
+		if (m_pDrawingContext == null)
+		{
+			// TODO Uno (integrate): ParagraphDrawingContext ctor (CCoreServices owner + node).
+			pDrawingContext = new ParagraphDrawingContext(m_pBlockLayoutEngine.GetOwner().GetContext(), this);
+			m_pDrawingContext = pDrawingContext;
+		}
+		else
+		{
+			pDrawingContext = (ParagraphDrawingContext)m_pDrawingContext;
+		}
+		pTextDrawingContext = pDrawingContext.GetTextDrawingContext();
+
+		BlockLayoutHelpers.GetTextAlignment(m_pElement, m_pBlockLayoutEngine.GetOwner(), out textAlignment);
+
+		// Embedded elements will be given their visual offsets here based on available space when lines are arranged.
+		// Visibility should be reset before this happens.
+		MarkEmbeddedElementsInvisible();
+
+		// Reset to assume there's no trimmed line before checking if there is.
+		m_hasTrimmedLine = false;
+
+		for (int lineIndex = 0, lineCount = m_lines.Count; lineIndex < lineCount; lineIndex++)
+		{
+			LineMetrics lineMetrics = m_lines[lineIndex];
+			TextLine? pTextLine = lineMetrics.Line;
+			Rect lineBounds;
+
+			// Since we need trimmed width to calculate alignment offset, format lines in Arrange ahead of Render.
+			// Render always expects to follow Arrange and will expect lines to remain, and then delete them.
+			FormatLineAtIndex(
+				(uint)lineIndex,
+				textTrimming,
+				(float)finalSize.Width,
+				ref pTextFormatter,
+				ref pParagraphProperties,
+				ref pTextLine);
+			lineMetrics.Line = pTextLine;
+
+			lineMetrics.Rect.Width = pTextLine!.Width;
+			lineMetrics.Rect.X = CalculateLineOffset(textAlignment, pTextLine, (float)finalSize.Width);
+
+			renderWidth = Math.Max(renderWidth, (float)lineMetrics.Rect.Width);
+
+			// Arrange the line with its final position within this paragraph.
+			lineBounds = lineMetrics.Rect;
+			lineBounds.Y += lineOffset;
+			pTextLine.Arrange(lineBounds);
+
+			lineOffset += lineMetrics.VerticalAdvance;
+		}
+
+		// Render width is the MAX of the arrange width and the render width.  In TextTrimming=None
+		// scenarios, arrangeWidth >= renderWidth because we reported the width we needed in measure
+		// and that's what we'll be given back in Arrange.  For TextTrimming=Clip we can always
+		// fit the arrange width provided, so again arrangeWidth >= renderWidth.  But for
+		// TextTrimming=Character/WordEllipsis we will try our best to fit the provided arrange width.
+		// But if the arrange width is narrow, and isn't enough to fit the character+ellipsis then
+		// our renderWidth will exceed the arrangeWidth.  We need to bubble that excess up to
+		// FrameworkElement so that it can apply a layout clip in these scenarios.
+		m_renderSize.Width = Math.Max((float)finalSize.Width, renderWidth);
+
+		// Render size height is the MIN of desired size height and final size height - if there's
+		// more than enough room to render, paragraph will just render all its content.
+		m_renderSize.Height = Math.Min((float)m_desiredSize.Height, (float)finalSize.Height);
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::RenderCore
+	//
+	//---------------------------------------------------------------------------
+	protected override void DrawCore(bool forceDraw)
+	{
+		float lineOffset = 0.0f;
+		bool skipRemainingLines = false;
+		bool isRightToLeft = false;
+		uint lineCharacterIndex = 0;
+		TextDrawingContext? pTextDrawingContext = null;
+		TextTrimming textTrimming = BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner());
+		TextFormatter? pTextFormatter = null;
+		TextParagraphProperties? pParagraphProperties = null;
+		bool isColorFontEnabled = BlockLayoutHelpers.GetIsColorFontEnabled(m_pBlockLayoutEngine.GetOwner());
+
+		if (BlockLayoutHelpers.GetFlowDirection(m_pBlockLayoutEngine.GetOwner()) == FlowDirection.RightToLeft)
+		{
+			isRightToLeft = true;
+		}
+
+		// DrawingContext should be created and cleared in Arrange.
+		MUX_ASSERT(m_pDrawingContext != null);
+		pTextDrawingContext = ((ParagraphDrawingContext)m_pDrawingContext!).GetTextDrawingContext();
+		pTextDrawingContext.Clear();
+
+		pTextDrawingContext.SetIsColorFontEnabled(isColorFontEnabled);
+
+		for (int lineIndex = 0, lineCount = m_lines.Count; lineIndex < lineCount; lineIndex++)
+		{
+			LineMetrics lineMetrics = m_lines[lineIndex];
+			Point origin = new Point(lineMetrics.Rect.X, lineOffset + lineMetrics.Rect.Y);
+			bool skipLine = false;
+			lineCharacterIndex = lineMetrics.FirstCharIndex;
+
+			// Draw only lines within the viewport area. Assume that anything for which there are metrics can be
+			// rendered, even partially. If a line should not be rendered in this node, it will not be in the metrics.
+			if (origin.Y > m_renderSize.Height)
+			{
+				// At the bottom of the viewport we can also skip all remaining lines.
+				skipLine = true;
+				skipRemainingLines = true;
+			}
+
+			if (!skipLine)
+			{
+				// Line must exist in the metrics at this time, either created during Measure or Arrange.
+				TextLine? pTextLine = lineMetrics.Line;
+
+				// Since we need trimmed width to calculate alignment offset, format lines in Arrange ahead of Render.
+				// Render always expects to follow Arrange and will expect lines to remain, and then delete them.
+				if (pTextLine == null)
+				{
+					FormatLineAtIndex(
+						(uint)lineIndex,
+						textTrimming,
+						(float)lineMetrics.Rect.Width,
+						ref pTextFormatter,
+						ref pParagraphProperties,
+						ref pTextLine);
+					lineMetrics.Line = pTextLine;
+				}
+
+				pTextDrawingContext.SetLineInfo(m_renderSize.Width, isRightToLeft, origin.Y, lineMetrics.VerticalAdvance);
+				// TODO Uno (integrate): rendering goes through ParsedText.Draw during RichTextVisual.Paint;
+				// this records line draw structurally only.
+				pTextLine!.Draw(pTextDrawingContext, origin, m_renderSize.Width);
+
+				if (textTrimming != TextTrimming.None)
+				{
+					// If paragraph ellipsis will be shown on this line, we can skip all remaining lines.
+					if (ShouldShowParagraphEllipsisOnCurrentLine(
+						(lineIndex < lineCount - 1) ? false : true))
+					{
+						skipRemainingLines = true;
+					}
+				}
+			}
+
+			lineOffset += lineMetrics.VerticalAdvance;
+
+			// Release the cached line.
+			lineMetrics.Line = null;
+
+			if (skipRemainingLines)
+			{
+				break;
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::CanBypassMeasure
+	//
+	//---------------------------------------------------------------------------
+	protected override bool CanBypassMeasure(
+		Size availableSize,
+		uint paragraphMaxLines,
+		bool allowEmptyContent,
+		bool measureBottomless,
+		BlockNodeBreak? pPreviousBreak)
+	{
+		TextParagraphProperties? pParagraphProperties = null;
+		bool canBypassMeasure = false;
+
+		BlockLayoutHelpers.GetParagraphProperties(m_pElement, m_pBlockLayoutEngine.GetOwner(), out pParagraphProperties);
+
+		// Current bypass requires all "measure states" to be equal except size, similar to BlockNode bypass except with slightly relaxed restrictions on size equality.
+		// Additional optimization might be possible - e.g. when switching from finite to bottomless or vice versa it may be OK to bypass if there is no break and all content
+		// will still fit, but those are not critical scenarios and we forgo bypass there for simplifying the code. We can consider more sophisticated bypass logic if
+		// perf for key scenarios warrants it.
+		if (!IsMeasureDirty() &&
+			(IsEmptyContentAllowed() == allowEmptyContent) &&
+			(IsMeasureBottomless() == measureBottomless) &&
+			(m_cachedMaxLines == paragraphMaxLines) &&
+			BlockNodeBreak.Equals(pPreviousBreak, m_pPreviousBreak))
+		{
+			TextTrimming textTrimming = BlockLayoutHelpers.GetTextTrimming(m_pBlockLayoutEngine.GetOwner());
+
+			// Detect if measure can be bypassed - paragraph implements additional measure bypass checks over BlockNode depending on wrapping, etc.
+			// Measure might be bypassed if content has not been changed AND:
+			// 1) Not wrapping AND Not clipping AND AvailableSize.Height <= PrevAvaiableSize.Height
+			//    (width constraint can be ignored, since it does not have any effects on the desired size).
+			//    If TextTrimming is not None, we always need to remeasure since the desired size is dependent on
+			//    the(possibly changed) available size.
+			// 2) Wrapping AND m_untrimmedDesiredWidth <= AvailableSize.Width <= PrevAvailableSize.Width AND
+			//    AvailableSize.Height <= PreviousAvailableSize.Height FOR BOTTOMLESS SCENARIOS E.G. TEXTBLOCK.
+			//    When breaking, e.g. for linking/pages we need to re measure if height is smaller, since we will
+			//    break differently.
+			// NOTE: If we add justification support, need to check for width equity.
+			if ((pParagraphProperties!.TextWrapping == TextWrapping.NoWrap && textTrimming == TextTrimming.None) ||
+				(m_untrimmedDesiredWidth <= availableSize.Width && availableSize.Width <= m_prevAvailableSize.Width))
+			{
+				if (m_pBreak != null)
+				{
+					// If there is a break for this paragraph, then height constraint needs to be
+					// the same to break at the same place.
+					canBypassMeasure = BlockLayoutHelpers.IsCloseReal((float)availableSize.Height, (float)m_prevAvailableSize.Height);
+				}
+				else
+				{
+					// If there was no break, we can bypass as long as the desired height will fit
+					// in the available space.
+					canBypassMeasure = (m_desiredSize.Height <= availableSize.Height);
+				}
+			}
+
+			if (canBypassMeasure)
+			{
+				// If measure is being bypassed, it means also that arrange could be bypassed if the final size is not changing.
+				// However if TextTrimming is enabled, we cannot bypass the arrange, if previous available width is
+				// different than the current available width. This is due to the fact that available size is used as collapsing width.
+				if (textTrimming != TextTrimming.None &&
+					!BlockLayoutHelpers.IsCloseReal((float)availableSize.Width, (float)m_prevAvailableSize.Width))
+				{
+					InvalidateArrange();
+				}
+			}
+		}
+
+		return canBypassMeasure;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::DeleteLineCache
+	//
+	//---------------------------------------------------------------------------
+	private void DeleteLineCache()
+	{
+		for (int lineIndex = 0, lineCount = m_lines.Count; lineIndex < lineCount; lineIndex++)
+		{
+			m_lines[lineIndex].LineBreak = null;
+			m_lines[lineIndex].Line = null;
+		}
+		m_lines.Clear();
+		m_pBreak = null;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::EnsureTextCaches
+	//
+	//---------------------------------------------------------------------------
+	private void EnsureTextCaches(ParagraphNodeBreak? pPreviousBreak)
+	{
+		// Obtain a run cache from a previous break or create one if necessary.
+		// If there is a run cache, either our own or from the break, assume all data in it is valid.
+		// Invalidation is processed by a separate code path.
+		if (pPreviousBreak != null)
+		{
+			// If there is a previous break, it must have a run cache.
+			m_pTextRunCache = pPreviousBreak.RunCache;
+		}
+		else
+		{
+			// If there is no run cache, create one.
+			if (m_pTextRunCache == null)
+			{
+				// TODO Uno (integrate): TextRunCache::Create — the concrete cache is created by the
+				// Skia text formatter bridge (the LineServices-backed cache is not ported).
+				m_pTextRunCache = TextRunCache.Create();
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::FormatLineAtIndex
+	//
+	//---------------------------------------------------------------------------
+	private void FormatLineAtIndex(
+		uint lineIndex,
+		TextTrimming textTrimming,
+		float layoutWidth,
+		ref TextFormatter? ppTextFormatter,
+		ref TextParagraphProperties? ppParagraphProperties,
+		ref TextLine? ppTextLine)
+	{
+		TextLine? pCollapsedTextLine = null;
+
+		LineMetrics lineMetrics = m_lines[(int)lineIndex];
+
+		if (ppTextLine == null)
+		{
+			if (ppTextFormatter == null)
+			{
+				BlockLayoutHelpers.GetTextFormatter(m_pBlockLayoutEngine.GetOwner(), out ppTextFormatter);
+				BlockLayoutHelpers.GetParagraphProperties(m_pElement, m_pBlockLayoutEngine.GetOwner(), out ppParagraphProperties);
+			}
+
+			// Line should always be reformatted at the width at which it was first measured to ensure that the metrics cache is valid.
+			ppTextLine = ppTextFormatter!.FormatLine(
+				m_textSource,
+				lineMetrics.FirstCharIndex,
+				m_prevAvailableSize.Width,
+				ppParagraphProperties!,
+				lineMetrics.LineBreak,
+				m_pTextRunCache);
+
+			MUX_ASSERT(lineMetrics.Length == ppTextLine.Length);
+		}
+
+		if ((textTrimming != TextTrimming.None) && !ppTextLine.HasCollapsed)
+		{
+			TrimLineIfNecessary(
+				(lineIndex < m_lines.Count - 1) ? m_lines[(int)lineIndex + 1] : null,
+				ppTextLine,
+				layoutWidth,
+				textTrimming,
+				out pCollapsedTextLine);
+
+			if (pCollapsedTextLine != null)
+			{
+				ppTextLine = pCollapsedTextLine;
+				pCollapsedTextLine = null;
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::CalculateLineOffset
+	//
+	//---------------------------------------------------------------------------
+	private float CalculateLineOffset(
+		TextAlignment textAlignment,
+		TextLine pTextLine,
+		float paragraphWidth)
+	{
+		float lineOffset = 0.0f;
+		float lineWidth = (float)pTextLine.Width;
+		TextAlignment lineAlignment = textAlignment;
+
+		if (textAlignment == TextAlignment.DetectFromContent)
+		// if alignment is set to DetectFromContent, compare the set paragraph direction and the detected paragraph direction to determine the line alignment( need to flip and they mismatch)
+		{
+			if (pTextLine.GetParagraphDirection() == FlowDirection.RightToLeft)
+			{
+				if (pTextLine.GetDetectedParagraphDirection() == FlowDirection.RightToLeft)
+				{
+					lineAlignment = TextAlignment.Left;
+				}
+				else
+				{
+					lineAlignment = TextAlignment.Right;
+				}
+			}
+			else
+			{
+				if (pTextLine.GetDetectedParagraphDirection() == FlowDirection.RightToLeft)
+				{
+					lineAlignment = TextAlignment.Right;
+				}
+				else
+				{
+					lineAlignment = TextAlignment.Left;
+				}
+			}
+		}
+		else
+		{
+			// If the detected reading order is different from the default flow direction,
+			// flip the textalignment to match the set flowdirection & textalignment combination.
+			if (!pTextLine.AlignmentFollowsReadingOrder)
+			{
+				if (textAlignment == TextAlignment.Right)
+				{
+					lineAlignment = TextAlignment.Left;
+				}
+				else if ((textAlignment == TextAlignment.Left) ||
+					(textAlignment == TextAlignment.Justify))
+				{
+					lineAlignment = TextAlignment.Right;
+				}
+			}
+		}
+
+		if (!IsInfiniteF(paragraphWidth))
+		{
+			switch (lineAlignment)
+			{
+				case TextAlignment.Right:
+					lineOffset = paragraphWidth - lineWidth;
+					break;
+
+				case TextAlignment.Center:
+					lineOffset = (paragraphWidth - lineWidth) / 2;
+					break;
+
+				default:
+					break;
+			}
+		}
+		return lineOffset;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::ApplyLineStackingStrategy
+	//
+	//---------------------------------------------------------------------------
+	private void ApplyLineStackingStrategy(
+		LineStackingStrategy lineStackingStrategy,
+		float fontBaseline,
+		float fontLineAdvance,
+		float lineHeight,
+		TextLine pTextLine,
+		bool firstLine,
+		bool lastLine,
+		out float pLineAdvance,
+		out float pLineOffset)
+	{
+		float fontBaselineRatio = fontBaseline / fontLineAdvance;
+
+		if (lineHeight <= 0)
+		{
+			lineStackingStrategy = LineStackingStrategy.MaxHeight;
+		}
+
+		switch (lineStackingStrategy)
+		{
+			case LineStackingStrategy.BlockLineHeight:
+				// The 'BlockLineHeight' line stacking strategy simply uses
+				// the block line metrics
+				pLineAdvance = lineHeight;
+				pLineOffset = (lineHeight - (float)pTextLine.Height) * fontBaselineRatio;
+				break;
+
+			case LineStackingStrategy.BaselineToBaseline:
+				// The 'BaselineToBaseline' line stacking strategy uses the block line
+				// metrics on all lines except the first and last.
+				pLineAdvance = lineHeight;
+				pLineOffset = (lineHeight - (float)pTextLine.Height) * fontBaselineRatio;
+
+				if (firstLine)
+				{
+					pLineAdvance -= pLineOffset;
+					pLineOffset = 0.0f;
+				}
+				else if (lastLine)
+				{
+					pLineAdvance -= (lineHeight - (float)pTextLine.Height) * (1 - fontBaselineRatio);
+				}
+				break;
+
+			default:
+				pLineAdvance = Math.Max((float)pTextLine.Height, lineHeight);
+				pLineOffset = 0.0f;
+				break;
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::TrimLineIfNecessary
+	//
+	//---------------------------------------------------------------------------
+	private void TrimLineIfNecessary(
+		LineMetrics? pNextLineMetrics,
+		TextLine pCurrentTextLine,
+		float collapsingWidth,
+		TextTrimming collapsingStyle,
+		out TextLine? ppCollapsedTextLine)
+	{
+		TextCollapsingSymbol? pCollapsingSymbol = null;
+
+		ppCollapsedTextLine = null;
+
+		float lineWidth = (float)pCurrentTextLine.Width;
+		bool trimmingNeeded = false;
+		if (collapsingWidth < lineWidth)
+		{
+			FrameworkElement pTextOwner = (FrameworkElement)m_pBlockLayoutEngine.GetOwner();
+			if (pTextOwner.GetUseLayoutRounding())
+			{
+				//
+				// If we're using layout rounding it's possible we've been given a slightly smaller width,
+				// so check to see if our layout-rounded line width is actually less than the arrange width
+				// before trimming.  If we choose not to apply trimming here it will be because we're only
+				// off by a fraction of a pixel and our measure width really does still fit the provided
+				// arrange width.  This means that we will still bubble up to FrameworkElement that our
+				// render size is technically larger than the arrange width, but FrameworkElement LayoutRound()s
+				// the render size we return before deciding if it should clip, and the same width that was
+				// returned in measure gets rounded down to the same as the arrange width and no layout clip
+				// needs to be applied.
+				//
+
+				float layoutRoundedLineWidth = (float)pTextOwner.LayoutRound(lineWidth);
+				if (collapsingWidth < layoutRoundedLineWidth)
+				{
+					trimmingNeeded = true;
+				}
+			}
+			else
+			{
+				trimmingNeeded = true;
+			}
+		}
+
+		// If the line being displayed has overflowed, collapse the line.
+		if (trimmingNeeded
+			|| ShouldShowParagraphEllipsisOnCurrentLine(pNextLineMetrics == null))
+		{
+			if ((collapsingStyle == TextTrimming.WordEllipsis)
+				|| (collapsingStyle == TextTrimming.CharacterEllipsis))
+			{
+				BlockLayoutHelpers.CreateCollapsingSymbol(m_pElement, m_pBlockLayoutEngine.GetOwner(), out pCollapsingSymbol);
+			}
+
+			ppCollapsedTextLine = pCurrentTextLine.Collapse(collapsingWidth, collapsingStyle, pCollapsingSymbol);
+			m_hasTrimmedLine = true;
+		}
+	}
+
+	private bool ShouldShowParagraphEllipsisOnCurrentLine(bool isLastLine)
+	{
+		PageNode? pPageNode = null;
+		bool showParagraphEllipsis = false;
+
+		// If there is a break and this is the last line, paragraph ellipsis may need to be displayed depending
+		// on the options for the page.
+		// TODO: Lookup paragraph ellipsis options from page in better way, this only works for non-nested Paragraph.
+		if (isLastLine &&
+			m_pBreak != null)
+		{
+			pPageNode = (PageNode?)m_pParentNode;
+			MUX_ASSERT(pPageNode != null);
+			showParagraphEllipsis = BlockLayoutHelpers.ShowParagraphEllipsisOnPage(pPageNode!.GetPageOwner());
+		}
+
+		return showParagraphEllipsis;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::RemoveEmbeddedElements
+	//
+	//---------------------------------------------------------------------------
+	private void RemoveEmbeddedElements()
+	{
+		// If there were any embedded elements in this node, page node will be resolved already.
+		if (m_pPageNode != null)
+		{
+			// Paragraph only recovers the page node for embedded element hosting.
+			// On delete, ask PageNode to remove all embedded elements associated with this ParagraphNode.
+			m_pPageNode.RemoveParagraphEmbeddedElements(this);
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::MarkEmbeddedElementsInvisible
+	//
+	//---------------------------------------------------------------------------
+	private void MarkEmbeddedElementsInvisible()
+	{
+		// If there were any embedded elements in this node, page node will be resolved already.
+		if (m_pPageNode != null)
+		{
+			// Paragraph only recovers the page node for embedded element hosting.
+			// On delete, ask PageNode to remove all embedded elements associated with this ParagraphNode.
+			m_pPageNode.MarkParagraphEmbeddedElementsInvisible(this);
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::GetPositionInParagraph
+	//
+	//  Synopsis:
+	//      Gets the paragraph-relative offset from an offset local to this node.
+	//      This is determined using the previous break record, which indicates
+	//      where this node starts relative to the paragraph start. Line
+	//      formatting requires this offset.
+	//
+	//---------------------------------------------------------------------------
+	private uint GetPositionInParagraph(uint localOffset)
+	{
+		uint breakIndex = (m_pPreviousBreak == null) ? 0 : m_pPreviousBreak.BreakIndex;
+		return localOffset + breakIndex;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::GetLocalPositionFromParagraphPosition
+	//
+	//  Synopsis:
+	//      Gets a local offset in the node from a paragraph-relative offset.
+	//      ParagraphNode needs to return only local offsets for query methods
+	//      since transformation to a global offset is done by the layout root.
+	//
+	//---------------------------------------------------------------------------
+	private uint GetLocalPositionFromParagraphPosition(uint paragraphPosition)
+	{
+		uint breakIndex = (m_pPreviousBreak == null) ? 0 : m_pPreviousBreak.BreakIndex;
+		MUX_ASSERT(paragraphPosition >= breakIndex);
+		return paragraphPosition - breakIndex;
+	}
+
+	private uint GetLineIndexFromPosition(
+		uint positionInParagraph,
+		out Point pLineOffset)
+	{
+		Point lineOffset = new Point(0.0f, 0.0f);
+		for (int i = 0; i < m_lines.Count; i++)
+		{
+			if (m_lines[i].FirstCharIndex <= positionInParagraph &&
+				positionInParagraph < (m_lines[i].FirstCharIndex + m_lines[i].Length))
+			{
+				pLineOffset = lineOffset;
+				return (uint)i;
+			}
+			lineOffset.Y += m_lines[i].VerticalAdvance;
+		}
+		MUX_ASSERT(false);
+		pLineOffset = lineOffset;
+		return (uint)m_lines.Count;
+	}
+
+	private uint GetLineIndexFromPoint(
+		Point point,
+		out Point pLineOffset)
+	{
+		Point lineOffset = new Point(0.0f, 0.0f);
+		int i = 0;
+
+		for (i = 0; i < m_lines.Count; i++)
+		{
+			// The true line's start along Y direction is the advance-based offset with adjustment
+			// for the line height/stacking strategy.
+			float lineStartY = (float)(lineOffset.Y + m_lines[i].Rect.Y);
+
+			if (point.Y < lineStartY && i == 0)
+			{
+				// Before start of first line - match to first line.
+				break;
+			}
+			else if (point.Y < (lineStartY + m_lines[i].VerticalAdvance))
+			{
+				break;
+			}
+			else if (i == m_lines.Count - 1)
+			{
+				// Past the end of the last line - match to last line.
+				break;
+			}
+			lineOffset.Y += m_lines[i].VerticalAdvance;
+		}
+		pLineOffset = lineOffset;
+		return (uint)i;
+	}
+
+	//---------------------------------------------------------------------------
+	//
+	// ParagraphNode::IsAtInsertionPositionInTextLine
+	//
+	//  Synopsis:
+	//      Queries a TextLine to determine if the specified position is an
+	//      insertion position. This code path is required for lines with
+	//      multi-character clusters since they cannot use the simple surrogate/
+	//      CRLF check.
+	//
+	//---------------------------------------------------------------------------
+	private static bool IsAtInsertionPositionInTextLine(
+		uint position,
+		uint lineStartIndex,
+		TextLine pTextLine)
+	{
+		uint lineEndIndex;
+		bool isAtInsertionPosition = true;
+		CharacterHit characterHit;
+
+		lineEndIndex = lineStartIndex + pTextLine.Length;
+
+		MUX_ASSERT(lineStartIndex < lineEndIndex); // Empty line shouldn't have multi character cluster flag.
+		MUX_ASSERT(lineStartIndex <= position &&
+			position <= lineEndIndex);
+
+		// Remove trailing newlines from consideration for insertion positions.
+		lineEndIndex -= pTextLine.NewlineLength;
+		if (lineEndIndex < position)
+		{
+			isAtInsertionPosition = false;
+		}
+		else if (lineStartIndex < position &&
+			position < lineEndIndex)
+		{
+			// Start/end text offsets are always insertion positions - do the work
+			// to query only if we're not at either endpoint.
+
+			// Infer insertion position by calling the caret next/prev to see
+			// if we end up at the same place we started.
+			characterHit = new CharacterHit((int)position, 0);
+
+			characterHit = pTextLine.GetNextCaretCharacterHit(characterHit);
+			characterHit = pTextLine.GetPreviousCaretCharacterHit(characterHit);
+
+			if ((uint)characterHit.FirstCharacterIndex != position ||
+				characterHit.TrailingLength != 0)
+			{
+				isAtInsertionPosition = false;
+			}
+		}
+
+		return isAtInsertionPosition;
+	}
+}

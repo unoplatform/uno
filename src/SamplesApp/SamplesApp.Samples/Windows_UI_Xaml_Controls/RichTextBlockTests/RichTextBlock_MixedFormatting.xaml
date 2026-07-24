@@ -1,0 +1,100 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_MixedFormatting"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock
+                FontWeight="Bold"
+                Text="Manual test: RichTextBlock mixed formatting"
+                TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap">
+                Verify the document below renders as follows:
+                &#x0a;- Paragraph 1 is a large bold heading.
+                &#x0a;- Paragraph 2 mixes bold, italic and underlined runs, plus one run with wide letter spacing (CharacterSpacing).
+                &#x0a;- Paragraph 3 shows red/green/orange colored runs, and a blue span containing nested bold+italic text (Span-in-Span).
+                &#x0a;- Paragraph 4 contains a mid-sentence Hyperlink (no NavigateUri) — clicking it should increment the counter below without navigating anywhere.
+                &#x0a;- Paragraph 5 has three lines produced by explicit LineBreak elements within a single paragraph.
+                &#x0a;- Paragraph 6 uses a monospace FontFamily (Consolas) and a large left Margin, distinct from the other paragraphs' TextIndent on paragraph 2.
+            </TextBlock>
+
+            <Border
+                Padding="16"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1">
+                <RichTextBlock x:Name="Doc">
+                    <Paragraph
+                        Margin="0,0,0,16"
+                        FontSize="28"
+                        FontWeight="Bold">
+                        <Run Text="Kitchen-Sink Formatting Document" />
+                    </Paragraph>
+
+                    <Paragraph Margin="0,0,0,12" TextIndent="24">
+                        <Run Text="This paragraph mixes " />
+                        <Bold>
+                            <Run Text="bold" />
+                        </Bold>
+                        <Run Text=", " />
+                        <Italic>
+                            <Run Text="italic" />
+                        </Italic>
+                        <Run Text=", and " />
+                        <Underline>
+                            <Run Text="underlined" />
+                        </Underline>
+                        <Run Text=" text, plus a run with " />
+                        <Run CharacterSpacing="400" Text="wide letter spacing" />
+                        <Run Text=" applied via CharacterSpacing." />
+                    </Paragraph>
+
+                    <Paragraph Margin="0,0,0,12">
+                        <Run Text="Colored runs: " />
+                        <Run Foreground="Crimson" Text="red" />
+                        <Run Text=", " />
+                        <Run Foreground="SeaGreen" Text="green" />
+                        <Run Text=", " />
+                        <Run Foreground="DarkOrange" Text="orange" />
+                        <Run Text=". Nested formatting: " />
+                        <Span Foreground="MediumBlue">
+                            <Run Text="a blue span containing " />
+                            <Bold>
+                                <Italic>
+                                    <Run Text="bold+italic inner text" />
+                                </Italic>
+                            </Bold>
+                            <Run Text=" nested inside it." />
+                        </Span>
+                    </Paragraph>
+
+                    <Paragraph Margin="0,0,0,12">
+                        <Run Text="Click " />
+                        <Hyperlink x:Name="CounterLink" Click="OnHyperlinkClick">
+                            <Run Text="this link" />
+                        </Hyperlink>
+                        <Run Text=" to increment the counter below. It has no NavigateUri, only a Click handler." />
+                    </Paragraph>
+
+                    <Paragraph Margin="0,0,0,12">
+                        <Run Text="Line one of this paragraph." />
+                        <LineBreak />
+                        <Run Text="Line two, after an explicit LineBreak." />
+                        <LineBreak />
+                        <Run Text="Line three, still the same paragraph." />
+                    </Paragraph>
+
+                    <Paragraph Margin="40,0,0,0" FontFamily="Consolas">
+                        <Run Text="This final paragraph uses a monospace FontFamily (Consolas) and a large left Margin, unlike the default-font paragraphs above." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <TextBlock x:Name="ClickCountText" Text="Hyperlink clicks: 0" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

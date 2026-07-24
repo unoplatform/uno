@@ -152,6 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
+				TextLineBounds,
 				FlowDirection,
 				adjustedTextAlignment,
 				TextWrapping,

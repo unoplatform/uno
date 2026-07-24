@@ -104,6 +104,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly FontDetails _defaultFontDetails;
 	private readonly List<Line> _lines;
 	private readonly float? _endingNewLineLineHeight;
+	private readonly float _firstLineBaseline;
 	private readonly bool _rtl;
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	private readonly List<int> _wordBoundaries;
@@ -121,6 +122,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		FlowDirection flowDirection,
 		TextAlignment? textAlignment, // null to determine from text.
 		TextWrapping textWrapping,
@@ -209,8 +211,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? (flowDirection is FlowDirection.RightToLeft ? TextAlignment.Right : TextAlignment.Left);
 			_wordBoundaries = [];
-			var emptyHeight = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight;
+			var (emptyHeight, emptyBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true);
 			calculatedSize = new Size(0, emptyHeight);
+			_firstLineBaseline = emptyBaseline;
 			_availableSize = availableSize;
 			_xyTable = [];
 			_indexToCluster = [];
@@ -368,7 +371,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						if (currentLineEnd != -1)
 						{
 							// If anything is already committed on the current line, flush it first so the chunk starts on a fresh line.
-							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, currentLineH, currentLineB));
 						}
 
@@ -399,7 +402,7 @@ internal readonly partial struct UnicodeText : IParsedText
 							clusterLast = currentClusterBreak.Previous!;
 						}
 
-						var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetails, lines.Count == 0, false);
+						var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,fontDetails, lines.Count == 0, false);
 						lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, end, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, clusterLast, width, widthWithoutTrailingSpaces, h, b));
 						lineWidth = 0;
 						lineWidthWithoutTrailingSpaces = 0;
@@ -429,7 +432,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						{
 							if (textWrapping is not TextWrapping.NoWrap && currentLineEnd != -1)
 							{
-								var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+								var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
 								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 								lineWidth = 0;
 								lineWidthWithoutTrailingSpaces = 0;
@@ -471,7 +474,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 						if (IsLineBreak(_text, currentClusterBreak.Value.end))
 						{
-							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
+							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 							lineWidth = 0;
 							lineWidthWithoutTrailingSpaces = 0;
@@ -482,7 +485,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 						if (currentClusterBreak.Value.end == _text.Length && currentLineEnd != -1)
 						{
-							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
+							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 						}
 					}
@@ -502,7 +505,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var nextLineHeight = lineIndex < lines.Count - 1
 				? lines[lineIndex + 1].lineHeight
 				: textEndsInLineBreak
-					? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight
+					? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true).lineHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
 			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
@@ -602,7 +605,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
+		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true).lineHeight : null;
 		totalHeight += _endingNewLineLineHeight ?? 0;
 
 		float maxLineWidth = 0;
@@ -718,6 +721,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
+		_firstLineBaseline = lines.Count > 0 ? lines[0].baselineOffset : 0;
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
@@ -1303,6 +1307,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
+	public float FirstLineBaseline => _firstLineBaseline;
+
 	private static List<int> GetWords(string text)
 	{
 		var boundaries = new List<int>();
@@ -1454,23 +1460,27 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	// This method assumes that the FontDetails with the biggest LineHeight is also the one with the biggest SKFontMetrics.Top.
 	// If that assumption is wrong, we will need an additional lazy parameter for the latter.
-	private static (float lineHeight, float baselineOffset) GetLineHeightAndBaselineOffset(LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails fontDetailsWithMaxHeightInLine, bool isFirstLine, bool isLastLine)
+	private static (float lineHeight, float baselineOffset) GetLineHeightAndBaselineOffset(TextLineBounds textLineBounds, LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails fontDetailsWithMaxHeightInLine, bool isFirstLine, bool isLastLine)
 	{
+		// The font's baseline/descent are constrained by TextLineBounds before they drive line stacking.
+		var (fontBaseline, fontLineSpacing) = fontDetailsWithMaxHeightInLine.GetTextLineBoundsMetrics(textLineBounds);
+		var fontDescent = fontLineSpacing - fontBaseline;
+
 		if (lineStackingStrategy is LineStackingStrategy.MaxHeight || !(lineHeight > 0))
 		{
-			return (Math.Max(lineHeight, fontDetailsWithMaxHeightInLine.LineHeight), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+			return (Math.Max(lineHeight, fontLineSpacing), fontBaseline);
 		}
 		else if (lineStackingStrategy is LineStackingStrategy.BaselineToBaseline)
 		{
 			if (isFirstLine)
 			{
-				return (Math.Min(fontDetailsWithMaxHeightInLine.LineHeight, Math.Max(-fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent, lineHeight)), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+				return (Math.Min(fontLineSpacing, Math.Max(fontBaseline, lineHeight)), fontBaseline);
 			}
 			else
 			{
 				if (isLastLine)
 				{
-					return (lineHeight + fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent, lineHeight);
+					return (lineHeight + fontDescent, lineHeight);
 				}
 				else
 				{
@@ -1480,7 +1490,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else if (lineStackingStrategy is LineStackingStrategy.BlockLineHeight)
 		{
-			return (lineHeight, lineHeight - fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent);
+			return (lineHeight, lineHeight - fontDescent);
 		}
 		else
 		{

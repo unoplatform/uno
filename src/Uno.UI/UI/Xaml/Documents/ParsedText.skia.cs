@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -10,6 +10,11 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+
+// Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
+// which would collide with the TextFormatting namespace imported above.
+using ObjectRun = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRun;
+using ObjectRunMetrics = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRunMetrics;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -59,10 +64,12 @@ internal readonly struct ParsedText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
-		out Size desiredSize)
+		out Size desiredSize,
+		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -85,6 +92,34 @@ internal readonly struct ParsedText : IParsedText
 				lineSegmentSpans.Add(breakSegmentSpan);
 
 				MoveToNextLine(currentLineWrapped: false);
+			}
+			else if (inline is InlineUIContainer container)
+			{
+				// Only containers the caller measured occupy space. Formatting outside a block-layout
+				// host (so with no embedded element host to measure against) leaves them zero-sized.
+				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
+				{
+					continue;
+				}
+
+				if (maxLines > 0 && renderLines.Count == maxLines)
+				{
+					goto MaxLinesHit;
+				}
+
+				var objectWidth = inlineObject.Metrics.Width;
+
+				if (x > 0 && objectWidth > availableWidth - x)
+				{
+					// The object doesn't fit in what's left of the line, and there is content before it,
+					// so wrap it whole onto the next line. An object never breaks internally.
+					MoveToNextLine(currentLineWrapped: true);
+				}
+
+				Segment objectSegment = new(container, flowDirection, inlineObject.Run, inlineObject.Metrics);
+				RenderSegmentSpan objectSegmentSpan = new(objectSegment, 0, 0, 0, 0, 0, objectWidth, objectWidth, 0);
+				lineSegmentSpans.Add(objectSegmentSpan);
+				x += objectWidth;
 			}
 			else if (inline is Run run)
 			{
@@ -320,7 +355,7 @@ internal readonly struct ParsedText : IParsedText
 
 		void MoveToNextLine(bool currentLineWrapped)
 		{
-			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped, textLineBounds);
 			renderLines.Add(renderLine);
 			lineSegmentSpans.Clear();
 
@@ -391,6 +426,14 @@ internal readonly struct ParsedText : IParsedText
 				var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 				var segment = segmentSpan.Segment;
+
+				if (segment.IsInlineObject)
+				{
+					// Inline objects do not render content directly. They are rendering through UIElement tree render walk.
+					x += segmentSpan.Width;
+					continue;
+				}
+
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
@@ -560,11 +603,16 @@ internal readonly struct ParsedText : IParsedText
 
 	// Warning: this is only tested and currently used by TextBox
 	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	public Rect GetRectForIndex(int adjustedIndex)
+	public Rect GetRectForIndex(int adjustedIndex) => GetRectForUnadjustedIndex(_text[..adjustedIndex].EnumerateRunes().Count());
+
+	/// <remarks>
+	/// Takes an unadjusted (glyph-space) index — the same space as the RenderLine glyph counts, and
+	/// therefore as the RichTextServices TextLine character indices.
+	/// </remarks>
+	internal Rect GetRectForUnadjustedIndex(int index)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 		foreach (var line in _renderLines)
 		{
@@ -740,6 +788,20 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => false;
+
+	internal int LineCount => _renderLines.Count;
+
+	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
+	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
+	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
+
+	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
+
+	internal Size AvailableSize => _availableSize;
+
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal FlowDirection FlowDirection => _flowDirection;
 
 	#endregion
 
@@ -962,7 +1024,7 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	// Warning: this is only tested and currently used by TextBox
-	private List<(int start, int length)> GetLineIntervals()
+	internal List<(int start, int length)> GetLineIntervals()
 	{
 		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
 
@@ -1079,7 +1141,7 @@ internal readonly struct ParsedText : IParsedText
 		return count;
 	}
 
-	private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	internal int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
 		var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
