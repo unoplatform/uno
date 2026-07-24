@@ -111,7 +111,7 @@ public partial class TextBox
 		var currentPosition = down.Position;
 
 		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayMicroseconds
+			&& currentTs - previousTap.ts <= GestureRecognizer.ResolvedMultiTapMaxDelayMicroseconds
 			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 

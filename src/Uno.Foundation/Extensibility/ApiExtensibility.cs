@@ -65,7 +65,23 @@ public static class ApiExtensibility
 	/// <returns>If registered or not.</returns>
 	public static bool IsRegistered<T>()
 	{
-		return _registrations.ContainsKey(typeof(T));
+		lock (_gate)
+		{
+			return _registrations.ContainsKey(typeof(T));
+		}
+	}
+
+	/// <summary>
+	/// Removes a previously registered extension builder for the specified <typeparamref name="T"/> type.
+	/// </summary>
+	/// <typeparam name="T">A registered type</typeparam>
+	/// <returns>True if a registration was removed, otherwise false.</returns>
+	internal static bool Unregister<T>()
+	{
+		lock (_gate)
+		{
+			return _registrations.Remove(typeof(T));
+		}
 	}
 
 	/// <summary>
