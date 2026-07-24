@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -24,6 +25,11 @@ using Combinatorial.MSTest;
 
 #if __APPLE_UIKIT__
 using UIKit;
+#endif
+
+#if __SKIA__
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -109,6 +115,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_ItemsSource_Changes_Then_SuggestionsList_Raises_LayoutInvalidated()
+		{
+			var items = new ObservableCollection<string> { "first" };
+			var sut = new AutoSuggestBox { ItemsSource = items };
+			var listener = new LayoutInvalidatedListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+
+				items.Add("before-template");
+				Assert.AreEqual(0, listener.EventCount, "No event should be raised before the suggestions list part exists.");
+
+				await UITestHelper.Load(sut);
+				listener.Reset();
+
+				items.Add("after-template");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, listener.EventCount, "The suggestions list should raise one layout invalidation.");
+				var suggestionsList = (ListView)sut.GetTemplateChild("SuggestionsList");
+				Assert.AreSame(FrameworkElementAutomationPeer.CreatePeerForElement(suggestionsList), listener.LastPeer);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		[TestMethod]
 #if __SKIA__
@@ -1289,6 +1329,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
+#endif
+
+#if __SKIA__
+#nullable enable annotations
+		private sealed class LayoutInvalidatedListener : IAutomationPeerListener
+		{
+			public int EventCount { get; private set; }
+			public AutomationPeer? LastPeer { get; private set; }
+
+			public bool ListenerExistsHelper(AutomationEvents eventId) => eventId == AutomationEvents.LayoutInvalidated;
+
+			public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+			{
+				if (eventId == AutomationEvents.LayoutInvalidated)
+				{
+					EventCount++;
+					LastPeer = peer;
+				}
+			}
+
+			public void Reset()
+			{
+				EventCount = 0;
+				LastPeer = null;
+			}
+
+			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child) { }
+			public void NotifyInvalidatePeer(AutomationPeer peer) { }
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) { }
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+		}
+#nullable restore annotations
 #endif
 	}
 }

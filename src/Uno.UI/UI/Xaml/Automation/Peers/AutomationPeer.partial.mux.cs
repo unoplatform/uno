@@ -645,22 +645,18 @@ partial class AutomationPeer
 	/// Raises the structure changed event.
 	/// </summary>
 	/// <param name="structureChangeType">The type of structure change.</param>
-	/// <param name="child">The child peer involved in the change (required for ChildRemoved).</param>
-	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)
+	/// <param name="child">The child peer involved in the change (required for ChildRemoved; may be null otherwise).</param>
+	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer? child)
 	{
 #if HAS_UNO
-		// TODO Uno: Implement RaiseStructureChangedEvent when UIA infrastructure is available.
-		// For now this is a stub that maintains API compatibility.
-
-		if (structureChangeType == AutomationStructureChangeType.ChildRemoved)
+		if (structureChangeType == AutomationStructureChangeType.ChildRemoved && child is null)
 		{
-			if (child is null)
-			{
-				throw new ArgumentNullException(nameof(child));
-			}
-			// UIAutomationCore expects runtime id of the removed child to be returned.
-			_ = child.GetRuntimeId();
+			throw new ArgumentNullException(nameof(child));
 		}
+
+#if __SKIA__
+		AutomationPeerListener?.NotifyStructureChangedEvent(this, structureChangeType, child);
+#endif
 #endif
 	}
 

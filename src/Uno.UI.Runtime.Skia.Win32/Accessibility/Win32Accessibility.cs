@@ -1,9 +1,11 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -32,18 +34,24 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
+	private readonly ConcurrentDictionary<Win32RawElementProvider, byte> _liveProviders = new(ReferenceEqualityComparer.Instance);
+	private int _providerCleanupDepth;
 	// Pending StructureChanged events, coalesced onto the dispatcher. We record the specific
 	// add/remove/invalidate so the flush can emit the WinUI-faithful event type (ChildAdded on the
 	// added element, ChildRemoved on the container with the removed child's runtime id) rather than
 	// a blanket ChildrenInvalidated. See AutomationEventsHelper::StructureChangedEventInformation
-	// (microsoft-ui-xaml). Kind.Invalidated is the coarse fallback for peer-initiated changes.
+	// (microsoft-ui-xaml). Kind.Invalidated is the coarse fallback for peer-initiated changes,
+	// while ExplicitType preserves app-raised AutomationPeer events.
 	private enum StructureChangeKind { Added, Removed, Invalidated }
 	private readonly record struct PendingStructureChange(
 		Win32RawElementProvider Container,
 		Win32RawElementProvider? Child,
 		StructureChangeKind Kind,
-		int[]? ChildRuntimeId);
+		int[]? ChildRuntimeId,
+		StructureChangeType? ExplicitType = null,
+		UIElement? Element = null);
 	private readonly List<PendingStructureChange> _pendingStructureChanges = new();
+	private readonly HashSet<Win32RawElementProvider> _pendingAddedProviders = new(ReferenceEqualityComparer.Instance);
 	// Strong references to just-invalidated providers. Keeps their COM-callable
 	// wrappers alive across the window between UiaDisconnectProvider and UIA
 	// delivering the structure-changed notification, so an out-of-proc client
@@ -51,6 +59,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// severed-CCW 0x80070002. Drained once the structure-change flush completes.
 	private readonly HashSet<Win32RawElementProvider> _disconnectedProviders = new(ReferenceEqualityComparer.Instance);
 	private bool _structureChangeFlushQueued;
+	private int _uiaClientsAreListeningFailureLogged;
 
 	// Matches WinUI's AP_BULK_CHILDREN_LIMIT. Within one coalescing window, per container:
 	// if total add+remove exceeds this, collapse to a single ChildrenInvalidated; otherwise a
@@ -86,6 +95,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Create root provider only; child providers are created lazily during navigation.
 		var rootPeer = rootElement.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
 		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this, rootPeer);
+		_liveProviders.TryAdd(_rootProvider, 0);
 		_providers.AddOrUpdate(rootElement, _rootProvider);
 		if (rootPeer is not null)
 		{
@@ -127,6 +137,33 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
+	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
+		IsAccessibilityEnabled
+		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());
+
+	private bool AreUiaClientsListening()
+	{
+		try
+		{
+			return Win32UIAutomationInterop.UiaClientsAreListening();
+		}
+		catch (Exception error) when (
+			error is DllNotFoundException
+				or EntryPointNotFoundException
+				or BadImageFormatException
+				or TypeLoadException
+				or System.Runtime.InteropServices.SEHException)
+		{
+			if (Interlocked.Exchange(ref _uiaClientsAreListeningFailureLogged, 1) == 0
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("[UIA] Unable to query whether UI Automation clients are listening.", error);
+			}
+
+			return false;
+		}
+	}
+
 	// ──────────────────────────────────────────────────────────────
 	//  Announcements — override base to dispatch at the UIA layer
 	//  (base's debouncing/throttling still runs; AnnounceOnPlatform
@@ -153,7 +190,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				text,
 				"UnoAnnouncement");
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (
+			ex is System.Runtime.InteropServices.COMException
+				or DllNotFoundException
+				or EntryPointNotFoundException
+				or BadImageFormatException
+				or TypeLoadException
+				or System.Runtime.InteropServices.SEHException)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -172,14 +215,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetOrCreateProvider(UIElement element)
 	{
-		if (_providers.TryGetValue(element, out var existing))
-		{
-			return existing;
-		}
-
-		if (!IsAccessibilityEnabled)
+		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
 		{
 			return null;
+		}
+
+		if (TryGetLiveProvider(element, out var existing))
+		{
+			return existing;
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -192,7 +235,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return null;
 		}
 
-		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+		var provider = GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+		if (provider is { IsInvalidated: false })
+		{
+			// PopupPanel and similar visual proxies expose a peer owned by another UIElement.
+			// Keep the visual element as an alias so subtree removal can invalidate the provider.
+			_providers.AddOrUpdate(element, provider);
+		}
+
+		return provider;
 	}
 
 	/// <summary>
@@ -200,27 +251,66 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
 	{
-		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource));
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource);
+		if (resolvedPeer.TryGetProviderOwner(out var owner)
+			&& AccessibilityRouter.Resolve(owner) is Win32Accessibility accessibility
+			&& !ReferenceEquals(accessibility, this))
+		{
+			return accessibility.GetOrCreateProviderForResolvedPeer(resolvedPeer);
+		}
+
+		return GetOrCreateProviderForResolvedPeer(resolvedPeer);
 	}
+
+	internal Win32RawElementProvider? GetProviderForRelatedElement(UIElement element)
+		=> AccessibilityRouter.Resolve(element) is Win32Accessibility accessibility
+			? accessibility.GetOrCreateProvider(element)
+			: null;
+
+	internal Win32RawElementProvider? GetProviderForRelatedPeer(AutomationPeer peer)
+		=> GetProviderForPeer(peer);
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		if (_providers.TryGetValue(element, out var provider))
+		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		{
+			return null;
+		}
+
+		if (TryGetLiveProvider(element, out var provider))
 		{
 			return provider;
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
-		return peer is null
-			? null
-			: GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+		if (peer is null)
+		{
+			return null;
+		}
+
+		var resolvedProvider = GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+		if (resolvedProvider is { IsInvalidated: false })
+		{
+			_providers.AddOrUpdate(element, resolvedProvider);
+		}
+
+		return resolvedProvider;
 	}
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
-		// Fast path: already have a provider keyed by this exact peer.
-		if (_peerProviders.TryGetValue(resolvedPeer, out var existingByPeer))
+		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
 		{
+			return null;
+		}
+
+		// Fast path: already have a provider keyed by this exact peer.
+		if (TryGetLiveProvider(resolvedPeer, out var existingByPeer))
+		{
+			if (resolvedPeer.TryGetProviderOwner(out var existingOwner) && existingOwner is Popup popup)
+			{
+				RegisterPopupPanelAlias(popup, existingByPeer);
+			}
 			return existingByPeer;
 		}
 
@@ -247,21 +337,23 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				return null;
 			}
 
-			if (_providers.TryGetValue(element, out var existingByElement)
+			if (TryGetLiveProvider(element, out var existingByElement)
 				&& existingByElement.RepresentsPeer(canonicalPeer))
 			{
 				_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+				RegisterProviderOwner(element, existingByElement);
 				return existingByElement;
 			}
 
-			if (_peerProviders.TryGetValue(canonicalPeer, out existingByPeer))
+			if (TryGetLiveProvider(canonicalPeer, out existingByPeer))
 			{
-				_providers.AddOrUpdate(element, existingByPeer);
+				RegisterProviderOwner(element, existingByPeer);
 				return existingByPeer;
 			}
 
 			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
-			_providers.AddOrUpdate(element, provider);
+			_liveProviders.TryAdd(provider, 0);
+			RegisterProviderOwner(element, provider);
 			_peerProviders.AddOrUpdate(canonicalPeer, provider);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -278,6 +370,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			// Create a provider keyed by this specific peer. Do NOT store in
 			// _providers since the element is shared with the canonical peer.
 			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer, isVirtualPeer: true);
+			_liveProviders.TryAdd(provider, 0);
 			_peerProviders.AddOrUpdate(resolvedPeer, provider);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -287,6 +380,63 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			return provider;
 		}
+	}
+
+	private void RegisterProviderOwner(UIElement owner, Win32RawElementProvider provider)
+	{
+		if (provider.IsInvalidated)
+		{
+			return;
+		}
+
+		_providers.AddOrUpdate(owner, provider);
+
+		// PopupPanel exposes its Popup's automation peer, so UIA navigation creates the provider
+		// from the Popup owner rather than from the visual panel that enters and leaves PopupRoot.
+		if (owner is Popup popup)
+		{
+			RegisterPopupPanelAlias(popup, provider);
+		}
+	}
+
+	private void RegisterPopupPanelAlias(Popup popup, Win32RawElementProvider provider)
+	{
+		if (!provider.IsInvalidated && popup.PopupPanel is { } popupPanel)
+		{
+			_providers.AddOrUpdate(popupPanel, provider);
+		}
+	}
+
+	private bool TryGetLiveProvider(UIElement element, [NotNullWhen(true)] out Win32RawElementProvider? provider)
+	{
+		if (_providers.TryGetValue(element, out provider))
+		{
+			if (!provider.IsInvalidated)
+			{
+				return true;
+			}
+
+			_providers.Remove(element);
+		}
+
+		provider = null;
+		return false;
+	}
+
+	private bool TryGetLiveProvider(AutomationPeer peer, [NotNullWhen(true)] out Win32RawElementProvider? provider)
+	{
+		if (_peerProviders.TryGetValue(peer, out provider))
+		{
+			if (!provider.IsInvalidated)
+			{
+				return true;
+			}
+
+			_peerProviders.Remove(peer);
+		}
+
+		provider = null;
+		return false;
 	}
 
 	// ──────────────────────────────────────────────────────────────
@@ -308,8 +458,30 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// Drop the cached children along the path so the next navigation rebuilds from current state.
 		ancestorProvider.InvalidateChildrenCache();
 
-		if (!Win32UIAutomationInterop.UiaClientsAreListening())
+		// WinUI raises ChildAdded only when an element enters the PC (render) scene; a Collapsed
+		// element does not (CUIElement::EnterPCScene is never reached), so skip it here — matching
+		// the Collapsed skip in CollectEnteringProviders. Without this, adding a Collapsed element to
+		// an active tree would materialize a provider and surface hidden content to UIA clients.
+		if (child.Visibility == Visibility.Collapsed)
 		{
+			return;
+		}
+
+		if (!AreUiaClientsListening())
+		{
+			return;
+		}
+
+		if (TryCancelPendingRemoval(ancestorProvider, child))
+		{
+			// Removal disconnects the old provider before the batch is flushed, so the pair cannot
+			// become a silent no-op. Collapse it to one refresh signal: UIA drops the stale runtime id
+			// and re-queries the re-added element without observing a transient remove/add pair.
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null));
 			return;
 		}
 
@@ -318,7 +490,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// of eagerly creating peers for every element added anywhere in the app.
 		if (ReferenceEquals(ancestorProvider, _rootProvider))
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 			return;
 		}
 
@@ -327,7 +504,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var childProvider = GetOrCreateProvider(child);
 		if (childProvider is not null)
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, childProvider, StructureChangeKind.Added, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				childProvider,
+				StructureChangeKind.Added,
+				null,
+				Element: child));
 			return;
 		}
 
@@ -342,13 +524,41 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			foreach (var provider in entering)
 			{
-				QueueStructureChange(new PendingStructureChange(ancestorProvider, provider, StructureChangeKind.Added, null));
+				QueueStructureChange(new PendingStructureChange(
+					ancestorProvider,
+					provider,
+					StructureChangeKind.Added,
+					null,
+					Element: child));
 			}
 		}
 		else
 		{
-			QueueStructureChange(new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			QueueStructureChange(new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 		}
+	}
+
+	private bool TryCancelPendingRemoval(Win32RawElementProvider container, UIElement child)
+	{
+		for (var i = _pendingStructureChanges.Count - 1; i >= 0; i--)
+		{
+			var pending = _pendingStructureChanges[i];
+			if (pending.ExplicitType is null
+				&& ReferenceEquals(pending.Container, container)
+				&& ReferenceEquals(pending.Element, child)
+				&& pending.Kind is StructureChangeKind.Removed or StructureChangeKind.Invalidated)
+			{
+				_pendingStructureChanges.RemoveAt(i);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
@@ -420,8 +630,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		// Capture the removed child's runtime id BEFORE cleanup — ChildRemoved carries it so a
 		// client can drop exactly that node. Only an already-existing provider is meaningful here.
-		var listening = Win32UIAutomationInterop.UiaClientsAreListening();
-		int[]? childRuntimeId = listening ? TryGetExistingProviderForElement(child)?.GetRuntimeId() : null;
+		var listening = AreUiaClientsListening();
+		var existingProvider = listening ? TryGetExistingProviderForElement(child) : null;
+		int[]? childRuntimeId = existingProvider?.GetRuntimeId();
+
+		// If this child's ChildAdded is still queued (add + remove within one coalescing window), the
+		// pair cancels out — WinUI's AutomationEventsHelper drops Added/Removed pairs for the same
+		// (child, container) key within a batch. CleanupProviders drops the pending Added below;
+		// suppress the matching Removed so a client never sees a remove for a node it was never told
+		// was added.
+		var cancelsPendingAdd = existingProvider is not null &&
+			_pendingAddedProviders.Contains(existingProvider);
 
 		// Clean up cached providers for the removed subtree.
 		CleanupProviders(child);
@@ -442,11 +661,24 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		if (cancelsPendingAdd)
+		{
+			return;
+		}
+
 		QueueStructureChange(childRuntimeId is not null
-			? new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Removed, childRuntimeId)
-			// TODO Uno: mirror CollectEnteringProviders for peer-less removals so shallow peer-bearing descendants
-			// can emit ChildRemoved instead of falling back to ChildrenInvalidated.
-			: new PendingStructureChange(ancestorProvider, null, StructureChangeKind.Invalidated, null));
+			? new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Removed,
+				childRuntimeId,
+				Element: child)
+			: new PendingStructureChange(
+				ancestorProvider,
+				null,
+				StructureChangeKind.Invalidated,
+				null,
+				Element: child));
 	}
 
 	/// <summary>
@@ -454,7 +686,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	private Win32RawElementProvider? TryGetExistingProviderForElement(UIElement element)
 	{
-		if (_providers.TryGetValue(element, out var provider))
+		if (TryGetLiveProvider(element, out var provider))
 		{
 			return provider;
 		}
@@ -469,7 +701,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// clients that the property has changed so they re-query it.
 		if (visual is ContainerVisual containerVisual
 			&& containerVisual.Owner?.Target is UIElement owner
-			&& _providers.TryGetValue(owner, out var provider))
+			&& TryGetLiveProvider(owner, out var provider))
 		{
 			try
 			{
@@ -479,7 +711,13 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 					null,
 					null);
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (
+				ex is System.Runtime.InteropServices.COMException
+					or DllNotFoundException
+					or EntryPointNotFoundException
+					or BadImageFormatException
+					or TypeLoadException
+					or System.Runtime.InteropServices.SEHException)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -495,27 +733,38 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		// on deep visual trees when subtrees are removed.
 		var stack = new Stack<UIElement>();
 		stack.Push(element);
+		Interlocked.Increment(ref _providerCleanupDepth);
 
-		while (stack.Count > 0)
+		try
 		{
-			var current = stack.Pop();
-
-			if (_providers.TryGetValue(current, out var provider))
+			while (stack.Count > 0)
 			{
-				// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
-				// cached children, cascades the disconnect to virtual children —
-				// e.g. WCT DataGrid rows/cells not reachable via the element table —
-				// disconnects from UIA, and updates the lookup tables + tombstone
-				// via OnProviderInvalidated. Every subsequent call on the provider
-				// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
-				// GC'd out from under a client's proxy (0x80070002).
-				provider.Invalidate();
-			}
+				var current = stack.Pop();
+				var provider = TryGetExistingProviderForElement(current);
 
-			foreach (var child in current.GetChildren())
-			{
-				stack.Push(child);
+				// Some visual elements expose a peer owned by another element. PopupPanel, for example,
+				// returns its Popup's peer, so the provider is keyed by Popup rather than PopupPanel.
+				if (provider is not null)
+				{
+					// Invalidate (mirrors WinUI's CUIAWrapper::Invalidate): clears the
+					// cached children, cascades the disconnect to virtual children —
+					// e.g. WCT DataGrid rows/cells not reachable via the element table —
+					// disconnects from UIA, and updates the lookup tables + tombstone
+					// via OnProviderInvalidated. Every subsequent call on the provider
+					// then fails with UIA_E_ELEMENTNOTAVAILABLE instead of the CCW being
+					// GC'd out from under a client's proxy (0x80070002).
+					provider.Invalidate();
+				}
+
+				foreach (var child in current.GetChildren())
+				{
+					stack.Push(child);
+				}
 			}
+		}
+		finally
+		{
+			Interlocked.Decrement(ref _providerCleanupDepth);
 		}
 	}
 
@@ -528,22 +777,25 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal void OnProviderInvalidated(Win32RawElementProvider provider)
 	{
-		_pendingStructureChanges.RemoveAll(p => ReferenceEquals(p.Container, provider) || ReferenceEquals(p.Child, provider));
+		_liveProviders.TryRemove(provider, out _);
+		_pendingAddedProviders.Remove(provider);
 
-		if (provider.RepresentedPeer is { } representedPeer)
+		if (provider.RepresentedPeer is { } representedPeer
+			&& _peerProviders.TryGetValue(representedPeer, out var byPeer)
+			&& ReferenceEquals(byPeer, provider))
 		{
 			_peerProviders.Remove(representedPeer);
 		}
 
-		// Only drop the element→provider mapping when this provider owns it.
-		// Virtual providers share their owner UIElement with the canonical peer's
-		// provider and must not evict it.
-		if (_providers.TryGetValue(provider.Owner, out var byElement)
+		if (provider.Owner is { } owner
+			&& _providers.TryGetValue(owner, out var byElement)
 			&& ReferenceEquals(byElement, provider))
 		{
-			_providers.Remove(provider.Owner);
+			_providers.Remove(owner);
 		}
 
+		// Additional aliases are removed lazily when looked up. ConditionalWeakTable entries do not
+		// keep their keys alive, and every lookup rejects an invalidated provider before reuse.
 		_disconnectedProviders.Add(provider);
 	}
 
@@ -552,7 +804,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		UIElement? current = element;
 		while (current is not null)
 		{
-			if (_providers.TryGetValue(current, out var provider))
+			if (TryGetLiveProvider(current, out var provider))
 			{
 				return provider;
 			}
@@ -581,6 +833,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private void QueueStructureChange(PendingStructureChange change)
 	{
 		_pendingStructureChanges.Add(change);
+		if (change.Kind == StructureChangeKind.Added && change.Child is not null)
+		{
+			_pendingAddedProviders.Add(change.Child);
+		}
 		EnsureStructureChangeFlushQueued();
 	}
 
@@ -600,6 +856,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			if (IsDisposed)
 			{
 				_pendingStructureChanges.Clear();
+				_pendingAddedProviders.Clear();
 				_disconnectedProviders.Clear();
 				return;
 			}
@@ -616,6 +873,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			_structureChangeFlushQueued = false;
 			_pendingStructureChanges.Clear();
+			_pendingAddedProviders.Clear();
 			_disconnectedProviders.Clear();
 		}
 	}
@@ -630,9 +888,21 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private void FlushStructureChanges()
 	{
 		var groups = new Dictionary<Win32RawElementProvider, (List<Win32RawElementProvider> Added, List<int[]> Removed, bool Invalidated)>(ReferenceEqualityComparer.Instance);
+		List<(Win32RawElementProvider Provider, StructureChangeType Type, int[]? RuntimeId)>? explicitChanges = null;
 
 		foreach (var change in _pendingStructureChanges)
 		{
+			if (change.Container.IsInvalidated)
+			{
+				continue;
+			}
+
+			if (change.ExplicitType is { } explicitType)
+			{
+				(explicitChanges ??= new()).Add((change.Container, explicitType, change.ChildRuntimeId));
+				continue;
+			}
+
 			if (!groups.TryGetValue(change.Container, out var group))
 			{
 				group = (new List<Win32RawElementProvider>(), new List<int[]>(), false);
@@ -640,8 +910,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			switch (change.Kind)
 			{
-				case StructureChangeKind.Added when change.Child is not null:
+				case StructureChangeKind.Added when change.Child is { IsInvalidated: false }:
 					group.Added.Add(change.Child);
+					break;
+				case StructureChangeKind.Added:
 					break;
 				case StructureChangeKind.Removed when change.ChildRuntimeId is not null:
 					group.Removed.Add(change.ChildRuntimeId);
@@ -655,6 +927,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		_pendingStructureChanges.Clear();
+		_pendingAddedProviders.Clear();
+
+		if (explicitChanges is not null)
+		{
+			foreach (var (provider, type, runtimeId) in explicitChanges)
+			{
+				RaiseStructureChangedCore(provider, type, runtimeId);
+			}
+		}
 
 		foreach (var (container, group) in groups)
 		{
@@ -721,7 +1002,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	internal Win32RawElementProvider? TryGetExistingProviderResolvingEventsSource(AutomationPeer peer)
 	{
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		return _peerProviders.TryGetValue(resolvedPeer, out var provider) ? provider : null;
+		return TryGetLiveProvider(resolvedPeer, out var provider) ? provider : null;
 	}
 
 	/// <summary>
@@ -735,12 +1016,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource);
 
-		if (_peerProviders.TryGetValue(resolvedPeer, out var providerByPeer))
+		if (TryGetLiveProvider(resolvedPeer, out var providerByPeer))
 		{
 			return providerByPeer;
 		}
 
-		if (resolvedPeer.TryGetProviderOwner(out var element) && _providers.TryGetValue(element, out var providerByElement))
+		if (resolvedPeer.TryGetProviderOwner(out var element) && TryGetLiveProvider(element, out var providerByElement))
 		{
 			return providerByElement;
 		}
@@ -751,6 +1032,57 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	// ──────────────────────────────────────────────────────────────
 	//  Automation peer listener — UIA-style dispatch overrides
 	// ──────────────────────────────────────────────────────────────
+
+	public override void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+	{
+		if (!IsAccessibilityEnabled || !AreUiaClientsListening())
+		{
+			return;
+		}
+
+		// Structure events are meaningful only for providers already exposed to UIA. Creating one
+		// here would register a COM wrapper from an event path and keep the element alive.
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		if (provider is null)
+		{
+			return;
+		}
+
+		provider.InvalidateChildrenCache();
+
+		int[]? runtimeId = null;
+		if (structureChangeType == AutomationStructureChangeType.ChildRemoved)
+		{
+			runtimeId = child is not null
+				? FindExistingProviderForPeer(child, resolveEventsSource: true)?.GetRuntimeId()
+				: null;
+			if (runtimeId is null)
+			{
+				structureChangeType = AutomationStructureChangeType.ChildrenInvalidated;
+			}
+		}
+
+		// WinUI's RaiseStructureChangedEventImpl intentionally ignores child for ChildAdded and
+		// raises the event on the calling peer with a null runtime ID. ChildRemoved alone carries
+		// the removed child's runtime ID.
+		var nativeType = structureChangeType switch
+		{
+			AutomationStructureChangeType.ChildAdded => StructureChangeType.ChildAdded,
+			AutomationStructureChangeType.ChildRemoved => StructureChangeType.ChildRemoved,
+			AutomationStructureChangeType.ChildrenInvalidated => StructureChangeType.ChildrenInvalidated,
+			AutomationStructureChangeType.ChildrenBulkAdded => StructureChangeType.ChildrenBulkAdded,
+			AutomationStructureChangeType.ChildrenBulkRemoved => StructureChangeType.ChildrenBulkRemoved,
+			AutomationStructureChangeType.ChildrenReordered => StructureChangeType.ChildrenReordered,
+			_ => throw new ArgumentOutOfRangeException(nameof(structureChangeType))
+		};
+
+		QueueStructureChange(new PendingStructureChange(
+			provider,
+			null,
+			StructureChangeKind.Invalidated,
+			runtimeId,
+			ExplicitType: nativeType));
+	}
 
 	public override void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
@@ -814,6 +1146,16 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		if (eventId == AutomationEvents.AutomationFocusChanged && TryGetPeerOwner(peer, out var focusedElement))
+		{
+			TrackFocusedElement(focusedElement);
+		}
+
+		if (!AreUiaClientsListening())
+		{
+			return;
+		}
+
 		// Only look up existing providers for most events — eagerly creating
 		// providers registers COM callable wrappers with UIA that prevent GC.
 		// For focus and live region changes, create a provider so Narrator
@@ -821,7 +1163,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
-			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged)
+			// Eagerly materialize a provider for events raised on an element the client has not yet
+			// navigated to: focus/live-region (Narrator tracking) and LayoutInvalidated (raised on the
+			// AutoSuggestBox suggestions list the moment it is populated, before UIA has walked into it).
+			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged or AutomationEvents.LayoutInvalidated)
 			{
 				provider = GetProviderForPeer(peer, resolveEventsSource: true);
 			}
@@ -839,10 +1184,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				case AutomationEvents.AutomationFocusChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_AutomationFocusChangedEventId);
-					if (TryGetPeerOwner(peer, out var focusedElement))
-					{
-						TrackFocusedElement(focusedElement);
-					}
 					break;
 				case AutomationEvents.InvokePatternOnInvoked:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
@@ -897,14 +1238,27 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_ToolTipClosedEventId);
 					break;
+				case AutomationEvents.WindowOpened:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_Window_WindowOpenedEventId);
+					break;
+				case AutomationEvents.WindowClosed:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_Window_WindowClosedEventId);
+					break;
+				case AutomationEvents.LayoutInvalidated:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_LayoutInvalidatedEventId);
+					break;
 				case AutomationEvents.LiveRegionChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_LiveRegionChangedEventId);
 					// Also announce the live region text for reliable Narrator delivery
 					var label = peer.GetName();
-					if (!string.IsNullOrEmpty(label))
+					if (!string.IsNullOrEmpty(label)
+						&& provider.Owner is { } owner)
 					{
-						var liveSetting = AutomationProperties.GetLiveSetting(provider.Owner);
+						var liveSetting = AutomationProperties.GetLiveSetting(owner);
 						if (liveSetting == AutomationLiveSetting.Assertive)
 						{
 							AnnounceAssertive(label);
@@ -928,21 +1282,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-		if (!IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
+		if (!IsAccessibilityEnabled
+			|| !AreUiaClientsListening()
+			|| string.IsNullOrEmpty(displayString))
 		{
 			return;
 		}
 
 		// Use specific provider if available, otherwise fall back to root
-		IRawElementProviderSimple? target = _rootProvider;
+		IRawElementProviderSimple target = _rootProvider;
 		if (FindExistingProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
 		{
 			target = elementProvider;
-		}
-
-		if (target is null)
-		{
-			return;
 		}
 
 		try
@@ -964,6 +1315,66 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 	}
 
+	public override void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+		if (!IsAccessibilityEnabled
+			|| !AreUiaClientsListening()
+			|| changedData is null)
+		{
+			// WinUI rejects a null changedData (E_POINTER) without raising; mirror that (no crash).
+			return;
+		}
+
+		// WinUI's CUIAWindow::UIARaiseTextEditTextChangedEvent only raises for AutoCorrect / Composition /
+		// CompositionFinalized — `None` falls through the switch without raising, and any other value is
+		// E_INVALIDARG. Mirror that so `None` (or an out-of-range cast) is not surfaced as a spurious event.
+		switch (changeType)
+		{
+			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.AutoCorrect:
+			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.Composition:
+			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.CompositionFinalized:
+				break;
+			default:
+				return;
+		}
+
+		// Materialize a provider if the client has not navigated to the element yet, mirroring the
+		// focus/live-region/LayoutInvalidated handling above (text services may raise this on an
+		// off-screen edit control). WinUI raises on the peer's own provider or fails (no root
+		// retargeting — CUIAWindow::UIARaiseTextEditTextChangedEvent), so we do not fall back to root.
+		var target = FindExistingProviderForPeer(peer, resolveEventsSource: true)
+			?? GetProviderForPeer(peer, resolveEventsSource: true);
+		if (target is null)
+		{
+			return;
+		}
+
+		var dataArray = new string[changedData.Count];
+		for (var i = 0; i < changedData.Count; i++)
+		{
+			dataArray[i] = changedData[i];
+		}
+
+		try
+		{
+			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
+			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+		}
+		catch (Exception ex) when (
+			ex is System.Runtime.InteropServices.COMException
+				or DllNotFoundException
+				or EntryPointNotFoundException
+				or BadImageFormatException
+				or TypeLoadException
+				or System.Runtime.InteropServices.SEHException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"NotifyTextEditTextChangedEvent failed: {ex.Message}");
+			}
+		}
+	}
+
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract no-op overrides — Win32 dispatches at the UIA layer
 	//  via NotifyPropertyChangedEvent / NotifyAutomationEvent, not via
@@ -981,6 +1392,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	protected override void UpdateHelpText(nint handle, string? helpText) { }
 	protected override void UpdateHeadingLevel(nint handle, int level) { }
 	protected override void UpdateLandmark(nint handle, string? landmarkRole) { }
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription) { }
 	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly) { }
 	protected override void UpdateFocusable(nint handle, bool focusable) { }
 	protected override void UpdateIsOffscreen(nint handle, bool isOffscreen) { }
@@ -1003,18 +1415,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			this.Log().Debug($"[UIA] Win32Accessibility disposing for window 0x{_hwnd:X}");
 		}
 
-		// Disconnect every live cached provider scoped to this window so UIA
-		// clients see a well-formed disconnect rather than a dangling HWND.
-		// Uses the .NET 9+ ConditionalWeakTable IEnumerable<KeyValuePair<...>>
-		// support. UiaDisconnectAllProviders is intentionally NOT used — it is
-		// process-wide and would disconnect providers belonging to other windows.
-		foreach (var pair in _providers)
+		// The explicit registry includes peer-only virtual providers even if their weak cache key
+		// has already been collected. UiaDisconnectAllProviders would affect other windows.
+		foreach (var provider in new List<Win32RawElementProvider>(_liveProviders.Keys))
 		{
-			if (!Win32UIAutomationInterop.TryDisconnectProvider(pair.Value, out var error)
-				&& this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn("[UIA] UiaDisconnectProvider failed during dispose.", error);
-			}
+			provider.Invalidate(allowRoot: true);
 		}
 
 		// Synthetic panes are not part of _providers (they wrap no UIElement),
@@ -1034,7 +1439,9 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		_providers.Clear();
 		_peerProviders.Clear();
+		_liveProviders.Clear();
 		_pendingStructureChanges.Clear();
+		_pendingAddedProviders.Clear();
 		_disconnectedProviders.Clear();
 	}
 
@@ -1083,6 +1490,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (ReferenceEquals(property, AutomationElementIdentifiers.LandmarkTypeProperty))
 		{
 			return Win32UIAutomationInterop.UIA_LandmarkTypePropertyId;
+		}
+		if (ReferenceEquals(property, AutomationElementIdentifiers.LocalizedLandmarkTypeProperty))
+		{
+			return Win32UIAutomationInterop.UIA_LocalizedLandmarkTypePropertyId;
 		}
 		if (ReferenceEquals(property, AutomationElementIdentifiers.LiveSettingProperty))
 		{

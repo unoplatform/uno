@@ -338,21 +338,35 @@ public partial class AutomationPeer : DependencyObject
 	// TODO (DOTI) Not in WinUI?
 	internal bool InvokeAutomationPeer()
 	{
-		// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
-		if (this is IInvokeProvider invokeProvider)
+		// Native (non-UIA) accessibility activation paths call this helper (Android ViewClicked,
+		// iOS AccessibilityActivate, Skia-Android virtual nodes). WinUI pattern providers throw
+		// ElementNotEnabledException when the element is disabled (see ButtonAutomationPeer.Invoke,
+		// ToggleButtonAutomationPeer.Toggle, RadioButtonAutomationPeer.Select, ...). On these
+		// activation paths a disabled element should simply not activate, so swallow that exception
+		// and report "not invoked". The Win32 UIA COM wrappers call the providers directly (not via
+		// this helper), so they still surface UIA_E_ELEMENTNOTENABLED to the UIA client.
+		// TODO: Add support for ComboBox, Slider, Selector, etc.
+		try
 		{
-			invokeProvider.Invoke();
-			return true;
+			if (this is IInvokeProvider invokeProvider)
+			{
+				invokeProvider.Invoke();
+				return true;
+			}
+			else if (this is IToggleProvider toggleProvider)
+			{
+				toggleProvider.Toggle();
+				return true;
+			}
+			else if (this is ISelectionItemProvider selectionItemProvider)
+			{
+				selectionItemProvider.Select();
+				return true;
+			}
 		}
-		else if (this is IToggleProvider toggleProvider)
+		catch (ElementNotEnabledException)
 		{
-			toggleProvider.Toggle();
-			return true;
-		}
-		else if (this is ISelectionItemProvider selectionItemProvider)
-		{
-			selectionItemProvider.Select();
-			return true;
+			// Disabled element — treat as not invoked rather than surfacing the exception.
 		}
 
 		return false;
@@ -570,17 +584,43 @@ public partial class AutomationPeer : DependencyObject
 	/// <param name="notificationProcessing">The notification processing hint.</param>
 	/// <param name="displayString">The notification string.</param>
 	/// <param name="activityId">The activity ID.</param>
+#if __SKIA__
 	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-		// #if __SKIA__
-		// 		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
-		// 		if (ListenerExists(AutomationEvents.Notification))
-		// 		{
-		// 			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
-		// 		}
-		// #else
+		// RaiseNotificationEvent is stable public API (since UWP 16299) and maps to the UIA
+		// Notification event. Unlike RaiseAutomationEvent, Uno's public contract has no
+		// AutomationEvents.Notification value (it is [VelocityFeature]-gated in WinUI), so we
+		// route straight to the listener rather than through ListenerExistsHelper(eventId). The
+		// per-backend NotifyNotificationEvent handlers gate delivery on IsAccessibilityEnabled.
+		AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
+	}
+#else
+	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	{
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
 	}
+#endif
+
+	/// <summary>
+	/// Raises an event when a text control programmatically changes its text (e.g. AutoCorrect or IME composition).
+	/// </summary>
+	/// <param name="automationTextEditChangeType">The kind of text-edit change.</param>
+	/// <param name="changedData">The text that changed.</param>
+#if __SKIA__
+	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		// TextEditTextChanged is an app-facing UIA event: in WinUI no built-in control auto-raises it —
+		// it is called from AutoCorrect/Composition text services (AutomationPeer_Partial.cpp:916-940).
+		// Route straight to the listener (like RaiseNotificationEvent); the per-backend
+		// NotifyTextEditTextChangedEvent handlers gate delivery on IsAccessibilityEnabled.
+		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
+	}
+#else
+	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)", LogLevel.Warning);
+	}
+#endif
 
 #if !__SKIA__
 	/// <summary>

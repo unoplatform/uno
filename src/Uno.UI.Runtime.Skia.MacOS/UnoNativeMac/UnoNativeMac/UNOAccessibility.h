@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *unoHelp;
 @property (nonatomic, strong, nullable) NSString *unoDescription; // accessibility description (maps to ARIA aria-description)
 @property (nonatomic, strong, nullable) NSString *unoRoleDescription;
+@property (nonatomic, strong, nullable) NSString *unoIdentifier; // AutomationProperties.AutomationId (XCUITest/Appium identifier)
 @property (nonatomic) NSRect unoFrame; // in window coordinates (top-left origin)
 @property (nonatomic) BOOL unoFocusable;
 @property (nonatomic) BOOL unoVisible;
@@ -107,6 +108,7 @@ void uno_accessibility_update_focusable(intptr_t handle, bool focusable);
 void uno_accessibility_update_value(intptr_t handle, const char* _Nullable value);
 void uno_accessibility_update_enabled(intptr_t handle, bool enabled);
 void uno_accessibility_update_help(intptr_t handle, const char* _Nullable help);
+void uno_accessibility_update_identifier(intptr_t handle, const char* _Nullable identifier);
 void uno_accessibility_update_description(intptr_t handle, const char* _Nullable description);
 void uno_accessibility_update_role_description(intptr_t handle, const char* _Nullable roleDescription);
 void uno_accessibility_update_role(intptr_t handle, const char* _Nullable role);
