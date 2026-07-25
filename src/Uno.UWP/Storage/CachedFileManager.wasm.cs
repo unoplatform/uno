@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,14 @@ namespace Windows.Storage
 			if (file is StorageFile storageFile && storageFile.Provider == StorageProviders.WasmDownloadPicker)
 			{
 				var stream = await file.OpenStreamForReadAsync();
+
+				if (stream.Length > int.MaxValue)
+				{
+					// The download is materialized as a single managed array before being
+					// handed to the browser, which caps it at 2 GB.
+					throw new NotSupportedException("Files larger than 2 GB cannot be saved using the download-based picker.");
+				}
+
 				byte[] data;
 
 				using (var reader = new BinaryReader(stream))
