@@ -70,20 +70,11 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void SetLength(long value)
 		{
-			if (value < Length)
+			// The File System Access truncate() also extends the file, zero-padded.
+			_pendingTasks.Enqueue(async () =>
 			{
-				_pendingTasks.Enqueue(async () =>
-				{
-					await TruncateAsync(value);
-				});
-			}
-			else
-			{
-				_pendingTasks.Enqueue(async () =>
-				{
-					await WriteAsync(new byte[] { 0 }, 0, 1);
-				});
-			}
+				await TruncateAsync(value);
+			});
 
 			_length = value;
 		}
@@ -106,7 +97,7 @@ namespace Uno.Storage.Streams.Internal
 
 				await NativeMethods.WriteAsync(_streamId.ToString(), pinnedData, offset, count, Position);
 
-				_length += Math.Max(Position + count, Length);
+				_length = Math.Max(Position + count, Length);
 				Position += count;
 			}
 			finally
