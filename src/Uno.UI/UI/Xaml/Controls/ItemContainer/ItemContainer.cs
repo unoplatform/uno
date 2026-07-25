@@ -470,6 +470,9 @@ partial class ItemContainer : Control
 		}
 
 		m_pointerInfo.ResetTrackedPointerId();
+		// Uno Doc: Snapshot before releasing the capture: on managed pointers ReleasePointerCapture
+		// synchronously raises PointerCaptureLost, which resets the touch/pen over state.
+		bool isPointerOver = m_pointerInfo.IsPointerOver();
 		// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
 		ReleasePointerCapture(args.Pointer);
 
@@ -501,7 +504,7 @@ partial class ItemContainer : Control
 			!args.Handled &&
 			!m_pointerInfo.IsPressed() &&
 			// Uno Doc: If pointer is not over, the item should not be clicked. This is a WinUI bug.
-			m_pointerInfo.IsPointerOver())
+			isPointerOver)
 		{
 			args.Handled = RaiseItemInvoked(ItemContainerInteractionTrigger.PointerReleased, args.OriginalSource);
 		}
