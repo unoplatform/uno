@@ -524,7 +524,6 @@ declare namespace Uno.Storage.Streams {
     class NativeFileWriteStream {
         private static _streamMap;
         private _stream;
-        private _buffer;
         private constructor();
         static openAsync(streamId: string, fileId: string): Promise<string>;
         private static verifyPermissionAsync;

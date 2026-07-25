@@ -45,10 +45,7 @@ var Windows;
                     }
                 }
                 static SaveAs(fileName, dataPtr, size) {
-                    const buffer = new Uint8Array(size);
-                    for (var i = 0; i < size; i++) {
-                        buffer[i] = Module.getValue(dataPtr + i, "i8");
-                    }
+                    const buffer = Module.HEAPU8.slice(dataPtr, dataPtr + size);
                     const a = window.document.createElement('a');
                     const blob = new Blob([buffer]);
                     a.href = window.URL.createObjectURL(blob);
@@ -56,6 +53,9 @@ var Windows;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
+                    // Revoke on a delay - revoking synchronously can abort the download in some browsers.
+                    // Without this the blob (~the whole file) stays pinned until the page closes.
+                    setTimeout(() => window.URL.revokeObjectURL(a.href), 40000);
                 }
             }
             Pickers.FileSavePicker = FileSavePicker;
