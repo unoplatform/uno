@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Windows.Storage;
 
 namespace Uno.Storage.Streams.Internal
@@ -120,14 +121,37 @@ namespace Uno.Storage.Streams.Internal
 
 		protected override async void Dispose(bool disposing)
 		{
-			if (_pendingChanges)
+			try
 			{
-				// Unfortunately need to do a fire-and-forget here, as the operations
-				// are required to be asynchronous on JS side.
-				await CopyToTargetAsync();
+				if (_pendingChanges)
+				{
+					// Unfortunately need to do a fire-and-forget here, as the operations
+					// are required to be asynchronous on JS side.
+					await CopyToTargetAsync();
+				}
 			}
-			_cacheStream.Dispose();
-			File.Delete(_cacheFile.Path);
+			catch (Exception e)
+			{
+				// Must not throw - an exception escaping an async void method is fatal.
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Failed to write pending changes to the target file.", e);
+				}
+			}
+
+			try
+			{
+				// Release the cache even when the copy failed - it holds ~file-size of in-memory filesystem space.
+				_cacheStream.Dispose();
+				File.Delete(_cacheFile.Path);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Failed to clean up the write stream cache file.", e);
+				}
+			}
 		}
 	}
 }
