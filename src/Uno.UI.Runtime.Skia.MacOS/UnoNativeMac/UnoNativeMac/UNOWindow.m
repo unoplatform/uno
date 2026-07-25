@@ -639,11 +639,11 @@ void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool 
     if (!hasBorder)
         style |= NSWindowStyleMaskBorderless;
     else
-        style ^= NSWindowStyleMaskBorderless;
+        style &= ~NSWindowStyleMaskBorderless;
     if (hasTitleBar)
         style |= NSWindowStyleMaskTitled;
     else
-        style ^= NSWindowStyleMaskTitled;
+        style &= ~NSWindowStyleMaskTitled;
 #if DEBUG
     NSLog(@"uno_window_set_border_and_title_bar %@ 0x%x hasBorder %s hasTitleBar %s 0x%x", window, (uint)window.styleMask,
           hasBorder ? "true" : "false", hasTitleBar ? "true" : "false", (uint)style);
@@ -676,7 +676,7 @@ void uno_window_set_minimizable(NSWindow* window, bool isMinimizable)
     if (isMinimizable)
         style |= NSWindowStyleMaskMiniaturizable;
     else
-        style ^= NSWindowStyleMaskMiniaturizable;
+        style &= ~NSWindowStyleMaskMiniaturizable;
 #if DEBUG
     NSLog(@"uno_window_set_minimizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isMinimizable ? "true" : "false", (uint)style);
 #endif
@@ -695,7 +695,7 @@ void uno_window_set_resizable(NSWindow *window, bool isResizable)
     if (isResizable)
         style |= NSWindowStyleMaskResizable;
     else
-        style ^= NSWindowStyleMaskResizable;
+        style &= ~NSWindowStyleMaskResizable;
 #if DEBUG
     NSLog(@"uno_window_set_resizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isResizable ? "true" : "false", (uint)style);
 #endif
@@ -1175,6 +1175,17 @@ NSOperatingSystemVersion _osVersion;
 + (void)initialize {
     windows = [[NSMutableSet alloc] initWithCapacity:10];
     _osVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+}
+
+// Borderless / title-bar-hidden NSWindows return NO from the default
+// canBecomeKeyWindow / canBecomeMainWindow, which silently drops keyboard
+// input. Always opt in so all UNOWindow instances still receive key events.
+- (BOOL)canBecomeKeyWindow {
+    return YES;
+}
+
+- (BOOL)canBecomeMainWindow {
+    return YES;
 }
 
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
