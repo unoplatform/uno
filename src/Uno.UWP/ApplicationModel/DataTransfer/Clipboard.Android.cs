@@ -1,11 +1,13 @@
 ﻿#nullable disable // Not supported by WinUI yet
 
 using Android.Content;
+using Android.OS;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -13,6 +15,9 @@ namespace Windows.ApplicationModel.DataTransfer
 	public static partial class Clipboard
 	{
 		private const string ClipboardDataLabel = nameof(Clipboard);
+		private static long? _clearedClipTimestamp;
+		private static bool _clearPending;
+		private static bool _clipboardKnownCleared;
 
 		public static void SetContent(DataPackage/* ? */ content)
 		{
@@ -27,9 +32,31 @@ namespace Windows.ApplicationModel.DataTransfer
 			// 2. All async code is run in the same task to avoid potential threading concerns.
 			//    Otherwise, it would be possible to set the OS clipboard data (code at the end)
 			//    before one or more of the data formats is ready.
-			_ = CoreDispatcher.Main.RunAsync(
-				CoreDispatcherPriority.High,
-				() => _ = SetContentAsync(content));
+			if (Looper.MyLooper() == Looper.MainLooper)
+			{
+				_ = SetContentSafelyAsync(content);
+			}
+			else
+			{
+				_ = CoreDispatcher.Main.RunAsync(
+					CoreDispatcherPriority.High,
+					() => _ = SetContentSafelyAsync(content));
+			}
+		}
+
+		private static async Task SetContentSafelyAsync(DataPackage content)
+		{
+			try
+			{
+				await SetContentAsync(content);
+			}
+			catch (Exception error)
+			{
+				if (typeof(Clipboard).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Clipboard).Log().Error("Unable to set Android clipboard content.", error);
+				}
+			}
 		}
 
 		internal static async Task SetContentAsync(DataPackage content)
@@ -41,10 +68,12 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			if (data?.Contains(StandardDataFormats.Text) ?? false)
 			{
-				var text = await data.GetTextAsync();
+				var text = data.FindRawData(StandardDataFormats.Text) is string immediateText
+					? immediateText
+					: await data.GetTextAsync();
 
 				items.Add(new ClipData.Item(text));
-				mimeTypes.Add("text/plaintext");
+				mimeTypes.Add("text/plain");
 			}
 
 			if (data != null)
@@ -95,6 +124,10 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 
 				manager.PrimaryClip = clipData;
+				_clearPending = false;
+				_clipboardKnownCleared = false;
+				_clearedClipTimestamp = null;
+				OnContentChanged();
 			}
 			else
 			{
@@ -189,11 +222,36 @@ namespace Windows.ApplicationModel.DataTransfer
 			return dataPackage.GetView();
 		}
 
+		internal static bool IsTextAvailable()
+		{
+			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			var description = manager?.PrimaryClipDescription;
+			if (manager?.HasPrimaryClip != true ||
+				description?.HasMimeType("text/*") != true ||
+				_clipboardKnownCleared ||
+				(Build.VERSION.SdkInt >= BuildVersionCodes.O &&
+					_clearedClipTimestamp == description.Timestamp))
+			{
+				return false;
+			}
+
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+			{
+				return true;
+			}
+
+			var clip = manager.PrimaryClip;
+			return clip is { ItemCount: > 0 } &&
+				!string.IsNullOrEmpty(clip.GetItemAt(0)?.Text);
+		}
+
 		public static void Clear()
 		{
 			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
-				if (OperatingSystem.IsAndroidVersionAtLeast(28))
+				_clearPending = true;
+				_clipboardKnownCleared = true;
+				if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
 				{
 					manager.ClearPrimaryClip();
 				}
@@ -201,6 +259,9 @@ namespace Windows.ApplicationModel.DataTransfer
 				{
 					manager.PrimaryClip = ClipData.NewPlainText("", "");
 				}
+				_clearedClipTimestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+					? manager.PrimaryClipDescription?.Timestamp
+					: null;
 			}
 		}
 
@@ -222,6 +283,28 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void Manager_PrimaryClipChanged(object sender, EventArgs e)
 		{
+			var manager = sender as ClipboardManager
+				?? ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			if (manager is not null)
+			{
+				var timestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+					? manager.PrimaryClipDescription?.Timestamp
+					: null;
+				if (_clearPending)
+				{
+					_clearedClipTimestamp = timestamp;
+					_clearPending = false;
+				}
+				else
+				{
+					_clipboardKnownCleared = false;
+					if (_clearedClipTimestamp != timestamp)
+					{
+						_clearedClipTimestamp = null;
+					}
+				}
+			}
+
 			OnContentChanged();
 		}
 
