@@ -520,8 +520,10 @@ declare namespace Uno.Storage.Streams {
     class NativeChunkedBuffer {
         private static _bufferMap;
         private static readonly _chunkSize;
+        private static _pendingDownloadUrl;
         private _chunks;
         private _length;
+        private _released;
         static create(bufferId: string): void;
         static dispose(bufferId: string): void;
         static getLength(bufferId: string): number;
@@ -530,6 +532,8 @@ declare namespace Uno.Storage.Streams {
         static truncate(bufferId: string, length: number): void;
         /** Builds a Blob from the chunks and triggers a browser download of it. */
         static saveAsBlob(bufferId: string, fileName: string): void;
+        private static revokePendingDownload;
+        private throwIfReleased;
         private ensureCapacity;
     }
 }

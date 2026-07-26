@@ -11,8 +11,11 @@ namespace Uno.Storage.Streams {
 
 		private static readonly _chunkSize = 2 * 1024 * 1024;
 
+		private static _pendingDownloadUrl: string = null;
+
 		private _chunks: Uint8Array[] = [];
 		private _length = 0;
+		private _released = false;
 
 		public static create(bufferId: string): void {
 			NativeChunkedBuffer._bufferMap.set(bufferId, new NativeChunkedBuffer());
@@ -29,6 +32,11 @@ namespace Uno.Storage.Streams {
 		public static write(bufferId: string, dataPtr: number, count: number, position: number): void {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			const chunkSize = NativeChunkedBuffer._chunkSize;
+			if (instance._released) {
+				// Writing again after the content was handed to the browser starts a new file.
+				instance._released = false;
+				instance._length = 0;
+			}
 			instance.ensureCapacity(position + count);
 
 			let src = dataPtr;
@@ -50,6 +58,7 @@ namespace Uno.Storage.Streams {
 		public static read(bufferId: string, dataPtr: number, count: number, position: number): number {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			const chunkSize = NativeChunkedBuffer._chunkSize;
+			instance.throwIfReleased();
 			const available = Math.max(0, Math.min(count, instance._length - position));
 
 			let dst = dataPtr;
@@ -71,6 +80,7 @@ namespace Uno.Storage.Streams {
 		public static truncate(bufferId: string, length: number): void {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			const chunkSize = NativeChunkedBuffer._chunkSize;
+			instance.throwIfReleased();
 
 			if (length < instance._length) {
 				const chunkCount = Math.ceil(length / chunkSize);
@@ -92,6 +102,7 @@ namespace Uno.Storage.Streams {
 		public static saveAsBlob(bufferId: string, fileName: string): void {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			const chunkSize = NativeChunkedBuffer._chunkSize;
+			instance.throwIfReleased();
 
 			const parts: Uint8Array[] = [];
 			let remaining = instance._length;
@@ -103,17 +114,46 @@ namespace Uno.Storage.Streams {
 
 			const blob = new Blob(parts);
 
+			// The Blob holds its own copy of the payload, so drop the staged chunks
+			// rather than keeping the file in memory twice.
+			instance._chunks = [];
+			instance._released = true;
+
+			// Free the previous download's blob now instead of waiting for its timer,
+			// so at most one payload is held at a time.
+			NativeChunkedBuffer.revokePendingDownload();
+
+			const url = window.URL.createObjectURL(blob);
+			NativeChunkedBuffer._pendingDownloadUrl = url;
+
 			const a = window.document.createElement('a');
-			a.href = window.URL.createObjectURL(blob);
+			a.href = url;
 			a.download = fileName;
 
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
 
-			// Revoke on a delay - revoking synchronously can abort the download in some browsers.
-			// Without this the blob (~the whole file) stays pinned until the page closes.
-			setTimeout(() => window.URL.revokeObjectURL(a.href), 40000);
+			// Backstop: revoking synchronously can abort the download in some browsers,
+			// so release the blob on a delay if no further download replaces it first.
+			setTimeout(() => {
+				if (NativeChunkedBuffer._pendingDownloadUrl === url) {
+					NativeChunkedBuffer.revokePendingDownload();
+				}
+			}, 40000);
+		}
+
+		private static revokePendingDownload(): void {
+			if (NativeChunkedBuffer._pendingDownloadUrl) {
+				window.URL.revokeObjectURL(NativeChunkedBuffer._pendingDownloadUrl);
+				NativeChunkedBuffer._pendingDownloadUrl = null;
+			}
+		}
+
+		private throwIfReleased(): void {
+			if (this._released) {
+				throw new Error("The staged content was released when the download was triggered.");
+			}
 		}
 
 		private ensureCapacity(bytes: number): void {
