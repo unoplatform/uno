@@ -76,7 +76,12 @@ internal sealed partial class ChunkedBufferStream : Stream
 	public override long Position
 	{
 		get => _position;
-		set => _position = value;
+		set
+		{
+			ObjectDisposedException.ThrowIf(_disposed, this);
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
+			_position = value;
+		}
 	}
 
 	public override void Flush()
@@ -154,6 +159,13 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 		ArgumentOutOfRangeException.ThrowIfNegative(value);
 		NativeMethods.Truncate(_bufferId, value);
+
+		// Match the usual Stream behavior: truncating below the cursor moves it to the new end,
+		// so a following write appends rather than leaving a zero-filled gap.
+		if (_position > value)
+		{
+			_position = value;
+		}
 	}
 
 	protected override void Dispose(bool disposing)
