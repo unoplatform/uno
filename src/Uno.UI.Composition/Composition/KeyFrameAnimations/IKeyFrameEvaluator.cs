@@ -8,6 +8,9 @@ internal interface IKeyFrameEvaluator
 	object Evaluate(float progress);
 	void Pause();
 	void Resume();
+	void Seek(float progress);
+
+	float PlaybackRate { get; set; }
 
 	float Progress { get; }
 

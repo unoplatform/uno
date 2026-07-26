@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace Microsoft.UI.Composition;
 
-public partial class AnimationController
+public partial class AnimationController : CompositionObject
 {
 	private CompositionObject? _ownerObject;
 	private string? _propertyName;
 	private KeyFrameAnimation? _animation;
-
-	private float? _progress;
+	private float _playbackRate = 1.0f;
 
 	// TODO: Support multiple KeyFrameAnimation association like on Windows
 
@@ -39,14 +38,13 @@ public partial class AnimationController
 		_ownerObject = ownerObject;
 		_propertyName = propertyName;
 		_animation = animation;
-		_progress = null;
 
 		_animation.Stopped += Animation_Stopped;
+		_animation.SetPlaybackRate(_playbackRate);
 	}
 
 	public void Resume()
 	{
-		_progress = null;
 		var animation = EnsureAnimation();
 		// Re-arm the compositor's frame-driven evaluation so the animation continues advancing.
 		_ownerObject?.ResumeAnimation(animation);
@@ -60,15 +58,48 @@ public partial class AnimationController
 		_ownerObject?.PauseAnimation(animation);
 	}
 
+	/// <summary>
+	/// Gets the maximum playback rate supported by the controller.
+	/// </summary>
+	public static float MaxPlaybackRate => float.MaxValue;
+
+	/// <summary>
+	/// Gets the minimum playback rate supported by the controller.
+	/// </summary>
+	public static float MinPlaybackRate => float.MinValue;
+
+	/// <summary>
+	/// Gets or sets the rate at which the controlled animation plays.
+	/// </summary>
+	public float PlaybackRate
+	{
+		get => _playbackRate;
+		set
+		{
+			if (_playbackRate == value)
+			{
+				return;
+			}
+
+			_playbackRate = value;
+			OnPropertyChanged(nameof(PlaybackRate), false);
+
+			if (_animation is not null)
+			{
+				_animation.SetPlaybackRate(value);
+			}
+		}
+	}
+
 	public float Progress
 	{
-		get => _progress is not null ? _progress.Value : EnsureAnimation().Progress;
+		get => EnsureAnimation().Progress;
 		set
 		{
 			var animation = EnsureAnimation();
-			_progress = value;
+			var clampedProgress = Math.Clamp(value, 0.0f, 1.0f);
+			_ownerObject?.SeekAnimation(animation, clampedProgress);
 			OnPropertyChanged(nameof(Progress), false);
-			_ownerObject?.SeekAnimation(animation, value);
 		}
 	}
 
@@ -101,7 +132,6 @@ public partial class AnimationController
 	private void Animation_Stopped(object? sender, EventArgs e)
 	{
 		_animation = null;
-		_progress = null;
 	}
 
 	private KeyFrameAnimation EnsureAnimation()

@@ -288,7 +288,7 @@ namespace Microsoft.UI.Composition
 
 		internal void SeekAnimation(KeyFrameAnimation animation, float progress)
 		{
-			PauseAnimation(animation);
+			animation.Seek(progress);
 			ReEvaluateAnimation(animation, progress);
 		}
 

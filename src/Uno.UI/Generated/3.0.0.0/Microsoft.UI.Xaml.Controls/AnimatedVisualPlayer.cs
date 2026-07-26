@@ -8,23 +8,9 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AnimatedVisualPlayer : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty AnimationOptimizationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(AnimationOptimization), typeof(global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization),
-			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization)));
-#endif
+		// Skipping already declared property AnimationOptimizationProperty
 		// Skipping already declared property AutoPlayProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DiagnosticsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Diagnostics), typeof(object),
-			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
-#endif
+		// Skipping already declared property DiagnosticsProperty
 		// Skipping already declared property DurationProperty
 		// Skipping already declared property FallbackContentProperty
 		// Skipping already declared property IsAnimatedVisualLoadedProperty
@@ -32,31 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PlaybackRateProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property StretchProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization AnimationOptimization
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization)this.GetValue(AnimationOptimizationProperty);
-			}
-			set
-			{
-				this.SetValue(AnimationOptimizationProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property AnimationOptimization
 		// Skipping already declared property AutoPlay
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Diagnostics
-		{
-			get
-			{
-				return (object)this.GetValue(DiagnosticsProperty);
-			}
-		}
-#endif
+		// Skipping already declared property Diagnostics
 		// Skipping already declared property Duration
 		// Skipping already declared property FallbackContent
 		// Skipping already declared property IsAnimatedVisualLoaded

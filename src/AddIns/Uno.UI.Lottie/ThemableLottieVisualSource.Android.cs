@@ -55,20 +55,23 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var cts = new CancellationTokenSource();
 
 			_updateCallback = updateCallback;
+			_sourceCacheKey = sourceCacheKey;
 
-			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
-
-			return Disposable.Create(() =>
-			{
-				cts.Cancel();
-				cts.Dispose();
-			});
+			return new AnimationDataLoadSubscription(
+				LoadAndUpdateAsync(sourceCacheKey, sourceJson, cts.Token),
+				() =>
+				{
+					cts.Cancel();
+					_updateCallback = null;
+					_sourceCacheKey = null;
+					cts.Dispose();
+				});
 		}
 
-		private void LoadAndUpdate(
-			CancellationToken ct,
+		private async Task LoadAndUpdateAsync(
 			string sourceCacheKey,
-			IInputStream sourceJson)
+			IInputStream sourceJson,
+			CancellationToken ct)
 		{
 			_sourceCacheKey = sourceCacheKey;
 
@@ -77,7 +80,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			// parsed document - it's read only.
 
 			// LOAD & PARSE JSON
-			LoadAndParseDocument(sourceJson);
+			var json = await ReadAnimationJsonAsync(sourceJson, ct);
+			ct.ThrowIfCancellationRequested();
+			LoadAndParseDocument(json);
 
 			if (_currentDocument == null)
 			{
@@ -91,15 +96,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			NotifyCallback();
 		}
 
-		private void LoadAndParseDocument(IInputStream sourceJson)
+		private void LoadAndParseDocument(string json)
 		{
-			JObject document;
-			using (var stream = sourceJson.AsStreamForRead(0))
-			{
-				using var streamReader = new StreamReader(stream);
-				using var reader = new JsonTextReader(streamReader);
-				document = JObject.Load(reader);
-			}
+			var document = JObject.Parse(json);
 
 			_currentDocument = document;
 

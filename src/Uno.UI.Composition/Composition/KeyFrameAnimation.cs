@@ -68,6 +68,11 @@ namespace Microsoft.UI.Composition
 			_keyframeEvaluator!.Pause();
 		}
 
+		internal void Seek(float progress)
+		{
+			_keyframeEvaluator!.Seek(progress);
+		}
+
 		// These match WinUI's non-virtual KeyFrameAnimation API surface; per-type behaviour is provided
 		// by InsertExpressionKeyFrameCore. A virtual modifier here would diverge from WinUI and make the
 		// sync generator emit a conflicting NotImplemented stub.
@@ -93,6 +98,11 @@ namespace Microsoft.UI.Composition
 		internal void Resume()
 		{
 			_keyframeEvaluator!.Resume();
+		}
+
+		internal void SetPlaybackRate(float value)
+		{
+			_keyframeEvaluator!.PlaybackRate = value;
 		}
 
 		internal float Progress => _keyframeEvaluator!.Progress;

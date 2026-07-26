@@ -126,8 +126,10 @@ namespace Uno.WinAppSDKSyncGenerator
 		private static Compilation s_referenceCompilation;
 
 		private Compilation _netstdReferenceCompilation;
+		private Compilation _netstdReferenceCompositionCompilation;
 		private Compilation _wasmCompilation;
 		private Compilation _skiaCompilation;
+		private Compilation _skiaCompositionCompilation;
 
 		private ISymbol _dependencyPropertySymbol;
 		protected ISymbol FlagsAttributeSymbol { get; private set; }
@@ -194,6 +196,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net10.0");
 			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
 			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
+			_netstdReferenceCompositionCompilation = await LoadProject($@"..\..\..\Uno.UI.Composition\Uno.UI.Composition.Reference.csproj", "net10.0");
+			_skiaCompositionCompilation = await LoadProject($@"..\..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj", "net10.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");
@@ -680,17 +684,22 @@ namespace Uno.WinAppSDKSyncGenerator
 		{
 			CurrentTypeEmitsNativeDefines = ShouldEmitNativeDefines(uapType);
 			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
+			var netstdCompilation = IsCompositionType(uapType) ? _netstdReferenceCompositionCompilation : _netstdReferenceCompilation;
+			var skiaCompilation = IsCompositionType(uapType) ? _skiaCompositionCompilation : _skiaCompilation;
 			return new PlatformSymbols<INamedTypeSymbol>(
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
 				  iOSType: _iOSCompilation.GetTypeByMetadataName(name),
 				  tvOSType: _tvOSCompilation.GetTypeByMetadataName(name),
-				  netStdRerefenceType: _netstdReferenceCompilation.GetTypeByMetadataName(name),
+				  netStdRerefenceType: netstdCompilation.GetTypeByMetadataName(name),
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
-				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
+				  skiaType: skiaCompilation.GetTypeByMetadataName(name),
 				  uapType: uapType,
 				  emitNativeDefines: CurrentTypeEmitsNativeDefines
 			  );
 		}
+
+		private static bool IsCompositionType(INamedTypeSymbol type)
+			=> type.ContainingNamespace.ToDisplayString() is "Microsoft.UI.Composition" or "Windows.UI.Composition";
 
 		protected PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 		{

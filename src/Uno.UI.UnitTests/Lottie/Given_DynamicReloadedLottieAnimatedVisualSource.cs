@@ -7,6 +7,7 @@ using Windows.Storage.Streams;
 using Windows.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Threading;
+using Uno.UI.Lottie;
 
 #if HAS_UNO_WINUI
 using CommunityToolkit.WinUI.Lottie;
@@ -94,6 +95,27 @@ namespace Uno.UI.Tests.Lottie
 			var jsonReference = reference.GetJson();
 			sut.GetJson().Should().NotBe(jsonReference);
 			sut.GetColorThemeProperty("Foreground").Should().Be(color);
+		}
+
+		[TestMethod]
+		public void LottieVisualSource_CreateFromString_Sets_UriSource()
+		{
+			var sut = LottieVisualSource.CreateFromString("ms-appx:///Lottie/LightBulb.json");
+
+			sut.UriSource.Should().Be(new Uri("ms-appx:///Lottie/LightBulb.json"));
+		}
+
+		[TestMethod]
+		public void LottieVisualSourceProvider_Creates_Themable_From_Lottie_Source()
+		{
+			var uri = new Uri("ms-appx:///Lottie/LightBulb.json");
+			var provider = new LottieVisualSourceProvider(owner: new object());
+			var source = new LottieVisualSource { UriSource = uri };
+
+			provider.TryCreateThemableFromAnimatedVisualSource(source, out var themable).Should().BeTrue();
+			themable.Should().NotBeNull();
+			themable.Should().BeOfType<ThemableLottieVisualSource>();
+			((ThemableLottieVisualSource)themable!).UriSource.Should().Be(uri);
 		}
 
 		private IInputStream GetStream(string name = "animation.json")
