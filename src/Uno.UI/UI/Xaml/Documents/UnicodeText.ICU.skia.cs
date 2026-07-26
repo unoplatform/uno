@@ -108,7 +108,7 @@ internal readonly partial struct UnicodeText
 				{
 					// Honor .NET's own app-local ICU configuration first, so Uno resolves the same
 					// libraries as the runtime, including custom-suffixed builds.
-					TryLoadConfiguredAppLocalIcu(attempts, out libicuuc, out customSuffix);
+					TryLoadConfiguredAppLocalIcu(attempts, ref lastError, out libicuuc, out customSuffix);
 				}
 
 				attempts.Add("icuuc");
@@ -275,7 +275,7 @@ internal readonly partial struct UnicodeText
 			=> AppContext.GetData("System.Globalization.AppLocalIcu") as string
 				?? Environment.GetEnvironmentVariable("DOTNET_SYSTEM_GLOBALIZATION_APPLOCALICU");
 
-		private static bool TryLoadConfiguredAppLocalIcu(List<string> attempts, out IntPtr libicuuc, out string? customSuffix)
+		private static bool TryLoadConfiguredAppLocalIcu(List<string> attempts, ref Exception? lastError, out IntPtr libicuuc, out string? customSuffix)
 		{
 			libicuuc = IntPtr.Zero;
 			customSuffix = null;
@@ -302,13 +302,21 @@ internal readonly partial struct UnicodeText
 
 			var name = $"libicuuc{suffix}.so.{version}";
 			attempts.Add(name);
-			if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+			try
 			{
-				customSuffix = suffix.Length == 0 ? null : suffix;
-				typeof(ICU).LogDebug()?.Debug($"Loaded app-local ICU '{name}' (System.Globalization.AppLocalIcu).");
-				return true;
+				// Use Load so a failure of the explicitly configured library is preserved for diagnostics.
+				libicuuc = NativeLibrary.Load(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories);
 			}
-			return false;
+			catch (Exception e)
+			{
+				lastError = e;
+				libicuuc = IntPtr.Zero;
+				typeof(ICU).LogWarn()?.Warn($"System.Globalization.AppLocalIcu is set but '{name}' failed to load; falling back to other ICU sources. {e.Message}");
+				return false;
+			}
+			customSuffix = suffix.Length == 0 ? null : suffix;
+			typeof(ICU).LogDebug()?.Debug($"Loaded app-local ICU '{name}' (System.Globalization.AppLocalIcu).");
+			return true;
 		}
 
 		private static bool TryLoadAppLocalIcuFromDirectories(List<string> attempts, ref Exception? lastError, out IntPtr libicuuc)
@@ -396,7 +404,14 @@ internal readonly partial struct UnicodeText
 
 		private static Version? ParseIcuFileVersion(string fileName)
 		{
-			var versionPart = fileName.Substring("libicuuc.so.".Length);
+			// The default Win32-style enumeration pattern also matches a bare "libicuuc.so"
+			// (a trailing ".*" matches end-of-name too), so guard before taking the version part.
+			const string prefix = "libicuuc.so.";
+			if (fileName.Length <= prefix.Length || !fileName.StartsWith(prefix, StringComparison.Ordinal))
+			{
+				return null;
+			}
+			var versionPart = fileName.Substring(prefix.Length);
 			// Version.TryParse needs at least two components; major-only files like libicuuc.so.66 are valid.
 			return Version.TryParse(versionPart.Contains('.') ? versionPart : $"{versionPart}.0", out var version) ? version : null;
 		}
