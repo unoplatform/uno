@@ -78,7 +78,7 @@ Each row includes the pattern's associated state properties and operations.
 | TableItem | Collection item plus header labels | Cell/header custom content | Direct/Derived |
 | Toggle | Checkable/checked/mixed; click action | Value/state plus activate | Direct |
 | Transform | Parameterized automation-hook operations; no dead parameterless AT action | Parameterized automation-hook operations; no dead parameterless AT action | Custom/Internal |
-| Text | Text, selection, editing/granularity actions | Native text accessibility/input bridge | Direct/Derived |
+| Text | Text, set-text/set-selection, character/word/line/paragraph/page traversal, and focus-gated copy/cut/paste | Value exposure; native `UITextInput` selection/granularity bridge deferred | Direct/Derived with explicit iOS limitation |
 | ItemContainer | Used internally to locate realized peer items | Used internally to locate realized peer items | Internal |
 | VirtualizedItem | Realize action for realized providers; container scroll realizes ownerless items | Realize action for realized providers; container scroll realizes ownerless items | Derived |
 | Text2 | Provider retained in typed fallback diagnostics | Provider retained in typed fallback diagnostics | Internal/Derived |
@@ -181,8 +181,14 @@ Separate `RaiseNotificationEvent` contract:
 - ObjectModel and SynchronizedInput have no native accessibility transport.
 - Full UIA TextRange object identity/granularity is translated to each platform's native text
   editing/selection API rather than copied.
+- Android advertises character, word, line, paragraph, and page traversal for non-empty
+  text. Copy/cut/paste follow Android TextView-style focus, selection, read-only, password,
+  and clipboard-availability rules.
+- iOS exposes text values but does not yet provide a native `UITextInput` selection/granularity
+  bridge from managed `UIAccessibilityElement` instances.
 - Unrealized item peers have no native node until a real container exists. Native container
-  scrolling performs realization; IDs are stable when the same container is recycled.
+  scrolling performs realization; realized item occurrences and noncanonical/ownerless peers
+  are peer-keyed, and a recycled container receives a new native ID when rebound.
 - Move, resize, rotate, absolute zoom, dock, and window-state operations remain available to
   automation hooks with explicit arguments. Only fixed, meaningful actions are advertised to
   TalkBack or VoiceOver.
