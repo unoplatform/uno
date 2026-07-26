@@ -271,7 +271,19 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		{
 			return base.DispatchHoverEvent(e);
 		}
-		return ExploreByTouchHelper.DispatchHoverEvent(e) || base.DispatchHoverEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchHoverEvent(e) || base.DispatchHoverEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility hover dispatch failed.", error);
+			}
+
+			return base.DispatchHoverEvent(e);
+		}
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
@@ -280,7 +292,19 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		{
 			return base.DispatchKeyEvent(e);
 		}
-		return ExploreByTouchHelper.DispatchKeyEvent(e) || base.DispatchKeyEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchKeyEvent(e) || base.DispatchKeyEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility key dispatch failed.", error);
+			}
+
+			return base.DispatchKeyEvent(e);
+		}
 	}
 
 	protected override void OnFocusChanged(bool gainFocus, [GeneratedEnum] FocusSearchDirection direction, Rect? previouslyFocusedRect)
