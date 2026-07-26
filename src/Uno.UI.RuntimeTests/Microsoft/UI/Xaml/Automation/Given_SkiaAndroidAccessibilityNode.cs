@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Private.Infrastructure;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
@@ -375,6 +378,134 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		Assert.AreEqual(41 * scale, snapshot.Bounds.Height, 1);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ownerless_Custom_Peer_Is_Exposed_Then_Node_And_Invoke_Are_Routed_By_Peer()
+	{
+		var host = new OwnerlessPeerHost();
+		await UITestHelper.Load(host);
+
+		var snapshot = FindByName(GetAllNodes(host.XamlRoot!), "Ownerless Action");
+		Assert.IsNotNull(snapshot, "The ownerless peer must appear in the Android virtual tree.");
+		Assert.AreEqual("android.widget.Button", snapshot.ClassName);
+
+		var scale = host.XamlRoot!.RasterizationScale;
+		Assert.AreEqual(30 * scale, snapshot.Bounds.Width, 1);
+		Assert.AreEqual(20 * scale, snapshot.Bounds.Height, 1);
+
+		var virtualId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(host.ChildPeer);
+		Assert.IsNotNull(virtualId, "The ownerless peer must receive a peer-keyed virtual ID.");
+		var hitId = AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+			host.XamlRoot!,
+			10 * scale,
+			10 * scale);
+		Assert.AreEqual(virtualId, hitId, "Explore-by-touch must resolve the ownerless peer ID.");
+
+		var invoked = AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(virtualId.Value, 0x10);
+		Assert.IsTrue(invoked, "ACTION_CLICK must route directly to the ownerless peer.");
+		Assert.IsTrue(host.ChildPeer.WasInvoked);
+
+		host.ChildPeer.SetName("Ownerless Updated");
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsNotNull(FindByName(GetAllNodes(host.XamlRoot!), "Ownerless Updated"));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Virtual_Peers_Share_An_Owner_Then_They_Keep_Distinct_Ids_And_Actions()
+	{
+		var host = new SharedOwnerPeerHost();
+		await UITestHelper.Load(host);
+
+		var nodes = GetAllNodes(host.XamlRoot!);
+		Assert.IsNotNull(FindByName(nodes, "Shared Owner A"));
+		Assert.IsNotNull(FindByName(nodes, "Shared Owner B"));
+
+		var firstId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(host.FirstPeer);
+		var secondId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(host.SecondPeer);
+		Assert.IsNotNull(firstId);
+		Assert.IsNotNull(secondId);
+		Assert.AreNotEqual(firstId, secondId);
+		var scale = host.XamlRoot!.RasterizationScale;
+		Assert.AreEqual(
+			firstId,
+			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+				host.XamlRoot!,
+				20 * scale,
+				15 * scale));
+		Assert.AreEqual(
+			secondId,
+			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+				host.XamlRoot!,
+				60 * scale,
+				15 * scale));
+
+		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
+		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(secondId.Value, 0x10));
+		Assert.IsTrue(host.FirstPeer.WasInvoked);
+		Assert.IsTrue(host.SecondPeer.WasInvoked);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Overlapping_Elements_Are_HitTested_Then_Highest_ZIndex_Wins()
+	{
+		var top = new Button { Content = "Top", Width = 80, Height = 40 };
+		var bottom = new Button { Content = "Bottom", Width = 80, Height = 40 };
+		Canvas.SetZIndex(top, 10);
+		Canvas.SetZIndex(bottom, 0);
+		var canvas = new Canvas
+		{
+			Width = 100,
+			Height = 100,
+			Children =
+			{
+				top,
+				bottom,
+			},
+		};
+		await UITestHelper.Load(canvas);
+
+		var topId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(top);
+		Assert.IsNotNull(topId);
+		var scale = canvas.XamlRoot!.RasterizationScale;
+		var hitPoint = top
+			.TransformToVisual(null)
+			.TransformPoint(new Windows.Foundation.Point(top.ActualWidth / 2, top.ActualHeight / 2));
+
+		var hitId = AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+			canvas.XamlRoot,
+			hitPoint.X * scale,
+			hitPoint.Y * scale);
+
+		Assert.AreEqual(topId, hitId);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_EventsSource_Changes_Then_New_Peer_Gets_New_Id_And_Stale_Id_Is_Rejected()
+	{
+		var host = new EventsSourcePeerHost();
+		await UITestHelper.Load(host);
+
+		Assert.IsNotNull(FindByName(GetAllNodes(host.XamlRoot!), "Events Source A"));
+		var firstId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(host.SourceA);
+		Assert.IsNotNull(firstId);
+
+		host.UseSecondSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(FindByName(GetAllNodes(host.XamlRoot!), "Events Source B"));
+		var secondId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(host.SourceB);
+		Assert.IsNotNull(secondId);
+		Assert.AreNotEqual(firstId, secondId);
+
+		Assert.IsFalse(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
+		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(secondId.Value, 0x10));
+		Assert.IsFalse(host.SourceA.WasInvoked);
+		Assert.IsTrue(host.SourceB.WasInvoked);
+	}
+
 	private sealed partial class CustomBoundsControl : Button
 	{
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -390,6 +521,179 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 		protected override Windows.Foundation.Rect GetBoundingRectangleCore()
 			=> new(11, 13, 37, 41);
+
+		protected override bool IsControlElementCore() => true;
+
+		protected override bool IsContentElementCore() => true;
+	}
+
+	private sealed partial class OwnerlessPeerHost : Grid
+	{
+		internal OwnerlessPeerHost()
+		{
+			Width = 100;
+			Height = 100;
+		}
+
+		internal OwnerlessInvokePeer ChildPeer { get; } = new();
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new OwnerlessPeerHostAutomationPeer(this, ChildPeer);
+	}
+
+	private sealed class OwnerlessPeerHostAutomationPeer : FrameworkElementAutomationPeer
+	{
+		private readonly AutomationPeer _childPeer;
+
+		internal OwnerlessPeerHostAutomationPeer(FrameworkElement owner, AutomationPeer childPeer)
+			: base(owner)
+		{
+			_childPeer = childPeer;
+		}
+
+		protected override IList<AutomationPeer> GetChildrenCore() => new[] { _childPeer };
+
+		protected override bool IsControlElementCore() => false;
+
+		protected override bool IsContentElementCore() => false;
+	}
+
+	private sealed class OwnerlessInvokePeer : AutomationPeer, IInvokeProvider
+	{
+		private string _name;
+
+		internal OwnerlessInvokePeer(string name = "Ownerless Action")
+			=> _name = name;
+
+		internal bool WasInvoked { get; private set; }
+
+		public void Invoke() => WasInvoked = true;
+
+		internal void SetName(string value)
+		{
+			var oldValue = _name;
+			_name = value;
+			RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty, oldValue, value);
+		}
+
+		protected override string GetNameCore() => _name;
+
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
+
+		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(5, 7, 30, 20);
+
+		protected override object? GetPatternCore(PatternInterface patternInterface)
+			=> patternInterface == PatternInterface.Invoke ? this : base.GetPatternCore(patternInterface);
+
+		protected override bool IsControlElementCore() => true;
+
+		protected override bool IsContentElementCore() => true;
+	}
+
+	private sealed partial class EventsSourcePeerHost : Grid
+	{
+		private EventsSourcePeerHostAutomationPeer? _peer;
+
+		internal EventsSourcePeerHost()
+		{
+			Width = 100;
+			Height = 100;
+		}
+
+		internal OwnerlessInvokePeer SourceA { get; } = new("Events Source A");
+
+		internal OwnerlessInvokePeer SourceB { get; } = new("Events Source B");
+
+		internal void UseSecondSource()
+		{
+			Assert.IsNotNull(_peer);
+			_peer.EventsSource = SourceB;
+			_peer.InvalidatePeer();
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			_peer = new EventsSourcePeerHostAutomationPeer(this)
+			{
+				EventsSource = SourceA,
+			};
+			return _peer;
+		}
+	}
+
+	private sealed class EventsSourcePeerHostAutomationPeer : FrameworkElementAutomationPeer
+	{
+		internal EventsSourcePeerHostAutomationPeer(FrameworkElement owner)
+			: base(owner)
+		{
+		}
+
+		protected override bool IsControlElementCore() => true;
+
+		protected override bool IsContentElementCore() => true;
+	}
+
+	private sealed partial class SharedOwnerPeerHost : Grid
+	{
+		internal SharedOwnerPeerHost()
+		{
+			Width = 100;
+			Height = 100;
+			FirstPeer = new SharedOwnerInvokePeer(this, "Shared Owner A", 10);
+			SecondPeer = new SharedOwnerInvokePeer(this, "Shared Owner B", 50);
+		}
+
+		internal SharedOwnerInvokePeer FirstPeer { get; }
+
+		internal SharedOwnerInvokePeer SecondPeer { get; }
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new SharedOwnerPeerHostAutomationPeer(this, FirstPeer, SecondPeer);
+	}
+
+	private sealed class SharedOwnerPeerHostAutomationPeer : FrameworkElementAutomationPeer
+	{
+		private readonly IList<AutomationPeer> _children;
+
+		internal SharedOwnerPeerHostAutomationPeer(
+			FrameworkElement owner,
+			params AutomationPeer[] children)
+			: base(owner)
+		{
+			_children = children;
+		}
+
+		protected override IList<AutomationPeer> GetChildrenCore() => _children;
+
+		protected override bool IsControlElementCore() => false;
+
+		protected override bool IsContentElementCore() => false;
+	}
+
+	private sealed class SharedOwnerInvokePeer : FrameworkElementAutomationPeer, IInvokeProvider
+	{
+		private readonly string _name;
+		private readonly double _x;
+
+		internal SharedOwnerInvokePeer(FrameworkElement owner, string name, double x)
+			: base(owner)
+		{
+			_name = name;
+			_x = x;
+		}
+
+		internal bool WasInvoked { get; private set; }
+
+		public void Invoke() => WasInvoked = true;
+
+		protected override string GetNameCore() => _name;
+
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
+
+		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(_x, 10, 30, 20);
+
+		protected override object? GetPatternCore(PatternInterface patternInterface)
+			=> patternInterface == PatternInterface.Invoke ? this : base.GetPatternCore(patternInterface);
 
 		protected override bool IsControlElementCore() => true;
 
@@ -568,6 +872,65 @@ public class Given_SkiaAndroidAutomationId
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Slider_Is_At_Maximum_Then_Increment_Is_Not_Advertised_Or_Performed()
+	{
+		var slider = new Slider { Minimum = 0, Maximum = 10, Value = 10, SmallChange = 1 };
+		await UITestHelper.Load(slider);
+
+		var snapshot = GetSnapshot(slider);
+		Assert.IsNotNull(snapshot);
+		CollectionAssert.DoesNotContain(snapshot.NativeActionIds.ToArray(), 0x1000);
+		CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x2000);
+
+		Assert.IsFalse(AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			slider,
+			new AccessibilityNativeActionRequest(AccessibilityNativeAction.Increment)));
+		Assert.AreEqual(10, slider.Value);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ComboBox_Is_Clicked_Then_ExpandCollapse_Action_Toggles_It()
+	{
+		var comboBox = new ComboBox
+		{
+			Items =
+			{
+				"One",
+				"Two",
+			},
+		};
+		await UITestHelper.Load(comboBox);
+
+		var snapshot = GetSnapshot(comboBox);
+		Assert.IsNotNull(snapshot);
+		CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x10);
+
+		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			comboBox,
+			new AccessibilityNativeActionRequest(AccessibilityNativeAction.Activate)));
+		Assert.IsTrue(comboBox.IsDropDownOpen);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ScrollViewer_Can_Scroll_Then_Native_Node_Is_Scrollable()
+	{
+		var scrollViewer = new ScrollViewer
+		{
+			Height = 100,
+			Content = new Border { Height = 400 },
+		};
+		await UITestHelper.Load(scrollViewer);
+
+		var snapshot = GetSnapshot(scrollViewer);
+
+		Assert.IsNotNull(snapshot);
+		Assert.IsTrue(snapshot.Scrollable);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_TextBox_SetValue_Action_Is_Performed_Then_Text_Updates()
 	{
 		var textBox = new TextBox();
@@ -578,6 +941,581 @@ public class Given_SkiaAndroidAutomationId
 
 		Assert.IsTrue(result, "SetValue action should return true for a writable TextBox.");
 		Assert.AreEqual("Hello", textBox.Text, "TextBox.Text should match the value set via action.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RichEditBox_Cannot_Set_Text_Then_Native_SetText_Is_Not_Advertised()
+	{
+		var richEditBox = new RichEditBox();
+		await UITestHelper.Load(richEditBox);
+
+		var snapshot = GetSnapshot(richEditBox);
+		Assert.IsNotNull(snapshot);
+		CollectionAssert.DoesNotContain(snapshot.NativeActionIds.ToArray(), 0x200000);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			richEditBox,
+			new AccessibilityNativeActionRequest(AccessibilityNativeAction.SetValue, text: "Unsupported"));
+
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ExpandCollapse_Is_LeafNode_Then_Click_Is_Not_Advertised()
+	{
+		var control = new LeafExpandControl { Width = 100, Height = 40 };
+		await UITestHelper.Load(control);
+
+		var snapshot = GetSnapshot(control);
+		Assert.IsNotNull(snapshot);
+		CollectionAssert.DoesNotContain(snapshot.NativeActionIds.ToArray(), 0x10);
+
+		var virtualId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(control);
+		Assert.IsNotNull(virtualId);
+		Assert.IsFalse(
+			AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(virtualId.Value, 0x10));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Is_Queried_Then_Text_Selection_And_Granularities_Are_Exposed()
+	{
+		var textBox = new TextBox
+		{
+			Text = "Alpha beta\nGamma",
+			AcceptsReturn = true,
+		};
+		await UITestHelper.Load(textBox);
+		textBox.Select(2, 3);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(2, snapshot.TextSelectionStart);
+		Assert.AreEqual(5, snapshot.TextSelectionEnd);
+		Assert.AreEqual(0x1F, snapshot.MovementGranularities,
+			"Editable text must expose character, word, line, paragraph, and page granularities.");
+		Assert.IsTrue(snapshot.Details?.SupportedActions.Contains(AccessibilityNativeAction.SetTextSelection) is true);
+		Assert.IsTrue(snapshot.Details?.SupportedActions.Contains(AccessibilityNativeAction.MoveTextNext) is true);
+		Assert.IsTrue(snapshot.Details?.SupportedActions.Contains(AccessibilityNativeAction.MoveTextPrevious) is true);
+		CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x100);
+		CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x200);
+		CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x20000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_SetTextSelection_Action_Is_Performed_Then_Selection_Updates()
+	{
+		var textBox = new TextBox { Text = "Alpha beta gamma" };
+		await UITestHelper.Load(textBox);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: 6,
+				number2: 10));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(6, textBox.SelectionStart);
+		Assert.AreEqual(4, textBox.SelectionLength);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(6, snapshot.TextSelectionStart);
+		Assert.AreEqual(10, snapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_MoveTextNext_ByWord_Then_Caret_Moves_To_Segment_End()
+	{
+		var textBox = new TextBox { Text = "Alpha beta gamma" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(0, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(5, textBox.SelectionStart);
+		Assert.AreEqual(0, textBox.SelectionLength);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Moves_By_Word_Twice_Then_Second_Action_Advances()
+	{
+		var textBox = new TextBox { Text = "Alpha beta gamma" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(0, 0);
+
+		var first = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+		var second = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+
+		Assert.IsTrue(first);
+		Assert.IsTrue(second);
+		Assert.AreEqual(10, textBox.SelectionStart);
+		Assert.AreEqual(0, textBox.SelectionLength);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Moves_To_Next_Line_From_Inside_Line_Then_Adjacent_Line_Is_Selected()
+	{
+		var textBox = new TextBox
+		{
+			AcceptsReturn = true,
+			Text = "abc\ndef",
+			Height = 100,
+		};
+		await UITestHelper.Load(textBox);
+		textBox.Select(1, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 0x4));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Moves_To_Next_Paragraph_Then_Caret_Reaches_Paragraph_End()
+	{
+		var textBox = new TextBox
+		{
+			AcceptsReturn = true,
+			Text = "alpha\r\nbeta",
+		};
+		await UITestHelper.Load(textBox);
+		textBox.Select(1, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 0x8));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(5, textBox.SelectionStart);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Moves_To_Next_Page_Then_Caret_Advances()
+	{
+		var textBox = new TextBox
+		{
+			AcceptsReturn = true,
+			Text = string.Join("\n", Enumerable.Range(0, 20).Select(index => $"Line {index}")),
+			Height = 80,
+		};
+		await UITestHelper.Load(textBox);
+		textBox.Select(0, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 0x10));
+
+		Assert.IsTrue(result);
+		Assert.IsTrue(textBox.SelectionStart > 0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Moves_By_Word_Then_Contraction_Remains_One_Segment()
+	{
+		var textBox = new TextBox { Text = "don't stop" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(0, 0);
+
+		var first = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+		var second = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+
+		Assert.IsTrue(first);
+		Assert.IsTrue(second);
+		Assert.AreEqual(10, textBox.SelectionStart);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextRange_Endpoint_Moves_By_Document_Then_It_Reaches_The_Boundary()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+
+		var peer = textBox.GetOrCreateAutomationPeer();
+		var provider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
+		Assert.IsNotNull(provider);
+
+		var range = provider.DocumentRange.Clone();
+		var moved = range.MoveEndpointByUnit(
+			TextPatternRangeEndpoint.Start,
+			TextUnit.Document,
+			1);
+
+		Assert.AreEqual(1, moved);
+		Assert.AreEqual(string.Empty, range.GetText(-1));
+
+		var unchanged = range.MoveEndpointByUnit(
+			TextPatternRangeEndpoint.Start,
+			TextUnit.Document,
+			0);
+
+		Assert.AreEqual(0, unchanged);
+		Assert.AreEqual(string.Empty, range.GetText(-1));
+
+		var pageRange = provider.DocumentRange.Clone();
+		var pageMoved = pageRange.MoveEndpointByUnit(
+			TextPatternRangeEndpoint.Start,
+			TextUnit.Page,
+			1);
+
+		Assert.AreEqual(1, pageMoved);
+		Assert.AreEqual(string.Empty, pageRange.GetText(-1));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Extends_Backward_Then_Next_Word_Contracts_The_Selection()
+	{
+		var textBox = new TextBox { Text = "Alpha beta gamma" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(5, 0);
+
+		var backward = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextPrevious,
+				number: 2,
+				number2: 1));
+
+		Assert.IsTrue(backward);
+		var backwardSnapshot =
+			AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(backwardSnapshot);
+		Assert.AreEqual(5, backwardSnapshot.TextSelectionStart);
+		Assert.AreEqual(0, backwardSnapshot.TextSelectionEnd);
+
+		var forward = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2,
+				number2: 1));
+
+		Assert.IsTrue(forward);
+		var forwardSnapshot =
+			AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(forwardSnapshot);
+		Assert.AreEqual(5, forwardSnapshot.TextSelectionStart);
+		Assert.AreEqual(5, forwardSnapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_MoveTextNext_ByCharacter_Then_SurrogatePair_Is_Not_Split()
+	{
+		var textBox = new TextBox { Text = "A😀B" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(1, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 1));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(3, textBox.SelectionStart);
+		Assert.AreEqual(0, textBox.SelectionLength);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Static_Text_Moves_By_Word_Then_Accessibility_Cursor_Updates()
+	{
+		var textBlock = new TextBlock { Text = "Alpha beta" };
+		await UITestHelper.Load(textBlock);
+
+		var before = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBlock);
+		Assert.IsNotNull(before);
+		Assert.IsTrue(before.Details?.SupportedActions.Contains(AccessibilityNativeAction.MoveTextNext) is true);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBlock,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+
+		Assert.IsTrue(result);
+		var after = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBlock);
+		Assert.IsNotNull(after);
+		Assert.AreEqual(5, after.TextSelectionStart);
+		Assert.AreEqual(5, after.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Static_Text_Shrinks_Then_Accessibility_Cursor_Is_Clamped()
+	{
+		var textBlock = new TextBlock { Text = "Alpha beta" };
+		await UITestHelper.Load(textBlock);
+
+		var moved = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBlock,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+		Assert.IsTrue(moved);
+
+		textBlock.Text = "X";
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBlock);
+		Assert.IsNotNull(snapshot);
+		Assert.IsTrue(snapshot.TextSelectionStart <= 1);
+		Assert.IsTrue(snapshot.TextSelectionEnd <= 1);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PasswordBox_Receives_Text_Selection_Actions_Then_They_Are_Rejected()
+	{
+		var passwordBox = new PasswordBox { Password = "secret" };
+		await UITestHelper.Load(passwordBox);
+
+		var selection = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			passwordBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: 0,
+				number2: 0));
+		var movement = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			passwordBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 1));
+
+		Assert.IsFalse(selection);
+		Assert.IsFalse(movement);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(passwordBox);
+		Assert.IsNotNull(snapshot);
+		Assert.IsNull(snapshot.Value);
+		Assert.AreEqual(-1, snapshot.TextSelectionStart);
+		Assert.AreEqual(-1, snapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_SelectionChanging_Cancels_Then_SetTextSelection_Returns_False()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		textBox.SelectionChanging += (_, args) => args.Cancel = true;
+		await UITestHelper.Load(textBox);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: 1,
+				number2: 4));
+
+		Assert.IsFalse(result);
+		Assert.AreEqual(0, textBox.SelectionStart);
+		Assert.AreEqual(0, textBox.SelectionLength);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_SelectionChanging_Cancels_Backward_Selection_Then_Caret_Direction_Is_Preserved()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(0, 0);
+		textBox.SelectionChanging += (_, args) => args.Cancel = true;
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: 5,
+				number2: 0));
+
+		Assert.IsFalse(result);
+		Assert.AreEqual(0, textBox.SelectionStart);
+		Assert.AreEqual(0, textBox.SelectionLength);
+		Assert.IsFalse(textBox.IsBackwardSelection);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Static_Text_Selection_Is_Cleared_Then_Native_Cursor_Is_Undefined()
+	{
+		var textBlock = new TextBlock { Text = "Alpha beta" };
+		await UITestHelper.Load(textBlock);
+
+		var moved = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBlock,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+		var cleared = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBlock,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: -1,
+				number2: -1));
+
+		Assert.IsTrue(moved);
+		Assert.IsTrue(cleared);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBlock);
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(-1, snapshot.TextSelectionStart);
+		Assert.AreEqual(-1, snapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Receives_SetSelection_Without_Arguments_Then_Selection_Is_Cleared()
+	{
+		const int ActionSetSelection = 0x20000;
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(1, 4);
+
+		var virtualId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(textBox);
+		Assert.IsNotNull(virtualId);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(
+			virtualId.Value,
+			ActionSetSelection);
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(0, textBox.SelectionLength);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(-1, snapshot.TextSelectionStart);
+		Assert.AreEqual(-1, snapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Selection_Changes_After_Clear_Then_Native_Selection_Is_Live_Again()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+
+		var cleared = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: -1,
+				number2: -1));
+		Assert.IsTrue(cleared);
+
+		textBox.Select(1, 3);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(1, snapshot.TextSelectionStart);
+		Assert.AreEqual(4, snapshot.TextSelectionEnd);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Disabled_TextBox_Receives_Selection_Actions_Then_They_Are_Rejected()
+	{
+		var textBox = new TextBox { Text = "Alpha beta", IsEnabled = false };
+		await UITestHelper.Load(textBox);
+
+		var selection = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.SetTextSelection,
+				number: 0,
+				number2: 0));
+		var movement = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 1));
+
+		Assert.IsFalse(selection);
+		Assert.IsFalse(movement);
+
+		var snapshot = AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(textBox);
+		Assert.IsNotNull(snapshot);
+		Assert.AreEqual(0, snapshot.MovementGranularities);
+		Assert.IsFalse(snapshot.Details?.SupportedActions.Contains(AccessibilityNativeAction.SetTextSelection) is true);
+		Assert.IsFalse(snapshot.Details?.SupportedActions.Contains(AccessibilityNativeAction.MoveTextNext) is true);
+	}
+
+	[TestMethod]
+	public void When_Fallback_Word_Traversal_Contains_Supplementary_Letter_Then_It_Is_Not_Skipped()
+	{
+		var result = global::DirectUI.TextRangeAdapter.TryGetTextSegment(
+			owner: null,
+			"𐐀 X",
+			TextUnit.Word,
+			position: 0,
+			forward: true,
+			out var start,
+			out var end);
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(0, start);
+		Assert.AreEqual(2, end);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Word_Traversal_Starts_Inside_Word_Then_It_Moves_From_The_Caret()
+	{
+		var textBox = new TextBox { Text = "Alpha" };
+		await UITestHelper.Load(textBox);
+		textBox.Select(2, 0);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.MoveTextNext,
+				number: 2));
+
+		Assert.IsTrue(result);
+		Assert.AreEqual(5, textBox.SelectionStart);
 	}
 
 	[TestMethod]
@@ -610,6 +1548,211 @@ public class Given_SkiaAndroidAutomationId
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Disabled_TextBox_SetValue_Action_Is_Performed_Then_Returns_False()
+	{
+		var textBox = new TextBox { Text = "Original", IsEnabled = false };
+		await UITestHelper.Load(textBox);
+
+		var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+			textBox,
+			new AccessibilityNativeActionRequest(AccessibilityNativeAction.SetValue, text: "Changed"));
+
+		Assert.IsFalse(result);
+		Assert.AreEqual("Original", textBox.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Copy_Action_Is_Performed_Then_Selection_Is_On_Clipboard()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		textBox.Select(0, 5);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var snapshot = GetSnapshot(textBox);
+			Assert.IsNotNull(snapshot);
+			CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x4000);
+
+			var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+				textBox,
+				new AccessibilityNativeActionRequest(AccessibilityNativeAction.CopyText));
+
+			Assert.IsTrue(result);
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(
+				() => Clipboard.GetContent().Contains(StandardDataFormats.Text),
+				message: "Copy accessibility action did not populate the clipboard.");
+			Assert.AreEqual("Alpha", await Clipboard.GetContent().GetTextAsync());
+		}
+		finally
+		{
+			Clipboard.Clear();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Cut_Action_Is_Performed_Then_Selection_Is_Removed()
+	{
+		var textBox = new TextBox { Text = "Alpha beta" };
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		textBox.Select(0, 6);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var snapshot = GetSnapshot(textBox);
+			Assert.IsNotNull(snapshot);
+			CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x10000);
+
+			var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+				textBox,
+				new AccessibilityNativeActionRequest(AccessibilityNativeAction.CutText));
+
+			Assert.IsTrue(result);
+			Assert.AreEqual("beta", textBox.Text);
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(
+				() => Clipboard.GetContent().Contains(StandardDataFormats.Text),
+				message: "Cut accessibility action did not populate the clipboard.");
+			Assert.AreEqual("Alpha ", await Clipboard.GetContent().GetTextAsync());
+		}
+		finally
+		{
+			Clipboard.Clear();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TextBox_Paste_Action_Is_Performed_Then_Clipboard_Text_Is_Inserted()
+	{
+		try
+		{
+			var package = new DataPackage();
+			package.SetText(" pasted");
+			Clipboard.SetContent(package);
+			Clipboard.Flush();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(
+				() => Clipboard.GetContent().Contains(StandardDataFormats.Text),
+				message: "Paste test setup did not populate the clipboard.");
+
+			var textBox = new TextBox { Text = "Alpha" };
+			await UITestHelper.Load(textBox);
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(textBox.Text.Length, 0);
+			await TestServices.WindowHelper.WaitFor(
+				() => textBox.CanPasteClipboardContent,
+				message: "TextBox did not observe text availability on the clipboard.");
+
+			var snapshot = GetSnapshot(textBox);
+			Assert.IsNotNull(snapshot);
+			CollectionAssert.Contains(snapshot.NativeActionIds.ToArray(), 0x8000);
+
+			var result = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+				textBox,
+				new AccessibilityNativeActionRequest(AccessibilityNativeAction.PasteText));
+
+			Assert.IsTrue(result);
+			await TestServices.WindowHelper.WaitFor(
+				() => textBox.Text == "Alpha pasted",
+				message: "Paste accessibility action did not update TextBox.Text.");
+		}
+		finally
+		{
+			Clipboard.Clear();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Clipboard_Availability_Changes_Then_Paste_Action_Updates_While_Focused()
+	{
+		Clipboard.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitFor(
+			() => !Clipboard.GetContent().Contains(StandardDataFormats.Text),
+			message: "Clipboard availability test did not begin with an empty clipboard.");
+		var textBox = new TextBox { Text = "Alpha" };
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var before = GetSnapshot(textBox);
+			Assert.IsNotNull(before);
+			CollectionAssert.DoesNotContain(before.NativeActionIds.ToArray(), 0x8000);
+
+			var package = new DataPackage();
+			package.SetText("paste");
+			Clipboard.SetContent(package);
+			Clipboard.Flush();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(
+				() => Clipboard.GetContent().Contains(StandardDataFormats.Text),
+				message: "Clipboard availability test setup did not populate the clipboard.");
+
+			await TestServices.WindowHelper.WaitFor(
+				() => GetSnapshot(textBox)?.NativeActionIds.Contains(0x8000) is true,
+				message: "Paste action was not added after text became available.");
+
+			Clipboard.Clear();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(
+				() => !Clipboard.GetContent().Contains(StandardDataFormats.Text),
+				message: "Clipboard was not cleared before removing the Paste action.");
+			await TestServices.WindowHelper.WaitFor(
+				() => GetSnapshot(textBox)?.NativeActionIds.Contains(0x8000) is false,
+				message: "Paste action was not removed after the clipboard was cleared.");
+		}
+		finally
+		{
+			Clipboard.Clear();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Custom_TextBox_Peer_Is_Password_Then_Copy_And_Cut_Are_Rejected()
+	{
+		Clipboard.Clear();
+		var textBox = new PasswordReportingTextBox { Text = "credential" };
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		textBox.Select(0, textBox.Text.Length);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			var snapshot = GetSnapshot(textBox);
+			Assert.IsNotNull(snapshot);
+			Assert.IsTrue(snapshot.Password);
+			CollectionAssert.DoesNotContain(snapshot.NativeActionIds.ToArray(), 0x4000);
+			CollectionAssert.DoesNotContain(snapshot.NativeActionIds.ToArray(), 0x10000);
+
+			Assert.IsFalse(AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+				textBox,
+				new AccessibilityNativeActionRequest(AccessibilityNativeAction.CopyText)));
+			Assert.IsFalse(AccessibilityPeerHelper.AndroidAccessibilityActionAccessor?.Invoke(
+				textBox,
+				new AccessibilityNativeActionRequest(AccessibilityNativeAction.CutText)));
+			Assert.AreEqual("credential", textBox.Text);
+		}
+		finally
+		{
+			Clipboard.Clear();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Unknown_Action_Is_Performed_Then_Returns_False()
 	{
 		var button = new Button { Content = "Unknown Action" };
@@ -620,5 +1763,48 @@ public class Given_SkiaAndroidAutomationId
 
 		Assert.IsFalse(result == true,
 			"An unmappable action should return false rather than throw.");
+	}
+
+	private sealed partial class PasswordReportingTextBox : TextBox
+	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new PasswordReportingTextBoxAutomationPeer(this);
+	}
+
+	private sealed class PasswordReportingTextBoxAutomationPeer : TextBoxAutomationPeer
+	{
+		internal PasswordReportingTextBoxAutomationPeer(TextBox owner)
+			: base(owner)
+		{
+		}
+
+		protected override bool IsPasswordCore() => true;
+	}
+
+	private sealed partial class LeafExpandControl : Button
+	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new LeafExpandAutomationPeer(this);
+	}
+
+	private sealed class LeafExpandAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
+	{
+		internal LeafExpandAutomationPeer(FrameworkElement owner)
+			: base(owner)
+		{
+		}
+
+		public ExpandCollapseState ExpandCollapseState => ExpandCollapseState.LeafNode;
+
+		public void Collapse() => throw new InvalidOperationException();
+
+		public void Expand() => throw new InvalidOperationException();
+
+		protected override object? GetPatternCore(PatternInterface patternInterface)
+			=> patternInterface == PatternInterface.ExpandCollapse ? this : base.GetPatternCore(patternInterface);
+
+		protected override bool IsControlElementCore() => true;
+
+		protected override bool IsContentElementCore() => true;
 	}
 }

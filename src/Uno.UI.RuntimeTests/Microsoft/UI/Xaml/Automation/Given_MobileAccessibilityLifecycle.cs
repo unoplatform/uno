@@ -135,6 +135,24 @@ public partial class Given_MobileAccessibilityLifecycle
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Native_Focus_Is_Cleared_Then_FocusedNode_Returns_Null()
+	{
+		var button = new Button { Content = "Clear Native Focus" };
+		await UITestHelper.Load(button);
+
+		Assert.IsTrue(RequestNativeFocus(button));
+		var virtualId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(button);
+		Assert.IsNotNull(virtualId);
+
+		Assert.IsTrue(
+			AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(virtualId.Value, 0x80));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNull(GetFocusedNode(button.XamlRoot!));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Focused_Element_Is_Removed_From_Tree_Then_FocusedNode_Returns_Null()
 	{
 		// Stale-focus recovery: after the focused element leaves the tree the
