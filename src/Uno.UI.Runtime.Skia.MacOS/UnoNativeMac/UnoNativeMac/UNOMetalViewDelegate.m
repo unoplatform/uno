@@ -119,10 +119,13 @@ bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* wid
     @autoreleasepool {
         if (window == nil) return false;
 
-        MTKView* view = (MTKView*)window.contentViewController.view;
-        if (view == nil || ![view isKindOfClass:[MTKView class]]) return false;
-
         UNOWindow* unoWindow = (UNOWindow*)window;
+        // The rendering view is a subview of the container returned by contentViewController.view,
+        // so it must be reached through renderingView rather than the content view itself.
+        NSView* renderingView = unoWindow.renderingView;
+        if (![renderingView isKindOfClass:[MTKView class]]) return false;
+
+        MTKView* view = (MTKView*)renderingView;
         UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
         if (delegate == nil) return false;
 
