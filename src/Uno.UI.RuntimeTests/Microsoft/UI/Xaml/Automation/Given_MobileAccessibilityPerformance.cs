@@ -136,9 +136,11 @@ public class Given_MobileAccessibilityPerformance
 		Assert.IsTrue(
 			events.Any(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
 			"At least one NodeInvalidated event must be emitted for the mutated node.");
-		Assert.IsTrue(
-			events.Length >= 1,
-			$"Name mutation must emit at least one event; got 0.");
+		Assert.AreEqual(
+			1,
+			events.Count(e => e.Kind == AccessibilityNativeEventKind.NodeInvalidated),
+			"A single-node update must coalesce into exactly one NodeInvalidated; handle-keyed " +
+			"and virtual-ID-keyed requests for the same node must not both dispatch.");
 		Assert.IsTrue(
 			events.Length <= 2,
 			$"Single-node update must emit at most 2 events for a {nodeCount}-node tree; got {events.Length}.");
@@ -146,6 +148,66 @@ public class Given_MobileAccessibilityPerformance
 		var snap = GetSnapshot(targets[targetIndex]);
 		Assert.IsNotNull(snap, "Updated node must still have a native snapshot.");
 		Assert.AreEqual("Updated Node", snap.Name, "Snapshot name must reflect the AutomationProperties.Name change.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Incremental_Updates_Applied_To_500_Node_Tree_Then_P95_Is_Within_Frame_Budget()
+	{
+		// SC-008: with accessibility active on a 500-node fixture, incremental semantic
+		// updates must complete within a 16 ms frame budget at the 95th percentile.
+		Assert.IsTrue(
+			AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor is not null
+				|| AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor is not null,
+			"No snapshot accessor registered.");
+
+		const int nodeCount = 500;
+		const int sampleCount = 40;
+		var targets = new TextBlock[nodeCount];
+		var panel = new StackPanel();
+		for (var i = 0; i < nodeCount; i++)
+		{
+			targets[i] = new TextBlock { Text = $"Node {i}" };
+			panel.Children.Add(targets[i]);
+		}
+
+		await UITestHelper.Load(panel);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var root = panel.XamlRoot!;
+		EnsureRegistration(root);
+		await TestServices.WindowHelper.WaitForIdle();
+		GetAndClearEvents(root);
+
+		// Warm up so JIT and first-scan costs are not attributed to the measured samples.
+		AutomationProperties.SetName(targets[0], "Warmup");
+		await TestServices.WindowHelper.WaitForIdle();
+		GetAndClearEvents(root);
+
+		var samples = new double[sampleCount];
+		for (var sample = 0; sample < sampleCount; sample++)
+		{
+			// Spread mutations across the tree so no single node stays permanently hot.
+			var target = targets[(sample * 7) % nodeCount];
+
+			var sw = Stopwatch.StartNew();
+			AutomationProperties.SetName(target, $"Updated {sample}");
+			await TestServices.WindowHelper.WaitForIdle();
+			sw.Stop();
+
+			samples[sample] = sw.Elapsed.TotalMilliseconds;
+			GetAndClearEvents(root);
+		}
+
+		Array.Sort(samples);
+		var p95Index = (int)Math.Ceiling(sampleCount * 0.95) - 1;
+		var p95 = samples[Math.Clamp(p95Index, 0, sampleCount - 1)];
+		var median = samples[sampleCount / 2];
+
+		Assert.IsTrue(
+			p95 <= 16d,
+			$"Incremental update p95 must stay within the 16 ms frame budget for a {nodeCount}-node tree; " +
+			$"p95={p95:F2} ms, median={median:F2} ms, max={samples[sampleCount - 1]:F2} ms.");
 	}
 
 	[TestMethod]
