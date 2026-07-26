@@ -13,8 +13,14 @@ namespace Uno.Storage.Streams {
 
 		private static readonly DownloadFolderName = "UnoPendingDownloads";
 
+		// Entries are namespaced per page session so a later session can reclaim the
+		// leftovers of one that crashed, without touching downloads still in flight here.
+		private static readonly _sessionPrefix = `s${Math.floor(Math.random() * 1e9).toString(36)}-`;
+
+		// Long enough for a multi-GB download to be read out before the file is dropped.
+		private static readonly DownloadRetentionMs = 15 * 60 * 1000;
+
 		private static _pendingDownloadUrl: string = null;
-		private static _pendingDownloadEntry: string = null;
 
 		private _chunks: Uint8Array[] = [];
 		private _length = 0;
@@ -111,11 +117,14 @@ namespace Uno.Storage.Streams {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			instance.throwIfReleased();
 
-			const entryName = bufferId;
+			const entryName = NativeChunkedBuffer._sessionPrefix + bufferId;
 			const directory = await NativeChunkedBuffer.tryGetDownloadDirectoryAsync();
 
 			let source: Blob;
 			if (directory) {
+				// Reclaim storage from earlier sessions before staging, since the payload
+				// counts against the origin quota (as low as 2 GB in some browsers).
+				await NativeChunkedBuffer.purgeStaleEntriesAsync(directory);
 				source = await instance.writeToOpfsAsync(directory, entryName);
 			}
 			else {
@@ -126,13 +135,14 @@ namespace Uno.Storage.Streams {
 			instance._chunks = [];
 			instance._released = true;
 
-			// Release the previous download now instead of waiting for its timer,
-			// so at most one payload is retained at a time.
-			await NativeChunkedBuffer.releasePendingDownloadAsync();
+			// Revoking the previous URL is safe for a download already in flight, but the
+			// file backing it must stay until that download has certainly finished.
+			if (NativeChunkedBuffer._pendingDownloadUrl) {
+				window.URL.revokeObjectURL(NativeChunkedBuffer._pendingDownloadUrl);
+			}
 
 			const url = window.URL.createObjectURL(source);
 			NativeChunkedBuffer._pendingDownloadUrl = url;
-			NativeChunkedBuffer._pendingDownloadEntry = directory ? entryName : null;
 
 			const a = window.document.createElement('a');
 			a.href = url;
@@ -142,13 +152,32 @@ namespace Uno.Storage.Streams {
 			a.click();
 			document.body.removeChild(a);
 
-			// Backstop: releasing synchronously can abort the download in some browsers,
-			// so clean up on a delay if no further download replaces it first.
 			setTimeout(() => {
 				if (NativeChunkedBuffer._pendingDownloadUrl === url) {
-					NativeChunkedBuffer.releasePendingDownloadAsync();
+					window.URL.revokeObjectURL(url);
+					NativeChunkedBuffer._pendingDownloadUrl = null;
 				}
-			}, 40000);
+				if (directory) {
+					directory.removeEntry(entryName).catch(() => { });
+				}
+			}, NativeChunkedBuffer.DownloadRetentionMs);
+		}
+
+		private static async purgeStaleEntriesAsync(directory: FileSystemDirectoryHandle): Promise<void> {
+			try {
+				const stale: string[] = [];
+				for await (const name of (<any>directory).keys()) {
+					if (!(<string>name).startsWith(NativeChunkedBuffer._sessionPrefix)) {
+						stale.push(name);
+					}
+				}
+				for (const name of stale) {
+					await directory.removeEntry(name).catch(() => { });
+				}
+			}
+			catch (e) {
+				// Directory enumeration is best-effort.
+			}
 		}
 
 		private async writeToOpfsAsync(directory: FileSystemDirectoryHandle, entryName: string): Promise<Blob> {
@@ -197,26 +226,6 @@ namespace Uno.Storage.Streams {
 			}
 		}
 
-		private static async releasePendingDownloadAsync(): Promise<void> {
-			if (NativeChunkedBuffer._pendingDownloadUrl) {
-				window.URL.revokeObjectURL(NativeChunkedBuffer._pendingDownloadUrl);
-				NativeChunkedBuffer._pendingDownloadUrl = null;
-			}
-
-			if (NativeChunkedBuffer._pendingDownloadEntry) {
-				const entryName = NativeChunkedBuffer._pendingDownloadEntry;
-				NativeChunkedBuffer._pendingDownloadEntry = null;
-				try {
-					const directory = await NativeChunkedBuffer.tryGetDownloadDirectoryAsync();
-					if (directory) {
-						await directory.removeEntry(entryName);
-					}
-				}
-				catch (e) {
-					// The download may still hold the file; it is cleaned up on the next save.
-				}
-			}
-		}
 
 		private throwIfReleased(): void {
 			if (this._released) {

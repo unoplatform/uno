@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using Uno;
@@ -31,7 +30,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			this.Loaded += (_, _) => UpdatePickerModeText();
 			this.Unloaded += (_, _) =>
 			{
-#if __WASM__
+#if __CROSSRUNTIME__
 				WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
 #endif
 			};
@@ -39,7 +38,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void OnPickerModeChanged(object sender, RoutedEventArgs e)
 		{
-#if __WASM__
+#if __CROSSRUNTIME__
 			// The configuration is a global that other picker samples also set, so make
 			// this sample's mode explicit rather than inheriting whatever ran before.
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = ForceDownloadFallback.IsChecked == true
@@ -51,15 +50,18 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void UpdatePickerModeText()
 		{
-#if __WASM__
-			var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
-			PickerModeText.Text = $"picker mode: {configuration} - saves use " +
-				(configuration.HasFlag(WasmPickerConfiguration.FileSystemAccessApi)
-					? "the native save dialog where the browser supports it, otherwise a browser download"
-					: "a browser download");
-#else
-			PickerModeText.Text = "picker mode: platform picker (WebAssembly-specific modes do not apply)";
+#if __CROSSRUNTIME__
+			if (OperatingSystem.IsBrowser())
+			{
+				var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+				PickerModeText.Text = $"picker mode: {configuration} - saves use " +
+					(configuration.HasFlag(WasmPickerConfiguration.FileSystemAccessApi)
+						? "the native save dialog where the browser supports it, otherwise a browser download"
+						: "a browser download");
+				return;
+			}
 #endif
+			PickerModeText.Text = "picker mode: platform picker (browser-specific modes do not apply)";
 		}
 
 		private async void OnPicker512(object sender, RoutedEventArgs e) => await SaveViaPickerAsync(512);
@@ -254,19 +256,11 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private static long GetMemoryUsageMb()
 		{
+			// Only a hint: on WebAssembly the payload is staged in JS-side buffers, which the
+			// managed heap does not reflect. Measure real growth in the browser's dev tools.
 			try
 			{
-#if __WASM__
-				// The payload is staged in JS-side buffers, which the WASM linear memory
-				// (MemoryManager.AppMemoryUsage) does not reflect - read the JS heap instead.
-				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
-					"(globalThis.performance && performance.memory && performance.memory.usedJSHeapSize || 0).toString()");
-				return long.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var bytes)
-					? bytes / (1024 * 1024)
-					: -1;
-#else
 				return GC.GetTotalMemory(forceFullCollection: false) / (1024 * 1024);
-#endif
 			}
 			catch
 			{

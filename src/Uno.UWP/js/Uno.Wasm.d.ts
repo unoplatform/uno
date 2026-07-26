@@ -521,8 +521,9 @@ declare namespace Uno.Storage.Streams {
         private static _bufferMap;
         private static readonly _chunkSize;
         private static readonly DownloadFolderName;
+        private static readonly _sessionPrefix;
+        private static readonly DownloadRetentionMs;
         private static _pendingDownloadUrl;
-        private static _pendingDownloadEntry;
         private _chunks;
         private _length;
         private _released;
@@ -539,10 +540,10 @@ declare namespace Uno.Storage.Streams {
          * files exceed the browser's blob storage, which surfaces as a failed download.
          */
         static saveAsDownloadAsync(bufferId: string, fileName: string): Promise<void>;
+        private static purgeStaleEntriesAsync;
         private writeToOpfsAsync;
         private buildBlob;
         private static tryGetDownloadDirectoryAsync;
-        private static releasePendingDownloadAsync;
         private throwIfReleased;
         private ensureCapacity;
     }
