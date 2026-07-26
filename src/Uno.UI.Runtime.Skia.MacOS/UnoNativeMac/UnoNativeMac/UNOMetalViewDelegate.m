@@ -103,6 +103,15 @@
 #if DEBUG
     NSLog (@"drawableSizeWillChange: %p %f x %f @ %gx", view.window, size.width, size.height, scale);
 #endif
+    // A paused view never runs the draw cycle that would apply the new size to its CAMetalLayer, so
+    // nextDrawable would keep vending textures at the previous size. Applying it here (main thread,
+    // before the managed resize) keeps the drawable in step with the window.
+    CAMetalLayer* metalLayer = (CAMetalLayer*)view.layer;
+    if (view.isPaused && [metalLayer isKindOfClass:[CAMetalLayer class]] && !CGSizeEqualToSize(metalLayer.drawableSize, size))
+    {
+        metalLayer.drawableSize = size;
+    }
+
     uno_get_resize_callback()((__bridge void*) view.window, size.width / scale, size.height / scale);
 }
 
@@ -140,10 +149,13 @@ bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* wid
         // Hold the drawable until present (strong property retains via ARC).
         delegate.currentFrameDrawable = drawable;
 
-        *texture = (__bridge void*)drawable.texture;
-        CGSize size = metalLayer.drawableSize;
-        *width = size.width;
-        *height = size.height;
+        // Report the texture's own dimensions rather than the layer's drawableSize: the two can
+        // disagree while a resize is in flight, and the managed side sizes its render target from
+        // these values, so they must describe the texture it is actually drawing into.
+        id<MTLTexture> drawableTexture = drawable.texture;
+        *texture = (__bridge void*)drawableTexture;
+        *width = drawableTexture.width;
+        *height = drawableTexture.height;
         return true;
     }
 }
