@@ -11,6 +11,15 @@
         <StackPanel Padding="16" Spacing="8">
             <TextBlock Text="Writes large generated payloads through StorageFile.OpenStreamForWriteAsync in 2 MB chunks. On WebAssembly, watch the tab's memory (DevTools) while writing: the write path must not buffer the whole file in tab memory, and multi-GB saves must not crash the runtime. The on-screen heap number is only a hint." TextWrapping="Wrap" />
 
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <CheckBox
+                    x:Name="ForceDownloadFallback"
+                    Checked="OnPickerModeChanged"
+                    Content="Force download fallback (no native picker)"
+                    Unchecked="OnPickerModeChanged" />
+            </StackPanel>
+            <TextBlock x:Name="PickerModeText" Text="picker mode: n/a" />
+
             <TextBlock FontWeight="SemiBold" Text="Save via FileSavePicker (native picker or download fallback):" />
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Button

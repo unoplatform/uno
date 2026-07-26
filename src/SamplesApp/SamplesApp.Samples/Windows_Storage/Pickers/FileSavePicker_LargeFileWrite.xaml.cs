@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using Uno;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -27,6 +28,38 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		public FileSavePicker_LargeFileWrite()
 		{
 			this.InitializeComponent();
+			this.Loaded += (_, _) => UpdatePickerModeText();
+			this.Unloaded += (_, _) =>
+			{
+#if __WASM__
+				WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
+#endif
+			};
+		}
+
+		private void OnPickerModeChanged(object sender, RoutedEventArgs e)
+		{
+#if __WASM__
+			// The configuration is a global that other picker samples also set, so make
+			// this sample's mode explicit rather than inheriting whatever ran before.
+			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = ForceDownloadFallback.IsChecked == true
+				? WasmPickerConfiguration.DownloadUpload
+				: WasmPickerConfiguration.FileSystemAccessApiWithFallback;
+#endif
+			UpdatePickerModeText();
+		}
+
+		private void UpdatePickerModeText()
+		{
+#if __WASM__
+			var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+			PickerModeText.Text = $"picker mode: {configuration} - saves use " +
+				(configuration.HasFlag(WasmPickerConfiguration.FileSystemAccessApi)
+					? "the native save dialog where the browser supports it, otherwise a browser download"
+					: "a browser download");
+#else
+			PickerModeText.Text = "picker mode: platform picker (WebAssembly-specific modes do not apply)";
+#endif
 		}
 
 		private async void OnPicker512(object sender, RoutedEventArgs e) => await SaveViaPickerAsync(512);
