@@ -68,8 +68,8 @@ namespace Windows.Storage
 			}
 
 			/// <summary>Triggers the browser download of the staged content.</summary>
-			public void TriggerDownload()
-				=> ChunkedBufferStream.SaveBufferAsBlob(_bufferId, Name);
+			public Task TriggerDownloadAsync()
+				=> ChunkedBufferStream.SaveBufferAsDownloadAsync(_bufferId, Name);
 		}
 	}
 }

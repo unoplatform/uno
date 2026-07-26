@@ -6,16 +6,16 @@ namespace Windows.Storage
 {
 	public static partial class CachedFileManager
 	{
-		private static Task<FileUpdateStatus> CompleteUpdatesTaskAsync(IStorageFile file, CancellationToken token)
+		private static async Task<FileUpdateStatus> CompleteUpdatesTaskAsync(IStorageFile file, CancellationToken token)
 		{
 			if (file is StorageFile { Implementation: StorageFile.DownloadPickerStorageFile downloadFile })
 			{
-				// The content was staged JS-side; the Blob is built there directly,
-				// without materializing the payload in managed memory.
-				downloadFile.TriggerDownload();
+				// The content is handed to the browser JS-side, without materializing
+				// the payload in managed memory.
+				await downloadFile.TriggerDownloadAsync();
 			}
 
-			return Task.FromResult(FileUpdateStatus.Complete);
+			return FileUpdateStatus.Complete;
 		}
 	}
 }

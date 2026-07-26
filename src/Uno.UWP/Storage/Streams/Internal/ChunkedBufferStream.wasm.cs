@@ -54,9 +54,9 @@ internal sealed partial class ChunkedBufferStream : Stream
 	public static void DisposeBuffer(Guid bufferId)
 		=> NativeMethods.DisposeBuffer(bufferId.ToString());
 
-	/// <summary>Triggers a browser download of the buffer content as a Blob.</summary>
-	public static void SaveBufferAsBlob(Guid bufferId, string fileName)
-		=> NativeMethods.SaveAsBlob(bufferId.ToString(), fileName);
+	/// <summary>Triggers a browser download of the buffer content.</summary>
+	public static Task SaveBufferAsDownloadAsync(Guid bufferId, string fileName)
+		=> NativeMethods.SaveAsDownloadAsync(bufferId.ToString(), fileName);
 
 	public override bool CanRead => true;
 
@@ -189,7 +189,7 @@ internal sealed partial class ChunkedBufferStream : Stream
 		[JSImport($"{JsType}.truncate")]
 		internal static partial void Truncate(string bufferId, double length);
 
-		[JSImport($"{JsType}.saveAsBlob")]
-		internal static partial void SaveAsBlob(string bufferId, string fileName);
+		[JSImport($"{JsType}.saveAsDownloadAsync")]
+		internal static partial Task SaveAsDownloadAsync(string bufferId, string fileName);
 	}
 }

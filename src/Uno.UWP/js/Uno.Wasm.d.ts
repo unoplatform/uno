@@ -520,7 +520,9 @@ declare namespace Uno.Storage.Streams {
     class NativeChunkedBuffer {
         private static _bufferMap;
         private static readonly _chunkSize;
+        private static readonly DownloadFolderName;
         private static _pendingDownloadUrl;
+        private static _pendingDownloadEntry;
         private _chunks;
         private _length;
         private _released;
@@ -530,9 +532,17 @@ declare namespace Uno.Storage.Streams {
         static write(bufferId: string, dataPtr: number, count: number, position: number): void;
         static read(bufferId: string, dataPtr: number, count: number, position: number): number;
         static truncate(bufferId: string, length: number): void;
-        /** Builds a Blob from the chunks and triggers a browser download of it. */
-        static saveAsBlob(bufferId: string, fileName: string): void;
-        private static revokePendingDownload;
+        /**
+         * Triggers a browser download of the staged content.
+         * The payload is first moved into an origin-private (OPFS) file so the download
+         * streams from disk: materializing it as an in-memory Blob instead makes large
+         * files exceed the browser's blob storage, which surfaces as a failed download.
+         */
+        static saveAsDownloadAsync(bufferId: string, fileName: string): Promise<void>;
+        private writeToOpfsAsync;
+        private buildBlob;
+        private static tryGetDownloadDirectoryAsync;
+        private static releasePendingDownloadAsync;
         private throwIfReleased;
         private ensureCapacity;
     }

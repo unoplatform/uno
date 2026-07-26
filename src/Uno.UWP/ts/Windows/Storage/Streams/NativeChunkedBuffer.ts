@@ -11,7 +11,10 @@ namespace Uno.Storage.Streams {
 
 		private static readonly _chunkSize = 2 * 1024 * 1024;
 
+		private static readonly DownloadFolderName = "UnoPendingDownloads";
+
 		private static _pendingDownloadUrl: string = null;
+		private static _pendingDownloadEntry: string = null;
 
 		private _chunks: Uint8Array[] = [];
 		private _length = 0;
@@ -98,33 +101,38 @@ namespace Uno.Storage.Streams {
 			instance._length = length;
 		}
 
-		/** Builds a Blob from the chunks and triggers a browser download of it. */
-		public static saveAsBlob(bufferId: string, fileName: string): void {
+		/**
+		 * Triggers a browser download of the staged content.
+		 * The payload is first moved into an origin-private (OPFS) file so the download
+		 * streams from disk: materializing it as an in-memory Blob instead makes large
+		 * files exceed the browser's blob storage, which surfaces as a failed download.
+		 */
+		public static async saveAsDownloadAsync(bufferId: string, fileName: string): Promise<void> {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
-			const chunkSize = NativeChunkedBuffer._chunkSize;
 			instance.throwIfReleased();
 
-			const parts: Uint8Array[] = [];
-			let remaining = instance._length;
-			for (let i = 0; remaining > 0; i++) {
-				const n = Math.min(remaining, chunkSize);
-				parts.push(n === chunkSize ? instance._chunks[i] : instance._chunks[i].subarray(0, n));
-				remaining -= n;
+			const entryName = bufferId;
+			const directory = await NativeChunkedBuffer.tryGetDownloadDirectoryAsync();
+
+			let source: Blob;
+			if (directory) {
+				source = await instance.writeToOpfsAsync(directory, entryName);
+			}
+			else {
+				// No origin-private file system: fall back to an in-memory Blob.
+				source = instance.buildBlob();
 			}
 
-			const blob = new Blob(parts);
-
-			// The Blob holds its own copy of the payload, so drop the staged chunks
-			// rather than keeping the file in memory twice.
 			instance._chunks = [];
 			instance._released = true;
 
-			// Free the previous download's blob now instead of waiting for its timer,
-			// so at most one payload is held at a time.
-			NativeChunkedBuffer.revokePendingDownload();
+			// Release the previous download now instead of waiting for its timer,
+			// so at most one payload is retained at a time.
+			await NativeChunkedBuffer.releasePendingDownloadAsync();
 
-			const url = window.URL.createObjectURL(blob);
+			const url = window.URL.createObjectURL(source);
 			NativeChunkedBuffer._pendingDownloadUrl = url;
+			NativeChunkedBuffer._pendingDownloadEntry = directory ? entryName : null;
 
 			const a = window.document.createElement('a');
 			a.href = url;
@@ -134,19 +142,79 @@ namespace Uno.Storage.Streams {
 			a.click();
 			document.body.removeChild(a);
 
-			// Backstop: revoking synchronously can abort the download in some browsers,
-			// so release the blob on a delay if no further download replaces it first.
+			// Backstop: releasing synchronously can abort the download in some browsers,
+			// so clean up on a delay if no further download replaces it first.
 			setTimeout(() => {
 				if (NativeChunkedBuffer._pendingDownloadUrl === url) {
-					NativeChunkedBuffer.revokePendingDownload();
+					NativeChunkedBuffer.releasePendingDownloadAsync();
 				}
 			}, 40000);
 		}
 
-		private static revokePendingDownload(): void {
+		private async writeToOpfsAsync(directory: FileSystemDirectoryHandle, entryName: string): Promise<Blob> {
+			const chunkSize = NativeChunkedBuffer._chunkSize;
+			const handle = await directory.getFileHandle(entryName, { create: true });
+			const writable = await handle.createWritable();
+			try {
+				let position = 0;
+				let remaining = this._length;
+				for (let i = 0; remaining > 0; i++) {
+					const n = Math.min(remaining, chunkSize);
+					await writable.write({ type: 'write', data: this._chunks[i].subarray(0, n), position: position });
+					// The bytes are on disk now - drop the staged chunk as we go.
+					this._chunks[i] = null;
+					position += n;
+					remaining -= n;
+				}
+			}
+			finally {
+				await writable.close();
+			}
+
+			// A File from an OPFS handle references the stored file rather than copying it.
+			return await handle.getFile();
+		}
+
+		private buildBlob(): Blob {
+			const chunkSize = NativeChunkedBuffer._chunkSize;
+			const parts: Uint8Array[] = [];
+			let remaining = this._length;
+			for (let i = 0; remaining > 0; i++) {
+				const n = Math.min(remaining, chunkSize);
+				parts.push(n === chunkSize ? this._chunks[i] : this._chunks[i].subarray(0, n));
+				remaining -= n;
+			}
+			return new Blob(parts);
+		}
+
+		private static async tryGetDownloadDirectoryAsync(): Promise<FileSystemDirectoryHandle> {
+			try {
+				const root = await navigator.storage.getDirectory();
+				return await root.getDirectoryHandle(NativeChunkedBuffer.DownloadFolderName, { create: true });
+			}
+			catch (e) {
+				return null;
+			}
+		}
+
+		private static async releasePendingDownloadAsync(): Promise<void> {
 			if (NativeChunkedBuffer._pendingDownloadUrl) {
 				window.URL.revokeObjectURL(NativeChunkedBuffer._pendingDownloadUrl);
 				NativeChunkedBuffer._pendingDownloadUrl = null;
+			}
+
+			if (NativeChunkedBuffer._pendingDownloadEntry) {
+				const entryName = NativeChunkedBuffer._pendingDownloadEntry;
+				NativeChunkedBuffer._pendingDownloadEntry = null;
+				try {
+					const directory = await NativeChunkedBuffer.tryGetDownloadDirectoryAsync();
+					if (directory) {
+						await directory.removeEntry(entryName);
+					}
+				}
+				catch (e) {
+					// The download may still hold the file; it is cleaned up on the next save.
+				}
 			}
 		}
 
