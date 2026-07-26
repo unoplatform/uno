@@ -61,7 +61,7 @@ names, roles, basic state, relationships, and bounds.
 - [ ] T018 [US1] Run US1 native-tree tests through `build/test-scripts/android-run-skia-runtime-tests.sh` and `build/test-scripts/ios-uitest-run.sh`
 
 > **PARTIAL T018**: The complete Android automation namespace passes on an API 36
-> emulator with TalkBack enabled: 328 passed, 0 failed, 133 platform skips. iOS native
+> emulator with TalkBack enabled: 371 passed, 0 failed, 134 platform skips. iOS native
 > execution still requires a macOS/Xcode runner.
 
 **Checkpoint**: TalkBack, VoiceOver, UIAutomator, and XCUITest can discover the standard fixture.
@@ -90,7 +90,7 @@ Uno control/provider state changes while disabled/read-only operations fail safe
 - [X] T026 [US2] Enforce UI-thread dispatch and native failure translation for disabled, read-only, unavailable, and invalid-argument actions in `src/Uno.UI.Runtime.Skia.Android/Accessibility/AndroidSkiaAccessibility.cs` and `src/Uno.UI.Runtime.Skia.AppleUIKit/Accessibility/AppleUIKitAccessibility.cs`
 - [ ] T027 [US2] Run US2 action tests through `build/test-scripts/android-run-skia-runtime-tests.sh` and `build/test-scripts/ios-uitest-run.sh`
 
-> **PARTIAL T027**: Android provider-action coverage passes as part of the 326-test native
+> **PARTIAL T027**: Android provider-action coverage passes as part of the 371-test native
 > namespace run. iOS native execution remains deferred for the T018 runner constraint.
 
 **Checkpoint**: Primary mobile accessibility actions are operable and state-correct.
@@ -209,8 +209,11 @@ representative actions, and confirm secure values stay hidden.
 - [X] T061 [US6] Extend AutomationId, name, relationship, action, and secure-text fixtures in `src/SamplesApp/SamplesApp.Samples/Windows_UI.Xaml_Automation/AutomationProperties_AutomationId.xaml` and `src/SamplesApp/SamplesApp.Samples/Windows_UI.Xaml_Automation/AccessibilityScreenReaderPage.xaml`
 - [ ] T062 [US6] Run native and SamplesApp automation tests through `src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj`
 
-> **PARTIAL T062**: The direct Android UIAutomator SamplesApp suite passes 10 of 10 tests
-> with TalkBack enabled. iOS XCUITest/Uno.UITest execution remains deferred.
+> **PARTIAL T062**: The direct Android UIAutomator SamplesApp suite passes 14 of 14 tests
+> both with TalkBack disabled and with TalkBack plus touch exploration enabled. The suite now
+> covers every SC-006 action category: Invoke, Toggle, Selection, Value, ExpandCollapse
+> (ComboBox drop-down, activated by the TalkBack double-tap gesture), RangeValue, and
+> Scroll/ScrollItem. iOS XCUITest/Uno.UITest execution remains deferred.
 
 **Checkpoint**: Mobile UI automation can locate and operate controls without abusing spoken names.
 
@@ -238,7 +241,9 @@ repeated add/remove/window/focus cycles and verify timing and registry baselines
 - [ ] T069 [US7] Run US7 lifecycle/performance tests through `build/test-scripts/android-run-skia-runtime-tests.sh` and `build/test-scripts/ios-uitest-run.sh`
 
 > **PARTIAL T069**: Android lifecycle, registry, stale-node, 500-node, and 1,000-item
-> virtualization tests pass in the native run. iOS native execution remains deferred.
+> virtualization tests pass in the native run, together with the SC-005 100-transition
+> focus/popup/scroll/virtualization/disable/removal stress test and the SC-008 incremental
+> update p95 frame-budget gate. iOS native execution remains deferred.
 
 **Checkpoint**: Mobile accessibility is incremental, leak-free, and lifecycle-safe.
 
@@ -294,17 +299,21 @@ fixture and complete the manual AT matrix with no unresolved P1 blocker.
 > run completed with 209 passed, 0 failed, and 252 mobile/platform skips. The capability
 > matrix contributed 25 passed and 4 mobile skips. Generic Skia, Android `net10.0-android`,
 > AppleUIKit `net9.0-ios18.0`/`iossimulator-x64`, Uno.UI.UnitTests, and
-> SamplesApp.UITests builds succeeded. Android API 36 completed 328 native automation tests
-> with 0 failures and 133 platform skips while TalkBack was active; the direct UIAutomator
-> suite completed 10 of 10 tests. The final multi-lens review findings were remediated,
+> SamplesApp.UITests builds succeeded. Android API 36 completed 371 native automation tests
+> with 0 failures and 134 platform skips while TalkBack was active; the direct UIAutomator
+> suite completed 14 of 14 tests after adding a duplicate-tree regression. The final
+> multi-lens review findings were remediated,
 > including modal announcement revalidation, ownerless EventsSource routing, non-light-dismiss
-> popup detection, cached native-node rejection, active-owner lifecycle, and tri-state identity.
+> popup detection, cached native-node rejection, active-owner lifecycle, tri-state identity,
+> native set-selection and character/word traversal, XCTest automation-element mirroring, and
+> nested Android virtual-node de-duplication.
 >
-> **BLOCKED T082**: Native iOS/VoiceOver/XCUITest and the manual cross-platform matrix
-> remain unavailable locally. Final review also retains follow-up work for peer-generation
-> identity across recycled containers, non-item ownerless peer projection, and native text
-> selection/granularity actions. Completion cannot be claimed until those items and the
-> required iOS evidence are resolved or explicitly accepted as deferred.
+> **BLOCKED T082**: Android completion is fully evidenced: the full namespace is 371 of 371
+> with 134 platform skips, UIAutomator is 11 of 11 with and without TalkBack, and the manual
+> TalkBack fixture passes with each AutomationId exposed exactly once and password text empty.
+> Native iOS/VoiceOver/XCUITest,
+> recycled-container generation validation, native text selection/granularity, and the
+> manual cross-platform matrix remain unavailable locally and require macOS/Xcode.
 
 ---
 
