@@ -10,8 +10,7 @@ using Uno.WinUI.Graphics3DGL;
 namespace UITests.Shared.Windows_UI_Composition
 {
 	// https://learnopengl.com/Getting-started/Hello-Triangle
-	[Sample("Microsoft.UI.Composition")]
-	public class SimpleTriangleGlCanvasElement()
+	public class GLCanvasElement_SimpleTriangleElement()
 		: GLCanvasElement(() => App.MainWindow)
 	{
 		private uint _vao;

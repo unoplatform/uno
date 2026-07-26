@@ -5330,6 +5330,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreSame(containersBefore[2], containersAfter[1], "Container at 2→1 must be the same instance (displaced item)");
 			Assert.AreSame(containersBefore[3], containersAfter[3], "Container at 3→3 must be the same instance");
 		}
+
+		// The four tests below reproduce the drag-drop reorder "whole-list flicker": on drop the managed
+		// layout used to call the heavy Refresh() (recycle every container) instead of a light re-measure,
+		// re-dealing containers to different data so every row re-templated. Identity is keyed by data item
+		// (indices change across a reorder). A/B are the collection-mutation paths (always reused); C is the
+		// real drag-drop drop path (the regression); D isolates that Refresh() itself churns containers.
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Reorder_Move_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400, // tall enough to realize all 8 items at 29px (no scroll virtualization)
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			source.Move(2, 5); // the Move Up/Down button path — a single NCC 'Move'
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+			AssertAllContainersReused(before, after, "Move(2→5)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Reorder_RemoveInsert_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			// The collection-mutation half of a drag-drop commit (UWP uses RemoveAt+Insert, not Move).
+			var item = source[2];
+			source.RemoveAt(2);
+			source.Insert(5, item);
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+			AssertAllContainersReused(before, after, "RemoveAt(2)+Insert(5)");
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Reorder_DragDrop_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var dragged = source[2];
+			var before = CaptureContainersByItem(SUT, source);
+
+			var fromRect = (SUT.ContainerFromIndex(2) as ListViewItem ?? throw new InvalidOperationException("no container at index 2")).GetAbsoluteBoundsRect();
+			var toRect = (SUT.ContainerFromIndex(5) as ListViewItem ?? throw new InvalidOperationException("no container at index 5")).GetAbsoluteBoundsRect();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// pick up item#2, drag down over item#5's row, then drop
+			mouse.MoveTo(fromRect.GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(toRect.GetCenter(), 16);
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			mouse.MoveTo(toRect.GetCenter(), 2);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle();
+
+			// Guard: the drop must actually have reordered, otherwise the reuse check would be vacuous.
+			Assert.AreNotEqual(2, source.IndexOf(dragged), "drag-drop did not reorder the dragged item");
+
+			var after = CaptureContainersByItem(SUT, source);
+
+			// The drop must keep every container's identity — the managed layout used to call the heavy
+			// Refresh() here, recycling and re-dealing every container (the whole-list flicker).
+			AssertAllContainersReused(before, after, "drag-drop reorder");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Layouter_Refresh_RecreatesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			// Isolation: drive the heavy layout path a drop used to call, with NO collection change at all.
+			var layout = (SUT.ItemsPanelRoot as IVirtualizingPanel)?.GetLayouter()
+				?? throw new InvalidOperationException("ListView is not backed by a virtualizing panel layout");
+			layout.Refresh();
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+
+			// Refresh() recycles every container and clears the id cache → containers are re-dealt.
+			var reused = CountReusedContainers(before, after);
+			Assert.IsTrue(reused < before.Count, $"Refresh() should recycle/re-deal containers, but all {before.Count} were reused");
+		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -5700,6 +5847,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.ToArray();
 #endif
 		}
+
+		// Maps each data item to its realized container. Keyed by data item (not index) so identity can be
+		// compared across a reorder, where indices change. Asserts every item is realized at capture time.
+		// Typed on ItemsControl (which defines ContainerFromItem); items comes in as IEnumerable<object>,
+		// which ObservableCollection<string> satisfies via IEnumerable<out T> covariance.
+		private static Dictionary<object, object> CaptureContainersByItem(ItemsControl list, IEnumerable<object> items)
+		{
+			var map = new Dictionary<object, object>();
+			foreach (var item in items)
+			{
+				var container = list.ContainerFromItem(item);
+				Assert.IsNotNull(container, $"Expected a realized container for '{item}'");
+				map[item] = container;
+			}
+
+			return map;
+		}
+
+		private static void AssertAllContainersReused(Dictionary<object, object> before, Dictionary<object, object> after, string context)
+		{
+			using var _ = new AssertionScope();
+			foreach (var (item, container) in before)
+			{
+				Assert.AreSame(container, after[item], $"{context}: container for '{item}' must be reused (would flicker if recreated)");
+			}
+		}
+
+		private static int CountReusedContainers(Dictionary<object, object> before, Dictionary<object, object> after)
+			=> before.Count(kvp => ReferenceEquals(kvp.Value, after[kvp.Key]));
 
 		private static double GetTop(FrameworkElement element, FrameworkElement container)
 		{

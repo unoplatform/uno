@@ -10,7 +10,11 @@ namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		internal override void Paint(in PaintingSession session) => Brush?.Paint(session.Canvas, session.Opacity, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+		internal override SKPath? Paint(in PaintingSession session)
+		{
+			Brush?.Paint(session.Canvas, session.Opacity, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+			return null;
+		}
 
 		internal override bool CanPaint() => Brush?.CanPaint() ?? false;
 
@@ -18,6 +22,8 @@ namespace Microsoft.UI.Composition
 		internal override bool PaintsWithinOwnSize => true;
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
+
+		internal override float DamageRegionSamplingMargin => Brush?.DamageRegionSamplingMargin ?? 0;
 
 		private protected override bool TryAddShadowPaths(List<(SKPath path, float alpha)> output)
 		{

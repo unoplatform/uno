@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Xaml.Input;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.ConditionMode;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTestPlatforms;
 
@@ -250,10 +251,11 @@ public class Given_SystemFocusVisual
 		};
 
 		TestServices.WindowHelper.WindowContent = translateContainer;
-		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForLoaded(translateContainer);
 
 		button.Focus(FocusState.Keyboard);
-		await TestServices.WindowHelper.WaitForIdle();
+
+		await TestServices.WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot) == button);
 		await UITestHelper.WaitForRender(2);
 
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;

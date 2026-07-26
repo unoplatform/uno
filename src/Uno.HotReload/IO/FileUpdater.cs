@@ -18,7 +18,7 @@ public class FileUpdater(
 	BufferGate gate,
 	HotReloadTracker tracker,
 	HotReloadInfoFile hotReloadInfoFile,
-	Func<ValueTask> requestHotReload)
+	Func<ValueTask> requestHotReload) : IFileUpdater
 {
 	public async Task<IUpdateFileResponse> UpdateAsync(IUpdateFileRequest request, CancellationToken ct)
 	{

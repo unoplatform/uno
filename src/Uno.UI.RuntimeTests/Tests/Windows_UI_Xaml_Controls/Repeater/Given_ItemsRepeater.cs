@@ -495,6 +495,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// SkiaWasm excluded: render-loop-driven ChangeView smooth-scroll stalls under the headless xvfb browser (flaky). #23524
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 #if !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif

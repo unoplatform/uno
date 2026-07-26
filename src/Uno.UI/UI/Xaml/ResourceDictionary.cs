@@ -1295,6 +1295,56 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
+		// Per-thread stack of active by-name scopes, so a Pop disposes the scope opened by its matching
+		// Push. LIFO and thread-local: the paired calls are balanced within a single synchronous resolution.
+		[ThreadStatic]
+		private static Stack<Uno.UI.Xaml.Core.CoreServices.RequestedThemeForSubTreeScope> _byNameThemeScopes;
+
+		/// <summary>
+		/// Scopes {ThemeResource} resolution to the named base theme ("Light"/"Dark") until the matching
+		/// <see cref="PopRequestedThemeForSubTreeByName"/>. Infrastructure entry point for external markup
+		/// packages (e.g. Uno.Extensions.Markup) that resolve theme resources with no owning element; not
+		/// intended for application code.
+		/// </summary>
+		/// <remarks>
+		/// Routes to the core requested-theme-for-subtree slot that the resolution leaf reads
+		/// (GetActiveTheme → CoreServices.GetRequestedThemeForSubTree), the same single slot WinUI's
+		/// CCoreServices::LookupThemeResource(theme, key) scopes. This is not the removed process-global
+		/// Themes stack — it is an owner-less scope over the core slot. On targets without the core slot
+		/// (native, or before a CoreServices instance exists) it is a balanced no-op.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PushRequestedThemeForSubTreeByName(string theme)
+		{
+			var scopes = _byNameThemeScopes ??= new();
+			scopes.Push(
+				Uno.UI.Xaml.Core.CoreServices.HasInstance
+					? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ThemeFromSubTreeName(theme))
+					: default);
+		}
+
+		/// <summary>
+		/// Restores the theme scoped by the matching <see cref="PushRequestedThemeForSubTreeByName"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PopRequestedThemeForSubTreeByName()
+		{
+			if (_byNameThemeScopes is { Count: > 0 } scopes)
+			{
+				scopes.Pop().Dispose();
+			}
+		}
+
+		// The core slot carries only the base Light/Dark theme (high contrast is composed separately at the
+		// resolution leaf). "Default" (a request with no specific base theme) and any other name map to None,
+		// so resolution falls back to the app/OS base theme — matching how WinUI resolves a Default request.
+		private static Theme ThemeFromSubTreeName(string theme) => theme switch
+		{
+			"Light" => Theme.Light,
+			"Dark" => Theme.Dark,
+			_ => Theme.None,
+		};
+
 		// The single theme read of the resolution leaf: every theme sub-dictionary selection
 		// (GetActiveThemeDictionary, lazy materialization) keys on this ambient.
 #if UNO_HAS_ENHANCED_LIFECYCLE

@@ -752,7 +752,9 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
 			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+		// A TextBlock only ever shows Both-mode grippers (at the selection edges), so there's no insertion
+		// handle to fold into a double-tap counter; the press point is unused here.
+		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
 			=> TouchTap(args.GetCurrentPoint(this).Position);
 		#endregion
 		#endregion

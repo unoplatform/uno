@@ -39,6 +39,10 @@ internal class ExtensionsRegistrar
 #if !__TVOS__
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new UIKitNativeWebViewProvider(o));
 #endif
+#if !__MACCATALYST__
+		// GLCanvasElement (OpenGL ES via EAGL); no-ops at runtime on anything but iOS/tvOS.
+		Uno.UI.Runtime.Skia.AppleUIKit.AppleUIKitNativeOpenGLWrapper.Register();
+#endif
 
 		_registered = true;
 	}

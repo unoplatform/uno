@@ -91,7 +91,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.18.66",
+		"version": "1.19.175",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -125,7 +125,7 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.1721",
+		"version": "10.0.28000.2270",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
@@ -139,27 +139,27 @@
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.14",
+		"version": "9.0.18",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.10"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.14",
+		"version": "9.0.18",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.10"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.83.1",
+		"version": "4.83.3",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -167,7 +167,7 @@
 	},
 	{
 		"group": "Mvvm",
-		"version": "8.4.0",
+		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
 		]
@@ -343,12 +343,12 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.50"
+			"net10.0": "10.0.60"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.6.0-dev.5",
+		"version": "6.6.27",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -356,7 +356,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.2.0-dev.44",
+		"version": "7.2.3",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -418,7 +418,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3856.49",
+		"version": "1.0.4078.44",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
