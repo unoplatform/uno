@@ -113,36 +113,37 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return;
 		}
 
-		// The texture differs every frame, so nothing here can be cached.
-		GRBackendRenderTarget? target = null;
-		SKSurface? surface = null;
-		try
-		{
-			var nativeElementClipPath = ct.OnNativePlatformFrameRequested(null, size =>
-			{
-				target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-				surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-				return surface.Canvas;
-			});
+		// The app is drawn into a retained layer sized from the managed XamlRoot bounds, which can
+		// briefly disagree with the drawable size while a resize is in flight. Only the blit below
+		// targets the drawable, so the swapchain surface must use the texture's own dimensions.
+		// The layer also survives across frames, which is what keeps damage-region rendering usable
+		// even though the drawable rotates every frame.
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(
+			_retainedLayer.Surface?.Canvas,
+			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
 
-			// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
-			// main thread; this method runs on the render thread, so marshal the update there.
-			var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
-			if (clip != _lastSvgClipPath)
-			{
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
-					{
-						_lastSvgClipPath = clip;
-					}
-				}, NativeDispatcherPriority.Normal);
-			}
-		}
-		finally
+		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
+		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
 		{
-			surface?.Dispose();
-			target?.Dispose();
+			_retainedLayer.Present(swapchainSurface);
+		}
+
+		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
+		// main thread; this method runs on the render thread, so marshal the update there.
+		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		if (clip != _lastSvgClipPath)
+		{
+			_lastSvgClipPath = clip;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				// if too early it's possible that the native element has not been arranged yet
+				// so the position and dimension of the element are not yet correct (0,0,0,0)
+				if (!NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+				{
+					// Retry on the next frame that produces a clip path.
+					_lastSvgClipPath = null;
+				}
+			}, NativeDispatcherPriority.Normal);
 		}
 	}
 
