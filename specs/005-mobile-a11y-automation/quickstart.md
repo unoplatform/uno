@@ -307,8 +307,18 @@ Latest local results:
 - Skia Desktop `Windows_UI_Xaml_Automation`: 209 passed, 0 failed, 252 platform skips.
 - Capability matrix: 25 passed, 0 failed, 4 mobile skips.
 - Android API 36 `Windows_UI_Xaml_Automation` with TalkBack and touch exploration enabled:
-  328 passed, 0 failed, 133 platform skips.
-- Android direct UIAutomator SamplesApp suite with TalkBack enabled: 10 passed, 0 failed.
+  371 passed, 0 failed, 134 platform skips. This includes the SC-005 100-transition
+  focus/popup/scroll/virtualization/disable/removal stress test and the SC-008 incremental
+  update p95 frame-budget gate on a 500-node tree.
+- Android direct UIAutomator SamplesApp suite: 14 passed, 0 failed, both with TalkBack
+  disabled and with TalkBack plus touch exploration enabled. Coverage now spans the SC-006
+  action categories: Invoke, Toggle, Selection, Value, ExpandCollapse (ComboBox drop-down),
+  RangeValue, and Scroll/ScrollItem.
+- Manual Android API 36 TalkBack smoke passed for invoke, toggle, list selection, and text
+  entry. UIAutomator exposed each fixture AutomationId exactly once and kept
+  password text empty while a sibling text field reported its typed value. With TalkBack
+  active, double-tap activation expands the ComboBox and its drop-down items are exposed
+  with their own AutomationIds.
 - Android `Uno.UI-netcoremobile-only.slnf` package build: succeeded with
   `-p:NetPrevious=net10.0`.
 - The iOS-compatible `Uno.UI-netcoremobile-only.slnf` subset builds with `net10.0-ios`
@@ -320,6 +330,9 @@ Latest local results:
 - `Uno.UI.UnitTests` and `SamplesApp.UITests`: build succeeded; SamplesApp.UITests retains
   its existing NUnit assembly-version warnings.
 
-Android native execution and automation are complete. Native iOS/VoiceOver/XCUITest execution
-and the manual cross-platform assistive-technology matrix still require macOS/Xcode and
-representative devices.
+Android native execution now covers set-text, set-selection, character/word/line/paragraph/
+page traversal, conditional copy/cut/paste, peer-keyed recycled/ownerless/shared-owner
+identity, unique nested virtual nodes, AutomationId lookup, representative actions, focus
+recovery, and secure-text redaction. Native iOS/VoiceOver/XCUITest execution, iOS recycled
+identity validation, and the manual cross-platform assistive-technology matrix still require
+macOS/Xcode and representative devices.
