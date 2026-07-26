@@ -1,15 +1,17 @@
 #nullable enable
 
+using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-internal class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner
+internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner, IDisposable
 {
 	private readonly XamlRoot _xamlRoot;
 	private readonly AndroidSkiaAccessibility _accessibility;
+	private bool _isDisposed;
 
 	public AndroidSkiaXamlRootHost(XamlRoot xamlRoot)
 	{
@@ -41,4 +43,17 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner
 
 	UIElement? IXamlRootHost.RootElement
 		=> _xamlRoot.Content as UIElement ?? _xamlRoot.VisualTree.RootElement;
+
+	public void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+		_accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+		XamlRootMap.Unregister(_xamlRoot);
+	}
 }

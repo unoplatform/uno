@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
@@ -42,14 +43,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private readonly int[] _hostLocationOnScreen = new int[2];
 
 	// Persistent virtual-ID registry. Survives tree rebuilds; IDs are never reused.
-	// _elementToId (CWT) is the stable identity store: kept alive as long as the
-	// owner DependencyObject is alive.  _idToWeakElement and _handleToId are
-	// reverse/handle maps: they are pruned at the end of every scan to contain only
-	// IDs present in the current peer tree, then rehydrated when an owner reappears.
+	// Visual-backed peers use their element as identity. Item and ownerless peers
+	// use the AutomationPeer instance so a recycled container cannot silently
+	// retain the previous logical item's native identity.
 
 	private readonly ConditionalWeakTable<DependencyObject, VirtualIdBox> _elementToId = new();
+	private readonly ConditionalWeakTable<AutomationPeer, VirtualIdBox> _peerToId = new();
+	private readonly Dictionary<AutomationPeer, int> _currentIdByPeer = new(ReferenceEqualityComparer.Instance);
 	private readonly Dictionary<int, WeakReference<DependencyObject>> _idToWeakElement = new();
+	private readonly Dictionary<int, WeakReference<AutomationPeer>> _idToWeakPeer = new();
 	private readonly Dictionary<nint, int> _handleToId = new();
+	private readonly Dictionary<nint, List<int>> _idsByHandle = new();
 	private int _nextId;
 
 	private sealed class VirtualIdBox
@@ -67,6 +71,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private readonly Dictionary<int, List<int>> _childrenByVirtualId = new();
 	private readonly Dictionary<int, int> _rowIndexByVirtualId = new();
 	private readonly Dictionary<int, Dictionary<int, AccessibilityNativeActionRequest>> _customActionsByVirtualId = new();
+	private readonly Dictionary<int, (int Start, int End)> _textSelectionByVirtualId = new();
+	private readonly HashSet<int> _clearedTextSelectionIds = new();
+	private readonly HashSet<int> _peerOnlyIds = new();
+	private readonly HashSet<int> _unroutablePeerIds = new();
 	private readonly Dictionary<string, string> _resourceSegmentByAutomationId = new(StringComparer.Ordinal);
 	private readonly Dictionary<string, string> _automationIdByResourceSegment = new(StringComparer.Ordinal);
 	private IReadOnlyList<AccessibilityPeerNode> _cachedPeerTree = Array.Empty<AccessibilityPeerNode>();
@@ -75,6 +83,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private int _cachedModalNodeIndex = -1;
 	private bool _peerTreeDirty = true;
 	private bool _visibleTreeBuilt;
+	private bool _isBuildingPeerTree;
+	private int _peerTreeRevision;
 
 	// Action hook delegate stored for reference-equality check in ClearAdapter.
 	private Func<UIElement, AccessibilityNativeActionRequest, bool>? _registeredActionAccessor;
@@ -107,6 +117,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// TYPE_VIEW_ACCESSIBILITY_FOCUSED = 0x00008000, used to send the focus event directly
 	// when no accessibility service is active (e.g., unit-test environments).
 	private const int TypeViewAccessibilityFocused = 0x00008000;
+	private const int TypeViewAccessibilityFocusCleared = 0x00010000;
 
 	// Android accessibility event type constants (stable per AOSP).
 	private const int TypeViewClicked = 0x1;
@@ -114,9 +125,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private const int TypeViewTextChanged = 0x10;
 	private const int TypeWindowStateChanged = 0x20;
 	private const int TypeViewTextSelectionChanged = 0x2000;
+	private const int TypeViewTextTraversedAtMovementGranularity = 0x20000;
 
 	// Bundle argument keys (stable per the Android/AndroidX specification).
-	private const string ActionArgumentSetTextCharsequenceKey = "action_argument_set_text_charsequence";
 	private const string ActionArgumentProgressValueKey = "android.view.accessibility.action.ARGUMENT_PROGRESS_VALUE";
 
 	// Cached Android action IDs avoid repeated JNI property access in the hot action path.
@@ -133,8 +144,77 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollBackward?.Id ?? 0;
 	private static readonly int s_actionSetTextId =
 		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetText?.Id ?? 0;
+	private static readonly int s_actionSetSelectionId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetSelection?.Id ?? 0;
+	private static readonly int s_actionCopyId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionCopy?.Id ?? 0;
+	private static readonly int s_actionCutId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionCut?.Id ?? 0;
+	private static readonly int s_actionPasteId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionPaste?.Id ?? 0;
+	private static readonly int s_actionNextAtMovementGranularityId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionNextAtMovementGranularity?.Id ?? 0;
+	private static readonly int s_actionPreviousAtMovementGranularityId =
+		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionPreviousAtMovementGranularity?.Id ?? 0;
 	private static readonly int s_actionDismissId =
 		AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionDismiss?.Id ?? 0;
+
+	private PendingTextTraversalEvent? _pendingTextTraversalEvent;
+	private PendingTextSelectionEvent? _pendingTextSelectionEvent;
+
+	private sealed class PendingTextTraversalEvent
+	{
+		internal PendingTextTraversalEvent(
+			int virtualViewId,
+			int fromIndex,
+			int toIndex,
+			int itemCount,
+			int movementGranularity,
+			int actionId)
+		{
+			VirtualViewId = virtualViewId;
+			FromIndex = fromIndex;
+			ToIndex = toIndex;
+			ItemCount = itemCount;
+			MovementGranularity = movementGranularity;
+			ActionId = actionId;
+		}
+
+		internal int VirtualViewId { get; }
+
+		internal int FromIndex { get; }
+
+		internal int ToIndex { get; }
+
+		internal int ItemCount { get; }
+
+		internal int MovementGranularity { get; }
+
+		internal int ActionId { get; }
+	}
+
+	private sealed class PendingTextSelectionEvent
+	{
+		internal PendingTextSelectionEvent(
+			int virtualViewId,
+			int selectionStart,
+			int selectionEnd,
+			int itemCount)
+		{
+			VirtualViewId = virtualViewId;
+			SelectionStart = selectionStart;
+			SelectionEnd = selectionEnd;
+			ItemCount = itemCount;
+		}
+
+		internal int VirtualViewId { get; }
+
+		internal int SelectionStart { get; }
+
+		internal int SelectionEnd { get; }
+
+		internal int ItemCount { get; }
+	}
 
 	private const int CustomActionChangeViewBase = 0x01010000;
 	private const int CustomActionZoomIn = 0x01020001;
@@ -187,49 +267,119 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			string? extraDataKey,
 			Bundle? arguments)
 		{
-			if (_owner.IsVirtualViewAvailable(virtualViewId))
-			{
-				_innerProvider.AddExtraDataToAccessibilityNodeInfo(
-					virtualViewId,
-					info,
-					extraDataKey,
-					arguments);
-			}
+			_owner.ExecuteProviderCallback(
+				nameof(AddExtraDataToAccessibilityNodeInfo),
+				virtualViewId,
+				() =>
+				{
+					if (_owner.IsVirtualViewAvailable(virtualViewId))
+					{
+						_innerProvider.AddExtraDataToAccessibilityNodeInfo(
+							virtualViewId,
+							info,
+							extraDataKey,
+							arguments);
+					}
+				});
 		}
 
 		public override AccessibilityNodeInfoCompat? CreateAccessibilityNodeInfo(int virtualViewId)
-			=> _owner.IsVirtualViewAvailable(virtualViewId)
-				? _innerProvider.CreateAccessibilityNodeInfo(virtualViewId)
-				: null;
+			=> _owner.ExecuteProviderCallback(
+				nameof(CreateAccessibilityNodeInfo),
+				virtualViewId,
+				() =>
+				{
+					if (!_owner.IsVirtualViewAvailable(virtualViewId))
+					{
+						return null;
+					}
+
+					var node = _innerProvider.CreateAccessibilityNodeInfo(virtualViewId);
+					if (virtualViewId == HostId && node is not null)
+					{
+						_owner.RemoveNestedChildrenFromHost(node);
+					}
+
+					return node;
+				},
+				fallback: null);
 
 		public override IList<AccessibilityNodeInfoCompat>? FindAccessibilityNodeInfosByText(
 			string? text,
 			int virtualViewId)
-			=> _owner.IsVirtualViewAvailable(virtualViewId)
-				? _innerProvider.FindAccessibilityNodeInfosByText(text, virtualViewId)
-				: Array.Empty<AccessibilityNodeInfoCompat>();
+			=> _owner.ExecuteProviderCallback(
+				nameof(FindAccessibilityNodeInfosByText),
+				virtualViewId,
+				() => _owner.IsVirtualViewAvailable(virtualViewId)
+					? _innerProvider.FindAccessibilityNodeInfosByText(text, virtualViewId)
+					: Array.Empty<AccessibilityNodeInfoCompat>(),
+				Array.Empty<AccessibilityNodeInfoCompat>());
 
 		public override AccessibilityNodeInfoCompat? FindFocus(int focus)
-		{
-			var focusedId = focus == FocusAccessibility
-				? _owner._nativeFocusedId
-				: focus == FocusInput
-					? _owner._nativeKeyboardFocusedId
-					: -1;
-			return focusedId < 0 || _owner.IsVirtualViewAvailable(focusedId)
-				? _innerProvider.FindFocus(focus)
-				: null;
-		}
+			=> _owner.ExecuteProviderCallback(
+				nameof(FindFocus),
+				focus,
+				() =>
+				{
+					var focusedId = focus == FocusAccessibility
+						? _owner._nativeFocusedId
+						: focus == FocusInput
+							? _owner._nativeKeyboardFocusedId
+							: -1;
+					return focusedId < 0 || _owner.IsVirtualViewAvailable(focusedId)
+						? _innerProvider.FindFocus(focus)
+						: null;
+				},
+				fallback: null);
 
 		public override bool PerformAction(int virtualViewId, int action, Bundle? arguments)
-		{
-			if (!_owner.IsVirtualViewAvailable(virtualViewId) ||
-				!_innerProvider.PerformAction(virtualViewId, action, arguments))
-			{
-				return false;
-			}
+			=> _owner.ExecuteProviderCallback(
+				nameof(PerformAction),
+				virtualViewId,
+				() => _owner.IsVirtualViewAvailable(virtualViewId) &&
+					_innerProvider.PerformAction(virtualViewId, action, arguments),
+				fallback: false);
+	}
 
-			return true;
+	private void ExecuteProviderCallback(string operation, int virtualViewId, System.Action callback)
+	{
+		try
+		{
+			callback();
+		}
+		catch (System.Exception error)
+		{
+			LogProviderCallbackFailure(operation, virtualViewId, error);
+		}
+	}
+
+	private T ExecuteProviderCallback<T>(
+		string operation,
+		int virtualViewId,
+		Func<T> callback,
+		T fallback)
+	{
+		try
+		{
+			return callback();
+		}
+		catch (System.Exception error)
+		{
+			LogProviderCallbackFailure(operation, virtualViewId, error);
+			return fallback;
+		}
+	}
+
+	private void LogProviderCallbackFailure(
+		string operation,
+		int virtualViewId,
+		System.Exception error)
+	{
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error(
+				$"Android accessibility provider callback {operation} failed for virtual ID {virtualViewId}.",
+				error);
 		}
 	}
 
@@ -244,6 +394,19 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return _orderedIdSet.Contains(virtualViewId);
 	}
 
+	private void RemoveNestedChildrenFromHost(AccessibilityNodeInfoCompat hostNode)
+	{
+		EnsureVisibleTreeBuilt();
+		foreach (var virtualViewId in _orderedIds)
+		{
+			if (_parentVirtualIdByVirtualId.TryGetValue(virtualViewId, out var parentId) &&
+				parentId != HostId)
+			{
+				hostNode.RemoveChild(_host, virtualViewId);
+			}
+		}
+	}
+
 	internal bool IsTouchExplorationEnabled
 		=> _host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is
 			AccessibilityManager { IsEnabled: true, IsTouchExplorationEnabled: true };
@@ -256,6 +419,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	internal void MarkAccessibilityTreeDirty()
 	{
+		_peerTreeRevision++;
+		_currentIdByPeer.Clear();
 		_peerTreeDirty = true;
 		_visibleTreeBuilt = false;
 		_cachedPeerTreeRoot = null;
@@ -280,11 +445,23 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		if (_peerTreeDirty || !ReferenceEquals(root, _cachedPeerTreeRoot))
 		{
 			_visibleTreeBuilt = false;
+			IReadOnlyList<AccessibilityPeerNode> peerTree;
+			var buildRevision = _peerTreeRevision;
+			_isBuildingPeerTree = true;
+			try
+			{
+				peerTree = AccessibilityPeerHelper.GetPeerTree(root);
+			}
+			finally
+			{
+				_isBuildingPeerTree = false;
+			}
+
 			_cachedPeerTreeRoot = root;
-			_cachedPeerTree = AccessibilityPeerHelper.GetPeerTree(root);
-			UpdateCachedModal(_cachedPeerTree);
-			RebuildAutomationIdResourceSegments(_cachedPeerTree);
-			_peerTreeDirty = false;
+			_cachedPeerTree = peerTree;
+			UpdateCachedModal(peerTree);
+			RebuildAutomationIdResourceSegments(peerTree);
+			_peerTreeDirty = _peerTreeRevision != buildRevision;
 		}
 
 		return _cachedPeerTree;
@@ -308,13 +485,25 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private void RebuildAutomationIdResourceSegments(IReadOnlyList<AccessibilityPeerNode> tree)
 	{
 		var automationIds = tree
-			.Select(node => node.Owner is UIElement owner
-				? AutomationProperties.GetAutomationId(owner)
-				: null)
+			.Select(node => node.ProviderPeer.GetAutomationId())
 			.Where(id => !string.IsNullOrEmpty(id))
 			.Distinct(StringComparer.Ordinal)
 			.Cast<string>()
 			.ToArray();
+		var liveAutomationIds = automationIds.ToHashSet(StringComparer.Ordinal);
+
+		foreach (var departedId in _resourceSegmentByAutomationId.Keys
+			.Where(id => !liveAutomationIds.Contains(id))
+			.ToArray())
+		{
+			var segment = _resourceSegmentByAutomationId[departedId];
+			_resourceSegmentByAutomationId.Remove(departedId);
+			if (_automationIdByResourceSegment.TryGetValue(segment, out var mappedId) &&
+				string.Equals(mappedId, departedId, StringComparison.Ordinal))
+			{
+				_automationIdByResourceSegment.Remove(segment);
+			}
+		}
 
 		foreach (var automationId in automationIds.Where(IsValidResourceSegment))
 		{
@@ -423,6 +612,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// tree through Uno.UI without a direct reference to this assembly.
 		AccessibilityPeerHelper.AndroidAccessibilityNodeAccessor = GetNodeForElement;
 		AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor = GetVirtualIdForElement;
+		AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor = GetVirtualIdForPeer;
+		AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor = HitTestForRoot;
 		AccessibilityPeerHelper.AndroidAllNodesForRootAccessor = GetAllNodesForRoot;
 		AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor = GetSnapshotForElement;
 		AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor = GetAllSnapshotsForRoot;
@@ -453,6 +644,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			AccessibilityPeerHelper.AndroidAccessibilityNodeAccessor = null;
 			AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor = null;
+			AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor = null;
+			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor = null;
 			AccessibilityPeerHelper.AndroidAllNodesForRootAccessor = null;
 			AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor = null;
 			AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor = null;
@@ -492,6 +685,15 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			ClearNativeKeyboardFocus(_nativeKeyboardFocusedId);
 		}
 		_customActionsByVirtualId.Clear();
+		_textSelectionByVirtualId.Clear();
+		_clearedTextSelectionIds.Clear();
+		_peerOnlyIds.Clear();
+		_unroutablePeerIds.Clear();
+		_idToWeakPeer.Clear();
+		_idToWeakElement.Clear();
+		_handleToId.Clear();
+		_idsByHandle.Clear();
+		_currentIdByPeer.Clear();
 		_orderedIdSet.Clear();
 		_cachedPeerTree = Array.Empty<AccessibilityPeerNode>();
 		_cachedPeerTreeRoot = null;
@@ -504,26 +706,80 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	}
 
 	private bool PerformRawAction(int virtualViewId, int action)
-		=> GetAccessibilityNodeProvider(_host)?.PerformAction(
-			virtualViewId,
-			action,
-			arguments: null) is true;
+	{
+		var provider = GetAccessibilityNodeProvider(_host);
+		if (provider?.PerformAction(virtualViewId, action, arguments: null) is true ||
+			OnPerformActionForVirtualView(virtualViewId, action, arguments: null))
+		{
+			return true;
+		}
+
+		// ExploreByTouchHelper only records accessibility focus when a service enabled
+		// touch exploration, so its clear-focus action fails in environments where
+		// RequestNativeFocusById used the direct-event fallback. Mirror that fallback
+		// here so clearing focus stays symmetric with setting it.
+		return action == ActionClearAccessibilityFocusId &&
+			ClearTrackedNativeAccessibilityFocus(virtualViewId);
+	}
+
+	// Clears the focus this adapter tracks itself, reporting success only when the
+	// requested node is the one currently reported as accessibility-focused.
+	private bool ClearTrackedNativeAccessibilityFocus(int virtualViewId)
+	{
+		if (_nativeFocusedId != virtualViewId)
+		{
+			return false;
+		}
+
+		_nativeFocusedId = -1;
+		TrySendEventForVirtualView(virtualViewId, TypeViewAccessibilityFocusCleared, "focus cleared");
+		InvalidateVirtualView(virtualViewId);
+		return true;
+	}
 
 	// Targeted invalidation (called by AndroidSkiaAccessibility) ---------------
 
-	internal bool InvalidateForHandle(nint handle)
+	// Returns true when the given native-visual handle already has a stable virtual ID.
+	internal bool HasVirtualId(nint handle)
 	{
-		if (_handleToId.TryGetValue(handle, out var id))
+		return _idsByHandle.ContainsKey(handle);
+	}
+
+	// Adds every live virtual ID mapped to the given native-visual handle to
+	// destination, so callers can merge handle- and ID-keyed invalidation requests
+	// into a single set and invalidate each node exactly once.
+	internal void AddVirtualIdsForHandle(nint handle, HashSet<int> destination)
+	{
+		if (!_idsByHandle.TryGetValue(handle, out var ids))
 		{
-			InvalidateVirtualView(id);
+			return;
+		}
+
+		foreach (var id in ids)
+		{
+			destination.Add(id);
+		}
+	}
+
+	internal int? GetCurrentVirtualIdForPeer(AutomationPeer peer)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		return _currentIdByPeer.TryGetValue(peer, out var id) ||
+			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)
+				? id
+				: null;
+	}
+
+	internal bool InvalidateForVirtualId(int virtualId)
+	{
+		if (_orderedIdSet.Contains(virtualId))
+		{
+			InvalidateVirtualView(virtualId);
 			return true;
 		}
 
 		return false;
 	}
-
-	// Returns true when the given native-visual handle already has a stable virtual ID.
-	internal bool HasVirtualId(nint handle) => _handleToId.ContainsKey(handle);
 
 	// Eagerly removes an element's virtual-ID entries from the reverse maps so that
 	// TalkBack stops advertising it before the next full tree scan.
@@ -537,6 +793,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private void PruneSubtree(UIElement element)
 	{
 		var handle = element.Visual.Handle;
+		_idsByHandle.Remove(handle);
 		if (_handleToId.Remove(handle, out var id))
 		{
 			if (_nativeFocusedId == id)
@@ -549,7 +806,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 
 			_idToWeakElement.Remove(id);
+			_idToWeakPeer.Remove(id);
 			_customActionsByVirtualId.Remove(id);
+			_textSelectionByVirtualId.Remove(id);
+			_clearedTextSelectionIds.Remove(id);
+			_peerOnlyIds.Remove(id);
+			_unroutablePeerIds.Remove(id);
 		}
 
 		foreach (var child in element.GetChildren())
@@ -565,8 +827,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	{
 		if (_handleToId.TryGetValue(handle, out var id))
 		{
-			SendEventForVirtualView(id, TypeViewTextChanged);
-			return true;
+			_textSelectionByVirtualId.Remove(id);
+			_clearedTextSelectionIds.Remove(id);
+			return TrySendEventForVirtualView(id, TypeViewTextChanged, "text changed");
 		}
 
 		return false;
@@ -576,8 +839,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	{
 		if (_handleToId.TryGetValue(handle, out var id))
 		{
-			SendEventForVirtualView(id, TypeViewSelected);
-			return true;
+			return TrySendEventForVirtualView(id, TypeViewSelected, "selection changed");
 		}
 
 		return false;
@@ -585,9 +847,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	internal bool SendTextSelectionChangedEventForHandle(nint handle)
 	{
-		if (_handleToId.TryGetValue(handle, out var id))
+		if (_handleToId.TryGetValue(handle, out var id) &&
+			TryGetElement(id, out var element) &&
+			element is UIElement uiElement &&
+			uiElement.GetOrCreateAutomationPeer() is { } peer &&
+			AccessibilityPeerHelper.TryGetText(peer, out var text, out _) &&
+			AccessibilityPeerHelper.TryGetTextSelection(peer, out var selectionStart, out var selectionEnd))
 		{
-			SendEventForVirtualView(id, TypeViewTextSelectionChanged);
+			_clearedTextSelectionIds.Remove(id);
+			_textSelectionByVirtualId[id] = (selectionStart, selectionEnd);
+			SendTextSelectionChangedEvent(id, selectionStart, selectionEnd, text.Length);
 			return true;
 		}
 
@@ -600,16 +869,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	internal bool SendWindowStateChangedEvent(nint handle)
 	{
 		var id = _handleToId.TryGetValue(handle, out var vid) ? vid : HostId;
-		SendEventForVirtualView(id, TypeWindowStateChanged);
-		return true;
+		return TrySendEventForVirtualView(id, TypeWindowStateChanged, "window state changed");
 	}
 
 	internal bool SendClickEventForHandle(nint handle)
 	{
 		if (_handleToId.TryGetValue(handle, out var id))
 		{
-			SendEventForVirtualView(id, TypeViewClicked);
-			return true;
+			return TrySendEventForVirtualView(id, TypeViewClicked, "clicked");
 		}
 
 		return false;
@@ -617,6 +884,26 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	// Sends an Android accessibility announcement for the host view.
 	internal void SendAnnouncement(string text) => _host.AnnounceForAccessibility(text);
+
+	private bool TrySendEventForVirtualView(int virtualViewId, int eventType, string operation)
+	{
+		try
+		{
+			SendEventForVirtualView(virtualViewId, eventType);
+			return true;
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error(
+					$"Android accessibility {operation} event failed for virtual ID {virtualViewId}.",
+					error);
+			}
+
+			return false;
+		}
+	}
 
 	internal void SetFocusForHandle(nint handle)
 	{
@@ -644,6 +931,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return false;
 		}
 
+		if (_nativeFocusedId == id && _orderedIdSet.Contains(id))
+		{
+			return true;
+		}
+
 		_settingNativeFocus = true;
 		try
 		{
@@ -663,7 +955,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			// Fallback for environments where no accessibility service is active
 			// (unit tests, emulator without TalkBack): send the event directly and
 			// invalidate the node so it is re-read with the correct focus state.
-			SendEventForVirtualView(id, TypeViewAccessibilityFocused);
+			TrySendEventForVirtualView(id, TypeViewAccessibilityFocused, "focus");
 			InvalidateVirtualView(id);
 			return true;
 		}
@@ -675,21 +967,51 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private void ClearNativeAccessibilityFocus(int id)
 	{
-		var provider = _innerNodeProvider ?? base.GetAccessibilityNodeProvider(_host);
-		provider?.PerformAction(id, ActionClearAccessibilityFocusId, arguments: null);
-		if (_nativeFocusedId == id)
+		try
 		{
-			_nativeFocusedId = -1;
+			var provider = _innerNodeProvider ?? base.GetAccessibilityNodeProvider(_host);
+			provider?.PerformAction(id, ActionClearAccessibilityFocusId, arguments: null);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error(
+					$"Android accessibility focus cleanup failed for virtual ID {id}.",
+					error);
+			}
+		}
+		finally
+		{
+			if (_nativeFocusedId == id)
+			{
+				_nativeFocusedId = -1;
+			}
 		}
 	}
 
 	private void ClearNativeKeyboardFocus(int id)
 	{
-		var provider = _innerNodeProvider ?? base.GetAccessibilityNodeProvider(_host);
-		provider?.PerformAction(id, ActionClearFocusId, arguments: null);
-		if (_nativeKeyboardFocusedId == id)
+		try
 		{
-			_nativeKeyboardFocusedId = -1;
+			var provider = _innerNodeProvider ?? base.GetAccessibilityNodeProvider(_host);
+			provider?.PerformAction(id, ActionClearFocusId, arguments: null);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error(
+					$"Android keyboard focus cleanup failed for virtual ID {id}.",
+					error);
+			}
+		}
+		finally
+		{
+			if (_nativeKeyboardFocusedId == id)
+			{
+				_nativeKeyboardFocusedId = -1;
+			}
 		}
 	}
 
@@ -703,7 +1025,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	// Virtual ID allocation and reverse-map maintenance -------------------------
 
-	private int GetOrCreateVirtualId(DependencyObject element)
+	private int GetOrCreateElementVirtualId(DependencyObject element)
 	{
 		if (_elementToId.TryGetValue(element, out var box))
 		{
@@ -742,6 +1064,142 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return id;
 	}
 
+	private int GetOrCreatePeerVirtualId(AutomationPeer identityPeer)
+	{
+		if (!_peerToId.TryGetValue(identityPeer, out var box))
+		{
+			box = new VirtualIdBox { Value = Interlocked.Increment(ref _nextId) };
+			_peerToId.Add(identityPeer, box);
+		}
+
+		SetWeakTarget(_idToWeakPeer, box.Value, identityPeer);
+		return box.Value;
+	}
+
+	private void BindVirtualId(
+		int id,
+		AccessibilityPeerNode node,
+		bool mapOwnerHandle)
+	{
+		SetWeakTarget(_idToWeakPeer, id, node.ProviderPeer);
+
+		UIElement? routingOwner = node.Owner;
+		if (routingOwner is null)
+		{
+			node.ProviderPeer.TryGetProviderOwner(out routingOwner);
+		}
+
+		if (routingOwner is not null)
+		{
+			SetWeakTarget(_idToWeakElement, id, routingOwner);
+			_unroutablePeerIds.Remove(id);
+			var handle = routingOwner.Visual.Handle;
+			if (!_idsByHandle.TryGetValue(handle, out var ids))
+			{
+				ids = new List<int>();
+				_idsByHandle[handle] = ids;
+				_adapter?.OnVirtualIdAssigned(handle);
+			}
+			if (!ids.Contains(id))
+			{
+				ids.Add(id);
+			}
+		}
+		else
+		{
+			_idToWeakElement.Remove(id);
+			_unroutablePeerIds.Add(id);
+		}
+
+		if (node.Owner is null)
+		{
+			_peerOnlyIds.Add(id);
+		}
+		else
+		{
+			_peerOnlyIds.Remove(id);
+		}
+
+		if (mapOwnerHandle && node.Owner is UIElement owner)
+		{
+			var handle = owner.Visual.Handle;
+			var wasAbsent = !_handleToId.ContainsKey(handle);
+			_handleToId[handle] = id;
+			if (wasAbsent)
+			{
+				_adapter?.OnVirtualIdAssigned(handle);
+			}
+		}
+	}
+
+	private static void SetWeakTarget<T>(
+		Dictionary<int, WeakReference<T>> targets,
+		int id,
+		T target)
+		where T : class
+	{
+		if (targets.TryGetValue(id, out var weakTarget))
+		{
+			weakTarget.SetTarget(target);
+		}
+		else
+		{
+			targets[id] = new WeakReference<T>(target);
+		}
+	}
+
+	private static bool IsCanonicalProviderForOwner(AccessibilityPeerNode node)
+	{
+		if (node.Owner is null)
+		{
+			return false;
+		}
+
+		var canonicalPeer = node.Owner
+			.GetOrCreateAutomationPeer()
+			?.ResolveProviderPeer(resolveEventsSource: true);
+		return ReferenceEquals(node.ProviderPeer, canonicalPeer);
+	}
+
+	private bool TryGetVirtualId(AutomationPeer peer, out int id)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if ((_currentIdByPeer.TryGetValue(peer, out id) ||
+			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)) &&
+			_orderedIdSet.Contains(id))
+		{
+			return true;
+		}
+
+		if (resolvedPeer.TryGetProviderOwner(out var owner))
+		{
+			return TryGetVirtualId(owner, out id);
+		}
+
+		id = -1;
+		return false;
+	}
+
+	internal bool InvalidateForPeer(AutomationPeer peer)
+	{
+		if (_isBuildingPeerTree)
+		{
+			return false;
+		}
+
+		EnsureVisibleTreeBuilt();
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if ((_currentIdByPeer.TryGetValue(peer, out var id) ||
+			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)) &&
+			_orderedIdSet.Contains(id))
+		{
+			InvalidateVirtualView(id);
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool TryGetElement(int virtualViewId, [NotNullWhen(true)] out DependencyObject? element)
 	{
 		if (_idToWeakElement.TryGetValue(virtualViewId, out var weakRef) &&
@@ -766,6 +1224,22 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
+	private bool TryGetVisiblePeer(
+		int virtualViewId,
+		[NotNullWhen(true)] out AutomationPeer? peer)
+	{
+		EnsureVisibleTreeBuilt();
+		if (_orderedIdSet.Contains(virtualViewId) &&
+			_idToWeakPeer.TryGetValue(virtualViewId, out var weakPeer) &&
+			weakPeer.TryGetTarget(out peer))
+		{
+			return true;
+		}
+
+		peer = null;
+		return false;
+	}
+
 	private void EnsureVisibleTreeBuilt()
 	{
 		if (!_visibleTreeBuilt)
@@ -783,9 +1257,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private void PruneRegistryToCurrentTree(HashSet<int> currentIds)
 	{
 		List<int>? toRemove = null;
-		foreach (var (id, weakRef) in _idToWeakElement)
+		foreach (var (id, weakPeer) in _idToWeakPeer)
 		{
-			if (!weakRef.TryGetTarget(out _) || !currentIds.Contains(id))
+			if (!weakPeer.TryGetTarget(out _) || !currentIds.Contains(id))
 			{
 				(toRemove ??= new List<int>()).Add(id);
 			}
@@ -807,7 +1281,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			foreach (var id in toRemove)
 			{
 				_idToWeakElement.Remove(id);
+				_idToWeakPeer.Remove(id);
 				_customActionsByVirtualId.Remove(id);
+				_textSelectionByVirtualId.Remove(id);
+				_clearedTextSelectionIds.Remove(id);
+				_peerOnlyIds.Remove(id);
+				_unroutablePeerIds.Remove(id);
 			}
 		}
 
@@ -842,17 +1321,54 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	{
 		base.OnPopulateEventForVirtualView(virtualViewId, e);
 
-		if ((int)e.EventType != TypeViewAccessibilityFocused)
+		var eventType = (int)e.EventType;
+		if (eventType == TypeViewTextSelectionChanged &&
+			_pendingTextSelectionEvent is { } selection &&
+			selection.VirtualViewId == virtualViewId)
 		{
+			e.FromIndex = selection.SelectionStart;
+			e.ToIndex = selection.SelectionEnd;
+			e.ItemCount = selection.ItemCount;
 			return;
 		}
 
-		if (!TryGetVisibleElement(virtualViewId, out var depObj) || depObj is not UIElement uiElement)
+		if (eventType == TypeViewTextTraversedAtMovementGranularity &&
+			_pendingTextTraversalEvent is { } traversal &&
+			traversal.VirtualViewId == virtualViewId)
+		{
+			e.FromIndex = traversal.FromIndex;
+			e.ToIndex = traversal.ToIndex;
+			e.ItemCount = traversal.ItemCount;
+			e.MovementGranularity =
+				(global::Android.Views.Accessibility.MovementGranularity)traversal.MovementGranularity;
+			e.SetAction((global::Android.AccessibilityServices.GlobalAction)traversal.ActionId);
+			return;
+		}
+
+		if (eventType == TypeViewAccessibilityFocusCleared)
+		{
+			if (_nativeFocusedId == virtualViewId)
+			{
+				_nativeFocusedId = -1;
+			}
+			return;
+		}
+
+		if (eventType != TypeViewAccessibilityFocused)
 		{
 			return;
 		}
 
 		_nativeFocusedId = virtualViewId;
+
+		if (!TryGetVisiblePeer(virtualViewId, out var focusedPeer) ||
+			_unroutablePeerIds.Contains(virtualViewId) ||
+			!focusedPeer.IsKeyboardFocusable() ||
+			!TryGetVisibleElement(virtualViewId, out var depObj) ||
+			depObj is not UIElement uiElement)
+		{
+			return;
+		}
 
 		// If _settingNativeFocus is set, this event originated from our own
 		// RequestNativeFocusById call; no need to sync XAML focus back.
@@ -864,64 +1380,116 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// Post to the main thread to avoid re-entrant calls within the event-send
 		// stack frame, which can happen when this is triggered synchronously from
 		// provider.PerformAction inside RequestNativeFocusById.
-		new Handler(Looper.MainLooper!).Post(new Runnable(() =>
+		if (!_host.Post(new Runnable(() =>
 		{
-			if (_settingNativeFocus)
-			{
-				return;
-			}
-
-			_settingNativeFocus = true;
+			var ownsFocusGuard = false;
 			try
 			{
+				if (_adapter is null ||
+					_nativeFocusedId != virtualViewId ||
+					_settingNativeFocus ||
+					!TryGetVisiblePeer(virtualViewId, out var currentPeer) ||
+					!ReferenceEquals(currentPeer, focusedPeer) ||
+					!TryGetVisibleElement(virtualViewId, out var currentElement) ||
+					!ReferenceEquals(currentElement, uiElement))
+				{
+					return;
+				}
+
+				_settingNativeFocus = true;
+				ownsFocusGuard = true;
 				if (uiElement is Control { IsFocusable: true, IsEnabled: true } control
 					&& control.Visibility == Visibility.Visible)
 				{
 					control.Focus(FocusState.Pointer);
 				}
 			}
+			catch (System.Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(
+						$"Android accessibility focus synchronization failed for virtual ID {virtualViewId}.",
+						error);
+				}
+			}
 			finally
 			{
-				_settingNativeFocus = false;
+				if (ownsFocusGuard)
+				{
+					_settingNativeFocus = false;
+				}
 			}
-		}));
+		})) && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn(
+				$"Unable to schedule Android accessibility focus synchronization for virtual ID {virtualViewId}.");
+		}
 	}
 
 	protected override int GetVirtualViewAt(float x, float y)
 	{
-		var rootElement = GetRootElement();
-		if (rootElement is null)
-		{
-			return HostId;
-		}
-
 		var logicalPoint = new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels();
-		var (element, _) = VisualTreeHelper.HitTest(logicalPoint, rootElement.XamlRoot?.VisualTree.RootElement);
-		if (element is null)
+		EnsureVisibleTreeBuilt();
+		var rootElement = GetRootElement();
+		var (hitElement, _) = rootElement is null
+			? (null, default)
+			: VisualTreeHelper.HitTest(logicalPoint, rootElement.XamlRoot?.VisualTree.RootElement);
+		for (var current = hitElement; current is not null;
+			current = current.GetUIElementAdjustedParentInternal())
 		{
-			return HostId;
-		}
-
-		DependencyObject? current = element;
-		while (current is not null)
-		{
-			if (current is UIElement uiElement)
+			if (_handleToId.TryGetValue(current.Visual.Handle, out var primaryId) &&
+				_orderedIdSet.Contains(primaryId))
 			{
-				var accessibilityView = AutomationProperties.GetAccessibilityView(uiElement);
-				if (accessibilityView != AccessibilityView.Raw)
-				{
-					var peer = uiElement.GetOrCreateAutomationPeer();
-					if (peer is not null && (peer.IsControlElement() || peer.IsContentElement()))
-					{
-						return GetOrCreateVirtualId(uiElement);
-					}
-				}
+				return primaryId;
 			}
 
-			current = (current as UIElement)?.GetUIElementAdjustedParentInternal();
+			if (!_idsByHandle.TryGetValue(current.Visual.Handle, out var ids))
+			{
+				continue;
+			}
+
+			for (var i = ids.Count - 1; i >= 0; i--)
+			{
+				if (ContainsPoint(ids[i], logicalPoint))
+				{
+					return ids[i];
+				}
+			}
+		}
+
+		for (var i = _orderedIds.Count - 1; i >= 0; i--)
+		{
+			var id = _orderedIds[i];
+			if ((_peerOnlyIds.Contains(id) || !_handleToId.ContainsValue(id)) &&
+				ContainsPoint(id, logicalPoint))
+			{
+				return id;
+			}
 		}
 
 		return HostId;
+	}
+
+	private bool ContainsPoint(int virtualViewId, Windows.Foundation.Point logicalPoint)
+	{
+		if (!TryGetVisiblePeer(virtualViewId, out var peer))
+		{
+			return false;
+		}
+
+		var bounds = peer.ResolveProviderPeer(resolveEventsSource: true).GetBoundingRectangle();
+		if (!HasFiniteBounds(bounds) &&
+			TryGetElement(virtualViewId, out var element) &&
+			element is UIElement uiElement)
+		{
+			bounds = GetElementLogicalBounds(uiElement);
+		}
+
+		return HasFiniteBounds(bounds) &&
+			bounds.Width > 0 &&
+			bounds.Height > 0 &&
+			bounds.Contains(logicalPoint);
 	}
 
 	protected override void OnVirtualViewKeyboardFocusChanged(int virtualViewId, bool hasFocus)
@@ -937,6 +1505,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		if (_settingNativeFocus ||
+			_unroutablePeerIds.Contains(virtualViewId) ||
+			!TryGetVisiblePeer(virtualViewId, out var peer) ||
+			!peer.IsKeyboardFocusable() ||
 			!TryGetVisibleElement(virtualViewId, out var element) ||
 			element is not Control { IsFocusable: true, IsEnabled: true } control)
 		{
@@ -992,14 +1563,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_parentVirtualIdByVirtualId.Clear();
 		_childrenByVirtualId.Clear();
 		_rowIndexByVirtualId.Clear();
+		_idsByHandle.Clear();
+		_currentIdByPeer.Clear();
 
-		// Assign stable virtual IDs to nodes that have a realized container (Owner != null).
-		// Unrealized ItemAutomationPeer nodes (container not yet materialized) carry
-		// Owner=null in the shared peer tree; they are intentionally skipped here so
-		// no virtual ID is created and no parent-handle identity is borrowed.
-		// PruneRegistryToCurrentTree below removes IDs for items that were realized on
-		// a previous scan but are now unrealized; the CWT (_elementToId) retains the
-		// stable ID so the same container element gets the same ID when re-realized.
+		// Item and virtual peers are keyed by provider identity so recycled or shared
+		// owners cannot transfer a logical node's native ID to another peer.
 		for (var i = 0; i < tree.Count; i++)
 		{
 			if (modalNodeIndices is not null && !modalNodeIndices.Contains(i))
@@ -1008,16 +1576,28 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 
 			var node = tree[i];
-			if (node.Owner is DependencyObject owner)
+			if (node.Peer is ItemAutomationPeer && node.Owner is null)
 			{
-				var id = GetOrCreateVirtualId(owner);
-				_orderedIds.Add(id);
-				_orderedIdSet.Add(id);
-				_virtualIdByNodeIndex[i] = id;
+				continue;
 			}
-			// node.Owner == null: unrealized virtual item — skip this slot entirely.
-			// FindNearestMappedParentId walks past gaps, so realized siblings of an
-			// unrealized item are still correctly nested under the container peer.
+
+			var isCanonicalProvider = IsCanonicalProviderForOwner(node);
+			var usePeerIdentity =
+				node.Peer is ItemAutomationPeer ||
+				node.Owner is null ||
+				!ReferenceEquals(node.Peer, node.ProviderPeer) ||
+				!isCanonicalProvider;
+			var id = usePeerIdentity
+				? GetOrCreatePeerVirtualId(node.ProviderPeer)
+				: GetOrCreateElementVirtualId(node.Owner!);
+			BindVirtualId(id, node, mapOwnerHandle: node.Owner is not null && isCanonicalProvider);
+			_currentIdByPeer[node.Peer] = id;
+			_currentIdByPeer[node.ProviderPeer] = id;
+			if (_orderedIdSet.Add(id))
+			{
+				_orderedIds.Add(id);
+			}
+			_virtualIdByNodeIndex[i] = id;
 		}
 
 		// Build parent/children maps now that all IDs are assigned.
@@ -1035,6 +1615,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 
 			var parentId = FindNearestMappedParentId(tree, node.ParentIndex);
+			if (parentId == id)
+			{
+				parentId = HostId;
+			}
 			_parentVirtualIdByVirtualId[id] = parentId;
 
 			if (parentId != HostId)
@@ -1045,8 +1629,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 					_childrenByVirtualId[parentId] = childList;
 				}
 
-				_rowIndexByVirtualId[id] = childList.Count;
-				childList.Add(id);
+				if (!childList.Contains(id))
+				{
+					_rowIndexByVirtualId[id] = childList.Count;
+					childList.Add(id);
+				}
 			}
 		}
 
@@ -1091,14 +1678,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle? arguments)
 	{
-		if (!TryGetVisibleElement(virtualViewId, out var element) ||
-			element is not UIElement uiElement)
+		if (!TryGetVisiblePeer(virtualViewId, out var peer))
 		{
 			return false;
 		}
 
-		var peer = uiElement.GetOrCreateAutomationPeer();
-		if (peer is null)
+		var resolvedPeer = AccessibilityPeerHelper.ResolveProviderPeer(peer);
+		if ((action == s_actionSetSelectionId ||
+			action == s_actionNextAtMovementGranularityId ||
+			action == s_actionPreviousAtMovementGranularityId) &&
+			(!resolvedPeer.IsEnabled() || resolvedPeer.IsPassword()))
 		{
 			return false;
 		}
@@ -1108,7 +1697,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			return AccessibilityPeerHelper.TryToggle(peer)
 				|| AccessibilityPeerHelper.TryToggleSelection(peer)
-				|| AccessibilityPeerHelper.TryInvokeDefaultAction(peer);
+				|| AccessibilityPeerHelper.TryInvokeDefaultAction(peer)
+				|| TryToggleExpandCollapse(peer);
 		}
 
 		// Expand/collapse is advertised selectively by OnPopulateNodeForVirtualView.
@@ -1151,6 +1741,49 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			var text = GetSetTextArgument(arguments);
 			return text is not null && AccessibilityPeerHelper.TrySetValue(peer, text);
+		}
+
+		if (action == s_actionSetSelectionId)
+		{
+			var hasStart =
+				arguments?.ContainsKey(AccessibilityNodeInfo.ActionArgumentSelectionStartInt) is true;
+			var hasEnd =
+				arguments?.ContainsKey(AccessibilityNodeInfo.ActionArgumentSelectionEndInt) is true;
+			if (hasStart != hasEnd)
+			{
+				return false;
+			}
+
+			return TrySetTextSelection(
+				virtualViewId,
+				peer,
+				hasStart
+					? arguments!.GetInt(AccessibilityNodeInfo.ActionArgumentSelectionStartInt)
+					: -1,
+				hasEnd
+					? arguments!.GetInt(AccessibilityNodeInfo.ActionArgumentSelectionEndInt)
+					: -1);
+		}
+
+		if (action == s_actionNextAtMovementGranularityId ||
+			action == s_actionPreviousAtMovementGranularityId)
+		{
+			return TryMoveTextAtGranularity(virtualViewId, peer, action, arguments);
+		}
+
+		if (action == s_actionCopyId)
+		{
+			return AccessibilityPeerHelper.TryCopyText(peer);
+		}
+
+		if (action == s_actionCutId)
+		{
+			return AccessibilityPeerHelper.TryCutText(peer);
+		}
+
+		if (action == s_actionPasteId)
+		{
+			return AccessibilityPeerHelper.TryPasteText(peer);
 		}
 
 		// Set progress / range value (Slider, ProgressBar, custom range controls).
@@ -1196,6 +1829,25 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		return provider.HorizontallyScrollable &&
 			AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
+	}
+
+	private static bool TryToggleExpandCollapse(AutomationPeer peer)
+	{
+		var resolvedPeer = AccessibilityPeerHelper.ResolveProviderPeer(peer);
+		if (!resolvedPeer.IsEnabled() ||
+			resolvedPeer.GetPattern(PatternInterface.ExpandCollapse) is not IExpandCollapseProvider provider)
+		{
+			return false;
+		}
+
+		return provider.ExpandCollapseState switch
+		{
+			ExpandCollapseState.Collapsed or ExpandCollapseState.PartiallyExpanded
+				=> AccessibilityPeerHelper.TryExpand(resolvedPeer),
+			ExpandCollapseState.Expanded
+				=> AccessibilityPeerHelper.TryCollapse(resolvedPeer),
+			_ => false,
+		};
 	}
 
 	private static bool ExecuteAdvancedAction(
@@ -1245,8 +1897,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
 	{
-		if (!TryGetVisibleElement(virtualViewId, out var element) ||
-			element is not UIElement uiElement)
+		if (!TryGetVisiblePeer(virtualViewId, out var peer))
 		{
 			node.ContentDescription = "";
 			node.Enabled = false;
@@ -1260,35 +1911,35 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		var peer = uiElement.GetOrCreateAutomationPeer();
-		if (peer is null)
+		UIElement? uiElement = null;
+		if (_idToWeakElement.TryGetValue(virtualViewId, out var weakElement) &&
+			weakElement.TryGetTarget(out var element))
 		{
-			node.ContentDescription = "";
-			node.Enabled = false;
-			node.ClassName = "android.view.View";
-			node.VisibleToUser = false;
-#pragma warning disable CS0618
-			node.SetBoundsInParent(new global::Android.Graphics.Rect(0, 0, 1, 1));
-#pragma warning restore CS0618
-			node.SetBoundsInScreen(new global::Android.Graphics.Rect(0, 0, 1, 1));
-			return;
+			uiElement = element as UIElement;
 		}
+		var semanticOwner = _peerOnlyIds.Contains(virtualViewId) ? null : uiElement;
 
 		var effectivePeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		var logicalRect = GetLogicalBounds(uiElement, effectivePeer);
+		var peerBounds = effectivePeer.GetBoundingRectangle();
+		var logicalRect = HasFiniteBounds(peerBounds)
+			? peerBounds
+			: uiElement is not null
+				? GetElementLogicalBounds(uiElement)
+				: Windows.Foundation.Rect.Empty;
 		var physicalRect = logicalRect.LogicalToPhysicalPixels();
 		var parentPhysicalRect = physicalRect;
 		if (_parentVirtualIdByVirtualId.TryGetValue(virtualViewId, out var boundsParentId) &&
 			boundsParentId != HostId &&
-			TryGetElement(boundsParentId, out var parentElement) &&
-			parentElement is UIElement parentUiElement)
+			TryGetVisiblePeer(boundsParentId, out var parentPeer))
 		{
-			var parentPeer = parentUiElement
-				.GetOrCreateAutomationPeer()
-				?.ResolveProviderPeer(resolveEventsSource: true);
-			var parentLogicalRect = parentPeer is null
-				? GetElementLogicalBounds(parentUiElement)
-				: GetLogicalBounds(parentUiElement, parentPeer);
+			var effectiveParentPeer = parentPeer.ResolveProviderPeer(resolveEventsSource: true);
+			var parentBounds = effectiveParentPeer.GetBoundingRectangle();
+			var parentLogicalRect = HasFiniteBounds(parentBounds)
+				? parentBounds
+				: TryGetElement(boundsParentId, out var parentElement) &&
+					parentElement is UIElement parentUiElement
+						? GetElementLogicalBounds(parentUiElement)
+						: Windows.Foundation.Rect.Empty;
 			parentPhysicalRect = new Windows.Foundation.Rect(
 					logicalRect.X - parentLogicalRect.X,
 					logicalRect.Y - parentLogicalRect.Y,
@@ -1317,14 +1968,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var isPassword = effectivePeer.IsPassword();
 		bool isEnabled = effectivePeer.IsEnabled();
 		var invokeProvider =
-			effectivePeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider ??
-			effectivePeer as IInvokeProvider;
+			effectivePeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
 		var toggleProvider =
-			effectivePeer.GetPattern(PatternInterface.Toggle) as IToggleProvider ??
-			effectivePeer as IToggleProvider;
+			effectivePeer.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 		var selectionItemProvider =
-			effectivePeer.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider ??
-			effectivePeer as ISelectionItemProvider;
+			effectivePeer.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+		var expandProvider =
+			effectivePeer.GetPattern(PatternInterface.ExpandCollapse) as IExpandCollapseProvider;
+		var canToggleExpandCollapse = expandProvider?.ExpandCollapseState is
+			ExpandCollapseState.Collapsed or
+			ExpandCollapseState.PartiallyExpanded or
+			ExpandCollapseState.Expanded;
 
 		// Core semantics (no password text leakage).
 		node.ContentDescription = effectivePeer.GetName() ?? "";
@@ -1339,7 +1993,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		// AutomationId: normalize to a valid Android resource name segment, expose the
 		// original unmodified value in UniqueId and Extras for machine-readable lookup.
-		var automationId = AutomationProperties.GetAutomationId(uiElement);
+		var automationId = effectivePeer.GetAutomationId();
 		if (!string.IsNullOrEmpty(automationId))
 		{
 			var segment = _resourceSegmentByAutomationId.TryGetValue(automationId, out var mappedSegment)
@@ -1354,7 +2008,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var isClickable = isEnabled
 			&& (invokeProvider is not null ||
 				toggleProvider is not null ||
-				selectionItemProvider is not null);
+				selectionItemProvider is not null ||
+				canToggleExpandCollapse);
 		if (isClickable)
 		{
 			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
@@ -1380,13 +2035,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// Selection state — always visible, not an action.
 		if (selectionItemProvider is not null)
 		{
-			node.Selected = isEnabled
-				? selectionItemProvider.IsSelected
-				: uiElement is SelectorItem { IsSelected: true };
+			node.Selected = selectionItemProvider.IsSelected;
 		}
 
 		// ExpandCollapse — suppressed when disabled.
-		if (isEnabled && effectivePeer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandProvider)
+		if (isEnabled && expandProvider is not null)
 		{
 			var ecState = expandProvider.ExpandCollapseState;
 			if (ecState is ExpandCollapseState.Collapsed or ExpandCollapseState.PartiallyExpanded)
@@ -1407,8 +2060,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 			if (!rangeProvider.IsReadOnly && isEnabled)
 			{
-				node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollForward);
-				node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollBackward);
+				if (rangeProvider.Value < rangeProvider.Maximum)
+				{
+					node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollForward);
+				}
+				if (rangeProvider.Value > rangeProvider.Minimum)
+				{
+					node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollBackward);
+				}
 
 				if (s_actionSetProgressId >= 0
 					&& AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetProgress is { } setProgressAction)
@@ -1421,16 +2080,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			&& effectivePeer.GetPattern(PatternInterface.Scroll) is IScrollProvider scrollProvider
 			&& (scrollProvider.HorizontallyScrollable || scrollProvider.VerticallyScrollable))
 		{
+			node.Scrollable = true;
 			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollForward);
 			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionScrollBackward);
 		}
 
 		// Text.
-		SetTextInfo(node, effectivePeer, controlType, isPassword, isEnabled);
+		SetTextInfo(node, virtualViewId, effectivePeer, controlType, isPassword, isEnabled);
 
 		// Collection / collection-item.
 		SetCollectionInfo(node, effectivePeer, controlType);
-		SetCollectionItemInfo(node, effectivePeer, controlType, uiElement, virtualViewId);
+		SetCollectionItemInfo(node, effectivePeer, controlType, semanticOwner, virtualViewId);
 
 		// Dismiss — suppressed when disabled.
 		if (isEnabled && effectivePeer.GetPattern(PatternInterface.Window) is not null)
@@ -1486,11 +2146,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		// Relations are applied after parent/child maps are populated.
-		SetRelations(node, effectivePeer, uiElement);
+		SetRelations(node, effectivePeer);
 
 		// Additional metadata.
-		SetMetadata(node, effectivePeer, uiElement);
-		ApplyCulture(node, uiElement);
+		SetMetadata(node, effectivePeer, semanticOwner);
+		ApplyCulture(node, effectivePeer);
 	}
 
 	private static Windows.Foundation.Rect GetLogicalBounds(UIElement element, AutomationPeer peer)
@@ -1631,8 +2291,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	}
 
 	// Text node properties.
-	private static void SetTextInfo(
+	private void SetTextInfo(
 		AccessibilityNodeInfoCompat node,
+		int virtualViewId,
 		AutomationPeer effectivePeer,
 		AutomationControlType controlType,
 		bool isPassword,
@@ -1646,25 +2307,108 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// isReadOnly is true when disabled or when the provider reports read-only.
 		bool isReadOnly = !isEnabled || valueProvider?.IsReadOnly != false;
 		bool isEditable = isEdit && !isReadOnly;
+		bool canSetText = isEditable && AccessibilityPeerHelper.CanSetText(effectivePeer);
+		bool isMultiline = isEdit &&
+			effectivePeer is FrameworkElementAutomationPeer { Owner: { } editOwner } &&
+			(editOwner is TextBox { AcceptsReturn: true } || editOwner is RichEditBox);
 
-		if (valueProvider is not null && !isPassword)
+		if (!isPassword &&
+			AccessibilityPeerHelper.TryGetText(
+				effectivePeer,
+				out var text,
+				out var supportsSelection))
+		{
+			node.Text = text;
+
+			if (text.Length > 0)
+			{
+				node.MovementGranularities =
+					AccessibilityPeerHelper.GetTextMovementGranularities(effectivePeer);
+				node.TextSelectable = supportsSelection;
+
+				if (_clearedTextSelectionIds.Contains(virtualViewId))
+				{
+					if (supportsSelection &&
+						AccessibilityPeerHelper.TryGetTextSelection(
+							effectivePeer,
+							out var currentSelectionStart,
+							out var currentSelectionEnd) &&
+						_textSelectionByVirtualId.TryGetValue(virtualViewId, out var baseline) &&
+						(currentSelectionStart != baseline.Start || currentSelectionEnd != baseline.End))
+					{
+						_clearedTextSelectionIds.Remove(virtualViewId);
+						_textSelectionByVirtualId[virtualViewId] =
+							(currentSelectionStart, currentSelectionEnd);
+						node.SetTextSelection(currentSelectionStart, currentSelectionEnd);
+					}
+				}
+				else if (AccessibilityPeerHelper.TryGetTextSelection(
+					effectivePeer,
+					out var selectionStart,
+					out var selectionEnd))
+				{
+					node.SetTextSelection(selectionStart, selectionEnd);
+					_textSelectionByVirtualId[virtualViewId] = (selectionStart, selectionEnd);
+				}
+				else if (_textSelectionByVirtualId.TryGetValue(virtualViewId, out var selection))
+				{
+					var clampedSelectionStart = System.Math.Clamp(selection.Start, 0, text.Length);
+					var clampedSelectionEnd = System.Math.Clamp(selection.End, 0, text.Length);
+					_textSelectionByVirtualId[virtualViewId] =
+						(clampedSelectionStart, clampedSelectionEnd);
+					node.SetTextSelection(clampedSelectionStart, clampedSelectionEnd);
+				}
+
+				if (isEnabled &&
+					AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetSelection is { } setSelectionAction)
+				{
+					node.AddAction(setSelectionAction);
+				}
+
+				if (isEnabled &&
+					AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionNextAtMovementGranularity is { } nextAction)
+				{
+					node.AddAction(nextAction);
+				}
+
+				if (isEnabled &&
+					AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionPreviousAtMovementGranularity is { } previousAction)
+				{
+					node.AddAction(previousAction);
+				}
+
+				if (!isEnabled)
+				{
+					node.MovementGranularities = 0;
+				}
+			}
+		}
+		else if (valueProvider is not null && !isPassword)
 		{
 			node.Text = valueProvider.Value;
 		}
 
 		node.Editable = isEditable;
 
-		if (isEditable)
+		if (canSetText)
 		{
 			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetText);
 		}
 
-		if (isEdit)
+		if (AccessibilityPeerHelper.CanCopyText(effectivePeer))
 		{
-			node.MultiLine = effectivePeer is FrameworkElementAutomationPeer { Owner: { } editOwner }
-				&& editOwner is TextBox tb ? tb.AcceptsReturn
-				: effectivePeer is FrameworkElementAutomationPeer { Owner: RichEditBox };
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionCopy);
 		}
+		if (AccessibilityPeerHelper.CanCutText(effectivePeer))
+		{
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionCut);
+		}
+		if (AccessibilityPeerHelper.CanPasteText(effectivePeer))
+		{
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionPaste);
+		}
+
+		node.MultiLine = isMultiline;
 	}
 
 	private static void SetCollectionInfo(
@@ -1708,7 +2452,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		AccessibilityNodeInfoCompat node,
 		AutomationPeer effectivePeer,
 		AutomationControlType controlType,
-		UIElement uiElement,
+		UIElement? uiElement,
 		int virtualViewId)
 	{
 		bool isHeading = controlType == AutomationControlType.HeaderItem;
@@ -1768,31 +2512,22 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// Relations: LabeledBy is native, DescribedBy contributes to hint, and flows define traversal.
 	private void SetRelations(
 		AccessibilityNodeInfoCompat node,
-		AutomationPeer effectivePeer,
-		UIElement uiElement)
+		AutomationPeer effectivePeer)
 	{
-		if (effectivePeer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
-			IsSameRoot(uiElement, labeledByPeer.Owner) &&
-			_elementToId.TryGetValue(labeledByPeer.Owner, out var labeledByBox) &&
-			_orderedIdSet.Contains(labeledByBox.Value))
+		if (effectivePeer.GetLabeledBy() is { } labeledByPeer &&
+			TryGetVirtualId(labeledByPeer, out var labeledById))
 		{
-			node.SetLabeledBy(_host, labeledByBox.Value);
+			node.SetLabeledBy(_host, labeledById);
 		}
 
-		// DescribedBy: targets are UIElement/DependencyObject — resolve each to its name via peer.
-		var describedByRaw = uiElement.GetValue(AutomationProperties.DescribedByProperty)
-			as IList<DependencyObject>;
-		if (describedByRaw is { Count: > 0 })
+		if (effectivePeer.GetDescribedBy() is { } describedByPeers)
 		{
 			var descriptions = new System.Text.StringBuilder(node.HintText ?? "");
-			foreach (var target in describedByRaw)
+			foreach (var describedByPeer in describedByPeers)
 			{
-				var desc = target is UIElement targetElement &&
-					IsSameRoot(uiElement, targetElement) &&
-					_elementToId.TryGetValue(targetElement, out var targetBox) &&
-					_orderedIdSet.Contains(targetBox.Value)
-						? targetElement.GetOrCreateAutomationPeer()?.GetName()
-						: null;
+				var desc = TryGetVirtualId(describedByPeer, out _)
+					? describedByPeer.GetName()
+					: null;
 				if (!string.IsNullOrEmpty(desc))
 				{
 					if (descriptions.Length > 0)
@@ -1810,37 +2545,25 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 		}
 
-		// FlowsTo: read from DP (no lazy allocation); filter to same-root live targets.
-		var flowsToRaw = uiElement.GetValue(AutomationProperties.FlowsToProperty)
-			as IList<DependencyObject>;
-		if (flowsToRaw is { Count: > 0 })
+		if (effectivePeer.GetFlowsTo() is { } flowsToPeers)
 		{
-			foreach (var target in flowsToRaw)
+			foreach (var targetPeer in flowsToPeers)
 			{
-				if (target is UIElement targetEl &&
-					IsSameRoot(uiElement, targetEl) &&
-					_elementToId.TryGetValue(targetEl, out var targetBox) &&
-					_orderedIdSet.Contains(targetBox.Value))
+				if (TryGetVirtualId(targetPeer, out var targetId))
 				{
-					node.SetTraversalBefore(_host, targetBox.Value);
+					node.SetTraversalBefore(_host, targetId);
 					break;
 				}
 			}
 		}
 
-		// FlowsFrom: read from DP; filter to same-root live sources.
-		var flowsFromRaw = uiElement.GetValue(AutomationProperties.FlowsFromProperty)
-			as IList<DependencyObject>;
-		if (flowsFromRaw is { Count: > 0 })
+		if (effectivePeer.GetFlowsFrom() is { } flowsFromPeers)
 		{
-			foreach (var source in flowsFromRaw)
+			foreach (var sourcePeer in flowsFromPeers)
 			{
-				if (source is UIElement sourceEl &&
-					IsSameRoot(uiElement, sourceEl) &&
-					_elementToId.TryGetValue(sourceEl, out var sourceBox) &&
-					_orderedIdSet.Contains(sourceBox.Value))
+				if (TryGetVirtualId(sourcePeer, out var sourceId))
 				{
-					node.SetTraversalAfter(_host, sourceBox.Value);
+					node.SetTraversalAfter(_host, sourceId);
 					break;
 				}
 			}
@@ -1851,7 +2574,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private static void SetMetadata(
 		AccessibilityNodeInfoCompat node,
 		AutomationPeer effectivePeer,
-		UIElement uiElement)
+		UIElement? uiElement)
 	{
 		// LocalizedControlType → role description (overrides class-name-derived role).
 		var localizedType = effectivePeer.GetLocalizedControlType();
@@ -1861,7 +2584,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		// ItemStatus → state description (e.g. "loading", "sorted ascending").
-		var itemStatus = AutomationProperties.GetItemStatus(uiElement);
+		var itemStatus = uiElement is not null
+			? AutomationProperties.GetItemStatus(uiElement)
+			: effectivePeer.GetItemStatus();
 		if (!string.IsNullOrEmpty(itemStatus))
 		{
 			node.StateDescription = string.IsNullOrEmpty(node.StateDescription)
@@ -1871,7 +2596,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		// FullDescription belongs in the hint/description slot alongside HelpText and DescribedBy.
 		// HintText was already set from HelpText; append FullDescription when present.
-		var fullDesc = AutomationProperties.GetFullDescription(uiElement);
+		var fullDesc = uiElement is not null
+			? AutomationProperties.GetFullDescription(uiElement)
+			: effectivePeer.GetFullDescription();
 		if (!string.IsNullOrEmpty(fullDesc))
 		{
 			var existing = node.HintText ?? "";
@@ -1882,7 +2609,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// Details-only (no unlocalized "hN" state text emitted to the native node).
 
 		// Form validation: use the real ContentInvalid API; no extras needed.
-		bool dataValid = AutomationProperties.GetIsDataValidForForm(uiElement);
+		bool dataValid = effectivePeer.IsDataValidForForm();
 		if (!dataValid)
 		{
 			node.ContentInvalid = true;
@@ -1894,7 +2621,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		// Required: no standard AccessibilityNodeInfoCompat API — fall back to Extras bundle.
-		bool required = AutomationProperties.GetIsRequiredForForm(uiElement);
+		bool required = effectivePeer.IsRequiredForForm();
 		if (required)
 		{
 			var extras = node.Extras ?? new global::Android.OS.Bundle();
@@ -1908,9 +2635,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
-	private void ApplyCulture(AccessibilityNodeInfoCompat node, UIElement element)
+	private void ApplyCulture(AccessibilityNodeInfoCompat node, AutomationPeer peer)
 	{
-		var lcid = AutomationProperties.GetCulture(element);
+		var lcid = peer.GetCulture();
 		if (lcid == 0)
 		{
 			return;
@@ -1986,18 +2713,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
-		if (!_elementToId.TryGetValue(element, out var box))
-		{
-			return null;
-		}
-
-		if (!_orderedIdSet.Contains(box.Value))
+		if (!TryGetVirtualId(element, out var id))
 		{
 			return null;
 		}
 
 		var provider = GetAccessibilityNodeProvider(_host);
-		return provider?.CreateAccessibilityNodeInfo(box.Value);
+		return provider?.CreateAccessibilityNodeInfo(id);
 	}
 
 	// Returns the stable virtual ID for element, triggering a scan if needed.
@@ -2006,10 +2728,47 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
-		return _elementToId.TryGetValue(element, out var box) &&
-			_orderedIdSet.Contains(box.Value)
-				? box.Value
+		return TryGetVirtualId(element, out var id)
+				? id
 				: null;
+	}
+
+	private int? GetVirtualIdForPeer(AutomationPeer peer)
+	{
+		var ids = new List<Integer>();
+		GetVisibleVirtualViews(ids);
+		return TryGetVirtualId(peer, out var id) ? id : null;
+	}
+
+	private int? HitTestForRoot(XamlRoot root, double physicalX, double physicalY)
+	{
+		if (_adapter?.RootElement?.XamlRoot is not { } adapterRoot ||
+			!ReferenceEquals(adapterRoot, root))
+		{
+			return null;
+		}
+
+		var id = GetVirtualViewAt((float)physicalX, (float)physicalY);
+		return id == HostId ? null : id;
+	}
+
+	private bool TryGetVirtualId(UIElement element, out int id)
+	{
+		if (_handleToId.TryGetValue(element.Visual.Handle, out id) &&
+			_orderedIdSet.Contains(id))
+		{
+			return true;
+		}
+
+		if (_elementToId.TryGetValue(element, out var box) &&
+			_orderedIdSet.Contains(box.Value))
+		{
+			id = box.Value;
+			return true;
+		}
+
+		id = -1;
+		return false;
 	}
 
 	// Returns all real AccessibilityNodeInfoCompat objects for the given XamlRoot
@@ -2057,14 +2816,15 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return null;
 		}
 
-		var peer = element.GetOrCreateAutomationPeer();
-		var effectivePeer = peer?.ResolveProviderPeer(resolveEventsSource: true);
+		var virtualId = GetVirtualIdForElement(element);
+		var effectivePeer = virtualId is { } id &&
+			_idToWeakPeer.TryGetValue(id, out var weakPeer) &&
+			weakPeer.TryGetTarget(out var peer)
+				? peer.ResolveProviderPeer(resolveEventsSource: true)
+				: element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
 		var controlType = effectivePeer?.GetAutomationControlType() ?? AutomationControlType.Custom;
-		int? vid = _elementToId.TryGetValue(element, out var box) && _orderedIdSet.Contains(box.Value)
-			? box.Value
-			: null;
 		var details = effectivePeer is not null
-			? BuildNodeDetails(effectivePeer, element, controlType, vid)
+			? BuildNodeDetails(effectivePeer, element, controlType, virtualId)
 			: null;
 		return CreateSnapshot(node, details, GetCheckedState(effectivePeer));
 	}
@@ -2101,16 +2861,18 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 			AccessibilityNativeNodeDetails? details = null;
 			AutomationPeer? snapshotPeer = null;
+			if (_idToWeakPeer.TryGetValue(id, out var weakPeer) &&
+				weakPeer.TryGetTarget(out var peer))
+			{
+				snapshotPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
+			}
 			if (_idToWeakElement.TryGetValue(id, out var weakRef) &&
 				weakRef.TryGetTarget(out var dep) &&
 				dep is UIElement owner)
 			{
-				var details2Peer = owner.GetOrCreateAutomationPeer();
-				var effectivePeer2 = details2Peer?.ResolveProviderPeer(resolveEventsSource: true);
-				snapshotPeer = effectivePeer2;
-				var controlType2 = effectivePeer2?.GetAutomationControlType() ?? AutomationControlType.Custom;
-				details = effectivePeer2 is not null
-					? BuildNodeDetails(effectivePeer2, owner, controlType2, id)
+				var controlType2 = snapshotPeer?.GetAutomationControlType() ?? AutomationControlType.Custom;
+				details = snapshotPeer is not null
+					? BuildNodeDetails(snapshotPeer, owner, controlType2, id)
 					: null;
 			}
 
@@ -2155,7 +2917,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
-		if (!_elementToId.TryGetValue(element, out var box) || !_orderedIdSet.Contains(box.Value))
+		if (!TryGetVirtualId(element, out var id))
 		{
 			return false;
 		}
@@ -2167,7 +2929,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return false;
 		}
 
-		return RequestNativeFocusById(box.Value);
+		return RequestNativeFocusById(id);
 	}
 
 	// Backing method for AndroidFocusedNativeNodeAccessor.
@@ -2360,7 +3122,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			details,
 			nativeAutomationId: node.ViewIdResourceName,
 			stateDescription: node.StateDescription?.ToString(),
-			nativeRoleDescription: node.RoleDescription?.ToString());
+			nativeRoleDescription: node.RoleDescription?.ToString(),
+			textSelectionStart: node.TextSelectionStart,
+			textSelectionEnd: node.TextSelectionEnd,
+			movementGranularities: node.MovementGranularities,
+			scrollable: node.Scrollable,
+			nativeActionIds: node.ActionList?.Select(action => action.Id).ToArray());
 	}
 
 	private static bool? GetCheckedState(AutomationPeer? peer)
@@ -2407,8 +3174,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			bool rangeReadOnly = rv.IsReadOnly || !effectivePeer.IsEnabled();
 			if (!rangeReadOnly)
 			{
-				supportedActions.Add(AccessibilityNativeAction.Increment);
-				supportedActions.Add(AccessibilityNativeAction.Decrement);
+				if (rv.Value < rv.Maximum)
+				{
+					supportedActions.Add(AccessibilityNativeAction.Increment);
+				}
+				if (rv.Value > rv.Minimum)
+				{
+					supportedActions.Add(AccessibilityNativeAction.Decrement);
+				}
 				supportedActions.Add(AccessibilityNativeAction.SetRangeValue);
 			}
 
@@ -2445,6 +3218,28 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 
 			textState = new AccessibilityNativeTextStateDetails(isEditable, isReadOnly, isMultiline, hasTextSelection);
+		}
+
+		if (enabled &&
+			!effectivePeer.IsPassword() &&
+			AccessibilityPeerHelper.TryGetText(effectivePeer, out var text, out _) &&
+			text.Length > 0)
+		{
+			supportedActions.Add(AccessibilityNativeAction.SetTextSelection);
+			supportedActions.Add(AccessibilityNativeAction.MoveTextNext);
+			supportedActions.Add(AccessibilityNativeAction.MoveTextPrevious);
+		}
+		if (AccessibilityPeerHelper.CanCopyText(effectivePeer))
+		{
+			supportedActions.Add(AccessibilityNativeAction.CopyText);
+		}
+		if (AccessibilityPeerHelper.CanCutText(effectivePeer))
+		{
+			supportedActions.Add(AccessibilityNativeAction.CutText);
+		}
+		if (AccessibilityPeerHelper.CanPasteText(effectivePeer))
+		{
+			supportedActions.Add(AccessibilityNativeAction.PasteText);
 		}
 
 		AccessibilityNativeScrollDetails? scroll = null;
@@ -2869,7 +3664,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
-		if (!_elementToId.TryGetValue(element, out var box) || !_orderedIdSet.Contains(box.Value))
+		if (!TryGetVirtualId(element, out var id))
 		{
 			return false;
 		}
@@ -2887,7 +3682,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			AccessibilityNativeAction.ScrollIntoView or
 			AccessibilityNativeAction.Realize)
 		{
-			return element.GetOrCreateAutomationPeer() is { } peer &&
+			return _idToWeakPeer.TryGetValue(id, out var weakPeer) &&
+				weakPeer.TryGetTarget(out var peer) &&
 				ExecuteAdvancedAction(peer, request);
 		}
 
@@ -2899,13 +3695,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		// Route through the real provider so the action path matches TalkBack exactly.
 		var provider = GetAccessibilityNodeProvider(_host);
-		if (provider is not null)
+		if (provider?.PerformAction(id, actionId, bundle) is true)
 		{
-			return provider.PerformAction(box.Value, actionId, bundle);
+			return true;
 		}
 
-		// Fallback: call directly when the provider isn't reachable (e.g. no active service).
-		return OnPerformActionForVirtualView(box.Value, actionId, bundle);
+		// Fallback: AndroidX may decline a valid advertised action before reaching
+		// OnPerformActionForVirtualView, especially for newer text granularities.
+		return OnPerformActionForVirtualView(id, actionId, bundle);
 	}
 
 	private static (int actionId, Bundle? bundle) MapRequestToAndroidAction(
@@ -2935,9 +3732,48 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			case AccessibilityNativeAction.SetValue when request.Text is not null:
 			{
 				var bundle = new Bundle();
-				bundle.PutString(ActionArgumentSetTextCharsequenceKey, request.Text);
+				bundle.PutString(AccessibilityNodeInfo.ActionArgumentSetTextCharsequence, request.Text);
 				return (s_actionSetTextId, bundle);
 			}
+
+			case AccessibilityNativeAction.SetTextSelection
+				when TryConvertToInt(request.Number, out var selectionStart) &&
+					TryConvertToInt(request.Number2, out var selectionEnd):
+			{
+				var bundle = new Bundle();
+				bundle.PutInt(AccessibilityNodeInfo.ActionArgumentSelectionStartInt, selectionStart);
+				bundle.PutInt(AccessibilityNodeInfo.ActionArgumentSelectionEndInt, selectionEnd);
+				return (s_actionSetSelectionId, bundle);
+			}
+
+			case AccessibilityNativeAction.MoveTextNext:
+			case AccessibilityNativeAction.MoveTextPrevious:
+			{
+				if (!TryConvertToInt(request.Number, out var granularity))
+				{
+					return (0, null);
+				}
+
+				var bundle = new Bundle();
+				bundle.PutInt(AccessibilityNodeInfo.ActionArgumentMovementGranularityInt, granularity);
+				bundle.PutBoolean(
+					AccessibilityNodeInfo.ActionArgumentExtendSelectionBoolean,
+					request.Number2 != 0);
+				return (
+					request.Action == AccessibilityNativeAction.MoveTextNext
+						? s_actionNextAtMovementGranularityId
+						: s_actionPreviousAtMovementGranularityId,
+					bundle);
+			}
+
+			case AccessibilityNativeAction.CopyText:
+				return (s_actionCopyId, null);
+
+			case AccessibilityNativeAction.CutText:
+				return (s_actionCutId, null);
+
+			case AccessibilityNativeAction.PasteText:
+				return (s_actionPasteId, null);
 
 			case AccessibilityNativeAction.SetRangeValue when s_actionSetProgressId >= 0:
 			{
@@ -2964,7 +3800,286 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		// TalkBack sends text as a CharSequence; the test accessor uses PutString.
 		// Try CharSequence first for TalkBack compatibility, then fall back to string.
-		return bundle.GetCharSequence(ActionArgumentSetTextCharsequenceKey)?.ToString()
-			?? bundle.GetString(ActionArgumentSetTextCharsequenceKey);
+		return bundle.GetCharSequence(AccessibilityNodeInfo.ActionArgumentSetTextCharsequence)?.ToString()
+			?? bundle.GetString(AccessibilityNodeInfo.ActionArgumentSetTextCharsequence);
+	}
+
+	private bool TrySetTextSelection(
+		int virtualViewId,
+		AutomationPeer peer,
+		int selectionStart,
+		int selectionEnd)
+	{
+		if (selectionStart == -1 && selectionEnd == -1)
+		{
+			if (!AccessibilityPeerHelper.TryGetText(
+				peer,
+				out var clearedText,
+				out var clearSupportsSelection))
+			{
+				return false;
+			}
+
+			if (clearSupportsSelection)
+			{
+				var collapsePosition =
+					AccessibilityPeerHelper.TryGetTextSelection(
+						peer,
+						out _,
+						out var currentSelectionEnd) &&
+					currentSelectionEnd >= 0
+						? currentSelectionEnd
+						: 0;
+				if (!AccessibilityPeerHelper.TrySetTextSelection(
+					peer,
+					collapsePosition,
+					collapsePosition,
+					allowReversed: false,
+					out var collapsedSelectionStart,
+					out var collapsedSelectionEnd))
+				{
+					return false;
+				}
+
+				_textSelectionByVirtualId[virtualViewId] =
+					(collapsedSelectionStart, collapsedSelectionEnd);
+			}
+			else
+			{
+				_textSelectionByVirtualId.Remove(virtualViewId);
+			}
+
+			_clearedTextSelectionIds.Add(virtualViewId);
+			SendTextSelectionChangedEvent(virtualViewId, -1, -1, clearedText.Length);
+			InvalidateVirtualView(virtualViewId);
+			return true;
+		}
+
+		if (!AccessibilityPeerHelper.TryGetText(peer, out var text, out var supportsSelection) ||
+			selectionStart < 0 ||
+			selectionEnd < selectionStart ||
+			selectionEnd > text.Length)
+		{
+			return false;
+		}
+
+		int actualSelectionStart;
+		int actualSelectionEnd;
+		if (supportsSelection)
+		{
+			if (!AccessibilityPeerHelper.TrySetTextSelection(
+				peer,
+				selectionStart,
+				selectionEnd,
+				allowReversed: false,
+				out actualSelectionStart,
+				out actualSelectionEnd))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (selectionStart != selectionEnd)
+			{
+				return false;
+			}
+
+			actualSelectionStart = selectionStart;
+			actualSelectionEnd = selectionEnd;
+		}
+
+		_textSelectionByVirtualId[virtualViewId] = (actualSelectionStart, actualSelectionEnd);
+		_clearedTextSelectionIds.Remove(virtualViewId);
+		SendTextSelectionChangedEvent(
+			virtualViewId,
+			actualSelectionStart,
+			actualSelectionEnd,
+			text.Length);
+		InvalidateVirtualView(virtualViewId);
+		return true;
+	}
+
+	private bool TryMoveTextAtGranularity(
+		int virtualViewId,
+		AutomationPeer peer,
+		int action,
+		Bundle? arguments)
+	{
+		if (arguments?.ContainsKey(AccessibilityNodeInfo.ActionArgumentMovementGranularityInt) != true)
+		{
+			return false;
+		}
+
+		var movementGranularity =
+			arguments.GetInt(AccessibilityNodeInfo.ActionArgumentMovementGranularityInt);
+		if (!TryGetTextUnit(movementGranularity, out var unit))
+		{
+			return false;
+		}
+
+		var forward = action == s_actionNextAtMovementGranularityId;
+		var extendSelection =
+			arguments.GetBoolean(AccessibilityNodeInfo.ActionArgumentExtendSelectionBoolean, false);
+		if (!AccessibilityPeerHelper.TryGetText(peer, out var text, out var supportsSelection))
+		{
+			return false;
+		}
+
+		int currentSelectionStart;
+		int currentSelectionEnd;
+		if (_clearedTextSelectionIds.Contains(virtualViewId))
+		{
+			currentSelectionStart = -1;
+			currentSelectionEnd = -1;
+		}
+		else if (AccessibilityPeerHelper.TryGetTextSelection(
+			peer,
+			out currentSelectionStart,
+			out currentSelectionEnd))
+		{
+			_textSelectionByVirtualId[virtualViewId] =
+				(currentSelectionStart, currentSelectionEnd);
+		}
+		else if (_textSelectionByVirtualId.TryGetValue(virtualViewId, out var currentSelection))
+		{
+			currentSelectionStart = currentSelection.Start;
+			currentSelectionEnd = currentSelection.End;
+		}
+		else
+		{
+			currentSelectionStart = -1;
+			currentSelectionEnd = -1;
+		}
+
+		var current = currentSelectionEnd >= 0
+			? currentSelectionEnd
+			: forward ? 0 : text.Length;
+		if (!AccessibilityPeerHelper.TryGetTextSegment(
+			peer,
+			unit,
+			current,
+			forward,
+			out var segmentStart,
+			out var segmentEnd))
+		{
+			return false;
+		}
+
+		var selectionStart = extendSelection && supportsSelection
+			? currentSelectionStart >= 0
+				? currentSelectionStart
+				: forward ? segmentStart : segmentEnd
+			: forward ? segmentEnd : segmentStart;
+		var selectionEnd = forward ? segmentEnd : segmentStart;
+		if (!extendSelection || !supportsSelection)
+		{
+			selectionStart = selectionEnd;
+		}
+
+		int actualSelectionStart;
+		int actualSelectionEnd;
+		if (supportsSelection)
+		{
+			if (!AccessibilityPeerHelper.TrySetTextSelection(
+				peer,
+				selectionStart,
+				selectionEnd,
+				allowReversed: true,
+				out actualSelectionStart,
+				out actualSelectionEnd))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			actualSelectionStart = selectionStart;
+			actualSelectionEnd = selectionEnd;
+		}
+
+		_textSelectionByVirtualId[virtualViewId] =
+			(actualSelectionStart, actualSelectionEnd);
+		_clearedTextSelectionIds.Remove(virtualViewId);
+		SendTextSelectionChangedEvent(
+			virtualViewId,
+			actualSelectionStart,
+			actualSelectionEnd,
+			text.Length);
+
+		_pendingTextTraversalEvent = new PendingTextTraversalEvent(
+			virtualViewId,
+			segmentStart,
+			segmentEnd,
+			text.Length,
+			movementGranularity,
+			action);
+		try
+		{
+			TrySendEventForVirtualView(
+				virtualViewId,
+				TypeViewTextTraversedAtMovementGranularity,
+				"text traversal");
+		}
+		finally
+		{
+			_pendingTextTraversalEvent = null;
+		}
+
+		InvalidateVirtualView(virtualViewId);
+		return true;
+	}
+
+	private void SendTextSelectionChangedEvent(
+		int virtualViewId,
+		int selectionStart,
+		int selectionEnd,
+		int itemCount)
+	{
+		_pendingTextSelectionEvent = new PendingTextSelectionEvent(
+			virtualViewId,
+			selectionStart,
+			selectionEnd,
+			itemCount);
+		try
+		{
+			TrySendEventForVirtualView(
+				virtualViewId,
+				TypeViewTextSelectionChanged,
+				"text selection");
+		}
+		finally
+		{
+			_pendingTextSelectionEvent = null;
+		}
+	}
+
+	private static bool TryGetTextUnit(int movementGranularity, out TextUnit unit)
+	{
+		unit = movementGranularity switch
+		{
+			0x1 => TextUnit.Character,
+			0x2 => TextUnit.Word,
+			0x4 => TextUnit.Line,
+			0x8 => TextUnit.Paragraph,
+			0x10 => TextUnit.Page,
+			_ => default,
+		};
+		return movementGranularity is 0x1 or 0x2 or 0x4 or 0x8 or 0x10;
+	}
+
+	private static bool TryConvertToInt(double value, out int result)
+	{
+		if (!double.IsFinite(value) ||
+			value != System.Math.Truncate(value) ||
+			value < int.MinValue ||
+			value > int.MaxValue)
+		{
+			result = 0;
+			return false;
+		}
+
+		result = (int)value;
+		return true;
 	}
 }

@@ -413,10 +413,12 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			// The XamlRoot and render view survive Activity recreation, so their
-			// accessibility adapter must remain attached to the retained helper.
-
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// The XamlRoot and render view survive configuration recreation.
+			if (!IsChangingConfigurations)
+			{
+				NativeWindowWrapper.Instance.OnNativeClosed();
+				AndroidSkiaWindowFactory.OnNativeWindowClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
