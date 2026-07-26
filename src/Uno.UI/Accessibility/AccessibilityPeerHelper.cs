@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
 namespace Uno.UI;
@@ -60,6 +62,12 @@ internal enum AccessibilityNativeAction
 	Decrement,
 	SetRangeValue,
 	SetValue,
+	SetTextSelection,
+	MoveTextNext,
+	MoveTextPrevious,
+	CopyText,
+	CutText,
+	PasteText,
 	ScrollForward,
 	ScrollBackward,
 	ScrollIntoView,
@@ -440,7 +448,12 @@ internal sealed class AccessibilityNativeNodeSnapshot
 		AccessibilityNativeNodeDetails? details = null,
 		string? nativeAutomationId = null,
 		string? stateDescription = null,
-		string? nativeRoleDescription = null)
+		string? nativeRoleDescription = null,
+		int textSelectionStart = -1,
+		int textSelectionEnd = -1,
+		int movementGranularities = 0,
+		bool scrollable = false,
+		IReadOnlyList<int>? nativeActionIds = null)
 	{
 		NativeNode = nativeNode;
 		Name = name;
@@ -459,6 +472,11 @@ internal sealed class AccessibilityNativeNodeSnapshot
 		NativeAutomationId = nativeAutomationId ?? automationId;
 		StateDescription = stateDescription;
 		NativeRoleDescription = nativeRoleDescription;
+		TextSelectionStart = textSelectionStart;
+		TextSelectionEnd = textSelectionEnd;
+		MovementGranularities = movementGranularities;
+		Scrollable = scrollable;
+		NativeActionIds = nativeActionIds ?? Array.Empty<int>();
 	}
 
 	internal object NativeNode { get; }
@@ -478,6 +496,16 @@ internal sealed class AccessibilityNativeNodeSnapshot
 	internal string? StateDescription { get; }
 
 	internal string? NativeRoleDescription { get; }
+
+	internal int TextSelectionStart { get; }
+
+	internal int TextSelectionEnd { get; }
+
+	internal int MovementGranularities { get; }
+
+	internal bool Scrollable { get; }
+
+	internal IReadOnlyList<int> NativeActionIds { get; }
 
 	internal bool Enabled { get; }
 
@@ -504,7 +532,8 @@ internal sealed class AccessibilityNativeNodeSnapshot
 	internal AccessibilityNativeNodeSnapshot WithDetails(AccessibilityNativeNodeDetails details)
 		=> new AccessibilityNativeNodeSnapshot(
 			NativeNode, Name, ClassName, Hint, Value, AutomationId,
-			Enabled, Heading, Password, Checkable, IsChecked, Traits, Bounds, details, NativeAutomationId, StateDescription, NativeRoleDescription);
+			Enabled, Heading, Password, Checkable, IsChecked, Traits, Bounds, details, NativeAutomationId, StateDescription, NativeRoleDescription,
+			TextSelectionStart, TextSelectionEnd, MovementGranularities, Scrollable, NativeActionIds);
 }
 
 internal static class AccessibilityPeerHelper
@@ -535,9 +564,17 @@ internal static class AccessibilityPeerHelper
 	/// </summary>
 	internal static Func<XamlRoot, object[]?>? IOSAllElementsForRootAccessor { get; set; }
 
+	internal static Func<XamlRoot, int>? IOSAutomationElementsCountAccessor { get; set; }
+
+	internal static Func<XamlRoot, object[]?>? IOSAutomationElementsForRootAccessor { get; set; }
+
 	internal static Func<UIElement, object?>? AndroidAccessibilityNodeAccessor { get; set; }
 
 	internal static Func<UIElement, int?>? AndroidAccessibilityVirtualIdAccessor { get; set; }
+
+	internal static Func<AutomationPeer, int?>? AndroidAccessibilityPeerVirtualIdAccessor { get; set; }
+
+	internal static Func<XamlRoot, double, double, int?>? AndroidAccessibilityHitTestAccessor { get; set; }
 
 	internal static Func<XamlRoot, object[]?>? AndroidAllNodesForRootAccessor { get; set; }
 
@@ -601,7 +638,11 @@ internal static class AccessibilityPeerHelper
 	}
 
 	internal static bool TryInvokeDefaultAction(AutomationPeer peer)
-		=> TryPerform(() => ResolveProviderPeer(peer).InvokeAutomationPeer());
+	{
+		var providerPeer = ResolveProviderPeer(peer);
+		return providerPeer.IsEnabled()
+			&& TryPerform(() => providerPeer.InvokeAutomationPeer());
+	}
 
 	internal static bool TryToggle(AutomationPeer peer)
 		=> TryPerformProvider<IToggleProvider>(peer, PatternInterface.Toggle, static provider => provider.Toggle());
@@ -643,8 +684,9 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryExpand(AutomationPeer peer)
 	{
-		var provider = GetProvider<IExpandCollapseProvider>(peer, PatternInterface.ExpandCollapse);
-		if (provider is null)
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IExpandCollapseProvider>(providerPeer, PatternInterface.ExpandCollapse);
+		if (!providerPeer.IsEnabled() || provider is null)
 		{
 			return false;
 		}
@@ -654,8 +696,9 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryCollapse(AutomationPeer peer)
 	{
-		var provider = GetProvider<IExpandCollapseProvider>(peer, PatternInterface.ExpandCollapse);
-		if (provider is null)
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IExpandCollapseProvider>(providerPeer, PatternInterface.ExpandCollapse);
+		if (!providerPeer.IsEnabled() || provider is null)
 		{
 			return false;
 		}
@@ -671,22 +714,290 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TrySetRangeValue(AutomationPeer peer, double value)
 	{
-		var provider = GetProvider<IRangeValueProvider>(peer, PatternInterface.RangeValue);
-		if (provider is null || provider.IsReadOnly)
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IRangeValueProvider>(providerPeer, PatternInterface.RangeValue);
+		if (!providerPeer.IsEnabled() ||
+			provider is null ||
+			provider.IsReadOnly ||
+			!double.IsFinite(value) ||
+			value < provider.Minimum ||
+			value > provider.Maximum)
 		{
 			return false;
 		}
 
-		var clampedValue = Math.Max(provider.Minimum, Math.Min(provider.Maximum, value));
-		return TryPerform(() => provider.SetValue(clampedValue));
+		return TryPerform(() => provider.SetValue(value));
 	}
 
 	internal static bool TrySetValue(AutomationPeer peer, string value)
 	{
-		var provider = GetProvider<IValueProvider>(peer, PatternInterface.Value);
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IValueProvider>(providerPeer, PatternInterface.Value);
 		return provider is not null
-			&& !provider.IsReadOnly
+			&& CanSetText(providerPeer, provider)
 			&& TryPerform(() => provider.SetValue(value));
+	}
+
+	internal static bool CanSetText(AutomationPeer peer)
+	{
+		var providerPeer = ResolveProviderPeer(peer);
+		return GetProvider<IValueProvider>(providerPeer, PatternInterface.Value) is { } provider
+			&& CanSetText(providerPeer, provider);
+	}
+
+	private static bool CanSetText(AutomationPeer providerPeer, IValueProvider provider)
+		=> providerPeer.IsEnabled()
+			&& !provider.IsReadOnly
+			&& providerPeer is not FrameworkElementAutomationPeer { Owner: RichEditBox };
+
+	internal static bool CanCopyText(AutomationPeer peer)
+		=> !ResolveProviderPeer(peer).IsPassword() &&
+			GetTextBox(peer) is
+		{
+			IsEnabled: true,
+			FocusState: not FocusState.Unfocused,
+			SelectionLength: > 0,
+		} textBox &&
+			textBox is not PasswordBox;
+
+	internal static bool CanCutText(AutomationPeer peer)
+		=> CanCopyText(peer) &&
+			GetTextBox(peer) is { IsReadOnly: false };
+
+	internal static bool CanPasteText(AutomationPeer peer)
+	{
+#if __SKIA__
+		return GetTextBox(peer) is
+		{
+			IsEnabled: true,
+			IsReadOnly: false,
+			FocusState: not FocusState.Unfocused,
+			CanPasteClipboardContent: true,
+		};
+#else
+		return false;
+#endif
+	}
+
+	internal static bool TryCopyText(AutomationPeer peer)
+	{
+		var textBox = GetTextBox(peer);
+		return textBox is not null &&
+			CanCopyText(peer) &&
+			TryPerform(textBox.CopySelectionToClipboard);
+	}
+
+	internal static bool TryCutText(AutomationPeer peer)
+	{
+		var textBox = GetTextBox(peer);
+		return textBox is not null &&
+			CanCutText(peer) &&
+			TryPerform(textBox.CutSelectionToClipboard);
+	}
+
+	internal static bool TryPasteText(AutomationPeer peer)
+	{
+		var textBox = GetTextBox(peer);
+		return textBox is not null &&
+			CanPasteText(peer) &&
+			TryPerform(textBox.PasteFromClipboard);
+	}
+
+	internal static bool TryGetText(
+		AutomationPeer peer,
+		out string text,
+		out bool supportsSelection)
+	{
+		var value = string.Empty;
+		var selectionSupported = false;
+		var success = TryPerform(() =>
+		{
+			var providerPeer = ResolveProviderPeer(peer);
+			var provider = GetProvider<ITextProvider>(providerPeer, PatternInterface.Text);
+			if (provider is null)
+			{
+				return false;
+			}
+
+			value = provider.DocumentRange.GetText(-1) ?? string.Empty;
+			selectionSupported = provider.SupportedTextSelection != SupportedTextSelection.None;
+			return true;
+		});
+
+		text = value;
+		supportsSelection = selectionSupported;
+		return success;
+	}
+
+	internal static bool TryGetTextSelection(
+		AutomationPeer peer,
+		out int selectionStart,
+		out int selectionEnd)
+	{
+		var start = -1;
+		var end = -1;
+		var success = TryPerform(() =>
+		{
+			var providerPeer = ResolveProviderPeer(peer);
+			var provider = GetProvider<ITextProvider>(providerPeer, PatternInterface.Text);
+			if (provider is null ||
+				provider.SupportedTextSelection == SupportedTextSelection.None)
+			{
+				return false;
+			}
+
+#if __SKIA__
+			if (providerPeer is FrameworkElementAutomationPeer { Owner: TextBox textBox })
+			{
+				start = textBox.IsBackwardSelection
+					? textBox.SelectionStart + textBox.SelectionLength
+					: textBox.SelectionStart;
+				end = textBox.IsBackwardSelection
+					? textBox.SelectionStart
+					: textBox.SelectionStart + textBox.SelectionLength;
+				return true;
+			}
+#endif
+
+			if (provider.GetSelection() is not { Length: > 0 } selection)
+			{
+				return false;
+			}
+
+			return TryGetTextRangeOffsets(provider, selection[0], out start, out end);
+		});
+
+		selectionStart = start;
+		selectionEnd = end;
+		return success;
+	}
+
+	internal static bool TrySetTextSelection(
+		AutomationPeer peer,
+		int selectionStart,
+		int selectionEnd,
+		bool allowReversed,
+		out int actualSelectionStart,
+		out int actualSelectionEnd)
+	{
+		var actualStart = -1;
+		var actualEnd = -1;
+		if (selectionStart < 0 || (!allowReversed && selectionEnd < selectionStart))
+		{
+			actualSelectionStart = actualStart;
+			actualSelectionEnd = actualEnd;
+			return false;
+		}
+
+		var success = TryPerform(() =>
+		{
+			var providerPeer = ResolveProviderPeer(peer);
+			var provider = GetProvider<ITextProvider>(providerPeer, PatternInterface.Text);
+			if (provider is null ||
+				provider.SupportedTextSelection == SupportedTextSelection.None)
+			{
+				return false;
+			}
+
+			var documentRange = provider.DocumentRange;
+			var textLength = documentRange.GetText(-1).Length;
+			if (Math.Max(selectionStart, selectionEnd) > textLength)
+			{
+				return false;
+			}
+
+#if __SKIA__
+			if (providerPeer is FrameworkElementAutomationPeer { Owner: TextBox textBox })
+			{
+				return textBox.SelectInternal(selectionStart, selectionEnd - selectionStart) &&
+					TryGetTextSelection(providerPeer, out actualStart, out actualEnd) &&
+					actualStart == selectionStart &&
+					actualEnd == selectionEnd;
+			}
+#endif
+
+			if (selectionEnd < selectionStart)
+			{
+				return false;
+			}
+
+			var range = documentRange.Clone();
+			var movedStart = range.MoveEndpointByUnit(
+				TextPatternRangeEndpoint.Start,
+				TextUnit.Character,
+				selectionStart);
+			var movedEnd = range.MoveEndpointByUnit(
+				TextPatternRangeEndpoint.End,
+				TextUnit.Character,
+				selectionEnd - textLength);
+			if (movedStart != selectionStart || movedEnd != selectionEnd - textLength)
+			{
+				return false;
+			}
+
+			range.Select();
+			return TryGetTextSelection(providerPeer, out actualStart, out actualEnd) &&
+				actualStart == selectionStart &&
+				actualEnd == selectionEnd;
+		});
+
+		actualSelectionStart = actualStart;
+		actualSelectionEnd = actualEnd;
+		return success;
+	}
+
+	internal static bool TryGetTextSegment(
+		AutomationPeer peer,
+		TextUnit unit,
+		int position,
+		bool forward,
+		out int segmentStart,
+		out int segmentEnd)
+	{
+		var start = -1;
+		var end = -1;
+		var success = TryPerform(() =>
+		{
+			var providerPeer = ResolveProviderPeer(peer);
+			var provider = GetProvider<ITextProvider>(providerPeer, PatternInterface.Text);
+			if (provider is null)
+			{
+				return false;
+			}
+
+			var text = provider.DocumentRange.GetText(-1) ?? string.Empty;
+			var owner = providerPeer is FrameworkElementAutomationPeer frameworkPeer
+				? frameworkPeer.Owner as FrameworkElement
+				: null;
+			return DirectUI.TextRangeAdapter.TryGetTextSegment(
+				owner,
+				text,
+				unit,
+				position,
+				forward,
+				out start,
+				out end);
+		});
+
+		segmentStart = start;
+		segmentEnd = end;
+		return success;
+	}
+
+	internal static int GetTextMovementGranularities(AutomationPeer peer)
+	{
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<ITextProvider>(providerPeer, PatternInterface.Text);
+		if (provider is null)
+		{
+			return 0;
+		}
+
+		var text = provider.DocumentRange.GetText(-1) ?? string.Empty;
+		var owner = providerPeer is FrameworkElementAutomationPeer { Owner: FrameworkElement element }
+			? element
+			: null;
+		return DirectUI.TextRangeAdapter.GetSupportedTextGranularities(owner, text);
 	}
 
 	internal static bool TryScroll(
@@ -721,8 +1032,10 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryChangeView(AutomationPeer peer, int viewId)
 	{
-		var provider = GetProvider<IMultipleViewProvider>(peer, PatternInterface.MultipleView);
-		return provider is not null
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IMultipleViewProvider>(providerPeer, PatternInterface.MultipleView);
+		return providerPeer.IsEnabled()
+			&& provider is not null
 			&& provider.GetSupportedViews().Contains(viewId)
 			&& TryPerform(() => provider.SetCurrentView(viewId));
 	}
@@ -735,6 +1048,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryMove(AutomationPeer peer, double x, double y)
 	{
+		if (!ResolveProviderPeer(peer).IsEnabled())
+		{
+			return false;
+		}
+
 		var provider = GetTransformProvider(peer);
 		return provider is not null
 			&& provider.CanMove
@@ -743,6 +1061,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryResize(AutomationPeer peer, double width, double height)
 	{
+		if (!ResolveProviderPeer(peer).IsEnabled())
+		{
+			return false;
+		}
+
 		var provider = GetTransformProvider(peer);
 		return provider is not null
 			&& provider.CanResize
@@ -751,6 +1074,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryRotate(AutomationPeer peer, double degrees)
 	{
+		if (!ResolveProviderPeer(peer).IsEnabled())
+		{
+			return false;
+		}
+
 		var provider = GetTransformProvider(peer);
 		return provider is not null
 			&& provider.CanRotate
@@ -759,6 +1087,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryZoom(AutomationPeer peer, double zoom)
 	{
+		if (!ResolveProviderPeer(peer).IsEnabled())
+		{
+			return false;
+		}
+
 		var provider = GetProvider<ITransformProvider2>(peer, PatternInterface.Transform2);
 		if (provider is null || !provider.CanZoom)
 		{
@@ -771,6 +1104,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool TryZoomByUnit(AutomationPeer peer, ZoomUnit zoomUnit)
 	{
+		if (!ResolveProviderPeer(peer).IsEnabled())
+		{
+			return false;
+		}
+
 		var provider = GetProvider<ITransformProvider2>(peer, PatternInterface.Transform2);
 		return provider is not null
 			&& provider.CanZoom
@@ -840,25 +1178,69 @@ internal static class AccessibilityPeerHelper
 
 	private static bool TryAdjustRange(AutomationPeer peer, bool increment)
 	{
-		var provider = GetProvider<IRangeValueProvider>(peer, PatternInterface.RangeValue);
-		if (provider is null || provider.IsReadOnly)
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<IRangeValueProvider>(providerPeer, PatternInterface.RangeValue);
+		if (!providerPeer.IsEnabled() ||
+			provider is null ||
+			provider.IsReadOnly ||
+			!double.IsFinite(provider.SmallChange) ||
+			provider.SmallChange <= 0)
 		{
 			return false;
 		}
 
 		var delta = increment ? provider.SmallChange : -provider.SmallChange;
-		return TrySetRangeValue(peer, provider.Value + delta);
+		var target = Math.Max(
+			provider.Minimum,
+			Math.Min(provider.Maximum, provider.Value + delta));
+		return target != provider.Value &&
+			TrySetRangeValue(providerPeer, target);
 	}
 
 	private static ITransformProvider? GetTransformProvider(AutomationPeer peer)
 		=> GetProvider<ITransformProvider2>(peer, PatternInterface.Transform2)
 			?? GetProvider<ITransformProvider>(peer, PatternInterface.Transform);
 
+	private static TextBox? GetTextBox(AutomationPeer peer)
+		=> ResolveProviderPeer(peer) is FrameworkElementAutomationPeer { Owner: TextBox textBox }
+			? textBox
+			: null;
+
+	private static bool TryGetTextRangeOffsets(
+		ITextProvider provider,
+		ITextRangeProvider range,
+		out int start,
+		out int end)
+	{
+		if (range is DirectUI.TextRangeAdapter adapter)
+		{
+			start = adapter.Start;
+			end = adapter.End;
+			return true;
+		}
+
+		var startPrefix = provider.DocumentRange.Clone();
+		startPrefix.MoveEndpointByRange(
+			TextPatternRangeEndpoint.End,
+			range,
+			TextPatternRangeEndpoint.Start);
+
+		var endPrefix = provider.DocumentRange.Clone();
+		endPrefix.MoveEndpointByRange(
+			TextPatternRangeEndpoint.End,
+			range,
+			TextPatternRangeEndpoint.End);
+
+		start = startPrefix.GetText(-1).Length;
+		end = endPrefix.GetText(-1).Length;
+		return end >= start;
+	}
+
 	private static T? GetProvider<T>(AutomationPeer peer, PatternInterface pattern)
 		where T : class
 	{
 		var providerPeer = ResolveProviderPeer(peer);
-		return providerPeer.GetPattern(pattern) as T ?? providerPeer as T;
+		return providerPeer.GetPattern(pattern) as T;
 	}
 
 	private static bool TryPerformProvider<T>(
@@ -867,8 +1249,11 @@ internal static class AccessibilityPeerHelper
 		Action<T> action)
 		where T : class
 	{
-		var provider = GetProvider<T>(peer, pattern);
-		return provider is not null && TryPerform(() => action(provider));
+		var providerPeer = ResolveProviderPeer(peer);
+		var provider = GetProvider<T>(providerPeer, pattern);
+		return providerPeer.IsEnabled()
+			&& provider is not null
+			&& TryPerform(() => action(provider));
 	}
 
 	private static bool TryPerform(Action? action)
