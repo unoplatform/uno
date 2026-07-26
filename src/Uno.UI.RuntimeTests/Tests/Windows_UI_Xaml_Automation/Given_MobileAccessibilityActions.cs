@@ -61,7 +61,7 @@ public partial class Given_MobileAccessibilityActions
 	}
 
 	[TestMethod]
-	public void When_Range_Actions_Requested_Then_Value_Is_Clamped_And_Set()
+	public void When_Range_Actions_Requested_Then_Only_Valid_Changes_Succeed()
 	{
 		var provider = new RangeValueProvider { Value = 5, Minimum = 0, Maximum = 10, SmallChange = 2 };
 		var peer = CreatePeer(PatternInterface.RangeValue, provider);
@@ -70,7 +70,15 @@ public partial class Given_MobileAccessibilityActions
 		Assert.AreEqual(7, provider.Value);
 		Assert.IsTrue(AccessibilityPeerHelper.TryDecrement(peer));
 		Assert.AreEqual(5, provider.Value);
-		Assert.IsTrue(AccessibilityPeerHelper.TrySetRangeValue(peer, 50));
+		Assert.IsFalse(AccessibilityPeerHelper.TrySetRangeValue(peer, 50));
+		Assert.AreEqual(5, provider.Value);
+		Assert.IsTrue(AccessibilityPeerHelper.TrySetRangeValue(peer, 10));
+		Assert.AreEqual(10, provider.Value);
+		Assert.IsFalse(AccessibilityPeerHelper.TryIncrement(peer));
+
+		provider.Value = 9.5;
+		provider.SmallChange = 1;
+		Assert.IsTrue(AccessibilityPeerHelper.TryIncrement(peer));
 		Assert.AreEqual(10, provider.Value);
 	}
 
@@ -246,6 +254,17 @@ public partial class Given_MobileAccessibilityActions
 		Assert.IsFalse(AccessibilityPeerHelper.TryToggle(peer));
 	}
 
+	[TestMethod]
+	public void When_Peer_Is_Disabled_Then_Custom_Provider_Is_Not_Invoked()
+	{
+		var provider = new ToggleProvider();
+		var peer = CreatePeer(PatternInterface.Toggle, provider);
+		peer.IsEnabledValue = false;
+
+		Assert.IsFalse(AccessibilityPeerHelper.TryToggle(peer));
+		Assert.AreEqual(0, provider.ToggleCount);
+	}
+
 	private static TestPeer CreatePeer(PatternInterface pattern, object provider)
 		=> new() { Patterns = { [pattern] = provider } };
 
@@ -253,8 +272,12 @@ public partial class Given_MobileAccessibilityActions
 	{
 		public Dictionary<PatternInterface, object> Patterns { get; } = new();
 
+		public bool IsEnabledValue { get; set; } = true;
+
 		protected override object? GetPatternCore(PatternInterface patternInterface)
 			=> Patterns.GetValueOrDefault(patternInterface);
+
+		protected override bool IsEnabledCore() => IsEnabledValue;
 	}
 
 	private sealed class ToggleProvider : IToggleProvider
