@@ -104,7 +104,9 @@ namespace Uno.Storage.Streams.Internal
 					var read = await _cacheStream.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, remaining), CancellationToken.None);
 					if (read <= 0)
 					{
-						break;
+						// Committing fewer bytes than were staged would silently truncate the file.
+						throw new IOException(
+							$"The staged content ended {remaining} bytes before the end of the range to commit.");
 					}
 
 					await targetStream.WriteAsync(buffer, 0, read, CancellationToken.None);

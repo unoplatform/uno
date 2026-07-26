@@ -132,8 +132,9 @@ namespace Uno.Storage.Streams.Internal
 
 		private async Task ProcessPendingAsync()
 		{
-			var currentTasks = _pendingTasks.ToArray();
-			foreach (var pendingTask in currentTasks)
+			// Dequeue before running: the queued operations call back into this method,
+			// so leaving them queued would replay them and recurse indefinitely.
+			while (_pendingTasks.TryDequeue(out var pendingTask))
 			{
 				await pendingTask();
 			}

@@ -64,7 +64,14 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override bool CanWrite => _canWrite;
 
-	public override long Length => (long)NativeMethods.GetLength(_bufferId);
+	public override long Length
+	{
+		get
+		{
+			ObjectDisposedException.ThrowIf(_disposed, this);
+			return (long)NativeMethods.GetLength(_bufferId);
+		}
+	}
 
 	public override long Position
 	{
@@ -79,6 +86,7 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override int Read(byte[] buffer, int offset, int count)
 	{
+		ObjectDisposedException.ThrowIf(_disposed, this);
 		ValidateArguments(buffer, offset, count);
 
 		var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -99,6 +107,8 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override void Write(byte[] buffer, int offset, int count)
 	{
+		ObjectDisposedException.ThrowIf(_disposed, this);
+
 		if (!_canWrite)
 		{
 			throw new NotSupportedException("This stream was opened for read access only.");
@@ -135,6 +145,8 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override void SetLength(long value)
 	{
+		ObjectDisposedException.ThrowIf(_disposed, this);
+
 		if (!_canWrite)
 		{
 			throw new NotSupportedException("This stream was opened for read access only.");
