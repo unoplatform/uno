@@ -21,6 +21,9 @@ internal readonly partial struct UnicodeText
 		// The version number of ICU is important because the exported symbols have their names appended by
 		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
 		private static int _icuVersion;
+		// Custom-suffixed app-local ICU builds (System.Globalization.AppLocalIcu = "suffix:version") rename
+		// exports with the suffix too, e.g. ubrk_open_67_myapp. Empty for regular builds.
+		private static string _icuSymbolSuffix = "";
 		private static IntPtr _libicuuc;
 		private static readonly Dictionary<Type, object> _lookupCache = new();
 
@@ -96,24 +99,40 @@ internal readonly partial struct UnicodeText
 				}
 				// Track every candidate we attempt so the final exception can report exactly
 				// what was tried. On Android the real fallback is "libicu.so", not "libicuuc".
-				var attempts = new List<string> { "icuuc" };
+				var attempts = new List<string>();
 				Exception? lastError = null;
+				string? customSuffix = null;
 
-				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+				libicuuc = IntPtr.Zero;
+				if (OperatingSystem.IsLinux())
+				{
+					// Honor .NET's own app-local ICU configuration first, so Uno resolves the same
+					// libraries as the runtime, including custom-suffixed builds.
+					TryLoadConfiguredAppLocalIcu(attempts, out libicuuc, out customSuffix);
+				}
+
+				attempts.Add("icuuc");
+				if (libicuuc == IntPtr.Zero
+					&& !NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					if (OperatingSystem.IsLinux())
 					{
-						for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
+						// App-local ICU (e.g. the Microsoft.ICU.ICU4C.Runtime package) ships fully-versioned
+						// file names like libicuuc.so.72.1.0.3 that name probing cannot guess, so scan the
+						// app directories before falling back to blind version probing.
+						if (!TryLoadAppLocalIcuFromDirectories(attempts, ref lastError, out libicuuc))
 						{
-							// some environments only have a versioned library and don't symlink it to libicuuc.so
-							var name = $"libicuuc.so.{j}";
-							attempts.Add(name);
-							// Use the same search directories as the primary attempt: a versioned ICU shipped
-							// app-locally (e.g. the Microsoft.ICU.ICU4C.Runtime package, the standard remedy for
-							// minimal images without a system ICU) sits next to the assembly, not in UserDirectories.
-							if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+							for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
 							{
-								break;
+								// some environments only have a versioned library and don't symlink it to
+								// libicuuc.so; a versioned name also matches by soname when the runtime has
+								// already loaded an ICU into the process (e.g. app-local ICU).
+								var name = $"libicuuc.so.{j}";
+								attempts.Add(name);
+								if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+								{
+									break;
+								}
 							}
 						}
 					}
@@ -170,6 +189,10 @@ internal readonly partial struct UnicodeText
 					{
 						hint = " Android's NDK-stable ICU (libicu.so) requires API 31+; libicuuc.so was attempted as a best-effort fallback for API 21-23.";
 					}
+					else if (OperatingSystem.IsLinux())
+					{
+						hint = GetLinuxIcuLoadFailureDetails();
+					}
 					else
 					{
 						hint = string.Empty;
@@ -180,20 +203,32 @@ internal readonly partial struct UnicodeText
 						lastError);
 				}
 
-				// Since libicuuc not installed by us, we have no control over the specific version number, so
-				// we try a wide range of versions.
-				for (int i = MaxSupportedIcuucVersion; i >= MinSupportedIcuucVersion; i--)
+				_icuSymbolSuffix = customSuffix is null ? "" : $"_{customSuffix}";
+
+				if (NativeLibrary.TryGetExport(libicuuc, "u_getVersion", out var getVersionExport))
 				{
-					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out _))
+					// ICU built with --disable-renaming exports unversioned symbols; read the version
+					// from the library itself instead of probing renamed symbol names.
+					Marshal.GetDelegateForFunctionPointer<u_getVersion>(getVersionExport)(out var unversionedInfo);
+					_icuVersion = unversionedInfo.byte1;
+				}
+				else
+				{
+					// Since libicuuc is not installed by us, we have no control over the specific version
+					// number, so we try a wide range of versions.
+					for (int i = MaxSupportedIcuucVersion; i >= MinSupportedIcuucVersion; i--)
 					{
-						_icuVersion = i;
-						break;
+						if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}{_icuSymbolSuffix}", out _))
+						{
+							_icuVersion = i;
+							break;
+						}
 					}
 				}
 
 				if (_icuVersion == 0)
 				{
-					throw new Exception($"Loaded icuuc, but could not find symbol `u_getVersion_N`, where N is in range [{MinSupportedIcuucVersion}-{MaxSupportedIcuucVersion}].");
+					throw new Exception($"Loaded icuuc, but could not find symbol `u_getVersion` or `u_getVersion_N{_icuSymbolSuffix}`, where N is in range [{MinSupportedIcuucVersion}-{MaxSupportedIcuucVersion}].");
 				}
 			}
 			else if (OperatingSystem.IsBrowser())
@@ -235,6 +270,160 @@ internal readonly partial struct UnicodeText
 			}
 		}
 
+		// Same configuration CoreLib reads for app-local ICU; the AppContext switch wins over the env var.
+		private static string? GetAppLocalIcuConfigValue()
+			=> AppContext.GetData("System.Globalization.AppLocalIcu") as string
+				?? Environment.GetEnvironmentVariable("DOTNET_SYSTEM_GLOBALIZATION_APPLOCALICU");
+
+		private static bool TryLoadConfiguredAppLocalIcu(List<string> attempts, out IntPtr libicuuc, out string? customSuffix)
+		{
+			libicuuc = IntPtr.Zero;
+			customSuffix = null;
+
+			var value = GetAppLocalIcuConfigValue();
+			if (string.IsNullOrEmpty(value))
+			{
+				return false;
+			}
+
+			// The value is "<version>" or "<suffix>:<version>", e.g. "72.1.0.3" or "myapp:67.1".
+			var version = value;
+			var suffix = "";
+			var separatorIndex = value.IndexOf(':');
+			if (separatorIndex >= 0)
+			{
+				suffix = value.Substring(0, separatorIndex);
+				version = value.Substring(separatorIndex + 1);
+			}
+
+			// The app-local binaries carry no rpath and reference each other by major-only soname,
+			// so libicudata must be loaded before libicuuc, like CoreLib does.
+			NativeLibrary.TryLoad($"libicudata{suffix}.so.{version}", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out _);
+
+			var name = $"libicuuc{suffix}.so.{version}";
+			attempts.Add(name);
+			if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+			{
+				customSuffix = suffix.Length == 0 ? null : suffix;
+				typeof(ICU).LogDebug()?.Debug($"Loaded app-local ICU '{name}' (System.Globalization.AppLocalIcu).");
+				return true;
+			}
+			return false;
+		}
+
+		private static bool TryLoadAppLocalIcuFromDirectories(List<string> attempts, ref Exception? lastError, out IntPtr libicuuc)
+		{
+			foreach (var directory in GetIcuProbingDirectories())
+			{
+				string? candidate;
+				try
+				{
+					candidate = Directory
+						.EnumerateFiles(directory, "libicuuc.so.*")
+						.Select(path => (Path: path, Version: ParseIcuFileVersion(Path.GetFileName(path))))
+						.Where(c => c.Version is not null)
+						.OrderByDescending(c => c.Version)
+						.FirstOrDefault().Path;
+				}
+				catch (Exception e)
+				{
+					lastError = e;
+					continue;
+				}
+				if (candidate is null)
+				{
+					continue;
+				}
+
+				attempts.Add(candidate);
+				// The app-local binaries carry no rpath and reference each other by major-only soname,
+				// so libicudata must already be in the process for the libicuuc load to resolve.
+				var dataPath = Path.Combine(directory, Path.GetFileName(candidate).Replace("libicuuc", "libicudata"));
+				if (File.Exists(dataPath))
+				{
+					NativeLibrary.TryLoad(dataPath, out _);
+				}
+				try
+				{
+					// Use Load so the dlopen error is preserved for diagnostics.
+					libicuuc = NativeLibrary.Load(candidate);
+					typeof(ICU).LogDebug()?.Debug($"Loaded app-local ICU '{candidate}'.");
+					return true;
+				}
+				catch (Exception e)
+				{
+					lastError = e;
+				}
+			}
+			libicuuc = IntPtr.Zero;
+			return false;
+		}
+
+		// Mirrors where the .NET host resolves app-local native assets: the app directory itself
+		// (self-contained and no-deps.json layouts), runtimes/<rid>/native (framework-dependent
+		// layouts), and the Uno.UI assembly directory.
+		private static IEnumerable<string> GetIcuProbingDirectories()
+		{
+			var baseDirectory = AppContext.BaseDirectory;
+			if (!string.IsNullOrEmpty(baseDirectory) && Directory.Exists(baseDirectory))
+			{
+				yield return baseDirectory;
+
+				var runtimesDirectory = Path.Combine(baseDirectory, "runtimes");
+				if (Directory.Exists(runtimesDirectory))
+				{
+					foreach (var ridDirectory in Directory.EnumerateDirectories(runtimesDirectory, "linux*"))
+					{
+						var nativeDirectory = Path.Combine(ridDirectory, "native");
+						if (Directory.Exists(nativeDirectory))
+						{
+							yield return nativeDirectory;
+						}
+					}
+				}
+			}
+
+#pragma warning disable IL3000
+			var assemblyDirectory = Path.GetDirectoryName(typeof(ICU).Assembly.Location);
+#pragma warning restore IL3000
+			if (!string.IsNullOrEmpty(assemblyDirectory)
+				&& Directory.Exists(assemblyDirectory)
+				&& (string.IsNullOrEmpty(baseDirectory) || !string.Equals(Path.TrimEndingDirectorySeparator(baseDirectory), assemblyDirectory, StringComparison.Ordinal)))
+			{
+				yield return assemblyDirectory;
+			}
+		}
+
+		private static Version? ParseIcuFileVersion(string fileName)
+		{
+			var versionPart = fileName.Substring("libicuuc.so.".Length);
+			// Version.TryParse needs at least two components; major-only files like libicuuc.so.66 are valid.
+			return Version.TryParse(versionPart.Contains('.') ? versionPart : $"{versionPart}.0", out var version) ? version : null;
+		}
+
+		private static string GetLinuxIcuLoadFailureDetails()
+		{
+			var builder = new StringBuilder();
+			builder.AppendLine().Append($"- System.Globalization.AppLocalIcu: {GetAppLocalIcuConfigValue() ?? "(not set)"}");
+			foreach (var directory in GetIcuProbingDirectories())
+			{
+				string[] icuFiles;
+				try
+				{
+					icuFiles = Directory.GetFiles(directory, "libicu*");
+				}
+				catch (Exception)
+				{
+					continue;
+				}
+				builder.AppendLine().Append($"- {directory}: {(icuFiles.Length == 0 ? "(no libicu* files)" : string.Join(", ", icuFiles.Select(Path.GetFileName)))}");
+			}
+			return builder
+				.AppendLine()
+				.Append("Install the distribution ICU package (e.g. 'apt install libicu74', 'dnf install libicu'), or ship ICU app-locally by referencing the Microsoft.ICU.ICU4C.Runtime package and setting the System.Globalization.AppLocalIcu runtime option. Note that InvariantGlobalization does not remove this requirement: ICU is used for BiDi and line breaking.")
+				.ToString();
+		}
+
 		public static T GetMethod<T>()
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
@@ -257,7 +446,7 @@ internal readonly partial struct UnicodeText
 				{
 					value = Marshal.GetDelegateForFunctionPointer<T>(originalNameFunc)!;
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var versionPostfixedFunc))
+				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}{_icuSymbolSuffix}", out var versionPostfixedFunc))
 				{
 					value = Marshal.GetDelegateForFunctionPointer<T>(versionPostfixedFunc)!;
 				}
