@@ -135,11 +135,11 @@ namespace Microsoft.UI.Xaml.Controls
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		// TODO Uno
-		//public IVectorView<SwipeItem> GetView()
-		//{
-		//	return m_items.GetView();
-		//}
+		/// <summary>
+		/// Gets an immutable view into the collection.
+		/// </summary>
+		/// <returns>An object representing the immutable collection view.</returns>
+		public IReadOnlyList<SwipeItem> GetView() => new ReadOnlyObservableCollection<SwipeItem>(m_items);
 
 		public event VectorChangedEventHandler<SwipeItem> VectorChanged
 		{
