@@ -85,6 +85,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	/// </summary>
 	internal event EventHandler CurrentActivityChanged;
 
+	internal AndroidSkiaXamlRootHost XamlRootHost { get; set; }
+
 	/// <summary>
 	/// Raises <see cref="CurrentActivityChanged"/> again once the activity holding this window has
 	/// built its render view. The handover itself happens in OnCreate, before anything bound to the
