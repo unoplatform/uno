@@ -32,12 +32,18 @@
                 AutomationProperties.Name="Enable fixture option"
                 Content="Enable fixture option" />
             <Slider
+                x:Name="VolumeSlider"
                 AutomationProperties.AutomationId="MobileAutomationRange"
                 AutomationProperties.Name="Fixture volume"
                 Header="Fixture volume"
                 Maximum="100"
                 Minimum="0"
                 Value="40" />
+            <TextBlock
+                x:Name="VolumeValue"
+                AutomationProperties.AutomationId="MobileAutomationRangeValue"
+                AutomationProperties.Name="Volume 40"
+                Text="Volume 40" />
             <TextBox
                 x:Name="ControlledField"
                 AutomationProperties.AutomationId="MobileAutomationText"
@@ -48,6 +54,17 @@
                 AutomationProperties.Name="Account password"
                 Header="Account password"
                 PasswordRevealMode="Hidden" />
+
+            <ComboBox
+                x:Name="ChoiceBox"
+                AutomationProperties.AutomationId="MobileAutomationCombo"
+                AutomationProperties.Name="Fixture choice"
+                Header="Fixture choice"
+                PlaceholderText="Pick a choice">
+                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice01" Content="Choice 01" />
+                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice02" Content="Choice 02" />
+                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice03" Content="Choice 03" />
+            </ComboBox>
 
             <TextBlock
                 x:Name="RelationLabel"
