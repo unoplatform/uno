@@ -184,3 +184,4 @@ If your device is significantly trimmed down for installed packages, you'll need
 - `libfontconfig`
 - `libfreetype`
 - `libinput`
+- `libicu` (versioned on Debian/Ubuntu, e.g. `libicu74`; alternatively ship [app-local ICU](xref:uno.publishing.desktop.linux))
