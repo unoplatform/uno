@@ -1,21 +1,25 @@
 #nullable enable
 
+using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 
 namespace Uno.UI.Runtime.Android;
 
-internal class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner
+internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner, IDisposable
 {
 	private readonly Window _window;
 	private readonly NativeWindowWrapper _wrapper;
+	private readonly XamlRoot _xamlRoot;
 	private readonly AndroidSkiaAccessibility _accessibility;
+	private bool _isDisposed;
 
 	public AndroidSkiaXamlRootHost(Window window, NativeWindowWrapper wrapper, XamlRoot xamlRoot)
 	{
 		_window = window;
 		_wrapper = wrapper;
+		_xamlRoot = xamlRoot;
 		_accessibility = new AndroidSkiaAccessibility(xamlRoot);
 		TryConfigureHelper();
 	}
@@ -54,4 +58,17 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwner
 		=> xamlRoot is not null && XamlRootMap.GetHostForRoot(xamlRoot) is AndroidSkiaXamlRootHost host
 			? host.Activity
 			: null;
+
+	public void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+		_accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+		XamlRootMap.Unregister(_xamlRoot);
+	}
 }

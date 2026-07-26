@@ -39,6 +39,12 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	// Handles batched for the next-looper-iteration InvalidateVirtualView flush.
 	private HashSet<nint> _pendingInvalidationHandles = new();
 	private HashSet<nint> _flushingInvalidationHandles = new();
+	private HashSet<int> _pendingInvalidationVirtualIds = new();
+	private HashSet<int> _flushingInvalidationVirtualIds = new();
+
+	// Deduplicated virtual IDs for the current flush (handle- and ID-keyed requests
+	// for the same node must produce a single invalidation).
+	private readonly HashSet<int> _flushingInvalidationTargets = new();
 	private bool _invalidationFlushScheduled;
 
 	// Guards the single root-invalidation flush for a burst of structure changes.
@@ -70,6 +76,35 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 
 	protected override bool IsBlockedByActiveModal(UIElement element)
 		=> _helper?.IsBlockedByActiveModal(element) is true;
+
+	public override void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		base.NotifyInvalidatePeer(peer);
+		var virtualId = _helper?.GetCurrentVirtualIdForPeer(peer);
+		_helper?.MarkAccessibilityTreeDirty();
+		if (virtualId is { } id)
+		{
+			ScheduleInvalidation(id);
+		}
+		else if (
+			peer.ResolveProviderPeer(resolveEventsSource: true).TryGetProviderOwner(out var owner))
+		{
+			ScheduleInvalidation(owner.Visual.Handle);
+		}
+	}
+
+	public override void NotifyPropertyChangedEvent(
+		AutomationPeer peer,
+		AutomationProperty automationProperty,
+		object oldValue,
+		object newValue)
+	{
+		base.NotifyPropertyChangedEvent(peer, automationProperty, oldValue, newValue);
+		if (_helper?.GetCurrentVirtualIdForPeer(peer) is { } id)
+		{
+			ScheduleInvalidation(id);
+		}
+	}
 
 	internal UIElement? RootElement
 		=> _xamlRootRef.TryGetTarget(out var root)
@@ -111,6 +146,8 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		_pendingDirtyHandles.Clear();
 		_pendingInvalidationHandles.Clear();
 		_flushingInvalidationHandles.Clear();
+		_pendingInvalidationVirtualIds.Clear();
+		_flushingInvalidationVirtualIds.Clear();
 		_pendingScrollSubscriptionRoots.Clear();
 		_eventLog.Clear();
 		_recordEvents = false;
@@ -208,6 +245,12 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		ScheduleInvalidationFlush();
 	}
 
+	private void ScheduleInvalidation(int virtualId)
+	{
+		_pendingInvalidationVirtualIds.Add(virtualId);
+		ScheduleInvalidationFlush();
+	}
+
 	private void ScheduleInvalidationFlush()
 	{
 		if (_invalidationFlushScheduled)
@@ -216,7 +259,14 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 
 		_invalidationFlushScheduled = true;
-		_mainHandler.Post(_flushInvalidationsRunnable);
+		if (!_mainHandler.Post(_flushInvalidationsRunnable))
+		{
+			_invalidationFlushScheduled = false;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to schedule Android accessibility node invalidation.");
+			}
+		}
 	}
 
 	private void FlushPendingInvalidations()
@@ -227,22 +277,54 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		_invalidationFlushScheduled = false;
-
-		(_pendingInvalidationHandles, _flushingInvalidationHandles) =
-			(_flushingInvalidationHandles, _pendingInvalidationHandles);
-		_pendingInvalidationHandles.Clear();
-		Trace($"Flushing {_flushingInvalidationHandles.Count} targeted invalidation(s).");
-
-		foreach (var handle in _flushingInvalidationHandles)
+		try
 		{
-			if (_helper?.InvalidateForHandle(handle) is true)
+			_invalidationFlushScheduled = false;
+
+			(_pendingInvalidationHandles, _flushingInvalidationHandles) =
+				(_flushingInvalidationHandles, _pendingInvalidationHandles);
+			_pendingInvalidationHandles.Clear();
+			(_pendingInvalidationVirtualIds, _flushingInvalidationVirtualIds) =
+				(_flushingInvalidationVirtualIds, _pendingInvalidationVirtualIds);
+			_pendingInvalidationVirtualIds.Clear();
+			Trace(
+				$"Flushing {_flushingInvalidationHandles.Count + _flushingInvalidationVirtualIds.Count} targeted invalidation(s).");
+
+			// A single property change can queue the same node twice (once by peer
+			// virtual ID, once by owner handle). Merge both queues into one set of
+			// virtual IDs so each node is invalidated - and recorded - exactly once.
+			_flushingInvalidationTargets.Clear();
+			foreach (var virtualId in _flushingInvalidationVirtualIds)
 			{
-				RecordEvent(AccessibilityNativeEventKind.NodeInvalidated);
+				_flushingInvalidationTargets.Add(virtualId);
+			}
+
+			foreach (var handle in _flushingInvalidationHandles)
+			{
+				_helper?.AddVirtualIdsForHandle(handle, _flushingInvalidationTargets);
+			}
+
+			foreach (var virtualId in _flushingInvalidationTargets)
+			{
+				if (_helper?.InvalidateForVirtualId(virtualId) is true)
+				{
+					RecordEvent(AccessibilityNativeEventKind.NodeInvalidated);
+				}
 			}
 		}
-
-		_flushingInvalidationHandles.Clear();
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility node invalidation failed.", error);
+			}
+		}
+		finally
+		{
+			_flushingInvalidationHandles.Clear();
+			_flushingInvalidationVirtualIds.Clear();
+			_flushingInvalidationTargets.Clear();
+		}
 	}
 
 	// Queues one root-level invalidation for the current looper iteration.
@@ -257,7 +339,14 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 
 		_rootInvalidationScheduled = true;
-		_mainHandler.Post(_flushRootRunnable);
+		if (!_mainHandler.Post(_flushRootRunnable))
+		{
+			_rootInvalidationScheduled = false;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to schedule Android accessibility root invalidation.");
+			}
+		}
 	}
 
 	private void FlushRootInvalidation()
@@ -269,19 +358,32 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		_rootInvalidationScheduled = false;
-		foreach (var root in _pendingScrollSubscriptionRoots)
+		try
 		{
-			if (_xamlRootRef.TryGetTarget(out var xamlRoot) &&
-				ReferenceEquals(root.XamlRoot, xamlRoot))
+			_rootInvalidationScheduled = false;
+			foreach (var root in _pendingScrollSubscriptionRoots)
 			{
-				SubscribeScrollSourcesInSubtree(root);
+				if (_xamlRootRef.TryGetTarget(out var xamlRoot) &&
+					ReferenceEquals(root.XamlRoot, xamlRoot))
+				{
+					SubscribeScrollSourcesInSubtree(root);
+				}
+			}
+			_helper.InvalidateAccessibilityRoot();
+			Trace("Flushed root structure invalidation.");
+			RecordEvent(AccessibilityNativeEventKind.StructureChanged);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility root invalidation failed.", error);
 			}
 		}
-		_pendingScrollSubscriptionRoots.Clear();
-		_helper.InvalidateAccessibilityRoot();
-		Trace("Flushed root structure invalidation.");
-		RecordEvent(AccessibilityNativeEventKind.StructureChanged);
+		finally
+		{
+			_pendingScrollSubscriptionRoots.Clear();
+		}
 	}
 
 	// Tree mutations ------------------------------------------------------------
@@ -572,8 +674,31 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 
 		if (!IsOnMainThread())
 		{
-			_mainHandler.Post(
-				new Runnable(() => AnnounceOnPlatform(text, assertive)));
+			var helper = _helper;
+			if (!_mainHandler.Post(new Runnable(() =>
+			{
+				if (IsDisposed || !ReferenceEquals(_helper, helper))
+				{
+					return;
+				}
+
+				try
+				{
+					helper.SendAnnouncement(text);
+					RecordEvent(AccessibilityNativeEventKind.Announcement, text: text);
+				}
+				catch (System.Exception error)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error("Android accessibility announcement failed.", error);
+					}
+				}
+			})) &&
+				this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to schedule Android accessibility announcement.");
+			}
 			return;
 		}
 
@@ -598,7 +723,35 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		_mainHandler.Post(new Runnable(() => _helper?.ExecuteAction(element, request)));
+		var helper = _helper;
+		var posted = _mainHandler.Post(new Runnable(() =>
+		{
+			if (IsDisposed || !ReferenceEquals(_helper, helper))
+			{
+				return;
+			}
+
+			try
+			{
+				helper.ExecuteAction(element, request);
+			}
+			catch (System.Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Android accessibility action {request.Action} failed.", error);
+				}
+			}
+		}));
+		if (!posted)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Unable to schedule Android accessibility action {request.Action}.");
+			}
+			return false;
+		}
+
 		Trace($"Native action {request.Action} queued for the main thread.");
 		return true;
 	}

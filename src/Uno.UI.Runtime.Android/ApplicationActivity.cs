@@ -607,6 +607,8 @@ namespace Uno.UI.Runtime.Android
 			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
 				wrapper.OnNativeClosed();
+				wrapper.XamlRootHost?.Dispose();
+				wrapper.XamlRootHost = null;
 			}
 		}
 
