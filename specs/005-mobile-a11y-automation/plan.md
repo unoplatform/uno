@@ -364,11 +364,12 @@ Implemented source coverage:
 - shared peer-tree promotion, provider actions, property/event routing, focus recovery, and
   announcement coalescing;
 - Android virtual nodes with stable weak IDs, native range/collection/text/relation metadata,
-  custom fixed actions, normalized automation identity, locale spans, incremental invalidation,
+  custom fixed actions, normalized automation identity, locale spans, set-selection,
+  character/word traversal, incremental invalidation, unique nested hierarchy projection,
   and realized-only virtualization;
 - iOS stable `UIAccessibilityElement` instances with per-XamlRoot weak dispatch, live values,
-  AX custom content, localized custom actions, native focus/modal handling, and incremental
-  container diffs;
+  AX custom content, localized custom actions, XCTest `automationElements`, native focus/modal
+  handling, and incremental container diffs;
 - platform-neutral runtime contracts for native snapshots, actions, events, focus, rich
   semantics, typed internal/unsupported fallbacks, lifecycle, performance, and complete
   capability-matrix integrity;
@@ -385,6 +386,9 @@ Intentional fallbacks:
   through typed diagnostics rather than dead native actions;
 - Android secondary windows are not supported by the current host. Root-keyed hooks are tested
   for the primary root and iOS uses a weak per-root adapter registry.
+- iOS native text selection/granularity remains blocked on a `UITextInput`-compatible bridge.
+- iOS recycled-container generation validation and native VoiceOver/XCUITest execution remain
+  macOS follow-up work.
 
 Local validation completed on Windows:
 
@@ -393,7 +397,11 @@ Local validation completed on Windows:
 - AppleUIKit runtime project compiles for `net9.0-ios18.0` / `iossimulator-x64` using the local
   iOS reference pack;
 - capability-matrix tests pass on Skia Desktop;
-- native Android/iOS execution and manual TalkBack/VoiceOver evidence remain CI/device work.
+- Android API 36 completes 371 accessibility runtime tests with 0 failures and 134 platform
+  skips while TalkBack is enabled. The direct UIAutomator suite passes 14 of 14 both with and
+  without TalkBack, and manual invoke/toggle/list/text/password smoke passes with unique
+  native IDs and password redaction;
+- native iOS/VoiceOver/XCUITest execution remains macOS/Xcode work.
 
 ## Complexity Tracking
 
