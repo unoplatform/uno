@@ -46,16 +46,17 @@ namespace Windows.Storage
 
 			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
-				using var stream = ChunkedBufferStream.CreateView(_bufferId);
+				using var stream = ChunkedBufferStream.CreateView(_bufferId, writable: false);
 				return Task.FromResult(new BasicProperties((ulong)stream.Length, DateTimeOffset.UtcNow));
 			}
 
 			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> Task.FromResult<IRandomAccessStreamWithContentType>(
-					new RandomAccessStreamWithContentType(ChunkedBufferStream.CreateView(_bufferId), ContentType));
+					new RandomAccessStreamWithContentType(
+						ChunkedBufferStream.CreateView(_bufferId, writable: accessMode == FileAccessMode.ReadWrite), ContentType));
 
 			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> Task.FromResult<Stream>(ChunkedBufferStream.CreateView(_bufferId));
+				=> Task.FromResult<Stream>(ChunkedBufferStream.CreateView(_bufferId, writable: accessMode == FileAccessMode.ReadWrite));
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
 				=> throw NotSupported();

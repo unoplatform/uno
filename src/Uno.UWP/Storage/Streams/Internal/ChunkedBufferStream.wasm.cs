@@ -19,13 +19,15 @@ internal sealed partial class ChunkedBufferStream : Stream
 {
 	private readonly string _bufferId;
 	private readonly bool _ownsBuffer;
+	private readonly bool _canWrite;
 	private long _position;
 	private bool _disposed;
 
-	private ChunkedBufferStream(Guid bufferId, bool ownsBuffer)
+	private ChunkedBufferStream(Guid bufferId, bool ownsBuffer, bool canWrite)
 	{
 		_bufferId = bufferId.ToString();
 		_ownsBuffer = ownsBuffer;
+		_canWrite = canWrite;
 	}
 
 	/// <summary>Creates a new JS-side buffer owned (and disposed) by this stream.</summary>
@@ -33,12 +35,16 @@ internal sealed partial class ChunkedBufferStream : Stream
 	{
 		var bufferId = Guid.NewGuid();
 		CreateBuffer(bufferId);
-		return new ChunkedBufferStream(bufferId, ownsBuffer: true);
+		return new ChunkedBufferStream(bufferId, ownsBuffer: true, canWrite: true);
 	}
 
-	/// <summary>Creates a view over an existing JS-side buffer whose lifetime is managed by the caller.</summary>
-	public static ChunkedBufferStream CreateView(Guid bufferId)
-		=> new ChunkedBufferStream(bufferId, ownsBuffer: false);
+	/// <summary>
+	/// Creates a view over an existing JS-side buffer whose lifetime is managed by the caller.
+	/// Ownership and writability are independent: views never dispose the buffer, and
+	/// <paramref name="writable"/> reflects the access mode the view was opened with.
+	/// </summary>
+	public static ChunkedBufferStream CreateView(Guid bufferId, bool writable)
+		=> new ChunkedBufferStream(bufferId, ownsBuffer: false, canWrite: writable);
 
 	/// <summary>Allocates a JS-side buffer whose lifetime is managed by the caller.</summary>
 	public static void CreateBuffer(Guid bufferId)
@@ -56,7 +62,7 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override bool CanSeek => true;
 
-	public override bool CanWrite => true;
+	public override bool CanWrite => _canWrite;
 
 	public override long Length => (long)NativeMethods.GetLength(_bufferId);
 
@@ -93,6 +99,11 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override void Write(byte[] buffer, int offset, int count)
 	{
+		if (!_canWrite)
+		{
+			throw new NotSupportedException("This stream was opened for read access only.");
+		}
+
 		ValidateArguments(buffer, offset, count);
 
 		var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -124,6 +135,11 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override void SetLength(long value)
 	{
+		if (!_canWrite)
+		{
+			throw new NotSupportedException("This stream was opened for read access only.");
+		}
+
 		ArgumentOutOfRangeException.ThrowIfNegative(value);
 		NativeMethods.Truncate(_bufferId, value);
 	}
