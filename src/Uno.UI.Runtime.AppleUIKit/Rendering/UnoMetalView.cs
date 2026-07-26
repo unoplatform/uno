@@ -19,6 +19,9 @@ namespace Uno.UI.Runtime.AppleUIKit
 	{
 		private readonly IMTLCommandQueue? _queue;
 
+		[Export("automationElements")]
+		public NSObject[]? AutomationElements { get; set; }
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
