@@ -133,6 +133,31 @@ public class Given_SkiaIOSAccessibilityElement
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Tree_Is_Built_Then_XCTest_Automation_Elements_Mirror_The_Accessibility_Tree()
+	{
+		var panel = new StackPanel
+		{
+			Children =
+			{
+				new Button { Content = "First" },
+				new Button { Content = "Second" },
+			},
+		};
+		await UITestHelper.Load(panel);
+
+		var accessibilityElements =
+			AccessibilityPeerHelper.IOSAllElementsForRootAccessor?.Invoke(panel.XamlRoot!)
+			?? Array.Empty<object>();
+		var automationElements =
+			AccessibilityPeerHelper.IOSAutomationElementsForRootAccessor?.Invoke(panel.XamlRoot!)
+			?? Array.Empty<object>();
+
+		Assert.IsTrue(accessibilityElements.Length > 0);
+		CollectionAssert.AreEqual(accessibilityElements, automationElements);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Raw_AccessibilityView_Then_Element_Is_Absent()
 	{
 		var panel = new StackPanel();
