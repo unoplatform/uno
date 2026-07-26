@@ -34,7 +34,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
-/// This is currently only available on the WPF and X11 targets (and WinUI).
+/// This is currently available on the WPF, Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
@@ -46,6 +46,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private readonly Func<Window>? _getWindowFunc;
 
 	private bool _changingGlInitialized;
+
+	// On GLES (Android), glReadPixels with BGRA is the optional GL_EXT_read_format_bgra extension.
+	// When it's absent we read RGBA and swap R/B into the BGRA back buffer. Desktop GL/ANGLE keep
+	// BGRA (core), and WASM keeps BGRA too (its JS shim swaps internally), so this stays false there.
+	private bool _readbackAsRgbaWithSwap;
 
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
@@ -216,7 +221,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// animation, call <see cref="Invalidate"/> inside <see cref="RenderOverride"/> to continuously invalidate and update.
 	/// </summary>
 #if WINAPPSDK
-	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	public void Invalidate()
+	{
+		if (IsGLInitialized == false)
+		{
+			return;
+		}
+
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	}
 #else
 	// We used to Invalidate like this
 	// public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
@@ -227,6 +240,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Invalidate() inside RenderOverride(), we will enter an infinite loop that completely hangs the app.
 	public void Invalidate()
 	{
+		if (IsGLInitialized == false)
+		{
+			return;
+		}
+
 		Compositor.GetSharedCompositor().InvalidateRender(Visual);
 	}
 
@@ -266,6 +284,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// <summary>
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
 	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
+	/// The value also becomes false if an exception escapes <see cref="Init"/>, <see cref="RenderOverride"/> or the
+	/// framebuffer setup, in which case the element stops rendering until it is reloaded.
 	/// </summary>
 	public bool? IsGLInitialized
 	{
@@ -292,7 +312,33 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
-			Init(_gl);
+			if (IsGLInitialized == false)
+			{
+				// The framebuffer creation failed and already recorded the failure.
+				return;
+			}
+
+			try
+			{
+				// Bind the element's offscreen framebuffer before Init so initialization runs against
+				// the same valid draw framebuffer used while rendering. FrameBufferDetails leaves FBO 0
+				// bound, but on iOS/tvOS there is no usable default framebuffer (EAGL has no window-backed
+				// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
+				// fail with "Current draw framebuffer is invalid".
+				_gl.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
+				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
+				Init(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
+				}
+
+				IsGLInitialized = false;
+				return;
+			}
 		}
 
 		var window =
@@ -339,7 +385,17 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				return;
 			}
 #endif
-			OnDestroy(_gl);
+			try
+			{
+				OnDestroy(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)}.{nameof(OnDestroy)} failed.", e);
+				}
+			}
 			_details?.Dispose();
 			_gl.Dispose();
 		}
@@ -368,7 +424,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -382,8 +438,22 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
-			_details?.Dispose();
-			_details = new FrameBufferDetails(_gl, RenderSize);
+			try
+			{
+				_details?.Dispose();
+				_details = new FrameBufferDetails(_gl, RenderSize);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} framebuffer update failed. The element will no longer render.", e);
+				}
+
+				IsGLInitialized = false;
+				_details = null;
+				return;
+			}
 		}
 
 #if WINAPPSDK
@@ -402,7 +472,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -412,6 +482,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _details.Framebuffer);
+		try
 		{
 			_gl.Viewport(new System.Drawing.Size((int)RenderSize.Width, (int)RenderSize.Height));
 
@@ -428,11 +499,58 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
-				_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				if (_readbackAsRgbaWithSwap)
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
+					SwapRedBlue((byte*)ptr, (int)RenderSize.Width * (int)RenderSize.Height);
+				}
+				else
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				}
 			});
 			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
 			_backBuffer.Invalidate();
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(GLCanvasElement)} rendering failed. The element will no longer render.", e);
+			}
+
+			IsGLInitialized = false;
+		}
+	}
+
+	// Decides the readback format once, while the context is current. Only GLES (Android) can lack
+	// BGRA read support; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
+	private static bool NeedsRgbaReadbackSwap(GL gl)
+	{
+		if (!OperatingSystem.IsAndroid())
+		{
+			return false;
+		}
+
+		gl.GetInteger(GLEnum.NumExtensions, out var extensionCount);
+		for (uint i = 0; i < extensionCount; i++)
+		{
+			if (gl.GetStringS(StringName.Extensions, i) == "GL_EXT_read_format_bgra")
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static unsafe void SwapRedBlue(byte* pixels, int pixelCount)
+	{
+		for (var i = 0; i < pixelCount; i++)
+		{
+			var offset = i * BytesPerPixel;
+			(pixels[offset], pixels[offset + 2]) = (pixels[offset + 2], pixels[offset]);
 		}
 	}
 

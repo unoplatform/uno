@@ -74,7 +74,11 @@ captured from MSBuild at build time.
 - The `Uno.UI.RemoteControl` client ships per-flavor (`netcoremobile`, `Skia`, `Wasm`,
   `Reference`), so the **platform identifier** is compile-time knowledge of the client
   assembly (`android` / `ios` / `tvos` / `maccatalyst` / `browserwasm` / skia-desktop), and
-  the **framework version** comes from the runtime (`Environment.Version`).
+  the **framework version** comes from the runtime (`Environment.Version`). One exception:
+  the skia flavor serves every skia-rendering head — desktop **and** browser
+  (`netX.0-browserwasm` with the skia renderer) — so it completes the compile-time knowledge
+  with a runtime check (`OperatingSystem.IsBrowser()` → `browserwasm`, otherwise the
+  skia-desktop pseudo-platform).
 - The value is a *normalized runtime descriptor*, not a raw TFM string reconstruction —
   the skia client cannot (and must not) guess whether the head TFM was spelled
   `net10.0-desktop` or `net10.0`; the matching rules below treat those as equivalent.
@@ -188,11 +192,14 @@ into the product (`Uno.HotReload/Utils/`) together with its unit tests; the DevS
 project (linked-source convention) validates the end-to-end behavior against multi-TFM
 fixtures.
 
-Known gap to address during the port: the classifier does not recognize
-`Microsoft.Windows.SDK.NET.Ref` (WinAppSDK `net10.0-windows10.x` heads resolve as plain
-`net10.0`). Windows targets do not use the dev-server metadata-updates path (VS native HR),
-but the mapping should either be added or the limitation asserted by a test so the filter
-never silently flushes a windows head that a future scenario would rely on.
+The classifier recognizes `Microsoft.Windows.SDK.NET.Ref` → `windows` (in `_platformPackPrefixes`,
+covered by `TryParseRefPackPath_WindowsSdkRefPack_ParsesPlatform`, with the WinAppSDK base pack
+covered by `TryParseRefPackPath_WindowsDesktopAppRef_BasePackRecognised`), so a WinAppSDK
+`net10.0-windows10.x` head resolves to `windows` rather than plain `net10.0`. Windows targets do not
+use the dev-server metadata-updates path (VS provides native hot reload), so this classification is a
+safety net: it keeps the filter from silently flushing a windows head a future scenario might rely on.
+No residual gap is known; should a windows ref-pack path outside the mapped prefix ever surface, add it
+to `_platformPackPrefixes` (with a fixture) rather than leaning on the plain-`net10.0` fallback.
 
 ### D6 — Diagnostics
 
