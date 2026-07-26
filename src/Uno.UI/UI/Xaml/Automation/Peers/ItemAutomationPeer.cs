@@ -22,6 +22,7 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 {
 	private readonly object _item;
 	private readonly ItemsControlAutomationPeer _itemsControlAutomationPeer;
+	private WeakReference<UIElement>? _realizedContainer;
 
 	public ItemAutomationPeer(object item, ItemsControlAutomationPeer parent)
 	{
@@ -43,10 +44,38 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	{
 		if (_itemsControlAutomationPeer?.Owner is ItemsControl itemsControl)
 		{
+			if (_realizedContainer?.TryGetTarget(out var realizedContainer) is true &&
+				ReferenceEquals(itemsControl.ItemFromContainer(realizedContainer), _item))
+			{
+				return realizedContainer;
+			}
+
 			return itemsControl.ContainerFromItem(_item) as UIElement;
 		}
 
 		return null;
+	}
+
+	internal void SetRealizedContainer(UIElement container)
+	{
+		_realizedContainer ??= new WeakReference<UIElement>(container);
+		_realizedContainer.SetTarget(container);
+	}
+
+	internal int GetItemIndex()
+	{
+		if (_itemsControlAutomationPeer.Owner is ItemsControl itemsControl)
+		{
+			var container = GetContainer();
+			if (container is not null)
+			{
+				return itemsControl.IndexFromContainer(container);
+			}
+
+			return itemsControl.Items.IndexOf(_item);
+		}
+
+		return -1;
 	}
 
 	internal AutomationPeer? GetContainerPeer()

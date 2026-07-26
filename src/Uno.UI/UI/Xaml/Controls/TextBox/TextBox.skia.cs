@@ -7,6 +7,7 @@ using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Internal;
@@ -16,6 +17,7 @@ using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -162,13 +164,21 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 #nullable restore
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
+	[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
 	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
 
 	public bool CanPasteClipboardContent
 	{
 		get => GetCanPasteClipboardContentValue();
 		private set => SetCanPasteClipboardContentValue(value);
+	}
+
+	private void OnCanPasteClipboardContentChanged(bool oldValue, bool newValue)
+	{
+		if (oldValue != newValue && AutomationPeer.AutomationPeerListener is not null)
+		{
+			GetOrCreateAutomationPeer()?.InvalidatePeer();
+		}
 	}
 
 	public static DependencyProperty SelectionFlyoutProperty { get; } =
@@ -213,12 +223,15 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		try
 		{
-			var content = Clipboard.GetContent();
-			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+			CanPasteClipboardContent = Clipboard.IsTextAvailable();
 		}
-		catch
+		catch (Exception error)
 		{
 			CanPasteClipboardContent = false;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to query clipboard text availability: {error}");
+			}
 		}
 	}
 
@@ -1455,18 +1468,41 @@ public partial class TextBox : ITextSelectionGripperHost
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
 	/// This makes the calculations a lot more natural.
 	/// </summary>
-	internal void SelectInternal(int selectionStart, int selectionLength)
+	internal bool SelectInternal(int selectionStart, int selectionLength)
 	{
+		var originalSelection = _selection;
+		var originalCaretXOffset = _caretXOffset;
+		var normalizedStart = Math.Min(selectionStart, selectionStart + selectionLength);
+		var normalizedLength = Math.Abs(selectionLength);
+
 		_inSelectInternal = true;
-		_selection.selectionEndsAtTheStart = selectionLength < 0;
-		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		try
 		{
-			_caretXOffset = selectionLength >= 0 ?
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			Select(normalizedStart, normalizedLength);
+			if (SelectionStart != normalizedStart || SelectionLength != normalizedLength)
+			{
+				_selection.selectionEndsAtTheStart = originalSelection.selectionEndsAtTheStart;
+				_caretXOffset = originalCaretXOffset;
+				UpdateDisplaySelection();
+				return false;
+			}
+
+			_selection.selectionEndsAtTheStart = selectionLength < 0;
+			if (DisplayBlockInlines is { })
+			{
+				_caretXOffset = selectionLength >= 0 ?
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			}
+
+			UpdateDisplaySelection();
+			UpdateScrolling();
+			return true;
 		}
-		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_inSelectInternal = false;
+		finally
+		{
+			_inSelectInternal = false;
+		}
 	}
 
 	private void TimerOnTick(object sender, object e)

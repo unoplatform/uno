@@ -105,7 +105,9 @@ internal static class AccessibilityRouter
 	public static SkiaAccessibilityBase? Resolve(AutomationPeer peer)
 	{
 		var providerPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		if (!SkiaAccessibilityBase.TryGetPeerOwner(providerPeer, peer, out var element))
+		if (!SkiaAccessibilityBase.TryGetPeerOwner(providerPeer, peer, out var element) &&
+			(providerPeer is ItemAutomationPeer ||
+				!providerPeer.TryGetProviderOwner(out element)))
 		{
 			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
