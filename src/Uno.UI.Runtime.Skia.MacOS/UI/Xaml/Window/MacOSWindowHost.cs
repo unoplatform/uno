@@ -153,6 +153,14 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
 	{
+		if (_metalRenderThread is not null)
+		{
+			// The render thread owns the GRContext and the retained layer on the Metal path. AppKit
+			// should not reach this (the view is paused), but bail out rather than risk drawing from
+			// the main thread concurrently with it.
+			return;
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture}");
@@ -909,18 +917,22 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		/// <summary>
 		/// Wakes the render thread to present a new frame. Calls made while it is busy
-		/// coalesce into a single wake-up.
+		/// coalesce into a single wake-up. Resets the present-completion event first so a
+		/// <see cref="WaitForNextPresent"/> caller can never observe a previous present.
 		/// </summary>
-		internal void SignalNewFrame() => _frameSignal.Set();
+		internal void SignalNewFrame()
+		{
+			_presentedEvent.Reset();
+			_frameSignal.Set();
+		}
 
 		/// <summary>
 		/// Blocks until the render thread finishes presenting the current frame, and returns
 		/// <see langword="false"/> if the timeout elapsed first.
 		/// </summary>
 		/// <remarks>
-		/// TODO: not wired up yet. It mirrors the Win32 render-thread contract, where the UI thread
-		/// waits for a present during a synchronous resize/show (Win32WindowWrapper.SynchronousRenderAndDraw),
-		/// which the macOS host still has to grow an equivalent of.
+		/// Currently unused. It mirrors the Win32 render-thread contract, where the UI thread waits for
+		/// a present during a synchronous resize/show (Win32WindowWrapper.SynchronousRenderAndDraw).
 		/// </remarks>
 		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
 
@@ -934,7 +946,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					break;
 				}
 
-				_presentedEvent.Reset();
 				try
 				{
 					if (NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height))
@@ -946,6 +957,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 						// Present the drawable; may block on VSync / drawable availability.
 						NativeUno.uno_window_present_frame(_windowHandle);
+
+						// Only a frame that actually reached the screen may release a waiter.
+						_presentedEvent.Set();
 					}
 				}
 				catch (Exception ex)
@@ -955,8 +969,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 						this.Log().Error($"macOS render thread error: {ex}");
 					}
 				}
-
-				_presentedEvent.Set();
 			}
 		}
 
