@@ -13,6 +13,30 @@ namespace Uno.Globalization.NumberFormatting
 		{
 		}
 
+		/// <summary>
+		/// The <see cref="NumberFormatInfo"/> used to format/parse the decimal separator, group
+		/// separator and group sizes, and negative sign.
+		/// </summary>
+		/// <remarks>
+		/// This intentionally defaults to <see cref="CultureInfo.InvariantCulture"/> (ASCII '.'/',' punctuation).
+		/// <see cref="NumeralSystemTranslator"/> assumes this punctuation is present in the formatted text so it
+		/// can translate it (e.g. to Arabic-Indic separators) without double-localizing it; callers that resolve
+		/// a locale-specific <see cref="NumberFormatInfo"/> (e.g. for decimal-comma locales) must only do so for
+		/// numeral systems the translator does not itself localize the punctuation for.
+		///
+		/// <see cref="AppendFormatIntegerPart"/>'s custom numeric picture format string (e.g. "00,0") correctly
+		/// honors this <see cref="NumberFormatInfo"/>'s <see cref="NumberFormatInfo.NumberGroupSizes"/> when
+		/// formatted via <see cref="StringBuilder.AppendFormat(IFormatProvider, string, object)"/>, including
+		/// non-uniform grouping (e.g. "en-IN" lakh/crore grouping, group sizes {3, 2}) - see
+		/// Given_DecimalFormatter.When_NonUniformGroupSizeLocale_Then_GroupsUsingLocaleGroupSizes. However,
+		/// <see cref="HasInvalidGroupSize"/> (used by <see cref="ParseDouble"/>) only ever consults
+		/// <see cref="NumberFormatInfo.NumberGroupSizes"/>[0] and validates every gap between separators against
+		/// that single size, so parsing text with non-uniform grouping may incorrectly reject (or, per its
+		/// off-by-one comparison, incorrectly accept) some otherwise-valid input. This is a pre-existing
+		/// FormatterHelper limitation, unrelated to locale resolution, and out of scope here.
+		/// </remarks>
+		public NumberFormatInfo NumberFormat { get; set; } = CultureInfo.InvariantCulture.NumberFormat;
+
 		public bool IsDecimalPointAlwaysDisplayed { get; set; }
 
 		public int IntegerDigits { get; set; } = 1;
@@ -55,7 +79,7 @@ namespace Uno.Globalization.NumberFormatting
 
 			if (IsZeroSigned && isNegative)
 			{
-				stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
+				stringBuilder.Append(NumberFormat.NegativeSign);
 			}
 
 			AppendFormatZero(stringBuilder);
@@ -77,7 +101,7 @@ namespace Uno.Globalization.NumberFormatting
 				return;
 			}
 
-			stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+			stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
 			stringBuilder.Append('0', FractionDigits);
 		}
 
@@ -113,19 +137,19 @@ namespace Uno.Globalization.NumberFormatting
 			}
 
 			var format = StringBuilderCache.GetStringAndRelease(formatBuilder);
-			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
+			stringBuilder.AppendFormat(NumberFormat, format, integerPart);
 		}
 
 		private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)
 		{
-			var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
+			var numberDecimalSeparator = NumberFormat.NumberDecimalSeparator;
 
 			var integerPart = (int)Math.Truncate(value);
 			var integerPartLen = integerPart.GetLength();
 			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerPartLen);
 			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
 			var needZeros = value == rounded;
-			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", CultureInfo.InvariantCulture) : value.ToString(CultureInfo.InvariantCulture);
+			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : value.ToString(NumberFormat);
 			var indexOfDecimalSeperator = formattedFractionPart.LastIndexOf(numberDecimalSeparator, StringComparison.Ordinal);
 
 			if (indexOfDecimalSeperator != -1)
@@ -134,13 +158,13 @@ namespace Uno.Globalization.NumberFormatting
 			}
 			else if (IsDecimalPointAlwaysDisplayed)
 			{
-				stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+				stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
 			}
 		}
 
 		private bool HasInvalidGroupSize(string text)
 		{
-			var numberFormat = CultureInfo.InvariantCulture.NumberFormat;
+			var numberFormat = NumberFormat;
 			var decimalSeperatorIndex = text.LastIndexOf(numberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
 			var groupSize = numberFormat.NumberGroupSizes[0];
 			var groupSeperatorLength = numberFormat.NumberGroupSeparator.Length;
@@ -190,13 +214,13 @@ namespace Uno.Globalization.NumberFormatting
 
 			if (!double.TryParse(text,
 				NumberStyles.Float | NumberStyles.AllowThousands,
-				CultureInfo.InvariantCulture, out double value))
+				NumberFormat, out double value))
 			{
 				return null;
 			}
 
 			if (value == 0 &&
-				text.IndexOf(CultureInfo.InvariantCulture.NumberFormat.NegativeSign, StringComparison.Ordinal) != -1)
+				text.IndexOf(NumberFormat.NegativeSign, StringComparison.Ordinal) != -1)
 			{
 				return -0d;
 			}

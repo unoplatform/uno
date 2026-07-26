@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
@@ -159,6 +160,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.IsFalse(sut.IsDecimalPointAlwaysDisplayed);
 			Assert.AreEqual("en-US", sut.ResolvedLanguage);
 			Assert.IsNull(sut.NumberRounder);
+			Assert.AreEqual("Latn", sut.NumeralSystem);
+			Assert.AreEqual("US", sut.GeographicRegion);
+			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
 			/*
 				FractionDigits	2	int
 				GeographicRegion	"US"	string
@@ -291,5 +295,198 @@ namespace Uno.UI.Tests.Windows_Globalization
 #else
 			new DecimalFormatter(new[] { "en-us" }, "US");
 #endif
+
+		[TestMethod]
+		public void When_LanguagesIsNull_Then_Throw()
+		{
+			Assert.ThrowsExactly<NullReferenceException>(() => new DecimalFormatter(languages: null!, "US"));
+		}
+
+		[TestMethod]
+#pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
+		[DataRow(new string[0])]
+		[DataRow(new string[] { "abcd" })]
+		[DataRow(new string[] { "en-US", "abcd" })]
+#pragma warning restore MSTEST0014 // DataRow should be valid
+		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
+		{
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(languages, "US"));
+		}
+
+		[TestMethod]
+		public void When_GeographicRegionIsNull_Then_Throw()
+		{
+			Assert.ThrowsExactly<NullReferenceException>(() => new DecimalFormatter(new[] { "en-US" }, geographicRegion: null!));
+		}
+
+		[TestMethod]
+		[DataRow("")]
+		[DataRow("NotARegion")]
+		[DataRow("1234")]
+		public void When_GeographicRegionIsInvalid_Then_Throw(string geographicRegion)
+		{
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new[] { "en-US" }, geographicRegion));
+		}
+
+		[TestMethod]
+		public void When_ConstructedWithLanguagesAndRegion_Then_PropertiesAreResolved()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
+
+			Assert.AreEqual(1, sut.Languages.Count);
+			Assert.AreEqual("en-US", sut.Languages[0]);
+			Assert.AreEqual("en-US", sut.ResolvedLanguage);
+			Assert.AreEqual("Latn", sut.NumeralSystem);
+			Assert.AreEqual("US", sut.GeographicRegion);
+			Assert.AreEqual("US", sut.ResolvedGeographicRegion);
+		}
+
+		[TestMethod]
+		public void When_GeographicRegionIsLowercase_Then_ResolvedGeographicRegionIsCanonical()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "us");
+
+			Assert.AreEqual("us", sut.GeographicRegion);
+			Assert.AreEqual("US", sut.ResolvedGeographicRegion);
+		}
+
+		[TestMethod]
+		public void When_ConstructedWithLanguagesAndRegion_Then_FormattingMatchesDefaultConstructor()
+		{
+			// en-US's separators/group sizes are the same as CultureInfo.InvariantCulture, so the
+			// locale-aware constructor must format identically to the default constructor.
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
+			sut.IsGrouped = true;
+			sut.IntegerDigits = 2;
+			sut.FractionDigits = 2;
+
+			Assert.AreEqual("1,234.50", sut.FormatDouble(1234.5));
+			Assert.AreEqual(1234.5, sut.ParseDouble("1,234.50"));
+		}
+
+		[TestMethod]
+		public void When_DecimalCommaLocale_Then_FormatUsesLocaleSeparators()
+		{
+			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+			var decimalSeparator = culture.NumberFormat.NumberDecimalSeparator;
+
+			var sut = new DecimalFormatter(new[] { "fr-FR" }, "FR");
+			sut.IntegerDigits = 1;
+			sut.FractionDigits = 2;
+
+			Assert.AreEqual("Latn", sut.NumeralSystem);
+			Assert.AreEqual($"1{decimalSeparator}50", sut.FormatDouble(1.5));
+			Assert.AreEqual(1.5, sut.ParseDouble($"1{decimalSeparator}50"));
+		}
+
+		[TestMethod]
+		public void When_DecimalCommaLocale_Then_GroupingUsesLocaleGroupSeparator()
+		{
+			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+			var decimalSeparator = culture.NumberFormat.NumberDecimalSeparator;
+			var groupSeparator = culture.NumberFormat.NumberGroupSeparator;
+
+			var sut = new DecimalFormatter(new[] { "fr-FR" }, "FR");
+			sut.IsGrouped = true;
+			sut.IntegerDigits = 2;
+			sut.FractionDigits = 2;
+
+			var expected = $"1{groupSeparator}234{decimalSeparator}50";
+			var formatted = sut.FormatDouble(1234.5);
+
+			Assert.AreEqual(expected, formatted);
+			Assert.AreEqual(1234.5, sut.ParseDouble(formatted));
+		}
+
+		[TestMethod]
+		public void When_NonUniformGroupSizeLocale_Then_GroupsUsingLocaleGroupSizes()
+		{
+			// "en-IN" uses NumberGroupSizes {3, 2} (lakh/crore grouping, e.g. "12,34,567") on real
+			// Windows/WinRT. .NET's custom numeric picture format string (built by
+			// FormatterHelper.AppendFormatIntegerPart) honors the NumberFormatInfo's NumberGroupSizes
+			// when formatting via StringBuilder.AppendFormat, so locale-aware grouping is correctly
+			// non-uniform here - this test pins that behavior against regression.
+			var sut = new DecimalFormatter(new[] { "en-IN" }, "IN");
+			sut.IsGrouped = true;
+			sut.IntegerDigits = 2;
+			sut.FractionDigits = 2;
+
+			Assert.AreEqual("12,34,567.00", sut.FormatDouble(1234567));
+		}
+
+		[TestMethod]
+		public void When_DecimalCommaLocale_Then_NegativeZeroRoundTrips()
+		{
+			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+			var negativeSign = culture.NumberFormat.NegativeSign;
+
+			var sut = new DecimalFormatter(new[] { "fr-FR" }, "FR");
+			sut.IsZeroSigned = true;
+			sut.IntegerDigits = 1;
+			sut.FractionDigits = 0;
+
+			var formatted = sut.FormatDouble(-0d);
+			Assert.AreEqual($"{negativeSign}0", formatted);
+
+			var parsed = sut.ParseDouble(formatted);
+			Assert.IsTrue(parsed.HasValue);
+			Assert.IsTrue(BitConverter.DoubleToInt64Bits(parsed!.Value) < 0);
+		}
+
+		[TestMethod]
+		public void When_ArabicLanguage_Then_NumeralSystemIsArabAndDigitsAreLocalized()
+		{
+			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA");
+			sut.IntegerDigits = 1;
+			sut.FractionDigits = 2;
+
+			Assert.AreEqual("Arab", sut.NumeralSystem);
+			Assert.AreEqual("ar-SA", sut.ResolvedLanguage);
+
+			var formatted = sut.FormatDouble(12.5);
+
+			// No ASCII digits should remain: they were all translated to Arabic-Indic digits.
+			foreach (var c in formatted)
+			{
+				Assert.IsFalse(c >= '0' && c <= '9', $"Unexpected ASCII digit '{c}' in '{formatted}'");
+			}
+
+			Assert.AreEqual(12.5, sut.ParseDouble(formatted));
+		}
+
+		[TestMethod]
+		public void When_ArabicLanguage_Then_GroupingAndDecimalPunctuationRoundTrip()
+		{
+			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA");
+			sut.IsGrouped = true;
+			sut.IntegerDigits = 2;
+			sut.FractionDigits = 2;
+
+			var formatted = sut.FormatDouble(1234.5);
+
+			Assert.IsTrue(formatted.Contains('\u066c'), "Expected the Arabic thousands separator.");
+			Assert.IsTrue(formatted.Contains('\u066b'), "Expected the Arabic decimal separator.");
+			Assert.AreEqual(1234.5, sut.ParseDouble(formatted));
+		}
+
+		[TestMethod]
+		public void When_NumeralSystemChangedAfterConstruction_Then_ArabicRoundTrips()
+		{
+			// Switching NumeralSystem after construction must re-coordinate the underlying punctuation
+			// source with the translator so Arabic digits/punctuation still round-trip correctly.
+			var sut = new DecimalFormatter(new[] { "fr-FR" }, "FR");
+			sut.IntegerDigits = 1;
+			sut.FractionDigits = 2;
+			sut.NumeralSystem = "Arab";
+
+			var formatted = sut.FormatDouble(1.5);
+
+			foreach (var c in formatted)
+			{
+				Assert.IsFalse(c >= '0' && c <= '9', $"Unexpected ASCII digit '{c}' in '{formatted}'");
+			}
+
+			Assert.AreEqual(1.5, sut.ParseDouble(formatted));
+		}
 	}
 }
