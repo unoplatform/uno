@@ -23,6 +23,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		private readonly RetainedLayer _retainedLayer = new();
 
+		[Export("automationElements")]
+		public NSObject[]? AutomationElements { get; set; }
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;

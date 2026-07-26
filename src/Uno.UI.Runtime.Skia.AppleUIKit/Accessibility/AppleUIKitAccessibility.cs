@@ -25,8 +25,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 /// <summary>
 /// Per-XamlRoot accessibility adapter for Skia iOS/tvOS/macCatalyst.
 /// Owns a stable registry of <see cref="UnoUIAccessibilityElement"/> objects hosted by the
-/// Skia/Metal view's <c>AccessibilityElements</c> collection, and pulls all accessibility
-/// property values live from the resolved automation peer on native demand.
+/// Skia/Metal view's accessibility and automation element collections, and pulls all
+/// accessibility property values live from the resolved automation peer on native demand.
 /// </summary>
 internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 {
@@ -41,6 +41,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private readonly Dictionary<nint, UnoUIAccessibilityElement> _nodeElements = new();
 	private UIAccessibilityElement[] _currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
 	private static readonly NSString _accessibilityElementsKey = new("accessibilityElements");
+	private static readonly NSString _automationElementsKey = new("automationElements");
 
 	// Weak owner references for live property pull
 	private readonly Dictionary<nint, WeakReference<UIElement>> _handleToOwner = new();
@@ -125,6 +126,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			AccessibilityPeerHelper.IOSAllElementsForRootAccessor =
 				root => FindAdapterForRoot(root)?.GetAllElementsForRoot(root);
+
+			AccessibilityPeerHelper.IOSAutomationElementsCountAccessor =
+				root => FindAdapterForRoot(root)?.GetAutomationElementsCountForRoot(root) ?? 0;
+
+			AccessibilityPeerHelper.IOSAutomationElementsForRootAccessor =
+				root => FindAdapterForRoot(root)?.GetAutomationElementsForRoot(root);
 
 			AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor =
 				element => FindAdapterForElement(element)?.GetSnapshotForOwner(element);
@@ -331,6 +338,32 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			: null;
 	}
 
+	private int GetAutomationElementsCountForRoot(XamlRoot xamlRoot)
+	{
+		if (!ReferenceEquals(xamlRoot, _xamlRoot) ||
+			!_controllerRef.TryGetTarget(out var controller) ||
+			controller.SkCanvasView is not { } metalView)
+		{
+			return 0;
+		}
+
+		return metalView.AutomationElements?.Length ?? 0;
+	}
+
+	private object[]? GetAutomationElementsForRoot(XamlRoot xamlRoot)
+	{
+		if (!ReferenceEquals(xamlRoot, _xamlRoot) ||
+			!_controllerRef.TryGetTarget(out var controller) ||
+			controller.SkCanvasView is not { } metalView)
+		{
+			return null;
+		}
+
+		return metalView.ValueForKey(_automationElementsKey) is NSArray array
+			? array.Cast<object>().ToArray()
+			: null;
+	}
+
 	private AccessibilityNativeNodeSnapshot? GetSnapshotForOwner(UIElement element)
 	{
 		if (IsBlockedByActiveModal(element))
@@ -369,6 +402,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			_currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
 			metalView.SetValueForKey(null!, _accessibilityElementsKey);
+			metalView.AutomationElements = null;
 			return;
 		}
 
@@ -393,6 +427,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_currentAccessibilityElements = elements.ToArray();
 		using var array = NSArray.FromNSObjects(_currentAccessibilityElements);
 		metalView.SetValueForKey(array, _accessibilityElementsKey);
+		metalView.AutomationElements = _currentAccessibilityElements;
 	}
 
 	// Initial build hook called from NativeWindowWrapper.ShowCore
