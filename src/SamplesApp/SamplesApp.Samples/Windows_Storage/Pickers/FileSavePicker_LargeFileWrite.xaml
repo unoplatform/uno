@@ -1,0 +1,63 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_Storage.Pickers.FileSavePicker_LargeFileWrite"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock Text="Writes large generated payloads through StorageFile.OpenStreamForWriteAsync in 2 MB chunks. On WebAssembly, watch the tab's memory (DevTools) while writing: the write path must not buffer the whole file in tab memory, and multi-GB saves must not crash the runtime. The on-screen heap number is only a hint." TextWrapping="Wrap" />
+
+            <TextBlock FontWeight="SemiBold" Text="Save via FileSavePicker (native picker or download fallback):" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="Picker512"
+                    Click="OnPicker512"
+                    Content="512 MB" />
+                <Button
+                    x:Name="Picker1024"
+                    Click="OnPicker1024"
+                    Content="1 GB" />
+                <Button
+                    x:Name="Picker2048"
+                    Click="OnPicker2048"
+                    Content="2 GB" />
+                <Button
+                    x:Name="Picker4096"
+                    Click="OnPicker4096"
+                    Content="4 GB" />
+            </StackPanel>
+
+            <TextBlock FontWeight="SemiBold" Text="Control: save to app storage (no picker):" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="Local128"
+                    Click="OnLocal128"
+                    Content="128 MB" />
+                <Button
+                    x:Name="Local512"
+                    Click="OnLocal512"
+                    Content="512 MB" />
+            </StackPanel>
+
+            <TextBlock FontWeight="SemiBold" Text="Copy a real file (pick source, then destination):" />
+            <Button
+                x:Name="CopyFile"
+                Click="OnPickFileAndSave"
+                Content="Pick a file and save a copy" />
+
+            <ProgressBar
+                x:Name="Progress"
+                Maximum="100"
+                Minimum="0" />
+            <TextBlock x:Name="MemText" Text="heap: n/a" />
+            <TextBlock
+                x:Name="LogBox"
+                FontFamily="Consolas"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
