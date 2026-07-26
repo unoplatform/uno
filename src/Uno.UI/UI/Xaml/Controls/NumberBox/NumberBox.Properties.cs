@@ -250,7 +250,11 @@ partial class NumberBox
 	/// <summary>
 	/// Gets or sets the flyout that is shown when text is selected, or null if no flyout is shown.
 	/// </summary>
-	[Uno.NotImplemented] // TODO:
+	// Uno specific: SelectionFlyout propagates via TemplateBinding to the InputBox TextBox part (see NumberBox.xaml),
+	// whose SelectionFlyout is only implemented on Skia (see TextBox.skia.cs). Match TextBox's platform support here.
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+	[Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
 	public FlyoutBase SelectionFlyout
 	{
 		get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
@@ -260,6 +264,9 @@ partial class NumberBox
 	/// <summary>
 	/// Identifies the SelectionFlyout dependency property.
 	/// </summary>
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+	[Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
 	public static DependencyProperty SelectionFlyoutProperty { get; } =
 		DependencyProperty.Register(
 			nameof(SelectionFlyout),

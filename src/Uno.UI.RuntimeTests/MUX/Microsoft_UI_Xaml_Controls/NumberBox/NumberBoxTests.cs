@@ -72,6 +72,34 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+		public void VerifySelectionFlyoutPropagates()
+		{
+			var numberBox = SetupNumberBox();
+			TextBox textBox = null;
+
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
+
+				textBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
+				Assert.IsNotNull(numberBox.SelectionFlyout, "NumberBox should have a default SelectionFlyout (TextControlCommandBarSelectionFlyout).");
+				Assert.AreSame(numberBox.SelectionFlyout, textBox.SelectionFlyout, "The default SelectionFlyout should match between NumberBox and its inner TextBox.");
+
+				var customFlyout = new Flyout();
+				numberBox.SelectionFlyout = customFlyout;
+				Content.UpdateLayout();
+
+				Assert.AreSame(customFlyout, textBox.SelectionFlyout, "Setting a custom SelectionFlyout on NumberBox should propagate to the inner TextBox.");
+
+				numberBox.SelectionFlyout = null;
+				Content.UpdateLayout();
+
+				Assert.IsNull(textBox.SelectionFlyout, "Clearing SelectionFlyout on NumberBox should propagate to the inner TextBox.");
+			});
+		}
+
+		[TestMethod]
 		public async Task VerifyIsEnabledChangeUpdatesVisualState()
 		{
 			var numberBox = SetupNumberBox();
