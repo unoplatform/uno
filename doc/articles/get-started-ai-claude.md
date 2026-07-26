@@ -34,3 +34,8 @@ This guide will walk you through the setup process for getting started with Clau
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Claude).
+
+## Uno TechBite
+
+Getting Started with Uno Platform & Claude Code - Complete Setup Guide:
+> [!Video https://www.youtube-nocookie.com/embed/19CLmH6kkvE]
