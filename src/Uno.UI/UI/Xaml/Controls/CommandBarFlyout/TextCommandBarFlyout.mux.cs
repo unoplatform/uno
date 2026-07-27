@@ -391,10 +391,27 @@ partial class TextCommandBarFlyout
 		}
 	}
 
-	private TextControlButtons GetButtonsToAdd()
+	// Uno specific: a transient flyout whose primary bar would be empty hides itself the moment it opens (see the
+	// Opened handler), which flashes an empty popup. Let a touch/pen caller ask up-front whether it is worth opening.
+	// The primary-bar routing mirrors UpdateButtons for InputDevicePrefersPrimaryCommands (which is only assigned
+	// once the flyout is opening, so it can't be read here).
+	internal bool HasTouchPrimaryCommandsFor(FrameworkElement target)
+	{
+		var primaryBarButtons = TextControlButtons.Cut | TextControlButtons.Copy | TextControlButtons.Paste
+			| TextControlButtons.Bold | TextControlButtons.Italic | TextControlButtons.Underline;
+		if (target is TextBox { SelectionLength: 0 } and not PasswordBox)
+		{
+			primaryBarButtons |= TextControlButtons.SelectAll;
+		}
+
+		return (GetButtonsToAdd(target) & primaryBarButtons) != TextControlButtons.None;
+	}
+
+	private TextControlButtons GetButtonsToAdd() => GetButtonsToAdd(Target);
+
+	private TextControlButtons GetButtonsToAdd(FrameworkElement target)
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
-		var target = Target;
 
 		if (target is TextBox textBoxTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
 		{
