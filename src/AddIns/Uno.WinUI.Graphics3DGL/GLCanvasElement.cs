@@ -55,6 +55,9 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// internally), so this stays false there.
 	private bool _readbackAsRgbaWithSwap;
 
+	// Rate-limits the pending-GL-error warning in Render to once per element.
+	private bool _warnedPendingGlError;
+
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
@@ -100,7 +103,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// OpenGL errors raised by user code should be checked and handled within <see cref="Init"/>
 	/// and <see cref="RenderOverride"/>. Errors still pending before the framebuffer readback are
 	/// drained (GL errors are sticky and would otherwise be misattributed to the readback check)
-	/// and logged as warnings.
+	/// and logged — as a warning on the first occurrence, then at Debug level.
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
@@ -510,9 +513,16 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 					break;
 				}
 
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				// Warn once per element: with Invalidate() called from RenderOverride, a persistent
+				// user error would otherwise flood the logs at frame rate.
+				if (!_warnedPendingGlError && this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn($"GL error {pendingError} was pending before the framebuffer readback, most likely raised by {nameof(RenderOverride)} (or {nameof(Init)} on the first frame); GL errors should be checked and handled within user code.");
+					_warnedPendingGlError = true;
+					this.Log().Warn($"GL error {pendingError} was pending before the framebuffer readback, most likely raised by {nameof(RenderOverride)} (or {nameof(Init)} on the first frame); GL errors should be checked and handled within user code. Further occurrences will be logged at Debug level.");
+				}
+				else if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"GL error {pendingError} was pending before the framebuffer readback.");
 				}
 			}
 
