@@ -261,8 +261,10 @@ Deltas vs. the design above (first implementation pass):
 - **F9 refinement**: the `Microsoft.VisualStudio.SDK` meta-package does **not** provide
   `Microsoft.VisualStudio.LanguageServices` — an explicit compile-time reference (Roslyn
   4.4 line, matching VS 17.4, `ExcludeAssets="runtime"`) was added to the extension project.
-- **Empty-content edits** (`NewText.Length == 0`) are skipped by the IDE batch handler, in
-  parity with the legacy single-file handler's `FileContent is { Length: > 0 }` guard.
+- **Delete sentinel vs empty content**: the IDE batch handler skips only `NewText == null` (the
+  delete sentinel, applied on disk by the dev-server and never forwarded). An empty string is valid
+  content — a request to truncate a file — and flows through to be applied, otherwise the batch would
+  ack `Success` while silently dropping the write.
 - `IFileEditor` is documented as a legacy seam (request-level variants must implement/derive
   `IFileUpdater`); `IDEFileEditor` is `[Obsolete]`, suppressed only at the legacy
   escape-hatch composition site.

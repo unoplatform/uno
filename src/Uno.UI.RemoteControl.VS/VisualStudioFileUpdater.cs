@@ -42,7 +42,13 @@ internal sealed class VisualStudioFileUpdater(
 	// the ack is sent, so without ordering a later batch's trigger could overtake an earlier batch
 	// still polling workspace readiness — re-exposing the intermediate snapshot this path exists to
 	// avoid (spec 052). They are chained on a single serial task so they run in request order.
+	// Settle delay between successive document/file-system steps (close → write, write → reopen):
+	// lets VS release its file-system watcher handle and the write land on disk before the next step
+	// reads it back, avoiding a racing stale read.
+	private const int _fileSystemSettleMs = 250;
+
 	private readonly object _finalizationGate = new();
+	// Completed sentinel — the first finalization awaits this instead of null-checking.
 	private JoinableTask _finalizationChain = ThreadHelper.JoinableTaskFactory.RunAsync(() => Task.CompletedTask);
 
 	public async Task ProcessAsync(UpdateFileRequestIdeMessage request)
@@ -138,8 +144,9 @@ internal sealed class VisualStudioFileUpdater(
 					// releasing the gate immediately — the lock is only ever held briefly.)
 					await previous;
 				}
-				catch
+				catch (Exception e)
 				{
+					debug($"BatchUpdate: finalization chain faulted unexpectedly — continuing ({e.GetType().Name}: {e.Message}).");
 				}
 
 				await WaitReadinessAndTriggerHotReloadAsync(isForceHotReloadDisabled, createdFiles, deferredFinalizations, ct);
@@ -157,8 +164,12 @@ internal sealed class VisualStudioFileUpdater(
 	/// nothing left to persist. When <paramref name="forceSaveOnDisk"/> is <see langword="false"/> the
 	/// change stays in-memory and is never persisted (so there is no step to return).
 	/// </summary>
-	public async Task<Func<Task>?> ApplyFileContentAsync(string filePath, string fileContent, bool forceSaveOnDisk = true)
+	internal async Task<Func<Task>?> ApplyFileContentAsync(string filePath, string fileContent, bool forceSaveOnDisk = true)
 	{
+		// DTE/EnvDTE objects have UI-thread (STA COM) affinity, and this can run on the IDE-channel
+		// background thread (the message pump does not marshal) — switch before any DTE access.
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
+
 		// Determine the appropriate encoding for the file
 		var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
 		var targetEncoding = EncodingHelpers.GetCompatibleEncoding(currentEncoding, fileContent);
@@ -193,9 +204,9 @@ internal sealed class VisualStudioFileUpdater(
 				debug($"Document {Path.GetFileName(filePath)} is open, closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
 
 				document.Close(vsSaveChanges.vsSaveChangesNo);
-				await Task.Delay(250); // Small delay to ensure file system is ready
+				await Task.Delay(_fileSystemSettleMs);
 				File.WriteAllText(filePath, fileContent, targetEncoding);
-				await Task.Delay(250); // Small delay to ensure file system is ready
+				await Task.Delay(_fileSystemSettleMs);
 				dte2.Documents.Open(filePath);
 			};
 		}
@@ -230,7 +241,7 @@ internal sealed class VisualStudioFileUpdater(
 		if (document is not null)
 		{
 			// Re-open the document to reflect changes in IDE
-			await Task.Delay(250); // Small delay to ensure file system is ready
+			await Task.Delay(_fileSystemSettleMs);
 			dte2.Documents.Open(filePath);
 		}
 
@@ -243,7 +254,8 @@ internal sealed class VisualStudioFileUpdater(
 	/// </summary>
 	private static void UpdateInMemory(Document document, string fileContent)
 	{
-		// TODO: We should NOT assume the `fileContent` to contain the full document content!
+		// Contract: `fileContent` is the full document content (the update pipeline sends whole-file
+		// content; FileEdit.OldText is informational). Partial / delta replacement is not supported here.
 		if (document.Object("TextDocument") is not TextDocument textDocument)
 		{
 			return;

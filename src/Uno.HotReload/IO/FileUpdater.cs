@@ -56,8 +56,11 @@ public class FileUpdater(
 	}
 
 	/// <summary>
-	/// Applies the edits of the request and reports the per-edit results, in request order.
-	/// Base behavior: apply every edit through the configured <see cref="IFileEditor"/>.
+	/// Applies the edits of the request and reports the per-edit results (the results array preserves
+	/// the input edit order). Base behavior: apply every edit through the configured
+	/// <see cref="IFileEditor"/> concurrently (<see cref="Task.WhenAll(System.Threading.Tasks.Task[])"/>) —
+	/// the edits are not applied in a guaranteed sequence; a variant that needs ordered application
+	/// overrides this.
 	/// </summary>
 	protected virtual async Task<ImmutableArray<FileEditResult>> ApplyEditsAsync(HotReloadOperation hotReload, IUpdateFileRequest request, CancellationToken ct)
 		=> [.. await Task.WhenAll(request.Edits.Select(edit => EditFileAsync(edit, request.ForceSaveOnDisk, ct)))];
