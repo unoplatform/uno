@@ -2587,6 +2587,16 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::BackgroundProperty()" reason="WinUI sync (BC38): BackgroundProperty declared per-type, not on FrameworkElement" />
 	  </Properties>
 	  <Methods>
+		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Load()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Unload()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Double fromProgress, System.Double toProgress, System.Boolean looped)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Stop()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Pause()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Resume()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.SetProgress(System.Double progress)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Measure(Windows.Foundation.Size availableSize)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
 		  <!-- Cursors.UseHandForInteraction / WebView2.IsInspectable accessors: paired with the removed properties (see <Properties> above). Native-only knobs removed with the native renderers (#2052). -->
