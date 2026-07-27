@@ -10,6 +10,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SwipeItemsTests
 	public class Given_SwipeItems
 	{
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23883")]
 		public void When_GetView_Then_ReturnsViewWithSameItemsAndOrder()
 		{
 			var item1 = new SwipeItem { Text = "Item1" };
@@ -26,6 +27,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SwipeItemsTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23883")]
 		public void When_GetView_Then_ReturnsIReadOnlyList()
 		{
 			var SUT = new SwipeItems();
@@ -38,6 +40,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SwipeItemsTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23883")]
 		public void When_ItemsEmpty_Then_GetViewIsEmpty()
 		{
 			var SUT = new SwipeItems();
@@ -49,6 +52,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SwipeItemsTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23883")]
 		public void When_ItemAppendedAfterGetView_Then_ViewReflectsLiveState()
 		{
 			// WinUI's SwipeItems::GetView() forwards to the backing Vector<T>'s GetView(),
@@ -68,12 +72,9 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SwipeItemsTests
 		}
 
 		[TestMethod]
-		public void When_GetView_Then_CannotBeDowncastToMutateTheCollection()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23883")]
+		public void When_GetView_Then_ViewIsReadOnly()
 		{
-			// The native WinRT IVectorView<T> is a distinct object that cannot be cast back to a
-			// mutable IVector<T>. The .NET port must preserve this: a caller must not be able to
-			// downcast the returned view to bypass SwipeItems' own validation (e.g. the
-			// SwipeMode.Execute single-item constraint) or its VectorChanged notifications.
 			var SUT = new SwipeItems { new SwipeItem { Text = "Item1" } };
 
 			var view = SUT.GetView();

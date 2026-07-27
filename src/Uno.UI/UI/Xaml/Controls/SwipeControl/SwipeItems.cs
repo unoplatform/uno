@@ -136,9 +136,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Gets an immutable view into the collection.
+		/// Returns a live, read-only view over the backing collection.
+		/// Mutations to <see cref="SwipeItems"/> are immediately reflected in the returned view.
 		/// </summary>
-		/// <returns>An object representing the immutable collection view.</returns>
 		public IReadOnlyList<SwipeItem> GetView() => new ReadOnlyObservableCollection<SwipeItem>(m_items);
 
 		public event VectorChangedEventHandler<SwipeItem> VectorChanged
