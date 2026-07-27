@@ -133,7 +133,14 @@ namespace Uno.Storage.Streams {
 				// Reclaim storage from earlier sessions before staging, since the payload
 				// counts against the origin quota (as low as 2 GB in some browsers).
 				await NativeChunkedBuffer.purgeStaleEntriesAsync(directory);
-				source = await instance.writeToOpfsAsync(directory, entryName);
+				try {
+					source = await instance.writeToOpfsAsync(directory, entryName);
+				}
+				catch (e) {
+					// Nothing was published, so reclaim the space the attempt took.
+					await directory.removeEntry(entryName).catch(() => { });
+					throw e;
+				}
 			}
 			else {
 				// No origin-private file system: fall back to an in-memory Blob.
@@ -198,14 +205,16 @@ namespace Uno.Storage.Streams {
 				for (let i = 0; remaining > 0; i++) {
 					const n = Math.min(remaining, chunkSize);
 					await writable.write({ type: 'write', data: this._chunks[i].subarray(0, n), position: position });
-					// The bytes are on disk now - drop the staged chunk as we go.
-					this._chunks[i] = null;
 					position += n;
 					remaining -= n;
 				}
-			}
-			finally {
 				await writable.close();
+			}
+			catch (e) {
+				// The staged chunks are left intact so the commit can be retried - a
+				// partially written file is discarded rather than published.
+				try { await writable.abort(); } catch (ignored) { }
+				throw e;
 			}
 
 			// A File from an OPFS handle references the stored file rather than copying it.
