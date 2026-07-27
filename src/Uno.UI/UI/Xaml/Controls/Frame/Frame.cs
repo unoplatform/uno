@@ -163,24 +163,10 @@ public partial class Frame : ContentControl
 		}
 	}
 
-	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 	internal static object CreatePageInstance(
 		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
 		Type sourcePageType)
-	{
-		var replacementType = sourcePageType.GetReplacementType(); // Get latest replacement type to handle Hot Reload.
-		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)
-		{
-			var bindableType = Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(replacementType);
-
-			if (bindableType != null)
-			{
-				return bindableType.CreateInstance()();
-			}
-		}
-
-		return Activator.CreateInstance(replacementType);
-	}
+		=> TypeMappings.CreateInstance(sourcePageType);
 
 	internal PageStackEntry GetCurrentPageStackEntry() => _useWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
 

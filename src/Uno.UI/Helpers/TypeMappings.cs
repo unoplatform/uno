@@ -71,6 +71,23 @@ public static class TypeMappings
 	public static object CreateInstance<[DynamicallyAccessedMembers(TypeRequirements)] TOriginalType>(params object[] args)
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
+	/// <summary>
+	/// Creates an instance of <paramref name="type"/>'s current replacement type, going through the
+	/// bindable metadata provider when one is registered so generated activators are used.
+	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+	internal static object CreateInstance([DynamicallyAccessedMembers(TypeRequirements)] Type type)
+	{
+		var replacementType = type.GetReplacementType();
+
+		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider?.GetBindableTypeByType(replacementType) is { } bindableType)
+		{
+			return bindableType.CreateInstance()();
+		}
+
+		return Activator.CreateInstance(replacementType);
+	}
+
 	[return: DynamicallyAccessedMembers(TypeRequirements)]
 	internal static Type GetMappedType(
 		[DynamicallyAccessedMembers(TypeRequirements)]

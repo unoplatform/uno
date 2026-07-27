@@ -74,8 +74,8 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		try
 		{
 			// Centralized HR-aware creation (replacement-type resolution + bindable
-			// metadata provider), also used by NavigationCache and PagePool.
-			newContent = Frame.CreatePageInstance(liveType) as FrameworkElement;
+			// metadata provider), also used by navigation through Frame.CreatePageInstance.
+			newContent = TypeMappings.CreateInstance(liveType) as FrameworkElement;
 		}
 		catch (Exception e)
 		{

@@ -79,6 +79,7 @@ public class Given_ContentControl_StrandedContent : BaseTestClass
 			() =>
 			{
 				var newContent = contentControl.Content as FrameworkElement;
+				Assert.IsNotNull(newContent, "the stranded content must have been re-created");
 				Assert.AreNotSame(staleContent, newContent);
 
 				Assert.AreEqual("local-tag", newContent.Tag, "a locally-set value must be transferred");
