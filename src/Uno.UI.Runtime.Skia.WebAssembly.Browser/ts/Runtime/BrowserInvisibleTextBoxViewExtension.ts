@@ -2,9 +2,18 @@
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static _imeExports: any;
-		private static readonly inputElementId = "uno-input";
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement | null;
+
+		// Issue-1 trailing-click guard state (see installTrailingClickGuard).
+		private static swallowNextCanvasClick: boolean;
+		private static lastPointerType: string;
+
+		// Set while a managed-initiated blur/detach is in progress so the input's own blur
+		// listener doesn't report it back to the FocusManager (that would be redundant and
+		// could clear focus on the wrong TextBox during a focus switch). Genuine, browser-
+		// initiated blurs happen with this false and ARE reported (see OnNativeBlur).
+		private static suppressBlurNotification: boolean;
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
@@ -26,6 +35,8 @@
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 				BrowserInvisibleTextBoxViewExtension._imeExports = browserExports.Uno.UI.Runtime.Skia.WasmImeTextBoxExtension;
+
+				BrowserInvisibleTextBoxViewExtension.installTrailingClickGuard();
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
@@ -50,6 +61,45 @@
 			}
 		}
 
+		// Neutralizes the touch-only, WebKit-internal race that dismisses the soft keyboard right
+		// after a TextBox tap (see swallowNextCanvasClick). Uno already preventDefaults pointer
+		// events, but per the Pointer Events spec that does NOT suppress the compatibility
+		// mouse events touch browsers synthesize, so the trailing mousedown still reaches the
+		// canvas and blurs #uno-input. We can't preventDefault it from the pointer path, so we
+		// intercept the mouse event itself, scoped to the single tap that just focused the input.
+		private static installTrailingClickGuard() {
+			// Any new pointer gesture disarms a stale flag, so only the mouse events synthesized
+			// from the very tap that focused the input are ever swallowed. Also records the pointer
+			// type: the bug is exclusive to touch/pen, where the compat mousedown is deferred until
+			// after focus. With a mouse, mousedown precedes focus, so there is nothing to guard.
+			document.addEventListener("pointerdown", (ev: PointerEvent) => {
+				BrowserInvisibleTextBoxViewExtension.lastPointerType = ev.pointerType;
+				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = false;
+			}, { capture: true });
+
+			// focusin bubbles (unlike focus), so a single document-level listener catches the
+			// invisible input regardless of when it is (re)created.
+			document.addEventListener("focusin", (ev: FocusEvent) => {
+				const target = ev.target as HTMLElement;
+				if (target?.id === UnoDomIds.input
+					&& (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch"
+						|| BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen")) {
+					BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
+				}
+			}, { capture: true });
+
+			const swallow = (ev: Event) => {
+				if (BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick
+					&& (ev.target as HTMLElement)?.id === UnoDomIds.canvas) {
+					ev.preventDefault();
+					ev.stopImmediatePropagation();
+					BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = false;
+				}
+			};
+			document.addEventListener("mousedown", swallow, { capture: true });
+			document.addEventListener("click", swallow, { capture: true });
+		}
+
 		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
@@ -58,7 +108,7 @@
 				input.autocomplete = "password";
 			}
 
-			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.id = UnoDomIds.input;
 			input.tabIndex = -1;
 			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
@@ -102,6 +152,17 @@
 				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
 				ev.preventDefault();
 			};
+
+			// C# drives focus one-way (StartEntry/EndEntry call focus()/blur()), so a blur the
+			// browser initiates on its own — e.g. tapping outside, or the touch-synthesized
+			// mousedown in issue 1 — is otherwise invisible to the FocusManager and LostFocus
+			// never fires. Report only those; managed-initiated blurs set suppressBlurNotification.
+			input.addEventListener("blur", () => {
+				if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
+					return;
+				}
+				BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlur();
+			});
 
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
 			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
@@ -243,7 +304,8 @@
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
 			// So, cleanup the existing inputElement and create a new one.
-			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			// Removing a focused input fires a native blur; suppress it since this is a managed re-focus.
+			BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(BrowserInvisibleTextBoxViewExtension.detachCore);
 			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
 
 			// It's necessary to actually focus the native input, not just make it visible. This is particularly
@@ -253,15 +315,37 @@
 			return true;
 		}
 
+		// Runs a managed-initiated focus mutation with the blur listener muted, so it isn't
+		// reported back to the FocusManager (which already drove the change). Callers that
+		// remove the input do so via detachCore, which blurs it explicitly first.
+		private static runSuppressingBlur(action: () => void) {
+			BrowserInvisibleTextBoxViewExtension.suppressBlurNotification = true;
+			try {
+				action();
+			} finally {
+				BrowserInvisibleTextBoxViewExtension.suppressBlurNotification = false;
+			}
+		}
+
+		private static detachCore() {
+			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
+			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
+			// fires on element removal past that window, which would clear the wrong TextBox's focus.
+			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
+			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+		}
+
 		public static blur() {
-			// reset focus
-			(document.activeElement as HTMLElement)?.blur();
-			BrowserInvisibleTextBoxViewExtension.detach();
+			// Managed-initiated blur (EndEntry): the FocusManager already knows focus is leaving.
+			BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
+				(document.activeElement as HTMLElement)?.blur();
+				BrowserInvisibleTextBoxViewExtension.detachCore();
+			});
 		}
 
 		public static detach() {
-			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(BrowserInvisibleTextBoxViewExtension.detachCore);
 		}
 
 		public static hasInput(): boolean {
