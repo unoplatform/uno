@@ -14,7 +14,6 @@ using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.Helpers;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -631,9 +630,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static Stream OpenValidatedAppDataStream(Uri uri)
 		{
-			var declaredRoot = GetDeclaredAppDataRootPath(uri);
-			var candidatePath = Path.GetFullPath(AppDataUriEvaluator.ToPath(uri));
+			var (declaredRoot, relativePath) = GetAppDataPath(uri);
 			var canonicalRoot = Path.GetFullPath(declaredRoot);
+			var candidatePath = Path.GetFullPath(Path.Combine(canonicalRoot, relativePath));
 			var canonicalRootWithSeparator = canonicalRoot.EndsWith(Path.DirectorySeparatorChar)
 				? canonicalRoot
 				: canonicalRoot + Path.DirectorySeparatorChar;
@@ -647,7 +646,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			return File.OpenRead(candidatePath);
 		}
 
-		private static string GetDeclaredAppDataRootPath(Uri uri)
+		private static (string RootPath, string RelativePath) GetAppDataPath(Uri uri)
 		{
 			var original = uri.OriginalString;
 			var schemeSeparatorIndex = original.IndexOf("://", StringComparison.Ordinal);
@@ -669,22 +668,24 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				rawPath = rawPath[..queryIndex];
 			}
+			rawPath = Uri.UnescapeDataString(rawPath);
 
-			var segments = rawPath.TrimStart('/').Split('/', 2, StringSplitOptions.RemoveEmptyEntries);
+			var segments = rawPath.TrimStart('/', '\\').Split(['/', '\\'], 2, StringSplitOptions.RemoveEmptyEntries);
 			if (segments.Length == 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder");
 			}
 
-			var declaredRoot = Uri.UnescapeDataString(segments[0]).ToLowerInvariant();
-
-			return declaredRoot switch
+			var rootPath = segments[0].ToLowerInvariant() switch
 			{
 				"local" => ApplicationData.Current.LocalFolder.Path,
 				"roaming" => ApplicationData.Current.RoamingFolder.Path,
 				"temp" => ApplicationData.Current.TemporaryFolder.Path,
 				_ => throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder")
 			};
+			var relativePath = segments.Length > 1 ? segments[1] : string.Empty;
+
+			return (rootPath, relativePath);
 		}
 
 		internal static string RedactUri(Uri? uri)
