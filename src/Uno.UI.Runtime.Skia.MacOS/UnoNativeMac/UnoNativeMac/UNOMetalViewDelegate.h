@@ -14,11 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 
-@property (nullable) id<MTLCommandQueue> queue;
+@property (nonatomic, strong, nullable) id<MTLCommandQueue> queue;
 
 /// Holds the drawable acquired by uno_window_acquire_next_frame until
 /// uno_window_present_frame is called. Only accessed from the render thread.
-@property (nullable) id<CAMetalDrawable> currentFrameDrawable;
+@property (nonatomic, strong, nullable) id<CAMetalDrawable> currentFrameDrawable;
 
 @end
 

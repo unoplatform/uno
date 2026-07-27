@@ -105,7 +105,10 @@
 #endif
     // A paused view never runs the draw cycle that would apply the new size to its CAMetalLayer, so
     // nextDrawable would keep vending textures at the previous size. Applying it here (main thread,
-    // before the managed resize) keeps the drawable in step with the window.
+    // before the managed resize) keeps the drawable in step with the window. CAMetalLayer allows
+    // drawableSize to be set from any thread; if the render thread acquires a drawable between this
+    // write and the managed resize it simply presents one more frame at the old size, which stays
+    // self-consistent because uno_window_acquire_next_frame reports the texture's own dimensions.
     CAMetalLayer* metalLayer = (CAMetalLayer*)view.layer;
     if (view.isPaused && [metalLayer isKindOfClass:[CAMetalLayer class]] && !CGSizeEqualToSize(metalLayer.drawableSize, size))
     {

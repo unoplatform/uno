@@ -133,14 +133,18 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
 		{
+			// Written before the enqueue so a subsequent render-thread frame producing the same clip
+			// doesn't queue a duplicate update while this one is still pending. MetalDraw can write
+			// on success instead because it already runs on the main thread.
 			_lastSvgClipPath = clip;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
 				// if too early it's possible that the native element has not been arranged yet
 				// so the position and dimension of the element are not yet correct (0,0,0,0)
-				if (!NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+				if (!NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip) && _lastSvgClipPath == clip)
 				{
-					// Retry on the next frame that produces a clip path.
+					// Retry on the next frame, unless a newer clip was recorded meanwhile — that one
+					// has its own pending update and must not be forced to re-apply.
 					_lastSvgClipPath = null;
 				}
 			}, NativeDispatcherPriority.Normal);
@@ -959,6 +963,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				}
 				catch (Exception ex)
 				{
+					// Intentionally broad: the loop must survive any per-frame Skia or interop failure.
+					// Letting an exception escape would end the thread and stop rendering permanently.
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
 						this.Log().Error($"macOS render thread error: {ex}");
@@ -967,25 +973,20 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
+		/// <summary>
+		/// Stops the render thread, waits for it to exit, then releases its synchronization
+		/// primitives. The join is intentionally unbounded, matching the Win32 render thread: the
+		/// loop only delays observing <see cref="_disposed"/> while a frame is in flight, and both
+		/// <c>nextDrawable</c> and the present complete in bounded time (a vsync wait, or ~1s and a
+		/// nil drawable when the window is occluded), so the thread always exits. The caller tears
+		/// down the native window and the <see cref="GRContext"/> right after this returns, and the
+		/// render thread is their sole other user, so it must be guaranteed stopped first.
+		/// </summary>
 		public void Dispose()
 		{
 			_disposed = true;
 			_frameSignal.Set();
-
-			// A present blocked on an unavailable drawable (occluded/minimized window) can outlive the
-			// join. Disposing the primitives underneath the still-running thread would make its next
-			// _presentedEvent.Set() / _frameSignal.WaitOne() throw ObjectDisposedException, which is
-			// unhandled at the thread boundary and would take the process down. Leaking them is cheap:
-			// the thread is a background thread and dies with the process.
-			if (!_thread.Join(TimeSpan.FromSeconds(2)))
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn("macOS render thread did not exit within 2 seconds; leaving its synchronization primitives undisposed.");
-				}
-
-				return;
-			}
+			_thread.Join();
 
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
