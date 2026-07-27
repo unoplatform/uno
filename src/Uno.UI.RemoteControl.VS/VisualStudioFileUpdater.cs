@@ -9,6 +9,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
@@ -37,6 +38,13 @@ internal sealed class VisualStudioFileUpdater(
 	Action<string> debug,
 	CancellationToken ct)
 {
+	// Finalizations (readiness wait → deferred saves / encoding upgrades → EnC trigger) start after
+	// the ack is sent, so without ordering a later batch's trigger could overtake an earlier batch
+	// still polling workspace readiness — re-exposing the intermediate snapshot this path exists to
+	// avoid (spec 052). They are chained on a single serial task so they run in request order.
+	private readonly object _finalizationGate = new();
+	private JoinableTask _finalizationChain = ThreadHelper.JoinableTaskFactory.RunAsync(() => Task.CompletedTask);
+
 	public async Task ProcessAsync(UpdateFileRequestIdeMessage request)
 	{
 		try
@@ -44,12 +52,16 @@ internal sealed class VisualStudioFileUpdater(
 			debug($"BatchUpdate #{request.CorrelationId}: received {request.Edits.Length} edit(s) for request {request.RequestId}.");
 
 			var createdFiles = new List<string>();
-			var deferredSaves = new List<Document>();
+			var deferredFinalizations = new List<Func<Task>>();
+			var forceSaveOnDisk = request.ForceSaveOnDisk ?? true;
 
 			foreach (var edit in request.Edits)
 			{
-				// Deletes are applied by the dev-server; every forwarded edit carries content.
-				if (edit.NewText is not { Length: > 0 } newText)
+				// `null` NewText is the delete sentinel (applied on disk by the dev-server, never
+				// forwarded here); an empty string is valid content — a request to truncate a file —
+				// and must flow through, otherwise the batch acks Success while silently dropping the
+				// write.
+				if (edit.NewText is not { } newText)
 				{
 					continue;
 				}
@@ -60,12 +72,13 @@ internal sealed class VisualStudioFileUpdater(
 					createdFiles.Add(filePath);
 				}
 
-				// Do not save open documents yet: a VS save can trigger "hot reload on save",
+				// Do not persist open documents yet: a VS save can trigger "hot reload on save",
 				// which must not evaluate the change-set before the workspace is ready (spec 052).
-				if (await ApplyFileContentAsync(filePath, newText, saveOpenDocument: false) is { } openDocument
-					&& (request.ForceSaveOnDisk ?? true))
+				// Any persisting work (a save, or the close/re-encode/reopen an encoding change needs)
+				// is returned as a deferred step and run during finalization.
+				if (await ApplyFileContentAsync(filePath, newText, forceSaveOnDisk) is { } deferredFinalization)
 				{
-					deferredSaves.Add(openDocument);
+					deferredFinalizations.Add(deferredFinalization);
 				}
 			}
 
@@ -79,10 +92,10 @@ internal sealed class VisualStudioFileUpdater(
 			// Finalization runs on a VS-tracked task (not a raw thread-pool Task.Run): the DTE
 			// calls inside marshal to the UI thread. It also runs when the hot-reload trigger is
 			// disabled — the deferred saves must be flushed regardless (ForceSaveOnDisk semantics
-			// do not depend on the trigger).
-			if (!request.IsForceHotReloadDisabled || deferredSaves.Count > 0)
+			// do not depend on the trigger). Batches are serialized so triggers fire in request order.
+			if (!request.IsForceHotReloadDisabled || deferredFinalizations.Count > 0)
 			{
-				_ = ThreadHelper.JoinableTaskFactory.RunAsync(() => WaitReadinessAndTriggerHotReloadAsync(request.IsForceHotReloadDisabled, createdFiles, deferredSaves, ct));
+				QueueFinalization(request.IsForceHotReloadDisabled, createdFiles, deferredFinalizations);
 			}
 		}
 		catch (Exception e)
@@ -104,12 +117,47 @@ internal sealed class VisualStudioFileUpdater(
 	}
 
 	/// <summary>
-	/// Applies <paramref name="fileContent"/> to <paramref name="filePath"/> — in-memory when the
-	/// document is open in the IDE, on disk otherwise — and returns the open document whose save
-	/// was skipped so the caller can perform it later (batched updates save only after workspace
-	/// readiness, see spec 052), or <see langword="null"/> when nothing is left to save.
+	/// Chains <see cref="WaitReadinessAndTriggerHotReloadAsync"/> behind any still-running earlier
+	/// batch. The dev-server is acked before finalization starts (so its BufferGate releases and the
+	/// next request can be applied); serializing the finalizations guarantees a later batch's EnC
+	/// trigger cannot overtake an earlier batch that is still waiting for workspace readiness.
 	/// </summary>
-	public async Task<Document?> ApplyFileContentAsync(string filePath, string fileContent, bool saveOpenDocument)
+	private void QueueFinalization(bool isForceHotReloadDisabled, List<string> createdFiles, List<Func<Task>> deferredFinalizations)
+	{
+		lock (_finalizationGate)
+		{
+			var previous = _finalizationChain;
+			_finalizationChain = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+			{
+				try
+				{
+					// Await the previous batch's JoinableTask (VSTHRD003-safe: JTF tracks it).
+					// WaitReadinessAndTriggerHotReloadAsync swallows its own exceptions, so an earlier
+					// batch normally completes successfully; guard regardless so one batch can never
+					// break the chain for the following ones. (An unfinished earlier batch yields here,
+					// releasing the gate immediately — the lock is only ever held briefly.)
+					await previous;
+				}
+				catch
+				{
+				}
+
+				await WaitReadinessAndTriggerHotReloadAsync(isForceHotReloadDisabled, createdFiles, deferredFinalizations, ct);
+			});
+		}
+	}
+
+	/// <summary>
+	/// Applies <paramref name="fileContent"/> to <paramref name="filePath"/> — in-memory when the
+	/// document is open in the IDE, on disk otherwise — and returns the work that would persist an
+	/// open document (a plain save, or the close/re-encode/reopen needed when the content requires a
+	/// different encoding) as a step for the caller to run *when* it wants: immediately (legacy
+	/// single-file path) or deferred to finalization so a batched update only touches disk once the
+	/// workspace can compile the change-set (spec 052). Returns <see langword="null"/> when there is
+	/// nothing left to persist. When <paramref name="forceSaveOnDisk"/> is <see langword="false"/> the
+	/// change stays in-memory and is never persisted (so there is no step to return).
+	/// </summary>
+	public async Task<Func<Task>?> ApplyFileContentAsync(string filePath, string fileContent, bool forceSaveOnDisk = true)
 	{
 		// Determine the appropriate encoding for the file
 		var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
@@ -121,71 +169,91 @@ internal sealed class VisualStudioFileUpdater(
 			.OfType<Document>()
 			.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
 
-		var shouldReopenDocument = false;
-
-		// If document is open but encoding needs to be changed, we close it
+		// Open document whose new content needs a different encoding: it has to be rewritten on disk
+		// with the target encoding (close → write → reopen). That persists the file — and a VS save
+		// can trigger "hot reload on save" — so the whole operation is returned as a step the caller
+		// runs when appropriate rather than run inline here.
 		if (document is not null && currentEncoding != targetEncoding)
 		{
-			// Document is open but does not have the current encoding, save it, then close it to change encoding
-			debug($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
-
-			try
+			if (!forceSaveOnDisk)
 			{
-				document.Save();
-			}
-			catch
-			{
-				// Ignore save errors
-			}
-
-			document.Close(vsSaveChanges.vsSaveChangesNo);
-			shouldReopenDocument = true;
-			await Task.Delay(250); // Small delay to ensure file system is ready
-		}
-
-		// If the file is open and encoding compatible, we update its content in-memory
-		// TODO: We should NOT assume the `fileContent` to contains the full document content!
-		if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
-		{
-			debug($"Updating {Path.GetFileName(filePath)} (in memory).");
-
-			// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-			// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-			const int flags = 0b0000_0011;
-			textDocument
-				.StartPoint
-				.CreateEditPoint()
-				.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-			if (saveOpenDocument)
-			{
-				// Save the document.
-				document.Save();
+				// Not forcing a disk save: reflect the new content in-memory only, leaving the
+				// document unsaved (VS negotiates the encoding whenever it is eventually saved).
+				UpdateInMemory(document, fileContent);
 				return null;
 			}
 
-			// The save is deferred to the caller (a VS save can trigger "hot reload on save",
-			// which must not evaluate the change-set before the workspace is ready).
-			return document;
-		}
-		else
-		{
-			debug($"Updating {Path.GetFileName(filePath)} (on disk).");
-
-			File.WriteAllText(filePath, fileContent, targetEncoding);
-
-			if (document is not null)
+			return async () =>
 			{
-				// Re-open the document to reflect changes in IDE
+				debug($"Document {Path.GetFileName(filePath)} is open, closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
+
+				document.Close(vsSaveChanges.vsSaveChangesNo);
+				await Task.Delay(250); // Small delay to ensure file system is ready
+				File.WriteAllText(filePath, fileContent, targetEncoding);
 				await Task.Delay(250); // Small delay to ensure file system is ready
 				dte2.Documents.Open(filePath);
+			};
+		}
+
+		// If the file is open (with a compatible encoding), we update its content in-memory.
+		if (document is not null && document.Object("TextDocument") is TextDocument)
+		{
+			debug($"Updating {Path.GetFileName(filePath)} (in memory).");
+
+			UpdateInMemory(document, fileContent);
+
+			// The save is returned as a step (a VS save can trigger "hot reload on save", which must
+			// not evaluate the change-set before the workspace is ready). None to return when the
+			// caller does not force a disk save — the change stays in-memory.
+			if (!forceSaveOnDisk)
+			{
+				return null;
 			}
 
-			return null;
+			return () =>
+			{
+				document.Save();
+				return Task.CompletedTask;
+			};
 		}
+
+		// Not open as a text document in the IDE: write straight to disk (and reopen if it was open).
+		debug($"Updating {Path.GetFileName(filePath)} (on disk).");
+
+		File.WriteAllText(filePath, fileContent, targetEncoding);
+
+		if (document is not null)
+		{
+			// Re-open the document to reflect changes in IDE
+			await Task.Delay(250); // Small delay to ensure file system is ready
+			dte2.Documents.Open(filePath);
+		}
+
+		return null;
 	}
 
-	private async Task WaitReadinessAndTriggerHotReloadAsync(bool isForceHotReloadDisabled, List<string> createdFiles, List<Document> deferredSaves, CancellationToken ct)
+	/// <summary>
+	/// Replaces the full in-memory content of an open document. The save (and therefore the on-disk
+	/// persist) is left to the caller so a batched update never persists before workspace readiness.
+	/// </summary>
+	private static void UpdateInMemory(Document document, string fileContent)
+	{
+		// TODO: We should NOT assume the `fileContent` to contains the full document content!
+		if (document.Object("TextDocument") is not TextDocument textDocument)
+		{
+			return;
+		}
+
+		// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+		// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+		const int flags = 0b0000_0011;
+		textDocument
+			.StartPoint
+			.CreateEditPoint()
+			.ReplaceText(textDocument.EndPoint, fileContent, flags);
+	}
+
+	private async Task WaitReadinessAndTriggerHotReloadAsync(bool isForceHotReloadDisabled, List<string> createdFiles, List<Func<Task>> deferredFinalizations, CancellationToken ct)
 	{
 		try
 		{
@@ -205,18 +273,19 @@ internal sealed class VisualStudioFileUpdater(
 			// also covers the trigger-disabled path, which never switched above).
 			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
 
-			// Deferred saves: performed only once the workspace can compile the change-set, so a
-			// save-triggered hot reload evaluates a coherent snapshot. Flushed even when the
-			// hot-reload trigger is disabled — ForceSaveOnDisk semantics do not depend on it.
-			foreach (var document in deferredSaves)
+			// Deferred finalizations (saves and encoding upgrades): performed only once the workspace
+			// can compile the change-set, so a save-triggered hot reload evaluates a coherent snapshot.
+			// Flushed even when the hot-reload trigger is disabled — ForceSaveOnDisk semantics do not
+			// depend on it.
+			foreach (var finalize in deferredFinalizations)
 			{
 				try
 				{
-					document.Save();
+					await finalize();
 				}
 				catch (Exception e)
 				{
-					debug($"Failed to save {document.FullName}: {e.Message}");
+					debug($"Deferred finalization failed: {e.Message}");
 				}
 			}
 

@@ -818,7 +818,12 @@ public partial class EntryPoint : IDisposable
 			{
 				var filePath = Path.GetFullPath(request.FileFullName);
 
-				await _fileUpdater.ApplyFileContentAsync(filePath, fileContent, saveOpenDocument: request.ForceSaveOnDisk);
+				// Single-file (non-batched) path: apply and persist immediately by running the
+				// returned step inline (the batched path defers the same step to finalization instead).
+				if (await _fileUpdater.ApplyFileContentAsync(filePath, fileContent, forceSaveOnDisk: request.ForceSaveOnDisk) is { } persist)
+				{
+					await persist();
+				}
 
 				// Send a message back to indicate that the request has been received and acted upon.
 				if (_ideChannelClient is not null)
