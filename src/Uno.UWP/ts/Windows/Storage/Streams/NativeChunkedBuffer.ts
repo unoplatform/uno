@@ -50,6 +50,7 @@ namespace Uno.Storage.Streams {
 			const chunkSize = NativeChunkedBuffer._chunkSize;
 			if (instance._released) {
 				// Writing again after the content was handed to the browser starts a new file.
+				instance._chunks = [];
 				instance._released = false;
 				instance._length = 0;
 			}

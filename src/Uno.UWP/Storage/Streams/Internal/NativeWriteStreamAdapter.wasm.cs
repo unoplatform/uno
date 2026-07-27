@@ -70,6 +70,8 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void SetLength(long value)
 		{
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
+
 			// The File System Access truncate() also extends the file, zero-padded.
 			_pendingTasks.Enqueue(async () =>
 			{
@@ -77,6 +79,13 @@ namespace Uno.Storage.Streams.Internal
 			});
 
 			_length = value;
+
+			// Truncating below the cursor moves it to the new end, as other streams do,
+			// so a following write appends instead of leaving a zero-filled gap.
+			if (Position > value)
+			{
+				Position = value;
+			}
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
