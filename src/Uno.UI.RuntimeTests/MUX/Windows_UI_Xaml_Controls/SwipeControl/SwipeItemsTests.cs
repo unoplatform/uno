@@ -10,11 +10,12 @@ using Microsoft.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls.SwipeControl;
 
 [TestClass]
-public class SwipeItemsTests
+public class Given_SwipeItems
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public void CompatibilityVectorMethodsAreHidden()
+	public void When_CompatibilityVectorMethodsAreHidden()
 	{
 #if HAS_UNO
 		var publicMethods = typeof(SwipeItems).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -29,9 +30,10 @@ public class SwipeItemsTests
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public void CompatibilityVectorMethodsWork()
+	public void When_CompatibilityVectorMethodsWork()
 	{
 #if HAS_UNO
 		var items = new SwipeItems();
@@ -55,18 +57,22 @@ public class SwipeItemsTests
 		Assert.AreEqual(0u, items.GetMany(2, destination));
 		Assert.ThrowsExactly<IndexOutOfRangeException>(() => items.GetMany(3, destination));
 
+		var changeCount = 0;
+		items.VectorChanged += (_, _) => changeCount++;
 		items.ReplaceAll([second]);
 #pragma warning restore CS0618
 
+		Assert.AreEqual(1, changeCount);
 		Assert.AreEqual(1, items.Count);
 		Assert.AreSame(second, items[0]);
 #endif
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public void ReplaceAllPreservesExecuteItemsWhenRejected()
+	public void When_ReplaceAllPreservesExecuteItemsWhenRejected()
 	{
 #if HAS_UNO
 		var items = new SwipeItems { Mode = SwipeMode.Execute };
@@ -86,9 +92,12 @@ public class SwipeItemsTests
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	public void RemoveRaisesVectorChanged()
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RemoveRaisesVectorChanged()
 	{
+#if HAS_UNO
 		var items = new SwipeItems();
 		var item = new SwipeItem();
 		var changeCount = 0;
@@ -99,5 +108,6 @@ public class SwipeItemsTests
 		Assert.IsTrue(items.Remove(item));
 		Assert.AreEqual(1, changeCount);
 		Assert.AreEqual(0, items.Count);
+#endif
 	}
 }

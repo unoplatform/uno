@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//void Clear();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("This method is not part of WinUI's projected API. Use GetEnumerator instead.")]
+		[Obsolete("This method is not part of WinUI's projected API. Use the indexer [0] or LINQ First() instead.")]
 		public SwipeItem First() => GetAt(0);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
