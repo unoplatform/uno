@@ -51,7 +51,7 @@ public sealed partial class Given_EmbeddedRoslyn
 		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
 		try
 		{
-			var analyzerPath = Path.Combine(root, "analyzers", "dotnet", "roslyn9.9", "cs", "BogusGenerators.dll");
+			var analyzerPath = Path.Join(root, "analyzers", "dotnet", "roslyn9.9", "cs", "BogusGenerators.dll");
 			Directory.CreateDirectory(Path.GetDirectoryName(analyzerPath)!);
 			File.WriteAllBytes(analyzerPath, [0xB0, 0x60, 0x05, 0x00]);
 			var reference = new AnalyzerFileReference(analyzerPath, new TestAnalyzerAssemblyLoader());
