@@ -87,6 +87,25 @@ namespace Uno.Storage.Streams.Internal
 		{
 			using var targetStream = await NativeWriteStreamAdapter.CreateAsync(_fileId);
 
+			// Committing must not move the caller's cursor.
+			var callerPosition = _cacheStream.Position;
+			try
+			{
+				await CopyDirtyRangeToTargetAsync(targetStream);
+			}
+			finally
+			{
+				_cacheStream.Seek(callerPosition, SeekOrigin.Begin);
+			}
+
+			await targetStream.CloseAsync();
+
+			_dirtyStart = long.MaxValue;
+			_dirtyEnd = 0;
+		}
+
+		private async Task CopyDirtyRangeToTargetAsync(NativeWriteStreamAdapter targetStream)
+		{
 			var cacheLength = _cacheStream.Length;
 			var dirtyEnd = Math.Min(_dirtyEnd, cacheLength);
 
@@ -119,11 +138,6 @@ namespace Uno.Storage.Streams.Internal
 				// Shrinks or zero-pad extends the target to the staged length.
 				await targetStream.TruncateAsync(cacheLength);
 			}
-
-			await targetStream.CloseAsync();
-
-			_dirtyStart = long.MaxValue;
-			_dirtyEnd = 0;
 		}
 
 		public override void Flush()
@@ -147,9 +161,14 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void SetLength(long value)
 		{
-			// No dirty range to record - the length-sync truncate on flush shrinks
-			// or zero-pad extends the target to match.
+			var previousLength = _cacheStream.Length;
 			_cacheStream.SetLength(value);
+
+			// A resize can turn existing target bytes into a zero-filled gap in the staged
+			// copy. The target keeps its own bytes there (the writable preserves existing
+			// data), so the resized range has to be committed rather than inferred from the
+			// final length alone.
+			MarkDirty(Math.Min(previousLength, value), Math.Max(previousLength, value));
 			_pendingChanges = true;
 		}
 
