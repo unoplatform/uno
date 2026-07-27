@@ -297,12 +297,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 #endif
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_LanguagesIsNull_Then_Throw()
 		{
 			Assert.ThrowsExactly<NullReferenceException>(() => new DecimalFormatter(languages: null!, "US"));
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 #pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
@@ -314,12 +316,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_GeographicRegionIsNull_Then_Throw()
 		{
-			Assert.ThrowsExactly<NullReferenceException>(() => new DecimalFormatter(new[] { "en-US" }, geographicRegion: null!));
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new[] { "en-US" }, geographicRegion: null!));
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		[DataRow("")]
 		[DataRow("NotARegion")]
 		[DataRow("1234")]
@@ -329,6 +333,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_ConstructedWithLanguagesAndRegion_Then_PropertiesAreResolved()
 		{
 			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
@@ -338,19 +343,18 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual("en-US", sut.ResolvedLanguage);
 			Assert.AreEqual("Latn", sut.NumeralSystem);
 			Assert.AreEqual("US", sut.GeographicRegion);
-			Assert.AreEqual("US", sut.ResolvedGeographicRegion);
+			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
 		}
 
 		[TestMethod]
-		public void When_GeographicRegionIsLowercase_Then_ResolvedGeographicRegionIsCanonical()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_GeographicRegionIsLowercase_Then_Throw()
 		{
-			var sut = new DecimalFormatter(new[] { "en-US" }, "us");
-
-			Assert.AreEqual("us", sut.GeographicRegion);
-			Assert.AreEqual("US", sut.ResolvedGeographicRegion);
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new[] { "en-US" }, "us"));
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_ConstructedWithLanguagesAndRegion_Then_FormattingMatchesDefaultConstructor()
 		{
 			// en-US's separators/group sizes are the same as CultureInfo.InvariantCulture, so the
@@ -365,6 +369,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_DecimalCommaLocale_Then_FormatUsesLocaleSeparators()
 		{
 			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
@@ -380,6 +385,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_DecimalCommaLocale_Then_GroupingUsesLocaleGroupSeparator()
 		{
 			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
@@ -399,6 +405,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_NonUniformGroupSizeLocale_Then_GroupsUsingLocaleGroupSizes()
 		{
 			// "en-IN" uses NumberGroupSizes {3, 2} (lakh/crore grouping, e.g. "12,34,567") on real
@@ -415,6 +422,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_DecimalCommaLocale_Then_NegativeZeroRoundTrips()
 		{
 			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
@@ -434,6 +442,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_ArabicLanguage_Then_NumeralSystemIsArabAndDigitsAreLocalized()
 		{
 			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA");
@@ -455,6 +464,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_ArabicLanguage_Then_GroupingAndDecimalPunctuationRoundTrip()
 		{
 			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA");
@@ -470,6 +480,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_NumeralSystemChangedAfterConstruction_Then_ArabicRoundTrips()
 		{
 			// Switching NumeralSystem after construction must re-coordinate the underlying punctuation

@@ -14,27 +14,9 @@ namespace Uno.Globalization.NumberFormatting
 		}
 
 		/// <summary>
-		/// The <see cref="NumberFormatInfo"/> used to format/parse the decimal separator, group
-		/// separator and group sizes, and negative sign.
+		/// Gets or sets the format used for punctuation, grouping, and signs.
+		/// It remains invariant when <see cref="NumeralSystemTranslator"/> localizes punctuation.
 		/// </summary>
-		/// <remarks>
-		/// This intentionally defaults to <see cref="CultureInfo.InvariantCulture"/> (ASCII '.'/',' punctuation).
-		/// <see cref="NumeralSystemTranslator"/> assumes this punctuation is present in the formatted text so it
-		/// can translate it (e.g. to Arabic-Indic separators) without double-localizing it; callers that resolve
-		/// a locale-specific <see cref="NumberFormatInfo"/> (e.g. for decimal-comma locales) must only do so for
-		/// numeral systems the translator does not itself localize the punctuation for.
-		///
-		/// <see cref="AppendFormatIntegerPart"/>'s custom numeric picture format string (e.g. "00,0") correctly
-		/// honors this <see cref="NumberFormatInfo"/>'s <see cref="NumberFormatInfo.NumberGroupSizes"/> when
-		/// formatted via <see cref="StringBuilder.AppendFormat(IFormatProvider, string, object)"/>, including
-		/// non-uniform grouping (e.g. "en-IN" lakh/crore grouping, group sizes {3, 2}) - see
-		/// Given_DecimalFormatter.When_NonUniformGroupSizeLocale_Then_GroupsUsingLocaleGroupSizes. However,
-		/// <see cref="HasInvalidGroupSize"/> (used by <see cref="ParseDouble"/>) only ever consults
-		/// <see cref="NumberFormatInfo.NumberGroupSizes"/>[0] and validates every gap between separators against
-		/// that single size, so parsing text with non-uniform grouping may incorrectly reject (or, per its
-		/// off-by-one comparison, incorrectly accept) some otherwise-valid input. This is a pre-existing
-		/// FormatterHelper limitation, unrelated to locale resolution, and out of scope here.
-		/// </remarks>
 		public NumberFormatInfo NumberFormat { get; set; } = CultureInfo.InvariantCulture.NumberFormat;
 
 		public bool IsDecimalPointAlwaysDisplayed { get; set; }

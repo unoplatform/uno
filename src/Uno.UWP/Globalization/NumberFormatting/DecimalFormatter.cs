@@ -20,6 +20,7 @@ namespace Windows.Globalization.NumberFormatting
 
 		private readonly FormatterHelper _formatterHelper;
 		private readonly NumeralSystemTranslator _translator;
+		private readonly string _numberFormatGeographicRegion;
 
 		public DecimalFormatter()
 		{
@@ -27,6 +28,7 @@ namespace Windows.Globalization.NumberFormatting
 			_formatterHelper = new FormatterHelper();
 			GeographicRegion = DefaultGeographicRegion;
 			ResolvedGeographicRegion = UnresolvedGeographicRegion;
+			_numberFormatGeographicRegion = DefaultGeographicRegion;
 		}
 
 		/// <summary>
@@ -48,11 +50,12 @@ namespace Windows.Globalization.NumberFormatting
 			GeographicRegionHelper.ValidateGeographicRegion(geographicRegion);
 
 			GeographicRegion = geographicRegion;
-			ResolvedGeographicRegion = GeographicRegionHelper.ResolveGeographicRegion(geographicRegion);
+			ResolvedGeographicRegion = UnresolvedGeographicRegion;
+			_numberFormatGeographicRegion = GeographicRegionHelper.ResolveGeographicRegion(geographicRegion);
 
 			_formatterHelper = new FormatterHelper
 			{
-				NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, ResolvedGeographicRegion, _translator.NumeralSystem)
+				NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, _numberFormatGeographicRegion, _translator.NumeralSystem)
 			};
 		}
 
@@ -87,13 +90,12 @@ namespace Windows.Globalization.NumberFormatting
 				// changes whether NumeralSystemTranslator localizes the decimal/group separators itself
 				// (see GeographicRegionHelper.ResolveNumberFormat), so the previously-resolved
 				// NumberFormatInfo may no longer be the correct one to avoid double localization.
-				_formatterHelper.NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, ResolvedGeographicRegion, _translator.NumeralSystem);
+				_formatterHelper.NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, _numberFormatGeographicRegion, _translator.NumeralSystem);
 			}
 		}
 
 		/// <summary>
-		/// Gets the geographic region, in the canonical two-letter ISO 3166 form, resolved from
-		/// <see cref="GeographicRegion"/>.
+		/// Gets the geographic region that was most recently used to format or parse decimal values.
 		/// </summary>
 		public string ResolvedGeographicRegion { get; }
 
@@ -137,6 +139,5 @@ namespace Windows.Globalization.NumberFormatting
 			text = _translator.TranslateBackNumerals(text);
 			return _formatterHelper.ParseDouble(text);
 		}
-
 	}
 }

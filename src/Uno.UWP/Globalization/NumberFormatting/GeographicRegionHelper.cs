@@ -21,12 +21,11 @@ internal static class GeographicRegionHelper
 	/// </summary>
 	public static void ValidateGeographicRegion(string geographicRegion)
 	{
-		if (geographicRegion is null)
-		{
-			ExceptionHelper.ThrowNullReferenceException(nameof(geographicRegion));
-		}
-
-		if (string.IsNullOrEmpty(geographicRegion) || !TryResolveRegion(geographicRegion, out _))
+		if (geographicRegion is null ||
+			geographicRegion.Length != 2 ||
+			geographicRegion[0] is < 'A' or > 'Z' ||
+			geographicRegion[1] is < 'A' or > 'Z' ||
+			!TryResolveRegion(geographicRegion, out _))
 		{
 			ExceptionHelper.ThrowArgumentException(nameof(geographicRegion));
 		}
@@ -107,12 +106,19 @@ internal static class GeographicRegionHelper
 	{
 		var primaryLanguageSubtag = GetPrimaryLanguageSubtag(resolvedLanguage);
 
-		foreach (var candidate in new[] { $"{primaryLanguageSubtag}-{resolvedGeographicRegion}", resolvedLanguage, primaryLanguageSubtag })
+		if (TryGetCultureInfo($"{primaryLanguageSubtag}-{resolvedGeographicRegion}", out var culture))
 		{
-			if (TryGetCultureInfo(candidate, out var culture))
-			{
-				return culture;
-			}
+			return culture;
+		}
+
+		if (TryGetCultureInfo(resolvedLanguage, out culture))
+		{
+			return culture;
+		}
+
+		if (TryGetCultureInfo(primaryLanguageSubtag, out culture))
+		{
+			return culture;
 		}
 
 		return null;
