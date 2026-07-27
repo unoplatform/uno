@@ -8,6 +8,9 @@ namespace Windows.Storage
 	{
 		private static async Task<FileUpdateStatus> CompleteUpdatesTaskAsync(IStorageFile file, CancellationToken token)
 		{
+			// Triggering the download is a user-visible side effect - don't start one for a cancelled commit.
+			token.ThrowIfCancellationRequested();
+
 			if (file is StorageFile { Implementation: StorageFile.DownloadPickerStorageFile downloadFile })
 			{
 				// The content is handed to the browser JS-side, without materializing

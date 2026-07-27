@@ -86,6 +86,8 @@ namespace Windows.Storage.Pickers
 
 		private Task<StorageFile?> DownloadPickerPickSaveFileAsync(CancellationToken token)
 		{
+			token.ThrowIfCancellationRequested();
+
 			if (SuggestedSaveFile == null)
 			{
 				if (string.IsNullOrEmpty(SuggestedFileName))
