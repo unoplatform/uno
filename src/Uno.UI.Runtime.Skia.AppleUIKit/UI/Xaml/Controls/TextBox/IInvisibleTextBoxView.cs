@@ -9,7 +9,7 @@ internal interface IInvisibleTextBoxView
 {
 	string? Text { get; }
 
-	bool IsCompatible(TextBoxCore core);
+	bool IsCompatible(IImeSessionHost host);
 
 	bool BecomeFirstResponder();
 
@@ -25,6 +25,8 @@ internal interface IInvisibleTextBoxView
 	/// Attaches the view shown above the soft keyboard while this input is editing, or clears it when null.
 	/// </summary>
 	void SetKeyboardAccessoryView(UIView? accessoryView);
+
+	void NotifyImePositionChanged();
 
 	UITextAutocapitalizationType AutocapitalizationType { get; set; }
 

@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="Functional RichEditBox (Skia): set/get plain text through Document, with a Header, PlaceholderText and IsReadOnly toggle."
+            Text="RichEditBox parity probe: set and get text through Document, with a Header, PlaceholderText and IsReadOnly toggle."
             TextWrapping="Wrap" />
         <RichEditBox
             x:Name="Editor"

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Text
 	// Run-model internals for the functional paragraph-formatting layer of the RichEditBox Text
 	// Object Model. Paragraph formatting is stored per-character (mirroring the character run model in
 	// RichEditTextDocument.Formatting.skia.cs) so it splices in lock-step with text edits and
-	// participates in the same undo snapshots. Writes always cover whole paragraphs (split on
+	// participates in the same undo deltas. Writes always cover whole paragraphs (split on
 	// \r / \n / \r\n / U+2029, each paragraph including its trailing break), so every character
 	// inside a paragraph shares the same ParagraphFormatState. A separate state represents the
 	// implicit zero-length terminal paragraph after a final break (and the sole paragraph when empty).
@@ -17,14 +17,19 @@ namespace Microsoft.UI.Text
 	// get/set/clone/undo.
 	public partial class RichEditTextDocument
 	{
-		private List<ParagraphRun> _paragraphRuns = new();
+		private readonly IndexedRunCollection<ParagraphRun> _paragraphRuns = new(
+			static run => run.Length,
+			static (run, length) => run.Length = length);
 		private ParagraphFormatState _terminalParagraphFormat = new();
+		private readonly Dictionary<global::Microsoft.UI.Text.ParagraphAlignment, int> _paragraphAlignmentLengths = new();
+		private int _visualParagraphFormattingLength;
+		private int _listParagraphFormattingLength;
 
-		internal IReadOnlyList<ParagraphRun> ParagraphRuns
+		internal IndexedRunCollection<ParagraphRun> ParagraphRuns
 		{
 			get
 			{
-				SyncParagraphRunsToLength(_plainText.Length);
+				SyncParagraphRunsToLength(_textBuffer.Length);
 				return _paragraphRuns;
 			}
 		}
@@ -33,95 +38,297 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				SyncParagraphRunsToLength(_plainText.Length);
+				SyncParagraphRunsToLength(_textBuffer.Length);
 				return _terminalParagraphFormat;
+			}
+		}
+
+		internal int ParagraphRunCount
+		{
+			get
+			{
+				SyncParagraphRunsToLength(_textBuffer.Length);
+				return _paragraphRuns.Count;
+			}
+		}
+
+		internal bool HasVisualParagraphFormatting
+			=> _visualParagraphFormattingLength != 0 || HasVisualParagraphFormattingState(_terminalParagraphFormat);
+
+		internal bool HasListParagraphFormatting
+			=> _listParagraphFormattingLength != 0 || HasListParagraphFormattingState(_terminalParagraphFormat);
+
+		internal bool HasMixedParagraphAlignments
+		{
+			get
+			{
+				if (_paragraphAlignmentLengths.Count == 0)
+				{
+					return false;
+				}
+				if (_paragraphAlignmentLengths.Count > 1)
+				{
+					return true;
+				}
+
+				using var enumerator = _paragraphAlignmentLengths.Keys.GetEnumerator();
+				_ = enumerator.MoveNext();
+				return TextUnitNavigation.EndsInParagraphBreak(_textBuffer)
+					&& _terminalParagraphFormat.Alignment != enumerator.Current;
 			}
 		}
 
 		// The document's default paragraph formatting: the basis for newly inserted text and empty
 		// documents (see DefaultParagraphState). Exposed via Get/SetDefaultParagraphFormat. Like the
-		// default character format, this is document-level configuration and is not part of the undo snapshot.
+		// default character format, this is document-level configuration and is not part of undo history.
 		private readonly ParagraphFormatState _defaultParagraphFormat = new();
 
 		private ParagraphFormatState DefaultParagraphState() => _defaultParagraphFormat.Clone();
 
-		/// <summary>Expands the paragraph runs into one (shared) state reference per character.</summary>
-		private List<ParagraphFormatState> ExpandParagraphRunsRaw()
+		private void SetParagraphRuns(List<ParagraphRun> runs)
 		{
-			var list = new List<ParagraphFormatState>();
+			_paragraphRuns.Reset(runs);
+			ResetParagraphRenderProfile();
 			foreach (var run in _paragraphRuns)
 			{
-				for (var i = 0; i < run.Length; i++)
-				{
-					list.Add(run.Format);
-				}
+				AddParagraphRenderProfile(run, 1);
 			}
-
-			return list;
 		}
 
-		/// <summary>Groups consecutive equal states into runs, each owning a private clone of its state.</summary>
-		private static List<ParagraphRun> BuildParagraphRunsFromStates(List<ParagraphFormatState> states)
-		{
-			var runs = new List<ParagraphRun>();
-			var i = 0;
-			while (i < states.Count)
-			{
-				var start = i;
-				var representative = states[i];
-				i++;
-				while (i < states.Count && states[i].Equals(representative))
-				{
-					i++;
-				}
+		private int GetParagraphRunStart(int runIndex) => _paragraphRuns.GetStart(runIndex);
 
-				runs.Add(new ParagraphRun(i - start, representative.Clone()));
+		internal int FindParagraphRunIndexForRender(int position)
+		{
+			SyncParagraphRunsToLength(_textBuffer.Length);
+			return position == _textBuffer.Length ? _paragraphRuns.Count : FindParagraphRunIndex(position);
+		}
+
+		internal int GetParagraphRunStartForRender(int runIndex) => GetParagraphRunStart(runIndex);
+
+		internal int GetParagraphRunEndForRender(int runIndex) => _paragraphRuns.GetEnd(runIndex);
+
+		internal int GetParagraphStartForRender(int position) => GetParagraphStart(position);
+
+		internal int GetParagraphEndForRender(int position) => GetParagraphEnd(position);
+
+		private int FindParagraphRunIndex(int position)
+		{
+			if ((uint)position >= (uint)_paragraphRuns.TotalLength)
+			{
+				throw new ArgumentOutOfRangeException(nameof(position));
 			}
 
-			return runs;
+			return _paragraphRuns.FindIndex(position);
+		}
+
+		private ParagraphFormatState GetParagraphFormatAt(int position) => _paragraphRuns[FindParagraphRunIndex(position)].Format;
+
+		private static void AppendParagraphRun(List<ParagraphRun> runs, int length, ParagraphFormatState format, bool clone = true)
+		{
+			if (length <= 0)
+			{
+				return;
+			}
+
+			if (runs.Count > 0 && runs[^1].Format.Equals(format))
+			{
+				runs[^1].Length += length;
+			}
+			else
+			{
+				runs.Add(new ParagraphRun(length, clone ? format.Clone() : format));
+			}
+		}
+
+		private void ReplaceParagraphRuns(int start, int end, IReadOnlyList<ParagraphRun> insertedRuns)
+		{
+			var length = _paragraphRuns.TotalLength;
+			start = Math.Clamp(start, 0, length);
+			end = Math.Clamp(end, start, length);
+
+			var startRun = start == length ? _paragraphRuns.Count : FindParagraphRunIndex(start);
+			var startOffset = startRun == _paragraphRuns.Count ? 0 : start - GetParagraphRunStart(startRun);
+			var endRun = end == length ? _paragraphRuns.Count : FindParagraphRunIndex(end);
+			var endOffset = endRun == _paragraphRuns.Count ? 0 : end - GetParagraphRunStart(endRun);
+			var removeCount = endRun - startRun + (endRun < _paragraphRuns.Count && endOffset > 0 ? 1 : 0);
+			var replacement = new List<ParagraphRun>(insertedRuns.Count + 2);
+			for (var i = 0; i < removeCount; i++)
+			{
+				AddParagraphRenderProfile(_paragraphRuns[startRun + i], -1);
+			}
+
+			if (startRun < _paragraphRuns.Count && startOffset > 0)
+			{
+				AppendParagraphRun(replacement, startOffset, _paragraphRuns[startRun].Format);
+			}
+
+			for (var i = 0; i < insertedRuns.Count; i++)
+			{
+				AppendParagraphRun(replacement, insertedRuns[i].Length, insertedRuns[i].Format);
+			}
+
+			if (endRun < _paragraphRuns.Count && endOffset > 0)
+			{
+				AppendParagraphRun(replacement, _paragraphRuns[endRun].Length - endOffset, _paragraphRuns[endRun].Format);
+			}
+
+			_paragraphRuns.ReplaceRange(startRun, removeCount, replacement);
+
+			foreach (var run in replacement)
+			{
+				AddParagraphRenderProfile(run, 1);
+			}
+			CoalesceParagraphRunsAt(startRun);
+		}
+
+		private void ResetParagraphRenderProfile()
+		{
+			_paragraphAlignmentLengths.Clear();
+			_visualParagraphFormattingLength = 0;
+			_listParagraphFormattingLength = 0;
+		}
+
+		private void AddParagraphRenderProfile(ParagraphRun run, int direction)
+		{
+			var lengthDelta = checked(run.Length * direction);
+			if (_paragraphAlignmentLengths.TryGetValue(run.Format.Alignment, out var alignmentLength))
+			{
+				var updatedLength = checked(alignmentLength + lengthDelta);
+				if (updatedLength == 0)
+				{
+					_paragraphAlignmentLengths.Remove(run.Format.Alignment);
+				}
+				else
+				{
+					_paragraphAlignmentLengths[run.Format.Alignment] = updatedLength;
+				}
+			}
+			else if (lengthDelta > 0)
+			{
+				_paragraphAlignmentLengths.Add(run.Format.Alignment, lengthDelta);
+			}
+			else
+			{
+				throw new InvalidOperationException("The paragraph alignment profile is inconsistent.");
+			}
+
+			if (HasVisualParagraphFormattingState(run.Format))
+			{
+				_visualParagraphFormattingLength = checked(_visualParagraphFormattingLength + lengthDelta);
+			}
+			if (HasListParagraphFormattingState(run.Format))
+			{
+				_listParagraphFormattingLength = checked(_listParagraphFormattingLength + lengthDelta);
+			}
+		}
+
+		private static bool HasVisualParagraphFormattingState(ParagraphFormatState format)
+			=> format.FirstLineIndent != 0
+				|| format.LeftIndent != 0
+				|| format.RightIndent != 0
+				|| format.SpaceBefore != 0
+				|| format.SpaceAfter != 0
+				|| format.RightToLeft
+				|| format.LineSpacingRule is not global::Microsoft.UI.Text.LineSpacingRule.Single
+					and not global::Microsoft.UI.Text.LineSpacingRule.Undefined
+				|| HasListParagraphFormattingState(format)
+				|| format.Tabs.Count != 0;
+
+		private static bool HasListParagraphFormattingState(ParagraphFormatState format)
+			=> format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+				and not global::Microsoft.UI.Text.MarkerType.Undefined;
+
+		internal bool IsParagraphRenderProfileValid()
+		{
+			var alignments = new Dictionary<global::Microsoft.UI.Text.ParagraphAlignment, int>();
+			var visualLength = 0;
+			var listLength = 0;
+			foreach (var run in _paragraphRuns)
+			{
+				alignments.TryGetValue(run.Format.Alignment, out var alignmentLength);
+				alignments[run.Format.Alignment] = alignmentLength + run.Length;
+				if (HasVisualParagraphFormattingState(run.Format))
+				{
+					visualLength += run.Length;
+				}
+				if (HasListParagraphFormattingState(run.Format))
+				{
+					listLength += run.Length;
+				}
+			}
+
+			if (visualLength != _visualParagraphFormattingLength
+				|| listLength != _listParagraphFormattingLength
+				|| alignments.Count != _paragraphAlignmentLengths.Count)
+			{
+				return false;
+			}
+
+			foreach (var pair in alignments)
+			{
+				if (!_paragraphAlignmentLengths.TryGetValue(pair.Key, out var length)
+					|| length != pair.Value)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private void CoalesceParagraphRunsAt(int index)
+		{
+			index = Math.Max(1, index);
+			var end = Math.Min(_paragraphRuns.Count - 1, index + 2);
+			while (index <= end && index < _paragraphRuns.Count)
+			{
+				if (_paragraphRuns[index - 1].Format.Equals(_paragraphRuns[index].Format))
+				{
+					_paragraphRuns.SetLength(
+						index - 1,
+						checked(_paragraphRuns[index - 1].Length + _paragraphRuns[index].Length));
+					_paragraphRuns.RemoveAt(index);
+					end--;
+				}
+				else
+				{
+					index++;
+				}
+			}
 		}
 
 		/// <summary>Reconciles the paragraph-run lengths so they sum exactly to <paramref name="length"/>.</summary>
 		private void SyncParagraphRunsToLength(int length)
 		{
-			var current = 0;
-			foreach (var run in _paragraphRuns)
-			{
-				current += run.Length;
-			}
+			var current = _paragraphRuns.TotalLength;
 
 			if (current == length)
 			{
 				return;
 			}
 
-			var expanded = ExpandParagraphRunsRaw();
-			if (expanded.Count < length)
+			if (current < length)
 			{
 				// New characters inherit the paragraph formatting of the character to their left (the
 				// paragraph they are extending), falling back to the default for an empty document.
-				var fill = expanded.Count > 0 ? expanded[expanded.Count - 1] : _terminalParagraphFormat;
-				while (expanded.Count < length)
-				{
-					expanded.Add(fill);
-				}
+				var fill = current > 0 ? GetParagraphFormatAt(current - 1) : _terminalParagraphFormat;
+				ReplaceParagraphRuns(current, current, new[] { new ParagraphRun(length - current, fill.Clone()) });
 			}
-			else if (expanded.Count > length)
+			else
 			{
-				expanded.RemoveRange(length, expanded.Count - length);
+				ReplaceParagraphRuns(length, current, Array.Empty<ParagraphRun>());
 			}
 
-			_paragraphRuns = BuildParagraphRunsFromStates(expanded);
-			SyncTerminalParagraphToMaterializedLastParagraph(expanded);
+			SyncTerminalParagraphToMaterializedLastParagraph();
 		}
 
 		/// <summary>Resets paragraph formatting to a single default run of <paramref name="length"/> characters.</summary>
 		private void ResetParagraphRuns(int length)
 		{
 			_terminalParagraphFormat = DefaultParagraphState();
-			_paragraphRuns = length > 0
+			SetParagraphRuns(length > 0
 				? new List<ParagraphRun> { new(length, _terminalParagraphFormat.Clone()) }
-				: new List<ParagraphRun>();
+				: new List<ParagraphRun>());
 		}
 
 		/// <summary>
@@ -129,10 +336,9 @@ namespace Microsoft.UI.Text
 		/// characters at <paramref name="start"/> and inserted <paramref name="insertLength"/> new ones.
 		/// Must be called while <see cref="_paragraphRuns"/> still reflect the pre-edit text length.
 		/// </summary>
-		private void SpliceParagraphRuns(string oldText, int start, int removeLength, int insertLength)
+		private void SpliceParagraphRuns(TextStoryBuffer oldText, int start, int removeLength, int insertLength)
 		{
-			var expanded = ExpandParagraphRunsRaw();
-			var oldLength = expanded.Count;
+			var oldLength = _paragraphRuns.TotalLength;
 			start = Math.Clamp(start, 0, oldLength);
 			var removeEnd = Math.Clamp(start + removeLength, start, oldLength);
 
@@ -140,112 +346,80 @@ namespace Microsoft.UI.Text
 			// containing the edit position. At a paragraph start that is the right-hand paragraph;
 			// at end-of-story it is the explicit terminal paragraph.
 			var insertFormat = start < oldLength && TextUnitNavigation.IsParagraphStart(oldText, start)
-				? expanded[start].Clone()
+				? GetParagraphFormatAt(start).Clone()
 				: start == oldLength
 					? _terminalParagraphFormat.Clone()
 					: start > 0
-						? expanded[start - 1].Clone()
-						: (oldLength > 0 ? expanded[0].Clone() : _terminalParagraphFormat.Clone());
+						? GetParagraphFormatAt(start - 1).Clone()
+						: (oldLength > 0 ? GetParagraphFormatAt(0).Clone() : _terminalParagraphFormat.Clone());
 
-			var result = new List<ParagraphFormatState>(oldLength - (removeEnd - start) + insertLength);
-			for (var i = 0; i < start; i++)
-			{
-				result.Add(expanded[i]);
-			}
-
-			for (var i = 0; i < insertLength; i++)
-			{
-				result.Add(insertFormat);
-			}
-
-			for (var i = removeEnd; i < oldLength; i++)
-			{
-				result.Add(expanded[i]);
-			}
-
-			_paragraphRuns = BuildParagraphRunsFromStates(result);
+			var insertedRuns = insertLength > 0
+				? new[] { new ParagraphRun(insertLength, insertFormat) }
+				: Array.Empty<ParagraphRun>();
+			ReplaceParagraphRuns(start, removeEnd, insertedRuns);
 			if (removeEnd == oldLength)
 			{
 				_terminalParagraphFormat = insertFormat.Clone();
 			}
 		}
 
-		private void NormalizeParagraphRuns()
+		private void NormalizeParagraphRunsAroundEdit(int editStart, int insertedLength)
 		{
-			SyncParagraphRunsToLength(_plainText.Length);
-			if (_plainText.Length == 0)
+			SyncParagraphRunsToLength(_textBuffer.Length);
+			if (_textBuffer.Length == 0)
 			{
 				return;
 			}
 
-			var states = ExpandParagraphRunsRaw();
-			foreach (var paragraph in TextUnitNavigation.GetParagraphChunks(_plainText))
+			var start = GetParagraphStart(Math.Clamp(editStart, 0, _textBuffer.Length));
+			var endProbe = Math.Clamp(editStart + insertedLength, start, _textBuffer.Length);
+			var end = GetParagraphEnd(endProbe);
+			var position = start;
+			while (position < end)
 			{
-				var format = states[paragraph.start].Clone();
-				var end = Math.Min(states.Count, paragraph.start + paragraph.length);
-				for (var i = paragraph.start; i < end; i++)
-				{
-					states[i] = format;
-				}
+				var paragraphEnd = GetParagraphEnd(position);
+				var format = GetParagraphFormatAt(position);
+				ReplaceParagraphRuns(position, paragraphEnd, new[] { new ParagraphRun(paragraphEnd - position, format.Clone()) });
+				position = paragraphEnd;
 			}
 
-			_paragraphRuns = BuildParagraphRunsFromStates(states);
-			SyncTerminalParagraphToMaterializedLastParagraph(states);
+			SyncTerminalParagraphToMaterializedLastParagraph();
 		}
 
-		private void SyncTerminalParagraphToMaterializedLastParagraph(List<ParagraphFormatState> states)
+		private void SyncTerminalParagraphToMaterializedLastParagraph()
 		{
-			if (states.Count > 0 && !TextUnitNavigation.EndsInParagraphBreak(_plainText))
+			if (_textBuffer.Length > 0 && !TextUnitNavigation.EndsInParagraphBreak(_textBuffer))
 			{
-				_terminalParagraphFormat = states[states.Count - 1].Clone();
+				_terminalParagraphFormat = GetParagraphFormatAt(_textBuffer.Length - 1).Clone();
 			}
 		}
 
-		/// <summary>
-		/// Maps the character range [start, end) to the whole-paragraph character span covering every
-		/// paragraph the range touches, plus the first/last paragraph indices. Returns false for an
-		/// empty document (there are no characters to carry paragraph state).
-		/// </summary>
-		private bool TryGetParagraphSpan(int start, int end, out int paraStart, out int paraEnd, out int firstPara, out int lastPara)
+		private int GetParagraphStart(int position)
+			=> _textBuffer.FindParagraphStart(position);
+
+		private int GetParagraphEnd(int position)
+			=> _textBuffer.FindParagraphEnd(position);
+
+		private bool TryGetParagraphSpan(int start, int end, out int paraStart, out int paraEnd, out bool includesTerminal)
 		{
-			paraStart = 0;
-			paraEnd = 0;
-			firstPara = 0;
-			lastPara = 0;
-
-			var length = _plainText.Length;
-
+			var length = _textBuffer.Length;
 			start = Math.Clamp(start, 0, length);
 			end = Math.Clamp(end, start, length);
-
-			var chunks = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
-			if (chunks.Count == 0)
-			{
-				return false;
-			}
-
-			firstPara = TextUnitNavigation.FindChunkIndex(chunks, start);
 			var endProbe = end > start ? end - 1 : start;
-			lastPara = TextUnitNavigation.FindChunkIndex(chunks, endProbe);
-			paraStart = chunks[firstPara].start;
-			paraEnd = chunks[lastPara].start + chunks[lastPara].length;
+			paraStart = GetParagraphStart(start);
+			paraEnd = GetParagraphEnd(endProbe);
+			includesTerminal = paraStart == length && paraEnd == length;
 			return true;
 		}
 
-		private void ApplyParagraphFormatOverParagraphs(int firstParagraph, int lastParagraph, UnoTextParagraphFormat paragraphFormat)
+		private void ApplyParagraphFormatOverRange(int start, int end, bool includesTerminal, UnoTextParagraphFormat paragraphFormat)
 		{
-			SyncParagraphRunsToLength(_plainText.Length);
-			var paragraphs = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
-			firstParagraph = Math.Clamp(firstParagraph, 0, paragraphs.Count - 1);
-			lastParagraph = Math.Clamp(lastParagraph, firstParagraph, paragraphs.Count - 1);
-			var expanded = ExpandParagraphRunsRaw();
+			SyncParagraphRunsToLength(_textBuffer.Length);
 			var transformedStates = new Dictionary<ParagraphFormatState, ParagraphFormatState>();
 			var transformedTabs = new Dictionary<IReadOnlyList<ParagraphTab>, ParagraphFormatState>(ReferenceEqualityComparer.Instance);
-			for (var paragraphIndex = firstParagraph; paragraphIndex <= lastParagraph; paragraphIndex++)
+
+			ParagraphFormatState Transform(ParagraphFormatState source)
 			{
-				var paragraph = paragraphs[paragraphIndex];
-				var paragraphEnd = paragraph.start + paragraph.length;
-				var source = paragraph.length == 0 ? _terminalParagraphFormat : expanded[paragraph.start];
 				if (!transformedStates.TryGetValue(source, out var format))
 				{
 					format = source.Clone();
@@ -261,18 +435,32 @@ namespace Microsoft.UI.Text
 					}
 					transformedStates.Add(source, format);
 				}
-				for (var i = paragraph.start; i < paragraphEnd; i++)
-				{
-					expanded[i] = format;
-				}
-				if (paragraph.length == 0
-					|| paragraphEnd == _plainText.Length && !TextUnitNavigation.EndsInParagraphBreak(_plainText))
-				{
-					_terminalParagraphFormat = format.Clone();
-				}
+				return format;
 			}
 
-			_paragraphRuns = BuildParagraphRunsFromStates(expanded);
+			if (start < end)
+			{
+				var transformedRuns = new List<ParagraphRun>();
+				var position = start;
+				while (position < end)
+				{
+					var paragraphEnd = Math.Min(end, GetParagraphEnd(position));
+					AppendParagraphRun(
+						transformedRuns,
+						paragraphEnd - position,
+						Transform(GetParagraphFormatAt(position)),
+						clone: false);
+					position = paragraphEnd;
+				}
+				ReplaceParagraphRuns(start, end, transformedRuns);
+			}
+
+			if (includesTerminal
+				|| end == _textBuffer.Length && !TextUnitNavigation.EndsInParagraphBreak(_textBuffer))
+			{
+				var source = includesTerminal ? _terminalParagraphFormat : GetParagraphFormatAt(end - 1);
+				_terminalParagraphFormat = Transform(source).Clone();
+			}
 		}
 
 		/// <summary>
@@ -281,22 +469,14 @@ namespace Microsoft.UI.Text
 		/// </summary>
 		internal UnoTextParagraphFormat GetParagraphFormatOverRange(int start, int end)
 		{
-			SyncParagraphRunsToLength(_plainText.Length);
+			SyncParagraphRunsToLength(_textBuffer.Length);
 			var format = new UnoTextParagraphFormat();
-			if (!TryGetParagraphSpan(start, end, out _, out _, out var firstPara, out var lastPara))
-			{
-				format.LoadFrom(DefaultParagraphState());
-				return format;
-			}
-
-			var chunks = TextUnitNavigation.GetParagraphChunksIncludingFinal(_plainText);
-			var expanded = ExpandParagraphRunsRaw();
-
-			ParagraphFormatState RepresentativeOf(int paraIndex)
-				=> chunks[paraIndex].length == 0 ? _terminalParagraphFormat : expanded[chunks[paraIndex].start];
-
-			var first = RepresentativeOf(firstPara);
-			if (firstPara == lastPara)
+			TryGetParagraphSpan(start, end, out var paragraphStart, out var paragraphEnd, out var includesTerminal);
+			var first = includesTerminal
+				? _terminalParagraphFormat
+				: GetParagraphFormatAt(paragraphStart);
+			var nextParagraph = includesTerminal ? paragraphEnd : GetParagraphEnd(paragraphStart);
+			if (nextParagraph >= paragraphEnd)
 			{
 				// A single paragraph is fully uniform: report all of its resolved values.
 				format.LoadFrom(first);
@@ -309,9 +489,10 @@ namespace Microsoft.UI.Text
 				listTabU = true, keepTogetherU = true, keepWithNextU = true, noLineNumberU = true,
 				pageBreakU = true, rtlU = true, widowU = true, styleU = true, tabsU = true;
 
-			for (var p = firstPara + 1; p <= lastPara; p++)
+			var position = nextParagraph;
+			while (position < paragraphEnd)
 			{
-				var s = RepresentativeOf(p);
+				var s = GetParagraphFormatAt(position);
 				alignmentU &= s.Alignment == first.Alignment;
 				firstIndentU &= s.FirstLineIndent.Equals(first.FirstLineIndent);
 				leftIndentU &= s.LeftIndent.Equals(first.LeftIndent);
@@ -334,6 +515,7 @@ namespace Microsoft.UI.Text
 				widowU &= s.WidowControl == first.WidowControl;
 				styleU &= s.Style == first.Style;
 				tabsU &= TabsEqual(s.Tabs, first.Tabs);
+				position = GetParagraphEnd(position);
 			}
 
 			format.AlignmentValue = alignmentU ? first.Alignment : global::Microsoft.UI.Text.ParagraphAlignment.Undefined;
@@ -375,7 +557,9 @@ namespace Microsoft.UI.Text
 			}
 
 			format.ListTypeValue = listTypeU ? first.ListType : global::Microsoft.UI.Text.MarkerType.Undefined;
+			format.ListTypeDefined = listTypeU;
 			format.ListStyleValue = listStyleU ? first.ListStyle : global::Microsoft.UI.Text.MarkerStyle.Undefined;
+			format.ListStyleDefined = listStyleU;
 			format.ListAlignmentValue = listAlignU ? first.ListAlignment : global::Microsoft.UI.Text.MarkerAlignment.Undefined;
 			if (listLevelU)
 			{
@@ -414,24 +598,13 @@ namespace Microsoft.UI.Text
 		/// <summary>Applies the defined properties of <paramref name="format"/> over every paragraph touched by [start, end).</summary>
 		internal void SetParagraphFormatOverRange(int start, int end, UnoTextParagraphFormat format)
 		{
-			if (TryGetParagraphSpan(start, end, out var protectedStart, out var protectedEnd, out _, out _))
-			{
-				ThrowIfNotEditable(protectedStart, protectedEnd);
-			}
-			else
-			{
-				ThrowIfNotEditable(start, end);
-			}
+			TryGetParagraphSpan(start, end, out var protectedStart, out var protectedEnd, out var includesTerminal);
+			ThrowIfNotEditable(protectedStart, protectedEnd);
 
 			MutateWithUndo(() =>
 			{
-				if (!TryGetParagraphSpan(start, end, out _, out _, out var firstPara, out var lastPara))
-				{
-					return;
-				}
-
-				ApplyParagraphFormatOverParagraphs(firstPara, lastPara, format);
-			});
+				ApplyParagraphFormatOverRange(protectedStart, protectedEnd, includesTerminal, format);
+			}, paragraphRange: new HistoryRange(protectedStart, protectedEnd));
 		}
 
 		/// <summary>Gets the document's default paragraph format as a live (bound) format object.</summary>
@@ -472,15 +645,15 @@ namespace Microsoft.UI.Text
 				return _terminalParagraphFormat.Alignment;
 			}
 
-			var alignment = _paragraphRuns[0].Format.Alignment;
-			for (var i = 1; i < _paragraphRuns.Count; i++)
+			if (_paragraphAlignmentLengths.Count != 1)
 			{
-				if (_paragraphRuns[i].Format.Alignment != alignment)
-				{
-					return null;
-				}
+				return null;
 			}
-			if (TextUnitNavigation.EndsInParagraphBreak(_plainText)
+
+			using var enumerator = _paragraphAlignmentLengths.Keys.GetEnumerator();
+			_ = enumerator.MoveNext();
+			var alignment = enumerator.Current;
+			if (TextUnitNavigation.EndsInParagraphBreak(_textBuffer)
 				&& _terminalParagraphFormat.Alignment != alignment)
 			{
 				return null;
@@ -498,6 +671,33 @@ namespace Microsoft.UI.Text
 			}
 
 			return list;
+		}
+
+		private static List<ParagraphRun> BuildParagraphRunsFromFragment(
+			IReadOnlyList<ParagraphRun> source,
+			int length,
+			ParagraphFormatState fallback)
+		{
+			var runs = new List<ParagraphRun>();
+			var remaining = length;
+			foreach (var run in source)
+			{
+				var runLength = Math.Min(remaining, run.Length);
+				if (runLength <= 0)
+				{
+					break;
+				}
+
+				AppendParagraphRun(runs, runLength, run.Format);
+				remaining -= runLength;
+			}
+
+			if (remaining > 0)
+			{
+				AppendParagraphRun(runs, remaining, fallback);
+			}
+
+			return runs;
 		}
 
 		internal static bool ParagraphRunsEqual(List<ParagraphRun> a, List<ParagraphRun> b)

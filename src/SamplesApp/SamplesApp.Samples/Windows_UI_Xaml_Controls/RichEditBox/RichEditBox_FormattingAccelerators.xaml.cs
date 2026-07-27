@@ -6,7 +6,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_FormattingAccelerators", Description = "Ctrl+B/I/U formatting accelerators on Skia, gated by the DisabledFormattingAccelerators property.")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_FormattingAccelerators", Description = "RichEditBox parity probe for Ctrl+B/I/U and DisabledFormattingAccelerators.")]
+#endif
 	public sealed partial class RichEditBox_FormattingAccelerators : Page
 	{
 		public RichEditBox_FormattingAccelerators()

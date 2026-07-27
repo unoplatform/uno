@@ -7,7 +7,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_CharacterFormatting", Description = "Functional RichEditBox on Skia: apply Bold/Italic/Underline/Strikethrough/Foreground/Size to a Document range via the Text Object Model, rendered as inlines, with undo/redo.")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_CharacterFormatting", Description = "RichEditBox parity probe for character formatting through the Text Object Model, with undo and redo.")]
+#endif
 	public sealed partial class RichEditBox_CharacterFormatting : Page
 	{
 		private const string InitialText = "The quick brown fox jumps over the lazy dog.";

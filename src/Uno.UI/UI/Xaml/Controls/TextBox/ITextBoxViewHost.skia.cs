@@ -18,6 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Whether spell-checking is enabled on the host.</summary>
 		bool IsSpellCheckEnabled { get; }
 
+		/// <summary>Whether color font glyphs are enabled on the host.</summary>
+		bool IsColorFontEnabled { get; }
+
 		/// <summary>The template's content presenter that hosts the <see cref="TextBoxView.DisplayBlock"/>.</summary>
 		ContentControl? ContentElement { get; }
 
@@ -36,6 +39,8 @@ namespace Microsoft.UI.Xaml.Controls
 		TextWrapping TextWrapping { get; }
 
 		TextAlignment TextAlignment { get; }
+
+		TextReadingOrder TextReadingOrder { get; }
 
 		/// <summary>Whether an IME composition is currently in progress on the host.</summary>
 		bool IsComposing { get; }
@@ -57,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Runs the host's text-input pipeline (BeforeTextChanging, TextChanging, DP coercion, etc.)
 		/// on <paramref name="newText"/> and returns the resulting (possibly modified) text.
 		/// </summary>
-		string ProcessTextInput(string newText);
+		string ProcessTextInput(string newText, int selectionStart, int selectionLength);
 
 		/// <summary>Forces an immediate layout pass on the host.</summary>
 		void UpdateLayout();

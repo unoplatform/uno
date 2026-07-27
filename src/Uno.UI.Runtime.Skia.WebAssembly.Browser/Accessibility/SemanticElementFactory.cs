@@ -394,6 +394,8 @@ internal static partial class SemanticElementFactory
 		string? placeholder = null;
 		var selectionStart = 0;
 		var selectionEnd = 0;
+		var selectionIsBackward = false;
+		var isSpellCheckEnabled = false;
 
 		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 		{
@@ -409,6 +411,19 @@ internal static partial class SemanticElementFactory
 				placeholder = core.PlaceholderText;
 				selectionStart = Math.Max(0, Math.Min(core.SelectionStart, value.Length));
 				selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, value.Length));
+				isSpellCheckEnabled = core.IsSpellCheckEnabled;
+			}
+			else if (feap.Owner is RichEditBox richEditBox)
+			{
+				value = richEditBox.GetAccessibilityText();
+				isReadOnly = richEditBox.IsReadOnly;
+				placeholder = richEditBox.PlaceholderText;
+				richEditBox.GetAccessibilitySelection(
+					out selectionStart,
+					out selectionEnd,
+					out selectionIsBackward);
+				multiline = true;
+				isSpellCheckEnabled = richEditBox.IsSpellCheckEnabled;
 			}
 		}
 
@@ -426,6 +441,8 @@ internal static partial class SemanticElementFactory
 			isReadOnly,
 			selectionStart,
 			selectionEnd,
+			selectionIsBackward,
+			isSpellCheckEnabled,
 			isFocusable);
 
 		// Set native placeholder on the input element
@@ -1327,7 +1344,7 @@ internal static partial class SemanticElementFactory
 		internal static partial void CreateRadioElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool isChecked, string? label, string? groupName, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTextBoxElement")]
-		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool isReadOnly, int selectionStart, int selectionEnd, bool isFocusable);
+		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool isReadOnly, int selectionStart, int selectionEnd, bool selectionIsBackward, bool isSpellCheckEnabled, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createComboBoxElement")]
 		internal static partial void CreateComboBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool expanded, string? selectedValue, bool isFocusable);

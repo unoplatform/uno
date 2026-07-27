@@ -6,7 +6,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_InteractiveEditing", Description = "Interactive RichEditBox on Skia: keyboard typing/navigation, pointer click/drag/word selection, caret, undo/redo.")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_InteractiveEditing", Description = "RichEditBox parity probe for keyboard, pointer, caret, selection, undo and redo behavior.")]
+#endif
 	public sealed partial class RichEditBox_InteractiveEditing : Page
 	{
 		public RichEditBox_InteractiveEditing()

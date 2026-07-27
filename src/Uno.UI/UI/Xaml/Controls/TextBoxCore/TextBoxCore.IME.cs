@@ -46,6 +46,40 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	InputScope IImeSessionHost.InputScope => InputScope;
 
+	bool IImeSessionHost.IsTextPredictionEnabled => IsTextPredictionEnabled;
+
+	CandidateWindowAlignment IImeSessionHost.DesiredCandidateWindowAlignment => CandidateWindowAlignment.Default;
+
+	string IImeSessionHost.Text => Text;
+
+	bool IImeSessionHost.AcceptsReturn => AcceptsReturn;
+
+	bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+	bool IImeSessionHost.CanAcceptTextInput => !IsReadOnly && Owner.IsTabStop;
+
+	int IImeSessionHost.MaxLength => MaxLength;
+
+	bool IImeSessionHost.IsComposing => _isComposing;
+
+	CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
+
+	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+	{
+		ProcessTextInput(text);
+		Select(selectionStart, selectionLength);
+	}
+
+	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
+		=> Select(selectionStart, selectionLength);
+
+	bool IImeSessionHost.RaisePaste()
+	{
+		var args = new TextControlPasteEventArgs();
+		RaisePaste(args);
+		return args.Handled;
+	}
+
 	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 
 	private void StartImeSession()
@@ -100,6 +134,8 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		_isComposing = true;
+		_compositionAppliedByPlatform = false;
+		_platformTextApplyInProgress = false;
 		_compositionStartIndex = SelectionStart;
 		// Initialize from SelectionLength so the first ReplaceCompositionText
 		// replaces the selected range, matching normal typing behavior.
@@ -138,6 +174,40 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		InvalidateTextBoxRender();
 	}
 
+	void IImeSessionHost.OnImeCompositionPartiallyCommitted(
+		string committedText,
+		string compositionText,
+		int cursorPosition,
+		int resolvedLength,
+		bool textAlreadyApplied)
+	{
+		if (IsReadOnly || !_isComposing)
+		{
+			return;
+		}
+
+		if (textAlreadyApplied)
+		{
+			_platformTextApplyInProgress = true;
+			_compositionAppliedByPlatform = true;
+		}
+		else
+		{
+			var combinedText = committedText + compositionText;
+			var combinedCursorPosition = cursorPosition >= 0
+				? committedText.Length + Math.Min(cursorPosition, compositionText.Length)
+				: -1;
+			ReplaceCompositionText(combinedText, combinedCursorPosition);
+		}
+
+		_compositionStartIndex = Math.Min(_compositionStartIndex + committedText.Length, Text.Length);
+		_compositionLength = Math.Min(compositionText.Length, Text.Length - _compositionStartIndex);
+		_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
+
+		_host.RaiseTextCompositionChanged(new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
+		InvalidateTextBoxRender();
+	}
+
 	void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
 	{
 		if (IsReadOnly)
@@ -163,6 +233,32 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		InvalidateTextBoxRender();
 	}
 
+	void IImeSessionHost.OnImeCompositionCanceled(bool textAlreadyApplied)
+	{
+		if (!_isComposing)
+		{
+			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
+			return;
+		}
+
+		var startIndex = _compositionStartIndex;
+		if (!textAlreadyApplied)
+		{
+			ReplaceCompositionText(string.Empty);
+		}
+
+		_isComposing = false;
+		_compositionAppliedByPlatform = false;
+		_platformTextApplyInProgress = false;
+		_compositionLength = 0;
+		_compositionStartIndex = 0;
+		_compositionResolvedLength = 0;
+
+		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, 0));
+		InvalidateTextBoxRender();
+	}
+
 	void IImeSessionHost.OnImeCompositionEnded()
 	{
 		if (!_isComposing)
@@ -183,6 +279,10 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, length));
 		InvalidateTextBoxRender();
+	}
+
+	void IImeSessionHost.OnCandidateWindowBoundsChanged(Rect bounds)
+	{
 	}
 
 	private void ReplaceCompositionText(string newText, int cursorPosition = -1)
@@ -246,15 +346,9 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 		// End and restart the session so that further IME input still works
 		// while the active host reference stays in sync.
-		ImeSessionCoordinator.Extension?.EndImeSession();
+		ImeSessionCoordinator.RestartSession(this);
 		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, length));
 		InvalidateTextBoxRender();
-
-		// Restart the IME session so the user can continue typing with IME.
-		if (ReferenceEquals(ImeSessionCoordinator.ActiveHost, this))
-		{
-			ImeSessionCoordinator.Extension?.StartImeSession(this);
-		}
 	}
 
 	private void InvalidateTextBoxRender() => TextBoxView?.DisplayBlock.InvalidateInlines(false);

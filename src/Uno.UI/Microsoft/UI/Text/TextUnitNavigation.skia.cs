@@ -31,6 +31,9 @@ namespace Microsoft.UI.Text
 			return index >= 0 ? position : starts[Math.Max(0, ~index - 1)];
 		}
 
+		internal static int GetTextElementStart(TextElementBoundaryView boundaries, int position)
+			=> boundaries.GetStart(position);
+
 		internal static int GetTextElementEnd(string text, int position)
 		{
 			if (position <= 0 || position >= text.Length)
@@ -42,6 +45,9 @@ namespace Microsoft.UI.Text
 			var index = Array.BinarySearch(starts, position);
 			return index >= 0 ? position : (~index < starts.Length ? starts[~index] : text.Length);
 		}
+
+		internal static int GetTextElementEnd(TextElementBoundaryView boundaries, int position)
+			=> boundaries.GetEnd(position);
 
 		internal static int[] GetTextElementBoundaries(string text)
 		{
@@ -67,6 +73,26 @@ namespace Microsoft.UI.Text
 
 			if (char.IsHighSurrogate(text[maxLength - 1]) && char.IsLowSurrogate(text[maxLength]))
 			{
+				maxLength++;
+			}
+
+			return text.Substring(0, maxLength);
+		}
+
+		internal static string TruncateToUtf16Limit(string text, int maxLength)
+		{
+			if (maxLength <= 0)
+			{
+				return string.Empty;
+			}
+
+			if (text.Length <= maxLength)
+			{
+				return text;
+			}
+
+			if (char.IsHighSurrogate(text[maxLength - 1]) && char.IsLowSurrogate(text[maxLength]))
+			{
 				maxLength--;
 			}
 
@@ -75,9 +101,59 @@ namespace Microsoft.UI.Text
 
 		internal static List<(int start, int length)> GetWordChunks(string text)
 		{
+			var values = GetTextElementBoundaries(text);
+			return GetWordChunks(text, new TextElementBoundaryView(values, values.Length));
+		}
+
+		internal static List<(int start, int length)> GetWordChunks(string text, TextElementBoundaryView boundaries)
+		{
 			var chunks = new List<(int start, int length)>();
-			var boundaries = GetTextElementBoundaries(text);
-			var elementCount = boundaries.Length - 1;
+			var elementCount = boundaries.Count - 1;
+			var elementIndex = 0;
+			while (elementIndex < elementCount)
+			{
+				var start = boundaries[elementIndex];
+				if (text[start] == '\r' && start + 1 < text.Length && text[start + 1] == '\n')
+				{
+					elementIndex++;
+					while (elementIndex < elementCount && boundaries[elementIndex] < start + 2)
+					{
+						elementIndex++;
+					}
+				}
+				else
+				{
+					var kind = GetWordTextElementKind(text, start);
+					elementIndex++;
+					if (kind is WordTextElementKind.Word or WordTextElementKind.Other)
+					{
+						while (elementIndex < elementCount
+							&& GetWordTextElementKind(text, boundaries[elementIndex]) == kind)
+						{
+							elementIndex++;
+						}
+					}
+
+					if (kind is WordTextElementKind.Word or WordTextElementKind.Other or WordTextElementKind.Space)
+					{
+						while (elementIndex < elementCount
+							&& GetWordTextElementKind(text, boundaries[elementIndex]) == WordTextElementKind.Space)
+						{
+							elementIndex++;
+						}
+					}
+				}
+
+				chunks.Add((start, boundaries[elementIndex] - start));
+			}
+
+			return chunks;
+		}
+
+		internal static List<(int start, int length)> GetWordChunks(TextStoryBuffer text, TextElementBoundaryView boundaries)
+		{
+			var chunks = new List<(int start, int length)>();
+			var elementCount = boundaries.Count - 1;
 			var elementIndex = 0;
 			while (elementIndex < elementCount)
 			{
@@ -150,6 +226,37 @@ namespace Microsoft.UI.Text
 				: WordTextElementKind.Other;
 		}
 
+		private static WordTextElementKind GetWordTextElementKind(TextStoryBuffer text, int start)
+		{
+			var first = text[start];
+			if (first is '\r' or '\n' or '\t')
+			{
+				return WordTextElementKind.Break;
+			}
+
+			if (first == ' ')
+			{
+				return WordTextElementKind.Space;
+			}
+
+			if (!text.TryGetRuneAt(start, out var value))
+			{
+				return WordTextElementKind.Other;
+			}
+
+			if (Rune.IsLetterOrDigit(value))
+			{
+				return WordTextElementKind.Word;
+			}
+
+			return Rune.GetUnicodeCategory(value) is UnicodeCategory.NonSpacingMark
+				or UnicodeCategory.SpacingCombiningMark
+				or UnicodeCategory.EnclosingMark
+				or UnicodeCategory.ConnectorPunctuation
+				? WordTextElementKind.Word
+				: WordTextElementKind.Other;
+		}
+
 		private enum WordTextElementKind
 		{
 			Word,
@@ -189,6 +296,20 @@ namespace Microsoft.UI.Text
 			return chunks;
 		}
 
+		internal static List<(int start, int length)> GetParagraphChunks(TextStoryBuffer text)
+		{
+			var chunks = new List<(int start, int length)>();
+			var position = 0;
+			while (position < text.Length)
+			{
+				var end = text.FindParagraphEnd(position);
+				chunks.Add((position, end - position));
+				position = end;
+			}
+
+			return chunks;
+		}
+
 		internal static List<(int start, int length)> GetParagraphChunksIncludingFinal(string text)
 		{
 			var chunks = GetParagraphChunks(text);
@@ -216,10 +337,32 @@ namespace Microsoft.UI.Text
 			return value is '\r' or '\n' or '\u2029';
 		}
 
+		internal static bool IsParagraphBreakAt(TextStoryBuffer text, int indexAfterBreak)
+		{
+			if (indexAfterBreak <= 0 || indexAfterBreak > text.Length)
+			{
+				return false;
+			}
+
+			var value = text[indexAfterBreak - 1];
+			if (value == '\r' && indexAfterBreak < text.Length && text[indexAfterBreak] == '\n')
+			{
+				return false;
+			}
+
+			return value is '\r' or '\n' or '\u2029';
+		}
+
 		internal static bool EndsInParagraphBreak(string text)
 			=> IsParagraphBreakAt(text, text.Length);
 
+		internal static bool EndsInParagraphBreak(TextStoryBuffer text)
+			=> IsParagraphBreakAt(text, text.Length);
+
 		internal static bool IsParagraphStart(string text, int position)
+			=> position == 0 || IsParagraphBreakAt(text, position);
+
+		internal static bool IsParagraphStart(TextStoryBuffer text, int position)
 			=> position == 0 || IsParagraphBreakAt(text, position);
 
 		internal static int GetHardLineBreakLengthEndingAt(string text, int end)
@@ -243,7 +386,43 @@ namespace Microsoft.UI.Text
 			return value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
 		}
 
+		internal static int GetHardLineBreakLengthEndingAt(TextStoryBuffer text, int end)
+		{
+			if (end <= 0 || end > text.Length)
+			{
+				return 0;
+			}
+
+			if (end >= 2 && text[end - 2] == '\r' && text[end - 1] == '\n')
+			{
+				return 2;
+			}
+
+			var value = text[end - 1];
+			if (value == '\r' && end < text.Length && text[end] == '\n')
+			{
+				return 0;
+			}
+
+			return value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
+		}
+
 		internal static int GetHardLineBreakLengthAt(string text, int start)
+		{
+			if (start < 0 || start >= text.Length)
+			{
+				return 0;
+			}
+
+			if (text[start] == '\r' && start + 1 < text.Length && text[start + 1] == '\n')
+			{
+				return 2;
+			}
+
+			return text[start] is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
+		}
+
+		internal static int GetHardLineBreakLengthAt(TextStoryBuffer text, int start)
 		{
 			if (start < 0 || start >= text.Length)
 			{
@@ -283,7 +462,47 @@ namespace Microsoft.UI.Text
 			return (start, text.Length - start);
 		}
 
+		internal static (int start, int length) GetLogicalLineChunk(TextStoryBuffer text, int position)
+		{
+			position = Math.Clamp(position, 0, text.Length);
+			var start = text.FindHardLineStart(position);
+			var end = text.FindHardLineEnd(position);
+			return (start, end - start);
+		}
+
 		internal static List<(int start, int length)> GetSentenceChunks(string text)
+		{
+			var chunks = new List<(int start, int length)>();
+			var start = 0;
+			var i = 0;
+			while (i < text.Length)
+			{
+				var isTerminator = text[i] is '.' or '?' or '!';
+				var followedByBoundary = i + 1 == text.Length || IsSentenceWhitespace(text[i + 1]);
+				i++;
+				if (!isTerminator || !followedByBoundary)
+				{
+					continue;
+				}
+
+				while (i < text.Length && IsSentenceWhitespace(text[i]))
+				{
+					i++;
+				}
+
+				chunks.Add((start, i - start));
+				start = i;
+			}
+
+			if (start < text.Length)
+			{
+				chunks.Add((start, text.Length - start));
+			}
+
+			return chunks;
+		}
+
+		internal static List<(int start, int length)> GetSentenceChunks(TextStoryBuffer text)
 		{
 			var chunks = new List<(int start, int length)>();
 			var start = 0;
@@ -324,6 +543,30 @@ namespace Microsoft.UI.Text
 			=> unit switch
 			{
 				global::Microsoft.UI.Text.TextRangeUnit.Word => GetWordChunks(text),
+				global::Microsoft.UI.Text.TextRangeUnit.Sentence => GetSentenceChunks(text),
+				global::Microsoft.UI.Text.TextRangeUnit.Paragraph => GetParagraphChunks(text),
+				_ => null,
+			};
+
+		internal static List<(int start, int length)>? GetChunks(
+			string text,
+			global::Microsoft.UI.Text.TextRangeUnit unit,
+			TextElementBoundaryView textElementBoundaries)
+			=> unit switch
+			{
+				global::Microsoft.UI.Text.TextRangeUnit.Word => GetWordChunks(text, textElementBoundaries),
+				global::Microsoft.UI.Text.TextRangeUnit.Sentence => GetSentenceChunks(text),
+				global::Microsoft.UI.Text.TextRangeUnit.Paragraph => GetParagraphChunks(text),
+				_ => null,
+			};
+
+		internal static List<(int start, int length)>? GetChunks(
+			TextStoryBuffer text,
+			global::Microsoft.UI.Text.TextRangeUnit unit,
+			TextElementBoundaryView textElementBoundaries)
+			=> unit switch
+			{
+				global::Microsoft.UI.Text.TextRangeUnit.Word => GetWordChunks(text, textElementBoundaries),
 				global::Microsoft.UI.Text.TextRangeUnit.Sentence => GetSentenceChunks(text),
 				global::Microsoft.UI.Text.TextRangeUnit.Paragraph => GetParagraphChunks(text),
 				_ => null,

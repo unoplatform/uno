@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="Functional RichEditBox (Skia): apply a uniform paragraph alignment to the whole document through the Text Object Model. Because the shared surface is a single TextBlock, a uniform Left/Center/Right/Justify alignment renders (visible across the wrapped lines); per-paragraph divergence, indents and spacing round-trip in the model but are not shown yet."
+            Text="RichEditBox paragraph-formatting parity probe: apply Left, Center, Right, or Justify alignment through the Text Object Model and compare rendering and undo behavior across targets."
             TextWrapping="Wrap" />
 
         <RichEditBox
