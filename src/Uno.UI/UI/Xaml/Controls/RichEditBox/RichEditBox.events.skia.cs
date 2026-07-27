@@ -4,6 +4,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -44,7 +45,19 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Occurs just before the text content of the text box changes.
 		/// </summary>
-		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? TextChanging;
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? TextChanging
+		{
+			add
+			{
+				if (_textChanging is null)
+				{
+					_lastObservedText = GetPlainTextContent();
+					_lastObservedTextVersion = Document.TextVersion;
+				}
+				_textChanging += value;
+			}
+			remove => _textChanging -= value;
+		}
 
 		/// <summary>
 		/// Occurs just before the selection changes. A handler may cancel the pending change by setting
@@ -71,6 +84,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TextControlPasteEventHandler? Paste;
 
 		private string _lastObservedText = string.Empty;
+		private long _lastObservedTextVersion;
+		private global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? _textChanging;
 		private bool _isInvokingTextChanging;
 
 		// Last (start, length) selection span for which SelectionChanged was raised.
@@ -78,6 +93,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TextChangeNotification? PrepareTextChangedNotification(bool isContentChanging)
 		{
+			var version = Document.TextVersion;
+			var textChanging = _textChanging;
+			if (textChanging is null)
+			{
+				if (isContentChanging && version == _lastObservedTextVersion)
+				{
+					return null;
+				}
+
+				_lastObservedTextVersion = version;
+				return new TextChangeNotification(version);
+			}
+
 			var text = GetPlainTextContent();
 			if (isContentChanging && text == _lastObservedText)
 			{
@@ -86,6 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var oldText = _lastObservedText;
 			_lastObservedText = text;
+			_lastObservedTextVersion = version;
 
 			// A TextChanging handler may synchronously edit the document again. The nested render still
 			// runs, but its notification is folded into the outer one so observers never receive stale
@@ -100,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isInvokingTextChanging = true;
 				try
 				{
-					TextChanging?.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging));
+					textChanging.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging));
 				}
 				catch (Exception error)
 				{
@@ -114,17 +143,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var finalText = GetPlainTextContent();
 			_lastObservedText = finalText;
+			_lastObservedTextVersion = Document.TextVersion;
 			if (isContentChanging && oldText == finalText)
 			{
 				return null;
 			}
 
-			return new TextChangeNotification(oldText, finalText);
+			return new TextChangeNotification(_lastObservedTextVersion);
 		}
 
 		private void QueueTextChangedNotification(TextChangeNotification? change)
 		{
-			if (change is not { } textChange)
+			if (change is null)
 			{
 				return;
 			}
@@ -132,16 +162,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var peer = GetOrCreateAutomationPeer() as RichEditBoxAutomationPeer;
 			if (peer is not null)
 			{
-				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
-				{
-					peer.RaiseValuePropertyChangedEvent(textChange.OldText, textChange.NewText);
-				}
-
 				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged))
 				{
 					peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
 				}
 			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 
 			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
@@ -158,6 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RaiseSelectionChangedIfNeeded()
 		{
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 			var current = (_selection.start, _selection.length);
 			if (current == _lastRaisedSelection)
 			{
@@ -179,9 +206,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
 			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
-		private readonly record struct TextChangeNotification(string OldText, string NewText);
+		private readonly record struct TextChangeNotification(long Version);
 
 		/// <summary>
 		/// Raises the cancellable <see cref="SelectionChanging"/> event for a proposed interactive

@@ -21,6 +21,18 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>The logical horizontal caret offset preserved across vertical (up/down) navigation.</summary>
 		float CaretXOffset { get; }
 
+		/// <summary>
+		/// Lets rich-text hosts provide geometry- and paragraph-aware Up/Down navigation.
+		/// Returns false to use the shared TextBox-compatible fallback.
+		/// </summary>
+		bool TryGetUpDownResult(
+			int selectionStart,
+			int selectionLength,
+			bool shift,
+			bool ctrl,
+			bool up,
+			out int result);
+
 		/// <summary>Starts or ends the current "typing run" used for undo grouping.</summary>
 		void TrySetCurrentlyTyping(bool value);
 

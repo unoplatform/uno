@@ -368,6 +368,7 @@ void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
                            ime_unmark_text_callback_fn_ptr unmarkText,
                            ime_get_caret_rect_callback_fn_ptr getCaretRect);
 void uno_set_ime_active(UNOWindow* window, bool active);
+void uno_notify_ime_position_changed(UNOWindow* window);
 
 ime_insert_text_callback_fn_ptr uno_get_ime_insert_text_callback(void);
 ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void);

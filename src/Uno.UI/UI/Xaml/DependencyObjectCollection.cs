@@ -175,6 +175,66 @@ namespace Microsoft.UI.Xaml
 			RaiseVectorChanged(CollectionChange.ItemRemoved, index);
 		}
 
+		internal void ReplaceRange(int index, int count, IReadOnlyList<T> replacement)
+		{
+			ArgumentNullException.ThrowIfNull(replacement);
+			if ((uint)index > (uint)_list.Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(index));
+			}
+			if (count < 0 || count > _list.Count - index)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count));
+			}
+
+			EnsureNotLocked();
+			for (var i = 0; i < replacement.Count; i++)
+			{
+				ValidateItem(replacement[i]);
+			}
+
+			var commonCount = Math.Min(count, replacement.Count);
+			for (var i = 0; i < commonCount; i++)
+			{
+				var oldItem = _list[index + i];
+				var newItem = replacement[i];
+				if (!ReferenceEquals(oldItem, newItem))
+				{
+					OnRemoved(oldItem);
+					_list[index + i] = newItem;
+					OnAdded(newItem);
+				}
+			}
+
+			if (count > commonCount)
+			{
+				for (var i = commonCount; i < count; i++)
+				{
+					OnRemoved(_list[index + i]);
+				}
+				_list.RemoveRange(index + commonCount, count - commonCount);
+			}
+			else if (replacement.Count > commonCount)
+			{
+				var inserted = new T[replacement.Count - commonCount];
+				for (var i = 0; i < inserted.Length; i++)
+				{
+					var item = replacement[commonCount + i];
+					inserted[i] = item;
+				}
+				_list.InsertRange(index + commonCount, inserted);
+				for (var i = 0; i < inserted.Length; i++)
+				{
+					OnAdded(inserted[i]);
+				}
+			}
+
+			if (count != 0 || replacement.Count != 0)
+			{
+				RaiseVectorChanged(CollectionChange.Reset, index);
+			}
+		}
+
 		public void Add(T item)
 		{
 			EnsureNotLocked();

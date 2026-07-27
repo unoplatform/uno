@@ -22,7 +22,7 @@ namespace Uno.UI.Runtime.Skia;
 /// focus recovery, modal dialog lifecycle, and announcement debouncing.
 /// Platform-specific subclasses override abstract methods for native interop.
 /// </summary>
-internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener
+internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener, ITextEditAutomationPeerListener
 {
 	// Announcement debounce/throttle constants
 	private const int AnnouncementDebounceMs = 100;
@@ -132,6 +132,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 
 		OnChildRemoved(parent, child);
+	}
+
+	internal void RouteTextControlStateChanged(UIElement element)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnTextControlStateChanged(element);
+	}
+
+	protected virtual void OnTextControlStateChanged(UIElement element)
+	{
 	}
 
 	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
@@ -398,6 +412,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	public virtual void NotifyTextEditTextChangedEvent(
+		AutomationPeer peer,
+		AutomationTextEditChangeType changeType,
+		System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+	}
+
 	public virtual void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
@@ -474,6 +495,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				owner = parentElement;
 				return true;
 			}
+		}
+
+		if (peer.TryGetProviderOwner(out owner))
+		{
+			return true;
 		}
 
 		owner = null;

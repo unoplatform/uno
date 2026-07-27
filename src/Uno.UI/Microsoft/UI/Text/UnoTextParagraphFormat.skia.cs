@@ -15,6 +15,10 @@ namespace Microsoft.UI.Text
 	// projected by the shared Skia text layout.
 	internal sealed class UnoTextParagraphFormat : global::Microsoft.UI.Text.ITextParagraphFormat
 	{
+		private const int TomTabHere = -1;
+		private const int TomTabNext = -2;
+		private const int TomTabBack = -3;
+
 		// When bound, each setter applies immediately through the bound callback: for a range-bound
 		// format (via the range's ParagraphFormat getter) this pushes into that range's paragraphs —
 		// making the canonical `range.ParagraphFormat.Alignment = Center` idiom work, matching WinUI's
@@ -55,7 +59,9 @@ namespace Microsoft.UI.Text
 		internal global::Microsoft.UI.Text.LineSpacingRule LineSpacingRuleValue = global::Microsoft.UI.Text.LineSpacingRule.Undefined;
 		internal bool LineSpacingDefined;
 		internal float LineSpacingValue;
+		internal bool ListTypeDefined;
 		internal global::Microsoft.UI.Text.MarkerType ListTypeValue = global::Microsoft.UI.Text.MarkerType.Undefined;
+		internal bool ListStyleDefined;
 		internal global::Microsoft.UI.Text.MarkerStyle ListStyleValue = global::Microsoft.UI.Text.MarkerStyle.Undefined;
 		internal global::Microsoft.UI.Text.MarkerAlignment ListAlignmentValue = global::Microsoft.UI.Text.MarkerAlignment.Undefined;
 		internal bool ListLevelIndexDefined;
@@ -172,7 +178,12 @@ namespace Microsoft.UI.Text
 			{
 				ValidateEnum(value, nameof(value));
 				ListStyleValue = value;
-				ApplyIfBound(delta => delta.ListStyleValue = value);
+				ListStyleDefined = true;
+				ApplyIfBound(delta =>
+				{
+					delta.ListStyleValue = value;
+					delta.ListStyleDefined = true;
+				});
 			}
 		}
 
@@ -203,7 +214,12 @@ namespace Microsoft.UI.Text
 			{
 				ValidateEnum(value, nameof(value));
 				ListTypeValue = value;
-				ApplyIfBound(delta => delta.ListTypeValue = value);
+				ListTypeDefined = true;
+				ApplyIfBound(delta =>
+				{
+					delta.ListTypeValue = value;
+					delta.ListTypeDefined = true;
+				});
 			}
 		}
 
@@ -299,7 +315,9 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		public int TabCount => TabsValue.Count;
+		public int TabCount => TabsDefined
+			? TabsValue.Count
+			: global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
 
 		public global::Microsoft.UI.Text.FormatEffect WidowControl
 		{
@@ -359,20 +377,50 @@ namespace Microsoft.UI.Text
 
 		public void GetTab(int index, out float position, out global::Microsoft.UI.Text.TabAlignment align, out global::Microsoft.UI.Text.TabLeader leader)
 		{
-			// TODO Uno: WinUI's GetTab also accepts special negative indices (tomTabBack/Next/Here);
-			// only direct 0-based indexing is supported here.
-			if (index >= 0 && index < TabsValue.Count)
+			align = global::Microsoft.UI.Text.TabAlignment.Left;
+			leader = global::Microsoft.UI.Text.TabLeader.Spaces;
+
+			if (!TabsDefined)
 			{
-				var tab = TabsValue[index];
-				position = tab.Position;
-				align = tab.Alignment;
-				leader = tab.Leader;
+				position = global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
 				return;
 			}
 
-			position = 0f;
-			align = global::Microsoft.UI.Text.TabAlignment.Left;
-			leader = global::Microsoft.UI.Text.TabLeader.Spaces;
+			if (TabsValue.Count != 0)
+			{
+				// The WinRT projection makes TOM's in/out position out-only, so native queries the
+				// special selectors from position zero, independent of the range or caret.
+				if (index == TomTabBack)
+				{
+					throw new ArgumentException("The paragraph tab index is invalid.", nameof(index));
+				}
+
+				if (index == TomTabHere)
+				{
+					position = 0;
+					return;
+				}
+
+				if (index == TomTabNext)
+				{
+					var next = TabsValue[0];
+					position = next.Position;
+					align = next.Alignment;
+					leader = next.Leader;
+					return;
+				}
+
+				if (index >= 0 && index < TabsValue.Count)
+				{
+					var tab = TabsValue[index];
+					position = tab.Position;
+					align = tab.Alignment;
+					leader = tab.Leader;
+					return;
+				}
+			}
+
+			throw new ArgumentException("The paragraph tab index is invalid.", nameof(index));
 		}
 
 		public global::Microsoft.UI.Text.ITextParagraphFormat GetClone()
@@ -501,7 +549,9 @@ namespace Microsoft.UI.Text
 			LineSpacingDefined = other.LineSpacingDefined;
 			LineSpacingValue = other.LineSpacingValue;
 			ListTypeValue = other.ListTypeValue;
+			ListTypeDefined = other.ListTypeDefined;
 			ListStyleValue = other.ListStyleValue;
+			ListStyleDefined = other.ListStyleDefined;
 			ListAlignmentValue = other.ListAlignmentValue;
 			ListLevelIndexDefined = other.ListLevelIndexDefined;
 			ListLevelIndexValue = other.ListLevelIndexValue;
@@ -538,7 +588,9 @@ namespace Microsoft.UI.Text
 			LineSpacingValue = state.LineSpacing;
 			LineSpacingDefined = true;
 			ListTypeValue = state.ListType;
+			ListTypeDefined = true;
 			ListStyleValue = state.ListStyle;
+			ListStyleDefined = true;
 			ListAlignmentValue = state.ListAlignment;
 			ListLevelIndexValue = state.ListLevelIndex;
 			ListLevelIndexDefined = true;

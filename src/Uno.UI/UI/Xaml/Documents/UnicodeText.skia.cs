@@ -25,6 +25,12 @@ using FontWeights = Microsoft.UI.Text.FontWeights;
 
 namespace Microsoft.UI.Xaml.Documents;
 
+internal readonly record struct RichEditSpellingAnnotationInfo(
+	int Start,
+	int End,
+	string Text,
+	IReadOnlyList<string> Suggestions);
+
 internal readonly partial struct UnicodeText : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
@@ -34,11 +40,88 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+	private static readonly Feature[] _disableKerningFeatures = [new Feature(new Tag('k', 'e', 'r', 'n'), 0)];
+	// OpenType small caps preserve HarfBuzz clusters and therefore keep TOM UTF-16 indices exact.
+	// Fonts without the feature render their ordinary glyphs rather than synthesizing fake caps.
+	private static readonly Feature[] _smallCapsFeatures = [new Feature(new Tag('s', 'm', 'c', 'p'), 1)];
+	private static readonly Feature[] _smallCapsWithoutKerningFeatures =
+	[
+		new Feature(new Tag('s', 'm', 'c', 'p'), 1),
+		new Feature(new Tag('k', 'e', 'r', 'n'), 0),
+	];
 
 	internal interface IFontCacheUpdateListener
 	{
 		void Invalidate();
 	}
+
+	internal sealed class ShapingCache
+	{
+		private const int MaxEntries = 512;
+		private const int MaxGlyphs = 64 * 1024;
+		private readonly Dictionary<ShapingCacheKey, List<ShapingCacheEntry>> _entries = new();
+		private int _entryCount;
+		private int _glyphCount;
+
+		internal long ShapeOperationCount { get; private set; }
+
+		internal bool TryGet(
+			ReadOnlySpan<char> text,
+			ShapingCacheKey key,
+			out CachedShapedGlyph[] glyphs)
+		{
+			if (_entries.TryGetValue(key, out var candidates))
+			{
+				foreach (var candidate in candidates)
+				{
+					if (text.SequenceEqual(candidate.Text))
+					{
+						glyphs = candidate.Glyphs;
+						return true;
+					}
+				}
+			}
+
+			glyphs = [];
+			return false;
+		}
+
+		internal void Add(ReadOnlySpan<char> text, ShapingCacheKey key, CachedShapedGlyph[] glyphs)
+		{
+			if (_entryCount >= MaxEntries || _glyphCount + glyphs.Length > MaxGlyphs)
+			{
+				return;
+			}
+
+			if (!_entries.TryGetValue(key, out var candidates))
+			{
+				candidates = new List<ShapingCacheEntry>();
+				_entries.Add(key, candidates);
+			}
+			candidates.Add(new ShapingCacheEntry(text.ToString(), glyphs));
+			_entryCount++;
+			_glyphCount += glyphs.Length;
+		}
+
+		internal void RecordShapeOperation() => ShapeOperationCount++;
+	}
+
+	internal readonly record struct ShapingCacheKey(
+		int TextHash,
+		int TextLength,
+		FontDetails FontDetails,
+		FlowDirection Direction,
+		bool EnableKerning,
+		string? LanguageTag,
+		global::Microsoft.UI.Text.TextScript TextScript,
+		bool SmallCaps);
+
+	internal sealed record ShapingCacheEntry(string Text, CachedShapedGlyph[] Glyphs);
+
+	internal readonly record struct CachedShapedGlyph(
+		GlyphPosition Position,
+		uint Codepoint,
+		uint Cluster);
 
 	private record struct Line(int start, int end, LinkedListNode<Cluster> clusterStart, LinkedListNode<Cluster> clusterLast, float width, float widthWithoutTrailingSpaces, float lineHeight, float baselineOffset, TextAlignment? textAlignment = null, bool hasEllipsis = false, ParagraphLayoutInfo? paragraphLayout = null, bool isFirstLineOfParagraph = false, bool isLastLineOfParagraph = false);
 	private readonly record struct TextDecorationDrawInfo(float X1, float X2, float Y, float Thickness, float FontSize, SKColor Color, global::Microsoft.UI.Text.UnderlineType Style);
@@ -59,9 +142,22 @@ internal readonly partial struct UnicodeText : IParsedText
 		bool rtl,
 		int lineIndex,
 		int indexInLine,
-		InlineObjectInfo? inlineObject = null)
+		InlineObjectInfo? inlineObject = null,
+		float baselineOffset = 0,
+		bool outline = false,
+		global::Microsoft.UI.Text.TabLeader tabLeader = global::Microsoft.UI.Text.TabLeader.Spaces)
 	{
-		public static Cluster Create(string _text, int indexStart, int indexEnd, LinkedListNode<Glyph> glyphsStart, LinkedListNode<Glyph> glyphsLast, FontDetails fontDetails, float characterSpacing, bool hidden)
+		public static Cluster Create(
+			string _text,
+			int indexStart,
+			int indexEnd,
+			LinkedListNode<Glyph> glyphsStart,
+			LinkedListNode<Glyph> glyphsLast,
+			FontDetails fontDetails,
+			float characterSpacing,
+			bool hidden,
+			float baselineOffset,
+			bool outline)
 		{
 			var clusterContainsTab = false;
 			var clusterContainsOnlyWhitespace = true;
@@ -77,7 +173,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				clusterWidth += AdvanceToPixels(glyphNode!.Value.GlyphPosition.XAdvance, fontDetails) + (clusterContainsTab ? 0 : characterSpacing);
 			}
 
-			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, hidden ? 0 : clusterWidth, characterSpacing, hidden, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
+			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, hidden ? 0 : clusterWidth, characterSpacing, hidden, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1, null, baselineOffset, outline);
 		}
 	}
 
@@ -93,6 +189,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			return null;
 		}
 	});
+	internal static ISpellCheckingService? SpellCheckingServiceOverrideForTesting { get; set; }
+	private static ISpellCheckingService? SpellCheckingService
+		=> SpellCheckingServiceOverrideForTesting ?? _spellCheckingService.Value;
 
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
@@ -122,14 +221,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType, float kerningThreshold, string? languageTag, global::Microsoft.UI.Text.TextScript textScript, bool smallCaps, float baselineOffset, bool outline)> _runBreaks;
 	private static readonly SKPaint _spareCharacterBackgroundPaint = new() { IsAntialias = true };
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
-		Inline[] inlines, // only leaf nodes
+		IEnumerable<Inline> inlines, // only leaf nodes; custom layouts may stream a bounded reusable inline
 		FontDetails defaultFontDetails, // only used for a final empty line, otherwise the FontDetails are read from the inline
 		int maxLines,
 		float lineHeight,
@@ -147,7 +246,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		Brush? defaultForeground,
 		bool alignmentIncludesTrailingWhitespace,
 		bool ignoreTrailingCharacterSpacing,
-		out Size calculatedSize)
+		out Size calculatedSize,
+		ShapingCache? shapingCache = null,
+		bool suppressEndingNewLineLine = false)
 	{
 		CI.Assert(maxLines >= 0);
 		_endingParagraphLayout = endingParagraphLayout;
@@ -158,7 +259,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)>();
+		_runBreaks = new List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType, float kerningThreshold, string? languageTag, global::Microsoft.UI.Text.TextScript textScript, bool smallCaps, float baselineOffset, bool outline)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -294,7 +395,21 @@ internal readonly partial struct UnicodeText : IParsedText
 			scriptBreaks.Add(inlineStart + inlineText.Length);
 			var characterSpacing = (float)inline.FontSize * inline.CharacterSpacing / 1000;
 			var run = inline as Run;
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, run?.CharacterBackground, characterSpacing, run?.IsHidden == true, run?.FlowDirection ?? flowDirection, inline.TextDecorations, run?.RichEditUnderlineType));
+			_runBreaks.Add((
+				inlineStart + inlineText.Length,
+				inline.Foreground,
+				run?.CharacterBackground,
+				characterSpacing,
+				run?.IsHidden == true,
+				run?.FlowDirection ?? flowDirection,
+				inline.TextDecorations,
+				run?.RichEditUnderlineType,
+				run?.RichEditKerningThreshold ?? 0,
+				run?.RichEditLanguageTag,
+				run?.RichEditTextScript ?? global::Microsoft.UI.Text.TextScript.Default,
+				run?.RichEditSmallCaps == true,
+				run?.RichEditBaselineOffset ?? 0,
+				run?.RichEditOutline == true));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -366,14 +481,52 @@ internal readonly partial struct UnicodeText : IParsedText
 		var clusterBreaks = new LinkedList<Cluster>();
 		foreach (var shapingRun in EnumerateShapingRuns(_runBreaks, scriptBreaks, _bidiBreaks, fontBreaks))
 		{
-			using var buffer = new Buffer();
-			buffer.AddUtf16(_text.AsSpan(shapingRun.start, shapingRun.end - shapingRun.start));
-			buffer.GuessSegmentProperties();
-			buffer.Direction = shapingRun.direction is FlowDirection.RightToLeft ? Direction.RightToLeft : Direction.LeftToRight;
-			shapingRun.fontDetails.Font.Shape(buffer);
-			var positions = buffer.GetGlyphPositionSpan();
-			var infos = buffer.GetGlyphInfoSpan();
-			var count = buffer.Length;
+			var fontSizeInPoints = shapingRun.fontDetails.SKFontSize * 72f / 96f;
+			var enableKerning = shapingRun.kerningThreshold > 0 && fontSizeInPoints >= shapingRun.kerningThreshold;
+			var runText = _text.AsSpan(shapingRun.start, shapingRun.end - shapingRun.start);
+			var cacheKey = new ShapingCacheKey(
+				GetOrdinalHash(runText),
+				runText.Length,
+				shapingRun.fontDetails,
+				shapingRun.direction,
+				enableKerning,
+				shapingRun.languageTag,
+				shapingRun.textScript,
+				shapingRun.smallCaps);
+			CachedShapedGlyph[] shapedGlyphs;
+			if (shapingCache is null || !shapingCache.TryGet(runText, cacheKey, out shapedGlyphs))
+			{
+				using var buffer = new Buffer();
+				buffer.AddUtf16(runText);
+				buffer.GuessSegmentProperties();
+				buffer.Direction = shapingRun.direction is FlowDirection.RightToLeft ? Direction.RightToLeft : Direction.LeftToRight;
+				if (!string.IsNullOrEmpty(shapingRun.languageTag))
+				{
+					buffer.Language = new Language(shapingRun.languageTag);
+				}
+				if (TryMapTextScript(shapingRun.textScript, out var script))
+				{
+					buffer.Script = script;
+				}
+
+				var features = shapingRun.smallCaps
+					? enableKerning ? _smallCapsFeatures : _smallCapsWithoutKerningFeatures
+					: enableKerning ? null : _disableKerningFeatures;
+				shapingRun.fontDetails.Font.Shape(buffer, features ?? []);
+				var positions = buffer.GetGlyphPositionSpan();
+				var infos = buffer.GetGlyphInfoSpan();
+				shapedGlyphs = new CachedShapedGlyph[buffer.Length];
+				for (var i = 0; i < shapedGlyphs.Length; i++)
+				{
+					shapedGlyphs[i] = new CachedShapedGlyph(
+						positions[i],
+						infos[i].Codepoint,
+						infos[i].Cluster);
+				}
+				shapingCache?.RecordShapeOperation();
+				shapingCache?.Add(runText, cacheKey, shapedGlyphs);
+			}
+			var count = shapedGlyphs.Length;
 
 			if (count == 0)
 			{
@@ -383,47 +536,50 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 			else
 			{
-				CI.Assert((buffer.Direction is Direction.LeftToRight && infos[0].Cluster == 0) || (buffer.Direction is Direction.RightToLeft && infos[^1].Cluster == 0));
-				if (buffer.Direction is Direction.LeftToRight)
+				var direction = shapingRun.direction is FlowDirection.RightToLeft ? Direction.RightToLeft : Direction.LeftToRight;
+				CI.Assert((direction is Direction.LeftToRight && shapedGlyphs[0].Cluster == 0) || (direction is Direction.RightToLeft && shapedGlyphs[^1].Cluster == 0));
+				if (direction is Direction.LeftToRight)
 				{
-					for (var index = 0; index < infos.Length; index++)
+					for (var index = 0; index < shapedGlyphs.Length; index++)
 					{
-						var info = infos[index];
-						var position = positions[index];
-						if (index > 0 && info.Cluster != infos[index - 1].Cluster)
+						var glyph = shapedGlyphs[index];
+						if (index > 0 && glyph.Cluster != shapedGlyphs[index - 1].Cluster)
 						{
 							clusterBreaks.AddLast(Cluster.Create(
 								_text,
 								clusterBreaks.Last?.Value.end ?? 0,
-								(int)(shapingRun.start + infos[index].Cluster),
+								(int)(shapingRun.start + glyph.Cluster),
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
 								shapingRun.fontDetails,
 								shapingRun.characterSpacing,
-								shapingRun.hidden));
+								shapingRun.hidden,
+								shapingRun.baselineOffset,
+								shapingRun.outline));
 						}
-						_glyphs.AddLast(new Glyph { GlyphPosition = position, Codepoint = info.Codepoint });
+						_glyphs.AddLast(new Glyph { GlyphPosition = glyph.Position, Codepoint = glyph.Codepoint });
 					}
 				}
 				else
 				{
-					for (var index = infos.Length - 1; index >= 0; index--)
+					for (var index = shapedGlyphs.Length - 1; index >= 0; index--)
 					{
-						var info = infos[index];
-						var position = positions[index];
-						if (index < infos.Length - 1 && info.Cluster != infos[index + 1].Cluster)
+						var glyph = shapedGlyphs[index];
+						if (index < shapedGlyphs.Length - 1 && glyph.Cluster != shapedGlyphs[index + 1].Cluster)
 						{
 							clusterBreaks.AddLast(Cluster.Create(
 								_text,
 								clusterBreaks.Last?.Value.end ?? 0,
-								(int)(shapingRun.start + infos[index].Cluster),
+								(int)(shapingRun.start + glyph.Cluster),
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
 								shapingRun.fontDetails,
 								shapingRun.characterSpacing,
-								shapingRun.hidden));
+								shapingRun.hidden,
+								shapingRun.baselineOffset,
+								shapingRun.outline));
 						}
-						_glyphs.AddLast(new Glyph { GlyphPosition = position, Codepoint = info.Codepoint });
+						_glyphs.AddLast(new Glyph { GlyphPosition = glyph.Position, Codepoint = glyph.Codepoint });
 					}
 				}
 
@@ -435,7 +591,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					_glyphs.Last!,
 					shapingRun.fontDetails,
 					shapingRun.characterSpacing,
-					shapingRun.hidden));
+					shapingRun.hidden,
+					shapingRun.baselineOffset,
+					shapingRun.outline));
 			}
 		}
 
@@ -482,6 +640,64 @@ internal readonly partial struct UnicodeText : IParsedText
 				effectiveAvailableWidth = GetEffectiveAvailableWidth(pl, firstLine: true);
 			}
 			LinkedListNode<Cluster>? currentClusterBreak = clusterBreaks.First!;
+			(float width, global::Microsoft.UI.Text.TabLeader leader) GetTabMetrics(float currentX, LinkedListNode<Cluster> tabCluster)
+			{
+				var layout = paragraphLayouts is not null && paragraphLayouts.Count > 0
+					? paragraphLayouts[paragraphLayoutIndex].layout
+					: null;
+				if (layout?.Tabs.Length > 0)
+				{
+					float? fullFieldWidth = null;
+					float? decimalFieldWidth = null;
+					foreach (var tab in layout.Tabs)
+					{
+						var fieldWidth = tab.Alignment switch
+						{
+							global::Microsoft.UI.Text.TabAlignment.Center => (fullFieldWidth ??= MeasureFollowingTabField(tabCluster, stopAtDecimal: false)) / 2,
+							global::Microsoft.UI.Text.TabAlignment.Right => fullFieldWidth ??= MeasureFollowingTabField(tabCluster, stopAtDecimal: false),
+							global::Microsoft.UI.Text.TabAlignment.Decimal => decimalFieldWidth ??= MeasureFollowingTabField(tabCluster, stopAtDecimal: true),
+							_ => 0,
+						};
+						var width = tab.Position - currentX - fieldWidth;
+						if (width > 0)
+						{
+							return (width, tab.Leader);
+						}
+					}
+				}
+
+				return (((int)(currentX / tabStopWidth) + 1) * tabStopWidth - currentX, global::Microsoft.UI.Text.TabLeader.Spaces);
+			}
+
+			float MeasureFollowingTabField(LinkedListNode<Cluster> tabCluster, bool stopAtDecimal)
+			{
+				var width = 0f;
+				var count = 0;
+				// Bound lookahead so malformed or very large documents cannot turn one tab into an
+				// unbounded layout scan. Bar tabs use left-tab placement because UnicodeText has no
+				// independent paragraph-rule primitive.
+				for (var node = tabCluster.Next; node is not null && count++ < 4096; node = node.Next)
+				{
+					if (node.Value.containsTab)
+					{
+						break;
+					}
+					if (stopAtDecimal)
+					{
+						var clusterText = text.AsSpan(node.Value.start, node.Value.end - node.Value.start);
+						if (clusterText.IndexOfAny('.', ',') >= 0)
+						{
+							break;
+						}
+					}
+					width += node.Value.width;
+					if (IsLineBreak(text, node.Value.end))
+					{
+						break;
+					}
+				}
+				return width;
+			}
 			// After emitting a line, update effective width for paragraph indents.
 			void UpdateEffectiveWidthAfterLine(int lineEnd)
 			{
@@ -504,8 +720,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				{
 					var oldValues = (chunkUnderTestWidth, chunkUnderTestTrailingSpaceWidth, maxHeightFontDetailsInChunkUnderTest, chunkUnderTestContainsOnlyWhitespace);
 
+					var tabMetrics = currentClusterBreak.Value.containsTab
+						? GetTabMetrics(lineWidth + chunkUnderTestWidth, currentClusterBreak)
+						: default;
 					var clusterWidth = currentClusterBreak.Value.containsTab
-						? ((int)((lineWidth + chunkUnderTestWidth) / tabStopWidth) + 1) * tabStopWidth - (lineWidth + chunkUnderTestWidth)
+						? tabMetrics.width
 						: currentClusterBreak.Value.width;
 
 					chunkUnderTestWidth += clusterWidth;
@@ -553,7 +772,7 @@ internal readonly partial struct UnicodeText : IParsedText
 							if (currentClusterBreak.Value.containsTab)
 							{
 								// commit the final computed width of this tab stop
-								currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth };
+								currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth, tabLeader = tabMetrics.leader };
 							}
 						}
 						else
@@ -608,7 +827,8 @@ internal readonly partial struct UnicodeText : IParsedText
 								{
 									// recalculate the width of the tab
 									chunkUnderTestWidth -= clusterWidth;
-									clusterWidth = ((int)(chunkUnderTestWidth / tabStopWidth) + 1) * tabStopWidth - chunkUnderTestWidth;
+									tabMetrics = GetTabMetrics(chunkUnderTestWidth, currentClusterBreak);
+									clusterWidth = tabMetrics.width;
 									chunkUnderTestWidth += clusterWidth;
 								}
 							}
@@ -634,7 +854,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						if (currentClusterBreak.Value.containsTab) // each "chunk" contains at most one tab, and always at the end
 						{
 							// commit the final computed width of this tab stop
-							currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth };
+							currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth, tabLeader = tabMetrics.leader };
 						}
 
 						if (IsLineBreak(_text, currentClusterBreak.Value.end))
@@ -661,6 +881,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		AdjustLinesForBaselineOffsets(lines);
 		if (inlineObjects is not null)
 		{
 			AdjustLinesForInlineObjects(lines);
@@ -805,7 +1026,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		var hasEndingParagraphLine = !endedEarly && lines[^1].end == _text.Length && textEndsInLineBreak;
+		var hasEndingParagraphLine = !suppressEndingNewLineLine
+			&& !endedEarly
+			&& lines[^1].end == _text.Length
+			&& textEndsInLineBreak;
 		if (hasEndingParagraphLine)
 		{
 			_endingNewLineLineHeight = terminalEffectiveHeight;
@@ -970,7 +1194,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
-		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(_wordBoundaries, _text) : null;
+		_corrections = isSpellCheckEnabled ? SpellCheckingService?.SpellCheck(_wordBoundaries, _text) : null;
 		// Use _xyTable's final prefixSummedHeight which includes paragraph spacing
 		var finalHeight = _xyTable.Count > 0 ? _xyTable[^1].prefixSummedHeight : 0;
 		_endingLineContentTop = hasEndingParagraphLine
@@ -1021,13 +1245,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		return (possibleTrimPoints, lineBreakOpportunitiesLookupStart);
 	}
 
-	private static List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType)> runBreaks,
+	private static List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction, float kerningThreshold, string? languageTag, global::Microsoft.UI.Text.TextScript textScript, bool smallCaps, float baselineOffset, bool outline)> EnumerateShapingRuns(
+		List<(int end, Brush? foreground, global::Windows.UI.Color? background, float characterSpacing, bool hidden, FlowDirection direction, TextDecorations decorations, global::Microsoft.UI.Text.UnderlineType? underlineType, float kerningThreshold, string? languageTag, global::Microsoft.UI.Text.TextScript textScript, bool smallCaps, float baselineOffset, bool outline)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
 	{
-		var shapingRuns = new List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction)>();
+		var shapingRuns = new List<(int start, int end, FontDetails fontDetails, float characterSpacing, bool hidden, FlowDirection direction, float kerningThreshold, string? languageTag, global::Microsoft.UI.Text.TextScript textScript, bool smallCaps, float baselineOffset, bool outline)>();
 
 		int currentRunBreakIndex = 0;
 		int currentScriptBreakIndex = 0;
@@ -1047,7 +1271,19 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (nextBreak > start)
 			{
-				shapingRuns.Add((start, nextBreak, fontBreaks[currentFontBreakIndex].fontDetails, nextRunBreak.characterSpacing, nextRunBreak.hidden, bidiBreaks[currentBidiBreakIndex].direction));
+				shapingRuns.Add((
+					start,
+					nextBreak,
+					fontBreaks[currentFontBreakIndex].fontDetails,
+					nextRunBreak.characterSpacing,
+					nextRunBreak.hidden,
+					bidiBreaks[currentBidiBreakIndex].direction,
+					nextRunBreak.kerningThreshold,
+					nextRunBreak.languageTag,
+					nextRunBreak.textScript,
+					nextRunBreak.smallCaps,
+					nextRunBreak.baselineOffset,
+					nextRunBreak.outline));
 				start = nextBreak;
 			}
 
@@ -1072,6 +1308,91 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
+	private static int GetOrdinalHash(ReadOnlySpan<char> text)
+	{
+		unchecked
+		{
+			var hash = (int)2166136261;
+			foreach (var character in text)
+			{
+				hash = (hash ^ character) * 16777619;
+			}
+			return hash;
+		}
+	}
+
+	private static bool TryMapTextScript(global::Microsoft.UI.Text.TextScript textScript, out Script script)
+	{
+		var tag = textScript switch
+		{
+			global::Microsoft.UI.Text.TextScript.Ansi => "Latn",
+			global::Microsoft.UI.Text.TextScript.EastEurope => "Latn",
+			global::Microsoft.UI.Text.TextScript.Cyrillic => "Cyrl",
+			global::Microsoft.UI.Text.TextScript.Greek => "Grek",
+			global::Microsoft.UI.Text.TextScript.Turkish => "Latn",
+			global::Microsoft.UI.Text.TextScript.Hebrew => "Hebr",
+			global::Microsoft.UI.Text.TextScript.Arabic => "Arab",
+			global::Microsoft.UI.Text.TextScript.Baltic => "Latn",
+			global::Microsoft.UI.Text.TextScript.Vietnamese => "Latn",
+			global::Microsoft.UI.Text.TextScript.Thai => "Thai",
+			global::Microsoft.UI.Text.TextScript.ShiftJis => "Jpan",
+			global::Microsoft.UI.Text.TextScript.GB2312 => "Hans",
+			global::Microsoft.UI.Text.TextScript.Hangul => "Hang",
+			global::Microsoft.UI.Text.TextScript.Big5 => "Hant",
+			global::Microsoft.UI.Text.TextScript.Armenian => "Armn",
+			global::Microsoft.UI.Text.TextScript.Syriac => "Syrc",
+			global::Microsoft.UI.Text.TextScript.Thaana => "Thaa",
+			global::Microsoft.UI.Text.TextScript.Devanagari => "Deva",
+			global::Microsoft.UI.Text.TextScript.Bengali => "Beng",
+			global::Microsoft.UI.Text.TextScript.Gurmukhi => "Guru",
+			global::Microsoft.UI.Text.TextScript.Gujarati => "Gujr",
+			global::Microsoft.UI.Text.TextScript.Oriya => "Orya",
+			global::Microsoft.UI.Text.TextScript.Tamil => "Taml",
+			global::Microsoft.UI.Text.TextScript.Telugu => "Telu",
+			global::Microsoft.UI.Text.TextScript.Kannada => "Knda",
+			global::Microsoft.UI.Text.TextScript.Malayalam => "Mlym",
+			global::Microsoft.UI.Text.TextScript.Sinhala => "Sinh",
+			global::Microsoft.UI.Text.TextScript.Lao => "Laoo",
+			global::Microsoft.UI.Text.TextScript.Tibetan => "Tibt",
+			global::Microsoft.UI.Text.TextScript.Myanmar => "Mymr",
+			global::Microsoft.UI.Text.TextScript.Georgian => "Geor",
+			global::Microsoft.UI.Text.TextScript.Jamo => "Hang",
+			global::Microsoft.UI.Text.TextScript.Ethiopic => "Ethi",
+			global::Microsoft.UI.Text.TextScript.Cherokee => "Cher",
+			global::Microsoft.UI.Text.TextScript.Aboriginal => "Cans",
+			global::Microsoft.UI.Text.TextScript.Ogham => "Ogam",
+			global::Microsoft.UI.Text.TextScript.Runic => "Runr",
+			global::Microsoft.UI.Text.TextScript.Khmer => "Khmr",
+			global::Microsoft.UI.Text.TextScript.Mongolian => "Mong",
+			global::Microsoft.UI.Text.TextScript.Braille => "Brai",
+			global::Microsoft.UI.Text.TextScript.Yi => "Yiii",
+			global::Microsoft.UI.Text.TextScript.Limbu => "Limb",
+			global::Microsoft.UI.Text.TextScript.TaiLe => "Tale",
+			global::Microsoft.UI.Text.TextScript.NewTaiLue => "Talu",
+			global::Microsoft.UI.Text.TextScript.SylotiNagri => "Sylo",
+			global::Microsoft.UI.Text.TextScript.Kharoshthi => "Khar",
+			global::Microsoft.UI.Text.TextScript.Kayahli => "Kali",
+			global::Microsoft.UI.Text.TextScript.Glagolitic => "Glag",
+			global::Microsoft.UI.Text.TextScript.Lisu => "Lisu",
+			global::Microsoft.UI.Text.TextScript.Vai => "Vaii",
+			global::Microsoft.UI.Text.TextScript.NKo => "Nkoo",
+			global::Microsoft.UI.Text.TextScript.Osmanya => "Osma",
+			global::Microsoft.UI.Text.TextScript.PhagsPa => "Phag",
+			global::Microsoft.UI.Text.TextScript.Gothic => "Goth",
+			global::Microsoft.UI.Text.TextScript.Deseret => "Dsrt",
+			global::Microsoft.UI.Text.TextScript.Tifinagh => "Tfng",
+			_ => null,
+		};
+
+		if (tag is not null)
+		{
+			return Script.TryParse(tag, out script);
+		}
+
+		script = default;
+		return false;
+	}
+
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
@@ -1093,8 +1414,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
+		Dictionary<(SKColor color, bool outline), Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> colorAndOutlineToFontToGlyphs = new();
 		List<TextDecorationDrawInfo> textDecorations = new();
+		List<(float x1, float x2, float baseline, SKColor color, SKFont font, global::Microsoft.UI.Text.TabLeader leader)>? tabLeaders = null;
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 		List<(SKImage image, SKRect destination)>? inlineObjectImages = null;
@@ -1152,9 +1474,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			else if (!cluster.Value.hidden && !cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
 			{
 				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
-				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
+				var key = (color, cluster.Value.outline);
+				if (!colorAndOutlineToFontToGlyphs.TryGetValue(key, out var fontToGlyphs))
 				{
-					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
+					colorAndOutlineToFontToGlyphs[key] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
 				}
 				if (!fontToGlyphs.TryGetValue(fontDetails.SKFont, out var glyphsAndPositions))
 				{
@@ -1168,13 +1491,26 @@ internal readonly partial struct UnicodeText : IParsedText
 					var glyph = glyphNode.Value;
 					glyphs.Add((ushort)glyph.Codepoint);
 					positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
-						positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
+						positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails) - cluster.Value.baselineOffset));
 					positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails) + cluster.Value.characterSpacing;
 					if (cluster.Value.glyphLast == glyphNode)
 					{
 						break;
 					}
 				}
+			}
+			else if (!cluster.Value.hidden
+				&& cluster.Value.containsTab
+				&& cluster.Value.tabLeader != global::Microsoft.UI.Text.TabLeader.Spaces
+				&& cluster.Value.width > 0)
+			{
+				(tabLeaders ??= new()).Add((
+					unalignedX + alignmentOffset,
+					unalignedX + alignmentOffset + cluster.Value.width,
+					positionAcc.Y,
+					BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity),
+					fontDetails.SKFont,
+					cluster.Value.tabLeader));
 			}
 
 			// Floor every edge and +1 the trailing edges so adjacent background
@@ -1213,7 +1549,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					textDecorations.Add(new TextDecorationDrawInfo(
 						unalignedX + alignmentOffset,
 						unalignedX + alignmentOffset + cluster.Value.width,
-						y + line.baselineOffset + (metrics.UnderlinePosition ?? 0),
+						y + line.baselineOffset - cluster.Value.baselineOffset + (metrics.UnderlinePosition ?? 0),
 						metrics.UnderlineThickness ?? 1,
 						fontDetails.SKFontSize,
 						foreground,
@@ -1225,7 +1561,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					textDecorations.Add(new TextDecorationDrawInfo(
 						unalignedX + alignmentOffset,
 						unalignedX + alignmentOffset + cluster.Value.width,
-						y + line.baselineOffset + (metrics.StrikeoutPosition ?? fontDetails.SKFontSize / -2),
+						y + line.baselineOffset - cluster.Value.baselineOffset + (metrics.StrikeoutPosition ?? fontDetails.SKFontSize / -2),
 						metrics.StrikeoutThickness ?? 1,
 						fontDetails.SKFontSize,
 						foreground,
@@ -1298,16 +1634,21 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
 		using var textBlobBuilder = new SKTextBlobBuilder();
-		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
+		foreach (var ((color, outline), fontToGlyphs) in colorAndOutlineToFontToGlyphs)
 		{
 			_spareDrawPaint.Color = color;
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
+				_spareDrawPaint.Style = outline ? SKPaintStyle.Stroke : SKPaintStyle.Fill;
+				_spareDrawPaint.StrokeWidth = outline ? Math.Max(1, font.Size / 24) : 0;
 				textBlobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), font, CollectionsMarshal.AsSpan(positions));
-				session.Canvas.DrawText(textBlobBuilder.Build(), 0, 0, _spareDrawPaint); // SKTextBlobBuilder::Build resets the builder
+				using var textBlob = textBlobBuilder.Build(); // Build resets the builder.
+				session.Canvas.DrawText(textBlob, 0, 0, _spareDrawPaint);
 			}
 		}
+		_spareDrawPaint.Style = SKPaintStyle.Fill;
 
+		DrawTabLeaders(session.Canvas, tabLeaders);
 		DrawTextDecorations(session.Canvas, textDecorations);
 
 		// Draw paragraph list markers on the first visual line of each paragraph
@@ -1421,6 +1762,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				thickness = Math.Max(2, thickness * 2);
 			}
+
 			else if (decoration.Style == global::Microsoft.UI.Text.UnderlineType.Thin)
 			{
 				thickness = Math.Max(0.5f, thickness / 2);
@@ -1475,6 +1817,43 @@ internal readonly partial struct UnicodeText : IParsedText
 		_spareTextDecorationPaint.StrokeCap = SKStrokeCap.Butt;
 	}
 
+	private static void DrawTabLeaders(
+		SKCanvas canvas,
+		List<(float x1, float x2, float baseline, SKColor color, SKFont font, global::Microsoft.UI.Text.TabLeader leader)>? leaders)
+	{
+		foreach (var (x1, x2, baseline, color, font, leader) in leaders ?? [])
+		{
+			_spareDrawPaint.Color = color;
+			if (leader is global::Microsoft.UI.Text.TabLeader.Lines or global::Microsoft.UI.Text.TabLeader.ThickLines)
+			{
+				_spareDrawPaint.Style = SKPaintStyle.Stroke;
+				_spareDrawPaint.StrokeWidth = leader == global::Microsoft.UI.Text.TabLeader.ThickLines ? 2 : 1;
+				canvas.DrawLine(x1, baseline + 1, x2, baseline + 1, _spareDrawPaint);
+				continue;
+			}
+
+			var text = leader switch
+			{
+				global::Microsoft.UI.Text.TabLeader.Dots => ".",
+				global::Microsoft.UI.Text.TabLeader.Dashes => "-",
+				global::Microsoft.UI.Text.TabLeader.Equals => "=",
+				_ => string.Empty,
+			};
+			if (text.Length == 0)
+			{
+				continue;
+			}
+
+			_spareDrawPaint.Style = SKPaintStyle.Fill;
+			var advance = Math.Max(1, font.MeasureText(text));
+			for (var x = x1; x + advance <= x2 && x - x1 < advance * 4096; x += advance)
+			{
+				canvas.DrawText(text, x, baseline, font, _spareDrawPaint);
+			}
+		}
+		_spareDrawPaint.Style = SKPaintStyle.Fill;
+	}
+
 	private static void DrawDashedLine(SKCanvas canvas, TextDecorationDrawInfo decoration, float thickness, float[] intervals, SKStrokeCap cap)
 	{
 		using var pathEffect = SKPathEffect.CreateDash(intervals, 0);
@@ -1516,7 +1895,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
 	{
-		if (_spellCheckingService.Value is { } spellCheckingService)
+		if (SpellCheckingService is { } spellCheckingService)
 		{
 			return spellCheckingService.GetSpellCheckSuggestions(_text, _wordBoundaries, correctionStart, correctionEnd);
 		}
@@ -1524,6 +1903,39 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			return null;
 		}
+	}
+
+	internal IReadOnlyList<RichEditSpellingAnnotationInfo> GetSpellingAnnotations()
+	{
+		if (_corrections is null || _wordBoundaries.Count == 0)
+		{
+			return Array.Empty<RichEditSpellingAnnotationInfo>();
+		}
+
+		var annotations = new List<RichEditSpellingAnnotationInfo>();
+		var wordStart = 0;
+		for (var i = 0; i < _wordBoundaries.Count; i++)
+		{
+			var wordEnd = _wordBoundaries[i];
+			if (i < _corrections.Count && _corrections[i] is { } correction)
+			{
+				var start = Math.Clamp(wordStart + correction.correctionStart, wordStart, wordEnd);
+				var end = Math.Clamp(wordStart + correction.correctionEnd, start, wordEnd);
+				if (end > start)
+				{
+					var suggestions = GetSpellCheckSuggestions(start, end)?.suggestions;
+					annotations.Add(new RichEditSpellingAnnotationInfo(
+						start,
+						end,
+						_text.Substring(start, end - start),
+						suggestions is { Count: > 0 } ? suggestions.ToArray() : Array.Empty<string>()));
+				}
+			}
+
+			wordStart = wordEnd;
+		}
+
+		return annotations;
 	}
 
 	private static SKColor BrushToColor(Brush? brush, float opacity)
@@ -1595,31 +2007,93 @@ internal readonly partial struct UnicodeText : IParsedText
 			var (alignmentOffset, lineWidth, height, y) = _endingNewLineLineHeight is { } endingNewLineLineHeight
 				? (GetAlignmentOffsetForLine(null), 0, endingNewLineLineHeight, _endingLineContentTop)
 				: (GetAlignmentOffsetForLine(_lines[^1]), _lines[^1].width, _lines[^1].lineHeight, GetLineContentTop(_lines.Count - 1));
-			return IsLineRightToLeft(null) ?
+			return IsLineRightToLeft(_lines[^1]) ?
 				new Rect(alignmentOffset, y, 0, height) :
 				new Rect(alignmentOffset + lineWidth, y, 0, height);
 		}
 		else
 		{
-			var clusterIndex = _indexToCluster.BinarySearch(
-				(index, index, null!),
-				Comparer<(int start, int end, LinkedListNode<Cluster> cluster)>.Create(static (a, b) => a.start.CompareTo(b.start)));
+			return GetClusterRect(GetClusterAt(index));
+		}
+	}
 
-			if (clusterIndex < 0)
+	public TextGeometryPositionInfo GetGeometryPosition(int adjustedIndex)
+	{
+		var index = Math.Clamp(adjustedIndex, 0, _text.Length);
+		if (_text.Length == 0 || index == _text.Length)
+		{
+			var caretRect = GetRectForIndex(index) with { Width = 0 };
+			var finalKind = TextGeometryPositionKind.Caret
+				| TextGeometryPositionKind.FinalEndOfParagraph
+				| TextGeometryPositionKind.TrailingEdge;
+			if (_text.Length > 0 && IsLineRightToLeft(_lines[^1]))
 			{
-				clusterIndex = ~clusterIndex - 1;
+				finalKind |= TextGeometryPositionKind.RightToLeft;
 			}
 
-			var cluster = _indexToCluster[clusterIndex].cluster;
-			var lineIndex = cluster.Value.lineIndex;
-			var line = _lines[lineIndex];
-			var indexInLine = cluster.Value.indexInLine;
-
-			var alignmentOffset = GetAlignmentOffsetForLine(line);
-			var y = GetLineContentTop(lineIndex);
-			var unalignedX = indexInLine == 0 ? (IsLineRightToLeft(line) ? line.width : 0) : _xyTable[lineIndex].prefixSummedWidths[indexInLine - 1].sumUntilAfterCluster;
-			return new Rect(alignmentOffset + unalignedX, y, cluster.Value.width, line.lineHeight);
+			return new TextGeometryPositionInfo(caretRect, caretRect, finalKind);
 		}
+
+		var cluster = GetClusterAt(index).Value;
+		var characterRect = GetClusterRect(cluster);
+		var clusterLength = Math.Max(1, cluster.end - cluster.start);
+		var logicalOffset = Math.Clamp(index - cluster.start, 0, clusterLength);
+		var fraction = (double)logicalOffset / clusterLength;
+		var caretX = cluster.rtl
+			? characterRect.Right - (characterRect.Width * fraction)
+			: characterRect.Left + (characterRect.Width * fraction);
+		var kind = TextGeometryPositionKind.Text | TextGeometryPositionKind.Caret;
+		if (cluster.inlineObject is not null)
+		{
+			kind |= TextGeometryPositionKind.InlineObject;
+		}
+		if (cluster.rtl)
+		{
+			kind |= TextGeometryPositionKind.RightToLeft;
+		}
+		if (logicalOffset == 0)
+		{
+			kind |= TextGeometryPositionKind.LeadingEdge;
+		}
+		else if (logicalOffset == clusterLength)
+		{
+			kind |= TextGeometryPositionKind.TrailingEdge;
+		}
+
+		return new TextGeometryPositionInfo(
+			characterRect,
+			new Rect(caretX, characterRect.Y, 0, characterRect.Height),
+			kind);
+	}
+
+	private LinkedListNode<Cluster> GetClusterAt(int index)
+	{
+		var clusterIndex = _indexToCluster.BinarySearch(
+			(index, index, null!),
+			Comparer<(int start, int end, LinkedListNode<Cluster> cluster)>.Create(static (a, b) => a.start.CompareTo(b.start)));
+
+		if (clusterIndex < 0)
+		{
+			clusterIndex = ~clusterIndex - 1;
+		}
+
+		return _indexToCluster[Math.Max(0, clusterIndex)].cluster;
+	}
+
+	private Rect GetClusterRect(LinkedListNode<Cluster> clusterNode)
+		=> GetClusterRect(clusterNode.Value);
+
+	private Rect GetClusterRect(Cluster cluster)
+	{
+		var lineIndex = cluster.lineIndex;
+		var line = _lines[lineIndex];
+		var indexInLine = cluster.indexInLine;
+		var alignmentOffset = GetAlignmentOffsetForLine(line);
+		var y = GetLineContentTop(lineIndex);
+		var unalignedX = indexInLine == 0
+			? (IsLineRightToLeft(line) ? line.width : 0)
+			: _xyTable[lineIndex].prefixSummedWidths[indexInLine - 1].sumUntilAfterCluster;
+		return new Rect(alignmentOffset + unalignedX, y, cluster.width, line.lineHeight);
 	}
 
 	public double GetBaselineForIndex(int index)
@@ -1641,6 +2115,41 @@ internal readonly partial struct UnicodeText : IParsedText
 		return lineTop + line.baselineOffset;
 	}
 
+	public int VisualLineCount => Math.Max(1, _lines.Count + (_endingNewLineLineHeight is null ? 0 : 1));
+
+	public TextVisualLineInfo GetVisualLine(int lineIndex)
+	{
+		if ((uint)lineIndex >= (uint)VisualLineCount)
+		{
+			throw new ArgumentOutOfRangeException(nameof(lineIndex));
+		}
+
+		if (lineIndex < _lines.Count)
+		{
+			var line = _lines[lineIndex];
+			var top = GetLineContentTop(lineIndex);
+			return new TextVisualLineInfo(
+				line.start,
+				line.end - line.start,
+				lineIndex,
+				new Rect(GetAlignmentOffsetForLine(line), top, line.width, line.lineHeight),
+				top + line.baselineOffset,
+				lineIndex == 0,
+				lineIndex == VisualLineCount - 1);
+		}
+
+		var start = _lines.Count == 0 ? 0 : _lines[^1].end;
+		var height = _endingNewLineLineHeight ?? _defaultFontDetails.LineHeight;
+		return new TextVisualLineInfo(
+			start,
+			_text.Length - start,
+			lineIndex,
+			new Rect(GetAlignmentOffsetForLine(null), _endingLineContentTop, 0, height),
+			_endingLineContentTop + _endingLineBaselineOffset,
+			lineIndex == 0,
+			true);
+	}
+
 	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection)
 	{
 		if (_text.Length == 0)
@@ -1648,20 +2157,29 @@ internal readonly partial struct UnicodeText : IParsedText
 			return extendedSelection ? 0 : -1;
 		}
 
-		if (p.Y < 0)
-		{
-			return extendedSelection ? 0 : -1;
-		}
-
 		var contentBottom = _endingNewLineLineHeight is { } endingHeight
 			? _endingLineContentTop + endingHeight + (_endingParagraphLayout?.SpaceAfter ?? 0)
 			: _xyTable[^1].prefixSummedHeight;
-		if (p.Y >= contentBottom)
+		var isAboveContent = p.Y < 0;
+		var isBelowContent = p.Y >= contentBottom;
+		if (!extendedSelection && (isAboveContent || isBelowContent))
 		{
-			if (!extendedSelection)
-			{
-				return -1;
-			}
+			return -1;
+		}
+
+		if (!isBelowContent && p.Y >= _xyTable[^1].prefixSummedHeight)
+		{
+			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
+		}
+
+		int lineIndex;
+		if (isAboveContent)
+		{
+			lineIndex = 0;
+		}
+		else if (isBelowContent)
+		{
+			lineIndex = _xyTable.Count - 1;
 			var lastLineRtl = IsLineRightToLeft(_lines[^1]);
 			if (lastLineRtl && p.X > GetAlignmentOffsetForLine(_lines[^1]) + _lines[^1].width || !lastLineRtl && p.X < GetAlignmentOffsetForLine(_lines[^1]))
 			{
@@ -1670,25 +2188,22 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				return 0;
 			}
-			else
+		}
+		else
+		{
+			lineIndex = _xyTable.BinarySearch(
+				((float)p.Y, null!, default),
+				Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
+					static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
+
+			if (lineIndex < 0)
 			{
-				return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? _lines[^1] : null) : 0);
+				lineIndex = ~lineIndex;
 			}
-		}
-
-		if (p.Y >= _xyTable[^1].prefixSummedHeight)
-		{
-			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
-		}
-
-		var lineIndex = _xyTable.BinarySearch(
-			((float)p.Y, null!, default),
-			Comparer<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>.Create(
-				static (a, b) => a.prefixSummedHeight.CompareTo(b.prefixSummedHeight)));
-
-		if (lineIndex < 0)
-		{
-			lineIndex = ~lineIndex;
+			else if (lineIndex < _xyTable.Count - 1)
+			{
+				lineIndex++;
+			}
 		}
 
 		var line = _xyTable[lineIndex].line;
@@ -2088,6 +2603,39 @@ internal readonly partial struct UnicodeText : IParsedText
 					var top = GetInlineObjectTop(inlineObject, line.lineHeight, line.baselineOffset);
 					minTop = Math.Min(minTop, top);
 					maxBottom = Math.Max(maxBottom, top + inlineObject.Height);
+				}
+
+				if (node == line.clusterLast)
+				{
+					break;
+				}
+			}
+
+			if (minTop < 0 || maxBottom > line.lineHeight)
+			{
+				lines[lineIndex] = line with
+				{
+					lineHeight = maxBottom - minTop,
+					baselineOffset = line.baselineOffset - minTop,
+				};
+			}
+		}
+	}
+
+	private static void AdjustLinesForBaselineOffsets(List<Line> lines)
+	{
+		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+		{
+			var line = lines[lineIndex];
+			var minTop = 0f;
+			var maxBottom = line.lineHeight;
+			for (var node = line.clusterStart; ; node = node.Next!)
+			{
+				if (node.Value.baselineOffset != 0)
+				{
+					var metrics = node.Value.fontDetails.SKFontMetrics;
+					minTop = Math.Min(minTop, line.baselineOffset + metrics.Top - node.Value.baselineOffset);
+					maxBottom = Math.Max(maxBottom, line.baselineOffset + metrics.Bottom - node.Value.baselineOffset);
 				}
 
 				if (node == line.clusterLast)

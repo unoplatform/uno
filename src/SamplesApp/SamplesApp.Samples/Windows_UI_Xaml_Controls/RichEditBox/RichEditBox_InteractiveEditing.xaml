@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="Interactive RichEditBox (Skia): type to edit, click to place the caret, drag or Shift+click to select, double-click to select a word. Arrows/Home/End navigate, Ctrl+A selects all, Ctrl+Z/Y undo/redo."
+            Text="Interactive RichEditBox parity probe: type to edit, click to place the caret, drag or Shift+click to select, and double-click to select a word. Arrows/Home/End navigate, Ctrl+A selects all, and Ctrl+Z/Y undo or redo."
             TextWrapping="Wrap" />
         <RichEditBox
             x:Name="Editor"

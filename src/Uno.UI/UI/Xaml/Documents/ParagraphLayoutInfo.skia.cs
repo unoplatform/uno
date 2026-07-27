@@ -5,8 +5,8 @@ using Microsoft.UI.Text;
 namespace Microsoft.UI.Xaml.Documents;
 
 // Immutable paragraph layout carrier projected from RichEditBox's ParagraphFormatState onto
-// Runs so UnicodeText can apply indents, spacing, and list markers during line-breaking and
-// rendering. Values are in DIPs (converted from TOM points at projection time). Null on Runs
+// Runs so UnicodeText can apply indents, spacing, list markers, and tab stops during line-breaking
+// and rendering. Values are in DIPs (converted from TOM points at projection time). Null on Runs
 // when no RichEditBox paragraph formatting applies, ensuring zero cost for plain TextBlock/Run.
 internal sealed class ParagraphLayoutInfo
 {
@@ -22,6 +22,7 @@ internal sealed class ParagraphLayoutInfo
 	internal string? MarkerText { get; init; }
 	internal float ListTab { get; init; }
 	internal MarkerAlignment MarkerAlignment { get; init; } = MarkerAlignment.Right;
+	internal ParagraphTabLayoutInfo[] Tabs { get; init; } = [];
 
 	internal bool IsDefault =>
 		LeftIndent == 0 &&
@@ -34,5 +35,11 @@ internal sealed class ParagraphLayoutInfo
 		!RightToLeft &&
 		!IsList &&
 		MarkerText is null &&
-		ListTab == 0;
+		ListTab == 0 &&
+		Tabs.Length == 0;
 }
+
+internal readonly record struct ParagraphTabLayoutInfo(
+	float Position,
+	TabAlignment Alignment,
+	TabLeader Leader);

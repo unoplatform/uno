@@ -4,9 +4,8 @@
 //
 // Minimal ITextProvider implementation that exposes the owning element's plain
 // text as a single document range. Sufficient for Narrator read-out and Inspect
-// pattern discovery. ITextProvider2 / ITextEditProvider are not implemented —
-// WinUI 3 sources those from a windowless RichEdit which Uno's Skia stack
-// doesn't host.
+// pattern discovery. Win32 projects this adapter through Text, Text2, and the
+// platform-only TextEdit resolver, matching WinUI's windowless RichEdit split.
 
 #nullable enable
 
@@ -60,7 +59,9 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		try
 		{
 			richEditBox.Document?.GetText(Microsoft.UI.Text.TextGetOptions.None, out text);
-			return text ?? string.Empty;
+			return text is { Length: > 0 } && text[^1] == '\r'
+				? text[..^1]
+				: text ?? string.Empty;
 		}
 		catch
 		{
@@ -68,8 +69,20 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		}
 	}
 
+	internal static int GetEffectiveTextLength(FrameworkElement owner)
+	{
+#if __SKIA__
+		if (owner is RichEditBox richEditBox)
+		{
+			return richEditBox.Document.TextLength;
+		}
+#endif
+
+		return GetEffectiveText(owner).Length;
+	}
+
 	public ITextRangeProvider DocumentRange
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveText(_owner).Length);
+		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveTextLength(_owner));
 
 	public SupportedTextSelection SupportedTextSelection
 		=> _owner is TextBox or RichEditBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
@@ -99,10 +112,45 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 	}
 
 	public ITextRangeProvider[] GetVisibleRanges()
-		=> new ITextRangeProvider[] { DocumentRange };
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.Document.TryGetVisibleRange(out var start, out var end))
+		{
+			return new ITextRangeProvider[]
+			{
+				new TextRangeAdapter(_ownerPeer, _owner, start, end),
+			};
+		}
+#endif
+
+		return new ITextRangeProvider[] { DocumentRange };
+	}
 
 	public ITextRangeProvider RangeFromChild(IRawElementProviderSimple childElement)
-		=> DocumentRange;
+	{
+#if __SKIA__
+		if (_ownerPeer is RichEditBoxAutomationPeer peer
+			&& childElement.AutomationPeer is { } childPeer
+			&& peer.TryGetTextObjectRange(childPeer, out var start, out var end))
+		{
+			if (childPeer is RichEditBoxTextObjectAutomationPeer textObjectPeer
+				&& textObjectPeer.CreateTextRangeProvider() is { } childRange)
+			{
+				return childRange;
+			}
+
+			return new TextRangeAdapter(
+				_ownerPeer,
+				_owner,
+				start,
+				end,
+				useObjectText: childPeer is RichEditBoxImageAutomationPeer);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider RangeFromPoint(Point screenLocation)
 	{
@@ -115,13 +163,20 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		return DocumentRange;
 	}
 
-	// ITextProvider2 — minimal stubs so Inspect lists the pattern. Annotations and
-	// caret-range queries return a document-wide range; clients that need precise
-	// caret tracking will need a richer implementation (see WinUI's windowless
-	// RichEdit, which Uno's Skia stack doesn't host).
-
 	public ITextRangeProvider RangeFromAnnotation(IRawElementProviderSimple annotationElement)
-		=> DocumentRange;
+	{
+#if __SKIA__
+		if (_ownerPeer is RichEditBoxAutomationPeer peer
+			&& annotationElement.AutomationPeer is RichEditBoxSpellingErrorAutomationPeer spellingErrorPeer
+			&& peer.TryGetSpellingAnnotationRange(spellingErrorPeer, out var start, out var end))
+		{
+			return spellingErrorPeer.CreateTextRangeProvider()
+				?? new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider GetCaretRange(out bool isActive)
 	{
@@ -136,19 +191,38 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		if (_owner is RichEditBox richEditBox)
 		{
 			var selection = richEditBox.Document.Selection;
-			var caret = selection.EndPosition;
+			var caret = selection.Options.HasFlag(Microsoft.UI.Text.SelectionOptions.StartActive)
+				? selection.StartPosition
+				: selection.EndPosition;
 			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
 		}
 
 		return new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
 	}
 
-	// ITextEditProvider — minimal stubs. Active composition and conversion target are
-	// IME-driven state Uno doesn't currently track end-to-end on Skia.
-
 	public ITextRangeProvider GetActiveComposition()
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.TryGetAccessibilityCompositionRange(conversionTarget: false, out var start, out var end))
+		{
+			return new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider GetConversionTarget()
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.TryGetAccessibilityCompositionRange(conversionTarget: true, out var start, out var end))
+		{
+			return new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -7123,11 +7125,150 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			fake.SimulateCompositionUpdate("ni");
 			await WindowHelper.WaitForIdle();
 
-			// Cancel without committing — text should retain last composition
+			// Cancel without committing — the transient preedit is removed.
 			fake.SimulateCompositionCancel();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("ni", SUT.Text);
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Text_Selection_And_Layout_Changes_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox
+			{
+				Width = 200,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				fake.Updates.Clear();
+				SUT.Text = "abcd";
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Select(1, 2);
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Width = 220;
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Focused_Input_Options_Change_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ni");
+				fake.Updates.Clear();
+
+				SUT.InputScope = new InputScope
+				{
+					Names =
+						{
+							new InputScopeName { NameValue = InputScopeNameValue.EmailSmtpAddress },
+						},
+				};
+				SUT.IsTextPredictionEnabled = false;
+				SUT.AcceptsReturn = true;
+				SUT.IsSpellCheckEnabled = false;
+
+				CollectionAssert.AreEqual(
+					new[]
+					{
+						ImeSessionUpdate.InputScope,
+						ImeSessionUpdate.TextPrediction,
+						ImeSessionUpdate.AcceptsReturn,
+						ImeSessionUpdate.SpellCheck,
+					},
+					fake.Updates);
+				Assert.IsTrue(SUT.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Preserves_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你haoB", SUT.Text);
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual(2, SUT.CompositionStartIndex);
+			Assert.AreEqual(3, SUT.CompositionLength);
+
+			fake.SimulateCompositionUpdate("ha");
+			fake.SimulateCompositionComplete("好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你好B", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Then_Cancel_Keeps_Only_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你B", SUT.Text);
 			Assert.IsFalse(SUT.IsComposing);
 		}
 
@@ -7435,13 +7576,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
+			public List<ImeSessionUpdate> Updates { get; } = new();
 
 			public event EventHandler CompositionStarted;
 			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler<ImePartialCompositionEventArgs> CompositionPartiallyCommitted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCanceled;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(IImeSessionHost host) { }
+			public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
+			{
+				add { }
+				remove { }
+			}
+
+			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) { }
+
+			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
+
+			public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+				=> Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
 			public void EndImeSession()
 			{
@@ -7459,21 +7614,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			public void SimulateCompositionUpdate(
+				string text,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
 			{
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+				CompositionUpdated?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, cursorPosition, resolvedLength, textAlreadyApplied));
 			}
 
-			public void SimulateCompositionComplete(string text)
+			public void SimulateCompositionComplete(string text, bool textAlreadyApplied = false)
 			{
 				IsComposing = false;
-				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionCompleted?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, textAlreadyApplied: textAlreadyApplied));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionPartialCommit(
+				string committedText,
+				string compositionText,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
+			{
+				CompositionPartiallyCommitted?.Invoke(
+					this,
+					new ImePartialCompositionEventArgs(
+						committedText,
+						compositionText,
+						cursorPosition,
+						resolvedLength,
+						textAlreadyApplied));
 			}
 
 			public void SimulateCompositionCancel()
 			{
 				IsComposing = false;
+				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 		}

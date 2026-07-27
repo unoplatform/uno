@@ -454,6 +454,9 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/RuntimeTests/">
+    <Project Path="Uno.UI.RuntimeTests.Win32UiaClient/RichEditBoxUiaClient.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

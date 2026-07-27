@@ -36,7 +36,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public abstract bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
-	public void StartEntry()
+	public void StartEntry(bool suppressSoftwareKeyboard = false)
 	{
 		if (_owner.TextBox is not { XamlRoot: { } xamlRoot } textBox)
 		{
@@ -104,6 +104,18 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void SetText(string text) => SetNativeText(text);
 
+	public void ReplaceText(int start, int length, string replacement)
+	{
+		if (GetNativeText() is not { } text)
+		{
+			return;
+		}
+
+		start = Math.Clamp(start, 0, text.Length);
+		length = Math.Clamp(length, 0, text.Length - start);
+		SetNativeText(string.Concat(text.AsSpan(0, start), replacement, text.AsSpan(start + length)));
+	}
+
 	public void UpdateNativeView()
 	{
 		if (_textBoxView is null || _owner.TextBox is not { } textBox)
@@ -169,6 +181,8 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			_textBoxView.SetPosition(pointX, pointY);
 		}
 	}
+
+	public void NotifyImePositionChanged() { }
 
 	public void SetPasswordRevealState(PasswordRevealState revealState)
 	{

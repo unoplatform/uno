@@ -41,7 +41,13 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		TextContainerInset = new UIEdgeInsets();
 	}
 
-	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => textBox.AcceptsReturn;
+	public bool IsCompatible(IImeSessionHost host) => host.AcceptsReturn;
+
+	public void NotifyImePositionChanged()
+	{
+		InputDelegate?.SelectionWillChange(this);
+		InputDelegate?.SelectionDidChange(this);
+	}
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 

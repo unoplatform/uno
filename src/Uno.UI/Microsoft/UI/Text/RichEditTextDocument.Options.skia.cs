@@ -9,7 +9,7 @@ namespace Microsoft.UI.Text
 	// clipboard-availability queries for Skia.
 	//
 	// CanCopy/CanPaste are genuinely functional. The remaining options drive caret or shared text
-	// layout behavior and are intentionally excluded from undo snapshots.
+	// layout behavior and are intentionally excluded from undo history.
 	public partial class RichEditTextDocument
 	{
 		private global::Microsoft.UI.Text.CaretType _caretType = global::Microsoft.UI.Text.CaretType.Normal;
@@ -91,16 +91,20 @@ namespace Microsoft.UI.Text
 		public bool CanCopy() => Selection.StartPosition != Selection.EndPosition;
 
 		/// <summary>
-		/// Returns whether the clipboard currently holds text or RTF content that can be pasted.
+		/// Returns whether the clipboard currently holds text, RTF, or bitmap content that can be pasted.
 		/// </summary>
-		public bool CanPaste()
+		public bool CanPaste() => CanPaste(TomClipboardFormat.Best);
+
+		internal bool CanPaste(int format)
 		{
 			try
 			{
 				var content = Clipboard.GetContent();
-				return content.Contains(StandardDataFormats.Rtf) || content.Contains(StandardDataFormats.Text);
+				return TomClipboardFormat.IsAvailable(content, format);
 			}
-			catch
+			catch (Exception error) when (error is InvalidOperationException
+				or UnauthorizedAccessException
+				or global::System.Runtime.InteropServices.COMException)
 			{
 				// Clipboard access can fail transiently (e.g. locked by another process); treat as
 				// "nothing to paste" rather than surfacing the failure.
@@ -108,14 +112,5 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		/// <summary>Clears the undo and redo history and discards any open undo group.</summary>
-		public void ClearUndoRedoHistory()
-		{
-			_undoStack.Clear();
-			_redoStack.Clear();
-			_undoGroupDepth = 0;
-			_undoGroupSnapshot = null;
-			_undoGroupTextEdits = null;
-		}
 	}
 }

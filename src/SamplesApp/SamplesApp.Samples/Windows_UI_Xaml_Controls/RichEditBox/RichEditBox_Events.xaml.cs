@@ -6,7 +6,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_Events", Description = "RichEditBox event surface on Skia: TextChanging/TextChanged, SelectionChanging (cancellable)/SelectionChanged, and CopyingToClipboard/CuttingToClipboard/Paste (suppressible).")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_Events", Description = "RichEditBox parity probe for text, selection, and clipboard events.")]
+#endif
 	public sealed partial class RichEditBox_Events : Page
 	{
 		private readonly List<string> _eventLog = new();

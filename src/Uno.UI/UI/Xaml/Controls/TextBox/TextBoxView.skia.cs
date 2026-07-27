@@ -46,6 +46,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetFlowDirection();
 			SetTextAlignment();
+			SetReadingOrder();
+			SetColorFontEnabled();
 
 			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
@@ -104,6 +106,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal void SetReadingOrder()
+		{
+			if (Host is { } host)
+			{
+				DisplayBlock.TextReadingOrder = host.TextReadingOrder;
+			}
+		}
+
+		internal void SetColorFontEnabled()
+		{
+			if (Host is { } host)
+			{
+				DisplayBlock.IsColorFontEnabled = host.IsColorFontEnabled;
+			}
+		}
+
 		/// <remarks>
 		/// Note that we are intentionally *not* setting the Foreground of DisplayBlock here, as it is inherited from
 		/// ContentElement in TextBox template. If it was set explicitly, the inheritance would no longer apply.
@@ -116,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
-		internal void OnFocusStateChanged(FocusState focusState)
+		internal void OnFocusStateChanged(FocusState focusState, bool suppressSoftwareKeyboard = false)
 		{
 			if (_isSkiaTextBox && _useInvisibleNativeTextView)
 			{
@@ -124,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_overlayTextBoxViewExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry(suppressSoftwareKeyboard);
 				}
 				else
 				{
@@ -186,7 +204,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var oldText = host.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
-				var modifiedText = host.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var selectionStart = _overlayTextBoxViewExtension?.GetSelectionStart() ?? oldSelection.start;
+				var selectionLength = _overlayTextBoxViewExtension?.GetSelectionLength() ?? oldSelection.length;
+				var modifiedText = host.ProcessTextInput(newText, selectionStart, selectionLength); // new text after BeforeTextChanging, TextChanging, DP callback, etc
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{

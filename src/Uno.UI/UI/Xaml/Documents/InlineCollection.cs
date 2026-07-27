@@ -20,6 +20,11 @@ namespace Microsoft.UI.Xaml.Documents
 #else
 		private readonly DependencyObjectCollection<Inline> _collection = new DependencyObjectCollection<Inline>();
 #endif
+		private int _updateDepth;
+		private bool _hasPendingCollectionChange;
+		private string _knownTextAfterUpdate;
+		private IReadOnlyList<Inline> _removedAfterUpdate;
+		private IReadOnlyList<Inline> _insertedAfterUpdate;
 
 #if __WASM__
 		internal InlineCollection(UIElement containerElement)
@@ -41,6 +46,21 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 			)
 		{
+			if (_updateDepth > 0)
+			{
+				_hasPendingCollectionChange = true;
+				return;
+			}
+
+			NotifyCollectionChanged(knownText: null, removed: null, inserted: null);
+		}
+
+		private void NotifyCollectionChanged(
+			string knownText,
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted,
+			bool updateText = true)
+		{
 #if !IS_UNIT_TESTS
 			InvalidateTraversedTree();
 
@@ -51,7 +71,18 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 			{
 				case TextBlock textBlock:
-					textBlock.InvalidateInlines(true);
+					if (!updateText)
+					{
+						textBlock.InvalidateInlinesWithoutTextUpdate(removed, inserted);
+					}
+					else if (knownText is null)
+					{
+						textBlock.InvalidateInlines(true);
+					}
+					else
+					{
+						textBlock.InvalidateInlines(knownText, removed, inserted);
+					}
 					break;
 				case Inline inline:
 					inline.InvalidateInlines(true);
@@ -60,6 +91,65 @@ namespace Microsoft.UI.Xaml.Documents
 					break;
 			}
 #endif
+		}
+
+		internal void ReplaceRange(
+			int index,
+			int count,
+			IReadOnlyList<Inline> replacement,
+			string knownText,
+			bool updateText)
+		{
+			ArgumentNullException.ThrowIfNull(replacement);
+			if (updateText)
+			{
+				ArgumentNullException.ThrowIfNull(knownText);
+			}
+			if ((uint)index > (uint)_collection.Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(index));
+			}
+			if (count < 0 || count > _collection.Count - index)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count));
+			}
+
+			_updateDepth++;
+			_knownTextAfterUpdate = knownText;
+			var removed = new Inline[count];
+			for (var i = 0; i < count; i++)
+			{
+				removed[i] = _collection[index + i];
+			}
+			_removedAfterUpdate = removed;
+			_insertedAfterUpdate = replacement;
+			var completed = false;
+			try
+			{
+				_collection.ReplaceRange(index, count, replacement);
+				completed = true;
+			}
+			finally
+			{
+				_updateDepth--;
+				if (_updateDepth == 0 && _hasPendingCollectionChange)
+				{
+					_hasPendingCollectionChange = false;
+					var text = completed ? _knownTextAfterUpdate : null;
+					var removedItems = completed ? _removedAfterUpdate : null;
+					var insertedItems = completed ? _insertedAfterUpdate : null;
+					_knownTextAfterUpdate = null;
+					_removedAfterUpdate = null;
+					_insertedAfterUpdate = null;
+					NotifyCollectionChanged(text, removedItems, insertedItems, updateText);
+				}
+				else if (_updateDepth == 0)
+				{
+					_knownTextAfterUpdate = null;
+					_removedAfterUpdate = null;
+					_insertedAfterUpdate = null;
+				}
+			}
 		}
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;

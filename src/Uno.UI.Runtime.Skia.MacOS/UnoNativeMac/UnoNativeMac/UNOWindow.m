@@ -1034,6 +1034,13 @@ void uno_set_ime_active(UNOWindow* window, bool active)
     }
 }
 
+void uno_notify_ime_position_changed(UNOWindow* window)
+{
+    NSView *renderingView = window.renderingView;
+    NSTextInputContext *inputContext = renderingView.inputContext;
+    [inputContext invalidateCharacterCoordinates];
+}
+
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
     *device = (__bridge void *)(uno_application_get_metal_device());

@@ -1,8 +1,13 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -22,8 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 	// single Ctrl+Z removes the entire IME-composed word). The composition underline is rendered "for
 	// free" by the shared DisplayBlock, which reads IsComposing/CompositionUnderline* off ITextBoxViewHost.
 	//
-	// Runtime-validated on Win32 (IMM32). Other Skia platforms are compile-checked through the shared
-	// contract; RichEditBox-on-Android IME (native InputConnection path) is a documented maintenance gap.
 	partial class RichEditBox : IImeSessionHost
 	{
 		private bool _isComposing;
@@ -35,6 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private int _compositionStartIndex;
 		private int _compositionLength;
 		private int _compositionResolvedLength;
+		private bool _compositionHasCommittedText;
 
 		// Guards the document text choke point so composition-internal ReplaceRange calls don't cancel
 		// the very composition that produced them (see CancelCompositionOnExternalChange).
@@ -46,6 +50,33 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
 
 		internal bool IsComposing => _isComposing;
+		internal int CompositionStartIndex => _compositionStartIndex;
+		internal int CompositionLength => _compositionLength;
+
+		internal bool TryGetAccessibilityCompositionRange(bool conversionTarget, out int start, out int end)
+		{
+			if (!_isComposing)
+			{
+				start = 0;
+				end = 0;
+				return false;
+			}
+
+			var textLength = GetPlainTextLength();
+			var compositionStart = Math.Clamp(_compositionStartIndex, 0, textLength);
+			var compositionLength = Math.Clamp(_compositionLength, 0, textLength - compositionStart);
+			if (!conversionTarget)
+			{
+				start = compositionStart;
+				end = compositionStart + compositionLength;
+				return true;
+			}
+
+			var resolvedLength = Math.Clamp(_compositionResolvedLength, 0, compositionLength);
+			start = compositionStart + resolvedLength;
+			end = compositionStart + compositionLength;
+			return start < end;
+		}
 
 		public event TypedEventHandler<RichEditBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
 		public event TypedEventHandler<RichEditBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
@@ -65,7 +96,48 @@ namespace Microsoft.UI.Xaml.Controls
 
 		InputScope IImeSessionHost.InputScope => InputScope;
 
-		private void StartImeSession() => ImeSessionCoordinator.StartSession(this);
+		bool IImeSessionHost.IsTextPredictionEnabled => IsTextPredictionEnabled;
+
+		CandidateWindowAlignment IImeSessionHost.DesiredCandidateWindowAlignment => DesiredCandidateWindowAlignment;
+
+		string IImeSessionHost.Text => GetPlainTextContent();
+
+		bool IImeSessionHost.AcceptsReturn => AcceptsReturn;
+
+		bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+		bool IImeSessionHost.IsComposing => _isComposing;
+
+		CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
+
+		void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+			=> UpdateTextFromNative(text, selectionStart, selectionLength);
+
+		void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
+			=> SelectFromNative(selectionStart, selectionLength);
+
+		public event TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged;
+
+		private void StartImeSession()
+			=> ActivateImeForFocusOrigin(_imeFocusOrigin);
+
+		private void ActivateImeForFocusOrigin(FocusState focusState)
+		{
+			var suppressSoftwareKeyboard =
+				PreventKeyboardDisplayOnProgrammaticFocus && focusState == FocusState.Programmatic;
+			_textBoxView?.OnFocusStateChanged(focusState, suppressSoftwareKeyboard);
+			ImeSessionCoordinator.StartSession(
+				this,
+				new ImeSessionActivation(focusState, suppressSoftwareKeyboard));
+		}
+
+		private void ActivateImeForUserInteraction(FocusState focusState)
+		{
+			_textBoxView?.OnFocusStateChanged(focusState, suppressSoftwareKeyboard: false);
+			ImeSessionCoordinator.StartSession(
+				this,
+				new ImeSessionActivation(focusState, IsSoftwareKeyboardSuppressed: false));
+		}
 
 		private void EndImeSession()
 		{
@@ -77,14 +149,25 @@ namespace Microsoft.UI.Xaml.Controls
 			_platformTextApplyInProgress = false;
 			if (_isComposing)
 			{
+				var compositionText = GetCurrentCompositionText();
+				var hadConversionTarget = TryGetAccessibilityCompositionRange(
+					conversionTarget: true,
+					out var previousConversionStart,
+					out var previousConversionEnd);
 				var startIndex = _compositionStartIndex;
 				var length = _compositionLength;
 				_isComposing = false;
 				_compositionLength = 0;
 				_compositionStartIndex = 0;
 				_compositionResolvedLength = 0;
+				_compositionHasCommittedText = false;
 
 				CloseCompositionUndoGroup();
+				RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, compositionText);
+				RaiseConversionTargetChangedIfNeeded(
+					hadConversionTarget,
+					previousConversionStart,
+					previousConversionEnd);
 				InvokeCompositionEvent(
 					() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
 					nameof(TextCompositionEnded));
@@ -104,7 +187,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_isComposing = true;
+			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_compositionHasCommittedText = false;
 			_compositionStartIndex = _selection.start;
 			// Initialize from the current selection length so the first ReplaceCompositionText replaces
 			// the selected range, matching normal typing behavior.
@@ -126,6 +211,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
 			if (textAlreadyApplied)
 			{
 				// The platform (e.g., Android InputConnection) already applied the text. Suppress the
@@ -143,8 +232,67 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_compositionLength = compositionText.Length;
 			}
-			_compositionResolvedLength = resolvedLength;
+			_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
 
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
+			InvokeCompositionEvent(
+				() => TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength)),
+				nameof(TextCompositionChanged));
+			InvalidateImeRender();
+		}
+
+		void IImeSessionHost.OnImeCompositionPartiallyCommitted(
+			string committedText,
+			string compositionText,
+			int cursorPosition,
+			int resolvedLength,
+			bool textAlreadyApplied)
+		{
+			if (IsReadOnly || !_isComposing)
+			{
+				return;
+			}
+
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
+			var committedLength = committedText.Length;
+			var compositionLength = compositionText.Length;
+			if (textAlreadyApplied)
+			{
+				_platformTextApplyInProgress = true;
+				_compositionAppliedByPlatform = true;
+			}
+			else
+			{
+				var combinedText = committedText + compositionText;
+				var combinedCursorPosition = cursorPosition >= 0
+					? committedText.Length + Math.Min(cursorPosition, compositionText.Length)
+					: -1;
+				var insertedLength = ReplaceCompositionText(combinedText, combinedCursorPosition);
+				committedLength = Math.Min(committedLength, insertedLength);
+				compositionLength = Math.Min(compositionLength, insertedLength - committedLength);
+			}
+
+			_compositionStartIndex = Math.Min(_compositionStartIndex + committedLength, GetPlainTextLength());
+			_compositionLength = Math.Min(compositionLength, GetPlainTextLength() - _compositionStartIndex);
+			_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
+			_compositionHasCommittedText |= committedLength > 0;
+
+			if (committedText.Length > 0)
+			{
+				RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, committedText);
+			}
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
 			InvokeCompositionEvent(
 				() => TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength)),
 				nameof(TextCompositionChanged));
@@ -158,6 +306,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
 			var committedLength = committedText.Length;
 			if (!textAlreadyApplied)
 			{
@@ -171,10 +323,63 @@ namespace Microsoft.UI.Xaml.Controls
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
+			_compositionHasCommittedText = false;
 
 			CloseCompositionUndoGroup();
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, committedText);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
 			InvokeCompositionEvent(
 				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength)),
+				nameof(TextCompositionEnded));
+			InvalidateImeRender();
+		}
+
+		void IImeSessionHost.OnImeCompositionCanceled(bool textAlreadyApplied)
+		{
+			if (!_isComposing)
+			{
+				_compositionAppliedByPlatform = false;
+				_platformTextApplyInProgress = false;
+				return;
+			}
+
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
+			var startIndex = _compositionStartIndex;
+			if (!textAlreadyApplied)
+			{
+				ReplaceCompositionText(string.Empty);
+			}
+
+			_isComposing = false;
+			_compositionAppliedByPlatform = false;
+			_platformTextApplyInProgress = false;
+			_compositionLength = 0;
+			_compositionStartIndex = 0;
+			_compositionResolvedLength = 0;
+
+			if (_compositionHasCommittedText)
+			{
+				CloseCompositionUndoGroup();
+			}
+			else
+			{
+				DiscardCompositionUndoGroup();
+			}
+			_compositionHasCommittedText = false;
+
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, string.Empty);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
+			InvokeCompositionEvent(
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, 0)),
 				nameof(TextCompositionEnded));
 			InvalidateImeRender();
 		}
@@ -190,6 +395,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Composition ended without explicit commit — keep the inserted text as-is (matches WinUI).
+			var compositionText = GetCurrentCompositionText();
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
 			var startIndex = _compositionStartIndex;
 			var length = _compositionLength;
 			_isComposing = false;
@@ -198,12 +408,65 @@ namespace Microsoft.UI.Xaml.Controls
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
+			_compositionHasCommittedText = false;
 
 			CloseCompositionUndoGroup();
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, compositionText);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
 			InvokeCompositionEvent(
 				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
 				nameof(TextCompositionEnded));
 			InvalidateImeRender();
+		}
+
+		void IImeSessionHost.OnCandidateWindowBoundsChanged(Rect bounds)
+			=> CandidateWindowBoundsChanged?.Invoke(this, new CandidateWindowBoundsChangedEventArgs(bounds));
+
+		/// <summary>
+		/// Gets the active linguistic alternatives for the current composition.
+		/// </summary>
+		public IAsyncOperation<IReadOnlyList<string>> GetLinguisticAlternativesAsync()
+			=> AsyncOperation.FromTask(GetLinguisticAlternativesCoreAsync);
+
+		private async Task<IReadOnlyList<string>> GetLinguisticAlternativesCoreAsync(CancellationToken cancellationToken)
+		{
+			if (!_isComposing || _compositionLength <= 0)
+			{
+				return Array.Empty<string>();
+			}
+
+			var text = GetPlainTextContent();
+			var start = Math.Clamp(_compositionStartIndex, 0, text.Length);
+			var length = Math.Min(_compositionLength, text.Length - start);
+			if (length <= 0)
+			{
+				return Array.Empty<string>();
+			}
+
+			var compositionText = text.Substring(start, length);
+			var prefix = text[..start];
+			var postfix = text[(start + length)..];
+			var candidates = await ImeSessionCoordinator.GetLinguisticAlternativesAsync(
+				this,
+				compositionText,
+				cancellationToken);
+			cancellationToken.ThrowIfCancellationRequested();
+
+			if (candidates.Count == 0)
+			{
+				return Array.Empty<string>();
+			}
+
+			var alternatives = new string[candidates.Count];
+			for (var i = 0; i < candidates.Count; i++)
+			{
+				alternatives[i] = prefix + candidates[i] + postfix;
+			}
+
+			return Array.AsReadOnly(alternatives);
 		}
 
 		/// <summary>
@@ -247,7 +510,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void SetInteractiveSelectionFromComposition(int caret)
 		{
-			var length = GetPlainTextContent().Length;
+			var length = GetPlainTextLength();
 			caret = Math.Clamp(caret, 0, length);
 			_selection = (caret, 0, false);
 
@@ -288,6 +551,11 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			var compositionText = GetCurrentCompositionText();
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
 			var startIndex = _compositionStartIndex;
 			var length = _compositionLength;
 			_isComposing = false;
@@ -296,11 +564,17 @@ namespace Microsoft.UI.Xaml.Controls
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
+			_compositionHasCommittedText = false;
 
 			CloseCompositionUndoGroup();
 
 			// End and restart the session so further IME input still works while the active host stays in sync.
 			ImeSessionCoordinator.RestartSession(this);
+			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, compositionText);
+			RaiseConversionTargetChangedIfNeeded(
+				hadConversionTarget,
+				previousConversionStart,
+				previousConversionEnd);
 			InvokeCompositionEvent(
 				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
 				nameof(TextCompositionEnded));
@@ -316,6 +590,32 @@ namespace Microsoft.UI.Xaml.Controls
 			catch (Exception error)
 			{
 				typeof(RichEditBox).LogError()?.Error($"A RichEditBox {eventName} handler failed.", error);
+			}
+		}
+
+		private string GetCurrentCompositionText()
+		{
+			var text = GetPlainTextContent();
+			var start = Math.Clamp(_compositionStartIndex, 0, text.Length);
+			var length = Math.Clamp(_compositionLength, 0, text.Length - start);
+			return text.Substring(start, length);
+		}
+
+		private void RaiseTextEditCompositionEvent(AutomationTextEditChangeType changeType, string changedText)
+			=> (FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?
+				.RaisePlatformTextEditTextChangedEvent(changeType, new[] { changedText });
+
+		private void RaiseConversionTargetChangedIfNeeded(bool previouslyAvailable, int previousStart, int previousEnd)
+		{
+			var currentlyAvailable = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var currentStart,
+				out var currentEnd);
+			if (previouslyAvailable != currentlyAvailable
+				|| previouslyAvailable && (previousStart != currentStart || previousEnd != currentEnd))
+			{
+				(FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?
+					.RaiseAutomationEvent(AutomationEvents.ConversionTargetChanged);
 			}
 		}
 
@@ -337,7 +637,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void InvalidateImeRender() => _textBoxView?.DisplayBlock.InvalidateInlines(false);
+		private void DiscardCompositionUndoGroup()
+		{
+			if (_compositionUndoGroupOpen)
+			{
+				_compositionUndoGroupOpen = false;
+				Document.DiscardUndoGroup();
+			}
+		}
+
+		private void InvalidateImeRender()
+		{
+			_textBoxView?.DisplayBlock.InvalidateInlines(false);
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.CandidateWindowAlignment);
+		}
 
 		/// <summary>
 		/// Installs a fake IME extension for testing. Returns a disposable that restores the original.

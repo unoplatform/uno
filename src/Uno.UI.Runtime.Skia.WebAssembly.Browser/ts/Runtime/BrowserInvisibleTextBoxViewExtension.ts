@@ -59,6 +59,7 @@
 			}
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
 			input.tabIndex = -1;
 			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
@@ -99,7 +100,10 @@
 			};
 
 			input.onpaste = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
+				const source = ev.clipboardData.getData("text");
+				const sourceLimit = BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
+				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(
+					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
 				ev.preventDefault();
 			};
 
@@ -138,7 +142,7 @@
 				if (ev.data.length > 0) {
 					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
 				} else {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 				}
 			});
 
@@ -152,6 +156,10 @@
 		// the character natively AND via the managed path, producing duplicated input.
 		public static attachTextInputKeyHandlers(input: HTMLInputElement | HTMLTextAreaElement, acceptsReturn: boolean) {
 			input.addEventListener("keydown", (ev: KeyboardEvent) => {
+				const acceptsReturnNow = input === BrowserInvisibleTextBoxViewExtension.inputElement
+					? BrowserInvisibleTextBoxViewExtension.acceptsReturn
+					: acceptsReturn;
+
 				// During IME composition, let the browser/IME handle all keys.
 				// stopPropagation prevents BrowserKeyboardInputSource from calling preventDefault.
 				if (ev.isComposing) {
@@ -173,7 +181,7 @@
 				// BrowserKeyboardInputSource raises the managed KeyDown. The flag prevents the
 				// keyup branch below from dispatching a duplicate OnEnterKeyPressed.
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
-				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturn) {
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturnNow) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
 					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = true;
 					return;
@@ -193,6 +201,10 @@
 			});
 
 			input.addEventListener("keyup", (ev: KeyboardEvent) => {
+				const acceptsReturnNow = input === BrowserInvisibleTextBoxViewExtension.inputElement
+					? BrowserInvisibleTextBoxViewExtension.acceptsReturn
+					: acceptsReturn;
+
 				// Android virtual keyboards (Gboard/SwiftKey/Samsung/AOSP) report keydown
 				// with keyCode 229 ("Unidentified") for Enter, which is stopPropagation'd
 				// above so it never reaches BrowserKeyboardInputSource. They DO report keyup
@@ -200,7 +212,7 @@
 				// focus-navigation patterns (Uno.Toolkit AutoFocusNext, FocusManager) work
 				// on Android browsers. The flag guards against double-dispatch on desktop/iOS,
 				// where the keydown branch already routed Enter through the document listener.
-				if (!acceptsReturn
+				if (!acceptsReturnNow
 					&& ev.key === "Enter"
 					&& !BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown
 					&& !ev.isComposing) {
@@ -229,6 +241,29 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
 				input.setAttribute("inputmode", inputMode);
+			}
+		}
+
+		public static setTextPredictionEnabled(enabled: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.autocomplete = enabled ? "on" : "off";
+				input.setAttribute("autocorrect", enabled ? "on" : "off");
+			}
+		}
+
+		public static setSpellCheckEnabled(enabled: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.spellcheck = enabled;
+			}
+		}
+
+		public static setAcceptsReturn(acceptsReturn: boolean) {
+			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
 			}
 		}
 
@@ -294,6 +329,17 @@
 					input.value = text;
 				}
 			}
+		}
+
+		public static replaceText(start: number, length: number, replacement: string) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input == null) {
+				return;
+			}
+
+			start = Math.max(0, Math.min(start, input.value.length));
+			const end = Math.max(start, Math.min(start + length, input.value.length));
+			input.setRangeText(replacement, start, end, "preserve");
 		}
 
 		public static updateSize(width: number, height: number) {

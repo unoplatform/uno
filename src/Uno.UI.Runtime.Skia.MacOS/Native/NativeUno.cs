@@ -250,6 +250,9 @@ internal static partial class NativeUno
 	internal static partial void uno_set_ime_active(nint windowHandle, [MarshalAs(UnmanagedType.U1)] bool active);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_notify_ime_position_changed(nint windowHandle);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -645,8 +648,9 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, void> expandCollapseCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_accessibility_set_value_callback(
-		delegate* unmanaged[Cdecl]<nint, nint, void> setValueCallback);
+	internal static unsafe partial void uno_accessibility_set_text_callbacks(
+		delegate* unmanaged[Cdecl]<nint, nint, int, int, int, void> setTextCallback,
+		delegate* unmanaged[Cdecl]<nint, int, int, int, void> setSelectionCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
@@ -718,7 +722,11 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_update_read_only(nint handle, [MarshalAs(UnmanagedType.I1)] bool readOnly);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_update_selection(nint handle, int selectionStart, int selectionLength);
+	internal static partial void uno_accessibility_update_selection(
+		nint handle,
+		int selectionStart,
+		int selectionLength,
+		[MarshalAs(UnmanagedType.I1)] bool selectionIsBackward);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_update_modal(nint handle, [MarshalAs(UnmanagedType.I1)] bool isModal);
