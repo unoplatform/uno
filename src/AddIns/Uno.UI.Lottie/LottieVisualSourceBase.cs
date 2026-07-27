@@ -50,6 +50,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private bool _hasLoadFailure;
 		private bool _isLoading;
 		private bool _hasPendingAnimatedVisualInvalidation;
+		private Task _pendingAnimatedVisualInvalidation = Task.CompletedTask;
 		private Task _currentLoadTask = Task.CompletedTask;
 
 		public static DependencyProperty UriSourceProperty { get; } = DependencyProperty.Register(
@@ -227,6 +228,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_loadRevoker.Disposable = null;
 			_animationDataSubscription.Disposable = null;
 			_hasPendingAnimatedVisualInvalidation = false;
+			_pendingAnimatedVisualInvalidation = Task.CompletedTask;
 
 			lock (_stateGate)
 			{
@@ -245,11 +247,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				using var jsonSource = await TryOpenJsonSourceAsync(sourceUri, cancellationToken);
 				if (jsonSource is null)
 				{
-					PublishLoadFailure(sourceUri, loadVersion, new NotSupportedException($"Failed to load animation: {RedactUri(sourceUri)}"));
+					await PublishLoadFailure(sourceUri, loadVersion, new NotSupportedException($"Failed to load animation: {RedactUri(sourceUri)}"));
 					return;
 				}
 
 				var initialUpdateObserved = 0;
+				Task initialInvalidation = Task.CompletedTask;
 				void OnAnimationUpdated(string updatedJson, string updatedCacheKey)
 				{
 					if (!IsCurrentLoad(sourceUri, loadVersion))
@@ -257,7 +260,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						return;
 					}
 
-					OnAnimationDataChanged(sourceUri, loadVersion, updatedJson, updatedCacheKey);
+					initialInvalidation = OnAnimationDataChanged(sourceUri, loadVersion, updatedJson, updatedCacheKey);
 					Interlocked.Exchange(ref initialUpdateObserved, 1);
 				}
 
@@ -280,18 +283,19 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				if (Interlocked.CompareExchange(ref initialUpdateObserved, 0, 0) == 0)
 				{
 					loadSubscription?.Dispose();
-					PublishLoadFailure(sourceUri, loadVersion, new InvalidOperationException("The animation source did not publish an initial payload."));
+					await PublishLoadFailure(sourceUri, loadVersion, new InvalidOperationException("The animation source did not publish an initial payload."));
 					return;
 				}
 
 				_animationDataSubscription.Disposable = loadSubscription;
+				await initialInvalidation;
 			}
 			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 			{
 			}
 			catch (Exception e)
 			{
-				PublishLoadFailure(sourceUri, loadVersion, e);
+				await PublishLoadFailure(sourceUri, loadVersion, e);
 			}
 		}
 
@@ -305,7 +309,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		private void OnAnimationDataChanged(Uri sourceUri, int loadVersion, string updatedJson, string updatedCacheKey)
+		private Task OnAnimationDataChanged(Uri sourceUri, int loadVersion, string updatedJson, string updatedCacheKey)
 		{
 			lock (_stateGate)
 			{
@@ -313,7 +317,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					|| !requestedSource.Equals(sourceUri)
 					|| loadVersion != _loadVersion)
 				{
-					return;
+					return Task.CompletedTask;
 				}
 
 				_animationJson = updatedJson;
@@ -322,10 +326,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_isLoading = false;
 			}
 
-			RaiseAnimatedVisualInvalidated();
+			return RaiseAnimatedVisualInvalidatedAsync();
 		}
 
-		private void PublishLoadFailure(Uri sourceUri, int loadVersion, Exception error)
+		private async Task PublishLoadFailure(Uri sourceUri, int loadVersion, Exception error)
 		{
 			lock (_stateGate)
 			{
@@ -347,40 +351,75 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				this.Log().Error($"Failed to load animation: {RedactUri(sourceUri)}", error);
 			}
 
-			RaiseAnimatedVisualInvalidated();
+			await RaiseAnimatedVisualInvalidatedAsync();
 		}
 
 		private void RaiseAnimatedVisualInvalidated()
+			=> _ = RaiseAnimatedVisualInvalidatedAsync();
+
+		private Task RaiseAnimatedVisualInvalidatedAsync()
 		{
 			if (_dispatcherQueue is { HasThreadAccess: true })
 			{
 				RaiseAnimatedVisualInvalidatedCore();
+				return Task.CompletedTask;
 			}
 			else if (_dispatcherQueue is { } dispatcherQueue)
 			{
-				if (_hasPendingAnimatedVisualInvalidation)
+				TaskCompletionSource<object?> completion;
+				lock (_stateGate)
 				{
-					return;
+					if (_hasPendingAnimatedVisualInvalidation)
+					{
+						return _pendingAnimatedVisualInvalidation;
+					}
+
+					completion = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+					_pendingAnimatedVisualInvalidation = completion.Task;
+					_hasPendingAnimatedVisualInvalidation = true;
 				}
 
-				_hasPendingAnimatedVisualInvalidation = true;
-				if (!dispatcherQueue.TryEnqueue(RaiseAnimatedVisualInvalidatedCore))
+				if (!dispatcherQueue.TryEnqueue(() =>
 				{
+					try
+					{
+						RaiseAnimatedVisualInvalidatedCore();
+						completion.TrySetResult(null);
+					}
+					catch (Exception error)
+					{
+						completion.TrySetException(error);
+					}
+				}))
+				{
+					lock (_stateGate)
+					{
+						_hasPendingAnimatedVisualInvalidation = false;
+						_pendingAnimatedVisualInvalidation = Task.CompletedTask;
+					}
+					completion.TrySetException(new InvalidOperationException($"Failed to enqueue {nameof(AnimatedVisualInvalidated)}."));
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
 						this.Log().Warn($"Failed to enqueue {nameof(AnimatedVisualInvalidated)} for {RedactUri(UriSource)}. The notification will be retried when the source is next used on the UI thread.");
 					}
 				}
+
+				return completion.Task;
 			}
 			else
 			{
 				RaiseAnimatedVisualInvalidatedCore();
+				return Task.CompletedTask;
 			}
 		}
 
 		private void RaiseAnimatedVisualInvalidatedCore()
 		{
-			_hasPendingAnimatedVisualInvalidation = false;
+			lock (_stateGate)
+			{
+				_hasPendingAnimatedVisualInvalidation = false;
+				_pendingAnimatedVisualInvalidation = Task.CompletedTask;
+			}
 			AnimatedVisualInvalidated?.Invoke(this, null!);
 		}
 

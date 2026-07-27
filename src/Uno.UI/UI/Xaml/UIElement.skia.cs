@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private protected virtual ContainerVisual CreateElementVisual()
-			=> (_elementVisualCompositor ?? Compositor.GetSharedCompositor()).CreateContainerVisual();
+			=> ElementVisualCompositor.CreateContainerVisual();
 
 		internal void SetElementVisualCompositor(Compositor compositor)
 		{
