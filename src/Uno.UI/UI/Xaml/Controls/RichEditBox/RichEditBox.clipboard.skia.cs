@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
@@ -44,9 +43,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool TryGetInteractiveSelectionSpan(out int start, out int end)
 		{
-			var text = GetPlainTextContent();
-			start = Math.Clamp(_selection.start, 0, text.Length);
-			var length = Math.Clamp(_selection.length, 0, text.Length - start);
+			var textLength = GetPlainTextLength();
+			start = Math.Clamp(_selection.start, 0, textLength);
+			var length = Math.Clamp(_selection.length, 0, textLength - start);
 			end = start + length;
 			return length > 0;
 		}
@@ -61,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void CopyTomSelectionToClipboard(global::Microsoft.UI.Text.UnoTextSelection selection)
 		{
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(selection.StartPosition, 0, textLength);
 			var end = Math.Clamp(selection.EndPosition, start, textLength);
 			if (start == end || RaiseCopyingToClipboardIsHandled())
@@ -69,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			textLength = GetPlainTextContent().Length;
+			textLength = GetPlainTextLength();
 			start = Math.Clamp(selection.StartPosition, 0, textLength);
 			end = Math.Clamp(selection.EndPosition, start, textLength);
 			if (start != end)
@@ -112,6 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CopySelectionToClipboardCore(start, end);
 			RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, end, string.Empty));
 			SetInteractiveSelection(start, 0);
+			Document.FinalizeHistorySelection();
 		}
 
 		internal void CutTomSelectionToClipboard(global::Microsoft.UI.Text.UnoTextSelection selection)
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(selection.StartPosition, 0, textLength);
 			var end = Math.Clamp(selection.EndPosition, start, textLength);
 			if (start == end || RaiseCuttingToClipboardIsHandled())
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			textLength = GetPlainTextContent().Length;
+			textLength = GetPlainTextLength();
 			start = Math.Clamp(selection.StartPosition, 0, textLength);
 			end = Math.Clamp(selection.EndPosition, start, textLength);
 			if (start == end)
@@ -144,6 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Document.CopyToClipboard(start, end);
 			Document.ReplaceRange(start, end, string.Empty, selection);
 			selection.SetRangeAfterTextMutation(start, start);
+			Document.FinalizeHistorySelection();
 		}
 
 		internal bool TryBeginTomSelectionPaste() => !IsReadOnly && !RaisePasteIsHandled();
@@ -165,13 +166,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var content = Clipboard.GetContent();
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(_selection.start, 0, textLength);
 			var end = Math.Clamp(start + _selection.length, start, textLength);
 			var operationRange = Document.GetRange(start, end);
+			var operationGeneration = Document.BeginPasteOperation();
+			var retrieval = Document.ReadClipboardContentAsync(content, operationRange);
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
-				_ = PasteFromClipboardAsync(content, operationRange);
+				_ = PasteFromClipboardAsync(retrieval, operationRange, operationGeneration);
 			});
 		}
 
@@ -187,52 +190,47 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(_selection.start, 0, textLength);
 			var end = Math.Clamp(start + _selection.length, start, textLength);
+			Document.BeginPasteOperation();
 			PasteClipboardContent(fragment: null, clipboardText, Document.GetRange(start, end));
 		}
 
-		private async Task PasteFromClipboardAsync(DataPackageView content, global::Microsoft.UI.Text.ITextRange operationRange)
+		internal int GetClipboardPasteSourceLimit()
+		{
+			var textLength = GetPlainTextLength();
+			var start = Math.Clamp(_selection.start, 0, textLength);
+			var end = Math.Clamp(start + _selection.length, start, textLength);
+			var outputLimit = Document.GetClipboardImportCharacterLimit(start, end);
+			return outputLimit >= (int.MaxValue - 2) / 2
+				? int.MaxValue
+				: outputLimit * 2 + 2;
+		}
+
+		private async Task PasteFromClipboardAsync(
+			Task<(global::Microsoft.UI.Text.RichTextFragment? Fragment, string? Text)> retrieval,
+			global::Microsoft.UI.Text.ITextRange operationRange,
+			long operationGeneration)
 		{
 			try
 			{
-				if (!content.AvailableFormats.Contains(StandardDataFormats.Rtf)
-					&& !content.AvailableFormats.Contains(StandardDataFormats.Text))
-				{
-					return;
-				}
+				var (fragment, clipboardText) = await retrieval;
 
-				global::Microsoft.UI.Text.RichTextFragment? fragment = null;
-				string? clipboardText = null;
-				if (content.AvailableFormats.Contains(StandardDataFormats.Rtf))
-				{
-					try
-					{
-						fragment = global::Microsoft.UI.Text.RichTextRtfCodec.Read(
-							await content.GetRtfAsync(),
-							Document.GetImportCharacterLimit(operationRange.StartPosition, operationRange.EndPosition));
-					}
-					catch (Exception error) when (error is InvalidOperationException or InvalidCastException or ArgumentException)
-					{
-					}
-				}
-
-				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
-				{
-					try
-					{
-						clipboardText = await content.GetTextAsync();
-					}
-					catch (Exception error) when (error is InvalidOperationException or InvalidCastException)
-					{
-					}
-				}
-
-				PasteClipboardContent(fragment, clipboardText, operationRange);
+				await Document.TryCommitLatestPasteAsync(
+					operationGeneration,
+					() => PasteClipboardContent(fragment, clipboardText, operationRange));
 			}
 			catch (UnauthorizedAccessException)
 			{
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is not null)
+			{
+				throw;
 			}
 			catch (Exception error)
 			{
@@ -248,14 +246,14 @@ namespace Microsoft.UI.Xaml.Controls
 			string? clipboardText,
 			global::Microsoft.UI.Text.ITextRange operationRange)
 		{
-			if (IsReadOnly)
+			if (IsReadOnly || (fragment is null && string.IsNullOrEmpty(clipboardText)))
 			{
 				return;
 			}
 
-			var text = GetPlainTextContent();
-			var start = Math.Clamp(operationRange.StartPosition, 0, text.Length);
-			var end = Math.Clamp(operationRange.EndPosition, start, text.Length);
+			var textLength = GetPlainTextLength();
+			var start = Math.Clamp(operationRange.StartPosition, 0, textLength);
+			var end = Math.Clamp(operationRange.EndPosition, start, textLength);
 			if (Document.IsRangeProtected(start, end))
 			{
 				return;
@@ -264,14 +262,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var insertedLength = 0;
 			RunWithDeferredSelectionSync(() =>
 			{
-				if (fragment is not null && CharacterCasing == CharacterCasing.Normal)
+				if (fragment is not null
+					&& (CharacterCasing == CharacterCasing.Normal || global::Microsoft.UI.Text.RichEditTextDocument.IsImageOnlyFragment(fragment)))
 				{
 					insertedLength = Document.ReplaceRangeWithFragment(start, end, fragment, sourceRange: null);
 				}
 				else if (!string.IsNullOrEmpty(clipboardText ?? fragment?.Text))
 				{
 					var sourceText = clipboardText ?? fragment!.Text;
-					var normalized = CoerceCasing(sourceText.Replace("\r\n", "\r").Replace('\n', '\r'));
+					var normalized = Document.NormalizeImportedPlainText(sourceText, start, end);
 					insertedLength = Document.ReplaceRange(start, end, normalized);
 				}
 			});

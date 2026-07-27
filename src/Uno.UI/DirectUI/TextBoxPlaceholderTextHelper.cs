@@ -87,7 +87,12 @@ internal class TextBoxPlaceholderTextHelper
 				return;
 			}
 
-			var describedByList = AutomationProperties.GetDescribedBy(spOwner) ?? [];
+			var describedByList = AutomationProperties.GetDescribedBy(spOwner);
+			if (describedByList is null)
+			{
+				describedByList = new List<DependencyObject>();
+				spOwner.SetValue(AutomationProperties.DescribedByProperty, describedByList);
+			}
 
 			if (!describedByList.Contains(textBlock))
 			{

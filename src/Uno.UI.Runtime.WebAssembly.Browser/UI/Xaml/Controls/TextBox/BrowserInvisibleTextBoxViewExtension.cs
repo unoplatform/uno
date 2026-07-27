@@ -16,6 +16,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 {
 	private readonly TextBoxView _view;
 	private bool _isNativeInputActive;
+	private bool _suppressSoftwareKeyboard;
 
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -76,6 +77,27 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			case RichEditBox richEditBox:
 				richEditBox.PasteFromClipboard(clipboardText);
 				break;
+		}
+	}
+
+	[JSExport]
+	private static int GetNativePasteSourceLimit()
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+		return FocusManager.GetFocusedElement(xamlRoot!) switch
+		{
+			RichEditBox richEditBox => richEditBox.GetClipboardPasteSourceLimit(),
+			TextBox { MaxLength: > 0 } textBox => GetTextBoxPasteSourceLimit(textBox),
+			_ => int.MaxValue,
+		};
+
+		static int GetTextBoxPasteSourceLimit(TextBox textBox)
+		{
+			var selectedLength = Math.Clamp(textBox.SelectionLength, 0, textBox.Text.Length);
+			var outputLimit = Math.Max(0, textBox.MaxLength - (textBox.Text.Length - selectedLength));
+			return outputLimit >= (int.MaxValue - 2) / 2
+				? int.MaxValue
+				: outputLimit * 2 + 2;
 		}
 	}
 
@@ -145,8 +167,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
-	public void StartEntry()
+	public void StartEntry(bool suppressSoftwareKeyboard = false)
 	{
+		_suppressSoftwareKeyboard = suppressSoftwareKeyboard;
 		var host = _view.Host;
 		_isNativeInputActive = NativeMethods.Focus(
 			host?.Owner.Visual.Handle ?? 0,
@@ -158,12 +181,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				RichEditBox richEditBox => richEditBox.AcceptsReturn,
 				_ => false,
 			},
-			GetInputModeValue(),
+			suppressSoftwareKeyboard ? "none" : GetInputModeValue(),
 			GetEnterKeyHintValue());
 
 		if (_isNativeInputActive)
 		{
 			InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
+			NativeMethods.SetTextPredictionEnabled(GetTextPredictionEnabled());
+			NativeMethods.SetSpellCheckEnabled(GetSpellCheckEnabled());
 			NativeMethods.UpdateSelection(SelectionStart, SelectionLength, SelectionDirection);
 		}
 	}
@@ -179,6 +204,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				NativeMethods.Blur(_view.Host?.Owner.Visual.Handle ?? 0);
 			}
 			_isNativeInputActive = false;
+			_suppressSoftwareKeyboard = false;
 		}
 	}
 
@@ -246,6 +272,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		NativeMethods.UpdatePosition(x, p.Y);
 	}
 
+	public void NotifyImePositionChanged()
+	{
+		if (IsHostFocused)
+		{
+			NativeMethods.UpdateSelection(SelectionStart, SelectionLength, SelectionDirection);
+		}
+	}
+
 	public void InvalidateLayout()
 	{
 		UpdateSize();
@@ -261,6 +295,15 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			return;
 		}
 		NativeMethods.SetText(text);
+	}
+
+	public void ReplaceText(int start, int length, string replacement)
+	{
+		if (!IsHostFocused)
+		{
+			return;
+		}
+		NativeMethods.ReplaceText(start, length, replacement);
 	}
 
 	public void Select(int start, int length)
@@ -289,6 +332,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			NativeMethods.SetEnterKeyHint(enterKeyHintValue);
 		}
+		NativeMethods.SetInputMode(_suppressSoftwareKeyboard ? "none" : GetInputModeValue());
+		NativeMethods.SetTextPredictionEnabled(GetTextPredictionEnabled());
+		NativeMethods.SetSpellCheckEnabled(GetSpellCheckEnabled());
+		NativeMethods.SetAcceptsReturn(GetAcceptsReturn());
 	}
 
 	public int GetSelectionStart() => 0;
@@ -319,6 +366,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		return "";
 	}
 
+	private bool GetTextPredictionEnabled() => _view.Host switch
+	{
+		TextBox textBox => textBox.IsTextPredictionEnabled,
+		RichEditBox richEditBox => richEditBox.IsTextPredictionEnabled,
+		_ => true,
+	};
+
+	private bool GetSpellCheckEnabled() => _view.Host?.IsSpellCheckEnabled ?? true;
+
+	private bool GetAcceptsReturn() => _view.Host is IImeSessionHost { AcceptsReturn: true };
+
 	private static partial class NativeMethods
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.initialize")]
@@ -326,6 +384,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setText")]
 		public static partial void SetText(string text);
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.replaceText")]
+		public static partial void ReplaceText(int start, int length, string replacement);
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.focus")]
 		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
@@ -353,5 +414,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setInputMode")]
 		public static partial void SetInputMode(string inputMode);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setTextPredictionEnabled")]
+		public static partial void SetTextPredictionEnabled(bool enabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setSpellCheckEnabled")]
+		public static partial void SetSpellCheckEnabled(bool enabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setAcceptsReturn")]
+		public static partial void SetAcceptsReturn(bool acceptsReturn);
 	}
 }

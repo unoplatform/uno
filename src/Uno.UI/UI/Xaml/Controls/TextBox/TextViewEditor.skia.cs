@@ -78,7 +78,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 		{
-			// TODO ctrl+up
 			if (HasPointerCapture)
 			{
 				return;
@@ -90,7 +89,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var start = selectionStart;
 			var end = selectionStart + selectionLength;
-			var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
+			var newEnd = _host.TryGetUpDownResult(
+				selectionStart,
+				selectionLength,
+				shift,
+				ctrl,
+				up: true,
+				out var hostResult)
+					? hostResult
+					: GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
 			if (shift)
 			{
 				selectionLength = newEnd - selectionStart;
@@ -106,7 +113,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 		{
-			// TODO ctrl+down
 			if (HasPointerCapture)
 			{
 				return;
@@ -118,7 +124,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var start = selectionStart;
 			var end = selectionStart + selectionLength;
-			var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
+			var newEnd = _host.TryGetUpDownResult(
+				selectionStart,
+				selectionLength,
+				shift,
+				ctrl,
+				up: false,
+				out var hostResult)
+					? hostResult
+					: GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
 			if (shift)
 			{
 				selectionLength = newEnd - selectionStart;

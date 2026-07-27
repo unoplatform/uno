@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents;
@@ -12,13 +13,92 @@ using Windows.UI.Text;
 namespace Microsoft.UI.Xaml.Controls
 {
 	// Projects the RichEditBox Text Object Model's character-format run model onto the shared
-	// DisplayBlock (a TextBlock). When no run carries special formatting the plain-text fast path
-	// (identical to TextBox) is used; otherwise each run becomes a TextBlock inline carrying the
-	// tracked formatting (weight, style, decorations, foreground, size, family).
+	// DisplayBlock (a TextBlock). Documents with a bounded fragment count use retained XAML inlines
+	// and incremental splices. Larger documents stream the same indexed runs through a custom layout
+	// with one reusable Run, preserving rich semantics without retaining unbounded XAML objects.
 	partial class RichEditBox
 	{
 		private const double DipsPerPoint = 96d / 72d;
+		private const int MaxRetainedInlineFragments = 8192;
+		private const double ScriptFontScale = 0.65;
+		private const double SuperscriptOffsetEm = 0.35;
+		private const double SubscriptOffsetEm = -0.15;
+		private const int MaxRenderPositionDeltas = 128;
+		private const int MaxRenderFragmentTextLength = 4096;
 		private bool _lastRenderWasRich;
+		private bool _usesBoundedRichLayout;
+		private readonly List<RenderedFragment> _renderedFragments = new();
+		private readonly List<RenderPositionDelta> _renderPositionDeltas = new();
+		private TextBlock? _renderedFragmentOwner;
+		private RichTextLayoutSource? _richTextLayoutSource;
+		private FontFamily? _mathFontFamily;
+		private int _renderedTextLength;
+		private long _renderedTextVersion = -1;
+		private long _renderedCharacterFormatVersion = -1;
+		private long _renderedParagraphFormatVersion = -1;
+		private int _renderFragmentCreationCount;
+		private int _renderFragmentSpecificationCount;
+		private int _renderSpliceCount;
+		private int _renderFullDiffCount;
+		private int _boundedRichLayoutCreateCount;
+		private long _boundedRichLayoutRunVisitCount;
+		private long _renderPositionGeneration;
+		private long _renderPositionBaseGeneration;
+
+		private sealed class RenderedFragment
+		{
+			internal required int Start;
+			internal required int Length;
+			internal required string SourceText;
+			internal required CharacterFormatState CharacterFormat;
+			internal required ParagraphFormatState ParagraphFormat;
+			internal required ParagraphLayoutInfo? ParagraphLayout;
+			internal required global::Microsoft.UI.Xaml.TextAlignment? ParagraphAlignment;
+			internal required FlowDirection FlowDirection;
+			internal required Inline Inline;
+			internal required Run Run;
+			internal required long PositionGeneration;
+		}
+
+		private readonly record struct RenderFragmentSpec(
+			int Start,
+			int Length,
+			string SourceText,
+			CharacterFormatState CharacterFormat,
+			ParagraphFormatState ParagraphFormat,
+			ParagraphLayoutInfo? ParagraphLayout,
+			global::Microsoft.UI.Xaml.TextAlignment? ParagraphAlignment,
+			FlowDirection FlowDirection);
+
+		private readonly record struct RenderPositionDelta(
+			int OldStart,
+			int OldEnd,
+			int NewStart,
+			int TextLengthDelta);
+
+		internal int RenderFragmentCreationCount => _renderFragmentCreationCount;
+
+		internal int RenderFragmentSpecificationCount => _renderFragmentSpecificationCount;
+
+		internal int RenderSpliceCount => _renderSpliceCount;
+
+		internal int RenderFullDiffCount => _renderFullDiffCount;
+
+		internal bool UsesBoundedRichLayout => _usesBoundedRichLayout;
+
+		internal int BoundedRichLayoutCreateCount => _boundedRichLayoutCreateCount;
+
+		internal long BoundedRichLayoutRunVisitCount => _boundedRichLayoutRunVisitCount;
+
+		internal int BoundedRichLayoutRetainedInlineCount => _richTextLayoutSource?.RetainedInlineCount ?? 0;
+
+		internal int BoundedRichLayoutRetainedResourceCount => _richTextLayoutSource?.RetainedResourceCount ?? 0;
+
+		internal int BoundedRichLayoutCachedParagraphCount => _richTextLayoutSource?.CachedParagraphCount ?? 0;
+
+		internal int BoundedRichLayoutParagraphRebuildCount => _richTextLayoutSource?.ParagraphLayoutRebuildCount ?? 0;
+
+		internal long BoundedRichLayoutShapingOperationCount => _richTextLayoutSource?.ShapingOperationCount ?? 0;
 
 		// Uno-specific: a *uniform* paragraph alignment resolved from the TOM paragraph model and
 		// projected onto this RichEditBox's own DisplayBlock. Null when no uniform, non-default alignment
@@ -36,47 +116,126 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var document = Document;
-			var text = document.PlainText;
+			var textLength = document.TextLength;
 			var runs = document.FormatRuns;
 			var paragraphRuns = document.ParagraphRuns;
 			var terminalParagraph = document.TerminalParagraphFormat;
-			var renderParagraphAlignments = HasMixedParagraphAlignments(paragraphRuns, terminalParagraph, text);
-			var renderParagraphLayouts = HasVisualParagraphFormatting(paragraphRuns, terminalParagraph);
+			var renderParagraphAlignments = document.HasMixedParagraphAlignments;
+			var renderParagraphLayouts = document.HasVisualParagraphFormatting;
+			var hasListFormatting = document.HasListParagraphFormatting;
+			var renderInvalidation = document.ConsumeRenderInvalidation();
 			var block = _textBoxView.DisplayBlock;
+			if (!ReferenceEquals(_renderedFragmentOwner, block))
+			{
+				_renderedFragmentOwner = block;
+				_renderedFragments.Clear();
+				_renderPositionDeltas.Clear();
+				_renderPositionBaseGeneration = _renderPositionGeneration;
+				_renderedTextLength = 0;
+				_lastRenderWasRich = false;
+				_usesBoundedRichLayout = false;
+			}
+			var mathLayout = GetMathLayout(document.StructuredMath);
+			var useBoundedRichLayout = mathLayout is null
+				&& (_usesBoundedRichLayout && renderInvalidation is not { Full: true }
+					|| CountRenderFragments(
+						document,
+						runs,
+						paragraphRuns,
+						0,
+						textLength,
+						renderParagraphLayouts,
+						MaxRetainedInlineFragments) > MaxRetainedInlineFragments);
+			RichTextLayoutSource? richTextLayoutSource = null;
+			if (useBoundedRichLayout)
+			{
+				richTextLayoutSource = _richTextLayoutSource ??= new RichTextLayoutSource(this);
+				richTextLayoutSource.Synchronize(
+					document,
+					runs,
+					paragraphRuns,
+					renderParagraphAlignments,
+					renderParagraphLayouts,
+					hasListFormatting,
+					renderInvalidation);
+			}
+			block.CustomTextLayout = useBoundedRichLayout
+				? richTextLayoutSource!
+				: mathLayout;
 			block.FontFamily = document.IsMathMode
-				? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
+				? _mathFontFamily ??= new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
 				: FontFamily;
 			block.DefaultTabStop = document.DefaultTabStop * 4f / 3f;
 			block.AlignmentIncludesTrailingWhitespace = document.AlignmentIncludesTrailingWhitespace;
 			block.IgnoreTrailingCharacterSpacing = document.IgnoreTrailingCharacterSpacing;
-			var terminalListState = BuildListMarkerState(text, paragraphRuns);
-			block.EndingParagraphLayout = renderParagraphLayouts
-				? CreateParagraphLayout(terminalParagraph, terminalListState)
-				: null;
+			if (renderParagraphLayouts)
+			{
+				var terminalListState = hasListFormatting
+					? BuildListMarkerState(document, paragraphRuns)
+					: new ParagraphListMarkerState();
+				var endingLayout = CreateParagraphLayout(terminalParagraph, terminalListState);
+				if (!ParagraphLayoutsEqual(block.EndingParagraphLayout, endingLayout))
+				{
+					block.EndingParagraphLayout = endingLayout;
+				}
+			}
+			else if (block.EndingParagraphLayout is not null)
+			{
+				block.EndingParagraphLayout = null;
+			}
 			block.EndingParagraphAlignment = renderParagraphAlignments
 				&& TryMapParagraphAlignment(terminalParagraph.Alignment, out var terminalAlignment)
 					? terminalAlignment
 					: null;
-
-			if (AllRunsDefault(runs) && !renderParagraphAlignments && !renderParagraphLayouts)
+			if (useBoundedRichLayout)
 			{
-				if (_lastRenderWasRich)
+				if (!_usesBoundedRichLayout)
 				{
-					// Deterministically collapse any previously-built rich inlines back to plain text;
-					// setting DisplayBlock.Text alone would be a no-op when the text is unchanged.
 					block.Inlines.Clear();
-					_lastRenderWasRich = false;
 				}
-
-				_textBoxView.SetTextNative(text);
+				_renderedFragments.Clear();
+				_renderPositionDeltas.Clear();
+				_renderPositionBaseGeneration = _renderPositionGeneration;
+				_renderedTextLength = textLength;
+				_usesBoundedRichLayout = true;
+				block.InvalidateMeasure();
 			}
 			else
 			{
-				RenderRuns(block, text, runs, paragraphRuns, renderParagraphAlignments, renderParagraphLayouts);
-				_textBoxView.Extension?.SetText(text);
-				_lastRenderWasRich = true;
+				_usesBoundedRichLayout = false;
+				_ = RenderRuns(
+					block,
+					document,
+					textLength,
+					runs,
+					paragraphRuns,
+					renderParagraphAlignments,
+					renderParagraphLayouts,
+					hasListFormatting,
+					renderInvalidation);
 			}
 
+			if (_textBoxView.Extension is { } extension
+				&& document.TextVersion != _renderedTextVersion)
+			{
+				if (_renderedTextVersion >= 0
+					&& renderInvalidation is { Full: false } textInvalidation)
+				{
+					extension.ReplaceText(
+						textInvalidation.OldStart,
+						textInvalidation.OldEnd - textInvalidation.OldStart,
+						document.GetTextInRange(textInvalidation.NewStart, textInvalidation.NewEnd));
+				}
+				else
+				{
+					extension.SetText(document.PlainText);
+				}
+			}
+			_lastRenderWasRich = true;
+
+			_renderedTextVersion = document.TextVersion;
+			_renderedCharacterFormatVersion = document.CharacterFormatVersion;
+			_renderedParagraphFormatVersion = document.ParagraphFormatVersion;
 			ApplyParagraphAlignment();
 		}
 
@@ -129,123 +288,578 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void RenderRuns(
+		private bool RenderRuns(
 			TextBlock block,
-			string text,
-			IReadOnlyList<FormatRun> runs,
-			IReadOnlyList<ParagraphRun> paragraphRuns,
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			int textLength,
+			IndexedRunCollection<FormatRun> runs,
+			IndexedRunCollection<ParagraphRun> paragraphRuns,
+			bool renderParagraphAlignments,
+			bool renderParagraphLayouts,
+			bool hasListFormatting,
+			global::Microsoft.UI.Text.RichEditTextDocument.RenderInvalidation? invalidation)
+		{
+			var inlines = block.Inlines;
+			var requiresFullDiff = !_lastRenderWasRich
+				|| _renderedFragments.Count == 0
+				|| invalidation is { Full: true }
+				|| hasListFormatting
+				|| invalidation is null
+					&& (_renderedTextVersion != document.TextVersion
+						|| _renderedCharacterFormatVersion != document.CharacterFormatVersion
+						|| _renderedParagraphFormatVersion != document.ParagraphFormatVersion);
+			if (!requiresFullDiff
+				&& invalidation is null
+				&& _renderedTextVersion == document.TextVersion
+				&& _renderedCharacterFormatVersion == document.CharacterFormatVersion
+				&& _renderedParagraphFormatVersion == document.ParagraphFormatVersion)
+			{
+				return true;
+			}
+
+			var oldFirst = 0;
+			var oldLast = _renderedFragments.Count;
+			var newStart = 0;
+			var newEnd = textLength;
+			if (!requiresFullDiff && invalidation is { } localInvalidation)
+			{
+				FindAffectedFragmentRange(localInvalidation.OldStart, localInvalidation.OldEnd, out oldFirst, out oldLast);
+				oldFirst = Math.Max(0, oldFirst - 1);
+				oldLast = Math.Min(_renderedFragments.Count, oldLast + 1);
+				var oldSliceStart = GetRenderedFragmentStart(_renderedFragments[oldFirst]);
+				var oldSliceEnd = GetRenderedFragmentEnd(_renderedFragments[oldLast - 1]);
+				var textLengthDelta = textLength - _renderedTextLength;
+				newStart = MapOldRenderPosition(oldSliceStart, localInvalidation, textLengthDelta, mapEnd: false);
+				newEnd = MapOldRenderPosition(oldSliceEnd, localInvalidation, textLengthDelta, mapEnd: true);
+				newStart = Math.Clamp(newStart, 0, textLength);
+				newEnd = Math.Clamp(newEnd, newStart, textLength);
+			}
+			else
+			{
+				_renderFullDiffCount++;
+			}
+
+			var specs = BuildRenderFragmentSpecs(
+				document,
+				runs,
+				paragraphRuns,
+				newStart,
+				newEnd,
+				renderParagraphAlignments,
+				renderParagraphLayouts);
+			var resultingCount = _renderedFragments.Count - (oldLast - oldFirst) + specs.Count;
+			if (resultingCount > MaxRetainedInlineFragments)
+			{
+				return false;
+			}
+
+			var textLengthChange = textLength - _renderedTextLength;
+			if (!requiresFullDiff && invalidation is { } positionInvalidation && textLengthChange != 0)
+			{
+				_renderPositionDeltas.Add(new RenderPositionDelta(
+					positionInvalidation.OldStart,
+					positionInvalidation.OldEnd,
+					positionInvalidation.NewStart,
+					textLengthChange));
+				_renderPositionGeneration++;
+			}
+
+			var commonPrefix = 0;
+			var oldCount = oldLast - oldFirst;
+			while (commonPrefix < oldCount
+				&& commonPrefix < specs.Count
+				&& RenderFragmentMatches(_renderedFragments[oldFirst + commonPrefix], specs[commonPrefix]))
+			{
+				UpdateRenderedFragment(_renderedFragments[oldFirst + commonPrefix], specs[commonPrefix]);
+				commonPrefix++;
+			}
+
+			var commonSuffix = 0;
+			while (commonSuffix < oldCount - commonPrefix
+				&& commonSuffix < specs.Count - commonPrefix
+				&& RenderFragmentMatches(
+					_renderedFragments[oldLast - commonSuffix - 1],
+					specs[specs.Count - commonSuffix - 1]))
+			{
+				UpdateRenderedFragment(
+					_renderedFragments[oldLast - commonSuffix - 1],
+					specs[specs.Count - commonSuffix - 1]);
+				commonSuffix++;
+			}
+
+			var removeIndex = oldFirst + commonPrefix;
+			var removeCount = oldCount - commonPrefix - commonSuffix;
+			var insertCount = specs.Count - commonPrefix - commonSuffix;
+			var insertedFragments = new List<RenderedFragment>(insertCount);
+			var insertedInlines = new List<Inline>(insertCount);
+			for (var i = 0; i < insertCount; i++)
+			{
+				var fragment = CreateRenderedFragment(specs[commonPrefix + i], block.FontSize);
+				insertedFragments.Add(fragment);
+				insertedInlines.Add(fragment.Inline);
+			}
+
+			var updateKnownText = document.TextVersion != _renderedTextVersion;
+			var knownText = updateKnownText
+				? GetUpdatedDisplayText(block.Text, document, invalidation, requiresFullDiff)
+				: null;
+			if (_renderedFragments.Count == 0)
+			{
+				inlines.ReplaceRange(0, inlines.Count, insertedInlines, knownText, updateKnownText);
+				_renderedFragments.AddRange(insertedFragments);
+				_renderSpliceCount++;
+			}
+			else if (removeCount != 0 || insertCount != 0)
+			{
+				inlines.ReplaceRange(removeIndex, removeCount, insertedInlines, knownText, updateKnownText);
+				if (removeCount != 0)
+				{
+					_renderedFragments.RemoveRange(removeIndex, removeCount);
+				}
+				if (insertCount != 0)
+				{
+					_renderedFragments.InsertRange(removeIndex, insertedFragments);
+				}
+				_renderSpliceCount++;
+			}
+
+			if (requiresFullDiff)
+			{
+				_renderPositionDeltas.Clear();
+				_renderPositionBaseGeneration = _renderPositionGeneration;
+			}
+			else if (_renderPositionDeltas.Count >= MaxRenderPositionDeltas)
+			{
+				CompactRenderPositions();
+			}
+			_renderedTextLength = textLength;
+			return true;
+		}
+
+		private string GetUpdatedDisplayText(
+			string currentText,
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			global::Microsoft.UI.Text.RichEditTextDocument.RenderInvalidation? invalidation,
+			bool requiresFullDiff)
+		{
+			if (requiresFullDiff
+				|| invalidation is not { Full: false } textInvalidation
+				|| currentText.Length != _renderedTextLength
+				|| textInvalidation.OldStart < 0
+				|| textInvalidation.OldEnd < textInvalidation.OldStart
+				|| textInvalidation.OldEnd > currentText.Length)
+			{
+				return document.PlainText;
+			}
+
+			var replacement = document.GetTextInRange(textInvalidation.NewStart, textInvalidation.NewEnd);
+			return string.Concat(
+				currentText.AsSpan(0, textInvalidation.OldStart),
+				replacement.AsSpan(),
+				currentText.AsSpan(textInvalidation.OldEnd));
+		}
+
+		private List<RenderFragmentSpec> BuildRenderFragmentSpecs(
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			IndexedRunCollection<FormatRun> runs,
+			IndexedRunCollection<ParagraphRun> paragraphRuns,
+			int start,
+			int end,
+			bool renderParagraphAlignments,
+			bool renderParagraphLayouts)
+			=> new(EnumerateRenderFragmentSpecs(
+				document,
+				runs,
+				paragraphRuns,
+				start,
+				end,
+				renderParagraphAlignments,
+				renderParagraphLayouts));
+
+		private IEnumerable<RenderFragmentSpec> EnumerateRenderFragmentSpecs(
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			IndexedRunCollection<FormatRun> runs,
+			IndexedRunCollection<ParagraphRun> paragraphRuns,
+			int start,
+			int end,
 			bool renderParagraphAlignments,
 			bool renderParagraphLayouts)
 		{
-			var inlines = block.Inlines;
-			inlines.Clear();
+			if (start >= end)
+			{
+				yield break;
+			}
 
-			var position = 0;
-			var characterRunIndex = 0;
-			var characterRunOffset = 0;
-			var paragraphRunIndex = 0;
-			var paragraphRunOffset = 0;
+			var position = start;
+			var characterRuns = runs.GetCursor(document.FindCharacterRunIndexForRender(position));
+			var paragraphRunsCursor = paragraphRuns.GetCursor(document.FindParagraphRunIndexForRender(position));
 			var paragraphEnd = 0;
 			ParagraphLayoutInfo? paragraphLayout = null;
-			var listState = new ListMarkerCounterState();
-			while (position < text.Length && characterRunIndex < runs.Count && paragraphRunIndex < paragraphRuns.Count)
+			var listState = new ParagraphListMarkerState();
+			while (position < end && characterRuns.IsValid && paragraphRunsCursor.IsValid)
 			{
-				var characterRun = runs[characterRunIndex];
-				var paragraphRun = paragraphRuns[paragraphRunIndex];
-				if (position >= paragraphEnd)
+				var characterRun = characterRuns.Current;
+				var paragraphRun = paragraphRunsCursor.Current;
+				var hasList = renderParagraphLayouts
+					&& paragraphRun.Format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+						and not global::Microsoft.UI.Text.MarkerType.Undefined;
+				if (renderParagraphLayouts && (paragraphLayout is null || hasList && position >= paragraphEnd))
 				{
-					paragraphEnd = GetParagraphEnd(text, position);
+					paragraphEnd = hasList ? document.GetParagraphEndForRender(position) : end;
 					paragraphLayout = CreateParagraphLayout(paragraphRun.Format, listState);
 				}
-				var requiresPerParagraphMarker = paragraphRun.Format.ListType is not global::Microsoft.UI.Text.MarkerType.None
-					and not global::Microsoft.UI.Text.MarkerType.Undefined
-					&& paragraphRun.Format.ListLevelIndex > 0;
-				var length = Math.Min(
-					requiresPerParagraphMarker ? paragraphEnd - position : text.Length - position,
-					Math.Min(characterRun.Length - characterRunOffset, paragraphRun.Length - paragraphRunOffset));
-				if (characterRun.Format.InlineImage is not null)
-				{
-					length = Math.Min(length, 1);
-				}
+
+				var characterRunEnd = characterRuns.End;
+				var paragraphRunEnd = paragraphRunsCursor.End;
+				var requiresPerParagraphMarker = hasList && paragraphRun.Format.ListLevelIndex > 0;
+				var length = GetRenderFragmentLength(
+					document,
+					position,
+					end,
+					characterRunEnd,
+					paragraphRunEnd,
+					requiresPerParagraphMarker ? paragraphEnd : end,
+					characterRun.Format.InlineImage is not null);
 				if (length <= 0)
 				{
-					if (characterRunOffset >= characterRun.Length)
+					if (position >= characterRunEnd)
 					{
-						characterRunIndex++;
-						characterRunOffset = 0;
+						characterRuns.MoveNext();
 					}
-					if (paragraphRunOffset >= paragraphRun.Length)
+					if (position >= paragraphRunEnd)
 					{
-						paragraphRunIndex++;
-						paragraphRunOffset = 0;
+						paragraphRunsCursor.MoveNext();
+						paragraphLayout = null;
 					}
 					continue;
 				}
 
-				var segment = text.Substring(position, length);
-				var inline = CreateRun(segment, characterRun.Format, block.FontSize);
-				if (renderParagraphAlignments && TryMapParagraphAlignment(paragraphRun.Format.Alignment, out var paragraphAlignment))
+				global::Microsoft.UI.Xaml.TextAlignment? paragraphAlignment = null;
+				if (renderParagraphAlignments && TryMapParagraphAlignment(paragraphRun.Format.Alignment, out var mappedAlignment))
 				{
-					inline.ParagraphAlignment = paragraphAlignment;
+					paragraphAlignment = mappedAlignment;
 				}
-				if (renderParagraphLayouts)
+				var flowDirection = renderParagraphLayouts && paragraphRun.Format.RightToLeft
+					? FlowDirection.RightToLeft
+					: FlowDirection.LeftToRight;
+				yield return new RenderFragmentSpec(
+					position,
+					length,
+					document.GetTextInRange(position, position + length),
+					characterRun.Format,
+					paragraphRun.Format,
+					renderParagraphLayouts ? paragraphLayout : null,
+					paragraphAlignment,
+					flowDirection);
+				_renderFragmentSpecificationCount++;
+
+				position += length;
+				if (position >= characterRunEnd)
 				{
-					inline.ParagraphLayout = paragraphLayout;
-					inline.FlowDirection = paragraphRun.Format.RightToLeft
-						? FlowDirection.RightToLeft
-						: FlowDirection.LeftToRight;
+					characterRuns.MoveNext();
+				}
+				if (position >= paragraphRunEnd)
+				{
+					paragraphRunsCursor.MoveNext();
+					paragraphLayout = null;
+				}
+			}
+		}
+
+		private int CountRenderFragments(
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			IndexedRunCollection<FormatRun> runs,
+			IndexedRunCollection<ParagraphRun> paragraphRuns,
+			int start,
+			int end,
+			bool renderParagraphLayouts,
+			int stopAfter)
+		{
+			if (start >= end)
+			{
+				return 0;
+			}
+
+			var count = 0;
+			var position = start;
+			var characterRuns = runs.GetCursor(document.FindCharacterRunIndexForRender(position));
+			var paragraphRunsCursor = paragraphRuns.GetCursor(document.FindParagraphRunIndexForRender(position));
+			var paragraphEnd = 0;
+			while (position < end && characterRuns.IsValid && paragraphRunsCursor.IsValid)
+			{
+				var characterRun = characterRuns.Current;
+				var paragraphRun = paragraphRunsCursor.Current;
+				var hasList = renderParagraphLayouts
+					&& paragraphRun.Format.ListType is not global::Microsoft.UI.Text.MarkerType.None
+						and not global::Microsoft.UI.Text.MarkerType.Undefined;
+				if (hasList && position >= paragraphEnd)
+				{
+					paragraphEnd = document.GetParagraphEndForRender(position);
 				}
 
-				if (characterRun.Format.Link is not null)
+				var characterRunEnd = characterRuns.End;
+				var paragraphRunEnd = paragraphRunsCursor.End;
+				var length = GetRenderFragmentLength(
+					document,
+					position,
+					end,
+					characterRunEnd,
+					paragraphRunEnd,
+					hasList && paragraphRun.Format.ListLevelIndex > 0 ? paragraphEnd : end,
+					characterRun.Format.InlineImage is not null);
+				if (length <= 0)
 				{
-					var hyperlink = new Hyperlink();
-					hyperlink.Inlines.Add(inline);
-					inlines.Add(hyperlink);
+					if (position >= characterRunEnd)
+					{
+						characterRuns.MoveNext();
+					}
+					if (position >= paragraphRunEnd)
+					{
+						paragraphRunsCursor.MoveNext();
+					}
+					continue;
+				}
+
+				count++;
+				if (count > stopAfter)
+				{
+					return count;
+				}
+				position += length;
+				if (position >= characterRunEnd)
+				{
+					characterRuns.MoveNext();
+				}
+				if (position >= paragraphRunEnd)
+				{
+					paragraphRunsCursor.MoveNext();
+				}
+			}
+
+			return count;
+		}
+
+		private static int GetRenderFragmentLength(
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			int position,
+			int end,
+			int characterRunEnd,
+			int paragraphRunEnd,
+			int paragraphEnd,
+			bool hasInlineImage)
+		{
+			var length = Math.Min(
+				end - position,
+				Math.Min(characterRunEnd - position, paragraphRunEnd - position));
+			length = Math.Min(length, MaxRenderFragmentTextLength);
+			if (position + length < end
+				&& length == MaxRenderFragmentTextLength)
+			{
+				var candidateEnd = position + length;
+				var textElementStart = document.GetTextElementStart(candidateEnd);
+				if (textElementStart > position)
+				{
+					length = textElementStart - position;
 				}
 				else
 				{
-					inlines.Add(inline);
-				}
-
-				position += length;
-				characterRunOffset += length;
-				paragraphRunOffset += length;
-				if (characterRunOffset == characterRun.Length)
-				{
-					characterRunIndex++;
-					characterRunOffset = 0;
-				}
-				if (paragraphRunOffset == paragraphRun.Length)
-				{
-					paragraphRunIndex++;
-					paragraphRunOffset = 0;
+					var textElementEnd = document.GetTextElementEnd(candidateEnd);
+					var runEnd = Math.Min(end, Math.Min(characterRunEnd, paragraphRunEnd));
+					if (textElementEnd <= runEnd)
+					{
+						length = textElementEnd - position;
+					}
 				}
 			}
-		}
-
-		private static int GetParagraphEnd(string text, int start)
-		{
-			for (var i = start; i < text.Length; i++)
+			length = Math.Min(length, paragraphEnd - position);
+			if (hasInlineImage)
 			{
-				if (text[i] == '\r')
-				{
-					return i + (i + 1 < text.Length && text[i + 1] == '\n' ? 2 : 1);
-				}
-				if (text[i] is '\n' or '\u2029')
-				{
-					return i + 1;
-				}
+				length = Math.Min(length, 1);
 			}
-
-			return text.Length;
+			return length;
 		}
 
-		private static ListMarkerCounterState BuildListMarkerState(string text, IReadOnlyList<ParagraphRun> paragraphRuns)
+		private RenderedFragment CreateRenderedFragment(RenderFragmentSpec spec, double inheritedFontSize)
 		{
-			var state = new ListMarkerCounterState();
+			var run = CreateRun(spec.SourceText, spec.CharacterFormat, inheritedFontSize);
+			run.ParagraphAlignment = spec.ParagraphAlignment;
+			run.ParagraphLayout = spec.ParagraphLayout;
+			run.FlowDirection = spec.FlowDirection;
+
+			Inline inline;
+			if (spec.CharacterFormat.Link is not null)
+			{
+				var hyperlink = new Hyperlink();
+				hyperlink.Inlines.Add(run);
+				inline = hyperlink;
+			}
+			else
+			{
+				inline = run;
+			}
+
+			_renderFragmentCreationCount++;
+			return new RenderedFragment
+			{
+				Start = spec.Start,
+				Length = spec.Length,
+				SourceText = spec.SourceText,
+				CharacterFormat = spec.CharacterFormat,
+				ParagraphFormat = spec.ParagraphFormat,
+				ParagraphLayout = spec.ParagraphLayout,
+				ParagraphAlignment = spec.ParagraphAlignment,
+				FlowDirection = spec.FlowDirection,
+				Inline = inline,
+				Run = run,
+				PositionGeneration = _renderPositionGeneration,
+			};
+		}
+
+		private static bool RenderFragmentMatches(RenderedFragment fragment, RenderFragmentSpec spec)
+			=> string.Equals(fragment.SourceText, spec.SourceText, StringComparison.Ordinal)
+				&& (fragment.CharacterFormat.InlineImage is null && spec.CharacterFormat.InlineImage is null
+					? fragment.CharacterFormat.Equals(spec.CharacterFormat)
+					: ReferenceEquals(fragment.CharacterFormat, spec.CharacterFormat))
+				&& fragment.ParagraphFormat.Equals(spec.ParagraphFormat)
+				&& fragment.ParagraphAlignment == spec.ParagraphAlignment
+				&& fragment.FlowDirection == spec.FlowDirection
+				&& ParagraphLayoutsEqual(fragment.ParagraphLayout, spec.ParagraphLayout);
+
+		private void UpdateRenderedFragment(RenderedFragment fragment, RenderFragmentSpec spec)
+		{
+			fragment.Start = spec.Start;
+			fragment.Length = spec.Length;
+			fragment.SourceText = spec.SourceText;
+			fragment.CharacterFormat = spec.CharacterFormat;
+			fragment.ParagraphFormat = spec.ParagraphFormat;
+			fragment.ParagraphAlignment = spec.ParagraphAlignment;
+			fragment.FlowDirection = spec.FlowDirection;
+			fragment.PositionGeneration = _renderPositionGeneration;
+		}
+
+		private void FindAffectedFragmentRange(int start, int end, out int first, out int last)
+		{
+			first = 0;
+			last = _renderedFragments.Count;
+			if (_renderedFragments.Count == 0)
+			{
+				return;
+			}
+
+			var low = 0;
+			var high = _renderedFragments.Count;
+			while (low < high)
+			{
+				var middle = low + ((high - low) / 2);
+				var fragment = _renderedFragments[middle];
+				if (GetRenderedFragmentEnd(fragment) <= start)
+				{
+					low = middle + 1;
+				}
+				else
+				{
+					high = middle;
+				}
+			}
+			first = Math.Min(low, _renderedFragments.Count - 1);
+
+			if (start == end)
+			{
+				last = first + 1;
+				return;
+			}
+
+			low = first;
+			high = _renderedFragments.Count;
+			while (low < high)
+			{
+				var middle = low + ((high - low) / 2);
+				if (GetRenderedFragmentStart(_renderedFragments[middle]) < end)
+				{
+					low = middle + 1;
+				}
+				else
+				{
+					high = middle;
+				}
+			}
+			last = Math.Max(first + 1, low);
+		}
+
+		private int GetRenderedFragmentStart(RenderedFragment fragment)
+		{
+			if (fragment.PositionGeneration == _renderPositionGeneration)
+			{
+				return fragment.Start;
+			}
+			if (fragment.PositionGeneration < _renderPositionBaseGeneration)
+			{
+				throw new InvalidOperationException("The rendered fragment position generation is no longer available.");
+			}
+
+			var firstDelta = checked((int)(fragment.PositionGeneration - _renderPositionBaseGeneration));
+			for (var i = firstDelta; i < _renderPositionDeltas.Count; i++)
+			{
+				var delta = _renderPositionDeltas[i];
+				if (fragment.Start <= delta.OldStart)
+				{
+					continue;
+				}
+				if (fragment.Start >= delta.OldEnd)
+				{
+					fragment.Start += delta.TextLengthDelta;
+				}
+				else
+				{
+					fragment.Start = delta.NewStart;
+				}
+			}
+			fragment.PositionGeneration = _renderPositionGeneration;
+			return fragment.Start;
+		}
+
+		private int GetRenderedFragmentEnd(RenderedFragment fragment)
+			=> GetRenderedFragmentStart(fragment) + fragment.Length;
+
+		private void CompactRenderPositions()
+		{
+			foreach (var fragment in _renderedFragments)
+			{
+				_ = GetRenderedFragmentStart(fragment);
+			}
+			_renderPositionDeltas.Clear();
+			_renderPositionBaseGeneration = _renderPositionGeneration;
+		}
+
+		private static int MapOldRenderPosition(
+			int position,
+			global::Microsoft.UI.Text.RichEditTextDocument.RenderInvalidation invalidation,
+			int textLengthDelta,
+			bool mapEnd)
+		{
+			if (invalidation.OldStart == invalidation.OldEnd && position == invalidation.OldStart)
+			{
+				return mapEnd ? invalidation.NewEnd : invalidation.NewStart;
+			}
+			if (position <= invalidation.OldStart)
+			{
+				return position;
+			}
+			if (position >= invalidation.OldEnd)
+			{
+				return position + textLengthDelta;
+			}
+			return mapEnd ? invalidation.NewEnd : invalidation.NewStart;
+		}
+
+		private static ParagraphListMarkerState BuildListMarkerState(
+			global::Microsoft.UI.Text.RichEditTextDocument document,
+			IReadOnlyList<ParagraphRun> paragraphRuns)
+		{
+			var state = new ParagraphListMarkerState();
 			var paragraphRunIndex = 0;
 			var paragraphRunOffset = 0;
-			for (var position = 0; position < text.Length;)
+			for (var position = 0; position < document.TextLength;)
 			{
 				while (paragraphRunIndex < paragraphRuns.Count && paragraphRunOffset >= paragraphRuns[paragraphRunIndex].Length)
 				{
@@ -258,7 +872,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				_ = CreateParagraphLayout(paragraphRuns[paragraphRunIndex].Format, state);
-				var paragraphEnd = GetParagraphEnd(text, position);
+				var paragraphEnd = document.GetParagraphEndForRender(position);
 				paragraphRunOffset += paragraphEnd - position;
 				position = paragraphEnd;
 			}
@@ -266,80 +880,24 @@ namespace Microsoft.UI.Xaml.Controls
 			return state;
 		}
 
-		private sealed class ListMarkerCounterState
+		private static ParagraphLayoutInfo CreateParagraphLayout(ParagraphFormatState format, ParagraphListMarkerState listState)
 		{
-			internal readonly Dictionary<int, ListMarkerCounter> Counters = new();
-			internal int PreviousLevel;
-			internal bool PreviousWasList;
-		}
-
-		private readonly record struct ListMarkerCounter(
-			global::Microsoft.UI.Text.MarkerType Type,
-			global::Microsoft.UI.Text.MarkerStyle Style,
-			int ConfiguredStart,
-			int Value);
-
-		private static ParagraphLayoutInfo CreateParagraphLayout(ParagraphFormatState format, ListMarkerCounterState listState)
-		{
-			var listType = format.ListType;
-			var hasList = listType is not global::Microsoft.UI.Text.MarkerType.None
-				and not global::Microsoft.UI.Text.MarkerType.Undefined
-				&& format.ListLevelIndex > 0;
-			string? marker = null;
-			if (hasList)
-			{
-				var level = format.ListLevelIndex;
-				var style = format.ListStyle == global::Microsoft.UI.Text.MarkerStyle.Undefined
-					? global::Microsoft.UI.Text.MarkerStyle.Period
-					: format.ListStyle;
-				if (!listState.PreviousWasList)
-				{
-					listState.Counters.Clear();
-				}
-				else if (level <= listState.PreviousLevel)
-				{
-					var deeperLevels = new List<int>();
-					foreach (var existingLevel in listState.Counters.Keys)
-					{
-						if (existingLevel > level)
-						{
-							deeperLevels.Add(existingLevel);
-						}
-					}
-					foreach (var deeperLevel in deeperLevels)
-					{
-						listState.Counters.Remove(deeperLevel);
-					}
-				}
-
-				var configuredStart = format.ListStart;
-				var firstValue = listType == global::Microsoft.UI.Text.MarkerType.UnicodeSequence
-					? (IsValidUnicodeScalar(configuredStart) ? configuredStart : 0x2022)
-					: configuredStart > 0 ? configuredStart : 1;
-				var value = firstValue;
-				if (listState.Counters.TryGetValue(level, out var counter)
-					&& counter.Type == listType
-					&& counter.Style == style
-					&& counter.ConfiguredStart == configuredStart)
-				{
-					value = counter.Value + 1;
-				}
-
-				listState.Counters[level] = new ListMarkerCounter(listType, style, configuredStart, value);
-				listState.PreviousLevel = level;
-				listState.PreviousWasList = true;
-				marker = FormatListMarker(listType, style, value);
-			}
-			else
-			{
-				listState.Counters.Clear();
-				listState.PreviousLevel = 0;
-				listState.PreviousWasList = false;
-			}
+			var marker = ParagraphListMarker.GetNext(format, listState, out var hasList);
 
 			var lineSpacing = format.LineSpacingRule is global::Microsoft.UI.Text.LineSpacingRule.AtLeast or global::Microsoft.UI.Text.LineSpacingRule.Exactly
 				? format.LineSpacing * (float)DipsPerPoint
 				: format.LineSpacing;
+			var tabs = format.Tabs.Count == 0
+				? Array.Empty<ParagraphTabLayoutInfo>()
+				: new ParagraphTabLayoutInfo[format.Tabs.Count];
+			for (var i = 0; i < tabs.Length; i++)
+			{
+				var tab = format.Tabs[i];
+				tabs[i] = new ParagraphTabLayoutInfo(
+					tab.Position * (float)DipsPerPoint,
+					tab.Alignment,
+					tab.Leader);
+			}
 			return new ParagraphLayoutInfo
 			{
 				LeftIndent = format.LeftIndent * (float)DipsPerPoint,
@@ -356,10 +914,46 @@ namespace Microsoft.UI.Xaml.Controls
 				MarkerAlignment = format.ListAlignment == global::Microsoft.UI.Text.MarkerAlignment.Undefined
 					? global::Microsoft.UI.Text.MarkerAlignment.Right
 					: format.ListAlignment,
+				Tabs = tabs,
 			};
 		}
 
-		private static string? FormatListMarker(
+		private static bool ParagraphLayoutsEqual(ParagraphLayoutInfo? left, ParagraphLayoutInfo? right)
+		{
+			if (ReferenceEquals(left, right))
+			{
+				return true;
+			}
+			if (left is null || right is null
+				|| left.LeftIndent != right.LeftIndent
+				|| left.RightIndent != right.RightIndent
+				|| left.FirstLineIndent != right.FirstLineIndent
+				|| left.SpaceBefore != right.SpaceBefore
+				|| left.SpaceAfter != right.SpaceAfter
+				|| left.LineSpacingRule != right.LineSpacingRule
+				|| left.LineSpacing != right.LineSpacing
+				|| left.RightToLeft != right.RightToLeft
+				|| left.IsList != right.IsList
+				|| !string.Equals(left.MarkerText, right.MarkerText, StringComparison.Ordinal)
+				|| left.ListTab != right.ListTab
+				|| left.MarkerAlignment != right.MarkerAlignment
+				|| left.Tabs.Length != right.Tabs.Length)
+			{
+				return false;
+			}
+
+			for (var i = 0; i < left.Tabs.Length; i++)
+			{
+				if (left.Tabs[i] != right.Tabs[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		internal static string? FormatListMarker(
 			global::Microsoft.UI.Text.MarkerType type,
 			global::Microsoft.UI.Text.MarkerStyle style,
 			int number)
@@ -377,10 +971,10 @@ namespace Microsoft.UI.Xaml.Controls
 				global::Microsoft.UI.Text.MarkerType.UppercaseEnglishLetter => ToLetters(number, upper: true),
 				global::Microsoft.UI.Text.MarkerType.LowercaseRoman => ToRoman(number).ToLowerInvariant(),
 				global::Microsoft.UI.Text.MarkerType.UppercaseRoman => ToRoman(number),
-				global::Microsoft.UI.Text.MarkerType.UnicodeSequence when IsValidUnicodeScalar(number) => char.ConvertFromUtf32(number),
+				global::Microsoft.UI.Text.MarkerType.UnicodeSequence when IsValidListMarkerUnicodeScalar(number) => char.ConvertFromUtf32(number),
 				global::Microsoft.UI.Text.MarkerType.CircledNumber => ToCircledNumber(number, black: false),
-				global::Microsoft.UI.Text.MarkerType.BlackCircleWingding => ToCircledNumber(number, black: false),
-				global::Microsoft.UI.Text.MarkerType.WhiteCircleWingding => ToCircledNumber(number, black: true),
+				global::Microsoft.UI.Text.MarkerType.BlackCircleWingding => ToWingdingCircledNumber(number, black: true),
+				global::Microsoft.UI.Text.MarkerType.WhiteCircleWingding => ToWingdingCircledNumber(number, black: false),
 				global::Microsoft.UI.Text.MarkerType.ArabicWide => ToLocalizedDigits(number, '０'),
 				global::Microsoft.UI.Text.MarkerType.SimplifiedChinese => ToChineseNumber(number, useTens: true),
 				global::Microsoft.UI.Text.MarkerType.TraditionalChinese => number is >= 10 and <= 19 ? ToChineseNumber(number, useTens: true) : ToChineseNumber(number, useTens: false),
@@ -411,7 +1005,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 		}
 
-		private static bool IsValidUnicodeScalar(int value)
+		internal static bool IsValidListMarkerUnicodeScalar(int value)
 			=> value is >= 0 and <= 0x10ffff && value is not >= 0xd800 and <= 0xdfff;
 
 		private static string ToLocalizedDigits(int number, char zero)
@@ -453,6 +1047,15 @@ namespace Microsoft.UI.Xaml.Controls
 				return char.ConvertFromUtf32(0x2460 + number - 1);
 			}
 			return number.ToString(global::System.Globalization.CultureInfo.InvariantCulture);
+		}
+
+		private static string ToWingdingCircledNumber(int number, bool black)
+		{
+			if (number is >= 1 and <= 10)
+			{
+				return char.ConvertFromUtf32((black ? 0x278a : 0x2780) + number - 1);
+			}
+			return ToCircledNumber(number, black);
 		}
 
 		private static string ToChineseNumber(int number, bool useTens)
@@ -516,74 +1119,17 @@ namespace Microsoft.UI.Xaml.Controls
 			return builder.ToString();
 		}
 
-		private static bool HasMixedParagraphAlignments(
-			IReadOnlyList<ParagraphRun> runs,
-			ParagraphFormatState terminalParagraph,
-			string text)
-		{
-			if (runs.Count == 0)
-			{
-				return false;
-			}
-
-			var alignment = runs[0].Format.Alignment;
-			if (global::Microsoft.UI.Text.TextUnitNavigation.EndsInParagraphBreak(text)
-				&& terminalParagraph.Alignment != alignment)
-			{
-				return true;
-			}
-
-			for (var i = 1; i < runs.Count; i++)
-			{
-				if (runs[i].Format.Alignment != alignment)
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private static bool HasVisualParagraphFormatting(
-			IReadOnlyList<ParagraphRun> runs,
-			ParagraphFormatState terminalParagraph)
-		{
-			foreach (var run in runs)
-			{
-				var format = run.Format;
-				if (format.FirstLineIndent != 0
-					|| format.LeftIndent != 0
-					|| format.RightIndent != 0
-					|| format.SpaceBefore != 0
-					|| format.SpaceAfter != 0
-					|| format.RightToLeft
-					|| format.LineSpacingRule is not global::Microsoft.UI.Text.LineSpacingRule.Single
-						and not global::Microsoft.UI.Text.LineSpacingRule.Undefined
-					|| format.ListType is not global::Microsoft.UI.Text.MarkerType.None
-						and not global::Microsoft.UI.Text.MarkerType.Undefined)
-				{
-					return true;
-				}
-			}
-
-			return HasVisualParagraphFormatting(terminalParagraph);
-		}
-
-		private static bool HasVisualParagraphFormatting(ParagraphFormatState format)
-			=> format.FirstLineIndent != 0
-				|| format.LeftIndent != 0
-				|| format.RightIndent != 0
-				|| format.SpaceBefore != 0
-				|| format.SpaceAfter != 0
-				|| format.RightToLeft
-				|| format.LineSpacingRule is not global::Microsoft.UI.Text.LineSpacingRule.Single
-					and not global::Microsoft.UI.Text.LineSpacingRule.Undefined
-				|| format.ListType is not global::Microsoft.UI.Text.MarkerType.None
-					and not global::Microsoft.UI.Text.MarkerType.Undefined;
-
 		private static Run CreateRun(string text, CharacterFormatState format, double inheritedFontSize)
 		{
-			var run = new Run { Text = text };
+			var run = new Run
+			{
+				Text = format.AllCaps ? ToUpperPreservingUtf16Length(text, format.LanguageTag) : text,
+				RichEditKerningThreshold = format.Kerning,
+				RichEditLanguageTag = string.IsNullOrEmpty(format.LanguageTag) ? null : format.LanguageTag,
+				RichEditTextScript = format.TextScript,
+				RichEditSmallCaps = format.SmallCaps && !format.AllCaps,
+				RichEditOutline = format.Outline,
+			};
 			run.CharacterBackground = format.Background;
 			run.IsHidden = format.Hidden;
 			if (format.InlineImage is { } inlineImage)
@@ -638,6 +1184,14 @@ namespace Microsoft.UI.Xaml.Controls
 				run.FontSize = format.Size * DipsPerPoint;
 			}
 
+			var sourceFontSize = format.Size > 0 ? format.Size * DipsPerPoint : inheritedFontSize;
+			run.RichEditBaselineOffset = format.Position * (float)DipsPerPoint;
+			if (format.Superscript || format.Subscript)
+			{
+				run.FontSize = sourceFontSize * ScriptFontScale;
+				run.RichEditBaselineOffset += (float)(sourceFontSize * (format.Superscript ? SuperscriptOffsetEm : SubscriptOffsetEm));
+			}
+
 			if (format.Spacing != 0)
 			{
 				var fontSizeInPoints = format.Size > 0 ? format.Size : (float)(inheritedFontSize / DipsPerPoint);
@@ -655,32 +1209,95 @@ namespace Microsoft.UI.Xaml.Controls
 			return run;
 		}
 
-		private static bool AllRunsDefault(IReadOnlyList<FormatRun> runs)
+		private static string ToUpperPreservingUtf16Length(string text, string languageTag)
 		{
-			foreach (var run in runs)
+			CultureInfo culture;
+			var isTurkic = languageTag.Equals("tr", StringComparison.OrdinalIgnoreCase)
+				|| languageTag.StartsWith("tr-", StringComparison.OrdinalIgnoreCase)
+				|| languageTag.Equals("az", StringComparison.OrdinalIgnoreCase)
+				|| languageTag.StartsWith("az-", StringComparison.OrdinalIgnoreCase);
+			if (string.IsNullOrEmpty(languageTag))
 			{
-				var format = run.Format;
-				if (format.Bold
-					|| format.WeightExplicit
-					|| format.Weight != 400
-										|| format.Background is not null
-										|| format.Hidden
-					|| format.Italic
-					|| format.FontStretch != global::Windows.UI.Text.FontStretch.Normal
-					|| format.Strikethrough
-					|| format.Underline is not global::Microsoft.UI.Text.UnderlineType.None and not global::Microsoft.UI.Text.UnderlineType.Undefined
-					|| format.Foreground is not null
-					|| format.Spacing != 0
-					|| format.Size > 0
-					|| !string.IsNullOrEmpty(format.Name)
-					|| format.Link is not null
-					|| format.InlineImage is not null)
+				culture = CultureInfo.InvariantCulture;
+			}
+			else
+			{
+				try
 				{
-					return false;
+					culture = CultureInfo.GetCultureInfo(languageTag);
+				}
+				catch (CultureNotFoundException)
+				{
+					culture = CultureInfo.InvariantCulture;
 				}
 			}
 
-			return true;
+			char[]? transformed = null;
+			// TOM positions are UTF-16 offsets. Per-code-unit casing deliberately avoids expansions
+			// such as "ß" -> "SS", which would invalidate selection and hit-testing indices.
+			for (var i = 0; i < text.Length; i++)
+			{
+				var upper = isTurkic
+					? text[i] switch
+					{
+						'i' => '\u0130',
+						'\u0131' => 'I',
+						_ => char.ToUpper(text[i], culture),
+					}
+					: char.ToUpper(text[i], culture);
+				if (upper != text[i])
+				{
+					transformed ??= text.ToCharArray();
+					transformed[i] = upper;
+				}
+			}
+
+			return transformed is null ? text : new string(transformed);
+		}
+
+		internal bool AreRenderedFragmentsValid()
+		{
+			if (_renderPositionBaseGeneration + _renderPositionDeltas.Count != _renderPositionGeneration)
+			{
+				return false;
+			}
+			if (!_lastRenderWasRich)
+			{
+				return _renderedFragments.Count == 0;
+			}
+			if (_textBoxView?.DisplayBlock is not { } block)
+			{
+				return false;
+			}
+			if (_usesBoundedRichLayout)
+			{
+				return _renderedFragments.Count == 0
+					&& ReferenceEquals(block.CustomTextLayout, _richTextLayoutSource)
+					&& block.Inlines.Count == 0;
+			}
+			if (block.Inlines.Count != _renderedFragments.Count)
+			{
+				return false;
+			}
+
+			var position = 0;
+			for (var i = 0; i < _renderedFragments.Count; i++)
+			{
+				var fragment = _renderedFragments[i];
+				if (GetRenderedFragmentStart(fragment) != position
+					|| fragment.Length != fragment.SourceText.Length
+					|| !ReferenceEquals(fragment.Inline, block.Inlines[i])
+					|| !string.Equals(
+						GetPlainTextSlice(position, fragment.Length),
+						fragment.SourceText,
+						StringComparison.Ordinal))
+				{
+					return false;
+				}
+				position += fragment.Length;
+			}
+
+			return position == GetPlainTextLength();
 		}
 	}
 }

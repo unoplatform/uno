@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -22,6 +25,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	private IntPtr _currentWindow;
 	private bool _isComposing;
 	private IX11InputMethod? _dbusIme;
+	private (int X, int Y, int Height)? _lastSpotLocation;
 
 	private X11ImeTextBoxExtension()
 	{
@@ -32,13 +36,20 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(IImeSessionHost host)
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
+		_lastSpotLocation = null;
 
 		if (host.XamlRoot is not { } xamlRoot)
 		{
@@ -68,6 +79,26 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		if ((update & (ImeSessionUpdate.CandidateWindowAlignment | ImeSessionUpdate.TextAndSelection)) != 0)
+		{
+			UpdateSpotLocationFromTextBox(host);
+		}
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+	}
+
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
+	}
+
 	public void EndImeSession()
 	{
 		if (_isComposing)
@@ -87,6 +118,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
+		_lastSpotLocation = null;
 	}
 
 	/// <summary>
@@ -125,9 +157,8 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		else if (_isComposing)
 		{
 			// Preedit cleared without an explicit CommitText signal (e.g., IBus cancelled
-			// the composition via Escape or backspace). Fire CompositionCompleted with empty
-			// text so the TextBox removes the preedit region, then end the composition.
-			CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
+			// the composition via Escape or backspace).
+			CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 			_isComposing = false;
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
 		}
@@ -153,12 +184,17 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		var index = host.IsBackwardSelection ? host.SelectionStart : host.SelectionStart + host.SelectionLength;
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
 		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
-		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top));
+		var candidateTop = host.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
+			? textBoxView.DisplayBlock.ActualHeight
+			: rect.Top;
+		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, candidateTop));
 		var scale = host.XamlRoot.RasterizationScale;
 
 		var x = (int)(topLeft.X * scale);
 		var y = (int)(topLeft.Y * scale);
-		var height = (int)(rect.Height * scale);
+		var height = host.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
+			? 1
+			: (int)(rect.Height * scale);
 
 		// IBus/Fcitx SetCursorLocation expects coordinates in absolute root-window
 		// (screen) pixels, while the values above are window-local. Translate through
@@ -182,6 +218,11 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		// IBus/Fcitx treat (x, y, w, h) as the caret rect and place the candidate
 		// popup at (x, y + h). Passing the caret top + line height anchors the popup
 		// at the line's bottom — flush below the text the user is composing.
-		_dbusIme.SetCursorLocation(screenX, screenY, 1, Math.Max(1, height));
+		var spotLocation = (X: screenX, Y: screenY, Height: Math.Max(1, height));
+		if (_lastSpotLocation != spotLocation)
+		{
+			_dbusIme.SetCursorLocation(spotLocation.X, spotLocation.Y, 1, spotLocation.Height);
+			_lastSpotLocation = spotLocation;
+		}
 	}
 }

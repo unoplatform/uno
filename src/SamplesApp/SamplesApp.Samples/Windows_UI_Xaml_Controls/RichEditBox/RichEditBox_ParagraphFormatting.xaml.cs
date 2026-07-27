@@ -6,7 +6,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_ParagraphFormatting", Description = "Functional RichEditBox on Skia: apply a uniform paragraph alignment (Left/Center/Right/Justify) to the whole document via the Text Object Model, projected onto the shared DisplayBlock, with undo/redo.")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_ParagraphFormatting", Description = "RichEditBox parity probe for paragraph alignment through the Text Object Model, with undo and redo.")]
+#endif
 	public sealed partial class RichEditBox_ParagraphFormatting : Page
 	{
 		// A multi-paragraph document whose lines are long enough to wrap inside the constrained editor,

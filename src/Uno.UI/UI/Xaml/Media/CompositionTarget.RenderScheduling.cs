@@ -71,6 +71,7 @@ public partial class CompositionTarget
 	private bool _renderRequested; // only set or read under _renderingStateGate
 	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate
 	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
+	private bool _renderDeferredForLayout; // only set or read under _renderingStateGate
 	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
 
 	// When the host stops delivering frames, the outstanding request latches and every later one coalesces into
@@ -88,6 +89,8 @@ public partial class CompositionTarget
 
 	/// <summary>Reports per stall, so a window the host legitimately stopped drawing (minimized) doesn't log forever.</summary>
 	private const int MaxStalledRenderReports = 3;
+
+	internal Action<Action>? RenderCallbackSchedulerForTesting { get; set; }
 
 	private bool RenderRequested
 	{
@@ -199,8 +202,18 @@ public partial class CompositionTarget
 				if (_renderRequestedAfterAheadOfTimePaint)
 				{
 					_renderRequestedAfterAheadOfTimePaint = false;
-					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}: rendered ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
-					((ICompositionTarget)this).RequestNewFrame();
+					if (FrameRenderHelper.CanRecordFrame(ContentRoot.VisualTree.RootElement))
+					{
+						_renderDeferredForLayout = false;
+						this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}: replacing a stale ahead-of-time frame in the current tick");
+						shouldRender = true;
+					}
+					else
+					{
+						_renderDeferredForLayout = true;
+						RenderRequested = true;
+						this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}: retaining the stale-frame request until layout completes");
+					}
 				}
 				else
 				{
@@ -209,9 +222,17 @@ public partial class CompositionTarget
 			}
 			else if (RenderRequested)
 			{
-				RenderRequested = false;
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)} fired from {nameof(EnqueueRenderCallback)}");
-				Render();
+				if (_renderDeferredForLayout && !FrameRenderHelper.CanRecordFrame(ContentRoot.VisualTree.RootElement))
+				{
+					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}: layout remains dirty, keeping the frame pending");
+				}
+				else
+				{
+					RenderRequested = false;
+					_renderDeferredForLayout = false;
+					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueueRenderCallback)}");
+					shouldRender = true;
+				}
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
@@ -238,7 +259,14 @@ public partial class CompositionTarget
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
-			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
+			if (RenderCallbackSchedulerForTesting is { } schedule)
+			{
+				schedule(EnqueueRenderCallback);
+			}
+			else
+			{
+				NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
+			}
 		}
 
 		// Present in a finally: a swapchain that takes a device lock in AcquireRenderTarget releases it in
@@ -272,6 +300,7 @@ public partial class CompositionTarget
 				{
 					RenderRequested = false;
 					_renderedAheadOfTime = true;
+					_renderDeferredForLayout = false;
 					shouldRender = true;
 				}
 				AssertRenderStateMachine();
@@ -293,6 +322,7 @@ public partial class CompositionTarget
 		{
 			Debug.Assert(!_renderRequestedAfterAheadOfTimePaint || _renderedAheadOfTime);
 			Debug.Assert(!_renderedAheadOfTime || !RenderRequested);
+			Debug.Assert(!_renderDeferredForLayout || RenderRequested);
 		}
 	}
 
@@ -302,7 +332,7 @@ public partial class CompositionTarget
 		{
 			lock (_renderingStateGate)
 			{
-				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine: {nameof(_renderRequested)} = {_renderRequested}, {nameof(_renderedAheadOfTime)} = {_renderedAheadOfTime}, {nameof(_renderRequestedAfterAheadOfTimePaint)}={_renderRequestedAfterAheadOfTimePaint}");
+				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine: {nameof(_renderRequested)} = {_renderRequested}, {nameof(_renderedAheadOfTime)} = {_renderedAheadOfTime}, {nameof(_renderRequestedAfterAheadOfTimePaint)}={_renderRequestedAfterAheadOfTimePaint}, {nameof(_renderDeferredForLayout)}={_renderDeferredForLayout}");
 			}
 		}
 	}

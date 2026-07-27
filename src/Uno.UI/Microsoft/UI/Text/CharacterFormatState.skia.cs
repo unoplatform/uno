@@ -4,6 +4,10 @@ using System;
 
 namespace Microsoft.UI.Text
 {
+	internal sealed class RichEditTextObjectIdentity
+	{
+	}
+
 	// Uno-specific concrete character-formatting state for one contiguous run of text in the
 	// RichEditBox Text Object Model. Unlike ITextCharacterFormat (which is tri-state and can be
 	// "undefined" over a mixed range), a run always holds concrete, resolved values.
@@ -45,11 +49,18 @@ namespace Microsoft.UI.Text
 		/// <summary>Quoted TOM URL text for a client-created friendly-name link; null means not a link.</summary>
 		public string? Link;
 
+		/// <summary>Optional RTF hyperlink anchor switch associated with <see cref="Link"/>.</summary>
+		public string? LinkAnchor;
+
 		/// <summary>Inline object occupying this character position; null for ordinary text.</summary>
 		public InlineImageState? InlineImage;
 
+		/// <summary>Stable identity shared by all runs belonging to one hyperlink or inline image.</summary>
+		public RichEditTextObjectIdentity? TextObjectIdentity;
+
 		public CharacterFormatState Clone()
 		{
+			FormattingStateCloneDiagnostics.RecordCharacterClone();
 			var clone = (CharacterFormatState)MemberwiseClone();
 			clone.InlineImage = InlineImage?.Clone();
 			return clone;
@@ -81,9 +92,17 @@ namespace Microsoft.UI.Text
 				&& Size.Equals(other.Size)
 				&& string.Equals(Name, other.Name, StringComparison.Ordinal)
 				&& string.Equals(Link, other.Link, StringComparison.Ordinal)
-				&& Equals(InlineImage, other.InlineImage);
+				&& string.Equals(LinkAnchor, other.LinkAnchor, StringComparison.Ordinal)
+				&& Equals(InlineImage, other.InlineImage)
+				&& ReferenceEquals(TextObjectIdentity, other.TextObjectIdentity);
 
 		public override bool Equals(object? obj) => Equals(obj as CharacterFormatState);
+
+		// Each inline-object code unit owns independent layout and automation identity.
+		internal static bool CanCoalesce(CharacterFormatState left, CharacterFormatState right)
+			=> left.InlineImage is null
+				&& right.InlineImage is null
+				&& left.Equals(right);
 
 		public override int GetHashCode()
 		{
@@ -112,8 +131,23 @@ namespace Microsoft.UI.Text
 			hash.Add(Size);
 			hash.Add(Name, StringComparer.Ordinal);
 			hash.Add(Link, StringComparer.Ordinal);
+			hash.Add(LinkAnchor, StringComparer.Ordinal);
 			hash.Add(InlineImage);
+			hash.Add(TextObjectIdentity);
 			return hash.ToHashCode();
+		}
+
+		internal static bool IsSameTextObject(CharacterFormatState left, CharacterFormatState right)
+		{
+			if (left.TextObjectIdentity is not null || right.TextObjectIdentity is not null)
+			{
+				return ReferenceEquals(left.TextObjectIdentity, right.TextObjectIdentity);
+			}
+
+			return left.Link is not null
+				&& right.Link is not null
+				&& string.Equals(left.Link, right.Link, StringComparison.Ordinal)
+				&& string.Equals(left.LinkAnchor, right.LinkAnchor, StringComparison.Ordinal);
 		}
 	}
 

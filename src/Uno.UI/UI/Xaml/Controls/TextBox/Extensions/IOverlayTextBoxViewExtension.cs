@@ -8,7 +8,7 @@ internal interface IOverlayTextBoxViewExtension
 {
 	bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
-	void StartEntry();
+	void StartEntry(bool suppressSoftwareKeyboard = false);
 
 	void EndEntry();
 
@@ -20,7 +20,11 @@ internal interface IOverlayTextBoxViewExtension
 
 	void UpdatePosition();
 
+	void NotifyImePositionChanged();
+
 	void SetText(string text);
+
+	void ReplaceText(int start, int length, string replacement);
 
 	void SetPasswordRevealState(PasswordRevealState passwordRevealState);
 

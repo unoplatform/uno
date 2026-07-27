@@ -74,6 +74,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
+	private ScrollViewer _imeScrollViewer;
+	private bool _isImeLayoutTrackingAttached;
 
 	private MenuFlyout _proofingMenu;
 
@@ -83,9 +85,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	internal ContentControl ContentElement => _contentElement;
 
+	Control ITextBoxViewHost.Owner => Owner;
+
 	string ITextBoxViewHost.Text => Text;
 
 	bool ITextBoxViewHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+	bool ITextBoxViewHost.IsColorFontEnabled => true;
 
 	FontFamily ITextBoxViewHost.FontFamily => Owner.FontFamily;
 
@@ -103,11 +109,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	TextAlignment ITextBoxViewHost.TextAlignment => TextAlignment;
 
+	TextReadingOrder ITextBoxViewHost.TextReadingOrder => TextReadingOrder.UseFlowDirection;
+
 	void ITextBoxViewHost.UpdateLayout() => Owner.UpdateLayout();
 
 	ContentControl ITextBoxViewHost.ContentElement => _contentElement;
 
-	string ITextBoxViewHost.ProcessTextInput(string newText) => ProcessTextInput(newText);
+	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength) => ProcessTextInput(newText);
 
 	bool ITextBoxViewHost.IsComposing => IsComposing;
 
@@ -129,6 +137,18 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	bool ITextViewEditorHost.HasPointerCapture => HasPointerCapture;
 
 	float ITextViewEditorHost.CaretXOffset => _caretXOffset;
+
+	bool ITextViewEditorHost.TryGetUpDownResult(
+		int selectionStart,
+		int selectionLength,
+		bool shift,
+		bool ctrl,
+		bool up,
+		out int result)
+	{
+		result = 0;
+		return false;
+	}
 
 	void ITextViewEditorHost.TrySetCurrentlyTyping(bool value) => TrySetCurrentlyTyping(value);
 
@@ -325,6 +345,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	partial void OnUnloadedPartial()
 	{
+		EndImeSession();
+		DetachImeGeometryTracking();
 		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
 		// recycling), which would otherwise strand IsCaretDragActive permanently true.
 		CancelCaretDrag();
@@ -334,6 +356,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 		_clipboardChangeSubscription.Disposable = null;
 	}
+
+	partial void OnLoadedPartial() => AttachImeGeometryTracking();
 
 	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
@@ -351,7 +375,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		TextBoxView?.UpdateFont();
 	}
 
-	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
+	partial void OnInputScopeChangedPartial(InputScope newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.InputScope);
+	}
+
+	partial void OnAcceptsReturnChangedPartial(bool newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.AcceptsReturn);
+	}
 
 	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 	{
@@ -360,9 +394,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			TextBoxView.DisplayBlock.IsSpellCheckEnabled = newValue;
 			TextBoxView.UpdateProperties();
 		}
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.SpellCheck);
 	}
 
-	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextPrediction);
+	}
 
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
@@ -410,7 +449,55 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 			TextBoxView.SetTextNative(Text);
 		}
+		AttachImeGeometryTracking();
 	}
+
+	private void AttachImeGeometryTracking()
+	{
+		if (!_isImeLayoutTrackingAttached)
+		{
+			Owner.LayoutUpdated += OnImeLayoutUpdated;
+			_isImeLayoutTrackingAttached = true;
+		}
+
+		var scrollViewer = _contentElement as ScrollViewer;
+		if (ReferenceEquals(_imeScrollViewer, scrollViewer))
+		{
+			return;
+		}
+
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+		}
+
+		_imeScrollViewer = scrollViewer;
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged += OnImeScrollViewerViewChanged;
+		}
+	}
+
+	private void DetachImeGeometryTracking()
+	{
+		if (_isImeLayoutTrackingAttached)
+		{
+			Owner.LayoutUpdated -= OnImeLayoutUpdated;
+			_isImeLayoutTrackingAttached = false;
+		}
+
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+			_imeScrollViewer = null;
+		}
+	}
+
+	private void OnImeLayoutUpdated(object sender, object args)
+		=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+
+	private void OnImeScrollViewerViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+		=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
@@ -590,6 +677,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 				_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
 			}
 		}
+
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 	}
 
 	/// <summary>
@@ -1268,6 +1357,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		}
 
 		_textBoxNotificationsSingleton?.NotifyValueChanged(this);
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 	}
 
 	private string RemoveLF(string baseString)

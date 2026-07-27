@@ -230,7 +230,7 @@ internal class Win32RawElementProvider :
 					when peer.GetPattern(PatternInterface.Text2) is ITextProvider2 text2
 					=> new UiaTextProvider2Wrapper(text2, _accessibility),
 				Win32UIAutomationInterop.UIA_TextEditPatternId
-					when peer.GetPattern(PatternInterface.TextEdit) is ITextEditProvider textEdit
+					when GetTextEditProvider(peer) is { } textEdit
 					=> new UiaTextEditProviderWrapper(textEdit, _accessibility),
 				Win32UIAutomationInterop.UIA_ItemContainerPatternId
 					when peer.GetPattern(PatternInterface.ItemContainer) is IItemContainerProvider itemContainer
@@ -294,6 +294,12 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 	}
+
+	private static ITextEditProvider? GetTextEditProvider(AutomationPeer peer)
+		=> peer.GetPattern(PatternInterface.TextEdit) as ITextEditProvider
+			?? (peer is RichEditBoxAutomationPeer
+				? peer.GetPattern(PatternInterface.Text) as ITextEditProvider
+				: null);
 
 	public object? GetPropertyValue(int propertyId)
 	{
@@ -1723,8 +1729,16 @@ internal class Win32RawElementProvider :
 	}
 
 	private AutomationPeer? GetAutomationPeer()
-		=> (_representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null)
-			?? ConnectedOwner.GetOrCreateAutomationPeer();
+	{
+		if (_representedPeer is not null)
+		{
+			return _representedPeer.TryGetTarget(out var peer)
+				? peer
+				: _isVirtualPeer ? null : ConnectedOwner.GetOrCreateAutomationPeer();
+		}
+
+		return ConnectedOwner.GetOrCreateAutomationPeer();
+	}
 
 	private bool ContainsPoint(double screenX, double screenY)
 	{

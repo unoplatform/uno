@@ -46,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL unoIsReadOnly;
 @property (nonatomic) NSInteger unoSelectionStart; // text caret/selection start index
 @property (nonatomic) NSInteger unoSelectionLength; // text selection length (0 = caret only)
+@property (nonatomic) BOOL unoSelectionIsBackward;
 @property (nonatomic) NSInteger unoPositionInSet; // maps to ARIA aria-posinset (1-based, 0=unset)
 @property (nonatomic) NSInteger unoSizeOfSet; // maps to ARIA aria-setsize (0=unset)
 @property (nonatomic, strong, nullable) NSString *unoLandmarkRole; // landmark type (main, navigation, search, form, region)
@@ -82,7 +83,17 @@ typedef void (*accessibility_focus_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_increment_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_decrement_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_expand_collapse_fn_ptr)(intptr_t handle);
-typedef void (*accessibility_set_value_fn_ptr)(intptr_t handle, const char* _Nonnull value);
+typedef void (*accessibility_set_text_fn_ptr)(
+	intptr_t handle,
+	const char* _Nonnull value,
+	int32_t selectionStart,
+	int32_t selectionEnd,
+	int32_t selectionIsBackward);
+typedef void (*accessibility_set_selection_fn_ptr)(
+	intptr_t handle,
+	int32_t selectionStart,
+	int32_t selectionEnd,
+	int32_t selectionIsBackward);
 typedef void (*accessibility_tree_requested_fn_ptr)(NSWindow* _Nonnull window);
 
 // Setup — window-scoped context lifecycle
@@ -94,7 +105,9 @@ void uno_accessibility_set_tree_requested_callback(accessibility_tree_requested_
 void uno_accessibility_ensure_tree(NSWindow* _Nonnull window);
 void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increment, accessibility_decrement_fn_ptr decrement);
 void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collapse_fn_ptr expandCollapse);
-void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue);
+void uno_accessibility_set_text_callbacks(
+	accessibility_set_text_fn_ptr setText,
+	accessibility_set_selection_fn_ptr setSelection);
 
 // Element management — take the owning NSWindow
 void uno_accessibility_add_element(NSWindow* _Nonnull window,
@@ -128,7 +141,11 @@ void uno_accessibility_update_position_in_set(intptr_t handle, int32_t position,
 void uno_accessibility_update_landmark(intptr_t handle, const char* _Nullable landmarkRole);
 void uno_accessibility_update_required(intptr_t handle, bool required);
 void uno_accessibility_update_read_only(intptr_t handle, bool readOnly);
-void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength);
+void uno_accessibility_update_selection(
+	intptr_t handle,
+	int32_t selectionStart,
+	int32_t selectionLength,
+	bool selectionIsBackward);
 void uno_accessibility_update_modal(intptr_t handle, bool isModal);
 
 // Focus — resolve context via element back-pointer

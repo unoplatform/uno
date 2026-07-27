@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="Functional RichEditBox (Skia): apply character formatting to a range through the Document Text Object Model. The runs render as TextBlock inlines."
+            Text="RichEditBox parity probe: apply character formatting to a range through the Document Text Object Model."
             TextWrapping="Wrap" />
 
         <RichEditBox
