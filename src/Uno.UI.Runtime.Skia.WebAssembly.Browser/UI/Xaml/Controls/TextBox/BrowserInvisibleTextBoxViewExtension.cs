@@ -3,6 +3,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.System;
@@ -53,6 +54,32 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
 		{
 			textBox.SelectInternal(selectionStart, selectionLength);
+		}
+	}
+
+	[JSExport]
+	private static void OnNativeBlur()
+	{
+		try
+		{
+			var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+			// Fired only for browser-initiated blurs of the shared native input (managed-initiated
+			// blurs are suppressed on the JS side). In that case managed focus is still stale on the
+			// TextBox, so clearing it here is what finally raises LostFocus and re-syncs FocusManager.
+			var focused = FocusManager.GetFocusedElement(xamlRoot!);
+			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(BrowserInvisibleTextBoxViewExtension).Log().Trace($"OnNativeBlur: focused element is {focused?.GetType().Name ?? "null"}");
+			}
+			if (focused is TextBox textBox)
+			{
+				textBox.Unfocus();
+			}
+		}
+		catch (Exception e)
+		{
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
