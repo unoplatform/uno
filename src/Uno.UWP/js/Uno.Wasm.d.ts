@@ -522,6 +522,7 @@ declare namespace Uno.Storage.Streams {
         private static readonly DownloadFolderName;
         private static readonly _sessionPrefix;
         private static readonly DownloadRetentionMs;
+        private static readonly UrlReleaseGraceMs;
         private static _pendingDownloadUrl;
         private static _downloadSequence;
         private _chunks;

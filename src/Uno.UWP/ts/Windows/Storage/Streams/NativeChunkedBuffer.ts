@@ -20,6 +20,9 @@ namespace Uno.Storage.Streams {
 		// Long enough for a multi-GB download to be read out before the file is dropped.
 		private static readonly DownloadRetentionMs = 15 * 60 * 1000;
 
+		// Only has to outlast the browser picking up a queued download, not the transfer.
+		private static readonly UrlReleaseGraceMs = 60 * 1000;
+
 		private static _pendingDownloadUrl: string = null;
 		private static _downloadSequence = 0;
 
@@ -154,10 +157,12 @@ namespace Uno.Storage.Streams {
 			instance._chunks = [];
 			instance._released = true;
 
-			// Revoking the previous URL is safe for a download already in flight, but the
-			// file backing it must stay until that download has certainly finished.
-			if (NativeChunkedBuffer._pendingDownloadUrl) {
-				window.URL.revokeObjectURL(NativeChunkedBuffer._pendingDownloadUrl);
+			// A download only becomes immune to revocation once the browser has dereferenced
+			// its URL, which happens shortly after the click - so give the previous one a
+			// grace period rather than revoking it the moment another save starts.
+			const previousUrl = NativeChunkedBuffer._pendingDownloadUrl;
+			if (previousUrl) {
+				setTimeout(() => window.URL.revokeObjectURL(previousUrl), NativeChunkedBuffer.UrlReleaseGraceMs);
 			}
 
 			const url = window.URL.createObjectURL(source);
