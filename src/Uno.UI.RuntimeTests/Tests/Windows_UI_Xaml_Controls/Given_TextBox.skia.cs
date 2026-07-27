@@ -5377,13 +5377,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
 		}
 
-		// Over an EMPTY textbox with clipboard content, Paste is the only available command and, under a touch/pen flyout,
-		// is promoted to the primary bar with nothing in the overflow — the lone-primary/no-secondary case. Like Cut/Copy/
-		// Paste in a selection flyout, that primary Paste button must show its text label, not render as a bare icon — the
-		// same primary-bar label miss that hit a lone Select All.
+		// Over an EMPTY PasswordBox with clipboard content, Paste is the only available command and, under a touch/pen
+		// flyout, is promoted to the primary bar with nothing in the overflow — the lone-primary/no-secondary case. Like
+		// Cut/Copy/Paste in a selection flyout, that primary Paste button must show its text label, not render as a bare
+		// icon — the same primary-bar label miss that hit a lone Select All. A PasswordBox is used because a TextBox
+		// always offers Select All on touch, so it can no longer reach a lone-primary bar.
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // touch flyout path: run on Desktop (dev) + real Android only
-		public async Task When_Touch_Paste_Only_Flyout_Shows_Label()
+		public async Task When_Touch_Paste_Only_PasswordBox_Flyout_Shows_Label()
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
 			{
@@ -5397,12 +5398,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
 			});
 
-			// Empty textbox: with nothing to select there is no Select All, so a populated clipboard leaves Paste as the
+			// Empty PasswordBox: its Select All needs Password.Length > 0, so a populated clipboard leaves Paste as the
 			// sole command — the lone-primary/no-secondary flyout.
-			var SUT = new TextBox
+			var SUT = new PasswordBox
 			{
-				Width = 400,
-				Text = ""
+				Width = 400
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5435,16 +5435,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Empty box + clipboard content: Paste is the only command (no selection → no Copy; no text → no Select All),
 			// sitting alone in the primary bar with an empty overflow.
 			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
-			Assert.IsTrue(hasPaste, "Paste should be available over an empty box when the clipboard has content");
-			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty box (nothing is selected)");
-			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty box (there is no text to select)");
-			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Paste should be the lone primary command over an empty box");
+			Assert.IsTrue(hasPaste, "Paste should be available over an empty password box when the clipboard has content");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty password box (nothing is selected)");
+			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty password box");
+			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Paste should be the lone primary command over an empty password box");
 			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the Paste-only flyout should have no secondary commands");
 
 			var pasteButton = flyout.PrimaryCommands
 				.OfType<AppBarButton>()
 				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey)));
-			Assert.IsNotNull(pasteButton, "Paste should be a primary (bar) command over an empty box with clipboard content");
+			Assert.IsNotNull(pasteButton, "Paste should be a primary (bar) command over an empty password box with clipboard content");
 			Assert.IsNotNull(pasteButton.Icon, "the primary Paste button should have an icon");
 
 			// The lone primary Paste button must show its text label, not just its icon — the reported bug.
@@ -5605,14 +5605,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(hasPaste, "Paste should be available over an empty box when the clipboard has content");
 			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty box (nothing is selected)");
 			Assert.IsFalse(hasCut, "Cut should NOT be available over an empty box (nothing is selected)");
-			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty box (there is no text to select)");
+			Assert.IsTrue(hasSelectAll, "Select All stays available on touch even over an empty box, so the gesture always has a command");
 		}
 
-		// An empty field with an empty clipboard has no command at all, so the gesture must not open the flyout —
-		// opening it would only flash an empty popup before it self-hides. The caret is still placed.
+		// On touch, Select All is available even over an empty box, so a double-tap opens the flyout with Select All
+		// alone - no Paste (empty clipboard), no Copy/Cut (nothing selected).
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
-		public async Task When_Touch_DoubleTap_Empty_Without_Clipboard_Shows_No_Flyout_Android()
+		public async Task When_Touch_DoubleTap_Empty_Without_Clipboard_Opens_Flyout_Android()
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
 			{
@@ -5627,6 +5627,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			finger.Press(center);
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "Select All alone should keep the empty-box flyout open with an empty clipboard");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode, "the gesture should still place the Android insertion caret");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All is available on touch even over an empty box");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available (nothing is selected)");
+			Assert.IsFalse(hasCut, "Cut should NOT be available (nothing is selected)");
+			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Select All should be the lone primary command");
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "nothing should land in the overflow");
+		}
+
+		// The counterpart that keeps HasTouchPrimaryCommandsFor honest: an empty PasswordBox with an empty clipboard is
+		// the remaining case with genuinely no primary command (its Select All needs Password.Length > 0 and routes to
+		// the overflow anyway), so the gesture must not open a flyout at all there.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Touch_DoubleTap_Empty_PasswordBox_Without_Clipboard_Shows_No_Flyout()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new PasswordBox
+			{
+				Width = 400,
 				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
 			};
 
@@ -5657,9 +5717,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(200);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, openedCount, "an empty box with an empty clipboard has no command, so the flyout must never open (not even to self-hide)");
-			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "an empty box with an empty clipboard has no command, so no flyout should open");
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode, "the gesture should still place the Android insertion caret");
+			Assert.AreEqual(0, openedCount, "an empty password box with an empty clipboard has no command, so the flyout must never open (not even to self-hide)");
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "no flyout should open with nothing to show");
 		}
 
 		// PasswordBox derives from TextBox and shares the touch gesture path, so the empty-field flyout runs there too:

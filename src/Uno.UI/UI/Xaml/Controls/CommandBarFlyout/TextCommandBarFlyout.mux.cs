@@ -393,8 +393,8 @@ partial class TextCommandBarFlyout
 
 	// Uno specific: a transient flyout whose primary bar would be empty hides itself the moment it opens (see the
 	// Opened handler), which flashes an empty popup. Let a touch/pen caller ask up-front whether it is worth opening.
-	// The primary-bar routing mirrors UpdateButtons for InputDevicePrefersPrimaryCommands (which is only assigned
-	// once the flyout is opening, so it can't be read here).
+	// The primary-bar routing mirrors UpdateButtons for InputDevicePrefersPrimaryCommands, which is only assigned once
+	// the flyout is opening - hence passing the touch/pen preference explicitly so both agree on the command set.
 	internal bool HasTouchPrimaryCommandsFor(FrameworkElement target)
 	{
 		var primaryBarButtons = TextControlButtons.Cut | TextControlButtons.Copy | TextControlButtons.Paste
@@ -404,18 +404,18 @@ partial class TextCommandBarFlyout
 			primaryBarButtons |= TextControlButtons.SelectAll;
 		}
 
-		return (GetButtonsToAdd(target) & primaryBarButtons) != TextControlButtons.None;
+		return (GetButtonsToAdd(target, prefersPrimaryCommands: true) & primaryBarButtons) != TextControlButtons.None;
 	}
 
-	private TextControlButtons GetButtonsToAdd() => GetButtonsToAdd(Target);
+	private TextControlButtons GetButtonsToAdd() => GetButtonsToAdd(Target, InputDevicePrefersPrimaryCommands);
 
-	private TextControlButtons GetButtonsToAdd(FrameworkElement target)
+	private TextControlButtons GetButtonsToAdd(FrameworkElement target, bool prefersPrimaryCommands)
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 
 		if (target is TextBox textBoxTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
 		{
-			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget);
+			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget, prefersPrimaryCommands);
 		}
 		else if (target is TextBlock textBlockTarget)
 		{
@@ -444,7 +444,7 @@ partial class TextCommandBarFlyout
 		return buttonsToAdd;
 	}
 
-	private TextControlButtons GetTextBoxButtonsToAdd(TextBox textBox)
+	private TextControlButtons GetTextBoxButtonsToAdd(TextBox textBox, bool prefersPrimaryCommands)
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 
@@ -476,7 +476,9 @@ partial class TextCommandBarFlyout
 			buttonsToAdd |= TextControlButtons.Copy;
 		}
 
-		if (textBox.Text.Length > 0)
+		// Uno specific: on touch/pen Select All stays available even with no text, so a touch gesture on an empty box
+		// always has a command and opens a usable flyout. WinUI drops it there (nothing to select).
+		if (textBox.Text.Length > 0 || prefersPrimaryCommands)
 		{
 			buttonsToAdd |= TextControlButtons.SelectAll;
 		}
