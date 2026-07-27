@@ -21,6 +21,7 @@ namespace Uno.Storage.Streams {
 		private static readonly DownloadRetentionMs = 15 * 60 * 1000;
 
 		private static _pendingDownloadUrl: string = null;
+		private static _downloadSequence = 0;
 
 		private _chunks: Uint8Array[] = [];
 		private _length = 0;
@@ -125,7 +126,9 @@ namespace Uno.Storage.Streams {
 			const instance = NativeChunkedBuffer._bufferMap.get(bufferId);
 			instance.throwIfReleased();
 
-			const entryName = NativeChunkedBuffer._sessionPrefix + bufferId;
+			// Unique per commit: committing the same file twice must not let the first
+			// retention timer delete the file a later download is still reading.
+			const entryName = `${NativeChunkedBuffer._sessionPrefix}${bufferId}-${++NativeChunkedBuffer._downloadSequence}`;
 			const directory = await NativeChunkedBuffer.tryGetDownloadDirectoryAsync();
 
 			let source: Blob;

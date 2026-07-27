@@ -76,9 +76,8 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private async Task SaveViaPickerAsync(int mb)
 		{
-			if (_busy)
+			if (!TryBeginRun())
 			{
-				Log("Busy - wait for the current run to finish.");
 				return;
 			}
 
@@ -106,13 +105,16 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			{
 				Log($"FAILED: {ex.GetType().Name}: {ex.Message}");
 			}
+			finally
+			{
+				_busy = false;
+			}
 		}
 
 		private async Task SaveToAppStorageAsync(int mb)
 		{
-			if (_busy)
+			if (!TryBeginRun())
 			{
-				Log("Busy - wait for the current run to finish.");
 				return;
 			}
 
@@ -142,13 +144,16 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			{
 				Log($"FAILED: {ex.GetType().Name}: {ex.Message}");
 			}
+			finally
+			{
+				_busy = false;
+			}
 		}
 
 		private async Task PickFileAndSaveAsync()
 		{
-			if (_busy)
+			if (!TryBeginRun())
 			{
-				Log("Busy - wait for the current run to finish.");
 				return;
 			}
 
@@ -173,7 +178,6 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					return;
 				}
 
-				_busy = true;
 				Log($"--- Copying '{source.Name}' via OpenStreamForWriteAsync ---");
 				var startMem = GetMemoryUsageMb();
 				var peakMem = startMem;
@@ -214,44 +218,50 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			}
 		}
 
+		// The caller owns the busy flag: this runs inside a larger operation that is not
+		// finished when the write loop is.
 		private async Task WriteGeneratedAsync(Stream outStream, long total, string label)
 		{
-			_busy = true;
-			try
+			Log($"--- {label}: writing via OpenStreamForWriteAsync ---");
+			var startMem = GetMemoryUsageMb();
+			var peakMem = startMem;
+
+			// One reused chunk buffer - the app never holds more than 2 MB itself.
+			var buffer = new byte[ChunkSize];
+			long written = 0;
+			long nextReport = 0;
+
+			while (written < total)
 			{
-				Log($"--- {label}: writing via OpenStreamForWriteAsync ---");
-				var startMem = GetMemoryUsageMb();
-				var peakMem = startMem;
+				var count = (int)Math.Min(ChunkSize, total - written);
+				await outStream.WriteAsync(buffer.AsMemory(0, count));
+				written += count;
 
-				// One reused chunk buffer - the app never holds more than 2 MB itself.
-				var buffer = new byte[ChunkSize];
-				long written = 0;
-				long nextReport = 0;
-
-				while (written < total)
+				if (written >= nextReport)
 				{
-					var count = (int)Math.Min(ChunkSize, total - written);
-					await outStream.WriteAsync(buffer.AsMemory(0, count));
-					written += count;
-
-					if (written >= nextReport)
-					{
-						peakMem = Math.Max(peakMem, GetMemoryUsageMb());
-						Progress.Value = (double)written / total * 100;
-						MemText.Text = $"written {written / (1024 * 1024)} MB   |   heap {peakMem} MB (start {startMem})";
-						nextReport += 64L * 1024 * 1024;
-						await Task.Yield();
-					}
+					peakMem = Math.Max(peakMem, GetMemoryUsageMb());
+					Progress.Value = (double)written / total * 100;
+					MemText.Text = $"written {written / (1024 * 1024)} MB   |   heap {peakMem} MB (start {startMem})";
+					nextReport += 64L * 1024 * 1024;
+					await Task.Yield();
 				}
-				await outStream.FlushAsync();
+			}
+			await outStream.FlushAsync();
 
-				peakMem = Math.Max(peakMem, GetMemoryUsageMb());
-				Log($"DONE: wrote {written / (1024 * 1024)} MB. heap {startMem} -> {peakMem} MB.");
-			}
-			finally
+			peakMem = Math.Max(peakMem, GetMemoryUsageMb());
+			Log($"DONE: wrote {written / (1024 * 1024)} MB. heap {startMem} -> {peakMem} MB.");
+		}
+
+		private bool TryBeginRun()
+		{
+			if (_busy)
 			{
-				_busy = false;
+				Log("Busy - wait for the current run to finish.");
+				return false;
 			}
+
+			_busy = true;
+			return true;
 		}
 
 		private static long GetMemoryUsageMb()
