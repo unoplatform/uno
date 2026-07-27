@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
@@ -47,6 +48,45 @@ public class Given_ContentControl_StrandedContent : BaseTestClass
 
 				host.Visibility = Visibility.Visible;
 				await contentControl.ValidateTextOnChildTextBlock(ControlChangedText);
+			},
+			ct);
+	}
+
+	/// <summary>
+	/// Local values move to the re-created instance the same way the visual-tree walk
+	/// transfers them — notably attached properties, which navigation frameworks set on
+	/// content right after creating it — while an inherited DataContext keeps flowing
+	/// from the host rather than being pinned on the new instance.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Content_Updated_While_Unmaterialized_Then_Local_Values_Are_Transferred()
+	{
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		var ct = cts.Token;
+
+		var host = new Grid { Visibility = Visibility.Collapsed, DataContext = "host-context" };
+		var contentControl = new ContentControl { Content = new HR_Frame_Pages_UC1() };
+		host.Children.Add(contentControl);
+		UnitTestsUIContentHelper.Content = host;
+
+		var staleContent = (FrameworkElement)contentControl.Content;
+		staleContent.Tag = "local-tag";
+		AutomationProperties.SetName(staleContent, "local-attached");
+
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_UC1>(
+			ControlOriginalText,
+			ControlChangedText,
+			() =>
+			{
+				var newContent = contentControl.Content as FrameworkElement;
+				Assert.AreNotSame(staleContent, newContent);
+
+				Assert.AreEqual("local-tag", newContent.Tag, "a locally-set value must be transferred");
+				Assert.AreEqual("local-attached", AutomationProperties.GetName(newContent), "a locally-set attached property must be transferred");
+				Assert.AreEqual(DependencyProperty.UnsetValue, newContent.ReadLocalValue(FrameworkElement.DataContextProperty),
+					"an inherited DataContext must not be pinned as a local value");
+
+				return Task.CompletedTask;
 			},
 			ct);
 	}

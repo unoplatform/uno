@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
 
 [assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.ContentControl), typeof(Microsoft.UI.Xaml.Controls.ContentControlElementMetadataUpdateHandler))]
@@ -34,6 +35,8 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 	/// materialized in the visual tree (host not laid out, template never applied) —
 	/// the HR visual-tree walk only enumerates materialized children and cannot
 	/// replace such an instance itself. Returns null when there is nothing to patch.
+	/// Deliberately does not raise Before/AfterElementReplaced — those belong to the walk;
+	/// consumers reconcile in AfterVisualTreeUpdate (see uno-internals-hotreload.md).
 	/// </summary>
 	[UnconditionalSuppressMessage("Trimming", "IL2072")]
 	// Hot reload requires trimming disabled; TypeMappings preserves replacement ctors.
@@ -96,12 +99,11 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 			return null;
 		}
 
-		// Copy the DataContext only when it was locally set; an inherited value must
-		// keep flowing from the host instead of being pinned on the new instance.
-		if (currentContent.ReadLocalValue(FrameworkElement.DataContextProperty) != DependencyProperty.UnsetValue)
-		{
-			newContent.DataContext = currentContent.DataContext;
-		}
+		// Same transfer the walk's ReplaceViewInstance does. It moves local values only — including
+		// attached properties (region/route properties set by navigation frameworks) and bindings —
+		// so an inherited DataContext keeps flowing from the host instead of being pinned here.
+		((IDependencyObjectStoreProvider)currentContent).Store
+			.ClonePropertiesToAnotherStoreForHotReload(((IDependencyObjectStoreProvider)newContent).Store);
 
 		return newContent;
 	}
