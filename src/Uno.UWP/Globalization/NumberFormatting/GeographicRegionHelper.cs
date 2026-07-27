@@ -55,34 +55,12 @@ internal static class GeographicRegionHelper
 	}
 
 	/// <summary>
-	/// Determines which <see cref="NumberFormatInfo"/> should be used to render the decimal separator,
-	/// group separator/sizes and negative sign.
+	/// Resolves the format used for punctuation, grouping, and signs.
 	/// </summary>
 	/// <remarks>
-	/// For Arabic-Indic numeral systems (Arab/ArabExt), <see cref="NumeralSystemTranslator"/> itself
-	/// translates the ASCII '.'/',' punctuation emitted by <see cref="FormatterHelper"/> into
-	/// locale-specific Arabic separators (see <see cref="NumeralSystemTranslator.TranslateArab"/>).
-	/// Resolving a locale-specific <see cref="NumberFormatInfo"/> in that case would either localize
-	/// the punctuation twice or feed the translator punctuation it doesn't recognize, so Invariant
-	/// (ASCII) punctuation is used unconditionally for those numeral systems.
-	///
-	/// For every other numeral system (including the default Latn), <see cref="NumeralSystemTranslator"/>
-	/// only substitutes digit glyphs and leaves punctuation untouched, so the resolved culture's actual
-	/// decimal/group separator and negative-sign conventions must be used here to get correct
-	/// decimal-comma behavior for the target locale.
-	///
-	/// Known limitation: <see cref="FormatterHelper.HasInvalidGroupSize"/> (used when parsing) only ever
-	/// consults <see cref="NumberFormatInfo.NumberGroupSizes"/>[0], so parsing text with non-uniform grouping
-	/// (e.g. "en-IN"/"hi-IN" lakh/crore grouping, group sizes {3, 2}) may not validate correctly, even though
-	/// formatting (<see cref="FormatterHelper.AppendFormatIntegerPart"/>) does honor the full
-	/// NumberGroupSizes array via .NET's custom numeric picture format. This is a pre-existing
-	/// FormatterHelper limitation, not fixed by this resolution logic.
-	///
-	/// Known limitation: under <c>InvariantGlobalization</c> publish mode, <see cref="CultureInfo.GetCultureInfo(string)"/>
-	/// does not throw for unknown cultures — it silently returns invariant-equivalent data. Uno's own
-	/// app templates require full globalization (<c>InvariantGlobalization=false</c>), so this is not
-	/// expected to be hit in a properly configured Uno app, but it means locale resolution here cannot
-	/// itself detect or report that degraded mode.
+	/// Arab and ArabExt use invariant punctuation because the translator localizes separators.
+	/// Other numeral systems use the resolved locale. InvariantGlobalization may silently return
+	/// invariant-equivalent data for unknown cultures.
 	/// </remarks>
 	public static NumberFormatInfo ResolveNumberFormat(string resolvedLanguage, string resolvedGeographicRegion, string numeralSystem)
 	{
