@@ -47,7 +47,8 @@ namespace Windows.Storage
 			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
 				using var stream = ChunkedBufferStream.CreateView(_bufferId, writable: false);
-				return Task.FromResult(new BasicProperties((ulong)stream.Length, DateTimeOffset.UtcNow));
+				return Task.FromResult(
+					new BasicProperties((ulong)stream.Length, ChunkedBufferStream.GetBufferLastModified(_bufferId)));
 			}
 
 			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)

@@ -25,6 +25,7 @@ namespace Uno.Storage.Streams {
 		private _chunks: Uint8Array[] = [];
 		private _length = 0;
 		private _released = false;
+		private _lastModified = Date.now();
 
 		public static create(bufferId: string): void {
 			NativeChunkedBuffer._bufferMap.set(bufferId, new NativeChunkedBuffer());
@@ -36,6 +37,11 @@ namespace Uno.Storage.Streams {
 
 		public static getLength(bufferId: string): number {
 			return NativeChunkedBuffer._bufferMap.get(bufferId)._length;
+		}
+
+		/** Epoch milliseconds of the last write, for file modification metadata. */
+		public static getLastModified(bufferId: string): number {
+			return NativeChunkedBuffer._bufferMap.get(bufferId)._lastModified;
 		}
 
 		public static write(bufferId: string, dataPtr: number, count: number, position: number): void {
@@ -62,6 +68,7 @@ namespace Uno.Storage.Streams {
 			}
 
 			instance._length = Math.max(instance._length, position + count);
+			instance._lastModified = Date.now();
 		}
 
 		public static read(bufferId: string, dataPtr: number, count: number, position: number): number {
@@ -105,6 +112,7 @@ namespace Uno.Storage.Streams {
 			}
 
 			instance._length = length;
+			instance._lastModified = Date.now();
 		}
 
 		/**

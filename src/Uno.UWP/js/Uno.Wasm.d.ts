@@ -527,9 +527,12 @@ declare namespace Uno.Storage.Streams {
         private _chunks;
         private _length;
         private _released;
+        private _lastModified;
         static create(bufferId: string): void;
         static dispose(bufferId: string): void;
         static getLength(bufferId: string): number;
+        /** Epoch milliseconds of the last write, for file modification metadata. */
+        static getLastModified(bufferId: string): number;
         static write(bufferId: string, dataPtr: number, count: number, position: number): void;
         static read(bufferId: string, dataPtr: number, count: number, position: number): number;
         static truncate(bufferId: string, length: number): void;

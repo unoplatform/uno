@@ -58,6 +58,10 @@ internal sealed partial class ChunkedBufferStream : Stream
 	public static Task SaveBufferAsDownloadAsync(Guid bufferId, string fileName)
 		=> NativeMethods.SaveAsDownloadAsync(bufferId.ToString(), fileName);
 
+	/// <summary>The time of the last write to the buffer.</summary>
+	public static DateTimeOffset GetBufferLastModified(Guid bufferId)
+		=> DateTimeOffset.FromUnixTimeMilliseconds((long)NativeMethods.GetLastModified(bufferId.ToString()));
+
 	public override bool CanRead => true;
 
 	public override bool CanSeek => true;
@@ -108,7 +112,9 @@ internal sealed partial class ChunkedBufferStream : Stream
 	}
 
 	public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-		=> Task.FromResult(Read(buffer, offset, count));
+		=> cancellationToken.IsCancellationRequested
+			? Task.FromCanceled<int>(cancellationToken)
+			: Task.FromResult(Read(buffer, offset, count));
 
 	public override void Write(byte[] buffer, int offset, int count)
 	{
@@ -135,6 +141,11 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 	public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
 	{
+		if (cancellationToken.IsCancellationRequested)
+		{
+			return Task.FromCanceled(cancellationToken);
+		}
+
 		Write(buffer, offset, count);
 		return Task.CompletedTask;
 	}
@@ -203,6 +214,9 @@ internal sealed partial class ChunkedBufferStream : Stream
 
 		[JSImport($"{JsType}.getLength")]
 		internal static partial double GetLength(string bufferId);
+
+		[JSImport($"{JsType}.getLastModified")]
+		internal static partial double GetLastModified(string bufferId);
 
 		[JSImport($"{JsType}.write")]
 		internal static partial void Write(string bufferId, nint data, int count, double position);
