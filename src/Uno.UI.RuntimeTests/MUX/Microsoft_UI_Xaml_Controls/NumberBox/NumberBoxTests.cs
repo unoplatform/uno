@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Automation;
 using MUXControlsTestApp;
 using Private.Infrastructure;
 using System.Threading.Tasks;
+using Windows.Globalization.NumberFormatting;
+using Windows.System.UserProfile;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -98,6 +100,26 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 
 				Assert.IsNull(textBox.SelectionFlyout, "Clearing SelectionFlyout on NumberBox should propagate to the inner TextBox.");
 			});
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void VerifyDefaultNumberFormatterUsesRegionalSettings()
+		{
+#if HAS_UNO
+			RunOnUIThread.Execute(() =>
+			{
+				var numberBox = new NumberBox();
+				var formatter = (DecimalFormatter)numberBox.NumberFormatter;
+				var expectedLanguage = GlobalizationPreferences.Languages[0].Split('_')[0];
+
+				Assert.AreEqual(expectedLanguage, formatter.Languages[0]);
+				Assert.AreEqual(GlobalizationPreferences.HomeGeographicRegion, formatter.GeographicRegion);
+				Assert.AreEqual(1, formatter.IntegerDigits);
+				Assert.AreEqual(0, formatter.FractionDigits);
+			});
+#endif
 		}
 
 		[TestMethod]
