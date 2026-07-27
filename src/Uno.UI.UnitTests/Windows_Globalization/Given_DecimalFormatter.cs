@@ -419,6 +419,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			sut.FractionDigits = 2;
 
 			Assert.AreEqual("12,34,567.00", sut.FormatDouble(1234567));
+			Assert.AreEqual(1234567d, sut.ParseDouble("12,34,567.00"));
 		}
 
 		[TestMethod]
