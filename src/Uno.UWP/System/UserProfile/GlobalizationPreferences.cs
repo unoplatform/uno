@@ -54,12 +54,14 @@ public static partial class GlobalizationPreferences
 	}
 #endif
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__
 	private static string[] GetCurrentCultureLanguages() =>
 		global::System.Globalization.CultureInfo.CurrentUICulture.Name is { Length: > 0 } language
 			? [language]
 			: ["en-US"];
+#endif
 
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__
 	private static string NormalizeRegionOrFallback(string? region)
 	{
 		if (TryNormalizeRegion(region, out var normalizedRegion) ||
@@ -130,10 +132,15 @@ public static partial class GlobalizationPreferences
 			const char Delimiter = ';';
 			if (NativeMethods.GetUserLanguages(Delimiter, out var handle) >= 0)
 			{
-				var languages = MarshalString.FromAbi(handle).Split(Delimiter);
-				MarshalString.DisposeAbi(handle);
-
-				return languages.Length > 0 ? languages : GetCurrentCultureLanguages();
+				try
+				{
+					var languages = MarshalString.FromAbi(handle).Split(Delimiter);
+					return languages.Length > 0 ? languages : GetCurrentCultureLanguages();
+				}
+				finally
+				{
+					MarshalString.DisposeAbi(handle);
+				}
 			}
 		}
 

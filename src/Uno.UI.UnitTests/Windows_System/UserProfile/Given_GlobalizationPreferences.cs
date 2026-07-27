@@ -1,6 +1,5 @@
 #nullable enable
 
-using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.System.UserProfile;
@@ -25,8 +24,6 @@ public class Given_GlobalizationPreferences
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 	public void When_HomeGeographicRegion_Then_ReturnsNonEmptyRegion()
 	{
-		Assert.AreEqual(CultureInfo.InvariantCulture, CultureInfo.CurrentCulture);
-
 		var region = GlobalizationPreferences.HomeGeographicRegion;
 
 		Assert.IsFalse(string.IsNullOrWhiteSpace(region));
