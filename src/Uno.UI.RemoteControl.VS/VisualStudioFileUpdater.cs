@@ -175,11 +175,16 @@ internal sealed class VisualStudioFileUpdater(
 		// runs when appropriate rather than run inline here.
 		if (document is not null && currentEncoding != targetEncoding)
 		{
+			// Reflect the new content in-memory right away so neither VS nor the dev-server (which is
+			// acked before finalization) ever observes stale content during the readiness wait. Only
+			// the persist that changes the on-disk encoding — close/re-encode/reopen — is deferred,
+			// as that is the part a "hot reload on save" could evaluate too early.
+			UpdateInMemory(document, fileContent);
+
 			if (!forceSaveOnDisk)
 			{
-				// Not forcing a disk save: reflect the new content in-memory only, leaving the
-				// document unsaved (VS negotiates the encoding whenever it is eventually saved).
-				UpdateInMemory(document, fileContent);
+				// Not forcing a disk save: leave the change in-memory and unsaved (VS negotiates the
+				// encoding whenever it is eventually saved).
 				return null;
 			}
 

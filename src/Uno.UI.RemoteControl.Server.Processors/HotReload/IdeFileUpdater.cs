@@ -87,18 +87,25 @@ internal sealed class IdeFileUpdater(
 		return [.. results];
 	}
 
-	protected override Task FinalizeAsync(HotReloadOperation hotReload, IUpdateFileRequest request, ImmutableArray<FileEditResult> results, CancellationToken ct)
+	protected override async Task FinalizeAsync(HotReloadOperation hotReload, IUpdateFileRequest request, ImmutableArray<FileEditResult> results, CancellationToken ct)
 	{
-		// The info file is already persisted (ApplyEditsAsync). For write batches the trigger
-		// traveled with the UpdateFileRequestIdeMessage (no blind pre-delay); for delete-only
-		// batches no IDE message is sent and the NoChanges auto-retry below provides the
-		// trigger. Either way the retry must stay armed: retries go through the standalone
-		// ForceHotReloadIdeMessage and never re-send file contents.
+		// Delete-only batches send no UpdateFileRequestIdeMessage, so nothing carries a hot-reload
+		// trigger to the IDE — and the NoChanges auto-retry only re-fires *after* an EnC attempt
+		// reports NoChanges, which never happens without an initial trigger. Fall back to the base
+		// finalization, which issues the standalone ForceHotReloadIdeMessage (the legacy delete path).
+		if (request.Edits.All(edit => edit.NewText is null))
+		{
+			await base.FinalizeAsync(hotReload, request, results, ct);
+			return;
+		}
+
+		// Write batches: the trigger traveled with the UpdateFileRequestIdeMessage (no blind
+		// pre-delay). The info file is already persisted (ApplyEditsAsync); keep only the NoChanges
+		// auto-retry armed — retries go through the standalone ForceHotReloadIdeMessage and never
+		// re-send file contents.
 		if (request.IsForceHotReloadDisabled is false && HasAnySuccessfulEdit(results))
 		{
 			hotReload.EnableAutoRetryIfNoChanges(request.ForceHotReloadAttempts, request.ForceHotReloadDelay);
 		}
-
-		return Task.CompletedTask;
 	}
 }
