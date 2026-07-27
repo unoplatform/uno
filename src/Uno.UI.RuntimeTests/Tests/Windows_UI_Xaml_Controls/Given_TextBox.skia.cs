@@ -5672,16 +5672,92 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty password box");
 		}
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_Android()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.Android, tapStartThumb: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Start_Selection_Thumb_Keeps_Selection_Android()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.Android, tapStartThumb: true);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_iOS()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.iOS, tapStartThumb: false);
+
+		// Native iOS/Android: with a range selected (both thumbs showing), tapping either thumb must KEEP the
+		// selection - the thumb is a selection edge, not a caret. It used to route through the caret-placing tap path
+		// and collapse the selection to length 0, wiping the user's selection on a stray tap.
+		// The tap is delivered through the gripper host seam instead of by injecting at the thumb's coordinates:
+		// grippers live in popups clipped to the TextBox, so in the (short) test host the thumb hangs outside the
+		// control and a coordinate-aimed tap silently lands on the text - or on nothing - rather than the gripper.
+		private static async Task AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention convention, bool tapStartThumb)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the first word to select it and show both thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "Some" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "the double-tap should select the word and show both thumbs");
+
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "both selection thumbs should be showing before tapping one");
+
+			// A real thumb tap arrives as a single tap well after the double-tap, so stamp the pointer point past the
+			// multi-tap window - otherwise the gripper folds it into the double-tap and selects a word instead.
+			var last = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null)
+				?? throw new InvalidOperationException("the injected taps should have left a pointer point");
+			var press = new Microsoft.UI.Input.PointerPoint(
+				last.FrameId,
+				last.Timestamp + 1_000_000, // +1s, past the 500ms multi-tap window
+				last.PointerDevice,
+				last.PointerId,
+				last.RawPosition,
+				last.Position,
+				last.IsInContact,
+				last.Properties);
+
+			// The presenter pins a gripper tap to the selection edge the thumb points at, never to the finger's
+			// position on the thumb (see TextSelectionGripperPresenter.OnGripperPointerReleased).
+			var anchorIndex = tapStartThumb ? SUT.SelectionStart : SUT.SelectionStart + SUT.SelectionLength;
+			((ITextSelectionGripperHost)SUT).OnGripperTapped(press, anchorIndex);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Some", SUT.SelectedText, $"tapping the {(tapStartThumb ? "start" : "end")} thumb (anchor {anchorIndex}) must keep the selection, not collapse it");
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must remain after tapping one of them");
+		}
+
 		// Repro: with a full selection's touch flyout open (both thumbs showing), Select All sits in the OVERFLOW
 		// (it's a secondary command while text is selected). Opening the overflow ("...") realizes it there; then
-		// tapping the LEFT thumb collapses the selection and reopens the flyout with Select All promoted to the lone
-		// primary command. That overflow-realized-then-promoted button must still show BOTH its icon and its text
-		// label, like Cut/Copy/Paste - not render as a bare icon. The overflow->primary re-parent is the path the
+		// collapsing the selection to a caret and reopening the flyout promotes Select All to the lone primary
+		// command. That overflow-realized-then-promoted button must still show BOTH its icon and its text label,
+		// like Cut/Copy/Paste - not render as a bare icon. The overflow->primary re-parent is the path the
 		// creation-time style workaround misses, distinct from When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android
 		// (which never realizes Select All in the overflow first).
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
-		public async Task When_Touch_SelectAll_Overflow_Then_Tap_Left_Thumb_Flyout_Shows_SelectAll_Label()
+		public async Task When_Touch_SelectAll_Overflow_Then_Collapse_Flyout_Shows_SelectAll_Label()
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
 			{
@@ -5698,7 +5774,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 400,
-				Text = "asd",
+				Text = "asd qwertyuiopasdfghjkl",
 				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
 			};
 
@@ -5707,11 +5783,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			// Select all: "asd" is a single word, so a touch double-tap selects the whole text, shows both thumbs, and
-			// opens the selection flyout - the touch path that surfaces it (a programmatic SelectAll never sets the
-			// touch input mode nor the thumbs).
+			// A touch double-tap selects the word, shows both thumbs and opens the selection flyout - the touch path
+			// that surfaces the bug (a programmatic SelectAll sets neither the touch input mode nor the thumbs).
 			var bounds = SUT.GetAbsoluteBoundsRect();
 			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			// Well right of both thumbs (which sit at the "asd" edges) but still over text, so the collapsing tap
+			// lands on plain text rather than on a thumb - tapping a thumb keeps the selection.
+			var farPoint = new Point(bounds.Left + 140, bounds.GetCenter().Y);
 			finger.Press(wordPoint);
 			finger.Release();
 			finger.Press(wordPoint);
@@ -5749,15 +5827,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should open the command bar (realizing Select All in the overflow)");
 			await WindowHelper.WaitForIdle();
 
-			// Select All has now been realized once in the overflow. Fully hide the flyout so the collapsing thumb tap
-			// opens it cleanly from a closed state - reopening an already-open flyout via the gripper races its async
-			// Hide (worse after the overflow toggle) and no-ops.
+			// Select All has now been realized once in the overflow. Fully hide the flyout so the reopening tap works
+			// from a closed state - reopening an already-open flyout via the gripper races its async Hide (worse after
+			// the overflow toggle) and no-ops.
 			SUT.SelectionFlyout?.Hide();
-			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before the collapsing thumb tap");
+			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before collapsing the selection");
 			await WindowHelper.WaitForIdle();
 
+			// Wait past the 500ms multi-tap window so the next tap is a single tap (collapse to a caret) rather than a
+			// double-tap-to-select-word.
+			await Task.Delay(600);
+
+			// A plain tap in the text collapses the selection to a caret with the single insertion handle (native
+			// Android). Tapping a selection thumb would NOT do this - it keeps the selection.
+			finger.Press(farPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "a plain tap should collapse the selection to the single insertion handle");
+
 			// The gripper popups are (re)positioned on a later frame, so GetAbsoluteBoundsRect is stale right after the
-			// selection. Wait until the LEFT (start) thumb is actually placed over the control before tapping it.
+			// collapse. Wait until the insertion handle is actually placed over the control before tapping it.
 			await WindowHelper.WaitFor(
 				() =>
 				{
@@ -5765,29 +5855,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						return false;
 					}
-					var g = vg.start.GetAbsoluteBoundsRect();
+					var g = vg.end.GetAbsoluteBoundsRect();
 					var s = SUT.GetAbsoluteBoundsRect();
 					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
 				},
 				timeoutMS: 3000,
-				message: "the left thumb should be positioned over the TextBox before tapping it");
+				message: "the insertion handle should be positioned over the TextBox before tapping it");
 
-			// Wait past the 500ms multi-tap window so tapping the thumb is a single tap (collapses to a caret) rather
-			// than a double-tap-to-select-word.
-			await Task.Delay(600);
+			await Task.Delay(600); // a single tap on the handle, not a double-tap-to-select-word
 
-			// Tap the LEFT thumb (grab near its bottom edge, what a real finger hits) to collapse the selection and
-			// open the flyout over the caret - now with Select All promoted from the overflow to the lone primary command.
-			var leftThumb = SUT.VisibleGrippersForTesting!.Value.start.GetAbsoluteBoundsRect();
-			finger.Press(new Point(leftThumb.GetCenter().X, leftThumb.Bottom - 2));
+			// Tap the insertion handle (grab near its bottom edge, what a real finger hits) to reopen the flyout over
+			// the caret - now with Select All promoted from the overflow to the lone primary command.
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(
 				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
-				message: "tapping the left thumb should open the selection flyout over the collapsed caret");
+				message: "tapping the insertion handle should reopen the selection flyout over the collapsed caret");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("", SUT.SelectedText, "tapping the thumb collapses the selection to a caret");
+			Assert.AreEqual("", SUT.SelectedText, "the reopened flyout should sit over a collapsed caret");
 
 			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
 			{

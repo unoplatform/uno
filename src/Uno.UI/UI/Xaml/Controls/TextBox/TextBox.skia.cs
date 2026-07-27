@@ -1955,10 +1955,12 @@ public partial class TextBox : ITextSelectionGripperHost
 		{
 			TouchSelectWordAt(anchorIndex);
 		}
-		else
+		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
 			TouchTapAt(anchorIndex);
 		}
+		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
+		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.
 	}
 	#endregion
 
