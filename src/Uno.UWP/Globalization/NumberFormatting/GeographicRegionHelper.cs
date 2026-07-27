@@ -22,14 +22,23 @@ internal static class GeographicRegionHelper
 	public static void ValidateGeographicRegion(string geographicRegion)
 	{
 		if (geographicRegion is null ||
-			geographicRegion.Length != 2 ||
-			geographicRegion[0] is < 'A' or > 'Z' ||
-			geographicRegion[1] is < 'A' or > 'Z' ||
-			!TryResolveRegion(geographicRegion, out _))
+			!IsUppercaseAlpha2(geographicRegion) &&
+			!IsNumericM49(geographicRegion))
 		{
 			ExceptionHelper.ThrowArgumentException(nameof(geographicRegion));
 		}
 	}
+
+	private static bool IsUppercaseAlpha2(string region) =>
+		region.Length == 2 &&
+		region[0] is >= 'A' and <= 'Z' &&
+		region[1] is >= 'A' and <= 'Z';
+
+	private static bool IsNumericM49(string region) =>
+		region.Length == 3 &&
+		region[0] is >= '0' and <= '9' &&
+		region[1] is >= '0' and <= '9' &&
+		region[2] is >= '0' and <= '9';
 
 	/// <summary>
 	/// Resolves <paramref name="geographicRegion"/> to its canonical two-letter ISO 3166 form.

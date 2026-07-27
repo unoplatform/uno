@@ -146,40 +146,45 @@ namespace Uno.Globalization.NumberFormatting
 
 		private bool HasInvalidGroupSize(string text)
 		{
-			var numberFormat = NumberFormat;
-			var decimalSeperatorIndex = text.LastIndexOf(numberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
-			var groupSize = numberFormat.NumberGroupSizes[0];
-			var groupSeperatorLength = numberFormat.NumberGroupSeparator.Length;
-			var groupSeperator = numberFormat.NumberGroupSeparator;
-
-			var preIndex = text.IndexOf(groupSeperator, StringComparison.Ordinal);
-			var Index = -1;
-
-			if (preIndex != -1)
+			var groupSeparator = NumberFormat.NumberGroupSeparator;
+			if (string.IsNullOrEmpty(groupSeparator) ||
+				!text.Contains(groupSeparator, StringComparison.Ordinal))
 			{
-				while (preIndex + groupSeperatorLength < text.Length)
+				return false;
+			}
+
+			var decimalSeparatorIndex = text.LastIndexOf(NumberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
+			var integerPart = decimalSeparatorIndex >= 0 ? text.Substring(0, decimalSeparatorIndex) : text;
+			if (integerPart.StartsWith(NumberFormat.NegativeSign, StringComparison.Ordinal))
+			{
+				integerPart = integerPart.Substring(NumberFormat.NegativeSign.Length);
+			}
+			else if (integerPart.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal))
+			{
+				integerPart = integerPart.Substring(NumberFormat.PositiveSign.Length);
+			}
+
+			var groups = integerPart.Split([groupSeparator], StringSplitOptions.None);
+			var groupSizes = NumberFormat.NumberGroupSizes;
+			var groupSizeIndex = 0;
+
+			for (var groupIndex = groups.Length - 1; groupIndex > 0; groupIndex--)
+			{
+				var expectedSize = groupSizes[Math.Min(groupSizeIndex, groupSizes.Length - 1)];
+				if (expectedSize == 0 || groups[groupIndex].Length != expectedSize)
 				{
-					Index = text.IndexOf(groupSeperator, preIndex + groupSeperatorLength, StringComparison.Ordinal);
+					return true;
+				}
 
-					if (Index == -1)
-					{
-						if (decimalSeperatorIndex - preIndex - groupSeperatorLength != groupSize)
-						{
-							return true;
-						}
-
-						break;
-					}
-					else if (Index - preIndex != groupSize)
-					{
-						return true;
-					}
-
-					preIndex = Index;
+				if (groupSizeIndex < groupSizes.Length - 1)
+				{
+					groupSizeIndex++;
 				}
 			}
 
-			return false;
+			var leftmostExpectedSize = groupSizes[Math.Min(groupSizeIndex, groupSizes.Length - 1)];
+			return groups[0].Length == 0 ||
+				leftmostExpectedSize > 0 && groups[0].Length > leftmostExpectedSize;
 		}
 
 		public double? ParseDouble(string text)

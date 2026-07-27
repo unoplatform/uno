@@ -334,6 +334,23 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[DataRow("419")]
+		[DataRow("001")]
+		[DataRow("999")]
+		[DataRow("XA")]
+		[DataRow("XB")]
+		[DataRow("XX")]
+		[DataRow("ZZ")]
+		public void When_GeographicRegionIsSupportedByWinRT_Then_Accept(string geographicRegion)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, geographicRegion);
+
+			Assert.AreEqual(geographicRegion, sut.GeographicRegion);
+			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_ConstructedWithLanguagesAndRegion_Then_PropertiesAreResolved()
 		{
 			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
@@ -366,6 +383,24 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Assert.AreEqual("1,234.50", sut.FormatDouble(1234.5));
 			Assert.AreEqual(1234.5, sut.ParseDouble("1,234.50"));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_UniformGroupingHasMultipleSeparators_Then_RoundTrips()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IsGrouped = true,
+				IntegerDigits = 2,
+				FractionDigits = 2,
+			};
+
+			var formatted = sut.FormatDouble(1234567);
+
+			Assert.AreEqual("1,234,567.00", formatted);
+			Assert.AreEqual(1234567d, sut.ParseDouble(formatted));
+			Assert.AreEqual(1234567d, sut.ParseDouble("+1,234,567.00"));
 		}
 
 		[TestMethod]
@@ -420,6 +455,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Assert.AreEqual("12,34,567.00", sut.FormatDouble(1234567));
 			Assert.AreEqual(1234567d, sut.ParseDouble("12,34,567.00"));
+			Assert.IsNull(sut.ParseDouble("1,234,567.00"));
+			Assert.IsNull(sut.ParseDouble("123,45,67.00"));
 		}
 
 		[TestMethod]
