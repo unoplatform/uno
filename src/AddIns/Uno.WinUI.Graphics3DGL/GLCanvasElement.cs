@@ -97,9 +97,9 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// Some of this may be done for you automatically.
 	/// </remarks>
 	/// <remarks>
-	/// OpenGL errors raised by your rendering logic should be checked and handled within
-	/// <see cref="RenderOverride"/>. Errors still pending when it returns are drained (GL errors
-	/// are sticky and would otherwise be misattributed to the framebuffer readback that follows)
+	/// OpenGL errors raised by user code should be checked and handled within <see cref="Init"/>
+	/// and <see cref="RenderOverride"/>. Errors still pending before the framebuffer readback are
+	/// drained (GL errors are sticky and would otherwise be misattributed to the readback check)
 	/// and logged as warnings.
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
@@ -497,11 +497,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 			RenderOverride(_gl);
 
-			// GL errors are sticky and context-global, so anything RenderOverride leaves behind
-			// would be misattributed to the readback check below. Handling GL errors is the
-			// user's job (see the RenderOverride docs); surface what they left instead of
-			// failing the readback on it. The drain is bounded because GetError can keep
-			// returning GL_CONTEXT_LOST forever on a lost context.
+			// GL errors are sticky and context-global, so anything user code leaves behind
+			// (RenderOverride, or Init on the first frame) would be misattributed to the readback
+			// check below. Handling GL errors is the user's job (see the RenderOverride docs);
+			// surface what they left instead of failing the readback on it. The drain is bounded
+			// because GetError can keep returning GL_CONTEXT_LOST forever on a lost context.
 			for (var i = 0; i < 8; i++)
 			{
 				var pendingError = _gl.GetError();
@@ -512,7 +512,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn($"{nameof(RenderOverride)} left GL error {pendingError} unhandled; GL errors should be checked and handled within {nameof(RenderOverride)}.");
+					this.Log().Warn($"GL error {pendingError} was pending before the framebuffer readback, most likely raised by {nameof(RenderOverride)} (or {nameof(Init)} on the first frame); GL errors should be checked and handled within user code.");
 				}
 			}
 
