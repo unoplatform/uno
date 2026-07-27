@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\Generated\NumberBox.properties.cpp, tag winui3/release/1.7.1, commit 5f27a786ac9
+// MUX Reference controls\dev\Generated\NumberBox.properties.cpp, commit b8cfb849061c00df624ebb29ac4727b9e58ea99c
 
 #pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
 
@@ -31,6 +31,7 @@ partial class NumberBox
 			nameof(AcceptsExpression),
 			typeof(bool),
 			typeof(NumberBox),
+			// Uno-specific: Update InputScope when expression mode changes.
 			new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)));
 
 	/// <summary>

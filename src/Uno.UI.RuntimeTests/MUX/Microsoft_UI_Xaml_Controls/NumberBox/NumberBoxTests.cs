@@ -72,7 +72,8 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23884")]
 		public void VerifySelectionFlyoutPropagates()
 		{
 			var numberBox = SetupNumberBox();
