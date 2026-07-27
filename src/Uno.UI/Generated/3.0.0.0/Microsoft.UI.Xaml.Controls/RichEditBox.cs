@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Input.InputScope)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -256,7 +256,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment DesiredCandidateWindowAlignment
 		{
@@ -350,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsColorFontEnabled
 		{
@@ -434,7 +434,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -578,7 +578,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrappingProperty.get
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
@@ -658,7 +658,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextReadingOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrapping.set
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichEditBox, global::Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
 		{

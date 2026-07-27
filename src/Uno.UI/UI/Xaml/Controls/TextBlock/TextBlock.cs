@@ -157,11 +157,38 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SetupInlines();
 
-		internal void InvalidateInlines(bool updateText)
+		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, knownText: null);
+
+		internal void InvalidateInlines(
+			string knownText,
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: true, knownText, removed, inserted);
+
+		internal void InvalidateInlinesWithoutTextUpdate(
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: false, knownText: null, removed, inserted);
+
+		private void InvalidateInlines(
+			bool updateText,
+			string knownText,
+			IReadOnlyList<Inline> removed = null,
+			IReadOnlyList<Inline> inserted = null)
 		{
+			if (updateText || removed is not null && inserted is not null)
+			{
+				// Text callbacks and hyperlink discovery must observe the final flattened inline tree.
+				Inlines.InvalidateTraversedTree();
+			}
+
 			if (updateText)
 			{
-				if (Inlines.Count == 1 && Inlines[0] is Run run)
+				if (knownText is not null)
+				{
+					_inlinesText = knownText;
+				}
+				else if (Inlines.Count == 1 && Inlines[0] is Run run)
 				{
 					_inlinesText = run.Text;
 				}
@@ -175,8 +202,18 @@ namespace Microsoft.UI.Xaml.Controls
 					Text = _inlinesText;
 				}
 
-				UpdateHyperlinks();
-				Inlines.InvalidateTraversedTree();
+				if (removed is null || inserted is null)
+				{
+					UpdateHyperlinks();
+				}
+				else
+				{
+					UpdateHyperlinks(removed, inserted);
+				}
+			}
+			else if (removed is not null && inserted is not null)
+			{
+				UpdateHyperlinks(removed, inserted);
 			}
 
 			OnInlinesChangedPartial();
@@ -1209,6 +1246,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
+		private readonly HashSet<Hyperlink> _hyperlinkSet = new();
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1235,17 +1273,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 					HyperlinkOver = null;
 					_hyperlinks.Clear();
+					_hyperlinkSet.Clear();
 				}
 
 				return;
 			}
 
 			HyperlinkOver = null;
-			var previousHyperLinks = _hyperlinks.ToHashSet();
+			var previousHyperLinks = new HashSet<Hyperlink>(_hyperlinkSet);
 			_hyperlinks.Clear();
+			_hyperlinkSet.Clear();
 			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
 			{
-				_hyperlinks.Add(hyperlink);
+				if (_hyperlinkSet.Add(hyperlink))
+				{
+					_hyperlinks.Add(hyperlink);
+				}
 				previousHyperLinks.Remove(hyperlink);
 			}
 
@@ -1253,6 +1296,52 @@ namespace Microsoft.UI.Xaml.Controls
 			foreach (var removed in previousHyperLinks)
 			{
 				removed.AbortAllPointerState();
+			}
+		}
+
+		private void UpdateHyperlinks(IReadOnlyList<Inline> removed, IReadOnlyList<Inline> inserted)
+		{
+			HyperlinkOver = null;
+			var changedHyperlinks = new List<Hyperlink>();
+			foreach (var inline in removed)
+			{
+				CollectHyperlinks(inline, changedHyperlinks);
+			}
+			foreach (var hyperlink in changedHyperlinks)
+			{
+				if (_hyperlinkSet.Remove(hyperlink))
+				{
+					_hyperlinks.Remove(hyperlink);
+					hyperlink.AbortAllPointerState();
+				}
+			}
+
+			changedHyperlinks.Clear();
+			foreach (var inline in inserted)
+			{
+				CollectHyperlinks(inline, changedHyperlinks);
+			}
+			foreach (var hyperlink in changedHyperlinks)
+			{
+				if (_hyperlinkSet.Add(hyperlink))
+				{
+					_hyperlinks.Add(hyperlink);
+				}
+			}
+		}
+
+		private static void CollectHyperlinks(Inline inline, List<Hyperlink> hyperlinks)
+		{
+			if (inline is Hyperlink hyperlink)
+			{
+				hyperlinks.Add(hyperlink);
+			}
+			if (inline is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					CollectHyperlinks(child, hyperlinks);
+				}
 			}
 		}
 
@@ -1392,6 +1481,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 		private bool _forceFocusedForContextFlyout;
+		private long _textLayoutVersion;
+		private double _textLayoutWidth = double.NaN;
 
 		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
 		// TextBox there is no caret/insertion point in a TextBlock, so the grippers only ever appear in
@@ -1404,7 +1495,6 @@ namespace Microsoft.UI.Xaml.Controls
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
 		private ParagraphLayoutInfo? _endingParagraphLayout;
-
 		internal ParagraphLayoutInfo? EndingParagraphLayout
 		{
 			get => _endingParagraphLayout;
@@ -1419,7 +1509,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? _endingParagraphAlignment;
-
 		internal TextAlignment? EndingParagraphAlignment
 		{
 			get => _endingParagraphAlignment;
@@ -1434,7 +1523,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private bool _alignmentIncludesTrailingWhitespace;
-
 		internal bool AlignmentIncludesTrailingWhitespace
 		{
 			get => _alignmentIncludesTrailingWhitespace;
@@ -1449,7 +1537,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private bool _ignoreTrailingCharacterSpacing;
-
 		internal bool IgnoreTrailingCharacterSpacing
 		{
 			get => _ignoreTrailingCharacterSpacing;
@@ -1464,6 +1551,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal event EventHandler? DrawingFinished;
+
+		internal long TextLayoutVersion => _textLayoutVersion;
+
+		internal double TextLayoutWidth => _textLayoutWidth;
 
 		public TextBlock()
 		{
@@ -1548,7 +1639,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
+			if (ParsedText is MathParsedText)
+			{
+				ParsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+			}
 			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			_textLayoutWidth = availableSizeWithoutPadding.Width;
+			_textLayoutVersion++;
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -1571,32 +1668,43 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
+		private IParsedText ParseText(Size availableSizeWithoutPadding, out Size size)
 		{
 			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
-			var ret = new UnicodeText(
-				availableSizeWithoutPadding,
-				Inlines.TraversedTree.leafTree,
-				GetDefaultFontDetails(),
-				MaxLines,
-				(float)LineHeight,
-				LineStackingStrategy,
-				TextLineBounds,
-				FlowDirection,
-				adjustedTextAlignment,
-				TextWrapping,
-				TextTrimming,
-				IsSpellCheckEnabled,
-				this,
-				isTextBoxOwned,
-				DefaultTabStop,
-				EndingParagraphLayout,
-				EndingParagraphAlignment,
-				Foreground,
-				AlignmentIncludesTrailingWhitespace,
-				IgnoreTrailingCharacterSpacing,
-				out size);
+			var inlines = Inlines.TraversedTree.leafTree;
+			var defaultFontDetails = GetDefaultFontDetails();
+			IParsedText ret = CustomTextLayout is { } customLayout
+				? customLayout.Create(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					this,
+					Foreground,
+					adjustedTextAlignment,
+					out size)
+				: new UnicodeText(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					MaxLines,
+					(float)LineHeight,
+					LineStackingStrategy,
+					TextLineBounds,
+					FlowDirection,
+					adjustedTextAlignment,
+					TextWrapping,
+					TextTrimming,
+					IsSpellCheckEnabled,
+					this,
+					isTextBoxOwned,
+					DefaultTabStop,
+					EndingParagraphLayout,
+					EndingParagraphAlignment,
+					Foreground,
+					AlignmentIncludesTrailingWhitespace,
+					IgnoreTrailingCharacterSpacing,
+					out size);
 
 			if (isTextBoxOwned)
 			{
@@ -1716,7 +1824,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
+			var highligherters = _renderSelection && SelectionHighlightColor.Color.A != 0 ? TextHighlighters.Append(new TextHighlighter
 			{
 				Background = SelectionHighlightColor,
 				Foreground = DefaultBrushes.SelectedTextForegroundColor,

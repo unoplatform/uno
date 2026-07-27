@@ -131,6 +131,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Focus(FocusState.Pointer);
 			}
+			else if (!IsReadOnly)
+			{
+				ActivateImeForUserInteraction(FocusState.Pointer);
+			}
 
 			_hasPointerCapture = CapturePointer(e.Pointer);
 		}
@@ -189,12 +193,16 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					Focus(FocusState.Pointer);
 				}
+				if (_wasFocusedOnPointerPressed && !IsReadOnly)
+				{
+					ActivateImeForUserInteraction(FocusState.Pointer);
+				}
 
 				var currentPoint = e.GetCurrentPoint(null);
 				var touchHoldTime = _lastPointerDown.point is { } down
 					? currentPoint.Timestamp - down.Timestamp
 					: 0;
-				if (touchHoldTime < GestureRecognizer.HoldMinDelayMicroseconds && !string.IsNullOrEmpty(GetPlainTextContent()))
+				if (touchHoldTime < GestureRecognizer.HoldMinDelayMicroseconds && GetPlainTextLength() != 0)
 				{
 					var displayBlock = _textBoxView!.DisplayBlock;
 					var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
@@ -288,7 +296,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private (int start, int length) GetLogicalLineChunk(int index)
-			=> global::Microsoft.UI.Text.TextUnitNavigation.GetLogicalLineChunk(GetPlainTextContent(), index);
+			=> Document.GetLogicalLineChunk(index);
 
 		private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
 		{

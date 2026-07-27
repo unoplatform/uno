@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -22,33 +21,114 @@ namespace Microsoft.UI.Text
 	internal class UnoTextRange : global::Microsoft.UI.Text.ITextRange
 	{
 		private protected readonly RichEditTextDocument _document;
-		private protected int _start;
-		private protected int _end;
+		private int _startValue;
+		private int _endValue;
+		private long _rangeEditGeneration;
+		private TrackedTextRangeRegistration? _trackingRegistration;
+		private bool _isApplyingRangeEdits;
 		private global::Microsoft.UI.Text.RangeGravity _gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior;
+
+		private protected int _start
+		{
+			get
+			{
+				EnsureCurrent();
+				return _startValue;
+			}
+			set
+			{
+				EnsureCurrent();
+				_startValue = value;
+			}
+		}
+
+		private protected int _end
+		{
+			get
+			{
+				EnsureCurrent();
+				return _endValue;
+			}
+			set
+			{
+				EnsureCurrent();
+				_endValue = value;
+			}
+		}
 
 		internal UnoTextRange(RichEditTextDocument document, int startPosition, int endPosition)
 		{
 			_document = document;
-			_start = startPosition;
-			_end = endPosition;
+			_rangeEditGeneration = document.RangeEditGeneration;
+			_startValue = startPosition;
+			_endValue = endPosition;
 			Normalize();
 			_document.TrackRange(this);
 		}
 
-		internal void RebaseAfterEdit(int editStart, int editEnd, int insertLength, int documentLength)
+		internal long RangeEditGeneration => _rangeEditGeneration;
+
+		internal TrackedTextRangeRegistration? TrackingRegistration => _trackingRegistration;
+
+		internal void SetTrackingRegistration(TrackedTextRangeRegistration registration)
+			=> _trackingRegistration = registration;
+
+		internal void SetRangeEditGeneration(long generation) => _rangeEditGeneration = generation;
+
+		private void EnsureCurrent()
 		{
-			var (startForward, endForward) = GetEndpointAffinities();
-			_start = RebasePosition(_start, editStart, editEnd, insertLength, startForward);
-			_end = RebasePosition(_end, editStart, editEnd, insertLength, endForward);
-			_start = Math.Clamp(_start, 0, documentLength);
-			_end = Math.Clamp(_end, 0, documentLength);
-			if (_start > _end)
+			if (!_isApplyingRangeEdits)
 			{
-				(_start, _end) = (_end, _start);
+				_document.EnsureRangeCurrent(this);
 			}
 		}
 
-		private static int RebasePosition(int position, int editStart, int editEnd, int insertLength, bool forwardAffinity)
+		internal void RebaseAfterEdit(int editStart, int editEnd, int insertLength, int documentLength, long generation)
+		{
+			_isApplyingRangeEdits = true;
+			try
+			{
+				var oldDocumentLength = documentLength - insertLength + (editEnd - editStart);
+				var oldStart = _startValue;
+				var oldEnd = _endValue;
+				var includedFinalEop = _endValue == oldDocumentLength + 1;
+				var fullyCovered = !includedFinalEop
+					&& (oldStart == oldEnd
+						? editStart <= oldStart && oldStart < editEnd
+						: editStart < oldStart && oldEnd < editEnd);
+				if (fullyCovered)
+				{
+					_startValue = _endValue = editStart;
+				}
+				else
+				{
+					_startValue = includedFinalEop && oldStart == oldDocumentLength && editStart == oldDocumentLength
+						? oldDocumentLength
+						: RebasePosition(oldStart, editStart, editEnd, insertLength, isStartEndpoint: true);
+					_endValue = includedFinalEop
+						? documentLength + 1
+						: RebasePosition(oldEnd, editStart, editEnd, insertLength, isStartEndpoint: false);
+				}
+				_startValue = Math.Clamp(_startValue, 0, documentLength);
+				_endValue = Math.Clamp(_endValue, 0, documentLength + 1);
+				if (_startValue > _endValue)
+				{
+					(_startValue, _endValue) = (_endValue, _startValue);
+				}
+
+				_rangeEditGeneration = generation;
+				if (_startValue != oldStart || _endValue != oldEnd)
+				{
+					OnRebasedAfterEdit();
+				}
+			}
+			finally
+			{
+				_isApplyingRangeEdits = false;
+			}
+		}
+
+		private static int RebasePosition(int position, int editStart, int editEnd, int insertLength, bool isStartEndpoint)
 		{
 			var removeLength = editEnd - editStart;
 			if (removeLength == 0)
@@ -63,44 +143,41 @@ namespace Microsoft.UI.Text
 					return position + insertLength;
 				}
 
-				return editStart + (forwardAffinity ? insertLength : 0);
+				return editStart;
 			}
 
-			if (position < editStart)
+			if (position <= editStart)
 			{
 				return position;
 			}
 
-			if (position > editEnd)
+			if (position >= editEnd)
 			{
 				return position + insertLength - removeLength;
 			}
 
-			return editStart + (forwardAffinity ? insertLength : 0);
+			return isStartEndpoint ? editStart + insertLength : editStart;
 		}
-
-		private (bool startForward, bool endForward) GetEndpointAffinities()
-			=> _gravity switch
-			{
-				global::Microsoft.UI.Text.RangeGravity.Backward => (false, false),
-				global::Microsoft.UI.Text.RangeGravity.Forward => (true, true),
-				global::Microsoft.UI.Text.RangeGravity.Inward => (true, false),
-				global::Microsoft.UI.Text.RangeGravity.Outward => (false, true),
-				_ => (true, true),
-			};
 
 		internal bool UsesForwardCharacterFormatting
 			=> _gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward;
 
 		private protected void Normalize()
 		{
-			var length = _document.TextLength;
-			_start = Math.Clamp(_start, 0, length);
-			_end = Math.Clamp(_end, 0, length);
 			if (_start > _end)
 			{
 				(_start, _end) = (_end, _start);
 			}
+
+			var length = _document.TextLength;
+			if (_start == _end)
+			{
+				_start = _end = Math.Clamp(_start, 0, length);
+				return;
+			}
+
+			_start = Math.Clamp(_start, 0, length);
+			_end = Math.Clamp(_end, 0, length + 1);
 		}
 
 		/// <summary>
@@ -113,11 +190,30 @@ namespace Microsoft.UI.Text
 		{
 		}
 
+		private void FinalizeSelectionHistoryIfNeeded()
+		{
+			if (this is UnoTextSelection)
+			{
+				_document.FinalizeHistorySelection();
+			}
+		}
+
+		private protected virtual void OnRebasedAfterEdit()
+		{
+		}
+
 		public int StartPosition
 		{
 			get => _start;
 			set
 			{
+				if (value > _document.TextLength)
+				{
+					_start = _end = _document.TextLength;
+					OnRangeChanged();
+					return;
+				}
+
 				_start = Math.Clamp(value, 0, _document.TextLength);
 				// WinUI: moving StartPosition past EndPosition drags EndPosition with it.
 				if (_start > _end)
@@ -134,7 +230,7 @@ namespace Microsoft.UI.Text
 			get => _end;
 			set
 			{
-				_end = Math.Clamp(value, 0, _document.TextLength);
+				_end = Math.Clamp(value, 0, _document.StoryLength);
 				// WinUI: moving EndPosition before StartPosition drags StartPosition with it.
 				if (_end < _start)
 				{
@@ -159,7 +255,7 @@ namespace Microsoft.UI.Text
 
 		public int Length => _end - _start;
 
-		public int StoryLength => _document.TextLength + 1;
+		public int StoryLength => _document.StoryLength;
 
 		public string Text
 		{
@@ -167,9 +263,15 @@ namespace Microsoft.UI.Text
 			set
 			{
 				var replacement = value ?? string.Empty;
-				var insertedLength = _document.ReplaceRange(_start, _end, replacement, this);
+				var insertedLength = _document.ReplaceRange(
+					_start,
+					_end,
+					replacement,
+					this,
+					forceHistory: true);
 				_end = _start + insertedLength;
 				OnRangeChanged();
+				FinalizeSelectionHistoryIfNeeded();
 			}
 		}
 
@@ -180,7 +282,7 @@ namespace Microsoft.UI.Text
 				var length = _document.TextLength;
 				if (_start < length)
 				{
-					return _document.GetTextInRange(_start, _start + 1)[0];
+					return _document.GetCharacterAt(_start);
 				}
 
 				// The end-of-story is conventionally represented by a carriage return in the TOM.
@@ -188,23 +290,37 @@ namespace Microsoft.UI.Text
 			}
 			set
 			{
-				// ITextRange::SetChar sets the character at the range's starting position, leaving the range
-				// length unchanged. At end-of-story there is no character to overwrite, so the value is inserted.
 				var length = _document.TextLength;
 				if (_start < length)
 				{
-					_document.ReplaceRange(_start, _start + 1, value.ToString(), this);
+					_document.ReplaceRange(
+						_start,
+						_start + 1,
+						value.ToString(),
+						this,
+						forceHistory: true);
 				}
 				else
 				{
-					_document.ReplaceRange(_start, _start, value.ToString(), this);
+					var includedFinalEop = _end > length;
+					_document.ReplaceRange(
+						_start,
+						_start,
+						value.ToString(),
+						this,
+						forceHistory: true);
+					if (includedFinalEop)
+					{
+						_end = _document.StoryLength;
+					}
 				}
 
 				OnRangeChanged();
+				FinalizeSelectionHistoryIfNeeded();
 			}
 		}
 
-		public void SetRange(int startPosition, int endPosition)
+		public virtual void SetRange(int startPosition, int endPosition)
 		{
 			_start = startPosition;
 			_end = endPosition;
@@ -224,6 +340,7 @@ namespace Microsoft.UI.Text
 				_start = _end;
 			}
 
+			Normalize();
 			OnRangeChanged();
 		}
 
@@ -240,18 +357,30 @@ namespace Microsoft.UI.Text
 				? _document.ReplaceRangeWithFragment(
 					_start,
 					_end,
-					string.IsNullOrEmpty(value) ? RichTextFragment.Empty() : RichTextRtfCodec.Read(value, _document.GetImportCharacterLimit(_start, _end)),
+					string.IsNullOrEmpty(value)
+						? RichTextFragment.Empty()
+						: RichTextRtfCodec.Read(
+							value,
+							_document.GetSetTextImportCharacterLimit(_start, _end, options),
+							_document.ShouldTruncateSetTextImportAtLimit(_start, _end, options)),
 					this,
-					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide))
+					unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
+					unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
+					forceHistory: true,
+					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit))
 				: _document.ReplaceRange(
 					_start,
 					_end,
 					value ?? string.Empty,
 					this,
 					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
-					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide));
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
+					forceHistory: true,
+					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit),
+					unicodeBidi: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.UnicodeBidi));
 			_end = _start + insertedLength;
 			OnRangeChanged();
+			FinalizeSelectionHistoryIfNeeded();
 		}
 
 		public global::Microsoft.UI.Text.ITextRange GetClone()
@@ -285,33 +414,28 @@ namespace Microsoft.UI.Text
 				return 0;
 			}
 
-			var text = _document.GetTextInRange(0, _document.TextLength);
+			var textLength = _document.TextLength;
 			var comparison = options.HasFlag(global::Microsoft.UI.Text.FindOptions.Case)
 				? StringComparison.Ordinal
 				: StringComparison.OrdinalIgnoreCase;
 			var matchWholeWord = options.HasFlag(global::Microsoft.UI.Text.FindOptions.Word);
-			var textElementBoundaries = matchWholeWord ? TextUnitNavigation.GetTextElementBoundaries(text) : null;
-			var originalStart = Math.Clamp(_start, 0, text.Length);
-			var originalEnd = Math.Clamp(_end, originalStart, text.Length);
+			var textElementBoundaries = matchWholeWord ? _document.TextElementBoundaries : (TextElementBoundaryView?)null;
+			var originalStart = Math.Clamp(_start, 0, textLength);
+			var originalEnd = Math.Clamp(_end, originalStart, textLength);
 			var currentRangeMatches = originalEnd - originalStart == value.Length
-				&& IsFindMatch(text, value, originalStart, comparison, textElementBoundaries);
+				&& IsFindMatch(_document, value, originalStart, comparison, textElementBoundaries);
 
 			int searchStart;
 			int searchEnd;
 			if (scanLength > 0)
 			{
 				searchStart = currentRangeMatches ? originalStart + 1 : originalStart;
-				searchEnd = (int)Math.Min(text.Length, (long)originalStart + scanLength);
+				searchEnd = (int)Math.Min(textLength, (long)originalStart + scanLength);
 			}
 			else if (scanLength < 0)
 			{
 				searchStart = (int)Math.Max(0, (long)originalEnd + scanLength);
 				searchEnd = currentRangeMatches ? originalEnd - 1 : originalEnd;
-			}
-			else if (originalStart == originalEnd)
-			{
-				searchStart = originalEnd;
-				searchEnd = text.Length;
 			}
 			else
 			{
@@ -320,8 +444,8 @@ namespace Microsoft.UI.Text
 			}
 
 			var match = scanLength < 0
-				? FindBackward(text, value, searchStart, searchEnd, comparison, textElementBoundaries)
-				: FindForward(text, value, searchStart, searchEnd, comparison, textElementBoundaries);
+				? FindBackward(_document, value, searchStart, searchEnd, comparison, textElementBoundaries)
+				: FindForward(_document, value, searchStart, searchEnd, comparison, textElementBoundaries);
 			if (match < 0)
 			{
 				return 0;
@@ -333,19 +457,19 @@ namespace Microsoft.UI.Text
 			return value.Length;
 		}
 
-		private static int FindForward(string text, string value, int searchStart, int searchEnd, StringComparison comparison, int[]? textElementBoundaries)
+		private static int FindForward(RichEditTextDocument document, string value, int searchStart, int searchEnd, StringComparison comparison, TextElementBoundaryView? textElementBoundaries)
 		{
 			var lastCandidate = searchEnd - value.Length;
 			var candidate = searchStart;
 			while (candidate <= lastCandidate)
 			{
-				var match = text.IndexOf(value, candidate, searchEnd - candidate, comparison);
+				var match = document.IndexOfText(value, candidate, searchEnd - candidate, comparison);
 				if (match < 0 || match > lastCandidate)
 				{
 					return -1;
 				}
 
-				if (IsFindMatch(text, value, match, comparison, textElementBoundaries))
+				if (IsFindMatch(document, value, match, comparison, textElementBoundaries))
 				{
 					return match;
 				}
@@ -356,20 +480,20 @@ namespace Microsoft.UI.Text
 			return -1;
 		}
 
-		private static int FindBackward(string text, string value, int searchStart, int searchEnd, StringComparison comparison, int[]? textElementBoundaries)
+		private static int FindBackward(RichEditTextDocument document, string value, int searchStart, int searchEnd, StringComparison comparison, TextElementBoundaryView? textElementBoundaries)
 		{
 			var lastCandidate = searchEnd - value.Length;
 			var candidate = searchStart;
 			var lastMatch = -1;
 			while (candidate <= lastCandidate)
 			{
-				var match = text.IndexOf(value, candidate, searchEnd - candidate, comparison);
+				var match = document.IndexOfText(value, candidate, searchEnd - candidate, comparison);
 				if (match < 0 || match > lastCandidate)
 				{
 					break;
 				}
 
-				if (IsFindMatch(text, value, match, comparison, textElementBoundaries))
+				if (IsFindMatch(document, value, match, comparison, textElementBoundaries))
 				{
 					lastMatch = match;
 				}
@@ -380,10 +504,10 @@ namespace Microsoft.UI.Text
 			return lastMatch;
 		}
 
-		private static bool IsFindMatch(string text, string value, int start, StringComparison comparison, int[]? textElementBoundaries)
+		private static bool IsFindMatch(RichEditTextDocument document, string value, int start, StringComparison comparison, TextElementBoundaryView? textElementBoundaries)
 		{
-			if (start < 0 || start > text.Length - value.Length
-				|| !text.AsSpan(start, value.Length).Equals(value.AsSpan(), comparison))
+			if (start < 0 || start > document.TextLength - value.Length
+				|| !document.TextRangeEquals(start, value, comparison))
 			{
 				return false;
 			}
@@ -394,30 +518,30 @@ namespace Microsoft.UI.Text
 			}
 
 			var end = start + value.Length;
-			return IsFindWordBoundary(text, start, textElementBoundaries)
-				&& IsFindWordBoundary(text, end, textElementBoundaries);
+			return IsFindWordBoundary(document, start, textElementBoundaries.Value)
+				&& IsFindWordBoundary(document, end, textElementBoundaries.Value);
 		}
 
-		private static bool IsFindWordBoundary(string text, int position, int[] textElementBoundaries)
+		private static bool IsFindWordBoundary(RichEditTextDocument document, int position, TextElementBoundaryView textElementBoundaries)
 		{
-			var boundaryIndex = Array.BinarySearch(textElementBoundaries, position);
+			var boundaryIndex = textElementBoundaries.BinarySearch(position);
 			if (boundaryIndex < 0)
 			{
 				return false;
 			}
 
-			if (position == 0 || position == text.Length)
+			if (position == 0 || position == document.TextLength)
 			{
 				return true;
 			}
 
-			return GetFindCharacterClass(text, textElementBoundaries[boundaryIndex - 1])
-				!= GetFindCharacterClass(text, textElementBoundaries[boundaryIndex]);
+			return GetFindCharacterClass(document, textElementBoundaries[boundaryIndex - 1])
+				!= GetFindCharacterClass(document, textElementBoundaries[boundaryIndex]);
 		}
 
-		private static int GetFindCharacterClass(string text, int start)
+		private static int GetFindCharacterClass(RichEditTextDocument document, int start)
 		{
-			if (!Rune.TryGetRuneAt(text, start, out var value))
+			if (!document.TryGetRuneAt(start, out var value))
 			{
 				return 2;
 			}
@@ -441,8 +565,16 @@ namespace Microsoft.UI.Text
 
 		public int Delete(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
+			var descriptor = global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptorForDelete(unit);
 			if (_start != _end)
 			{
+				if (_start == _document.TextLength)
+				{
+					_end = _start;
+					OnRangeChanged();
+					return 0;
+				}
+
 				_document.BeginUndoGroup();
 				_document.BatchDisplayUpdates();
 				try
@@ -458,7 +590,9 @@ namespace Microsoft.UI.Text
 						? 0
 						: DeleteCollapsed(unit, count > 0 ? additionalCount : -additionalCount, notify: false);
 					OnRangeChanged();
-					return 1 + additionalDeleted;
+					FinalizeSelectionHistoryIfNeeded();
+					var deletedUnits = 1 + Math.Abs(additionalDeleted);
+					return count < 0 ? -deletedUnits : deletedUnits;
 				}
 				finally
 				{
@@ -471,6 +605,11 @@ namespace Microsoft.UI.Text
 						_document.ApplyDisplayUpdates();
 					}
 				}
+			}
+
+			if (descriptor.Kind == global::Microsoft.UI.Text.TextRangeUnitProviderKind.UnsupportedOperation)
+			{
+				return 0;
 			}
 
 			return DeleteCollapsed(unit, count, notify: true);
@@ -506,25 +645,26 @@ namespace Microsoft.UI.Text
 				if (notify)
 				{
 					OnRangeChanged();
+					FinalizeSelectionHistoryIfNeeded();
 				}
 
-				return deleted;
+				return count > 0 ? deleted : -deleted;
 			}
 
 			// Word / Paragraph / Line: delete |count| units in the logical direction (like CTRL+DELETE /
 			// CTRL+BACKSPACE), returning the number of units removed (TOM ITextRange::Delete pDelta).
-			var boundaries = GetUnitBoundaries(unit);
+			var boundaries = GetUnitBoundarySet(unit);
 			if (boundaries is null)
 			{
-				// Story and unsupported units, or a Line delete before the view is laid out.
 				return 0;
 			}
 
-			var target = MoveByBoundaries(boundaries, _start, count, out var unitsMoved);
+			var target = boundaries.Move(_start, count, out var unitsMoved);
 			if (unitsMoved == 0)
 			{
 				return 0;
 			}
+			target = Math.Clamp(target, 0, length);
 
 			var rangeStart = Math.Min(_start, target);
 			var rangeEnd = Math.Max(_start, target);
@@ -538,9 +678,10 @@ namespace Microsoft.UI.Text
 			if (notify)
 			{
 				OnRangeChanged();
+				FinalizeSelectionHistoryIfNeeded();
 			}
 
-			return Math.Abs(unitsMoved);
+			return unitsMoved;
 		}
 
 		public void ChangeCase(global::Microsoft.UI.Text.LetterCase value)
@@ -551,14 +692,18 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
-			var changed = value == global::Microsoft.UI.Text.LetterCase.Upper
-				? text.ToUpperInvariant()
-				: text.ToLowerInvariant();
-			_document.ReplaceRange(_start, _end, changed, this);
+			var changed = _document.ChangeCaseText(text, value);
+			var start = _start;
+			var insertedLength = _document.ReplaceRange(start, _end, changed, this);
+			_start = start;
+			_end = start + insertedLength;
+			OnRangeChanged();
+			FinalizeSelectionHistoryIfNeeded();
 		}
 
 		public int Move(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
+			var descriptor = global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptor(unit);
 			var length = _document.TextLength;
 
 			// TOM ITextRange::Move: "If Count is zero, the range is unchanged." This holds for every unit,
@@ -572,6 +717,13 @@ namespace Microsoft.UI.Text
 			{
 				if (_start != _end)
 				{
+					if (_start == length && _end == length + 1)
+					{
+						_end = _start;
+						OnRangeChanged();
+						return -1;
+					}
+
 					// Collapsing a non-degenerate range toward the direction of travel counts as the first
 					// unit moved (TOM), so only Count-1 further characters are traversed from the far edge.
 					if (count > 0)
@@ -593,9 +745,9 @@ namespace Microsoft.UI.Text
 				}
 
 				// Degenerate caret: move the full Count.
-				var position = _start;
-				var caretTarget = (int)Math.Clamp((long)position + count, 0, length);
-				var moved = caretTarget - position;
+				var caretPosition = _start;
+				var caretTarget = (int)Math.Clamp((long)caretPosition + count, 0, length);
+				var moved = caretTarget - caretPosition;
 				_start = _end = caretTarget;
 				OnRangeChanged();
 				return moved;
@@ -614,153 +766,85 @@ namespace Microsoft.UI.Text
 				return MoveLayoutUnit(unit, count);
 			}
 
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-			if (chunks is null || chunks.Count == 0)
+			var direction = Math.Sign(count);
+			var position = direction > 0 ? _end : _start;
+			var boundaries = GetUnitBoundarySet(unit);
+			var unitsMoved = 0;
+			var collapsedRange = _start != _end;
+			if (collapsedRange)
 			{
-				return 0;
-			}
+				_start = _end = Math.Min(position, length);
 
-			// Unit boundaries are the chunk starts plus the end-of-story position.
-			var boundaries = new int[chunks.Count + 1];
-			for (var i = 0; i < chunks.Count; i++)
-			{
-				boundaries[i] = chunks[i].start;
-			}
-
-			boundaries[chunks.Count] = length;
-
-			// Collapse a non-degenerate range toward the direction of travel first.
-			var insertion = count > 0 ? _end : _start;
-
-			int movedUnits;
-			int destination;
-			if (count > 0)
-			{
-				var index = -1;
-				for (var i = 0; i < boundaries.Length; i++)
+				if (descriptor.IsSparse && direction < 0 && boundaries?.TryGetSpanEndingAt(position, out var precedingSpan) == true)
 				{
-					if (boundaries[i] > insertion)
+					_start = _end = Math.Min(precedingSpan.Start, length);
+					OnRangeChanged();
+					return direction;
+				}
+				if (descriptor.IsSparse && direction > 0 && boundaries?.TryGetSpanContainingForward(position, out var followingSpan) == true)
+				{
+					_start = _end = Math.Min(followingSpan.End, length);
+					OnRangeChanged();
+					return direction;
+				}
+
+				var collapseConsumesUnit = descriptor.MoveCollapseConsumesUnit
+					|| boundaries?.HasStartAt(position) == true;
+				if (collapseConsumesUnit)
+				{
+					unitsMoved = direction;
+					if (Math.Abs((long)count) == 1)
 					{
-						index = i;
-						break;
+						OnRangeChanged();
+						return unitsMoved;
 					}
 				}
-
-				if (index < 0)
-				{
-					return 0;
-				}
-
-				var targetIndex = (int)Math.Min((long)index + count - 1, boundaries.Length - 1);
-				destination = boundaries[targetIndex];
-				movedUnits = targetIndex - index + 1;
 			}
-			else
+
+			if (boundaries is not null)
 			{
-				var index = -1;
-				for (var i = boundaries.Length - 1; i >= 0; i--)
+				var remaining = count - unitsMoved;
+				var destination = boundaries.Move(position, remaining, out var moved);
+				var destinationPosition = Math.Min(destination, length);
+				if (moved != 0 && destinationPosition != position)
 				{
-					if (boundaries[i] < insertion)
-					{
-						index = i;
-						break;
-					}
+					_start = _end = destinationPosition;
+					unitsMoved += moved;
 				}
-
-				if (index < 0)
-				{
-					return 0;
-				}
-
-				var targetIndex = (int)Math.Max((long)index - (-(long)count - 1), 0);
-				destination = boundaries[targetIndex];
-				movedUnits = -(index - targetIndex + 1);
 			}
 
-			_start = _end = destination;
-			OnRangeChanged();
-			return movedUnits;
+			if (unitsMoved == 0 && collapsedRange)
+			{
+				unitsMoved = direction;
+			}
+
+			if (unitsMoved != 0)
+			{
+				OnRangeChanged();
+			}
+			return unitsMoved;
 		}
-
-		// The full story text; the basis for text-based (non-geometry) unit navigation.
-		private protected string GetStoryText() => _document.GetTextInRange(0, _document.TextLength);
 
 		// The ascending unit-boundary positions for <paramref name="unit"/> — every unit start plus the
 		// end of the story — used by Delete/MoveStart/MoveEnd. Word/Paragraph are text-based; Line is
 		// geometry-based (wrap-aware) and requires a laid-out view. Returns null when the unit is not
 		// boundary-navigable here (Character/Story are handled directly) or the layout is unavailable.
-		private int[]? GetUnitBoundaries(global::Microsoft.UI.Text.TextRangeUnit unit)
+		private protected global::Microsoft.UI.Text.TextRangeUnitBoundarySet? GetUnitBoundarySet(
+			global::Microsoft.UI.Text.TextRangeUnit unit,
+			bool allowUnavailableWindow = false)
 		{
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
+			var boundaries = _document.GetUnitBoundaries(unit);
+			if (boundaries is null
+				&& !allowUnavailableWindow
+				&& unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
 			{
-				return GetLineBoundaries();
+				throw new NotImplementedException();
 			}
-
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-			if (chunks is null || chunks.Count == 0)
-			{
-				return null;
-			}
-
-			var boundaries = new int[chunks.Count + 1];
-			for (var i = 0; i < chunks.Count; i++)
-			{
-				boundaries[i] = chunks[i].start;
-			}
-
-			boundaries[chunks.Count] = _document.TextLength;
 			return boundaries;
 		}
 
-		// The ascending start positions of every visual line plus the end of the story, or null when the
-		// view is not yet laid out. Lines are contiguous, so the next line starts where the current line's
-		// content ends (stepping over a hard carriage return when present).
-		private int[]? GetLineBoundaries()
-		{
-			var text = GetStoryText();
-			var length = text.Length;
-			var boundaries = new List<int>();
-			var probe = 0;
-			var guard = 0;
-			while (guard++ <= length + 1)
-			{
-				if (!_document.TryGetLineBounds(probe, out var lineStart, out var lineEnd, out _, out var isLast))
-				{
-					return null;
-				}
-
-				if (boundaries.Count == 0 || boundaries[boundaries.Count - 1] != lineStart)
-				{
-					boundaries.Add(lineStart);
-				}
-
-				if (isLast)
-				{
-					break;
-				}
-
-				var next = lineEnd;
-				next += global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthAt(text, next);
-				if (next <= probe)
-				{
-					break;
-				}
-
-				probe = next;
-			}
-
-			if (boundaries.Count == 0)
-			{
-				return null;
-			}
-
-			if (boundaries[boundaries.Count - 1] != length)
-			{
-				boundaries.Add(length);
-			}
-
-			return boundaries.ToArray();
-		}
+		private protected int[]? GetUnitBoundaries(global::Microsoft.UI.Text.TextRangeUnit unit)
+			=> GetUnitBoundarySet(unit)?.GetMovementBoundaries();
 
 		// Moves <paramref name="position"/> by <paramref name="count"/> unit boundaries along
 		// <paramref name="boundaries"/> and reports the signed number of units actually crossed. Mirrors
@@ -815,6 +899,12 @@ namespace Microsoft.UI.Text
 
 		private int MoveLayoutUnit(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window
+				&& _document.GetVisibleUnitBoundaries() is null)
+			{
+				throw new NotImplementedException();
+			}
+
 			var direction = Math.Sign(count);
 			var position = direction > 0 ? _end : _start;
 			var unitsMoved = 0;
@@ -869,6 +959,12 @@ namespace Microsoft.UI.Text
 
 		private int MoveLayoutEndpoint(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool moveStart)
 		{
+			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window
+				&& _document.GetVisibleUnitBoundaries() is null)
+			{
+				throw new NotImplementedException();
+			}
+
 			var direction = Math.Sign(count);
 			var position = moveStart ? _start : _end;
 			var moved = unit == global::Microsoft.UI.Text.TextRangeUnit.Screen
@@ -903,6 +999,7 @@ namespace Microsoft.UI.Text
 
 		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
+			var descriptor = global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptor(unit);
 			var length = _document.TextLength;
 
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
@@ -928,19 +1025,29 @@ namespace Microsoft.UI.Text
 				return MoveLayoutEndpoint(unit, count, moveStart: true);
 			}
 
-			var boundaries = GetUnitBoundaries(unit);
+			var boundaries = GetUnitBoundarySet(unit);
 			if (boundaries is null)
 			{
 				return 0;
 			}
 
-			var target = MoveByBoundaries(boundaries, _start, count, out var unitsMoved);
+			if (descriptor.IsEffectUnit && count > 0 && boundaries.HasStartAt(_start))
+			{
+				return 1;
+			}
+
+			var target = boundaries.Move(_start, count, out var unitsMoved);
 			if (unitsMoved == 0)
+			{
+				return descriptor.IsEffectUnit && count > 0 ? 1 : 0;
+			}
+
+			var oldStart = _start;
+			_start = Math.Clamp(target, 0, length);
+			if (_start == oldStart)
 			{
 				return 0;
 			}
-
-			_start = Math.Clamp(target, 0, length);
 			if (_start > _end)
 			{
 				_end = _start;
@@ -952,12 +1059,13 @@ namespace Microsoft.UI.Text
 
 		public int MoveEnd(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
+			global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptor(unit);
 			var length = _document.TextLength;
 
 			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
 			{
 				var oldChar = _end;
-				_end = (int)Math.Clamp((long)_end + count, 0, length);
+				_end = (int)Math.Clamp((long)_end + count, 0, _document.StoryLength);
 				if (_end < _start)
 				{
 					_start = _end;
@@ -977,19 +1085,24 @@ namespace Microsoft.UI.Text
 				return MoveLayoutEndpoint(unit, count, moveStart: false);
 			}
 
-			var boundaries = GetUnitBoundaries(unit);
+			var boundaries = GetUnitBoundarySet(unit);
 			if (boundaries is null)
 			{
 				return 0;
 			}
 
-			var target = MoveByBoundaries(boundaries, _end, count, out var unitsMoved);
+			var target = boundaries.Move(_end, count, out var unitsMoved);
 			if (unitsMoved == 0)
 			{
 				return 0;
 			}
 
-			_end = Math.Clamp(target, 0, length);
+			var oldEnd = _end;
+			_end = Math.Clamp(target, 0, _document.StoryLength);
+			if (_end == oldEnd)
+			{
+				return 0;
+			}
 			if (_end < _start)
 			{
 				_start = _end;
@@ -1062,23 +1175,45 @@ namespace Microsoft.UI.Text
 				if (value is UnoTextRange source)
 				{
 					var fragment = source._document.CaptureFragment(source._start, source._end);
-					var insertedLength = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
+					var insertedLength = _document.ReplaceRangeWithFragment(
+						_start,
+						_end,
+						fragment,
+						this,
+						forceHistory: true);
 					_end = _start + insertedLength;
 				}
 				else
 				{
-					var insertedLength = _document.ReplaceRange(_start, _end, value.Text ?? string.Empty, this);
+					var insertedLength = _document.ReplaceRange(
+						_start,
+						_end,
+						value.Text ?? string.Empty,
+						this,
+						forceHistory: true);
 					_end = _start + insertedLength;
 				}
 
 				OnRangeChanged();
+				FinalizeSelectionHistoryIfNeeded();
 			}
 		}
 
 		public global::Microsoft.UI.Text.RangeGravity Gravity
 		{
 			get => _gravity;
-			set => _gravity = value;
+			set
+			{
+				_gravity = value switch
+				{
+					global::Microsoft.UI.Text.RangeGravity.UIBehavior => value,
+					global::Microsoft.UI.Text.RangeGravity.Backward => value,
+					global::Microsoft.UI.Text.RangeGravity.Forward => value,
+					global::Microsoft.UI.Text.RangeGravity.Inward => value,
+					global::Microsoft.UI.Text.RangeGravity.Outward => global::Microsoft.UI.Text.RangeGravity.UIBehavior,
+					_ => throw new ArgumentException("The range gravity is invalid.", nameof(value)),
+				};
+			}
 		}
 
 		public string Link
@@ -1098,7 +1233,7 @@ namespace Microsoft.UI.Text
 			set => _document.SetLink(_start, _end, value);
 		}
 
-		public bool CanPaste(int format) => _document.CanPaste();
+		public bool CanPaste(int format) => _document.CanPaste(format);
 
 		public virtual void Copy()
 		{
@@ -1136,8 +1271,8 @@ namespace Microsoft.UI.Text
 			}
 
 			// The OS clipboard read is async on Uno, so unlike WinUI's synchronous paste this replaces the
-			// range on a later dispatcher turn. A matching in-process rich payload restores formatting; the
-			// 'format' argument (a RichEdit clipboard-format id) is not used to select an OS payload.
+			// range on a later dispatcher turn. The operation range remains live while the requested native
+			// clipboard format is retrieved.
 			var operationRange = new UnoTextRange(_document, _start, _end)
 			{
 				Gravity = _gravity,
@@ -1146,54 +1281,30 @@ namespace Microsoft.UI.Text
 			{
 				_start = _end = caret;
 				OnRangeChanged();
-			}, requireEditable: this is UnoTextSelection);
+			}, requireEditable: this is UnoTextSelection, format);
 		}
 
 		// --- Text-based unit navigation (Word/Paragraph/Story) — functional over the plain-text buffer ---
 
 		public int EndOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			int target;
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			var boundaries = _document.GetUnitBoundaries(unit);
+			if (boundaries is null || boundaries.Count == 0)
+			{
+				return 0;
+			}
+
+			var probe = _end > _start ? _end - 1 : _end;
+			var index = boundaries.FindContaining(probe);
+			if (index < 0)
+			{
+				return 0;
+			}
+			var target = boundaries[index].OperationEnd;
+
+			if (!extend && target > _document.TextLength)
 			{
 				target = _document.TextLength;
-			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
-			{
-				// The end of a single character is one position forward from a degenerate range.
-				target = Math.Min(_end + (_start == _end ? 1 : 0), _document.TextLength);
-			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
-			{
-				// The visual line end is geometry-based (wrap-aware); probe end-1 for a non-degenerate range.
-				var probe = _end > _start ? _end - 1 : _end;
-				if (!_document.TryGetLineBounds(probe, out _, out var lineEnd, out _, out _))
-				{
-					return 0;
-				}
-
-				target = lineEnd;
-			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
-			{
-				if (!_document.TryGetVisibleRange(out _, out target))
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-				if (chunks is null || chunks.Count == 0)
-				{
-					return 0;
-				}
-
-				// Probe the unit the range end sits within (end-1 for a non-degenerate range so a
-				// selection ending on a boundary is not pulled into the following unit).
-				var probe = _end > _start ? _end - 1 : _end;
-				var chunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, probe)];
-				target = chunk.start + chunk.length;
 			}
 
 			var old = _end;
@@ -1213,42 +1324,17 @@ namespace Microsoft.UI.Text
 
 		public int StartOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			int target;
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			var boundaries = _document.GetUnitBoundaries(unit);
+			if (boundaries is null || boundaries.Count == 0)
 			{
-				target = 0;
+				return 0;
 			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			var index = boundaries.FindContaining(_start);
+			if (index < 0)
 			{
-				// The start of a character is the range's own start; nothing to move.
-				target = _start;
+				return 0;
 			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
-			{
-				if (!_document.TryGetLineBounds(_start, out var lineStart, out _, out _, out _))
-				{
-					return 0;
-				}
-
-				target = lineStart;
-			}
-			else if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
-			{
-				if (!_document.TryGetVisibleRange(out target, out _))
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-				if (chunks is null || chunks.Count == 0)
-				{
-					return 0;
-				}
-
-				target = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start)].start;
-			}
+			var target = boundaries[index].Start;
 
 			var old = _start;
 			_start = target;
@@ -1267,110 +1353,81 @@ namespace Microsoft.UI.Text
 
 		public int Expand(global::Microsoft.UI.Text.TextRangeUnit unit)
 		{
-			var originalLength = _end - _start;
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
-			{
-				_start = 0;
-				_end = _document.TextLength;
-				OnRangeChanged();
-				return (_end - _start) - originalLength;
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
-			{
-				// Expanding a caret by one character selects the following character.
-				if (_start == _end && _start < _document.TextLength)
-				{
-					_end = _start + 1;
-					OnRangeChanged();
-					return 1;
-				}
-
-				return 0;
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
-			{
-				if (!_document.TryGetLineBounds(_start, out var lineStart, out _, out _, out _))
-				{
-					return 0;
-				}
-
-				var probe = _end > _start ? _end - 1 : _end;
-				_document.TryGetLineBounds(probe, out _, out var lineEnd, out _, out _);
-				_start = lineStart;
-				_end = Math.Max(lineEnd, lineStart);
-				OnRangeChanged();
-				return (_end - _start) - originalLength;
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
-			{
-				if (!_document.TryGetVisibleRange(out _start, out _end))
-				{
-					return 0;
-				}
-
-				OnRangeChanged();
-				return (_end - _start) - originalLength;
-			}
-
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(GetStoryText(), unit);
-			if (chunks is null || chunks.Count == 0)
+			var boundaries = GetUnitBoundarySet(unit, allowUnavailableWindow: true);
+			if (boundaries is null || boundaries.Count == 0)
 			{
 				return 0;
 			}
 
-			var startChunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, _start)];
+			var startIndex = boundaries.FindContaining(_start);
+			if (startIndex < 0)
+			{
+				return 0;
+			}
 			var probeEnd = _end > _start ? _end - 1 : _end;
-			var endChunk = chunks[global::Microsoft.UI.Text.TextUnitNavigation.FindChunkIndex(chunks, probeEnd)];
-			_start = startChunk.start;
-			_end = endChunk.start + endChunk.length;
+			var endIndex = boundaries.FindContaining(probeEnd);
+			if (endIndex < 0)
+			{
+				endIndex = startIndex;
+			}
+
+			var oldStart = _start;
+			var oldEnd = _end;
+			var originalLength = _end - _start;
+			_start = boundaries[startIndex].Start;
+			_end = boundaries[endIndex].OperationEnd;
 			OnRangeChanged();
-			return (_end - _start) - originalLength;
+			return oldEnd == _end && oldStart != _start
+				? _start - oldStart
+				: (_end - _start) - originalLength;
 		}
 
 		public int GetIndex(global::Microsoft.UI.Text.TextRangeUnit unit)
 		{
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			var descriptor = global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptor(unit);
+			var units = GetUnitBoundarySet(unit);
+			if (descriptor.Kind == global::Microsoft.UI.Text.TextRangeUnitProviderKind.ContentLink)
 			{
 				return 1;
 			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
+			if (descriptor.IsEffectUnit)
 			{
-				return _start + 1;
+				return units?.GetLeadingCompletedIndex(_start) ?? 0;
 			}
-
-			var units = GetIndexedUnitRanges(unit);
 			if (units is null || units.Count == 0)
 			{
 				return 0;
 			}
-
-			for (var i = 0; i < units.Count; i++)
+			if (descriptor.Kind == global::Microsoft.UI.Text.TextRangeUnitProviderKind.Object)
 			{
-				var current = units[i];
-				if (_start < current.end || (current.start == current.end && _start == current.start))
-				{
-					return i + 1;
-				}
+				return units.CountEndingAtOrBefore(_start);
 			}
-
-			return units.Count;
+			var index = units.FindContaining(_start);
+			return index < 0 ? 0 : index + 1;
 		}
 
 		public void SetIndex(global::Microsoft.UI.Text.TextRangeUnit unit, int index, bool extend)
 		{
-			if (!TryGetIndexedUnit(unit, index, out var unitStart, out var unitEnd))
+			var descriptor = global::Microsoft.UI.Text.TextRangeUnitBoundaryProvider.GetDescriptor(unit);
+			var units = GetUnitBoundarySet(unit);
+			if (descriptor.IsEffectUnit || descriptor.Kind == global::Microsoft.UI.Text.TextRangeUnitProviderKind.ContentLink)
 			{
+				SetSingleUnitIndex(index, extend);
 				return;
 			}
+			if (units is null || units.Count == 0)
+			{
+				if (descriptor.Kind == global::Microsoft.UI.Text.TextRangeUnitProviderKind.Object)
+				{
+					SetSingleUnitIndex(index, extend);
+				}
+				return;
+			}
+			var indexedUnit = units[GetUnitIndex(index, units.Count)];
 
 			if (extend)
 			{
-				_end = unitEnd;
+				_end = indexedUnit.End;
 				if (_end < _start)
 				{
 					_start = _end;
@@ -1378,126 +1435,30 @@ namespace Microsoft.UI.Text
 			}
 			else
 			{
-				_start = _end = unitStart;
+				_start = _end = indexedUnit.Start;
 			}
 
 			OnRangeChanged();
 		}
 
-		private bool TryGetIndexedUnit(global::Microsoft.UI.Text.TextRangeUnit unit, int index, out int unitStart, out int unitEnd)
+		private void SetSingleUnitIndex(int index, bool extend)
 		{
-			unitStart = 0;
-			unitEnd = 0;
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Story)
+			ValidateUnitIndex(index, 1);
+			var position = index > 0 ? 0 : _document.TextLength;
+			if (extend)
 			{
-				ValidateUnitIndex(index, 1);
-				unitEnd = _document.TextLength;
-				return true;
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Character)
-			{
-				var length = _document.TextLength;
-				unitStart = GetUnitIndex(index, length + 1);
-				unitEnd = Math.Min(unitStart + 1, length);
-				return true;
-			}
-
-			var units = GetIndexedUnitRanges(unit);
-			if (units is null || units.Count == 0)
-			{
-				return false;
-			}
-
-			var indexedUnit = units[GetUnitIndex(index, units.Count)];
-			unitStart = indexedUnit.start;
-			unitEnd = indexedUnit.end;
-			return true;
-		}
-
-		private List<(int start, int end)>? GetIndexedUnitRanges(global::Microsoft.UI.Text.TextRangeUnit unit)
-		{
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Line)
-			{
-				return GetLineRanges();
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Window)
-			{
-				return _document.TryGetVisibleRange(out var visibleStart, out var visibleEnd)
-					? new List<(int start, int end)> { (visibleStart, visibleEnd) }
-					: null;
-			}
-
-			var text = GetStoryText();
-			var chunks = global::Microsoft.UI.Text.TextUnitNavigation.GetChunks(text, unit);
-			if (chunks is null)
-			{
-				return null;
-			}
-
-			var units = new List<(int start, int end)>(chunks.Count + 1);
-			foreach (var chunk in chunks)
-			{
-				units.Add((chunk.start, chunk.start + chunk.length));
-			}
-
-			if (unit == global::Microsoft.UI.Text.TextRangeUnit.Word
-				|| (unit == global::Microsoft.UI.Text.TextRangeUnit.Paragraph
-					&& (text.Length == 0 || global::Microsoft.UI.Text.TextUnitNavigation.EndsInParagraphBreak(text))))
-			{
-				units.Add((text.Length, text.Length));
-			}
-
-			return units;
-		}
-
-		private List<(int start, int end)>? GetLineRanges()
-		{
-			var text = GetStoryText();
-			var starts = new List<int>();
-			var probe = 0;
-			var guard = 0;
-			while (guard++ <= text.Length + 1)
-			{
-				if (!_document.TryGetLineBounds(probe, out var lineStart, out var lineEnd, out _, out var isLast))
+				_end = position;
+				if (_end < _start)
 				{
-					return null;
+					_start = _end;
 				}
-
-				if (starts.Count == 0 || starts[starts.Count - 1] != lineStart)
-				{
-					starts.Add(lineStart);
-				}
-
-				if (isLast)
-				{
-					break;
-				}
-
-				var next = lineEnd;
-				next += global::Microsoft.UI.Text.TextUnitNavigation.GetHardLineBreakLengthAt(text, next);
-				if (next <= probe)
-				{
-					break;
-				}
-
-				probe = next;
 			}
-
-			if (starts.Count == 0)
+			else
 			{
-				return null;
+				_start = _end = position;
 			}
 
-			var lines = new List<(int start, int end)>(starts.Count);
-			for (var i = 0; i < starts.Count; i++)
-			{
-				lines.Add((starts[i], i + 1 < starts.Count ? starts[i + 1] : text.Length));
-			}
-
-			return lines;
+			OnRangeChanged();
 		}
 
 		private static int GetUnitIndex(int index, int unitCount)
@@ -1521,9 +1482,8 @@ namespace Microsoft.UI.Text
 
 		public void GetCharacterUtf32(out uint value, int offset)
 		{
-			var text = _document.GetTextInRange(0, _document.TextLength);
 			var position = (long)_end + offset;
-			if (position < 0 || position >= text.Length)
+			if (position < 0 || position >= _document.TextLength)
 			{
 				// Out of range yields 0 (WinUI reports the null character past the story end).
 				value = 0;
@@ -1531,15 +1491,32 @@ namespace Microsoft.UI.Text
 			}
 
 			var index = (int)position;
-			if (char.IsLowSurrogate(text[index]) && index > 0 && char.IsHighSurrogate(text[index - 1]))
+			if (char.IsLowSurrogate(_document.GetCharacterAt(index))
+				&& index > 0
+				&& char.IsHighSurrogate(_document.GetCharacterAt(index - 1)))
 			{
-				index--;
+				if (offset > 0)
+				{
+					index++;
+					if (index >= _document.TextLength)
+					{
+						value = 0;
+						return;
+					}
+				}
+				else
+				{
+					index--;
+				}
 			}
 
 			// Combine a surrogate pair into a single UTF-32 code point; otherwise the char is the value.
-			value = char.IsHighSurrogate(text[index]) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1])
-				? (uint)char.ConvertToUtf32(text[index], text[index + 1])
-				: text[index];
+			var character = _document.GetCharacterAt(index);
+			value = char.IsHighSurrogate(character)
+				&& index + 1 < _document.TextLength
+				&& char.IsLowSurrogate(_document.GetCharacterAt(index + 1))
+					? (uint)char.ConvertToUtf32(character, _document.GetCharacterAt(index + 1))
+					: character;
 		}
 
 		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point)
@@ -1547,6 +1524,7 @@ namespace Microsoft.UI.Text
 			// The point is taken at the range's start when PointOptions.Start is set, otherwise at its
 			// (active) end, mirroring WinUI's tomStart/tomEnd anchoring.
 			point = default;
+			_document.TryScrollRangeIntoView(_start, _end, options);
 			var anchor = options.HasFlag(global::Microsoft.UI.Text.PointOptions.Start) ? _start : _end;
 			if (!_document.TryGetIndexRect(anchor, options, out var rect))
 			{
@@ -1570,16 +1548,15 @@ namespace Microsoft.UI.Text
 
 		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit)
 		{
-			// TODO Uno: 'hit' (WinUI reports a RichEdit hit-test/clip indicator) is reported as 0.
-			hit = 0;
-			if (options.HasFlag(global::Microsoft.UI.Text.PointOptions.Start))
-			{
-				_document.TryGetRangeRect(_start, _start, options, out rect);
-			}
-			else
-			{
-				_document.TryGetRangeRect(_start, _end, options, out rect);
-			}
+			_document.TryScrollRangeIntoView(_start, _end, options);
+			_document.TryGetRangeGeometry(
+				_start,
+				_end,
+				options,
+				this is UnoTextSelection,
+				out var result);
+			rect = result.Rect;
+			hit = result.NativeHit;
 		}
 
 		public void ScrollIntoView(global::Microsoft.UI.Text.PointOptions value)
@@ -1587,6 +1564,15 @@ namespace Microsoft.UI.Text
 
 		public void SetPoint(global::Windows.Foundation.Point point, global::Microsoft.UI.Text.PointOptions options, bool extend)
 		{
+			const global::Microsoft.UI.Text.PointOptions invalidOptions =
+				global::Microsoft.UI.Text.PointOptions.AllowOffClient
+				| global::Microsoft.UI.Text.PointOptions.NoHorizontalScroll
+				| global::Microsoft.UI.Text.PointOptions.NoVerticalScroll;
+			if ((options & invalidOptions) != 0)
+			{
+				throw new ArgumentException(nameof(options));
+			}
+
 			if (!_document.TryGetIndexFromPoint(point, options, out var index))
 			{
 				return;
@@ -1604,11 +1590,7 @@ namespace Microsoft.UI.Text
 				}
 				else
 				{
-					_end = index;
-					if (_end < _start)
-					{
-						_start = _end;
-					}
+					_start = _end = index;
 				}
 
 				OnRangeChanged();
@@ -1632,62 +1614,57 @@ namespace Microsoft.UI.Text
 			=> _document.GetRangeTextViaStream(_start, _end, options, value);
 
 		public void SetTextViaStream(global::Microsoft.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
-			=> SetText(options, _document.ReadRangeTextViaStream(options, value));
+		{
+			if (!options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf))
+			{
+				var plainInsertedLength = _document.ReplaceRange(
+					_start,
+					_end,
+					_document.ReadRangeTextViaStream(value),
+					this,
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
+					options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
+					forceHistory: true,
+					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit),
+					unicodeBidi: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.UnicodeBidi));
+				_start = _end = _start + plainInsertedLength;
+				OnRangeChanged();
+				FinalizeSelectionHistoryIfNeeded();
+				return;
+			}
+
+			var fragment = _document.ReadRangeRtfViaStream(
+				value,
+				_document.GetSetTextImportCharacterLimit(_start, _end, options),
+				_document.ShouldTruncateSetTextImportAtLimit(_start, _end, options));
+			var insertedLength = _document.ReplaceRangeWithFragment(
+				_start,
+				_end,
+				fragment,
+				this,
+				unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
+				unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
+				forceHistory: true,
+				checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit));
+			_start = _end = _start + insertedLength;
+			OnRangeChanged();
+			FinalizeSelectionHistoryIfNeeded();
+		}
 
 		public void InsertImage(int width, int height, int ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, string alternateText, global::Windows.Storage.Streams.IRandomAccessStream value)
 		{
 			ArgumentNullException.ThrowIfNull(value);
-			if (value.Size > InlineImageState.MaxEncodedBytes)
-			{
-				throw new ArgumentException("The image stream is too large.", nameof(value));
-			}
-
 			if (width < 0 || height < 0 || ascent < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(width), "Image dimensions and ascent cannot be negative.");
 			}
 
-			value.Seek(0);
-			using var buffer = new MemoryStream();
-			var source = value.AsStream();
-			var chunk = new byte[8192];
-			while (true)
-			{
-				var read = source.Read(chunk, 0, chunk.Length);
-				if (read == 0)
-				{
-					break;
-				}
-
-				if (buffer.Length + read > InlineImageState.MaxEncodedBytes)
-				{
-					throw new ArgumentException("The image stream is too large.", nameof(value));
-				}
-				buffer.Write(chunk, 0, read);
-			}
-			var image = new InlineImageState
-			{
-				Data = buffer.ToArray(),
-				Width = width,
-				Height = height,
-				Ascent = ascent,
-				VerticalAlignment = verticalAlign,
-				AlternateText = alternateText ?? string.Empty,
-			};
-			image.Validate();
-			var fragment = new RichTextFragment(
-				"\ufffc",
-				new List<CharacterFormatState>
-				{
-					new()
-					{
-						InlineImage = image,
-					},
-				},
-				new List<ParagraphFormatState>());
+			var image = InlineImageState.CreateFromStream(value, width, height, ascent, verticalAlign, alternateText);
+			var fragment = _document.CreateInlineImageFragment(_start, image);
 			var insertedLength = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
 			_end = _start + insertedLength;
 			OnRangeChanged();
+			FinalizeSelectionHistoryIfNeeded();
 		}
 	}
 }

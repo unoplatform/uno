@@ -2,6 +2,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -38,6 +39,33 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>The input scope used by platform keyboard and IME services.</summary>
 		InputScope InputScope { get; }
 
+		/// <summary>Whether text prediction is enabled for this session.</summary>
+		bool IsTextPredictionEnabled { get; }
+
+		/// <summary>The requested candidate-window alignment.</summary>
+		CandidateWindowAlignment DesiredCandidateWindowAlignment { get; }
+
+		/// <summary>The plain text mirrored into the platform input connection.</summary>
+		string Text { get; }
+
+		/// <summary>Whether the platform input connection should accept line breaks.</summary>
+		bool AcceptsReturn { get; }
+
+		/// <summary>Whether the platform input connection should request spell checking.</summary>
+		bool IsSpellCheckEnabled { get; }
+
+		/// <summary>Whether the host is currently tracking an IME composition.</summary>
+		bool IsComposing { get; }
+
+		/// <summary>The casing requested for platform-entered text.</summary>
+		CharacterCasing CharacterCasing { get; }
+
+		/// <summary>Applies text and selection produced by a platform input connection.</summary>
+		void UpdateTextFromNative(string text, int selectionStart, int selectionLength);
+
+		/// <summary>Applies a selection-only update produced by a platform input connection.</summary>
+		void SelectFromNative(int selectionStart, int selectionLength);
+
 		/// <summary>Called when the user begins an IME composition.</summary>
 		void OnImeCompositionStarted();
 
@@ -47,7 +75,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Called when the user commits text from the IME.</summary>
 		void OnImeCompositionCompleted(string committedText, bool textAlreadyApplied);
 
+		/// <summary>Called when the IME commits a prefix and continues composing.</summary>
+		void OnImeCompositionPartiallyCommitted(
+			string committedText,
+			string compositionText,
+			int cursorPosition,
+			int resolvedLength,
+			bool textAlreadyApplied);
+
+		/// <summary>Called when the IME cancels the transient preedit.</summary>
+		void OnImeCompositionCanceled(bool textAlreadyApplied);
+
 		/// <summary>Called when the IME composition session ends (after commit or cancel).</summary>
 		void OnImeCompositionEnded();
+
+		/// <summary>Called when the platform reports candidate-window bounds.</summary>
+		void OnCandidateWindowBoundsChanged(Rect bounds);
 	}
 }

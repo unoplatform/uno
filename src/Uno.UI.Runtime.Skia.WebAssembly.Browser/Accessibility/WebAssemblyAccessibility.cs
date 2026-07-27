@@ -1061,7 +1061,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// Routes to the IValueProvider.SetValue() method on the automation peer.
 	/// </summary>
 	[JSExport]
-	public static void OnTextInput(IntPtr handle, string value, int selectionStart, int selectionEnd)
+	public static void OnTextInput(
+		IntPtr handle,
+		string value,
+		int selectionStart,
+		int selectionEnd,
+		bool selectionIsBackward)
 	{
 		var @this = Instance;
 		if (@this.Log().IsEnabled(LogLevel.Trace))
@@ -1071,6 +1076,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
+			if (owner is RichEditBox richEditBox)
+			{
+				richEditBox.ApplyAccessibilityTextInput(
+					value,
+					selectionStart,
+					selectionEnd,
+					selectionIsBackward);
+				return;
+			}
+
 			if (owner is ITextBoxHost { Core: { } core })
 			{
 				var maxLength = value?.Length ?? 0;
@@ -1084,6 +1099,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				valueProvider.SetValue(value);
 			}
+		}
+	}
+
+	[JSExport]
+	public static void OnTextSelectionChanged(
+		IntPtr handle,
+		int selectionStart,
+		int selectionEnd,
+		bool selectionIsBackward)
+	{
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: RichEditBox richEditBox })
+		{
+			richEditBox.ApplyAccessibilitySelection(
+				selectionStart,
+				selectionEnd,
+				selectionIsBackward);
 		}
 	}
 
@@ -2125,8 +2156,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
-		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
-			TryGetPeerOwner(peer, out var element))
+		if (automationProperty == RichEditBoxAutomationPeer.IsSpellCheckEnabledProperty
+			&& TryGetPeerOwner(peer, out var element))
+		{
+			NativeMethods.UpdateTextBoxSpellCheck(element.Visual.Handle, (bool)newValue);
+		}
+		else if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
+			TryGetPeerOwner(peer, out element))
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)newValue);
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -2438,14 +2474,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
 				// Sync text value changes to the semantic DOM (handles programmatic TextBox.Text updates)
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+				if (TryGetPeerOwner(peer, out var textElement))
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (textElement is RichEditBox richEditBox)
 					{
-						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
+						UpdateRichEditBoxValueAndSelection(richEditBox);
 					}
-					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
+					else if (peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+					{
+						UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
+					}
+				}
+				break;
+
+			case AutomationEvents.TextPatternOnTextSelectionChanged:
+				if (TryGetPeerOwner(peer, out var selectionElement)
+					&& selectionElement is RichEditBox selectionRichEditBox)
+				{
+					UpdateRichEditBoxValueAndSelection(selectionRichEditBox);
 				}
 				break;
 
@@ -2571,6 +2617,31 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		UpdateTextBoxValueKeepingSelection(core.Owner.Visual.Handle, core.Text, core);
 	}
 
+	protected override void OnTextControlStateChanged(UIElement element)
+	{
+		if (element is RichEditBox richEditBox && HasSemanticElement(element.Visual.Handle))
+		{
+			UpdateRichEditBoxValueAndSelection(richEditBox);
+			NativeMethods.UpdateTextBoxReadOnly(element.Visual.Handle, richEditBox.IsReadOnly);
+			NativeMethods.UpdateTextBoxPlaceholder(element.Visual.Handle, richEditBox.PlaceholderText ?? string.Empty);
+			NativeMethods.UpdateTextBoxSpellCheck(element.Visual.Handle, richEditBox.IsSpellCheckEnabled);
+		}
+	}
+
+	private static void UpdateRichEditBoxValueAndSelection(RichEditBox richEditBox)
+	{
+		richEditBox.GetAccessibilitySelection(
+			out var selectionStart,
+			out var selectionEnd,
+			out var selectionIsBackward);
+		NativeMethods.UpdateTextBoxValue(
+			richEditBox.Visual.Handle,
+			richEditBox.GetAccessibilityText(),
+			selectionStart,
+			selectionEnd,
+			selectionIsBackward);
+	}
+
 	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? core = null)
 	{
 		core ??= TryGetTextBoxForHandle(handle, out var resolvedCore) ? resolvedCore : null;
@@ -2578,7 +2649,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
-			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd);
+			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd, false);
 			return;
 		}
 
@@ -2586,7 +2657,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	private static void UpdateTextBoxValuePreservingSelection(IntPtr handle, string value)
-		=> NativeMethods.UpdateTextBoxValue(handle, value ?? string.Empty, PreserveTextSelectionSentinel, PreserveTextSelectionSentinel);
+		=> NativeMethods.UpdateTextBoxValue(
+			handle,
+			value ?? string.Empty,
+			PreserveTextSelectionSentinel,
+			PreserveTextSelectionSentinel,
+			false);
 
 	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBoxCore? core)
 	{
@@ -2664,10 +2740,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max, string? valueText);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxValue")]
-		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd);
+		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd, bool selectionIsBackward);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxReadOnly")]
 		internal static partial void UpdateTextBoxReadOnly(IntPtr handle, bool isReadOnly);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxSpellCheck")]
+		internal static partial void UpdateTextBoxSpellCheck(IntPtr handle, bool isSpellCheckEnabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxPlaceholder")]
+		internal static partial void UpdateTextBoxPlaceholder(IntPtr handle, string placeholder);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateExpandCollapseState")]
 		internal static partial void UpdateExpandCollapseState(IntPtr handle, bool expanded);

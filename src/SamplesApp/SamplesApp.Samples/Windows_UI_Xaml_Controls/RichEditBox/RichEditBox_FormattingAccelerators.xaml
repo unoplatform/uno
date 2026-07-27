@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="Formatting accelerators (Skia): select some text in the editor, then press Ctrl+B, Ctrl+I or Ctrl+U to toggle bold, italic or underline over the selection. Use the checkboxes to disable individual accelerators via DisabledFormattingAccelerators."
+            Text="Formatting-accelerator parity probe: select some text, then press Ctrl+B, Ctrl+I or Ctrl+U to toggle bold, italic or underline. Use the checkboxes to disable individual accelerators via DisabledFormattingAccelerators."
             TextWrapping="Wrap" />
         <RichEditBox
             x:Name="Editor"

@@ -14,7 +14,7 @@
         Spacing="8">
         <TextBlock
             FontWeight="SemiBold"
-            Text="RichEditBox events (Skia): type to raise TextChanging/TextChanged, move the caret to raise SelectionChanging/SelectionChanged, and use Ctrl+C/X/V to raise CopyingToClipboard/CuttingToClipboard/Paste. Toggle the switches to cancel or suppress the corresponding operation."
+            Text="RichEditBox event parity probe: type to raise TextChanging/TextChanged, move the caret to raise SelectionChanging/SelectionChanged, and use Ctrl+C/X/V to raise CopyingToClipboard/CuttingToClipboard/Paste. Toggle the switches to cancel or suppress the corresponding operation."
             TextWrapping="Wrap" />
         <RichEditBox
             x:Name="Editor"

@@ -19,20 +19,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public event ContextMenuOpeningEventHandler? ContextMenuOpening;
 
-		private FlyoutBase GetProofingMenuFlyout()
+		private FlyoutBase GetProofingMenuFlyout(int? position = null)
 		{
 			_proofingMenu ??= new MenuFlyout();
 			TextControlFlyoutHelper.AddProofingFlyout(_proofingMenu, this);
 			if (IsSpellCheckEnabled && (FocusState != FocusState.Unfocused || _forceFocusedVisualState))
 			{
-				UpdateProofingMenu();
+				UpdateProofingMenu(position ?? _selection.start);
 			}
 
 			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
 			return _proofingMenu;
 		}
 
-		private void UpdateProofingMenu()
+		private void UpdateProofingMenu(int position)
 		{
 			if (_proofingMenu is null)
 			{
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_proofingMenu.Items.Clear();
 			if (_textBoxView?.DisplayBlock.ParsedText is not UnicodeText unicodeText
-				|| unicodeText.GetCorrectionAtIndex(_selection.start) is not { } correction
+				|| unicodeText.GetCorrectionAtIndex(position) is not { } correction
 				|| unicodeText.GetSpellCheckSuggestions(correction.correctionStart, correction.correctionEnd) is not { } result)
 			{
 				return;
@@ -108,6 +108,54 @@ namespace Microsoft.UI.Xaml.Controls
 			var position = new Point(_lastPointerPositionForFlyout.X, selectionRect.Y);
 			TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, selectionRect, showMode);
 			_lastFlyoutInputDeviceType = default;
+		}
+
+		internal void ShowAccessibilityContextMenu(int start, int end)
+		{
+			if (!IsLoaded || Visibility != Visibility.Visible)
+			{
+				return;
+			}
+
+			var length = Document.TextLength;
+			start = Math.Clamp(start, 0, length);
+			end = Math.Clamp(end, start, length);
+			Document.GetRange(start, end).GetRect(
+				global::Microsoft.UI.Text.PointOptions.ClientCoordinates,
+				out var rangeRect,
+				out _);
+			if (rangeRect.Height <= 0)
+			{
+				return;
+			}
+
+			FlyoutBase? flyout = ContextFlyout;
+			if (flyout is null && start != end)
+			{
+				flyout = SelectionFlyout;
+			}
+
+			if (flyout is null
+				&& GetProofingMenuFlyout(start) is MenuFlyout { Items.Count: > 0 } proofingMenu)
+			{
+				flyout = proofingMenu;
+			}
+
+			flyout ??= SelectionFlyout;
+			if (flyout is null)
+			{
+				return;
+			}
+
+			var position = new Point(
+				rangeRect.X + rangeRect.Width / 2,
+				rangeRect.Y + rangeRect.Height);
+			TextControlFlyoutHelper.ShowAt(
+				flyout,
+				this,
+				position,
+				rangeRect,
+				FlyoutShowMode.Standard);
 		}
 
 		private void DismissSelectionFlyoutForPointerPress()

@@ -6,7 +6,9 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
-	[Sample("RichEditBox", Name = "RichEditBox_Basic", Description = "Functional RichEditBox on Skia: programmatic plain-text via Document, Header, PlaceholderText and IsReadOnly.")]
+#if __SKIA__ || !HAS_UNO
+	[Sample("RichEditBox", Name = "RichEditBox_Basic", Description = "RichEditBox parity probe for Document text, Header, PlaceholderText and IsReadOnly.")]
+#endif
 	public sealed partial class RichEditBox_Basic : Page
 	{
 		public RichEditBox_Basic()

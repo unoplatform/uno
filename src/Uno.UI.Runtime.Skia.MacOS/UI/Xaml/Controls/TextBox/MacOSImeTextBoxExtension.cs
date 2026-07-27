@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
@@ -22,15 +25,22 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	private string _lastComposingText = string.Empty;
 	private IImeSessionHost? _activeTextBox;
 	private nint _activeWindowHandle;
+	private Rect _lastCaretRect = Rect.Empty;
 
 	public bool IsComposing => _isComposing;
 
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(IImeSessionHost host)
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
 		// Don't wire up composition events for PasswordBox — IME composition
 		// reveals characters, which is not appropriate for password fields.
@@ -40,6 +50,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 		}
 
 		_activeTextBox = host;
+		_lastCaretRect = Rect.Empty;
 
 		// Find the native window handle to activate IME routing on the native view
 		_activeWindowHandle = MacOSWindowHost.GetNativeHandleForXamlRoot(host.XamlRoot);
@@ -52,6 +63,36 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 		{
 			this.Log().Debug($"IME session started. Window: {_activeWindowHandle}");
 		}
+	}
+
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		if (_activeWindowHandle != 0
+			&& (update & (ImeSessionUpdate.CandidateWindowAlignment | ImeSessionUpdate.TextAndSelection)) != 0)
+		{
+			if ((update & ImeSessionUpdate.CandidateWindowAlignment) != 0)
+			{
+				_lastCaretRect = Rect.Empty;
+			}
+			var caretRect = GetCaretRect();
+			if (caretRect != Rect.Empty && !caretRect.Equals(_lastCaretRect))
+			{
+				_lastCaretRect = caretRect;
+				NativeUno.uno_notify_ime_position_changed(_activeWindowHandle);
+			}
+		}
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+	}
+
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
 	}
 
 	public void EndImeSession()
@@ -70,6 +111,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 
 		_activeTextBox = null;
 		_activeWindowHandle = 0;
+		_lastCaretRect = Rect.Empty;
 	}
 
 	/// <summary>
@@ -112,6 +154,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 			// Empty marked text while composing = cancel
 			_isComposing = false;
 			_lastComposingText = string.Empty;
+			CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -174,13 +217,21 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	{
 		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
 		{
-			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
-			var caretRect = parsedText.GetRectForIndex(selEnd);
+			var caret = _activeTextBox.IsBackwardSelection
+				? _activeTextBox.SelectionStart
+				: _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
+			var caretRect = parsedText.GetRectForIndex(caret);
 			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
+			var candidateTop = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
+				? _activeTextBox.TextBoxView.DisplayBlock.ActualHeight
+				: caretRect.Top;
+			var candidateHeight = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
+				? 1
+				: caretRect.Height;
 			var caretPoint = transform.TransformPoint(
-				new Windows.Foundation.Point(caretRect.Left, caretRect.Top));
+				new Windows.Foundation.Point(caretRect.Left, candidateTop));
 			var caretBottom = transform.TransformPoint(
-				new Windows.Foundation.Point(caretRect.Left, caretRect.Top + caretRect.Height));
+				new Windows.Foundation.Point(caretRect.Left, candidateTop + candidateHeight));
 
 			// Return in logical (view) coordinates — the native side converts to screen coordinates
 			return new Rect(caretPoint.X, caretPoint.Y, 1, caretBottom.Y - caretPoint.Y);

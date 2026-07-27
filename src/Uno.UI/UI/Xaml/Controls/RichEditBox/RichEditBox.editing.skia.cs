@@ -39,6 +39,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private CompositionBrush? _cachedCaretBrush;
 		private Color _cachedCaretColor;
 		private char? _pendingHighSurrogate;
+		private int _pendingInteractiveLineFeedPosition = -1;
+		private long _pendingInteractiveLineFeedTextVersion = -1;
+		private long _pendingInteractiveLineFeedSelectionVersion = -1;
+		private long _pendingInteractiveLineFeedInputStateVersion = -1;
+		private long _interactiveInputStateVersion;
 		private bool _isProcessingSelectionChanging;
 		private int _selectionSyncDeferralDepth;
 		private RichEditCaretDisplayMode _caretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
@@ -81,6 +86,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		float ITextViewEditorHost.CaretXOffset => _caretXOffset;
 
+		bool ITextViewEditorHost.TryGetUpDownResult(
+			int selectionStart,
+			int selectionLength,
+			bool shift,
+			bool ctrl,
+			bool up,
+			out int result)
+			=> TryGetInteractiveUpDownResult(selectionStart, selectionLength, shift, ctrl, up, out result);
+
 		// RichEditBox uses the document's snapshot-based undo, so it does not track typing runs.
 		void ITextViewEditorHost.TrySetCurrentlyTyping(bool value) { }
 
@@ -101,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Honor any programmatic selection set before focus; clamp it to the current content.
-			var length = GetPlainTextContent().Length;
+			var length = GetPlainTextLength();
 			var selStart = Math.Clamp(Document.Selection.StartPosition, 0, length);
 			var selEnd = Math.Clamp(Document.Selection.EndPosition, 0, length);
 			var selectionEndsAtTheStart = selStart != selEnd
@@ -126,7 +140,17 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void StopCaret()
 		{
 			_pendingHighSurrogate = null;
+			InvalidatePendingInteractiveLineFeed();
 			CaretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
+		}
+
+		private void InvalidatePendingInteractiveLineFeed()
+		{
+			_pendingInteractiveLineFeedPosition = -1;
+			_pendingInteractiveLineFeedTextVersion = -1;
+			_pendingInteractiveLineFeedSelectionVersion = -1;
+			_pendingInteractiveLineFeedInputStateVersion = -1;
+			_interactiveInputStateVersion++;
 		}
 
 		internal void ResumeCaret()
@@ -136,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(_selection.start, 0, textLength);
 			var end = Math.Clamp(_selection.start + _selection.length, start, textLength);
 			var isBackward = _selection.selectionEndsAtTheStart && start != end;
@@ -182,8 +206,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_textBoxView is null || FocusState == FocusState.Unfocused)
 			{
+				InvalidatePendingInteractiveLineFeed();
 				return;
 			}
+
+			var pendingLineFeedPosition = _pendingInteractiveLineFeedPosition;
+			var pendingLineFeedTextVersion = _pendingInteractiveLineFeedTextVersion;
+			var pendingLineFeedSelectionVersion = _pendingInteractiveLineFeedSelectionVersion;
+			var pendingLineFeedInputStateVersion = _pendingInteractiveLineFeedInputStateVersion;
+			var previousInputStateVersion = _interactiveInputStateVersion;
+			InvalidatePendingInteractiveLineFeed();
 
 			if (_pendingHighSurrogate is not null
 				&& (args.UnicodeKey is not { } nextUnicode || !char.IsLowSurrogate(nextUnicode)))
@@ -196,11 +228,8 @@ namespace Microsoft.UI.Xaml.Controls
 				? (_selection.start + _selection.length, -_selection.length)
 				: (_selection.start, _selection.length);
 
-			var text = GetPlainTextContent();
-			var oldText = text;
 			var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 			var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
-			var rtl = _textBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft;
 
 			if (args.Key == VirtualKey.Enter && TryNavigateLinkAtCaret())
 			{
@@ -267,6 +296,26 @@ namespace Microsoft.UI.Xaml.Controls
 					return;
 			}
 
+			if (TryProcessRangeEditKey(
+				args,
+				ctrl,
+				shift,
+				ref selectionStart,
+				ref selectionLength,
+				pendingLineFeedPosition,
+				pendingLineFeedTextVersion,
+				pendingLineFeedSelectionVersion,
+				pendingLineFeedInputStateVersion,
+				previousInputStateVersion))
+			{
+				return;
+			}
+
+			var text = GetPlainTextContent();
+			var oldText = text;
+			var historyKind = global::Microsoft.UI.Text.TextHistoryKind.None;
+			var rtl = _textBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft;
+
 			switch (args.Key)
 			{
 				case VirtualKey.Up:
@@ -306,20 +355,22 @@ namespace Microsoft.UI.Xaml.Controls
 					Editor.KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Back when !IsReadOnly:
+					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Backspace;
 					if (!_hasPointerCapture && selectionLength == 0 && selectionStart > 0 && !IsWordDelete(args, ctrl))
 					{
-						var previous = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart - 1);
-						var current = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart);
+						var previous = Document.GetTextElementStart(selectionStart - 1);
+						var current = Document.GetTextElementEnd(selectionStart);
 						selectionLength = current - previous;
 						selectionStart = previous;
 					}
 					Editor.KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
 				case VirtualKey.Delete when !IsReadOnly:
+					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Delete;
 					if (!_hasPointerCapture && selectionLength == 0 && selectionStart < text.Length && !shift && !IsWordDelete(args, ctrl))
 					{
-						var current = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart);
-						var next = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart + 1);
+						var current = Document.GetTextElementStart(selectionStart);
+						var next = Document.GetTextElementEnd(selectionStart + 1);
 						selectionStart = current;
 						selectionLength = next - current;
 					}
@@ -348,6 +399,7 @@ namespace Microsoft.UI.Xaml.Controls
 						(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
 					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 					{
+						historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
 						var start = Math.Min(selectionStart, selectionStart + selectionLength);
 						var end = Math.Max(selectionStart, selectionStart + selectionLength);
 						string input;
@@ -406,15 +458,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var caretXOffset = _caretXOffset;
 
-			if (!string.Equals(text, oldText, StringComparison.Ordinal))
+			var textChanged = !string.Equals(text, oldText, StringComparison.Ordinal);
+			if (textChanged)
 			{
-				if (!ApplyTextDiff(oldText, text))
+				if (!ApplyTextDiff(oldText, text, historyKind, checkTextLimit: false))
 				{
 					return;
 				}
 			}
 
 			SetInteractiveSelection(selectionStart, selectionLength);
+			if (textChanged)
+			{
+				Document.FinalizeHistorySelection();
+			}
 
 			// Preserve the sticky horizontal caret offset when moving up/down.
 			if (args.Key is VirtualKey.Up or VirtualKey.Down)
@@ -428,13 +485,198 @@ namespace Microsoft.UI.Xaml.Controls
 				? args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu)
 				: ctrl;
 
+		private bool TryProcessRangeEditKey(
+			KeyRoutedEventArgs args,
+			bool ctrl,
+			bool shift,
+			ref int selectionStart,
+			ref int selectionLength,
+			int pendingLineFeedPosition,
+			long pendingLineFeedTextVersion,
+			long pendingLineFeedSelectionVersion,
+			long pendingLineFeedInputStateVersion,
+			long previousInputStateVersion)
+		{
+			var textLength = GetPlainTextLength();
+			var activeEnd = selectionStart + selectionLength;
+			var start = Math.Clamp(Math.Min(selectionStart, activeEnd), 0, textLength);
+			var end = Math.Clamp(Math.Max(selectionStart, activeEnd), start, textLength);
+			var insert = string.Empty;
+			var historyKind = global::Microsoft.UI.Text.TextHistoryKind.None;
+			var armLineFeedCoalescing = false;
+			var inputStateVersionBeforeMutation = _interactiveInputStateVersion;
+			var selectionVersionBeforeMutation = Document.SelectionChangeVersion;
+
+			switch (args.Key)
+			{
+				case VirtualKey.Back:
+					if (IsReadOnly || _hasPointerCapture)
+					{
+						return true;
+					}
+					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Backspace;
+					if (start == end)
+					{
+						if (start == 0)
+						{
+							return true;
+						}
+
+						if (IsWordDelete(args, ctrl))
+						{
+							start = _textBoxView!.DisplayBlock.ParsedText.GetWordAt(start, false).start;
+						}
+						else
+						{
+							var caret = start;
+							start = Document.GetTextElementStart(caret - 1);
+							end = Document.GetTextElementEnd(caret);
+						}
+					}
+					break;
+				case VirtualKey.Delete:
+					if (IsReadOnly || _hasPointerCapture)
+					{
+						return true;
+					}
+					args.Handled = true;
+					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Delete;
+					if (start == end)
+					{
+						if (start == textLength || shift)
+						{
+							return true;
+						}
+
+						if (IsWordDelete(args, ctrl))
+						{
+							var word = _textBoxView!.DisplayBlock.ParsedText.GetWordAt(start, true);
+							end = word.start + word.length;
+						}
+						else
+						{
+							var caret = start;
+							start = Document.GetTextElementStart(caret);
+							end = Document.GetTextElementEnd(caret + 1);
+						}
+					}
+					break;
+				default:
+					if (ShouldSwallowKeyDuringComposition)
+					{
+						return true;
+					}
+
+					if (args.UnicodeKey is not { } key)
+					{
+						return false;
+					}
+
+					if (key == '\n'
+						&& start == end
+						&& pendingLineFeedPosition == start
+						&& pendingLineFeedTextVersion == Document.TextVersion
+						&& pendingLineFeedSelectionVersion == Document.SelectionChangeVersion
+						&& pendingLineFeedInputStateVersion == previousInputStateVersion)
+					{
+						args.Handled = true;
+						return true;
+					}
+
+					var isEnterKey = key is '\r' or '\n' || args.Key == VirtualKey.Enter;
+					var altHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+					var ctrlHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+					var isAltGr = !DeviceTargetHelper.UsesAppleKeyboardLayout && ctrlHeld && altHeld;
+					var hasShortcutModifier = !isAltGr && (
+						ctrlHeld
+						|| args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows)
+						|| !DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld);
+					if (IsReadOnly
+						|| hasShortcutModifier
+						|| isEnterKey && !AcceptsReturn)
+					{
+						return false;
+					}
+
+					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
+					armLineFeedCoalescing = key == '\r';
+					if (char.IsHighSurrogate(key))
+					{
+						_pendingHighSurrogate = key;
+						args.Handled = true;
+						return true;
+					}
+					if (char.IsLowSurrogate(key))
+					{
+						if (_pendingHighSurrogate is not { } highSurrogate)
+						{
+							args.Handled = true;
+							return true;
+						}
+
+						insert = string.Concat(highSurrogate, key);
+						_pendingHighSurrogate = null;
+					}
+					else
+					{
+						insert = key is '\n' ? "\r" : key.ToString();
+					}
+
+					args.Handled = true;
+					insert = ClampInsertToMaxLength(CoerceCasing(insert), textLength, start, end);
+					if (insert.Length == 0 && start == end)
+					{
+						return true;
+					}
+					break;
+			}
+
+			try
+			{
+				var insertedLength = 0;
+				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(
+					start,
+					end,
+					insert,
+					checkTextLimit: false,
+					historyKind: historyKind));
+				var inputStateVersionBeforeSelection = _interactiveInputStateVersion;
+				var targetSelection = (start: start + insertedLength, length: 0, selectionEndsAtTheStart: false);
+				var selectionWillChange = _selection != targetSelection;
+				SetInteractiveSelection(targetSelection.start, targetSelection.length);
+				Document.FinalizeHistorySelection();
+				var selectionUpdateWasExpected = _interactiveInputStateVersion
+					== inputStateVersionBeforeSelection + (selectionWillChange ? 1 : 0);
+				if (armLineFeedCoalescing
+					&& insertedLength == 1
+					&& inputStateVersionBeforeMutation == inputStateVersionBeforeSelection
+					&& selectionUpdateWasExpected
+					&& selectionVersionBeforeMutation == Document.SelectionChangeVersion
+					&& _selection == targetSelection
+					&& FocusState != FocusState.Unfocused
+					&& !IsReadOnly
+					&& AcceptsReturn)
+				{
+					_pendingInteractiveLineFeedPosition = start + insertedLength;
+					_pendingInteractiveLineFeedTextVersion = Document.TextVersion;
+					_pendingInteractiveLineFeedSelectionVersion = Document.SelectionChangeVersion;
+					_pendingInteractiveLineFeedInputStateVersion = _interactiveInputStateVersion;
+				}
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+
+			return true;
+		}
+
 		private bool TryNavigateLinkAtCaret()
 		{
 			var caret = _selection.selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 			return TryNavigateLinkAt(caret);
 		}
 
-		private bool TryNavigateLinkAt(int position)
+		internal bool TryNavigateLinkAt(int position)
 		{
 			var range = Document.GetRange(position, position);
 			var link = range.Link;
@@ -447,11 +689,16 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
-		private static async Task LaunchLinkAsync(Uri uri)
+		internal Func<Uri, Task<bool>>? LinkLauncherForTesting { get; set; }
+
+		private async Task LaunchLinkAsync(Uri uri)
 		{
 			try
 			{
-				if (!await global::Windows.System.Launcher.LaunchUriAsync(uri))
+				var launched = LinkLauncherForTesting is { } testLauncher
+					? await testLauncher(uri)
+					: await global::Windows.System.Launcher.LaunchUriAsync(uri);
+				if (!launched)
 				{
 					typeof(RichEditBox).LogWarn()?.Warn("No handler accepted a RichEditBox hyperlink.");
 				}
@@ -462,7 +709,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static bool TryGetLinkUri(string link, out Uri uri)
+		internal static bool TryGetLinkUri(string link, out Uri uri)
 		{
 			uri = null!;
 			if (string.IsNullOrEmpty(link))
@@ -472,7 +719,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var start = link[0] == '\ufddf' ? 1 : 0;
 			if (link.Length - start >= 2
-				&& Uri.TryCreate(link.Substring(start + 1, link.Length - start - 2), UriKind.Absolute, out var parsed))
+				&& link[start] == '"'
+				&& link[^1] == '"'
+				&& Uri.TryCreate(link.Substring(start + 1, link.Length - start - 2), UriKind.Absolute, out var parsed)
+				&& (parsed.Scheme == Uri.UriSchemeHttp
+					|| parsed.Scheme == Uri.UriSchemeHttps
+					|| parsed.Scheme == Uri.UriSchemeMailto))
 			{
 				uri = parsed;
 				return true;
@@ -481,9 +733,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private static void SnapActiveSelectionToTextElementStart(string text, bool extend, ref int selectionStart, ref int selectionLength)
+		private void SnapActiveSelectionToTextElementStart(string text, bool extend, ref int selectionStart, ref int selectionLength)
 		{
-			var activeEnd = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementStart(text, selectionStart + selectionLength);
+			var activeEnd = Document.GetTextElementStart(selectionStart + selectionLength);
 			if (extend)
 			{
 				selectionLength = activeEnd - selectionStart;
@@ -495,9 +747,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void SnapActiveSelectionToTextElementEnd(string text, bool extend, ref int selectionStart, ref int selectionLength)
+		private void SnapActiveSelectionToTextElementEnd(string text, bool extend, ref int selectionStart, ref int selectionLength)
 		{
-			var activeEnd = global::Microsoft.UI.Text.TextUnitNavigation.GetTextElementEnd(text, selectionStart + selectionLength);
+			var activeEnd = Document.GetTextElementEnd(selectionStart + selectionLength);
 			if (extend)
 			{
 				selectionLength = activeEnd - selectionStart;
@@ -537,7 +789,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// span in a document of <paramref name="currentLength"/> characters keeps the total within
 		/// <see cref="MaxLength"/>. A non-positive MaxLength means unlimited.
 		/// </summary>
-		internal string ClampInsertToMaxLength(string insert, int currentLength, int start, int end)
+		internal string ClampInsertToMaxLength(
+			string insert,
+			int currentLength,
+			int start,
+			int end,
+			bool preserveSurrogatePair = true)
 		{
 			var maxLength = MaxLength;
 			if (maxLength <= 0)
@@ -553,7 +810,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return insert.Length <= room
 				? insert
-				: global::Microsoft.UI.Text.TextUnitNavigation.TruncateToUtf16Boundary(insert, room);
+				: preserveSurrogatePair
+					? global::Microsoft.UI.Text.TextUnitNavigation.TruncateToUtf16Boundary(insert, room)
+					: global::Microsoft.UI.Text.TextUnitNavigation.TruncateToUtf16Limit(insert, room);
 		}
 
 		/// <summary>
@@ -561,36 +820,32 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <paramref name="newText"/> through the document's ReplaceRange so the character-format run
 		/// model outside the edit is preserved and the change is recorded on the undo history.
 		/// </summary>
-		private bool ApplyTextDiff(string oldText, string newText)
-			=> ApplyTextDiff(oldText, newText, out _);
-
-		private bool ApplyTextDiff(string oldText, string newText, out AppliedTextDiff appliedDiff)
+		private bool ApplyTextDiff(
+			string oldText,
+			string newText,
+			global::Microsoft.UI.Text.TextHistoryKind historyKind = global::Microsoft.UI.Text.TextHistoryKind.None,
+			bool checkTextLimit = true)
 		{
-			appliedDiff = default;
-			var max = Math.Min(oldText.Length, newText.Length);
-
-			var prefix = 0;
-			while (prefix < max && oldText[prefix] == newText[prefix])
-			{
-				prefix++;
-			}
-
-			var suffix = 0;
-			while (suffix < max - prefix && oldText[oldText.Length - 1 - suffix] == newText[newText.Length - 1 - suffix])
-			{
-				suffix++;
-			}
-
-			var start = prefix;
-			var oldEnd = oldText.Length - suffix;
-			var nativeInsert = newText.Substring(prefix, newText.Length - suffix - prefix);
+			var diff = GetTextDiff(oldText, newText);
+			var oldEnd = diff.Start + diff.RemovedLength;
+			var nativeInsert = newText.Substring(diff.Start, diff.InsertedLength);
 			var insert = CoerceCasing(nativeInsert);
+			if (checkTextLimit)
+			{
+				insert = ClampInsertToMaxLength(insert, oldText.Length, diff.Start, oldEnd);
+			}
 
 			try
 			{
-				var insertedLength = 0;
-				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(start, oldEnd, insert));
-				appliedDiff = new AppliedTextDiff(start, nativeInsert.Length, insertedLength);
+				RunWithDeferredSelectionSync(() =>
+				{
+					_ = Document.ReplaceRange(
+						diff.Start,
+						oldEnd,
+						insert,
+						checkTextLimit: false,
+						historyKind: historyKind);
+				});
 				return true;
 			}
 			catch (UnauthorizedAccessException)
@@ -606,49 +861,132 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool NativeSelectionIsBackward => _selection.selectionEndsAtTheStart;
 
 		internal void UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+			=> TryUpdateTextFromNative(text, selectionStart, selectionLength);
+
+		internal bool TryUpdateTextFromNative(string text, int selectionStart, int selectionLength)
 		{
 			var oldText = GetPlainTextContent();
-			var appliedDiff = default(AppliedTextDiff);
+			var textChanged = !string.Equals(oldText, text, StringComparison.Ordinal);
 			if (IsReadOnly
-				|| (!string.Equals(oldText, text, StringComparison.Ordinal)
-					&& !ApplyTextDiff(oldText, text, out appliedDiff)))
+				|| (_isComposing && !_platformTextApplyInProgress && !_compositionAppliedByPlatform)
+				|| (textChanged && !ApplyTextDiff(
+					oldText,
+					text,
+					GetNativeHistoryKind(GetTextDiff(oldText, text)))))
 			{
-				_textBoxView?.Extension?.SetText(oldText);
-				_textBoxView?.Extension?.Select(_selection.start, _selection.length);
-				return;
+				RestoreNativeTextAndSelection(oldText);
+				return false;
 			}
 
 			var actualText = GetPlainTextContent();
-			if (!string.Equals(actualText, text, StringComparison.Ordinal))
+			var nativeTextNeedsCorrection = !string.Equals(actualText, text, StringComparison.Ordinal);
+			if (nativeTextNeedsCorrection)
 			{
 				_textBoxView?.Extension?.SetText(actualText);
-				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, appliedDiff);
-				selectionStart = RebaseNativePosition(selectionStart, appliedDiff);
+				var correction = GetTextDiff(text, actualText);
+				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, correction);
+				selectionStart = RebaseNativePosition(selectionStart, correction);
 				selectionLength = selectionEnd - selectionStart;
 			}
 
 			SetInteractiveSelection(selectionStart, selectionLength);
+			if (nativeTextNeedsCorrection)
+			{
+				_textBoxView?.Extension?.Select(_selection.start, _selection.length);
+			}
+			if (textChanged)
+			{
+				Document.FinalizeHistorySelection();
+			}
+
+			return true;
 		}
 
-		private static int RebaseNativePosition(int position, AppliedTextDiff diff)
+		private void RestoreNativeTextAndSelection(string text)
 		{
-			var nativeEnd = diff.Start + diff.NativeInsertLength;
+			_textBoxView?.Extension?.SetText(text);
+			_textBoxView?.Extension?.Select(_selection.start, _selection.length);
+		}
+
+		private global::Microsoft.UI.Text.TextHistoryKind GetNativeHistoryKind(TextDiff diff)
+		{
+			if (diff.InsertedLength > 0)
+			{
+				return global::Microsoft.UI.Text.TextHistoryKind.Typing;
+			}
+
+			if (diff.RemovedLength == 0 || _selection.length != 0)
+			{
+				return global::Microsoft.UI.Text.TextHistoryKind.None;
+			}
+
+			var caret = _selection.start;
+			if (diff.Start + diff.RemovedLength == caret)
+			{
+				return global::Microsoft.UI.Text.TextHistoryKind.Backspace;
+			}
+			if (diff.Start == caret)
+			{
+				return global::Microsoft.UI.Text.TextHistoryKind.Delete;
+			}
+
+			return global::Microsoft.UI.Text.TextHistoryKind.None;
+		}
+
+		private static TextDiff GetTextDiff(string oldText, string newText)
+		{
+			var max = Math.Min(oldText.Length, newText.Length);
+			var prefix = 0;
+			while (prefix < max && oldText[prefix] == newText[prefix])
+			{
+				prefix++;
+			}
+
+			var suffix = 0;
+			while (suffix < max - prefix
+				&& oldText[oldText.Length - 1 - suffix] == newText[newText.Length - 1 - suffix])
+			{
+				suffix++;
+			}
+
+			return new TextDiff(
+				prefix,
+				oldText.Length - prefix - suffix,
+				newText.Length - prefix - suffix);
+		}
+
+		private static int RebaseNativePosition(int position, TextDiff diff)
+		{
+			var nativeEnd = diff.Start + diff.RemovedLength;
 			if (position <= diff.Start)
 			{
 				return position;
 			}
 			if (position >= nativeEnd)
 			{
-				return position + diff.AppliedInsertLength - diff.NativeInsertLength;
+				return position + diff.InsertedLength - diff.RemovedLength;
 			}
 
-			return diff.Start + Math.Min(position - diff.Start, diff.AppliedInsertLength);
+			return diff.Start + Math.Min(position - diff.Start, diff.InsertedLength);
 		}
 
-		private readonly record struct AppliedTextDiff(int Start, int NativeInsertLength, int AppliedInsertLength);
+		private readonly record struct TextDiff(int Start, int RemovedLength, int InsertedLength);
 
 		internal void SelectFromNative(int selectionStart, int selectionLength)
-			=> SetInteractiveSelection(selectionStart, selectionLength);
+		{
+			var nativeSelectionStart = _selection.selectionEndsAtTheStart
+				? _selection.start + _selection.length
+				: _selection.start;
+			var nativeSelectionLength = _selection.selectionEndsAtTheStart
+				? -_selection.length
+				: _selection.length;
+			if (selectionStart == nativeSelectionStart && selectionLength == nativeSelectionLength)
+			{
+				return;
+			}
+
+			SetInteractiveSelection(selectionStart, selectionLength);
+		}
 
 		private void RunWithDeferredSelectionSync(Action action)
 		{
@@ -671,6 +1009,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetInteractiveSelection(int selectionStart, int selectionLength)
 		{
+			Document.BreakHistoryCoalescing();
 			var caret = selectionStart + selectionLength;
 			var start = Math.Min(selectionStart, caret);
 			var length = Math.Abs(selectionLength);
@@ -691,10 +1030,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var length = GetPlainTextContent().Length;
-			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
-			var end = Math.Clamp(Document.Selection.EndPosition, start, length);
+			var length = GetPlainTextLength();
+			var tomStart = Document.Selection.StartPosition;
+			var tomEnd = Document.Selection.EndPosition;
+			var start = Math.Clamp(tomStart, 0, length);
+			var end = Math.Clamp(tomEnd, start, length);
 			ProcessSelectionChange(start, end, _selection.selectionEndsAtTheStart && start != end, proposalAlreadyInTom: true, raiseForSameRange: false);
+			RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
 		}
 
 		/// <summary>
@@ -704,23 +1046,58 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void OnTomSelectionChanged()
 		{
+			InvalidatePendingInteractiveLineFeed();
 			if (_isProcessingSelectionChanging)
 			{
 				return;
 			}
 
-			var length = GetPlainTextContent().Length;
+			var length = GetPlainTextLength();
+			var tomStart = Document.Selection.StartPosition;
+			var tomEnd = Document.Selection.EndPosition;
+			var start = Math.Clamp(tomStart, 0, length);
+			var end = Math.Clamp(tomEnd, start, length);
+			var selectionEndsAtTheStart = start != end
+				&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
+			ProcessSelectionChange(start, end, selectionEndsAtTheStart, proposalAlreadyInTom: true, raiseForSameRange: true);
+			RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
+		}
+
+		internal void OnTomSelectionDirectionChanged()
+		{
+			InvalidatePendingInteractiveLineFeed();
+			if (_isProcessingSelectionChanging)
+			{
+				return;
+			}
+
+			var length = GetPlainTextLength();
 			var start = Math.Clamp(Document.Selection.StartPosition, 0, length);
 			var end = Math.Clamp(Document.Selection.EndPosition, start, length);
 			var selectionEndsAtTheStart = start != end
 				&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
-			ProcessSelectionChange(start, end, selectionEndsAtTheStart, proposalAlreadyInTom: true, raiseForSameRange: true);
+			CommitInteractiveSelection(start, end, selectionEndsAtTheStart, raiseSelectionChanged: false);
+		}
+
+		private void RestoreVirtualFinalEopSelection(int tomStart, int tomEnd, int interactiveStart, int interactiveEnd, int textLength)
+		{
+			if (textLength > 0
+				&& tomEnd == textLength + 1
+				&& _selection.start == interactiveStart
+				&& _selection.start + _selection.length == interactiveEnd)
+			{
+				Document.SetSelectionRangeInternal(
+					tomStart,
+					tomEnd,
+					clearPendingCaretFormat: false,
+					selectionEndsAtTheStart: false);
+			}
 		}
 
 		private void ProcessSelectionChange(int proposedStart, int proposedEnd, bool selectionEndsAtTheStart, bool proposalAlreadyInTom, bool raiseForSameRange)
 		{
 			var originalSelection = _selection;
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			proposedStart = Math.Clamp(proposedStart, 0, textLength);
 			proposedEnd = Math.Clamp(proposedEnd, proposedStart, textLength);
 			var selectionChanged = proposedStart != originalSelection.start
@@ -757,7 +1134,7 @@ namespace Microsoft.UI.Xaml.Controls
 					throw;
 				}
 
-				textLength = GetPlainTextContent().Length;
+				textLength = GetPlainTextLength();
 				var handlerStart = Math.Clamp(Document.Selection.StartPosition, 0, textLength);
 				var handlerEnd = Math.Clamp(Document.Selection.EndPosition, handlerStart, textLength);
 				var selectionChangedByHandler = Document.SelectionChangeVersion != selectionChangeVersion;
@@ -786,7 +1163,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RestoreSelectionSilently((int start, int length, bool selectionEndsAtTheStart) selection)
 		{
-			var textLength = GetPlainTextContent().Length;
+			var textLength = GetPlainTextLength();
 			var start = Math.Clamp(selection.start, 0, textLength);
 			var end = Math.Clamp(selection.start + selection.length, start, textLength);
 			Document.SetSelectionRangeInternal(
@@ -802,6 +1179,10 @@ namespace Microsoft.UI.Xaml.Controls
 			var selection = (start, end - start, selectionEndsAtTheStart);
 			var selectionChanged = selection != _selection;
 			_selection = selection;
+			if (selectionChanged)
+			{
+				InvalidatePendingInteractiveLineFeed();
+			}
 			if (!raiseSelectionChanged)
 			{
 				_lastRaisedSelection = (start, end - start);
@@ -877,7 +1258,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var renderedEnd = Math.Clamp(_selection.start + _selection.length, renderedStart, displayedLength);
 			displayBlock.Selection = new TextBlock.Range(renderedStart, renderedEnd);
 
-			var focused = FocusState != FocusState.Unfocused;
+			var focused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = focused || _selection.length > 0;
 
 			if (focused

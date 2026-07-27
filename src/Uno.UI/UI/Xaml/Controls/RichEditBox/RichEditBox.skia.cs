@@ -3,11 +3,13 @@
 using System;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -21,10 +23,10 @@ namespace Microsoft.UI.Xaml.Controls
 	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
 	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
 	//
-	// Standard RTF/streams, inline images, MathML interchange, paragraph layout/list projection,
-	// browser editing, and TextBox-style touch/multi-tap selection are supported. Full OpenType math
-	// layout remains outside this managed text engine.
-	public partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost
+	// Standard RTF/streams, inline images, structured MathML with core math layout, paragraph
+	// layout/list projection, browser editing, and TextBox-style touch/multi-tap selection are
+	// supported. Advanced OpenType math glyph assembly remains outside this managed text engine.
+	public partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost, IFocusRequestOriginHandler
 	{
 		private TextBoxView? _textBoxView;
 		private TextSelectionGripperPresenter? _gripperPresenter;
@@ -36,9 +38,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _propertyChangedCallbacksRegistered;
 		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
+		private FocusState _imeFocusOrigin;
+		private bool _imeFocusRequestInProgress;
+		private bool _imeWasFocusedBeforeRequest;
 		private bool _pendingUpdateScrolling;
 		private int? _pendingScrollingTargetIndex;
 		private int? _bringIntoViewTargetIndex;
+		private ScrollViewer? _imeScrollViewer;
+		private bool _isImeLayoutTrackingAttached;
 
 		/// <summary>
 		/// Gets an object that facilitates programmatic access to the text and formatting properties
@@ -54,6 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+			DetachImeGeometryTracking();
 
 			// Ensures we don't keep a reference to a TextBoxView that exists in a previous template.
 			_gripperPresenter?.Hide();
@@ -75,13 +83,14 @@ namespace Microsoft.UI.Xaml.Controls
 			RegisterPointerPressedHandler();
 
 			UpdateHeaderPresenterVisibility();
-			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
+			UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
 			UpdateDescriptionVisibility(initialization: true);
 
 			_isInitializing = false;
 
 			UpdateVisualState();
 			DispatchUpdateScrolling();
+			AttachImeGeometryTracking();
 		}
 
 		private void UpdateTextBoxView()
@@ -110,6 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 			view.SetWrapping();
 			UpdateTextWrappingScrollMode();
 			view.SetTextAlignment();
+			view.SetReadingOrder();
+			view.SetColorFontEnabled();
 			view.UpdateFont();
 			view.DisplayBlock.IsSpellCheckEnabled = IsSpellCheckEnabled;
 			view.UpdateProperties();
@@ -166,8 +177,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!_isInitializing)
 			{
-				UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
+				UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
 			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
 		private void UpdateDescriptionVisibility(bool initialization)
@@ -186,6 +198,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Returns the current plain-text content held by the TOM document.</summary>
 		internal string GetPlainTextContent() => _document?.PlainText ?? string.Empty;
 
+		internal int GetPlainTextLength() => _document?.TextLength ?? 0;
+
+		internal string GetPlainTextSlice(int start, int length)
+			=> _document?.GetTextInRange(start, start + length) ?? string.Empty;
+
 		/// <summary>
 		/// Called by <see cref="global::Microsoft.UI.Text.RichEditTextDocument"/> after the document
 		/// text changes so the control can re-render and refresh dependent visuals.
@@ -199,11 +216,13 @@ namespace Microsoft.UI.Xaml.Controls
 			var textChange = PrepareTextChangedNotification(isContentChanging);
 
 			RenderDocument();
-			UpdatePlaceholderTextPresenterVisibility(string.IsNullOrEmpty(GetPlainTextContent()));
+			UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
+			(FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?.OnDocumentAccessibilityChanged();
 
 			OnDocumentTextChangedInteractive();
 			DispatchUpdateScrolling();
 			QueueTextChangedNotification(textChange);
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 		}
 
 		internal void OnDocumentMathModeChanged()
@@ -214,11 +233,47 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnDocumentCaretTypeChanged() => UpdateDisplaySelection();
 
+		internal override void UpdateFocusState(FocusState focusState)
+		{
+			var wasFocused = FocusState != FocusState.Unfocused;
+			if (!_imeFocusRequestInProgress)
+			{
+				_imeFocusOrigin = focusState;
+			}
+			base.UpdateFocusState(focusState);
+			if (!_imeFocusRequestInProgress &&
+				wasFocused &&
+				focusState != FocusState.Unfocused &&
+				!IsReadOnly)
+			{
+				ActivateImeForFocusOrigin(focusState);
+			}
+		}
+
+		void IFocusRequestOriginHandler.OnFocusRequesting(FocusState focusState)
+		{
+			_imeFocusRequestInProgress = true;
+			_imeWasFocusedBeforeRequest = FocusState != FocusState.Unfocused;
+			_imeFocusOrigin = focusState;
+		}
+
+		void IFocusRequestOriginHandler.OnFocusRequested(FocusState focusState, bool succeeded)
+		{
+			_imeFocusRequestInProgress = false;
+			if (succeeded &&
+				_imeWasFocusedBeforeRequest &&
+				FocusState != FocusState.Unfocused &&
+				!IsReadOnly)
+			{
+				ActivateImeForFocusOrigin(focusState);
+			}
+			_imeWasFocusedBeforeRequest = false;
+		}
+
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
 			_forceFocusedVisualState = false;
-			_textBoxView?.OnFocusStateChanged(FocusState);
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
 			if (!IsReadOnly)
@@ -228,6 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				_textBoxView?.OnFocusStateChanged(_imeFocusOrigin, suppressSoftwareKeyboard: true);
 				UpdateDisplaySelection();
 			}
 		}
@@ -257,15 +313,65 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+			AttachImeGeometryTracking();
 			DispatchUpdateScrolling();
 		}
 
 		private protected override void OnUnloaded()
 		{
+			EndImeSession();
+			DetachImeGeometryTracking();
 			_gripperPresenter?.Hide();
 			CaretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
 			base.OnUnloaded();
 		}
+
+		private void AttachImeGeometryTracking()
+		{
+			if (!_isImeLayoutTrackingAttached)
+			{
+				LayoutUpdated += OnImeLayoutUpdated;
+				_isImeLayoutTrackingAttached = true;
+			}
+
+			var scrollViewer = _contentElement as ScrollViewer;
+			if (ReferenceEquals(_imeScrollViewer, scrollViewer))
+			{
+				return;
+			}
+
+			if (_imeScrollViewer is not null)
+			{
+				_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+			}
+
+			_imeScrollViewer = scrollViewer;
+			if (_imeScrollViewer is not null)
+			{
+				_imeScrollViewer.ViewChanged += OnImeScrollViewerViewChanged;
+			}
+		}
+
+		private void DetachImeGeometryTracking()
+		{
+			if (_isImeLayoutTrackingAttached)
+			{
+				LayoutUpdated -= OnImeLayoutUpdated;
+				_isImeLayoutTrackingAttached = false;
+			}
+
+			if (_imeScrollViewer is not null)
+			{
+				_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+				_imeScrollViewer = null;
+			}
+		}
+
+		private void OnImeLayoutUpdated(object? sender, object args)
+			=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+
+		private void OnImeScrollViewerViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
+			=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
@@ -355,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var brush = FocusState == FocusState.Unfocused
+			var brush = FocusState == FocusState.Unfocused && !_forceFocusedVisualState
 				? SelectionHighlightColorWhenNotFocused ?? SelectionHighlightColor
 				: SelectionHighlightColor;
 			view.OnSelectionHighlightColorChanged(brush ?? DefaultBrushes.SelectionHighlightColor);
@@ -383,9 +489,11 @@ namespace Microsoft.UI.Xaml.Controls
 			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
 			: FontFamily;
 
-		// TODO Uno: Run the real input pipeline (BeforeTextChanging/TextChanging/coercion) once the
-		// shared editing engine is available. For now the text is passed through unchanged.
-		string ITextBoxViewHost.ProcessTextInput(string newText) => newText;
+		string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
+		{
+			TryUpdateTextFromNative(newText, selectionStart, selectionLength);
+			return GetPlainTextContent();
+		}
 
 		// Interactive IME composition state lives in RichEditBox.IME.skia.cs; the shared DisplayBlock
 		// reads these to render the composition underline over the active (unresolved) preedit region.

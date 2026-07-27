@@ -1,6 +1,10 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -21,6 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static IImeTextBoxExtension? _extension;
 		private static bool _initialized;
 		private static IImeSessionHost? _activeHost;
+		private static ImeSessionActivation _activeActivation;
 
 		/// <summary>The active platform IME extension, or null when none is registered.</summary>
 		internal static IImeTextBoxExtension? Extension
@@ -65,7 +70,21 @@ namespace Microsoft.UI.Xaml.Controls
 			extension.CompositionStarted += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
 			extension.CompositionUpdated += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
 			extension.CompositionCompleted += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
+			extension.CompositionPartiallyCommitted += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionPartiallyCommitted(
+				e.CommittedText,
+				e.CompositionText,
+				e.CursorPosition,
+				e.ResolvedLength,
+				e.TextAlreadyApplied));
+			extension.CompositionCanceled += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionCanceled(e.TextAlreadyApplied));
 			extension.CompositionEnded += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
+			extension.CandidateWindowBoundsChanged += static (_, e) =>
+			{
+				if (_activeHost is { } host)
+				{
+					host.OnCandidateWindowBoundsChanged(e.Bounds);
+				}
+			};
 		}
 
 		private static void InvokeActiveHost(Action<IImeSessionHost> callback)
@@ -87,10 +106,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>Activates an IME session for <paramref name="host"/> (called on focus).</summary>
 		internal static void StartSession(IImeSessionHost host)
+			=> StartSession(host, new ImeSessionActivation(FocusState.Programmatic, IsSoftwareKeyboardSuppressed: false));
+
+		/// <summary>Activates an IME session for <paramref name="host"/> (called on focus).</summary>
+		internal static void StartSession(IImeSessionHost host, ImeSessionActivation activation)
 		{
 			EnsureInitialized();
 			if (ReferenceEquals(_activeHost, host))
 			{
+				if (_activeActivation != activation)
+				{
+					_activeActivation = activation;
+					_extension?.StartImeSession(host, activation);
+				}
 				return;
 			}
 
@@ -107,13 +135,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_activeHost = host;
+			_activeActivation = activation;
 			try
 			{
-				_extension?.StartImeSession(host);
+				_extension?.StartImeSession(host, activation);
 			}
 			catch (Exception error)
 			{
 				_activeHost = null;
+				_activeActivation = default;
 				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to start the IME session.", error);
 			}
 		}
@@ -144,7 +174,43 @@ namespace Microsoft.UI.Xaml.Controls
 				if (ReferenceEquals(_activeHost, host))
 				{
 					_activeHost = null;
+					_activeActivation = default;
 				}
+			}
+		}
+
+		internal static void UpdateSession(IImeSessionHost host, ImeSessionUpdate update)
+		{
+			if (update != ImeSessionUpdate.None && ReferenceEquals(_activeHost, host))
+			{
+				_extension?.UpdateImeSession(host, update);
+			}
+		}
+
+		internal static async Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(
+			IImeSessionHost host,
+			string compositionText,
+			CancellationToken cancellationToken)
+		{
+			EnsureInitialized();
+			if (!ReferenceEquals(_activeHost, host) || _extension is not { } extension)
+			{
+				return Array.Empty<string>();
+			}
+
+			try
+			{
+				return await extension.GetLinguisticAlternativesAsync(compositionText, cancellationToken)
+					?? Array.Empty<string>();
+			}
+			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+			{
+				throw;
+			}
+			catch (Exception error)
+			{
+				typeof(ImeSessionCoordinator).LogError()?.Error("The platform IME failed to get linguistic alternatives.", error);
+				return Array.Empty<string>();
 			}
 		}
 
@@ -166,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			try
 			{
-				_extension?.StartImeSession(host);
+				_extension?.StartImeSession(host, _activeActivation);
 			}
 			catch (Exception error)
 			{
@@ -190,19 +256,39 @@ namespace Microsoft.UI.Xaml.Controls
 			EventHandler onStarted = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
 			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
 			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
+			EventHandler<ImePartialCompositionEventArgs> onPartiallyCommitted = (_, e) => InvokeActiveHost(host => host.OnImeCompositionPartiallyCommitted(
+				e.CommittedText,
+				e.CompositionText,
+				e.CursorPosition,
+				e.ResolvedLength,
+				e.TextAlreadyApplied));
+			EventHandler<ImeCompositionEventArgs> onCanceled = (_, e) => InvokeActiveHost(host => host.OnImeCompositionCanceled(e.TextAlreadyApplied));
 			EventHandler onEnded = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
+			EventHandler<ImeCandidateWindowBoundsChangedEventArgs> onCandidateWindowBoundsChanged = (_, e) =>
+			{
+				if (_activeHost is { } host)
+				{
+					host.OnCandidateWindowBoundsChanged(e.Bounds);
+				}
+			};
 
 			extension.CompositionStarted += onStarted;
 			extension.CompositionUpdated += onUpdated;
 			extension.CompositionCompleted += onCompleted;
+			extension.CompositionPartiallyCommitted += onPartiallyCommitted;
+			extension.CompositionCanceled += onCanceled;
 			extension.CompositionEnded += onEnded;
+			extension.CandidateWindowBoundsChanged += onCandidateWindowBoundsChanged;
 
 			return Disposable.Create(() =>
 			{
 				extension.CompositionStarted -= onStarted;
 				extension.CompositionUpdated -= onUpdated;
 				extension.CompositionCompleted -= onCompleted;
+				extension.CompositionPartiallyCommitted -= onPartiallyCommitted;
+				extension.CompositionCanceled -= onCanceled;
 				extension.CompositionEnded -= onEnded;
+				extension.CandidateWindowBoundsChanged -= onCandidateWindowBoundsChanged;
 				_extension = originalExtension;
 				_initialized = originalInitialized;
 			});

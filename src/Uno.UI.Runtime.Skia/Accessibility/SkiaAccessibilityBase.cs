@@ -135,6 +135,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		OnChildRemoved(parent, child);
 	}
 
+	internal void RouteTextControlStateChanged(UIElement element)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnTextControlStateChanged(element);
+	}
+
+	protected virtual void OnTextControlStateChanged(UIElement element)
+	{
+	}
+
 	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
 	// container does not invalidate the cached bounding rectangles of its descendants
 	// in the native accessibility tree, leaving screen-reader highlight rectangles at
@@ -428,6 +442,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	public virtual void NotifyTextEditTextChangedEvent(
+		AutomationPeer peer,
+		AutomationTextEditChangeType changeType,
+		System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+	}
+
 	public virtual void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
@@ -510,6 +531,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				owner = parentElement;
 				return true;
 			}
+		}
+
+		if (peer.TryGetProviderOwner(out owner))
+		{
+			return true;
 		}
 
 		owner = null;

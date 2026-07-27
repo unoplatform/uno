@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CandidateWindowBoundsChangedEventArgs
@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.Rect Bounds
 		{

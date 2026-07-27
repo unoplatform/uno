@@ -125,10 +125,14 @@ namespace Microsoft.UI.Xaml.Documents
 		internal ParagraphLayoutInfo? ParagraphLayout { get; set; }
 
 		internal global::Windows.UI.Color? CharacterBackground { get; set; }
-
 		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType { get; set; }
-
 		internal bool IsHidden { get; set; }
+		internal float RichEditBaselineOffset { get; set; }
+		internal float RichEditKerningThreshold { get; set; }
+		internal string? RichEditLanguageTag { get; set; }
+		internal global::Microsoft.UI.Text.TextScript RichEditTextScript { get; set; } = global::Microsoft.UI.Text.TextScript.Default;
+		internal bool RichEditSmallCaps { get; set; }
+		internal bool RichEditOutline { get; set; }
 
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
 		{
@@ -479,27 +483,5 @@ namespace Microsoft.UI.Xaml.Documents
 			}))
 			.AsMemoized();
 #nullable disable
-	}
-
-	internal sealed class InlineObjectInfo
-	{
-		internal InlineObjectInfo(SKImage? image, float width, float height, float ascent, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlignment)
-		{
-			Image = image;
-			Width = width;
-			Height = height;
-			Ascent = ascent;
-			VerticalAlignment = verticalAlignment;
-		}
-
-		internal SKImage? Image { get; }
-
-		internal float Width { get; }
-
-		internal float Height { get; }
-
-		internal float Ascent { get; }
-
-		internal global::Microsoft.UI.Text.VerticalCharacterAlignment VerticalAlignment { get; }
 	}
 }
