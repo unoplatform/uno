@@ -243,19 +243,19 @@ internal sealed class VisualStudioFileUpdater(
 	/// </summary>
 	private static void UpdateInMemory(Document document, string fileContent)
 	{
-		// TODO: We should NOT assume the `fileContent` to contains the full document content!
+		// TODO: We should NOT assume the `fileContent` to contain the full document content!
 		if (document.Object("TextDocument") is not TextDocument textDocument)
 		{
 			return;
 		}
 
-		// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+		// Keep existing markers and normalize newlines while replacing the whole document.
 		// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-		const int flags = 0b0000_0011;
+		const vsEPReplaceTextOptions flags = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewlines;
 		textDocument
 			.StartPoint
 			.CreateEditPoint()
-			.ReplaceText(textDocument.EndPoint, fileContent, flags);
+			.ReplaceText(textDocument.EndPoint, fileContent, (int)flags);
 	}
 
 	private async Task WaitReadinessAndTriggerHotReloadAsync(bool isForceHotReloadDisabled, List<string> createdFiles, List<Func<Task>> deferredFinalizations, CancellationToken ct)
@@ -263,7 +263,13 @@ internal sealed class VisualStudioFileUpdater(
 		try
 		{
 			var stopwatch = Stopwatch.StartNew();
-			if (!isForceHotReloadDisabled && createdFiles.Count > 0)
+
+			// Created files must be integrated into the workspace before ANYTHING can evaluate the
+			// change-set — our own Debug.ApplyCodeChanges below, but also a "hot reload on save" that a
+			// deferred save / encoding rewrite can itself kick off. So wait for readiness whenever there
+			// are created files and we will either trigger or run a deferred persist — including when the
+			// explicit trigger is disabled but there are still deferred persists to flush.
+			if (createdFiles.Count > 0 && (!isForceHotReloadDisabled || deferredFinalizations.Count > 0))
 			{
 				// DTE is STA COM: marshal to the UI thread for the project-system mutation, then
 				// run the readiness polling through the thread pool so the UI thread is not held
@@ -359,7 +365,7 @@ internal sealed class VisualStudioFileUpdater(
 				lastReason = GetNotReadyReason(solution, createdFiles);
 				if (lastReason is null)
 				{
-					debug($"BatchUpdate: workspace compiles the full change-set after {stopwatch.ElapsedMilliseconds} ms.");
+					debug($"BatchUpdate: workspace reports the full change-set as ready after {stopwatch.ElapsedMilliseconds} ms.");
 					return;
 				}
 			}

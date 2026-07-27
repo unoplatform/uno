@@ -33,9 +33,13 @@ internal sealed class IdeFileUpdater(
 {
 	protected override async Task<ImmutableArray<FileEditResult>> ApplyEditsAsync(HotReloadOperation hotReload, IUpdateFileRequest request, CancellationToken ct)
 	{
-		// The batch below carries the hot-reload trigger: the info file must be persisted
-		// before the IDE can possibly act on that trigger (spec 052, R6).
-		await PersistHotReloadInfoAsync(hotReload, request);
+		// Write batches: the IDE message below carries the hot-reload trigger, so the info
+		// file must be persisted here before the IDE can act on it (spec 052, R6).
+		// Delete-only batches send no IDE message; base.FinalizeAsync persists and triggers.
+		if (request.Edits.Any(edit => edit.NewText is not null))
+		{
+			await PersistHotReloadInfoAsync(hotReload, request);
+		}
 
 		// Non-nullable by construction: the delete loop below fills every NewText==null slot,
 		// the write fan-out fills every other one — each index is covered exactly once.
