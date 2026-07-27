@@ -241,6 +241,12 @@ public partial class TextBox
 			{
 				HandleEmptyTextTouchGesture(args.GetCurrentPoint(this).Position);
 			}
+			else if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
+			{
+				// A single tap in an empty field has no word to select, but must still place the caret (and Android's
+				// insertion handle) so the field shows where typing will go - and so the handle can open the flyout.
+				TouchTapAt(0);
+			}
 
 			return;
 		}

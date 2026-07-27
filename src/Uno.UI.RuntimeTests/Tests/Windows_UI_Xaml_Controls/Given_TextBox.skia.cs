@@ -5416,8 +5416,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => SUT.CanPasteClipboardContent, message: "the clipboard should read non-empty so Paste is available");
 
 			// A touch tap sets the last input device to Touch so the flyout opens in primary-commands mode (Paste on the
-			// bar). The empty box swallows the tap (its tap-to-caret path is gated on non-empty text), so it only sets the
-			// input mode — matching how a touch-opened context flyout reaches this state on device.
+			// bar). The tap only places a caret in the empty box (no selection), matching how a touch-opened context
+			// flyout reaches this state on device.
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
@@ -5455,6 +5455,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			Assert.AreEqual(Visibility.Visible, pasteLabel.Visibility, "the lone primary Paste button must show its text label, not just an icon");
 			Assert.IsFalse(string.IsNullOrEmpty(pasteLabel.Text), "the primary Paste button label must have text");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Empty_Places_Caret_Android()
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Empty_Places_Caret_iOS()
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention.iOS, TextBox.CaretDisplayMode.ThumblessCaretShowing);
+
+		// Native iOS/Android: a single tap in an EMPTY field places the caret - Android with its insertion handle, iOS
+		// as a bare caret. The empty box used to swallow the tap entirely (the tap-to-caret path was gated on non-empty
+		// text), leaving no caret affordance and no handle to open the flyout from. A single tap must NOT pop the
+		// flyout though: that belongs to the double-tap / long-press / handle-tap.
+		private static async Task AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention convention, TextBox.CaretDisplayMode expectedCaret)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => SUT.CaretMode == expectedCaret, message: $"a tap in the empty box should leave the {convention} caret");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart, "the caret should sit at the only available index");
+			Assert.AreEqual(0, SUT.SelectionLength, "there is nothing to select in an empty box");
+			if (convention == TextBox.TouchTextSelectionConvention.Android)
+			{
+				Assert.IsNotNull(SUT.VisibleGrippersForTesting, "Android should show the insertion handle so it can open the flyout");
+			}
+
+			// A single tap is not a flyout gesture.
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "a single tap must not open the selection flyout");
 		}
 
 		[TestMethod]
