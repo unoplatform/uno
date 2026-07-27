@@ -587,6 +587,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		// lost context.
 		for (var i = 0; i < 8 && gl.GetError() is not GLEnum.NoError; i++) { }
 
+		// Select the read buffer explicitly so the probe mirrors the readback in Render and
+		// doesn't depend on the caller having just bound a freshly created framebuffer.
+		gl.ReadBuffer(GLEnum.ColorAttachment0);
+
 		Span<byte> probe = stackalloc byte[BytesPerPixel];
 		gl.ReadPixels(0, 0, 1, 1, GLEnum.Bgra, GLEnum.UnsignedByte, probe);
 		return gl.GetError() is not GLEnum.NoError;
