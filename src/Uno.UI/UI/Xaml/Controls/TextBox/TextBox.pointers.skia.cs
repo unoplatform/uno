@@ -272,8 +272,9 @@ public partial class TextBox
 	{
 		TouchTapAt(0);
 
-		// An empty field offers no Cut/Copy/Select All, so the flyout can end up with nothing to show at all
-		// (nothing on the clipboard). Opening it then would only flash an empty popup before it self-hides.
+		// A TextBox always carries Select All in the touch primary bar, but a PasswordBox keeps its Select All in the
+		// overflow (and only with a password), so an empty one with an empty clipboard has no primary command at all.
+		// Opening the flyout then would only flash an empty popup before it self-hides.
 		if (SelectionFlyout is TextCommandBarFlyout flyout && !flyout.HasTouchPrimaryCommandsFor(this))
 		{
 			return;
