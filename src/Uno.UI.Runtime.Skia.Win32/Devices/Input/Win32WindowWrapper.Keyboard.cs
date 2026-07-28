@@ -82,8 +82,9 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 
 			if (keyUpCommitChar is { } c)
 			{
-				// IsKeyReleased mirrors the real WM_CHAR's lParam transition bit (that of the Alt
-				// key-up) and lets consumers distinguish this from key-press-composed characters.
+				// IsKeyReleased and WasKeyDown mirror the real WM_CHAR's lParam transition and
+				// previous-key-state bits (those of the Alt key-up), and let consumers distinguish
+				// this from key-press-composed characters.
 				CharacterReceived?.Invoke(this, new CharacterReceivedEventArgs(
 					c,
 					new CorePhysicalKeyStatus
@@ -91,6 +92,7 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 						ScanCode = (uint)((lParam.Value & 0x00FF0000) >> 16),
 						RepeatCount = 1,
 						IsKeyReleased = true,
+						WasKeyDown = true,
 					}));
 			}
 		}
