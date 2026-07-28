@@ -93,6 +93,10 @@
                         FontSize="18"
                         FontWeight="SemiBold"
                         Text="Input and document options" />
+                    <TextBlock
+                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                        Text="Read-only and wrapping are immediately visible. Spell checking uses squiggles; color fonts affect emoji. Prediction and software-keyboard suppression require platform IME support."
+                        TextWrapping="Wrap" />
                     <ToggleSwitch
                         x:Name="ReadOnlyToggle"
                         Header="Read-only"

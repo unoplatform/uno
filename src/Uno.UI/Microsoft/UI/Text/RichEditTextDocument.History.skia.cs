@@ -65,7 +65,9 @@ namespace Microsoft.UI.Text
 			MathDocument? BeforeMathDocument,
 			MathDocument? AfterMathDocument,
 			bool BeforeMathMLUnavailable,
-			bool AfterMathMLUnavailable);
+			bool AfterMathMLUnavailable,
+			RtfPreservedMetadata BeforePreservedRtfMetadata,
+			RtfPreservedMetadata AfterPreservedRtfMetadata);
 
 		private sealed class HistoryEntry
 		{
@@ -209,6 +211,7 @@ namespace Microsoft.UI.Text
 			var beforeSelection = CaptureSelectionState();
 			var beforeMath = _mathDocument;
 			var beforeMathMLUnavailable = _mathMLUnavailable;
+			var beforePreservedRtfMetadata = _preservedRtfMetadata;
 			var beforeTerminal = _terminalParagraphFormat.Clone();
 			var beforeText = string.Empty;
 			var beforeCharacterRuns = new List<FormatRun>();
@@ -292,7 +295,14 @@ namespace Microsoft.UI.Text
 
 			var mathChanged = !ReferenceEquals(_mathDocument, beforeMath)
 				|| _mathMLUnavailable != beforeMathMLUnavailable;
-			var documentChanged = textChanged || runsChanged || paragraphRunsChanged || mathChanged;
+			var preservedRtfMetadataChanged = !ReferenceEquals(
+				_preservedRtfMetadata,
+				beforePreservedRtfMetadata);
+			var documentChanged = textChanged
+				|| runsChanged
+				|| paragraphRunsChanged
+				|| mathChanged
+				|| preservedRtfMetadataChanged;
 			if (documentChanged)
 			{
 				if (runsChanged)
@@ -383,7 +393,9 @@ namespace Microsoft.UI.Text
 				beforeMath,
 				_mathDocument,
 				beforeMathMLUnavailable,
-				_mathMLUnavailable);
+				_mathMLUnavailable,
+				beforePreservedRtfMetadata,
+				_preservedRtfMetadata);
 
 			if (_undoEnabled)
 			{
@@ -572,6 +584,10 @@ namespace Microsoft.UI.Text
 			{
 				var sourceLength = undo ? edit.InsertLength : edit.RemoveLength;
 				var targetText = undo ? operation.BeforeText : operation.AfterText;
+				_preservedRtfMetadata = undo
+					? operation.BeforePreservedRtfMetadata
+					: operation.AfterPreservedRtfMetadata;
+				_preservedRtfMetadataEditApplied = true;
 				_textBuffer.Replace(edit.Start, sourceLength, targetText);
 				RebaseRanges(
 					edit.Start,
@@ -588,6 +604,9 @@ namespace Microsoft.UI.Text
 			_mathMLUnavailable = undo
 				? operation.BeforeMathMLUnavailable
 				: operation.AfterMathMLUnavailable;
+			_preservedRtfMetadata = undo
+				? operation.BeforePreservedRtfMetadata
+				: operation.AfterPreservedRtfMetadata;
 			if (oldStart != int.MaxValue)
 			{
 				RecordRenderInvalidation(
@@ -716,6 +735,21 @@ namespace Microsoft.UI.Text
 			{
 				cost += operation.BeforeMathDocument?.CanonicalMathML.Length * sizeof(char) ?? 0;
 				cost += operation.AfterMathDocument?.CanonicalMathML.Length * sizeof(char) ?? 0;
+			}
+			if (!ReferenceEquals(operation.BeforePreservedRtfMetadata, operation.AfterPreservedRtfMetadata))
+			{
+				cost += EstimatePreservedRtfCost(operation.BeforePreservedRtfMetadata);
+				cost += EstimatePreservedRtfCost(operation.AfterPreservedRtfMetadata);
+			}
+			return cost;
+		}
+
+		private static long EstimatePreservedRtfCost(RtfPreservedMetadata metadata)
+		{
+			long cost = 0;
+			foreach (var entry in metadata.Entries)
+			{
+				cost += entry.Rtf.Length * sizeof(char);
 			}
 			return cost;
 		}

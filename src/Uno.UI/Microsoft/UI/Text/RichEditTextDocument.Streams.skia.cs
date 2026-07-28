@@ -195,7 +195,7 @@ namespace Microsoft.UI.Text
 
 		private static byte[] EncodeRtfStream(string content, bool appendNullTerminator)
 		{
-			var byteCount = Encoding.ASCII.GetByteCount(content);
+			var byteCount = Encoding.Latin1.GetByteCount(content);
 			var terminatorLength = 2 + (appendNullTerminator ? 1 : 0);
 			if (byteCount > RichTextRtfCodec.MaxRtfOutputLength - terminatorLength)
 			{
@@ -203,7 +203,7 @@ namespace Microsoft.UI.Text
 			}
 
 			var bytes = new byte[byteCount + terminatorLength];
-			Encoding.ASCII.GetBytes(content, 0, content.Length, bytes, 0);
+			Encoding.Latin1.GetBytes(content, 0, content.Length, bytes, 0);
 			bytes[byteCount] = (byte)'\r';
 			bytes[byteCount + 1] = (byte)'\n';
 			return bytes;
