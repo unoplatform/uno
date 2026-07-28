@@ -11,6 +11,7 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 {
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	public event TypedEventHandler<object, CharacterReceivedEventArgs>? CharacterReceived;
 
 	private void OnKey(WPARAM wParam, LPARAM lParam, bool down)
 	{
@@ -48,6 +49,22 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 			}
 		}
 
+		// A WM_CHAR paired with a key *release* can't be delivered through KeyDown — in practice
+		// it's an Alt+numpad code, composed by TranslateMessage when Alt is released. Deliver it
+		// through CharacterReceived and keep it out of the key-up args (WinUI key-up events don't
+		// carry a character).
+		char? keyUpCommitChar = null;
+		if (!down && unicodeKey is { } keyUpChar)
+		{
+			// Unlike the keydown filter above, don't deliver '\r'/'\n' (e.g. Alt+013) —
+			// Enter handling is keydown-based.
+			if (!char.IsControl(keyUpChar))
+			{
+				keyUpCommitChar = keyUpChar;
+			}
+			unicodeKey = null;
+		}
+
 		var args = new KeyEventArgs(
 			"keyboard",
 			key,
@@ -62,6 +79,20 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 		else
 		{
 			KeyUp?.Invoke(this, args);
+
+			if (keyUpCommitChar is { } c)
+			{
+				// IsKeyReleased mirrors the real WM_CHAR's lParam transition bit (that of the Alt
+				// key-up) and lets consumers distinguish this from key-press-composed characters.
+				CharacterReceived?.Invoke(this, new CharacterReceivedEventArgs(
+					c,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)((lParam.Value & 0x00FF0000) >> 16),
+						RepeatCount = 1,
+						IsKeyReleased = true,
+					}));
+			}
 		}
 	}
 }
