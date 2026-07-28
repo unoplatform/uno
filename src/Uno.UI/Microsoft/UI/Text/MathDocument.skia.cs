@@ -403,61 +403,382 @@ internal sealed class MathDocument
 	internal static bool TryConvertUnicodeMath(string text, out MathDocument document)
 	{
 		document = null!;
-		if (text.Length < 2 || text[^1] != ' ')
+		if (text.Length < 2
+			|| text[^1] != ' '
+			|| text.Length > MaxProjectionLength)
 		{
 			return false;
 		}
 
 		var candidate = text[..^1];
-		var style = new MathStyle(MathVariant.Unspecified, Colors.Black, null);
-		MathNode? converted = null;
-		var operatorIndex = candidate.LastIndexOf('^');
-		if (operatorIndex > 0 && operatorIndex < candidate.Length - 1)
-		{
-			converted = new MathScriptNode(
-				MathStyle.Default,
-				CreateLiveRow(candidate[..operatorIndex], style),
-				subscript: null,
-				CreateLiveRow(candidate[(operatorIndex + 1)..], style));
-		}
-		else
-		{
-			operatorIndex = candidate.LastIndexOf('/');
-			if (operatorIndex > 0 && operatorIndex < candidate.Length - 1)
-			{
-				converted = new MathFractionNode(
-					MathStyle.Default,
-					CreateLiveRow(candidate[..operatorIndex], style),
-					CreateLiveRow(candidate[(operatorIndex + 1)..], style));
-			}
-			else if (candidate.EndsWith(')')
-				&& candidate.LastIndexOf('(') is var openIndex
-				&& openIndex >= 0
-				&& openIndex < candidate.Length - 1)
-			{
-				var children = new List<MathNode>();
-				foreach (var rune in candidate[..openIndex].EnumerateRunes())
-				{
-					children.Add(CreateLiveToken(rune.ToString(), style));
-				}
-				children.Add(new MathFencedNode(
-					MathStyle.Default,
-					"(",
-					")",
-					CreateLiveRow(candidate[(openIndex + 1)..^1], style)));
-				converted = new MathRowNode(MathStyle.Default, CopyAsReadOnly(children));
-			}
-		}
-
-		if (converted is null)
+		var parser = new UnicodeMathParser(candidate);
+		if (!parser.TryParse(out var converted))
 		{
 			return false;
 		}
 
-		document = Create(
-			converted as MathRowNode
-				?? new MathRowNode(MathStyle.Default, AsReadOnly(converted)));
-		return true;
+		try
+		{
+			document = Create(
+				converted as MathRowNode
+					?? new MathRowNode(MathStyle.Default, AsReadOnly(converted)));
+			return true;
+		}
+		catch (ArgumentException)
+		{
+			return false;
+		}
+	}
+
+	private sealed class UnicodeMathParser
+	{
+		private static readonly MathStyle _liveStyle = new(MathVariant.Unspecified, Colors.Black, null);
+		private readonly string _text;
+		private int _position;
+		private int _depth;
+		private int _nodeCount;
+		private bool _hasConversion;
+		private bool _failed;
+
+		internal UnicodeMathParser(string text)
+		{
+			_text = text;
+		}
+
+		internal bool TryParse(out MathNode node)
+		{
+			node = ParseExpression('\0');
+			return !_failed
+				&& _hasConversion
+				&& _position == _text.Length
+				&& _nodeCount <= MaxNodeCount;
+		}
+
+		private MathNode ParseExpression(char closing)
+		{
+			if (++_depth > MaxDepth)
+			{
+				_failed = true;
+				_depth--;
+				return EmptyRow();
+			}
+
+			var numerator = ParseSequence(closing);
+			if (!_failed && Current == '/')
+			{
+				if (IsEmpty(numerator))
+				{
+					_failed = true;
+					_depth--;
+					return numerator;
+				}
+				_position++;
+				if (AtEndOrClosing(closing))
+				{
+					_failed = true;
+				}
+				else
+				{
+					var denominator = ParseExpression(closing);
+					if (IsEmpty(denominator))
+					{
+						_failed = true;
+					}
+					else
+					{
+						numerator = AddNode(new MathFractionNode(MathStyle.Default, numerator, denominator));
+						_hasConversion = true;
+					}
+				}
+			}
+
+			_depth--;
+			return numerator;
+		}
+
+		private MathNode ParseSequence(char closing)
+		{
+			var children = new List<MathNode>();
+			while (!_failed && !AtEndOrClosing(closing) && Current != '/')
+			{
+				var before = _position;
+				children.Add(ParseScriptedAtom());
+				if (_position == before)
+				{
+					_failed = true;
+				}
+			}
+
+			return AddNode(new MathRowNode(MathStyle.Default, CopyAsReadOnly(children)));
+		}
+
+		private MathNode ParseScriptedAtom()
+		{
+			var @base = ParsePrimary();
+			MathNode? subscript = null;
+			MathNode? superscript = null;
+			while (!_failed && Current is '_' or '^')
+			{
+				var marker = Current;
+				_position++;
+				if (AtEndOrClosing('\0')
+					|| marker == '_' && subscript is not null
+					|| marker == '^' && superscript is not null)
+				{
+					_failed = true;
+					break;
+				}
+
+				var argument = ParseScriptArgument();
+				if (marker == '_')
+				{
+					subscript = argument;
+				}
+				else
+				{
+					superscript = argument;
+				}
+			}
+
+			if (subscript is null && superscript is null)
+			{
+				return @base;
+			}
+
+			_hasConversion = true;
+			return AddNode(new MathScriptNode(
+				MathStyle.Default,
+				EnsureRow(@base),
+				subscript is null ? null : EnsureRow(subscript),
+				superscript is null ? null : EnsureRow(superscript)));
+		}
+
+		private MathNode ParseScriptArgument()
+			=> ParsePrimary();
+
+		private MathNode ParsePrimary()
+		{
+			if (Current is '√' or '∛' or '∜')
+			{
+				var radical = Current;
+				_position++;
+				if (Current == '\0')
+				{
+					_failed = true;
+					return EmptyRow();
+				}
+
+				_hasConversion = true;
+				var radicand = ParseScriptArgument();
+				MathNode? degree = radical switch
+				{
+					'∛' => EnsureRow(AddNode(CreateLiveToken("3", _liveStyle))),
+					'∜' => EnsureRow(AddNode(CreateLiveToken("4", _liveStyle))),
+					_ => null,
+				};
+				return AddNode(new MathRadicalNode(MathStyle.Default, EnsureRow(radicand), degree));
+			}
+
+			if (Current is '(' or '{')
+			{
+				var open = Current;
+				var close = open == '(' ? ')' : '}';
+				_position++;
+				var content = ParseExpression(close);
+				if (_failed || Current != close)
+				{
+					_failed = true;
+					return content;
+				}
+
+				_position++;
+				_hasConversion = true;
+				return open == '('
+					? AddNode(new MathFencedNode(MathStyle.Default, "(", ")", content))
+					: content;
+			}
+
+			if (Current == '\\')
+			{
+				return ParseCommand();
+			}
+
+			if (Current is '\0' or ')' or '}')
+			{
+				_failed = true;
+				return EmptyRow();
+			}
+
+			var length = char.IsHighSurrogate(Current)
+				&& _position + 1 < _text.Length
+				&& char.IsLowSurrogate(_text[_position + 1])
+					? 2
+					: 1;
+			var value = _text.Substring(_position, length);
+			_position += length;
+			return AddNode(CreateLiveToken(value, _liveStyle));
+		}
+
+		private MathNode ParseCommand()
+		{
+			var start = _position++;
+			while (_position < _text.Length && char.IsLetter(_text[_position]))
+			{
+				_position++;
+			}
+
+			var command = _text[(start + 1).._position];
+			if (command is "sqrt" or "root")
+			{
+				if (Current is not ('(' or '{'))
+				{
+					_position = start;
+					return ParseLiteralCommand();
+				}
+
+				_hasConversion = true;
+				var first = ParsePrimary();
+				if (command == "sqrt")
+				{
+					return AddNode(new MathRadicalNode(MathStyle.Default, first, degree: null));
+				}
+				if (Current is not ('(' or '{'))
+				{
+					_failed = true;
+					return first;
+				}
+
+				var radicand = ParsePrimary();
+				return AddNode(new MathRadicalNode(MathStyle.Default, radicand, first));
+			}
+
+			if (TryMapCommand(command, out var value))
+			{
+				_hasConversion = true;
+				return AddNode(CreateLiveToken(value, _liveStyle));
+			}
+
+			_position = start;
+			return ParseLiteralCommand();
+		}
+
+		private MathNode ParseLiteralCommand()
+		{
+			var children = new List<MathNode>();
+			children.Add(AddNode(CreateLiveToken("\\", _liveStyle)));
+			_position++;
+			while (!_failed && _position < _text.Length && char.IsLetter(_text[_position]))
+			{
+				children.Add(AddNode(CreateLiveToken(_text[_position++].ToString(), _liveStyle)));
+			}
+			return AddNode(new MathRowNode(MathStyle.Default, CopyAsReadOnly(children)));
+		}
+
+		private static bool IsEmpty(MathNode node)
+			=> node is MathRowNode { Children.Count: 0 };
+
+		private MathNode AddNode(MathNode node)
+		{
+			if (++_nodeCount > MaxNodeCount)
+			{
+				_failed = true;
+			}
+			return node;
+		}
+
+		private MathNode EmptyRow()
+			=> AddNode(new MathRowNode(MathStyle.Default, Array.Empty<MathNode>()));
+
+		private MathNode EnsureRow(MathNode node)
+			=> node is MathRowNode ? node : AddNode(new MathRowNode(MathStyle.Default, AsReadOnly(node)));
+
+		private char Current => _position < _text.Length ? _text[_position] : '\0';
+
+		private bool AtEndOrClosing(char closing)
+			=> Current == '\0' || closing != '\0' && Current == closing;
+
+		private static bool TryMapCommand(string command, out string value)
+		{
+			value = command switch
+			{
+				"alpha" => "α",
+				"beta" => "β",
+				"gamma" => "γ",
+				"delta" => "δ",
+				"zeta" => "ζ",
+				"eta" => "η",
+				"epsilon" => "ϵ",
+				"varepsilon" => "ε",
+				"theta" => "θ",
+				"vartheta" => "ϑ",
+				"iota" => "ι",
+				"kappa" => "κ",
+				"lambda" => "λ",
+				"mu" => "μ",
+				"nu" => "ν",
+				"xi" => "ξ",
+				"omicron" => "ο",
+				"pi" => "π",
+				"varpi" => "ϖ",
+				"rho" => "ρ",
+				"sigma" => "σ",
+				"tau" => "τ",
+				"upsilon" => "υ",
+				"phi" => "ϕ",
+				"varphi" => "φ",
+				"chi" => "χ",
+				"psi" => "ψ",
+				"omega" => "ω",
+				"Gamma" => "Γ",
+				"Delta" => "Δ",
+				"Theta" => "Θ",
+				"Xi" => "Ξ",
+				"Lambda" => "Λ",
+				"Pi" => "Π",
+				"Sigma" => "Σ",
+				"Upsilon" => "Υ",
+				"Phi" => "Φ",
+				"Psi" => "Ψ",
+				"Omega" => "Ω",
+				"pm" => "±",
+				"mp" => "∓",
+				"times" => "×",
+				"div" => "÷",
+				"cdot" => "⋅",
+				"ast" => "∗",
+				"le" or "leq" => "≤",
+				"ge" or "geq" => "≥",
+				"ne" or "neq" => "≠",
+				"approx" => "≈",
+				"equiv" => "≡",
+				"infty" => "∞",
+				"partial" => "∂",
+				"nabla" => "∇",
+				"sum" => "∑",
+				"prod" => "∏",
+				"int" => "∫",
+				"rightarrow" or "to" => "→",
+				"leftarrow" => "←",
+				"leftrightarrow" => "↔",
+				"in" => "∈",
+				"notin" => "∉",
+				"subset" => "⊂",
+				"supset" => "⊃",
+				"subseteq" => "⊆",
+				"supseteq" => "⊇",
+				"cup" => "∪",
+				"cap" => "∩",
+				"wedge" or "land" => "∧",
+				"vee" or "lor" => "∨",
+				"oplus" => "⊕",
+				"otimes" => "⊗",
+				"propto" => "∝",
+				"forall" => "∀",
+				"exists" => "∃",
+				_ => string.Empty,
+			};
+			return value.Length != 0;
+		}
 	}
 
 	internal RichTextFragment CreateFragment(
@@ -562,6 +883,10 @@ internal sealed class MathDocument
 		var children = new List<MathNode>();
 		foreach (var rune in text.EnumerateRunes())
 		{
+			if (children.Count == MaxNodeCount)
+			{
+				return FromPlainText(text);
+			}
 			children.Add(CreateLiveToken(rune.ToString(), style));
 		}
 		return Create(new MathRowNode(MathStyle.Default, CopyAsReadOnly(children)), text);

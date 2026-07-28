@@ -32,8 +32,8 @@ namespace Microsoft.UI.Text
 	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
 	//
 	// Standard RTF transport, stream load/save, links, inline images, bounded structured MathML,
-	// core OpenType-MATH-aware layout, and visual paragraph projection are supported. Advanced math
-	// glyph assembly, UnicodeMath live conversion, and advanced RTF destinations remain unsupported.
+	// UnicodeMath conversion, OpenType MATH variants/assemblies, and lossless bounded preservation
+	// of unsupported RTF destinations and table controls are supported on Skia.
 	public partial class RichEditTextDocument
 	{
 		internal readonly record struct RenderInvalidation(
@@ -55,6 +55,8 @@ namespace Microsoft.UI.Text
 		private readonly TextElementBoundaryCache _textElementBoundaryCache = new();
 		private readonly TextRangeUnitBoundaryCache _textRangeUnitBoundaryCache = new();
 		private readonly TextStoryBuffer _textBuffer = new();
+		private RtfPreservedMetadata _preservedRtfMetadata = RtfPreservedMetadata.Empty;
+		private bool _preservedRtfMetadataEditApplied;
 		private long _characterFormatVersion;
 		private long _paragraphFormatVersion;
 		private long _automationVersion;
@@ -534,7 +536,8 @@ namespace Microsoft.UI.Text
 						: _textBuffer.Slice(0, start)
 							+ insert
 							+ _textBuffer.Slice(end, originalLength - end);
-					if (MathDocument.TryConvertUnicodeMath(prospective, out var convertedDocument))
+					if (prospective.Length <= MathDocument.MaxProjectionLength
+						&& MathDocument.TryConvertUnicodeMath(prospective, out var convertedDocument))
 					{
 						var linearInput = prospective[..^1];
 						var conversionStart = start;
@@ -573,17 +576,20 @@ namespace Microsoft.UI.Text
 							forceHistory);
 					}
 
-					var converted = MathDocument.CreateLinearUnicodeMath(prospective);
-					var edit = new MathEditResult(
-						converted,
-						new MathTextSpan(0, originalLength),
-						converted.Projection.Length,
-						Math.Max(0, converted.Projection.Length - start));
-					return ReplaceRangeWithMathDocument(
-						edit,
-						sourceRange,
-						historyKind,
-						forceHistory);
+					if (prospective.Length <= MathDocument.MaxProjectionLength)
+					{
+						var converted = MathDocument.CreateLinearUnicodeMath(prospective);
+						var edit = new MathEditResult(
+							converted,
+							new MathTextSpan(0, originalLength),
+							converted.Projection.Length,
+							Math.Max(0, converted.Projection.Length - start));
+						return ReplaceRangeWithMathDocument(
+							edit,
+							sourceRange,
+							historyKind,
+							forceHistory);
+					}
 				}
 
 				if (_mathDocument is { } mathDocument)
@@ -627,6 +633,8 @@ namespace Microsoft.UI.Text
 					SyncParagraphRunsToLength(originalLength);
 					SpliceRuns(start, end - start, insert.Length, sourceRange?.UsesForwardCharacterFormatting == true, unlink, unhide);
 					SpliceParagraphRuns(_textBuffer, start, end - start, insert.Length);
+					_preservedRtfMetadata = _preservedRtfMetadata.ApplyEdit(start, end - start, insert.Length);
+					_preservedRtfMetadataEditApplied = true;
 					_textBuffer.Replace(start, end - start, insert);
 					if (unicodeBidi)
 					{
@@ -697,6 +705,8 @@ namespace Microsoft.UI.Text
 						SetPlainTextCore(fragment.Text);
 						SetRuns(characterRuns);
 						SetParagraphRuns(paragraphRuns);
+						_preservedRtfMetadata = RtfPreservedMetadata.Empty;
+						_preservedRtfMetadataEditApplied = true;
 						_terminalParagraphFormat = fragment.Text.Length > 0
 							? GetParagraphFormatAt(fragment.Text.Length - 1).Clone()
 							: DefaultParagraphState();
@@ -764,6 +774,8 @@ namespace Microsoft.UI.Text
 				MutateWithUndo(() =>
 					{
 						SetPlainTextCore(replacement);
+						_preservedRtfMetadata = RtfPreservedMetadata.Empty;
+						_preservedRtfMetadataEditApplied = true;
 						SetRuns(BuildRunsFromFragment(
 							fragment.CharacterRuns,
 							replacement.Length,
@@ -866,7 +878,8 @@ namespace Microsoft.UI.Text
 				text,
 				CaptureCharacterRuns(start, end),
 				CaptureParagraphRuns(start, end),
-				GetTerminalParagraphForFragment(start, end));
+				GetTerminalParagraphForFragment(start, end),
+				preservedRtfMetadata: _preservedRtfMetadata.Slice(start, end - start));
 		}
 
 		private bool CanPossiblyEncodeRtf(int start, int end)
@@ -1100,6 +1113,15 @@ namespace Microsoft.UI.Text
 					ReplaceRuns(start, end, insertedCharacterRuns);
 					ReplaceParagraphRuns(start, end, insertedParagraphRuns);
 
+					var insertedMetadata = insertedLength == fragment.Text.Length
+						? fragment.PreservedRtfMetadata
+						: RtfPreservedMetadata.Empty;
+					_preservedRtfMetadata = _preservedRtfMetadata.ApplyEdit(
+						start,
+						end - start,
+						insertedLength,
+						insertedMetadata);
+					_preservedRtfMetadataEditApplied = true;
 					_textBuffer.Replace(start, end - start, insert);
 					if (end == originalLength)
 					{
@@ -1214,6 +1236,10 @@ namespace Microsoft.UI.Text
 				SetPlainTextCore(text);
 				SetRuns(characterRuns);
 				SetParagraphRuns(paragraphRuns);
+				_preservedRtfMetadata = text.Length == fragment.Text.Length
+					? fragment.PreservedRtfMetadata
+					: fragment.PreservedRtfMetadata.Slice(0, text.Length);
+				_preservedRtfMetadataEditApplied = true;
 				_terminalParagraphFormat = text.Length == fragment.Text.Length && fragment.HasExplicitTerminalParagraphState
 					? fragment.TerminalParagraphState.Clone()
 					: text.Length > 0 ? GetParagraphFormatAt(text.Length - 1).Clone() : DefaultParagraphState();
@@ -1375,6 +1401,14 @@ namespace Microsoft.UI.Text
 
 		private void RebaseRanges(int editStart, int editEnd, int insertLength, UnoTextRange? sourceRange, int? documentLength = null)
 		{
+			if (!_preservedRtfMetadataEditApplied)
+			{
+				_preservedRtfMetadata = _preservedRtfMetadata.ApplyEdit(
+					editStart,
+					editEnd - editStart,
+					insertLength);
+			}
+			_preservedRtfMetadataEditApplied = false;
 			var rebasedDocumentLength = documentLength ?? _textBuffer.Length;
 			_rangeEditLog.Add(new RangeEditDelta(editStart, editEnd, insertLength, rebasedDocumentLength));
 			_rangeEditGeneration++;
@@ -1854,6 +1888,8 @@ namespace Microsoft.UI.Text
 			{
 				SetPlainTextCore(text);
 				ResetRuns(text.Length);
+				_preservedRtfMetadata = RtfPreservedMetadata.Empty;
+				_preservedRtfMetadataEditApplied = true;
 				if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.UnicodeBidi))
 				{
 					ApplyUnicodeBidiScripts(0, text);
