@@ -52,6 +52,12 @@ internal static class EmbeddedRoslyn
 		// reference (same on-disk analyzer referenced by several projects), keeping the first
 		// failure per reference.
 		var failures = new Dictionary<AnalyzerFileReference, AnalyzerLoadFailureEventArgs>();
+		// Distinct() uses AnalyzerFileReference equality (FullPath + AssemblyLoader). Under
+		// MSBuildWorkspace there is a single shared loader, so this dedups by path as intended.
+		// It is kept instance-based on purpose: `failures` and the warning lookup below key off the
+		// same reference instances, so switching to path-based dedup (DistinctBy(FullPath)) would
+		// silently drop the warning for any project holding a different instance unless those are
+		// re-keyed by path too — not worth it for a shared-loader workspace.
 		foreach (var reference in solution.Projects.SelectMany(p => p.AnalyzerReferences).OfType<AnalyzerFileReference>().Distinct())
 		{
 			void OnLoadFailed(object? sender, AnalyzerLoadFailureEventArgs args) => failures.TryAdd(reference, args);

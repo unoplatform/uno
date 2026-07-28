@@ -62,22 +62,26 @@ internal partial class WatchHotReloadService
 						// the baseline of the next emit).
 						var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, true, ct });
 
-						if (r is Task t)
+						if (r is not Task t)
 						{
-							await t.ConfigureAwait(false);
-
-							var resultPropertyInfo = r.GetType().GetProperty("Result")
-								?? throw new InvalidOperationException($"Unable to find Result property on [{r}]");
-
-							var value = resultPropertyInfo.GetValue(r, null);
-
-							if (value is ITuple tuple)
-							{
-								return tuple;
-							}
+							throw new InvalidOperationException(
+								$"Expected {nameof(EmitSolutionUpdateAsync)} to return a Task but got [{r?.GetType().FullName ?? "null"}].");
 						}
 
-						throw new InvalidOperationException();
+						await t.ConfigureAwait(false);
+
+						var resultPropertyInfo = r.GetType().GetProperty("Result")
+							?? throw new InvalidOperationException($"Unable to find Result property on [{r}]");
+
+						var value = resultPropertyInfo.GetValue(r, null);
+
+						if (value is ITuple tuple)
+						{
+							return tuple;
+						}
+
+						throw new InvalidOperationException(
+							$"Expected {nameof(EmitSolutionUpdateAsync)} result to be ITuple but got [{value?.GetType().FullName ?? "null"}].");
 					};
 				}
 				else
