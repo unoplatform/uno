@@ -8,6 +8,7 @@ using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 {
@@ -27,7 +28,7 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 			"<mo>=</mo><msup><mi>z</mi><mn>2</mn></msup></mrow></math>";
 
 		private static readonly byte[] _imageBytes = Convert.FromBase64String(
-			"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4AWJiZmT6DwAAAP//EKnFGgAAAAZJREFUAwABIQEIIJGZrwAAAABJRU5ErkJggg==");
+			"iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAQSURBVBhXY2CIuvMfjGEMAEiICNX2ThQSAAAAAElFTkSuQmCC");
 
 		private readonly List<string> _events = new();
 		private bool _suppressEvents;
@@ -51,6 +52,7 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 			Editor.TextChanged += (_, _) =>
 			{
 				AppendEvent("TextChanged");
+				UpdateStatus("Text changed.");
 			};
 			Editor.SelectionChanged += (_, _) =>
 			{
@@ -87,6 +89,7 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 				"First list item\r" +
 				"Second list item\r" +
 				"Formula text: H2O and x2. Find this formatting word.\r" +
+				"Color emoji probe: 😀 🌈\r" +
 				"Arabic and RTL probe: مرحبا بالعالم";
 
 			Editor.Document.SetText(TextSetOptions.None, text);
@@ -164,7 +167,11 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 				$"{message ?? "State updated."}\n" +
 				$"Text length: {GetDocumentTextLength()}\n" +
 				$"Selection: [{selection.StartPosition}, {selection.EndPosition}]\n" +
-				$"CanUndo: {Editor.Document.CanUndo()}  CanRedo: {Editor.Document.CanRedo()}";
+				$"CanUndo: {Editor.Document.CanUndo()}  CanRedo: {Editor.Document.CanRedo()}\n" +
+				$"Options: ReadOnly={Editor.IsReadOnly}, SpellCheck={Editor.IsSpellCheckEnabled}, " +
+				$"Prediction={Editor.IsTextPredictionEnabled}, ColorFonts={Editor.IsColorFontEnabled}, " +
+				$"Wrapping={Editor.TextWrapping}, PreventKeyboard={Editor.PreventKeyboardDisplayOnProgrammaticFocus}, " +
+				$"CopyFormat={Editor.ClipboardCopyFormat}";
 		}
 
 		private void AppendEvent(string value)
@@ -320,7 +327,22 @@ namespace Uno.UI.Samples.Content.UITests.RichEditBoxControl
 
 		private void OnCopyClick(object sender, RoutedEventArgs e) => Run("Selection copied.", Selection.Copy);
 		private void OnCutClick(object sender, RoutedEventArgs e) => Run("Selection cut.", Selection.Cut);
-		private void OnPasteClick(object sender, RoutedEventArgs e) => Run("Best clipboard format pasted.", () => Selection.Paste(0));
+		private void OnPasteClick(object sender, RoutedEventArgs e)
+		{
+			var content = Clipboard.GetContent();
+			var formats = content is null || content.AvailableFormats.Count == 0
+				? "(none)"
+				: string.Join(", ", content.AvailableFormats);
+			if (!Editor.Document.CanPaste())
+			{
+				UpdateStatus(
+					$"No supported clipboard content. Available formats: {formats}. " +
+					"To paste an image, copy its pixels from an image editor, browser, or screenshot tool; copying a file in Explorer supplies a file-drop list.");
+				return;
+			}
+
+			Run($"Paste requested. Clipboard formats: {formats}.", () => Selection.Paste(0));
+		}
 
 		private void OnAddLinkClick(object sender, RoutedEventArgs e) => Run("Link applied to the selection.", () =>
 		{

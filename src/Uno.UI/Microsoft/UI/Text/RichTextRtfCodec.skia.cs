@@ -10,7 +10,7 @@ namespace Microsoft.UI.Text
 {
 	// Standard RTF transport for the managed RichEditBox model. The supported subset covers Unicode
 	// text, the persisted character/paragraph properties, and friendly-name hyperlinks. Unsupported
-	// destinations are skipped, allowing documents from native RichEdit to degrade to the modeled data.
+	// destinations retain bounded opaque metadata while the modeled text remains available for rendering.
 	internal static partial class RichTextRtfCodec
 	{
 		internal const int MaxRtfInputLength = 16 * 1024 * 1024;
@@ -25,6 +25,9 @@ namespace Microsoft.UI.Text
 		private const int HardMaxParsedCharacters = MaxRtfInputLength;
 		private const int MaxParsedControlTokens = 262_144;
 		private const int MaxParsedFormatRuns = 65_536;
+		private const int MaxPreservedRtfEntries = 4096;
+		private const int MaxPreservedRtfGroupLength = 256 * 1024;
+		private const int MaxPreservedRtfTotalLength = 2 * 1024 * 1024;
 		private const int MaxParsedImages = 128;
 		private const int MaxParsedImageBytes = 16 * 1024 * 1024;
 		private const long MaxParsedImagePixels = 32L * 1024 * 1024;
@@ -66,6 +69,8 @@ namespace Microsoft.UI.Text
 			CharacterFormatState? previousCharacter = null;
 			ParagraphFormatState? previousParagraph = null;
 			var listMarkerState = new ParagraphListMarkerState();
+			var preservedEntries = fragment.PreservedRtfMetadata.Entries;
+			var preservedIndex = 0;
 			var characterRunIndex = 0;
 			var paragraphRunIndex = 0;
 			var characterRunEnd = fragment.CharacterRuns.Count == 0 ? 0 : fragment.CharacterRuns[0].Length;
@@ -88,6 +93,7 @@ namespace Microsoft.UI.Text
 
 					for (; position < segmentEnd; position++)
 					{
+						var replacesProjectedCharacter = AppendPreservedRtf(position);
 						var isParagraphStart = position == 0 || fragment.Text[position - 1] == '\r';
 						if (paragraphTransition || (isParagraphStart && HasList(paragraph)))
 						{
@@ -96,7 +102,10 @@ namespace Microsoft.UI.Text
 							paragraphTransition = false;
 						}
 
-						AppendInlineImage(builder, image);
+						if (!replacesProjectedCharacter)
+						{
+							AppendInlineImage(builder, image);
+						}
 					}
 
 					previousCharacter = null;
@@ -129,6 +138,7 @@ namespace Microsoft.UI.Text
 					var characterTransition = previousCharacter is null || !previousCharacter.Equals(character);
 					for (; position < segmentEnd; position++)
 					{
+						var replacesProjectedCharacter = AppendPreservedRtf(position);
 						var isParagraphStart = position == 0 || fragment.Text[position - 1] == '\r';
 						if (paragraphTransition || (isParagraphStart && HasList(paragraph)))
 						{
@@ -144,7 +154,10 @@ namespace Microsoft.UI.Text
 							characterTransition = false;
 						}
 
-						AppendTextCharacter(builder, fragment.Text[position]);
+						if (!replacesProjectedCharacter)
+						{
+							AppendTextCharacter(builder, fragment.Text[position]);
+						}
 					}
 				}
 
@@ -170,6 +183,7 @@ namespace Microsoft.UI.Text
 			{
 				builder.Append("}}");
 			}
+			AppendPreservedRtf(fragment.Text.Length);
 
 			if (previousParagraph is null || !previousParagraph.Equals(fragment.TerminalParagraphState))
 			{
@@ -179,6 +193,18 @@ namespace Microsoft.UI.Text
 
 			builder.Append('}');
 			return builder.ToString();
+
+			bool AppendPreservedRtf(int anchor)
+			{
+				var replacesProjectedCharacter = false;
+				while (preservedIndex < preservedEntries.Count && preservedEntries[preservedIndex].Anchor == anchor)
+				{
+					var entry = preservedEntries[preservedIndex++];
+					builder.Append(entry.Rtf);
+					replacesProjectedCharacter |= entry.ProjectedLength != 0;
+				}
+				return replacesProjectedCharacter;
+			}
 		}
 
 		internal static RichTextFragment Read(
@@ -262,6 +288,8 @@ namespace Microsoft.UI.Text
 
 					var parent = stack[stack.Count - 1];
 					var child = parent.CreateChild();
+					child.GroupStart = i;
+					child.ProjectedStart = output.TextLength;
 					child.UnicodeFallbackRemaining = parent.UnicodeFallbackRemaining;
 					parent.UnicodeFallbackRemaining = 0;
 					stack.Add(child);
@@ -280,8 +308,10 @@ namespace Microsoft.UI.Text
 					{
 						terminalParagraph = stack[stack.Count - 1].State.Paragraph.Clone();
 					}
+					stack[stack.Count - 1].GroupEnd = i;
 
 					CloseFrame(
+						rtf,
 						stack,
 						output,
 						ref imageCount,
@@ -2278,6 +2308,7 @@ namespace Microsoft.UI.Text
 		}
 
 		private static void CloseFrame(
+			string rtf,
 			List<ParserFrame> stack,
 			ParsedFragmentBuilder output,
 			ref int imageCount,
@@ -2287,6 +2318,15 @@ namespace Microsoft.UI.Text
 		{
 			var closed = stack[stack.Count - 1];
 			stack.RemoveAt(stack.Count - 1);
+			if (closed.PreserveOpaqueDestination
+				&& !stack.Exists(static frame => frame.PreserveOpaqueDestination))
+			{
+				var preservedGroup = rtf.Substring(closed.GroupStart, closed.GroupEnd - closed.GroupStart + 1);
+				if (!ContainsUnsafePreservedDestination(preservedGroup))
+				{
+					output.AddOpaqueGroup(preservedGroup, closed.ProjectedStart);
+				}
+			}
 			if (closed.IsObjectGroup && closed.ObjectContext is { } objectContext)
 			{
 				AppendObjectFallback(objectContext, closed.State, output, budget);
@@ -2913,6 +2953,8 @@ namespace Microsoft.UI.Text
 			ParseBudget budget,
 			ParseWorkBudget workBudget)
 		{
+			var controlStart = index;
+			var projectedStart = output.TextLength;
 			workBudget.RecordControl();
 			if (++index >= rtf.Length)
 			{
@@ -3046,6 +3088,14 @@ namespace Microsoft.UI.Text
 			}
 
 			HandleControl(word, hasParameter, parameter, stack, fonts, colors, lists, output, budget);
+			if (IsTableControl(word))
+			{
+				output.AddTableControl(
+					word,
+					rtf.Substring(controlStart, index - controlStart + 1),
+					projectedStart,
+					output.TextLength - projectedStart);
+			}
 		}
 
 		private static void AppendFieldInstructionControl(
@@ -3086,12 +3136,18 @@ namespace Microsoft.UI.Text
 				{
 					frame.Destination = frame.UnicodeAlternativeDestination;
 				}
+				else if ((IsIgnoredStandardDestination(word) || frame.StarDestination)
+					&& IsPreservableDestination(word))
+				{
+					frame.PreserveOpaqueDestination = true;
+				}
 				frame.StarDestination = false;
 				return;
 			}
 			if (IsIgnoredStandardDestination(word))
 			{
 				frame.Destination = ParserDestination.Ignore;
+				frame.PreserveOpaqueDestination = IsPreservableDestination(word);
 				frame.StarDestination = false;
 				return;
 			}
@@ -3451,6 +3507,7 @@ namespace Microsoft.UI.Text
 					if (frame.StarDestination)
 					{
 						frame.Destination = ParserDestination.Ignore;
+						frame.PreserveOpaqueDestination = IsPreservableDestination(word);
 					}
 					break;
 			}
@@ -3680,6 +3737,76 @@ namespace Microsoft.UI.Text
 				default:
 					return false;
 			}
+		}
+
+		private static bool IsPreservableDestination(ReadOnlySpan<char> word)
+			=> !IsUnsafePreservedDestination(word);
+
+		private static bool IsUnsafePreservedDestination(ReadOnlySpan<char> word)
+			=> word.SequenceEqual("object")
+				|| word.SequenceEqual("objdata")
+				|| word.SequenceEqual("objclass")
+				|| word.SequenceEqual("objname")
+				|| word.SequenceEqual("password")
+				|| word.StartsWith("passwordhash", StringComparison.Ordinal)
+				|| word.SequenceEqual("passwordsalt")
+				|| word.StartsWith("prot", StringComparison.Ordinal)
+				|| word.SequenceEqual("security")
+				|| word.SequenceEqual("private")
+				|| word.SequenceEqual("datastore")
+				|| word.SequenceEqual("datafield")
+				|| word.SequenceEqual("databinding")
+				|| word.SequenceEqual("field")
+				|| word.SequenceEqual("fldinst")
+				|| word.SequenceEqual("dde")
+				|| word.SequenceEqual("ddeauto")
+				|| word.SequenceEqual("includetext")
+				|| word.SequenceEqual("includepicture");
+
+		private static bool ContainsUnsafePreservedDestination(string rtf)
+		{
+			for (var position = 0; position < rtf.Length; position++)
+			{
+				if (rtf[position] != '\\')
+				{
+					continue;
+				}
+
+				var controlPosition = position;
+				if (TryReadControlWord(rtf, ref controlPosition, out var word, out _, out _))
+				{
+					if (IsUnsafePreservedDestination(word))
+					{
+						return true;
+					}
+					position = controlPosition - 1;
+				}
+				else
+				{
+					SkipControl(rtf, ref position);
+				}
+			}
+			return false;
+		}
+
+		private static bool IsTableControl(ReadOnlySpan<char> word)
+		{
+			if (word.SequenceEqual("trowd")
+				|| word.SequenceEqual("cell")
+				|| word.SequenceEqual("row")
+				|| word.SequenceEqual("nestcell")
+				|| word.SequenceEqual("nestrow")
+				|| word.SequenceEqual("nesttableprops")
+				|| word.SequenceEqual("nonesttables")
+				|| word.SequenceEqual("intbl")
+				|| word.SequenceEqual("itap"))
+			{
+				return true;
+			}
+
+			return word.StartsWith("tr", StringComparison.Ordinal)
+				|| word.StartsWith("cl", StringComparison.Ordinal)
+				|| word.SequenceEqual("cellx");
 		}
 
 		private static void ApplyLineSpacing(ParserState state)
@@ -3956,7 +4083,16 @@ namespace Microsoft.UI.Text
 			private readonly StringBuilder _text = new();
 			private readonly List<FormatRun> _characterRuns = new();
 			private readonly List<ParagraphRun> _paragraphRuns = new();
+			private readonly List<RtfPreservedEntry> _opaqueEntries = new();
+			private readonly List<PreservedTableRegion> _tableRegions = new();
+			private readonly Stack<PreservedTableRegion> _openTableRegions = new();
 			private bool _hasExplicitTerminalParagraphState;
+			private int _preservedLength;
+			private int _preservedEntryCount;
+			private int _nextRegionId = 1;
+			private int _nextSequence;
+
+			internal int TextLength => _text.Length;
 
 			internal void Append(
 				char value,
@@ -3998,19 +4134,133 @@ namespace Microsoft.UI.Text
 				}
 			}
 
+			internal void AddOpaqueGroup(string rtf, int anchor)
+			{
+				if (rtf.Length > MaxPreservedRtfGroupLength)
+				{
+					throw new ArgumentException("An opaque RTF destination is too large.");
+				}
+				RecordPreservedLength(rtf.Length);
+				_opaqueEntries.Add(new RtfPreservedEntry(
+					rtf,
+					anchor,
+					0,
+					anchor,
+					0,
+					_nextRegionId++,
+					0,
+					_nextSequence++));
+			}
+
+			internal void AddTableControl(
+				ReadOnlySpan<char> word,
+				string rtf,
+				int anchor,
+				int projectedLength)
+			{
+				PreservedTableRegion? region;
+				if (word.SequenceEqual("trowd"))
+				{
+					var parentRegionId = _openTableRegions.Count == 0 ? 0 : _openTableRegions.Peek().Id;
+					region = new PreservedTableRegion(_nextRegionId++, parentRegionId, anchor);
+					_tableRegions.Add(region);
+					_openTableRegions.Push(region);
+				}
+				else
+				{
+					region = _openTableRegions.Count == 0 ? null : _openTableRegions.Peek();
+				}
+
+				if (region is null)
+				{
+					return;
+				}
+
+				RecordPreservedLength(rtf.Length);
+				region.Entries.Add(new PendingTableEntry(rtf, anchor, projectedLength, _nextSequence++));
+				if (word.SequenceEqual("row") || word.SequenceEqual("nestrow"))
+				{
+					region.End = anchor + projectedLength;
+					region.IsClosed = true;
+					_openTableRegions.Pop();
+				}
+			}
+
 			internal RichTextFragment Build(
 				ParagraphFormatState terminalParagraphState,
 				bool canUseTerminalParagraphState)
-				=> new(
+			{
+				var metadata = new List<RtfPreservedEntry>(_opaqueEntries);
+				foreach (var region in _tableRegions)
+				{
+					if (!region.IsClosed || region.End <= region.Start)
+					{
+						continue;
+					}
+					foreach (var entry in region.Entries)
+					{
+						metadata.Add(new RtfPreservedEntry(
+							entry.Rtf,
+							entry.Anchor,
+							entry.ProjectedLength,
+							region.Start,
+							region.End - region.Start,
+							region.Id,
+							region.ParentRegionId,
+							entry.Sequence));
+					}
+				}
+				metadata.Sort(static (left, right) =>
+				{
+					var anchor = left.Anchor.CompareTo(right.Anchor);
+					return anchor != 0 ? anchor : left.Sequence.CompareTo(right.Sequence);
+				});
+
+				return new(
 					_text.ToString(),
 					_characterRuns,
 					_paragraphRuns,
 					terminalParagraphState,
 					canUseTerminalParagraphState,
-					canUseTerminalParagraphState && _hasExplicitTerminalParagraphState);
+					canUseTerminalParagraphState && _hasExplicitTerminalParagraphState,
+					metadata.Count == 0 ? RtfPreservedMetadata.Empty : new RtfPreservedMetadata(metadata));
+			}
 
 			internal void MarkExplicitTerminalParagraphState()
 				=> _hasExplicitTerminalParagraphState = true;
+
+			private void RecordPreservedLength(int length)
+			{
+				if (++_preservedEntryCount > MaxPreservedRtfEntries
+					|| length > MaxPreservedRtfTotalLength - _preservedLength)
+				{
+					throw new ArgumentException("The RTF contains too much preserved metadata.");
+				}
+				_preservedLength += length;
+			}
+
+			private sealed class PreservedTableRegion
+			{
+				internal PreservedTableRegion(int id, int parentRegionId, int start)
+				{
+					Id = id;
+					ParentRegionId = parentRegionId;
+					Start = start;
+				}
+
+				internal int Id { get; }
+				internal int ParentRegionId { get; }
+				internal int Start { get; }
+				internal int End { get; set; }
+				internal bool IsClosed { get; set; }
+				internal List<PendingTableEntry> Entries { get; } = new();
+			}
+
+			private readonly record struct PendingTableEntry(
+				string Rtf,
+				int Anchor,
+				int ProjectedLength,
+				int Sequence);
 		}
 
 		private sealed class ParseBudget
@@ -4273,6 +4523,10 @@ namespace Microsoft.UI.Text
 			public ParserState State;
 			public ParserDestination Destination;
 			public bool StarDestination;
+			public bool PreserveOpaqueDestination;
+			public int GroupStart;
+			public int GroupEnd;
+			public int ProjectedStart;
 			public bool IsField;
 			public bool IsObjectGroup;
 			public bool InObjectResult;
