@@ -552,8 +552,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-cupertino"
 				},
 				"SimpleTheme": {
-					"description": "Adds support for the Simple Design Toolkit.",
-					"helpUrl": "https://aka.platform.uno/feature-simpletheme"
+					"description": "Adds support for the Simple Design Toolkit."
 				},
 				"Dsp": {
 					"description": "Adds support for the Uno.Dsp.Tasks package.",
