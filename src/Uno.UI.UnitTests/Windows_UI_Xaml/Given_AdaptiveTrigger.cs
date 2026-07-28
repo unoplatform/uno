@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Loader;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,6 +13,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_AdaptiveTrigger
 	{
+		private readonly List<AssemblyLoadContext> _scopedAlcs = new();
+
 		[TestInitialize]
 		public void Initialize()
 		{
@@ -19,7 +23,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 		[TestCleanup]
 		public void Cleanup()
-			=> AdaptiveTrigger.SetWindowSizeOverride(null);
+		{
+			AdaptiveTrigger.SetWindowSizeOverride(null);
+
+			foreach (var alc in _scopedAlcs)
+			{
+				AdaptiveTrigger.SetWindowSizeOverride(null, alc);
+				alc.Unload();
+			}
+
+			_scopedAlcs.Clear();
+		}
 
 		[TestMethod]
 		public void When_SingleActiveState()
@@ -348,6 +362,209 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			// Clearing the override reverts evaluation to the real window size (1000x1000) -> active.
 			AdaptiveTrigger.SetWindowSizeOverride(null);
 			group.CurrentState.Should().Be(state);
+		}
+
+		// Scoped (per-AssemblyLoadContext) override tests — https://github.com/unoplatform/uno/issues/23721
+
+		[TestMethod]
+		public void When_ScopedOverride_AppliesOnlyToOwningAlcTrigger()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc, guestElement) = CreateCollectibleGuestElement();
+
+			var hostBorder = new Border();
+			hostBorder.ForceLoaded();
+			var (hostGroup, hostState) = BuildTriggeredGroup(hostBorder);
+
+			guestElement.ForceLoaded();
+			var (guestGroup, guestState) = BuildTriggeredGroup(guestElement);
+
+			hostGroup.CurrentState.Should().Be(hostState);
+			guestGroup.CurrentState.Should().Be(guestState);
+
+			// A size scoped to the guest ALC deactivates the guest trigger only — the host trigger
+			// keeps evaluating against the real window (the "host chrome must not collapse" scenario).
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+
+			guestGroup.CurrentState.Should().Be(null);
+			hostGroup.CurrentState.Should().Be(hostState);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_WinsOverGlobal()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc, guestElement) = CreateCollectibleGuestElement();
+
+			var hostBorder = new Border();
+			hostBorder.ForceLoaded();
+			var (hostGroup, hostState) = BuildTriggeredGroup(hostBorder);
+
+			guestElement.ForceLoaded();
+			var (guestGroup, _) = BuildTriggeredGroup(guestElement);
+
+			// Global override satisfies the triggers, scoped override does not: the guest trigger must
+			// use the scoped value while the host trigger keeps using the global one.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200));
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+
+			guestGroup.CurrentState.Should().Be(null);
+			hostGroup.CurrentState.Should().Be(hostState);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_Cleared_RevertsToGlobal_ThenWindow()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc, guestElement) = CreateCollectibleGuestElement();
+
+			guestElement.ForceLoaded();
+			var (guestGroup, guestState) = BuildTriggeredGroup(guestElement);
+
+			guestGroup.CurrentState.Should().Be(guestState);
+
+			// Without a scoped override the guest trigger follows the global override…
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50));
+			guestGroup.CurrentState.Should().Be(null);
+
+			// …a scoped override then takes precedence over the global one…
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200), alc);
+			guestGroup.CurrentState.Should().Be(guestState);
+
+			// …clearing the scoped override falls back to the global override…
+			AdaptiveTrigger.SetWindowSizeOverride(null, alc);
+			guestGroup.CurrentState.Should().Be(null);
+
+			// …and clearing the global override reverts to the real window size.
+			AdaptiveTrigger.SetWindowSizeOverride(null);
+			guestGroup.CurrentState.Should().Be(guestState);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_SetBeforeAttach_AppliesOnAttach()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc, guestElement) = CreateCollectibleGuestElement();
+
+			// The scoped override is set before the guest trigger ever attaches — the host scenario
+			// where a simulated form factor is active while guest pages load.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+
+			guestElement.ForceLoaded();
+			var (guestGroup, guestState) = BuildTriggeredGroup(guestElement);
+
+			guestGroup.CurrentState.Should().Be(null);
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200), alc);
+			guestGroup.CurrentState.Should().Be(guestState);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_NullAlc_Throws()
+			=> Assert.ThrowsExactly<ArgumentNullException>(() => AdaptiveTrigger.SetWindowSizeOverride(new Size(10, 10), null));
+
+		[TestMethod]
+		public void When_ScopedOverride_DefaultAlc_Throws()
+			=> Assert.ThrowsExactly<ArgumentException>(() => AdaptiveTrigger.SetWindowSizeOverride(new Size(10, 10), AssemblyLoadContext.Default));
+
+		[TestMethod]
+		public void When_ScopedOverride_ForForeignAlc_DoesNotAffectHost()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var hostBorder = new Border();
+			hostBorder.ForceLoaded();
+			var (hostGroup, hostState) = BuildTriggeredGroup(hostBorder);
+
+			hostGroup.CurrentState.Should().Be(hostState);
+
+			// An override scoped to an ALC no element belongs to must leave every trigger alone.
+			var foreignAlc = new AssemblyLoadContext(nameof(When_ScopedOverride_ForForeignAlc_DoesNotAffectHost), isCollectible: true);
+			_scopedAlcs.Add(foreignAlc);
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), foreignAlc);
+
+			hostGroup.CurrentState.Should().Be(hostState);
+
+			Window.Current.SetWindowSize(new Size(20, 20));
+			hostGroup.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_AlcUnloaded_Then_NotRootedByOverride()
+		{
+			var weakAlc = StageScopedOverrideOnCollectibleAlc();
+
+			for (var i = 0; i < 10 && weakAlc.IsAlive; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsFalse(
+				weakAlc.IsAlive,
+				"A scoped window-size override must never keep the target AssemblyLoadContext alive; " +
+				"otherwise a collectible guest app could no longer unload.");
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears()
+		{
+			var flagField = typeof(AdaptiveTrigger).GetField(
+				"_hasScopedWindowSizeOverrides",
+				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+			Assert.IsNotNull(flagField, "AdaptiveTrigger._hasScopedWindowSizeOverrides must exist (fast-path gate)");
+
+			var alc = new AssemblyLoadContext(nameof(When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears), isCollectible: true);
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+			Assert.IsTrue((bool)flagField.GetValue(null), "Setting a scoped override must engage the scoped-resolution path");
+
+			// Unloading fires synchronously on the calling thread and must drop the scope even when the
+			// host never cleared it, restoring the no-scoped-overrides fast path.
+			alc.Unload();
+			Assert.IsFalse((bool)flagField.GetValue(null), "Unloading the scoped ALC must restore the fast path");
+		}
+
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+		private static WeakReference StageScopedOverrideOnCollectibleAlc()
+		{
+			var alc = new AssemblyLoadContext(nameof(StageScopedOverrideOnCollectibleAlc), isCollectible: true);
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+			alc.Unload();
+			return new WeakReference(alc);
+		}
+
+		/// <summary>
+		/// Loads a second copy of the view library into a collectible <c>AssemblyLoadContext</c> (Uno
+		/// assemblies unify from the default context) and instantiates its <c>MyExtControl</c>, giving a
+		/// live element whose type belongs to that context — the shape of a hosted guest app's page.
+		/// </summary>
+		private (AssemblyLoadContext Alc, FrameworkElement GuestElement) CreateCollectibleGuestElement()
+		{
+			var alc = new AssemblyLoadContext($"{nameof(Given_AdaptiveTrigger)}-guest", isCollectible: true);
+			_scopedAlcs.Add(alc);
+
+			var guestAssembly = alc.LoadFromAssemblyPath(typeof(ViewLibrary.MyExtControl).Assembly.Location);
+			var guestType = guestAssembly.GetType(typeof(ViewLibrary.MyExtControl).FullName, throwOnError: true);
+			var guestElement = (FrameworkElement)Activator.CreateInstance(guestType);
+
+			return (alc, guestElement);
+		}
+
+		private static (VisualStateGroup Group, VisualState State) BuildTriggeredGroup(FrameworkElement element)
+		{
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(new AdaptiveTrigger { MinWindowHeight = 100, MinWindowWidth = 100 });
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(element, new List<VisualStateGroup>() { group });
+
+			return (group, state);
 		}
 	}
 }
