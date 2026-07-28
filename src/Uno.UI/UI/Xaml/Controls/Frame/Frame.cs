@@ -166,7 +166,7 @@ public partial class Frame : ContentControl
 	internal static object CreatePageInstance(
 		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
 		Type sourcePageType)
-		=> TypeMappings.CreateInstance(sourcePageType);
+		=> TypeActivator.CreateInstance(sourcePageType);
 
 	internal PageStackEntry GetCurrentPageStackEntry() => _useWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
 

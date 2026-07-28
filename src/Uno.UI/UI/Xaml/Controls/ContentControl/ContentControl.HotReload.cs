@@ -75,7 +75,7 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		{
 			// Centralized HR-aware creation (replacement-type resolution + bindable
 			// metadata provider), also used by navigation through Frame.CreatePageInstance.
-			newContent = TypeMappings.CreateInstance(liveType) as FrameworkElement;
+			newContent = TypeActivator.CreateInstance(liveType) as FrameworkElement;
 		}
 		catch (Exception e)
 		{
