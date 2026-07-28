@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -6188,6 +6189,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(hasCut, "Cut should be available: the word is selected");
 		}
 
+		// A touch/pen flyout routes Cut/Copy/Paste into the primary bar, which CommandBarFlyout does not close on
+		// invoke (it only wires that up for secondary commands). Copy is what exposes it: unlike Cut/Paste it leaves
+		// the text untouched, so nothing else closed the flyout and it lingered over the text after copying.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Flyout_Copy_Closes_Flyout_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for a flyout to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle();
+
+			var openFlyout =
+				(SUT.SelectionFlyout as TextCommandBarFlyout) is { IsOpen: true } sel ? sel :
+				(SUT.ContextFlyout as TextCommandBarFlyout) is { IsOpen: true } ctx ? ctx :
+				null;
+
+			Assert.IsNotNull(openFlyout, "a text command flyout should be open after the long-press");
+			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
+
+			// On touch/pen, Copy sits in the primary bar (see TextCommandBarFlyout.UpdateButtons) - the path under test.
+			var copyButton = openFlyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(copyButton, "Copy should be a primary (bar) command on a touch-opened flyout");
+
+			// Invoke it through AppBarButton.OnClick, the same path a tap takes, without hit-testing inside the popup.
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(copyButton) is not ButtonAutomationPeer copyPeer)
+			{
+				Assert.Fail("the Copy button should expose a ButtonAutomationPeer");
+				return;
+			}
+			copyPeer.Invoke();
+
+			await WindowHelper.WaitFor(
+				() => !openFlyout.IsOpen,
+				message: "invoking Copy should close the touch selection flyout");
+
+			// Copy must not disturb what it copied.
+			Assert.AreEqual("Text", SUT.SelectedText, "the selection should survive Copy");
+		}
+
 		// Repro for the long-press gripper path: after a touch long-press selects the word on the Android
 		// convention, BOTH selection thumbs must actually lay out and stay visible (not just the flyout).
 		// Sister of When_Touch_LongPress_Flyout_Includes_Copy_Android, which only checks the flyout commands
@@ -6273,6 +6338,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(hasCut, $"Cut should be available (selectedText='{SUT.SelectedText}')");
 
 			contextFlyout.Hide();
+		}
+
+		// Mouse counterpart of When_Touch_Flyout_Copy_Closes_Flyout_Android: with a pointer, Cut/Copy/Paste stay in
+		// the overflow, where CommandBarFlyout already closes the flyout on Click. Guards that the touch/pen primary-bar
+		// close doesn't alter (or become needed by) the mouse path.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_RightClick_Flyout_Copy_Closes_Flyout()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			mouse.PressRight(new Point(bounds.Left + 20, bounds.GetCenter().Y)); // inside "Some Text" and the selection
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.ContextFlyout is not TextCommandBarFlyout contextFlyout || !contextFlyout.IsOpen)
+			{
+				Assert.Fail("the ContextFlyout should open on right-click over the text");
+				return;
+			}
+
+			// A mouse-opened flyout keeps Cut/Copy/Paste in the overflow (see TextCommandBarFlyout.UpdateButtons).
+			var copyButton = contextFlyout.SecondaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(copyButton, "Copy should be a secondary (overflow) command on a mouse-opened flyout");
+			Assert.AreEqual(0, contextFlyout.PrimaryCommands.OfType<AppBarButton>().Count(
+				b => b.KeyboardAccelerators.Any(ka => ka.Key is VirtualKey.X or VirtualKey.C or VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey))),
+				"Cut/Copy/Paste must not reach the primary bar on a mouse-opened flyout");
+
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(copyButton) is not ButtonAutomationPeer copyPeer)
+			{
+				Assert.Fail("the Copy button should expose a ButtonAutomationPeer");
+				return;
+			}
+			copyPeer.Invoke();
+
+			await WindowHelper.WaitFor(
+				() => !contextFlyout.IsOpen,
+				message: "invoking Copy should close the mouse-opened context flyout");
+
+			Assert.AreEqual("Some Text", SUT.SelectedText, "the selection should survive Copy");
 		}
 
 		// Native Android: a touch long-press selects the word (and suppresses the context menu).

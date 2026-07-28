@@ -607,6 +607,19 @@ partial class TextCommandBarFlyout
 		return wasFound;
 	}
 
+	// Uno specific: CommandBarFlyout only closes itself when a *secondary* command is invoked (MUX extends that to the
+	// proofing menu - "interactions with any proofing menu element ... close the entire flyout, same as interactions
+	// with secondary commands"), never for the primary bar - where UpdateButtons puts Cut/Copy/Paste for a touch/pen
+	// flyout, and only there. Close it in that case too, so it doesn't linger over the text after the command ran.
+	// The device check is redundant with the primary-bar membership, but keeps the touch/pen scope explicit here.
+	private void HideAfterPrimaryBarInvoke(TextControlButtons button)
+	{
+		if (IsButtonInPrimaryCommands(button) && InputDevicePrefersPrimaryCommands)
+		{
+			Hide();
+		}
+	}
+
 	private void ExecuteCutCommand()
 	{
 		var target = Target;
@@ -633,10 +646,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.			
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Cut))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Cut);
 	}
 
 	private void ExecuteCopyCommand()
@@ -685,10 +695,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Copy))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Copy);
 	}
 
 	private void ExecutePasteCommand()
@@ -721,10 +728,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Paste))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Paste);
 	}
 
 	private void ExecuteBoldCommand()
