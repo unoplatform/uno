@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -144,15 +145,7 @@ public sealed partial class ClickablePoint_Visualizer : UserControl
 	}
 
 	private static Type? FindType(string fullName)
-	{
-		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-		{
-			if (assembly.GetType(fullName, throwOnError: false) is { } type)
-			{
-				return type;
-			}
-		}
-
-		return null;
-	}
+		=> AppDomain.CurrentDomain.GetAssemblies()
+			.Select(assembly => assembly.GetType(fullName, throwOnError: false))
+			.FirstOrDefault(type => type is not null);
 }
