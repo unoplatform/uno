@@ -19,6 +19,7 @@ using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using __Windows.ApplicationModel.Core;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -84,10 +85,20 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 			ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
 			ApiExtensibility.Register(typeof(IFontFallbackService), _ => NotoFontFallbackService.Instance);
 
+			await CoreApplicationNative.InitializeExports();
+
 			await WebAssemblyWindowWrapper.Initialize();
 
 			CompositionTarget.FrameRenderingOptions = (false, false);
 			_renderer = new BrowserRenderer(this, _forceSoftwareRendering);
+
+			if (WebAssemblyThreading.IsThreadingEnabled)
+			{
+				// Start the dedicated render worker: it creates a JSWebWorker with its own
+				// JS interop, receives the OffscreenCanvas, sets up WebGL, and enters a render
+				// loop waiting for frame signals from the deputy.
+				RenderWorker.Start(this, WebAssemblyWindowWrapper.Instance.CanvasId);
+			}
 		}
 	}
 

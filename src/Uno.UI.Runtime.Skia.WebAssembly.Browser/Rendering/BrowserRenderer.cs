@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -12,7 +14,7 @@ internal partial class BrowserRenderer
 {
 	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 	private readonly IXamlRootHost _host;
-	private readonly IBrowserRenderer _renderer;
+	private readonly IBrowserRenderer? _renderer;
 	private JSObject? _nativeInstance;
 
 	private int _renderCount;
@@ -28,7 +30,21 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
-		if (!forceSoftwareRendering && WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
+		if (WebAssemblyThreading.IsThreadingEnabled)
+		{
+			// TODO: Software rendering (post-MVP)
+			if (forceSoftwareRendering)
+			{
+				throw new NotSupportedException("Software renderer is not supported on MT.");
+			}
+
+			// TODO: Refactor to use IBrowserRenderer (post-MVP)
+			// In MT mode, the render worker owns the WebGL context and all GL resources.
+			// The render worker is started separately by the host.
+			// BrowserRenderer only handles the InvalidateRender.
+			_renderer = null;
+		}
+		else if (!forceSoftwareRendering && WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
 		{
 			_renderer = webGlBrowserRenderer;
 		}
@@ -60,6 +76,13 @@ internal partial class BrowserRenderer
 		((BrowserRenderer)instance).RenderFrame();
 	}
 
+	[JSExport]
+	internal static Task RenderFrameAsync([JSMarshalAs<JSType.Any>] object instance)
+	{
+		((BrowserRenderer)instance).RenderFrameMT();
+		return Task.CompletedTask;
+	}
+
 	private void RenderFrame()
 	{
 		// The RootElement may not be set yet during startup because the JavaScript
@@ -85,7 +108,7 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		_renderer.MakeCurrent();
+		_renderer!.MakeCurrent();
 
 		if (_renderer.NeedsForceResize())
 		{
@@ -113,6 +136,27 @@ internal partial class BrowserRenderer
 		}
 	}
 
+	private void RenderFrameMT()
+	{
+		_pendingInvalidate = false;
+
+		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
+		{
+			return;
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace("Render");
+		}
+
+		RenderWorker.SignalFrameAvailable();
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Render worker was signaled.");
+		}
+	}
 
 	internal static partial class NativeMethods
 	{

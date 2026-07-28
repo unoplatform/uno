@@ -105,7 +105,14 @@ namespace Microsoft.UI.Xaml
 		{
 			_startInvoked = true;
 
-			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
+			// In WASM MT mode the runtime's JSSynchronizationContext is already installed on the
+			// deputy thread and NativeDispatcher posts into it; overwriting it would break the
+			// runtime pump loop that drains both JS interop and dispatcher items. Only set it in
+			// ST mode or on non-browser platforms.
+			if (SynchronizationContext.Current?.GetType().Name != "JSSynchronizationContext")
+			{
+				SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
+			}
 
 			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
 
@@ -131,8 +138,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
+				currentApp.InvokeOnLaunched();
 			}
 			else
 			{

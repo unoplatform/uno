@@ -16,6 +16,11 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
+		// Single ordered chain for all JS→managed text interop in MT mode.
+		// Guarantees callbacks reach managed code in the exact order the browser dispatched the events.
+		// Not used in ST mode.
+		private static interopQueue: Promise<any> = Promise.resolve();
+
 		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
@@ -27,27 +32,63 @@
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 				BrowserInvisibleTextBoxViewExtension._imeExports = browserExports.Uno.UI.Runtime.Skia.WasmImeTextBoxExtension;
 
-				document.onselectionchange = () => {
-					let input = document.activeElement;
-					if (input instanceof HTMLInputElement) {
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					document.onselectionchange = () => {
+						const input = document.activeElement;
 
-						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
-							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-						}
-						else {
-							if (input.selectionDirection == "backward") {
-								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
-							} else {
-								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+						if (input instanceof HTMLInputElement) {
+							if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+								BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+							}
+							else {
+								// Snapshot direction + positions before any later setSelectionRange can flip them.
+								const backward = input.selectionDirection == "backward";
+								const start = backward ? input.selectionEnd : input.selectionStart;
+								const length = backward
+									? input.selectionStart - input.selectionEnd
+									: input.selectionEnd - input.selectionStart;
+								BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+
+									await BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length);
+
+									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+								});
 							}
 						}
+					}
+				} else {
+					document.onselectionchange = () => {
+						let input = document.activeElement;
 
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+						if (input instanceof HTMLInputElement) {
+							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+
+							if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+								BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+								input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart,
+									BrowserInvisibleTextBoxViewExtension.nextSelectionEnd,
+									BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
+							}
+							else {
+								if (input.selectionDirection == "backward") {
+									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
+								} else {
+									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+								}
+							}
+
+							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+						}
 					}
 				}
 			}
+		}
+
+		public static enqueue(work: () => any): void {
+			// catch() keeps the chain alive if one notification rejects.
+			BrowserInvisibleTextBoxViewExtension.interopQueue =
+				BrowserInvisibleTextBoxViewExtension.interopQueue.then(work).catch(() => { });
 		}
 
 		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
@@ -82,65 +123,135 @@
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
 
-			input.oninput = ev => {
-				// During IME composition, text state is managed by the composition event path.
-				// The oninput event still fires but we must skip the normal text sync.
-				// Also suppress the final input event after compositionend (browser fires input after compositionend).
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
-					BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
-					return;
-				}
-				let input = ev.target as HTMLInputElement;
-				if (input.selectionDirection == "backward") {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
-				}
-			};
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				input.oninput = ev => {
+					// See below.
+					if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
+						BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+						return;
+					}
 
-			input.onpaste = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
-				ev.preventDefault();
-			};
+					const element = ev.target as HTMLInputElement;
+					const value = element.value;
+					const backward = element.selectionDirection == "backward";
+					const start = backward ? element.selectionEnd : element.selectionStart;
+					const length = backward ? element.selectionStart - element.selectionEnd : element.selectionEnd - element.selectionStart;
 
-			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
-			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
-			input.addEventListener("beforeinput", (ev: InputEvent) => {
-				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+
+						await BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChangedAsync(value, start, length);
+
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+					});
+				};
+
+				input.onpaste = ev => {
 					ev.preventDefault();
 
-					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
-				}
-			});
+					const text = ev.clipboardData.getData("text");
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativePasteAsync(text));
+				};
+
+				// See below.
+				input.addEventListener("beforeinput", (ev: InputEvent) => {
+					if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+						ev.preventDefault();
+
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressedAsync());
+					}
+				});
+			} else {
+				input.oninput = ev => {
+					// During IME composition, text state is managed by the composition event path.
+					// The oninput event still fires but we must skip the normal text sync.
+					// Also suppress the final input event after compositionend (browser fires input after compositionend).
+					if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
+						BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+						return;
+					}
+					let input = ev.target as HTMLInputElement;
+					if (input.selectionDirection == "backward") {
+						BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+					} else {
+						BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+					}
+				};
+
+				input.onpaste = ev => {
+					BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
+					ev.preventDefault();
+				};
+
+				// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+				// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
+				input.addEventListener("beforeinput", (ev: InputEvent) => {
+					if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+						ev.preventDefault();
+
+						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					}
+				});
+			}
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
-			input.addEventListener("compositionstart", () => {
-				BrowserInvisibleTextBoxViewExtension.isComposing = true;
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
-			});
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				input.addEventListener("compositionstart", () => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = true;
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStartedAsync());
+				});
 
-			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
-				// Use input.selectionStart for cursor position when available,
-				// as the IME may place the caret within the preedit string.
-				const selectionStart = input.selectionStart;
-				const cursorPosition = selectionStart === null
-					? ev.data.length
-					: Math.max(0, Math.min(selectionStart, ev.data.length));
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
-			});
+				input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+					// See below.
+					const selectionStart = input.selectionStart;
+					const cursorPosition = selectionStart === null
+						? ev.data.length
+						: Math.max(0, Math.min(selectionStart, ev.data.length));
+					const data = ev.data;
 
-			input.addEventListener("compositionend", (ev: CompositionEvent) => {
-				BrowserInvisibleTextBoxViewExtension.isComposing = false;
-				// The browser fires an input event after compositionend with the committed text.
-				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
-				BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
-				if (ev.data.length > 0) {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
-				}
-			});
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdatedAsync(ev.data, cursorPosition));
+				});
+
+				input.addEventListener("compositionend", (ev: CompositionEvent) => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = false;
+					// See below.
+					BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
+					const data = ev.data;
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => data.length > 0
+						? BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompletedAsync(data)
+							: BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEndedAsync());
+				});
+			} else {
+				input.addEventListener("compositionstart", () => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = true;
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
+				});
+
+				input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+					// Use input.selectionStart for cursor position when available,
+					// as the IME may place the caret within the preedit string.
+					const selectionStart = input.selectionStart;
+					const cursorPosition = selectionStart === null
+						? ev.data.length
+						: Math.max(0, Math.min(selectionStart, ev.data.length));
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
+				});
+
+				input.addEventListener("compositionend", (ev: CompositionEvent) => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = false;
+					// The browser fires an input event after compositionend with the committed text.
+					// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
+					BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
+					if (ev.data.length > 0) {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
+					} else {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+					}
+				});
+			}
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
@@ -204,8 +315,14 @@
 					&& ev.key === "Enter"
 					&& !BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown
 					&& !ev.isComposing) {
+
 					ev.preventDefault();
-					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+
+					if (WebAssemblyThreading.isThreadingEnabled()) {
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressedAsync());
+					} else {
+						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					}
 				}
 
 				if (ev.key === "Enter" || ev.keyCode === 13) {

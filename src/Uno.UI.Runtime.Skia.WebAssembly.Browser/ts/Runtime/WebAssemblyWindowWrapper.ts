@@ -62,7 +62,8 @@ namespace Uno.UI.Runtime.Skia {
 
 			await Accessibility.setup();
 
-			window.addEventListener("resize", x => this.resize());
+			const resizeObserver = new ResizeObserver(() => this.resize());
+			resizeObserver.observe(document.documentElement);
 
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();

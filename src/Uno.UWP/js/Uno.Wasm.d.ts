@@ -28,13 +28,7 @@ declare namespace Windows.ApplicationModel.Core {
      * Support file for the Windows.ApplicationModel.Core
      * */
     class CoreApplication {
-        private static _initializedExportsResolve;
-        private static _initializedExports;
         static initialize(): void;
-        /**
-         * Provides a promised that resolves when CoreApplication is initialized
-         */
-        static waitForInitialized(): Promise<void>;
         static initializeExports(): Promise<void>;
     }
 }
@@ -228,7 +222,7 @@ declare namespace Uno.UI.Dispatching {
     class NativeDispatcher {
         static _dispatcherCallback: any;
         static _isReady: boolean;
-        static init(isReady: Promise<boolean>): void;
+        static init(): void;
         static WakeUp(force: boolean): void;
     }
 }

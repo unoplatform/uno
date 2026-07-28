@@ -1,0 +1,7 @@
+﻿<Project>
+	<PropertyGroup>
+		<CompressionEnabled>false</CompressionEnabled>
+		<WasmEnableThreads>true</WasmEnableThreads>
+		<WasmNativeStrip>false</WasmNativeStrip>
+	</PropertyGroup>
+</Project>
