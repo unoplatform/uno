@@ -467,19 +467,13 @@ internal class Win32RawElementProvider :
 				}
 				else
 				{
-					var visual = _owner.Visual;
-					var size = visual.Size;
-
-					// Compute the full element-to-root transform, then transform the
-					// local rect to get the axis-aligned bounding box in window coords.
-					// This correctly handles rotation, scale, and skew transforms.
-					var transform = UIElement.GetTransform(from: _owner, to: null);
-					var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
-					logicalRect = transform.Transform(localRect);
-
-					// Clip to ancestor scroll/clip regions so Narrator doesn't report
-					// bounds for content that is scrolled out of view.
-					logicalRect = ClipToElementAndAncestors(_owner, logicalRect);
+					// Clipped global bounds — the same machinery as IsOffscreen and GetClickablePoint,
+					// so composition-level clips (e.g. the ScrollViewer viewport InsetClip and layout
+					// clips) are honored, not just the Clip DP.
+					logicalRect = _owner.GetGlobalBoundsWithOptions(
+						ignoreClipping: false,
+						ignoreClippingOnScrollContentPresenters: false,
+						useTargetInformation: false);
 
 					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
 					{
@@ -1618,30 +1612,6 @@ internal class Win32RawElementProvider :
 	public void AdviseEventRemoved(int eventId, int[]? propertyIds)
 	{
 		_accessibility.OnAdviseEventRemoved(eventId, propertyIds);
-	}
-
-	/// <summary>
-	/// Clips a logical rect to the element and ancestors that have Clip set (e.g., ScrollViewer).
-	/// This prevents Narrator from reporting bounds for content scrolled out of view.
-	/// </summary>
-	private static Windows.Foundation.Rect ClipToElementAndAncestors(UIElement element, Windows.Foundation.Rect rect)
-	{
-		UIElement? current = element;
-		while (current is not null)
-		{
-			if (current.Clip is RectangleGeometry clip)
-			{
-				var clipTransform = UIElement.GetTransform(from: current, to: null);
-				var clipRect = clipTransform.Transform(clip.Rect);
-				rect.Intersect(clipRect);
-				if (rect.IsEmpty)
-				{
-					return new Windows.Foundation.Rect(0, 0, 0, 0);
-				}
-			}
-			current = current.GetParent() as UIElement;
-		}
-		return rect;
 	}
 
 	private AutomationPeer? GetAutomationPeer()
