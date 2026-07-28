@@ -19,7 +19,8 @@ namespace Microsoft.UI.Text
 			IReadOnlyList<ParagraphRun> paragraphRuns,
 			ParagraphFormatState terminalParagraphState,
 			bool hasExplicitTerminalParagraphState = true,
-			bool preservesTerminalParagraphStateOnImport = false)
+			bool preservesTerminalParagraphStateOnImport = false,
+			RtfPreservedMetadata? preservedRtfMetadata = null)
 		{
 			Text = text;
 			_characterRuns = characterRuns;
@@ -27,6 +28,7 @@ namespace Microsoft.UI.Text
 			TerminalParagraphState = terminalParagraphState;
 			HasExplicitTerminalParagraphState = hasExplicitTerminalParagraphState;
 			PreservesTerminalParagraphStateOnImport = preservesTerminalParagraphStateOnImport;
+			PreservedRtfMetadata = preservedRtfMetadata ?? RtfPreservedMetadata.Empty;
 			AssertRunInvariants();
 		}
 
@@ -41,6 +43,8 @@ namespace Microsoft.UI.Text
 		internal bool HasExplicitTerminalParagraphState { get; }
 
 		internal bool PreservesTerminalParagraphStateOnImport { get; }
+
+		internal RtfPreservedMetadata PreservedRtfMetadata { get; }
 
 		internal CharacterFormatState GetCharacterFormatAt(int position)
 			=> GetFormatAt(_characterRuns, position);
@@ -57,7 +61,8 @@ namespace Microsoft.UI.Text
 				_paragraphRuns,
 				terminalParagraphState,
 				hasExplicitTerminalParagraphState,
-				PreservesTerminalParagraphStateOnImport);
+				PreservesTerminalParagraphStateOnImport,
+				PreservedRtfMetadata);
 
 		internal RichTextFragment TransformCharacterFormats(Action<CharacterFormatState> transform)
 		{
@@ -75,7 +80,8 @@ namespace Microsoft.UI.Text
 				_paragraphRuns,
 				TerminalParagraphState,
 				HasExplicitTerminalParagraphState,
-				PreservesTerminalParagraphStateOnImport);
+				PreservesTerminalParagraphStateOnImport,
+				PreservedRtfMetadata);
 		}
 
 		internal RichTextFragment Slice(
@@ -99,7 +105,8 @@ namespace Microsoft.UI.Text
 				SliceParagraphRuns(_paragraphRuns, start, length),
 				terminalParagraphState,
 				hasExplicitTerminalParagraphState,
-				PreservesTerminalParagraphStateOnImport);
+				PreservesTerminalParagraphStateOnImport,
+				PreservedRtfMetadata.Slice(start, length));
 		}
 
 		internal bool AreRunInvariantsValid()

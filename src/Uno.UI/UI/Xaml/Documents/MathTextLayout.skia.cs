@@ -62,6 +62,7 @@ internal sealed class MathParsedText : IParsedText
 
 	private readonly MathDocument _document;
 	private readonly List<TextPlacement> _textPlacements = new();
+	private readonly List<GlyphPlacement> _glyphPlacements = new();
 	private readonly List<RulePlacement> _rulePlacements = new();
 	private readonly MathIndexLayout[] _indexLayout;
 	private readonly double _width;
@@ -82,8 +83,10 @@ internal sealed class MathParsedText : IParsedText
 		_document = document;
 		var resolver = new InlineStyleResolver(inlines, defaultFontDetails, defaultForeground);
 		Metrics = MathFontMetrics.Create(defaultFontDetails);
-		var builder = new BoxBuilder(document, resolver, fontListener, defaultForeground, Metrics);
+		var builder = new BoxBuilder(document, resolver, fontListener, defaultForeground, Metrics, defaultFontDetails.SKFont);
 		var root = builder.Build(document.Root, 1);
+		VerticalVariantGlyphCount = builder.VerticalVariantGlyphCount;
+		VerticalAssemblyGlyphCount = builder.VerticalAssemblyGlyphCount;
 		_width = Math.Max(0, root.Width);
 		_baseline = Math.Max(root.Ascent, defaultFontDetails.SKFontMetrics.Ascent * -1);
 		_height = Math.Max(defaultFontDetails.LineHeight, _baseline + root.Descent);
@@ -92,6 +95,7 @@ internal sealed class MathParsedText : IParsedText
 		var context = new ArrangeContext(
 			document,
 			_textPlacements,
+			_glyphPlacements,
 			_rulePlacements,
 			_indexLayout);
 		root.Arrange(context, (float)_xOffset, (float)_baseline);
@@ -102,6 +106,10 @@ internal sealed class MathParsedText : IParsedText
 	internal MathFontMetrics Metrics { get; }
 
 	internal bool UsesOpenTypeMath => Metrics.UsesOpenTypeMath;
+
+	internal int VerticalVariantGlyphCount { get; }
+
+	internal int VerticalAssemblyGlyphCount { get; }
 
 	internal int IndexStorageByteCount => checked(_indexLayout.Length * 24);
 
@@ -121,6 +129,17 @@ internal sealed class MathParsedText : IParsedText
 			session.Canvas.Translate(placement.X, placement.Y);
 			placement.Layout.Draw(session, caret: null, _noHighlighters, compositionRange: null);
 			session.Canvas.Restore();
+		}
+
+		using (var textBlobBuilder = new SKTextBlobBuilder())
+		{
+			foreach (var placement in _glyphPlacements)
+			{
+				textBlobBuilder.AddPositionedRun(placement.Glyphs, placement.Font, placement.Positions);
+				using var textBlob = textBlobBuilder.Build();
+				_rulePaint.Color = GetColor(placement.Brush, session.Opacity);
+				session.Canvas.DrawText(textBlob, placement.X, placement.Y, _rulePaint);
+			}
 		}
 
 		foreach (var rule in _rulePlacements)
@@ -377,6 +396,14 @@ internal sealed class MathParsedText : IParsedText
 
 	private sealed record TextPlacement(UnicodeText Layout, float X, float Y);
 
+	private sealed record GlyphPlacement(
+		SKFont Font,
+		ushort[] Glyphs,
+		SKPoint[] Positions,
+		float X,
+		float Y,
+		Brush? Brush);
+
 	private sealed record RulePlacement(SKRect Rect, Brush? Brush);
 
 	private readonly struct MathIndexLayout
@@ -407,17 +434,20 @@ internal sealed class MathParsedText : IParsedText
 	{
 		private readonly MathDocument _document;
 		private readonly List<TextPlacement> _textPlacements;
+		private readonly List<GlyphPlacement> _glyphPlacements;
 		private readonly List<RulePlacement> _rules;
 		private readonly MathIndexLayout[] _indexLayout;
 
 		internal ArrangeContext(
 			MathDocument document,
 			List<TextPlacement> textPlacements,
+			List<GlyphPlacement> glyphPlacements,
 			List<RulePlacement> rules,
 			MathIndexLayout[] indexLayout)
 		{
 			_document = document;
 			_textPlacements = textPlacements;
+			_glyphPlacements = glyphPlacements;
 			_rules = rules;
 			_indexLayout = indexLayout;
 		}
@@ -426,6 +456,15 @@ internal sealed class MathParsedText : IParsedText
 
 		internal void AddText(UnicodeText layout, float x, float top)
 			=> _textPlacements.Add(new TextPlacement(layout, x, top));
+
+		internal void AddGlyphs(
+			SKFont font,
+			ushort[] glyphs,
+			SKPoint[] positions,
+			float x,
+			float top,
+			Brush? brush)
+			=> _glyphPlacements.Add(new GlyphPlacement(font, glyphs, positions, x, top, brush));
 
 		internal void AddRule(SKRect rect, Brush? brush) => _rules.Add(new RulePlacement(rect, brush));
 
@@ -461,13 +500,15 @@ internal sealed class MathParsedText : IParsedText
 		private readonly UnicodeText.IFontCacheUpdateListener _fontListener;
 		private readonly Brush? _defaultForeground;
 		private readonly float _em;
+		private readonly SKFont _mathFont;
 
 		internal BoxBuilder(
 			MathDocument document,
 			InlineStyleResolver resolver,
 			UnicodeText.IFontCacheUpdateListener fontListener,
 			Brush? defaultForeground,
-			MathFontMetrics metrics)
+			MathFontMetrics metrics,
+			SKFont mathFont)
 		{
 			_document = document;
 			_resolver = resolver;
@@ -475,9 +516,14 @@ internal sealed class MathParsedText : IParsedText
 			_defaultForeground = defaultForeground;
 			Metrics = metrics;
 			_em = Math.Max(1, resolver.DefaultFontSize);
+			_mathFont = mathFont;
 		}
 
 		internal MathFontMetrics Metrics { get; }
+
+		internal int VerticalVariantGlyphCount { get; private set; }
+
+		internal int VerticalAssemblyGlyphCount { get; private set; }
 
 		internal MathBox Build(MathNode node, float scale)
 			=> node switch
@@ -527,16 +573,21 @@ internal sealed class MathParsedText : IParsedText
 				? Build(degreeNode, scale * Metrics.ScriptScale)
 				: null;
 			var targetHeight = radicand.Ascent + radicand.Descent + Metrics.RadicalGap * scale;
-			// TODO Uno: Select OpenType MATH glyph variants/assemblies when the managed font stack
-			// exposes them. Bounded font scaling keeps radicals and fences usable in the meantime.
 			var fenceScale = Math.Clamp(targetHeight / Math.Max(1, _em), 1, 2.75f);
 			var radicalSpan = _document.GetSpan(radical);
-			var sign = CreateLiteralBox(
-				radical,
-				"√",
-				new MathTextSpan(radicalSpan.Start, 1),
-				scale * fenceScale,
-				GetBrush(radical));
+			var sign = CreateVerticalGlyphBox(
+					radical,
+					"√",
+					new MathTextSpan(radicalSpan.Start, 1),
+					targetHeight,
+					scale,
+					GetBrush(radical))
+				?? CreateLiteralBox(
+					radical,
+					"√",
+					new MathTextSpan(radicalSpan.Start, 1),
+					scale * fenceScale,
+					GetBrush(radical));
 			return new RadicalBox(
 				radical,
 				radicand,
@@ -562,18 +613,26 @@ internal sealed class MathParsedText : IParsedText
 			var targetHeight = inner.Ascent + inner.Descent;
 			var fenceScale = Math.Clamp(targetHeight / Math.Max(1, _em), 1, 3);
 			var span = _document.GetSpan(fenced);
-			var open = CreateLiteralBox(
-				fenced,
-				fenced.Open,
-				new MathTextSpan(span.Start, 1),
-				scale * fenceScale,
-				GetBrush(fenced));
-			var close = CreateLiteralBox(
-				fenced,
-				fenced.Close,
-				new MathTextSpan(Math.Max(span.Start, span.End - 1), span.Length > 0 ? 1 : 0),
-				scale * fenceScale,
-				GetBrush(fenced));
+			var openSpan = new MathTextSpan(span.Start, 1);
+			var closeSpan = new MathTextSpan(Math.Max(span.Start, span.End - 1), span.Length > 0 ? 1 : 0);
+			var open = CreateVerticalGlyphBox(
+					fenced,
+					fenced.Open,
+					openSpan,
+					targetHeight,
+					scale,
+					GetBrush(fenced),
+					allowBrowserVariant: false)
+				?? CreateLiteralBox(fenced, fenced.Open, openSpan, scale * fenceScale, GetBrush(fenced));
+			var close = CreateVerticalGlyphBox(
+					fenced,
+					fenced.Close,
+					closeSpan,
+					targetHeight,
+					scale,
+					GetBrush(fenced),
+					allowBrowserVariant: false)
+				?? CreateLiteralBox(fenced, fenced.Close, closeSpan, scale * fenceScale, GetBrush(fenced));
 			return new FencedBox(fenced, open, inner, close);
 		}
 
@@ -593,18 +652,26 @@ internal sealed class MathParsedText : IParsedText
 			var span = _document.GetSpan(table);
 			var contentHeight = TableBox.GetContentHeight(rows, _em * 0.25f * scale);
 			var fenceScale = Math.Clamp(contentHeight / Math.Max(1, _em), 1, 3);
-			var open = CreateLiteralBox(
-				table,
-				"[",
-				new MathTextSpan(span.Start, 1),
-				scale * fenceScale,
-				GetBrush(table));
-			var close = CreateLiteralBox(
-				table,
-				"]",
-				new MathTextSpan(Math.Max(span.Start, span.End - 1), span.Length > 0 ? 1 : 0),
-				scale * fenceScale,
-				GetBrush(table));
+			var openSpan = new MathTextSpan(span.Start, 1);
+			var closeSpan = new MathTextSpan(Math.Max(span.Start, span.End - 1), span.Length > 0 ? 1 : 0);
+			var open = CreateVerticalGlyphBox(
+					table,
+					"[",
+					openSpan,
+					contentHeight,
+					scale,
+					GetBrush(table),
+					allowBrowserVariant: false)
+				?? CreateLiteralBox(table, "[", openSpan, scale * fenceScale, GetBrush(table));
+			var close = CreateVerticalGlyphBox(
+					table,
+					"]",
+					closeSpan,
+					contentHeight,
+					scale,
+					GetBrush(table),
+					allowBrowserVariant: false)
+				?? CreateLiteralBox(table, "]", closeSpan, scale * fenceScale, GetBrush(table));
 			return new TableBox(
 				table,
 				rows,
@@ -700,6 +767,75 @@ internal sealed class MathParsedText : IParsedText
 			Brush? brush,
 			bool mapsIndexes = true)
 			=> CreateGlyphBox(owner, text, span, scale, brush, 0, 0, mapsIndexes);
+
+		private MathBox? CreateVerticalGlyphBox(
+			MathNode owner,
+			string text,
+			MathTextSpan span,
+			float targetHeight,
+			float scale,
+			Brush? brush,
+			bool allowBrowserVariant = true)
+		{
+			if (!Metrics.TryGetVerticalGlyph(
+				_mathFont,
+				text,
+				targetHeight,
+				out var run,
+				allowBrowserVariant))
+			{
+				return null;
+			}
+
+			var glyphs = new ushort[run.Parts.Length];
+			var widths = new float[glyphs.Length];
+			var bounds = new SKRect[glyphs.Length];
+			for (var index = 0; index < glyphs.Length; index++)
+			{
+				glyphs[index] = run.Parts[index].Glyph;
+				if (glyphs[index] >= _mathFont.Typeface.GlyphCount)
+				{
+					return null;
+				}
+			}
+			_mathFont.GetGlyphWidths(glyphs, widths, bounds, null);
+
+			var left = float.MaxValue;
+			var right = float.MinValue;
+			var top = float.MaxValue;
+			var bottom = float.MinValue;
+			var hasInk = false;
+			for (var index = 0; index < glyphs.Length; index++)
+			{
+				left = Math.Min(left, bounds[index].Left);
+				right = Math.Max(right, bounds[index].Right);
+				top = Math.Min(top, run.Parts[index].Offset + bounds[index].Top);
+				bottom = Math.Max(bottom, run.Parts[index].Offset + bounds[index].Bottom);
+				hasInk |= bounds[index].Width > 0 && bounds[index].Height > 0;
+			}
+			if (!hasInk || !float.IsFinite(left) || !float.IsFinite(top))
+			{
+				return null;
+			}
+
+			var height = Math.Max(run.Advance, bottom - top);
+			var width = Math.Max(1, right - left);
+			var positions = new SKPoint[glyphs.Length];
+			for (var index = 0; index < glyphs.Length; index++)
+			{
+				positions[index] = new SKPoint(-left, run.Parts[index].Offset - top);
+			}
+			var ascent = Math.Clamp(height / 2 + Metrics.AxisHeight * scale, 0, height);
+			if (run.IsAssembly)
+			{
+				VerticalAssemblyGlyphCount++;
+			}
+			else
+			{
+				VerticalVariantGlyphCount++;
+			}
+			return new VerticalGlyphBox(owner, span, _mathFont, glyphs, positions, width, ascent, height - ascent, brush);
+		}
 
 		private GlyphBox CreateGlyphBox(
 			MathNode owner,
@@ -851,6 +987,53 @@ internal sealed class MathParsedText : IParsedText
 		}
 	}
 
+	private sealed class VerticalGlyphBox : MathBox
+	{
+		private readonly MathTextSpan _span;
+		private readonly SKFont _font;
+		private readonly ushort[] _glyphs;
+		private readonly SKPoint[] _positions;
+		private readonly Brush? _brush;
+
+		internal VerticalGlyphBox(
+			MathNode node,
+			MathTextSpan span,
+			SKFont font,
+			ushort[] glyphs,
+			SKPoint[] positions,
+			float width,
+			float ascent,
+			float descent,
+			Brush? brush)
+			: base(node, width, ascent, descent)
+		{
+			_span = span;
+			_font = font;
+			_glyphs = glyphs;
+			_positions = positions;
+			_brush = brush;
+		}
+
+		internal override void Arrange(ArrangeContext context, float x, float baseline)
+		{
+			var top = baseline - Ascent;
+			context.AddGlyphs(_font, _glyphs, _positions, x, top, _brush);
+			context.SetNodeBounds(Node, x, baseline, Width, Ascent, Descent);
+			if (_span.Length > 0)
+			{
+				context.SetIndex(
+					_span.Start,
+					new Rect(x, top, Width, Ascent + Descent),
+					baseline,
+					force: true);
+			}
+			else
+			{
+				context.SetIndex(_span.Start, new Rect(x, top, 0, Ascent + Descent), baseline);
+			}
+		}
+	}
+
 	private sealed class RowBox : MathBox
 	{
 		private readonly IReadOnlyList<MathBox> _children;
@@ -976,7 +1159,7 @@ internal sealed class MathParsedText : IParsedText
 	{
 		private readonly MathBox _radicand;
 		private readonly MathBox? _degree;
-		private readonly GlyphBox _sign;
+		private readonly MathBox _sign;
 		private readonly float _radicandX;
 		private readonly float _barY;
 		private readonly float _ruleThickness;
@@ -988,7 +1171,7 @@ internal sealed class MathParsedText : IParsedText
 			MathRadicalNode node,
 			MathBox radicand,
 			MathBox? degree,
-			GlyphBox sign,
+			MathBox sign,
 			MathFontMetrics metrics,
 			float scale,
 			Brush? brush)
@@ -1045,7 +1228,7 @@ internal sealed class MathParsedText : IParsedText
 		private static float GetWidth(
 			MathBox radicand,
 			MathBox? degree,
-			GlyphBox sign,
+			MathBox sign,
 			MathFontMetrics metrics,
 			float scale)
 			=> Math.Max(sign.Width, (degree?.Width ?? 0) * 0.65f)
@@ -1464,11 +1647,11 @@ internal sealed class MathParsedText : IParsedText
 
 	private sealed class FencedBox : MathBox
 	{
-		private readonly GlyphBox _open;
+		private readonly MathBox _open;
 		private readonly MathBox _inner;
-		private readonly GlyphBox _close;
+		private readonly MathBox _close;
 
-		internal FencedBox(MathFencedNode node, GlyphBox open, MathBox inner, GlyphBox close)
+		internal FencedBox(MathFencedNode node, MathBox open, MathBox inner, MathBox close)
 			: base(
 				node,
 				open.Width + inner.Width + close.Width,
@@ -1494,8 +1677,8 @@ internal sealed class MathParsedText : IParsedText
 	private sealed class TableBox : MathBox
 	{
 		private readonly MathBox[][] _rows;
-		private readonly GlyphBox _open;
-		private readonly GlyphBox _close;
+		private readonly MathBox _open;
+		private readonly MathBox _close;
 		private readonly float[] _columnWidths;
 		private readonly float[] _rowAscents;
 		private readonly float[] _rowDescents;
@@ -1506,8 +1689,8 @@ internal sealed class MathParsedText : IParsedText
 		internal TableBox(
 			MathTableNode node,
 			MathBox[][] rows,
-			GlyphBox open,
-			GlyphBox close,
+			MathBox open,
+			MathBox close,
 			float horizontalGap,
 			float verticalGap,
 			float axisHeight)
@@ -1528,8 +1711,8 @@ internal sealed class MathParsedText : IParsedText
 		private TableBox(
 			MathTableNode node,
 			MathBox[][] rows,
-			GlyphBox open,
-			GlyphBox close,
+			MathBox open,
+			MathBox close,
 			float horizontalGap,
 			float verticalGap,
 			float axisHeight,
