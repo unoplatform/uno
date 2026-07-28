@@ -380,6 +380,10 @@ partial class Application
 		// FrameworkElementHelper — remove CWT entries for ALC DependencyObjects
 		FrameworkElementHelper.ClearNonDefaultAlcEntries();
 
+		// AdaptiveTrigger — drop window-size overrides scoped to unloading ALCs (backstop to their
+		// own Unloading subscription; weakly keyed, so this is hygiene rather than leak prevention).
+		RunCleanupStep(nameof(AdaptiveTrigger.ClearScopedWindowSizeOverridesForNonDefaultAlc), AdaptiveTrigger.ClearScopedWindowSizeOverridesForNonDefaultAlc);
+
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 

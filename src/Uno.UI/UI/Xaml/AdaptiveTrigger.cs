@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml
 		private void UpdateState()
 		{
 			double w, h;
-			if (_windowSizeOverride is { } overrideSize)
+			if (GetEffectiveWindowSizeOverride() is { } overrideSize)
 			{
 				w = overrideSize.Width;
 				h = overrideSize.Height;
@@ -174,6 +174,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void DetachSizeChanged() => _sizeChangedSubscription.Disposable = null;
+		private void DetachSizeChanged()
+		{
+			// Re-parenting (owner/element change) can move the trigger across an ALC boundary.
+			_ownerAlcCache = null;
+			_sizeChangedSubscription.Disposable = null;
+		}
 	}
 }
