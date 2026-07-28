@@ -180,6 +180,11 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
 		=> Inject(GetWheel(delta, isHorizontal, steps));
 
+#if HAS_UNO
+	internal void Wheel(double delta, VirtualKeyModifiers modifiers, bool isHorizontal = false, uint steps = 1)
+		=> Inject(GetWheel(delta, isHorizontal, steps).Select(info => (info, modifiers)));
+#endif
+
 	public void RightTap(Point location)
 	{
 		PressRight();
