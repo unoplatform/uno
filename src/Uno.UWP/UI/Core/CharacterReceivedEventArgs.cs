@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Core;
 
-public partial class CharacterReceivedEventArgs
+public partial class CharacterReceivedEventArgs : ICoreWindowEventArgs
 {
 	internal CharacterReceivedEventArgs(uint keyCode, CorePhysicalKeyStatus keyStatus)
 	{
