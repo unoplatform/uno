@@ -136,6 +136,26 @@ legacy Top/Left default for `HorizontalContentAlignment`/`VerticalContentAlignme
 now always the WinUI-correct **Center/Center**. Apps that set it to `true` should instead set
 `HorizontalContentAlignment`/`VerticalContentAlignment` explicitly (via a `Style` or per control).
 
+The cross-platform `WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride`
+flag is also removed. Unlike the flags above it defaulted to `true`, so this changes behavior for
+apps that never touched it: setting `Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride`
+no longer swaps `CultureInfo.CurrentCulture`/`CurrentUICulture` from inside the setter. The override
+is persisted and applied to the culture on the next app start, matching WinUI. Resource lookup
+(`x:Uid`, `ResourceLoader`) still follows the new value immediately, so localized strings keep
+updating once the affected pages reload.
+
+Apps that relied on the immediate culture swap — number, date, and currency formatting, or .NET
+resource lookup through `CurrentUICulture` — should set the culture themselves alongside the
+override:
+
+```csharp
+ApplicationLanguages.PrimaryLanguageOverride = language;
+
+var culture = new CultureInfo(language);
+CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = culture;
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+```
+
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
 ### Behavioral changes (same API, different result)
