@@ -256,6 +256,77 @@ public class Given_Win32Accessibility
 	}
 
 	[TestMethod]
+	public async Task When_Scrolled_Partially_Out_Of_View_BoundingRectangle_Is_Clipped()
+	{
+		var button = new Button
+		{
+			Width = 150,
+			Height = 60,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Content = "target",
+		};
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new StackPanel
+			{
+				Children =
+				{
+					new Border { Height = 170 },
+					button,
+					new Border { Height = 400 },
+				},
+			},
+		};
+
+		try
+		{
+			await UITestHelper.Load(scrollViewer);
+			// Button occupies [170, 230] in content coordinates; viewport becomes [200, 400],
+			// leaving only the bottom 30 logical pixels of the button visible.
+			scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			var buttonProvider = GetOrCreateProvider(accessibility, button)
+				?? throw new InvalidOperationException("Button provider not found.");
+			var scrollViewerProvider = GetOrCreateProvider(accessibility, scrollViewer)
+				?? throw new InvalidOperationException("ScrollViewer provider not found.");
+
+			var scale = scrollViewer.XamlRoot?.RasterizationScale
+				?? throw new InvalidOperationException("XamlRoot not found.");
+			var buttonBounds = GetBoundingRectangle(buttonProvider);
+			var scrollViewerBounds = GetBoundingRectangle(scrollViewerProvider);
+
+			// Derive the client origin from the fully-visible ScrollViewer, then compare the
+			// button's provider bounds against the visible intersection in logical coordinates.
+			var logicalScrollViewerBounds = scrollViewer
+				.TransformToVisual(null)
+				.TransformBounds(new Rect(0, 0, scrollViewer.ActualWidth, scrollViewer.ActualHeight));
+			var logicalButtonBounds = button
+				.TransformToVisual(null)
+				.TransformBounds(new Rect(0, 0, button.ActualWidth, button.ActualHeight));
+			var expectedVisible = logicalButtonBounds;
+			expectedVisible.Intersect(logicalScrollViewerBounds);
+			var clientOriginX = scrollViewerBounds.Left - logicalScrollViewerBounds.X * scale;
+			var clientOriginY = scrollViewerBounds.Top - logicalScrollViewerBounds.Y * scale;
+
+			Assert.IsFalse(expectedVisible.IsEmpty, "The button should be partially visible.");
+			Assert.IsTrue(expectedVisible.Height < logicalButtonBounds.Height, "The button should be partially scrolled out of view.");
+			Assert.AreEqual(clientOriginX + expectedVisible.X * scale, buttonBounds.Left, 2 * scale);
+			Assert.AreEqual(clientOriginY + expectedVisible.Y * scale, buttonBounds.Top, 2 * scale);
+			Assert.AreEqual(expectedVisible.Width * scale, buttonBounds.Width, 2 * scale);
+			Assert.AreEqual(expectedVisible.Height * scale, buttonBounds.Height, 2 * scale);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
 		var accessibilityType = FindType("Uno.UI.Runtime.Skia.Win32.Win32Accessibility")
