@@ -40,6 +40,7 @@
 				   OR $(UnoFeatures.Contains(';svg;')) 
 				   OR $(UnoFeatures.Contains(';material;')) 
 				   OR $(UnoFeatures.Contains(';cupertino;'))
+				   OR $(UnoFeatures.Contains(';simpletheme;'))
 			   )
 			   AND $(UnoFeatures.Contains(';skiarenderer;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
