@@ -37,10 +37,8 @@ public static class ApiExtensibility
 
 		lock (_gate)
 		{
-			if (!_registrations.ContainsKey(type))
-			{
-				_registrations.Add(type, builder);
-			}
+			// TryAdd is a single lookup and idempotent (no-op when already present) — CA1864.
+			_registrations.TryAdd(type, builder);
 		}
 	}
 
