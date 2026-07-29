@@ -21,6 +21,11 @@ internal class DesktopWindow : BaseWindowImplementation
 
 	public override void Initialize()
 	{
+		if (Window.IsMacOSHostedAlcWindow)
+		{
+			return;
+		}
+
 		_windowChrome = new WindowChrome(Window);
 		_windowChrome.ApplyStylingForMinMaxCloseButtons();
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
@@ -41,6 +46,13 @@ internal class DesktopWindow : BaseWindowImplementation
 		{
 			if (_windowChrome is null)
 			{
+				// On macOS hosted ALC scenarios the chrome is intentionally not created;
+				// content is redirected at the Window.Content level via ContentHostOverride.
+				if (Window.IsMacOSHostedAlcWindow)
+				{
+					return;
+				}
+
 				throw new InvalidOperationException(
 					"Window content is being set before the application is initialized." +
 					"Instead, set the window content later - e.g. in OnLaunched.");
