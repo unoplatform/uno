@@ -17,6 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 using ShimSkiaSharp;
 using Svg.Skia;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Composition.Drawing;
 using SkiaSharp;
 using SKCanvas = SkiaSharp.SKCanvas;
 using SKMatrix = SkiaSharp.SKMatrix;
@@ -95,9 +96,37 @@ public partial class SvgProvider : ISvgProvider
 		=> new SvgCanvas(_owner, this);
 #endif
 
-	public object? TryGetLoadedDataAsPictureAsync()
-#if __SKIA__
-		=> _skSvg?.Picture;
+	public unsafe object? RenderToImage(int pixelWidth, int pixelHeight)
+#if !__NETSTD_REFERENCE__
+	{
+		if (_skSvg?.Picture is not { } picture || pixelWidth <= 0 || pixelHeight <= 0)
+		{
+			return null;
+		}
+
+		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		using var surface = SKSurface.Create(info);
+		var canvas = surface.Canvas;
+		canvas.Clear(SkiaSharp.SKColors.Transparent);
+		var cull = picture.CullRect;
+		if (cull.Width > 0 && cull.Height > 0)
+		{
+			canvas.Scale(pixelWidth / cull.Width, pixelHeight / cull.Height);
+		}
+		canvas.DrawPicture(picture);
+		canvas.Flush();
+
+		var bgra = new byte[pixelWidth * pixelHeight * 4];
+		fixed (byte* p = bgra)
+		{
+			if (!surface.ReadPixels(info, (nint)p, info.RowBytes, 0, 0))
+			{
+				return null;
+			}
+		}
+
+		return DrawingBackend.Current.CreateImageFrame(pixelWidth, pixelHeight, bgra).Frames[0];
+	}
 #else
 		=> null;
 #endif
