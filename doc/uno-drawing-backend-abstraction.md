@@ -592,8 +592,14 @@ flagged by the `Uno.PackageDiff` CI gate (expected; this doc is the reference fo
 ## Status — what's neutral, and what's still Skia
 
 **Neutral through the seams today:** all drawing verbs, geometry, shaders, color/effect filters, shadows,
-glyph rendering (outline + color), image decode (PNG/GIF/BMP/JPEG/WebP-lossless), SVG, and the record/present
-frame cycle. No SkiaSharp type appears on any of these interfaces.
+glyph rendering (outline + color), image decode (PNG/GIF/BMP/JPEG/WebP-lossless), SVG, `RenderTargetBitmap`,
+the native-element clip path (crosses `CompositionTarget`↔host as `IGeometry`, converted to `SKPath` only
+inside each Skia host), and the record/present frame cycle. No SkiaSharp type appears on any of these interfaces.
+
+**Assembly layout:** `Uno.UI.Composition` is fully SkiaSharp-free; the Skia backend lives in a separate
+`Uno.UI.Composition.Skia` assembly (`Uno.UI → Uno.UI.Composition.Skia → Uno.UI.Composition`). `Uno.UI` itself
+no longer references SkiaSharp except the two items below — the Vulkan GPU subsystem was relocated wholesale
+from `Uno.UI` into the Skia backend assembly.
 
 **Still Skia (the remaining path to fully dropping SkiaSharp):**
 1. **The rasterizer itself** — the default `IDrawingSession`/`RenderOffscreen` pixel work is SkiaSharp. A
@@ -601,7 +607,8 @@ frame cycle. No SkiaSharp type appears on any of these interfaces.
 2. **Image decode fallbacks** — WebP **lossy (VP8)** and animated WebP (both need the ~2000-line RFC 6386
    VP8 intra decoder), TIFF, ICO still route to the Skia codec.
 3. **`SKCanvasElement`/`SvgCanvas`** — intentionally Skia-only (an app-facing "draw with raw Skia" control in
-   a separate package); out of scope for core neutrality.
+   a separate package); out of scope for core neutrality. This is the only remaining SkiaSharp use in `Uno.UI`
+   besides the frame-rate-counter overlay's `SKFont` text shaping (a diagnostic, not a render-path dependency).
 4. **Transitional internals** — a few backend-internal spots still hand an `SKImage` to the composition
-   surface (RTB render, the WASM browser-canvas decode path); these are inside/adjacent to the Skia backend,
-   not on a pluggable interface.
+   surface (the WASM browser-canvas decode path); these are inside/adjacent to the Skia backend, not on a
+   pluggable interface.
