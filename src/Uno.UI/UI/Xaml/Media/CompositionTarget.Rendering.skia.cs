@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -35,13 +34,11 @@ public partial class CompositionTarget
 	private static bool _isRenderingActive;
 
 	// Enqueued from the UI thread, drained on the rendering thread during Draw.
-	private readonly ConcurrentQueue<RenderJob> _renderJobs = new();
 
 	static CompositionTarget()
 	{
 		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
 		// back to software rendering instead of hanging.
-		XamlRootMap.Unregistered += (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.FailPendingRenderJobs();
 	}
 
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
@@ -159,20 +156,9 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	// Render jobs run on the render thread with the GPU context current; this is a Skia-specific concern
-	// (GRContext GPU tasks). Non-Skia targets have no GRContext and simply run jobs with null.
-	private static GRContext? GetGRContext(IRenderTarget? target) => (target as SkiaRenderTarget)?.Canvas.Context as GRContext;
-
 	private SKPath Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
-
-		// Run pending render jobs even when there's no frame to present. When the target
-		// doesn't exist yet, jobs stay queued for the next pass (the one that will create it).
-		if (target is not null && !_renderJobs.IsEmpty)
-		{
-			RunRenderJobs(GetGRContext(target));
-		}
 
 		(IRenderData frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
@@ -212,12 +198,6 @@ public partial class CompositionTarget
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
 				_lastScaledNativeClipPath = null;
-
-				// Jobs that couldn't run at method entry because the target didn't exist yet.
-				if (!_renderJobs.IsEmpty)
-				{
-					RunRenderJobs(GetGRContext(target));
-				}
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
@@ -259,85 +239,6 @@ public partial class CompositionTarget
 		}
 	}
 
-	/// <summary>
-	/// Schedules <paramref name="render"/> to run during the next native render pass — on the
-	/// rendering thread, with the GRContext current — and invalidates so that pass happens
-	/// promptly. The task completes true once the action has run, or false when it couldn't be
-	/// executed (software rendering, the window is shutting down, or the action threw); the
-	/// caller should then fall back to rendering in software.
-	/// </summary>
-	internal Task<bool> TryExecuteOnNextRenderAsync(Action<GRContext> render)
-	{
-		NativeDispatcher.CheckThreadAccess();
-
-		var job = new RenderJob(render);
-		_renderJobs.Enqueue(job);
-
-		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-		{
-			host.InvalidateRender();
-		}
-		else
-		{
-			// No host to render a pass; don't leave the awaiter hanging.
-			FailPendingRenderJobs();
-		}
-
-		return job.Task;
-	}
-
-	private void RunRenderJobs(GRContext? context)
-	{
-		if (context is null)
-		{
-			// No GPU context (raster canvas): this target renders in software. Fail the jobs so
-			// callers fall back to software rendering instead of waiting for a context that
-			// never comes.
-			FailPendingRenderJobs();
-			return;
-		}
-
-		while (_renderJobs.TryDequeue(out var job))
-		{
-			job.Run(context);
-		}
-	}
-
-	private void FailPendingRenderJobs()
-	{
-		while (_renderJobs.TryDequeue(out var job))
-		{
-			job.Fail();
-		}
-	}
-
-	private sealed class RenderJob(Action<GRContext> render)
-	{
-		// RunContinuationsAsynchronously so completing a job never runs the awaiter's
-		// continuation inline on the rendering thread, which would stall frame presentation.
-		private readonly TaskCompletionSource<bool> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-		public Task<bool> Task => _tcs.Task;
-
-		public void Run(GRContext context)
-		{
-			try
-			{
-				render(context);
-				_tcs.TrySetResult(true);
-			}
-			catch (Exception e)
-			{
-				if (typeof(CompositionTarget).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(CompositionTarget).Log().Error("Render job failed.", e);
-				}
-				_tcs.TrySetResult(false);
-			}
-		}
-
-		public void Fail() => _tcs.TrySetResult(false);
-	}
 
 	private void ReturnFrame((IRenderData frame, SKPath path) frame)
 	{
