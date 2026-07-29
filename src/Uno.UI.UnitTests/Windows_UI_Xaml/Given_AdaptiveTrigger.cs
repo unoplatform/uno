@@ -29,7 +29,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			foreach (var alc in _scopedAlcs)
 			{
 				AdaptiveTrigger.SetWindowSizeOverride(null, alc);
-				alc.Unload();
+				try
+				{
+					alc.Unload();
+				}
+				catch (InvalidOperationException)
+				{
+					// Already unloaded by the test itself.
+				}
 			}
 
 			_scopedAlcs.Clear();
@@ -513,19 +520,90 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears()
 		{
-			var flagField = typeof(AdaptiveTrigger).GetField(
-				"_hasScopedWindowSizeOverrides",
-				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-			Assert.IsNotNull(flagField, "AdaptiveTrigger._hasScopedWindowSizeOverrides must exist (fast-path gate)");
-
 			var alc = new AssemblyLoadContext(nameof(When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears), isCollectible: true);
+			_scopedAlcs.Add(alc);
+
 			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
-			Assert.IsTrue((bool)flagField.GetValue(null), "Setting a scoped override must engage the scoped-resolution path");
+			Assert.IsTrue(AdaptiveTrigger.HasScopedWindowSizeOverrides, "Setting a scoped override must engage the scoped-resolution path");
 
 			// Unloading fires synchronously on the calling thread and must drop the scope even when the
 			// host never cleared it, restoring the no-scoped-overrides fast path.
 			alc.Unload();
-			Assert.IsFalse((bool)flagField.GetValue(null), "Unloading the scoped ALC must restore the fast path");
+			Assert.IsFalse(AdaptiveTrigger.HasScopedWindowSizeOverrides, "Unloading the scoped ALC must restore the fast path");
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_ForUnloadingAlc_IsIgnored()
+		{
+			var alc = new AssemblyLoadContext(nameof(When_ScopedOverride_ForUnloadingAlc_IsIgnored), isCollectible: true);
+			_scopedAlcs.Add(alc);
+			alc.Unload();
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+
+			Assert.IsFalse(
+				AdaptiveTrigger.HasScopedWindowSizeOverrides,
+				"An override for an already-unloading ALC must be ignored: its Unloading event can never fire again to clean it up");
+		}
+
+		[TestMethod]
+		public void When_TwoScopedOverrides_EachAppliesToItsOwnAlc()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc1, guest1) = CreateCollectibleGuestElement();
+			var (alc2, guest2) = CreateCollectibleGuestElement();
+
+			guest1.ForceLoaded();
+			var (group1, state1) = BuildTriggeredGroup(guest1);
+
+			guest2.ForceLoaded();
+			var (group2, state2) = BuildTriggeredGroup(guest2);
+
+			// Two guests simulated at different sizes at the same time: each trigger follows the
+			// override of its own load context.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc1);
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200), alc2);
+
+			group1.CurrentState.Should().Be(null);
+			group2.CurrentState.Should().Be(state2);
+
+			AdaptiveTrigger.SetWindowSizeOverride(null, alc1);
+
+			group1.CurrentState.Should().Be(state1);
+			group2.CurrentState.Should().Be(state2);
+		}
+
+		[TestMethod]
+		public void When_ScopedOverride_OwnerResolvedBeforeParenting_ReresolvesOnAttach()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (alc, guestElement) = CreateCollectibleGuestElement(typeof(ViewLibrary.MyExtBorder));
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), alc);
+
+			// Build the triggered subtree BEFORE parenting it under the guest element: the property
+			// change forces an evaluation whose ancestor walk finds no guest-typed ancestor yet.
+			var grid = new Grid();
+			var sut = new AdaptiveTrigger { MinWindowHeight = 100 };
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+			VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup>() { group });
+
+			sut.MinWindowWidth = 100;
+
+			// Parenting the subtree under a guest-typed ancestor fires no owner hook on the trigger —
+			// the attach that follows must re-resolve the ancestry instead of trusting a cached miss.
+			((Border)guestElement).Child = grid;
+			guestElement.ForceLoaded();
+
+			group.CurrentState.Should().Be(null);
+
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(200, 200), alc);
+			group.CurrentState.Should().Be(state);
 		}
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -543,12 +621,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		/// live element whose type belongs to that context — the shape of a hosted guest app's page.
 		/// </summary>
 		private (AssemblyLoadContext Alc, FrameworkElement GuestElement) CreateCollectibleGuestElement()
+			=> CreateCollectibleGuestElement(typeof(ViewLibrary.MyExtControl));
+
+		private (AssemblyLoadContext Alc, FrameworkElement GuestElement) CreateCollectibleGuestElement(Type viewLibraryType)
 		{
 			var alc = new AssemblyLoadContext($"{nameof(Given_AdaptiveTrigger)}-guest", isCollectible: true);
 			_scopedAlcs.Add(alc);
 
-			var guestAssembly = alc.LoadFromAssemblyPath(typeof(ViewLibrary.MyExtControl).Assembly.Location);
-			var guestType = guestAssembly.GetType(typeof(ViewLibrary.MyExtControl).FullName, throwOnError: true);
+			var guestAssembly = alc.LoadFromAssemblyPath(viewLibraryType.Assembly.Location);
+			var guestType = guestAssembly.GetType(viewLibraryType.FullName, throwOnError: true);
 			var guestElement = (FrameworkElement)Activator.CreateInstance(guestType);
 
 			return (alc, guestElement);

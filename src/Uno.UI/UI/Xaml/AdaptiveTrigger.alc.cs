@@ -13,42 +13,52 @@ namespace Microsoft.UI.Xaml;
 
 partial class AdaptiveTrigger
 {
-	// Reference-type holder for a scoped override value (ConditionalWeakTable values must be reference types).
+	// Immutable holder for a scoped override value (ConditionalWeakTable values must be reference
+	// types). Updates replace the holder so the lock-free read path always sees a consistent Size.
 	private sealed class ScopedSizeOverride
 	{
-		public Size Size;
+		public ScopedSizeOverride(Size size) => Size = size;
+
+		public Size Size { get; }
 	}
 
 	// Weakly keyed by the ALC so a scoped override can never keep a collectible guest context alive.
 	private static readonly ConditionalWeakTable<AssemblyLoadContext, ScopedSizeOverride> _scopedWindowSizeOverrides = new();
 	private static readonly object _scopedOverridesGate = new();
 
+	// One WeakReference per ALC, shared by every trigger's owner cache, so re-resolution after
+	// list-recycling detach/attach cycles doesn't allocate a fresh weak GC handle per trigger.
+	private static readonly ConditionalWeakTable<AssemblyLoadContext, WeakReference<AssemblyLoadContext>> _sharedAlcWeakReferences = new();
+
 	// Fast-path gate: while false (no scoped override anywhere in the process), triggers never walk
 	// their ancestry nor touch the table — single-ALC apps pay one volatile read per evaluation.
 	private static volatile bool _hasScopedWindowSizeOverrides;
+
+	internal static bool HasScopedWindowSizeOverrides => _hasScopedWindowSizeOverrides;
 
 	// Sentinel for "resolved, no secondary-ALC owner" so the ancestor walk runs at most once per attach.
 	private static readonly object _noSecondaryAlc = new();
 
 	// null = unresolved | _noSecondaryAlc | WeakReference<AssemblyLoadContext>. Weak so a trigger
 	// instance leaked past its guest app's unload can never root the collectible ALC. Reset on
-	// detach (owner/element changes); an ancestor re-parented above the owner element without an
-	// owner hook firing keeps a stale value until the next detach/attach — hosts swap guests at the
-	// content-host boundary, which unloads the subtree, so that path re-resolves in practice.
+	// detach AND attach, so every (re-)entry into a live tree re-resolves the current ancestry.
 	private object? _ownerAlcCache;
 
 	/// <summary>
 	/// Overrides the size used by <see cref="AdaptiveTrigger"/>s owned by elements originating from
-	/// <paramref name="assemblyLoadContext"/> (i.e. having an ancestor whose type is loaded in that
-	/// context), instead of the window bounds. Passing a <c>null</c> size clears that scoped override.
+	/// <paramref name="assemblyLoadContext"/> — those whose nearest ancestor typed in a non-default
+	/// load context belongs to it. Passing a <c>null</c> size clears that scoped override.
 	/// </summary>
 	/// <remarks>
 	/// Uno-specific host-extensibility hook complementing the global <c>SetWindowSizeOverride(Size?)</c>
 	/// overload: a host that loads a guest app into its own <c>AssemblyLoadContext</c> can simulate a
 	/// form factor for the guest's triggers without affecting its own UI. A scoped override takes
-	/// precedence over the global override for the triggers it applies to. The association is weak:
-	/// it never keeps a collectible context alive, and is dropped automatically when the context
-	/// unloads. Call it on the UI thread: it synchronously re-evaluates every live trigger.
+	/// precedence over the global override for the triggers it applies to; nested contexts resolve
+	/// to the innermost one. Triggers whose ancestry contains no guest-typed element — content built
+	/// solely from shared framework types, including popup and flyout subtrees re-parented under the
+	/// host's popup root — cannot be attributed and fall back to the global override. The association
+	/// is weak: it never keeps a collectible context alive, and is dropped automatically when the
+	/// context unloads. Call it on the UI thread: it synchronously re-evaluates every live trigger.
 	/// </remarks>
 	/// <param name="size">The simulated window size, or <c>null</c> to clear the scoped override.</param>
 	/// <param name="assemblyLoadContext">The load context whose triggers the override applies to.</param>
@@ -69,23 +79,38 @@ partial class AdaptiveTrigger
 
 			if (size is { } newSize)
 			{
-				if (hasExisting && existing!.Size == newSize)
-				{
-					return;
-				}
-
 				if (hasExisting)
 				{
-					existing!.Size = newSize;
+					if (existing!.Size == newSize)
+					{
+						return;
+					}
+
+					// Replace rather than mutate: GetEffectiveWindowSizeOverride reads lock-free.
+					_scopedWindowSizeOverrides.Remove(assemblyLoadContext);
+					_scopedWindowSizeOverrides.Add(assemblyLoadContext, new ScopedSizeOverride(newSize));
 				}
 				else
 				{
-					_scopedWindowSizeOverrides.Add(assemblyLoadContext, new ScopedSizeOverride { Size = newSize });
+					// A post-Unloading entry could never self-clean (the event won't fire again) and
+					// would silently never apply while latching the scoped-resolution path on for good.
+					if (AlcStateHelper.IsUnloadInitiated(assemblyLoadContext, valueIfUnknown: false))
+					{
+						if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(AdaptiveTrigger).Log().Warn(
+								$"Ignoring window-size override for ALC '{assemblyLoadContext.Name}': its unload has already been initiated");
+						}
+
+						return;
+					}
+
+					_scopedWindowSizeOverrides.Add(assemblyLoadContext, new ScopedSizeOverride(newSize));
 					if (assemblyLoadContext.IsCollectible)
 					{
 						// Self-cleaning even if the host never clears the override: drop the entry (and
 						// restore the fast path) when the guest context unloads. Symmetric with the
-						// unsubscription in the clearing branch below, so at most one subscription exists.
+						// unsubscriptions on the clearing paths, so at most one subscription exists.
 						assemblyLoadContext.Unloading += OnScopedOverrideAlcUnloading;
 					}
 				}
@@ -155,17 +180,51 @@ partial class AdaptiveTrigger
 
 	private static void OnScopedOverrideAlcUnloading(AssemblyLoadContext alc)
 	{
-		// Only mutates the table/flag (no DP access), so no UI-thread marshaling is needed, and no
-		// change event is raised: the guest tree is dying and no other trigger matched that scope.
-		lock (_scopedOverridesGate)
+		// May run on the caller's thread OR the finalizer thread (GC-initiated unload of a dropped
+		// collectible ALC) — an escaping exception there is process-fatal, so contain everything.
+		try
 		{
-			_scopedWindowSizeOverrides.Remove(alc);
-			RecomputeHasScopedOverrides();
-		}
+			bool removed;
+			lock (_scopedOverridesGate)
+			{
+				removed = _scopedWindowSizeOverrides.TryGetValue(alc, out _);
+				if (removed)
+				{
+					_scopedWindowSizeOverrides.Remove(alc);
+					RecomputeHasScopedOverrides();
+				}
+			}
 
-		if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Debug))
+			if (!removed)
+			{
+				return;
+			}
+
+			if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(AdaptiveTrigger).Log().Debug($"Scoped window-size override dropped for unloading ALC '{alc.Name}'");
+			}
+
+			// Guest triggers can still be live when unload is initiated before the guest tree is
+			// detached (the wrong-order host case); without a re-evaluation they'd stay frozen in the
+			// simulated-size state. Re-evaluate on the UI thread — never from here directly, as this
+			// can run on an arbitrary or finalizer thread.
+			static void RaiseChanged() => WindowSizeOverrideChanged?.Invoke(null, EventArgs.Empty);
+			if (global::Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
+			{
+				RaiseChanged();
+			}
+			else
+			{
+				global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(static () => RaiseChanged());
+			}
+		}
+		catch (Exception ex)
 		{
-			typeof(AdaptiveTrigger).Log().Debug($"Scoped window-size override dropped for unloading ALC '{alc.Name}'");
+			if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(AdaptiveTrigger).Log().Warn($"Failed to drop the scoped window-size override for unloading ALC '{alc.Name}'", ex);
+			}
 		}
 	}
 
@@ -220,12 +279,25 @@ partial class AdaptiveTrigger
 			if (AssemblyLoadContext.GetLoadContext(node.GetType().Assembly) is { } alc
 				&& !ReferenceEquals(alc, AssemblyLoadContext.Default))
 			{
-				_ownerAlcCache = new WeakReference<AssemblyLoadContext>(alc);
+				_ownerAlcCache = _sharedAlcWeakReferences.GetValue(alc, static a => new WeakReference<AssemblyLoadContext>(a));
+
+				if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Trace))
+				{
+					typeof(AdaptiveTrigger).Log().Trace($"AdaptiveTrigger attributed to ALC '{alc.Name}' via ancestor '{node.GetType().Name}'");
+				}
+
 				return alc;
 			}
 		}
 
 		_ownerAlcCache = _noSecondaryAlc;
+
+		if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(AdaptiveTrigger).Log().Debug(
+				"AdaptiveTrigger has no ancestor typed in a non-default AssemblyLoadContext; scoped window-size overrides will not apply to it");
+		}
+
 		return null;
 	}
 }

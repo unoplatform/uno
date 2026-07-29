@@ -14,8 +14,9 @@ namespace Microsoft.UI.Xaml
 
 		private static Size? _windowSizeOverride;
 
-		// Raised when the global window-size override set through SetWindowSizeOverride changes, so that
-		// every live AdaptiveTrigger re-evaluates its active state (the same role XamlRoot.Changed plays).
+		// Raised when a window-size override set through SetWindowSizeOverride (global or ALC-scoped)
+		// changes, so every live AdaptiveTrigger re-evaluates its active state (the same role
+		// XamlRoot.Changed plays).
 		private static event EventHandler WindowSizeOverrideChanged;
 
 		public AdaptiveTrigger()
@@ -157,6 +158,10 @@ namespace Microsoft.UI.Xaml
 
 		private void AttachSizeChanged()
 		{
+			// Every (re-)attach re-resolves the owner ALC: an evaluation while the owner subtree was not
+			// yet parented under its guest-typed ancestor may have cached "no ALC".
+			_ownerAlcCache = null;
+
 			// Only subscribe while a XamlRoot exists (the trigger is in a live tree): subscribing the static
 			// override event any earlier would root never-loaded triggers for the process lifetime.
 			if (XamlRoot is { } xamlRoot)
