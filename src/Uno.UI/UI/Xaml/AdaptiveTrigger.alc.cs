@@ -24,6 +24,9 @@ partial class AdaptiveTrigger
 
 	// Weakly keyed by the ALC so a scoped override can never keep a collectible guest context alive.
 	private static readonly ConditionalWeakTable<AssemblyLoadContext, ScopedSizeOverride> _scopedWindowSizeOverrides = new();
+
+	// Guards writers only — set/clear/unload, all cold control-plane paths. The per-evaluation read
+	// path (GetEffectiveWindowSizeOverride) is deliberately lock-free.
 	private static readonly object _scopedOverridesGate = new();
 
 	// One WeakReference per ALC, shared by every trigger's owner cache, so re-resolution after
@@ -32,6 +35,8 @@ partial class AdaptiveTrigger
 
 	// Fast-path gate: while false (no scoped override anywhere in the process), triggers never walk
 	// their ancestry nor touch the table — single-ALC apps pay one volatile read per evaluation.
+	// Can stay latched true if an ALC unloads between the IsUnloadInitiated check and the Unloading
+	// subscription (the weak entry is still collected) — a perf-only cost, never a correctness one.
 	private static volatile bool _hasScopedWindowSizeOverrides;
 
 	internal static bool HasScopedWindowSizeOverrides => _hasScopedWindowSizeOverrides;
@@ -41,8 +46,11 @@ partial class AdaptiveTrigger
 
 	// null = unresolved | _noSecondaryAlc | WeakReference<AssemblyLoadContext>. Weak so a trigger
 	// instance leaked past its guest app's unload can never root the collectible ALC. Reset on
-	// detach AND attach, so every (re-)entry into a live tree re-resolves the current ancestry.
+	// detach AND attach (ResetOwnerAlcCache): re-parenting can move the trigger across an ALC
+	// boundary, and a pre-parenting evaluation may have cached "no ALC".
 	private object? _ownerAlcCache;
+
+	private void ResetOwnerAlcCache() => _ownerAlcCache = null;
 
 	/// <summary>
 	/// Overrides the size used by <see cref="AdaptiveTrigger"/>s owned by elements originating from
@@ -149,9 +157,9 @@ partial class AdaptiveTrigger
 	/// </summary>
 	internal static void ClearScopedWindowSizeOverridesForNonDefaultAlc()
 	{
+		List<AssemblyLoadContext>? toRemove = null;
 		lock (_scopedOverridesGate)
 		{
-			List<AssemblyLoadContext>? toRemove = null;
 			foreach (var (alc, _) in _scopedWindowSizeOverrides)
 			{
 				// Only strip dying contexts: another guest app may still be live with its own override.
@@ -175,6 +183,19 @@ partial class AdaptiveTrigger
 
 				RecomputeHasScopedOverrides();
 			}
+		}
+
+		if (toRemove is not null)
+		{
+			if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(AdaptiveTrigger).Log().Debug(
+					$"Scoped window-size overrides dropped for {toRemove.Count} unloading ALC(s) during application cleanup");
+			}
+
+			// Same reason as the Unloading path: still-live guest triggers must not stay frozen at
+			// the simulated size once their scope is gone.
+			RaiseWindowSizeOverrideChangedOnUIThread();
 		}
 	}
 
@@ -209,22 +230,43 @@ partial class AdaptiveTrigger
 			// detached (the wrong-order host case); without a re-evaluation they'd stay frozen in the
 			// simulated-size state. Re-evaluate on the UI thread — never from here directly, as this
 			// can run on an arbitrary or finalizer thread.
-			static void RaiseChanged() => WindowSizeOverrideChanged?.Invoke(null, EventArgs.Empty);
-			if (global::Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
-			{
-				RaiseChanged();
-			}
-			else
-			{
-				global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(static () => RaiseChanged());
-			}
+			RaiseWindowSizeOverrideChangedOnUIThread();
 		}
 		catch (Exception ex)
 		{
 			if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Warning))
 			{
-				typeof(AdaptiveTrigger).Log().Warn($"Failed to drop the scoped window-size override for unloading ALC '{alc.Name}'", ex);
+				typeof(AdaptiveTrigger).Log().Warn($"Failure while handling the unload of ALC '{alc.Name}'", ex);
 			}
+		}
+	}
+
+	private static void RaiseWindowSizeOverrideChangedOnUIThread()
+	{
+		// Contained: when this runs enqueued (or on the finalizer thread), an escaping subscriber
+		// exception would surface as an unhandled dispatcher exception with no ALC-unload context.
+		static void RaiseChanged()
+		{
+			try
+			{
+				WindowSizeOverrideChanged?.Invoke(null, EventArgs.Empty);
+			}
+			catch (Exception ex)
+			{
+				if (typeof(AdaptiveTrigger).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(AdaptiveTrigger).Log().Warn("Failed to re-evaluate adaptive triggers after a scoped window-size override was dropped", ex);
+				}
+			}
+		}
+
+		if (global::Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
+		{
+			RaiseChanged();
+		}
+		else
+		{
+			global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(static () => RaiseChanged());
 		}
 	}
 

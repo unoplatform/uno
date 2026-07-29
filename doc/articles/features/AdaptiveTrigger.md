@@ -151,7 +151,7 @@ The `LargeScreen` setter target is triggered when the window width is `>=` 1000 
 
 ## Simulating a Window Size (Uno-specific)
 
-Uno Platform exposes an `SetWindowSizeOverride` extensibility hook, primarily intended for hosts (such as design-time tooling) that simulate a form factor by resizing hosted content rather than the window itself. This API has no WinUI equivalent and is hidden from IntelliSense (`EditorBrowsable(Never)`).
+Uno Platform exposes a `SetWindowSizeOverride` extensibility hook, primarily intended for hosts (such as design-time tooling) that simulate a form factor by resizing hosted content rather than the window itself. This API has no WinUI equivalent and is hidden from IntelliSense (`EditorBrowsable(Never)`).
 
 ```csharp
 // Make every AdaptiveTrigger evaluate against a simulated size instead of the window bounds.

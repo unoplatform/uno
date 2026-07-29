@@ -158,9 +158,7 @@ namespace Microsoft.UI.Xaml
 
 		private void AttachSizeChanged()
 		{
-			// Every (re-)attach re-resolves the owner ALC: an evaluation while the owner subtree was not
-			// yet parented under its guest-typed ancestor may have cached "no ALC".
-			_ownerAlcCache = null;
+			ResetOwnerAlcCache();
 
 			// Only subscribe while a XamlRoot exists (the trigger is in a live tree): subscribing the static
 			// override event any earlier would root never-loaded triggers for the process lifetime.
@@ -181,8 +179,7 @@ namespace Microsoft.UI.Xaml
 
 		private void DetachSizeChanged()
 		{
-			// Re-parenting (owner/element change) can move the trigger across an ALC boundary.
-			_ownerAlcCache = null;
+			ResetOwnerAlcCache();
 			_sizeChangedSubscription.Disposable = null;
 		}
 	}

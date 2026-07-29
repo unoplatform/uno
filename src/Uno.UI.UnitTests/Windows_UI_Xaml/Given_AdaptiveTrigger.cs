@@ -374,6 +374,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		// Scoped (per-AssemblyLoadContext) override tests — https://github.com/unoplatform/uno/issues/23721
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_AppliesOnlyToOwningAlcTrigger()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -399,6 +400,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_WinsOverGlobal()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -422,6 +424,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_Cleared_RevertsToGlobal_ThenWindow()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -451,6 +454,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_SetBeforeAttach_AppliesOnAttach()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -471,14 +475,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_NullAlc_Throws()
 			=> Assert.ThrowsExactly<ArgumentNullException>(() => AdaptiveTrigger.SetWindowSizeOverride(new Size(10, 10), null));
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_DefaultAlc_Throws()
 			=> Assert.ThrowsExactly<ArgumentException>(() => AdaptiveTrigger.SetWindowSizeOverride(new Size(10, 10), AssemblyLoadContext.Default));
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_ForForeignAlc_DoesNotAffectHost()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -501,6 +508,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_AlcUnloaded_Then_NotRootedByOverride()
 		{
 			var weakAlc = StageScopedOverrideOnCollectibleAlc();
@@ -518,6 +526,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears()
 		{
 			var alc = new AssemblyLoadContext(nameof(When_ScopedOverride_AlcUnloaded_Then_ScopeSelfClears), isCollectible: true);
@@ -533,6 +542,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_ForUnloadingAlc_IsIgnored()
 		{
 			var alc = new AssemblyLoadContext(nameof(When_ScopedOverride_ForUnloadingAlc_IsIgnored), isCollectible: true);
@@ -547,6 +557,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_TwoScopedOverrides_EachAppliesToItsOwnAlc()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
@@ -575,6 +586,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
+		public void When_NestedScopedAlcs_InnermostWins()
+		{
+			Window.Current.SetWindowSize(new Size(1000, 1000));
+
+			var (outerAlc, outerElement) = CreateCollectibleGuestElement(typeof(ViewLibrary.MyExtBorder));
+			var (innerAlc, innerElement) = CreateCollectibleGuestElement(typeof(ViewLibrary.MyExtBorder));
+
+			((Border)outerElement).Child = innerElement;
+			outerElement.ForceLoaded();
+			innerElement.ForceLoaded();
+
+			var (group, state) = BuildTriggeredGroup(innerElement);
+			group.CurrentState.Should().Be(state);
+
+			// A trigger nested under two guest-typed ancestors belongs to the INNERMOST context: the
+			// outer guest's simulated size must not leak into content hosted within a nested guest…
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), outerAlc);
+			group.CurrentState.Should().Be(state);
+
+			// …while the inner context's own override does apply.
+			AdaptiveTrigger.SetWindowSizeOverride(new Size(50, 50), innerAlc);
+			group.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23721")]
 		public void When_ScopedOverride_OwnerResolvedBeforeParenting_ReresolvesOnAttach()
 		{
 			Window.Current.SetWindowSize(new Size(1000, 1000));
