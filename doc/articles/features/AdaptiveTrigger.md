@@ -164,8 +164,8 @@ AdaptiveTrigger.SetWindowSizeOverride(null);
 When a host loads a guest application into its own (collectible) `AssemblyLoadContext`, the global override would also re-evaluate the host's own triggers. To simulate a size for the guest only, scope the override to the guest's load context:
 
 ```csharp
-// Only affects triggers whose owner element originates from guestLoadContext
-// (i.e. has an ancestor whose type is loaded in that context).
+// Only affects triggers whose nearest non-default-load-context ancestor
+// belongs to guestLoadContext (nested contexts resolve to the innermost one).
 AdaptiveTrigger.SetWindowSizeOverride(new Size(400, 640), guestLoadContext);
 
 // Clear just that scope.
@@ -173,3 +173,6 @@ AdaptiveTrigger.SetWindowSizeOverride(null, guestLoadContext);
 ```
 
 Each trigger evaluates against the most specific value available: the override scoped to its owner's load context first, then the global override, then the window (`XamlRoot`) bounds. A scoped override never keeps a collectible load context alive, and is dropped automatically when the context unloads. Both overloads must be called on the UI thread, as they synchronously re-evaluate every live trigger.
+
+> [!NOTE]
+> The scope matches only triggers that have at least one ancestor whose type is loaded in the given context. Guest content composed solely of shared framework types — including popup and flyout subtrees, which are re-parented under the host's popup root — cannot be attributed to the guest context and falls back to the global override.
