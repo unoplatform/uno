@@ -267,6 +267,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal (int index, CompositionBrush brush)? RenderCaret
 		{
+			get => _caretPaint;
 			set
 			{
 				if (_caretPaint != value)

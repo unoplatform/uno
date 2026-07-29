@@ -222,13 +222,30 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			if (textBoxView != null && SelectedTextRange != value)
 			{
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
-				if (!_settingSelectionFromManaged)
+				if (!_settingSelectionFromManaged && !textBoxView.IsCaretDragActive)
 				{
 					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}
 	}
+
+	#region Floating cursor (space-bar trackpad gesture)
+
+	private readonly InvisibleTextBoxFloatingCursor _floatingCursor = new();
+
+	// No base call on purpose: UIKit would map the point against this field's system-font layout,
+	// which has no relation to the Skia-rendered text.
+	public override void BeginFloatingCursor(CGPoint point)
+		=> _floatingCursor.Begin(TextBoxViewExtension, point);
+
+	public override void UpdateFloatingCursor(CGPoint point)
+		=> _floatingCursor.Update(TextBoxViewExtension, point);
+
+	public override void EndFloatingCursor()
+		=> _floatingCursor.End(TextBoxViewExtension);
+
+	#endregion
 
 	#region IME Composition (UITextInput overrides)
 

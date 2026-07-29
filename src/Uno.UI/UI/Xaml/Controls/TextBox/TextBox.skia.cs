@@ -584,7 +584,7 @@ public partial class TextBox : ITextSelectionGripperHost
 			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
-				SelectionLength == 0 &&
+				(SelectionLength == 0 || _caretDragPreviewIndex is not null) &&
 				isFocused &&
 				!IsReadOnly &&
 				!FeatureConfiguration.TextBox.HideCaret)
@@ -594,7 +594,12 @@ public partial class TextBox : ITextSelectionGripperHost
 				// so we use the TextBox's own Foreground (element-theme-aware via
 				// ThemeResource) with fully opaque alpha for maximum caret visibility.
 				var caretBrush = GetOpaqueCaretBrush();
-				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, caretBrush);
+				// A caret drag previews its position without committing the selection until the
+				// gesture ends, so the preview wins while it is active. Text can shrink mid-drag.
+				var caretIndex = _caretDragPreviewIndex is { } previewIndex
+					? Math.Clamp(previewIndex, 0, Text.Length)
+					: (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength);
+				displayBlock.RenderCaret = (caretIndex, caretBrush);
 			}
 			else
 			{
