@@ -138,6 +138,8 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_isPaused = false;
 	}
 
+	public bool IsPaused => _isPaused;
+
 	public void Seek(float progress)
 	{
 		_playhead = ClampPlayhead(progress);

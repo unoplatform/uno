@@ -241,6 +241,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task LoadAnimationAsync(Uri sourceUri, int loadVersion, CancellationToken cancellationToken)
 		{
+			IDisposable? loadSubscription = null;
 			try
 			{
 				using var jsonSource = await TryOpenJsonSourceAsync(sourceUri, cancellationToken);
@@ -263,7 +264,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					Interlocked.Exchange(ref initialUpdateObserved, 1);
 				}
 
-				var loadSubscription = LoadAndObserveAnimationData(
+				loadSubscription = LoadAndObserveAnimationData(
 					jsonSource.Stream,
 					jsonSource.CacheKey,
 					OnAnimationUpdated);
@@ -287,6 +288,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 
 				_animationDataSubscription.Disposable = loadSubscription;
+				loadSubscription = null;
 				await initialInvalidation;
 			}
 			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -295,6 +297,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			catch (Exception e)
 			{
 				await PublishLoadFailure(sourceUri, loadVersion, e);
+			}
+			finally
+			{
+				loadSubscription?.Dispose();
 			}
 		}
 
@@ -618,7 +624,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 			}
 
-			var stream = await response.Content.ReadAsStreamAsync();
+			var stream = await response.Content.ReadAsStreamAsync(ct);
 			if (ct.IsCancellationRequested)
 			{
 				response.Dispose();

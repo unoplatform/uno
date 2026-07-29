@@ -642,7 +642,7 @@ public class Given_AnimatedVisualPlayer
 		Assert.AreEqual(0, source.LastVisual!.CreateAnimationsCallCount, "Source3 should not pre-create animations for Resources optimization.");
 
 		await player.PlayAsync(0, 1, false);
-		await WaitForDestroyAnimationsTurnAsync();
+		await WaitForCompositionCommitAsync(player);
 
 		Assert.AreEqual(1, source.LastVisual.CreateAnimationsCallCount, "Playback should create animations on demand.");
 		Assert.AreEqual(1, source.LastVisual.DestroyAnimationsCallCount, "Resources optimization should destroy animations after playback completes.");
@@ -663,14 +663,14 @@ public class Given_AnimatedVisualPlayer
 		};
 
 		await UITestHelper.Load(player);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WaitForCompositionCommitAsync(player);
 
 		Assert.IsNotNull(source.LastVisual);
 
 		player.SetProgress(0.5);
 		player.AnimationOptimization = PlayerAnimationOptimization.Latency;
 
-		await WaitForDestroyAnimationsTurnAsync();
+		await WaitForCompositionCommitAsync(player);
 
 		Assert.AreEqual(1, source.LastVisual!.CreateAnimationsCallCount, "The original CreateAnimations call should remain in effect.");
 		Assert.AreEqual(0, source.LastVisual.DestroyAnimationsCallCount, "The stale DestroyAnimations continuation must not tear down newly-retained animations.");
@@ -701,7 +701,7 @@ public class Given_AnimatedVisualPlayer
 		player.Source = secondSource;
 
 		await TestServices.WindowHelper.WaitFor(() => secondSource.CreateCount == 1, timeoutMS: 2000, "Source replacement should create the replacement visual.");
-		await WaitForDestroyAnimationsTurnAsync();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsNotNull(secondSource.LastVisual);
 		Assert.AreEqual(0, secondSource.LastVisual!.DestroyAnimationsCallCount, "Delayed destruction must not target the replacement visual.");
@@ -788,11 +788,9 @@ public class Given_AnimatedVisualPlayer
 		player.Resume();
 	}
 
-	private static async Task WaitForDestroyAnimationsTurnAsync()
+	private static async Task WaitForCompositionCommitAsync(AnimatedVisualPlayer player)
 	{
-		await Task.Yield();
-		await TestServices.WindowHelper.WaitForIdle();
-		await Task.Yield();
+		await player.Visual.Compositor.RequestCommitAsync();
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 

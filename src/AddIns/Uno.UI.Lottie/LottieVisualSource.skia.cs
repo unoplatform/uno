@@ -62,7 +62,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				try
 				{
-					var animation = Task.Run(() => CreateAnimation(animationJson)).GetAwaiter().GetResult();
+					var animation = CreateAnimation(animationJson);
 					if (animation is null)
 					{
 						diagnostics = new InvalidOperationException("Failed to load animation.");

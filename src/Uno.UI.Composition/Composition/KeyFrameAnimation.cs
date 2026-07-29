@@ -64,9 +64,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Pause()
-		{
-			_keyframeEvaluator!.Pause();
-		}
+			=> _keyframeEvaluator!.Pause();
 
 		internal void Seek(float progress)
 		{
@@ -96,9 +94,9 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Resume()
-		{
-			_keyframeEvaluator!.Resume();
-		}
+			=> _keyframeEvaluator!.Resume();
+
+		internal bool IsPaused => _keyframeEvaluator?.IsPaused == true;
 
 		internal void SetPlaybackRate(float value)
 		{

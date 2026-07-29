@@ -14,6 +14,8 @@ internal interface IKeyFrameEvaluator
 
 	float Progress { get; }
 
+	bool IsPaused { get; }
+
 	/// <summary>
 	/// The time remaining until the animation completes.
 	/// </summary>

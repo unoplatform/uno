@@ -1,6 +1,10 @@
 using System;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SkiaSharp;
+using Uno.UI.Composition;
+using Windows.UI.Input;
 
 namespace Uno.UI.Tests.CompositionTests;
 
@@ -72,5 +76,58 @@ public class CompositionPropertySetTests
 		controller.Progress = 0.75f;
 
 		Assert.AreEqual(0.75f, target.Opacity);
+	}
+
+	[TestMethod]
+	public void When_AnimationController_Is_Paused_Compositor_Is_Not_Animating()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var target = compositor.CreateSpriteVisual();
+		target.CompositionTarget = new TestCompositionTarget();
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(1.0f, 1.0f);
+		animation.Duration = TimeSpan.FromSeconds(1);
+
+		target.StartAnimation(nameof(Visual.Opacity), animation);
+		var controller = target.TryGetAnimationController(nameof(Visual.Opacity));
+
+		Assert.IsNotNull(controller);
+		Assert.IsTrue(compositor.IsAnimating);
+
+		controller.Pause();
+		Assert.IsFalse(compositor.IsAnimating);
+
+		controller.Resume();
+		Assert.IsTrue(compositor.IsAnimating);
+
+		target.StopAnimation(nameof(Visual.Opacity));
+		Assert.IsFalse(compositor.IsAnimating);
+	}
+
+	private sealed class TestCompositionTarget : ICompositionTarget
+	{
+		public double RasterizationScale => 1;
+
+		public event EventHandler RasterizationScaleChanged
+		{
+			add { }
+			remove { }
+		}
+
+		public void AddDamage(SKRect bounds)
+		{
+		}
+
+		public void AddDamage(SKPath region)
+		{
+		}
+
+		public void RequestNewFrame()
+		{
+		}
+
+		public void TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
+		{
+		}
 	}
 }

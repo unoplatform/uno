@@ -272,18 +272,30 @@ namespace Microsoft.UI.Composition
 		// AnimationController only supports KeyFrameAnimations
 		internal void PauseAnimation(KeyFrameAnimation animation)
 		{
+			if (animation.IsPaused)
+			{
+				return;
+			}
+
 			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.Pause();
+#if __SKIA__
+			Compositor.UnregisterAnimation(animation, this);
+#endif
 		}
 
 		internal void ResumeAnimation(KeyFrameAnimation animation)
 		{
+			if (!animation.IsPaused)
+			{
+				return;
+			}
+
 			animation.Resume();
-			// Subscribe exactly once: StartAnimation already subscribes ReEvaluateAnimation, so a
-			// Resume() on a running (never-paused) animation would otherwise double-subscribe and
-			// re-evaluate the property twice per frame. Removing first is a no-op when not subscribed.
-			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.AnimationFrame += ReEvaluateAnimation;
+#if __SKIA__
+			Compositor.RegisterAnimation(animation, this);
+#endif
 		}
 
 		internal void SeekAnimation(KeyFrameAnimation animation, float progress)
