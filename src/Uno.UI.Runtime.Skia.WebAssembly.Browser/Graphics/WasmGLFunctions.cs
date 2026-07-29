@@ -32,6 +32,10 @@ internal static unsafe partial class WasmGLFunctions
 {
 	private static Dictionary<string, IntPtr> _addresses = null!;
 
+	// Set once if the native resolver can't be reached (shim not linked / symbol mismatch); further
+	// calls then skip the P/Invoke so GetProcAddress falls back to the JS shim without re-throwing.
+	private static bool _nativeResolveUnavailable;
+
 	public static IntPtr GetProcAddress(string name)
 	{
 		// Prefer emscripten's native C GL library (it shares the WebGL context and window.GL.*
@@ -65,10 +69,6 @@ internal static unsafe partial class WasmGLFunctions
 
 		return IntPtr.Zero;
 	}
-
-	// Set once if the native resolver can't be reached (shim not linked / symbol mismatch); further
-	// calls then skip the P/Invoke so GetProcAddress falls back to the JS shim without re-throwing.
-	private static bool _nativeResolveUnavailable;
 
 	private static IntPtr ResolveNative(string name)
 	{
