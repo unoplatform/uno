@@ -39,7 +39,11 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
+<<<<<<< HEAD
 			"net10.0": "10.0.15"
+=======
+			"net10.0": "10.1.0-dev.214"
+>>>>>>> ea8a1df444 (chore(sdk): Align net10 WasmBootstrap and Maui overrides)
 		}
 	},
 	{
@@ -333,7 +337,11 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
+<<<<<<< HEAD
 			"net10.0": "10.0.0"
+=======
+			"net10.0": "10.0.90"
+>>>>>>> ea8a1df444 (chore(sdk): Align net10 WasmBootstrap and Maui overrides)
 		}
 	},
 	{
