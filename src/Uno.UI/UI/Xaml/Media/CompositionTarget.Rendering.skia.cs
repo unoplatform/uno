@@ -45,10 +45,6 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
-	// A backend-neutral empty clip, returned when there is no frame to present yet.
-	private static IGeometry? _emptyClipPath;
-	private static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
-
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
 	private static IGeometry? _lastNativeClipPath;
@@ -177,7 +173,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return EmptyClipPath;
+			return SkiaRenderHelper.EmptyClipPath;
 		}
 		else
 		{
