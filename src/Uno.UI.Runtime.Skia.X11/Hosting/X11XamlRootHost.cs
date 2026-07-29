@@ -522,6 +522,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
 
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is X11SoftwareRenderer;
+
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
 		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
 		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;

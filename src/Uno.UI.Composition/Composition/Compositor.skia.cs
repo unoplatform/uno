@@ -29,6 +29,12 @@ public partial class Compositor
 		UnoSkiaApi.Initialize();
 	}
 
+	/// <summary>
+	/// Whether the scene is rasterized on the CPU rather than by a GPU-backed surface.
+	/// Set by the active render backend once its renderer is selected; null until then.
+	/// Consulted while recording (e.g. by effect brushes to generate filters the target
+	/// surface can rasterize) and temporarily overridden by RenderTargetBitmap.
+	/// </summary>
 	internal bool? IsSoftwareRenderer { get; set; }
 
 	internal static bool SkipVisualTreePainting { get; set; }
