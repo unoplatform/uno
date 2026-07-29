@@ -144,11 +144,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-<<<<<<< HEAD
-			"net11.0": "10.0.5"
-=======
-			"net10.0": "10.0.10"
->>>>>>> origin/master
+			"net11.0": "10.0.10"
 		}
 	},
 	{
@@ -158,11 +154,7 @@
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-<<<<<<< HEAD
-			"net11.0": "10.0.5"
-=======
-			"net10.0": "10.0.10"
->>>>>>> origin/master
+			"net11.0": "10.0.10"
 		}
 	},
 	{
@@ -351,11 +343,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-<<<<<<< HEAD
-			"net11.0": "10.0.50"
-=======
-			"net10.0": "10.0.60"
->>>>>>> origin/master
+			"net11.0": "10.0.60"
 		}
 	},
 	{

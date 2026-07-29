@@ -295,17 +295,10 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-<<<<<<< HEAD
-=======
 					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
 					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
-#if __WASM__
-					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-						disableAnimation: false);
-#else
->>>>>>> origin/master
+
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
