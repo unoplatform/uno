@@ -24,5 +24,10 @@ public static class SkiaBackend
 		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
+
+		// Composition-root backend selection for the pluggable graphics pipeline: register Skia as the
+		// available backend. A host that drives the neutral loop (GraphicsBackend.Activate) picks it up; swap
+		// this list to run a different backend. The choice lives here, not in the render loop or the host.
+		GraphicsBackend.Register(new IGraphicsBackend[] { new SkiaGraphicsBackend() });
 	}
 }
