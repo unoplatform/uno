@@ -205,7 +205,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 					size => new SkiaRenderTarget(skSurface.Canvas));
 
 				// Update the native layer host clip path
-				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+				ApplicationActivity.NativeLayerHost!.Path = SkiaGeometryInterop.ToSKPath(nativeClipPath);
 			});
 		}
 		catch (Exception ex)

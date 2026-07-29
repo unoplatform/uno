@@ -26,65 +26,55 @@ internal static class SkiaRenderHelper
 	private static readonly List<Visual> _emptyList = new();
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
-	private static readonly SKPath _emptyClipPath = new();
+	private static IGeometry? _emptyClipPath;
+	private static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
 
 	// This is used on X11, when no native elements are present - DO NOT MODIFY
 	private static float _invertedClipPathWidth;
 	private static float _invertedClipPathHeight;
-	private static SKPath? _invertedClipPath;
+	private static IGeometry? _invertedClipPath;
 
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
 	/// <summary>
 	/// Phase 1 of the render cycle (UI thread): walks the visual tree into <paramref name="session"/> (the
-	/// recording session provided by the backend) and computes the native-element clip path. Backend-agnostic;
-	/// the caller obtains the frame via <see cref="ICommandRecorder.Finish"/>.
+	/// recording session provided by the backend) and computes the native-element clip path (a backend-neutral
+	/// <see cref="IGeometry"/>). Backend-agnostic; the caller obtains the frame via <see cref="ICommandRecorder.Finish"/>.
 	/// </summary>
-	internal static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		session.Clear(global::Windows.UI.Colors.Transparent);
 
 		rootVisual.Compositor.RenderRootVisual(session, rootVisual);
 
 		return !ContentPresenter.HasNativeElements() ?
-			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
+			(!invertPath ? EmptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
 			CalculateClippingPath(width, height, rootVisual, invertPath);
 	}
 
 	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
+	/// Does a rendering cycle and returns a geometry that represents the visible area of the native views.
 	/// </summary>
-	private static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	private static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var rect = new SKRect(0f, 0f, width, height);
-
-		var parentClip = DrawingBackend.Current.CreateRectangleGeometry(rect.ToRect());
-		var seedClip = DrawingBackend.Current.CreateRectangleGeometry(new global::Windows.Foundation.Rect(0, 0, 0, 0));
+		var parentClip = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+		var seedClip = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		var accumulated = rootVisual.GetNativeViewPathAndZOrder(parentClip, seedClip, nativeVisualsInZOrder);
 
-		// The native-clipping consumers below still operate on SKPath; unwrap the geometry handle here
-		// (a native SkiaGeometrySource2D passes through; a managed geometry is rebuilt into an SKPath).
-		var clipPath = accumulated is SkiaGeometrySource2D skiaGeom
-			? skiaGeom.Geometry
-			: Uno.UI.Composition.Drawing.SkiaGeometryInterop.ToSKPath((Uno.UI.Composition.Drawing.ManagedGeometry)accumulated);
-
 		if (!invertPath)
 		{
-			return (clipPath, nativeVisualsInZOrder);
+			return (accumulated, nativeVisualsInZOrder);
 		}
 		else
 		{
-			var invertedPath = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(rect);
-			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
-
-			return (invertedPath, nativeVisualsInZOrder);
+			return (parentClip.Combine(accumulated, GeometryCombineMode.Difference), nativeVisualsInZOrder);
 		}
 	}
 
-	private static SKPath GetOrUpdateInvertedClippingPath(float width, float height)
+	private static IGeometry GetOrUpdateInvertedClippingPath(float width, float height)
 	{
 		if (_invertedClipPath != null && _invertedClipPathWidth == width && _invertedClipPathHeight == height)
 		{
@@ -92,8 +82,8 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var result = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(new SKRect(0f, 0f, width, height));
-			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+			using var rect = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+			var result = rect.Combine(EmptyClipPath, GeometryCombineMode.Difference);
 
 			_invertedClipPathWidth = width;
 			_invertedClipPathHeight = height;

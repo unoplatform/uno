@@ -114,11 +114,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(new SkiaRenderTarget(canvas), _ => new SkiaRenderTarget(canvas));
+		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(new SkiaRenderTarget(canvas), _ => new SkiaRenderTarget(canvas));
 
-		if (clipPath is not null)
+		if (clipGeometry is not null)
 		{
-			UpdateNativeClipping(clipPath);
+			using var clipLease = SkiaGeometryInterop.Lease(clipGeometry);
+			UpdateNativeClipping(clipLease.Path);
 		}
 	}
 

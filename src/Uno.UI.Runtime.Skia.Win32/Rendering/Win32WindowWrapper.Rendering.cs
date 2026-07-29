@@ -57,7 +57,7 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		var clipPath = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
+		var clipGeometry = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
 		{
 			_surface?.Dispose();
 			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
@@ -77,6 +77,6 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		return (clipPath, clientRect.Width, clientRect.Height);
+		return (SkiaGeometryInterop.ToSKPath(clipGeometry), clientRect.Width, clientRect.Height);
 	}
 }

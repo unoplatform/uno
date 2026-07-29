@@ -22,6 +22,20 @@ internal static class SkiaGeometryInterop
 			_ => throw new NotSupportedException($"Cannot rasterize geometry of type {geometry.GetType().Name} with the Skia backend."),
 		};
 
+	/// <summary>
+	/// Returns an <see cref="SKPath"/> for <paramref name="geometry"/> suitable for retaining beyond the
+	/// current scope (e.g. a native-element clip handed to a windowing API): a native geometry's path is
+	/// returned directly (borrowed, do not dispose), a managed geometry is rebuilt into a fresh path. Use
+	/// <see cref="Lease"/> instead when the path is only needed within the current scope.
+	/// </summary>
+	public static SKPath ToSKPath(IGeometry geometry)
+		=> geometry switch
+		{
+			SkiaGeometrySource2D skia => skia.Geometry,
+			ManagedGeometry managed => ToSKPath(managed),
+			_ => throw new NotSupportedException($"Cannot rasterize geometry of type {geometry.GetType().Name} with the Skia backend."),
+		};
+
 	/// <summary>Builds a fresh <see cref="SKPath"/> from a managed geometry's contours.</summary>
 	public static SKPath ToSKPath(ManagedGeometry managed)
 	{

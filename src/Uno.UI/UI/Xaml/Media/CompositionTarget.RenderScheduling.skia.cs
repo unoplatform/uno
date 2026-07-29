@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
@@ -164,7 +163,7 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal SKPath OnNativePlatformFrameRequested(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
+	internal IGeometry OnNativePlatformFrameRequested(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 

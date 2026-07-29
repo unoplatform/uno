@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
@@ -45,14 +45,18 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
+	// A backend-neutral empty clip, returned when there is no frame to present yet.
+	private static IGeometry? _emptyClipPath;
+	private static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
+
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
-	private static SKPath? _lastNativeClipPath;
+	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static SKPath? _lastScaledNativeClipPath;
+	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IRenderData frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IRenderData frame, IGeometry nativeElementClipPath)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -110,7 +114,7 @@ public partial class CompositionTarget
 			FrameRenderingOptions.invertNativeElementClipPath);
 		var frame = recording.Finish();
 		var renderedFrame = (frame, path);
-		var previousFrame = default((IRenderData frame, SKPath path)?);
+		var previousFrame = default((IRenderData frame, IGeometry path)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
@@ -156,11 +160,11 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private SKPath Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
+	private IGeometry Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(IRenderData frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IRenderData frame, IGeometry nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -173,7 +177,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return EmptyClipPath;
 		}
 		else
 		{
@@ -223,11 +227,9 @@ public partial class CompositionTarget
 			{
 				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
 				{
-					_lastScaledNativeClipPath = new();
-
-					lastRenderedFrame
+					_lastScaledNativeClipPath = lastRenderedFrame
 						.nativeElementClipPath
-						.Transform(SKMatrix.CreateScale(rasterizationScale, rasterizationScale), _lastScaledNativeClipPath);
+						.Transform(Matrix3x2.CreateScale(rasterizationScale, rasterizationScale));
 
 					_lastNativeClipPath = lastRenderedFrame.nativeElementClipPath;
 				}
@@ -240,7 +242,7 @@ public partial class CompositionTarget
 	}
 
 
-	private void ReturnFrame((IRenderData frame, SKPath path) frame)
+	private void ReturnFrame((IRenderData frame, IGeometry path) frame)
 	{
 		IRenderData? frameToDelete = null;
 
