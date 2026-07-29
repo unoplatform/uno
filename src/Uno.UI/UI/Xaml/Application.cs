@@ -129,9 +129,8 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
-#if __SKIA__
-			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
-#endif
+			// The Skia SKCanvasElement visual factory is registered by the Skia backend (SkiaBackend.Register),
+			// since SKCanvasVisual lives in the backend assembly beside SkiaDrawingSession.
 		}
 
 		static partial void InitializePartialStatic();

@@ -1,7 +1,9 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.Foundation.Extensibility;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Graphics;
 
 namespace Uno.UI.Composition.Skia;
 
@@ -14,7 +16,13 @@ namespace Uno.UI.Composition.Skia;
 public static class SkiaBackend
 {
 	public static void Register()
+	{
 		// Calling into this assembly triggers its module initializers (they install the libSkiaSharp resolver
 		// and register the backend). Registering again here is idempotent and makes the intent explicit.
-		=> DrawingBackend.Register(new SkiaDrawingBackend());
+		DrawingBackend.Register(new SkiaDrawingBackend());
+
+		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
+		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
+		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
+	}
 }
