@@ -33,7 +33,7 @@ public static class ApiExtensibility
 	public static void Register(Type type, Func<object, object> builder)
 	{
 		type = type ?? throw new ArgumentNullException(nameof(type));
-		builder = builder ?? throw new ArgumentNullException(nameof(type));
+		builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
 		lock (_gate)
 		{
@@ -57,24 +57,28 @@ public static class ApiExtensibility
 	public static void Register<TOwner>(Type type, Func<TOwner, object> builder)
 	{
 		type = type ?? throw new ArgumentNullException(nameof(type));
-		builder = builder ?? throw new ArgumentNullException(nameof(type));
-
-		Func<object, object> objectBuilder = o =>
-		{
-			if (!(o is TOwner owner))
-			{
-				throw new InvalidOperationException($"Expected owner of type {typeof(TOwner).Name} to resolve instance of {type.Name}.");
-			}
-
-			return builder(owner);
-		};
+		builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
 		lock (_gate)
 		{
-			if (!_registrations.ContainsKey(type))
+			// Check for an existing registration before building the wrapper lambda so a duplicate
+			// (idempotent) registration does not allocate the closure needlessly.
+			if (_registrations.ContainsKey(type))
 			{
-				_registrations.Add(type, objectBuilder);
+				return;
 			}
+
+			Func<object, object> objectBuilder = o =>
+			{
+				if (!(o is TOwner owner))
+				{
+					throw new InvalidOperationException($"Expected owner of type {typeof(TOwner).Name} to resolve instance of {type.Name}.");
+				}
+
+				return builder(owner);
+			};
+
+			_registrations.Add(type, objectBuilder);
 		}
 	}
 
