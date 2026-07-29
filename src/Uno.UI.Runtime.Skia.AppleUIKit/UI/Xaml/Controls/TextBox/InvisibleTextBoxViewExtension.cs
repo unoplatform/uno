@@ -52,6 +52,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
 
+		// The proxy wraps its text at its frame width and iOS keyboard interactions
+		// (e.g. the spacebar trackpad drag) map vertical movement through that layout,
+		// so the frame must track the TextBox size while editing.
+		textBox.SizeChanged += OnTextBoxSizeChanged;
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
 		// change FirstResponder's View before removing the previous view to avoid flickering
@@ -68,10 +73,17 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
+			if (_owner.TextBox is { } textBox)
+			{
+				textBox.SizeChanged -= OnTextBoxSizeChanged;
+			}
+
 			RemoveViewFromTextInputLayer();
 			_textBoxView = null;
 		}
 	}
+
+	private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs args) => InvalidateLayout();
 
 	public void UpdateSize() => InvalidateLayout();
 
