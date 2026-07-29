@@ -66,12 +66,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// This includes assembly resolution handlers required by Roslyn msbuild workspace
 				CompilationEnvironment.Initialize(Path.GetDirectoryName(configureServer.ProjectPath));
 
+				// From this point (and until the baseline solution has been captured from disk),
+				// update requests are queued by the gate instead of being written to disk.
+				_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Initializing);
+
 				var ct = new CancellationTokenSource();
 				_workspace = (InitializeAsync(ct.Token), ct);
 			}
 			catch (Exception e)
 			{
 				_reporter.Error($"Failed to initialize compilation workspace, hot-reload is disabled:\r\n{e}");
+				_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Failed);
 				_ = _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
 				_ = Notify(HotReloadEvent.Disabled);
 
@@ -85,6 +90,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					var properties = configureServer.MSBuildProperties.ToDictionary();
 					var runtimeTargetFramework = GetRuntimeTargetFramework(configureServer);
+					var runtimeIdentifier = properties.GetValueOrDefault("RuntimeIdentifier");
 					async ValueTask<Solution> LoadSolutionFromDisk(CancellationToken ct2)
 					{
 						var workspace = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, properties, ct2);
@@ -92,8 +98,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						// Restrict a multi-targeted head to the flavor the running application reported: the
 						// workspace loaded one project per TargetFrameworks entry (the evaluated TargetFramework
 						// is empty), and the non-running flavors would otherwise block hot reload with their
-						// compilation errors or fail the initial emit (they were never built).
-						return workspace.CurrentSolution.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter);
+						// compilation errors or fail the initial emit (they were never built). Then re-point the
+						// kept flavor's compilation outputs to the assembly the running application was actually
+						// built from (RID-specific paths) — before the watch session starts, as EnC captures its
+						// baselines from those paths.
+						return workspace.CurrentSolution
+							.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter)
+							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2);
 					}
 
 					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
@@ -105,11 +116,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					var fileSystemWatch = new FileSystemObserver(manager, _reporter, _solutionWatchersGate);
 					ct.Register(() => fileSystemWatch.Dispose());
 
+					// Release queued update requests only once the baseline has been captured AND the
+					// file-system observer is active, so a flushed edit can neither be folded into the
+					// baseline nor go unobserved.
+					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Ready);
+
 					return manager;
 				}
 				catch (Exception e)
 				{
 					_reporter.Error($"Failed to initialize compilation workspace, hot-reload is disabled:\r\n{e}");
+					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Failed);
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
 					await Notify(HotReloadEvent.Disabled);
 

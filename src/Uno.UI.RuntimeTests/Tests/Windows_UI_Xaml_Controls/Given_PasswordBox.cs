@@ -189,11 +189,11 @@ public class Given_PasswordBox
 
 		passwordBox.CopySelectionToClipboard();
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(sentinel, await Clipboard.GetContent()!.GetTextAsync());
+		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel));
 
 		passwordBox.CutSelectionToClipboard();
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(sentinel, await Clipboard.GetContent()!.GetTextAsync());
+		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel));
 		Assert.AreEqual(secret, passwordBox.Password);
 	}
 #endif
