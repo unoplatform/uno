@@ -73,28 +73,28 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.13.0-dev.11",
+		"version": "1.13.0-dev.17",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.4.0-dev.7",
+		"version": "6.4.0-dev.13",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "1.8.0-dev.42",
+		"version": "1.13.0-dev.7",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.19.175",
+		"version": "1.20.0-dev.750",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -128,14 +128,14 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.2270",
+		"version": "10.0.28000.2526",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildToolsWinApp",
-		"version": "0.3.1",
+		"version": "0.5.0",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools.WinApp"
 		]
@@ -162,7 +162,7 @@
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.83.3",
+		"version": "4.87.0",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -186,7 +186,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.8.1",
+		"version": "2.9.4",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -351,7 +351,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.6.27",
+		"version": "6.7.0-dev.16",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -359,7 +359,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.2.3",
+		"version": "7.3.0-dev.102",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -389,7 +389,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.5.0-dev.37",
+		"version": "9.1.0-dev.2",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -402,7 +402,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "7.0.0-dev.24",
+		"version": "7.1.0-dev.1",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -428,7 +428,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.3.0-dev.36",
+		"version": "1.3.0-dev.98",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]
