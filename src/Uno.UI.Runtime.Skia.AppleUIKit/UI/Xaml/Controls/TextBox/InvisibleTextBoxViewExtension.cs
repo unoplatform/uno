@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
@@ -169,6 +170,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
+
+		// The proxy lays out its own copy of the text and iOS keyboard interactions
+		// (e.g. the spacebar trackpad drag) constrain horizontal caret movement to the
+		// proxy's layout lines. Match the font size so its wrap points stay close to
+		// the Skia-rendered text.
+		_textBoxView.Font = UIFont.SystemFontOfSize((float)textBox.FontSize);
 
 		var inputReturnType = TextBoxExtensions.GetInputReturnType(textBox);
 		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
@@ -372,6 +379,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		var y = rect?.Y ?? 0;
 		var width = rect?.Width ?? 10;
 		var height = rect?.Height ?? 10;
+
+		// For the off-screen proxy, wrap fidelity matters more than the control
+		// bounds: size it to the text area so its line breaks stay close to the
+		// Skia layout (see the font-size match in UpdateProperties).
+		if (!ShouldAnchorToTextBox() && textBox?.ContentElement is { } contentElement)
+		{
+			var contentWidth = contentElement.ActualWidth - contentElement.Padding.Horizontal();
+			var contentHeight = contentElement.ActualHeight - contentElement.Padding.Vertical();
+			if (contentWidth > 0)
+			{
+				width = contentWidth;
+			}
+			if (contentHeight > 0)
+			{
+				height = contentHeight;
+			}
+		}
 
 		// Only iPad shows a floating numeric keypad that needs an anchor
 		// view. For all other cases we push the native view off-screen so
