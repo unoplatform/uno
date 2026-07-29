@@ -461,27 +461,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
-		{
-#if DEBUG
-			// Skia-only consistency check: the optimized ApplyPostPaintingClipping must match a full path clip.
-			if (session.Session is SkiaDrawingSession skiaSession)
-			{
-				var canvas = skiaSession.Canvas;
-				canvas.Save();
-				if (visual.GetPostPaintingClipping() is SkiaGeometrySource2D postClip)
-				{
-					canvas.ClipPath(postClip.Geometry, antialias: true);
-				}
-
-				var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
-				canvas.Restore();
-				visual.ApplyPostPaintingClipping(session.Session);
-				Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
-				return;
-			}
-#endif
-			visual.ApplyPostPaintingClipping(session.Session);
-		}
+			=> visual.ApplyPostPaintingClipping(session.Session);
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{

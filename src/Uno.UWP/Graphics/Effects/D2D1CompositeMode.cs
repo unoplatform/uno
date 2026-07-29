@@ -7,7 +7,7 @@
 ///		- <see href="https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_CanvasComposite.htm"/><br/>
 ///	</remarks>
 /// </summary>
-internal enum D2D1CompositeMode
+public enum D2D1CompositeMode
 {
 	SourceOver = 0,
 	DestinationOver = 1,
