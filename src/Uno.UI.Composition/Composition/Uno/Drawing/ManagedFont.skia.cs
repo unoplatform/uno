@@ -95,6 +95,8 @@ internal sealed class ManagedFont : IFont
 	/// <summary>Whether this font has a glyph for <paramref name="codepoint"/>.</summary>
 	public bool ContainsGlyph(int codepoint) => GetGlyphIndex(codepoint) != 0;
 
+	public float GetGlyphAdvance(ushort glyph) => GetAdvance(glyph);
+
 	/// <summary>The glyph's horizontal advance in font units (hmtx; glyphs past numHMetrics reuse the last advance).</summary>
 	public int GetAdvanceWidth(ushort glyph)
 	{
