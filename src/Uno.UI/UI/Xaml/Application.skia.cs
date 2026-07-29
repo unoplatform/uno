@@ -105,6 +105,10 @@ namespace Microsoft.UI.Xaml
 		{
 			_startInvoked = true;
 
+			// Install the Skia drawing backend before any layout/font resolution reaches DrawingBackend.Current
+			// (the backend now lives in a separate assembly, so it no longer self-registers on Composition load).
+			global::Uno.UI.Composition.Skia.SkiaBackend.Register();
+
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;

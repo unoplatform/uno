@@ -7,7 +7,7 @@ using SkiaSharp;
 
 namespace Windows.Graphics.Effects.Interop;
 
-internal static partial class EffectHelpers
+internal static class SkiaEffectHelpers
 {
 	public static SKBlendMode ToSkia(this D2D1BlendEffectMode blendMode)
 	{

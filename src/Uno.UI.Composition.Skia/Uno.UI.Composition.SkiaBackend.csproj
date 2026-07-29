@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -6,13 +6,9 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<AssemblyName>Uno.UI.Composition</AssemblyName>
-		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.Skia</AssemblyName>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
-		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_COMPOSITION</DefineConstants>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -25,21 +21,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="AssemblyInfo.skia.cs" />
+		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Xaml\CornerRadius.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\FullCornerRadius.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Thickness.cs" />
-	</ItemGroup>
-
 </Project>

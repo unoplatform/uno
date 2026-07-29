@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
+[assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.UI.GooglePlay")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
