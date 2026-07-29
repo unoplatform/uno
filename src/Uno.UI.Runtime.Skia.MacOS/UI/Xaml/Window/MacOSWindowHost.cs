@@ -114,7 +114,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return new SkiaRenderTarget(surface.Canvas);
 		});
 
-		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		string? clip = null;
+		if (!nativeElementClipPath.IsEmpty)
+		{
+			using var clipLease = SkiaGeometryInterop.Lease(nativeElementClipPath);
+			clip = clipLease.Path.ToSvgPathData();
+		}
 		if (clip != _lastSvgClipPath)
 		{
 			// if too early it's possible that the native element has not been arranged yet
@@ -163,7 +168,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return new SkiaRenderTarget(_surface.Canvas);
 		});
 
-		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		string? clip = null;
+		if (!nativeElementClipPath.IsEmpty)
+		{
+			using var clipLease = SkiaGeometryInterop.Lease(nativeElementClipPath);
+			clip = clipLease.Path.ToSvgPathData();
+		}
 		if (clip != _lastSvgClipPath)
 		{
 			// if too early it's possible that the native element has not been arranged yet

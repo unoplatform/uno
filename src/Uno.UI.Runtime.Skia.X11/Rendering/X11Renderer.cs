@@ -60,7 +60,10 @@ internal abstract class X11Renderer : IDisposable
 			return new SkiaRenderTarget(_surface.Canvas);
 		});
 
-		_airspaceHelper?.XShapeClip(nativeElementClipPath);
+		using (var clipLease = SkiaGeometryInterop.Lease(nativeElementClipPath))
+		{
+			_airspaceHelper?.XShapeClip(clipLease.Path);
+		}
 
 		using (X11Helper.XLock(display))
 		{

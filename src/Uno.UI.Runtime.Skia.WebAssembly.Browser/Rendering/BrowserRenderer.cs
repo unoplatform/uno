@@ -105,7 +105,18 @@ internal partial class BrowserRenderer
 			_renderer.Flush();
 		}
 
-		var (path, fillType) = !currentClipPath.IsEmpty ? (currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") : ("", "nonzero");
+		string path, fillType;
+		if (!currentClipPath.IsEmpty)
+		{
+			using var clipLease = SkiaGeometryInterop.Lease(currentClipPath);
+			path = clipLease.Path.ToSvgPathData();
+			fillType = currentClipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero";
+		}
+		else
+		{
+			path = "";
+			fillType = "nonzero";
+		}
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
