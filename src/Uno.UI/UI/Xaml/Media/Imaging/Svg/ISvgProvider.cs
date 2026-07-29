@@ -25,7 +25,11 @@ public interface ISvgProvider
 
 	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
 
-	/// <summary>Rasterizes the loaded SVG to a neutral image (an <c>IImage</c>) at the given pixel size, or null if unsupported. Typed as object to keep this cross-flavor interface free of the Skia-only Drawing types.</summary>
+	/// <summary>
+	/// Rasterizes the loaded SVG to a neutral image (an <c>IImage</c> on the Skia flavor) at the given pixel
+	/// size, or null if unsupported. Returns <c>object</c> because this interface also compiles for the
+	/// reference/native flavors, where the Skia-flavor <c>IImage</c> type does not exist; the Skia consumer casts.
+	/// </summary>
 	object? RenderToImage(int pixelWidth, int pixelHeight) => default;
 
 	void Unload();

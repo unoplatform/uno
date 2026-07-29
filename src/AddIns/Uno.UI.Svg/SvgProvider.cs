@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
 using System.IO;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Media.Imaging.Svg;
@@ -10,7 +9,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.Graphics.Display;
-using System.Diagnostics.CodeAnalysis;
 
 
 #if !__NETSTD_REFERENCE__
@@ -30,6 +28,9 @@ namespace Uno.UI.Svg;
 public partial class SvgProvider : ISvgProvider
 {
 #if !__NETSTD_REFERENCE__
+	// 16 MP (≈64 MB BGRA) ceiling on a single rasterization, to bound untrusted SVG dimensions.
+	private const long MaxRasterizePixelCount = 16L * 1024 * 1024;
+
 	private readonly SvgImageSource _owner;
 	private readonly CompositeDisposable _disposables = new();
 
@@ -104,8 +105,27 @@ public partial class SvgProvider : ISvgProvider
 			return null;
 		}
 
+		// The dimensions can derive from an untrusted SVG (a remote source's viewBox), so bound the
+		// allocation: (long) math avoids int overflow, and the cap avoids an OOM from a hostile size.
+		if ((long)pixelWidth * pixelHeight > MaxRasterizePixelCount)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"SVG rasterization size {pixelWidth}x{pixelHeight} exceeds the maximum; skipping.");
+			}
+			return null;
+		}
+
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		using var surface = SKSurface.Create(info);
+		if (surface is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Failed to create a {pixelWidth}x{pixelHeight} surface for SVG rasterization.");
+			}
+			return null;
+		}
 		var canvas = surface.Canvas;
 		canvas.Clear(SkiaSharp.SKColors.Transparent);
 		var cull = picture.CullRect;
@@ -121,6 +141,10 @@ public partial class SvgProvider : ISvgProvider
 		{
 			if (!surface.ReadPixels(info, (nint)p, info.RowBytes, 0, 0))
 			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"SVG rasterization ReadPixels failed for {pixelWidth}x{pixelHeight}.");
+				}
 				return null;
 			}
 		}

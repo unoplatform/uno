@@ -27,7 +27,7 @@ internal static class SkiaRenderHelper
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static IGeometry? _emptyClipPath;
-	private static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
+	internal static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
 
 	// This is used on X11, when no native elements are present - DO NOT MODIFY
 	private static float _invertedClipPathWidth;
@@ -220,7 +220,7 @@ internal static class SkiaRenderHelper
 		}
 
 		/// <summary>
-		/// Called from CompositionTarget.Render after a freshly-recorded SKPicture has been
+		/// Called from CompositionTarget.Render after a freshly-recorded frame (IRenderData) has been
 		/// swapped into _lastRenderedFrame. Stamps the moment the picture became ready. If the
 		/// previous generation was never consumed by Draw before this new recording starts,
 		/// that previous CPU work is wasted — count it as "drawn-but-not-presented".

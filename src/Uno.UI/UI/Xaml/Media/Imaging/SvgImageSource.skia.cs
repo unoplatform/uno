@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Helpers;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
 using Microsoft.UI.Composition;
@@ -53,6 +54,11 @@ partial class SvgImageSource
 					if (provider.RenderToImage(Math.Max(1, width), Math.Max(1, height)) is IImage svgImage)
 					{
 						return ImageData.FromCompositionSurface(new CompositionImageSurface(svgImage));
+					}
+
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"SVG provider returned no image for {width}x{height}; rendering empty.");
 					}
 				}
 
