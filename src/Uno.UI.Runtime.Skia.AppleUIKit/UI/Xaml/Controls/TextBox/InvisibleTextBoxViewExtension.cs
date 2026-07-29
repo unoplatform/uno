@@ -227,6 +227,37 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	// Invoked from textFieldDidChangeSelection:/textViewDidChangeSelection:. UIKit mutates the
+	// selection through internal controllers for some interactions (e.g. the spacebar trackpad-
+	// mode drag), bypassing the setSelectedTextRange: override in the views, so the delegate
+	// callback is the only notification that covers every native selection change.
+	internal void OnNativeSelectionChanged()
+	{
+		if (_textBoxView is not { } textBoxView
+			|| textBoxView.IsSettingTextFromManaged
+			|| textBoxView.IsSettingSelectionFromManaged
+			|| textBoxView.IsComposing)
+		{
+			return;
+		}
+
+		if (_owner?.TextBox is not { } textBox)
+		{
+			return;
+		}
+
+		// While a native edit is in flight the native text is ahead of the managed text, so
+		// selection offsets don't map onto it; ProcessNativeTextInput applies the post-edit
+		// selection itself (see SetPendingSelection).
+		var nativeText = GetNativeText()?.Replace('\n', '\r') ?? string.Empty;
+		if (nativeText != (textBox.Text ?? string.Empty))
+		{
+			return;
+		}
+
+		SyncSelectionToTextBox();
+	}
+
 	internal void ProcessNativeTextInput(string? text)
 	{
 		// During IME composition, text updates are managed by the shared

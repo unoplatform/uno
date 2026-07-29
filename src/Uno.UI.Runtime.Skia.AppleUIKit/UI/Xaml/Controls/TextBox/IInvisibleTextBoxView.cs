@@ -44,4 +44,8 @@ internal interface IInvisibleTextBoxView
 	TextBoxView? Owner { get; }
 
 	bool IsComposing { get; }
+
+	bool IsSettingTextFromManaged { get; }
+
+	bool IsSettingSelectionFromManaged { get; }
 }
