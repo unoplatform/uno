@@ -6,15 +6,14 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
-using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
@@ -117,14 +116,17 @@ internal static class SkiaRenderHelper
 		private static readonly Color _unpresentedIconColor = Color.FromArgb(0xFF, 0xFF, 0xC1, 0x07);
 		private static readonly Color _frameTimeIconColor = Color.FromArgb(0xFF, 0x00, 0xBC, 0xD4);
 		private static readonly Color _clockIconColor = Color.FromArgb(0xFF, 0x21, 0x96, 0xF3);
-		// Kept for text shaping and measurement only (font work, not rendering).
-		private static readonly SKFont _font = new() { Size = 14, Embolden = true };
-		private static readonly IFont _fontHandle = new SkiaFont(_font);
+		// The overlay's font, resolved lazily through the neutral font manager (bold, 14px) so the counter
+		// pulls in no SkiaSharp type. Lazy because the backend is registered after this type is first touched.
+		private static IFont? _font;
+		private static IFont Font => _font ??= DrawingBackend.Current.FontManager.GetDefaultFont(FontWeights.Bold, FontStretch.Normal, FontStyle.Normal, 14f);
 
 		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
-		// Sized to fit a three-digit reference value — measured once at type load.
-		private static readonly float _minColumn1Width = MeasureWidth("120.0");
-		private static readonly float _minColumn2Width = MeasureWidth("120.0 ms");
+		// Sized to fit a three-digit reference value — measured lazily on first draw.
+		private static float? _minColumn1Width;
+		private static float MinColumn1Width => _minColumn1Width ??= MeasureWidth("120.0");
+		private static float? _minColumn2Width;
+		private static float MinColumn2Width => _minColumn2Width ??= MeasureWidth("120.0 ms");
 
 		private readonly TimeSpan[] _frameTimes;
 		// TimeSpan ticks (100ns units); accessed across threads via Interlocked to avoid torn reads on 32-bit.
@@ -298,8 +300,8 @@ internal static class SkiaRenderHelper
 			var isIdle = _isIdle;
 			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
 
-			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
-			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
+			var col1Width = Math.Max(MinColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
+			var col2Width = Math.Max(MinColumn2Width, MaxTextWidth(frameTimeText, delayText));
 
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
@@ -338,8 +340,13 @@ internal static class SkiaRenderHelper
 
 		private static float MeasureWidth(string text)
 		{
-			_font.MeasureText(text, out var rect);
-			return rect.Width;
+			var font = Font;
+			float width = 0;
+			foreach (var ch in text)
+			{
+				width += font.GetGlyphAdvance(font.GetGlyphIndex(ch));
+			}
+			return width;
 		}
 
 		private static void DrawCell(IDrawingSession session, float iconX, float textX, int row, string value, Action<IDrawingSession, float, float> drawIcon)
@@ -348,24 +355,35 @@ internal static class SkiaRenderHelper
 			var iconY = rowTop + (RowHeight - IconSize) / 2;
 			drawIcon(session, iconX, iconY);
 
-			_font.MeasureText(value, out var textRect);
-			var textY = rowTop + (RowHeight - textRect.Height) / 2 - textRect.Top;
+			// Vertically center on the font's line box (Ascent is negative, above the baseline).
+			var textHeight = Font.Descent - Font.Ascent;
+			var textY = rowTop + (RowHeight - textHeight) / 2 - Font.Ascent;
 			DrawText(session, value, textX, textY, _textColor);
 		}
 
-		// Shape the string with the font (font work stays on Skia) and draw the glyph outlines through the
-		// neutral path verb — the same way a TextBlock renders.
+		// Shape the string through the neutral font handle (glyph index + advance per character) and draw the
+		// glyph outlines through the neutral path verb — the same way a TextBlock renders. The overlay text is
+		// ASCII (digits, "ms", labels), so a simple left-to-right advance layout is sufficient (no shaping).
 		private static void DrawText(IDrawingSession session, string text, float x, float baselineY, Color color)
 		{
-			var glyphs = _font.GetGlyphs(text);
-			if (glyphs.Length == 0)
+			if (text.Length == 0)
 			{
 				return;
 			}
 
-			var positions = _font.GetGlyphPositions(text, new SKPoint(x, baselineY));
-			var positionsV = MemoryMarshal.Cast<SKPoint, Vector2>(positions);
-			using var geometry = _fontHandle.BuildGlyphRunOutline(glyphs, positionsV, 0f);
+			var font = Font;
+			var glyphs = new ushort[text.Length];
+			var positions = new Vector2[text.Length];
+			var penX = x;
+			for (var i = 0; i < text.Length; i++)
+			{
+				var glyph = font.GetGlyphIndex(text[i]);
+				glyphs[i] = glyph;
+				positions[i] = new Vector2(penX, baselineY);
+				penX += font.GetGlyphAdvance(glyph);
+			}
+
+			using var geometry = font.BuildGlyphRunOutline(glyphs, positions, 0f);
 			session.DrawPath(geometry, color, antialias: true);
 		}
 

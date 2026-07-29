@@ -46,6 +46,12 @@ internal sealed class SkiaFont : IFont
 
 	public bool ContainsGlyph(int codepoint) => _font.ContainsGlyph(codepoint);
 
+	public float GetGlyphAdvance(ushort glyph)
+	{
+		Span<ushort> glyphs = [glyph];
+		return _font.MeasureText(glyphs, null);
+	}
+
 	public string FamilyName => _font.Typeface?.FamilyName ?? string.Empty;
 
 	public int UnitsPerEm => _font.Typeface?.UnitsPerEm ?? 0;

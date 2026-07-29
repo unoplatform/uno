@@ -60,6 +60,9 @@ public interface IFont
 	/// <summary>Whether this font has a glyph for <paramref name="codepoint"/>.</summary>
 	bool ContainsGlyph(int codepoint);
 
+	/// <summary>The glyph's horizontal advance in pixels at this font's size.</summary>
+	float GetGlyphAdvance(ushort glyph);
+
 	// --- Shaper face source: the raw sfnt so the text layer can build a HarfBuzz face without touching a Skia
 	//     typeface. SkiaFont serves tables from its (already variable-instanced) typeface, so shaping is unchanged. ---
 
