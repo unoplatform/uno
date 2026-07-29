@@ -81,7 +81,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
-	private X11Renderer? _renderer;
+	private IX11Renderer? _renderer;
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -419,8 +419,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
+
+		// Neutral pluggable-pipeline path (Uno-created context + backend-wrapped target, no hardcoded Skia in
+		// the host). Opt-in while the remaining kinds migrate; "software" is the CPU-framebuffer path.
+		if (Environment.GetEnvironmentVariable("UNO_NEUTRAL_RENDER") is "software")
+		{
+			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
+		}
+
 		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
-		if (webgpuMode is "1" or "true" or "swapchain")
+		if (_renderer is null && webgpuMode is "1" or "true" or "swapchain")
 		{
 			try
 			{
