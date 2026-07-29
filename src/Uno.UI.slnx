@@ -250,6 +250,9 @@
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.Composition.Skia/Uno.UI.Composition.SkiaBackend.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
   </Folder>
   <Folder Name="/Uno.UI/DevServer/">
     <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Reference.csproj">
