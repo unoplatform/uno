@@ -1,0 +1,20 @@
+#nullable enable
+
+using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+
+namespace Uno.UI.Composition.Skia;
+
+/// <summary>
+/// Explicit entry point that installs the SkiaSharp drawing backend. A Skia host calls this during startup —
+/// before the first layout/measure that resolves fonts/images through <see cref="DrawingBackend.Current"/> —
+/// so the backend is registered independently of assembly load timing. (The backend also self-registers via
+/// module initializers for standalone consumers that touch its types directly, e.g. tests and offscreen tools.)
+/// </summary>
+public static class SkiaBackend
+{
+	public static void Register()
+		// Calling into this assembly triggers its module initializers (they install the libSkiaSharp resolver
+		// and register the backend). Registering again here is idempotent and makes the intent explicit.
+		=> DrawingBackend.Register(new SkiaDrawingBackend());
+}
