@@ -268,13 +268,36 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// While a native edit is in flight the native text is ahead of the managed text, so
 		// selection offsets don't map onto it; ProcessNativeTextInput applies the post-edit
 		// selection itself (see SetPendingSelection).
-		var nativeText = GetNativeText()?.Replace('\n', '\r') ?? string.Empty;
-		if (nativeText != (textBox.Text ?? string.Empty))
+		if (!NativeTextEquals(GetNativeText(), textBox.Text))
 		{
 			return;
 		}
 
 		SyncSelectionToTextBox();
+	}
+
+	// Equivalent to nativeText.Replace('\n', '\r') == managedText (native uses \n, managed
+	// uses \r — see SetText), without allocating: this runs on every native selection change.
+	private static bool NativeTextEquals(string? nativeText, string? managedText)
+	{
+		nativeText ??= string.Empty;
+		managedText ??= string.Empty;
+
+		if (nativeText.Length != managedText.Length)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < nativeText.Length; i++)
+		{
+			var nativeChar = nativeText[i] == '\n' ? '\r' : nativeText[i];
+			if (nativeChar != managedText[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	internal void ProcessNativeTextInput(string? text)
