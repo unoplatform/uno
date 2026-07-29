@@ -5408,13 +5408,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
-			// Focus so the clipboard subscription is live, then put text on the clipboard so Paste is available.
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-			var dp = new DataPackage();
-			dp.SetText("clipboard text");
-			Clipboard.SetContent(dp);
-			await WindowHelper.WaitFor(() => SUT.CanPasteClipboardContent, message: "the clipboard should read non-empty so Paste is available");
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
 
 			// A touch tap sets the last input device to Touch so the flyout opens in primary-commands mode (Paste on the
 			// bar). The tap only places a caret in the empty box (no selection), matching how a touch-opened context
@@ -5554,13 +5554,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
-			// Focus so the clipboard subscription is live, then put text on the clipboard so Paste is available.
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-			var dp = new DataPackage();
-			dp.SetText("clipboard text");
-			Clipboard.SetContent(dp);
-			await WindowHelper.WaitFor(() => SUT.CanPasteClipboardContent, message: "the clipboard should read non-empty so Paste is available");
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
@@ -5748,12 +5748,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-			var dp = new DataPackage();
-			dp.SetText("clipboard text");
-			Clipboard.SetContent(dp);
-			await WindowHelper.WaitFor(() => SUT.CanPasteClipboardContent, message: "the clipboard should read non-empty so Paste is available");
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
