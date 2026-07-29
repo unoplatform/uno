@@ -39,7 +39,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.137"
+			"net10.0": "10.1.0-dev.214"
 		}
 	},
 	{
@@ -346,7 +346,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.60"
+			"net10.0": "10.0.90"
 		}
 	},
 	{
