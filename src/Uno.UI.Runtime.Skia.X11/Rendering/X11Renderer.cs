@@ -1,6 +1,7 @@
 using Uno.UI.Composition.Drawing;
 using System;
 using Windows.Foundation;
+using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -9,7 +10,7 @@ using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal abstract class X11Renderer : IDisposable
+internal abstract class X11Renderer : IX11Renderer
 {
 	private int _renderCount;
 	private SKColor _background = SKColors.White;
@@ -24,7 +25,7 @@ internal abstract class X11Renderer : IDisposable
 		_x11Window = x11Window;
 	}
 
-	public void SetBackgroundColor(SKColor color) => _background = color;
+	public void SetBackgroundColor(Color color) => _background = new SKColor(color.R, color.G, color.B, color.A);
 
 	public virtual void Render()
 	{
