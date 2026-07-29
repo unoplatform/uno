@@ -8,7 +8,7 @@
 ///		- <see href="https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_BlendEffectMode.htm"/><br/>
 ///	</remarks>
 /// </summary>
-internal enum D2D1BlendEffectMode
+public enum D2D1BlendEffectMode
 {
 	Multiply = 0,
 	Screen = 1,
