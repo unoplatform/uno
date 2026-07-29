@@ -1,5 +1,5 @@
-﻿using System.IO;
-using SkiaSharp;
+using System.IO;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -7,9 +7,14 @@ public partial class BitmapSource
 {
 	partial void UpdatePixelWidthAndHeightPartial(Stream stream)
 	{
-		using var codec = SKCodec.Create(stream);
-		var info = codec.Info;
-		PixelWidth = info.Width;
-		PixelHeight = info.Height;
+		// Read the source dimensions through the neutral backend decoder (no Skia codec here).
+		if (DrawingBackend.Current.TryDecodeImage(stream, null, null, out var frames))
+		{
+			using (frames)
+			{
+				PixelWidth = frames.Frames[0].PixelWidth;
+				PixelHeight = frames.Frames[0].PixelHeight;
+			}
+		}
 	}
 }

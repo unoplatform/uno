@@ -17,7 +17,6 @@ using Uno.Foundation.Logging;
 
 #if __SKIA__
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using System.Runtime.InteropServices.JavaScript;
 #endif
 
@@ -65,30 +64,30 @@ internal static partial class ImageSourceHelpers
 				}
 
 				var bytes = decodedBufferObject.GetPropertyAsByteArray("bytes");
-				SKImage image;
-				unsafe
+				if (bytes is null)
 				{
-					var gcHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-					fixed (void* ptr = bytes)
+					return ImageData.Empty;
+				}
+
+				try
+				{
+					// The browser Canvas API returns RGBA; the neutral image surface takes BGRA — swap R/B.
+					var bgra = new byte[bytes.Length];
+					for (var i = 0; i + 3 < bytes.Length; i += 4)
 					{
-						try
-						{
-							image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), static (_, gcHandle) =>
-							{
-								((GCHandle)gcHandle).Free();
-							}, gcHandle);
-							if (image == null)
-							{
-								throw new InvalidOperationException($"{nameof(SKImage)}.{nameof(SKImage.FromPixels)} returned null.");
-							}
-							return ImageData.FromCompositionSurface(new CompositionImageSurface(new global::Uno.UI.Composition.Drawing.SkiaImage(image)));
-						}
-						catch (Exception e)
-						{
-							gcHandle.Free();
-							return ImageData.FromError(e);
-						}
+						bgra[i] = bytes[i + 2];
+						bgra[i + 1] = bytes[i + 1];
+						bgra[i + 2] = bytes[i];
+						bgra[i + 3] = bytes[i + 3];
 					}
+
+					var browserSurface = new CompositionImageSurface();
+					browserSurface.CopyPixels(width, height, bgra);
+					return ImageData.FromCompositionSurface(browserSurface);
+				}
+				catch (Exception e)
+				{
+					return ImageData.FromError(e);
 				}
 			}
 		}
