@@ -6304,7 +6304,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// originates on the inner DisplayBlock and bubbles to the TextBox) must still open the ContextFlyout,
 		// reflecting the current selection. Guards the OnContextRequestedCore DisplayBlock deferral.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mouse path: run on Desktop (dev) + real Android only
 		public async Task When_RightClick_Over_Selection_Flyout_Includes_Copy()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -6345,7 +6345,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// the overflow, where CommandBarFlyout already closes the flyout on Click. Guards that the touch/pen primary-bar
 		// close doesn't alter (or become needed by) the mouse path.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		// Skia-iOS is excluded: there a mouse is not the real device, and the selection collapses when the flyout
+		// closes - pre-existing behavior this mouse path does not change.
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_RightClick_Flyout_Copy_Closes_Flyout()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
