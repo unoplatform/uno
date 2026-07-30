@@ -1,4 +1,4 @@
-# Uno Drawing / Graphics Backend — Target Design
+# Uno Drawing / Graphics — Target Design
 
 Status: **design** (the shape we're implementing toward). The current, partially-implemented state lives in
 `uno-drawing-backend-abstraction.md`; this document supersedes it where they differ.
@@ -11,13 +11,13 @@ Types are introduced **bottom-up in dependency order** — nothing is referenced
 
 1. **Three independent concerns.**
    - **Content production** — geometry, images, fonts, SVG. Produces *neutral currency* (`IGeometry`, `IImage`),
-     is **independent of the render backend**, and is supplied through its own seams.
-   - **The render backend** — a *matched pair*: a resource factory (`IDrawingBackend`) + a frame renderer
-     (`IRenderBackend`), bound to a GPU device.
-   - **Graphics negotiation** — window/context creation + backend selection (`IGraphicsContext`,
-     `IGraphicsContextSource`, `IGraphicsBackend`, `GraphicsBackend`).
+     is **independent of the renderer**, and is supplied through its own seams.
+   - **The renderer** — a *matched pair*: a resource factory (`IDrawingFactory`) + a frame renderer
+     (`IRenderer`), bound to a GPU device.
+   - **Graphics negotiation** — window/context creation + provider selection (`IGraphicsContext`,
+     `IGraphicsContextFactory`, `IGraphicsProvider`, `GraphicsRegistry`).
 2. **Class vs. interface.** Interface = per-implementer behavior with no shared implementation. Class = inert
-   data, *or* a real shared implementation. (So render targets are classes; contexts/backends are interfaces;
+   data, *or* a real shared implementation. (So render targets are classes; contexts and providers are interfaces;
    per-kind context bases are abstract classes.)
 3. **Neutral vs. opaque handles.** *Neutral/introspectable* handles (`IGeometry`, `IImage`, `IFont` output) are
    read by the framework (bounds, hit-test, pixels) → any renderer can consume any producer's → managed impls
@@ -26,7 +26,101 @@ Types are introduced **bottom-up in dependency order** — nothing is referenced
 4. **Paint is by-value, inline, per verb.** No combined paint object; each draw verb takes exactly the inputs it
    honors (a solid fill and a shader fill are distinct overloads). Expensive things cross as handles.
 5. **No GPU-library types on the seam.** The seam carries GPU-*API* primitives (handles, proc loaders) but never
-   GPU-*library* wrappers (`GRContext`, `SKSurface`, wgpu-sharp) — those are built inside the backend.
+   GPU-*library* wrappers (`GRContext`, `SKSurface`, wgpu-sharp) — those are built inside the renderer.
+
+---
+
+## Vocabulary (the word "backend" is retired)
+
+The old `*Backend` names conflated three different jobs. The abstractions are now named for what they *do*:
+
+| Concept | Type | Kind | Role |
+|---|---|---|---|
+| Resource factory | `IDrawingFactory` (`DrawingFactory.Current`) | interface + static | manufactures the renderer's handles — geometry, shaders, filters, textures, offscreen |
+| Frame renderer | `IRenderer` (`CompositionTarget.Renderer`) | interface + static | draws a frame **immediately** and presents; retained record/replay is an optional add-on |
+| Graphics provider | `IGraphicsProvider` | interface | the pluggable **pair** (factory + renderer) for one device; the unit you register |
+| Graphics registry | `GraphicsRegistry` | static | registers providers, negotiates, activates the winner |
+| Graphics context | `IGraphicsContext` | interface | a live GPU device + swapchain + present |
+| Context factory | `IGraphicsContextFactory` | interface | host-supplied; creates the window+context pair |
+| Image decoder | `IImageDecoder` (`ImageDecoder.Current`) | interface + static | encoded bytes → neutral pixels — an independent content seam |
+| Font manager | `IFontManager` (`FontManager.Current`) | interface + static | family / bytes / codepoint → `IFont` — an independent content seam |
+
+So: the render/drawing "backends" become a **renderer** and a **factory**; their pluggable bundle is a **provider**;
+the content seams are **decoders**/**managers**.
+
+---
+
+## The buckets (what we abstract, and why)
+
+Every place the core rests on Skia (or HarfBuzz, or Unicode data), whether abstracting it breaks public API, and
+the call we're making. "Breaks public API" = removes/changes a type an app can reference today.
+
+| Bucket | Rests on today | Breaks public API? | Abstract? | Abstraction (yes) / why not (no) |
+|---|---|---|---|---|
+| **Geometry** | `SKPath`, `SKPathBuilder`, `SKPath.Op`, `SKPathMeasure` (trim), contour iteration | No | **Yes** | `IGeometry` + `IPathBuilder`/`IPrimitiveGeometryBuilder` — neutral/introspectable; managed engine proven |
+| **Drawing verbs** | `SKCanvas` (`Save`/`Restore`/`ClipPath`/`DrawPath`/`DrawImage`/`SaveLayer`/`DrawTextBlob`) | No | **Yes** | `IDrawingSession` |
+| **Frame record/replay** | `SKPicture`, `SKPictureRecorder` | No | **Yes (optional)** | base `IRenderer` is immediate; retaining is opt-in `IRetainedRenderingSession` + `IRenderData` |
+| **Present / swapchain** | `SKSurface`, `GRBackendRenderTarget` | No | **Yes** | `IRenderTarget` (per-kind data classes) produced by the context; `IPresentSession` |
+| **Shaders** | `SKShader` (linear/radial/image gradients) | No | **Yes** | opaque `IShader` |
+| **Color filters** | `SKColorFilter` (matrix/table) | No | **Yes** | opaque `IColorFilter` |
+| **Effects** (blur/shadow/…) | `SKImageFilter`; input graph is WinUI `IGraphicsEffect`/D2D interop | No (input already public WinUI) | **Yes** | framework lowers the graph to typed `EffectNode` records → opaque `IEffectFilter` |
+| **Image decode** | `SKCodec` (+ EXIF orientation); a managed decoder already exists | No | **Yes** | `IImageDecoder` — independent seam |
+| **Image upload** | `SKImage.FromBitmap` / GPU upload | No | **Yes** | `IImageTexture` + `IDrawingFactory.CreateImageTexture` |
+| **Font resolution / fallback** | `SKFontManager`/`SKTypeface` (or system enumeration) | No | **Yes** | `IFontManager` — independent seam |
+| **Text shaping** | HarfBuzz (Skia's, via `SKTypeface` sfnt tables) | No | **Yes** | `IFont.Shape` — shaper is an impl detail; no raw `GetFontTable` on the seam |
+| **Glyph rendering** | `SKFont.GetPath` (outlines) + COLR/CBDT bitmap glyphs (emoji) | No | **Yes** | `IFont.GetGlyphDrawables` — outline **or** image, unified in one call |
+| **Text layout** (line-break, bidi, shaping orchestration) | Unicode algorithms (Uno's own, ICU-like) — *not* Skia | n/a | **No** | one uniform engine is required for cross-platform consistency + WinUI parity; the variation worth having (fonts + shaping) is captured one layer down |
+| **GPU context / device** | `GRContext.CreateGl/CreateVulkan`; GLX/EGL/`CAMetalLayer` surfaces | Host-level only, no app break | **Yes** | `IGraphicsContext` + host `IGraphicsContextFactory`; seam carries proc-loaders/handles, never `GRContext` |
+| **Renderer selection** | hardcoded Skia renderer + host `RenderSurfaceType` / `FeatureConfiguration.Rendering.UseOpenGL*` knobs | **Yes** — removes those public knobs | **Yes** | `IGraphicsProvider` + `GraphicsRegistry.Register/Activate` with requirements/preferences negotiation |
+| **SVG** | `Svg.Skia` (or the managed SVG engine) | No | **Yes (done)** | `ISvgProvider` / `ManagedSvg` → `IImage` |
+| **Raw-Skia app island** (`SKCanvasElement`/`SKCanvasVisual`) | `SKCanvas`, app-facing | n/a (app opt-in) | **No** | it's a deliberate "draw with raw Skia" escape hatch in a separate package; neutralizing it defeats its purpose |
+| **The rasterizer** (fill/AA/gradient sampling/blend/clip → pixels) | Skia's CPU/GPU rasterizer | No | **Yes, eventually** | a managed rasterizer implementing `IDrawingFactory`/`IRenderer`/`IDrawingSession` — the largest remaining piece; Skia is the only impl today |
+
+---
+
+## End-to-end flow
+
+```mermaid
+flowchart TB
+  subgraph Startup["Startup / composition root"]
+    App["App head"] -->|"register providers"| Reg["GraphicsRegistry"]
+    App -->|"ImageDecoder.Current ="| Dec["IImageDecoder"]
+    App -->|"FontManager.Current ="| FM["IFontManager"]
+    Host["Platform host"] -->|"implements"| CF["IGraphicsContextFactory"]
+  end
+
+  Reg -->|"Activate: negotiate kind + requirements"| CF
+  CF -->|"create window + context pair"| Ctx["IGraphicsContext"]
+  Reg -->|"pick provider, Open(context)"| Prov["IGraphicsProvider"]
+  Prov -->|"GraphicsSession.Factory"| Fac["IDrawingFactory → DrawingFactory.Current"]
+  Prov -->|"GraphicsSession.Renderer"| Ren["IRenderer → CompositionTarget.Renderer"]
+
+  subgraph Frame["Per frame — CompositionTarget"]
+    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
+    Ren -->|"BeginFrame(RT)"| PS["IPresentSession (an IDrawingSession)"]
+    Tree["Visual-tree walk"] -->|"draw verbs"| PS
+    PS -->|"Dispose = present"| Ctx
+  end
+
+  subgraph Content["Content seams — renderer-independent"]
+    Dec -->|"decode"| IMG["IImage"]
+    IMG -->|"CreateImageTexture"| TEX["IImageTexture"]
+    FM -->|"resolve"| Font["IFont"]
+    Font -->|"Shape + GetGlyphDrawables"| GLY["glyph outline (IGeometry) / image (IImage)"]
+    Fac -->|"CreatePathBuilder"| GEO["IGeometry"]
+    Fac -->|"shaders / color filters / effects"| PNT["IShader / IColorFilter / IEffectFilter"]
+  end
+
+  Fac -.->|"upload"| TEX
+  GEO --> Tree
+  TEX --> Tree
+  GLY --> Tree
+  PNT --> Tree
+```
+
+The base path is **immediate**: `BeginFrame(target)` → draw the tree straight into the `IPresentSession` → dispose
+presents. Retaining (recording a `Visual`'s subtree or a whole frame into `IRenderData` and replaying it) is the
+optional `IRetainedRenderingSession` layer, guarded with `is IRetainedRenderingSession` at the call-sites.
 
 ---
 
@@ -50,7 +144,7 @@ public readonly struct GraphicsPreferences     // SOFT: honored if possible, els
     public int PreferredSampleCount { get; init; }
     public GraphicsColorFormat PreferredColor { get; init; }
 }
-public readonly struct GraphicsContextRequest  // per-kind needs, bundled — a backend lists these in preference order
+public readonly struct GraphicsContextRequest  // per-kind needs, bundled — a renderer lists these in preference order
 {
     public GraphicsContextKind Kind { get; init; }
     public GraphicsRequirements Requirements { get; init; }
@@ -136,7 +230,7 @@ public interface IPrimitiveGeometryBuilder : IGeometryBuilder   // whole shapes
 push-sink) because tessellation is cached per stable geometry, so flattening isn't a per-frame hot path; it
 takes a **tolerance** (resolution-dependent). Trim is here (`GetTrimmed`), once. Two builders by construction
 *mode* (pen vs whole-shape); single-primitive shortcuts (`Rectangle`/`Ellipse`/…) are **shared helpers over the
-builder**, not per-shape backend methods.
+builder**, not per-shape factory methods.
 
 ---
 
@@ -184,7 +278,7 @@ The three paint handles, by role:
 | `IColorFilter` | remaps a fill/image/layer's colors | no |
 | `IEffectFilter` | transforms a layer/backdrop's pixels (blur, graphs) | **yes** |
 
-**Effects are decoded by the framework into a neutral graph; the backend consumes it cast-free.** The public
+**Effects are decoded by the framework into a neutral graph; the renderer consumes it cast-free.** The public
 WinUI graph (`IGraphicsEffect` + `IGraphicsEffectD2D1Interop`, GUID/boxed props) is walked **once, framework-side**
 into a typed node graph, with color-adjust presets **lowered to `IColorFilter`** (they *are* color remaps —
 `Contrast`, `Sepia`, `Saturation`, `Opacity`, …). No builder — the finished graph is handed over:
@@ -202,7 +296,7 @@ public sealed record Composite(IReadOnlyList<EffectNode> Sources, /*D2D1Composit
 public sealed record Border(EffectNode Source, /*edge modes*/ int ExtendX, int ExtendY) : EffectNode;
 public sealed record Transform(EffectNode Source, Matrix3x2 Matrix) : EffectNode;
 public sealed record Lighting(EffectNode Source, /*LightingSpec*/ object Spec) : EffectNode;
-// backend realizes via one cast-free `switch` expression over these records
+// the renderer realizes via one cast-free `switch` expression over these records
 ```
 
 ---
@@ -282,7 +376,7 @@ mirror the clip trio; no `DrawLine` (it's `Stroke` of a 2-point geometry); shado
 // MANDATORY: the immediate draw-and-present session. Draw into it directly; Dispose flushes/presents. No recording.
 public interface IPresentSession : IDrawingSession, IDisposable { }   // Dispose = flush/present
 
-// OPTIONAL retained layer — a backend MAY implement it on its sessions for record-once / replay-many. The
+// OPTIONAL retained layer — a renderer MAY implement it on its sessions for record-once / replay-many. The
 // framework guards `is IRetainedRenderingSession` and falls back to redraw-every-frame when it's absent.
 public interface IRetainedRenderingSession
 {
@@ -295,10 +389,10 @@ public interface IRenderData : IDisposable { }   // opaque retained fragment (Sk
 
 **The base path is immediate.** The render loop draws the visual tree straight into an `IPresentSession`, which
 flushes/presents on dispose — **no `IRenderData`, no recording**. Recording *is* retaining, so it lives entirely
-in the **optional** `IRetainedRenderingSession`: a backend that also implements it on its sessions lets the
+in the **optional** `IRetainedRenderingSession`: a renderer that also implements it on its sessions lets the
 framework (a) cache an unchanged `Visual`'s subtree as an `IRenderData` and `Replay` it instead of re-walking, and
 (b) record a whole frame on the UI thread and replay it on the render thread (the two-thread decoupling). An
-immediate-only backend implements none of it and simply redraws each frame. Either way the tree walk targets
+immediate-only renderer implements none of it and simply redraws each frame. Either way the tree walk targets
 `IDrawingSession`, so it's written once and is oblivious to whether it's drawing immediately or into a recording.
 The sessions do **not** hard-extend `IRetainedRenderingSession` — that's what keeps it genuinely optional.
 
@@ -321,37 +415,37 @@ public sealed class WebGpuRenderTarget   : IRenderTarget { public nint TextureVi
 **Decisions:** the base is an **interface** (polymorphic, no shared impl); the per-kind targets are **plain data
 classes** (inert handles + size). Not `IDisposable` — the context owns the target's lifetime (valid from
 `AcquireRenderTarget` until `Present`) and guarantees **stable identity** (same instance while unchanged, new on
-resize/recreate) so the backend can cache its wrap by identity. The backend's own realized surface (concept-2,
-e.g. `SKSurface`) is **not** here — it's `IPresentSession`, backend-internal.
+resize/recreate) so the renderer can cache its wrap by identity. The renderer's own realized surface (concept-2,
+e.g. `SKSurface`) is **not** here — it's `IPresentSession`, renderer-internal.
 
 ---
 
-## I. Render backend (depends on G, H)
+## I. Renderer (depends on G, H)
 
 ```csharp
-public interface IRenderBackend
+public interface IRenderer
 {
     // IMMEDIATE: hand back a session bound to the target; draw the tree straight into it; Dispose = flush/present.
     IPresentSession BeginFrame(IRenderTarget target);
 }
 ```
 
-The base render backend is **immediate** — `BeginFrame(target)` wraps the concept-1 target into its concept-2
+The base renderer is **immediate** — `BeginFrame(target)` wraps the concept-1 target into its concept-2
 surface (**caching the wrap keyed by target identity**, rebuilt only on a new target) and returns a session; the
 loop draws the tree straight into it and disposing it presents. There is **no recording or `IRenderData` in the
-base** — that's the optional retained layer (§G). A backend whose sessions *also* implement
+base** — that's the optional retained layer (§G). A renderer whose sessions *also* implement
 `IRetainedRenderingSession` additionally gets per-`Visual` subtree caching and UI-thread-record /
-render-thread-present decoupling; an immediate-only backend redraws every frame. Bound to a context so it built
+render-thread-present decoupling; an immediate-only renderer redraws every frame. Bound to a context so it built
 its device wrap once (see N).
 
 ---
 
-## J. Drawing backend — the matched resource factory (produces B–E handles)
+## J. Drawing factory — the matched resource factory (produces B–E handles)
 
 ```csharp
-public interface IDrawingBackend
+public interface IDrawingFactory
 {
-    // geometry — the backend's NATIVE representation (fast path; managed geometry is the neutral opt-in)
+    // geometry — the renderer's NATIVE representation (fast path; managed geometry is the neutral opt-in)
     IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
     IPathBuilder CreatePathBuilder();
     // opaque paint — matched, downcast by the renderer
@@ -366,7 +460,7 @@ public interface IDrawingBackend
 }
 ```
 
-**Decision:** this is the render-backend-*specific* factory only (opaque paint + GPU boundary + native geometry +
+**Decision:** this is the renderer-*specific* factory only (opaque paint + GPU boundary + native geometry +
 offscreen). Decode and font *resolution/shaping* are **not** here — they're independent seams (K, E). Geometry
 stays because a native representation is conversion-free for the matched renderer; `ManagedGeometry` is the
 pluggable neutral alternative. No per-shape `Create*Geometry` — single-primitive shortcuts are shared helpers
@@ -374,7 +468,7 @@ over the builder.
 
 ---
 
-## K. Independent content seams (render-backend-independent)
+## K. Independent content seams (renderer-independent)
 
 ```csharp
 public interface IImageDecoder      // CPU-only: encoded stream → neutral pixels. Own seam.
@@ -386,8 +480,8 @@ public interface IImageDecoder      // CPU-only: encoded stream → neutral pixe
 // + IFontManager (E) is the other content seam.  + ManagedSvg (SVG → IImage).
 ```
 
-Each produces neutral currency (`IImage` / `IGeometry`) consumed by any render backend. Supplied independently
-of the render backend and of each other.
+Each produces neutral currency (`IImage` / `IGeometry`) consumed by any renderer. Supplied independently
+of the renderer and of each other.
 
 `CreateImage` returns a **single `IImage`** (matching `RenderOffscreen`), not the multi-frame container —
 `IImageFrames` is reserved for genuine **animation** (`TryDecode`), and `CreateFrames(IImage)` exists only to wrap
@@ -421,14 +515,14 @@ public abstract class VulkanGraphicsContext : IGraphicsContext { /* Instance/Phy
 side interface. **No size args** — the context is the size authority (queries its own window). Sizing is
 pull-based; there's no `Resized`. Per-kind contexts are **abstract classes** (real shared core), specialized per
 platform; they expose the device as **neutral primitives** (proc loaders / raw handles), never GPU-library types
-— the backend builds its `GRContext` from those.
+— the renderer builds its `GRContext` from those.
 
 ---
 
-## M. Context source — the host's entire contribution (depends on L)
+## M. Context factory — the host's entire contribution (depends on L)
 
 ```csharp
-public interface IGraphicsContextSource
+public interface IGraphicsContextFactory
 {
     IGraphicsContext? Create(GraphicsContextRequest request);   // builds window+context TOGETHER, or null (cleaned up)
 }
@@ -441,15 +535,15 @@ negotiation can try the next request. No neutral `INativeWindow` type — nothin
 
 ---
 
-## N. The backend pair (depends on I, J, L)
+## N. The graphics provider — the matched pair (depends on I, J, L)
 
 ```csharp
-public interface IGraphicsBackend
+public interface IGraphicsProvider
 {
     IReadOnlyList<GraphicsContextRequest> SupportedContexts { get; }   // preference order
-    GraphicsSession Open(IGraphicsContext context);                    // matched (Drawing, Render), device-bound
+    GraphicsSession Open(IGraphicsContext context);                    // matched (Factory, Renderer), device-bound
 }
-public sealed record GraphicsSession(IDrawingBackend Drawing, IRenderBackend Render) : IDisposable;
+public sealed record GraphicsSession(IDrawingFactory Factory, IRenderer Renderer) : IDisposable;
 ```
 
 **Decision:** `Open(context)` mints the matched pair *together* (both device-bound — GPU resource factories and
@@ -463,30 +557,30 @@ context to its kind class to build the device wrap once.
 ```csharp
 public readonly record struct GraphicsActivation(IGraphicsContext Context, GraphicsSession Session) : IDisposable;
 
-public static class GraphicsBackend
+public static class GraphicsRegistry
 {
-    public static void Register(IReadOnlyList<IGraphicsBackend> backendsInPreferenceOrder);   // composition root
-    public static GraphicsActivation Activate(IGraphicsContextSource source);                 // host, once it can make windows
+    public static void Register(IReadOnlyList<IGraphicsProvider> providersInPreferenceOrder);   // composition root
+    public static GraphicsActivation Activate(IGraphicsContextFactory source);                 // host, once it can make windows
 }
 ```
 
 `Activate` is the sole negotiator and the sole caller of `source.Create`:
 
 ```csharp
-foreach (var backend in registered)               // preference order
-  foreach (var request in backend.SupportedContexts)
+foreach (var provider in registered)               // preference order
+  foreach (var request in provider.SupportedContexts)
      if (source.Create(request) is { } context)   // host creates window+context for the kind, or null
      {
-         var session = backend.Open(context);
-         DrawingBackend.Current = session.Drawing;         // installs the globals (only place)
-         CompositionTarget.RenderBackend = session.Render;
+         var session = provider.Open(context);
+         DrawingFactory.Current = session.Factory;         // installs the globals (only place)
+         CompositionTarget.Renderer = session.Renderer;
          return new GraphicsActivation(context, session);
      }
-throw /* enumerate what no (backend, request) could satisfy — a loud, described failure */;
+throw /* enumerate what no (provider, request) could satisfy — a loud, described failure */;
 ```
 
-The kind is chosen by **intersection**: the backend proposes an ordered set, the source vetoes what it can't
-build (null), first survivor wins. `Activate` is shared; only the `IGraphicsContextSource` is per-host.
+The kind is chosen by **intersection**: the renderer proposes an ordered set, the source vetoes what it can't
+build (null), first survivor wins. `Activate` is shared; only the `IGraphicsContextFactory` is per-host.
 
 ---
 
@@ -494,19 +588,19 @@ build (null), first survivor wins. `Activate` is shared; only the `IGraphicsCont
 
 **Composition-root inputs (pluggable choices, set independently):**
 ```csharp
-GraphicsBackend.Register(new IGraphicsBackend[] { new SkiaGraphicsBackend() });   // render backend(s)
+GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });   // renderer(s)
 ImageDecoder.Current = new ManagedImageDecoder();                                 // or Skia / platform codec
 FontManager.Current  = new ManagedFontManager();                                  // or Skia / CoreText / DirectWrite
 ```
 **`Activate`-derived outputs (never user-assigned):**
 ```csharp
-DrawingBackend.Current           // winning session's IDrawingBackend
-CompositionTarget.RenderBackend  // winning session's IRenderBackend
+DrawingFactory.Current           // winning session's IDrawingFactory
+CompositionTarget.Renderer  // winning session's IRenderer
 ```
 
 `DrawingBackendOptions` is gone — its `FontManager` and `UNO_MANAGED_*` toggles are now first-class per-seam
-registrations. Unset seams **throw** (no hidden default). All process-global today = one backend/decoder/font
-manager per process (multi-window-different-backends → per-target, deferred).
+registrations. Unset seams **throw** (no hidden default). All process-global today = one renderer/decoder/font
+manager per process (multi-window-different-providers → per-target, deferred).
 
 ---
 
@@ -519,7 +613,7 @@ manager per process (multi-window-different-backends → per-target, deferred).
 | line layout, justification, alignment, wrapping | text layer | **no** |
 | font resolution + fallback | `IFontManager` | **yes** |
 | shaping, metrics, coverage, glyph outlines/images | `IFont` | **yes** |
-| draw (`GlyphOutline`→Fill / `GlyphImage`→DrawImage) | render backend | (separate axis) |
+| draw (`GlyphOutline`→Fill / `GlyphImage`→DrawImage) | renderer | (separate axis) |
 
 **Why the algorithms aren't overridable:** Uno guarantees text lays out *identically on every platform and
 matches WinUI*. A single framework engine delivers that; delegating to native engines (CoreText/DirectWrite/
@@ -540,7 +634,7 @@ fallback *policy* is framework, fallback *font lookup* is the plug (`MatchCharac
 
 ```csharp
 // once, when the host can create windows:
-var activation = GraphicsBackend.Activate(new X11GraphicsContextSource(display, parent, …));
+var activation = GraphicsRegistry.Activate(new X11GraphicsContextFactory(display, parent, …));
 ((PlatformContext)activation.Context).WireInput(...);          // host downcasts to wire input to its window
 
 // per frame, in the host's own render method (its own thread/lock/invalidation):
