@@ -6601,6 +6601,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Preview_Uses_SelectionHighlightColor()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.SelectionHighlightColor = new SolidColorBrush(Colors.Magenta);
+			SUT.Foreground = new SolidColorBrush(Colors.Green);
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			var restingBrush = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush;
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			await WindowHelper.WaitForIdle();
+
+			var dragBrush = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush;
+			Assert.AreNotSame(restingBrush, dragBrush, "The dragged caret should not reuse the Foreground caret brush.");
+			Assert.AreEqual(Colors.Magenta, ((Microsoft.UI.Composition.CompositionColorBrush)dragBrush).Color);
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Colors.Green, ((Microsoft.UI.Composition.CompositionColorBrush)SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush).Color,
+				"The caret should return to the Foreground colour once the gesture ends.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_On_Touch_Then_Insertion_Handle_Survives()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// The iOS convention taps to a bare caret, so the Android one is what exercises a
+			// caret drag starting from a mode that carries a handle.
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the insertion handle");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "The thumb should be hidden while dragging.");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-40, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode,
+				"The insertion handle must come back after the gesture.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
 		public async Task When_CaretDrag_Declined()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

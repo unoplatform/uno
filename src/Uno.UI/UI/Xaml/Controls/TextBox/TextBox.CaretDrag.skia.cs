@@ -2,6 +2,9 @@
 
 using System;
 using Windows.Foundation;
+using Windows.UI;
+using Microsoft.UI.Composition;
+using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -26,7 +29,36 @@ public partial class TextBox
 	// so a drag raises a single SelectionChanged instead of one per callback.
 	private int? _caretDragPreviewIndex;
 
+	// The gesture needs a thumbless, non-blinking caret, so the mode in effect beforehand — which on
+	// touch platforms carries the selection thumbs — is put back when it ends.
+	private CaretDisplayMode? _caretModeBeforeCaretDrag;
+
+	private CompositionBrush? _cachedCaretDragBrush;
+	private Color _cachedCaretDragColor;
+
 	internal bool IsCaretDragActive => _caretDragAnchor is not null;
+
+	/// <summary>
+	/// Brush for the previewed caret. It follows SelectionHighlightColor rather than the Foreground
+	/// so the dragged caret reads as a transient selection affordance.
+	/// </summary>
+	private CompositionBrush GetCaretDragBrush()
+	{
+		var color = (SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor).Color;
+		if (color.A < 255)
+		{
+			color = Color.FromArgb(255, color.R, color.G, color.B);
+		}
+
+		if (_cachedCaretDragBrush is not null && _cachedCaretDragColor == color)
+		{
+			return _cachedCaretDragBrush;
+		}
+
+		_cachedCaretDragColor = color;
+		_cachedCaretDragBrush = Compositor.GetSharedCompositor().CreateColorBrush(color);
+		return _cachedCaretDragBrush;
+	}
 
 	/// <summary>
 	/// Drives a platform caret-drag gesture, such as the iOS space-bar trackpad gesture.
@@ -75,6 +107,8 @@ public partial class TextBox
 		var caretIndex = IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength;
 		var caretRect = parsedText.GetRectForIndex(caretIndex);
 		_caretDragAnchor = new Point(caretRect.Left, caretRect.Top + (caretRect.Height / 2));
+
+		_caretModeBeforeCaretDrag ??= CaretMode;
 
 		// The caret must not blink away mid-drag. CaretMode restarts the timer when it changes,
 		// so stop it afterwards.
@@ -128,9 +162,17 @@ public partial class TextBox
 		}
 
 		var previewIndex = _caretDragPreviewIndex;
+		var previousMode = _caretModeBeforeCaretDrag;
 
 		_caretDragAnchor = null;
 		_caretDragPreviewIndex = null;
+		_caretModeBeforeCaretDrag = null;
+
+		// Restored before committing so the selection transitions in SelectPartial see the real mode.
+		if (previousMode is { } mode)
+		{
+			CaretMode = mode;
+		}
 
 		if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
 		{
