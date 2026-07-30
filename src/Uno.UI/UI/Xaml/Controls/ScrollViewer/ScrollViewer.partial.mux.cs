@@ -7,8 +7,12 @@
 using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.System;
+using Windows.UI.ViewManagement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -215,6 +219,14 @@ namespace Microsoft.UI.Xaml.Controls
 				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(true));
 			RegisterPropertyChangedCallback(VerticalScrollModeProperty, (s, e) =>
 				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(false));
+			RegisterPropertyChangedCallback(ReduceViewportForCoreInputViewOcclusionsProperty, (s, e) =>
+				((ScrollViewer)s).OnReduceViewportForCoreInputViewOcclusionsChanged());
+			RegisterPropertyChangedCallback(TopLeftHeaderProperty, (s, e) =>
+				((ScrollViewer)s).UpdateScrollContentPresenterHeaders());
+			RegisterPropertyChangedCallback(TopHeaderProperty, (s, e) =>
+				((ScrollViewer)s).UpdateScrollContentPresenterHeaders());
+			RegisterPropertyChangedCallback(LeftHeaderProperty, (s, e) =>
+				((ScrollViewer)s).UpdateScrollContentPresenterHeaders());
 
 			// IsHorizontalScrollChainingEnabled / IsVerticalScrollChainingEnabled / IsZoomChainingEnabled →
 			// OnViewportAffectingPropertyChanged with chainedMotionTypesChanged: true.
@@ -332,6 +344,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// because the cross-platform path doesn't cache them as fields
 				// the new port can read.
 				m_trElementScrollContentPresenter = _presenter as ScrollContentPresenter;
+				m_trElementRoot = GetTemplateChild("Root") as FrameworkElement;
 				m_trElementHorizontalScrollBar = GetTemplateChild("HorizontalScrollBar") as ScrollBar;
 				m_trElementVerticalScrollBar = GetTemplateChild("VerticalScrollBar") as ScrollBar;
 				m_tpElementScrollBarSeparator = GetTemplateChild("ScrollBarSeparator") as UIElement;
@@ -345,6 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// IScrollOwner pipeline becomes live for programmatic scroll + bring-into-view.
 				if (m_trElementScrollContentPresenter is not null)
 				{
+					UpdateScrollContentPresenterHeaders();
 					m_trElementScrollContentPresenter.HookupScrollingComponents();
 					PutManipulationHandler(m_trElementScrollContentPresenter);
 				}
@@ -435,12 +449,12 @@ namespace Microsoft.UI.Xaml.Controls
 				m_verticalScrollbarPointerEnteredToken.Disposable = null;
 				m_verticalScrollbarPointerExitedToken.Disposable = null;
 			}
+			StopOcclusionReflow();
 			m_trElementRoot = null;
 			m_trElementScrollContentPresenter = null;
 			m_trElementHorizontalScrollBar = null;
 			m_trElementVerticalScrollBar = null;
 			m_tpElementScrollBarSeparator = null;
-			m_trLayoutAdjustmentsForOcclusionsStoryboard = null;
 		}
 
 		// Scrolls the view in the specified direction.
@@ -708,7 +722,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DMAlignment alignment = DMAlignment.None;
 			UIElement spContentUIElement = null;
 			UIElement spScrollInfoAsElement = null;
-			object spProvider = null;
+			IManipulationDataProvider spProvider = null;
 			IScrollInfo spScrollInfo = null;
 			Orientation orientation = Orientation.Horizontal;
 			global::Windows.Foundation.Size sizeFirstVisibleItem = default;
@@ -818,10 +832,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			spProvider = GetInnerManipulationDataProvider();
-			if (spProvider is FrameworkElement spProviderFE)
+			if (spProvider is not null)
 			{
-				// TODO Uno: Phase 5 — IManipulationDataProvider port. PhysicalOrientation
-				// is read from the provider; defaults to Horizontal until that lands.
+				orientation = spProvider.PhysicalOrientation;
 
 				// When operating with a IManipulationDataProvider implementation, we do not support animations. Pretend the flag was set to False.
 				disableAnimation = true;
@@ -834,7 +847,6 @@ namespace Microsoft.UI.Xaml.Controls
 					// of ScrollToHorizontalOffset/ScrollToVerticalOffset/ZoomToFactor calls.
 					isBringIntoViewportCallAllowed = false;
 				}
-				_ = spProviderFE;
 			}
 
 			ComputePixelViewportWidth((spProvider is not null && orientation == Orientation.Horizontal) ? spProvider : null, true /*isProviderSet*/, out viewportPixelWidth);
@@ -1487,16 +1499,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// (C++ source line 5607)
 		internal void ComputePixelExtentWidth(
 			bool ignoreZoomFactor,
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			out double pValue)
 		{
 			pValue = 0.0;
 
 			if (pProvider is not null)
 			{
-				// TODO Uno: Phase 5 — IManipulationDataProvider integration for
-				// virtualizing panels. pProvider->ComputePixelExtent(...) goes here.
-				pValue = ExtentWidth;
+				pValue = pProvider.ComputePixelExtent(ignoreZoomFactor);
 			}
 			else
 			{
@@ -1521,15 +1531,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// (C++ source line 5652)
 		internal void ComputePixelExtentHeight(
 			bool ignoreZoomFactor,
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			out double pValue)
 		{
 			pValue = 0.0;
 
 			if (pProvider is not null)
 			{
-				// TODO Uno: Phase 5 — IManipulationDataProvider integration.
-				pValue = ExtentHeight;
+				pValue = pProvider.ComputePixelExtent(ignoreZoomFactor);
 			}
 			else
 			{
@@ -1554,12 +1563,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// When isProviderSet is True, the provided pProvider param is valid even when NULL.
 		// (C++ source line 5698)
 		internal void ComputePixelViewportWidth(
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			bool isProviderSet,
 			out double pValue)
 		{
 			pValue = 0.0;
-			object spProviderLocal = pProvider;
+			IManipulationDataProvider spProviderLocal = pProvider;
 			double viewportWidth = 0.0;
 
 			if (spProviderLocal is null && !isProviderSet)
@@ -1589,13 +1598,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// When isProviderSet is True, the provided pProvider param is valid even when NULL.
 		// (C++ source line 5741)
 		internal void ComputePixelViewportHeight(
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			bool isProviderSet,
 			out double pValue)
 		{
 			pValue = 0.0;
 			double viewportHeight = 0.0;
-			object spProviderLocal = pProvider;
+			IManipulationDataProvider spProviderLocal = pProvider;
 
 			if (spProviderLocal is null && !isProviderSet)
 			{
@@ -1623,7 +1632,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Gets the value of the scrollable width of the content in pixels even for logical scrolling scenarios.
 		// (C++ source line 5783)
 		internal void ComputePixelScrollableWidth(
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			out double pixelScrollableWidth)
 		{
 			pixelScrollableWidth = 0.0;
@@ -1637,7 +1646,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Gets the value of the scrollable height of the content in pixels even for logical scrolling scenarios.
 		// (C++ source line 5805)
 		internal void ComputePixelScrollableHeight(
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			out double pixelScrollableHeight)
 		{
 			pixelScrollableHeight = 0.0;
@@ -1779,10 +1788,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Returns the value of ZoomSnapPoints which can be null if uninitialized.
-		// Mirrors the C++ m_spZoomSnapPoints field accessor pattern. Note that
-		// ZoomSnapPoints is currently NotImplemented on Skia at the public-API
-		// level (the DP is registered, but reads return null), so there are no
-		// zoom snap points to apply on Skia.
 		private global::System.Collections.Generic.IList<float> GetZoomSnapPoints()
 			=> GetValue(ZoomSnapPointsProperty) as global::System.Collections.Generic.IList<float>;
 
@@ -2021,7 +2026,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool inManipulation,
 			bool forInitialTransformationAdjustment,
 			bool adjustDimensions,
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			double leftMargin,
 			double extent,
 			float zoomFactor,
@@ -2122,7 +2127,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool inManipulation,
 			bool forInitialTransformationAdjustment,
 			bool adjustDimensions,
-			object pProvider,
+			IManipulationDataProvider pProvider,
 			double topMargin,
 			double extent,
 			float zoomFactor,
@@ -2269,11 +2274,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
-		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
-		// is that GestureFollowing reads as None (`PointerRoutedEventArgs.GestureFollowing`
-		// is currently NotImplemented), so the m_shouldFocusOnRightTapUnhandled
-		// branch never fires. Once GestureFollowing lands, uncomment the
-		// commented-out branch in MuxInternal to wire the right-tap focus path.
+		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely.
 
 		// (C++ source line 2323)
 		protected override void OnGotFocus(RoutedEventArgs args)
@@ -2916,11 +2917,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Returns the potential inner IManipulationDataProvider regardless of orientation.
 		// The managed Skia path uses the ScrollContentPresenter as its pixel-based IScrollInfo.
-		private object GetInnerManipulationDataProvider() => null;
+		private IManipulationDataProvider GetInnerManipulationDataProvider() => GetScrollInfo() as IManipulationDataProvider;
 
 		// Returns the potential inner IManipulationDataProvider if it's oriented according
 		// to the provided orientation.
-		private object GetInnerManipulationDataProvider(bool isForHorizontalOrientation) => null;
+		private IManipulationDataProvider GetInnerManipulationDataProvider(bool isForHorizontalOrientation)
+		{
+			var provider = GetInnerManipulationDataProvider();
+			if (provider is null)
+			{
+				return null;
+			}
+
+			return (provider.PhysicalOrientation == Orientation.Horizontal) == isForHorizontalOrientation
+				? provider
+				: null;
+		}
 
 		// Updates the ScrollBar's IsIgnoringUserInput flag based on the scroll mode setting.
 		// Delays the update when there is an ongoing manipulation.
@@ -3749,14 +3761,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			horizontalAlignment = alignment;
 
-			// TODO Uno: Phase 6 — header child Unlock-center logic. Headers aren't ported yet.
-			// if (horizontalAlignment == DMAlignment.Near && m_trElementScrollContentPresenter is { } pScrollContentPresenter)
-			// {
-			//     if (pScrollContentPresenter.IsTopLeftHeaderChild_New || pScrollContentPresenter.IsTopHeaderChild_New || pScrollContentPresenter.IsLeftHeaderChild_New)
-			//     {
-			//         horizontalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
-			//     }
-			// }
+			if (horizontalAlignment == DMAlignment.Near &&
+				m_trElementScrollContentPresenter is { } pScrollContentPresenter &&
+				(pScrollContentPresenter.IsTopLeftHeaderChild_New ||
+				 pScrollContentPresenter.IsTopHeaderChild_New ||
+				 pScrollContentPresenter.IsLeftHeaderChild_New))
+			{
+				// When a header child is present, the DMAlignmentUnlockCenter flag is required to avoid
+				// offsets being reset to 0 when inertia starts.
+				horizontalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
+			}
 
 			if (resetHorizontalStretchAlignmentTreatedAsNear)
 			{
@@ -3861,7 +3875,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			verticalAlignment = alignment;
 
-			// TODO Uno: Phase 6 — header child Unlock-center logic. Headers aren't ported yet.
+			if (verticalAlignment == DMAlignment.Near &&
+				m_trElementScrollContentPresenter is { } pScrollContentPresenter &&
+				(pScrollContentPresenter.IsTopLeftHeaderChild_New ||
+				 pScrollContentPresenter.IsTopHeaderChild_New ||
+				 pScrollContentPresenter.IsLeftHeaderChild_New))
+			{
+				// When a header child is present, the DMAlignmentUnlockCenter flag is required to avoid
+				// offsets being reset to 0 when inertia starts.
+				verticalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
+			}
 
 			if (resetVerticalStretchAlignmentTreatedAsNear)
 			{
@@ -4314,14 +4337,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (m_trElementScrollContentPresenter is not null)
 				{
-					m_isInChildInvalidateMeasure = true;
+					m_inChildInvalidateMeasure = true;
 					try
 					{
 						m_trElementScrollContentPresenter.InvalidateMeasure();
 					}
 					finally
 					{
-						m_isInChildInvalidateMeasure = false;
+						m_inChildInvalidateMeasure = false;
 					}
 
 					ComputePixelViewportWidth(pProvider: null, isProviderSet: false, out viewport);
@@ -4339,6 +4362,139 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_isInDirectManipulationCompletion = false;
 			NotifyLayoutRefreshed();
+		}
+
+		private void HandleManipulationStarting(UIElement manipulatedElement, bool wasInDirectManipulation)
+		{
+			m_xPixelOffsetRequested = -1;
+			m_yPixelOffsetRequested = -1;
+			m_contentWidthRequested = -1;
+			m_contentHeightRequested = -1;
+			m_isInertiaEndTransformValid = false;
+			m_preDirectManipulationNonVirtualizedTranslationCorrection = 0.0f;
+
+			var provider = GetInnerManipulationDataProvider(isForHorizontalOrientation: true);
+			var offset = m_xOffset;
+			if (provider is not null)
+			{
+				offset = m_xPixelOffset;
+				provider.UpdateInManipulation(IsInManipulation, isInLiveTree: true, nonVirtualizingOffset: -1.0);
+				GetManipulationPrimaryContentTransform(
+					manipulatedElement,
+					inManipulation: false,
+					forInitialTransformationAdjustment: false,
+					forMargins: false,
+					out _,
+					out m_preDirectManipulationNonVirtualizedTranslationCorrection,
+					out _);
+			}
+
+			if (!wasInDirectManipulation)
+			{
+				m_preDirectManipulationOffsetX = (float)offset;
+			}
+
+			if (provider is null)
+			{
+				provider = GetInnerManipulationDataProvider(isForHorizontalOrientation: false);
+				offset = m_yOffset;
+				if (provider is not null)
+				{
+					offset = m_yPixelOffset;
+					provider.UpdateInManipulation(IsInManipulation, isInLiveTree: true, nonVirtualizingOffset: -1.0);
+					GetManipulationPrimaryContentTransform(
+						manipulatedElement,
+						inManipulation: false,
+						forInitialTransformationAdjustment: false,
+						forMargins: false,
+						out m_preDirectManipulationNonVirtualizedTranslationCorrection,
+						out _,
+						out _);
+				}
+			}
+			else
+			{
+				offset = m_yOffset;
+			}
+
+			if (!wasInDirectManipulation)
+			{
+				m_preDirectManipulationOffsetY = (float)offset;
+				m_preDirectManipulationZoomFactor = ZoomFactor;
+			}
+		}
+
+		private void HandleManipulationCompleted(
+			UIElement manipulatedElement,
+			bool wasInDirectManipulationZoom,
+			float xCumulativeTranslation,
+			float yCumulativeTranslation)
+		{
+			var provider = GetInnerManipulationDataProvider(isForHorizontalOrientation: true);
+			var isForHorizontalOrientation = true;
+			var nonVirtualizingOffset = -1.0;
+			var virtualizingPixelOffset = -1.0;
+
+			if (provider is not null)
+			{
+				if (wasInDirectManipulationZoom)
+				{
+					nonVirtualizingOffset = m_preDirectManipulationOffsetY - yCumulativeTranslation - m_preDirectManipulationNonVirtualizedTranslationCorrection;
+					virtualizingPixelOffset = m_preDirectManipulationOffsetX - xCumulativeTranslation;
+				}
+			}
+			else
+			{
+				provider = GetInnerManipulationDataProvider(isForHorizontalOrientation: false);
+				isForHorizontalOrientation = false;
+				if (provider is not null && wasInDirectManipulationZoom)
+				{
+					nonVirtualizingOffset = m_preDirectManipulationOffsetX - xCumulativeTranslation - m_preDirectManipulationNonVirtualizedTranslationCorrection;
+					virtualizingPixelOffset = m_preDirectManipulationOffsetY - yCumulativeTranslation;
+				}
+			}
+
+			if (provider is not null)
+			{
+				provider.UpdateInManipulation(IsInManipulation, IsInLiveTree, nonVirtualizingOffset);
+
+				var currentPixelOffset = isForHorizontalOrientation ? m_xPixelOffset : m_yPixelOffset;
+				if (wasInDirectManipulationZoom &&
+					Math.Abs(virtualizingPixelOffset - currentPixelOffset) > ScrollViewerScrollRoundingTolerance)
+				{
+					var requestedExtent = isForHorizontalOrientation ? m_contentWidthRequested : m_contentHeightRequested;
+					var pixelExtent = isForHorizontalOrientation ? m_xPixelExtent : m_yPixelExtent;
+					if (pixelExtent > 0.0 &&
+						Math.Abs(requestedExtent - pixelExtent) / pixelExtent < ScrollViewerZoomExtentRoundingTolerance)
+					{
+						var pixelDelta = virtualizingPixelOffset - currentPixelOffset;
+						var logicalOffset = provider.ComputeLogicalOffset(isForHorizontalOrientation, ref pixelDelta);
+						if (isForHorizontalOrientation)
+						{
+							ScrollToHorizontalOffsetInternal(logicalOffset);
+						}
+						else
+						{
+							ScrollToVerticalOffsetInternal(logicalOffset);
+						}
+
+						(provider as UIElement)?.UpdateLayout();
+					}
+				}
+			}
+			else if (IsScrollContentPresenterScrollClient())
+			{
+				m_isInDirectManipulationCompletion = true;
+			}
+			else
+			{
+				NotifyLayoutRefreshed();
+			}
+
+			if (IsInLiveTree)
+			{
+				m_trElementScrollContentPresenter?.InvalidateMeasure();
+			}
 		}
 
 		// Member of the IScrollOwner internal contract. Allows the interface consumer to notify this ScrollViewer
@@ -4898,9 +5054,25 @@ namespace Microsoft.UI.Xaml.Controls
 		// Called when a property that changes responsiveness to occlusions changes.
 		internal void OnReduceViewportForCoreInputViewOcclusionsChanged()
 		{
-			// TODO Uno: Phase 5 — CoreInputView occlusion subscription. The Win32 CoreInputView API isn't
-			// available on Skia; soft-keyboard reflow on Skia happens via a different InputManager path.
-			// For now this is a no-op so the property change doesn't fire any unsupported native call.
+			m_coreInputViewOcclusionsChangedToken.Disposable = null;
+
+			if (ReduceViewportForCoreInputViewOcclusions && m_isLoaded)
+			{
+				var inputPane = InputPane.GetForCurrentView();
+				inputPane.Showing += OnInputPaneVisibilityChanged;
+				inputPane.Hiding += OnInputPaneVisibilityChanged;
+				m_coreInputViewOcclusionsChangedToken.Disposable = Disposable.Create(() =>
+				{
+					inputPane.Showing -= OnInputPaneVisibilityChanged;
+					inputPane.Hiding -= OnInputPaneVisibilityChanged;
+				});
+
+				ReflowAroundCoreInputViewOcclusions();
+			}
+			else
+			{
+				StopOcclusionReflow();
+			}
 		}
 
 		// Called when the ScrollViewer.CanContentRenderOutsideBounds property changed.
@@ -4923,10 +5095,81 @@ namespace Microsoft.UI.Xaml.Controls
 		// keyboard.
 		internal void ReflowAroundCoreInputViewOcclusions()
 		{
-			// TODO Uno: Phase 5 — CoreInputView occlusion-driven reflow. The Win32 CoreInputView API isn't
-			// available on Skia; the equivalent path is in InputManager.PointerManager / OnScreenKeyboard.
-			// Stubbed for now so the property-changed handler can call it without a side effect.
+			ReflowAroundInputPaneOcclusion(InputPane.GetForCurrentView().OccludedRect);
 		}
+
+		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
+		{
+			if (ReflowAroundInputPaneOcclusion(args.OccludedRect))
+			{
+				args.EnsuredFocusedElementInView = true;
+			}
+		}
+
+		private bool ReflowAroundInputPaneOcclusion(global::Windows.Foundation.Rect occludingRect)
+		{
+			var isOccluded = false;
+			var margin = default(Thickness);
+
+			if (m_trElementRoot is not null &&
+				XamlRoot is not null &&
+				FocusManager.GetFocusedElement(XamlRoot) is UIElement focusedElement &&
+				IsTextEditableControl(focusedElement) &&
+				(this == focusedElement || this.IsAncestorOf(focusedElement)))
+			{
+				var focusedElementRect = focusedElement
+					.TransformToVisual(null)
+					.TransformBounds(new global::Windows.Foundation.Rect(0, 0, focusedElement.ActualSize.X, focusedElement.ActualSize.Y));
+
+				if (HasArea(RectHelper.Intersect(focusedElementRect, occludingRect)))
+				{
+					var scrollViewerRect = TransformToVisual(null)
+						.TransformBounds(new global::Windows.Foundation.Rect(0, 0, ActualWidth, ActualHeight));
+					var occludedScrollViewerRect = RectHelper.Intersect(scrollViewerRect, occludingRect);
+
+					if (HasArea(occludedScrollViewerRect) &&
+						scrollViewerRect.Height - occludedScrollViewerRect.Height >= ScrollViewerMinHeightToReflowAroundOcclusions)
+					{
+						margin = m_trElementRoot.Margin;
+						margin.Bottom = occludedScrollViewerRect.Height;
+						isOccluded = true;
+					}
+				}
+			}
+
+			StopOcclusionReflow();
+
+			if (isOccluded)
+			{
+				var storyboard = new Storyboard();
+				var animation = new ObjectAnimationUsingKeyFrames();
+				Storyboard.SetTarget(animation, m_trElementRoot);
+				Storyboard.SetTargetProperty(animation, nameof(FrameworkElement.Margin));
+				animation.KeyFrames.Add(new DiscreteObjectKeyFrame
+				{
+					KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero),
+					Value = margin,
+				});
+				storyboard.Children.Add(animation);
+				storyboard.Begin();
+				storyboard.SkipToFill();
+				m_trLayoutAdjustmentsForOcclusionsStoryboard = storyboard;
+			}
+
+			return isOccluded;
+		}
+
+		private void StopOcclusionReflow()
+		{
+			m_trLayoutAdjustmentsForOcclusionsStoryboard?.Stop();
+			m_trLayoutAdjustmentsForOcclusionsStoryboard = null;
+		}
+
+		private static bool IsTextEditableControl(UIElement element)
+			=> element is TextBox or PasswordBox or RichEditBox;
+
+		private static bool HasArea(global::Windows.Foundation.Rect rect)
+			=> rect.Width > 0.0 && rect.Height > 0.0;
 
 		// Called to determine if our manipulation data is stale and we need to bring into view.
 		internal bool IsBringIntoViewportNeeded()
@@ -4946,11 +5189,23 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			GetDManipView(out var horizontalOffset, out var verticalOffset, out var zoomFactor);
+			m_hManipulationHandler.GetDirectManipulationView(
+				out var manipulationHandlerTranslationX,
+				out var manipulationHandlerTranslationY,
+				out var manipulationHandlerZoomFactor);
+			GetManipulationPrimaryContentTransform(
+				pManipulatedElementNoRef,
+				inManipulation: true,
+				forInitialTransformationAdjustment: false,
+				forMargins: false,
+				out var translationX,
+				out var translationY,
+				out var zoomFactor);
+
 			return
-				Math.Abs(horizontalOffset - m_xPixelOffset) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
-				Math.Abs(verticalOffset - m_yPixelOffset) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
-				Math.Abs(zoomFactor - ZoomFactor) >= ScrollViewerZoomRoundingToleranceForBringIntoViewport;
+				Math.Abs(manipulationHandlerTranslationX - translationX) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
+				Math.Abs(manipulationHandlerTranslationY - translationY) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
+				Math.Abs(manipulationHandlerZoomFactor - zoomFactor) >= ScrollViewerZoomRoundingToleranceForBringIntoViewport;
 		}
 
 		// Synchonizes the ScrollData's m_ComputedOffset and m_Offset fields.
@@ -5437,6 +5692,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnLoadedCore()
 		{
 			m_isLoaded = true;
+			OnReduceViewportForCoreInputViewOcclusionsChanged();
 			OnManipulatabilityAffectingPropertyChanged(
 				pIsInLiveTree: true,
 				isCachedPropertyChanged: false,
@@ -5454,6 +5710,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnUnloadedCore()
 		{
 			m_isLoaded = false;
+			m_coreInputViewOcclusionsChangedToken.Disposable = null;
+			StopOcclusionReflow();
 
 			m_showingMouseIndicators = false;
 			m_keepIndicatorsShowing = false;
@@ -5545,9 +5803,24 @@ namespace Microsoft.UI.Xaml.Controls
 				double sizeX = 0.0;
 				double sizeY = 0.0;
 
-				// TODO Uno: Phase 6 — port get_TopLeftHeader / get_TopHeader / get_LeftHeader on SCP and the
-				// header-margin computation. Headers are not yet wired up on the managed Skia path; this
-				// returns (0, 0).
+				if (pScrollContentPresenter.IsTopLeftHeaderChild_New &&
+					pScrollContentPresenter.GetTopLeftHeader() is FrameworkElement topLeftHeader)
+				{
+					sizeX = Math.Max(sizeX, topLeftHeader.ActualWidth + topLeftHeader.Margin.Left + topLeftHeader.Margin.Right);
+					sizeY = Math.Max(sizeY, topLeftHeader.ActualHeight + topLeftHeader.Margin.Top + topLeftHeader.Margin.Bottom);
+				}
+
+				if (pScrollContentPresenter.IsTopHeaderChild_New &&
+					pScrollContentPresenter.GetTopHeader() is FrameworkElement topHeader)
+				{
+					sizeY = Math.Max(sizeY, topHeader.ActualHeight + topHeader.Margin.Top + topHeader.Margin.Bottom);
+				}
+
+				if (pScrollContentPresenter.IsLeftHeaderChild_New &&
+					pScrollContentPresenter.GetLeftHeader() is FrameworkElement leftHeader)
+				{
+					sizeX = Math.Max(sizeX, leftHeader.ActualWidth + leftHeader.Margin.Left + leftHeader.Margin.Right);
+				}
 
 				pSize = new global::Windows.Foundation.Size((float)sizeX, (float)sizeY);
 			}
@@ -5567,11 +5840,43 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (sizeHeaders.Width > 0.0f || sizeHeaders.Height > 0.0f)
 				{
-					// TODO Uno: Phase 6 — header ownership lookup + ComputePixelViewportWidth/Height
-					// once those land. Until headers are wired up, the ratios stay (1, 1).
+					var isChildInTopLeftHeader = false;
+					var isChildInTopHeader = false;
+					var isChildInLeftHeader = false;
+
+					if (pChild is not null)
+					{
+						m_trElementScrollContentPresenter.GetHeaderOwnership(
+							pChild,
+							out _,
+							out isChildInTopLeftHeader,
+							out isChildInTopHeader,
+							out isChildInLeftHeader,
+							out _);
+					}
+
+					if (!isChildInTopLeftHeader)
+					{
+						var zoomFactor = ZoomFactor;
+
+						if (sizeHeaders.Width > 0.0f && !isChildInLeftHeader && ActualWidth > 0.0)
+						{
+							ComputePixelViewportWidth(null, true /*isProviderSet*/, out var viewportWidth);
+							pRatios.Width = (float)(Math.Max(0.0, viewportWidth - sizeHeaders.Width * zoomFactor) / ActualWidth);
+						}
+
+						if (sizeHeaders.Height > 0.0f && !isChildInTopHeader && ActualHeight > 0.0)
+						{
+							ComputePixelViewportHeight(null, true /*isProviderSet*/, out var viewportHeight);
+							pRatios.Height = (float)(Math.Max(0.0, viewportHeight - sizeHeaders.Height * zoomFactor) / ActualHeight);
+						}
+					}
 				}
 			}
 		}
+
+		private void UpdateScrollContentPresenterHeaders()
+			=> m_trElementScrollContentPresenter?.SetHeaders(TopLeftHeader, TopHeader, LeftHeader);
 
 		private bool IsPanelACarouselPanel(bool isForHorizontalOrientation)
 			=> GetScrollInfoAsElement() is CarouselPanel;
@@ -5720,6 +6025,32 @@ namespace Microsoft.UI.Xaml.Controls
 			var extentHeight = spScrollInfo.GetExtentHeight();
 			var viewportWidth = spScrollInfo.GetViewportWidth();
 			var viewportHeight = spScrollInfo.GetViewportHeight();
+			var horizontalProvider = GetInnerManipulationDataProvider(isForHorizontalOrientation: true);
+			var verticalProvider = horizontalProvider is null
+				? GetInnerManipulationDataProvider(isForHorizontalOrientation: false)
+				: null;
+
+			var pixelOffsetX = horizontalProvider?.ComputePixelOffset(isForHorizontalOrientation: true) ?? horizontalOffset;
+			var pixelOffsetY = verticalProvider?.ComputePixelOffset(isForHorizontalOrientation: false) ?? verticalOffset;
+			ComputePixelViewportWidth(horizontalProvider, isProviderSet: horizontalProvider is not null, out var pixelViewportWidth);
+			ComputePixelViewportHeight(verticalProvider, isProviderSet: verticalProvider is not null, out var pixelViewportHeight);
+			ComputePixelExtentWidth(ignoreZoomFactor: false, pProvider: horizontalProvider, out var pixelExtentWidth);
+			ComputePixelExtentHeight(ignoreZoomFactor: false, pProvider: verticalProvider, out var pixelExtentHeight);
+
+			m_xOffset = horizontalOffset;
+			m_yOffset = verticalOffset;
+			m_xMinOffset = minHorizontalOffset;
+			m_yMinOffset = minVerticalOffset;
+			m_xPixelOffset = pixelOffsetX;
+			m_yPixelOffset = pixelOffsetY;
+			m_xViewport = viewportWidth;
+			m_yViewport = viewportHeight;
+			m_xPixelViewport = pixelViewportWidth;
+			m_yPixelViewport = pixelViewportHeight;
+			m_xExtent = extentWidth;
+			m_yExtent = extentHeight;
+			m_xPixelExtent = pixelExtentWidth;
+			m_yPixelExtent = pixelExtentHeight;
 
 			if (m_trElementHorizontalScrollBar is not null)
 			{
@@ -5865,7 +6196,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Tracks whether the SV is itself triggering an InvalidateMeasure on
 		// its inner panel (bug 261102 / 342668 workaround).
-		bool IScrollOwner.IsInChildInvalidateMeasure() => m_isInChildInvalidateMeasure;
+		bool IScrollOwner.IsInChildInvalidateMeasure() => m_inChildInvalidateMeasure;
 
 		// #endregion
 

@@ -7,6 +7,7 @@
 
 #nullable disable
 
+using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
@@ -52,8 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Reference to the main scrollable region being presented (it could
 		// be this).
-		// Note: existing _scroller field already stores a weak reference; reuse it.
-		// private ManagedWeakReference m_wrScrollInfo;
+		private WeakReference<IScrollInfo> m_wrScrollInfo;
 
 		// The state necessary to scroll the content.
 		private ScrollData m_pScrollData;
@@ -110,6 +110,12 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool IsTopLeftHeaderChild_New => m_isTopLeftHeaderChild;
 		internal bool IsTopHeaderChild_New => m_isTopHeaderChild;
 		internal bool IsLeftHeaderChild_New => m_isLeftHeaderChild;
+
+		internal UIElement GetTopLeftHeader() => m_trTopLeftHeader;
+
+		internal UIElement GetTopHeader() => m_trTopHeader;
+
+		internal UIElement GetLeftHeader() => m_trLeftHeader;
 
 		// Return true if the child's actual Width size is used for the
 		// extent exposed through IScrollInfo

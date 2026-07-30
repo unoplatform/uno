@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using DirectUI;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Windows.System;
@@ -19,6 +20,22 @@ namespace Microsoft.UI.Xaml.Controls
 			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
 #if !__WASM__
 			var key = args.Key;
+
+#if __SKIA__
+			if (!m_ignoreSemanticZoomNavigationInput)
+			{
+				var zoomDirection = GetKeyboardMessageZoomAction(args.KeyboardModifiers, key);
+				if (zoomDirection != ZoomDirection.None)
+				{
+					ProcessPureInertiaInputMessage(zoomDirection, out var isHandled);
+					if (isHandled)
+					{
+						args.Handled = true;
+						return;
+					}
+				}
+			}
+#endif
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
 			// but interestingly that doesn't seem to affect pointer wheel scrolling

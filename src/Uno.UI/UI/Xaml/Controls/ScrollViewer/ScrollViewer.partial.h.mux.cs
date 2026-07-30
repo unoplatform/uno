@@ -370,7 +370,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// In this case the new configurations need to to be pushed to the ManipulationHandler
 		// once the ongoing manipulation completes.
 		private bool m_areViewportConfigurationsInvalid;
-		private bool m_isInChildInvalidateMeasure;
 
 		// Set to True during a manipulation when the manipulability of the elements might be FALSE
 		// once the ongoing manipulation completes.
@@ -572,12 +571,11 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (state)
 			{
 				case DMManipulationState.DMManipulationStarting:
+					var wasInDirectManipulation = m_isInDirectManipulation;
 					m_isInDirectManipulation = true;
 					m_isDirectManipulationStopped = false;
 					m_isInDirectManipulationCompletion = false;
-					m_preDirectManipulationOffsetX = (float)m_xOffset;
-					m_preDirectManipulationOffsetY = (float)m_yOffset;
-					m_preDirectManipulationZoomFactor = ZoomFactor;
+					HandleManipulationStarting(manipulatedElement, wasInDirectManipulation);
 					m_currentHorizontalScrollMode = HorizontalScrollMode;
 					m_currentVerticalScrollMode = VerticalScrollMode;
 					m_currentZoomMode = ZoomMode;
@@ -607,9 +605,14 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 
 				case DMManipulationState.DMManipulationCompleted:
-					m_isInDirectManipulationCompletion = true;
+					var wasInDirectManipulationZoom = m_isInDirectManipulationZoom;
 					m_isInDirectManipulation = false;
 					m_isInDirectManipulationZoom = false;
+					HandleManipulationCompleted(
+						manipulatedElement,
+						wasInDirectManipulationZoom,
+						xCumulativeTranslation,
+						yCumulativeTranslation);
 					m_isDirectManipulationZoomFactorChangeIgnored = false;
 					m_isInertial = false;
 					m_isInertiaEndTransformValid = false;
@@ -760,8 +763,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return (DMConfigurations)((int)panXConfiguration + (int)panYConfiguration);
 		}
 
-		// Uno's managed ScrollViewer always uses the dynamic indicator visual states.
-		private static bool IsConscious() => true;
+		private static bool IsConscious() => Uno.UI.Helpers.WinUI.SharedHelpers.ShouldUseDynamicScrollbars();
 
 		// Inline header virtuals — root-ScrollViewer specializations override these. Default to false
 		// since regular ScrollViewers are never the root ScrollViewer.

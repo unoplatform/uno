@@ -101,19 +101,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_isPointerLeftButtonPressed)
 			{
-				//GestureModes gestureFollowing = GestureModes.None;
-
 				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				//var gestureFollowing = args.GestureFollowing;
+#if __SKIA__
+				var gestureFollowing = args.GestureFollowing;
 
-				//if (gestureFollowing == GestureModes.RightTapped)
-				//{
-				//	// Schedule the focus change for OnRightTappedUnhandled.
-				//	m_shouldFocusOnRightTapUnhandled = true;
-				//}
-				//else
+				if (gestureFollowing == GestureModes.RightTapped)
+				{
+					// Schedule the focus change for OnRightTappedUnhandled.
+					m_shouldFocusOnRightTapUnhandled = true;
+				}
+				else
+#endif
 				{
 					bool isFocusedOnLightDismissPopupOfFlyout = false;
 

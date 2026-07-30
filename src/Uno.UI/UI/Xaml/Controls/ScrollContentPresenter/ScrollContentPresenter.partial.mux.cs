@@ -21,16 +21,75 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ScrollContentPresenter
 	{
 #if __SKIA__
-#pragma warning disable IDE0051 // Private member is unused (placeholder for full impl)
+#pragma warning disable IDE0051 // Private member is unused
 
 		// #region Foundational IScrollInfo implementation ported from ScrollContentPresenter_Partial.cpp
 
 		// Gets a value indicating whether the current ScrollContentPresenter is a scrolling client.
-		// In WinUI this is true iff the m_wrScrollInfo weak ref points to this instance — i.e. no inner
-		// IManipulationDataProvider has registered as the IScrollInfo. In the Uno managed scroll path
-		// we always answer true: logical scrolling delegated to an inner panel is not yet wired up here.
-		// TODO Uno: revisit when virtualizing-panel logical scrolling lands on Skia.
-		internal bool IsScrollClient() => true;
+		internal bool IsScrollClient() => GetCurrentScrollInfo() == this;
+
+		private IScrollInfo GetCurrentScrollInfo()
+			=> m_wrScrollInfo is { } scrollInfoReference && scrollInfoReference.TryGetTarget(out var scrollInfo)
+				? scrollInfo
+				: null;
+
+		internal void SetHeaders(UIElement topLeftHeader, UIElement topHeader, UIElement leftHeader)
+		{
+			if (m_trTopLeftHeader != topLeftHeader ||
+				m_trTopHeader != topHeader ||
+				m_trLeftHeader != leftHeader)
+			{
+				m_trTopLeftHeader = topLeftHeader;
+				m_trTopHeader = topHeader;
+				m_trLeftHeader = leftHeader;
+				m_isTopLeftHeaderChild = topLeftHeader is not null;
+				m_isTopHeaderChild = topHeader is not null;
+				m_isLeftHeaderChild = leftHeader is not null;
+				InvalidateMeasure();
+			}
+		}
+
+		internal void GetHeaderOwnership(
+			DependencyObject element,
+			out bool isElementDirectChild,
+			out bool isElementInTopLeftHeader,
+			out bool isElementInTopHeader,
+			out bool isElementInLeftHeader,
+			out bool isElementInContent)
+		{
+			isElementDirectChild = false;
+			var isTopLeftDirectChild = false;
+			var isTopDirectChild = false;
+			var isLeftDirectChild = false;
+			var isContentDirectChild = false;
+			isElementInTopLeftHeader = IsHeaderOwner(m_trTopLeftHeader, element, out isTopLeftDirectChild);
+			isElementInTopHeader = !isElementInTopLeftHeader && IsHeaderOwner(m_trTopHeader, element, out isTopDirectChild);
+			isElementInLeftHeader = !isElementInTopLeftHeader && !isElementInTopHeader && IsHeaderOwner(m_trLeftHeader, element, out isLeftDirectChild);
+			isElementInContent = !isElementInTopLeftHeader &&
+				!isElementInTopHeader &&
+				!isElementInLeftHeader &&
+				Content is UIElement content &&
+				IsHeaderOwner(content, element, out isContentDirectChild);
+
+			isElementDirectChild = isTopLeftDirectChild || isTopDirectChild || isLeftDirectChild || isContentDirectChild;
+		}
+
+		private static bool IsHeaderOwner(UIElement owner, DependencyObject element, out bool isDirectChild)
+		{
+			isDirectChild = owner == element;
+			return isDirectChild || owner?.IsAncestorOf(element) == true;
+		}
+
+		private void GetZoomedHeadersSize(out Size size)
+		{
+			size = default;
+			if (GetScrollOwner() is ScrollViewer scrollViewer)
+			{
+				scrollViewer.GetHeadersSize(out size);
+				size.Width *= m_fZoomFactor;
+				size.Height *= m_fZoomFactor;
+			}
+		}
 
 		// Get (or create on demand) the ScrollContentPresenter's scrolling state.
 		internal ScrollData GetScrollData()
@@ -211,8 +270,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var offset = GetVerticalOffset();
 				var viewport = GetViewportHeight();
-				// TODO Uno: GetZoomedHeadersSize stub returns zero until headers land in Phase 6.
-				var sizeHeaders = new Size(0, 0);
+				GetZoomedHeadersSize(out var sizeHeaders);
 				viewport = Math.Max(ScrollViewer.ScrollViewerLineDelta, viewport - sizeHeaders.Height);
 				SetVerticalOffset(offset - viewport);
 			}
@@ -225,7 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var offset = GetVerticalOffset();
 				var viewport = GetViewportHeight();
-				var sizeHeaders = new Size(0, 0);
+				GetZoomedHeadersSize(out var sizeHeaders);
 				viewport = Math.Max(ScrollViewer.ScrollViewerLineDelta, viewport - sizeHeaders.Height);
 				SetVerticalOffset(offset + viewport);
 			}
@@ -238,7 +296,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var offset = GetHorizontalOffset();
 				var viewport = GetViewportWidth();
-				var sizeHeaders = new Size(0, 0);
+				GetZoomedHeadersSize(out var sizeHeaders);
 				viewport = Math.Max(ScrollViewer.ScrollViewerLineDelta, viewport - sizeHeaders.Width);
 				SetHorizontalOffset(offset - viewport);
 			}
@@ -251,7 +309,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var offset = GetHorizontalOffset();
 				var viewport = GetViewportWidth();
-				var sizeHeaders = new Size(0, 0);
+				GetZoomedHeadersSize(out var sizeHeaders);
 				viewport = Math.Max(ScrollViewer.ScrollViewerLineDelta, viewport - sizeHeaders.Width);
 				SetHorizontalOffset(offset + viewport);
 			}
@@ -542,8 +600,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The 'appliedOffset' returned specifies how much of 'offset' was applied
 		// so that potential parent bring-into-view contributors can attempt to
 		// apply the remainder offset.
-		// (C++ source line 1078 — Skia-focused port: header ownership and DManip
-		//  view-snapshotting paths are stubbed; all other behavior preserved.)
+		// (C++ source line 1078)
 		internal global::Windows.Foundation.Rect MakeVisible(
 			// The element that should become visible.
 			UIElement visual,
@@ -622,9 +679,7 @@ namespace Microsoft.UI.Xaml.Controls
 				unhandledRect = rectangle;
 
 				// Compute the area taken up by the potential ScrollViewer headers
-				// TODO Uno: Phase 6 — when headers are ported, replace with a real
-				// GetZoomedHeadersSize(out sizeHeaders).
-				sizeHeaders = new global::Windows.Foundation.Size(0, 0);
+				GetZoomedHeadersSize(out sizeHeaders);
 
 				// Adjust the target rectangle based on those headers
 				rectangle.X -= sizeHeaders.Width;
@@ -634,14 +689,13 @@ namespace Microsoft.UI.Xaml.Controls
 				if (isScrollClient)
 				{
 					// Check if visual belongs to a header.
-					// TODO Uno: Phase 6 — replace with a real GetHeaderOwnership(...)
-					// once headers are ported. For now treat every descendant as
-					// part of the scrollable content.
-					isVisualDirectChild = false;
-					isVisualInTopLeftHeader = false;
-					isVisualInTopHeader = false;
-					isVisualInLeftHeader = false;
-					isVisualInContent = true;
+					GetHeaderOwnership(
+						visual,
+						out isVisualDirectChild,
+						out isVisualInTopLeftHeader,
+						out isVisualInTopHeader,
+						out isVisualInLeftHeader,
+						out isVisualInContent);
 
 					if (!isVisualInTopLeftHeader)
 					{
@@ -1021,28 +1075,57 @@ namespace Microsoft.UI.Xaml.Controls
 			// TemplatedParent for parity with WinUI.
 			var spScrollContainer = (ScrollOwner as ScrollViewer)
 				?? (TemplatedParent as ScrollViewer);
+			var spCurrentScrollInfo = GetCurrentScrollInfo();
 
 			// If our content is not an IScrollInfo, we should have selected a style
 			// that contains one.
 			if (spScrollContainer is not null)
 			{
 				// 1. Try our content...
-				// TODO Uno: Phase 5 — once virtualizing panels expose their inner
-				// IScrollInfo via IOrientedVirtualizingPanel (ItemsPresenter →
-				// IOrientedVirtualizingPanel → inner panel.IScrollInfo), prefer that
-				// IScrollInfo over the SCP itself.
-				IScrollInfo spScrollInfo = this;
+				var spScrollInfo = Content as IScrollInfo;
 
-				// 2. Otherwise, present ourselves as the IScrollInfo to the SV.
+				// 2. Our child might be an ItemsPresenter. In this case check its panel for being an IScrollInfo.
+				if (Content is ItemsPresenter itemsPresenter)
+				{
+					spScrollInfo = itemsPresenter.Panel as IScrollInfo;
+				}
+
+				// 3. As a final fallback, we use ourself.
+				spScrollInfo ??= this;
+
+				if (spScrollInfo != spCurrentScrollInfo && spCurrentScrollInfo is not null)
+				{
+					if (spCurrentScrollInfo == this)
+					{
+						m_pScrollData = null;
+						GetScrollData();
+					}
+					else
+					{
+						spCurrentScrollInfo.PutScrollOwner(null);
+					}
+				}
+
+				m_wrScrollInfo = new WeakReference<IScrollInfo>(spScrollInfo);
+				spScrollInfo.PutScrollOwner(spScrollContainer);
 				spScrollContainer.PutScrollInfo(spScrollInfo);
-
-				// 3. Tell ScrollData to keep a weak reference to the SV as the
-				//    IScrollOwner so our InvalidateScrollInfoImpl call lands.
-				PutScrollOwner((IScrollOwner)spScrollContainer);
-
-				// 4. Keep the cross-platform ScrollOwner property in sync until the
-				//    legacy Skia path is fully retired.
 				ScrollOwner = spScrollContainer;
+
+				if (spScrollInfo is IManipulationDataProvider provider)
+				{
+					provider.SetZoomFactor(m_fZoomFactor);
+				}
+			}
+			else if (spCurrentScrollInfo is not null)
+			{
+				if (spCurrentScrollInfo.GetScrollOwner() is { } spScrollOwner)
+				{
+					spScrollOwner.SetScrollInfo(null);
+				}
+
+				spCurrentScrollInfo.PutScrollOwner(null);
+				m_wrScrollInfo = null;
+				m_pScrollData = null;
 			}
 		}
 
@@ -1449,12 +1532,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				InvalidateMeasure();
 			}
-			else
+			else if (GetCurrentScrollInfo() is IManipulationDataProvider provider)
 			{
-				// TODO Uno: Phase 5 — when an inner IManipulationDataProvider is the IScrollInfo, push
-				// SetZoomFactor onto it. Until that contract lands, this branch is a no-op.
-				// var spProvider = GetScrollOwner_Mux() as IManipulationDataProvider;
-				// spProvider?.SetZoomFactor(m_fZoomFactor);
+				provider.SetZoomFactor(m_fZoomFactor);
 			}
 		}
 
@@ -1476,12 +1556,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (pNewParent is null)
 			{
-				// TODO Uno: Phase 6 — once UnparentHeaders is ported, call it here. Headers are not
-				// yet wired up so leaving the call site commented out for now.
-				// UnparentHeaders();
-				m_trTopLeftHeader = null;
-				m_trTopHeader = null;
-				m_trLeftHeader = null;
+				SetHeaders(null, null, null);
 			}
 		}
 

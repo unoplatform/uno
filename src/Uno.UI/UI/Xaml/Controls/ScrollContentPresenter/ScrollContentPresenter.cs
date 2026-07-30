@@ -258,6 +258,13 @@ namespace Microsoft.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
+#if __SKIA__
+			if (Scroller?.IsInDirectManipulationCompletion() == true)
+			{
+				Scroller.PostDirectManipulationLayoutRefreshed();
+			}
+#endif
+
 			return finalSize;
 		}
 

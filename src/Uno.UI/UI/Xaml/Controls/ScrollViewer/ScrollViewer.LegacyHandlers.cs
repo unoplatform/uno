@@ -1,31 +1,13 @@
 ﻿#nullable enable
 
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno;
-using Uno.Foundation.Logging;
-using Windows.Foundation.Metadata;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
 #if __CROSSRUNTIME__
-		private static bool _warnedAboutZoomedContentAlignment;
-
-		[NotImplemented]
-		private void UpdateZoomedContentAlignment()
-		{
-			if (_warnedAboutZoomedContentAlignment)
-			{
-				return;
-			}
-
-			_warnedAboutZoomedContentAlignment = true;
-			if (this.Log().IsEnabled(ApiInformation.NotImplementedLogLevel))
-			{
-				this.Log().Log(ApiInformation.NotImplementedLogLevel, "Zoom-based content alignment is not implemented on this platform.");
-			}
-		}
+		private void UpdateZoomedContentAlignment() => (_presenter as UIElement)?.InvalidateArrange();
 #endif
 
 #if !__SKIA__
@@ -36,7 +18,28 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleVerticalScroll on ScrollViewer
+			var targetOffset = scrollEventType switch
+			{
+				ScrollEventType.ThumbPosition or ScrollEventType.ThumbTrack => offset,
+				ScrollEventType.LargeDecrement => VerticalOffset - ViewportHeight,
+				ScrollEventType.LargeIncrement => VerticalOffset + ViewportHeight,
+				ScrollEventType.SmallDecrement => VerticalOffset - ScrollViewerLineDelta,
+				ScrollEventType.SmallIncrement => VerticalOffset + ScrollViewerLineDelta,
+				ScrollEventType.First => 0.0,
+				ScrollEventType.Last => ScrollableHeight,
+				_ => VerticalOffset,
+			};
+
+			targetOffset = global::System.Math.Clamp(targetOffset, 0.0, ScrollableHeight);
+			if (targetOffset != VerticalOffset)
+			{
+				ChangeViewCore(
+					horizontalOffset: null,
+					verticalOffset: targetOffset,
+					zoomFactor: null,
+					disableAnimation: true,
+					shouldSnap: false);
+			}
 		}
 
 		/// <summary>
@@ -44,7 +47,28 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+			var targetOffset = scrollEventType switch
+			{
+				ScrollEventType.ThumbPosition or ScrollEventType.ThumbTrack => offset,
+				ScrollEventType.LargeDecrement => HorizontalOffset - ViewportWidth,
+				ScrollEventType.LargeIncrement => HorizontalOffset + ViewportWidth,
+				ScrollEventType.SmallDecrement => HorizontalOffset - ScrollViewerLineDelta,
+				ScrollEventType.SmallIncrement => HorizontalOffset + ScrollViewerLineDelta,
+				ScrollEventType.First => 0.0,
+				ScrollEventType.Last => ScrollableWidth,
+				_ => HorizontalOffset,
+			};
+
+			targetOffset = global::System.Math.Clamp(targetOffset, 0.0, ScrollableWidth);
+			if (targetOffset != HorizontalOffset)
+			{
+				ChangeViewCore(
+					horizontalOffset: targetOffset,
+					verticalOffset: null,
+					zoomFactor: null,
+					disableAnimation: true,
+					shouldSnap: false);
+			}
 		}
 #endif
 	}
