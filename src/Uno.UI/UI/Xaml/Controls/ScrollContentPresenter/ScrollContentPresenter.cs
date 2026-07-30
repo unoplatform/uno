@@ -163,6 +163,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+#if __SKIA__
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureOverridePort(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeOverridePort(finalSize);
+#else
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -267,14 +274,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return finalSize;
 		}
+#endif
 
 		internal override bool IsViewHit()
 			=> true;
 
 #if __CROSSRUNTIME__
-		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
-			=> new Rect(default, RenderSize);
+			=> CanContentRenderOutsideBounds ? null : new Rect(default, RenderSize);
 #endif
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)

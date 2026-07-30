@@ -358,13 +358,21 @@ public partial class ScrollContentPresenter
 		GeneralTransform transform = descendant.TransformToVisual(content);
 		Thickness contentMargin = new Thickness();
 
-		// TODO Uno specific: We need to add presenter padding, as it is not accounted
-		// for when bringing into view nested ScrollViewer.
-		// This is not happening in the WinUI ScrollView control,
-		// but matches our ScrollViewer requirements.
+		var presenterPadding = Padding;
+		contentMargin = new Thickness(
+			presenterPadding.Left,
+			presenterPadding.Top,
+			presenterPadding.Right,
+			presenterPadding.Bottom);
+
 		if (descendant is ScrollViewer sv)
 		{
-			contentMargin = sv.Presenter.Margin;
+			var presenterMargin = sv.Presenter.Margin;
+			contentMargin = new Thickness(
+				contentMargin.Left + presenterMargin.Left,
+				contentMargin.Top + presenterMargin.Top,
+				contentMargin.Right + presenterMargin.Right,
+				contentMargin.Bottom + presenterMargin.Bottom);
 		}
 
 		if (contentAsFE != null)

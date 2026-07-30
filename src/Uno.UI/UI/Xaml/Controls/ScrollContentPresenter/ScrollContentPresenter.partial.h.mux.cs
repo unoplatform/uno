@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollContentPresenter_Partial.h, commit 5f9e85113
+// MUX Reference ScrollContentPresenter_Partial.h, commit dc46907e92
 
 // Uncomment for DManip debug outputs.
 //#define DM_DEBUG
@@ -54,6 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Reference to the main scrollable region being presented (it could
 		// be this).
 		private WeakReference<IScrollInfo> m_wrScrollInfo;
+		private ManipulationDataProviderScrollInfo m_manipulationDataProviderScrollInfo;
 
 		// The state necessary to scroll the content.
 		private ScrollData m_pScrollData;
@@ -101,8 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Overriding this method and returning TRUE in order to navigate among automation children
 		// of content and headers in reverse order.
-		// TODO Uno: AreAutomationPeerChildrenReversed exists on UIElement; SCP-specific override TBD when AP work lands.
-		// internal bool AreAutomationPeerChildrenReversed() => true;
+		internal override bool AreAutomationPeerChildrenReversed() => true;
 
 		// Returns the zoom factor applied in the most recent layout pass.
 		internal float GetLastZoomFactorApplied() => m_fLastZoomFactorApplied;

@@ -175,6 +175,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
+#if __SKIA__
+			UnparentHeaders();
+#endif
 			if (Scroller is { } sv)
 			{
 				UnhookScrollEvents(sv);
@@ -311,6 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Math.Abs(_zoomFactor - targetZoom) > 0.0001f)
 				{
 					_zoomFactor = targetZoom;
+					SetZoomFactor(targetZoom);
 					updated = true;
 					zoomUpdated = true;
 				}
@@ -391,6 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (zoomUpdated)
 			{
 				Scroller?.OnPresenterZoomed(_zoomFactor);
+				Scroller?.InvalidateArrange();
 			}
 
 			if (updated || options.IsTouch)

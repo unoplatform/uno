@@ -5,8 +5,14 @@
 #nullable disable
 
 using System;
+using System.Collections.Generic;
 using DirectUI;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -26,7 +32,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// #region Foundational IScrollInfo implementation ported from ScrollContentPresenter_Partial.cpp
 
 		// Gets a value indicating whether the current ScrollContentPresenter is a scrolling client.
-		internal bool IsScrollClient() => GetCurrentScrollInfo() == this;
+		internal bool IsScrollClient()
+			=> GetCurrentScrollInfo() is { } scrollInfo &&
+				(scrollInfo == this || scrollInfo is ManipulationDataProviderScrollInfo);
 
 		private IScrollInfo GetCurrentScrollInfo()
 			=> m_wrScrollInfo is { } scrollInfoReference && scrollInfoReference.TryGetTarget(out var scrollInfo)
@@ -35,18 +43,166 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetHeaders(UIElement topLeftHeader, UIElement topHeader, UIElement leftHeader)
 		{
-			if (m_trTopLeftHeader != topLeftHeader ||
-				m_trTopHeader != topHeader ||
-				m_trLeftHeader != leftHeader)
+			var scrollViewer = GetScrollOwner() as ScrollViewer;
+			var changed = false;
+
+			if (m_trTopLeftHeader != topLeftHeader)
 			{
+				RemoveTopLeftHeader(scrollViewer, removeFromChildrenCollection: true);
 				m_trTopLeftHeader = topLeftHeader;
+				changed = true;
+			}
+
+			if (m_trTopHeader != topHeader)
+			{
+				RemoveTopHeader(scrollViewer, removeFromChildrenCollection: true);
 				m_trTopHeader = topHeader;
+				changed = true;
+			}
+
+			if (m_trLeftHeader != leftHeader)
+			{
+				RemoveLeftHeader(scrollViewer, removeFromChildrenCollection: true);
 				m_trLeftHeader = leftHeader;
-				m_isTopLeftHeaderChild = topLeftHeader is not null;
-				m_isTopHeaderChild = topHeader is not null;
-				m_isLeftHeaderChild = leftHeader is not null;
+				changed = true;
+			}
+
+			if (changed)
+			{
 				InvalidateMeasure();
 			}
+		}
+
+		// Adds a header to this ScrollContentPresenter's children.
+		private void AddHeader(
+			ScrollViewer scrollViewer,
+			UIElement topLeftHeader,
+			UIElement topHeader,
+			UIElement leftHeader,
+			bool isTopHeader,
+			bool isLeftHeader)
+		{
+			var isTopLeftHeader = isTopHeader && isLeftHeader;
+			var childCount = VisualTreeHelper.GetChildrenCount(this);
+
+			global::System.Diagnostics.Debug.Assert(scrollViewer is not null);
+			global::System.Diagnostics.Debug.Assert(isTopHeader || isLeftHeader);
+
+			if (isTopLeftHeader)
+			{
+				global::System.Diagnostics.Debug.Assert(!m_isTopLeftHeaderChild);
+				global::System.Diagnostics.Debug.Assert(topLeftHeader is not null);
+				AddChild(topLeftHeader, childCount);
+				m_isTopLeftHeaderChild = true;
+			}
+			else if (isTopHeader)
+			{
+				// TopLeftHeader element must be added after the TopHeader so the correct z-order gets applied.
+				if (m_isTopLeftHeaderChild)
+				{
+					childCount--;
+				}
+
+				global::System.Diagnostics.Debug.Assert(!m_isTopHeaderChild);
+				global::System.Diagnostics.Debug.Assert(topHeader is not null);
+				AddChild(topHeader, childCount);
+				m_isTopHeaderChild = true;
+			}
+			else
+			{
+				global::System.Diagnostics.Debug.Assert(isLeftHeader);
+				// TopLeftHeader and TopHeader elements must be added after the LeftHeader so the correct z-order gets applied.
+				if (m_isTopHeaderChild)
+				{
+					childCount--;
+				}
+				if (m_isTopLeftHeaderChild)
+				{
+					childCount--;
+				}
+
+				global::System.Diagnostics.Debug.Assert(!m_isLeftHeaderChild);
+				global::System.Diagnostics.Debug.Assert(leftHeader is not null);
+				AddChild(leftHeader, childCount);
+				m_isLeftHeaderChild = true;
+			}
+		}
+
+		// Removes the top-left header from this ScrollContentPresenter's children
+		// when removeFromChildrenCollection is True, resets its global scale factor
+		// and notifies the owning ScrollViewer.
+		private void RemoveTopLeftHeader(ScrollViewer scrollViewer, bool removeFromChildrenCollection)
+		{
+			if (m_isTopLeftHeaderChild && m_trTopLeftHeader is { } topLeftHeader)
+			{
+				if (removeFromChildrenCollection)
+				{
+					RemoveChild(topLeftHeader);
+				}
+				m_isTopLeftHeaderChild = false;
+				topLeftHeader.ResetGlobalScaleFactor();
+
+				// If spTopLeftHeader was the last header shown, also reset the GlobalScaleFactor sparse storage for the primary child.
+				if (!m_isLeftHeaderChild && !m_isTopHeaderChild)
+				{
+					ResetPrimaryChildGlobalScaleFactor();
+				}
+			}
+		}
+
+		// Removes the top header from this ScrollContentPresenter's children
+		// when removeFromChildrenCollection is True, resets its global scale factor
+		// and notifies the owning ScrollViewer.
+		private void RemoveTopHeader(ScrollViewer scrollViewer, bool removeFromChildrenCollection)
+		{
+			if (m_isTopHeaderChild && m_trTopHeader is { } topHeader)
+			{
+				if (removeFromChildrenCollection)
+				{
+					RemoveChild(topHeader);
+				}
+				m_isTopHeaderChild = false;
+				topHeader.ResetGlobalScaleFactor();
+
+				// If spTopHeader was the last header shown, also reset the GlobalScaleFactor sparse storage for the primary child.
+				if (!m_isLeftHeaderChild && !m_isTopLeftHeaderChild)
+				{
+					ResetPrimaryChildGlobalScaleFactor();
+				}
+			}
+		}
+
+		// Removes the left header from this ScrollContentPresenter's children
+		// when removeFromChildrenCollection is True, resets its global scale factor
+		// and notifies the owning ScrollViewer.
+		private void RemoveLeftHeader(ScrollViewer scrollViewer, bool removeFromChildrenCollection)
+		{
+			if (m_isLeftHeaderChild && m_trLeftHeader is { } leftHeader)
+			{
+				if (removeFromChildrenCollection)
+				{
+					RemoveChild(leftHeader);
+				}
+				m_isLeftHeaderChild = false;
+				leftHeader.ResetGlobalScaleFactor();
+
+				// If spLeftHeader was the last header shown, also reset the GlobalScaleFactor sparse storage for the primary child.
+				if (!m_isTopHeaderChild && !m_isTopLeftHeaderChild)
+				{
+					ResetPrimaryChildGlobalScaleFactor();
+				}
+			}
+		}
+
+		private void ResetPrimaryChildGlobalScaleFactor()
+			=> (Content as UIElement)?.ResetGlobalScaleFactor();
+
+		private void UnparentHeaders()
+		{
+			var scrollViewer = GetScrollOwner() as ScrollViewer;
+			RemoveTopLeftHeader(scrollViewer, removeFromChildrenCollection: true);
+			RemoveTopHeader(scrollViewer, removeFromChildrenCollection: true);
+			RemoveLeftHeader(scrollViewer, removeFromChildrenCollection: true);
 		}
 
 		internal void GetHeaderOwnership(
@@ -526,6 +682,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				InvalidateArrange();
 				m_scrollRequested = true;
+			}
+
+			if (bIsOffsetChanged || !DoubleUtil.AreClose(ZoomFactor, zoomFactor))
+			{
 				Set(
 					horizontalOffset: appliedOffsetX,
 					verticalOffset: appliedOffsetY,
@@ -644,6 +804,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double appliedOffsetXTmp = 0.0;
 			double appliedOffsetYTmp = 0.0;
 			global::Windows.Foundation.Size sizeHeaders = default;
+			Page mostAncestorPageBetween = null;
 
 			appliedOffsetX = 0.0;
 			appliedOffsetY = 0.0;
@@ -653,12 +814,19 @@ namespace Microsoft.UI.Xaml.Controls
 			isEmpty = isEmpty || visual is null || visual == this;
 			if (!isEmpty)
 			{
-				// TODO Uno: IsAncestorOfAndMostAncestorPageBetween — Page tracking
-				// is required only by GetFullScreenPageBottomAppBarHeight (an
-				// app-bar/full-screen accommodation that is Win32 specific). We
-				// approximate by walking the parent chain via IsAncestorOf and
-				// not tracking the intervening Page.
 				isAncestor = this.IsAncestorOf(visual);
+				if (isAncestor)
+				{
+					for (var ancestor = VisualTreeHelper.GetParent(visual);
+						ancestor is not null && ancestor != this;
+						ancestor = VisualTreeHelper.GetParent(ancestor))
+					{
+						if (ancestor is Page page)
+						{
+							mostAncestorPageBetween = page;
+						}
+					}
+				}
 			}
 			if (isEmpty || !isAncestor)
 			{
@@ -793,8 +961,7 @@ namespace Microsoft.UI.Xaml.Controls
 						else
 						{
 							// if applicable additionally reduce the viewport height by the space occluded by a page bottom appbar
-							// TODO Uno: GetFullScreenPageBottomAppBarHeight is Win32-only and stubbed to 0 here.
-							double pageBottomAppBarScrollOffset = 0.0;
+							var pageBottomAppBarScrollOffset = GetFullScreenPageBottomAppBarHeight(mostAncestorPageBetween);
 
 							viewportHeight = GetViewportHeight();
 							viewport.Y = (float)verticalOffset;
@@ -951,6 +1118,26 @@ namespace Microsoft.UI.Xaml.Controls
 			return rectangle;
 		}
 
+		private static double GetFullScreenPageBottomAppBarHeight(Page page)
+		{
+			const double pageApplyingLayoutBoundsTolerance = 1.0;
+
+			if (page?.XamlRoot is not { } xamlRoot ||
+				page.BottomAppBar is not FrameworkElement bottomAppBar)
+			{
+				return 0.0;
+			}
+
+			var currentWindowBounds = xamlRoot.Size;
+			if (Math.Abs(currentWindowBounds.Width - page.ActualWidth) < pageApplyingLayoutBoundsTolerance &&
+				Math.Abs(currentWindowBounds.Height - page.ActualHeight) < pageApplyingLayoutBoundsTolerance)
+			{
+				return bottomAppBar.ActualHeight;
+			}
+
+			return 0.0;
+		}
+
 		// Determine how down we need to scroll to accommodate the desired view.
 		internal static void ComputeScrollOffsetWithMinimalScroll(
 			float topView,
@@ -1081,6 +1268,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// that contains one.
 			if (spScrollContainer is not null)
 			{
+				m_manipulationDataProviderScrollInfo = null;
+
 				// 1. Try our content...
 				var spScrollInfo = Content as IScrollInfo;
 
@@ -1088,14 +1277,23 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Content is ItemsPresenter itemsPresenter)
 				{
 					spScrollInfo = itemsPresenter.Panel as IScrollInfo;
+					if (spScrollInfo is null && itemsPresenter is IManipulationDataProvider itemsPresenterProvider)
+					{
+						m_manipulationDataProviderScrollInfo = new ManipulationDataProviderScrollInfo(this, itemsPresenterProvider);
+						spScrollInfo = m_manipulationDataProviderScrollInfo;
+					}
 				}
 
 				// 3. As a final fallback, we use ourself.
-				spScrollInfo ??= this;
+				if (spScrollInfo is null)
+				{
+					m_manipulationDataProviderScrollInfo = null;
+					spScrollInfo = this;
+				}
 
 				if (spScrollInfo != spCurrentScrollInfo && spCurrentScrollInfo is not null)
 				{
-					if (spCurrentScrollInfo == this)
+					if (spCurrentScrollInfo == this || spCurrentScrollInfo is ManipulationDataProviderScrollInfo)
 					{
 						m_pScrollData = null;
 						GetScrollData();
@@ -1125,6 +1323,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				spCurrentScrollInfo.PutScrollOwner(null);
 				m_wrScrollInfo = null;
+				m_manipulationDataProviderScrollInfo = null;
 				m_pScrollData = null;
 			}
 		}
@@ -1158,8 +1357,6 @@ namespace Microsoft.UI.Xaml.Controls
 			double extentWidth = 0.0;
 			double viewportWidth = 0.0;
 			double offset = 0.0;
-			// TODO: Add back when we have RichTextBox
-			//    ctl::ComPtr<RichTextBox> spRichTextBoxParent;
 			TextWrapping wrapping = TextWrapping.NoWrap;
 			ScrollBarVisibility visibility = ScrollBarVisibility.Disabled;
 			Thickness scrollViewerPadding = default;
@@ -1167,7 +1364,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double availableHeight = 0.0;
 			global::Windows.Foundation.Rect clipRect = default;
 
-			var spTemplatedParent = TemplatedParent;
+			var spTemplatedParent = TemplatedParent ?? ScrollOwner;
 			var spScrollViewer = spTemplatedParent as ScrollViewer;
 			var pScrollData = GetScrollData();
 			extentWidth = pScrollData.m_extent.Width;
@@ -1176,22 +1373,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var spTemplatedGrandParent = spScrollViewer?.TemplatedParent;
 			var spTextBoxParent = spTemplatedGrandParent as TextBox;
-			// TODO: Add back when we have RichTextBox
-			//    spRichTextBoxParent = spTemplatedGrandParent.AsOrNull<xaml_controls::IRichTextBox>();
 
 			// Detemine the TextWrapping and HorizontalScrollBarVisiblity properties.
 			if (spTextBoxParent is not null)
 			{
 				wrapping = spTextBoxParent.TextWrapping;
-				// TODO: Add back when TextBox has a HorizontalScrollBarVisibility property
-				//        IFC(spTextBoxParent->get_HorizontalScrollBarVisibility(&visibility));
+				visibility = ScrollViewer.GetHorizontalScrollBarVisibility(spTextBoxParent);
 			}
-			// TODO: Add back when we have RichTextBox
-			//    else if (spRichTextBoxParent)
-			//    {
-			//        IFC(spRichTextBoxParent->get_TextWrapping(&wrapping));
-			//        IFC(spRichTextBoxParent->get_HorizontalScrollBarVisibility(&visibility));
-			//    }
 
 			// Determine the space to reserve for left and right glyph overhang
 			scrollViewerPadding = spScrollViewer is not null ? spScrollViewer.Padding : default;
@@ -1268,24 +1456,18 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				global::Windows.Foundation.Rect clipRect = default;
-
-				// TODO: Add back when we have ITextBoxView/IRichTextBoxView
-				//    IFC(get_TemplatedParent(&pTemplatedParent));
-				//    IFC(get_Content(&pContent));
-				//
-				//    if (ctl::is<IScrollViewer>(ctl::as_iinspectable(pTemplatedParent)) &&
-				//        (ctl::is<ITextBoxView>(pContentAsII) || ctl::is<IRichTextBoxView>(pContentAsII)))
-				//    {
-				//        // We may need to allow glyphs to overhang into the ScrollViewers padding
-				//        IFC(CalculateTextBoxClipRect(availableSize, &clip));
-				//        clipRect = clip;
-				//    }
-				//    else
-				//    {
-				clipRect.X = clipRect.Y = 0;
-				clipRect.Width = availableSize.Width;
-				clipRect.Height = availableSize.Height;
-				//    }
+				var scrollViewer = (TemplatedParent as ScrollViewer) ?? (ScrollOwner as ScrollViewer);
+				if (scrollViewer?.TemplatedParent is TextBox)
+				{
+					// We may need to allow glyphs to overhang into the ScrollViewer's padding.
+					CalculateTextBoxClipRect(availableSize, out clipRect);
+				}
+				else
+				{
+					clipRect.X = clipRect.Y = 0;
+					clipRect.Width = availableSize.Width;
+					clipRect.Height = availableSize.Height;
+				}
 				m_tpClippingRectangle.Rect = clipRect;
 			}
 		}
@@ -1466,7 +1648,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var spScrollOwner = pScrollData.GetScrollOwner();
 			if (!valid && spScrollOwner is not null)
 			{
-				// TODO Uno: layout-cycle warning context recording (StoreLayoutCycleWarningContext) is not ported.
+				if (!DoubleUtil.AreClose(HorizontalOffset, pScrollData.m_ComputedOffset.X) ||
+					!DoubleUtil.AreClose(VerticalOffset, pScrollData.m_ComputedOffset.Y))
+				{
+					Set(
+						horizontalOffset: pScrollData.m_ComputedOffset.X,
+						verticalOffset: pScrollData.m_ComputedOffset.Y,
+						disableAnimation: true);
+				}
+
 				spScrollOwner.InvalidateScrollInfoImpl();
 			}
 		}
@@ -1522,6 +1712,29 @@ namespace Microsoft.UI.Xaml.Controls
 			pIsValid = valid;
 		}
 
+		// Called to let the peer know when InputPane is showing.
+		internal void NotifyInputPaneStateChange(bool isInputPaneShow)
+		{
+			m_isInputPaneShow = isInputPaneShow;
+		}
+
+		// Called to let the peer know when InputPane transition is applied.
+		internal void ApplyInputPaneTransition(bool isInputPaneTransitionEnabled)
+		{
+			m_tpInputPaneThemeTransition ??= new RepositionThemeTransition();
+			ContentTransitions ??= new TransitionCollection();
+
+			var shouldApplyTransition = isInputPaneTransitionEnabled && m_isInputPaneShow;
+			if (shouldApplyTransition && !ContentTransitions.Contains(m_tpInputPaneThemeTransition))
+			{
+				ContentTransitions.Add(m_tpInputPaneThemeTransition);
+			}
+			else if (!shouldApplyTransition)
+			{
+				ContentTransitions.Remove(m_tpInputPaneThemeTransition);
+			}
+		}
+
 		// Updates the zoom factor.
 		// (C++ source line 3338)
 		internal void SetZoomFactor(float newZoomFactor)
@@ -1532,7 +1745,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				InvalidateMeasure();
 			}
-			else if (GetCurrentScrollInfo() is IManipulationDataProvider provider)
+
+			if (GetCurrentScrollInfo() is IManipulationDataProvider provider)
 			{
 				provider.SetZoomFactor(m_fZoomFactor);
 			}
@@ -1544,9 +1758,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (pOldContent is UIElement spOldChild)
 			{
-				// TODO Uno: ResetGlobalScaleFactor exists on the C++ UIElement; in Uno the equivalent
-				// scale-factor reset is implicit. No-op for now.
-				// spOldChild.ResetGlobalScaleFactor();
+				spOldChild.ResetGlobalScaleFactor();
 			}
 		}
 
@@ -1556,7 +1768,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (pNewParent is null)
 			{
-				SetHeaders(null, null, null);
+				UnparentHeaders();
+				m_trTopLeftHeader = null;
+				m_trTopHeader = null;
+				m_trLeftHeader = null;
 			}
 		}
 
@@ -1638,26 +1853,33 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Provides the behavior for the Measure pass of layout. Classes can
 		// override this method to define their own Measure pass behavior.
-		// (C++ source line 1612 — simplified Skia port that omits headers, IManipulationDataProvider,
-		//  CalendarPanel, and SemanticZoom branches. Phase 6 will reintroduce them.)
-		// TODO Uno: Phase 4 — switch the cross-platform Skia MeasureOverride (ScrollContentPresenter.cs:163,
-		// in the UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__ block) to delegate to this method via
-		// `protected override Size MeasureOverride(Size s) => MeasureOverridePort(s);` once the dependent
-		// pieces of the existing Managed.cs scroll path (PointerWheelScroll, ValidateInputOffset 3-arg
-		// signature) are migrated. For now this method is dormant on Skia.
 		internal global::Windows.Foundation.Size MeasureOverridePort(global::Windows.Foundation.Size availableSize)
 		{
-			// TODO Uno: Phase 6 — header support (TopLeftHeader/TopHeader/LeftHeader). For now skip.
-
-			// Use the cross-platform `Content` field as the primary child.
 			var spChild = Content as UIElement;
-
-			// If there is no child but scroll data exists, it should be updated with an extent of 0.
+			var spChildAsFE = spChild as FrameworkElement;
+			var spTopLeftHeader = m_trTopLeftHeader;
+			var spTopHeader = m_trTopHeader;
+			var spLeftHeader = m_trLeftHeader;
 			var pScrollData = GetScrollData();
+			var desiredSize = default(global::Windows.Foundation.Size);
+			var desiredSizeZoomed = default(global::Windows.Foundation.Size);
+			var topLeftHeaderDesiredSize = default(global::Windows.Foundation.Size);
+			var topHeaderDesiredSize = default(global::Windows.Foundation.Size);
+			var leftHeaderDesiredSize = default(global::Windows.Foundation.Size);
+			var headersDesiredSize = default(global::Windows.Foundation.Size);
+			var toBeAdjustedDesiredSize = default(global::Windows.Foundation.Size);
+			var layoutSize = default(global::Windows.Foundation.Size);
+			var adjustDesiredSize = false;
+			ScrollViewer spScrollViewer = null;
 
 			if (!IsScrollClient())
 			{
-				// Custom IScrollInfo implementations are not supported here. Defer to base measure.
+				if (spTopLeftHeader is not null || spTopHeader is not null || spLeftHeader is not null)
+				{
+					// Custom IScrollInfo implementations are not supported when a header is set.
+					throw new NotSupportedException("ScrollViewer headers cannot be used with a custom IScrollInfo implementation.");
+				}
+
 				if (spChild is not null)
 				{
 					return base.MeasureOverride(availableSize);
@@ -1665,12 +1887,57 @@ namespace Microsoft.UI.Xaml.Controls
 				return default;
 			}
 
+			if (spChildAsFE is not null && (spTopLeftHeader is not null || spTopHeader is not null || spLeftHeader is not null))
+			{
+				// Check if the ScrollContentPresenter's content is a FrameworkElement or
+				// if the default ControlTemplate with Grid/TextBlock is used instead.
+				if (Content is FrameworkElement)
+				{
+					if (spChildAsFE.HorizontalAlignment != HorizontalAlignment.Left)
+					{
+						// Only the Left horizontal alignment is supported when a header is set.
+						throw new NotSupportedException("ScrollViewer content must use HorizontalAlignment.Left when a header is set.");
+					}
+
+					if (spChildAsFE.VerticalAlignment != VerticalAlignment.Top)
+					{
+						// Only the Top vertical alignment is supported when a header is set.
+						throw new NotSupportedException("ScrollViewer content must use VerticalAlignment.Top when a header is set.");
+					}
+				}
+				// else: no alignment check is done when the default Grid/TextBlock ControlTemplate is used.
+			}
+
 			var spScrollOwner = pScrollData.GetScrollOwner();
-			var spScrollViewer = spScrollOwner as ScrollViewer;
+			spScrollViewer = spScrollOwner as ScrollViewer;
+
+			if (spScrollViewer is not null)
+			{
+				if (spLeftHeader is not null && !m_isLeftHeaderChild)
+				{
+					// Add the left header as a child.
+					AddHeader(spScrollViewer, spTopLeftHeader, spTopHeader, spLeftHeader, false /*isTopHeader*/, true /*isLeftHeader*/);
+				}
+
+				if (spTopHeader is not null && !m_isTopHeaderChild)
+				{
+					// Add the top header as a child.
+					AddHeader(spScrollViewer, spTopLeftHeader, spTopHeader, spLeftHeader, true /*isTopHeader*/, false /*isLeftHeader*/);
+				}
+
+				if (spTopLeftHeader is not null && !m_isTopLeftHeaderChild)
+				{
+					// Add the top-left header as a child.
+					AddHeader(spScrollViewer, spTopLeftHeader, spTopHeader, spLeftHeader, true /*isTopHeader*/, true /*isLeftHeader*/);
+				}
+			}
 
 			var childAvailableSize = availableSize;
-
+			// when set to true, this means that we wanted to set to infinity but were blocked in doing it.
+			var childPreventsInfiniteAvailableWidth = false;
+			var childPreventsInfiniteAvailableHeight = false;
 			bool sizesContentToTemplatedParent = false;
+
 			if (spScrollViewer is not null)
 			{
 				// When ScrollContentPresenter.SizesContentToTemplatedParent is True, the child's available size
@@ -1685,10 +1952,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			bool childPreventsInfiniteAvailableWidth = false;
-			bool childPreventsInfiniteAvailableHeight = false;
-			var spChildAsFE = Content as FrameworkElement;
-
 			if (pScrollData.m_canHorizontallyScroll)
 			{
 				childPreventsInfiniteAvailableWidth = spChildAsFE is not null &&
@@ -1702,6 +1965,12 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					childAvailableSize.Width = double.PositiveInfinity;
 				}
+			}
+			else if (spChildAsFE is not null &&
+				FlowDirection != spChildAsFE.FlowDirection &&
+				!sizesContentToTemplatedParent)
+			{
+				childAvailableSize.Width = double.PositiveInfinity;
 			}
 
 			if (pScrollData.m_canVerticallyScroll)
@@ -1719,6 +1988,15 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			var headersAreNonClipping = false;
+
+			// We wanted to set to infinity, but we didn't. Certain panels can deal with non clipping subtrees.
+			if (spChildAsFE is ItemsPresenter itemsPresenter)
+			{
+				headersAreNonClipping = itemsPresenter.EvaluateAndSetNonClippingBehavior(
+					childPreventsInfiniteAvailableWidth || childPreventsInfiniteAvailableHeight);
+			}
+
 			float zoomFactor = 1.0f;
 			if (spScrollOwner is not null)
 			{
@@ -1726,71 +2004,226 @@ namespace Microsoft.UI.Xaml.Controls
 				global::System.Diagnostics.Debug.Assert(zoomFactor == m_fZoomFactor);
 			}
 
-			global::Windows.Foundation.Size desiredSize = default;
-			global::Windows.Foundation.Size desiredSizeZoomed = default;
+			if (spTopLeftHeader is not null || spTopHeader is not null || spLeftHeader is not null)
+			{
+				// When at least one header element is shown, the plateau scale returned by RootScale is combined with the owning ScrollViewer's ZoomFactor
+				// so the CUIElement::LayoutRound method can correctly snap the four quadrants based on both factors. put_GlobalScaleFactor is pushing the global
+				// scale factor into sparse storage for whichever of the four quadrants exist.
+				var globalScaleFactor = RootScale.GetRasterizationScaleForElement(this) * zoomFactor;
+
+				if (spTopLeftHeader is not null)
+				{
+					spTopLeftHeader.PutGlobalScaleFactor(globalScaleFactor);
+					spTopLeftHeader.Measure(childAvailableSize);
+					topLeftHeaderDesiredSize = spTopLeftHeader.DesiredSize;
+				}
+				if (spTopHeader is not null)
+				{
+					spTopHeader.PutGlobalScaleFactor(globalScaleFactor);
+					spTopHeader.IsNonClippingSubtree = headersAreNonClipping;
+					spTopHeader.Measure(childAvailableSize);
+					topHeaderDesiredSize = spTopHeader.DesiredSize;
+				}
+				if (spLeftHeader is not null)
+				{
+					spLeftHeader.PutGlobalScaleFactor(globalScaleFactor);
+					spLeftHeader.Measure(childAvailableSize);
+					leftHeaderDesiredSize = spLeftHeader.DesiredSize;
+				}
+				if (spChild is not null)
+				{
+					spChild.PutGlobalScaleFactor(globalScaleFactor);
+				}
+			}
+
+			headersDesiredSize.Width = Math.Max(topLeftHeaderDesiredSize.Width, leftHeaderDesiredSize.Width);
+			headersDesiredSize.Height = Math.Max(topLeftHeaderDesiredSize.Height, topHeaderDesiredSize.Height);
 
 			if (spChild is not null)
 			{
 				spChild.Measure(childAvailableSize);
 				desiredSize = spChild.DesiredSize;
 
-				// TODO Uno: Phase 6 — CalendarPanel desired-viewport-size adjustment (toBeAdjustedDesiredSize).
+				if (spChild is Primitives.CalendarPanel calendarPanel)
+				{
+					var desiredViewportSizeFromPanel = calendarPanel.GetDesiredViewportSize();
+					adjustDesiredSize = true;
+					// In CalendarPanel, the SCP's desired size should be determined by the Panel so Panel can decide
+					// the numbers (rows and cols) of items showing in the viewport.
+					// Note: the SCP's scrollcontent extent is still determined by Panel's desired size.
+					// see more details from CalendarView::MeasureOverride in file CalendarView_Partial.cpp
+					toBeAdjustedDesiredSize.Width = desiredViewportSizeFromPanel.Width - desiredSize.Width;
+					toBeAdjustedDesiredSize.Height = desiredViewportSizeFromPanel.Height - desiredSize.Height;
+				}
+
+				// Give opportunity to the content to define the viewport size itself.
+				(spChild as ICustomScrollInfo)?.ApplyViewport(ref desiredSize);
 			}
 
-			if (pScrollData is not null)
+			desiredSize.Width += headersDesiredSize.Width;
+			desiredSize.Height += headersDesiredSize.Height;
+
+			if (spChild is null)
 			{
-				if (spChild is null)
+				// Irrespective of the presence of headers, the desired size is (0, 0) when ScrollViewer.Content is null.
+				global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Width == 0.0f);
+				global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Height == 0.0f);
+				if (m_isChildActualWidthUsedAsExtent)
 				{
-					// Irrespective of the presence of headers, the desired size is (0, 0) when ScrollViewer.Content is null.
-					global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Width == 0.0f);
-					global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Height == 0.0f);
+					// No need to use the actual child width as the extent width.
+					StopUseOfActualWidthAsExtent();
+				}
+				if (m_isChildActualHeightUsedAsExtent)
+				{
+					// No need to use the actual child height as the extent height.
+					StopUseOfActualHeightAsExtent();
+				}
+				VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
+			}
+			else
+			{
+				if (spScrollViewer is not null)
+				{
+					layoutSize = spScrollViewer.GetLayoutSize();
+				}
+
+				// blow over the reported size to use the passed in size. This will increase the extent.
+				if (layoutSize.Width != 0.0f && layoutSize.Height != 0.0f)
+				{
+					// This situation only arises with the SemanticZoom control which applies a pseudo-LayoutTransform to the ScrollViewer.Content element.
+					// The SemanticZoom provides a layout size to the ScrollViewer to be imposed to its ScrollContentPresenter.
+					desiredSizeZoomed.Width = (layoutSize.Width + headersDesiredSize.Width) * zoomFactor;
+					desiredSizeZoomed.Height = (layoutSize.Height + headersDesiredSize.Height) * zoomFactor;
+
 					if (m_isChildActualWidthUsedAsExtent)
 					{
-						// No need to use the actual child width as the extent width.
+						// In case the actual size was being used as the extent, use the imposed layoutSize instead.
 						StopUseOfActualWidthAsExtent();
 					}
 					if (m_isChildActualHeightUsedAsExtent)
 					{
-						// No need to use the actual child height as the extent height.
+						// In case the actual size was being used as the extent, use the imposed layoutSize instead.
 						StopUseOfActualHeightAsExtent();
 					}
-					VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
 				}
 				else
 				{
-					global::Windows.Foundation.Size layoutSize = default;
-					if (spScrollViewer is not null)
+					desiredSizeZoomed.Width = desiredSize.Width * zoomFactor;
+					desiredSizeZoomed.Height = desiredSize.Height * zoomFactor;
+
+					var setExtent = false;
+					var extentSize = pScrollData.m_extent;
+					var canUseActualSizeAsExtent = false;
+
+					if (m_isChildActualWidthUsedAsExtent)
 					{
-						layoutSize = spScrollViewer.GetLayoutSize();
+						CanUseActualWidthAsExtent(spScrollOwner, spScrollViewer, spChildAsFE, out canUseActualSizeAsExtent);
+						if (!canUseActualSizeAsExtent)
+						{
+							StopUseOfActualWidthAsExtent();
+						}
+						else if (pScrollData.m_canHorizontallyScroll && desiredSize.Width >= pScrollData.m_viewport.Width)
+						{
+							// After switching to the mode where the child's actual width is used as extent, push an extent that is larger
+							// than the viewport as early as possible to the owning ScrollViewer. This is important for ModernCollectionBasePanel
+							// which may trigger a call to ScrollViewer::ChangeViewInternal inside its ArrangeOverride.
+							setExtent = true;
+
+							if (sizesContentToTemplatedParent && desiredSize.Width == pScrollData.m_viewport.Width)
+							{
+								desiredSizeZoomed.Width = extentSize.Width;
+							}
+							else
+							{
+								extentSize.Width = desiredSizeZoomed.Width;
+							}
+						}
 					}
 
-					if (layoutSize.Width != 0.0f && layoutSize.Height != 0.0f)
+					if (m_isChildActualHeightUsedAsExtent)
 					{
-						// SemanticZoom case — TODO Uno Phase 5.
-						desiredSizeZoomed.Width = (float)((layoutSize.Width) * zoomFactor);
-						desiredSizeZoomed.Height = (float)((layoutSize.Height) * zoomFactor);
-					}
-					else
-					{
-						desiredSizeZoomed.Width = (float)(desiredSize.Width * zoomFactor);
-						desiredSizeZoomed.Height = (float)(desiredSize.Height * zoomFactor);
+						CanUseActualHeightAsExtent(spScrollOwner, spScrollViewer, spChildAsFE, out canUseActualSizeAsExtent);
+						if (!canUseActualSizeAsExtent)
+						{
+							StopUseOfActualHeightAsExtent();
+						}
+						else if (pScrollData.m_canVerticallyScroll && desiredSize.Height >= pScrollData.m_viewport.Height)
+						{
+							// After switching to the mode where the child's actual height is used as extent, push an extent that is larger
+							// than the viewport as early as possible to the owning ScrollViewer. This is important for ModernCollectionBasePanel
+							// which may trigger a call to ScrollViewer::ChangeViewInternal inside its ArrangeOverride.
+							setExtent = true;
+
+							if (sizesContentToTemplatedParent && desiredSize.Height == pScrollData.m_viewport.Height)
+							{
+								desiredSizeZoomed.Height = extentSize.Height;
+							}
+							else
+							{
+								extentSize.Height = desiredSizeZoomed.Height;
+							}
+						}
 					}
 
-					// TODO Uno: Phase 6 — m_isChildActualWidth/HeightUsedAsExtent special mode handling.
-
-					if (!m_isChildActualWidthUsedAsExtent && !m_isChildActualHeightUsedAsExtent)
+					if (!m_isChildActualWidthUsedAsExtent && m_isChildActualHeightUsedAsExtent)
 					{
-						// If we're handling scrolling (as the physical scrolling client, validate properties).
-						VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
+						// Only the actual height is used as extent. Make sure the latest desired width is used as extent.
+						setExtent = true;
+						extentSize.Width = desiredSizeZoomed.Width;
+						// The extent height pushed to the ScrollViewer in the VerifyScrollData call below is not up-to-date.
+						// The updated height will be pushed to the ScrollViewer in the VerifyScrollData call made in the coming ArrangeOverride.
+						// The m_isChildActualHeightUpdated flag is temporarily set to False during the VerifyScrollData call below so the
+						// ScrollViewer does not prematurely reset its m_contentHeightRequested field in its InvalidateScrollInfo implementation.
+						m_isChildActualHeightUpdated = false;
 					}
+					else if (m_isChildActualWidthUsedAsExtent && !m_isChildActualHeightUsedAsExtent)
+					{
+						// Only the actual width is used as extent. Make sure the latest desired height is used as extent.
+						setExtent = true;
+						extentSize.Height = desiredSizeZoomed.Height;
+						// The extent width pushed to the ScrollViewer in the VerifyScrollData call below is not up-to-date.
+						// The updated width will be pushed to the ScrollViewer in the VerifyScrollData call made in the coming ArrangeOverride.
+						// The m_isChildActualWidthUpdated flag is temporarily set to False during the VerifyScrollData call below so the
+						// ScrollViewer does not prematurely reset its m_contentWidthRequested field in its InvalidateScrollInfo implementation.
+						m_isChildActualWidthUpdated = false;
+					}
+
+					if (setExtent)
+					{
+						VerifyScrollData(pScrollData.m_viewport, extentSize);
+					}
+				}
+
+				// Do not attempt to update the IScrollInfo extent when this ScrollContentPresenter
+				// operates in the mode where the child's actual size is used as extent.
+				if (m_isChildActualWidthUsedAsExtent)
+				{
+					m_unpublishedExtentSize.Width = desiredSizeZoomed.Width;
+				}
+				if (m_isChildActualHeightUsedAsExtent)
+				{
+					m_unpublishedExtentSize.Height = desiredSizeZoomed.Height;
+				}
+
+				if (!m_isChildActualWidthUsedAsExtent && !m_isChildActualHeightUsedAsExtent)
+				{
+					// If we're handling scrolling (as the physical scrolling client, validate properties).
+					VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
 				}
 			}
 
-			if (layoutSizeNonZero(spScrollViewer, out var ls))
+			if (adjustDesiredSize)
+			{
+				// When we need to adjust desired size, we ignore the available size.
+				desiredSize.Width += toBeAdjustedDesiredSize.Width;
+				desiredSize.Height += toBeAdjustedDesiredSize.Height;
+			}
+			else if (layoutSize.Width != 0.0f && layoutSize.Height != 0.0f)
 			{
 				// SemanticZoom's ScrollViewer case. Use the enforced layoutSize rather than the child's desiredSize.
-				desiredSize.Width = Math.Min(availableSize.Width, ls.Width);
-				desiredSize.Height = Math.Min(availableSize.Height, ls.Height);
+				// This matches how desiredSizeZoomed is evaluated for the VerifyScrollData call above.
+				desiredSize.Width = Math.Min(availableSize.Width, layoutSize.Width);
+				desiredSize.Height = Math.Min(availableSize.Height, layoutSize.Height);
 			}
 			else
 			{
@@ -1801,42 +2234,34 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isChildActualWidthUpdated = true;
 			m_isChildActualHeightUpdated = true;
 
-			// Let ScrollViewer know that child sizes might have changed.
+			// Let ScrollViewer know that child sizes might have changed
 			spScrollViewer?.OnScrollContentPresenterMeasured();
 
 			return desiredSize;
-
-			static bool layoutSizeNonZero(ScrollViewer sv, out global::Windows.Foundation.Size size)
-			{
-				if (sv is not null)
-				{
-					size = sv.GetLayoutSize();
-					return size.Width != 0.0f && size.Height != 0.0f;
-				}
-				size = default;
-				return false;
-			}
 		}
 
 		// Provides the behavior for the Arrange pass of layout. Classes can
 		// override this method to define their own Arrange pass behavior.
-		// (C++ source line 2094 — simplified Skia port that omits headers, IManipulationDataProvider,
-		//  m_isChildActualWidth/HeightUsedAsExtent special mode, and the layout-cycle warning context.)
-		// TODO Uno: Phase 4 — same as MeasureOverridePort: switch the cross-platform Skia ArrangeOverride
-		// (ScrollContentPresenter.cs:231) to delegate here once the existing Managed.cs scroll path is
-		// migrated. For now this method is dormant on Skia.
 		internal global::Windows.Foundation.Size ArrangeOverridePort(global::Windows.Foundation.Size finalSize)
 		{
-			// Loop while the inner arrange marks an additional scroll request.
 			do
 			{
 				// NOTE: We are updating the clip only if there is a scroll owner that hosts
 				// this control. This is a limited fix for 22803.
-				// TODO Uno: Phase 4 — port UpdateClip(finalSize). For now defer to base.
-
-				// TODO Uno: Phase 6 — header arrangement (TopLeftHeader/TopHeader/LeftHeader).
+				if (TemplatedParent is not null || ScrollOwner is not null)
+				{
+					UpdateClip(finalSize);
+				}
 
 				var spChild = Content as UIElement;
+				var spChildAsFE = spChild as FrameworkElement;
+				var spTopLeftHeader = m_trTopLeftHeader;
+				var spTopHeader = m_trTopHeader;
+				var spLeftHeader = m_trLeftHeader;
+				var topLeftHeaderDesiredSize = default(global::Windows.Foundation.Size);
+				var topHeaderDesiredSize = default(global::Windows.Foundation.Size);
+				var leftHeaderDesiredSize = default(global::Windows.Foundation.Size);
+				var isHeaderArranged = false;
 
 				// Verifies IScrollInfo properties & invalidates ScrollViewer if necessary.
 				m_scrollRequested = false;
@@ -1849,33 +2274,823 @@ namespace Microsoft.UI.Xaml.Controls
 				if (isScrollClient && pScrollData is not null)
 				{
 					var extentSize = pScrollData.m_extent;
-					// TODO Uno: Phase 6 — m_isChildActualWidth/HeightUsedAsExtent special mode exit.
+
+					if (m_isChildActualWidthUsedAsExtent &&
+						m_unpublishedExtentSize.Width > 0 &&
+						m_unpublishedExtentSize.Width == finalSize.Width &&
+						extentSize.Width != m_unpublishedExtentSize.Width)
+					{
+						// Use the unpublished desired width which ends up being the final arrangement width.
+						extentSize.Width = m_unpublishedExtentSize.Width;
+						StopUseOfActualWidthAsExtent();
+					}
+
+					if (m_isChildActualHeightUsedAsExtent &&
+						m_unpublishedExtentSize.Height > 0 &&
+						m_unpublishedExtentSize.Height == finalSize.Height &&
+						extentSize.Height != m_unpublishedExtentSize.Height)
+					{
+						// Use the unpublished desired height which ends up being the final arrangement height.
+						extentSize.Height = m_unpublishedExtentSize.Height;
+						StopUseOfActualHeightAsExtent();
+					}
+
 					VerifyScrollData(finalSize /*viewport*/, extentSize /*extent*/);
 				}
 
+				if (m_isTopLeftHeaderChild && spTopLeftHeader is not null)
+				{
+					topLeftHeaderDesiredSize = spTopLeftHeader.DesiredSize;
+					isHeaderArranged = true;
+				}
+				if (m_isTopHeaderChild && spTopHeader is not null)
+				{
+					topHeaderDesiredSize = spTopHeader.DesiredSize;
+					isHeaderArranged = true;
+				}
+				if (m_isLeftHeaderChild && spLeftHeader is not null)
+				{
+					leftHeaderDesiredSize = spLeftHeader.DesiredSize;
+					isHeaderArranged = true;
+				}
+
+				var currentZoomFactor = 1.0f;
 				if (spChild is not null && isScrollClient)
 				{
-					// TODO Uno: Phase 4 — DM completion + pre-DM-offset bookkeeping. For now use ComputedOffset directly.
-					// var currentZoomFactor = spScrollOwner?.GetZoomFactor() ?? 1.0f;
+					if (spScrollOwner is not null)
+					{
+						currentZoomFactor = spScrollOwner.GetZoomFactor();
+						global::System.Diagnostics.Debug.Assert(currentZoomFactor == m_fZoomFactor);
+					}
 
+					if (spScrollViewer is not null && spScrollViewer.IsInDirectManipulationCompletion())
+					{
+						spScrollViewer.PostDirectManipulationLayoutRefreshed();
+					}
+				}
+				else if (isHeaderArranged && spScrollOwner is not null)
+				{
+					currentZoomFactor = spScrollOwner.GetZoomFactor();
+					global::System.Diagnostics.Debug.Assert(currentZoomFactor == m_fZoomFactor);
+				}
+
+				if (spTopLeftHeader is not null)
+				{
+					spTopLeftHeader.Arrange(new global::Windows.Foundation.Rect(
+						0,
+						0,
+						topLeftHeaderDesiredSize.Width,
+						topLeftHeaderDesiredSize.Height));
+				}
+
+				if (spTopHeader is not null)
+				{
+					spTopHeader.Arrange(new global::Windows.Foundation.Rect(
+						Math.Max(topLeftHeaderDesiredSize.Width, leftHeaderDesiredSize.Width),
+						0,
+						topHeaderDesiredSize.Width,
+						topHeaderDesiredSize.Height));
+				}
+
+				if (spLeftHeader is not null)
+				{
+					spLeftHeader.Arrange(new global::Windows.Foundation.Rect(
+						0,
+						Math.Max(topLeftHeaderDesiredSize.Height, topHeaderDesiredSize.Height),
+						leftHeaderDesiredSize.Width,
+						leftHeaderDesiredSize.Height));
+				}
+
+				if (spChild is not null)
+				{
 					var desiredSize = spChild.DesiredSize;
-
 					var childRect = new global::Windows.Foundation.Rect(
-						0,
-						0,
+						Math.Max(topLeftHeaderDesiredSize.Width, leftHeaderDesiredSize.Width),
+						Math.Max(topLeftHeaderDesiredSize.Height, topHeaderDesiredSize.Height),
 						Math.Max(desiredSize.Width, finalSize.Width),
 						Math.Max(desiredSize.Height, finalSize.Height));
 
 					spChild.Arrange(childRect);
 
-					// TODO Uno: Phase 6 — actual-size-as-extent mode entry/exit (StartUseOfActualWidth/HeightAsExtent +
-					// CanUseActualWidth/HeightAsExtent + LayoutRound + AreWithinTolerance comparison).
+					// Give opportunity to the content to define the viewport size itself.
+					(spChild as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
+
+					if (isScrollClient && pScrollData is not null)
+					{
+						if (spChild.IsArrangeDirty)
+						{
+							if (m_isChildActualWidthUsedAsExtent || m_isChildActualHeightUsedAsExtent)
+							{
+								// When operating in the mode where the child's actual width or height is used for the IScrollInfo extent
+								// and the child is still marked dirty for layout, make sure that this ScrollContentPresenter::ArrangeOverride
+								// is invoked again so that the correct content extent can be pushed to the owning ScrollViewer with a call to
+								// VerifyScrollData in the 'else' branch below once the child got arranged.
+								InvalidateArrange();
+							}
+						}
+						else
+						{
+							var extentSize = pScrollData.m_extent;
+							var canUseActualSizeAsExtent = false;
+
+							// Check if the mode where the child's actual width is used for the IScrollInfo extent must be entered.
+							// To minimize the occurrences of this mode, it is restricted to cases that use a Stretch alignment.
+							CanUseActualWidthAsExtent(spScrollOwner, spScrollViewer, spChildAsFE, out canUseActualSizeAsExtent);
+							global::System.Diagnostics.Debug.Assert(canUseActualSizeAsExtent || !m_isChildActualWidthUsedAsExtent);
+							if (canUseActualSizeAsExtent)
+							{
+								// Determine the child's actual width, including the margins which are included in the IScrollInfo extent.
+								global::System.Diagnostics.Debug.Assert(spChildAsFE is not null);
+								var margins = spChildAsFE.Margin;
+								var actualWidth = Math.Max(0.0, spChildAsFE.ActualWidth + margins.Left + margins.Right);
+								var useLayoutRounding = GetUseLayoutRounding();
+								if (useLayoutRounding)
+								{
+									// Apply the same rounding on the content width as for the viewport width, i.e. finalSize, provided as a parameter.
+									// This is to avoid situations where the content width ends up being slightly larger than the viewport width and
+									// incorrectly causes the horizontal scrollbar to appear.
+									actualWidth = spChild.LayoutRound(actualWidth);
+								}
+
+								// Limit the width to the viewport width when horizontal scrolling is disabled.
+								if (!pScrollData.m_canHorizontallyScroll && actualWidth > pScrollData.m_viewport.Width)
+								{
+									actualWidth = pScrollData.m_viewport.Width;
+								}
+
+								if (m_isChildActualWidthUsedAsExtent ||
+									(pScrollData.m_extent.Width > 0 &&
+										!DoubleUtil.AreWithinTolerance(
+											actualWidth * currentZoomFactor,
+											pScrollData.m_extent.Width,
+											ScrollViewer.ScrollViewerScrollRoundingTolerance)))
+								{
+									var actualWidthWithRoundedDownMarginsMatchesExtentWidth = false;
+									var scale = RootScale.GetRasterizationScaleForElement(this);
+									var roundingStep = 1.0 / scale;
+
+									if (!m_isChildActualWidthUsedAsExtent &&
+										useLayoutRounding &&
+										margins.Left + margins.Right >= roundingStep)
+									{
+										// c.f. RS5 bug 18604282. The desired width and computed actual width may differ by a single rounding step because the FrameworkElement.ActualWidth was rounded up
+										// while it was not in the desired size.
+										// Example at global scale factor of 1.5: FrameworkElement.ActualWidth is rounded up from 238 to 238.66 in CFrameworkElement::ArrangeCore. With a Margin.Left of 11px
+										// and a Margin.Right of 12px, the DesiredSize.Width is set to LayoutRound(238 + LayoutRound(23)) == 261.33 in CFrameworkElement::MeasureCore. Thus the check above
+										// "Is LayoutRound(238.66 + 23)==262 equal to 261.33?" fails.
+										// Verifying if that is the case below.
+										var actualWidthWithRoundedDownMargins = spChild.LayoutRound(actualWidth - roundingStep);
+										actualWidthWithRoundedDownMarginsMatchesExtentWidth =
+											DoubleUtil.AreWithinTolerance(
+												actualWidthWithRoundedDownMargins * currentZoomFactor,
+												pScrollData.m_extent.Width,
+												ScrollViewer.ScrollViewerScrollRoundingTolerance);
+									}
+
+									if (!actualWidthWithRoundedDownMarginsMatchesExtentWidth)
+									{
+										// When m_isChildActualWidthUsedAsExtent==False, the extent previously set in MeasureOverride does not match the resulting width after Arrange.
+										// Override the extent based on the new actual width.
+										// When m_isChildActualWidthUsedAsExtent==True, this ScrollContentPresenter already uses the child's actual width as the extent. This remains
+										// the case until a new Content is set or CanUseActualWidthAsExtent returns False.
+										if (!m_isChildActualWidthUsedAsExtent)
+										{
+											StartUseOfActualWidthAsExtent();
+										}
+
+										// Finally use the child's actual width for the IScrollInfo extent.
+										extentSize.Width = actualWidth * currentZoomFactor;
+									}
+								}
+							}
+
+							// Check if the mode where the child's actual height is used for the IScrollInfo extent must be entered.
+							// To minimize the occurrences of this mode, it is restricted to cases that use a Stretch alignment.
+							CanUseActualHeightAsExtent(spScrollOwner, spScrollViewer, spChildAsFE, out canUseActualSizeAsExtent);
+							global::System.Diagnostics.Debug.Assert(canUseActualSizeAsExtent || !m_isChildActualHeightUsedAsExtent);
+							if (canUseActualSizeAsExtent)
+							{
+								// Determine the child's actual height, including the margins which are included in the IScrollInfo extent.
+								global::System.Diagnostics.Debug.Assert(spChildAsFE is not null);
+								var margins = spChildAsFE.Margin;
+								var actualHeight = Math.Max(0.0, spChildAsFE.ActualHeight + margins.Top + margins.Bottom);
+								var useLayoutRounding = GetUseLayoutRounding();
+								if (useLayoutRounding)
+								{
+									// Apply the same rounding on the content height as for the viewport height, i.e. finalSize, provided as a parameter.
+									// This is to avoid situations where the content height ends up being slightly larger than the viewport height and
+									// incorrectly causes the vertical scrollbar to appear.
+									actualHeight = spChild.LayoutRound(actualHeight);
+								}
+
+								// Limit the height to the viewport height when vertical scrolling is disabled.
+								if (!pScrollData.m_canVerticallyScroll && actualHeight > pScrollData.m_viewport.Height)
+								{
+									actualHeight = pScrollData.m_viewport.Height;
+								}
+
+								if (m_isChildActualHeightUsedAsExtent ||
+									(pScrollData.m_extent.Height > 0 &&
+										!DoubleUtil.AreWithinTolerance(
+											actualHeight * currentZoomFactor,
+											pScrollData.m_extent.Height,
+											ScrollViewer.ScrollViewerScrollRoundingTolerance)))
+								{
+									var actualHeightWithRoundedDownMarginsMatchesExtentHeight = false;
+									var scale = RootScale.GetRasterizationScaleForElement(this);
+									var roundingStep = 1.0 / scale;
+
+									if (!m_isChildActualHeightUsedAsExtent &&
+										useLayoutRounding &&
+										margins.Top + margins.Bottom >= roundingStep)
+									{
+										// c.f. RS5 bug 18604282. The desired height and computed actual height may differ by a single rounding step because the FrameworkElement.ActualHeight was rounded up
+										// while it was not in the desired size.
+										// Example at global scale factor of 1.5: FrameworkElement.ActualHeight is rounded up from 238 to 238.66 in CFrameworkElement::ArrangeCore. With a Margin.Top of 11px
+										// and a Margin.Bottom of 12px, the DesiredSize.Height is set to LayoutRound(238 + LayoutRound(23)) == 261.33 in CFrameworkElement::MeasureCore. Thus the check above
+										// "Is LayoutRound(238.66 + 23)==262 equal to 261.33?" fails.
+										// Verifying if that is the case below.
+										var actualHeightWithRoundedDownMargins = spChild.LayoutRound(actualHeight - roundingStep);
+										actualHeightWithRoundedDownMarginsMatchesExtentHeight =
+											DoubleUtil.AreWithinTolerance(
+												actualHeightWithRoundedDownMargins * currentZoomFactor,
+												pScrollData.m_extent.Height,
+												ScrollViewer.ScrollViewerScrollRoundingTolerance);
+									}
+
+									if (!actualHeightWithRoundedDownMarginsMatchesExtentHeight)
+									{
+										// When m_isChildActualHeightUsedAsExtent==False, the extent previously set in MeasureOverride does not match the resulting height after Arrange.
+										// Override the extent based on the new actual height.
+										// When m_isChildActualHeightUsedAsExtent==True, this ScrollContentPresenter already uses the child's actual height as the extent. This remains
+										// the case until a new Content is set or CanUseActualHeightAsExtent returns False.
+										if (!m_isChildActualHeightUsedAsExtent)
+										{
+											StartUseOfActualHeightAsExtent();
+										}
+
+										// Finally use the child's actual height for the IScrollInfo extent.
+										extentSize.Height = actualHeight * currentZoomFactor;
+									}
+								}
+							}
+
+							if (m_isChildActualWidthUsedAsExtent || m_isChildActualHeightUsedAsExtent)
+							{
+								VerifyScrollData(pScrollData.m_viewport, extentSize);
+							}
+						}
+					}
 				}
 			}
 			while (m_scrollRequested);
 
 			return finalSize;
 		}
+
+		// Override the default tab-based navigation order when headers are present such that
+		// the tab order is top-left header -> top header -> left header -> content.
+		// Handle scenarios where the default behavior is to exit the ScrollContentPresenter or remain inside.
+		internal override TabStopProcessingResult ProcessTabStopOverride(
+			DependencyObject focusedElement,
+			DependencyObject candidateTabStopElement,
+			bool isBackward,
+			bool didCycleFocusAtRootVisualScope)
+		{
+			if (!m_isTopLeftHeaderChild && !m_isTopHeaderChild && !m_isLeftHeaderChild)
+			{
+				// No custom navigation needed when there is no header element.
+				return default;
+			}
+
+			// Determine where the currently focused element and new candidate are in
+			// relation to the headers and content.
+			AnalyzeTabbingElements(
+				focusedElement,
+				candidateTabStopElement,
+				out var isFocusedElementInTopLeftHeader,
+				out var isFocusedElementInTopHeader,
+				out var isFocusedElementInLeftHeader,
+				out var isFocusedElementInContent,
+				out var isCandidateElementInTopLeftHeader,
+				out var isCandidateElementInTopHeader,
+				out var isCandidateElementInLeftHeader,
+				out var isCandidateElementInContent);
+
+			if ((isFocusedElementInTopLeftHeader && isCandidateElementInTopLeftHeader) ||
+				(isFocusedElementInTopHeader && isCandidateElementInTopHeader) ||
+				(isFocusedElementInLeftHeader && isCandidateElementInLeftHeader) ||
+				(isFocusedElementInContent && isCandidateElementInContent))
+			{
+				// No custom navigation is needed when remaining within the same header or content.
+				return default;
+			}
+
+			if (isFocusedElementInTopLeftHeader ||
+				isFocusedElementInTopHeader ||
+				isFocusedElementInLeftHeader ||
+				isFocusedElementInContent)
+			{
+				return ProcessTabStopPrivate(
+					isBackward,
+					isFocusedElementInTopLeftHeader,
+					isFocusedElementInTopHeader,
+					isFocusedElementInLeftHeader,
+					isFocusedElementInContent);
+			}
+
+			return default;
+		}
+
+		// Override the default tab-based navigation order when headers are present such that
+		// the tab order is top-left header -> top header -> left header -> content.
+		// Handle scenarios where the default behavior is to enter the ScrollContentPresenter from the outside.
+		internal override TabStopProcessingResult ProcessCandidateTabStopOverride(
+			DependencyObject focusedElement,
+			DependencyObject candidateTabStopElement,
+			DependencyObject overriddenCandidateTabStopElement,
+			bool isBackward)
+		{
+			if (!m_isTopLeftHeaderChild && !m_isTopHeaderChild && !m_isLeftHeaderChild)
+			{
+				// No custom navigation needed when there is no header element.
+				return default;
+			}
+
+			// Determine where the currently focused element and new candidate are in
+			// relation to the headers and content.
+			AnalyzeTabbingElements(
+				focusedElement,
+				candidateTabStopElement,
+				out var isFocusedElementInTopLeftHeader,
+				out var isFocusedElementInTopHeader,
+				out var isFocusedElementInLeftHeader,
+				out var isFocusedElementInContent,
+				out var isCandidateElementInTopLeftHeader,
+				out var isCandidateElementInTopHeader,
+				out var isCandidateElementInLeftHeader,
+				out var isCandidateElementInContent);
+
+			// No custom navigation is needed when remaining within the same header or content.
+			if ((isFocusedElementInTopLeftHeader && isCandidateElementInTopLeftHeader) ||
+				(isFocusedElementInTopHeader && isCandidateElementInTopHeader) ||
+				(isFocusedElementInLeftHeader && isCandidateElementInLeftHeader) ||
+				(isFocusedElementInContent && isCandidateElementInContent))
+			{
+				return default;
+			}
+
+			// No custom navigation is needed when attempting to leave the ScrollContentPresenter.
+			if (!isCandidateElementInTopLeftHeader &&
+				!isCandidateElementInTopHeader &&
+				!isCandidateElementInLeftHeader &&
+				!isCandidateElementInContent)
+			{
+				return default;
+			}
+
+			if (!isFocusedElementInTopLeftHeader &&
+				!isFocusedElementInTopHeader &&
+				!isFocusedElementInLeftHeader &&
+				!isFocusedElementInContent)
+			{
+				// Attempting to enter the ScrollContentPresenter.
+				var candidateChild = GetDirectChild(
+					isCandidateElementInTopLeftHeader,
+					isCandidateElementInTopHeader,
+					isCandidateElementInLeftHeader,
+					isCandidateElementInContent);
+				if (candidateChild is null)
+				{
+					return default;
+				}
+
+				// Check if the owning direct child has a TabIndex set.
+				GetTabIndex(candidateChild, out _, out m_tabIndex);
+				m_isTabIndexSet = true;
+				try
+				{
+					var directChild = isBackward
+						? GetFirstFocusableElementOverride()
+						: GetLastFocusableElementOverride();
+					var newTabStop = GetFocusableTarget(directChild, isBackward);
+					return new(newTabStop is not null, newTabStop);
+				}
+				finally
+				{
+					m_isTabIndexSet = false;
+				}
+			}
+
+			return default;
+		}
+
+		// Returns the first focusable element among the headers and content with a TabIndex equal to m_tabIndex.
+		internal override DependencyObject GetFirstFocusableElementOverride()
+		{
+			var children = GetOrderedFocusableChildren();
+			if (m_isTabIndexSet)
+			{
+				for (var index = children.Count - 1; index >= 0; index--)
+				{
+					if (children[index].TabIndex == m_tabIndex)
+					{
+						return children[index].Element;
+					}
+				}
+			}
+			else if (children.Count > 0)
+			{
+				return children[0].Element;
+			}
+
+			return null;
+		}
+
+		// Returns the last focusable element among the headers and content with a TabIndex equal to m_tabIndex.
+		internal override DependencyObject GetLastFocusableElementOverride()
+		{
+			var children = GetOrderedFocusableChildren();
+			if (m_isTabIndexSet)
+			{
+				for (var index = 0; index < children.Count; index++)
+				{
+					if (children[index].TabIndex == m_tabIndex)
+					{
+						return children[index].Element;
+					}
+				}
+			}
+			else if (children.Count > 0)
+			{
+				return children[^1].Element;
+			}
+
+			return null;
+		}
+
+		// Determines if a direct child has a custom TabIndex value set, while TabStop is True.
+		private bool HasDirectChildWithTabIndexSet()
+		{
+			foreach (var child in GetOrderedFocusableChildren())
+			{
+				if (child.TabIndex != int.MaxValue)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		// Handles tab-based navigation when a custom TabIndex value is set for
+		// a header or the content.
+		private TabStopProcessingResult ProcessTabStopPrivate(
+			bool isBackward,
+			bool isFocusedElementInTopLeftHeader,
+			bool isFocusedElementInTopHeader,
+			bool isFocusedElementInLeftHeader,
+			bool isFocusedElementInContent)
+		{
+			var children = GetOrderedFocusableChildren();
+			var focusedIndex = -1;
+			for (var index = 0; index < children.Count; index++)
+			{
+				var child = children[index];
+				if ((isFocusedElementInTopLeftHeader && child.IsTopLeftHeader) ||
+					(isFocusedElementInTopHeader && child.IsTopHeader) ||
+					(isFocusedElementInLeftHeader && child.IsLeftHeader) ||
+					(isFocusedElementInContent && child.IsContent))
+				{
+					focusedIndex = index;
+					break;
+				}
+			}
+
+			if (focusedIndex >= 0)
+			{
+				var targetIndex = focusedIndex + (isBackward ? -1 : 1);
+				if (targetIndex >= 0 && targetIndex < children.Count)
+				{
+					var newTabStop = GetFocusableTarget(children[targetIndex].Element, isBackward);
+					return new(newTabStop is not null, newTabStop);
+				}
+			}
+
+			var focusManager = VisualTree.GetContentRootForElement(this)?.FocusManager;
+			var outsideTabStop = isBackward
+				? focusManager?.GetPreviousTabStop(this)
+				: focusManager?.GetNextTabStop(this, true);
+			return new(outsideTabStop is not null, outsideTabStop);
+		}
+
+		// Determines the location of the first focusable element in scenarios where a custom TabIndex value
+		// is set for a header or the content.
+		private void GetFirstFocusableElementPrivate(
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+		{
+			var children = GetOrderedFocusableChildren();
+			SetTabbingRegion(
+				children.Count > 0 ? children[0] : default,
+				out isTopLeftHeader,
+				out isTopHeader,
+				out isLeftHeader,
+				out isContent);
+		}
+
+		// Determines the location of the last focusable element in scenarios where a custom TabIndex value
+		// is set for a header or the content.
+		private void GetLastFocusableElementPrivate(
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+		{
+			var children = GetOrderedFocusableChildren();
+			SetTabbingRegion(
+				children.Count > 0 ? children[^1] : default,
+				out isTopLeftHeader,
+				out isTopHeader,
+				out isLeftHeader,
+				out isContent);
+		}
+
+		// Determines the next focusable element among the headers and content for scenarios
+		// that involve a custom TabIndex value.
+		private DependencyObject GetNextFocusableElementPrivate(
+			bool isFocusedElementInTopLeftHeader,
+			bool isFocusedElementInTopHeader,
+			bool isFocusedElementInLeftHeader,
+			bool isFocusedElementInContent,
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+			=> GetAdjacentFocusableElementPrivate(
+				isBackward: false,
+				isFocusedElementInTopLeftHeader,
+				isFocusedElementInTopHeader,
+				isFocusedElementInLeftHeader,
+				isFocusedElementInContent,
+				out isTopLeftHeader,
+				out isTopHeader,
+				out isLeftHeader,
+				out isContent);
+
+		// Determines the previous focusable element among the headers and content for scenarios
+		// that involve a custom TabIndex value.
+		private DependencyObject GetPreviousFocusableElementPrivate(
+			bool isFocusedElementInTopLeftHeader,
+			bool isFocusedElementInTopHeader,
+			bool isFocusedElementInLeftHeader,
+			bool isFocusedElementInContent,
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+			=> GetAdjacentFocusableElementPrivate(
+				isBackward: true,
+				isFocusedElementInTopLeftHeader,
+				isFocusedElementInTopHeader,
+				isFocusedElementInLeftHeader,
+				isFocusedElementInContent,
+				out isTopLeftHeader,
+				out isTopHeader,
+				out isLeftHeader,
+				out isContent);
+
+		private DependencyObject GetAdjacentFocusableElementPrivate(
+			bool isBackward,
+			bool isFocusedElementInTopLeftHeader,
+			bool isFocusedElementInTopHeader,
+			bool isFocusedElementInLeftHeader,
+			bool isFocusedElementInContent,
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+		{
+			var children = GetOrderedFocusableChildren();
+			for (var index = 0; index < children.Count; index++)
+			{
+				var child = children[index];
+				if ((isFocusedElementInTopLeftHeader && child.IsTopLeftHeader) ||
+					(isFocusedElementInTopHeader && child.IsTopHeader) ||
+					(isFocusedElementInLeftHeader && child.IsLeftHeader) ||
+					(isFocusedElementInContent && child.IsContent))
+				{
+					var targetIndex = index + (isBackward ? -1 : 1);
+					if (targetIndex >= 0 && targetIndex < children.Count)
+					{
+						var target = children[targetIndex];
+						SetTabbingRegion(
+							target,
+							out isTopLeftHeader,
+							out isTopHeader,
+							out isLeftHeader,
+							out isContent);
+						return target.Element;
+					}
+					break;
+				}
+			}
+
+			SetTabbingRegion(
+				default,
+				out isTopLeftHeader,
+				out isTopHeader,
+				out isLeftHeader,
+				out isContent);
+			return null;
+		}
+
+		// Determines where the currently focused element and new candidate are in
+		// relation to the headers and content.
+		private void AnalyzeTabbingElements(
+			DependencyObject focusedElement,
+			DependencyObject candidateTabStopElement,
+			out bool isFocusedElementInTopLeftHeader,
+			out bool isFocusedElementInTopHeader,
+			out bool isFocusedElementInLeftHeader,
+			out bool isFocusedElementInContent,
+			out bool isCandidateElementInTopLeftHeader,
+			out bool isCandidateElementInTopHeader,
+			out bool isCandidateElementInLeftHeader,
+			out bool isCandidateElementInContent)
+		{
+			isFocusedElementInTopLeftHeader = false;
+			isFocusedElementInTopHeader = false;
+			isFocusedElementInLeftHeader = false;
+			isFocusedElementInContent = false;
+			isCandidateElementInTopLeftHeader = false;
+			isCandidateElementInTopHeader = false;
+			isCandidateElementInLeftHeader = false;
+			isCandidateElementInContent = false;
+
+			if (focusedElement is not null)
+			{
+				GetHeaderOwnership(
+					focusedElement,
+					out _,
+					out isFocusedElementInTopLeftHeader,
+					out isFocusedElementInTopHeader,
+					out isFocusedElementInLeftHeader,
+					out isFocusedElementInContent);
+			}
+
+			if (candidateTabStopElement is not null)
+			{
+				GetHeaderOwnership(
+					candidateTabStopElement,
+					out _,
+					out isCandidateElementInTopLeftHeader,
+					out isCandidateElementInTopHeader,
+					out isCandidateElementInLeftHeader,
+					out isCandidateElementInContent);
+			}
+		}
+
+		// Returns the requested direct child as a dependency object.
+		private DependencyObject GetDirectChild(
+			bool topLeftHeader,
+			bool topHeader,
+			bool leftHeader,
+			bool content)
+		{
+			if (topLeftHeader)
+			{
+				return m_trTopLeftHeader;
+			}
+			if (topHeader)
+			{
+				return m_trTopHeader;
+			}
+			if (leftHeader)
+			{
+				return m_trLeftHeader;
+			}
+			return content ? Content as DependencyObject : null;
+		}
+
+		// Determines if an element is focusable or has a focusable child.
+		private static void GetTabIndex(
+			DependencyObject element,
+			out bool isTabStop,
+			out int tabIndex)
+		{
+			isTabStop = false;
+			tabIndex = int.MaxValue;
+
+			if (element is UIElement uiElement)
+			{
+				tabIndex = uiElement.TabIndex;
+				isTabStop = uiElement.IsTabStop &&
+					(uiElement is not Control control || control.IsEnabled);
+				isTabStop |= FocusManager.FindFirstFocusableElement(element) is not null;
+			}
+			else if (element is Microsoft.UI.Xaml.Documents.Hyperlink hyperlink)
+			{
+				isTabStop = hyperlink.IsTabStop;
+				tabIndex = hyperlink.TabIndex;
+			}
+			else
+			{
+				// The provided element is not a Control with a IsTabStop property but may have a child with one set to True.
+				isTabStop = FocusManager.FindFirstFocusableElement(element) is not null;
+			}
+		}
+
+		private List<TabbingChild> GetOrderedFocusableChildren()
+		{
+			var children = new List<TabbingChild>(4);
+			Add(m_trTopLeftHeader, isTopLeftHeader: true, isTopHeader: false, isLeftHeader: false, isContent: false, order: 0);
+			Add(m_trTopHeader, isTopLeftHeader: false, isTopHeader: true, isLeftHeader: false, isContent: false, order: 1);
+			Add(m_trLeftHeader, isTopLeftHeader: false, isTopHeader: false, isLeftHeader: true, isContent: false, order: 2);
+			Add(Content as DependencyObject, isTopLeftHeader: false, isTopHeader: false, isLeftHeader: false, isContent: true, order: 3);
+			children.Sort(static (left, right) =>
+			{
+				var tabIndexComparison = left.TabIndex.CompareTo(right.TabIndex);
+				return tabIndexComparison != 0 ? tabIndexComparison : left.Order.CompareTo(right.Order);
+			});
+			return children;
+
+			void Add(
+				DependencyObject element,
+				bool isTopLeftHeader,
+				bool isTopHeader,
+				bool isLeftHeader,
+				bool isContent,
+				int order)
+			{
+				if (element is null)
+				{
+					return;
+				}
+
+				GetTabIndex(element, out var isTabStop, out var tabIndex);
+				if (isTabStop)
+				{
+					children.Add(new(
+						element,
+						isTopLeftHeader,
+						isTopHeader,
+						isLeftHeader,
+						isContent,
+						tabIndex,
+						order));
+				}
+			}
+		}
+
+		private static DependencyObject GetFocusableTarget(DependencyObject directChild, bool isBackward)
+		{
+			if (directChild is null)
+			{
+				return null;
+			}
+
+			var target = isBackward
+				? FocusManager.FindLastFocusableElement(directChild)
+				: FocusManager.FindFirstFocusableElement(directChild);
+			if (target is not null)
+			{
+				return target;
+			}
+
+			if (directChild is UIElement uiElement &&
+				uiElement.IsTabStop &&
+				(uiElement is not Control control || control.IsEnabled))
+			{
+				return directChild;
+			}
+
+			return null;
+		}
+
+		private static void SetTabbingRegion(
+			TabbingChild child,
+			out bool isTopLeftHeader,
+			out bool isTopHeader,
+			out bool isLeftHeader,
+			out bool isContent)
+		{
+			isTopLeftHeader = child.IsTopLeftHeader;
+			isTopHeader = child.IsTopHeader;
+			isLeftHeader = child.IsLeftHeader;
+			isContent = child.IsContent;
+		}
+
+		private readonly record struct TabbingChild(
+			DependencyObject Element,
+			bool IsTopLeftHeader,
+			bool IsTopHeader,
+			bool IsLeftHeader,
+			bool IsContent,
+			int TabIndex,
+			int Order);
 
 		// #endregion
 
