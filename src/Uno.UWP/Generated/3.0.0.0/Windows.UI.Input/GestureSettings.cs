@@ -3,64 +3,27 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	[global::System.FlagsAttribute]
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	public enum GestureSettings : uint
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Tap = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DoubleTap = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Hold = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		HoldWithMouse = 8,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		RightTap = 16,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Drag = 32,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationTranslateX = 64,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationTranslateY = 128,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationTranslateRailsX = 256,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationTranslateRailsY = 512,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationRotate = 1024,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationScale = 2048,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationTranslateInertia = 4096,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationRotateInertia = 8192,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationScaleInertia = 16384,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		CrossSlide = 32768,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ManipulationMultipleFingerPanning = 65536,
-#endif
+		// Skipping already declared field Windows.UI.Input.GestureSettings.None
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Tap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.DoubleTap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Hold
+		// Skipping already declared field Windows.UI.Input.GestureSettings.HoldWithMouse
+		// Skipping already declared field Windows.UI.Input.GestureSettings.RightTap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Drag
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateX
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateY
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateRailsX
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateRailsY
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationRotate
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationScale
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationRotateInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationScaleInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.CrossSlide
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationMultipleFingerPanning
 	}
 #endif
 }

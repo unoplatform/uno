@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	public enum HoldingState
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Started = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Completed = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Canceled = 2,
-#endif
+		// Skipping already declared field Windows.UI.Input.HoldingState.Started
+		// Skipping already declared field Windows.UI.Input.HoldingState.Completed
+		// Skipping already declared field Windows.UI.Input.HoldingState.Canceled
 	}
 #endif
 }
