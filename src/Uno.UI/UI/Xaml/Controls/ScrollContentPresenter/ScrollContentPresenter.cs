@@ -89,6 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+#if !__SKIA__
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
 			// Simulate a BringIntoView request
@@ -103,6 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return args.TargetRect;
 		}
+#endif
 
 #if __WASM__
 		bool _forceChangeToCurrentView;

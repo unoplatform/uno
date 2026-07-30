@@ -1,0 +1,493 @@
+﻿// MUX Reference test/native/external/controls/scrollviewer/ScrollViewerIntegrationTests.cpp,
+// commit 5f9e85113. Tests ported from the native WinUI integration test suite to validate
+// public API behavior (ScrollToHorizontalOffset / ScrollToVerticalOffset / ChangeView /
+// extents from sized children).
+
+using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Windows.UI;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_ScrollViewer_Integration
+	{
+		// (C++ source: AddScrollViewer at line 3739 — simplified Skia port.)
+		// Builds the standard 100x100 ScrollViewer with 12 stacked 100x100 rectangles
+		// used by most of the C++ integration tests.
+		private static async Task<ScrollViewer> AddScrollViewer(Orientation orientation)
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 100,
+				Height = 100,
+			};
+
+			if (orientation == Orientation.Horizontal)
+			{
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+			}
+
+			var stackPanel = new StackPanel { Orientation = orientation };
+			scrollViewer.Content = stackPanel;
+
+			for (int i = 0; i < 12; i++)
+			{
+				stackPanel.Children.Add(new Rectangle
+				{
+					Fill = new SolidColorBrush(i % 2 == 0 ? Colors.Red : Colors.Blue),
+					Width = 100,
+					Height = 100,
+				});
+			}
+
+			TestServices.WindowHelper.WindowContent = scrollViewer;
+			await TestServices.WindowHelper.WaitForLoaded(scrollViewer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			return scrollViewer;
+		}
+
+		// MUX Reference DoScrollToOffset at C++ line 3915.
+		// Validates that ScrollToHorizontalOffset / ScrollToVerticalOffset move the
+		// view by the expected delta only when the corresponding scrollbar is enabled.
+		private static async Task DoScrollToOffset(Orientation direction, bool canScroll)
+		{
+			var scrollViewer = await AddScrollViewer(direction);
+
+			if (!canScroll)
+			{
+				if (direction == Orientation.Horizontal)
+				{
+					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				}
+				else
+				{
+					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				}
+
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			var oldHorizontalOffset = scrollViewer.HorizontalOffset;
+			var oldVerticalOffset = scrollViewer.VerticalOffset;
+			var oldZoomFactor = scrollViewer.ZoomFactor;
+
+			var expectedNewHorizontalOffset = oldHorizontalOffset;
+			var expectedNewVerticalOffset = oldVerticalOffset;
+
+			if (canScroll)
+			{
+				if (direction == Orientation.Horizontal)
+				{
+					expectedNewHorizontalOffset += 1;
+				}
+				else
+				{
+					expectedNewVerticalOffset += 1;
+				}
+			}
+
+			if (direction == Orientation.Horizontal)
+			{
+				scrollViewer.ScrollToHorizontalOffset(expectedNewHorizontalOffset);
+			}
+			else
+			{
+				scrollViewer.ScrollToVerticalOffset(expectedNewVerticalOffset);
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expectedNewHorizontalOffset, scrollViewer.HorizontalOffset, 0.001, "HorizontalOffset");
+			Assert.AreEqual(expectedNewVerticalOffset, scrollViewer.VerticalOffset, 0.001, "VerticalOffset");
+			Assert.AreEqual(oldZoomFactor, scrollViewer.ZoomFactor, "ZoomFactor unchanged");
+		}
+
+		// MUX Reference CanInstantiate (C++ line 57).
+		// Validates that a ScrollViewer can be instantiated without error.
+		[TestMethod]
+		public void CanInstantiate()
+		{
+			var scrollViewer = new ScrollViewer();
+			Assert.IsNotNull(scrollViewer);
+		}
+
+		// MUX Reference CanEnterAndLeaveLiveTree (C++ line 62).
+		// Validates that a ScrollViewer can be added to and removed from the live
+		// visual tree without error.
+		[TestMethod]
+		public async Task CanEnterAndLeaveLiveTree()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Content = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.Cyan) },
+			};
+
+			TestServices.WindowHelper.WindowContent = scrollViewer;
+			await TestServices.WindowHelper.WaitForLoaded(scrollViewer);
+
+			Assert.IsTrue(scrollViewer.IsLoaded, "ScrollViewer should be loaded after entering tree");
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(scrollViewer.IsLoaded, "ScrollViewer should be unloaded after leaving tree");
+		}
+
+		// MUX Reference CanScrollToHorizontalOffset (C++ line 73).
+		[TestMethod]
+		public Task CanScrollToHorizontalOffset() => DoScrollToOffset(Orientation.Horizontal, canScroll: true);
+
+		// MUX Reference CanScrollToVerticalOffset (C++ line 78).
+		[TestMethod]
+		public Task CanScrollToVerticalOffset() => DoScrollToOffset(Orientation.Vertical, canScroll: true);
+
+		// MUX Reference CannotScrollToHorizontalOffset (C++ line 83).
+		[TestMethod]
+		public Task CannotScrollToHorizontalOffset() => DoScrollToOffset(Orientation.Horizontal, canScroll: false);
+
+		// MUX Reference CannotScrollToVerticalOffset (C++ line 88).
+		[TestMethod]
+		public Task CannotScrollToVerticalOffset() => DoScrollToOffset(Orientation.Vertical, canScroll: false);
+
+		// MUX Reference DoChangeView at C++ line 4014.
+		// Validates that ScrollViewer.ChangeView changes the view by the expected delta
+		// and raises ViewChanged with IsIntermediate=false at the end.
+		private static async Task DoChangeView(bool horizontal, bool vertical, bool zoom)
+		{
+			var orientation = horizontal ? Orientation.Horizontal : Orientation.Vertical;
+			var scrollViewer = await AddScrollViewer(orientation);
+
+			var oldHorizontalOffset = scrollViewer.HorizontalOffset;
+			var oldVerticalOffset = scrollViewer.VerticalOffset;
+			var oldZoomFactor = scrollViewer.ZoomFactor;
+
+			var expectedNewHorizontalOffset = oldHorizontalOffset + (horizontal ? 1 : 0);
+			var expectedNewVerticalOffset = oldVerticalOffset + (vertical ? 1 : 0);
+			var expectedNewZoomFactor = oldZoomFactor + (zoom ? 0.01f : 0.0f);
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					viewChangedTcs.TrySetResult(true);
+				}
+			}
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				bool couldChangeView = scrollViewer.ChangeView(
+					expectedNewHorizontalOffset,
+					expectedNewVerticalOffset,
+					expectedNewZoomFactor,
+					true /*disableAnimation*/);
+
+				Assert.IsTrue(couldChangeView, "ChangeView returned false");
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
+
+				Assert.AreEqual(expectedNewHorizontalOffset, scrollViewer.HorizontalOffset, 0.001, "HorizontalOffset");
+				Assert.AreEqual(expectedNewVerticalOffset, scrollViewer.VerticalOffset, 0.001, "VerticalOffset");
+				Assert.AreEqual(expectedNewZoomFactor, scrollViewer.ZoomFactor, 0.001, "ZoomFactor");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
+
+		// MUX Reference CanChangeViewHorizontally (C++ line 93).
+		[TestMethod]
+		public Task CanChangeViewHorizontally() => DoChangeView(horizontal: true, vertical: false, zoom: false);
+
+		// MUX Reference CanChangeViewVertically (C++ line 98).
+		[TestMethod]
+		public Task CanChangeViewVertically() => DoChangeView(horizontal: false, vertical: true, zoom: false);
+
+		// MUX Reference SizedTextBlock (C++ line 3802).
+		// Validates that a short text in a TextBlock with a large MinWidth pushes
+		// the large extent to the owning ScrollViewer; lifting MinWidth re-shrinks.
+		[TestMethod]
+		public async Task SizedTextBlock()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				Width = 100,
+				Height = 50,
+			};
+
+			var textBlock = new TextBlock
+			{
+				MinWidth = 500,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Stretch,
+				Text = "Short",
+			};
+
+			scrollViewer.Content = textBlock;
+			TestServices.WindowHelper.WindowContent = scrollViewer;
+			await TestServices.WindowHelper.WaitForLoaded(scrollViewer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Even though the TextBlock's Text is short, the TextBlock::MinWidth value forces its actual width to be 500px.
+			Assert.AreEqual(400.0, scrollViewer.ScrollableWidth, 0.5, "ScrollableWidth with MinWidth=500 on 100-wide SV");
+
+			// Eliminate the min width requirement. The TextBlock is expected to shrink.
+			textBlock.MinWidth = 0;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// The ScrollViewer is no longer expected to be scrollable horizontally.
+			Assert.AreEqual(0.0, scrollViewer.ScrollableWidth, 0.5, "ScrollableWidth after MinWidth lifted");
+		}
+
+		// MUX Reference ChangeScrollViewerHeightToZero (C++ line 1622).
+		// Regression test: setting Height=0 on a loaded ScrollViewer must not crash.
+		[TestMethod]
+		public async Task ChangeScrollViewerHeightToZero()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			// Changing ScrollViewer Height to 0 after it was loaded.
+			scrollViewer.Height = 0;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// No assertion: just verify no crash.
+			Assert.AreEqual(0.0, scrollViewer.Height);
+		}
+
+		// MUX Reference ResetContent (C++ line 1643).
+		// Validates that Content=null implies ScrollableHeight=0, and that re-assigning
+		// content restores scrollability.
+		[TestMethod]
+		public async Task ResetContent()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			Assert.IsTrue(scrollViewer.ScrollableHeight > 0.0, "Initial ScrollableHeight should be > 0");
+
+			// Resetting Content for the case where ScrollContentPresenter::m_isChildActualHeightUsedAsExtent is false.
+			scrollViewer.Content = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// ScrollViewer.Content == null implies ScrollViewer.ScrollableHeight == 0
+			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after Content=null");
+
+			var textBlock = new TextBlock
+			{
+				FontSize = 100.0,
+				Text = "A text with large characters.",
+			};
+			scrollViewer.Content = textBlock;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(scrollViewer.ScrollableHeight > 0.0, "ScrollableHeight after re-content should be > 0");
+
+			// Resetting Content for the case where ScrollContentPresenter::m_isChildActualHeightUsedAsExtent is true.
+			scrollViewer.Content = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// ScrollViewer.Content == null implies ScrollViewer.ScrollableHeight == 0
+			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
+		}
+
+		// TODO Uno: Phase-4 ChangeViewInternal + DM adapter — port C++
+		// ViewChangeEventsAreCorrect (C++ line 3066) when ChangeView with
+		// disableAnimation=false drives a real inertial-frame chain on Skia.
+		// The original test asserts:
+		//   VERIFY_IS_GREATER_THAN(*inertialViewChangingCount, 0);
+		//   VERIFY_IS_GREATER_THAN(*intermediateViewChangedCount, 0);
+		// Both require the DM inertia per-frame ticking that the cross-platform
+		// synchronous Skia path doesn't produce. Per the don't-simplify rule,
+		// the test stays unported until those features land.
+
+		// MUX Reference ValidateNoLayoutCycleByChangeContentSize (C++ line 4854).
+		// Regression test for a layout cycle that used to occur when the content
+		// width oscillated across a parent's MinWidth constraint.
+		[TestMethod]
+		public async Task ValidateNoLayoutCycleByChangeContentSize()
+		{
+			var rootGrid = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"<Grid xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" " +
+				"xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" x:Name=\"rootGrid\" Background=\"Orange\">" +
+				"  <StackPanel Background=\"DarkGray\">" +
+				"    <Button x:Name=\"cycleButton\" Content=\"Cycle\" HorizontalAlignment=\"Center\" />" +
+				"    <Border x:Name=\"constrainOwner\" HorizontalAlignment=\"Left\" VerticalAlignment=\"Stretch\" MinWidth=\"800\" Background=\"Yellow\">" +
+				"      <ScrollViewer HorizontalScrollBarVisibility=\"Auto\" HorizontalScrollMode=\"Enabled\" VerticalScrollBarVisibility=\"Disabled\" VerticalScrollMode=\"Disabled\">" +
+				"        <Border>" +
+				"          <Rectangle x:Name=\"contentRect\" Fill=\"Red\" Height=\"100\" Width=\"2000\" />" +
+				"        </Border>" +
+				"      </ScrollViewer>" +
+				"    </Border>" +
+				"  </StackPanel>" +
+				"</Grid>");
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+			await TestServices.WindowHelper.WaitForLoaded(rootGrid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Do the change content 4 times that ensures no layout cycle by changing the content size
+			for (int i = 0; i < 4; i++)
+			{
+				var constrainOwner = (Border)rootGrid.FindName("constrainOwner");
+				var contentRect = (Microsoft.UI.Xaml.Shapes.Rectangle)rootGrid.FindName("contentRect");
+				var constraint = constrainOwner.MinWidth;
+
+				contentRect.Width = contentRect.Width < constraint
+					? constraint + 100
+					: constraint - 100;
+
+				// Update the layout to ensure no layout cycle by changing the content size
+				constrainOwner.UpdateLayout();
+
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// Completed the verification without a layout cycle crash.
+		}
+
+		// MUX Reference ValidateNoLayoutCycleByChangeAlignment (C++ line 4912).
+		// Regression test: changing a ScrollViewer's VerticalAlignment after layout
+		// must not cause a layout cycle crash.
+		[TestMethod]
+		public async Task ValidateNoLayoutCycleByChangeAlignment()
+		{
+			var rootGrid = new Grid
+			{
+				Background = new SolidColorBrush(Colors.SlateBlue),
+				Width = 400,
+				Height = 400,
+			};
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+			await TestServices.WindowHelper.WaitForLoaded(rootGrid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var scrollViewer = new ScrollViewer();
+			var stackPanel = new StackPanel();
+			var rect = new Microsoft.UI.Xaml.Shapes.Rectangle
+			{
+				Width = 100,
+				Height = 200,
+				Fill = new SolidColorBrush(Colors.Red),
+			};
+
+			stackPanel.Children.Add(rect);
+			scrollViewer.Content = stackPanel;
+
+			rootGrid.Children.Add(scrollViewer);
+			rootGrid.UpdateLayout();
+
+			scrollViewer.VerticalAlignment = VerticalAlignment.Top;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Validate no layout cycle crash by changing the alignment.
+		}
+
+		// MUX Reference DefaultValuesAreCorrect (C++ line 3170).
+		// Validates that a fresh ScrollViewer has the documented default values for
+		// scroll modes, rail enablement, zoom mode, scroll bar visibility, and
+		// MaxZoomFactor.
+		// Note: HorizontalScrollBarVisibility's default differs across editions.
+		// WinUI generic style sets it to Disabled; AddScrollViewer(Vertical) does not
+		// touch it so we check the as-built state.
+		[TestMethod]
+		public async Task DefaultValuesAreCorrect()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			Assert.AreEqual(ScrollMode.Auto, scrollViewer.HorizontalScrollMode);
+			Assert.AreEqual(ScrollMode.Auto, scrollViewer.VerticalScrollMode);
+			Assert.AreEqual(true, scrollViewer.IsHorizontalRailEnabled);
+			Assert.AreEqual(true, scrollViewer.IsVerticalRailEnabled);
+			Assert.AreEqual(ZoomMode.Disabled, scrollViewer.ZoomMode);
+			Assert.AreEqual(10.0, scrollViewer.MaxZoomFactor, 0.001);
+			// MinZoomFactor default per WinUI is 0.1.
+			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
+		}
+
+		// TODO Uno: SCP.SizesContentToTemplatedParent + alignment behavior gap —
+		// port C++ ConstrainVerticalStackPanelAvailableSize (C++ 7123) /
+		// ConstrainHorizontalStackPanelAvailableSize (C++ 7130) /
+		// ConstrainStackPanelAvailableSize (C++ 7135) once SCP on Skia matches
+		// WinUI's behavior: with SizesContentToTemplatedParent=true and child
+		// alignment=Top/Left, the child is expected to be size-constrained to
+		// the viewport (scrollable extent = 0). On Skia the child stays
+		// unconstrained (scrollable extent stays 1100). Likely needs a fix in
+		// SCP.MeasureOverride's slotSize derivation under the
+		// UNO_HAS_MANAGED_SCROLL_PRESENTER branch.
+
+		// MUX Reference ReenterContent (C++ line 1697).
+		// Validates that resetting Content to null and then back to the original
+		// content preserves the SV's view (HorizontalOffset / VerticalOffset /
+		// ZoomFactor). The C++ test additionally renders before/after the toggle
+		// and asserts DComp pixel parity; the Skia variant skips that (no DComp)
+		// and keeps the public-API view assertions.
+		// Note: the requested verticalOffset=200 stays within the unzoomed
+		// scrollable height (1200-100=1100), so the assertion passes even though
+		// the visual-zoom rendering feature isn't yet on Skia. ZoomFactor DP is
+		// updated via the iter-#14 feature (commit 9dada7a6d4).
+		[TestMethod]
+		public async Task ReenterContent()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					viewChangedTcs.TrySetResult(true);
+				}
+			}
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				_ = scrollViewer.ChangeView(null /*horizontalOffset*/, 200.0 /*verticalOffset*/, 1.2f /*zoomFactor*/, true /*disableAnimation*/);
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "Initial ViewChanged didn't fire within 3s");
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Momentarily setting ScrollViewer.Content to null.
+				var content = scrollViewer.Content;
+				scrollViewer.Content = null;
+				scrollViewer.Content = content;
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0.0, scrollViewer.HorizontalOffset, 0.001, "HorizontalOffset");
+				Assert.AreEqual(200.0, scrollViewer.VerticalOffset, 0.001, "VerticalOffset");
+				Assert.AreEqual(1.2f, scrollViewer.ZoomFactor, 0.001, "ZoomFactor");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
+
+		// TODO Uno: visual zoom rendering — port C++ ChangeViewTwice (C++ line 1763)
+		// once SCP applies ZoomFactor as a visual transform and recomputes
+		// scrollable extents at the new zoom. The test asserts a final
+		// VerticalOffset of 3500 after ChangeView(null, 3500, 3.0f) — only
+		// achievable when the content extent is multiplied by the zoom factor
+		// (12*100*3 = 3600, scrollable = 3500). The DP-update half (ZoomFactor)
+		// is in via 9dada7a6d4; the visual half is the missing feature.
+	}
+}

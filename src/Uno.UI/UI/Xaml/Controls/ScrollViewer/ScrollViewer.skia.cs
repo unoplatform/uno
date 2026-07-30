@@ -5,6 +5,46 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ScrollViewer
 {
+	// Hooks the WinUI port's template-part wiring on top of the cross-platform
+	// OnApplyTemplate. See ScrollViewer.partial.mux.cs for the implementation.
+	partial void OnApplyTemplatePartial() => OnApplyTemplate_MuxPartial();
+
+	// MUX Reference ScrollViewer_Partial.cpp:OnPropertyChanged2 ZoomMode case.
+	// When the ZoomMode property changes, both the manipulability and the
+	// primary-content extent push to DM need to refresh.
+	partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
+	{
+		OnManipulatabilityAffectingPropertyChanged(
+			pIsInLiveTree: null,
+			isCachedPropertyChanged: true,
+			isContentChanged: false,
+			isAffectingConfigurations: true,
+			isAffectingTouchConfiguration: false);
+
+		// When the zoom factor changes from static to manipulatable or vice-versa,
+		// a new content size may have to be pushed to DirectManipulation.
+		OnPrimaryContentAffectingPropertyChanged(
+			boundsChanged: true,
+			horizontalAlignmentChanged: false,
+			verticalAlignmentChanged: false,
+			zoomFactorBoundaryChanged: false);
+
+		if (_presenter is ScrollContentPresenter scp)
+		{
+			switch (zoomMode)
+			{
+				case ZoomMode.Disabled:
+					scp.OnMinZoomFactorChanged(1f);
+					scp.OnMaxZoomFactorChanged(1f);
+					break;
+				case ZoomMode.Enabled:
+					scp.OnMinZoomFactorChanged(MinZoomFactor);
+					scp.OnMaxZoomFactorChanged(MaxZoomFactor);
+					break;
+			}
+		}
+	}
+
 	private (double? horizontal, double? vertical) ClampOffsetsToFocusedTextBox(double? horizontalOffset, double? verticalOffset)
 	{
 		if (Presenter is not null && ShouldSnapToTouchTextBox())
@@ -44,23 +84,4 @@ public partial class ScrollViewer
 		return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } textBox && textBox.FindFirstParent<ScrollViewer>() == this;
 	}
 
-	partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
-	{
-		if (_presenter is ScrollContentPresenter scp)
-		{
-			switch (zoomMode)
-			{
-				case ZoomMode.Disabled:
-					// When zoom is disabled, set min/max to 1 to prevent any zooming
-					scp.OnMinZoomFactorChanged(1f);
-					scp.OnMaxZoomFactorChanged(1f);
-					break;
-				case ZoomMode.Enabled:
-					// When zoom is enabled, use the actual min/max values
-					scp.OnMinZoomFactorChanged(MinZoomFactor);
-					scp.OnMaxZoomFactorChanged(MaxZoomFactor);
-					break;
-			}
-		}
-	}
 }

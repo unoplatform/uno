@@ -140,6 +140,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 #if __SKIA__
 			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
+
+			// Wire DP-changed callbacks to invoke OnPropertyChanged2Core (the C++
+			// SCP::OnPropertyChanged2 dispatch — only checks
+			// CanContentRenderOutsideBoundsProperty for now). The Uno cross-platform
+			// SCP DP doesn't have a callback so we add one at construction time.
+			RegisterPropertyChangedCallback(CanContentRenderOutsideBoundsProperty, (s, e) =>
+				((ScrollContentPresenter)s).OnPropertyChanged2Core(CanContentRenderOutsideBoundsProperty));
 #endif
 		}
 
@@ -585,6 +592,20 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
+
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp HandleManipulationStarting raises the
+			// DirectManipulationStarted event so app code can observe DM-driven scroll/zoom
+			// transitions. The new port has Raise* helpers (ScrollViewer.partial.mux.cs:4866)
+			// but no caller; route through SCP's DM handler which is already wired into
+			// the touch/inertia pipeline.
+			if (!isResuming && Scroller is { } sv)
+			{
+				sv.NotifyDirectManipulationStarting();
+				sv.NotifyDirectManipulationStarted();
+				sv.RaiseDirectManipulationStarted();
+			}
+#endif
 		}
 
 		/// <inheritdoc />
@@ -681,6 +702,15 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
+#if __SKIA__
+			// MUX Reference: when DM transitions from active manipulation to inertia,
+			// the m_isInertial flag flips so subsequent ViewChanging events report
+			// IsInertial=true. The Phase-4 DM adapter will replace this bridge.
+			// (End-of-inertia transform is communicated below, after inertia.DesiredDisplacementDeceleration
+			// has been initialized.)
+			sv.NotifyInertiaStarting();
+#endif
+
 			var direction = GetDirection(args.Velocities);
 
 			// Check if we have snap points configured - if so, we should handle inertia even with limited scrollable space
@@ -742,6 +772,25 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
 			}
+
+#if __SKIA__
+			// Compute the end-of-inertia transform now that DesiredDisplacementDeceleration
+			// is initialized. This lets ViewChanging events raised during inertia populate
+			// FinalView with the right targets.
+			{
+				var v0X = args.Velocities.Linear.X;
+				var v0Y = args.Velocities.Linear.Y;
+				var dur = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(
+					Math.Max(Math.Abs(v0X), Math.Abs(v0Y)),
+					inertia.DesiredDisplacementDeceleration);
+				var endX = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0X, inertia.DesiredDisplacementDeceleration, dur);
+				var endY = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0Y, inertia.DesiredDisplacementDeceleration, dur);
+				sv.NotifyInertiaStarting(
+					inertiaEndHorizontalOffset: HorizontalOffset - endX,
+					inertiaEndVerticalOffset: VerticalOffset - endY,
+					inertiaEndZoomFactor: sv.ZoomFactor);
+			}
+#endif
 
 			// If we have snap points, we disable the inertia support (for local SV).
 			// However, we determine the final value of the inertia to snap on the right snap-point.
@@ -813,6 +862,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Set(disableAnimation: true, isIntermediate: false);
 			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp HandleManipulationCompleted raises the
+			// DirectManipulationCompleted event. Route through SCP's DM handler.
+			if (Scroller is { } sv)
+			{
+				sv.NotifyDirectManipulationCompleted();
+				sv.RaiseDirectManipulationCompleted();
+			}
+#endif
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)

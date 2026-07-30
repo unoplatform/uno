@@ -751,7 +751,7 @@ public partial class ScrollBar
 	}
 
 	// Gets a value indicating whether the ScrollBar is currently dragging.
-	private bool IsDragging
+	internal bool IsDragging
 	{
 		get
 		{

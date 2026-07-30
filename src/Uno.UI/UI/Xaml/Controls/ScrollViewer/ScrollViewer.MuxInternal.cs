@@ -49,7 +49,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			}
 		}
-		internal bool IsInDirectManipulation { get; }
+		// Reads the m_isInDirectManipulation field declared in ScrollViewer.partial.h.mux.cs
+		// (Skia-only). SCP.Managed.cs sets this via NotifyDirectManipulationStarting/Completed
+		// when a touch-driven manipulation begins/ends so DM-aware code paths (snap-points
+		// reactions, PrimaryContentChanged etc.) behave correctly during inertial scroll.
+		// On non-Skia platforms there's no managed DM-state field, so the property stays false.
+		internal bool IsInDirectManipulation
+#if __SKIA__
+			=> IsInDirectManipulationCore();
+#else
+		{ get; }
+#endif
 		internal bool TemplatedParentHandlesScrolling { get; set; }
 		internal Func<AutomationPeer>? AutomationPeerFactoryIndex { get; set; }
 
