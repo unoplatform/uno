@@ -52,13 +52,14 @@ the content seams are **decoders**/**managers**.
 
 ## The buckets (what we abstract, and why)
 
-The high-level map, read **before → after**: the Skia (or HarfBuzz / Unicode) API the core used before the seam,
-the concrete Skia type that leaked into core code (the escape hatch the abstraction closes), whether abstracting it
-changes a type an app can reference, whether we abstract it, and the abstraction (or why not). The lettered
+The high-level map, read **before → after**. The two "before" columns are *historical* — this design has **no
+Skia crossing the seam**; they record what the core used *before* each abstraction existed: the Skia (or HarfBuzz
+/ Unicode) API it called, and the concrete Skia type it used to hold directly (now replaced). Then: whether
+abstracting it changes a type an app can reference, whether we abstract it, and the abstraction. The lettered
 sections **§A–R** carry the per-type detail. Text is three rows because its boundary runs through the middle — the
 font stack is abstracted, the layout engine is not.
 
-| Bucket | Used before (Skia / other API) | Skia type it leaked | Breaks public API? | Abstract? | Abstraction (after) / why not |
+| Bucket | Before: Skia / other API called | Before: concrete Skia type held | Breaks public API? | Abstract? | Abstraction (after) / why not |
 |---|---|---|---|---|---|
 | **Geometry** | `SKPath`, `SKPathBuilder`, `SKPath.Op`, path measure (trim) | `SKPath` | No | **Yes** | `IGeometry` + path/primitive builders — neutral; managed engine proven (§B) |
 | **Paint** — shaders, color filters, effects | `SKPaint` config; `SKShader` (gradients), `SKColorFilter` (matrix), `SKImageFilter` (blur/shadow); effect input is WinUI `IGraphicsEffect`/D2D | `SKPaint`, `SKShader`, `SKColorFilter`, `SKImageFilter` | No | **Yes** | inline paint + opaque `IShader`/`IColorFilter`/`IEffectFilter`; effect graph lowered to typed `EffectNode` records (§D) |
