@@ -111,7 +111,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2)
 							.WithCollectibleAnalyzerReferences();
 
-						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter);
+						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter, ct2);
 
 						return solution;
 					}

@@ -40,7 +40,10 @@ internal partial class WatchHotReloadService
 			{
 				_targetInstance = Activator.CreateInstance(hotReloadServiceType, services);
 
-				if (hotReloadServiceType.GetMethod(nameof(StartSessionAsync)) is { } startSessionAsyncMethod)
+				// Typed lookups: an overload added by a future Roslyn would make the name-only
+				// GetMethod(name) throw AmbiguousMatchException; these keep resolving (or fail
+				// with the explicit messages below).
+				if (hotReloadServiceType.GetMethod(nameof(StartSessionAsync), [typeof(Solution), typeof(ImmutableArray<string>), typeof(CancellationToken)]) is { } startSessionAsyncMethod)
 				{
 					// Bind strongly so a signature drift on a future Roslyn bump fails here, at
 					// session creation, instead of surfacing as a mid-session invocation error.
@@ -55,27 +58,27 @@ internal partial class WatchHotReloadService
 					throw new InvalidOperationException($"Cannot find {nameof(StartSessionAsync)}");
 				}
 
-				if (hotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync)) is { } emitSolutionUpdateAsyncMethod)
+				if (hotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync), [typeof(Solution), typeof(bool), typeof(CancellationToken)]) is { } emitSolutionUpdateAsyncMethod)
 				{
+					// Same fail-fast binding as StartSessionAsync (the method's Task<T> relaxes to
+					// Task under delegate variance); only the Result/ITuple decomposition below
+					// stays reflective — the tuple's type arguments are internal to Roslyn.
+					var emitSolutionUpdateAsync = emitSolutionUpdateAsyncMethod
+						.CreateDelegate<Func<Solution, bool, CancellationToken, Task>>(_targetInstance);
+
 					_emitSolutionUpdateAsync = async (s, ct) =>
 					{
 						// commitUpdates: true == the historical Watch behavior (the EnC service
 						// commits the emitted solution update when its status is Ready, making it
 						// the baseline of the next emit).
-						var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, true, ct });
+						var task = emitSolutionUpdateAsync(s, true, ct);
 
-						if (r is not Task t)
-						{
-							throw new InvalidOperationException(
-								$"Expected {nameof(EmitSolutionUpdateAsync)} to return a Task but got [{r?.GetType().FullName ?? "null"}].");
-						}
+						await task.ConfigureAwait(false);
 
-						await t.ConfigureAwait(false);
+						var resultPropertyInfo = task.GetType().GetProperty("Result")
+							?? throw new InvalidOperationException($"Unable to find Result property on [{task}]");
 
-						var resultPropertyInfo = r.GetType().GetProperty("Result")
-							?? throw new InvalidOperationException($"Unable to find Result property on [{r}]");
-
-						var value = resultPropertyInfo.GetValue(r, null);
+						var value = resultPropertyInfo.GetValue(task, null);
 
 						if (value is ITuple tuple)
 						{
@@ -91,7 +94,7 @@ internal partial class WatchHotReloadService
 					throw new InvalidOperationException($"Cannot find {nameof(EmitSolutionUpdateAsync)}");
 				}
 
-				if (hotReloadServiceType.GetMethod(nameof(EndSession)) is { } endSessionMethod)
+				if (hotReloadServiceType.GetMethod(nameof(EndSession), Type.EmptyTypes) is { } endSessionMethod)
 				{
 #pragma warning disable CA2263
 					_endSession = (Action)endSessionMethod.CreateDelegate(typeof(Action), _targetInstance);

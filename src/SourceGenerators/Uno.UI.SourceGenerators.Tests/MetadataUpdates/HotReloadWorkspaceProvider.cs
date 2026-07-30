@@ -200,25 +200,17 @@ internal class HotReloadWorkspace
 
 		var workspace = new AdhocWorkspace();
 
-		void OnWorkspaceFailed(WorkspaceDiagnostic diagnostic)
+		workspace.WorkspaceFailed += (_sender, diag) =>
 		{
-			if (diagnostic.Kind == WorkspaceDiagnosticKind.Warning)
+			if (diag.Diagnostic.Kind == WorkspaceDiagnosticKind.Warning)
 			{
-				Console.WriteLine($"MSBuildWorkspace warning: {diagnostic}");
+				Console.WriteLine($"MSBuildWorkspace warning: {diag.Diagnostic}");
 			}
 			else
 			{
-				taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diagnostic}"));
+				taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diag.Diagnostic}"));
 			}
-		}
-
-#if NET10_0_OR_GREATER
-		// Roslyn 5.x obsoleted the WorkspaceFailed event in favour of RegisterWorkspaceFailedHandler;
-		// the returned registration lives as long as the workspace, nothing to dispose separately.
-		_ = workspace.RegisterWorkspaceFailedHandler(args => OnWorkspaceFailed(args.Diagnostic));
-#else
-		workspace.WorkspaceFailed += (_sender, diag) => OnWorkspaceFailed(diag.Diagnostic);
-#endif
+		};
 
 		var currentSolution = workspace.CurrentSolution;
 		var frameworkReferences = BuildFrameworkReferences();

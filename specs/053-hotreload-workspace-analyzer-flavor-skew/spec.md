@@ -112,7 +112,15 @@ Files with per-TFM conditional `PackageReference`s to update (all
   consistent (a mixed 4.x/5.x graph in one host flavor must not ship). Sweep result: the
   two csproj above are the only dev-server projects pinning `Microsoft.CodeAnalysis.*`
   (other hits — `Uno.Analyzers`, `Uno.WinAppSDKSyncGenerator`, analyzer test projects —
-  are outside the dev-server component set and intentionally untouched).
+  are outside the dev-server component set and intentionally untouched). As implemented,
+  the matrix is hoisted into `src/Uno.DevServer.Roslyn.props` (imported by both projects)
+  so a bump edits one file and cannot ship a mixed graph.
+
+The inverse skew — an embed *newer* than the served SDK's csc — is accepted by design:
+the pin then makes the workspace select a flavor the embed can load, possibly newer than
+the one the application's own build used. Loadability by the embed is the invariant that
+matters here; flavor selection within a loadable range is the SDK multi-targeting design
+working as intended.
 
 Compatibility notes for the implementing agent:
 
@@ -168,7 +176,7 @@ default loaders R4 exists to replace. Two passes:
    pair — per-project granularity is deliberate (the requirement is naming every impacted
    project); the *load work and failure capture* are what get deduplicated, e.g.:
 
-  `Analyzer 'CommunityToolkit.Mvvm.SourceGenerators' (analyzers/dotnet/roslyn5.0) failed to load in the hot-reload workspace (Roslyn 4.14): its generated code will be MISSING — hot reload will NOT work for project 'Contoso.ViewModels' (and any project consuming its generated members).`
+  `Analyzer 'CommunityToolkit.Mvvm.SourceGenerators' (roslyn5.0) failed to load in the hot-reload workspace (Roslyn 4.14): its generated code will be MISSING — hot reload will NOT work for project 'Contoso.ViewModels' (and any project consuming its generated members).`
 
   Include: analyzer simple name, the `roslyn{X.Y}` path segment when present in
   `FullPath`, the embedded Roslyn version, the project name, and the captured failure
@@ -293,7 +301,8 @@ that replaces the DataTemplate page twice (update+undo) and then AppResources tw
 update+undo pair applied **without** the DataTemplate generations before it succeeds
 end-to-end.
 
-Forensic evidence (all artifacts preserved, see `hr-enc-repro` bundle):
+Forensic evidence (artifacts preserved as a standalone repro bundle — replay harness,
+baseline assembly, dumped deltas — ready to attach to the runtime escalation):
 
 - The rejected generation-4 delta is **structurally clean**: SRM-level diff of its
   EncLog/EncMap against the accepted generation-2 delta of the isolated run shows
@@ -384,6 +393,14 @@ failure) so a single rejected update degrades one reload instead of the whole se
    generations 1–3 apply, 4 fails; the same AppResources pair without the DataTemplate
    generations applies) — the dev-server is out of the loop, the delta is SRM-clean, and
    the repro bundle is ready for a dotnet/runtime escalation.
+
+R2 consequence shipped separately (own commit): `Uno.UI.SourceGenerators.Tests` is
+temporarily pinned back to the 4.14 line and its MetadataUpdate suite `Compile Remove`d —
+NuGet cannot restore a 4.14-pinned test project against the 5.6-pinned `Uno.HotReload`
+(NU1107). The follow-up PR migrates the test project to 5.x, regenerates the snapshot
+baselines (checksum algorithm SHA1→SHA256 and generated-file ordering changed; the
+regeneration harness is Windows-only), and re-enables the suite; the branch with the 5.x
+re-enable groundwork is prepared.
 
 Additional coverage from the implementation pass: the retargeted EnC shim was validated
 by emitting a **real delta** (on-disk baseline, IL/metadata/PDB + updated types) against

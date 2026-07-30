@@ -142,6 +142,9 @@ internal sealed class CollectibleAnalyzerAssemblyLoader : IAnalyzerAssemblyLoade
 
 		protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
 		{
+			// Deliberate scope boundary: native DLLs are loaded from their original location, NOT
+			// shadow-copied (so a rebuild while loaded can fail to replace them on Windows).
+			// Native analyzer dependencies are rare and Roslyn's own loaders share the limitation.
 			var candidate = Path.Combine(_directory, unmanagedDllName + ".dll");
 			return File.Exists(candidate) ? LoadUnmanagedDllFromPath(candidate) : IntPtr.Zero;
 		}

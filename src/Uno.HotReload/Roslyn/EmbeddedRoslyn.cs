@@ -1,7 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Uno.HotReload.Tracking;
@@ -43,56 +44,71 @@ internal static class EmbeddedRoslyn
 	/// silent (<see cref="AnalyzerFileReference.GetGenerators(string)"/> swallows it — no
 	/// exception, no diagnostic) and only surfaces as a wall of missing-member compilation
 	/// errors, long after startup. The forced load is one-time work: Roslyn caches it for the
-	/// workspace's lifetime.
+	/// workspace's lifetime — which is also why this must run during solution load, before
+	/// anything else materializes the generators: a later sweep would observe the cached result
+	/// and no failure event.
 	/// </summary>
-	internal static void WarnOnAnalyzerLoadFailures(Solution solution, IReporter reporter)
+	internal static void WarnOnAnalyzerLoadFailures(Solution solution, IReporter reporter, CancellationToken ct = default)
 	{
-		// Only the AnalyzerLoadFailed event carries the real load/type-load failure, and it only
-		// fires while the generators materialize: subscribe before forcing, once per distinct
-		// reference (same on-disk analyzer referenced by several projects), keeping the first
-		// failure per reference.
-		var failures = new Dictionary<AnalyzerFileReference, AnalyzerLoadFailureEventArgs>();
-		// Distinct() uses AnalyzerFileReference equality (FullPath + AssemblyLoader). Under
-		// MSBuildWorkspace there is a single shared loader, so this dedups by path as intended.
-		// It is kept instance-based on purpose: `failures` and the warning lookup below key off the
-		// same reference instances, so switching to path-based dedup (DistinctBy(FullPath)) would
-		// silently drop the warning for any project holding a different instance unless those are
-		// re-keyed by path too — not worth it for a shared-loader workspace.
-		foreach (var reference in solution.Projects.SelectMany(p => p.AnalyzerReferences).OfType<AnalyzerFileReference>().Distinct())
+		try
 		{
-			void OnLoadFailed(object? sender, AnalyzerLoadFailureEventArgs args) => failures.TryAdd(reference, args);
-
-			reference.AnalyzerLoadFailed += OnLoadFailed;
-			try
+			// Only the AnalyzerLoadFailed event carries the real load/type-load failure, and it only
+			// fires while the generators materialize: subscribe before forcing, once per distinct
+			// reference (same on-disk analyzer referenced by several projects), keeping the first
+			// failure per reference. Concurrent map: the event's contract does not pin the thread
+			// it fires on while the loader machinery runs.
+			var failures = new ConcurrentDictionary<AnalyzerFileReference, AnalyzerLoadFailureEventArgs>();
+			// Distinct() uses AnalyzerFileReference equality (FullPath + AssemblyLoader). Under
+			// MSBuildWorkspace there is a single shared loader, so this dedups by path as intended.
+			// It is kept instance-based on purpose: `failures` and the warning lookup below key off the
+			// same reference instances, so switching to path-based dedup (DistinctBy(FullPath)) would
+			// silently drop the warning for any project holding a different instance unless those are
+			// re-keyed by path too — not worth it for a shared-loader workspace.
+			foreach (var reference in solution.Projects.SelectMany(p => p.AnalyzerReferences).OfType<AnalyzerFileReference>().Distinct())
 			{
-				_ = reference.GetGenerators(LanguageNames.CSharp);
-			}
-			finally
-			{
-				reference.AnalyzerLoadFailed -= OnLoadFailed;
-			}
-		}
+				ct.ThrowIfCancellationRequested();
 
-		if (failures.Count is 0)
-		{
-			return;
-		}
+				void OnLoadFailed(object? sender, AnalyzerLoadFailureEventArgs args) => failures.TryAdd(reference, args);
 
-		// Attribute each failure to every project referencing the analyzer, so the log states
-		// which projects hot reload will fail on (their compiles will miss the generated code).
-		foreach (var project in solution.Projects)
-		{
-			foreach (var reference in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
-			{
-				if (failures.TryGetValue(reference, out var failure))
+				reference.AnalyzerLoadFailed += OnLoadFailed;
+				try
 				{
-					reporter.Warn(
-						$"Analyzer '{Path.GetFileNameWithoutExtension(reference.FullPath)}'{GetFlavorSegment(reference.FullPath)} "
-						+ $"failed to load in the hot-reload workspace (Roslyn {Version.ToString(2)}): its generated code will be MISSING "
-						+ $"— hot reload will NOT work for project '{project.Name}' (and any project consuming its generated members). "
-						+ $"Failure: [{failure.ErrorCode}] {failure.Message}{(failure.Exception is { } e ? $"\n{e}" : "")}");
+					_ = reference.GetGenerators(LanguageNames.CSharp);
+				}
+				finally
+				{
+					reference.AnalyzerLoadFailed -= OnLoadFailed;
 				}
 			}
+
+			if (failures.IsEmpty)
+			{
+				return;
+			}
+
+			// Attribute each failure to every project referencing the analyzer, so the log states
+			// which projects hot reload will fail on (their compiles will miss the generated code).
+			foreach (var project in solution.Projects)
+			{
+				foreach (var reference in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
+				{
+					if (failures.TryGetValue(reference, out var failure))
+					{
+						reporter.Warn(
+							$"Analyzer '{Path.GetFileNameWithoutExtension(reference.FullPath)}'{GetFlavorSegment(reference.FullPath)} "
+							+ $"failed to load in the hot-reload workspace (Roslyn {Version.ToString(2)}): its generated code will be MISSING "
+							+ $"— hot reload will NOT work for project '{project.Name}' (and any project consuming its generated members). "
+							+ $"Failure: [{failure.ErrorCode}] {failure.Message}{(failure.Exception is { } e ? $"\n{e}" : "")}");
+					}
+				}
+			}
+		}
+		catch (Exception e) when (e is not OperationCanceledException)
+		{
+			// Diagnostics-only sweep: it must never take down the workspace load it observes. A
+			// reference this sweep could not even enumerate will surface through the usual
+			// missing-generated-code compilation errors instead.
+			reporter.Warn($"Analyzer load-failure detection failed (hot reload continues): {e.Message}");
 		}
 	}
 

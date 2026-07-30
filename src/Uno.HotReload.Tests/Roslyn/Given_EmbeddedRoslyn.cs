@@ -19,6 +19,10 @@ public sealed partial class Given_EmbeddedRoslyn
 	private static partial Regex CompilerApiVersionShape();
 
 	[TestMethod]
+	[Description(
+		"The CompilerApiVersion pin forwarded to the hot-reload workspace is what makes the SDK " +
+		"select analyzer flavors the embedded Roslyn can load: it must track the embedded " +
+		"Microsoft.CodeAnalysis major.minor exactly, whatever version a future bump embeds.")]
 	public void When_CompilerApiVersion_Then_MatchesTheEmbeddedCompilationAssembly()
 	{
 		var version = typeof(Compilation).Assembly.GetName().Version;
@@ -29,6 +33,10 @@ public sealed partial class Given_EmbeddedRoslyn
 	}
 
 	[TestMethod]
+	[Description(
+		"The analyzers/dotnet/roslyn{X.Y} flavor folders are named after the PACKAGE version " +
+		"while the pin is computed from the ASSEMBLY version: this guards against a Roslyn " +
+		"assembly-versioning scheme change silently desynchronizing the pin from the folders.")]
 	public void When_CompilerApiVersion_Then_TracksThePackageLine()
 	{
 		// The analyzers/dotnet/roslyn{X.Y} flavor folders are named after the PACKAGE version, so
@@ -44,6 +52,11 @@ public sealed partial class Given_EmbeddedRoslyn
 	}
 
 	[TestMethod]
+	[Description(
+		"An analyzer that fails to load is otherwise SILENT (GetGenerators swallows the failure " +
+		"and returns empty) and only surfaces as missing generated code mid-session: exactly one " +
+		"warning per referencing project must name the analyzer, its flavor, the embedded Roslyn " +
+		"and the hot-reload consequence — with the captured failure detail.")]
 	public void When_UnloadableAnalyzer_Then_WarnsOncePerProjectNamingIt()
 	{
 		// A corrupt assembly under a flavor-style folder: the load failure is silent through
@@ -86,6 +99,9 @@ public sealed partial class Given_EmbeddedRoslyn
 	}
 
 	[TestMethod]
+	[Description(
+		"A loadable reference must produce no warning at all: the signal is only trustworthy — " +
+		"and acted upon — if it fires exclusively on real load failures.")]
 	public void When_LoadableAnalyzer_Then_NoWarning()
 	{
 		// Any loadable managed assembly works as a no-generator analyzer reference; the test
@@ -102,6 +118,42 @@ public sealed partial class Given_EmbeddedRoslyn
 		EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, reporter);
 
 		Assert.AreEqual(0, reporter.Warnings.Count, string.Join(Environment.NewLine, reporter.Warnings));
+	}
+
+	[TestMethod]
+	[Description(
+		"The flavor segment of the warning is best-effort: an analyzer that does not live under " +
+		"an analyzers/dotnet/roslyn{X.Y} layout must still warn, with a clean message — no " +
+		"stray ' ()' placeholder where the flavor would have been.")]
+	public void When_UnloadableAnalyzerOutsideFlavorFolder_Then_WarnsWithoutFlavorSegment()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		try
+		{
+			var analyzerPath = Path.Join(root, "BogusGenerators.dll");
+			File.WriteAllBytes(analyzerPath, [0xB0, 0x60, 0x05, 0x00]);
+			var reference = new AnalyzerFileReference(analyzerPath, new TestAnalyzerAssemblyLoader());
+
+			var lib = ProjectId.CreateNewId();
+			using var workspace = new AdhocWorkspace();
+			var solution = workspace.CurrentSolution
+				.AddProject(lib, "Lib1", "Lib1", LanguageNames.CSharp)
+				.AddAnalyzerReference(lib, reference);
+			var reporter = new RecordingReporter();
+
+			EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, reporter);
+
+			Assert.AreEqual(1, reporter.Warnings.Count, string.Join(Environment.NewLine, reporter.Warnings));
+			var warning = reporter.Warnings[0];
+			// The name directly followed by "failed" is the guard: any (even empty) flavor
+			// segment would interpose itself between the two.
+			StringAssert.Contains(warning, "'BogusGenerators' failed to load");
+			Assert.IsFalse(warning.Contains("(roslyn", StringComparison.Ordinal), warning);
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
 	}
 
 	private sealed class TestAnalyzerAssemblyLoader : IAnalyzerAssemblyLoader

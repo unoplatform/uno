@@ -18,6 +18,10 @@ namespace Uno.HotReload.Tests.Roslyn;
 public sealed class Given_CollectibleAnalyzerAssemblyLoader
 {
 	[TestMethod]
+	[Description(
+		"Analyzer contexts must be COLLECTIBLE (Roslyn 5.x's own are not, and die referencing " +
+		"the collectible per-application context hosting the embedded Roslyn) and shared per " +
+		"directory, so co-located analyzer assemblies see each other like Roslyn's loader.")]
 	public void When_LoadFromPath_Then_LoadsCollectible_And_SharesContextPerDirectory()
 	{
 		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
@@ -42,6 +46,9 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 	}
 
 	[TestMethod]
+	[Description(
+		"Loading must go through a shadow copy: the analyzer file on disk belongs to the user's " +
+		"build (IDE/CLI rebuilds it at will) and locking it would break those builds on Windows.")]
 	public void When_LoadFromPath_Then_OriginalFileIsNotLocked()
 	{
 		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
@@ -64,6 +71,10 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 	}
 
 	[TestMethod]
+	[Description(
+		"THE dev-server scenario: the embedded Roslyn lives in a COLLECTIBLE per-application " +
+		"context. The analyzer context must resolve compiler assemblies to that exact instance " +
+		"(type identity), which Roslyn 5.x's non-collectible contexts cannot even reference.")]
 	public void When_CompilerLivesInCollectibleContext_Then_AnalyzerRequestsUnifyToIt()
 	{
 		// THE dev-server scenario: the embedded Roslyn is hosted in a COLLECTIBLE per-application
@@ -91,6 +102,10 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 	}
 
 	[TestMethod]
+	[Description(
+		"The snapshot transform must swap every AnalyzerFileReference onto the collectible " +
+		"loader while preserving FullPath (identity for diagnostics and equality), and the " +
+		"swapped reference must actually force-load warning-free through the new loader.")]
 	public void When_WithCollectibleAnalyzerReferences_Then_SwapsLoadersKeepingPaths()
 	{
 		var originalReference = new AnalyzerFileReference(typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location, new PassthroughLoader());

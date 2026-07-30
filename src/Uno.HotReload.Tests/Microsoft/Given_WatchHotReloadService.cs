@@ -13,6 +13,12 @@ namespace Uno.HotReload.Tests.Microsoft;
 public sealed class Given_WatchHotReloadService
 {
 	[TestMethod]
+	[Description(
+		"No runtime DECLARES AddExplicitInterfaceImplementation even though .NET and Mono " +
+		"support it (only .NET Framework does not); dotnet-watch grants it implicitly and so " +
+		"must the shim — without it, Roslyn refuses to Replace any [CreateNewOnMetadataUpdate] " +
+		"type having an explicitly-implemented member (every generated XAML ResourceDictionary " +
+		"singleton) with ENC0106/CS9346.")]
 	public void When_AddImplicitCapabilities_Then_AppendsAddExplicitInterfaceImplementation()
 	{
 		// The exact capability set reported by the .NET 10 CoreCLR (MetadataUpdater.GetCapabilities()):

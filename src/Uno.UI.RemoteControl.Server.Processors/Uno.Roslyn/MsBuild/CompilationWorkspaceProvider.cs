@@ -54,6 +54,14 @@ public static class CompilationWorkspaceProvider
 	private const string UnoIsHotReloadHostProperty = "UnoIsHotReloadHost";
 
 	/// <summary>
+	/// The MSBuild property pinning the analyzer-flavor selection to the embedded Roslyn (spec
+	/// 053 R1). Workspace-only for the same reason as <see cref="UnoIsHotReloadHostProperty"/>:
+	/// the application's own restore ran with the SDK's value, so the recovery restore must not
+	/// see ours.
+	/// </summary>
+	private const string CompilerApiVersionProperty = "CompilerApiVersion";
+
+	/// <summary>
 	/// Opens the hot-reload <see cref="MSBuildWorkspace"/> for <paramref name="projectPath"/>: the
 	/// projects are evaluated with the whitelisted global properties only (see
 	/// <see cref="_globalPropertiesAllowList"/>). The workspace owns the MSBuild services and is
@@ -96,7 +104,7 @@ public static class CompilationWorkspaceProvider
 			// AnalyzerFileReference.GetGenerators() silently returns zero generators (missing
 			// generated code in every compile of the affected projects). As a GLOBAL property this
 			// is immutable for the evaluation, so the SDK's own unconditional assignment is ignored.
-			["CompilerApiVersion"] = EmbeddedRoslyn.CompilerApiVersion,
+			[CompilerApiVersionProperty] = EmbeddedRoslyn.CompilerApiVersion,
 		};
 
 		foreach (var property in _globalPropertiesAllowList)
@@ -183,11 +191,13 @@ public static class CompilationWorkspaceProvider
 					"(missing targeting pack at design time); attempting to recover with 'dotnet restore'.");
 				workspace.Dispose();
 
-				// Restore under the same allow-listed evaluation context the workspace used (minus the
-				// workspace-only hot-reload marker), so a property-conditioned targeting pack is
-				// restored for the graph that was actually opened.
+				// Restore under the same allow-listed evaluation context the workspace used (minus
+				// the workspace-only properties — the hot-reload marker and the CompilerApiVersion
+				// pin — which must not make the recovery restore diverge from the application's
+				// own), so a property-conditioned targeting pack is restored for the graph that
+				// was actually opened.
 				var restoreProperties = globalProperties
-					.Where(entry => entry.Key != UnoIsHotReloadHostProperty)
+					.Where(entry => entry.Key is not (UnoIsHotReloadHostProperty or CompilerApiVersionProperty))
 					.ToDictionary(entry => entry.Key, entry => entry.Value);
 				await DotnetRestoreRunner.TryRestoreAsync(projectPath, restoreProperties, reporter, ct);
 				continue;
