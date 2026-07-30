@@ -129,16 +129,20 @@ public sealed class HotReloadManager : IDisposable
 		var hotReload = await _tracker.StartOrContinueHotReload().ConfigureAwait(false);
 		var files = await filesAsync.ConfigureAwait(false);
 
+		// Hold the solution-update gate across the WHOLE pass, including the catch: an operation is
+		// completed by the pass that processes it, and that completion — the terminal outcome on
+		// success, or the catch's InternalError on failure — must happen under the gate. Were the
+		// gate released before the catch completed (the failure path releases it as the exception
+		// unwinds out of the try), a queued batch could acquire it, merge into the still-open
+		// operation (TryMerge sees _result == -1) and complete it first, dropping this pass's
+		// outcome — reporting a failed pass as a clean reload.
+		using var _ = await _solutionUpdateGate.LockAsync(ct).ConfigureAwait(false);
+
 		// Process the batch of files (sequentially!)
 		try
 		{
-			using var _ = await _solutionUpdateGate.LockAsync(ct).ConfigureAwait(false);
-
-			// The merge decision must be made under the gate: operations are completed by the
-			// pass that processes them, which runs while holding this gate. Deciding earlier
-			// allows a batch to merge into an operation that completes before the batch's own
-			// pass runs — that pass's outcome (e.g. Failed + diagnostics) would then be dropped
-			// by the already-completed operation, reporting broken content as a clean reload.
+			// The merge decision is made under the gate (see above): deciding it earlier would let a
+			// batch merge into an operation that completes before the batch's own pass runs.
 			if (!hotReload.TryMerge(files))
 			{
 				hotReload = await _tracker.StartHotReload(files).ConfigureAwait(false);
@@ -168,6 +172,17 @@ public sealed class HotReloadManager : IDisposable
 		// Updaters report what they did not consume; surface that to the operation
 		// before any short-circuit so the report reflects skipped inputs.
 		hotReload.NotifyIgnored(result.IgnoredChanges.GetAllPaths());
+
+		// Up-to-date entries were consumed (their content is already in the solution) — not
+		// ignored. Surface them for diagnosability only: they are how a re-observation of
+		// content the pipeline just applied resolves to a plain NoChanges instead of forking.
+		// Guard on the cheap struct-field check so the common (nothing-skipped) path builds
+		// neither the enumerator nor the array.
+		if (!result.UpToDateChanges.EditedDocuments.IsEmpty || !result.UpToDateChanges.EditedAdditionalDocuments.IsEmpty)
+		{
+			var upToDate = result.UpToDateChanges.GetAllPaths().ToImmutableArray();
+			_tracker.Verbose($"{upToDate.Length} file(s) already up to date ({string.Join(", ", upToDate.Select(Path.GetFileName))})");
+		}
 
 		// Commit unconditionally, ahead of every terminal branch (spec 045 §2): an updater may have
 		// rebound metadata/analyzer references (e.g. newly resolved packages) onto result.Solution.
