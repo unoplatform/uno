@@ -162,8 +162,9 @@ public interface IImageTexture : IDisposable     // draw-ready (GPU-uploaded); d
 
 **Decision:** images split **decode (neutral CPU pixels = `IImage`) vs. upload (GPU texture = `IImageTexture`)**.
 The type system encodes **decode → upload → draw**: `DrawImage` takes `IImageTexture`, never a raw `IImage`, so
-you must upload first. `IImage` isn't disposable (its `IImageFrames` container/producer owns it); `IImageTexture`
-is (a scarce GPU resource, never GC-cached).
+you must upload first. A **single** image is a bare `IImage`; **`IImageFrames` means animation only** (a real
+multi-frame sequence + per-frame durations), never a wrapper-for-one-image. `IImage` isn't disposable (its
+producer/`IImageFrames` container owns it); `IImageTexture` is (a scarce GPU resource, never GC-cached).
 
 ---
 
@@ -278,14 +279,28 @@ mirror the clip trio; no `DrawLine` (it's `Stroke` of a 2-point geometry); shado
 ## G. Frame-cycle primitives (build on `IDrawingSession`)
 
 ```csharp
-public interface IRenderData : IDisposable { }        // opaque recorded frame
-public interface IRetainedRenderingSession { ICommandRecorder CreateRecording(); void Replay(IRenderData data); }
+// MANDATORY: the immediate draw-and-present session. Draw into it directly; Dispose flushes/presents. No recording.
+public interface IPresentSession : IDrawingSession, IDisposable { }   // Dispose = flush/present
+
+// OPTIONAL retained layer — a backend MAY implement it on its sessions for record-once / replay-many. The
+// framework guards `is IRetainedRenderingSession` and falls back to redraw-every-frame when it's absent.
+public interface IRetainedRenderingSession
+{
+    ICommandRecorder CreateRecording();   // capture a reusable fragment (a Visual's subtree, or a whole frame)
+    void Replay(IRenderData data);
+}
 public interface ICommandRecorder : IDrawingSession, IRetainedRenderingSession { IRenderData Finish(); }
-public interface IPresentSession   : IDrawingSession, IRetainedRenderingSession, IDisposable { }  // Dispose = present
+public interface IRenderData : IDisposable { }   // opaque retained fragment (Skia: an SKPicture)
 ```
 
-Both the recorder and the present session **are** `IDrawingSession`s, so the visual-tree walk is written once and
-doesn't know whether it's recording or presenting.
+**The base path is immediate.** The render loop draws the visual tree straight into an `IPresentSession`, which
+flushes/presents on dispose — **no `IRenderData`, no recording**. Recording *is* retaining, so it lives entirely
+in the **optional** `IRetainedRenderingSession`: a backend that also implements it on its sessions lets the
+framework (a) cache an unchanged `Visual`'s subtree as an `IRenderData` and `Replay` it instead of re-walking, and
+(b) record a whole frame on the UI thread and replay it on the render thread (the two-thread decoupling). An
+immediate-only backend implements none of it and simply redraws each frame. Either way the tree walk targets
+`IDrawingSession`, so it's written once and is oblivious to whether it's drawing immediately or into a recording.
+The sessions do **not** hard-extend `IRetainedRenderingSession` — that's what keeps it genuinely optional.
 
 ---
 
@@ -316,14 +331,18 @@ e.g. `SKSurface`) is **not** here — it's `IPresentSession`, backend-internal.
 ```csharp
 public interface IRenderBackend
 {
-    ICommandRecorder BeginFrame();                       // phase 1: record the tree → IRenderData
-    IPresentSession BeginPresent(IRenderTarget target);  // phase 2: wrap target (cache by identity), compose, present on dispose
+    // IMMEDIATE: hand back a session bound to the target; draw the tree straight into it; Dispose = flush/present.
+    IPresentSession BeginFrame(IRenderTarget target);
 }
 ```
 
-Passive participant in `CompositionTarget`'s two-phase cycle. `BeginPresent` wraps the concept-1 target into its
-concept-2 surface, **caching the wrap keyed by target identity** (rebuild only on a new target; bounded to
-swapchain depth). Bound to a context so it built its device wrap once (see N).
+The base render backend is **immediate** — `BeginFrame(target)` wraps the concept-1 target into its concept-2
+surface (**caching the wrap keyed by target identity**, rebuilt only on a new target) and returns a session; the
+loop draws the tree straight into it and disposing it presents. There is **no recording or `IRenderData` in the
+base** — that's the optional retained layer (§G). A backend whose sessions *also* implement
+`IRetainedRenderingSession` additionally gets per-`Visual` subtree caching and UI-thread-record /
+render-thread-present decoupling; an immediate-only backend redraws every frame. Bound to a context so it built
+its device wrap once (see N).
 
 ---
 
@@ -360,15 +379,20 @@ over the builder.
 ```csharp
 public interface IImageDecoder      // CPU-only: encoded stream → neutral pixels. Own seam.
 {
-    bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, out IImageFrames? frames);
-    IImageFrames CreateFrame(int width, int height, ReadOnlySpan<byte> bgraPremul);
-    IImageFrames CreateFrames(IImage image);
+    bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, out IImageFrames? frames); // may be multi-frame (GIF/APNG)
+    IImage CreateImage(int width, int height, ReadOnlySpan<byte> bgraPremul);                     // a SINGLE image → IImage
+    IImageFrames CreateFrames(IImage image);                                                      // wrap one image as a 1-frame sequence
 }
 // + IFontManager (E) is the other content seam.  + ManagedSvg (SVG → IImage).
 ```
 
 Each produces neutral currency (`IImage` / `IGeometry`) consumed by any render backend. Supplied independently
 of the render backend and of each other.
+
+`CreateImage` returns a **single `IImage`** (matching `RenderOffscreen`), not the multi-frame container —
+`IImageFrames` is reserved for genuine **animation** (`TryDecode`), and `CreateFrames(IImage)` exists only to wrap
+a single image into the 1-frame sequence the frame-provider/animation path expects. `IImage` stays non-disposable
+(container/producer owns it); this just stops overloading `IImageFrames` as "a box to dispose."
 
 ---
 
