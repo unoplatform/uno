@@ -151,9 +151,10 @@ Requirement (verbatim from review): *the log must state which project is impacte
 make it clear hot reload will not work on it* — a few lines, not a 2,500-line error dump.
 
 **As implemented** — `EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(Solution, IReporter)`
-(`Uno.HotReload/Roslyn/EmbeddedRoslyn.cs`), called at the end of
-`CompilationWorkspaceProvider.CreateWorkspaceAsync`, after the load recovery/reporting.
-Two passes:
+(`Uno.HotReload/Roslyn/EmbeddedRoslyn.cs`), called on the solution snapshot the hot-reload
+manager is initialized with (`ServerHotReloadProcessor.MetadataUpdate`), after the R4
+loader rewiring — running it on the workspace's own solution would force-load through the
+default loaders R4 exists to replace. Two passes:
 
 1. Over the **distinct** `AnalyzerFileReference`s of the solution
    (`AnalyzerFileReference` equality is path+loader based, so a reference shared by N
@@ -170,13 +171,105 @@ Two passes:
   `Analyzer 'CommunityToolkit.Mvvm.SourceGenerators' (analyzers/dotnet/roslyn5.0) failed to load in the hot-reload workspace (Roslyn 4.14): its generated code will be MISSING — hot reload will NOT work for project 'Contoso.ViewModels' (and any project consuming its generated members).`
 
   Include: analyzer simple name, the `roslyn{X.Y}` path segment when present in
-  `FullPath`, the embedded Roslyn version, and the project name.
+  `FullPath`, the embedded Roslyn version, the project name, and the captured failure
+  (`AnalyzerLoadFailureEventArgs` error code, message and exception — the exception is
+  what made R4's root cause diagnosable from a session log).
 - Emit at workspace load (so the session log carries the warning **before** any
   failure), and keep the eager `GetGenerators` call — it is one-time, cached by
   Roslyn, and turns a lazy mid-session failure into a startup signal.
 - With R1+R2 in place this log should never fire for the packages above; it exists for
   the next skew (SDK 11 / Roslyn 6, or a package shipping flavors newer than the
   embedded line before we bump).
+
+### R4 — analyzers must load in COLLECTIBLE contexts
+
+Requirement (from runtime validation): the `When_HotReloadScenario` runtime test hung the
+`Tests - Desktop Skia Windows` CI job at its 60-minute limit — every hot-reload compile of
+the secondary app failed with the missing-generated-code wall (~90 errors, no
+`InitializeComponent`), i.e. the exact disease R1 targets, still present at runtime.
+
+Root cause — a Roslyn 4.x→5.x behavior change colliding with the dev-server's isolation
+model:
+
+- Roslyn **4.x** created its per-directory analyzer load contexts with
+  `isCollectible: true`; Roslyn **5.x** creates them **non-collectible**
+  (`AnalyzerAssemblyLoader.DirectoryLoadContext`, verified by decompilation of 4.14.0 vs
+  5.6.0).
+- The dev-server hosts its hot-reload processors — embedded Roslyn included — in a
+  **collectible per-application `AssemblyLoadContext`**
+  (`DefaultRemoteControlProcessorFactory`, `isCollectible: true` so a disconnected app's
+  processors can unload).
+- The runtime forbids a non-collectible assembly from referencing a collectible one: the
+  moment an analyzer's `Microsoft.CodeAnalysis` reference is bound (type materialization
+  in `GetAnalyzersForTypeNames`), the load dies with `NotSupportedException`
+  (*"A non-collectible assembly may not reference a collectible assembly"*), surfaced as
+  `[UnableToCreateAnalyzer] Could not load … 'Microsoft.CodeAnalysis, Version=4.x' —
+  Operation is not supported (0x80131515)`.
+- Net effect on the 5.6 embed: **every** analyzer fails to load — the in-box SDK
+  generators and `Uno.UI.SourceGenerators` alike — so every workspace compile misses all
+  generated code. R1's flavor pin is correct but moot when nothing can load at all.
+
+**As implemented** — `CollectibleAnalyzerAssemblyLoader`
+(`Uno.HotReload/Roslyn/CollectibleAnalyzerAssemblyLoader.cs`), an
+`IAnalyzerAssemblyLoader` restoring the 4.x semantics under any embedded Roslyn:
+
+- one **collectible** `AssemblyLoadContext` per analyzer directory (a collectible assembly
+  may reference both collectible and non-collectible ones);
+- assemblies already loaded in the embedded Roslyn's own context are **unified to that
+  exact instance** (an analyzer built against `Microsoft.CodeAnalysis` 4.x binds to the
+  loaded 5.x, mirroring Roslyn's own compiler-context redirect), everything else resolves
+  from the analyzer's directory, its registered dependency locations, then the default
+  context;
+- analyzer files are **shadow-copied** (per path+timestamp, under
+  `%TMP%/uno-devserver/analyzers`) so the originals never get locked while the IDE or a
+  build rebuilds them — parity with Roslyn's shadow-copying loader.
+
+Wired as a pure snapshot transform, `Solution.WithCollectibleAnalyzerReferences()`,
+applied with the other snapshot transforms when the hot-reload manager (re)loads the
+solution — both the initial load and the temporary added-file discovery workspaces go
+through the same delegate. `Workspace.TryApplyChanges` was deliberately NOT used: applying
+analyzer-reference changes through `MSBuildWorkspace` writes them into the user's
+`.csproj`.
+
+### Known issue (follow-up) — reloadable-type updates rejected under the 5.x embed
+
+With R4 in place the generators load and ordinary hot reloads work end-to-end, but every
+ResourceDictionary/DataTemplate scenario still fails on the 5.x embed — the update is
+rejected as a rude edit (`ENC0106: Updating a reloadable type … requires restarting …`,
+`CS9346: Update requires emitting explicit interface implementation …`) and every
+subsequent update of the session then times out (the server commits its EnC baseline while
+the application never applied the update, and the skew cascades through the whole run).
+
+Root cause — a second Roslyn 4.x→5.x behavioral change, fully diagnosed:
+
+- `GrantNewTypeDefinition` (identical code in 4.14 and 5.6) requires the
+  `AddExplicitInterfaceImplementation` capability when the reloadable type has an
+  explicitly-implemented interface member — a capability **no .NET runtime reports**
+  (net10 CoreCLR grants `Baseline … NewTypeDefinition … AddFieldRva`, nothing more).
+- Every XAML ResourceDictionary singleton the Uno generator emits is exactly that shape:
+  `[CreateNewOnMetadataUpdate] internal sealed class ResourceDictionarySingleton__… :
+  IXamlResourceDictionaryProvider` with an explicit
+  `IXamlResourceDictionaryProvider.GetResourceDictionary()` implementation
+  (`XamlFileGenerator`, singleton emission).
+- 4.x analysis did not route these edits through that gate (master, on the 4.14 embed,
+  passes the same scenarios with the same generated code); 5.x does.
+
+**Explored and NOT shipped** — augmenting the application-reported capabilities with
+`AddExplicitInterfaceImplementation` before the EnC session starts. Results: the isolated
+dictionary scenarios (`When_Change_AppResource_String`, `When_Change_DataTemplate`) then
+pass end-to-end (delta applies, UI updates, undo runs — the replace of a reloadable type
+carries its explicit implementations as plain metadata of a brand-new type definition).
+But in a **full-suite** run the runtime starts rejecting deltas at
+`MetadataUpdater.ApplyUpdate` ("The assembly update failed", first rejection within
+seconds, 105 rejections total — the first one poisons the session the same way the rude
+edit did). The trigger is sequence-dependent (repeated replaces of the same reloadable
+types); until it is understood, granting the capability trades a deterministic rude edit
+for a non-deterministic runtime rejection — worse. Follow-up options, in preference
+order: teach the generator to implement `IXamlResourceDictionaryProvider` implicitly on
+reloadable singletons (removes the gate entirely; changes generated-code snapshots →
+Windows regen), understand/fix the sequence-dependent apply rejection and then grant the
+capability, or escalate to Roslyn (a Replace semantic edit arguably should not require
+`AddExplicitInterfaceImplementation`).
 
 ## Non-goals
 
@@ -217,9 +310,27 @@ Two passes:
    (previously: blocked with the phantom-error wall as soon as any pass compiled the
    library, cf. spec 054).
 
+5. **R4 loader**: **done** — `Uno.HotReload.Tests/Roslyn/Given_CollectibleAnalyzerAssemblyLoader.cs`,
+   4 tests: contexts are collectible and shared per directory; the original file stays
+   unlocked after load (shadow copy: rewrite + delete succeed); compiler assemblies unify
+   to the compiler context's exact instance **including when that context is collectible**
+   (the dev-server scenario, simulated with a collectible ALC hosting
+   `Microsoft.CodeAnalysis`); `WithCollectibleAnalyzerReferences()` swaps the loader while
+   preserving `FullPath` and the swapped reference force-loads warning-free.
+6. **R4 runtime red/green**: reproduced the CI hang locally (Skia desktop runtime tests,
+   `Given_HotReloadWorkspace`): **red** without the loader — every analyzer fails with
+   `[UnableToCreateAnalyzer] … Operation is not supported`, every hot-reload compile shows
+   the missing-generated-code wall; **green** with it — zero analyzer load failures, the
+   generators emit, metadata updates flow.
+7. **Known-issue evidence (reloadable types)**: isolated `When_Change_AppResource_String`
+   / `When_Change_DataTemplate` runs are **red** on the 5.x embed (ENC0106/CS9346 +
+   session cascade) and turn green with the explored capability augmentation — which a
+   full-suite run then invalidates (105 `MetadataUpdater.ApplyUpdate` rejections,
+   sequence-dependent); recorded above as a follow-up, not shipped.
+
 Additional coverage from the implementation pass: the retargeted EnC shim was validated
 by emitting a **real delta** (on-disk baseline, IL/metadata/PDB + updated types) against
-both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (103 tests) runs
+both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (115 tests) runs
 green on the net10/Roslyn 5.6 flavor.
 
 ## Resolved decisions

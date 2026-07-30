@@ -84,12 +84,13 @@ internal static class EmbeddedRoslyn
 		{
 			foreach (var reference in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
 			{
-				if (failures.ContainsKey(reference))
+				if (failures.TryGetValue(reference, out var failure))
 				{
 					reporter.Warn(
 						$"Analyzer '{Path.GetFileNameWithoutExtension(reference.FullPath)}'{GetFlavorSegment(reference.FullPath)} "
 						+ $"failed to load in the hot-reload workspace (Roslyn {Version.ToString(2)}): its generated code will be MISSING "
-						+ $"— hot reload will NOT work for project '{project.Name}' (and any project consuming its generated members).");
+						+ $"— hot reload will NOT work for project '{project.Name}' (and any project consuming its generated members). "
+						+ $"Failure: [{failure.ErrorCode}] {failure.Message}{(failure.Exception is { } e ? $"\n{e}" : "")}");
 				}
 			}
 		}

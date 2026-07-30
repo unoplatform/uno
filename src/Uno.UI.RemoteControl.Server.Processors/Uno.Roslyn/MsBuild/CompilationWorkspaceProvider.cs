@@ -198,10 +198,11 @@ public static class CompilationWorkspaceProvider
 
 		ReportUnresolvedHeadFlavors(workspace.CurrentSolution, projectPath, workspaceDiagnostics, reporter);
 
-		// Analyzer load failures are silent (GetGenerators returns an empty array): surface them
-		// now, one warning per impacted project, so the session log carries the signal before any
-		// hot-reload pass compiles with missing generated code.
-		EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(workspace.CurrentSolution, reporter);
+		// NOTE: analyzer load-failure detection (EmbeddedRoslyn.WarnOnAnalyzerLoadFailures) runs on
+		// the consumer's solution snapshot, after WithCollectibleAnalyzerReferences rewired the
+		// analyzer loaders — running it here would force-load through the workspace's default
+		// loaders, which cannot load anything under Roslyn 5.x in this host (see
+		// CollectibleAnalyzerAssemblyLoader).
 
 		return workspace;
 	}
