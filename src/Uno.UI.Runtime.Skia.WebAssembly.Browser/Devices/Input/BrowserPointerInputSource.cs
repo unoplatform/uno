@@ -2,9 +2,10 @@
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Microsoft.UI.Xaml.Controls;
-using static Windows.UI.Input.PointerUpdateKind;
+using static Microsoft.UI.Input.PointerUpdateKind;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 

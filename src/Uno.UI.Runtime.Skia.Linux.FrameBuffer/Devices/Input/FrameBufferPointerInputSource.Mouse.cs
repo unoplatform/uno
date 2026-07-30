@@ -14,7 +14,7 @@ using Windows.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
-using static Windows.UI.Input.PointerUpdateKind;
+using static Microsoft.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
@@ -146,7 +146,7 @@ internal partial class FrameBufferPointerInputSource
 		properties.IsRightButtonPressed = _pointerPressed.Contains(libinput_event_code.BTN_RIGHT);
 
 		var timestampInMicroseconds = timestamp;
-		var pointerPoint = new Windows.UI.Input.PointerPoint(
+		var pointerPoint = new global::Microsoft.UI.Input.PointerPoint(
 			frameId: (uint)timestamp, // UNO TODO: How should set the frame, timestamp may overflow.
 			timestamp: timestampInMicroseconds,
 			device: PointerDevice.For(PointerDeviceType.Mouse),

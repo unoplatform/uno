@@ -98,7 +98,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerMoved(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new global::Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: Math.Max(data.VerticalSwipeTimestamp, data.HorizontalSwipeTimestamp),
 						device: PointerDevice.For(PointerDeviceType.Touch),
@@ -128,7 +128,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerPressed(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new global::Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: (uint)data.Timestamp,
 						device: PointerDevice.For(PointerDeviceType.Touch),
@@ -158,7 +158,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 			RaisePointerReleased(
 				_previous = new PointerEventArgs(
-					new Windows.UI.Input.PointerPoint(
+					new global::Microsoft.UI.Input.PointerPoint(
 						frameId: GetNextFrameId(),
 						timestamp: (uint)data.Timestamp,
 						device: PointerDevice.For(PointerDeviceType.Touch),

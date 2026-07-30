@@ -11,8 +11,8 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using static Windows.UI.Input.PointerUpdateKind;
+using Microsoft.UI.Input;
+using static Microsoft.UI.Input.PointerUpdateKind;
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
@@ -98,7 +98,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 		try
 		{
-			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(global::Windows.Devices.Input.PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
 
 			// Ensure that the async context is set properly, since we're raising
 			// events from outside the dispatcher.
@@ -106,9 +106,9 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
-			var pointerType = (PointerDeviceType)deviceType;
+			var pointerType = (global::Windows.Devices.Input.PointerDeviceType)deviceType;
 			var pointerDevice = PointerDevice.For(pointerType);
-			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((PointerDeviceType)deviceType, (uint)pointerId));
+			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((global::Windows.Devices.Input.PointerDeviceType)deviceType, (uint)pointerId));
 
 			var frameId = ToFrameId(timestamp);
 			var ts = that.ToTimestamp(timestamp);
