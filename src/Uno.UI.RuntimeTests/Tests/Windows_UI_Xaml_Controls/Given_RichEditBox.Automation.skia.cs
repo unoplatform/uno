@@ -22,6 +22,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_RichEditBox
 {
 	[TestMethod]
+	public void When_Accessibility_Text_Input_Exceeds_Source_Limit_Is_Rejected()
+	{
+		var editor = new RichEditBox { MaxLength = 4 };
+		editor.Document.SetText(TextSetOptions.None, "ab");
+		editor.Document.Selection.SetRange(1, 1);
+
+		Assert.IsFalse(editor.ApplyAccessibilityTextInput("a123456789b", 10, 10));
+		Assert.AreEqual("ab", editor.Document.GetTextInRange(0, editor.Document.TextLength));
+	}
+
+	[TestMethod]
 	public async Task When_Automation_TextEdit_Uses_Active_IME_Ranges_And_Events()
 	{
 		var fake = new FakeImeTextBoxExtension();

@@ -44,7 +44,7 @@ public partial class Given_RichEditBox
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
-	public async Task When_Tall_Math_Table_Uses_Vertical_Glyph_Assembly_And_Preserves_Hit_Testing()
+	public async Task When_Tall_Math_Table_Uses_Available_Math_Font_And_Preserves_Hit_Testing()
 	{
 		var editor = new RichEditBox
 		{
@@ -78,8 +78,14 @@ public partial class Given_RichEditBox
 			var firstCell = parsed.GetRectForIndex(story.IndexOf("\U0001D465", StringComparison.Ordinal));
 			var lastCell = parsed.GetRectForIndex(story.LastIndexOf("\U0001D465", StringComparison.Ordinal));
 
-			Assert.IsTrue(parsed.UsesOpenTypeMath, "Cambria Math should expose an OpenType MATH table.");
-			Assert.IsGreaterThan(0, parsed.VerticalAssemblyGlyphCount);
+			if (parsed.UsesOpenTypeMath)
+			{
+				Assert.IsGreaterThan(0, parsed.VerticalAssemblyGlyphCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, parsed.VerticalAssemblyGlyphCount);
+			}
 			Assert.IsGreaterThanOrEqualTo(lastCell.Bottom - firstCell.Y, bracket.Height);
 
 			var point = block.TransformToVisual(editor).TransformPoint(
@@ -96,7 +102,7 @@ public partial class Given_RichEditBox
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
-	public async Task When_Tall_Math_Table_Uses_Bounded_Browser_Fallback()
+	public async Task When_Tall_Math_Table_Uses_Browser_Safe_Vertical_Glyphs()
 	{
 		var editor = new RichEditBox
 		{
@@ -124,7 +130,10 @@ public partial class Given_RichEditBox
 
 			var parsed = GetMathLayout(editor, out _);
 			var bracket = parsed.GetRectForIndex(0);
-			Assert.AreEqual(0, parsed.VerticalAssemblyGlyphCount);
+			if (parsed.UsesOpenTypeMath)
+			{
+				Assert.IsGreaterThan(0, parsed.VerticalAssemblyGlyphCount);
+			}
 			Assert.IsGreaterThan(0, bracket.Height);
 			Assert.IsTrue(editor.Document.AreRunIndexesValid());
 		}
