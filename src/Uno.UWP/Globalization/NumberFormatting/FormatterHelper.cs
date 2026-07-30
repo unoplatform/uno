@@ -189,7 +189,8 @@ namespace Uno.Globalization.NumberFormatting
 
 		public double? ParseDouble(string text)
 		{
-			if (text.IndexOf(' ') != -1)
+			if (!string.IsNullOrEmpty(NumberFormat.PositiveSign) &&
+				text.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal))
 			{
 				return null;
 			}
@@ -200,7 +201,10 @@ namespace Uno.Globalization.NumberFormatting
 			}
 
 			if (!double.TryParse(text,
-				NumberStyles.Float | NumberStyles.AllowThousands,
+				NumberStyles.AllowLeadingSign |
+				NumberStyles.AllowDecimalPoint |
+				NumberStyles.AllowThousands |
+				NumberStyles.AllowExponent,
 				NumberFormat, out double value))
 			{
 				return null;

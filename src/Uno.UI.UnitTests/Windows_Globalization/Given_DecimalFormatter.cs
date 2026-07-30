@@ -181,8 +181,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[TestMethod]
 		[DataRow("1.2", 1.2)]
+		[DataRow("-1.2", -1.2)]
+		[DataRow("+1", null)]
+		[DataRow("+1.2", null)]
 		[DataRow("1.2 ", null)]
 		[DataRow(" 1.2", null)]
+		[DataRow("1.2\t", null)]
+		[DataRow("\t1.2", null)]
 		[DataRow("1.20", 1.2)]
 		[DataRow("12,34.2", null)]
 		[DataRow("0", 0d)]
@@ -326,6 +331,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		[DataRow("")]
 		[DataRow("NotARegion")]
+		[DataRow("003")]
+		[DataRow("123")]
+		[DataRow("899")]
 		[DataRow("1234")]
 		public void When_GeographicRegionIsInvalid_Then_Throw(string geographicRegion)
 		{
@@ -334,8 +342,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[DataRow("000")]
 		[DataRow("419")]
 		[DataRow("001")]
+		[DataRow("840")]
+		[DataRow("900")]
 		[DataRow("999")]
 		[DataRow("XA")]
 		[DataRow("XB")]
@@ -347,6 +358,29 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Assert.AreEqual(geographicRegion, sut.GeographicRegion);
 			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[DataRow("en-US", "IN", "en-US", "1,234,567.50")]
+		[DataRow("en-IN", "US", "en-IN", "12,34,567.50")]
+		[DataRow("en", "IN", "en", "1,234,567.50")]
+		public void When_LanguageResolves_Then_RegionDoesNotOverrideNumberFormat(
+			string language,
+			string geographicRegion,
+			string expectedResolvedLanguage,
+			string expected)
+		{
+			var sut = new DecimalFormatter(new[] { language }, geographicRegion)
+			{
+				IsGrouped = true,
+				IntegerDigits = 2,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(geographicRegion, sut.GeographicRegion);
+			Assert.AreEqual(expectedResolvedLanguage, sut.ResolvedLanguage);
+			Assert.AreEqual(expected, sut.FormatDouble(1234567.5));
 		}
 
 		[TestMethod]
@@ -400,7 +434,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Assert.AreEqual("1,234,567.00", formatted);
 			Assert.AreEqual(1234567d, sut.ParseDouble(formatted));
-			Assert.AreEqual(1234567d, sut.ParseDouble("+1,234,567.00"));
+			Assert.IsNull(sut.ParseDouble("+1,234,567.00"));
 		}
 
 		[TestMethod]
