@@ -18,7 +18,7 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 {
 	private readonly IXamlRootHost _host;
 	private readonly X11Window _x11Window;
-	private readonly IPresentableGraphicsContext _context;
+	private readonly IGraphicsContext _context;
 	private Color _background;
 
 	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window)
@@ -32,7 +32,7 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 
 		var (width, height) = GetWindowSize();
 		var activation = GraphicsBackend.Activate(new X11GraphicsNativeWindow(x11Window, width, height));
-		_context = (IPresentableGraphicsContext)activation.Context;
+		_context = activation.Context;
 
 		// Route the shared render loop through the negotiated backend (whichever was registered).
 		CompositionTarget.RenderBackend = activation.RenderBackend;

@@ -796,6 +796,14 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 
 	public bool IsLost => false;
 
+	// The WebGPU render path is driven by the (legacy, env-gated) X11WebGpu*Renderer today, not GraphicsBackend
+	// .Activate, so this context isn't asked to acquire/present. Stubbed until the WebGPU host adopts the seam.
+	public IRenderTarget AcquireRenderTarget(int width, int height)
+		=> throw new System.NotSupportedException("WebGpuGraphicsContext does not yet drive AcquireRenderTarget/Present.");
+
+	public void Present()
+		=> throw new System.NotSupportedException("WebGpuGraphicsContext does not yet drive AcquireRenderTarget/Present.");
+
 	public void Dispose() { }
 }
 
