@@ -1438,7 +1438,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (DrawingBackend.Current.FontManager.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
+		if (FontManager.Current.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
 		{
 			return FontDetails.Create(fallback, fontSize);
 		}

@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var currentFont = defaultFont.ContainsGlyph(codepoint)
 					? defaultFont
-					: DrawingBackend.Current.FontManager.MatchCharacter(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
+					: FontManager.Current.MatchCharacter(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
 
 				if (currentFont is null)
 				{

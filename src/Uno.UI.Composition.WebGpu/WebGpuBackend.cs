@@ -882,7 +882,6 @@ public sealed class WebGpuDrawingBackend : IDrawingBackend
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 
-	public IFontManager FontManager => _inner.FontManager;
 	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);

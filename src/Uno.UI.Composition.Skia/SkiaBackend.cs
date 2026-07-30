@@ -24,6 +24,9 @@ public static class SkiaBackend
 		// Image decoding is an independent, render-backend-agnostic seam; install the Skia decoder.
 		ImageDecoder.Current = new SkiaImageDecoderBackend();
 
+		// Font resolution is likewise render-backend-independent; install the Skia resolver (or a host override).
+		FontManager.Current = DrawingBackendOptions.FontManager ?? new SkiaFontManager();
+
 		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());

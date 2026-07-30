@@ -23,9 +23,6 @@ namespace Uno.UI.Composition.Drawing;
 /// </remarks>
 public interface IDrawingBackend
 {
-	/// <summary>Resolves fonts (installed family, embedded bytes, or codepoint fallback) into <see cref="IFont"/> handles for the text layer.</summary>
-	IFontManager FontManager { get; }
-
 	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
 	IPathBuilder CreatePathBuilder();
 	IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
