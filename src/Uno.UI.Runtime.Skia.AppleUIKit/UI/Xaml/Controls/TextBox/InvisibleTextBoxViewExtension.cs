@@ -40,7 +40,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
-			if (!_textBoxView.IsFirstResponder)
+			if (!suppressSoftwareKeyboard && !_textBoxView.IsFirstResponder)
 			{
 				_textBoxView.BecomeFirstResponder();
 			}
@@ -58,8 +58,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		AddViewToTextInputLayer(host.XamlRoot);
 
-		// change FirstResponder's View before removing the previous view to avoid flickering
-		_textBoxView.BecomeFirstResponder();
+		if (!suppressSoftwareKeyboard)
+		{
+			// change FirstResponder's View before removing the previous view to avoid flickering
+			_textBoxView.BecomeFirstResponder();
+		}
 
 		RemovePreviousViewFromTextInputLayer();
 
@@ -155,7 +158,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void UpdateNativeView()
 	{
-		if (ImeHost is { } host)
+		// Property changes before focus must not create an unattached native responder.
+		if (_textBoxView is not null && ImeHost is { } host)
 		{
 			EnsureTextBoxView(host);
 			UpdateProperties();
@@ -294,9 +298,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	internal void SyncSelectionToTextBox()
+	internal void SyncSelectionToTextBox(IInvisibleTextBoxView source)
 	{
-		if (ImeHost is { } host)
+		if (ReferenceEquals(_textBoxView, source) && ImeHost is { } host)
 		{
 			var start = GetSelectionStart();
 			var length = GetSelectionLength();
@@ -304,8 +308,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	internal void ProcessNativeTextInput(string? text)
+	internal void ProcessNativeTextInput(IInvisibleTextBoxView source, string? text)
 	{
+		if (!ReferenceEquals(_textBoxView, source))
+		{
+			return;
+		}
+
 		// During IME composition, text updates are managed by the shared
 		// TextBox.skia.cs composition handlers via IImeTextBoxExtension events.
 		// Suppress the normal text processing path to prevent double processing.

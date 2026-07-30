@@ -110,7 +110,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	/// <summary>
 	/// Called from native view override when UITextInput.SetMarkedText is invoked.
 	/// </summary>
-	internal void OnSetMarkedText(string text)
+	internal void OnSetMarkedText(string text, int cursorPosition)
 	{
 		bool wasComposing = _isComposing;
 
@@ -122,21 +122,21 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 				_lastComposingText = text;
 
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition started: '{text}'");
+					this.Log().Trace($"Composition started (length: {text.Length}).");
 				}
 			}
 			else
 			{
 				_lastComposingText = text;
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition updated: '{text}'");
+					this.Log().Trace($"Composition updated (length: {text.Length}).");
 				}
 			}
 		}
@@ -203,25 +203,8 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } })
-		{
-			var caret = _activeTextBox.IsBackwardSelection
-				? _activeTextBox.SelectionStart
-				: _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
-			var caretRect = parsedText.GetRectForIndex(caret);
-			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
-			var candidateTop = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-				? _activeTextBox.TextBoxView.DisplayBlock.ActualHeight
-				: caretRect.Top;
-			var candidateHeight = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-				? 1
-				: caretRect.Height;
-			var caretPoint = transform.TransformPoint(new Point(caretRect.Left, candidateTop));
-			var caretBottom = transform.TransformPoint(new Point(caretRect.Left, candidateTop + candidateHeight));
-
-			return new Rect(caretPoint.X, caretPoint.Y, 1, caretBottom.Y - caretPoint.Y);
-		}
-
-		return Rect.Empty;
+		return _activeTextBox?.TryGetCandidateWindowRect(out var rect) == true
+			? rect
+			: Rect.Empty;
 	}
 }

@@ -284,26 +284,16 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 	private unsafe void UpdateCandidateWindowPosition(IImeSessionHost host)
 	{
 		if (_hwnd.IsNull ||
-			host.TextBoxView?.DisplayBlock.ParsedText is not { } parsedText ||
+			!host.TryGetCandidateWindowRect(out var candidateRect) ||
 			host.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
 
-		var index = host.IsBackwardSelection
-			? host.SelectionStart
-			: host.SelectionStart + host.SelectionLength;
-		var caretRect = parsedText.GetRectForIndex(index);
-		var candidateY = host.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-			? host.TextBoxView.DisplayBlock.ActualHeight
-			: caretRect.Top;
-		var rootPoint = host.TextBoxView.DisplayBlock
-			.TransformToVisual(null)
-			.TransformPoint(new Windows.Foundation.Point(caretRect.Left, candidateY));
 		var scale = xamlRoot.RasterizationScale;
 		var candidatePosition = new Point(
-			(int)(rootPoint.X * scale),
-			(int)(rootPoint.Y * scale));
+			(int)(candidateRect.X * scale),
+			(int)(candidateRect.Y * scale));
 		if (_lastCandidatePosition == candidatePosition)
 		{
 			return;

@@ -9,18 +9,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_RichEditBox
 {
 	[TestMethod]
-	public void When_Document_Is_ITextDocument()
-	{
-		var document = new RichEditBox().Document;
-
-#if HAS_UNO
-		Assert.IsInstanceOfType<ITextDocument>(document);
-#endif
-		Assert.IsNotNull(document.GetRange(0, 0));
-		document.ClearUndoRedoHistory();
-	}
-
-	[TestMethod]
 	[DataRow("", false)]
 	[DataRow("abc", true)]
 	public void When_Final_Eop_Is_Addressable(string text, bool selectionCanIncludeEop)

@@ -786,7 +786,7 @@ internal sealed class MathDocument
 		ParagraphFormatState defaultParagraphFormat)
 	{
 		var baseCharacter = defaultCharacterFormat.Clone();
-		baseCharacter.Name = RichEditTextDocument.MathFontFamilyName;
+		baseCharacter.Name = RichEditTextDocument.MathRenderingFontFamilyName;
 		var characterRuns = new List<FormatRun>();
 		var position = 0;
 
@@ -1135,16 +1135,6 @@ internal sealed class MathDocument
 		}
 
 		return copy is null ? nodes : Array.AsReadOnly(copy);
-	}
-
-	private static MathRowNode CreateLiveRow(string value, MathStyle style)
-	{
-		var children = new List<MathNode>();
-		foreach (var rune in value.EnumerateRunes())
-		{
-			children.Add(CreateLiveToken(rune.ToString(), style));
-		}
-		return new MathRowNode(MathStyle.Default, CopyAsReadOnly(children));
 	}
 
 	private static MathTokenNode CreateLiveToken(string value, MathStyle style)

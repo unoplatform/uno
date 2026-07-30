@@ -217,35 +217,49 @@ namespace Microsoft.UI.Text
 			}
 
 			var originalPosition = value.Position;
+			Exception? primaryError = null;
 			try
 			{
-				if (value.Size > (ulong)maxBytes)
+				var size = value.Size;
+				if (size > (ulong)maxBytes || size > int.MaxValue)
 				{
 					throw new ArgumentException("The text stream is too large.", nameof(value));
 				}
 
 				value.Seek(0);
 				var stream = value.AsStreamForRead();
-				using var buffer = new MemoryStream((int)Math.Min(value.Size, (ulong)int.MaxValue));
-				var chunk = new byte[4096];
-				while (true)
+				var bytes = new byte[(int)size];
+				var offset = 0;
+				while (offset < bytes.Length)
 				{
-					var read = stream.Read(chunk, 0, chunk.Length);
+					var read = stream.Read(bytes, offset, bytes.Length - offset);
 					if (read == 0)
 					{
 						break;
 					}
-					if (buffer.Length > maxBytes - read)
-					{
-						throw new ArgumentException("The text stream is too large.", nameof(value));
-					}
-					buffer.Write(chunk, 0, read);
+					offset += read;
 				}
-				return buffer.ToArray();
+				if (offset != bytes.Length)
+				{
+					Array.Resize(ref bytes, offset);
+				}
+				return bytes;
+			}
+			catch (Exception error)
+			{
+				primaryError = error;
+				throw;
 			}
 			finally
 			{
-				value.Seek(originalPosition);
+				try
+				{
+					value.Seek(originalPosition);
+				}
+				catch (Exception restorationError) when (primaryError is not null && !IsFatalException(restorationError))
+				{
+					AttachStreamRollbackFailure(primaryError, new List<Exception> { restorationError });
+				}
 			}
 		}
 

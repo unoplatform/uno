@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 
 namespace DirectUI;
 
@@ -63,10 +64,39 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 				? text[..^1]
 				: text ?? string.Empty;
 		}
-		catch
+		catch (Exception error) when (!IsFatalException(error))
 		{
+			if (typeof(TextAdapter).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(TextAdapter).Log().Warn("Failed to read RichEditBox text for UI Automation.", error);
+			}
 			return string.Empty;
 		}
+	}
+
+	private static bool IsFatalException(Exception error)
+	{
+		if (error is OutOfMemoryException
+			or StackOverflowException
+			or AccessViolationException
+			or AppDomainUnloadedException
+			or BadImageFormatException
+			or CannotUnloadAppDomainException)
+		{
+			return true;
+		}
+		if (error is AggregateException aggregate)
+		{
+			foreach (var inner in aggregate.InnerExceptions)
+			{
+				if (IsFatalException(inner))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return error.InnerException is { } innerException && IsFatalException(innerException);
 	}
 
 	internal static int GetEffectiveTextLength(FrameworkElement owner)

@@ -4,12 +4,12 @@ using System;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Core;
 
 namespace Microsoft.UI.Text
 {
@@ -26,6 +26,9 @@ namespace Microsoft.UI.Text
 		private int _clipboardRtfGenerationCount;
 		private long _pasteOperationGeneration;
 		private readonly SemaphoreSlim _pasteCommitGate = new(1, 1);
+		private CancellationTokenSource? _pasteOperationCancellation;
+
+		internal readonly record struct PasteOperation(long Generation, CancellationToken CancellationToken);
 
 		internal int ClipboardRtfGenerationCount => _clipboardRtfGenerationCount;
 
@@ -86,46 +89,110 @@ namespace Microsoft.UI.Text
 		/// control-level Ctrl+V paste). When a matching rich payload is present the character formatting
 		/// is preserved, as one undoable action.
 		/// </summary>
-		internal void BeginPasteFromClipboard(
+		internal async void BeginPasteFromClipboard(
 			UnoTextRange operationRange,
 			Action<int> onPasted,
 			bool requireEditable,
 			int format)
-			=> BeginPasteFromClipboard(
-				Clipboard.GetContent(),
-				operationRange,
-				onPasted,
-				requireEditable,
-				format);
+		{
+			try
+			{
+				await BeginPasteFromClipboardCoreAsync(
+					Clipboard.GetContent(),
+					operationRange,
+					onPasted,
+					requireEditable,
+					format);
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception error) when (FindFatalException(error) is not null)
+			{
+				throw;
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("RichEditBox TOM paste failed.", error);
+				}
+			}
+		}
 
-		internal void BeginPasteFromClipboard(
+		internal async void BeginPasteFromClipboard(
 			DataPackageView content,
 			UnoTextRange operationRange,
 			Action<int> onPasted,
 			bool requireEditable,
 			int format)
 		{
-			var operationGeneration = BeginPasteOperation();
-			var retrieval = ReadClipboardContentAsync(content, operationRange, format);
-			_ = _owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			try
 			{
-				_ = PasteFromClipboardAsync(
-					retrieval,
+				await BeginPasteFromClipboardCoreAsync(
+					content,
 					operationRange,
 					onPasted,
 					requireEditable,
-					operationGeneration);
-			});
+					format);
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception error) when (FindFatalException(error) is not null)
+			{
+				throw;
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("RichEditBox TOM paste failed.", error);
+				}
+			}
 		}
 
-		internal long BeginPasteOperation() => Interlocked.Increment(ref _pasteOperationGeneration);
-
-		internal async Task<bool> TryCommitLatestPasteAsync(long operationGeneration, Action commit)
+		private async Task BeginPasteFromClipboardCoreAsync(
+			DataPackageView content,
+			UnoTextRange operationRange,
+			Action<int> onPasted,
+			bool requireEditable,
+			int format)
 		{
-			await _pasteCommitGate.WaitAsync();
+			var operation = BeginPasteOperation();
+			var retrieval = ReadClipboardContentAsync(content, operationRange, format, operation.CancellationToken);
+			await PasteFromClipboardAsync(
+				retrieval,
+				operationRange,
+				onPasted,
+				requireEditable,
+				operation);
+		}
+
+		internal PasteOperation BeginPasteOperation()
+		{
+			var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+			var previous = Interlocked.Exchange(ref _pasteOperationCancellation, cancellation);
+			previous?.Cancel();
+			previous?.Dispose();
+			return new PasteOperation(
+				Interlocked.Increment(ref _pasteOperationGeneration),
+				cancellation.Token);
+		}
+
+		internal async Task<bool> TryCommitLatestPasteAsync(PasteOperation operation, Action commit)
+		{
+			await _pasteCommitGate.WaitAsync(operation.CancellationToken);
 			try
 			{
-				if (operationGeneration != Volatile.Read(ref _pasteOperationGeneration))
+				operation.CancellationToken.ThrowIfCancellationRequested();
+				if (operation.Generation != Volatile.Read(ref _pasteOperationGeneration))
 				{
 					return false;
 				}
@@ -144,90 +211,71 @@ namespace Microsoft.UI.Text
 			UnoTextRange operationRange,
 			Action<int> onPasted,
 			bool requireEditable,
-			long operationGeneration)
+			PasteOperation operation)
 		{
-			try
-			{
-				var (fragment, clipboardText) = await retrieval;
+			var (fragment, clipboardText) = await retrieval;
 
-				if (fragment is null && string.IsNullOrEmpty(clipboardText))
+			if (fragment is null && string.IsNullOrEmpty(clipboardText))
+			{
+				return;
+			}
+
+			await TryCommitLatestPasteAsync(operation, () =>
+			{
+				if (requireEditable && IsOwnerReadOnly)
 				{
 					return;
 				}
 
-				await TryCommitLatestPasteAsync(operationGeneration, () =>
+				// RichEditBox is multiline and normalizes newlines to \r like WinUI.
+				var start = operationRange.StartPosition;
+				var end = operationRange.EndPosition;
+				if (IsRangeProtected(start, end, operationRange.UsesForwardCharacterFormatting))
 				{
-					if (requireEditable && IsOwnerReadOnly)
+					return;
+				}
+
+				BeginUndoGroup();
+				BatchDisplayUpdates();
+				try
+				{
+					int insertedLength;
+					if (fragment is not null
+						&& (_owner.CharacterCasing == global::Microsoft.UI.Xaml.Controls.CharacterCasing.Normal || IsImageOnlyFragment(fragment)))
 					{
-						return;
+						insertedLength = ReplaceRangeWithFragment(start, end, fragment, operationRange);
+					}
+					else
+					{
+						var sourceText = clipboardText ?? fragment!.Text;
+						var normalized = NormalizeImportedPlainText(sourceText, start, end);
+						insertedLength = ReplaceRange(start, end, normalized, operationRange);
 					}
 
-					// RichEditBox is multiline and normalizes newlines to \r like WinUI.
-					var start = operationRange.StartPosition;
-					var end = operationRange.EndPosition;
-					if (IsRangeProtected(start, end, operationRange.UsesForwardCharacterFormatting))
-					{
-						return;
-					}
-
-					BeginUndoGroup();
-					BatchDisplayUpdates();
+					onPasted(start + insertedLength);
+					FinalizeHistorySelection();
+				}
+				finally
+				{
 					try
 					{
-						int insertedLength;
-						if (fragment is not null
-							&& (_owner.CharacterCasing == global::Microsoft.UI.Xaml.Controls.CharacterCasing.Normal || IsImageOnlyFragment(fragment)))
-						{
-							insertedLength = ReplaceRangeWithFragment(start, end, fragment, operationRange);
-						}
-						else
-						{
-							var sourceText = clipboardText ?? fragment!.Text;
-							var normalized = NormalizeImportedPlainText(sourceText, start, end);
-							insertedLength = ReplaceRange(start, end, normalized, operationRange);
-						}
-
-						onPasted(start + insertedLength);
-						FinalizeHistorySelection();
+						EndUndoGroup();
 					}
 					finally
 					{
-						try
-						{
-							EndUndoGroup();
-						}
-						finally
-						{
-							ApplyDisplayUpdates();
-						}
+						ApplyDisplayUpdates();
 					}
-				});
-			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (OperationCanceledException)
-			{
-				throw;
-			}
-			catch (Exception error) when (FindFatalException(error) is not null)
-			{
-				throw;
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-				{
-					this.Log().Error("RichEditBox TOM paste failed.", error);
 				}
-			}
+			});
 		}
 
 		internal async Task<(RichTextFragment? Fragment, string? Text)> ReadClipboardContentAsync(
 			DataPackageView content,
 			global::Microsoft.UI.Text.ITextRange operationRange,
-			int format = TomClipboardFormat.Best)
+			int format = TomClipboardFormat.Best,
+			CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
 			var requested = TomClipboardFormat.Resolve(format);
 			if (requested == ClipboardRepresentation.None)
 			{
@@ -239,7 +287,8 @@ namespace Microsoft.UI.Text
 				var fragment = await TryReadClipboardRtfAsync(
 					content,
 					StandardDataFormats.Rtf,
-					operationRange);
+					operationRange,
+					cancellationToken);
 				if (fragment is not null)
 				{
 					return (fragment, null);
@@ -251,7 +300,8 @@ namespace Microsoft.UI.Text
 				var fragment = await TryReadClipboardRtfAsync(
 					content,
 					RtfWithoutObjectsFormat,
-					operationRange);
+					operationRange,
+					cancellationToken);
 				if (fragment is not null)
 				{
 					return (fragment, null);
@@ -263,10 +313,11 @@ namespace Microsoft.UI.Text
 			{
 				try
 				{
-					return (null, await content.GetTextAsync());
+					return (null, await content.GetTextAsync().AsTask(cancellationToken));
 				}
 				catch (Exception error)
 				{
+					LogRecoverableClipboardFailure(StandardDataFormats.Text, error);
 					HandleClipboardRepresentationFailure(error);
 				}
 			}
@@ -276,13 +327,14 @@ namespace Microsoft.UI.Text
 			{
 				try
 				{
-					var reference = await content.GetBitmapAsync();
+					var reference = await content.GetBitmapAsync().AsTask(cancellationToken);
 					if (reference is null)
 					{
 						return (null, null);
 					}
 
-					using var stream = await reference.OpenReadAsync();
+					using var stream = await reference.OpenReadAsync().AsTask(cancellationToken);
+					cancellationToken.ThrowIfCancellationRequested();
 					var image = InlineImageState.CreateFromStream(
 						stream,
 						width: null,
@@ -296,6 +348,7 @@ namespace Microsoft.UI.Text
 				}
 				catch (Exception error)
 				{
+					LogRecoverableClipboardFailure(StandardDataFormats.Bitmap, error);
 					HandleClipboardRepresentationFailure(error);
 				}
 			}
@@ -306,7 +359,8 @@ namespace Microsoft.UI.Text
 		private async Task<RichTextFragment?> TryReadClipboardRtfAsync(
 			DataPackageView content,
 			string format,
-			global::Microsoft.UI.Text.ITextRange operationRange)
+			global::Microsoft.UI.Text.ITextRange operationRange,
+			CancellationToken cancellationToken)
 		{
 			if (!content.Contains(format))
 			{
@@ -316,9 +370,10 @@ namespace Microsoft.UI.Text
 			try
 			{
 				var rtf = string.Equals(format, StandardDataFormats.Rtf, StringComparison.Ordinal)
-					? await content.GetRtfAsync()
-					: await content.GetDataAsync(format) as string
+					? await content.GetRtfAsync().AsTask(cancellationToken)
+					: await content.GetDataAsync(format).AsTask(cancellationToken) as string
 						?? throw new InvalidCastException("The clipboard RTF representation is not text.");
+				cancellationToken.ThrowIfCancellationRequested();
 				var start = operationRange.StartPosition;
 				var end = operationRange.EndPosition;
 				return SanitizeClipboardFragment(
@@ -329,8 +384,20 @@ namespace Microsoft.UI.Text
 			}
 			catch (Exception error)
 			{
+				LogRecoverableClipboardFailure(format, error);
 				HandleClipboardRepresentationFailure(error);
 				return null;
+			}
+		}
+
+		private void LogRecoverableClipboardFailure(string format, Exception error)
+		{
+			if (IsRecoverableClipboardRepresentationFailure(error)
+				&& FindException<UnauthorizedAccessException>(error) is null
+				&& FindException<SecurityException>(error) is null
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Failed to read the '{format}' clipboard representation.", error);
 			}
 		}
 

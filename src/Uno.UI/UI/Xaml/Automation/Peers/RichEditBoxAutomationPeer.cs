@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RichEditBoxAutomationPeer_Partial.cpp, tag winui3/release/1.8.2, commit b8cfb8490
+// MUX Reference RichEditBoxAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 using System;
 using System.Collections.Generic;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -16,7 +17,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// RichEditBox as one native textarea and does not duplicate its inline text as descendant link/image
 /// nodes. The managed automation tree remains available without adding a Value pattern.
 /// </remarks>
-public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer
+public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer, IValueProvider
 {
 	private TextAdapter m_textPattern;
 
@@ -55,6 +56,25 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer
 
 	internal void RaiseIsReadOnlyPropertyChangedEvent(bool oldValue, bool newValue)
 		=> RaisePropertyChangedEvent(ValuePatternIdentifiers.IsReadOnlyProperty, oldValue, newValue);
+
+	/// <inheritdoc />
+	public string Value => TextAdapter.GetEffectiveText((Controls.RichEditBox)Owner);
+
+	/// <inheritdoc />
+	public bool IsReadOnly => ((Controls.RichEditBox)Owner).IsReadOnly;
+
+	/// <inheritdoc />
+	public void SetValue(string value)
+	{
+		if (IsReadOnly)
+		{
+			throw new InvalidOperationException("Cannot set value on a read-only RichEditBox.");
+		}
+
+		((Controls.RichEditBox)Owner).Document?.SetText(
+			Microsoft.UI.Text.TextSetOptions.None,
+			value ?? string.Empty);
+	}
 
 	protected override string GetNameCore()
 	{

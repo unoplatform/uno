@@ -117,7 +117,7 @@ internal sealed class MathFontMetrics
 		string text,
 		float targetSize,
 		out MathGlyphRun glyphRun,
-		bool allowBrowserVariant = true)
+		bool allowVariant = true)
 	{
 		glyphRun = default;
 		if (_rawData.Table is not { } table || _rawData.VariantsOffset == 0 || string.IsNullOrEmpty(text))
@@ -146,7 +146,7 @@ internal sealed class MathFontMetrics
 			}
 		}
 		if (selectedVariant.Glyph != 0
-			&& (!OperatingSystem.IsBrowser() || allowBrowserVariant))
+			&& allowVariant)
 		{
 			glyphRun = new MathGlyphRun(
 				new[] { new MathGlyphPart(selectedVariant.Glyph, 0) },
@@ -155,14 +155,14 @@ internal sealed class MathFontMetrics
 			return true;
 		}
 
-		// Browser Skia does not reliably settle layout while drawing a multi-part glyph blob.
-		// Keep using OpenType variants there and fall back to bounded scaling when assembly is required.
-		if (OperatingSystem.IsBrowser())
-		{
-			return false;
-		}
-
 		return TryBuildAssembly(construction, _rawData.MinimumConnectorOverlap, targetUnits, scale, out glyphRun);
+	}
+
+	internal static bool HasOpenTypeMathTable(SKTypeface typeface)
+	{
+		ArgumentNullException.ThrowIfNull(typeface);
+		var size = typeface.GetTableSize(new Tag('M', 'A', 'T', 'H'));
+		return size >= 10 && size <= MaxMathTableBytes;
 	}
 
 	internal static bool TryReadVerticalConstructionForTesting(
