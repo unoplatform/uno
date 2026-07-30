@@ -23,17 +23,41 @@ public class Given_HotReloadClientOperation_Alc
 	[TestMethod]
 	public void When_Operation_Completed_Then_Raw_Types_Released_But_Curated_Kept()
 	{
-		var collectibleAlc = new global::System.Runtime.Loader.AssemblyLoadContext("Given_HotReloadClientOperation_Alc.collectible", isCollectible: true);
+		// The raw-Type[] release this test guards is type-agnostic, so the assertions below hold for any
+		// type. Where the platform can materialize a *genuinely collectible* type (desktop/CoreCLR: a real
+		// on-disk Assembly.Location that can be re-loaded into a collectible ALC) we use one so the
+		// previewed-app scenario is mirrored exactly. On WASM/Android assemblies are bundled with no
+		// loadable on-disk path, so we fall back to an ordinary type; the operation's release behaviour —
+		// what this test asserts — is identical. Collectible-ALC *collection* itself is covered by
+		// AlcUnloadMemoryRuntimeTests.
+		global::System.Runtime.Loader.AssemblyLoadContext? collectibleAlc = null;
 		try
 		{
-			// A type loaded into a collectible ALC stands in for a previewed-app hot-reloaded type.
-			var collectibleType = collectibleAlc
-				.LoadFromAssemblyPath(typeof(Given_HotReloadClientOperation_Alc).Assembly.Location)
-				.GetType(typeof(Given_HotReloadClientOperation_Alc).FullName!, throwOnError: true)!;
+			var type = typeof(Given_HotReloadClientOperation_Alc);
+			var assemblyLocation = type.Assembly.Location;
+			if (assemblyLocation is { Length: > 0 })
+			{
+				try
+				{
+					// A type loaded into a collectible ALC stands in for a previewed-app hot-reloaded type.
+					collectibleAlc = new global::System.Runtime.Loader.AssemblyLoadContext("Given_HotReloadClientOperation_Alc.collectible", isCollectible: true);
+					type = collectibleAlc
+						.LoadFromAssemblyPath(assemblyLocation)
+						.GetType(type.FullName!, throwOnError: true)!;
 
-			Assert.AreSame(collectibleAlc, global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(collectibleType.Assembly), "Pre-condition: the type must belong to the collectible ALC.");
+					Assert.AreSame(collectibleAlc, global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly), "Pre-condition: the type must belong to the collectible ALC.");
+				}
+				catch (Exception ex) when (ex is System.IO.FileNotFoundException or System.IO.FileLoadException or BadImageFormatException or NotSupportedException or ArgumentException)
+				{
+					// The platform reported a path but cannot re-load the assembly into a separate
+					// collectible ALC (e.g. a bundled/embedded assembly). Fall back to the ordinary type.
+					collectibleAlc?.Unload();
+					collectibleAlc = null;
+					type = typeof(Given_HotReloadClientOperation_Alc);
+				}
+			}
 
-			var op = new _Op(_Source.Manual, new[] { collectibleType }, static () => { });
+			var op = new _Op(_Source.Manual, new[] { type }, static () => { });
 
 			Assert.AreEqual(1, op.Types.Length, "Pre-condition: the live operation must retain its raw types.");
 			var curatedBefore = op.CuratedTypes;
@@ -52,7 +76,7 @@ public class Given_HotReloadClientOperation_Alc
 		}
 		finally
 		{
-			collectibleAlc.Unload();
+			collectibleAlc?.Unload();
 		}
 	}
 }
