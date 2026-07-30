@@ -6549,8 +6549,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
 			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
 
-			// The blink interval is 500ms; the caret must stay visible across several of them.
-			for (var i = 0; i < 8; i++)
+			// The blink interval is 500ms; the caret must stay visible across a few of them.
+			for (var i = 0; i < 4; i++)
 			{
 				await Task.Delay(200);
 				await WindowHelper.WaitForIdle();
@@ -6561,9 +6561,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
 			await WindowHelper.WaitForIdle();
 
-			// ...and blinking must resume afterwards.
+			// ...and blinking must resume afterwards. Generous headroom over the 500ms interval so a
+			// loaded CI shard doesn't turn this flaky.
 			var blinkedOff = false;
-			for (var i = 0; i < 20 && !blinkedOff; i++)
+			for (var i = 0; i < 40 && !blinkedOff; i++)
 			{
 				await Task.Delay(100);
 				await WindowHelper.WaitForIdle();

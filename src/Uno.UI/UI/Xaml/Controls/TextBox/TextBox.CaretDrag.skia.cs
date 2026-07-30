@@ -144,7 +144,7 @@ public partial class TextBox
 		var maxY = lastLine.Top + (lastLine.Height / 2);
 
 		var x = anchor.X + cumulativeOffset.X;
-		var y = Math.Clamp(anchor.Y + cumulativeOffset.Y, Math.Min(minY, maxY), Math.Max(minY, maxY));
+		var y = Math.Clamp(anchor.Y + cumulativeOffset.Y, minY, maxY);
 
 		// GetIndexAt returns -1 on a miss, hence the Math.Max, matching every other call site.
 		var index = Math.Max(0, parsedText.GetIndexAt(new Point(x, y), true, true));
