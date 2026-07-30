@@ -22,6 +22,12 @@ public interface IGraphicsContext : IDisposable
 
 	/// <summary>Whether the context has been lost (device removed, surface invalidated) and must be recreated.</summary>
 	bool IsLost { get; }
+
+	/// <summary>Acquires the color target for the next frame (recreating the swapchain/framebuffer on resize).</summary>
+	IRenderTarget AcquireRenderTarget(int width, int height);
+
+	/// <summary>Presents the frame rendered into the last-acquired target to the window.</summary>
+	void Present();
 }
 
 /// <summary>
