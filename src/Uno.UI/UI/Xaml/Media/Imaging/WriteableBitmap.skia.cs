@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private void DecodeStreamIntoBuffer()
 		{
 			// Decode the encoded stream to BGRA (premultiplied) pixels through the neutral backend decoder.
-			if (DrawingBackend.Current.TryDecodeImage(_stream.AsStream(), null, null, out var frames))
+			if (ImageDecoder.Current.TryDecode(_stream.AsStream(), null, null, out var frames))
 			{
 				using (frames)
 				{

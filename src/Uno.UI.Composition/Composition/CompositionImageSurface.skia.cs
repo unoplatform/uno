@@ -75,7 +75,7 @@ namespace Microsoft.UI.Composition
 		/// uploaded through the backend) as a surface.</summary>
 		internal CompositionImageSurface(IImage image)
 		{
-			FrameProvider = FrameProviderFactory.Create(DrawingBackend.Current.CreateImageFrames(image), null);
+			FrameProvider = FrameProviderFactory.Create(ImageDecoder.Current.CreateFrames(image), null);
 		}
 
 		private protected override void DisposeInternal()
@@ -100,7 +100,7 @@ namespace Microsoft.UI.Composition
 			try
 			{
 				var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
-				if (!DrawingBackend.Current.TryDecodeImage(imageStream, targetWidth, targetHeight, out var frames))
+				if (!ImageDecoder.Current.TryDecode(imageStream, targetWidth, targetHeight, out var frames))
 				{
 					SetFrameProviderAndOnFrameChanged(null, null);
 					return (false, "Failed to decode image");
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Composition
 		/// </summary>
 		internal void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
 		{
-			var frames = DrawingBackend.Current.CreateImageFrame(pixelWidth, pixelHeight, data.Span);
+			var frames = ImageDecoder.Current.CreateFrame(pixelWidth, pixelHeight, data.Span);
 			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
 		}
 
