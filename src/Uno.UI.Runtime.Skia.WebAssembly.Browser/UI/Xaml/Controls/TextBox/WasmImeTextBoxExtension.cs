@@ -20,6 +20,7 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	internal static WasmImeTextBoxExtension Instance { get; } = new();
 
 	private bool _isComposing;
+	private bool _restartPending;
 
 	public bool IsComposing => _isComposing;
 
@@ -40,7 +41,11 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		{
 			return;
 		}
-
+		if (_restartPending)
+		{
+			BrowserInvisibleTextBoxViewExtension.RestartComposition();
+			_restartPending = false;
+		}
 	}
 
 	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
@@ -69,6 +74,8 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 
 	public void EndImeSession()
 	{
+		_restartPending = _isComposing;
+		BrowserInvisibleTextBoxViewExtension.InvalidateComposition();
 		if (_isComposing)
 		{
 			_isComposing = false;
@@ -86,12 +93,20 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	[JSExport]
 	private static void OnCompositionUpdated(string text, int cursorPosition)
 	{
+		if (!Instance._isComposing)
+		{
+			return;
+		}
 		Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, cursorPosition));
 	}
 
 	[JSExport]
 	private static void OnCompositionCompleted(string text)
 	{
+		if (!Instance._isComposing)
+		{
+			return;
+		}
 		Instance._isComposing = false;
 		Instance.CompositionCompleted?.Invoke(Instance, new ImeCompositionEventArgs(text));
 		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);

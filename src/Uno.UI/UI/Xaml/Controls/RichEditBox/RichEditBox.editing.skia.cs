@@ -825,8 +825,22 @@ namespace Microsoft.UI.Xaml.Controls
 			string newText,
 			global::Microsoft.UI.Text.TextHistoryKind historyKind = global::Microsoft.UI.Text.TextHistoryKind.None,
 			bool checkTextLimit = true)
+			=> ApplyTextDiff(
+				oldText,
+				newText,
+				GetTextDiff(oldText, newText),
+				historyKind,
+				checkTextLimit,
+				out _);
+
+		private bool ApplyTextDiff(
+			string oldText,
+			string newText,
+			TextDiff diff,
+			global::Microsoft.UI.Text.TextHistoryKind historyKind,
+			bool checkTextLimit,
+			out bool nativeTextNeedsCorrection)
 		{
-			var diff = GetTextDiff(oldText, newText);
 			var oldEnd = diff.Start + diff.RemovedLength;
 			var nativeInsert = newText.Substring(diff.Start, diff.InsertedLength);
 			var insert = CoerceCasing(nativeInsert);
@@ -834,22 +848,27 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				insert = ClampInsertToMaxLength(insert, oldText.Length, diff.Start, oldEnd);
 			}
+			nativeTextNeedsCorrection = !string.Equals(nativeInsert, insert, StringComparison.Ordinal);
 
 			try
 			{
+				var insertedLength = 0;
 				RunWithDeferredSelectionSync(() =>
 				{
-					_ = Document.ReplaceRange(
+					insertedLength = Document.ReplaceRange(
 						diff.Start,
 						oldEnd,
 						insert,
 						checkTextLimit: false,
 						historyKind: historyKind);
 				});
+				var actualInsert = Document.GetTextInRange(diff.Start, diff.Start + insertedLength);
+				nativeTextNeedsCorrection = !string.Equals(nativeInsert, actualInsert, StringComparison.Ordinal);
 				return true;
 			}
 			catch (UnauthorizedAccessException)
 			{
+				nativeTextNeedsCorrection = false;
 				return false;
 			}
 		}
@@ -867,21 +886,25 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var oldText = GetPlainTextContent();
 			var textChanged = !string.Equals(oldText, text, StringComparison.Ordinal);
+			var diff = textChanged ? GetTextDiff(oldText, text) : default;
+			var nativeTextNeedsCorrection = false;
 			if (IsReadOnly
 				|| (_isComposing && !_platformTextApplyInProgress && !_compositionAppliedByPlatform)
 				|| (textChanged && !ApplyTextDiff(
 					oldText,
 					text,
-					GetNativeHistoryKind(GetTextDiff(oldText, text)))))
+					diff,
+					GetNativeHistoryKind(diff),
+					checkTextLimit: true,
+					out nativeTextNeedsCorrection)))
 			{
 				RestoreNativeTextAndSelection(oldText);
 				return false;
 			}
 
-			var actualText = GetPlainTextContent();
-			var nativeTextNeedsCorrection = !string.Equals(actualText, text, StringComparison.Ordinal);
 			if (nativeTextNeedsCorrection)
 			{
+				var actualText = GetPlainTextContent();
 				_textBoxView?.Extension?.SetText(actualText);
 				var correction = GetTextDiff(text, actualText);
 				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, correction);

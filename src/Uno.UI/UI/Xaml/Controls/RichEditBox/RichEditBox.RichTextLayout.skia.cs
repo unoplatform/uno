@@ -27,7 +27,8 @@ partial class RichEditBox
 		private readonly UnicodeText.ShapingCache _shapingCache = new();
 		private readonly RichTextFontCacheListener _fontCacheListener;
 		private RichTextParsedText? _parsedText;
-		private bool _paragraphCacheEnabled;
+		private ParagraphListMarkerState _finalListState = new();
+		private bool _hadListFormatting;
 		private long _textVersion = -1;
 		private long _characterFormatVersion = -1;
 		private long _paragraphFormatVersion = -1;
@@ -52,6 +53,8 @@ partial class RichEditBox
 
 		internal long ShapingOperationCount => _shapingCache.ShapeOperationCount;
 
+		internal ParagraphListMarkerState GetFinalListState() => _finalListState.Clone();
+
 		internal void Synchronize(
 			RichEditTextDocument document,
 			IndexedRunCollection<FormatRun> runs,
@@ -61,16 +64,6 @@ partial class RichEditBox
 			bool hasListFormatting,
 			RichEditTextDocument.RenderInvalidation? invalidation)
 		{
-			_paragraphCacheEnabled = !hasListFormatting;
-			if (!_paragraphCacheEnabled)
-			{
-				_paragraphs.Clear();
-				_parsedText = null;
-				_fragmentCount = 0;
-				UpdateVersions(document);
-				return;
-			}
-
 			var versionsMatch = _textVersion == document.TextVersion
 				&& _characterFormatVersion == document.CharacterFormatVersion
 				&& _paragraphFormatVersion == document.ParagraphFormatVersion;
@@ -81,7 +74,8 @@ partial class RichEditBox
 
 			if (_paragraphs.Count == 0
 				|| invalidation is null
-				|| invalidation.Value.Full)
+				|| invalidation.Value.Full
+				|| invalidation.Value.ParagraphSemanticsChanged && (hasListFormatting || _hadListFormatting))
 			{
 				RebuildAllParagraphs(
 					document,
@@ -102,6 +96,7 @@ partial class RichEditBox
 			}
 
 			UpdateVersions(document);
+			_hadListFormatting = hasListFormatting;
 		}
 
 		public IParsedText Create(
@@ -122,7 +117,7 @@ partial class RichEditBox
 			_owner._boundedRichLayoutCreateCount++;
 			_fontCacheListener.Inner = fontListener;
 			_run.FontListener = _fontCacheListener;
-			if (!_paragraphCacheEnabled || _paragraphs.Count == 0)
+			if (_paragraphs.Count == 0)
 			{
 				return new UnicodeText(
 					availableSize,
@@ -266,7 +261,9 @@ partial class RichEditBox
 				0,
 				document.TextLength,
 				renderParagraphAlignments,
-				renderParagraphLayouts));
+				renderParagraphLayouts,
+				new ParagraphListMarkerState(),
+				out _finalListState));
 			_fragmentCount = 0;
 			foreach (var paragraph in _paragraphs)
 			{
@@ -297,6 +294,7 @@ partial class RichEditBox
 
 			var oldReplaceStart = _paragraphs[first].Start;
 			var oldReplaceEnd = _paragraphs[last].End;
+			var listState = _paragraphs[first].ListStateBefore.Clone();
 			var textLengthDelta = document.TextLength - oldTextLength;
 			var mappedStart = MapOldRenderPosition(oldReplaceStart, invalidation, textLengthDelta, mapEnd: false);
 			var mappedEnd = MapOldRenderPosition(oldReplaceEnd, invalidation, textLengthDelta, mapEnd: true);
@@ -319,7 +317,9 @@ partial class RichEditBox
 				newReplaceStart,
 				newReplaceEnd,
 				renderParagraphAlignments,
-				renderParagraphLayouts);
+				renderParagraphLayouts,
+				listState,
+				out _);
 			var removedFragmentCount = 0;
 			for (var i = first; i <= last; i++)
 			{
@@ -358,12 +358,15 @@ partial class RichEditBox
 			int start,
 			int end,
 			bool renderParagraphAlignments,
-			bool renderParagraphLayouts)
+			bool renderParagraphLayouts,
+			ParagraphListMarkerState listState,
+			out ParagraphListMarkerState finalListState)
 		{
 			var paragraphs = new List<RichParagraphLayoutCacheEntry>();
 			if (document.TextLength == 0)
 			{
-				paragraphs.Add(new RichParagraphLayoutCacheEntry(0, 0, []));
+				paragraphs.Add(new RichParagraphLayoutCacheEntry(0, 0, [], listState.Clone()));
+				finalListState = listState.Clone();
 				return paragraphs;
 			}
 
@@ -377,6 +380,7 @@ partial class RichEditBox
 					break;
 				}
 
+				var listStateBefore = listState.Clone();
 				var specs = new List<RenderFragmentSpec>(_owner.EnumerateRenderFragmentSpecs(
 					document,
 					runs,
@@ -384,11 +388,17 @@ partial class RichEditBox
 					position,
 					paragraphEnd,
 					renderParagraphAlignments,
-					renderParagraphLayouts));
-				paragraphs.Add(new RichParagraphLayoutCacheEntry(position, paragraphEnd - position, specs));
+					renderParagraphLayouts,
+					listState));
+				paragraphs.Add(new RichParagraphLayoutCacheEntry(
+					position,
+					paragraphEnd - position,
+					specs,
+					listStateBefore));
 				position = paragraphEnd;
 			}
 
+			finalListState = listState.Clone();
 			return paragraphs;
 		}
 

@@ -41,6 +41,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
+			var existingLength = GetPlainTextLength();
+			var preservedLength = existingLength - Math.Abs(_selection.length);
+			var insertedLength = Math.Max(0, text.Length - preservedLength);
+			if (insertedLength > GetClipboardPasteSourceLimit())
+			{
+				return false;
+			}
+
 			return TryUpdateTextFromNative(
 				text,
 				isBackward ? selectionEnd : selectionStart,

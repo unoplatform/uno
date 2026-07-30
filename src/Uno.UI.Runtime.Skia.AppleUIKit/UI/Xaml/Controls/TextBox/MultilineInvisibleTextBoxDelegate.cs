@@ -35,13 +35,8 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 	{
 		if (textView is MultilineInvisibleTextBoxView textBoxView)
 		{
-			if (_textBoxViewExtension.GetTarget()?.Owner.Core is not { } core)
-			{
-				return false;
-			}
-
-			// Both IsReadOnly = true and IsTabStop = false can prevent editing
-			if (core.IsReadOnly || !core.Owner.IsTabStop)
+			if (_textBoxViewExtension.GetTarget()?.Owner.Host is not IImeSessionHost host
+				|| !host.CanAcceptTextInput)
 			{
 				return false;
 			}
@@ -70,13 +65,13 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 			//	return false;
 			//}
 
-			if (core.MaxLength > 0)
+			if (host.MaxLength > 0)
 			{
 				// When replacing text from pasting (multiple characters at once)
 				// we should only allow it (return true) when the new text length
-				// is lower or equal to the allowed length (MaxLength)
+				// is lower or equal to the allowed length.
 				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
-				return newLength <= core.MaxLength;
+				return newLength <= host.MaxLength;
 			}
 		}
 
@@ -93,9 +88,9 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 	/// </summary>
 	public override void EditingStarted(UITextView textView)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: FocusState.Unfocused } core)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: FocusState.Unfocused } control)
 		{
-			core.Owner.Focus(FocusState.Pointer);
+			control.Focus(FocusState.Pointer);
 		}
 	}
 
@@ -107,9 +102,9 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		var bindableTextView = textView as MultilineInvisibleTextBoxView;
 		bindableTextView?.OnTextChanged();
 
-		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: not FocusState.Unfocused } core)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: not FocusState.Unfocused } control)
 		{
-			core.Owner.Unfocus();
+			control.Unfocus();
 		}
 	}
 }

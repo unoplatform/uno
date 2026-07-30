@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 
@@ -523,10 +524,25 @@ namespace Microsoft.UI.Xaml.Controls
 					(bool)args.OldValue,
 					(bool)args.NewValue);
 			}
-			_ = owner.Dispatcher.RunAsync(
-				global::Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => (FrameworkElementAutomationPeer.FromElement(owner) as RichEditBoxAutomationPeer)?
-					.OnDocumentAccessibilityChanged());
+			if (!owner.DispatcherQueue.TryEnqueue(() =>
+			{
+				try
+				{
+					(FrameworkElementAutomationPeer.FromElement(owner) as RichEditBoxAutomationPeer)?
+						.OnDocumentAccessibilityChanged();
+				}
+				catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+				{
+					if (typeof(RichEditBox).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(RichEditBox).Log().Error("Failed to refresh RichEditBox accessibility state.", error);
+					}
+				}
+			})
+				&& typeof(RichEditBox).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(RichEditBox).Log().Warn("Failed to enqueue a RichEditBox accessibility refresh.");
+			}
 			ImeSessionCoordinator.UpdateSession(owner, ImeSessionUpdate.SpellCheck);
 		}
 

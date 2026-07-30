@@ -57,13 +57,27 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		_sessionActive = true;
 		_activeHost = host;
 
-		if (Plugin is { } plugin)
+		try
 		{
-			plugin.InputConnectionCreated -= OnInputConnectionCreated;
-			plugin.InputConnectionCreated += OnInputConnectionCreated;
+			if (Plugin is { } plugin)
+			{
+				plugin.InputConnectionCreated -= OnInputConnectionCreated;
+				plugin.InputConnectionCreated += OnInputConnectionCreated;
 
-			plugin.StartImeSession(host, activation);
-			SubscribeToConnection(plugin.ActiveInputConnection);
+				plugin.StartImeSession(host, activation);
+				SubscribeToConnection(plugin.ActiveInputConnection);
+			}
+		}
+		catch
+		{
+			_sessionActive = false;
+			_activeHost = null;
+			UnsubscribeFromConnection();
+			if (Plugin is { } plugin)
+			{
+				plugin.InputConnectionCreated -= OnInputConnectionCreated;
+			}
+			throw;
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
