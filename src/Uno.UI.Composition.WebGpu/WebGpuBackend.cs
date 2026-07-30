@@ -879,9 +879,6 @@ public sealed class WebGpuDrawingBackend : IDrawingBackend
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);
 	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => _inner.RenderOffscreen(pixelWidth, pixelHeight, render);
-	public bool TryDecodeImage(System.IO.Stream stream, int? targetWidth, int? targetHeight, out IImageFrames frames) => _inner.TryDecodeImage(stream, targetWidth, targetHeight, out frames);
-	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => _inner.CreateImageFrame(pixelWidth, pixelHeight, bgraPremul);
-	public IImageFrames CreateImageFrames(IImage image) => _inner.CreateImageFrames(image);
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)

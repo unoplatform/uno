@@ -40,23 +40,9 @@ public interface IDrawingBackend
 	IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
 
 	/// <summary>
-	/// Decodes an encoded image stream (PNG/JPEG/GIF/…) into one or more frames, applying EXIF orientation and,
-	/// when a target size is given, scaling. Returns false when the bytes can't be decoded. The backend owns the
-	/// codec; callers see only the neutral <see cref="IImageFrames"/> (dispose it to release the frames).
-	/// </summary>
-	bool TryDecodeImage(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames);
-
-	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single-frame <see cref="IImageFrames"/>.</summary>
-	IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
-
-	/// <summary>Wraps an already-decoded <see cref="IImage"/> as a single-frame <see cref="IImageFrames"/>, taking
-	/// ownership of the image (disposing the frames releases it).</summary>
-	IImageFrames CreateImageFrames(IImage image);
-
-	/// <summary>
 	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU texture (see
 	/// <see cref="IImageTexture"/>). Done once; the caller owns and disposes the result. This is the "store"
-	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="TryDecodeImage"/>.
+	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="IImageDecoder"/>.
 	/// </summary>
 	IImageTexture CreateImageTexture(IImage image);
 

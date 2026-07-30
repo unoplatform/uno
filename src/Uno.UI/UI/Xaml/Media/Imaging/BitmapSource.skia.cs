@@ -8,7 +8,7 @@ public partial class BitmapSource
 	partial void UpdatePixelWidthAndHeightPartial(Stream stream)
 	{
 		// Read the source dimensions through the neutral backend decoder (no Skia codec here).
-		if (DrawingBackend.Current.TryDecodeImage(stream, null, null, out var frames))
+		if (ImageDecoder.Current.TryDecode(stream, null, null, out var frames))
 		{
 			using (frames)
 			{

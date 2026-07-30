@@ -38,19 +38,6 @@ public sealed class ManagedDrawingBackend : IDrawingBackend
 	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 		=> throw new NotImplementedException("Managed offscreen rasterization is not yet implemented; requires a managed rasterizer.");
 
-	public bool TryDecodeImage(Stream stream, int? targetWidth, int? targetHeight, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out IImageFrames? frames)
-	{
-		// Managed decode produces neutral BGRA frames; wrapping them into IImage still needs a managed IImage. Deferred.
-		frames = null;
-		return false;
-	}
-
-	public IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
-		=> throw new NotImplementedException("Managed IImageFrames is not yet implemented.");
-
-	public IImageFrames CreateImageFrames(IImage image)
-		=> throw new NotImplementedException("Managed IImageFrames is not yet implemented.");
-
 	// The managed factory is a CPU-resource factory (geometry/decode); GPU textures are created by the
 	// device-bound backend factory (e.g. WebGpuDrawingBackend), not here.
 	public IImageTexture CreateImageTexture(IImage image)

@@ -149,7 +149,7 @@ public partial class SvgProvider : ISvgProvider
 			}
 		}
 
-		return DrawingBackend.Current.CreateImageFrame(pixelWidth, pixelHeight, bgra).Frames[0];
+		return ImageDecoder.Current.CreateFrame(pixelWidth, pixelHeight, bgra).Frames[0];
 	}
 #else
 		=> null;

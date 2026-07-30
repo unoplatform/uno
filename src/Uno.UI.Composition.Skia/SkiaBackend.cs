@@ -21,6 +21,9 @@ public static class SkiaBackend
 		// and register the backend). Registering again here is idempotent and makes the intent explicit.
 		DrawingBackend.Register(new SkiaDrawingBackend());
 
+		// Image decoding is an independent, render-backend-agnostic seam; install the Skia decoder.
+		ImageDecoder.Current = new SkiaImageDecoderBackend();
+
 		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
