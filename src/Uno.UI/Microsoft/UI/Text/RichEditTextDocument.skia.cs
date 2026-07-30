@@ -19,21 +19,7 @@ namespace Microsoft.UI.Text
 		internal long Generation { get; set; }
 	}
 
-	// Uno-specific functional implementation of the RichEditBox Text Object Model document for Skia.
-	//
-	// This increment provides a working text core: SetText/GetText round-trip, a functional Text
-	// Object Model surface (GetRange/Selection returning UnoTextRange/UnoTextSelection) that navigates
-	// and edits the buffer and drives the owning RichEditBox's shared rendering, a functional
-	// character-formatting run model (see RichEditTextDocument.Formatting.skia.cs and
-	// UnoTextRange.CharacterFormat), a functional paragraph-formatting run model (see
-	// RichEditTextDocument.ParagraphFormatting.skia.cs and UnoTextRange.ParagraphFormat), a
-	// delta-based undo/redo stack over text and both formatting models
-	// (CanUndo/CanRedo/Undo/Redo/UndoLimit) with grouping (BeginUndoGroup/EndUndoGroup), and display
-	// batching (BatchDisplayUpdates/ApplyDisplayUpdates).
-	//
-	// Standard RTF transport, stream load/save, links, inline images, bounded structured MathML,
-	// UnicodeMath conversion, OpenType MATH variants/assemblies, and lossless bounded preservation
-	// of unsupported RTF destinations and table controls are supported on Skia.
+	// Text, formatting runs, tracked ranges, preserved metadata, and undo state mutate in lock-step.
 	public partial class RichEditTextDocument
 	{
 		internal readonly record struct RenderInvalidation(

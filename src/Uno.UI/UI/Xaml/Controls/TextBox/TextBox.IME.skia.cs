@@ -59,6 +59,10 @@ public partial class TextBox : IImeSessionHost
 
 	bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
+	bool IImeSessionHost.CanAcceptTextInput => !IsReadOnly && IsTabStop;
+
+	int IImeSessionHost.MaxLength => MaxLength;
+
 	bool IImeSessionHost.IsComposing => _isComposing;
 
 	CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
@@ -71,6 +75,13 @@ public partial class TextBox : IImeSessionHost
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
 		=> Select(selectionStart, selectionLength);
+
+	bool IImeSessionHost.RaisePaste()
+	{
+		var args = new TextControlPasteEventArgs();
+		RaisePaste(args);
+		return args.Handled;
+	}
 
 	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 

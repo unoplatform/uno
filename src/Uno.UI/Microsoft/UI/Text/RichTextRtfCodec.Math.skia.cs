@@ -892,6 +892,7 @@ namespace Microsoft.UI.Text
 		{
 			private int _groups;
 			private int _work;
+			private int _projectedXmlLength = 128;
 
 			internal void RecordGroup()
 			{
@@ -907,6 +908,33 @@ namespace Microsoft.UI.Text
 				{
 					throw new ArgumentException("The RTF math content is too complex.");
 				}
+			}
+
+			internal void RecordProjectedNode()
+				=> AddProjectedXmlLength(128);
+
+			internal void RecordProjectedText(string value)
+			{
+				var length = 32;
+				foreach (var character in value)
+				{
+					length += character switch
+					{
+						'&' => 5,
+						'<' or '>' => 4,
+						_ => 1,
+					};
+				}
+				AddProjectedXmlLength(length);
+			}
+
+			private void AddProjectedXmlLength(int length)
+			{
+				if (length > MathDocument.MaxInputLength - _projectedXmlLength)
+				{
+					throw new ArgumentException("The RTF math content expands beyond the MathML input limit.");
+				}
+				_projectedXmlLength += length;
 			}
 		}
 
@@ -1411,6 +1439,7 @@ namespace Microsoft.UI.Text
 						continue;
 					}
 
+					_budget.RecordProjectedText(token.Text);
 					var name = token.Kind switch
 					{
 						MathTokenKind.Identifier => "mi",
@@ -1583,6 +1612,7 @@ namespace Microsoft.UI.Text
 
 			private void RecordNode()
 			{
+				_budget.RecordProjectedNode();
 				if (++_nodes > MathDocument.MaxNodeCount)
 				{
 					throw new ArgumentException("The RTF math content contains too many nodes.", nameof(_rtf));

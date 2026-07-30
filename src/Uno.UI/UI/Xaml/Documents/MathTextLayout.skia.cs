@@ -285,6 +285,8 @@ internal sealed class MathParsedText : IParsedText
 
 	private void DrawHighlighterBackgrounds(in Visual.PaintingSession session, IEnumerable<TextHighlighter> highlighters)
 	{
+		var canvas = session.Canvas;
+		var opacity = session.Opacity;
 		foreach (var highlighter in highlighters)
 		{
 			var brush = highlighter.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
@@ -292,14 +294,40 @@ internal sealed class MathParsedText : IParsedText
 			{
 				var start = Math.Clamp(range.StartIndex, 0, _document.Projection.Length);
 				var end = Math.Clamp(start + range.Length, start, _document.Projection.Length);
+				Rect? pending = null;
 				for (var index = start; index < end; index++)
 				{
 					var rect = ExpandForHighlight(_indexLayout[index].Rect);
-					brush.Paint(
-						session.Canvas,
-						session.Opacity,
-						new SKRect((float)rect.X, (float)rect.Y, (float)rect.Right, (float)rect.Bottom));
+					if (pending is { } previous
+						&& Math.Abs(previous.Y - rect.Y) < 0.5
+						&& Math.Abs(previous.Height - rect.Height) < 0.5
+						&& rect.X <= previous.Right + 0.5)
+					{
+						pending = new Rect(
+							previous.X,
+							Math.Min(previous.Y, rect.Y),
+							Math.Max(previous.Right, rect.Right) - previous.X,
+							Math.Max(previous.Bottom, rect.Bottom) - Math.Min(previous.Y, rect.Y));
+					}
+					else
+					{
+						Paint(pending);
+						pending = rect;
+					}
 				}
+				Paint(pending);
+			}
+
+			void Paint(Rect? rect)
+			{
+				if (rect is not { } value)
+				{
+					return;
+				}
+				brush.Paint(
+					canvas,
+					opacity,
+					new SKRect((float)value.X, (float)value.Y, (float)value.Right, (float)value.Bottom));
 			}
 		}
 	}
@@ -622,7 +650,7 @@ internal sealed class MathParsedText : IParsedText
 					targetHeight,
 					scale,
 					GetBrush(fenced),
-					allowBrowserVariant: false)
+					allowVariant: !OperatingSystem.IsBrowser())
 				?? CreateLiteralBox(fenced, fenced.Open, openSpan, scale * fenceScale, GetBrush(fenced));
 			var close = CreateVerticalGlyphBox(
 					fenced,
@@ -631,7 +659,7 @@ internal sealed class MathParsedText : IParsedText
 					targetHeight,
 					scale,
 					GetBrush(fenced),
-					allowBrowserVariant: false)
+					allowVariant: !OperatingSystem.IsBrowser())
 				?? CreateLiteralBox(fenced, fenced.Close, closeSpan, scale * fenceScale, GetBrush(fenced));
 			return new FencedBox(fenced, open, inner, close);
 		}
@@ -661,7 +689,7 @@ internal sealed class MathParsedText : IParsedText
 					contentHeight,
 					scale,
 					GetBrush(table),
-					allowBrowserVariant: false)
+					allowVariant: !OperatingSystem.IsBrowser())
 				?? CreateLiteralBox(table, "[", openSpan, scale * fenceScale, GetBrush(table));
 			var close = CreateVerticalGlyphBox(
 					table,
@@ -670,7 +698,7 @@ internal sealed class MathParsedText : IParsedText
 					contentHeight,
 					scale,
 					GetBrush(table),
-					allowBrowserVariant: false)
+					allowVariant: !OperatingSystem.IsBrowser())
 				?? CreateLiteralBox(table, "]", closeSpan, scale * fenceScale, GetBrush(table));
 			return new TableBox(
 				table,
@@ -775,14 +803,14 @@ internal sealed class MathParsedText : IParsedText
 			float targetHeight,
 			float scale,
 			Brush? brush,
-			bool allowBrowserVariant = true)
+			bool allowVariant = true)
 		{
 			if (!Metrics.TryGetVerticalGlyph(
 				_mathFont,
 				text,
 				targetHeight,
 				out var run,
-				allowBrowserVariant))
+				allowVariant))
 			{
 				return null;
 			}

@@ -618,6 +618,14 @@ namespace Uno.UI.Runtime.Skia {
 			// moves focus to the semantic element instead of the invisible TextBox <input>.
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, multiline);
 
+			element.addEventListener('paste', (event: ClipboardEvent) => {
+				const source = event.clipboardData?.getData('text') ?? '';
+				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+				BrowserInvisibleTextBoxViewExtension.onNativePaste(
+					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				event.preventDefault();
+			});
+
 			// Input event handler for text changes (T050)
 			element.addEventListener('input', () => {
 				if (callbacks.onTextInput) {

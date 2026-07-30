@@ -175,26 +175,17 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 			return;
 		}
 
-		var textBoxView = host.TextBoxView;
-		if (textBoxView?.DisplayBlock?.ParsedText is null || host.XamlRoot is null)
+		if (!host.TryGetCandidateWindowRect(out var candidateRect)
+			|| host.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
 
-		var index = host.IsBackwardSelection ? host.SelectionStart : host.SelectionStart + host.SelectionLength;
-		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
-		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
-		var candidateTop = host.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-			? textBoxView.DisplayBlock.ActualHeight
-			: rect.Top;
-		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, candidateTop));
-		var scale = host.XamlRoot.RasterizationScale;
+		var scale = xamlRoot.RasterizationScale;
 
-		var x = (int)(topLeft.X * scale);
-		var y = (int)(topLeft.Y * scale);
-		var height = host.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-			? 1
-			: (int)(rect.Height * scale);
+		var x = (int)(candidateRect.X * scale);
+		var y = (int)(candidateRect.Y * scale);
+		var height = (int)(candidateRect.Height * scale);
 
 		// IBus/Fcitx SetCursorLocation expects coordinates in absolute root-window
 		// (screen) pixels, while the values above are window-local. Translate through

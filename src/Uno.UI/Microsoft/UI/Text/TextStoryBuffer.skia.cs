@@ -975,38 +975,49 @@ internal sealed class TextStoryBuffer
 		HardLine,
 	}
 
+	[Flags]
+	private enum SourceBreakKind : byte
+	{
+		CarriageReturn = 1,
+		Paragraph = 2,
+		HardLine = 4,
+	}
+
 	private sealed class SourceBuffer
 	{
-		private readonly int[] _carriageReturns;
-		private readonly int[] _paragraphBreaks;
-		private readonly int[] _hardLineBreaks;
+		private readonly int[] _breakPositions;
+		private readonly byte[] _breakKinds;
 
 		internal SourceBuffer(string text)
 		{
 			Text = text;
-			List<int>? carriageReturns = null;
-			List<int>? paragraphBreaks = null;
-			List<int>? hardLineBreaks = null;
+			List<int>? breakPositions = null;
+			List<byte>? breakKinds = null;
 			for (var i = 0; i < text.Length; i++)
 			{
 				var value = text[i];
+				var kind = default(SourceBreakKind);
 				if (value == '\r')
 				{
-					(carriageReturns ??= new()).Add(i);
+					kind |= SourceBreakKind.CarriageReturn;
 				}
 				if (value is '\r' or '\n' or '\u2029')
 				{
-					(paragraphBreaks ??= new()).Add(i);
+					kind |= SourceBreakKind.Paragraph;
 				}
 				if (value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029')
 				{
-					(hardLineBreaks ??= new()).Add(i);
+					kind |= SourceBreakKind.HardLine;
+				}
+				if (kind != 0)
+				{
+					(breakPositions ??= new()).Add(i);
+					(breakKinds ??= new()).Add((byte)kind);
 				}
 			}
 
-			_carriageReturns = carriageReturns?.ToArray() ?? Array.Empty<int>();
-			_paragraphBreaks = paragraphBreaks?.ToArray() ?? Array.Empty<int>();
-			_hardLineBreaks = hardLineBreaks?.ToArray() ?? Array.Empty<int>();
+			_breakPositions = breakPositions?.ToArray() ?? Array.Empty<int>();
+			_breakKinds = breakKinds?.ToArray() ?? Array.Empty<byte>();
 		}
 
 		internal string Text { get; }
@@ -1015,7 +1026,7 @@ internal sealed class TextStoryBuffer
 		{
 			if (value == '\r')
 			{
-				return IndexOf(_carriageReturns, start, count);
+				return IndexOf(SourceBreakKind.CarriageReturn, start, count);
 			}
 
 			var index = Text.AsSpan(start, count).IndexOf(value);
@@ -1026,7 +1037,7 @@ internal sealed class TextStoryBuffer
 		{
 			if (value == '\r')
 			{
-				return LastIndexOf(_carriageReturns, start, count);
+				return LastIndexOf(SourceBreakKind.CarriageReturn, start, count);
 			}
 
 			var index = Text.AsSpan(start, count).LastIndexOf(value);
@@ -1034,28 +1045,47 @@ internal sealed class TextStoryBuffer
 		}
 
 		internal int IndexOfBreak(BreakKind kind, int start, int count)
-			=> IndexOf(kind == BreakKind.Paragraph ? _paragraphBreaks : _hardLineBreaks, start, count);
+			=> IndexOf(
+				kind == BreakKind.Paragraph ? SourceBreakKind.Paragraph : SourceBreakKind.HardLine,
+				start,
+				count);
 
 		internal int LastIndexOfBreak(BreakKind kind, int start, int count)
-			=> LastIndexOf(kind == BreakKind.Paragraph ? _paragraphBreaks : _hardLineBreaks, start, count);
+			=> LastIndexOf(
+				kind == BreakKind.Paragraph ? SourceBreakKind.Paragraph : SourceBreakKind.HardLine,
+				start,
+				count);
 
-		private static int IndexOf(int[] positions, int start, int count)
+		private int IndexOf(SourceBreakKind kind, int start, int count)
 		{
-			var index = Array.BinarySearch(positions, start);
+			var index = Array.BinarySearch(_breakPositions, start);
 			index = index >= 0 ? index : ~index;
-			return index < positions.Length && positions[index] < start + count
-				? positions[index]
-				: -1;
+			var end = start + count;
+			while (index < _breakPositions.Length && _breakPositions[index] < end)
+			{
+				if (((SourceBreakKind)_breakKinds[index] & kind) != 0)
+				{
+					return _breakPositions[index];
+				}
+				index++;
+			}
+			return -1;
 		}
 
-		private static int LastIndexOf(int[] positions, int start, int count)
+		private int LastIndexOf(SourceBreakKind kind, int start, int count)
 		{
 			var end = start + count;
-			var index = Array.BinarySearch(positions, end);
+			var index = Array.BinarySearch(_breakPositions, end);
 			index = index >= 0 ? index - 1 : ~index - 1;
-			return index >= 0 && positions[index] >= start
-				? positions[index]
-				: -1;
+			while (index >= 0 && _breakPositions[index] >= start)
+			{
+				if (((SourceBreakKind)_breakKinds[index] & kind) != 0)
+				{
+					return _breakPositions[index];
+				}
+				index--;
+			}
+			return -1;
 		}
 	}
 

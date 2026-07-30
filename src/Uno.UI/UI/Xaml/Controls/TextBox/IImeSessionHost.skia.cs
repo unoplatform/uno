@@ -54,6 +54,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Whether the platform input connection should request spell checking.</summary>
 		bool IsSpellCheckEnabled { get; }
 
+		/// <summary>Whether the host currently accepts text changes from the platform input connection.</summary>
+		bool CanAcceptTextInput { get; }
+
+		/// <summary>The maximum accepted text length, or 0 when no limit is applied.</summary>
+		int MaxLength { get; }
+
 		/// <summary>Whether the host is currently tracking an IME composition.</summary>
 		bool IsComposing { get; }
 
@@ -65,6 +71,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>Applies a selection-only update produced by a platform input connection.</summary>
 		void SelectFromNative(int selectionStart, int selectionLength);
+
+		/// <summary>Raises the host's paste event and returns whether the default paste was suppressed.</summary>
+		bool RaisePaste();
 
 		/// <summary>Called when the user begins an IME composition.</summary>
 		void OnImeCompositionStarted();

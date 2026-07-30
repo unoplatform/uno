@@ -4,17 +4,10 @@ using System;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// Clipboard (Copy/Cut/Paste) for the functional RichEditBox on Skia.
-	//
-	// Mirrors TextBox's clipboard behavior against the interactive selection (_selection). Copy/Cut are
-	// synchronous; Paste is dispatched because the OS clipboard read (DataPackageView.GetTextAsync) is
-	// async on Uno — this matches TextBox.PasteFromClipboard. All mutations flow through
-	// Document.ReplaceRange so the character-format run model is preserved and undo is recorded.
-	//
+	// Clipboard mutations flow through the document so formatting, tracked ranges, and undo stay aligned.
 	partial class RichEditBox
 	{
 		/// <summary>
@@ -153,29 +146,49 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Pastes plain text from the OS clipboard, replacing the current selection. Raises
 		/// <see cref="Paste"/> first; a handler may suppress the default paste.
 		/// </summary>
-		internal void PasteFromClipboard()
+		internal async void PasteFromClipboard()
 		{
-			if (IsReadOnly)
+			try
 			{
-				return;
-			}
+				if (IsReadOnly)
+				{
+					return;
+				}
 
-			if (RaisePasteIsHandled())
-			{
-				return;
-			}
+				if (RaisePasteIsHandled())
+				{
+					return;
+				}
 
-			var content = Clipboard.GetContent();
-			var textLength = GetPlainTextLength();
-			var start = Math.Clamp(_selection.start, 0, textLength);
-			var end = Math.Clamp(start + _selection.length, start, textLength);
-			var operationRange = Document.GetRange(start, end);
-			var operationGeneration = Document.BeginPasteOperation();
-			var retrieval = Document.ReadClipboardContentAsync(content, operationRange);
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				var content = Clipboard.GetContent();
+				var textLength = GetPlainTextLength();
+				var start = Math.Clamp(_selection.start, 0, textLength);
+				var end = Math.Clamp(start + _selection.length, start, textLength);
+				var operationRange = Document.GetRange(start, end);
+				var operation = Document.BeginPasteOperation();
+				var retrieval = Document.ReadClipboardContentAsync(
+					content,
+					operationRange,
+					cancellationToken: operation.CancellationToken);
+				await PasteFromClipboardAsync(retrieval, operationRange, operation);
+			}
+			catch (UnauthorizedAccessException)
 			{
-				_ = PasteFromClipboardAsync(retrieval, operationRange, operationGeneration);
-			});
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is not null)
+			{
+				throw;
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+				{
+					this.Log().Error("RichEditBox interactive paste failed.", error);
+				}
+			}
 		}
 
 		/// <summary>
@@ -211,34 +224,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private async Task PasteFromClipboardAsync(
 			Task<(global::Microsoft.UI.Text.RichTextFragment? Fragment, string? Text)> retrieval,
 			global::Microsoft.UI.Text.ITextRange operationRange,
-			long operationGeneration)
+			global::Microsoft.UI.Text.RichEditTextDocument.PasteOperation operation)
 		{
-			try
-			{
-				var (fragment, clipboardText) = await retrieval;
+			var (fragment, clipboardText) = await retrieval;
 
-				await Document.TryCommitLatestPasteAsync(
-					operationGeneration,
-					() => PasteClipboardContent(fragment, clipboardText, operationRange));
-			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (OperationCanceledException)
-			{
-				throw;
-			}
-			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is not null)
-			{
-				throw;
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-				{
-					this.Log().Error("RichEditBox interactive paste failed.", error);
-				}
-			}
+			await Document.TryCommitLatestPasteAsync(
+				operation,
+				() => PasteClipboardContent(fragment, clipboardText, operationRange));
 		}
 
 		private void PasteClipboardContent(
@@ -276,6 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 
 			SetInteractiveSelection(start + insertedLength, 0);
+			Document.FinalizeHistorySelection();
 		}
 
 	}

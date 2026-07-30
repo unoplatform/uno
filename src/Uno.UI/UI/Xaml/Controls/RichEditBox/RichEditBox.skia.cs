@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Input;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -16,16 +17,7 @@ using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// Uno-specific functional implementation of RichEditBox for Skia targets.
-	//
-	// This wires the control onto the shared managed text rendering surface (TextBoxView /
-	// DisplayBlock, the same one TextBox uses through ITextBoxViewHost) and a functional Text Object
-	// Model (RichEditTextDocument) with a character-formatting run model that is projected onto the
-	// DisplayBlock's inlines (see RichEditBox.rendering.skia.cs).
-	//
-	// Standard RTF/streams, inline images, structured MathML with core math layout, paragraph
-	// layout/list projection, browser editing, and TextBox-style touch/multi-tap selection are
-	// supported. Advanced OpenType math glyph assembly remains outside this managed text engine.
+	// Skia uses the shared managed text surface while preserving RichEditBox's document semantics.
 	public partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost, IFocusRequestOriginHandler
 	{
 		private TextBoxView? _textBoxView;
@@ -62,6 +54,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 			DetachImeGeometryTracking();
+			var focusState = FocusState;
+			if (focusState != FocusState.Unfocused)
+			{
+				_textBoxView?.OnFocusStateChanged(FocusState.Unfocused);
+			}
 
 			// Ensures we don't keep a reference to a TextBoxView that exists in a previous template.
 			_gripperPresenter?.Hide();
@@ -91,6 +88,10 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState();
 			DispatchUpdateScrolling();
 			AttachImeGeometryTracking();
+			if (focusState != FocusState.Unfocused)
+			{
+				ActivateImeForFocusOrigin(focusState);
+			}
 		}
 
 		private void UpdateTextBoxView()
@@ -486,7 +487,7 @@ namespace Microsoft.UI.Xaml.Controls
 		ContentControl? ITextBoxViewHost.ContentElement => _contentElement;
 
 		FontFamily ITextBoxViewHost.FontFamily => _document?.IsMathMode == true
-			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
+			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathRenderingFontFamilyName)
 			: FontFamily;
 
 		string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
@@ -555,7 +556,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
 			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
 			=> TouchTap(args.GetCurrentPoint(_textBoxView!.DisplayBlock).Position, wasFocused: true);
 
 		private int GetActiveSelectionIndex()

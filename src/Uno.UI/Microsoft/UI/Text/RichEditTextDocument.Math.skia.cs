@@ -3,12 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Microsoft.UI.Xaml.Documents;
+using SkiaSharp;
 
 namespace Microsoft.UI.Text;
 
 public partial class RichEditTextDocument
 {
 	internal const string MathFontFamilyName = "Cambria Math";
+	private static readonly Lazy<string> _mathRenderingFontFamilyName = new(ResolveMathRenderingFontFamilyName);
 
 	private global::Microsoft.UI.Text.RichEditMathMode _mathMode;
 	private MathDocument? _mathDocument;
@@ -22,6 +25,8 @@ public partial class RichEditTextDocument
 
 	internal IReadOnlyList<MathAtomSpan> MathAtoms
 		=> _mathDocument?.Atoms ?? Array.Empty<MathAtomSpan>();
+
+	internal static string MathRenderingFontFamilyName => _mathRenderingFontFamilyName.Value;
 
 	/// <summary>Retrieves the current math mode setting of the RichEditBox.</summary>
 	public global::Microsoft.UI.Text.RichEditMathMode GetMathMode() => _mathMode;
@@ -97,4 +102,28 @@ public partial class RichEditTextDocument
 			Array.Empty<ParagraphRun>(),
 			new ParagraphFormatState(),
 			hasExplicitTerminalParagraphState: false);
+
+	private static string ResolveMathRenderingFontFamilyName()
+	{
+		string[] candidates =
+		[
+			MathFontFamilyName,
+			"STIX Two Math",
+			"STIX Math",
+			"Latin Modern Math",
+			"Libertinus Math",
+			"Noto Sans Math",
+			"DejaVu Math TeX Gyre",
+		];
+		foreach (var candidate in candidates)
+		{
+			using var typeface = SKTypeface.FromFamilyName(candidate);
+			if (typeface is not null && MathFontMetrics.HasOpenTypeMathTable(typeface))
+			{
+				return typeface.FamilyName;
+			}
+		}
+
+		return global::Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily;
+	}
 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.UI.Text;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
@@ -14,17 +15,23 @@ partial class RichEditBox
 {
 	private sealed class RichParagraphLayoutCacheEntry
 	{
-		internal RichParagraphLayoutCacheEntry(int start, int length, List<RenderFragmentSpec> specs)
+		internal RichParagraphLayoutCacheEntry(
+			int start,
+			int length,
+			List<RenderFragmentSpec> specs,
+			ParagraphListMarkerState listStateBefore)
 		{
 			Start = start;
 			Length = length;
 			Specs = specs;
+			ListStateBefore = listStateBefore;
 		}
 
 		internal int Start;
 		internal int Length;
 		internal int End => Start + Length;
 		internal List<RenderFragmentSpec> Specs { get; }
+		internal ParagraphListMarkerState ListStateBefore { get; }
 		internal IParsedText? ParsedText { get; private set; }
 		internal Size Size { get; private set; }
 		private RichParagraphCachedLayout? _firstLayout;
@@ -176,9 +183,15 @@ partial class RichEditBox
 			var highlighterList = highlighters as IReadOnlyList<TextHighlighter>
 				?? new List<TextHighlighter>(highlighters);
 			var caretParagraph = caret is null ? -1 : FindParagraphForIndex(caret.Value.index);
-			for (var i = 0; i < _paragraphs.Length; i++)
+			var clip = session.Canvas.LocalClipBounds;
+			var firstVisibleParagraph = FindFirstParagraphEndingAfter(clip.Top);
+			for (var i = firstVisibleParagraph; i < _paragraphs.Length; i++)
 			{
 				var paragraph = _paragraphs[i];
+				if (paragraph.Top >= clip.Bottom)
+				{
+					break;
+				}
 				(int index, CompositionBrush brush, float thickness)? localCaret = null;
 				if (i == caretParagraph && caret is { } caretValue)
 				{
@@ -205,6 +218,26 @@ partial class RichEditBox
 					localComposition);
 				session.Canvas.Restore();
 			}
+		}
+
+		private int FindFirstParagraphEndingAfter(double y)
+		{
+			var low = 0;
+			var high = _paragraphs.Length;
+			while (low < high)
+			{
+				var middle = low + ((high - low) / 2);
+				var paragraph = _paragraphs[middle];
+				if (paragraph.Top + paragraph.Size.Height <= y)
+				{
+					low = middle + 1;
+				}
+				else
+				{
+					high = middle;
+				}
+			}
+			return low;
 		}
 
 		public Rect GetRectForIndex(int adjustedIndex)

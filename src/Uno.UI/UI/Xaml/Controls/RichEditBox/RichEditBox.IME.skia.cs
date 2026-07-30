@@ -106,6 +106,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
+		bool IImeSessionHost.CanAcceptTextInput => !IsReadOnly && IsTabStop;
+
+		int IImeSessionHost.MaxLength => MaxLength;
+
 		bool IImeSessionHost.IsComposing => _isComposing;
 
 		CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
@@ -115,6 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
 			=> SelectFromNative(selectionStart, selectionLength);
+
+		bool IImeSessionHost.RaisePaste() => RaisePasteIsHandled();
 
 		public event TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged;
 
@@ -206,7 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
 		{
-			if (IsReadOnly)
+			if (IsReadOnly || !_isComposing)
 			{
 				return;
 			}

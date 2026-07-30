@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const double DipsPerPoint = 96d / 72d;
 		private const int MaxRetainedInlineFragments = 8192;
+		private const int MaxRetainedInlineTextLength = 2 * 1024 * 1024;
 		private const double ScriptFontScale = 0.65;
 		private const double SuperscriptOffsetEm = 0.35;
 		private const double SubscriptOffsetEm = -0.15;
@@ -138,6 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var mathLayout = GetMathLayout(document.StructuredMath);
 			var useBoundedRichLayout = mathLayout is null
 				&& (_usesBoundedRichLayout && renderInvalidation is not { Full: true }
+					|| textLength > MaxRetainedInlineTextLength
 					|| CountRenderFragments(
 						document,
 						runs,
@@ -163,7 +165,7 @@ namespace Microsoft.UI.Xaml.Controls
 				? richTextLayoutSource!
 				: mathLayout;
 			block.FontFamily = document.IsMathMode
-				? _mathFontFamily ??= new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathFontFamilyName)
+				? _mathFontFamily ??= new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathRenderingFontFamilyName)
 				: FontFamily;
 			block.DefaultTabStop = document.DefaultTabStop * 4f / 3f;
 			block.AlignmentIncludesTrailingWhitespace = document.AlignmentIncludesTrailingWhitespace;
@@ -171,7 +173,8 @@ namespace Microsoft.UI.Xaml.Controls
 			if (renderParagraphLayouts)
 			{
 				var terminalListState = hasListFormatting
-					? BuildListMarkerState(document, paragraphRuns)
+					? richTextLayoutSource?.GetFinalListState()
+						?? BuildListMarkerState(document, paragraphRuns)
 					: new ParagraphListMarkerState();
 				var endingLayout = CreateParagraphLayout(terminalParagraph, terminalListState);
 				if (!ParagraphLayoutsEqual(block.EndingParagraphLayout, endingLayout))
@@ -202,6 +205,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				if (_usesBoundedRichLayout)
+				{
+					_richTextLayoutSource = null;
+				}
 				_usesBoundedRichLayout = false;
 				_ = RenderRuns(
 					block,
@@ -215,7 +222,8 @@ namespace Microsoft.UI.Xaml.Controls
 					renderInvalidation);
 			}
 
-			if (_textBoxView.Extension is { } extension
+			if (!_isComposing
+				&& _textBoxView.Extension is { } extension
 				&& document.TextVersion != _renderedTextVersion)
 			{
 				if (_renderedTextVersion >= 0
@@ -303,7 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var requiresFullDiff = !_lastRenderWasRich
 				|| _renderedFragments.Count == 0
 				|| invalidation is { Full: true }
-				|| hasListFormatting
+				|| hasListFormatting && invalidation is { ParagraphSemanticsChanged: true }
 				|| invalidation is null
 					&& (_renderedTextVersion != document.TextVersion
 						|| _renderedCharacterFormatVersion != document.CharacterFormatVersion
@@ -483,7 +491,8 @@ namespace Microsoft.UI.Xaml.Controls
 			int start,
 			int end,
 			bool renderParagraphAlignments,
-			bool renderParagraphLayouts)
+			bool renderParagraphLayouts,
+			ParagraphListMarkerState? existingListState = null)
 		{
 			if (start >= end)
 			{
@@ -495,7 +504,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var paragraphRunsCursor = paragraphRuns.GetCursor(document.FindParagraphRunIndexForRender(position));
 			var paragraphEnd = 0;
 			ParagraphLayoutInfo? paragraphLayout = null;
-			var listState = new ParagraphListMarkerState();
+			var listState = existingListState ?? (renderParagraphLayouts && start > 0
+				? BuildListMarkerState(
+					document,
+					paragraphRuns,
+					document.GetParagraphStartForRender(start))
+				: new ParagraphListMarkerState());
 			while (position < end && characterRuns.IsValid && paragraphRunsCursor.IsValid)
 			{
 				var characterRun = characterRuns.Current;
@@ -854,12 +868,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static ParagraphListMarkerState BuildListMarkerState(
 			global::Microsoft.UI.Text.RichEditTextDocument document,
-			IReadOnlyList<ParagraphRun> paragraphRuns)
+			IReadOnlyList<ParagraphRun> paragraphRuns,
+			int endExclusive = int.MaxValue)
 		{
 			var state = new ParagraphListMarkerState();
 			var paragraphRunIndex = 0;
 			var paragraphRunOffset = 0;
-			for (var position = 0; position < document.TextLength;)
+			var end = Math.Min(document.TextLength, endExclusive);
+			for (var position = 0; position < end;)
 			{
 				while (paragraphRunIndex < paragraphRuns.Count && paragraphRunOffset >= paragraphRuns[paragraphRunIndex].Length)
 				{

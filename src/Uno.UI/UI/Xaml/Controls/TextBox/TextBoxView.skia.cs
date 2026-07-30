@@ -23,13 +23,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly ManagedWeakReference _host;
 		private bool _isPasswordRevealed;
-		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
+		private readonly bool _usesManagedTextRendering;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
 		public TextBoxView(ITextBoxViewHost host)
 		{
 			_host = WeakReferencePool.RentWeakReference(this, host);
 			IsPasswordBox = host is PasswordBox;
+			_usesManagedTextRendering = host is not global::Microsoft.UI.Xaml.Controls.TextBox
+				|| !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 			DisplayBlock = new TextBlock
 			{
@@ -49,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 			SetReadingOrder();
 			SetColorFontEnabled();
 
-			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
+			if ((!_usesManagedTextRendering || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -136,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState, bool suppressSoftwareKeyboard = false)
 		{
-			if (_isSkiaTextBox && _useInvisibleNativeTextView)
+			if (_usesManagedTextRendering && _useInvisibleNativeTextView)
 			{
 				// We don't care about actual entry here, just making
 				// the password manager autocompletion button appear.
@@ -149,7 +151,7 @@ namespace Microsoft.UI.Xaml.Controls
 					_overlayTextBoxViewExtension?.EndEntry();
 				}
 			}
-			else if (!_isSkiaTextBox)
+			else if (!_usesManagedTextRendering)
 			{
 				if (focusState != FocusState.Unfocused)
 				{
@@ -244,7 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			if (_isSkiaTextBox)
+			if (_usesManagedTextRendering)
 			{
 				Host?.ContentElement?.InvalidateMeasure();
 				Host?.UpdateLayout();

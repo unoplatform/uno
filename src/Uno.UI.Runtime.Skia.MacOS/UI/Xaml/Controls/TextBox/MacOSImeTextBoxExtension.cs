@@ -215,28 +215,8 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
-		{
-			var caret = _activeTextBox.IsBackwardSelection
-				? _activeTextBox.SelectionStart
-				: _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
-			var caretRect = parsedText.GetRectForIndex(caret);
-			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
-			var candidateTop = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-				? _activeTextBox.TextBoxView.DisplayBlock.ActualHeight
-				: caretRect.Top;
-			var candidateHeight = _activeTextBox.DesiredCandidateWindowAlignment == CandidateWindowAlignment.BottomEdge
-				? 1
-				: caretRect.Height;
-			var caretPoint = transform.TransformPoint(
-				new Windows.Foundation.Point(caretRect.Left, candidateTop));
-			var caretBottom = transform.TransformPoint(
-				new Windows.Foundation.Point(caretRect.Left, candidateTop + candidateHeight));
-
-			// Return in logical (view) coordinates — the native side converts to screen coordinates
-			return new Rect(caretPoint.X, caretPoint.Y, 1, caretBottom.Y - caretPoint.Y);
-		}
-
-		return Rect.Empty;
+		return _activeTextBox?.TryGetCandidateWindowRect(out var rect) == true
+			? rect
+			: Rect.Empty;
 	}
 }

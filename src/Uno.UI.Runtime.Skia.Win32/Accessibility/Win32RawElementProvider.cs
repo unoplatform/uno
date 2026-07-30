@@ -372,7 +372,7 @@ internal class Win32RawElementProvider :
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var propName = GetPropertyName(propertyId);
-				this.Log().Trace($"[UIA] GetPropertyValue({propName}) on {DescribeElement()} → {result ?? "(null)"}");
+				this.Log().Trace($"[UIA] GetPropertyValue({propName}) on {DescribeElement()} → {DescribePropertyValue(result)}");
 			}
 
 			return result;
@@ -834,21 +834,7 @@ internal class Win32RawElementProvider :
 		{
 			var count = result?.Count ?? 0;
 			var peerDesc = peer?.GetType().Name ?? "none";
-			var childNames = "";
-			if (result is not null && count <= 10)
-			{
-				var names = new List<string>();
-				foreach (var child in result)
-				{
-					var childType = child?.GetType().Name ?? "null";
-					string childName;
-					try { childName = child?.GetName() ?? ""; }
-					catch { childName = "<error>"; }
-					names.Add($"{childType}({childName})");
-				}
-				childNames = $" [{string.Join(", ", names)}]";
-			}
-			this.Log().Trace($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
+			this.Log().Trace($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children");
 		}
 
 		_cachedAutomationChildren = result;
@@ -1511,13 +1497,18 @@ internal class Win32RawElementProvider :
 		var typeName = resolvedPeer is not null && resolvedPeer is not FrameworkElementAutomationPeer
 			? $"{resolvedPeer.GetType().Name}->{_owner.GetType().Name}"
 			: _owner.GetType().Name;
-		var automationId = AutomationProperties.GetAutomationId(_owner);
-		var name = AutomationProperties.GetName(_owner);
-		var details = !string.IsNullOrEmpty(automationId) ? automationId
-			: !string.IsNullOrEmpty(name) ? $"\"{name}\""
-			: $"rid={_runtimeId}";
-		return $"{typeName}({details}){(_isRoot ? " [ROOT]" : "")}";
+		return $"{typeName}(rid={_runtimeId}){(_isRoot ? " [ROOT]" : "")}";
 	}
+
+	private static string DescribePropertyValue(object? value) => value switch
+	{
+		null => "(null)",
+		string text => $"String(length={text.Length})",
+		Array array => $"{array.GetType().GetElementType()?.Name ?? "Object"}[{array.Length}]",
+		bool or byte or sbyte or short or ushort or int or uint or long or ulong or float or double or decimal or Enum
+			=> value.ToString() ?? value.GetType().Name,
+		_ => value.GetType().Name,
+	};
 
 	private static string GetPropertyName(int propertyId) => propertyId switch
 	{

@@ -8,8 +8,10 @@
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
+		private static compositionStart: number = 0;
 		private static suppressNextInput: boolean;
 		private static enterHandledByKeyDown: boolean;
+		private static compositionGeneration: number = 0;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
@@ -19,6 +21,16 @@
 		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
+
+		public static getNativePasteSourceLimit(): number {
+			BrowserInvisibleTextBoxViewExtension.initialize();
+			return BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
+		}
+
+		public static onNativePaste(source: string): void {
+			BrowserInvisibleTextBoxViewExtension.initialize();
+			BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(source);
+		}
 
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
@@ -119,22 +131,33 @@
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
+			let activeCompositionGeneration = 0;
 			input.addEventListener("compositionstart", () => {
+				activeCompositionGeneration = ++BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 				BrowserInvisibleTextBoxViewExtension.isComposing = true;
+				BrowserInvisibleTextBoxViewExtension.compositionStart = input.selectionStart ?? 0;
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			});
 
 			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+					return;
+				}
 				// Use input.selectionStart for cursor position when available,
 				// as the IME may place the caret within the preedit string.
 				const selectionStart = input.selectionStart;
 				const cursorPosition = selectionStart === null
 					? ev.data.length
-					: Math.max(0, Math.min(selectionStart, ev.data.length));
+					: Math.max(0, Math.min(
+						selectionStart - BrowserInvisibleTextBoxViewExtension.compositionStart,
+						ev.data.length));
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
 			});
 
 			input.addEventListener("compositionend", (ev: CompositionEvent) => {
+				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+					return;
+				}
 				BrowserInvisibleTextBoxViewExtension.isComposing = false;
 				// The browser fires an input event after compositionend with the committed text.
 				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
@@ -278,6 +301,7 @@
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
 			// So, cleanup the existing inputElement and create a new one.
+			BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
 
@@ -333,13 +357,37 @@
 
 		public static replaceText(start: number, length: number, replacement: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (input == null) {
+			if (input == null || BrowserInvisibleTextBoxViewExtension.isComposing) {
 				return;
 			}
 
 			start = Math.max(0, Math.min(start, input.value.length));
 			const end = Math.max(start, Math.min(start + length, input.value.length));
 			input.setRangeText(replacement, start, end, "preserve");
+		}
+
+		public static invalidateComposition() {
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isComposing;
+			BrowserInvisibleTextBoxViewExtension.compositionGeneration++;
+			BrowserInvisibleTextBoxViewExtension.isComposing = false;
+			BrowserInvisibleTextBoxViewExtension.suppressNextInput = wasComposing;
+		}
+
+		public static restartComposition() {
+			BrowserInvisibleTextBoxViewExtension.invalidateComposition();
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input == null || document.activeElement !== input) {
+				return;
+			}
+
+			const selectionStart = input.selectionStart;
+			const selectionEnd = input.selectionEnd;
+			const selectionDirection = input.selectionDirection;
+			input.blur();
+			input.focus({ preventScroll: true });
+			if (selectionStart !== null && selectionEnd !== null) {
+				input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+			}
 		}
 
 		public static updateSize(width: number, height: number) {
