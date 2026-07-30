@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollViewer_Partial.cpp, commit 5f9e85113
+// MUX Reference ScrollViewer_Partial.cpp, commit dc46907e92
 
 #nullable disable
 
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ScrollViewer
 	{
 #if __SKIA__
-#pragma warning disable IDE0051 // Private member is unused (placeholder for full impl)
+#pragma warning disable IDE0051 // Private member is unused
 
 		// These keycodes are undefined in the VirtualKey enum, so define them here.
 		// - (on number row)
@@ -62,17 +62,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_hManipulationHandler is null)
 			{
-				// TODO Uno: Phase 4 — UIElement::put_IsDirectManipulationContainer is the
-				// CDispatcherCore-level marker that the SV is a DM container. On Skia the
-				// InputManager.PointerManager.DirectManipulation pump handles container
-				// detection implicitly via the visual tree, so this is a no-op until
-				// the DM adapter formalises a container-attachment hook.
-				// put_IsDirectManipulationContainer(isParentAlive || pNewParent is not null);
+				PutManipulationHandler(m_trElementScrollContentPresenter);
 			}
-			else
+			if (m_hManipulationHandler is not null)
 			{
 				OnManipulatabilityAffectingPropertyChanged(
-					pIsInLiveTree: null,
+					pIsInLiveTree: isParentAlive || pNewParent is not null,
 					isCachedPropertyChanged: false,
 					isContentChanged: false,
 					isAffectingConfigurations: false,
@@ -281,39 +276,6 @@ namespace Microsoft.UI.Xaml.Controls
 					zoomFactorBoundaryChanged: false));
 		}
 
-#if false
-		// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
-		// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
-
-		// Original destructor logic (not executed):
-		// ~ScrollViewer()
-		// {
-		//     // Releasing and unhooking of template parts and events
-		//     IGNOREHR(UnhookTemplate());
-		//
-		//     m_trManipulatableElement.Clear();
-		//
-		//     if (m_spZoomSnapPoints)
-		//     {
-		//         IGNOREHR(m_spZoomSnapPoints->remove_VectorChanged(m_ZoomSnapPointsVectorChangedToken));
-		//         ZeroMemory(&m_ZoomSnapPointsVectorChangedToken, sizeof(m_ZoomSnapPointsVectorChangedToken));
-		//     }
-		//
-		//     if (m_coreInputViewOcclusionsChangedToken.value != 0)
-		//     {
-		//         ... // CoreInputView occlusion handler removal — N/A on Uno managed targets.
-		//     }
-		//
-		//     IGNOREHR(UnhookScrollSnapPointsInfoEvents(TRUE /*isForHorizontalSnapPoints*/));
-		//     IGNOREHR(UnhookScrollSnapPointsInfoEvents(FALSE /*isForHorizontalSnapPoints*/));
-		//
-		//     if (auto dxamlCore = DXamlCore::GetCurrent())
-		//     {
-		//         dxamlCore->UnregisterFromDynamicScrollbarsSettingChanged(this);
-		//     }
-		// }
-#endif
-
 		// (Public events declared by the IDL surface — currently implemented for Skia only.)
 
 		// Occurs when the view is about to change.
@@ -384,6 +346,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_trElementScrollContentPresenter is not null)
 				{
 					m_trElementScrollContentPresenter.HookupScrollingComponents();
+					PutManipulationHandler(m_trElementScrollContentPresenter);
 				}
 			}
 
@@ -451,6 +414,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Releases and unhooks template parts and their events.
 		internal void UnhookTemplate()
 		{
+			PutManipulationHandler(null);
+
 			// Cleanup any existing template parts
 			if (m_trElementHorizontalScrollBar is { } hScrollBar)
 			{
@@ -491,10 +456,22 @@ namespace Microsoft.UI.Xaml.Controls
 				// CInputServices::ProcessInputMessageWithDirectManipulation does it instead.
 				// For PageUp/Down, Home and End keys though, that method must ignore the RightToLeft
 				// flow direction, otherwise a move to the opposite direction is performed.
-				ProcessInputMessage(
-					ignoreFlowDirection: key == VirtualKey.PageUp || key == VirtualKey.PageDown ||
-						key == VirtualKey.Home || key == VirtualKey.End,
-					out _);
+				m_pendingDirectManipulationKey = key;
+				try
+				{
+					ProcessInputMessage(
+						ignoreFlowDirection: key == VirtualKey.PageUp || key == VirtualKey.PageDown ||
+							key == VirtualKey.Home || key == VirtualKey.End,
+						out var isHandled);
+					if (isHandled)
+					{
+						return;
+					}
+				}
+				finally
+				{
+					m_pendingDirectManipulationKey = null;
+				}
 			}
 
 			{
@@ -668,12 +645,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// and ZoomToFactor with optional animation, snap-point adjustment, and DM
 		// BringIntoViewport coordination.
 		// (C++ source line 3385)
-		// NOTE: this is the WinUI ChangeViewInternal port. The DM-aware branches
-		// (m_canManipulateElementsWithBringIntoViewport / BringIntoViewportInternal /
-		// GetDManipView path) are preserved verbatim inside `#if false` blocks per
-		// the don't-simplify rule and become live when the Phase-4 DM adapter
-		// lands. The non-DM SetOffsetsWithExtents / SetHorizontalOffset /
-		// SetVerticalOffset / ZoomToFactorInternal path is the active one on Skia.
 		internal bool ChangeViewInternal(
 			double? pHorizontalOffset,
 			double? pVerticalOffset,
@@ -1166,23 +1137,86 @@ namespace Microsoft.UI.Xaml.Controls
 				isBringIntoViewportCallAllowed = false;
 			}
 
-#if false // TODO Uno: Phase 4 — DM adapter. The C++ block at lines 3953-4259 invokes
-		  // get_CanManipulateElements + BringIntoViewportInternal to drive an animated
-		  // DManip view change. The non-DM fallback below is the active path on Skia.
 			if (isBringIntoViewportCallAllowed)
 			{
-				get_CanManipulateElements(
+				GetManipulationConfigurations(
+					canUseCachedProperties: true,
 					out canManipulateElementsByTouch,
-					out canManipulateElementsNonTouch,
-					out canManipulateElementsWithBringIntoViewport);
+					out var canManipulateElementsWithAsyncBringIntoViewport,
+					out _,
+					out var nonTouchConfiguration,
+					out _);
+				canManipulateElementsNonTouch = nonTouchConfiguration != DMConfigurations.None;
+				canManipulateElementsWithBringIntoViewport = m_canManipulateElementsWithBringIntoViewport;
+				m_canManipulateElementsWithAsyncBringIntoViewport = canManipulateElementsWithAsyncBringIntoViewport;
 
-				if (canManipulateElementsWithBringIntoViewport && (!applyAsManip || m_canManipulateElementsWithAsyncBringIntoViewport))
+				if (canManipulateElementsWithBringIntoViewport &&
+					(!applyAsManip || m_canManipulateElementsWithAsyncBringIntoViewport))
 				{
-					// ... (DM-aware path: BringIntoViewportInternal call, DManip view snapshotting,
-					// targetTranslate computation via ComputeTranslation[X/Y]Correction, etc.) ...
+					if (!disableAnimation && adjustWithMandatorySnapPoints)
+					{
+						AdjustViewWithMandatorySnapPoints(
+							minHorizontalOffset,
+							maxHorizontalOffset,
+							currentHorizontalOffset,
+							minVerticalOffset,
+							maxVerticalOffset,
+							currentVerticalOffset,
+							minZoomFactor,
+							maxZoomFactor,
+							viewportPixelWidth,
+							viewportPixelHeight,
+							ref currentUnzoomedPixelExtentWidth,
+							ref currentUnzoomedPixelExtentHeight,
+							ref targetHorizontalOffset,
+							ref targetVerticalOffset,
+							ref targetZoomFactor);
+						targetPixelHorizontalOffset = targetHorizontalOffset;
+						targetPixelVerticalOffset = targetVerticalOffset;
+					}
+
+					m_targetChangeViewHorizontalOffset = targetHorizontalOffset;
+					m_targetChangeViewVerticalOffset = targetVerticalOffset;
+					m_targetChangeViewZoomFactor = targetZoomFactor;
+
+					if (pZoomFactor.HasValue)
+					{
+						NotifyZoomFactorChanging(targetZoomFactor);
+					}
+					if (pHorizontalOffset.HasValue)
+					{
+						NotifyHorizontalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
+					}
+					if (pVerticalOffset.HasValue)
+					{
+						NotifyVerticalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
+					}
+
+					bounds = new global::Windows.Foundation.Rect(
+						targetPixelHorizontalOffset / targetZoomFactor,
+						targetPixelVerticalOffset / targetZoomFactor,
+						viewportPixelWidth / targetZoomFactor,
+						viewportPixelHeight / targetZoomFactor);
+					targetTranslateX = (float)-targetPixelHorizontalOffset;
+					targetTranslateY = (float)-targetPixelVerticalOffset;
+
+					m_isInChangeViewBringIntoViewport = true;
+					clearInChangeViewBringIntoViewport = true;
+					isBringIntoViewportCalled = true;
+					BringIntoViewportInternal(
+						bounds,
+						targetTranslateX,
+						targetTranslateY,
+						targetZoomFactor,
+						transformIsValid: true,
+						skipDuringTouchContact,
+						skipAnimationWhileRunning,
+						animate: !disableAnimation,
+						applyAsManip,
+						isForMakeVisible,
+						out isHandled);
 				}
 			}
-#endif
 
 			if (!isBringIntoViewportCalled || !isHandled)
 			{
@@ -1242,7 +1276,12 @@ namespace Microsoft.UI.Xaml.Controls
 						if (m_trElementScrollContentPresenter is not null)
 						{
 							// Jump to the target offsets
-							m_trElementScrollContentPresenter.SetOffsetsWithExtents(targetHorizontalOffset, targetVerticalOffset, currentUnzoomedPixelExtentWidth * targetZoomFactor, currentUnzoomedPixelExtentHeight * targetZoomFactor);
+							m_trElementScrollContentPresenter.SetOffsetsWithExtents(
+								targetHorizontalOffset,
+								targetVerticalOffset,
+								currentUnzoomedPixelExtentWidth * targetZoomFactor,
+								currentUnzoomedPixelExtentHeight * targetZoomFactor,
+								targetZoomFactor);
 						}
 					}
 					else
@@ -1299,16 +1338,10 @@ namespace Microsoft.UI.Xaml.Controls
 				m_isInChangeViewBringIntoViewport = false;
 			}
 
-			// Suppress unused-variable warnings for stub-only locals (used only by the
-			// `#if false` DM block above).
 			_ = canManipulateElementsByTouch;
 			_ = canManipulateElementsNonTouch;
 			_ = canManipulateElementsWithBringIntoViewport;
-			_ = clearInChangeViewBringIntoViewport;
-			_ = bounds;
 			_ = alignment;
-			_ = targetTranslateX;
-			_ = targetTranslateY;
 			_ = targetExtentWidth;
 			_ = targetExtentHeight;
 			_ = sizeFirstVisibleItem;
@@ -1320,6 +1353,33 @@ namespace Microsoft.UI.Xaml.Controls
 			_ = skipDuringTouchContact;
 
 			return returnValue;
+		}
+
+		internal void BringIntoViewportInternal(
+			global::Windows.Foundation.Rect bounds,
+			float translateX,
+			float translateY,
+			float zoomFactor,
+			bool transformIsValid,
+			bool skipDuringTouchContact,
+			bool skipAnimationWhileRunning,
+			bool animate,
+			bool applyAsManip,
+			bool isForMakeVisible,
+			out bool handled)
+		{
+			handled = m_hManipulationHandler?.BringIntoViewport(
+				bounds,
+				translateX,
+				translateY,
+				zoomFactor,
+				transformIsValid,
+				skipDuringTouchContact,
+				skipAnimationWhileRunning,
+				animate,
+				GetCurrentDirectManipulationConfiguration(
+					isTouch: false,
+					isForBringIntoViewport: true)) == true;
 		}
 
 		// Scroll content by one page to the left.
@@ -1385,9 +1445,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			base.OnPointerMoved(pArgs);
 
-			// TODO Uno: PointerRoutedEventArgs.IsGenerated isn't a public API on Uno; the WinUI source skips
-			// generated replays. The cross-platform path will route generated pointer events normally — likely
-			// fine since indicator behaviour is purely cosmetic here.
+			// PointerRoutedEventArgs.IsGenerated is not exposed by Uno, so generated replays follow
+			// the normal cross-platform route. This only affects indicator visual-state selection.
 
 			var spPointer = pArgs.Pointer;
 			var pointerDeviceType = spPointer.PointerDeviceType;
@@ -1722,9 +1781,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Returns the value of ZoomSnapPoints which can be null if uninitialized.
 		// Mirrors the C++ m_spZoomSnapPoints field accessor pattern. Note that
 		// ZoomSnapPoints is currently NotImplemented on Skia at the public-API
-		// level (the DP is registered, but reads return null until snap-points
-		// land on Skia), so the AdjustZoomFactorWithMandatorySnapPoints loop
-		// below stays a no-op until that lands.
+		// level (the DP is registered, but reads return null), so there are no
+		// zoom snap points to apply on Skia.
 		private global::System.Collections.Generic.IList<float> GetZoomSnapPoints()
 			=> GetValue(ZoomSnapPointsProperty) as global::System.Collections.Generic.IList<float>;
 
@@ -2360,15 +2418,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 					desiredViewOut = desiredView;
 
-					// TODO Uno: Phase 4 — port UIElement::BringIntoView(rect, forceIntoView,
-					// useAnimation, skipDuringManipulation, horizontalAlignmentRatio,
-					// verticalAlignmentRatio, offsetX, offsetY) which originates a
-					// RequestBringIntoView event up the visual tree so a parent ScrollViewer
-					// can complete the request. Uno's OnBringIntoViewRequested uses the
+					// Uno's OnBringIntoViewRequested uses the
 					// `desiredView` + `remaining*Offset` out params to update the routed-event
 					// args directly so the parent SV picks up the bubbled event with the
-					// adjusted target — equivalent to BringIntoView re-originating, except
-					// without spawning a new event.
+					// adjusted target without spawning a second event.
 					_ = forceIntoView;
 					_ = skipDuringManipulation;
 				}
@@ -2400,12 +2453,11 @@ namespace Microsoft.UI.Xaml.Controls
 				bool isAncestor = this.IsAncestorOf(elementNoRef);
 				if (isAncestor)
 				{
-					// TODO Uno: BringIntoViewRequestedEventArgs.ForceIntoView is not yet
-					// surfaced in Uno; treat it as false until exposed.
+					// BringIntoViewRequestedEventArgs.ForceIntoView is not exposed by Uno.
 					bool forceIntoView = false;
 					bool useAnimation = args.AnimationDesired;
-					// TODO Uno: BringIntoViewRequestedEventArgs.InterruptDuringManipulation
-					// is not yet surfaced in Uno; default to true (the WinUI default).
+					// BringIntoViewRequestedEventArgs.InterruptDuringManipulation is not exposed
+					// by Uno, so use the WinUI default.
 					bool skipDuringManipulation = true;
 					double horizontalAlignmentRatio = args.HorizontalAlignmentRatio;
 					double verticalAlignmentRatio = args.VerticalAlignmentRatio;
@@ -2420,9 +2472,6 @@ namespace Microsoft.UI.Xaml.Controls
 					// is being manipulated by user. For example, don't scroll into view during zoomin/out
 					// in SemanticZoom using the keyboard.
 
-					// TODO Uno: Phase 4 — once IsInManipulation is wired up to the DM adapter,
-					// honour skipDuringManipulation. For now treat the SV as never being in
-					// manipulation so the bring-into-view request always fires.
 					if (forceIntoView || (bringIntoView && (!skipDuringManipulation || !IsInManipulation)))
 					{
 						var rect = args.TargetRect;
@@ -2866,8 +2915,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal UIElement GetScrollInfoAsElement() => GetScrollInfo() as UIElement;
 
 		// Returns the potential inner IManipulationDataProvider regardless of orientation.
-		// TODO Uno: Phase 4 — IManipulationDataProvider isn't implemented in the managed Skia path yet.
-		// Always returns null (the SCP is the IScrollInfo implementer).
+		// The managed Skia path uses the ScrollContentPresenter as its pixel-based IScrollInfo.
 		private object GetInnerManipulationDataProvider() => null;
 
 		// Returns the potential inner IManipulationDataProvider if it's oriented according
@@ -3876,6 +3924,369 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal void PutManipulationHandler(ScrollContentPresenter manipulationHandler)
+		{
+			if (m_hManipulationHandler == manipulationHandler)
+			{
+				return;
+			}
+
+			m_hManipulationHandler?.SetDirectManipulationOwner(null);
+			m_hManipulationHandler = manipulationHandler;
+			m_hManipulationHandler?.SetDirectManipulationOwner(this);
+
+			if (m_hManipulationHandler is not null)
+			{
+				OnManipulatabilityAffectingPropertyChanged(
+					pIsInLiveTree: null,
+					isCachedPropertyChanged: false,
+					isContentChanged: true,
+					isAffectingConfigurations: true,
+					isAffectingTouchConfiguration: true);
+			}
+			else
+			{
+				m_canManipulateElementsByTouch = false;
+				m_canManipulateElementsNonTouch = false;
+				m_canManipulateElementsWithBringIntoViewport = false;
+				m_canManipulateElementsWithAsyncBringIntoViewport = false;
+				m_touchConfiguration = DMConfigurations.None;
+				m_nonTouchConfiguration = DMConfigurations.None;
+			}
+		}
+
+		internal void GetManipulationConfigurations(
+			bool canUseCachedProperties,
+			out bool canManipulateElementsByTouch,
+			out bool canManipulateElementsWithAsyncBringIntoViewport,
+			out DMConfigurations touchConfiguration,
+			out DMConfigurations nonTouchConfiguration,
+			out DMConfigurations bringIntoViewportConfiguration)
+		{
+			canManipulateElementsByTouch = false;
+			canManipulateElementsWithAsyncBringIntoViewport = false;
+			touchConfiguration = DMConfigurations.None;
+			nonTouchConfiguration = DMConfigurations.None;
+			bringIntoViewportConfiguration =
+				DMConfigurations.PanX |
+				DMConfigurations.PanY |
+				DMConfigurations.Zoom |
+				DMConfigurations.PanInertia |
+				DMConfigurations.ZoomInertia;
+
+			var content = GetContentUIElement();
+			if (m_hManipulationHandler is null || content is null || !IsLoaded || !m_hManipulationHandler.IsLoaded)
+			{
+				return;
+			}
+
+			canManipulateElementsWithAsyncBringIntoViewport =
+				m_hManipulationHandler.ActualWidth > 0 &&
+				m_hManipulationHandler.ActualHeight > 0;
+
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			var zoomMode = GetEffectiveZoomMode(canUseCachedProperties);
+			if (zoomMode != ZoomMode.Disabled)
+			{
+				touchConfiguration |= DMConfigurations.Zoom;
+				if (GetEffectiveIsZoomInertiaEnabled(canUseCachedProperties))
+				{
+					touchConfiguration |= DMConfigurations.ZoomInertia;
+				}
+				canManipulateElementsByTouch = true;
+			}
+
+			var horizontalScrollMode = GetEffectiveHorizontalScrollMode(canUseCachedProperties);
+			if (horizontalScrollMode != ScrollMode.Disabled)
+			{
+				canManipulateElementsByTouch = true;
+				if (horizontalScrollMode != ScrollMode.Auto || ScrollableWidth > 0)
+				{
+					touchConfiguration |= DMConfigurations.PanX;
+					if (GetEffectiveIsHorizontalRailEnabled(canUseCachedProperties))
+					{
+						touchConfiguration |= DMConfigurations.RailsX;
+					}
+				}
+			}
+
+			var verticalScrollMode = GetEffectiveVerticalScrollMode(canUseCachedProperties);
+			if (verticalScrollMode != ScrollMode.Disabled)
+			{
+				canManipulateElementsByTouch = true;
+				if (verticalScrollMode != ScrollMode.Auto || ScrollableHeight > 0)
+				{
+					touchConfiguration |= DMConfigurations.PanY;
+					if (GetEffectiveIsVerticalRailEnabled(canUseCachedProperties))
+					{
+						touchConfiguration |= DMConfigurations.RailsY;
+					}
+				}
+			}
+
+			if (GetEffectiveIsScrollInertiaEnabled(canUseCachedProperties) &&
+				(touchConfiguration & (DMConfigurations.PanX | DMConfigurations.PanY)) != 0)
+			{
+				touchConfiguration |= DMConfigurations.PanInertia;
+			}
+
+			if (touchConfiguration == DMConfigurations.None && canManipulateElementsByTouch)
+			{
+				touchConfiguration = DMConfigurations.Interaction;
+			}
+
+			nonTouchConfiguration = GetNonTouchManipulationConfiguration(canUseCachedProperties);
+		}
+
+		internal void GetCanManipulateElements(
+			out bool canManipulateElementsByTouch,
+			out bool canManipulateElementsNonTouch,
+			out bool canManipulateElementsWithBringIntoViewport)
+		{
+			GetManipulationConfigurations(
+				canUseCachedProperties: true,
+				out canManipulateElementsByTouch,
+				out _,
+				out _,
+				out var nonTouchConfiguration,
+				out _);
+			canManipulateElementsNonTouch = nonTouchConfiguration != DMConfigurations.None;
+			canManipulateElementsWithBringIntoViewport =
+				m_hManipulationHandler is not null &&
+				GetContentUIElement() is not null;
+		}
+
+		internal void GetManipulationViewport(
+			UIElement manipulatedElement,
+			out global::Windows.Foundation.Rect bounds,
+			out Microsoft.UI.Xaml.Media.GeneralTransform inputTransform,
+			out DMConfigurations touchConfiguration,
+			out DMConfigurations nonTouchConfiguration,
+			out DMConfigurations bringIntoViewportConfiguration,
+			out DMOverpanMode horizontalOverpanMode,
+			out DMOverpanMode verticalOverpanMode,
+			out DMMotionTypes chainedMotionTypes)
+		{
+			var presenter = m_trElementScrollContentPresenter;
+			bounds = presenter is null
+				? default
+				: new global::Windows.Foundation.Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight);
+			inputTransform = presenter?.TransformToVisual(null);
+			GetManipulationConfigurations(
+				canUseCachedProperties: true,
+				out _,
+				out _,
+				out touchConfiguration,
+				out nonTouchConfiguration,
+				out bringIntoViewportConfiguration);
+			horizontalOverpanMode = m_horizontalOverpanMode;
+			verticalOverpanMode = m_verticalOverpanMode;
+			chainedMotionTypes = DMMotionTypes.None;
+			if (IsHorizontalScrollChainingEnabled)
+			{
+				chainedMotionTypes |= DMMotionTypes.PanX;
+			}
+			if (IsVerticalScrollChainingEnabled)
+			{
+				chainedMotionTypes |= DMMotionTypes.PanY;
+			}
+			if (IsZoomChainingEnabled)
+			{
+				chainedMotionTypes |= DMMotionTypes.Zoom;
+			}
+		}
+
+		internal void GetManipulationPrimaryContent(
+			UIElement manipulatedElement,
+			out global::Windows.Foundation.Size offsets,
+			out global::Windows.Foundation.Rect bounds,
+			out DMAlignment horizontalAlignment,
+			out DMAlignment verticalAlignment,
+			out float minZoomFactor,
+			out float maxZoomFactor,
+			out bool isHorizontalStretchAlignmentTreatedAsNear,
+			out bool isVerticalStretchAlignmentTreatedAsNear,
+			out bool isLayoutRefreshed)
+		{
+			GetTopLeftMargins(manipulatedElement, out var topMargin, out var leftMargin);
+			offsets = new global::Windows.Foundation.Size((float)leftMargin, (float)topMargin);
+			bounds = manipulatedElement is FrameworkElement element
+				? new global::Windows.Foundation.Rect(0, 0, element.ActualWidth, element.ActualHeight)
+				: default;
+			horizontalAlignment = ComputeHorizontalAlignment(canUseCachedProperties: true);
+			verticalAlignment = ComputeVerticalAlignment(canUseCachedProperties: true);
+			minZoomFactor = m_overridingMinZoomFactor > 0 ? m_overridingMinZoomFactor : MinZoomFactor;
+			maxZoomFactor = m_overridingMaxZoomFactor > 0 ? m_overridingMaxZoomFactor : MaxZoomFactor;
+			isHorizontalStretchAlignmentTreatedAsNear = m_isHorizontalStretchAlignmentTreatedAsNear;
+			isVerticalStretchAlignmentTreatedAsNear = m_isVerticalStretchAlignmentTreatedAsNear;
+			isLayoutRefreshed = m_isInDirectManipulationCompletion;
+		}
+
+		internal DMConfigurations GetNonTouchManipulationConfiguration(bool canUseCachedProperties)
+		{
+			var configuration = DMConfigurations.None;
+			if (GetEffectiveHorizontalScrollMode(canUseCachedProperties) != ScrollMode.Disabled)
+			{
+				configuration |= DMConfigurations.PanX;
+			}
+			if (GetEffectiveVerticalScrollMode(canUseCachedProperties) != ScrollMode.Disabled)
+			{
+				configuration |= DMConfigurations.PanY;
+			}
+			if (GetEffectiveIsScrollInertiaEnabled(canUseCachedProperties) &&
+				configuration != DMConfigurations.None)
+			{
+				configuration |= DMConfigurations.PanInertia;
+			}
+			if (GetEffectiveZoomMode(canUseCachedProperties) != ZoomMode.Disabled)
+			{
+				configuration |= DMConfigurations.Zoom;
+				if (GetEffectiveIsZoomInertiaEnabled(canUseCachedProperties))
+				{
+					configuration |= DMConfigurations.ZoomInertia;
+				}
+			}
+			return configuration;
+		}
+
+		internal DMConfigurations GetCurrentDirectManipulationConfiguration(
+			bool isTouch,
+			bool isForBringIntoViewport)
+		{
+			GetManipulationConfigurations(
+				canUseCachedProperties: true,
+				out _,
+				out _,
+				out var touchConfiguration,
+				out var nonTouchConfiguration,
+				out var bringIntoViewportConfiguration);
+
+			return isForBringIntoViewport
+				? bringIntoViewportConfiguration
+				: isTouch
+					? touchConfiguration
+					: nonTouchConfiguration;
+		}
+
+		internal void GetManipulationPrimaryContentTransform(
+			UIElement manipulatedElement,
+			bool inManipulation,
+			bool forInitialTransformationAdjustment,
+			bool forMargins,
+			out float translationX,
+			out float translationY,
+			out float zoomFactor)
+		{
+			zoomFactor = ZoomFactor;
+			GetTopLeftMargins(manipulatedElement, out var topMargin, out var leftMargin);
+
+			if (forMargins)
+			{
+				translationX = (zoomFactor - 1.0f) * (float)leftMargin;
+				translationY = (zoomFactor - 1.0f) * (float)topMargin;
+				return;
+			}
+
+			ComputeTranslationXCorrection(
+				inManipulation,
+				forInitialTransformationAdjustment,
+				adjustDimensions: false,
+				pProvider: null,
+				leftMargin,
+				extent: -1,
+				zoomFactor,
+				out var translationCorrectionX);
+			ComputeTranslationYCorrection(
+				inManipulation,
+				forInitialTransformationAdjustment,
+				adjustDimensions: false,
+				pProvider: null,
+				topMargin,
+				extent: -1,
+				zoomFactor,
+				out var translationCorrectionY);
+
+			translationX = translationCorrectionX - (float)m_xPixelOffset;
+			translationY = translationCorrectionY - (float)m_yPixelOffset;
+		}
+
+		internal void GetDManipView(
+			out double horizontalOffset,
+			out double verticalOffset,
+			out float zoomFactor)
+		{
+			if (m_hManipulationHandler is not null && GetContentUIElement() is not null)
+			{
+				m_hManipulationHandler.GetDirectManipulationOffsets(
+					out horizontalOffset,
+					out verticalOffset,
+					out zoomFactor);
+			}
+			else
+			{
+				horizontalOffset = 0;
+				verticalOffset = 0;
+				zoomFactor = 1;
+			}
+		}
+
+		// Temporary workaround for DManip bug 799346
+		// Called by internal controls to override the MinZoomFactor or MaxZoomFactor value
+		internal void SetDirectManipulationOverridingZoomBoundaries()
+		{
+			if (m_hManipulationHandler is null)
+			{
+				return;
+			}
+
+			m_hManipulationHandler.GetDirectManipulationView(
+				out _,
+				out _,
+				out var uncompressedZoomFactor);
+
+			if (uncompressedZoomFactor < MinZoomFactor)
+			{
+				m_overridingMinZoomFactor = Math.Max(
+					ScrollViewerMinimumZoomFactor,
+					uncompressedZoomFactor - ScrollViewerZoomRoundingTolerance);
+				m_overridingMaxZoomFactor = 0;
+			}
+			else if (uncompressedZoomFactor > MaxZoomFactor)
+			{
+				m_overridingMinZoomFactor = 0;
+				m_overridingMaxZoomFactor =
+					uncompressedZoomFactor + ScrollViewerZoomRoundingTolerance;
+			}
+			else
+			{
+				m_overridingMinZoomFactor = 0;
+				m_overridingMaxZoomFactor = 0;
+			}
+
+			OnPrimaryContentAffectingPropertyChanged(
+				boundsChanged: false,
+				horizontalAlignmentChanged: false,
+				verticalAlignmentChanged: false,
+				zoomFactorBoundaryChanged: true);
+		}
+
+		// Temporary workaround for DManip bug 799346
+		// Called by internal controls to undo the overriding of the MinZoomFactor or MaxZoomFactor value
+		internal void ResetDirectManipulationOverridingZoomBoundaries()
+		{
+			m_overridingMinZoomFactor = 0;
+			m_overridingMaxZoomFactor = 0;
+			OnPrimaryContentAffectingPropertyChanged(
+				boundsChanged: false,
+				horizontalAlignmentChanged: false,
+				verticalAlignmentChanged: false,
+				zoomFactorBoundaryChanged: true);
+		}
+
 		// Retrieves the left and top margins of the provided element.
 		internal static void GetTopLeftMargins(UIElement pElement, out double topMargin, out double leftMargin)
 		{
@@ -3903,7 +4314,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (m_trElementScrollContentPresenter is not null)
 				{
-					m_trElementScrollContentPresenter.InvalidateMeasure();
+					m_isInChildInvalidateMeasure = true;
+					try
+					{
+						m_trElementScrollContentPresenter.InvalidateMeasure();
+					}
+					finally
+					{
+						m_isInChildInvalidateMeasure = false;
+					}
 
 					ComputePixelViewportWidth(pProvider: null, isProviderSet: false, out viewport);
 					availableSize.Width = (float)viewport;
@@ -3975,26 +4394,47 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_hManipulationHandler is null)
 			{
-				// No DM handler attached: nothing to push. The Skia path doesn't
-				// have a separate manipulation handler service; the InputManager's
-				// PointerManager.DirectManipulation drives panning directly via
-				// GestureRecognizer + InertiaProcessor.
 				return;
 			}
 
-			// TODO Uno: Phase 4 — full body. Depends on GetManipulationConfigurations
-			// (a 200+ line port that needs IManipulationDataProvider) and
-			// CoreImports::ManipulationHandler_NotifyCanManipulateElements which is
-			// the DM-adapter layer. The full C++ source at line 10014-10310 mirrors:
-			//   1. Compute the new (canManipulateElementsByTouch / NonTouch / Bring)
-			//      tuple via GetManipulationConfigurations(...).
-			//   2. If the tuple changed, set m_isCanManipulateElementsInvalid /
-			//      m_touchConfiguration / m_nonTouchConfiguration accordingly,
-			//      raise NotifyManipulatableElementChanged + push to DM handler.
-			//   3. If only touch configuration changed (and not the tuple), push
-			//      to DM via ManipulationHandler_NotifyCanManipulateElements.
-			//   4. If isAffectingConfigurations, fall through to
-			//      OnViewportConfigurationsAffectingPropertyChanged.
+			if (IsInDirectManipulation)
+			{
+				m_isCanManipulateElementsInvalid = true;
+				m_areViewportConfigurationsInvalid |=
+					isAffectingConfigurations ||
+					isAffectingTouchConfiguration;
+				return;
+			}
+
+			GetManipulationConfigurations(
+				canUseCachedProperties: isCachedPropertyChanged,
+				out var canManipulateElementsByTouch,
+				out var canManipulateElementsWithAsyncBringIntoViewport,
+				out var touchConfiguration,
+				out var nonTouchConfiguration,
+				out var bringIntoViewportConfiguration);
+
+			m_canManipulateElementsByTouch = canManipulateElementsByTouch;
+			m_canManipulateElementsNonTouch = nonTouchConfiguration != DMConfigurations.None;
+			m_canManipulateElementsWithBringIntoViewport = GetContentUIElement() is not null;
+			m_canManipulateElementsWithAsyncBringIntoViewport = canManipulateElementsWithAsyncBringIntoViewport;
+			m_touchConfiguration = touchConfiguration;
+			m_nonTouchConfiguration = nonTouchConfiguration;
+			m_isCanManipulateElementsInvalid = false;
+			m_hManipulationHandler.OnManipulationConfigurationChanged(
+				touchConfiguration,
+				nonTouchConfiguration,
+				bringIntoViewportConfiguration);
+
+			if (isContentChanged)
+			{
+				NotifyManipulatableElementChanged();
+			}
+
+			if (isAffectingConfigurations || isAffectingTouchConfiguration)
+			{
+				OnViewportConfigurationsAffectingPropertyChanged();
+			}
 		}
 
 		// Called when this DM container wants the DM handler to process the current
@@ -4004,18 +4444,61 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ProcessInputMessage(bool ignoreFlowDirection, out bool isHandled)
 		{
 			isHandled = false;
-			if (m_hManipulationHandler is not null)
+			if (m_hManipulationHandler is not null && m_pendingDirectManipulationKey is { } key)
 			{
-				var spContentUIElement = GetContentUIElement();
-				if (spContentUIElement is not null)
+				double? horizontalOffset = null;
+				double? verticalOffset = null;
+				var invertHorizontal = !ignoreFlowDirection && FlowDirection == FlowDirection.RightToLeft;
+
+				switch (key)
 				{
-					// TODO Uno: Phase 4 — port ManipulationHandler_ProcessInputMessage via the DM adapter.
-					// CoreImports::ManipulationHandler_ProcessInputMessage(
-					//     m_hManipulationHandler,
-					//     spContentUIElement,
-					//     ignoreFlowDirection,
-					//     out var fHandled);
-					// isHandled = fHandled;
+					case VirtualKey.Up:
+						verticalOffset = Math.Max(0, VerticalOffset - ScrollViewerLineDelta);
+						break;
+					case VirtualKey.Down:
+						verticalOffset = Math.Min(ScrollableHeight, VerticalOffset + ScrollViewerLineDelta);
+						break;
+					case VirtualKey.Left:
+						horizontalOffset = invertHorizontal
+							? Math.Min(ScrollableWidth, HorizontalOffset + ScrollViewerLineDelta)
+							: Math.Max(0, HorizontalOffset - ScrollViewerLineDelta);
+						break;
+					case VirtualKey.Right:
+						horizontalOffset = invertHorizontal
+							? Math.Max(0, HorizontalOffset - ScrollViewerLineDelta)
+							: Math.Min(ScrollableWidth, HorizontalOffset + ScrollViewerLineDelta);
+						break;
+					case VirtualKey.PageUp:
+						verticalOffset = Math.Max(0, VerticalOffset - ViewportHeight);
+						break;
+					case VirtualKey.PageDown:
+						verticalOffset = Math.Min(ScrollableHeight, VerticalOffset + ViewportHeight);
+						break;
+					case VirtualKey.Home:
+						horizontalOffset = 0;
+						verticalOffset = 0;
+						break;
+					case VirtualKey.End:
+						horizontalOffset = ScrollableWidth;
+						verticalOffset = ScrollableHeight;
+						break;
+				}
+
+				if (horizontalOffset.HasValue || verticalOffset.HasValue)
+				{
+					isHandled = ChangeViewInternal(
+						horizontalOffset,
+						verticalOffset,
+						pZoomFactor: null,
+						pOldZoomFactor: null,
+						forceChangeToCurrentView: false,
+						adjustWithMandatorySnapPoints: true,
+						skipDuringTouchContact: true,
+						skipAnimationWhileRunning: true,
+						disableAnimation: false,
+						applyAsManip: true,
+						transformIsInertiaEnd: false,
+						isForMakeVisible: false);
 				}
 			}
 		}
@@ -4175,11 +4658,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var spContentUIElement = GetContentUIElement();
 				if (spContentUIElement is not null)
 				{
-					// TODO Uno: Phase 4 — port ManipulationHandler_NotifySnapPointsChanged via the DM adapter.
-					// CoreImports::ManipulationHandler_NotifySnapPointsChanged(
-					//     m_hManipulationHandler,
-					//     spContentUIElement,
-					//     (byte)motionType);
+					m_hManipulationHandler.OnSnapPointsChanged(motionType);
 				}
 			}
 		}
@@ -4213,10 +4692,15 @@ namespace Microsoft.UI.Xaml.Controls
 				else if (m_canManipulateElementsByTouch || m_canManipulateElementsNonTouch || m_canManipulateElementsWithBringIntoViewport)
 				{
 					m_areViewportConfigurationsInvalid = false;
-					// TODO Uno: Phase 4 — port GetManipulationConfigurations + OnViewportAffectingPropertyChanged.
-					// The DM viewport-configuration push is part of the DM adapter (Phase 4) and isn't wired up
-					// yet on Skia. Until then, this branch is a no-op (the m_areViewportConfigurationsInvalid
-					// gate above already handles the in-manipulation case).
+					OnViewportAffectingPropertyChanged(
+						boundsChanged: false,
+						touchConfigurationChanged: true,
+						nonTouchConfigurationChanged: true,
+						configurationsChanged: true,
+						chainedMotionTypesChanged: false,
+						horizontalOverpanModeChanged: false,
+						verticalOverpanModeChanged: false,
+						out _);
 				}
 			}
 		}
@@ -4265,16 +4749,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var spContentUIElement = GetContentUIElement();
 				if (spContentUIElement is not null)
 				{
-					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyPrimaryContentChanged via the DM adapter.
-					// CoreImports::ManipulationHandler_NotifyPrimaryContentChanged(
-					//     m_hManipulationHandler,
-					//     spContentUIElement,
-					//     IsInManipulation,
-					//     layoutRefreshed,
-					//     boundsChanged,
-					//     horizontalAlignmentChanged,
-					//     verticalAlignmentChanged,
-					//     zoomFactorBoundaryChanged);
+					if (zoomFactorBoundaryChanged)
+					{
+						m_hManipulationHandler.OnMinZoomFactorChanged(
+							m_overridingMinZoomFactor > 0 ? m_overridingMinZoomFactor : MinZoomFactor);
+						m_hManipulationHandler.OnMaxZoomFactorChanged(
+							m_overridingMaxZoomFactor > 0 ? m_overridingMaxZoomFactor : MaxZoomFactor);
+					}
+					m_hManipulationHandler.RefreshDirectManipulationState();
 				}
 			}
 		}
@@ -4300,30 +4782,23 @@ namespace Microsoft.UI.Xaml.Controls
 				bool isInUnstoppedManipulation = IsInUnstoppedManipulation();
 				if (m_hManipulationHandler is not null && !(isInUnstoppedManipulation && m_trManipulatableElement is null))
 				{
-					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyPrimaryContentTransformChanged via the DM adapter.
-					// CoreImports::ManipulationHandler_NotifyPrimaryContentTransformChanged(
-					//     m_hManipulationHandler,
-					//     pManipulatedElementNoRef,
-					//     isInUnstoppedManipulation,
-					//     translationXChanged,
-					//     translationYChanged,
-					//     zoomFactorChanged);
+					m_hManipulationHandler.RefreshDirectManipulationState();
 				}
 				else
 				{
 					// Set the manipulated element's static DM transform since the
 					// InputManager has not declared itself as the manipulation handler.
 					global::System.Diagnostics.Debug.Assert(zoomFactorChanged);
-					// TODO Uno: Phase 4 — port GetManipulationPrimaryContentTransform. The DM adapter will provide
-					// the static transform; until then, the transform is implicit through Composition.
-					// GetManipulationPrimaryContentTransform(
-					//     pManipulatedElementNoRef,
-					//     inManipulation: false,
-					//     forInitialTransformationAdjustment: false,
-					//     forMargins: false,
-					//     out _,  // translationX
-					//     out _,  // translationY
-					//     out _); // zoomFactor
+					GetManipulationPrimaryContentTransform(
+						pManipulatedElementNoRef,
+						inManipulation: false,
+						forInitialTransformationAdjustment: false,
+						forMargins: false,
+						out var translationX,
+						out var translationY,
+						out var zoomFactor);
+					pManipulatedElementNoRef.Visual.AnchorPoint = new global::System.Numerics.Vector2(translationX, translationY);
+					pManipulatedElementNoRef.Visual.Scale = new global::System.Numerics.Vector3(zoomFactor, zoomFactor, 1);
 				}
 			}
 		}
@@ -4354,19 +4829,24 @@ namespace Microsoft.UI.Xaml.Controls
 				var spContentUIElement = GetContentUIElement();
 				if (spContentUIElement is not null)
 				{
-					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyViewportChanged via the DM adapter.
-					// CoreImports::ManipulationHandler_NotifyViewportChanged(
-					//     m_hManipulationHandler,
-					//     spContentUIElement,
-					//     IsInManipulation,
-					//     boundsChanged,
-					//     touchConfigurationChanged,
-					//     nonTouchConfigurationChanged,
-					//     configurationsChanged,
-					//     chainedMotionTypesChanged,
-					//     horizontalOverpanModeChanged,
-					//     verticalOverpanModeChanged,
-					//     out areConfigurationsUpdated);
+					GetManipulationConfigurations(
+						canUseCachedProperties: true,
+						out _,
+						out _,
+						out var touchConfiguration,
+						out var nonTouchConfiguration,
+						out var bringIntoViewportConfiguration);
+					m_touchConfiguration = touchConfiguration;
+					m_nonTouchConfiguration = nonTouchConfiguration;
+					m_hManipulationHandler.OnManipulationConfigurationChanged(
+						touchConfiguration,
+						nonTouchConfiguration,
+						bringIntoViewportConfiguration);
+					if (boundsChanged)
+					{
+						m_hManipulationHandler.RefreshDirectManipulationState();
+					}
+					areConfigurationsUpdated = true;
 				}
 			}
 		}
@@ -4392,13 +4872,11 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						// The old manipulatable element was null. Unparent the potential headers so
 						// they get added to the CDMViewport that is about to be created.
-						// TODO Uno: Phase 6 — header unparenting + InvalidateMeasure.
+						pScp.InvalidateMeasure();
 					}
 
-					// TODO Uno: Phase 4 — let the ManipulationHandler know about this manipulatable element change.
-					// CoreImports::ManipulationHandler_NotifyManipulatableElementChanged(...) — DM-only.
-
 					m_trManipulatableElement = pManipulatableElementNoRef;
+					m_hManipulationHandler.RefreshDirectManipulationState();
 				}
 			}
 		}
@@ -4468,10 +4946,11 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			// TODO Uno: Phase 4 — full IsBringIntoViewportNeeded port. The C++ source compares the current
-			// DM transform with the XAML offsets/zoom and returns true when they have diverged. Until DM
-			// adapter exists, return false (no sync needed).
-			return false;
+			GetDManipView(out var horizontalOffset, out var verticalOffset, out var zoomFactor);
+			return
+				Math.Abs(horizontalOffset - m_xPixelOffset) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
+				Math.Abs(verticalOffset - m_yPixelOffset) >= ScrollViewerScrollRoundingToleranceForBringIntoViewport ||
+				Math.Abs(zoomFactor - ZoomFactor) >= ScrollViewerZoomRoundingToleranceForBringIntoViewport;
 		}
 
 		// Synchonizes the ScrollData's m_ComputedOffset and m_Offset fields.
@@ -4958,6 +5437,12 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnLoadedCore()
 		{
 			m_isLoaded = true;
+			OnManipulatabilityAffectingPropertyChanged(
+				pIsInLiveTree: true,
+				isCachedPropertyChanged: false,
+				isContentChanged: false,
+				isAffectingConfigurations: true,
+				isAffectingTouchConfiguration: true);
 
 			// DManip needs to be aware of the content transform immediately via a ZoomToRect call.
 			// Prior attempts at synchronizing the XAML and DManip transforms may have failed because a viewport size, in pixels, was still 0.
@@ -4972,6 +5457,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_showingMouseIndicators = false;
 			m_keepIndicatorsShowing = false;
+			m_trManipulatableElement = null;
+			UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: true);
+			UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: false);
 		}
 
 		// Determine if content can be scrolled.
@@ -5085,10 +5573,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: Phase 5 — port `IsPanelACarouselPanel`. CarouselPanel is a virtualizing panel used
-		// by ComboBox; until it's hooked up here, return false (which is the safe default for
-		// non-carousel scenarios — the offset gets clamped, which is correct for normal Scroll panels).
-		private bool IsPanelACarouselPanel(bool isForHorizontalOrientation) => false;
+		private bool IsPanelACarouselPanel(bool isForHorizontalOrientation)
+			=> GetScrollInfoAsElement() is CarouselPanel;
 
 		internal float GetZoomedHorizontalOffsetWithPendingShifts()
 		{
@@ -5210,17 +5696,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// #region IScrollOwner contract — explicit interface implementation.
-		// Each member is a thin adapter onto an existing port method or a
-		// scoped Phase-stub. The full WinUI behavior (in particular the 600-line
-		// InvalidateScrollInfoImpl and 400-line InvalidateScrollInfo_TryUpdateValues)
-		// will land in Phase 4 once the DM adapter is wired up. For now the
-		// adapter is functional enough that an SCP that has been told to use
-		// the new IScrollOwner pipeline can call back without crashing.
 
 		// Member of the IScrollOwner internal contract.
 		// Pushes the latest IScrollInfo state to the scroll bars and the
-		// HorizontalOffset / VerticalOffset DPs. The full DM-aware port at
-		// C++ source line 4392 will replace this once the adapter lands.
+		// HorizontalOffset / VerticalOffset DPs.
 		void IScrollOwner.InvalidateScrollInfoImpl()
 		{
 			// Batch up any potential ViewChanged events into a single notification
@@ -5308,11 +5787,8 @@ namespace Microsoft.UI.Xaml.Controls
 		float IScrollOwner.GetZoomFactor() => ZoomFactor;
 
 		// Forwards a pure-inertia keyboard zoom (Ctrl+Plus / Ctrl+Minus) request to
-		// DirectManipulation. The DM-side path remains DM-bound; on Skia this
-		// becomes a no-op until the DM adapter lands. The C++ source has 2 overloads:
-		// the no-out one captures the handled flag and feeds it back to
-		// m_handleScrollInfoWheelEvent so the next wheel/key event is routed correctly.
-		// (C++ source line 9728)
+		// DirectManipulation. The no-out overload captures the handled flag and feeds
+		// it back to m_handleScrollInfoWheelEvent so the next wheel/key event is routed correctly.
 		void IScrollOwner.ProcessPureInertiaInputMessage(ZoomDirection zoomDirection)
 		{
 			ProcessPureInertiaInputMessage(zoomDirection, out var isHandled);
@@ -5358,22 +5834,38 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!stopProcessing)
 			{
-				ProcessInputMessage(ignoreFlowDirection: false, out isHandled);
+				if (zoomDirection == ZoomDirection.None)
+				{
+					ProcessInputMessage(ignoreFlowDirection: false, out isHandled);
+				}
+				else
+				{
+					var zoomFactor = zoomDirection == ZoomDirection.In
+						? Math.Min(MaxZoomFactor, ZoomFactor * 1.1f)
+						: Math.Max(MinZoomFactor, ZoomFactor / 1.1f);
+					isHandled = ChangeViewInternal(
+						pHorizontalOffset: null,
+						pVerticalOffset: null,
+						pZoomFactor: zoomFactor,
+						pOldZoomFactor: null,
+						forceChangeToCurrentView: false,
+						adjustWithMandatorySnapPoints: false,
+						skipDuringTouchContact: true,
+						skipAnimationWhileRunning: true,
+						disableAnimation: false,
+						applyAsManip: true,
+						transformIsInertiaEnd: false,
+						isForMakeVisible: false);
+				}
 			}
 		}
 
-		// Returns true while DM is in a zoom manipulation. Reflected through
-		// the existing MuxInternal m_isInDirectManipulationZoom field so we
-		// stay consistent with the rest of the SV state machine. The field
-		// stays false until the DM adapter lands but we still surface the
-		// real getter for parity with C++.
+		// Returns true while DM is in a zoom manipulation.
 		bool IScrollOwner.IsInDirectManipulationZoom() => m_isInDirectManipulationZoom;
 
 		// Tracks whether the SV is itself triggering an InvalidateMeasure on
-		// its inner panel (bug 261102 / 342668 workaround). Skia's pure-managed
-		// scroll path does not have that race, so this is permanently false
-		// for now.
-		bool IScrollOwner.IsInChildInvalidateMeasure() => false;
+		// its inner panel (bug 261102 / 342668 workaround).
+		bool IScrollOwner.IsInChildInvalidateMeasure() => m_isInChildInvalidateMeasure;
 
 		// #endregion
 

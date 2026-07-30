@@ -147,59 +147,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
-		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
-		{
-#if __SKIA__
-			// MUX Reference ScrollViewer_Partial.cpp:3385 ChangeViewInternal — before
-			// applying the new view, the WinUI port raises ViewChanging with the
-			// computed target view so app code can observe the in-flight change.
-			// On Skia the rendered scroll is driven by SCP.Set(...) below; this
-			// block sources the same NextView/FinalView args the C++ port would.
-			// Phase-4 ChangeViewInternal will own this entirely; until then, this
-			// is the bridge.
-
-			// MUX Reference: when a programmatic ChangeView arrives during inertia,
-			// the inertia is aborted. This matches C++ ScrollViewer behavior where
-			// ChangeViewInternal calls StopInertialManipulation as a side effect.
-			if (IsInDirectManipulation && m_isInertial)
-			{
-				StopInertialManipulation();
-			}
-
-			var targetH = horizontalOffset ?? HorizontalOffset;
-			var targetV = verticalOffset ?? VerticalOffset;
-			var targetZ = zoomFactor.HasValue ? (float)zoomFactor.Value : ZoomFactor;
-
-			// MUX Reference: ChangeViewInternal stores the requested target so
-			// GetTargetView returns it during the in-flight change (for nested SVs
-			// requesting MakeVisible against this SV mid-ChangeView). The fields are
-			// reset to -1 at the start of RaiseViewChanging once a ViewChanging event
-			// is dispatched.
-			m_targetChangeViewHorizontalOffset = targetH;
-			m_targetChangeViewVerticalOffset = targetV;
-			m_targetChangeViewZoomFactor = targetZ;
-			if (zoomFactor.HasValue)
-			{
-				NotifyZoomFactorChanging(targetZ);
-				// MUX Reference ScrollViewer_Partial.cpp:3385 — ChangeViewInternal
-				// processes a zoom factor change by routing through ZoomToFactorInternal,
-				// which coerces against MinZoomFactor/MaxZoomFactor and updates the
-				// public ZoomFactor DP. Without this, the SV's ZoomFactor property
-				// stays at its old value after a ChangeView call that requested zoom.
-				ZoomToFactorInternal(targetZ, delayAndFlushViewChanged: false, out _);
-			}
-			if (horizontalOffset.HasValue)
-			{
-				NotifyHorizontalOffsetChanging(targetH, targetV);
-			}
-			if (verticalOffset.HasValue)
-			{
-				NotifyVerticalOffsetChanging(targetH, targetV);
-			}
-#endif
-			return (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
-		}
-
 		private partial void OnLoadedPartial()
 		{
 #if __SKIA__
@@ -227,6 +174,7 @@ namespace Microsoft.UI.Xaml.Controls
 					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
 					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
 				};
+				contentExtent *= ZoomFactor;
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;
 				if (offset > 0 && overscroll < -0.5)

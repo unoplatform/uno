@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
+		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)

@@ -81,11 +81,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ZoomFactor = zoomFactor;
 
-#if __SKIA__
-			// Refresh pixel offsets with the new zoom factor.
-			NotifyPresenterOffsetsChanged(HorizontalOffset, VerticalOffset, zoomFactor);
-#endif
-
 			// Note: We should also defer the intermediate zoom changes
 			Update(isIntermediate: false);
 

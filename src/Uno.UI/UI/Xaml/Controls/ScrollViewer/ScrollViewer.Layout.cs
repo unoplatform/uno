@@ -150,11 +150,11 @@ namespace Microsoft.UI.Xaml.Controls
 			// precision, which could then cause the scroll bars to appear
 			// for no reason.
 
-			var scrollableHeight = Math.Max(Math.Round(ExtentHeight - ViewportHeight, 4), 0);
+			var scrollableHeight = Math.Max(Math.Round(ExtentHeight * ZoomFactor - ViewportHeight, 4), 0);
 
 			ScrollableHeight = scrollableHeight;
 
-			var scrollableWidth = Math.Max(Math.Round(ExtentWidth - ViewportWidth, 4), 0);
+			var scrollableWidth = Math.Max(Math.Round(ExtentWidth * ZoomFactor - ViewportWidth, 4), 0);
 
 			ScrollableWidth = scrollableWidth;
 

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollContentPresenter_Partial.cpp, commit 5f9e85113
+// MUX Reference ScrollContentPresenter_Partial.cpp, commit dc46907e92
 
 #nullable disable
 
@@ -368,12 +368,7 @@ namespace Microsoft.UI.Xaml.Controls
 					m_scrollRequested = true;
 					isScrollRequested = true;
 					requestedOffset = scrollX;
-					// TODO Uno: Phase 4 — once the cross-platform Skia ArrangeOverride is
-					// switched to ArrangeOverridePort (which calls VerifyScrollData →
-					// CoerceOffsets → IScrollOwner.InvalidateScrollInfoImpl), this direct
-					// call becomes redundant. For now bridge the chain manually so the
-					// SV's public HorizontalOffset DP gets updated synchronously instead
-					// of waiting for a layout pass that may not call VerifyScrollData.
+					// Keep the managed presenter and the WinUI ScrollData path synchronized.
 					CoerceOffsets(out _);
 					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
 					// Drive the cross-platform managed scroll path so the visual scroll
@@ -417,8 +412,6 @@ namespace Microsoft.UI.Xaml.Controls
 					m_scrollRequested = true;
 					isScrollRequested = true;
 					requestedOffset = scrollY;
-					// TODO Uno: Phase 4 — see SetHorizontalOffsetPrivate. CoerceOffsets pushes
-					// m_Offset → m_ComputedOffset which is what GetVerticalOffset reads.
 					CoerceOffsets(out _);
 					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
 					Set(verticalOffset: scrollY, disableAnimation: true);
@@ -431,10 +424,13 @@ namespace Microsoft.UI.Xaml.Controls
 			double offsetX,
 			double offsetY,
 			double extentWidth,
-			double extentHeight)
+			double extentHeight,
+			float zoomFactor)
 		{
 			var bIsOffsetChanged = false;
 			ScrollData pScrollData = null;
+			double? appliedOffsetX = null;
+			double? appliedOffsetY = null;
 
 			var bCanHorizontallyScroll = GetCanHorizontallyScroll();
 			if (bCanHorizontallyScroll)
@@ -442,6 +438,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var viewportWidth = GetViewportWidth();
 				pScrollData = GetScrollData();
 				ValidateInputOffset(offsetX, pScrollData.m_MinOffset.X, extentWidth - viewportWidth, out var scrollX);
+				appliedOffsetX = scrollX;
 
 				var currentX = pScrollData.GetOffsetX();
 				if (!DoubleUtil.AreClose(currentX, scrollX))
@@ -457,6 +454,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var viewportHeight = GetViewportHeight();
 				pScrollData ??= GetScrollData();
 				ValidateInputOffset(offsetY, pScrollData.m_MinOffset.Y, extentHeight - viewportHeight, out var scrollY);
+				appliedOffsetY = scrollY;
 
 				var currentY = pScrollData.GetOffsetY();
 				if (!DoubleUtil.AreClose(currentY, scrollY))
@@ -470,6 +468,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				InvalidateArrange();
 				m_scrollRequested = true;
+				Set(
+					horizontalOffset: appliedOffsetX,
+					verticalOffset: appliedOffsetY,
+					zoomFactor,
+					disableAnimation: true);
 			}
 		}
 
@@ -648,11 +651,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// Initialize the viewport
 						if (spScrollViewer is not null && useAnimation)
 						{
-#if false
-							// TODO Uno: Phase 4 DM wiring — when DM adapter lands, restore the
-							// in-manipulation snapshot of the DManip view + target view so
-							// MakeVisible during a manipulation merges with the ongoing animation.
-							if (spScrollViewer.IsInManipulation())
+							if (spScrollViewer.IsInManipulation)
 							{
 								double targetHorizontalOffset = 0.0;
 								double targetVerticalOffset = 0.0;
@@ -676,11 +675,6 @@ namespace Microsoft.UI.Xaml.Controls
 								horizontalOffset = spScrollViewer.GetUnboundHorizontalOffset();
 								verticalOffset = spScrollViewer.GetUnboundVerticalOffset();
 							}
-#else
-							// Phase-4 stub: fall back to the cached IScrollInfo offsets.
-							horizontalOffset = GetHorizontalOffset();
-							verticalOffset = GetVerticalOffset();
-#endif
 						}
 						else
 						{
@@ -794,17 +788,12 @@ namespace Microsoft.UI.Xaml.Controls
 							double targetHorizontalOffset = (double)Math.Max(0, minX);
 							double targetVerticalOffset = (double)Math.Max(0, minY);
 
-#if false
-							// TODO Uno: Phase 4 DM wiring — animated MakeVisible flows through
-							// ScrollViewer.ChangeViewInternal which is not yet ported. For now
-							// fall through to the non-animated SetHorizontalOffsetPrivate /
-							// SetVerticalOffsetPrivate path.
 							// No need to call ChangeView during a manipulation if the requested view coincides with the final view.
-							if (!spScrollViewer.IsInManipulation() ||
+							if (!spScrollViewer.IsInManipulation ||
 								!DoubleUtil.AreClose(horizontalOffset, targetHorizontalOffset) ||
 								!DoubleUtil.AreClose(verticalOffset, targetVerticalOffset))
 							{
-								spScrollViewer.ChangeViewInternal(
+								handled = spScrollViewer.ChangeViewInternal(
 									targetHorizontalOffset /*pHorizontalOffset*/,
 									targetVerticalOffset /*pVerticalOffset*/,
 									null /*pZoomFactor*/,
@@ -816,8 +805,7 @@ namespace Microsoft.UI.Xaml.Controls
 									false /*disableAnimation*/,
 									true /*applyAsManip*/,
 									false /*transformIsInertiaEnd*/,
-									true /*isForMakeVisible*/,
-									out handled);
+									true /*isForMakeVisible*/);
 
 								if (handled)
 								{
@@ -829,36 +817,6 @@ namespace Microsoft.UI.Xaml.Controls
 									minY = (float)Math.Min(targetVerticalOffset, scrollableDim);
 								}
 							}
-#else
-							// Phase-4 stub: synchronous scroll. ChangeViewInternal will be wired
-							// in Phase 4 once the DM adapter and ChangeView pipeline are ported.
-							if (horizontalOffset != minX)
-							{
-								SetHorizontalOffsetPrivate((double)minX, out var isScrollRequested, out var currentOffset, out var requestedOffset);
-								if (isScrollRequested)
-								{
-									minX = (float)requestedOffset;
-									handled = true;
-								}
-								else
-								{
-									minX = (float)currentOffset;
-								}
-							}
-							if (verticalOffset != minY)
-							{
-								SetVerticalOffsetPrivate((double)minY, out var isScrollRequested, out var currentOffset, out var requestedOffset);
-								if (isScrollRequested)
-								{
-									minY = (float)requestedOffset;
-									handled = true;
-								}
-								else
-								{
-									minY = (float)currentOffset;
-								}
-							}
-#endif
 						}
 						else
 						{
@@ -931,11 +889,9 @@ namespace Microsoft.UI.Xaml.Controls
 			appliedOffsetX = appliedOffsetXTmp;
 			appliedOffsetY = appliedOffsetYTmp;
 
-			// Suppress unused-variable warnings for stub-only locals.
+			// Suppress unused-variable warnings for header ownership state.
 			_ = isVisualDirectChild;
 			_ = isVisualInContent;
-			_ = zoomFactor;
-			_ = targetZoomFactor;
 
 			// Return the rectangle
 			return rectangle;

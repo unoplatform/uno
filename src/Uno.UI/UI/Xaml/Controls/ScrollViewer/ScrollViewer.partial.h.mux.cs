@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollViewer_Partial.h, commit 5f9e85113
+// MUX Reference ScrollViewer_Partial.h, commit dc46907e92
 
 //  Abstract:
 //      Represents a scrollable area that can contain other visible elements.
@@ -292,13 +292,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_VerticalSnapPointsChangedToken = new();
 
 		// Callback object used by a single listener that wants to be aware of DM state changes
-		// TODO Uno: Original C++ uses raw pointer; Uno uses interface reference.
 		private IDirectManipulationStateChangeHandler m_pDMStateChangeHandler;
 
-		// HANDLE m_hManipulationHandler — Native HANDLE in C++; Uno uses an object reference for the handler.
-		// TODO Uno: Original C++ stores a raw HANDLE bound to the input manager. In Uno, manipulation
-		// dispatch is performed via GestureRecognizer + InputManager; this field is unused on managed targets.
-		private object m_hManipulationHandler;
+		// HANDLE m_hManipulationHandler — the managed implementation uses the ScrollContentPresenter
+		// that owns the GestureRecognizer pipeline.
+		private ScrollContentPresenter m_hManipulationHandler;
+		private VirtualKey? m_pendingDirectManipulationKey;
 
 		// Last values returned by ScrollViewer::get_CanManipulateElements.
 		// Used to determine if IDirectManipulationContainerHandler.NotifyCanManipulateElements
@@ -371,6 +370,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// In this case the new configurations need to to be pushed to the ManipulationHandler
 		// once the ongoing manipulation completes.
 		private bool m_areViewportConfigurationsInvalid;
+		private bool m_isInChildInvalidateMeasure;
 
 		// Set to True during a manipulation when the manipulability of the elements might be FALSE
 		// once the ongoing manipulation completes.
@@ -545,75 +545,110 @@ namespace Microsoft.UI.Xaml.Controls
 		// Note: IsInDirectManipulation() and IsInManipulation() are exposed via the existing MuxInternal partial.
 		internal bool IsInDirectManipulationCore() => m_isInDirectManipulation;
 
-		// Skia-side bridges: SCP.Managed.cs IDirectManipulationHandler events flip the
-		// underlying m_isInDirectManipulation / m_isInertial flags so the rest of the SV
-		// state machine (snap-points reaction, OnPrimaryContentChanged DM gates,
-		// ViewChanging.IsInertial, etc.) behaves correctly during touch-driven scroll.
-		// The Phase-4 DM adapter port will replace these with full
-		// HandleManipulationStarting/Delta/Completed invocations.
-		internal void NotifyDirectManipulationStarting()
+		internal void NotifyManipulationProgress(
+			UIElement manipulatedElement,
+			DMManipulationState state,
+			float xCumulativeTranslation,
+			float yCumulativeTranslation,
+			float zCumulativeFactor,
+			float xCenter,
+			float yCenter,
+			bool isInertial,
+			bool isTouchConfigurationActivated,
+			bool isBringIntoViewportConfigurationActivated)
 		{
-			m_isInDirectManipulation = true;
-			m_isDirectManipulationStopped = false;
-			m_isInertial = false;
-			m_dmanipState = DMManipulationState.DMManipulationStarting;
+			m_dmanipState = state;
 
-			// Cache the current scroll/zoom-mode + scrollbar-visibility properties so the
-			// active manipulation uses these values even if the live DPs change mid-manip.
-			// MUX Reference: ScrollViewer_Partial.cpp HandleManipulationStarting captures
-			// these into m_current* fields before the manipulation begins.
-			m_currentHorizontalScrollMode = HorizontalScrollMode;
-			m_currentVerticalScrollMode = VerticalScrollMode;
-			m_currentZoomMode = ZoomMode;
-			m_currentHorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
-			m_currentVerticalScrollBarVisibility = VerticalScrollBarVisibility;
-			m_currentIsHorizontalRailEnabled = IsHorizontalRailEnabled;
-			m_currentIsVerticalRailEnabled = IsVerticalRailEnabled;
-			m_currentIsScrollInertiaEnabled = IsScrollInertiaEnabled;
-			m_currentIsZoomInertiaEnabled = IsZoomInertiaEnabled;
-		}
+			if (m_isInertial && !isInertial)
+			{
+				m_isInertial = false;
+				m_isInertiaEndTransformValid = false;
+			}
+			else if (!m_isInertial && isInertial)
+			{
+				m_isInertial = true;
+			}
 
-		internal void NotifyDirectManipulationStarted()
-		{
-			m_dmanipState = DMManipulationState.DMManipulationStarted;
+			switch (state)
+			{
+				case DMManipulationState.DMManipulationStarting:
+					m_isInDirectManipulation = true;
+					m_isDirectManipulationStopped = false;
+					m_isInDirectManipulationCompletion = false;
+					m_preDirectManipulationOffsetX = (float)m_xOffset;
+					m_preDirectManipulationOffsetY = (float)m_yOffset;
+					m_preDirectManipulationZoomFactor = ZoomFactor;
+					m_currentHorizontalScrollMode = HorizontalScrollMode;
+					m_currentVerticalScrollMode = VerticalScrollMode;
+					m_currentZoomMode = ZoomMode;
+					m_currentHorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+					m_currentVerticalScrollBarVisibility = VerticalScrollBarVisibility;
+					m_currentIsHorizontalRailEnabled = IsHorizontalRailEnabled;
+					m_currentIsVerticalRailEnabled = IsVerticalRailEnabled;
+					m_currentIsScrollInertiaEnabled = IsScrollInertiaEnabled;
+					m_currentIsZoomInertiaEnabled = IsZoomInertiaEnabled;
+					if (isTouchConfigurationActivated)
+					{
+						m_preferMouseIndicators = false;
+					}
+					RaiseDirectManipulationStarted();
+					break;
 
-			// Switch to Intermediate mode since any ViewChanged event raised
-			// until the DMManipulationCompleted notification is intermediate.
-			// (MUX Reference: NotifyManipulationProgress DMManipulationStarted case.)
-			EnterIntermediateViewChangedMode();
+				case DMManipulationState.DMManipulationStarted:
+					EnterIntermediateViewChangedMode();
+					break;
 
-			// Forward to the registered IDirectManipulationStateChangeHandler.
+				case DMManipulationState.DMManipulationDelta:
+				case DMManipulationState.DMManipulationLastDelta:
+					if (Math.Abs(zCumulativeFactor - 1.0f) > ScrollViewerZoomRoundingTolerance)
+					{
+						m_isInDirectManipulationZoom = true;
+					}
+					break;
+
+				case DMManipulationState.DMManipulationCompleted:
+					m_isInDirectManipulationCompletion = true;
+					m_isInDirectManipulation = false;
+					m_isInDirectManipulationZoom = false;
+					m_isDirectManipulationZoomFactorChangeIgnored = false;
+					m_isInertial = false;
+					m_isInertiaEndTransformValid = false;
+					m_isTargetHorizontalOffsetValid = false;
+					m_isTargetVerticalOffsetValid = false;
+					m_isTargetZoomFactorValid = false;
+					LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+					RaiseDirectManipulationCompleted();
+					break;
+			}
+
 			m_pDMStateChangeHandler?.NotifyStateChange(
-				DMManipulationState.DMManipulationStarted,
-				0f, 0f, 1f, 0f, 0f,
-				m_isInertial, false, false);
-		}
+				state,
+				xCumulativeTranslation,
+				yCumulativeTranslation,
+				zCumulativeFactor,
+				xCenter,
+				yCenter,
+				isInertial,
+				isTouchConfigurationActivated,
+				isBringIntoViewportConfigurationActivated);
 
-		internal void NotifyDirectManipulationCompleted()
-		{
-			// Mirror C++ NotifyManipulationProgress DMManipulationCompleted handling:
-			// flip flags BEFORE running any further DM-aware code.
-			m_isInDirectManipulationCompletion = true;
-			m_isInDirectManipulation = false;
-			m_isInDirectManipulationZoom = false;
-			m_isInertial = false;
-			m_dmanipState = DMManipulationState.DMManipulationCompleted;
-			m_isInertiaEndTransformValid = false;
-
-			// Reset target-view tracking flags so a subsequent ChangeViewInternal call
-			// uses fresh live property values.
-			m_isTargetHorizontalOffsetValid = false;
-			m_isTargetVerticalOffsetValid = false;
-			m_isTargetZoomFactorValid = false;
-
-			// Leave intermediate mode and raise final ViewChanged.
-			LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
-
-			// Forward to the registered IDirectManipulationStateChangeHandler.
-			m_pDMStateChangeHandler?.NotifyStateChange(
-				DMManipulationState.DMManipulationCompleted,
-				0f, 0f, 1f, 0f, 0f,
-				false, false, false);
+			if (state == DMManipulationState.DMManipulationCompleted)
+			{
+				if (m_isCanManipulateElementsInvalid)
+				{
+					OnManipulatabilityAffectingPropertyChanged(
+						pIsInLiveTree: null,
+						isCachedPropertyChanged: false,
+						isContentChanged: false,
+						isAffectingConfigurations: false,
+						isAffectingTouchConfiguration: true);
+				}
+				if (m_areViewportConfigurationsInvalid)
+				{
+					m_areViewportConfigurationsInvalid = false;
+					OnViewportConfigurationsAffectingPropertyChanged();
+				}
+			}
 		}
 
 		internal void NotifyInertiaStarting()
@@ -649,9 +684,8 @@ namespace Microsoft.UI.Xaml.Controls
 			m_xOffset = horizontalOffset;
 			m_yOffset = verticalOffset;
 
-			// Pixel offsets equal logical offsets multiplied by the zoom factor.
-			m_xPixelOffset = horizontalOffset * zoomFactor;
-			m_yPixelOffset = verticalOffset * zoomFactor;
+			m_xPixelOffset = horizontalOffset;
+			m_yPixelOffset = verticalOffset;
 
 			// Track the "unbound" offsets (offsets without overpan clamping). Outside
 			// of active DM these are equal to the pixel offsets.
@@ -661,18 +695,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_unboundVerticalOffset = m_yPixelOffset;
 			}
 
-			// Forward delta-state to a registered IDirectManipulationStateChangeHandler
-			// during active DM so app code observing inertia/touch updates gets per-tick
-			// notifications. Skipped outside of DM (regular ChangeView calls don't fire
-			// delta states; they go through NotifyOffsetChanging instead).
-			if (m_isInDirectManipulation && m_pDMStateChangeHandler is not null)
-			{
-				m_pDMStateChangeHandler.NotifyStateChange(
-					DMManipulationState.DMManipulationDelta,
-					(float)horizontalOffset, (float)verticalOffset, zoomFactor,
-					0f, 0f,
-					m_isInertial, false, false);
-			}
 		}
 
 		// Stops an in-progress inertia phase. The C++ source uses this when an
@@ -686,6 +708,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_isInDirectManipulation && m_isInertial)
 			{
 				m_isDirectManipulationStopped = true;
+				m_hManipulationHandler?.StopInertialManipulation();
 			}
 		}
 
@@ -737,7 +760,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return (DMConfigurations)((int)panXConfiguration + (int)panYConfiguration);
 		}
 
-		// TODO Uno: DXamlCore::ShouldUseDynamicScrollbars equivalent — likely always true in Uno.
+		// Uno's managed ScrollViewer always uses the dynamic indicator visual states.
 		private static bool IsConscious() => true;
 
 		// Inline header virtuals — root-ScrollViewer specializations override these. Default to false

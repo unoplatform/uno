@@ -156,7 +156,23 @@ namespace Microsoft.UI.Xaml.Controls
 				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor, canBypassSingle: true);
 			}
 
+#if __SKIA__
+			return ChangeViewInternal(
+				horizontalOffset,
+				verticalOffset,
+				zoomFactor,
+				pOldZoomFactor: null,
+				forceChangeToCurrentView: false,
+				adjustWithMandatorySnapPoints: shouldSnap,
+				skipDuringTouchContact: true,
+				skipAnimationWhileRunning: true,
+				disableAnimation,
+				applyAsManip: true,
+				transformIsInertiaEnd: false,
+				isForMakeVisible: false);
+#else
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
+#endif
 		}
 	}
 }

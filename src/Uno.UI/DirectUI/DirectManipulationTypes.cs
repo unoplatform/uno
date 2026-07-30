@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference DirectManipulationTypes.h, commit 5f9e85113
+// MUX Reference DirectManipulationTypes.h, commit dc46907e92
 
 using System;
 
@@ -18,8 +18,8 @@ namespace DirectUI
 		PanX = 0x00000002,
 		PanY = 0x00000004,
 		PanInertia = 0x00000008,
-		PanRailsX = 0x00000010,
-		PanRailsY = 0x00000020,
+		RailsX = 0x00000010,
+		RailsY = 0x00000020,
 		Zoom = 0x00000040,
 		ZoomInertia = 0x00000080,
 	}

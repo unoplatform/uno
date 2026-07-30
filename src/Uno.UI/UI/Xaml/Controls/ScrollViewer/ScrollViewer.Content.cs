@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// C++ ScrollViewer_Partial.cpp:OnPropertyChanged2 ContentControl_Content case →
 			// IFC(OnContentPropertyChanged()). The new port resets stretch-alignment-treated-
 			// as-near flags and triggers OnManipulatabilityAffectingPropertyChanged for the
-			// new content (DM-bound, no-op without DM adapter on Skia).
+			// new content.
 			OnContentPropertyChanged();
 #endif
 		}

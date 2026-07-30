@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference winrtgeneratedclasses/ScrollViewerView.g.h, commit 5f9e85113
+// MUX Reference winrtgeneratedclasses/ScrollViewerView.g.h, commit dc46907e92
 
 namespace Microsoft.UI.Xaml.Controls
 {
