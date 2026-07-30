@@ -32,6 +32,7 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	private readonly Func<WUX.Application> _appBuilder;
 
 	private NativeWindowFactoryExtension? _windowFactory;
+	private bool _previousSkipVisualTreePainting;
 
 	/// <summary>
 	/// Creates a host for a Uno Skia headless (offscreen) application. Use <c>UseHeadless()</c> on the
@@ -60,8 +61,11 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 			this.Log().Debug($"Application is exiting");
 		}
 
-		// Stop all render threads before returning so they never outlive their target buffers.
-		_windowFactory?.DisposeWindows();
+		// Tear down every window (stop its render thread, unregister from XamlRootMap) before returning.
+		_windowFactory?.TearDownWindows();
+
+		// SkipVisualTreePainting is a process-wide flag; restore what it was before this host ran.
+		FeatureConfiguration.Rendering.SkipVisualTreePainting = _previousSkipVisualTreePainting;
 
 		return Task.CompletedTask;
 	}
@@ -72,7 +76,9 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 
 		// Headless windows produce no pixel output, so skip the paint walk globally to save CPU. The
 		// render cycle still ticks (keeping scheduling/animations alive), and RenderTargetBitmap does its
-		// own paint, so on-demand capture is unaffected.
+		// own paint, so on-demand capture is unaffected. The flag is process-wide, so remember the prior
+		// value and restore it on shutdown (see RunLoop).
+		_previousSkipVisualTreePainting = FeatureConfiguration.Rendering.SkipVisualTreePainting;
 		FeatureConfiguration.Rendering.SkipVisualTreePainting = true;
 
 		_windowFactory = new NativeWindowFactoryExtension(_hostBuilder);

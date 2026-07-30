@@ -34,9 +34,10 @@ host.Run();
 ```
 
 > [!NOTE]
-> The headless host reports itself as supported on every operating system, so it is always selected when
-> present. Use it on its own (for example in a dedicated test/offscreen head) rather than chained with
-> `UseX11()`/`UseWin32()`/`UseMacOS()`, which it would otherwise shadow.
+> `UnoPlatformHostBuilder` selects the **first** registered host builder that reports itself supported, and
+> the headless host reports supported on every operating system. So if you register it before other desktop
+> hosts (e.g. `UseX11()`/`UseWin32()`/`UseMacOS()`) it shadows them. Register it on its own — for example in
+> a dedicated test/offscreen head — or last, as a fallback.
 
 ## Running the app
 

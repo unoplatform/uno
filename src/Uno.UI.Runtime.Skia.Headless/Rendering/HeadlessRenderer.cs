@@ -57,7 +57,16 @@ internal sealed class HeadlessRenderer : IDisposable
 	}
 
 	/// <summary>Ticks the render cycle (draws nothing, keeping scheduling/animations/RenderTargetBitmap alive).</summary>
-	public void Invalidate() => _renderInvalidationEvent.Set();
+	public void Invalidate()
+	{
+		// A late invalidation can arrive after disposal (the event is disposed once the thread stops).
+		if (_disposed)
+		{
+			return;
+		}
+
+		_renderInvalidationEvent.Set();
+	}
 
 	private void Render()
 	{

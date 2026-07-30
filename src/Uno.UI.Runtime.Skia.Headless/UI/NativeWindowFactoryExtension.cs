@@ -33,12 +33,12 @@ internal sealed class NativeWindowFactoryExtension : INativeWindowFactoryExtensi
 		return wrapper;
 	}
 
-	/// <summary>Disposes every window's renderer, joining their render threads. Called on host shutdown.</summary>
-	internal void DisposeWindows()
+	/// <summary>Tears down every window (unregister + stop its render thread). Called on host shutdown.</summary>
+	internal void TearDownWindows()
 	{
 		foreach (var window in _windows)
 		{
-			window.DisposeRenderer();
+			window.TearDown();
 		}
 	}
 }

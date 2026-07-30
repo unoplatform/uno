@@ -25,7 +25,6 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 	private int _rawWidth;
 	private int _rawHeight;
 	private bool _closed;
-	private bool _rendererDisposed;
 
 	public HeadlessWindowWrapper(Window window, XamlRoot xamlRoot, int width, int height, HeadlessWindowOptions options)
 		: base(window, xamlRoot)
@@ -84,7 +83,14 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 
 	protected override void ShowCore() => _renderer.Invalidate();
 
-	protected override void CloseCore()
+	protected override void CloseCore() => TearDown();
+
+	/// <summary>
+	/// Unregisters the window from <see cref="XamlRootMap"/> and stops/disposes its renderer (joining the
+	/// render thread). Called on window close and on host shutdown. Unregistering first ensures no further
+	/// invalidation is routed to this wrapper; the renderer additionally ignores late invalidations.
+	/// </summary>
+	internal void TearDown()
 	{
 		if (_closed)
 		{
@@ -92,25 +98,10 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		}
 		_closed = true;
 
-		DisposeRenderer();
-
 		if (XamlRoot is { } xamlRoot)
 		{
 			XamlRootMap.Unregister(xamlRoot);
 		}
-	}
-
-	/// <summary>
-	/// Stops and disposes this window's renderer (joining its render thread). Called on window close
-	/// and on host shutdown, so render threads never outlive the buffers they draw into.
-	/// </summary>
-	internal void DisposeRenderer()
-	{
-		if (_rendererDisposed)
-		{
-			return;
-		}
-		_rendererDisposed = true;
 
 		_renderer.Dispose();
 	}
