@@ -484,6 +484,135 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23903")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TopNav_Select_Overflow_Item_Overflow_Button_Remains()
+		{
+#if HAS_INPUT_INJECTOR
+			// Issue #23903: in Top mode with MenuItemsSource + MenuItemTemplate, selecting the widest
+			// item from the overflow flyout made the overflow button disappear even though not all
+			// items fit in the top bar. Inherited from WinUI (microsoft/microsoft-ui-xaml#6626).
+
+			var titles = new List<string>
+			{
+				"First Tab with large text",
+				"Second Tab with large text",
+				"Third Tab with large text",
+				"Fourth Tab with large text",
+				"Fifth Tab with large text and the last is larger then the other",
+			};
+
+			var template = (DataTemplate)XamlReader.Load("""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+							  xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+					<muxc:NavigationViewItem Content="{Binding}" />
+				</DataTemplate>
+				""");
+
+			var failures = new List<string>();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			foreach (var width in new double[] { 1240, 1180, 1120, 1060, 1000, 940, 880, 820, 760, 700 })
+			{
+				var nv = new MUXC.NavigationView
+				{
+					PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Top,
+					IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+					IsSettingsVisible = false,
+					IsPaneToggleButtonVisible = false,
+					MenuItemsSource = titles,
+					MenuItemTemplate = template,
+					Width = 1400,
+					Height = 80,
+				};
+
+				try
+				{
+					await UITestHelper.Load(nv);
+
+					// Shrink gradually, like a user dragging the window edge.
+					for (var w = 1380d; w >= width; w -= 20)
+					{
+						nv.Width = w;
+						nv.UpdateLayout();
+					}
+					await WindowHelper.WaitForIdle();
+
+					var overflowButton = nv.FindFirstDescendant<Button>(b => b.Name == "TopNavOverflowButton");
+					if (overflowButton is null || overflowButton.Visibility == Visibility.Collapsed)
+					{
+						// All items fit at this width, nothing to test.
+						continue;
+					}
+
+					// Open the overflow flyout by tapping the overflow button, like a user would.
+					finger.Tap(overflowButton.GetAbsoluteBounds().GetCenter());
+					await WindowHelper.WaitForIdle();
+
+					// Find the widest item's container inside the flyout and tap it.
+					var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
+					MUXC.NavigationViewItem flyoutItem = null;
+					foreach (var popup in popups)
+					{
+						flyoutItem = (popup.Child as FrameworkElement)?.FindFirstDescendant<MUXC.NavigationViewItem>(
+							i => Equals(i.Content, titles[4]));
+						if (flyoutItem is not null)
+						{
+							break;
+						}
+					}
+
+					if (flyoutItem is null)
+					{
+						failures.Add($"width={width}: widest item not found in overflow flyout");
+						continue;
+					}
+
+					finger.Tap(flyoutItem.GetAbsoluteBounds().GetCenter());
+					await WindowHelper.WaitForIdle();
+
+					if (!Equals(nv.SelectedItem, titles[4]))
+					{
+						failures.Add($"width={width}: selection did not stick (SelectedItem={nv.SelectedItem ?? "<null>"})");
+						continue;
+					}
+
+					// All five items cannot fit, so the overflow button must remain visible.
+					overflowButton = nv.FindFirstDescendant<Button>(b => b.Name == "TopNavOverflowButton");
+					if (overflowButton is null)
+					{
+						failures.Add($"width={width}: overflow button not found after selection");
+					}
+					else if (overflowButton.Visibility == Visibility.Collapsed)
+					{
+						failures.Add($"width={width}: overflow button collapsed after selecting the overflow item");
+					}
+				}
+				finally
+				{
+					foreach (var popup in Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot))
+					{
+						popup.IsOpen = false;
+					}
+					WindowHelper.WindowContent = null;
+					await WindowHelper.WaitForIdle();
+				}
+			}
+
+			Assert.IsTrue(failures.Count == 0, $"Overflow button visibility failures:{Environment.NewLine}{string.Join(Environment.NewLine, failures)}");
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19482")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_BackButtonVisible_PaneToggleButton_Not_Clipped()
