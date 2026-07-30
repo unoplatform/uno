@@ -87,9 +87,9 @@ flowchart TB
 
   Reg -->|"Activate: negotiate kind + requirements"| CF
   CF -->|"create window + context pair"| Ctx["IGraphicsContext"]
-  Reg -->|"pick provider, Open(context)"| Prov["IGraphicsProvider"]
-  Prov -->|"GraphicsSession.Factory"| Fac["IDrawingFactory → DrawingFactory.Current"]
-  Prov -->|"GraphicsSession.Renderer"| Ren["IRenderer → CompositionTarget.Renderer"]
+  Reg -->|"pick provider, CreateGraphics(context)"| Prov["IGraphicsProvider"]
+  Prov -->|"Graphics.DrawingFactory"| Fac["IDrawingFactory → DrawingFactory.Current"]
+  Prov -->|"Graphics.Renderer"| Ren["IRenderer → CompositionTarget.Renderer"]
 
   subgraph Frame["Per frame — CompositionTarget"]
     Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
@@ -537,21 +537,22 @@ negotiation can try the next request. No neutral `INativeWindow` type — nothin
 public interface IGraphicsProvider
 {
     IReadOnlyList<GraphicsContextRequest> SupportedContexts { get; }   // preference order
-    GraphicsSession Open(IGraphicsContext context);                    // matched (Factory, Renderer), device-bound
+    Graphics CreateGraphics(IGraphicsContext context);                 // matched (DrawingFactory, Renderer), device-bound
 }
-public sealed record GraphicsSession(IDrawingFactory Factory, IRenderer Renderer) : IDisposable;
+public sealed record Graphics(IDrawingFactory DrawingFactory, IRenderer Renderer) : IDisposable;
 ```
 
-**Decision:** `Open(context)` mints the matched pair *together* (both device-bound — GPU resource factories and
-renderers both need the device), so "a renderer without its factory" is unrepresentable. `Open` downcasts the
-context to its kind class to build the device wrap once.
+**Decision:** `CreateGraphics(context)` mints the matched pair *together* (both device-bound — GPU resource
+factories and renderers both need the device), so "a renderer without its factory" is unrepresentable. It downcasts
+the context to its kind class to build the device wrap once. Named `CreateGraphics` (not `Create`) to stay distinct
+from `IGraphicsContextFactory.Create`, which makes the context itself.
 
 ---
 
 ## O. Registry + negotiation (depends on M, N)
 
 ```csharp
-public readonly record struct GraphicsActivation(IGraphicsContext Context, GraphicsSession Session) : IDisposable;
+public readonly record struct GraphicsActivation(IGraphicsContext Context, Graphics Graphics) : IDisposable;
 
 public static class GraphicsRegistry
 {
@@ -567,10 +568,10 @@ foreach (var provider in registered)               // preference order
   foreach (var request in provider.SupportedContexts)
      if (source.Create(request) is { } context)   // host creates window+context for the kind, or null
      {
-         var session = provider.Open(context);
-         DrawingFactory.Current = session.Factory;         // installs the globals (only place)
-         CompositionTarget.Renderer = session.Renderer;
-         return new GraphicsActivation(context, session);
+         var graphics = provider.CreateGraphics(context);
+         DrawingFactory.Current = graphics.DrawingFactory;   // installs the globals (only place)
+         CompositionTarget.Renderer = graphics.Renderer;
+         return new GraphicsActivation(context, graphics);
      }
 throw /* enumerate what no (provider, request) could satisfy — a loud, described failure */;
 ```
