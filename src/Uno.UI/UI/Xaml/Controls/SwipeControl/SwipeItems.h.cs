@@ -57,7 +57,19 @@ namespace Microsoft.UI.Xaml.Controls
 		public void ReplaceAll(SwipeItem[] items)
 		{
 			ArgumentNullException.ThrowIfNull(items);
-			Items = new ObservableCollection<SwipeItem>(items);
+
+			if (Mode == SwipeMode.Execute && items.Length > 1)
+			{
+				throw new ArgumentException("Execute items should only have one item.");
+			}
+
+			m_items.Clear();
+			foreach (var item in items)
+			{
+				m_items.Add(item);
+			}
+
+			m_vectorChangedEventSource?.Invoke(this, new VectorChangedEventArgs(CollectionChange.Reset, 0));
 		}
 		#endregion
 
