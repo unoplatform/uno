@@ -1,4 +1,7 @@
 using System.ComponentModel;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
@@ -17,7 +20,6 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 

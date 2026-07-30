@@ -1,10 +1,12 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using ElmSharp;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using Windows.System;
 using System.Threading;

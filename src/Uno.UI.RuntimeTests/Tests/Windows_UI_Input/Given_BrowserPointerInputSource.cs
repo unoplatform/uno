@@ -1,13 +1,14 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Input;
 

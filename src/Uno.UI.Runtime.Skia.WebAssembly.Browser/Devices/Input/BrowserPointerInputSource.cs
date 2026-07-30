@@ -1,11 +1,11 @@
 ﻿using System;
 using Windows.Devices.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Input;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Microsoft.UI.Xaml.Controls;
-using static Microsoft.UI.Input.PointerUpdateKind;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 
