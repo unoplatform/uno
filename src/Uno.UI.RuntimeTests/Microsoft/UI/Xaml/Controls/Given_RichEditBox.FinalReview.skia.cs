@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_RichEditBox
 {
 	[TestMethod]
-	public void When_Rtf_Hyperlinks_Preserve_Metadata_But_Activation_Is_Allowlisted()
+	public void When_Rtf_Hyperlink_Export_Uses_The_Safe_Scheme_Allowlist()
 	{
 		var targets = new[]
 		{
@@ -53,10 +53,12 @@ public partial class Given_RichEditBox
 		var roundTripped = new RichEditBox().Document;
 		roundTripped.SetText(TextSetOptions.FormatRtf, roundTrippedRtf);
 		GetTextWithoutFinalEop(roundTripped, out var roundTrippedText);
-		foreach (var (label, target, _) in targets)
+		foreach (var (label, target, allowed) in targets)
 		{
 			var start = roundTrippedText.IndexOf(label, StringComparison.Ordinal);
-			Assert.AreEqual($"\"{target}\"", roundTripped.GetRange(start, start + label.Length).Link);
+			Assert.AreEqual(
+				allowed ? $"\"{target}\"" : string.Empty,
+				roundTripped.GetRange(start, start + label.Length).Link);
 		}
 	}
 

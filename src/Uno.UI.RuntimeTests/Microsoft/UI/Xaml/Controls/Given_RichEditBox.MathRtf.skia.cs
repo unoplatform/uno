@@ -124,6 +124,24 @@ public partial class Given_RichEditBox
 		Assert.IsFalse(document.CanUndo());
 	}
 
+	[TestMethod]
+	public void When_Math_Rtf_Xml_Expansion_Exceeds_Budget_Import_Is_Rejected_Atomically()
+	{
+		var document = new RichEditBox().Document;
+		document.SetMathMode(RichEditMathMode.MathOnly);
+		document.SetMathML(WrapMath("<mi>x</mi>"));
+		document.GetMathML(out var before);
+		document.ClearUndoRedoHistory();
+		var rtf = CreateNativeMathRtf(@"{\mr " + new string('&', 220_000) + "}");
+
+		Assert.ThrowsExactly<ArgumentException>(() =>
+			document.SetText(TextSetOptions.FormatRtf, rtf));
+
+		document.GetMathML(out var after);
+		AssertMathEquivalent(before, after, "expanded MathML");
+		Assert.IsFalse(document.CanUndo());
+	}
+
 	private static string CreateNativeMathRtf(string body)
 		=> @"{\rtf1\fbidis\ansi\ansicpg1252\deff0\nouicompat\deflang1033"
 			+ @"{\fonttbl{\f0\fnil\fcharset0 Cambria Math;}{\f1\fnil Segoe UI Variable;}}"
