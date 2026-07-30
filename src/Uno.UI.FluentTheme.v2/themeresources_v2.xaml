@@ -8867,6 +8867,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <skia:Style TargetType="SemanticZoom" BasedOn="{StaticResource SemanticZoomRevealStyle}" />
   <Style TargetType="controls:DropDownButton" x:Key="DropDownButtonRevealStyle">
     <Setter Property="Background" Value="{ThemeResource ButtonRevealBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />

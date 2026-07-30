@@ -60,4 +60,15 @@ public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer
 			}
 		}
 	}
+
+	internal void RaiseToggleStatePropertyChangedEvent(bool oldValue, bool newValue)
+	{
+		var oldState = oldValue ? ToggleState.On : ToggleState.Off;
+		var newState = newValue ? ToggleState.On : ToggleState.Off;
+
+		if (oldState != newState)
+		{
+			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldState, newState);
+		}
+	}
 }
