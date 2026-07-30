@@ -80,6 +80,7 @@ internal partial class BrowserRenderer
 	internal static Task RenderFrameAsync([JSMarshalAs<JSType.Any>] object instance)
 	{
 		((BrowserRenderer)instance).RenderFrameMT();
+
 		return Task.CompletedTask;
 	}
 

@@ -10,17 +10,17 @@ public static partial class WebAssemblyThreading
 
 		IsThreadingEnabled = NativeMethods.IsThreadingEnabled();
 		WindowObject = window;
-		WindowObjectOrNull = IsThreadingEnabled ? window : null;
 	}
 
 	public static bool IsThreadingEnabled { get; private set; }
 
-	public static JSObject WindowObject { get; private set; }
-
 	/// <summary>
-	/// Shorthand, always null on ST, contains Window on MT
+	/// Passing the Window object as an argument to a JSImport routes the call to the Main browser thread.
+	/// This is not normally necessary on the deputy thread as it has no JSProxyContext.
+	/// Use this for JSImports calls inside JSWebWorker.
+	/// See: JSProxyContext.SealJSImportCapturing().
 	/// </summary>
-	public static JSObject WindowObjectOrNull { get; private set; }
+	public static JSObject WindowObject { get; private set; }
 
 	internal static partial class NativeMethods
 	{

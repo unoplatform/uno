@@ -1,7 +1,7 @@
 ﻿namespace Windows.Devices.Midi {
 	export class MidiInPort {
 		private static dispatchMessage:
-			(instanceId: string, serializedMessage: string, timestamp: number) => number;
+			(instanceId: string, serializedMessage: string, timestamp: number) => (void | Promise<void>);
 
 		private static instanceMap: { [managedId: string]: MidiInPort } = {};
 
@@ -27,10 +27,10 @@
 
 		public static startMessageListener(managedId: string) {
 			if (!MidiInPort.dispatchMessage) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessageAsync;
 				} else {
-					throw `MidiInPort: Unable to find dotnet exports`;
+					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;
 				}
 			}
 

@@ -3,7 +3,10 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+using Uno.Foundation;
 using Uno.UI.NativeElementHosting;
+
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 
 namespace Uno.UI.Runtime.Skia;
@@ -62,6 +65,16 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		}
 	}
 
+	public static void SetSvgClipPathForNativeElementHostAsync(string path, string fillType)
+	{
+		if (_lastSvgClipPath != (path, fillType))
+		{
+			_lastSvgClipPath = (path, fillType);
+
+			_ = NativeMethods.SetSvgClipPathForNativeElementHostAsync(path, fillType, WebAssemblyThreading.WindowObject);
+		}
+	}
+
 	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize) => availableSize;
 
 	public object CreateSampleComponent(string text)
@@ -93,6 +106,12 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHost")]
 		internal static partial void SetSvgClipPathForNativeElementHost(string path, string fillType);
+
+		// WASM-MT : We use an async variant here not to block the render thread.
+		// Using a Task returning call posts to the Main browser thread.
+		// No need to await the result.
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHostAsync")]
+		internal static partial Task SetSvgClipPathForNativeElementHostAsync(string path, string fillType, JSObject window);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setZIndex")]
 		internal static partial void SetZIndex(string content, int zIndex);
